@@ -115,7 +115,7 @@ void Model::selectionInvert(bool markonly)
 }
 
 // Delete Selected Atoms
-void Model::selectionDelete()
+void Model::selectionDelete(bool markonly)
 {
 	msg.enter("Model::selectionDelete");
 	Atom *i, *tempi;
@@ -124,7 +124,7 @@ void Model::selectionDelete()
 	i = atoms_.first();
 	while (i != NULL)
 	{
-		if (i->isSelected())
+		if (i->isSelected(markonly))
 		{
 			tempi = i->next;
 			deleteAtom(i);
@@ -401,22 +401,22 @@ Atom *Model::firstMarked()
 }
 
 // Select overlapping atoms
-void Model::selectOverlaps(double tolerance)
+void Model::selectOverlaps(double tolerance, bool markonly)
 {
 	msg.enter("Model::selectOverlaps");
 	Atom *i, *j;
 	double deltar;
-	selectNone();
+	selectNone(markonly);
 	for (i = atoms_.first(); i != atoms_.last(); i = i->next)
 	{
-		if (i->isSelected()) continue;
+		if (i->isSelected(markonly)) continue;
 		for (j = i->next; j != NULL; j = j->next)
 		{
 			deltar = cell_.distance(i, j);
 			if (deltar < tolerance)
 			{
 				msg.print("Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
-				selectAtom(j);
+				selectAtom(j, markonly);
 			}
 		}
 	}

@@ -167,8 +167,8 @@ void Model::pack(Generator *gen)
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
-	// Ignore the identity operator, and leave if there are no atoms selected
-	if ((gen == 0) || (nSelected_ == 0))
+	// Ignore the identity operator, and leave if there are no atoms marked
+	if ((gen == 0) || (nMarked_ == 0))
 	{
 		msg.enter("Model::pack[generator]");
 		return;
@@ -177,7 +177,7 @@ void Model::pack(Generator *gen)
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
-	clip.copySelection(this);
+	clip.copyMarked(this);
 	clip.pasteToModel(this, FALSE);
 	for (Atom *i = atoms_[oldnatoms]; i != NULL; i = i->next)
 	{
@@ -204,8 +204,8 @@ void Model::pack()
 		msg.exit("Model::pack");
 		return;
 	}
-	// Select all atoms in model
-	selectAll();
+	// Mark all atoms in model
+	selectAll(TRUE);
 	if (sg != 0)
 	{
 		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(sg));
@@ -217,8 +217,8 @@ void Model::pack()
 		for (Refitem<Generator,int> *ri = cell_.generators(); ri != NULL; ri = ri->next) pack(ri->item);
 	}
 	// Select overlapping atoms and delete
-	selectOverlaps(0.1);
-	selectionDelete();
+	selectOverlaps(0.1, TRUE);
+	selectionDelete(TRUE);
 	msg.exit("Model::pack");
 }
 
