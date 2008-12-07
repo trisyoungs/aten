@@ -280,7 +280,7 @@ class Model
 	// Invert current atom selection
 	void selectionInvert(bool markonly = FALSE);
 	// Delete current atom selection
-	void selectionDelete();
+	void selectionDelete(bool markonly = FALSE);
 	// Expand current atom selection by one bond
 	void selectionExpand(bool markonly = FALSE);
 	// Return the atom at the clicked screen coordinates (if any)
@@ -306,7 +306,7 @@ class Model
 	// Return the first marked atom in the model (if any)
 	Atom *firstMarked();
 	// Detect and select overlapping atoms
-	void selectOverlaps(double tolerance);
+	void selectOverlaps(double tolerance, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()
