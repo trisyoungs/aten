@@ -13,9 +13,6 @@ aten_DATA = src/gui/icons/aten.png
 filterdir = $(atendir)/filters
 filter_DATA = data/filters/*
 
-ffdir = $(atendir)/ff
-ff_DATA = data/ff/*
-
 testdir = $(atendir)/test
 test_DATA = data/test/*
 
