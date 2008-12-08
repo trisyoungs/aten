@@ -1,0 +1,83 @@
+# XMol-style XYZ coordinates files
+# Last modified: 10/11/2008
+# ChangeLog:
+#	10/11/2008 - Multiple models now recognised on import. Removed centreing of trajectory frames.
+#	10/10/2008 - Adjusted to use new variable access style.
+#	24/09/2008 - Modified to correctly read trajectories containing different numbers/ordering of atoms
+
+importmodel
+	name "XMol XYZ Coordinates"
+	nickname xyz
+	extension xyz
+	glob *.xyz
+	id 3
+
+	# Variable declaration
+	integer natoms,n,m
+	character e,title
+	real rx,ry,rz,q
+
+	# Loop over model(s) in file
+	for $m
+		# Read data
+		readline "$natoms"
+		getline $title
+		newmodel $title
+		for $n,1,$natoms
+			readline "$e $rx $ry $rz $q"
+			newatom $e
+			setcoords $rx $ry $rz
+			setcharge $q
+		end
+		rebond
+		finalisemodel
+	end
+end
+
+exportmodel
+	name "XMol XYZ Coordinates"
+	extension xyz
+	glob *.xyz
+	nickname xyz
+	id 3
+
+	# Variable declaration
+	integer n
+	character e
+	real rx,ry,rz
+	atom i
+
+	writeline "$model.natoms"
+	writeline "$model.name"
+	for $i
+		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
+	end
+end
+
+importtrajectory
+	name "XMol XYZ Coordinates"
+	extension xyz
+	glob *xyz
+	nickname xyz
+
+	# Variable declaration
+	integer n,natoms
+	character e,title
+	real rx,ry,rz
+
+	# No header in XYZ trajectories, so only check for frames
+	if $header <> true
+		readline "$natoms"
+		getline $title
+		setname $title
+		newglyph text
+		glyphtext $title
+		glyphdata 1 10 10 0
+		for $n,1,$natoms
+			readline "$e $rx $ry $rz"
+			newatom $e $rx $ry $rz
+		end
+		rebond
+		finaliseframe
+	end
+end

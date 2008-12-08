@@ -1,0 +1,84 @@
+# Aten 'Custom' file format example using keywords, and includes glyphs
+# Last modified: 12/10/2008
+#	12/10/2008 - Adjusted to use new variable access methods, and changed format specifiers.
+#	04/10/2008 - Quoting changes.
+#	07/03/2008 - First release.
+
+importmodel
+	name "Aten Keyword Format"
+	nickname akf
+	extension akf
+	glob *.akf
+	id 1
+
+	# Variable declaration
+	integer natoms,n,i,j,k
+	character e,keywd,line
+	real rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
+
+	newmodel $infile
+
+	# Read line
+	for $n
+		readline "$keywd $line@200"
+		if $keywd = "atom"
+			readvar $line "$e $rx $ry $rz"
+			newatom $e $rx $ry $rz
+		elseif $keywd = "cell"
+			readvar $line "$rx $ry $rz $ax $ay $az"
+			cell $rx $ry $rz $ax $ay $az
+		elseif $keywd = "cellmat"
+			readvar $line "$ax $ay $az $bx $by $bz $cx $cy $cz"
+			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+		elseif $keywd = "arrow"
+			readvar $line "$i $j"
+			newglyph arrow
+			glyphatomr 1 $i
+			glyphatomr 2 $j
+		elseif $keywd = "vector"
+			readvar $line "$i $j"
+			newglyph arrow
+			glyphatomr 1 $i
+			glyphatomr 2 $j
+		elseif $keywd = "sphere"
+			readvar $line "$i $rx $ry $rz"
+			newglyph sphere
+			glyphatomr 1 $i
+			glyphdata 2 $rx $ry $rz
+		elseif $keywd = "cube"
+			readvar $line "$i $rx $ry $rz"
+			newglyph cube
+			glyphatomr 1 $i
+			glyphdata 2 $rx $ry $rz
+		elseif $keywd = "tet"
+			readvar $line "$i $j $k"
+			newglyph tetrahedron
+			glyphatomr 1 $i
+			glyphatomr 2 $j
+			glyphatomr 3 $k
+		else
+			warn "Keyword '$keywd' not recognised."
+		end if
+	end
+	rebond
+	finalisemodel
+end
+#exportmodel
+#	name "XMol XYZ Coordinates"
+#	extension xyz
+#	glob *.xyz
+#	nickname xyz
+#	id 1
+#
+#	# Variable declaration
+#	integer n
+#	character e
+#	real rx,ry,rz
+#	atom i
+#
+#	writeline "$natoms"
+#	writeline "$title"
+#	for $i
+#		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6"
+#	end
+#end

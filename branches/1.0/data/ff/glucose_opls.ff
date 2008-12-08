@@ -1,0 +1,68 @@
+name "Glucose (from OPLS-AA)"
+# Force constants from OPLS-AA, geometries from MP2/6-31G(d) geometry.
+# Average geometry parameters are 'rough guesses', not proper averages.
+units kcal
+vscale 0.5
+escale 0.5
+types
+#1	CO	C	"nbonds=4,ring(size=6),-O(-H),-O(-C),-C,-H"	# Carbon of secondary alcohol in ring position 1 (next to ring O)
+1	CO	C	"nbonds=4,ring(size=6),-O(-C),-O,-C,-H"	# Carbon of secondary alcohol in ring position 1 (next to ring O)
+2	CT 	C	"nbonds=4,-O,-H,-C"				# General aliphatic carbon
+3	OS	O	"nbonds=2,ring(size=6),-C,-C"			# Ring oxygen
+4	CT2	C	"nbonds=4,-H(n=2),-C(ring(size=6)),-O(-H)"	# Carbon of primary alcohol
+5	OHp	O	"-H,-C"						# Alcoholic oxygen
+6	HC1	H	"-C"						# Aliphatic hydrogen
+7	HO	H	"-O"						# Alcoholic hydrogen
+end
+inter  lj
+#FFID	Type	Charge	VDW1		VDW2	VDW3
+1	CO	0	0.066		3.5	0.0
+2	CT	0	0.066		3.5	0.0
+3	OS	0	0.14		2.9	0.0
+4	CT2	0	0.066		3.5	0.0
+5	OHp	0	0.17		3.17	0.0
+6	HC1	0	0.03		2.5	0.0
+7	HO	0	0.0		0.0	0.0
+end
+equivalents
+CT	CT2
+end
+bonds harmonic
+CO	C*	536.0	1.521
+CT	CT	536.0	1.513
+CT	OS	640.0	1.429
+CO	OS	640.0	1.417
+C*	HC1	680.0	1.100
+CO	OHp	640.0	1.398
+CT	OHp	640.0	1.425
+OHp	HO	1106.0	0.976
+end
+angles harmonic
+CT	CT	C*	116.7	109.5
+C*	C*	OS	100.0	108.6
+CO	OS	CT	120.0	111.2
+OHp	CO	OS	185.2	106.0
+OHp	C*	C*	100.0	111.0
+HO	OHp	C*	110.0	106.3
+OHp	C*	HC1	70.0	109.6
+C*	C*	HC1	75.0	109.5
+HC1	CT	HC1	66.0	108.3
+OS	C*	HC1	77.0	107.0
+end
+torsions cos3
+C*	CT	CT	CT	1.74	-0.157	0.279
+OS	C*	CT	CT	-1.336	0.0	0.0
+CT	C*	OS	C*	0.65	-0.25	0.67
+C*	C*	C*	OHp	-1.336	0.0	0.0
+OHp	C*	C*	OHp	9.066	0.0	0.0
+OS	C*	CT	OHp	4.319	0.0	0.0
+C*	C*	C*	HC1	0.0	0.0	0.366
+C*	OS	C*	HC1	0.0	0.0	0.76
+OS	C*	C*	HC1	0.0	0.0	0.468
+OHp	C*	C*	HC1	0.0	0.0	0.468
+HO	OHp	C*	C*	2.674	-2.883	1.026
+HO	OHp	C*	OS	-1.257	-1.806	0.003
+HC1	C*	C*	HC1	0.0	0.0	0.318
+HO	OHp	C*	HC1	0.0	0.0	0.45
+OHp	CO	OS	CT	4.319	0.0	0.0
+end

@@ -1,0 +1,28 @@
+# Point-like particle test, with electrostatics and VDW contributions
+# 256 negative ions and 256 positive ions
+
+# Load forcefield, model, and trajectory
+loadff ../aten-stuff/dlpolytest/points/points.ff pointsff
+loadmodel ../aten-stuff/dlpolytest/points/points.CONFIG points
+createpatterns
+chargeff
+loadtrajectory ../aten-stuff/dlpolytest/points/points.HISu
+
+# Set up energy expression
+createexpression
+elec ewald 0.14021 16 16 16 
+vcut 25.0
+ecut 25.0
+
+# Calculate model energy and print totals
+modelenergy
+printenergy
+
+# Read in 50 frames from the trajectory, calculate and print an energy summary for each
+#loop nrg 50
+#energy traj
+#energy summary
+#traj nextframe
+#endloop nrg
+
+quit
