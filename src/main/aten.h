@@ -27,7 +27,7 @@
 #include "command/filter.h"
 #include "templates/namemap.h"
 
-#define ATENVERSION "0.99"
+#define ATENVERSION "1.0"
 #define ATENREVISION "739"
 #define ATENDATE "Sun 07 Dec - 18:35"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
