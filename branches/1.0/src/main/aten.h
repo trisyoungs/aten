@@ -28,9 +28,9 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "1.0"
-#define ATENREVISION "739"
-#define ATENDATE "Sun 07 Dec - 18:35"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENREVISION "741"
+#define ATENDATE "Mon 08 Dec - 20:47"
+#define ATENURL "http://aten.googlecode.com/svn/branches/1.0"
 
 // Forward Declarations
 class Model;
