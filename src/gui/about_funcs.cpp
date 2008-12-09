@@ -33,8 +33,6 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 	ui.VersionLabel->setText(s);
 	ui.DateLabel->setText(ATENDATE);
 	ui.UrlLabel->setText(ATENURL);
-	sprintf(s, "<a href=\"http://www.projectaten.org/doc/%s/manual.html\">http://www.projectaten.org/doc/%s/manual.html</a>",ATENVERSION,ATENVERSION);
-	ui.ManualLabel->setText(s);
 }
 
 // Destructor
