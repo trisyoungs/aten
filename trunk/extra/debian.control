@@ -1,13 +1,15 @@
 Source: aten
 Section: unknown
 Priority: optional
-Maintainer: Tris Youngs <tris@projectaten.org>
+Maintainer: Tris Youngs <tris@projectaten.net>
 Build-Depends: debhelper (>= 4.1.16)
 
 Package: aten
 Architecture: any
 Depends: ${shlibs:Depends}
 Description: Atomic configuration creator and editor
- Then, here there is the long description of the package... 
- also here the syntax is very painful (look at the documentation of Debian Policy
- to avoid errors http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Description)
+ Aten allows configurations suitable for molecular dynamics, Monte Carlo, and ab initio codes
+ to be created easily. Periodic and non-periodic systems can be generated automatically or
+ built by hand, and spacegroup packing (i.e. support for crystals) is implemented. Aten is 
+ fully scriptable and support for any file format (be it a model file, gridded data, or 
+ forcefield description) can be added through the filters system.

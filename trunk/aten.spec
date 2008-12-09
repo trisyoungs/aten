@@ -20,7 +20,7 @@ Group: Productivity/Scientific/Chemistry
 Source: %{fullname}.tar.gz
 
 # Location of the project's home page.
-URL: http://www.projectaten.org
+URL: http://www.projectaten.net
 
 # Owner of the product.
 Vendor: Tristan Youngs
@@ -95,11 +95,11 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/aten/
 
 %changelog
-* Wed Apr 02 2008 Tristan Youngs <tris@projectaten.org> 
+* Wed Apr 02 2008 Tristan Youngs <tris@projectaten.net> 
 - added checks to build on different distros with the SuSE build service.
-* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.org>
+* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.net>
 - added dependencies list and long description.
-* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.org>
+* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.net>
 - installation target points to local dir.
-* Mon Mar 24 2008 Tristan Youngs <tris@projectaten.com> 
+* Mon Mar 24 2008 Tristan Youngs <tris@projectaten.net> 
 - initial version.
