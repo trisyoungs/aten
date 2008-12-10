@@ -115,18 +115,11 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s)
 const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
 Prefs::ViewObject Prefs::viewObject(const char *s)
 {
-	return (Prefs::ViewObject) power(2,enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s));
+	return (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
 }
 const char *Prefs::viewObject(Prefs::ViewObject vo)
 {
-	double d = vo;
-	int i;
-	for (i=0; i<Prefs::nViewObjects; i++)
-	{
-		d /= 2.0;
-		if (d < 0.75) break;
-	}
-	return ViewObjectKeywords[i];
+	return ViewObjectKeywords[vo];
 }
 
 // Guide Geometries
@@ -175,9 +168,8 @@ Prefs::Prefs()
 	fogFar_ = 200;
 
 	// Rendering - Objects
-	screenObjects_ = Prefs::ViewAtoms + Prefs::ViewLabels + Prefs::ViewMeasurements + Prefs::ViewGlobe + Prefs::ViewCell;
-	screenObjects_ += Prefs::ViewCellAxes + Prefs::ViewRegions + Prefs::ViewSurfaces;
-	imageObjects_ = screenObjects_ - Prefs::ViewGlobe;
+	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
+	imageObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
 	renderStyle_ = Atom::StickStyle;
 
 	// Build
@@ -321,27 +313,27 @@ void Prefs::load(const char *filename)
 // Set the visibility of an object on-screen
 void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
 {
-	if (b && (!(screenObjects_&vo))) screenObjects_ += vo;
-	else if ((!b) && (screenObjects_&vo)) screenObjects_ -= vo;
+	if (b && (!(screenObjects_&(1 << vo)))) screenObjects_ += (1 << vo);
+	else if ((!b) && (screenObjects_&(1 << vo))) screenObjects_ -= (1 << vo);
 }
 
 // Set the visibility of an object on-screen
 void Prefs::setVisibleOnImage(ViewObject vo, bool b)
 {
-	if (b && (!(imageObjects_&vo))) imageObjects_ += vo;
-	else if ((!b) && (imageObjects_&vo)) imageObjects_ -= vo;
+	if (b && (!(imageObjects_&(1 << vo)))) imageObjects_ += (1 << vo);
+	else if ((!b) && (imageObjects_&(1 << vo))) imageObjects_ -= (1 << vo);
 }
 
 // Return whether the specified object is visible (i.e. should be rendered) on screen
 bool Prefs::isVisibleOnScreen(ViewObject vo)
 {
-	return (screenObjects_&vo ? TRUE : FALSE);
+	return (screenObjects_&(1 << vo) ? TRUE : FALSE);
 }
 
 // Return whether the specified object is visible (i.e. should be rendered) on saved images
 bool Prefs::isVisibleOnImage(ViewObject vo)
 {
-	return (imageObjects_&vo ? TRUE : FALSE);
+	return (imageObjects_&(1 << vo) ? TRUE : FALSE);
 }
 
 // Return screenobjects bitvector

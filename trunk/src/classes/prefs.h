@@ -65,7 +65,7 @@ class Prefs
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char*);
 	// View Objects
-	enum ViewObject { ViewAtoms=1, ViewCell=2, ViewCellAxes=4, ViewCellRepeat=8, ViewForceArrows=16, ViewGlobe=32, ViewLabels=64, ViewMeasurements=128, ViewRegions=256, ViewSurfaces=512, nViewObjects=11 };
+	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
 	static ViewObject viewObject(const char*);
 	static const char *viewObject(ViewObject);
 	// GL Options
