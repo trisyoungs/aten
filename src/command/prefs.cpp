@@ -343,23 +343,21 @@ int Command::function_CA_SHOWONSCREEN(CommandNode *&c, Bundle &obj)
 		char shown[512], notshown[512];
 		shown[0] = '\0';
 		notshown[0] = '\0';
-		int n = 1;
 		strcat(shown,"Visible: ");
 		strcat(notshown,"Hidden : ");
 		msg.print( "Current on-screen object status:\n");
 		for (int i=0; i<Prefs::nViewObjects; i++)
 		{
-			if (prefs.isVisibleOnScreen( (Prefs::ViewObject) n))
+			if (prefs.isVisibleOnScreen( (Prefs::ViewObject) i))
 			{
-				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) i));
 				strcat(shown, " ");
 			}
 			else
 			{
-				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) i));
 				strcat(notshown, " ");
 			}
-			n *= 2;
 		}
 		msg.print( "%s\n", shown);
 		msg.print( "%s\n", notshown);
@@ -381,23 +379,21 @@ int Command::function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj)
 		char shown[512], notshown[512];
 		shown[0] = '\0';
 		notshown[0] = '\0';
-		int n = 1;
 		strcat(shown,"Visible: ");
 		strcat(notshown,"Hidden : ");
 		msg.print( "Current on-image object status:\n");
 		for (int i=0; i<Prefs::nViewObjects; i++)
 		{
-			if (prefs.isVisibleOnImage( (Prefs::ViewObject) n))
+			if (prefs.isVisibleOnImage( (Prefs::ViewObject) i))
 			{
-				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) i));
 				strcat(shown, " ");
 			}
 			else
 			{
-				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) i));
 				strcat(notshown, " ");
 			}
-			n *= 2;
 		}
 		msg.print( "%s\n", shown);
 		msg.print( "%s\n", notshown);

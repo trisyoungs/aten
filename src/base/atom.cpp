@@ -622,13 +622,19 @@ short int Atom::labels()
 }
 
 // Set the bit for the specified label (if it is not set already)
-void Atom::addLabel(Atom::AtomLabel label) { if (!(labels_&label)) labels_ += (short int) label;
+void Atom::addLabel(Atom::AtomLabel label)
+{
+	if (!(labels_&label)) labels_ += (short int) label;
 }
 
 // Unsets the bit for the specified label (if it is not unset already)
-void Atom::removeLabel(Atom::AtomLabel label) { if (labels_&label) labels_ -= (short int) label;
+void Atom::removeLabel(Atom::AtomLabel label)
+{
+	if (labels_&label) labels_ -= (short int) label;
 }
 
 // Clear all labels from the atom
-void Atom::clearLabels() { labels_ = 0;
+void Atom::clearLabels()
+{
+	labels_ = 0;
 }
