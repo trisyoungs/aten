@@ -635,6 +635,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	}
 
 	// Flag any surfaces to be rerendered for use in this context
+	printf("lksjdflkjsdlkfjkl IMAGE\n");
 	aten.current.rs->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
 	int screenbits = prefs.screenObjects();
@@ -658,6 +659,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	mainView.configure(mainWidget->width(), mainWidget->height());
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
+	printf("lksjdflkjsdlkfjkl IMAGE DONE\n");
 
 	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
 	msg.print("Saved current view as '%s'\n", filename);

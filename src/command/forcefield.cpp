@@ -190,11 +190,7 @@ int Command::function_CA_GETFF(CommandNode *&c, Bundle &obj)
 int Command::function_CA_LOADFF(CommandNode *&c, Bundle &obj)
 {
 	Forcefield *ff = aten.loadForcefield(c->argc(0));
-	if (ff == NULL)
-	{
-		msg.print("Can't find forcefield file '%s' in any location.\n", c->argc(0));
-		return Command::Fail;
-	}
+	if (ff == NULL) return Command::Fail;
 	else
 	{
 		if (c->hasArg(1)) ff->setName(c->argc(1));
