@@ -90,7 +90,7 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 			rv.set(p->firstAtom(), VTypes::AtomData);
 			break;
 		case (PatternAccessors::FirstAtomId):
-			rv.set(p->startAtom());
+			rv.set(p->startAtom() + 1);
 			break;
 		case (PatternAccessors::FField):
 			rv.set(p->forcefield(), VTypes::ForcefieldData);
@@ -99,7 +99,7 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 			rv.set(p->lastAtom(), VTypes::AtomData);
 			break;
 		case (PatternAccessors::LastAtomId):
-			rv.set(p->endAtom());
+			rv.set(p->endAtom() + 1);
 			break;
 		case (PatternAccessors::Name):
 			rv.set(p->name());
