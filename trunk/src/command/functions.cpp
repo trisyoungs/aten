@@ -225,6 +225,7 @@ void Command::initPointers()
 	pointers_[CA_ADDGRIDPOINT] = &Command::function_CA_ADDGRIDPOINT;
 	pointers_[CA_ADDNEXTGRIDPOINT] = &Command::function_CA_ADDNEXTGRIDPOINT;
 	pointers_[CA_FINALISEGRID] = &Command::function_CA_FINALISEGRID;
+	pointers_[CA_GRIDALPHA] = &Command::function_CA_GRIDALPHA;
 	pointers_[CA_GRIDAXES] = &Command::function_CA_GRIDAXES;
 	pointers_[CA_GRIDCOLOUR] = &Command::function_CA_GRIDCOLOUR;
 	pointers_[CA_GRIDCOLOURSCALE] = &Command::function_CA_GRIDCOLOURSCALE;
@@ -236,7 +237,6 @@ void Command::initPointers()
 	pointers_[CA_GRIDSIZE] = &Command::function_CA_GRIDSIZE;
 	pointers_[CA_GRIDSTYLE] = &Command::function_CA_GRIDSTYLE;
 	pointers_[CA_GRIDSYMMETRIC] = &Command::function_CA_GRIDSYMMETRIC;
-	pointers_[CA_GRIDTRANSPARENCY] = &Command::function_CA_GRIDTRANSPARENCY;
 	pointers_[CA_GRIDUSEZ] = &Command::function_CA_GRIDUSEZ;
 	pointers_[CA_LOADGRID] = &Command::function_CA_LOADGRID;
 	pointers_[CA_NEWGRID] = &Command::function_CA_NEWGRID;

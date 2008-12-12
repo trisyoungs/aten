@@ -51,6 +51,14 @@ int Command::function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Set transparency of grid
+int Command::function_CA_GRIDALPHA(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
+	obj.g->setAlpha(c->argf(0));
+	return Command::Success;
+}
+
 // Set grid axes (nine doubles)
 int Command::function_CA_GRIDAXES(CommandNode *&c, Bundle &obj)
 {
@@ -68,7 +76,7 @@ int Command::function_CA_GRIDCOLOUR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
-	if (c->hasArg(3)) obj.g->setTransparency(c->argd(3));
+	if (c->hasArg(3)) obj.g->setAlpha(c->argd(3));
 	return Command::Success;
 }
 
@@ -77,7 +85,7 @@ int Command::function_CA_GRIDCOLOURNEGATIVE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
-	if (c->hasArg(3)) obj.g->setTransparency(c->argd(3));
+	if (c->hasArg(3)) obj.g->setAlpha(c->argd(3));
 	return Command::Success;
 }
 
@@ -189,14 +197,6 @@ int Command::function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setSymmetric(c->argb(0));
-	return Command::Success;
-}
-
-// Set transparency of grid
-int Command::function_CA_GRIDTRANSPARENCY(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
-	obj.g->setTransparency(c->argf(0));
 	return Command::Success;
 }
 
