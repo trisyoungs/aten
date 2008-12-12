@@ -278,7 +278,7 @@ void AtenGrids::refreshGridInfo()
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
 	if (!g->usesColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
-	ui.GridTransparencySpin->setValue( g->transparency() );
+	ui.GridTransparencySpin->setValue( g->alpha() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
 	ui.GridColourscaleSpin->setEnabled( g->usesColourScale() );
 	ui.GridNegativeColourButton->setEnabled( !g->usesColourScale() );
@@ -409,7 +409,7 @@ void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 	if (row == -1) return;
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
-	g->setTransparency( (GLfloat) value );
+	g->setAlpha( (GLfloat) value );
 	gui.mainView.postRedisplay();
 }
 

@@ -276,16 +276,16 @@ Grid::SurfaceStyle Grid::style()
 	return style_;
 }
 
-// Set transparency of the surface
-void Grid::setTransparency(GLfloat a)
+// Set alpha value of the surface
+void Grid::setAlpha(GLfloat a)
 {
 	positiveColour_[3] = a;
 	negativeColour_[3] = a;
 	log_++;
 }
 
-// Return transparency of the grid's surface
-GLfloat Grid::transparency()
+// Return alpha value of the grid's surface
+GLfloat Grid::alpha()
 {
 	return positiveColour_[3];
 }

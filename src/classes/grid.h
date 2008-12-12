@@ -196,10 +196,10 @@ class Grid
 	void setPositiveColour(GLfloat r, GLfloat g, GLfloat b);
 	// Set the negative colour of the surface
 	void setNegativeColour(GLfloat r, GLfloat g, GLfloat b);
-	// Set transparency of the surface
-	void setTransparency(GLfloat a);
-	// Return the transparency of the surface
-	GLfloat transparency();
+	// Set alpha value of the surface
+	void setAlpha(GLfloat a);
+	// Return the alpha value of the surface
+	GLfloat alpha();
 	// Return the positive colour of the surface
 	GLfloat *positiveColour();
 	// Return the negative colour of the surface

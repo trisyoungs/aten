@@ -282,6 +282,7 @@ class Command {
 		CA_ADDNEXTGRIDPOINT,
 		CA_FINALISEGRID,
 		CA_GETGRID,
+		CA_GRIDALPHA,
 		CA_GRIDAXES,
 		CA_GRIDCOLOUR,
 		CA_GRIDCOLOURNEGATIVE,
@@ -294,7 +295,6 @@ class Command {
 		CA_GRIDSIZE,
 		CA_GRIDSTYLE,
 		CA_GRIDSYMMETRIC,
-		CA_GRIDTRANSPARENCY,
 		CA_GRIDUSEZ,
 		CA_LOADGRID,
 		CA_NEWGRID,
@@ -687,6 +687,7 @@ class Command {
 	static int function_CA_ADDNEXTGRIDPOINT(CommandNode *&c, Bundle &obj);
 	static int function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj);
 	static int function_CA_GETGRID(CommandNode *&c, Bundle &obj);
+	static int function_CA_GRIDALPHA(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDAXES(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDCOLOUR(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDCOLOURNEGATIVE(CommandNode *&c, Bundle &obj);
@@ -699,7 +700,6 @@ class Command {
 	static int function_CA_GRIDSIZE(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDSTYLE(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDTRANSPARENCY(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOADGRID(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWGRID(CommandNode *&c, Bundle &obj);
