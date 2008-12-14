@@ -78,12 +78,13 @@ bool IntegerVariable::set(int i, Variable *index)
 	// Check array index given
 	if (index == NULL)
 	{
-		if (arraySize_ != -1)
-		{
-			msg.print("No array index given to array '%s'.\n", name_.get());
-			return FALSE;
-		}
-		integerData_ = i;
+		if (arraySize_ != -1) for (int n=0; n<arraySize_; n++) integerArrayData_[n] = i;
+		else integerData_ = i;
+// 		{
+// 			msg.print("No array index given to array '%s'.\n", name_.get());
+// 			return FALSE;
+// 		}
+// 		integerData_ = i;
 	}
 	else
 	{

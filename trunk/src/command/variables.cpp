@@ -24,11 +24,26 @@
 #include "model/model.h"
 #include "base/elements.h"
 #include "base/spacegroup.h"
+#include "base/sysfunc.h"
 #include "base/pattern.h"
 #include "classes/grid.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
+
+// Get part of string before specified character
+int Command::function_CA_AFTERCHAR(CommandNode *&c, Bundle &obj)
+{
+	c->arg(2)->set( afterChar(c->argc(0), c->argc(1)[0]) );
+	return Command::Success;
+}
+
+// Get part of string before specified character
+int Command::function_CA_BEFORECHAR(CommandNode *&c, Bundle &obj)
+{
+	c->arg(2)->set( beforeChar(c->argc(0), c->argc(1)[0]) );
+	return Command::Success;
+}
 
 // Decrease variable by 1
 int Command::function_CA_DECREASE(CommandNode *&c, Bundle &obj)
@@ -100,6 +115,7 @@ int Command::function_CA_LET(CommandNode *&c, Bundle &obj)
 int Command::function_CA_LETCHAR(CommandNode *&c, Bundle &obj)
 {
 	// Our action depends on the operator provided which we cast from the second argument
+	Dnchar tempstring;
 	switch (c->argi(1))
 	{
 		// Straight assigment
@@ -108,7 +124,9 @@ int Command::function_CA_LETCHAR(CommandNode *&c, Bundle &obj)
 			break;
 		// Concatenation
 		case (AssignOps::PlusEquals):
-			c->arg(0)->set(c->argc(2));
+			tempstring = c->argc(0);
+			tempstring.cat(c->argc(2));
+			c->arg(0)->set(tempstring.get());
 			break;
 		default:
 			printf("Operator given to CA_LETCHAR (%i) that we don't know how to handle.\n", c->argi(1));
@@ -126,5 +144,12 @@ int Command::function_CA_LETPTR(CommandNode *&c, Bundle &obj)
 		return Command::Fail;
 	}
 	else c->arg(0)->set(c->arg(2)->asPointer(c->argt(0)), c->argt(0));
+	return Command::Success;
+}
+
+// Strip characters from supplied string
+int Command::function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj)
+{
+	c->arg(0)->set( stripChars(c->argc(0), c->argc(1)) );
 	return Command::Success;
 }

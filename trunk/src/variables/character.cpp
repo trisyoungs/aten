@@ -70,12 +70,14 @@ bool CharacterVariable::set(const char *s, Variable *index)
 	// Check array index given
 	if (index == NULL)
 	{
-		if (arraySize_ != -1)
-		{
-			msg.print("No array index given to array '%s'.\n", name_.get());
-			return FALSE;
-		}
-		charData_ = s;
+		if (arraySize_ != -1) for (int n=0; n<arraySize_; n++) charArrayData_[n] = s;
+		else charData_ = s;
+// 		if (arraySize_ != -1)
+// 		{
+// 			msg.print("No array index given to array '%s'.\n", name_.get());
+// 			return FALSE;
+// 		}
+// 		charData_ = s;
 	}
 	else
 	{

@@ -82,12 +82,14 @@ bool RealVariable::set(double d, Variable *index)
 	// Check array index given
 	if (index == NULL)
 	{
-		if (arraySize_ != -1)
-		{
-			msg.print("No array index given to array '%s'.\n", name_.get());
-			return FALSE;
-		}
-		realData_ = d;
+		if (arraySize_ != -1) for (int n=0; n<arraySize_; n++) realArrayData_[n] = d;
+		else realData_ = d;
+// 		if (arraySize_ != -1)
+// 		{
+// 			msg.print("No array index given to array '%s'.\n", name_.get());
+// 			return FALSE;
+// 		}
+// 		realData_ = d;
 	}
 	else
 	{

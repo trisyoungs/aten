@@ -243,7 +243,12 @@ void Dnchar::operator+=(char c)
 // String addition
 void Dnchar::cat(const char *s)
 {
-	for (int n = 0; s[n] != '\0'; n++) *this += s[n];
+	// Create concatenated string
+	static char tempstr[8096];
+	tempstr[0] = '\0';
+	strcpy(tempstr, data_);
+	strcpy(&tempstr[endPosition_], s);
+	set(tempstr);
 }
 
 // Find character

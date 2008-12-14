@@ -79,12 +79,14 @@ bool PointerVariable::set(void *ptr, VTypes::DataType type, Variable *index)
 	// Check array index given
 	if (index == NULL)
 	{
-		if (arraySize_ != -1)
+		if (arraySize_ != -1) for (int n=0; n<arraySize_; n++) ptrArrayData_[n] = ptr;
+		else ptrData_ = ptr;
+/*		if (arraySize_ != -1)
 		{
 			msg.print("No array index given to array '%s'.\n", name_.get());
 			return FALSE;
 		}
-		ptrData_ = ptr;
+		ptrData_ = ptr;*/
 	}
 	else
 	{

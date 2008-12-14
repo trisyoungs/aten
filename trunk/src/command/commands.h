@@ -466,11 +466,14 @@ class Command {
 		CA_MIRROR,
 	
 		// Variables
+		CA_AFTERCHAR,
+		CA_BEFORECHAR,
 		CA_DECREASE,
 		CA_INCREASE,
 		CA_LET,
 		CA_LETCHAR,
 		CA_LETPTR,
+		CA_STRIPCHARS,
 	
 		// View
 		CA_GETVIEW,
@@ -849,11 +852,14 @@ class Command {
 	static int function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_MIRROR(CommandNode *&c, Bundle &obj);
 	// Variables
+	static int function_CA_AFTERCHAR(CommandNode *&c, Bundle &obj);
+	static int function_CA_BEFORECHAR(CommandNode *&c, Bundle &obj);
 	static int function_CA_DECREASE(CommandNode *&c, Bundle &obj);
 	static int function_CA_INCREASE(CommandNode *&c, Bundle &obj);
 	static int function_CA_LET(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETCHAR(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETPTR(CommandNode *&c, Bundle &obj);
+	static int function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj);
 	// View
 	static int function_CA_GETVIEW(CommandNode *&c, Bundle &obj);
 	static int function_CA_LIGHT(CommandNode *&c, Bundle &obj);

@@ -45,7 +45,8 @@ int Command::function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj)
 	Filter *f = c->parent()->filter();
 	if (f != NULL)
 	{
-		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
+// 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
+		obj.m->setFilename(c->parent()->filename());
 		obj.m->setFilter(f->partner());
 	}
 	// Do various necessary calculations
