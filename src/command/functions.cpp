@@ -408,11 +408,14 @@ void Command::initPointers()
 	pointers_[CA_MIRROR] = &Command::function_CA_MIRROR;
 
 	// Variable Commands
+	pointers_[CA_AFTERCHAR] = &Command::function_CA_AFTERCHAR;
+	pointers_[CA_BEFORECHAR] = &Command::function_CA_BEFORECHAR;
 	pointers_[CA_DECREASE] = &Command::function_CA_DECREASE;
 	pointers_[CA_INCREASE] = &Command::function_CA_INCREASE;
 	pointers_[CA_LET] = &Command::function_CA_LET;
 	pointers_[CA_LETCHAR] = &Command::function_CA_LETCHAR;
 	pointers_[CA_LETPTR] = &Command::function_CA_LETPTR;
+	pointers_[CA_STRIPCHARS] = &Command::function_CA_STRIPCHARS;
 
 	// View Commands
 	pointers_[CA_GETVIEW] = &Command::function_CA_GETVIEW;

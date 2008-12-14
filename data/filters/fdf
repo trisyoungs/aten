@@ -1,6 +1,7 @@
 # Siesta Flexible Data Format (fdf)
-# Last modified: 17/11/2008
+# Last modified: 14/12/2008
 # ChangeLog:
+#	14/12/2008 - Rearranged layout a little - cell writing still not implemented.
 #	17/11/2008 - Fully working export filter.
 #	07/11/2008 - First version.
 
@@ -43,12 +44,14 @@ exportmodel
 	real rx,ry,rz
 	atom i
 
-	# Determine number of species (elements) used in model
-	for $n,1,130
-		$el[1] = 0
-	end
+	# Determine number of species (elements) used in model, and create element->species map
+	$el = 0
+	$nspecies = 0
 	for $i
-		$el[$i.z] = 1
+		if $el[$i.z] = 0
+			$nspecies += 1
+			$el[$i.z] = $nspecies
+		end
 	end
 	
 	# Write title information
@@ -83,12 +86,9 @@ exportmodel
 	# Write chemical species data, and label species in ascending order
 	writeline "%block ChemicalSpeciesLabel"
 	# 1  7    N-PBE 
-	$nspecies = 0
 	for $n,1,120
 		if $el[$n] <> 0
-			$nspecies += 1
-			$el[$n] = $nspecies
-			writeline "$nspecies  $n  ${elements.symbol[$n]}-PBE"
+			writeline "$el[$n]  $n  ${elements.symbol[$n]}-PBE"
 		end
 	end
 	writeline "%endblock ChemicalSpeciesLabel"

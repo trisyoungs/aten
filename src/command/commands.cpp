@@ -762,6 +762,10 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Mirror the atom selection of the current model about its geometric centre in the specified axis" },
 	
 	// Variables
+	{ "afterchar",		"NNV",		"<string> <char> <result>",
+				"Return part of the <string> after the first occurrence of the character <char>" },
+	{ "beforechar",		"NNV",		"<string> <char> <result>",
+				"Return part of the <string> before the first occurrence of the character <char>" },
 	{ "dec",		"V",		"<variable>",
 				"Decrease the specified variable" },
 	{ "inc",		"V",		"<variable>",
@@ -772,6 +776,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set the specified character variable" },
 	{ "letptr",		"V=V",		"<variable> = <variable>",
 				"Set the specified pointer variable" },
+	{ "stripchars",		"VN",		"<variable> <chars>",
+				"Strip all occurrences of the supplied characters from <variable>" },
 	
 	// View
 	{ "getview",		"",		"",

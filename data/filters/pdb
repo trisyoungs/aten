@@ -1,6 +1,7 @@
 # Protein databank coordinates import. Residue data etc. is ignored.
-# Last modified: 16/10/2008
+# Last modified: 14/12/2008
 # ChangeLog:
+#	14/12/2008 - Fixed reporting of missing HEADER, even when HEADER was supplied.
 #	16/10/2008 - Corrected dummy variable formatter which contained a rogue '%'.
 #	12/10/2008 - Adjusted to use new variable access methods (but kept old keyword style).
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
@@ -65,7 +66,7 @@ importmodel
 			end
 		end
 	end
-	if $found = n
+	if $found = 0
 		warn "No HEADER record found in file."
 	end
 	rebond
