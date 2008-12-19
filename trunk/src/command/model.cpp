@@ -37,6 +37,40 @@ int Command::function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Return (or set) the current model
+int Command::function_CA_CURRENTMODEL(CommandNode *&c, Bundle &obj)
+{
+	// Check the presence of arg(0)
+	if (c->hasArg(0))
+	{
+		Model *m = NULL;
+		switch (c->argt(0))
+		{
+			case (VTypes::IntegerData):
+				m = aten.model(c->argi(0)-1);
+				break;
+			case (VTypes::CharacterData):
+				m = aten.findModel(c->argc(0));
+				break;
+			case (VTypes::ModelData):
+				m = (Model*) c->argp(0, VTypes::ModelData);
+				break;
+		}
+		if (m == NULL)
+		{
+			msg.print("Invalid model specified - current model unchanged.\n");
+			return Command::Fail;
+		}
+		else
+		{
+			aten.setCurrentModel(m);
+			msg.print("Current model is now '%s'.\n", aten.current.rs->name());
+		}
+	}
+	else msg.print("Current model is '%s'.\n", aten.current.rs->name());
+	return Command::Success;
+}
+
 // Finalise current model
 int Command::function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj)
 {
@@ -68,6 +102,20 @@ int Command::function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Set current model to be first loaded/created model
+int Command::function_CA_FIRSTMODEL(CommandNode *&c, Bundle &obj)
+{
+	Model *m = aten.model(0);
+	if (m != NULL) 
+	{
+		aten.setCurrentModel(m);
+		obj.p = NULL;
+		obj.i = m->atoms();
+	}
+	else return Command::Fail;
+	return Command::Success;
+}
+
 // Select working model ('getmodel <name> [variable]')
 int Command::function_CA_GETMODEL(CommandNode *&c, Bundle &obj)
 {
@@ -92,6 +140,20 @@ int Command::function_CA_INFO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->renderSource()->print();
+	return Command::Success;
+}
+
+// Set current model to be last loaded/created model
+int Command::function_CA_LASTMODEL(CommandNode *&c, Bundle &obj)
+{
+	Model *m = aten.model(aten.nModels()-1);
+	if (m != NULL) 
+	{
+		aten.setCurrentModel(m);
+		obj.p = NULL;
+		obj.i = m->atoms();
+	}
+	else return Command::Fail;
 	return Command::Success;
 }
 

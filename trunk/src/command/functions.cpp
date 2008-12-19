@@ -285,8 +285,11 @@ void Command::initPointers()
 	
 	// Model Commands
 	pointers_[CA_CREATEATOMS] = &Command::function_CA_CREATEATOMS;
+	pointers_[CA_CURRENTMODEL] = &Command::function_CA_CURRENTMODEL;
 	pointers_[CA_FINALISEMODEL] = &Command::function_CA_FINALISEMODEL;
+	pointers_[CA_FIRSTMODEL] = &Command::function_CA_FIRSTMODEL;
 	pointers_[CA_GETMODEL] = &Command::function_CA_GETMODEL;
+	pointers_[CA_LASTMODEL] = &Command::function_CA_LASTMODEL;
 	pointers_[CA_LISTMODELS] = &Command::function_CA_LISTMODELS;
 	pointers_[CA_LOADMODEL] = &Command::function_CA_LOADMODEL;
 	pointers_[CA_LOGINFO] = &Command::function_CA_LOGINFO;

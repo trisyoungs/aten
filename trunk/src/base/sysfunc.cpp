@@ -47,7 +47,7 @@ const char *lowerCase(const char *s)
 	return result;
 }
 
-// Get characters before designated character
+// Get characters before first occurrence of designated character
 const char *beforeChar(const char *s, char delim)
 {
 	static char result[256];
@@ -63,18 +63,21 @@ const char *beforeChar(const char *s, char delim)
 	return result;
 }
 
-// Get characters after designated character
+// Get characters after first occurrence of designated character
 const char *afterChar(const char *s, char delim)
 {
 	static char result[256];
-	static int i, count;
-	static bool founddelim;
-	founddelim = FALSE;
+	static int i, count, ndelim;
+	ndelim = 0;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (s[i] == delim) founddelim = TRUE;
-		else if (founddelim)
+		if ((s[i] == delim) && (ndelim == 0))
+		{
+			ndelim ++;
+			continue;
+		}
+		if (ndelim > 0)
 		{
 			result[count] = s[i];
 			count ++;
