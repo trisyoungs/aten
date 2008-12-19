@@ -343,9 +343,12 @@ class Command {
 		
 		// Model Commands
 		CA_CREATEATOMS,
+		CA_CURRENTMODEL,
 		CA_FINALISEMODEL,
+		CA_FIRSTMODEL,
 		CA_GETMODEL,
 		CA_INFO,
+		CA_LASTMODEL,
 		CA_LISTMODELS,
 		CA_LOADMODEL,
 		CA_LOGINFO,
@@ -744,9 +747,12 @@ class Command {
 	static int function_CA_SIMPLEXMINIMISE(CommandNode *&c, Bundle &obj);
 	// Model Commands
 	static int function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj);
+	static int function_CA_CURRENTMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj);
+	static int function_CA_FIRSTMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_GETMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_INFO(CommandNode *&c, Bundle &obj);
+	static int function_CA_LASTMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_LISTMODELS(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOADMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOGINFO(CommandNode *&c, Bundle &obj);

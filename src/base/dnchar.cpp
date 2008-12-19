@@ -117,13 +117,13 @@ int Dnchar::length() const
 }
 
 // Create empty array
-void Dnchar::createEmpty(int newsize_)
+void Dnchar::createEmpty(int newsize)
 {
 	// Check if array has already been initialised
 	if (data_ != NULL) delete[] data_;
 	// Create new, empty array
-	size_ = newsize_;
-	data_ = new char[newsize_];
+	size_ = newsize;
+	data_ = new char[newsize];
 	endPosition_ = 0;
 	data_[0] = '\0';
 }
