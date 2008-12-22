@@ -23,6 +23,7 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/pattern.h"
+#include "main/aten.h"
 
 // Root node (no action)
 int Command::function_CA_ROOTNODE(CommandNode *&c, Bundle &obj)
@@ -120,6 +121,9 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				break;
 			case (VTypes::ForcefieldAtomData):
 				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
+				break;
+			case (VTypes::ModelData):
+				if (c->argp(0, VTypes::ModelData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));
@@ -234,6 +238,17 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				}
 				else c->arg(0)->set(obj.rs->uniqueTypes(), VTypes::ForcefieldAtomData);
 				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
+				break;
+			// Model loop
+			case (VTypes::ModelData):
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+				if (c->argt(0) == VTypes::ModelData) c->arg(0)->set(aten.models(), VTypes::ModelData);
+				else
+				{
+					msg.print( "Modeltern loop variable must be of Model type.\n");
+					return Command::Fail;
+				}
+				if (c->argp(0, VTypes::ModelData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));

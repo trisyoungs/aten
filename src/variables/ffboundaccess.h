@@ -31,7 +31,7 @@ class FFBoundAccessors : public VAccess
 	// Constructor
 	FFBoundAccessors();
 	// Accessor list
-	enum Accessors { Data, Form, TypeNames, nAccessors };
+	enum Accessors { Data, Form, NAtoms, Type, TypeNames, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

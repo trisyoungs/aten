@@ -24,6 +24,7 @@
 
 #include "variables/variable.h"
 #include "variables/character.h"
+#include "variables/special.h"
 #include "base/constants.h"
 #include "base/dnchar.h"
 #include "templates/list.h"
@@ -93,8 +94,10 @@ class VariableList
 	Variable *addListVariable(const char *name, VTypes::DataType vt, void *ptr);
 	// Add pointer to data in Bundle variable
 	Variable *addBundlePointer(const char *name, VTypes::DataType vt);
-	//.Add simple, internally-named, non-array variable of given type
+	// Add simple, internally-named, non-array variable of given type
 	Variable *addSimpleVariable(VTypes::DataType vt);
+	// Add a special variable
+	Variable *addSpecialVariable(SpecialVariable::SpecialData sd);
 	// Reset all variable values
 	void resetVariables();
 	// Clear all variables, expressions etc. stored in class
