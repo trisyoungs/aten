@@ -24,6 +24,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Interaction types
+const char *ForcefieldBoundKeywords[] = { "none", "bond", "angle", "torsion" };
+int ForcefieldBoundNAtoms[] = { 0, 2, 3, 4 };
+const char *ForcefieldBound::boundType(ForcefieldBound::BoundType bt)
+{
+	return ForcefieldBoundKeywords[bt];
+}
+int ForcefieldBound::bountTypeNAtoms(ForcefieldBound::BoundType bt)
+{
+	return ForcefieldBoundNAtoms[bt];
+}
+
 // Constructor
 ForcefieldBound::ForcefieldBound()
 {

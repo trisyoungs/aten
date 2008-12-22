@@ -33,6 +33,8 @@ FFBoundAccessors::FFBoundAccessors()
 {
 	accessorPointers[FFBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
 	accessorPointers[FFBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
+	accessorPointers[FFBoundAccessors::NAtoms] = addAccessor("natoms", VTypes::IntegerData, TRUE);
+	accessorPointers[FFBoundAccessors::Type] = addAccessor("type", VTypes::CharacterData, FALSE);
 	accessorPointers[FFBoundAccessors::TypeNames] = addAccessor("typenames",VTypes::CharacterData, FALSE, MAXFFBOUNDTYPES);
 };
 
@@ -69,6 +71,12 @@ bool FFBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 		case (FFBoundAccessors::Form):
 			rv.set(ffb->formText());
 			break;
+		case (FFBoundAccessors::NAtoms):
+			rv.set( ForcefieldBound::bountTypeNAtoms(ffb->type()) );
+			break;
+		case (FFBoundAccessors::Type):
+			rv.set( ForcefieldBound::boundType(ffb->type()) );
+			break;
 		case (FFBoundAccessors::TypeNames):
 			rv.set(ffb->typeName(index-1));
 			break;
@@ -86,6 +94,9 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("FFBoundAccessors::set");
 	bool result = TRUE;
+	BondFunctions::BondFunction bf;
+	AngleFunctions::AngleFunction af;
+	TorsionFunctions::TorsionFunction tf;
 	// Cast pointer into ForcefieldBound*
 	ForcefieldBound *ffb = (ForcefieldBound*) classptr;
 	if (ffb == NULL) printf("Warning - NULL ForcefieldBound pointer passed to FFBoundAccessors::set.\n");
@@ -116,7 +127,30 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	switch (vid)
 	{
 		case (FFBoundAccessors::Data):
-			result = FALSE;
+			ffb->setParameter(index-1, srcvar->asDouble());
+			break;
+		case (FFBoundAccessors::Form):
+			switch (ffb->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					bf = BondFunctions::bondFunction(srcvar->asCharacter());
+					if (bf == VdwFunctions::None) result = FALSE;
+					else ffb->setBondStyle(bf);
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					af = AngleFunctions::angleFunction(srcvar->asCharacter());
+					if (af == VdwFunctions::None) result = FALSE;
+					else ffb->setAngleStyle(af);
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					tf = TorsionFunctions::torsionFunction(srcvar->asCharacter());
+					if (tf == VdwFunctions::None) result = FALSE;
+					else ffb->setTorsionStyle(tf);
+					break;
+			}
+			break;
+		case (FFBoundAccessors::TypeNames):
+			ffb->setTypeName(index-1, srcvar->asCharacter());
 			break;
 		default:
 			printf("FFBoundAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

@@ -35,6 +35,8 @@ class ForcefieldBound
 	ForcefieldBound();
 	// Forcefield Bound Interaction Type
 	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction };
+	static const char *boundType(ForcefieldBound::BoundType bt);
+	static int bountTypeNAtoms(ForcefieldBound::BoundType bt);
 
 	private:
 	// Type of bound interaction
