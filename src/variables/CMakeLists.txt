@@ -20,6 +20,7 @@ pointerlist.h
 prefsaccess.h
 real.h
 returnvalue.h
+special.h
 vaccess.h
 variable.h
 variablelist.h
@@ -43,6 +44,7 @@ pointer.cpp
 prefsaccess.cpp
 real.cpp
 returnvalue.cpp
+special.cpp
 vaccess.cpp
 variable.cpp
 variablelist.cpp

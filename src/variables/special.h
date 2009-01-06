@@ -34,6 +34,10 @@ class SpecialVariable : public Variable
 	// Special Variable types
 	enum SpecialData { SpecialNModels, SpecialRandom, nSpecialData };
 
+	private:
+	// Type of the data contained
+	SpecialData type_;
+
 	/*
 	// Set / Get
 	*/
@@ -41,7 +45,7 @@ class SpecialVariable : public Variable
 	// Set type of special variable
 	void setSpecialData(SpecialVariable::SpecialData sd);
 	// Set size of array
-	bool setArraySize(int size);
+// 	bool setArraySize(int size);
 	// Set value of variable (char)
 // 	bool set(const char *s, Variable *index = NULL);
 	// Set value of variable (int)
@@ -59,7 +63,7 @@ class SpecialVariable : public Variable
 	// Step variable
 // 	bool step(int delta, Variable *index = NULL);
 	// Clears value of variable
-// 	bool reset(Variable *index = NULL);
+	bool reset(Variable *index = NULL);
 };
 
 #endif

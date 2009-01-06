@@ -127,13 +127,16 @@ void Model::selectionDelete(bool markonly)
 		if (i->isSelected(markonly))
 		{
 			tempi = i->next;
-			deleteAtom(i);
+			deleteAtom(i, TRUE);
 			i = tempi;
 		}
 		else i = i->next;
 		if (!aten.updateProgress(++count)) break;
 	}
 	aten.cancelProgress();
+	// Renumber atoms and recalculate density here
+	renumberAtoms();
+	calculateDensity();
 	msg.exit("Model::selectionDelete");
 }
 

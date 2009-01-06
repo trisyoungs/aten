@@ -1,8 +1,9 @@
 # GAMESS-US Trajectory Filter, and Cartesian Input Model Filters (I/O)
-# Last modified: 10/10/2008
+# Last modified: 06/01/2009
 # Notes:
 #	Output model filter sets symmetry to C1.
 # ChangeLog:
+#	06/01/2009 - Renamed 'nmodels' variable to prevent clash with implicit variable of same name
 #	10/10/2008 - Adjusted to use new data access methods.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Changed extension from 'out' to 'log'. Added reading of .inpi files. Nicknames now 'gamuslog' and 'gamusinp'
@@ -15,7 +16,7 @@ importmodel
 	zmap name
 
 	# Variable declaration
-	integer result,nmodels,natoms,n
+	integer result,nstructures,natoms,n
 	character line,e
 	real rx,ry,rz
 
@@ -27,15 +28,15 @@ importmodel
 	# Get number of atoms from line
 	readvar $line "*@48 $natoms"
 	# Now search for coordinate sets
-	let $nmodels = 0
+	let $nstructures = 0
 	for $n
 		# Determine number of atoms - search for lines containing 'COORDINATES OF ALL ATOMS ARE'
 		find "COORDINATES OF ALL ATOMS ARE" $result
 		if $result = 1
 			# Found a set of coordinates. Skip 2 lines and then read coordinates
-			$nmodels += 1
+			$nstructures += 1
 			skipline 2
-			newmodel $nmodels
+			newmodel $nstructures
 			for $n,1,$natoms
 				readline "$e * $rx $ry $rz"
 				newatom $e
