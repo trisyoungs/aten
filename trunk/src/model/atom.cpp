@@ -111,15 +111,15 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 }
 
 // Remove atom
-void Model::removeAtom(Atom *xatom)
+void Model::removeAtom(Atom *xatom, bool noupdate)
 {
 	msg.enter("Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
 	mass_ -= elements().atomicMass(xatom->element());
 	if (mass_ < 0.0) mass_ = 0.0;
-	calculateDensity();
+	if (!noupdate) calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
-	for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+	if (!noupdate) for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	if (xatom->isSelected()) deselectAtom(xatom);
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
@@ -134,7 +134,7 @@ void Model::removeAtom(Atom *xatom)
 }
 
 // Delete Atom
-void Model::deleteAtom(Atom *xatom)
+void Model::deleteAtom(Atom *xatom, bool noupdate)
 {
 	msg.enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
@@ -155,7 +155,7 @@ void Model::deleteAtom(Atom *xatom)
 			bref = xatom->bonds();
 		}
 		// Finally, delete the atom
-		removeAtom(xatom);
+		removeAtom(xatom, noupdate);
 	}
 	msg.exit("Model::deleteAtom");
 }

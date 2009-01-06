@@ -21,24 +21,23 @@
 
 #include "variables/special.h"
 #include "base/sysfunc.h"
+#include "base/mathfunc.h"
 #include "base/constants.h"
 #include "base/messenger.h"
+#include "main/aten.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 // Constructor / Destructor
 SpecialVariable::SpecialVariable()
 {
-	dataType_ = VTypes::RealData;
-	realData_ = 0.0;
-	realArrayData_ = NULL;
+	dataType_ = VTypes::NoData;
 	arraySize_ = -1;
 }
 
 // Destructor
 SpecialVariable::~SpecialVariable()
 {
-	if (realArrayData_ != NULL) delete[] realArrayData_;
 }
 
 /*
@@ -46,49 +45,89 @@ SpecialVariable::~SpecialVariable()
 */
 
 // Set type of special variable
-void SpecialVariable::setSpecialData(SpecialData sd)
+void SpecialVariable::setSpecialData(SpecialVariable::SpecialData sd)
 {
+	type_ = sd;
+	switch (type_)
+	{
+		case (SpecialVariable::SpecialNModels):
+			dataType_ = VTypes::IntegerData;
+			break;
+		case (SpecialVariable::SpecialRandom):
+			dataType_ = VTypes::RealData;
+			break;
+		default:
+			printf("!!!ERROR!!! SpecialVariable type not recognised.\n");
+			break;
+	}
 }
 
 // Get value of variable as character string
 const char *SpecialVariable::asCharacter(Variable *index)
 {
-	return ftoa(asDouble(index));
+	if (index != NULL)
+	{
+		msg.print("Array index given to variable '%s'.\n", name_.get());
+		return "NULL";
+	}
+	// Lookup data type and return value explicitly
+	switch (type_)
+	{
+		case (SpecialVariable::SpecialNModels):
+			return itoa(aten.nModels());
+			break;
+		case (SpecialVariable::SpecialRandom):
+			return ftoa(csRandom());
+			break;
+		default:
+			printf("!!!ERROR!!! SpecialVariable type not recognised and can't be returned as a character.\n");
+			break;
+	}
 }
 
 // Get value of variable as integer
 int SpecialVariable::asInteger(Variable *index)
 {
-	return (int) asDouble(index);
+	if (index != NULL)
+	{
+		msg.print("Array index given to variable '%s'.\n", name_.get());
+		return 0;
+	}
+	// Lookup data type and return value explicitly
+	switch (type_)
+	{
+		case (SpecialVariable::SpecialNModels):
+			return aten.nModels();
+			break;
+		case (SpecialVariable::SpecialRandom):
+			return (int) csRandom();
+			break;
+		default:
+			printf("!!!ERROR!!! SpecialVariable type not recognised and can't be returned as an integer.\n");
+			break;
+	}
 }
 
 // Get value of variable as double
 double SpecialVariable::asDouble(Variable *index)
 {
-	// Check array index given
-	if (index == NULL)
+	if (index != NULL)
 	{
-		if (arraySize_ != -1)
-		{
-			msg.print("No array index given to array '%s'.\n", name_.get());
-			return FALSE;
-		}
-		return realData_;
+		msg.print("Array index given to variable '%s'.\n", name_.get());
+		return 0.0;
 	}
-	else
+	// Lookup data type and return value explicitly
+	switch (type_)
 	{
-		if (arraySize_ == -1)
-		{
-			msg.print("Array index given to variable '%s'.\n", name_.get());
-			return FALSE;
-		}
-		int n = index->asInteger();
-		if ((n > arraySize_) || (n < 1))
-		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
-			return FALSE;
-		}
-		return realArrayData_[n-1];
+		case (SpecialVariable::SpecialNModels):
+			return (double) aten.nModels();
+			break;
+		case (SpecialVariable::SpecialRandom):
+			return csRandom();
+			break;
+		default:
+			printf("!!!ERROR!!! SpecialVariable type not recognised and can't be returned as a real.\n");
+			break;
 	}
 }
 
@@ -96,4 +135,9 @@ double SpecialVariable::asDouble(Variable *index)
 bool SpecialVariable::asBool(Variable *index)
 {
 	return (asDouble(index) <= 0 ? FALSE : TRUE);
+}
+
+// Clears value of variable (or not, in this case);
+bool SpecialVariable::reset(Variable *index)
+{
 }

@@ -120,7 +120,7 @@ class Model
 	// Atoms in model
 	List<Atom> atoms_;
 	// Delete the specified atom (internal function)
-	void removeAtom(Atom*_);
+	void removeAtom(Atom*, bool noupdate);
 	
 	public:
 	// Create a new atom
@@ -140,7 +140,7 @@ class Model
 	// Return the list index of the specified atom
 	int atomIndex(Atom *i) const;
 	// Delete specified atom
-	void deleteAtom(Atom *target);
+	void deleteAtom(Atom *target, bool noupdate = FALSE);
 	// Translate specified atom
 	void translateAtom(Atom *target, Vec3<double> delta);
 	// Position specified atom

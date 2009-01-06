@@ -547,7 +547,7 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 void GuiQt::textProgressUpdate(int currentstep)
 {
 // 	static char *twister = "-\\|/";
-	static char twister[5] = { '-', '\\', '|', '/' };
+	static char twister[4] = { '-', '\\', '|', '/' };
 // 	static char *c = twister;
 	static int n, ndots, c;
 	static double dpercent;
@@ -563,7 +563,7 @@ void GuiQt::textProgressUpdate(int currentstep)
 	printf("\rProgress [%c]", twister[c]);
 	// Increase the twister character
 	c ++;
-	c = c%5;
+	c = c%4;
 	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{

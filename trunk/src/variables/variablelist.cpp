@@ -50,6 +50,7 @@ VariableList::VariableList()
 	v = addListVariable("models", VTypes::ModelData, aten.modelList());
 	v = addVariable("prefs", VTypes::PrefsData);
 	v = addVariable("elements", VTypes::ElementsData);
+	v = addSpecialVariable("nmodels", SpecialVariable::SpecialNModels);
 }
 
 // Return list position (id) of Variable in list
@@ -256,6 +257,18 @@ Variable *VariableList::addSimpleVariable(VTypes::DataType vt)
 	sprintf(newname,"var%i", variables_.nItems());
 	newvar->setName(newname);
 	return newvar;
+}
+
+
+// Add a special variable
+Variable *VariableList::addSpecialVariable(const char *name, SpecialVariable::SpecialData sd)
+{
+	SpecialVariable *newvar = new SpecialVariable;
+	newvar->setName(name);
+	newvar->setSpecialData(sd);
+	Variable *v = (Variable*) newvar;
+	variables_.own(v);
+	return v;
 }
 
 /*
