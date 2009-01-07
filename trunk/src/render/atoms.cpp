@@ -41,7 +41,7 @@ void Canvas::renderModelAtoms()
 	cell = displayModel_->cell();
 	
 	// Set polygon fill mode and specular reflection
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)
@@ -72,8 +72,8 @@ void Canvas::renderModelAtoms()
 				prefs.colourScale[2].colour(cval, diffuse);
 				break;
 		  }
-		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-		  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		  glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+		  glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 		  // Get position
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
@@ -226,8 +226,8 @@ void Canvas::renderModelAtoms()
 		}
 		ambient[3] = ambient[3] / 2.0f;
 		diffuse[3] = diffuse[3] / 2.0f;
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
 		glPushMatrix();
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);

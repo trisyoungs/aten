@@ -140,4 +140,5 @@ bool SpecialVariable::asBool(Variable *index)
 // Clears value of variable (or not, in this case);
 bool SpecialVariable::reset(Variable *index)
 {
+	return TRUE;
 }

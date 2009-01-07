@@ -31,7 +31,7 @@ Prefs prefs;
 const char *GlOptionKeywords[Prefs::nGlOptions] = { "fog", "linealias", "polyalias", "backcull", "__DUMMY__" };
 Prefs::GlOption Prefs::glOption(const char *s)
 {
-	return (Prefs::GlOption) power(2,enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s));
+	return (Prefs::GlOption) enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s);
 }
 
 // Colour Schemes
@@ -160,8 +160,8 @@ Prefs::Prefs()
 	spotlightPosition_[3] = 0.0f;
 
 	// GL Options
-	glOptions_ = 0;
-	shininess_ = 10;
+	glOptions_ = 8;
+	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
 	fogNear_ = 1;
@@ -567,21 +567,21 @@ Prefs::ColouringScheme Prefs::colourScheme()
 */
 
 // Set the bit for the specified option (if it is not set already)
-void Prefs::addGlOption(GlOption go)
+void Prefs::addGlOption(Prefs::GlOption go)
 {
-	if (!(glOptions_&go)) glOptions_ += go;
+	if (!(glOptions_&(1 << go))) glOptions_ += (1 << go);
 }
 
 // Unsets the bit for the specified option (if it is not unset already)
-void Prefs::removeGlOption(GlOption go)
+void Prefs::removeGlOption(Prefs::GlOption go)
 {
-	if (glOptions_&go) glOptions_ -= go;
+	if (glOptions_&(1 << go)) glOptions_ -= (1 << go);
 }
 
 // Return whether a given option is set
-bool Prefs::hasGlOption(GlOption go)
+bool Prefs::hasGlOption(Prefs::GlOption go)
 {
-	return (glOptions_&go ? TRUE : FALSE);
+	return (glOptions_&(1 << go) ? TRUE : FALSE);
 }
 
 // Sets the start depth of depth cueing
