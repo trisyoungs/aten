@@ -69,7 +69,7 @@ class Prefs
 	static ViewObject viewObject(const char*);
 	static const char *viewObject(ViewObject);
 	// GL Options
-	enum GlOption { FogOption=1, LineAliasOption=2, PolyAliasOption=4, BackCullOption=8, DummyOption=16, nGlOptions=5 };
+	enum GlOption { FogOption, LineAliasOption, PolyAliasOption, BackCullOption, DummyOption, nGlOptions };
 	static GlOption glOption(const char*);
 	// Atom colouring scheme
 	enum ColouringScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColouringSchemes };

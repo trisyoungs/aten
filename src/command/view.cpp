@@ -23,7 +23,7 @@
 #include "base/messenger.h"
 #include "gui/gui.h"
 #include "model/model.h"
-#include <time.h>
+#include <ctime>
 
 // Get current view
 int Command::function_CA_GETVIEW(CommandNode *&c, Bundle &obj)
@@ -108,7 +108,8 @@ int Command::function_CA_SPEEDTEST(CommandNode *&c, Bundle &obj)
 		gui.mainView.postRedisplay();
 	}
 	clock_t tfinish = clock();
-	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
+	printf("%f    %f    %f \n", double(tstart), double(tfinish), double(CLOCKS_PER_SEC));
+	double nsec = (tfinish-tstart) / double(CLOCKS_PER_SEC);
 	msg.print("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
 	return Command::Success;
 }

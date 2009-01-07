@@ -260,9 +260,11 @@ void Canvas::initGl()
 		}
 		else glDisable(GL_FOG);
 		// Configure face culling
-		glCullFace(GL_BACK);
+		glCullFace(GL_FRONT);
 		prefs.hasGlOption(Prefs::BackCullOption) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
 		// Test
+		glDisable(GL_DITHER);
+		glDisable(GL_LOGIC_OP);
 		// End Test
 		endGl();
 	}
