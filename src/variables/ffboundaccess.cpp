@@ -134,17 +134,17 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			{
 				case (ForcefieldBound::BondInteraction):
 					bf = BondFunctions::bondFunction(srcvar->asCharacter());
-					if (bf == VdwFunctions::None) result = FALSE;
+					if (bf == BondFunctions::None) result = FALSE;
 					else ffb->setBondStyle(bf);
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					af = AngleFunctions::angleFunction(srcvar->asCharacter());
-					if (af == VdwFunctions::None) result = FALSE;
+					if (af == AngleFunctions::None) result = FALSE;
 					else ffb->setAngleStyle(af);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
 					tf = TorsionFunctions::torsionFunction(srcvar->asCharacter());
-					if (tf == VdwFunctions::None) result = FALSE;
+					if (tf == TorsionFunctions::None) result = FALSE;
 					else ffb->setTorsionStyle(tf);
 					break;
 			}

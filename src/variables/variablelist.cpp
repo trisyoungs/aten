@@ -51,6 +51,7 @@ VariableList::VariableList()
 	v = addVariable("prefs", VTypes::PrefsData);
 	v = addVariable("elements", VTypes::ElementsData);
 	v = addSpecialVariable("nmodels", SpecialVariable::SpecialNModels);
+	v = addSpecialVariable("random", SpecialVariable::SpecialRandom);
 }
 
 // Return list position (id) of Variable in list
