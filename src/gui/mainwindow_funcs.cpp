@@ -82,6 +82,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 		delete gui.minimiserWindow;
 		delete gui.positionWindow;
 		delete gui.transformWindow;
+		gui.app->exit(0);
 	}
 	else event->ignore();
 }
