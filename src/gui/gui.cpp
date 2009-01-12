@@ -289,7 +289,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 				break;
 		}
 	}
-	mainWindow->statusLabel->setText(s);
+	mainWindow->infoLabel->setText(s);
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Update contents of the atom list
@@ -365,6 +365,29 @@ void GuiQt::updateTrajControls()
 		// Set slider and spinbox
 		mainWindow->updateTrajectoryToolbar();
 	}
+}
+
+// Update statusbar
+void GuiQt::updateStatusBar(bool clear)
+{
+	return;
+
+	static Dnchar text(512);
+	static Canvas::UserAction lastAction = Canvas::NoAction;
+	// Initialise string if NoAction
+	if (lastAction == Canvas::NoAction) text.clear();
+	// If current action is not the same as the last action, recreate string
+	if (lastAction != mainView.selectedMode())
+	{
+		lastAction = mainView.selectedMode();
+		text.clear();
+		text.cat("<b>");
+		text.cat(UserActionTexts[lastAction].name);
+		text.cat("</b>");
+	}
+	// Set text in statusbar widget
+	if (clear) mainWindow->statusBar()->clearMessage();
+	else mainWindow->statusBar()->showMessage(text.get());
 }
 
 void GuiQt::printMessage(const char *s)

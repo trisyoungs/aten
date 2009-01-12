@@ -52,6 +52,7 @@ class TCanvas : public QGLWidget
 	void mousePressEvent(QMouseEvent*);
 	void mouseReleaseEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
+	void focusOutEvent(QFocusEvent *event);
 	void wheelEvent(QWheelEvent*);
 	void timerEvent(QTimerEvent*);
 };

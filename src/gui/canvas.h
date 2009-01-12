@@ -55,6 +55,20 @@ class TextObject
 	TextObject *prev, *next;
 };
 
+// User action texts
+class UserActionText
+{
+	public:
+	// Action texts
+	const char *name;
+	const char *unModified;
+	const char *shiftModified;
+	const char *ctrlModified;
+	const char *altModified;
+};
+
+extern UserActionText UserActionTexts[];
+
 /*
 // Canvas Master Class
 // Provides GL rendering functions for a context
@@ -67,6 +81,7 @@ class Canvas
 
 	// Actions
 	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
+	
 	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
 
@@ -283,7 +298,7 @@ class Canvas
 	UserAction selectedMode_;
 	// Button flags (uses enum 'MouseButton')
 	bool mouseButton_[Prefs::nMouseButtons];
-	// Key flags (uses enum 'ModifierKey')
+	// Key flags (set by Gui::informMouseDown and used by TCanvas::beginMode)
 	bool keyModifier_[Prefs::nModifierKeys];
 	// Begin an action on the model (called from MouseButtondown)
 	void beginMode(Prefs::MouseButton);
@@ -304,7 +319,7 @@ class Canvas
 	// Return the currently selected mode
 	UserAction selectedMode();
 	// Inform the canvas of a mouse down event
-	void informMouseDown(Prefs::MouseButton, double, double);
+	void informMouseDown(Prefs::MouseButton, double x, double y, bool shiftkey, bool ctrlkey, bool altkey);
 	// Inform the canvas of a mouse up event
 	void informMouseUp(Prefs::MouseButton, double, double);
 	// Inform the canvas of a mouse move event

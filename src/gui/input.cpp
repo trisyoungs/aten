@@ -25,10 +25,14 @@
 #include "model/model.h"
 
 // Inform mouse down
-void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y)
+void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y, bool shiftkey, bool ctrlkey, bool altkey)
 {
+	// Store mouse position and key modifier status
 	rMouseDown_.set(x,y,0.0);
 	rMouseUp_.set(x,y,0.0);
+	keyModifier_[Prefs::ShiftKey] = shiftkey;
+	keyModifier_[Prefs::CtrlKey] = ctrlkey;
+	keyModifier_[Prefs::AltKey] = altkey;
 	// Determine if there is an atom under the mouse
 	atomHover_ = displayModel_->atomOnScreen(x,y);
 	// Perform atom picking before entering mode (if required)
@@ -84,7 +88,7 @@ void Canvas::informKeyDown(Canvas::KeyCode key)
 	viewtarget = displayModel_;
 	switch (key)
 	{
-		case (Canvas::LeftShiftKey):
+/*		case (Canvas::LeftShiftKey):
 			keyModifier_[Prefs::ShiftKey] = TRUE;
 			break;
 		case (Canvas::RightShiftKey):
@@ -101,7 +105,7 @@ void Canvas::informKeyDown(Canvas::KeyCode key)
 			break;
 		case (Canvas::RightAltKey):
 			keyModifier_[Prefs::AltKey] = TRUE;
-			break;
+			break;*/
 		//case (GDK_Escape): aten.check_before_close(); break;
 		case (Canvas::LeftKey):
 			viewtarget->rotate(-10.0,0.0);
@@ -127,7 +131,7 @@ void Canvas::informKeyUp(Canvas::KeyCode key)
 {
 	switch (key)
 	{
-		case (Canvas::LeftShiftKey):
+/*		case (Canvas::LeftShiftKey):
 			keyModifier_[Prefs::ShiftKey] = FALSE;
 			break;
 		case (Canvas::RightShiftKey):
@@ -144,7 +148,7 @@ void Canvas::informKeyUp(Canvas::KeyCode key)
 			break;
 		case (Canvas::RightAltKey):
 			keyModifier_[Prefs::AltKey] = FALSE;
-			break;
+			break;*/
 	}
 }
 

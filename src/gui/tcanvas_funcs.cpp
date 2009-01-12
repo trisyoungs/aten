@@ -144,8 +144,10 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 			return;
 		}
 	}
+	// Store the state of the modifier keys here
+	Qt::KeyboardModifiers km = event->modifiers();
 	// Inform the main canvas that a button action has occurred
-	gui.mainView.informMouseDown(button,event->x(),event->y());
+	gui.mainView.informMouseDown(button, event->x(), event->y(), km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
 	msg.exit("TCanvas::mousePressEvent");
 }
 
@@ -172,6 +174,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	// Mouse motion handler.
 	// Tell the main canvas that the mouse has moved
 	gui.mainView.informMouseMove(event->x(),event->y());
+	gui.updateStatusBar();
 }
 
 void TCanvas::wheelEvent(QWheelEvent *event)
@@ -179,6 +182,11 @@ void TCanvas::wheelEvent(QWheelEvent *event)
 	// Handle mouse-wheel scroll events.
 	if (event->delta() > 0) gui.mainView.informScroll(TRUE);
 	else gui.mainView.informScroll(FALSE);
+}
+
+void TCanvas::focusOutEvent(QFocusEvent *event)
+{
+	gui.updateStatusBar(TRUE);
 }
 
 void TCanvas::timerEvent(QTimerEvent *event)
