@@ -28,6 +28,7 @@ class Dnchar
 	public:
 	// Constructor / Destructor
 	Dnchar();
+	Dnchar(int size);
 	~Dnchar();
 	// Copy constructor
 	Dnchar(const Dnchar&);

@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Constructor
+// Constructors
 Dnchar::Dnchar()
 {
 	// Private variables
@@ -37,6 +37,20 @@ Dnchar::Dnchar()
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+Dnchar::Dnchar(int emptysize)
+{
+	// Private variables
+	data_ = NULL;
+	size_ = 0;
+	endPosition_ = -1;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	createEmpty(emptysize);
 }
 
 // Destructor

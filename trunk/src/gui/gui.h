@@ -93,6 +93,8 @@ class GuiQt
 	void updateWindowTitle();
 	// Update trajectory control widgets
 	void updateTrajControls();
+	// Update statusbar
+	void updateStatusBar(bool clear = FALSE);
 	// Refreshes all widgets to do with the model
 	void modelChanged(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
 

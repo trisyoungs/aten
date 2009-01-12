@@ -29,11 +29,11 @@ MAINWINDOW_ACTIONS = bondactions.cpp drawactions.cpp editactions.cpp fileactions
 WIDGET_UI = ttabbar.uih tcolourframe.uih ttreewidget.uih tcanvas.uih
 WIDGET_FUNCS = tcanvas_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp
 
-CANVAS_FUNCS = canvas.cpp input.cpp
+CANVAS_FUNCS = actiontext.cpp canvas.cpp input.cpp
 
 libgui_a_SOURCES = $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(CANVAS_FUNCS) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(MAINWINDOW_ACTIONS) $(SUBWINDOW_FUNCS)
 
 
-noinst_HEADERS = about.h atomlist.h build.h canvas.h celldefine.h celltransform.h disorder.h ffeditor.h forcefields.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h minimiser.h position.h prefs.h selectelement.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h
+noinst_HEADERS = about.h actiontext.h atomlist.h build.h canvas.h celldefine.h celltransform.h disorder.h ffeditor.h forcefields.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h minimiser.h position.h prefs.h selectelement.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@
