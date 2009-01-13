@@ -370,8 +370,6 @@ void GuiQt::updateTrajControls()
 // Update statusbar
 void GuiQt::updateStatusBar(bool clear)
 {
-	return;
-
 	static Dnchar text(512);
 	static Canvas::UserAction lastAction = Canvas::NoAction;
 	// Initialise string if NoAction
@@ -383,11 +381,27 @@ void GuiQt::updateStatusBar(bool clear)
 		text.clear();
 		text.cat("<b>");
 		text.cat(UserActionTexts[lastAction].name);
-		text.cat("</b>");
+		text.cat(":</b> ");
+		text.cat(UserActionTexts[lastAction].unModified);
+		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
+		{
+			text.cat(", <b>+Shift:</b> ");
+			text.cat(UserActionTexts[lastAction].shiftModified);
+		}
+		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
+		{
+			text.cat(", <b>+Ctrl:</b> ");
+			text.cat(UserActionTexts[lastAction].ctrlModified);
+		}
+		if (UserActionTexts[lastAction].altModified[0] != '\0')
+		{
+			text.cat(", <b>+Alt:</b> ");
+			text.cat(UserActionTexts[lastAction].altModified);
+		}
 	}
 	// Set text in statusbar widget
-	if (clear) mainWindow->statusBar()->clearMessage();
-	else mainWindow->statusBar()->showMessage(text.get());
+	if (clear) mainWindow->messageLabel->setText("");
+	else mainWindow->messageLabel->setText(text.get());
 }
 
 void GuiQt::printMessage(const char *s)

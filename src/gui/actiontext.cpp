@@ -21,22 +21,39 @@
 
 #include "gui/canvas.h"
 
-// User action texts
+// User action texts (name, nomod, shift, ctrl, alt)
 UserActionText UserActionTexts[] = {
 	{ "", "", "", "", "" },
-	{ "Select", 	"Click atoms to select. Click-drag to select by box",
-		"Click atoms to toggle selection state, click-drag to add atoms to current selection",
+	{ "Select", 	"Click atoms to select, or click-drag to select by box",
+		"toggle selection state (click), add atoms to current selection (click-drag)",
 		"", "" },
-	{ "Select Molecule", "Click atom to select all other atoms reachable through bonds",
-		"Click atom to select all other atoms reachable through bonds and add to current selection",
-		"", "" }
+	{ "Select Molecule", "Click atom to select bound fragment",
+		"to add bound fragment to current selection",
+		"", "" },
+	{ "Select Element", "Click atom to select all atoms of the same element",
+		"Click atom to add all atoms of the same element to the current selection",
+		"", "" },
+	{ "Select Radial", "", "", "", "" },
+	{ "Measure Distance", "", "", "", "" },
+	{ "Measure Angle", "", "", "", "" },
+	{ "Measure Torsion", "", "", "", "" },
+	{ "Draw Atoms", "", "", "", "" },
+	{ "Draw Chains", "", "", "", "" },
+	{ "Transmute", "", "", "", "" },
+	{ "Delete Atoms", "", "", "", "" },
+	{ "Probe Atom", "", "", "", "" },
+	{ "Create Single Bond", "", "", "", "" },
+	{ "Create Double Bond", "", "", "", "" },
+	{ "Create Triple Bond", "", "", "", "" },
+	{ "Delete Bond", "", "", "", "" },
+	{ "Add Hydrogens", "", "", "", "" },
+	{ "Rotate Camera (XY)", "", "", "", "" },
+	{ "Rotate Camera (Z)", "", "", "", "" },
+	{ "Translate Camera", "", "", "", "" },
+	{ "Zoom Camera", "", "", "", "" },
+	{ "Rotate Selection (XY)", "", "", "", "" },
+	{ "Rotate Selection (Z)", "", "", "", "" },
+	{ "Translate Selection", "", "", "", "" },
+	{ "Picking", "", "", "", "" }
 	};
-/*	// Action texts
-	const char *name;
-	const char *unModified;
-	const char *shiftModified;
-	const char *ctrlModified;
-	const char *altModified;
-*/
-// NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction
 
