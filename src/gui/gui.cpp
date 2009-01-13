@@ -385,17 +385,17 @@ void GuiQt::updateStatusBar(bool clear)
 		text.cat(UserActionTexts[lastAction].unModified);
 		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
 		{
-			text.cat(", <b>+Shift:</b> ");
+			text.cat(", <b>+shift</b> ");
 			text.cat(UserActionTexts[lastAction].shiftModified);
 		}
 		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
 		{
-			text.cat(", <b>+Ctrl:</b> ");
+			text.cat(", <b>+ctrl</b> ");
 			text.cat(UserActionTexts[lastAction].ctrlModified);
 		}
 		if (UserActionTexts[lastAction].altModified[0] != '\0')
 		{
-			text.cat(", <b>+Alt:</b> ");
+			text.cat(", <b>+alt</b> ");
 			text.cat(UserActionTexts[lastAction].altModified);
 		}
 	}
