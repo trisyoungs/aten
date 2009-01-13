@@ -345,6 +345,7 @@ void Command::initPointers()
 	pointers_[CA_USENICETEXT] = &Command::function_CA_USENICETEXT;
 	pointers_[CA_VCUT] = &Command::function_CA_VCUT;
 	pointers_[CA_VDW] = &Command::function_CA_VDW;
+	pointers_[CA_ZOOMTHROTTLE] = &Command::function_CA_ZOOMTHROTTLE;
 
 	// Read / Write Commands
 	pointers_[CA_ADDREADOPTION] = &Command::function_CA_ADDREADOPTION;

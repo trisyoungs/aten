@@ -380,7 +380,7 @@ class Prefs
 
 
 	/*
-	// Edit Preferences
+	// Editing Preferences
 	*/
 	private:
 	// Bonding tolerance for automatic calculation
@@ -397,10 +397,6 @@ class Prefs
 	bool showGuide_;
 	// Geometry of the grid in the drawing guide
 	Prefs::GuideGeometry guideShape_;
-	// User-definable mouse button actions
-	MouseAction mouseAction_[Prefs::nMouseButtons];
-	// User-definable key modifier actions
-	KeyAction keyAction_[Prefs::nModifierKeys];
 	// Hydrogen add distance
 	double hydrogenDistance_;
 
@@ -433,6 +429,24 @@ class Prefs
 	void setGuideShape(Prefs::GuideGeometry g);
 	// Return guide shape
 	Prefs::GuideGeometry guideShape();
+	// Set hydrogen add distance
+	void setHydrogenDistance(double d);
+	// Return hydrogen add distance
+	double hydrogenDistance();
+
+
+	/*
+	// Interaction Preferences
+	*/
+	private:
+	// User-definable mouse button actions
+	MouseAction mouseAction_[Prefs::nMouseButtons];
+	// User-definable key modifier actions
+	KeyAction keyAction_[Prefs::nModifierKeys];
+	// Zoom 'throttle'
+	double zoomThrottle_;
+
+	public:
 	// Sets the action for the specified mouse button
 	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
@@ -441,10 +455,10 @@ class Prefs
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk);
-	// Set hydrogen add distance
-	void setHydrogenDistance(double d);
-	// Return hydrogen add distance
-	double hydrogenDistance();
+	// Sets the zoom throttle
+	void setZoomThrottle(double throtvalue);
+	// Returns the zoom throttle
+	double zoomThrottle();
 
 
 	/*

@@ -106,12 +106,6 @@ void Model::adjustCamera(const Vec3<double> &v, double r)
 	adjustCamera(v.x,v.y,v.z,r);
 }
 
-// Return the size of the orthographic projection
-double Model::orthoSize()
-{
-	return orthoSize_;
-}
-
 // Set exact rotation of model (angles passed in radians)
 void Model::setRotation(double rotx, double roty)
 {
@@ -153,6 +147,8 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	if (trajectoryParent_ == NULL)
 	{
 		camera_.add(dx, -dy, dz);
+		// Never let camera z go below -1.0...
+		if (camera_.z > -1.0) camera_.z = -1.0;
 		cameraRotation_ = cameraRotation_ + angle;
 		if (cameraRotation_ > 2.0*PI) cameraRotation_ -= 2.0*PI;
 		coscam = cos(cameraRotation_);
@@ -182,18 +178,18 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	msg.exit("Model::adjustCamera");
 }
 
-// Adjust orthographic size
-void Model::adjustOrthoSize(double delta)
+// Adjust camera zoom
+void Model::adjustZoom(bool zoomin)
 {
-	msg.enter("Model::adjustOrthoSize");
-	orthoSize_ += delta;
-	if (orthoSize_ < 1.0) orthoSize_ = 1.0;
-	//if (orthoSize_ > 50.0) orthoSize_ = 50.0;
+	msg.enter("Model::adjustZoom");
+	double dz = -camera_.z * prefs.zoomThrottle();
+	if (zoomin) dz = -dz;
+	adjustCamera(0.0,0.0,dz,0.0);
 	calculateViewMatrix();
 	gui.mainView.doProjection();
 	// Log camera change
 	changeLog.add(Log::Camera);
-	msg.exit("Model::adjustOrthoSize");
+	msg.exit("Model::adjustZoom");
 }
 
 // Reset Camera
@@ -239,7 +235,6 @@ void Model::resetView()
 	bool done = FALSE;
 	double z, largest = 0.0;
 	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
-	orthoSize_ = 1.0;
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (i = atoms_.first(); i != NULL; i = i->next)

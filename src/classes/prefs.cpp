@@ -190,6 +190,7 @@ Prefs::Prefs()
 	keyAction_[Prefs::ShiftKey] = Prefs::ZrotateKeyAction;
 	keyAction_[Prefs::CtrlKey] = Prefs::ManipulateKeyAction;
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
+	zoomThrottle_ = 0.15;
 
 	// Colours
 	setColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
@@ -742,6 +743,23 @@ void Prefs::setGuideShape(Prefs::GuideGeometry g)
 	guideShape_ = g;
 }
 
+
+// Set hydrogen add distance
+void Prefs::setHydrogenDistance(double d)
+{
+	hydrogenDistance_ = d;
+}
+
+// Return hydrogen add distance
+double Prefs::hydrogenDistance()
+{
+	return hydrogenDistance_;
+}
+
+/*
+// Interaction Preferences
+*/
+
 // Sets the action for the specified mouse button
 void Prefs::setMouseAction(Prefs::MouseButton mb, Prefs::MouseAction ma)
 {
@@ -766,16 +784,16 @@ Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk)
 	return keyAction_[mk];
 }
 
-// Set hydrogen add distance
-void Prefs::setHydrogenDistance(double d)
+// Sets the zoom throttle
+void Prefs::setZoomThrottle(double throtvalue)
 {
-	hydrogenDistance_ = d;
+	zoomThrottle_ = throtvalue;
 }
 
-// Return hydrogen add distance
-double Prefs::hydrogenDistance()
+// Returns the zoom throttle
+double Prefs::zoomThrottle()
 {
-	return hydrogenDistance_;
+	return zoomThrottle_;
 }
 
 /*

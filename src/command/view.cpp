@@ -148,7 +148,7 @@ int Command::function_CA_ZOOMVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
-	obj.rs->adjustOrthoSize(-c->argd(0));
+// 	obj.rs->adjustOrthoSize(-c->argd(0));   TGAY
 	gui.mainView.postRedisplay();
 	return Command::Success;
 }

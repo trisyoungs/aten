@@ -447,3 +447,11 @@ int Command::function_CA_VDW(CommandNode *&c, Bundle &obj)
 	prefs.setCalculateVdw(c->argb(0));
 	return Command::Success;
 }
+
+// Display or set zoom throttle ('zoomthrottle [ratio]')
+int Command::function_CA_ZOOMTHROTTLE(CommandNode *&c, Bundle &obj)
+{
+	if (c->hasArg(0)) prefs.setZoomThrottle(c->argd(0));
+	else msg.print("Zooming throttle is %f.\n", prefs.zoomThrottle());
+	return Command::Success;
+}
