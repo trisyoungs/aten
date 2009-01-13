@@ -250,10 +250,10 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect)
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
 	msg.enter("Model::selectTree");
-	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 	bool status;
 	Atom *j;
 	Refitem<Bond,int> *bref = i->bonds();
+	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 	while (bref != NULL)
 	{
 		j = bref->item->partner(i);
@@ -281,7 +281,6 @@ void Model::selectElement(Atom *target, bool markonly, bool deselect)
 void Model::selectElement(int el, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
-
 	msg.enter("Model::selectElement");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) (deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly));
@@ -297,7 +296,6 @@ void Model::deselectElement(int el, bool markonly)
 		if (i->element() == el) deselectAtom(i, markonly);
 	msg.exit("Model::deselectElement");
 }
-
 
 // Select all atoms which match the provided type
 void Model::selectType(int element, const char *typedesc)

@@ -158,6 +158,7 @@ void Canvas::setSelectedMode(UserAction ua)
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
 	gui.mainView.postRedisplay();
+	gui.updateStatusBar();
 	msg.exit("Canvas::setSelectedMode");
 }
 
@@ -304,14 +305,14 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::SelectMoleculeAction):
 			displayModel_->beginUndoState("Select Molecule");
 			if (!modded) displayModel_->selectNone();
-			if (atomHover_ != NULL)	displayModel_->selectTree(atomHover_, ctrled);
+			if (atomHover_ != NULL)	displayModel_->selectTree(atomHover_, FALSE, ctrled);
 			displayModel_->endUndoState();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectElementAction):
 			displayModel_->beginUndoState("Select Element");
 			if (!modded) displayModel_->selectNone();
-			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_, ctrled);
+			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_, FALSE, ctrled);
 			displayModel_->endUndoState();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
