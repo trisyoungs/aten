@@ -288,13 +288,13 @@ class Model
 	// TODO Make private
 	void selectPattern(Pattern*);
 	// Select all atoms within the rectangular boundary specified
-	void selectBox(double, double, double, double);
+	void selectBox(double, double, double, double, bool deselect = FALSE);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom *i, bool markonly = FALSE);
+	void selectTree(Atom *i, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms of the same element as the specified atom
-	void selectElement(Atom *i, bool markonly = FALSE);
+	void selectElement(Atom *i, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms of the same element as the atom with the specified id
-	void selectElement(int el, bool markonly = FALSE);
+	void selectElement(int el, bool markonly = FALSE, bool deselect = FALSE);
 	// DeSelect all atoms of the same element as the atom with the specified id
 	void deselectElement(int el, bool markonly = FALSE);
 	// Select all atoms which match the provided type

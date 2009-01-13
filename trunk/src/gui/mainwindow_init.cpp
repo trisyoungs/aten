@@ -168,10 +168,20 @@ void AtenForm::finaliseUi()
 	elementGroup->addAction(ui.actionElementCustom);
 
 	// Add permanent statusbar widgets
-	infoLabel = new QLabel(this,0);
-	infoLabel->setFrameShape(QFrame::NoFrame);
-	infoLabel->setFrameShadow(QFrame::Plain);
-	ui.MainWindowStatusBar->addPermanentWidget(infoLabel,0);
+	ui.MainWindowStatusBar->setSizeGripEnabled(FALSE);
+	QFrame *frame = new QFrame(this);
+	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
+	QHBoxLayout *lablayout = new QHBoxLayout(frame);
+	messageLabel = new QLabel(this);
+	messageLabel->setTextFormat(Qt::RichText);
+	messageLabel->setWordWrap(TRUE);
+	QFont font = messageLabel->font();
+	font.setPointSize(9);
+	messageLabel->setFont(font);
+	lablayout->addWidget(messageLabel, 100);
+	infoLabel = new QLabel(this);
+	infoLabel->setFont(font);
+	lablayout->addWidget(infoLabel);
 	progressIndicator = new QFrame(this);
 	progressIndicator->setContentsMargins(0,0,0,0);
 	QHBoxLayout *layout = new QHBoxLayout(progressIndicator);

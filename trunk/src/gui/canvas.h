@@ -330,6 +330,8 @@ class Canvas
 	void informKeyDown(KeyCode);
 	// Inform the canvas of a keydown event
 	void informKeyUp(KeyCode);
+	// Return modifier status
+	bool modifierOn(Prefs::ModifierKey);
 };
 
 #endif

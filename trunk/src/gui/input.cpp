@@ -88,25 +88,6 @@ void Canvas::informKeyDown(Canvas::KeyCode key)
 	viewtarget = displayModel_;
 	switch (key)
 	{
-/*		case (Canvas::LeftShiftKey):
-			keyModifier_[Prefs::ShiftKey] = TRUE;
-			break;
-		case (Canvas::RightShiftKey):
-			keyModifier_[Prefs::ShiftKey] = TRUE;
-			break;
-		case (Canvas::LeftControlKey):
-			keyModifier_[Prefs::CtrlKey] = TRUE;
-			break;
-		case (Canvas::RightControlKey):
-			keyModifier_[Prefs::CtrlKey] = TRUE;
-			break;
-		case (Canvas::LeftAltKey):
-			keyModifier_[Prefs::AltKey] = TRUE;
-			break;
-		case (Canvas::RightAltKey):
-			keyModifier_[Prefs::AltKey] = TRUE;
-			break;*/
-		//case (GDK_Escape): aten.check_before_close(); break;
 		case (Canvas::LeftKey):
 			viewtarget->rotate(-10.0,0.0);
 			postRedisplay();
@@ -131,25 +112,13 @@ void Canvas::informKeyUp(Canvas::KeyCode key)
 {
 	switch (key)
 	{
-/*		case (Canvas::LeftShiftKey):
-			keyModifier_[Prefs::ShiftKey] = FALSE;
-			break;
-		case (Canvas::RightShiftKey):
-			keyModifier_[Prefs::ShiftKey] = FALSE;
-			break;
-		case (Canvas::LeftControlKey):
-			keyModifier_[Prefs::CtrlKey] = FALSE;
-			break;
-		case (Canvas::RightControlKey):
-			keyModifier_[Prefs::CtrlKey] = FALSE;
-			break;
-		case (Canvas::LeftAltKey):
-			keyModifier_[Prefs::AltKey] = FALSE;
-			break;
-		case (Canvas::RightAltKey):
-			keyModifier_[Prefs::AltKey] = FALSE;
-			break;*/
 	}
+}
+
+// Return modifier status
+bool Canvas::modifierOn(Prefs::ModifierKey mk)
+{
+	return keyModifier_[mk];
 }
 
 /*
@@ -299,6 +268,10 @@ void Canvas::endMode(Prefs::MouseButton button)
 		msg.exit("Canvas::endMode");
 		return;
 	}
+	// Store modifier states for convenience
+	bool shifted = keyModifier_[Prefs::ShiftKey];
+	bool ctrled = keyModifier_[Prefs::CtrlKey];
+	bool modded = (shifted || ctrled);
 	// Create atoms pointer array
 	atoms = new Atom*[4];
 	// Reset mouse button flag
@@ -314,39 +287,37 @@ void Canvas::endMode(Prefs::MouseButton button)
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndoState("Change Selection");
 			displayModel_->projectAll();
-			// If SHIFT is not held down, deselect the current selection
-			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
+			// If neither shift nor ctrl are not held down, deselect the current selection
+			if (!modded) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
-			if (area < 100.0)
+			if (area > 50.0) displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y, ctrled);
+			else if (atomHover_ != NULL)
 			{
-				if (keyModifier_[Prefs::ShiftKey])
-				{
-					if (atomHover_ != NULL) displayModel_->selectionToggle(atomHover_);
-				}
-				else if (atomHover_ != NULL) displayModel_->selectAtom(atomHover_);
+				if (shifted) displayModel_->selectionToggle(atomHover_);
+				else if (ctrled) displayModel_->deselectAtom(atomHover_);
+				else displayModel_->selectAtom(atomHover_);
 			}
-			else displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y);
 			displayModel_->endUndoState();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// Now do the rest
 		case (Canvas::SelectMoleculeAction):
 			displayModel_->beginUndoState("Select Molecule");
-			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
-			if (atomHover_ != NULL) displayModel_->selectTree(atomHover_);
+			if (!modded) displayModel_->selectNone();
+			if (atomHover_ != NULL)	displayModel_->selectTree(atomHover_, ctrled);
 			displayModel_->endUndoState();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectElementAction):
 			displayModel_->beginUndoState("Select Element");
-			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
-			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_);
+			if (!modded) displayModel_->selectNone();
+			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_, ctrled);
 			displayModel_->endUndoState();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectRadialAction):
 			displayModel_->beginUndoState("Select Radial");
-			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
+			if (!modded) displayModel_->selectNone();
 			if (atomHover_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
@@ -515,6 +486,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);
 			break;
 	}
+	delete[] atoms;
 	msg.exit("Canvas::endMode");
 }
 

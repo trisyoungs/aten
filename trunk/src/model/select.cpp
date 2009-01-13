@@ -211,12 +211,13 @@ Atom *Model::atomOnScreen(double x1, double y1)
 }
 
 // Select atoms within bounding box
-void Model::selectBox(double x1, double y1, double x2, double y2)
+void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 {
 	// Box selection - choose all the atoms within the selection area
 	msg.enter("Model::selectBox");
 	double t;
 	Atom *i;
+	Vec3<double> sr;
 	y1 = gui.mainView.height() - y1;
 	y2 = gui.mainView.height() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
@@ -235,30 +236,34 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		Vec3<double> sr = i->rScreen();
-		if ((sr.x >= x1) && (sr.x <= x2))
-			if ((sr.y >= y1) && (sr.y <= y2)) selectAtom(i);
+		sr = i->rScreen();
+		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
 	msg.exit("Model::selectBox");
 }
 
 // Tree Select
-void Model::selectTree(Atom *i, bool markonly)
+void Model::selectTree(Atom *i, bool markonly, bool deselect)
 {
 	// The passed atom node is the starting point for the algorithm.
 	// From here, select all atoms that are bound - if they are already
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
 	msg.enter("Model::selectTree");
-	selectAtom(i, markonly);
+	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
+	bool status;
+	Atom *j;
 	Refitem<Bond,int> *bref = i->bonds();
 	while (bref != NULL)
 	{
-		Atom *j = bref->item->partner(i);
-		if (!j->isSelected(markonly))
+		j = bref->item->partner(i);
+		status = j->isSelected(markonly);
+		if (deselect) status = !status;
+		if (!status)
 		{
-			selectAtom(j, markonly);
-			this->selectTree(j, markonly);
+			if (deselect) deselectAtom(j, markonly);
+			else selectAtom(j, markonly);
+			this->selectTree(j, markonly, deselect);
 		}
 		bref = bref->next;
 	}
@@ -266,20 +271,20 @@ void Model::selectTree(Atom *i, bool markonly)
 }
 
 // Select by Element
-void Model::selectElement(Atom *target, bool markonly)
+void Model::selectElement(Atom *target, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom i
-	selectElement(target->element(), markonly);
+	selectElement(target->element(), markonly, deselect);
 }
 
 // Select by element (from element)
-void Model::selectElement(int el, bool markonly)
+void Model::selectElement(int el, bool markonly, bool deselect)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
 
 	msg.enter("Model::selectElement");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-		if (i->element() == el) selectAtom(i, markonly);
+		if (i->element() == el) (deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly));
 	msg.exit("Model::selectElement");
 }
 
