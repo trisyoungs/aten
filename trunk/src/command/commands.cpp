@@ -307,7 +307,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	{ "printsummary",	"",		"",
 				"Print a one-line summary of the last calculated energy" },
 	{ "printvdw",		"",		"",
-				"Print the EDW pattern matrix of the last calculated energy" },
+				"Print the VDW pattern matrix of the last calculated energy" },
 
 	// Flow control
 	{ "break",		"",		"",
@@ -638,9 +638,9 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Show (or set) the atomic colouring scheme to use" },
 	{ "shininess",		"E",		"<n>",
 				"Set the shininess of atoms" },
-	{ "showonscreen",	"nn",		"[object] yes|no",
+	{ "showonscreen",	"nn",		"[object  yes|no]",
 				"Set (or lists) the visibility of view objects on-screen" },
-	{ "showonimage",	"nn",		"<object> yes|no",
+	{ "showonimage",	"nn",		"[object  yes|no]",
 				"Set (or lists) the visibility of view objects on saved images" },
 	{ "style",		"n",		"[style]",
 				"Set (or show) the current model drawing style" },
@@ -649,9 +649,11 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	{ "usenicetext",	"N",		"<<on|off>>",
 				"Use QPainter (on) or QGlWidget (off) to render label text" },
 	{ "vcut",		"E",		"<cutoff>",
-				"Set the EDW cutoff distance" },
+				"Set the VDW cutoff distance" },
 	{ "vdw",		"N",		"<on|off>",
-				"Turn on/off EDW energy/force calculation" },
+				"Turn on/off VDW energy/force calculation" },
+	{ "zoomthrottle",	"n",		"[ratio]",
+				"Display (or set) the zooming throttle" },
 
 	// Read / Write Commands
 	{ "addreadoption",	"N",		"<option>",

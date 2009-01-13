@@ -100,13 +100,13 @@ void Canvas::renderScene(Model *source)
 	glLoadIdentity();
 	if (prefs.hasPerspective())
 	{
-		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
-		top = -bottom;
-		glFrustum(aspect_*top, aspect_*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
+ 		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
+ 		top = -bottom;
+ 		glFrustum(aspect_*top, aspect_*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
 	}
 	else
 	{
-		bottom = displayModel_->orthoSize();
+		bottom = tan(prefs.perspectiveFov() / DEGRAD) * displayModel_->camera().z;
 		top = -bottom;
 		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}

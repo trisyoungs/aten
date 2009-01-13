@@ -552,8 +552,7 @@ void Canvas::modeMotion(double x, double y)
 			displayModel_->adjustCamera(delta/15.0,0.0);
 			break;
 		case (Canvas::ZoomAction):
-			if (prefs.hasPerspective()) displayModel_->adjustCamera(0.0,0.0,delta.y,0.0);
-			else displayModel_->adjustOrthoSize(delta.y);
+			displayModel_->adjustZoom(delta.y < 0.0);
 			break;
 		case (Canvas::TransformRotateXYAction):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
@@ -603,9 +602,7 @@ void Canvas::modeScroll(bool scrollup)
 		case (Prefs::TranslateAction):
 			break;
 		case (Prefs::ZoomAction):
-			if (prefs.hasPerspective())
-				scrollup ? displayModel_->adjustCamera(0.0,0.0,-5.0,0.0) : displayModel_->adjustCamera(0.0,0.0,5.0,0.0);
-			else scrollup ? displayModel_->adjustOrthoSize(1.0) : displayModel_->adjustOrthoSize(-1.0);
+			displayModel_->adjustZoom(scrollup);
 			break;
 	}
 	postRedisplay();

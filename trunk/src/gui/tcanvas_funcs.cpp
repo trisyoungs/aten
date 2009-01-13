@@ -117,9 +117,6 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		msg.exit("TCanvas::mousePressEvent");
 		return;
 	}
-	// Do the requested action as defined in the edit panel, but only if another action
-	// isn't currently in progress. Set the UserAction based on the mouse button that sent
-	// the signal, current selection / draw modes and key modifier states.
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
 	if (button == Prefs::RightButton)
 	{
@@ -165,7 +162,7 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 		return;
 	}
 	// Finalize the requested action
-	gui.mainView.informMouseUp(button,event->x(),event->y());
+	gui.mainView.informMouseUp(button, event->x(), event->y());
 	msg.exit("TCanvas::mouseReleaseEvent");
 }
 

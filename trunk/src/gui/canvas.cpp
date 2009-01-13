@@ -546,10 +546,9 @@ void Canvas::doProjection()
 		}
 		else
 		{
-			bottom = (displayModel_ == NULL ? 5.0 : displayModel_->orthoSize());
+			bottom = tan(prefs.perspectiveFov() / DEGRAD) * (displayModel_ == NULL ? 1.0 : displayModel_->camera().z);
 			top = -bottom;
-			//glOrtho(aspect*top,aspect*bottom,top,bottom,-bottom*2.0,bottom*2.0);
-			glOrtho(aspect_*top,aspect_*bottom,top,bottom,-prefs.clipNear(),prefs.clipFar());
+			glOrtho(aspect_*top,aspect_*bottom,top,bottom,-prefs.clipFar(),prefs.clipFar());
 		}
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
 		PMAT.setFromColumnMajor(pmat);

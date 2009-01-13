@@ -403,7 +403,8 @@ class Command {
 		CA_USENICETEXT,
 		CA_VCUT,
 		CA_VDW,
-	
+		CA_ZOOMTHROTTLE,
+
 		// Read / Write Commands
 		CA_ADDREADOPTION,
 		CA_FIND,
@@ -420,12 +421,12 @@ class Command {
 		CA_SKIPLINE,
 		CA_WRITELINE,
 		CA_WRITEVAR,
-	
+
 		// Script Commands
 		CA_LISTSCRIPTS,
 		CA_LOADSCRIPT,
 		CA_RUNSCRIPT,
-	
+
 		// Select Commands
 		CA_DESELECT,
 		CA_EXPAND,
@@ -437,13 +438,13 @@ class Command {
 		CA_SELECTOVERLAPS,
 		CA_SELECTPATTERN,
 		CA_SELECTTYPE,
-		
+
 		// Site Commands
 		CA_GETSITE,
 		CA_LISTSITES,
 		CA_NEWSITE,
 		CA_SITEAXES,
-	
+
 		// System commands
 		CA_DEBUG,
 		CA_GUI,
@@ -460,14 +461,14 @@ class Command {
 		CA_NEXTFRAME,
 		CA_PREVFRAME,
 		CA_SEEKFRAME,
-	
+
 		// Transformation Commands
 		CA_CENTRE,
 		CA_TRANSLATE,
 		CA_TRANSLATEATOM,
 		CA_TRANSLATECELL,
 		CA_MIRROR,
-	
+
 		// Variables
 		CA_AFTERCHAR,
 		CA_BEFORECHAR,
@@ -477,7 +478,7 @@ class Command {
 		CA_LETCHAR,
 		CA_LETPTR,
 		CA_STRIPCHARS,
-	
+
 		// View
 		CA_GETVIEW,
 		CA_ORTHOGRAPHIC,
@@ -491,7 +492,7 @@ class Command {
 		CA_VIEWALONGCELL,
 		CA_ZOOMVIEW,
 		CA_ZROTATEVIEW,
-	
+
 		CA_NITEMS
 	};
 	// Return enumerated command id from string
@@ -800,6 +801,7 @@ class Command {
 	static int function_CA_USENICETEXT(CommandNode *&c, Bundle &obj);
 	static int function_CA_VCUT(CommandNode *&c, Bundle &obj);
 	static int function_CA_VDW(CommandNode *&c, Bundle &obj);
+	static int function_CA_ZOOMTHROTTLE(CommandNode *&c, Bundle &obj);
 	// Read / Write Commands
 	static int function_CA_ADDREADOPTION(CommandNode *&c, Bundle &obj);
 	static int function_CA_FIND(CommandNode *&c, Bundle &obj);

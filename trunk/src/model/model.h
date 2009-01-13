@@ -324,8 +324,6 @@ class Model
 	Mat4<double> viewMatrixInverse_;
 	// Camera position
 	Vec3<double> camera_;
-	// Size of view for orthographic projection
-	double orthoSize_;
 	// Log point at the last projection (Log::Coordinate+Log::Camera)
 	int projectionPoint_;
 
@@ -361,10 +359,8 @@ class Model
 	// Adjust the position of the camera
 	void adjustCamera(double, double, double, double);
 	void adjustCamera(const Vec3<double> &v, double r);
-	// Adjusts the orthographic size (zoom)
-	void adjustOrthoSize(double);
-	// Return the size of the orthographic projection
-	double orthoSize();
+	// Adjusts the camera zoom
+	void adjustZoom(bool zoomin);
 	// (Re)set the camera position and matrix
 	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
