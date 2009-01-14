@@ -110,7 +110,7 @@
           <enum>Qt::NoFocus</enum>
          </property>
          <property name="contextMenuPolicy" >
-          <enum>Qt::ActionsContextMenu</enum>
+          <enum>Qt::DefaultContextMenu</enum>
          </property>
          <property name="acceptDrops" >
           <bool>false</bool>
@@ -122,13 +122,13 @@
           <bool>false</bool>
          </property>
          <property name="readOnly" >
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="acceptRichText" >
           <bool>false</bool>
          </property>
          <property name="textInteractionFlags" >
-          <enum>Qt::TextEditable</enum>
+          <enum>Qt::TextSelectableByMouse</enum>
          </property>
         </widget>
        </widget>

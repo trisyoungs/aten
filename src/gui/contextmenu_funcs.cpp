@@ -63,7 +63,7 @@ void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
 	static StaticCommandNode cmd(Command::CA_ATOMSTYLE, "c", "none");
 	static StaticCommandNode cmdatom(Command::CA_ATOMSTYLE, "ci", "none", 0);
-	if (target == NULL)
+	if (nSelected > 1)
 	{
 		cmd.pokeArguments("c", Atom::drawStyle(ds));
 		cmd.execute();
@@ -105,7 +105,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
 	static StaticCommandNode cmd(Command::CA_LABEL, "c", "none");
 	static StaticCommandNode cmdatom(Command::CA_LABEL, "ci", "none", 0);
-	if (target == NULL)
+	if (nSelected > 1)
 	{
 		cmd.pokeArguments("c", Atom::atomLabel(al));
 		cmd.execute();
@@ -126,7 +126,7 @@ void AtenForm::removeAtomLabels(bool all)
 	static StaticCommandNode cmdatom(Command::CA_REMOVELABELS, "i", 0);
 	static StaticCommandNode cmdall(Command::CA_CLEARLABELS, "");
 	if (all) cmdall.execute();
-	else if (target == NULL) cmd.execute();
+	else if (nSelected > 1) cmd.execute();
 	else
 	{
 		cmdatom.pokeArguments("i", target->id());
@@ -178,7 +178,7 @@ void AtenForm::setAtomHidden(bool hidden)
 	static StaticCommandNode cmdhatom(Command::CA_HIDE, "i", 0);
 	static StaticCommandNode cmds(Command::CA_SHOW, "");
 	static StaticCommandNode cmdsatom(Command::CA_SHOW, "i", 0);
-	if (target == NULL) hidden ? cmdh.execute() : cmds.execute();
+	if (nSelected > 1) hidden ? cmdh.execute() : cmds.execute();
 	else
 	{
 		if (hidden)
