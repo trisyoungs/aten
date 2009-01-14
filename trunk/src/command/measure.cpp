@@ -121,7 +121,7 @@ int Command::function_CA_TORSION(CommandNode *&c, Bundle &obj)
 int Command::function_CA_TORSIONS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	obj.rs->beginUndoState("Measure torsion angles in selection");
+	obj.rs->beginUndoState("Measure torsions in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Torsion);
 	obj.rs->endUndoState();
 	return Command::Success;
