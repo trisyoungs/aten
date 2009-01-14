@@ -167,21 +167,35 @@ void AtenForm::finaliseUi()
 	elementGroup->addAction(ui.actionElementN);
 	elementGroup->addAction(ui.actionElementCustom);
 
-	// Add permanent statusbar widgets
+	// Fix up the statusbar with a single big frame and no size grip
 	ui.MainWindowStatusBar->setSizeGripEnabled(FALSE);
 	QFrame *frame = new QFrame(this);
 	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
+	// Message label
 	QHBoxLayout *lablayout = new QHBoxLayout(frame);
 	messageLabel = new QLabel(this);
 	messageLabel->setTextFormat(Qt::RichText);
 	messageLabel->setWordWrap(TRUE);
 	QFont font = messageLabel->font();
-	font.setPointSize(9);
+	font.setPointSize(8);
 	messageLabel->setFont(font);
 	lablayout->addWidget(messageLabel, 100);
-	infoLabel = new QLabel(this);
-	infoLabel->setFont(font);
-	lablayout->addWidget(infoLabel);
+	QFrame *sep = new QFrame;
+	sep->setFrameStyle(QFrame::VLine);
+// 	sep->setLineWidth(10);
+
+// 	sep->setFrameWidth(2);
+	lablayout->addWidget(sep,0);
+	// Info labels
+	QVBoxLayout *infolayout = new QVBoxLayout;
+	infoLabel1 = new QLabel(this);
+	infoLabel1->setFont(font);
+	infolayout->addWidget(infoLabel1);
+	infoLabel2 = new QLabel(this);
+	infoLabel2->setFont(font);
+	infolayout->addWidget(infoLabel2);
+	lablayout->addLayout(infolayout,0);
+	// Progress indicator
 	progressIndicator = new QFrame(this);
 	progressIndicator->setContentsMargins(0,0,0,0);
 	QHBoxLayout *layout = new QHBoxLayout(progressIndicator);

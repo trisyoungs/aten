@@ -27,26 +27,35 @@
 
 // Local variables
 Atom *target = NULL;
+int nSelected = 0;
 
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
 	//Model *viewTarget = aten.currentModel()->renderSource();
+
 	Model *viewTarget = gui.mainView.displayModel();
 	target = undermouse;
-	//printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
-	if ((viewTarget->nSelected() != 0) && (undermouse->isSelected())) target = NULL;
+	if (target == NULL) return;
 	QPoint pos(x,y);
-	// If there are no atoms selected we must enable the menu first...
-	if (viewTarget->nSelected() == 0)
+// 	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
+	if (!target->isSelected())
 	{
-		// Select atom under the mouse...
+		viewTarget->beginUndoState("Context menu atom focus");
+		viewTarget->selectNone();
 		viewTarget->selectAtom(target);
+		viewTarget->endUndoState();
+		nSelected = viewTarget->nSelected();
 		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
 		mainWindow->ui.AtomContextMenu->exec(pos);
 		mainWindow->ui.AtomContextMenu->setEnabled(FALSE);
 	}
-	else mainWindow->ui.AtomContextMenu->exec(pos);
+	else
+	{
+		nSelected = viewTarget->nSelected();
+		mainWindow->ui.AtomContextMenu->exec(pos);
+	}
+	
 }
 
 // Set atom style

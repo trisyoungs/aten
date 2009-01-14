@@ -249,7 +249,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update status bar
 	QString s;
 	Model *m = aten.currentModel();
-	// Trajectory information label and toolbar
+	// First label - atom and trajectory frame information
 	if (m->nTrajectoryFrames() != 0)
 	{
 		s = "(Frame ";
@@ -261,7 +261,6 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		mainWindow->updateTrajectoryToolbar();
 	}
 	m = m->renderSource();
-	// Model information
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
 	if (m->nSelected() != 0)
@@ -272,10 +271,12 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	}
 	s += ftoa(m->mass());
 	s += " g mol<sup>-1</sup> ";
+	mainWindow->infoLabel1->setText(s);
+	// Second label - cell information
 	Cell::CellType ct = m->cell()->type();
 	if (ct != Cell::NoCell)
 	{
-		s += "(";
+		s = "(";
 		s += Cell::cellType(ct);
 		s += ", ";
 		s += ftoa(m->density());
@@ -289,7 +290,8 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 				break;
 		}
 	}
-	mainWindow->infoLabel->setText(s);
+	else s = "Non-periodic";
+	mainWindow->infoLabel2->setText(s);
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Update contents of the atom list

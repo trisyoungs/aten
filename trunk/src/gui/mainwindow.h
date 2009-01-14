@@ -356,7 +356,7 @@ class AtenForm : public QMainWindow
 	*/
 	public:
 	// Text labels for model information and UI messages in status bar
-	QLabel *infoLabel, *messageLabel;
+	QLabel *infoLabel1, *infoLabel2, *messageLabel;
 	// Statusbar progress indicator widgets
 	QProgressBar *progressBar;
 	QLabel *progressLabel;
