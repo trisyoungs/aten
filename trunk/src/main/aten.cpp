@@ -802,10 +802,15 @@ void Aten::copyGrid(Grid *g)
 {
 	// If there is an old grid here, delete it first
 	if (gridClipboard_ != NULL) delete gridClipboard_;
-	*gridClipboard_ = *g;
+	gridClipboard_ = NULL;
+	if (g != NULL)
+	{
+		gridClipboard_ = new Grid;
+		*gridClipboard_ = *g;
+	}
 }
 
-// Return grid on clipboard
+// Return grid on clipboard (if any)
 Grid *Aten::gridClipboard()
 {
 	return gridClipboard_;

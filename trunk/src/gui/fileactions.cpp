@@ -63,19 +63,37 @@ bool AtenForm::runSaveModelDialog()
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
 	Filter *f;
-	int result = saveModelDialog->exec();
-	//printf("Save model dialog result = %i\n",result);
-	if (result == 1)
+
+
+// 	int result = saveModelDialog->exec();
+// 	//printf("Save model dialog result = %i\n",result);
+// 	if (result == 1)
+// 	{
+// 		// Get selected filename (only grab first
+// 		//QString filename = savemodeldialog->selectedFiles().first();
+// 		saveModelFilename = qPrintable(saveModelDialog->selectedFiles().first());
+// 		// Get selected filter
+// 		QString filter = saveModelDialog->selectedFilter();
+// 		// Find the filter that was selected
+// 		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
+// 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
+// 		if (f == NULL) printf("AtenForm::run_savemodel_dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
+// 		saveModelFilter = f;
+// 		return (saveModelFilter == NULL ? FALSE : TRUE);
+// 	}
+// 	else return FALSE;
+
+
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filename (only grab first
-		//QString filename = savemodeldialog->selectedFiles().first();
-		saveModelFilename = qPrintable(saveModelDialog->selectedFiles().first());
-		// Get selected filter
-		QString filter = saveModelDialog->selectedFilter();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-		if (f == NULL) printf("AtenForm::run_savemodel_dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
+		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next) if (selFilter == f->description()) break;
+		if (f == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
 		saveModelFilter = f;
 		return (saveModelFilter == NULL ? FALSE : TRUE);
 	}
@@ -189,15 +207,15 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	else return;
 	// Get filename from user
 	GuiQt::BitmapFormat bf;
-	if (saveBitmapDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filename
-		QStringList filenames = saveBitmapDialog->selectedFiles();
-		QString filename = filenames.first();
-		// Get selected filter
-		QString filter = saveBitmapDialog->selectedFilter();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		bf = GuiQt::bitmapFormatFromFilter(qPrintable(filter));
+		bf = GuiQt::bitmapFormatFromFilter(qPrintable(selFilter));
 		// Save the image
 		gui.saveImage(qPrintable(filename), bf, width, height, 100);
 	}
@@ -208,16 +226,15 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
 	Model *m = aten.currentModel();
-	if (loadTrajectoryDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), loadTrajectoryFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filename
-		QStringList filenames = loadTrajectoryDialog->selectedFiles();
-		QString filename = filenames.first();
-		// Get selected filter
-		QString filter = loadTrajectoryDialog->selectedFilter();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
+		for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next) if (selFilter == f->description()) break;
 		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
 		if (f == NULL) f = aten.probeFile(qPrintable(filename), Filter::TrajectoryImport);
 		if (f != NULL)
@@ -238,16 +255,16 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	static StaticCommandNode cmd(Command::CA_SAVEEXPRESSION, "cc", "none", "none");
 	Filter *f;
-	if (saveExpressionDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filename (only grab first
-		QString filename = saveExpressionDialog->selectedFiles().first();
-		// Get selected filter
-		QString filter = saveExpressionDialog->selectedFilter();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
+		for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next) if (selFilter == f->description()) break;
+		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
 		else
 		{
 			cmd.pokeArguments("cc", f->nickname(), qPrintable(filename));

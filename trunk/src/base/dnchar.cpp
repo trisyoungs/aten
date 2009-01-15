@@ -53,6 +53,20 @@ Dnchar::Dnchar(int emptysize)
 	createEmpty(emptysize);
 }
 
+Dnchar::Dnchar(const char *s)
+{
+	// Private variables
+	data_ = NULL;
+	size_ = 0;
+	endPosition_ = -1;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	set(s);
+}
+
 // Destructor
 Dnchar::~Dnchar()
 {

@@ -74,6 +74,7 @@ void Canvas::renderModelAtoms()
 		  }
 		  glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 		  glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+
 		  // Get position
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);

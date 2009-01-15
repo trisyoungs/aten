@@ -304,11 +304,13 @@ void AtenForm::refreshScriptsMenu()
 
 void AtenForm::on_actionLoadScript_triggered(bool v)
 {
-	QString filename;
-	if (loadScriptDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Load Script", currentDirectory_.path(), loadScriptFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filter in file dialog
-		filename = loadScriptDialog->selectedFiles().first();
+		// Store path for next use
+		currentDirectory_.setPath(filename);
 		// Create script and model variables within it
 		CommandList *ca = aten.scripts.add();
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();

@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
+#include "gui/grids.h"
 
 // Finalise GUI
 void AtenForm::finaliseUi()
@@ -182,9 +183,6 @@ void AtenForm::finaliseUi()
 	lablayout->addWidget(messageLabel, 100);
 	QFrame *sep = new QFrame;
 	sep->setFrameStyle(QFrame::VLine);
-// 	sep->setLineWidth(10);
-
-// 	sep->setFrameWidth(2);
 	lablayout->addWidget(sep,0);
 	// Info labels
 	QVBoxLayout *infolayout = new QVBoxLayout;
@@ -217,102 +215,58 @@ void AtenForm::finaliseUi()
 	// Load Qt Settings
 	loadSettings();
 
-	// Create open model dialog
-	loadModelDialog = new QFileDialog(this);
-	loadModelDialog->setFileMode(QFileDialog::ExistingFiles);
-	loadModelDialog->setDirectory(aten.workDir());
-	loadModelDialog->setWindowTitle("Open Model(s)");
-
-	// Create open trajectory dialog
-	loadTrajectoryDialog = new QFileDialog(this);
-	loadTrajectoryDialog->setFileMode(QFileDialog::ExistingFile);
-	loadTrajectoryDialog->setDirectory(aten.workDir());
-	loadTrajectoryDialog->setWindowTitle("Add Trajectory");
-
-	// Create save model dialog
-	saveModelDialog = new QFileDialog(this);
-	saveModelDialog->setWindowTitle("Save Model");
-	saveModelDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveModelDialog->setDirectory(aten.workDir());
-	saveModelDialog->setConfirmOverwrite(TRUE);
-	saveModelDialog->setFileMode(QFileDialog::AnyFile);
-
-	// Create save image dialog
-	saveBitmapDialog = new QFileDialog(this);
-	saveBitmapDialog->setWindowTitle("Save Image");
-	saveBitmapDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveBitmapDialog->setDirectory(aten.workDir());
-	saveBitmapDialog->setFileMode(QFileDialog::AnyFile);
-
-	// Create save vector dialog
-	saveVectorDialog = new QFileDialog(this);
-	saveVectorDialog->setWindowTitle("Save Vector");
-	saveVectorDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveVectorDialog->setDirectory(aten.workDir());
-	saveVectorDialog->setFileMode(QFileDialog::AnyFile);
-
-	// Create save expression dialog
-	saveExpressionDialog = new QFileDialog(this);
-	saveExpressionDialog->setWindowTitle("Save Expression");
-	saveExpressionDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveExpressionDialog->setDirectory(aten.workDir());
-	saveExpressionDialog->setFileMode(QFileDialog::AnyFile);
-
-	// Create open script dialog
-	loadScriptDialog = new QFileDialog(this);
-	loadScriptDialog->setWindowTitle("Open Script");
-	loadScriptDialog->setDirectory(aten.workDir());
-	loadScriptDialog->setFileMode(QFileDialog::ExistingFile);
-
-	// Finally, add items to filter combo boxes
-	setDialogFilters();
+	// Create filter lists for file dialogs
+	createDialogFilters();
 
 	msg.exit("AtenForm::finaliseUi");
 }
 
 // Set filter combos on file dialogs
-void AtenForm::setDialogFilters()
+void AtenForm::createDialogFilters()
 {
-	msg.enter("AtenForm::setDialogFilters");
+	msg.enter("AtenForm::createDialogFilters");
 	Filter *f;
 	int n;
-	QStringList filters;
 
 	// Model Import
-	loadModelDialog->filters().clear();
-	filters << "All files (*)";
-	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
-	if (filters.empty())
+	loadModelFilters.clear();
+	loadModelFilters += "All files (*)";
+	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
 	{
-		ui.actionFileOpen->setEnabled(FALSE);
-		ui.RecentMenu->setEnabled(FALSE);
+		loadModelFilters += ";;";
+		loadModelFilters += f->description();
 	}
-	else loadModelDialog->setFilters(filters);
+	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
+	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
 
 	// Trajectory Import
-	loadTrajectoryDialog->filters().clear();
-	filters.clear();
-	filters << "All files (*)";
-	for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next) filters << f->description();
-	loadTrajectoryDialog->setFilters(filters);
+	loadTrajectoryFilters.clear();
+	loadTrajectoryFilters += "All files (*)";
+	for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
+	{
+		loadTrajectoryFilters += ";;";
+		loadTrajectoryFilters += f->description();
+	}
+	ui.actionFileAddTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
-	saveModelDialog->filters().clear();
-	filters.clear();
-	for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next) filters << f->description();
-	// Check for empty filters list (causes crash)
-	if (filters.empty())
+	saveModelFilters.clear();
+	for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
 	{
-		ui.actionFileSave->setEnabled(FALSE);
-		ui.actionFileSaveAs->setEnabled(FALSE);
+		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
+		saveModelFilters += f->description();
 	}
-	else saveModelDialog->setFilters(filters);
+	// Check for empty filters list
+	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
+	ui.actionFileSaveAs->setEnabled(!saveModelFilters.isEmpty());
 
 	// Save image
-	saveBitmapDialog->filters().clear();
-	filters.clear();
-	for (n=0; n < GuiQt::nBitmapFormats; n++) filters << GuiQt::bitmapFormatFilter( (GuiQt::BitmapFormat) n);
-	saveBitmapDialog->setFilters(filters);
+	saveBitmapFilters.clear();
+	for (n=0; n < GuiQt::nBitmapFormats; n++)
+	{
+		if (!saveBitmapFilters.isEmpty()) saveBitmapFilters += ";;";
+		saveBitmapFilters += GuiQt::bitmapFormatFilter( (GuiQt::BitmapFormat) n);
+	}
 
 	// Save vector
 // 	saveVectorDialog->filters().clear();
@@ -321,20 +275,31 @@ void AtenForm::setDialogFilters()
 // 	saveVectorDialog->setFilters(filters);
 
 	// Expression Export
-	saveExpressionDialog->filters().clear();
-	filters.clear();
-	for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
-	// Check for empty filters list (causes crash)
-	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
-	else saveExpressionDialog->setFilters(filters);
+	saveExpressionFilters.clear();
+	for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next)
+	{
+		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
+		saveExpressionFilters += f->description();
+	}
+	// Check for empty filters list
+	ui.actionFileSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
+
+	// Grid import
+	loadGridFilters.clear();
+	loadGridFilters += "All files (*)";
+	for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next)
+	{
+		loadGridFilters += ";;";
+		loadGridFilters += f->description();
+	}
+	gui.gridsWindow->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 
 	// Create open script dialog
-	loadScriptDialog->filters().clear();
-	filters.clear();
-	filters << "All files (*)";
-	loadScriptDialog->setFilters(filters);
+	loadScriptFilters.clear();
+	loadScriptFilters += "All files (*)";
 
-	msg.exit("AtenForm::setDialogFilters");
+
+	msg.exit("AtenForm::createDialogFilters");
 }
 
 // Set controls
