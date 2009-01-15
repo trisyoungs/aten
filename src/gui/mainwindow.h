@@ -33,7 +33,7 @@ enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP
 #define MAXRECENTFILES 10
 
 // Forward Declarations
-class QFileDialog;
+// class QFileDialog;
 class QDoubleSpinBox;
 class QLabel;
 class QTimer;
@@ -62,8 +62,8 @@ class AtenForm : public QMainWindow
 	Ui::MainWindow ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
 	void finaliseUi();
-	// Set filter combos on file dialogs
-	void setDialogFilters();
+	// Create filter combos on file dialogs
+	void createDialogFilters();
 	// Set controls to reflect program variables
 	void setControls();
 	protected:
@@ -362,16 +362,8 @@ class AtenForm : public QMainWindow
 	QLabel *progressLabel;
 	QPushButton *progressButton;
 	QFrame *progressIndicator;
-	// File dialogs for models
-	QFileDialog *loadModelDialog, *saveModelDialog;
-	// File dialogs for trajectories
-	QFileDialog *loadTrajectoryDialog, *saveTrajectoryDialog;
-	// File dialogs for expressions
-	QFileDialog *loadExpressionDialog, *saveExpressionDialog;
-	// File dialog for save bitmap and save vector image
-	QFileDialog *saveBitmapDialog, *saveVectorDialog;
-	// File dialog for script loading
-	QFileDialog *loadScriptDialog;
+	// String lists to hold file dialog filter definitions
+	QString loadModelFilters, saveModelFilters, loadTrajectoryFilters, saveTrajectoryFilters, loadExpressionFilters, saveExpressionFilters, saveBitmapFilters, saveVectorFilters, loadScriptFilters, loadGridFilters, saveGridFilters;
 	// Filter set from save model dialog
 	Filter *saveModelFilter;
 	// Filename set from save model dialog

@@ -374,6 +374,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	twodx = r.x / npoints.x * 2.0;
 	twody = r.y / npoints.y * 2.0;
 	twodz = r.z / npoints.z * 2.0;
+	glEnable(GL_BLEND);
 	// Set glBegin based on the surface style
 	switch (ss)
 	{
@@ -381,7 +382,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 			glBegin(GL_POINTS);
 			break;
 		case (Grid::TriangleSurface):
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_FRONT, GL_LINE);
 			glBegin(GL_TRIANGLES);
 			break;
 		case (Grid::SolidSurface):
@@ -389,10 +390,12 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 			glBegin(GL_TRIANGLES);
 			break;
 	}
+
 	// Set colour / transparency for surface
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
 	{

@@ -29,6 +29,7 @@ class Dnchar
 	// Constructor / Destructor
 	Dnchar();
 	Dnchar(int size);
+	Dnchar(const char*);
 	~Dnchar();
 	// Copy constructor
 	Dnchar(const Dnchar&);

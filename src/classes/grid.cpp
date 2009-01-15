@@ -85,7 +85,7 @@ void Grid::operator=(Grid &source)
 	minimum_ = source.minimum_;
 	maximum_ = source.maximum_;
 	cutoff_ = source.cutoff_;
-	log_ = -1;
+	log_ = 0;
 	style_ = source.style_;
 	displayList_ = 0;
 	renderPoint_ = -1;
@@ -126,6 +126,7 @@ void Grid::operator=(Grid &source)
 			for (y=0; y<nPoints_.y; y++) data2d_[x][y] = source.data2d_[x][y];
 		}
 	}
+	name_ = source.name_;
 }
 
 /*
@@ -296,7 +297,7 @@ GLfloat *Grid::positiveColour()
 	return positiveColour_;
 }
 
-// Return the (positive) colour of the grid's surface
+// Return the (negative) colour of the grid's surface
 GLfloat *Grid::negativeColour()
 {
 	return negativeColour_;

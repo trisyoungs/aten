@@ -92,8 +92,6 @@ class AtenGrids : public QDialog
 	~AtenGrids();
 	// Main form declaration
 	Ui::GridsDialog ui;
-	// File dialogs for grids
-	QFileDialog *openGridDialog, *saveGridDialog;
 };
 
 #endif

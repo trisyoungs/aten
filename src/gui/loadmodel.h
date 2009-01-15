@@ -56,8 +56,6 @@ class AtenLoadModel : public QDialog
 	Filter *selectedFilter_;
 	// Filename in edit box
 	Dnchar selectedFilename_;
-	// Current directory
-	Dnchar currentDirectory_;
 
 	public:
 	// Return the selected filter

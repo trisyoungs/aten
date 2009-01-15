@@ -49,18 +49,6 @@ AtenGrids::AtenGrids(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,fl
 	layout->setMenuBar(menuBar_);
 	layout->setMargin(0);
 	ui.menuFrame->setLayout(layout);
-	
-	// Create open grid dialog
-	QStringList filters;
-	openGridDialog = new QFileDialog(this);
-	openGridDialog->setWindowTitle("Open Grid");
-	openGridDialog->setDirectory(aten.workDir());
-	openGridDialog->setFileMode(QFileDialog::ExistingFile);
-	filters.clear();
-	filters << "All files (*)";
-	for (Filter *f = aten.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
-	if (filters.empty()) ui.actionGridLoad->setEnabled(FALSE);
-	else openGridDialog->setFilters(filters);
 }
 
 // Destructor
@@ -101,33 +89,27 @@ void AtenGrids::refresh()
 void AtenGrids::loadGrid()
 {
 	msg.enter("AtenGrids::loadGrid");
+
+
 	Filter *f;
-	QString filename;
-	QStringList filenames;
-	if (openGridDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), gui.mainWindow->loadGridFilters, &selFilter);
+	if (!filename.isEmpty())
 	{
-		// Get selected filter in file dialog
-		QString filter = openGridDialog->selectedFilter();
-		// Find the corresponding Aten filter that was selected
-		for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-		// Get selected filename list
-		filenames = openGridDialog->selectedFiles();
-		// Loop over selected files
-		for (int i = 0; i < filenames.count(); ++i)
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Find the filter that was selected
+		for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next) if (selFilter == f->description()) break;
+		if (f != NULL) f->execute(qPrintable(filename));
+		else
 		{
-			filename = filenames.at(i);
-			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+			f = aten.probeFile(qPrintable(filename), Filter::GridImport);
 			if (f != NULL) f->execute(qPrintable(filename));
-			else
-			{
-				f = aten.probeFile(qPrintable(filename), Filter::GridImport);
-				if (f != NULL) f->execute(qPrintable(filename));
-			}
 		}
-		gui.gridsWindow->refresh();
-		gui.mainView.postRedisplay();
 	}
+	gui.gridsWindow->refresh();
+	gui.mainView.postRedisplay();
 	msg.exit("AtenGrids::loadGrid");
 }
 
@@ -138,10 +120,31 @@ void AtenGrids::on_actionGridLoad_triggered(bool checked)
 
 void AtenGrids::on_actionGridCopy_triggered(bool checked)
 {
+	int row = ui.GridList->currentRow();
+	if (row == -1)
+	{
+		msg.print("No grid selected to copy.\n");
+		return;
+	}
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	aten.copyGrid(g);
 }
 
 void AtenGrids::on_actionGridCut_triggered(bool checked)
 {
+	int row = ui.GridList->currentRow();
+	if (row == -1)
+	{
+		msg.print("No grid selected to cut.\n");
+		return;
+	}
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	aten.copyGrid(g);
+	m->removeGrid(g);
+	refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenGrids::on_actionGridDelete_triggered(bool checked)
@@ -160,6 +163,17 @@ void AtenGrids::on_actionGridDelete_triggered(bool checked)
 
 void AtenGrids::on_actionGridPaste_triggered(bool checked)
 {
+	Grid *g = aten.gridClipboard();
+	if (g == NULL)
+	{
+		msg.print("No grid data on clipboard.\n");
+		return;
+	}
+	Model *m = aten.currentModel();
+	Grid *newgrid = m->addGrid();
+	*newgrid = *g;
+	refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)

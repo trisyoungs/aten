@@ -665,7 +665,7 @@
                </widget>
               </item>
               <item row="1" column="5" >
-               <widget class="TColourFrame" name="GridPositiveColourFrame" >
+               <widget class="TColourFrame" name="GridNegativeColourFrame" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>7</hsizetype>
@@ -703,7 +703,7 @@
                </widget>
               </item>
               <item row="1" column="6" >
-               <widget class="QPushButton" name="GridPositiveColourButton" >
+               <widget class="QPushButton" name="GridNegativeColourButton" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>5</hsizetype>
@@ -750,7 +750,7 @@
                </widget>
               </item>
               <item row="0" column="6" >
-               <widget class="QPushButton" name="GridNegativeColourButton" >
+               <widget class="QPushButton" name="GridPositiveColourButton" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>5</hsizetype>
@@ -780,7 +780,7 @@
                </widget>
               </item>
               <item row="0" column="5" >
-               <widget class="TColourFrame" name="GridNegativeColourFrame" >
+               <widget class="TColourFrame" name="GridPositiveColourFrame" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>7</hsizetype>
