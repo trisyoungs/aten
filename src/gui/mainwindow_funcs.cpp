@@ -69,7 +69,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 		// Delete subwindows / dialogs
 		delete gui.prefsDialog;
 		delete gui.forcefieldEditorDialog;
-		delete gui.loadModelDialog;
+// 		delete gui.loadModelDialog;
 		delete gui.selectPatternDialog;
 		delete gui.atomlistWindow;
 		delete gui.buildWindow;

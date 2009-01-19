@@ -151,6 +151,7 @@ void GuiQt::run()
 	loadModelDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
+// 	atomlistWindow->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
