@@ -113,17 +113,6 @@ Atom typing is performed in several steps.
 
 */
 
-void printstuff(Pattern *p)
-{
-	Atom *i = p->firstAtom();
-	for (int n=0; n<p->nAtoms(); n++)
-	{
-		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, elements().symbol(i),
-			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
-		i = i->next;
-	}
-}
-
 // Set type of specified atom
 void Model::setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed)
 {
@@ -137,19 +126,7 @@ void Model::describeAtoms()
 {
 	// Locate ring structure and assign atom hybridisations in all patterns.
 	msg.enter("Model::describeAtoms");
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
-	{
-		// 1) Locate ring structures
-		p->findRings();
-		// 2) Reset atom environments
-		p->clearHybrids();
-		printstuff(p);
-		// 3) Assign hybridisation types
-		p->assignHybrids();
-		printstuff(p);
-		// 4) Go through the ring list and see if any are aromatic
-		//for (Ring *r = p->rings(); r != NULL; r = r->next) if (r->isAromatic()) r->setAromatic();
-	}
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->describeAtoms();
 	msg.exit("Model::describeAtoms");
 }
 

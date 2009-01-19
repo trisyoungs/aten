@@ -39,7 +39,7 @@ Atomtype::AtomtypeCommand Atomtype::atomtypeCommand(const char *s)
 }
 
 // Ring typing commands
-const char *RingtypeCommandKeywords[Ringtype::nRingtypeCommands] = { "size", "n", "notself" };
+const char *RingtypeCommandKeywords[Ringtype::nRingtypeCommands] = { "size", "n", "aliphatic", "nonaromatic", "aromatic", "notself" };
 Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 {
 	return (Ringtype::RingtypeCommand) enumSearch("",Ringtype::nRingtypeCommands,RingtypeCommandKeywords,s);
@@ -72,6 +72,7 @@ Ringtype::Ringtype()
 	nAtoms_ = -1;
 	nRepeat_ = 1;
 	selfAbsent_ = FALSE;
+	type_ = Ring::AnyRing;
 
 	// Public variables
 	prev = NULL;
@@ -295,6 +296,18 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 				case (Ringtype::NotSelfCommand):
 					selfAbsent_ = TRUE;
 					break;
+				// Ring type (aliphatic)
+				case (Ringtype::AliphaticCommand):
+					type_ = Ring::AliphaticRing;
+					break;
+				// Ring type (non-aromatic)
+				case (Ringtype::NonAromaticCommand):
+					type_ = Ring::NonAromaticRing;
+					break;
+				// Ring type (aromatic)
+				case (Ringtype::AromaticCommand):
+					type_ = Ring::AromaticRing;
+					break;
 				// Unrecognised
 				default:
 					if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding ring at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
@@ -395,9 +408,6 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					break;
 				case (Atomtype::Sp3Command):
 					environment_ = Atom::Sp3Environment;
-					break;
-				case (Atomtype::AromaticCommand):
-					environment_ = Atom::AromaticEnvironment;
 					break;
 				// Ring specification (possible options)
 				case (Atomtype::RingCommand):
@@ -721,7 +731,24 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		}
 	}
 	// Ring check
-	if (ringList_.first() == NULL) msg.print(Messenger::Typing,"(%li %2i) ... Rings  [defaulted]\n",this,level);
+	if (ringList_.first() == NULL)
+	{
+		if (acyclic_)
+		{
+			// Get list of rings our test atom is involved in
+			ringchecklist.clear();
+			// Search the list of atoms in this ring for 'i'
+			for (r = ringdata->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringchecklist.add(r);
+			if (acyclic_ && (ringchecklist.nItems() != 0))
+			{
+				msg.print(Messenger::Typing,"(%li %2i) [failed - acyclic specified but is in %i rings]\n",this,level,ringchecklist.nItems());
+				level --;
+				msg.exit("Atomtype::matchAtom");
+				return -1;
+			}
+		}
+		msg.print(Messenger::Typing,"(%li %2i) ... Rings  [defaulted]\n",this,level);
+	}
 	else
 	{
 		// Get list of rings our test atom is involved in
@@ -739,17 +766,25 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 				{
 					// Initialise score
 					ringscore = 0;
+					// Check for specific type of ring first...
+					msg.print(Messenger::Typing,"(%li %2i) ... ... Type  ",this,level);
+					if (atr->type_ == Ring::AnyRing) msg.print(Messenger::Typing,"[defaulted]");
+					else if (atr->type_ == refring->item->type())
+					{
+						msg.print(Messenger::Typing,"[passed - matched '%s']\n",Ring::ringType(atr->type_));
+						ringscore ++;
+					}
+					else
+					{
+						msg.print(Messenger::Typing,"[failed]\n");
+						continue;
+					}
 					// Check for presence of top atom 
 					if ((atr->selfAbsent_) && (refring->item->containsAtom(topatom))) continue;
 					else ringscore ++;
 					// Size check
 					msg.print(Messenger::Typing,"(%li %2i) ... ... Size  ",this,level);
-					if (atr->nAtoms_ == -1)
-					{
-						
-						msg.print(Messenger::Typing,"[defaulted]\n");
-						ringscore ++;
-					}
+					if (atr->nAtoms_ == -1) msg.print(Messenger::Typing,"[defaulted]\n");
 					else if (atr->nAtoms_ == refring->item->nAtoms())
 					{
 						msg.print(Messenger::Typing,"[passed - matched '%i']\n",atr->nAtoms_);

@@ -37,6 +37,9 @@ class Ring
 	// Circular list browsing
 	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri);
 	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri);
+	// Ring type
+	enum RingType { AnyRing, AliphaticRing, NonAromaticRing, AromaticRing, nRingTypes };
+	static const char *ringType(Ring::RingType);
 
 	/*
 	// Constituent Atoms / Bonds
@@ -48,6 +51,8 @@ class Ring
 	Reflist<Bond,Bond::BondType> bonds_;
 	// Requested size of ring when ring searching
 	int requestedSize_;
+	// Type of ring
+	RingType type_;
 
 	public:
 	// Return first referenced atom
@@ -68,14 +73,16 @@ class Ring
 	bool addAtom(Atom*);
 	// Remove the specified refitem from the find
 	void removeAtom(Refitem<Atom,int>*);
-	// Flag the atoms involved in the ring as being aromatic
-	void setAromatic();
 	// Store current bond types for referenced bonds
 	void storeBondTypes();
 	// Recall stored bond orders for referenced bonds
 	void recallBondTypes();
 	// Return the total bond order penalty of atoms in the ring
 	int totalBondOrderPenalty();
+	// Detect ring type based on atom hybridicities and bonds
+	void detectType();
+	// Return type of ring
+	RingType type();
 
 
 	/*
