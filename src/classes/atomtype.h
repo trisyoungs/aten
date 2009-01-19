@@ -24,6 +24,7 @@
 
 #include "base/atom.h"
 #include "base/bond.h"
+#include "classes/ring.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
 
@@ -45,7 +46,7 @@ class Ringtype
 	// List pointers
 	Ringtype *prev, *next;
 	// Ring typing commands
-	enum RingtypeCommand { SizeCommand, RepeatCommand, NotSelfCommand, nRingtypeCommands };
+	enum RingtypeCommand { SizeCommand, RepeatCommand, AliphaticCommand, NonAromaticCommand, AromaticCommand, NotSelfCommand, nRingtypeCommands };
 	RingtypeCommand ringtypeCommand(const char*);
 
 	private:
@@ -61,6 +62,8 @@ class Ringtype
 	void print();
 	// Flag that the owner bound atom (if any) should not itself appear in the ring
 	bool selfAbsent_;
+	// Requested style of the ring
+	Ring::RingType type_;
 	// Friend classes
 	friend class Atomtype;
 };

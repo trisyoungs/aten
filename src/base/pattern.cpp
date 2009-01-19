@@ -1328,3 +1328,29 @@ void Pattern::augment()
 	propagateBondTypes();
 	msg.exit("Pattern::augment");
 }
+
+void printstuff(Pattern *p)
+{
+	Atom *i = p->firstAtom();
+	for (int n=0; n<p->nAtoms(); n++)
+	{
+		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, elements().symbol(i),
+			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
+		i = i->next;
+	}
+}
+
+// Describe atom / ring types
+void Pattern::describeAtoms()
+{
+	// 1) Locate ring structures
+	findRings();
+	// 2) Reset atom environments
+	clearHybrids();
+	printstuff(this);
+	// 3) Assign hybridisation types
+	assignHybrids();
+	printstuff(this);
+	// 4) Go through the ring list and see if any are aromatic
+	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
+}

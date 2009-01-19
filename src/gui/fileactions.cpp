@@ -95,6 +95,7 @@ bool AtenForm::runSaveModelDialog()
 		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next) if (selFilter == f->description()) break;
 		if (f == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
 		saveModelFilter = f;
+		saveModelFilename = qPrintable(filename);
 		return (saveModelFilter == NULL ? FALSE : TRUE);
 	}
 	else return FALSE;

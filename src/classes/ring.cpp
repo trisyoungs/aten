@@ -23,6 +23,13 @@
 #include "base/atom.h"
 #include "base/elements.h"
 
+// Ring types
+const char *RingTypes[Ring::nRingTypes] = { "any", "aliphatic", "non-aromatic", "aromatic" };
+const char *Ring::ringType(Ring::RingType rt)
+{
+	return RingTypes[rt];
+}
+
 // Constructor
 Ring::Ring()
 {
@@ -114,8 +121,7 @@ bool Ring::addAtom(Atom *i)
 		msg.exit("Ring::addAtom");
 		return FALSE;
 	}
-	// Append a ringatom to the list, pointing to atom i
-	// Store atom ID in the Refitem's data variable
+	// Append a ringatom to the list, pointing to atom i, storing the atom ID in the Refitem's data variable
 	atoms_.add(i,i->id());
 	msg.exit("Ring::addAtom");
 	return TRUE;
@@ -147,18 +153,74 @@ void Ring::recallBondTypes()
 	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->item->setType(rb->data);
 }
 
-// Set aromatic
-void Ring::setAromatic()
+// Detect ring type based on atom hybridicities and bonds
+void Ring::detectType()
 {
-	msg.enter("Ring::setAromatic");
-	// Set atom environments to be Atomtype::AromaticEnvironment
-	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
-		ra->item->setEnvironment(Atom::AromaticEnvironment);
-	// Set bonds to be Bond::Aromatic
+	int nsingle = 0, ndouble = 0, nother = 0;
+	Bond::BondType lasttype, thistype;
+	bool alternating = TRUE;
+	// Get numbers of single/double bonds, and wheter they alternate around the ring
 	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
-		rb->item->setType(Bond::Aromatic);
-	printf("Oooh - an aromatic ring\n");
-	msg.exit("Ring::setAromatic");
+	{
+		thistype = rb->item->type();
+		if (thistype == Bond::Single) nsingle ++;
+		else if (thistype == Bond::Double) ndouble ++;
+		else
+		{
+			nother ++;
+			alternating = FALSE;
+			continue;
+		}
+		// Check previous bond for 'alternateness'
+		lasttype = (rb == bonds_.first() ? bonds_.last()->item->type() : rb->prev->item->type());
+		if ((lasttype == Bond::Single) && (thistype != Bond::Double)) alternating = FALSE;
+		else if ((lasttype == Bond::Double) && (thistype != Bond::Single)) alternating = FALSE;
+	}
+	// Set type
+	if (nsingle == bonds_.nItems()) type_ = Ring::AliphaticRing;
+	else if ((bonds_.nItems()%2) == 0)
+	{
+		// For rings with an even number of atoms, the bonds *must* alternate in type
+		type_ = (alternating ? Ring::AromaticRing : Ring::NonAromaticRing);
+	}
+	else
+	{
+		int nhetero = 0, group;
+		bool failed = FALSE;
+		Bond::BondType bt1, bt2;
+		// For rings with an odd number of atoms, adjacent single bonds may use a medial heteroatom to grant aromaticity
+		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
+		{
+			group = elements().group(ra->item);
+			// If its a heteroatom there's a chance. If not, we're done
+			if ((group == 15) || (group == 16))
+			{
+				// Check for single bonds either side
+				bt1 = ra->item->findBond(getPrev(ra)->item)->type();
+				bt2 = ra->item->findBond(getNext(ra)->item)->type();
+				// TODO Need to check against the bondorder penalty
+			//bondOrderPenalty(Atom *i, int bo);
+				if ((bt1 == Bond::Single) && (bt2 == Bond::Single)) nhetero ++;
+				else failed = TRUE;
+			}
+			else failed = TRUE;
+			if (failed) break;
+
+		}
+		if (failed) type_ = Ring::NonAromaticRing;
+		else
+		{
+			// Get total number of pi electrons now...
+			int npi = (nhetero + ndouble) * 2;
+			type_ = Ring::AromaticRing;	
+		}
+	}
+}
+
+// Return type of ring
+Ring::RingType Ring::type()
+{
+	return type_;
 }
 
 /*

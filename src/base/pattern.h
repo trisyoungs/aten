@@ -332,6 +332,9 @@ class Pattern
 	void augmentOLD();
 	// Return total bond order penalty of atoms in one molecule of the pattern
 	int totalBondOrderPenalty();
+	// Describe atoms in pattern, detect rings etc.
+	void describeAtoms();
+
 
 	/*
 	// Propagation / Selectors
