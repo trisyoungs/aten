@@ -1,7 +1,5 @@
 Issues with the current version:
 	- Spherical regions in disordered builder have poor randomness.
-	- OpenGL transparency issues (polygon artefacts - need ordering?)
-	- GL backface culling option (gl backcull on) renders incorrectly.
 
 General To-Do list:
 	- Molecular dynamics

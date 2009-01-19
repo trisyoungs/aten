@@ -27,29 +27,6 @@
 
 // Forward declarations
 class Model;
-class AtomlistRefreshThread;
-
-// Atomlist Refresh thread
-class AtomlistRefreshThread : public QThread
-{
-	public:
-	// Constructor
-	AtomlistRefreshThread();
-
-	private:
-	// Whether the running thread should be restarted
-	bool restart_;
-	// Whether the running thread should be killed
-	bool kill_;
-
-	public:
-	// Execute thread
-	void run();
-	// Restart thread
-	void restart();
-	// Kill thread
-	void kill();
-};
 
 // Atom list
 class AtenAtomlist : public QDialog
@@ -66,21 +43,18 @@ class AtenAtomlist : public QDialog
 	private:
 	void peekScrollBar();
 	void pokeScrollBar();
+	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
+	void toggleItemSelection(TTreeWidgetItem *twi);
 	private slots:
-// 	void on_AtomTree_itemPressed(QTreeWidgetItem *item, int column);
-// 	void on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
 	void dialogFinished(int result);
 	void updateSelection();
-
-	/*
-	// Threads
-	*/
-	private:
-	AtomlistRefreshThread refreshThread;
+	void treeMousePressEvent(QMouseEvent *event);
+	void treeMouseReleaseEvent(QMouseEvent *event);
+	void treeMouseMoveEvent(QMouseEvent *event);
 
 	/*
 	// Local variables
@@ -92,10 +66,10 @@ class AtenAtomlist : public QDialog
 	Model *listLastModel_;
 	// Whether the widget should refresh when it is next shown
 	bool shouldRefresh_;
-	// Whether the widget is currently refreshing
-	bool refreshing_;
 	// Position of list slider
 	int listPosition_;
+	// Last clicked and 'moved over' TTreeWidgetItem in the AtomList
+	TTreeWidgetItem *lastClicked_, *lastHovered_;
 
 	/*
 	// Dialog

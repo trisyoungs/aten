@@ -39,6 +39,11 @@ class TTreeWidget : public QTreeWidget
 	// List of TTreeViewWidgets that this TTreeWidget contains
 	Reflist<TTreeWidgetItem,int> atomItems_;
 
+	signals:
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+
 	public:
 	// Clear list of TTreeViewWidgets 
 	void clearAtomItems() { atomItems_.clear(); }
