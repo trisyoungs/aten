@@ -27,35 +27,26 @@
 
 // Local variables
 Atom *target = NULL;
-int nSelected = 0;
 
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
-	//Model *viewTarget = aten.currentModel()->renderSource();
-
-	Model *viewTarget = gui.mainView.displayModel();
 	target = undermouse;
 	if (target == NULL) return;
 	QPoint pos(x,y);
 // 	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
 	if (!target->isSelected())
 	{
+		Model *viewTarget = gui.mainView.displayModel();
 		viewTarget->beginUndoState("Context menu atom focus");
 		viewTarget->selectNone();
 		viewTarget->selectAtom(target);
 		viewTarget->endUndoState();
-		nSelected = viewTarget->nSelected();
 		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
 		mainWindow->ui.AtomContextMenu->exec(pos);
 		mainWindow->ui.AtomContextMenu->setEnabled(FALSE);
 	}
-	else
-	{
-		nSelected = viewTarget->nSelected();
-		mainWindow->ui.AtomContextMenu->exec(pos);
-	}
-	
+	else mainWindow->ui.AtomContextMenu->exec(pos);
 }
 
 // Set atom style
@@ -63,7 +54,7 @@ void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
 	static StaticCommandNode cmd(Command::CA_ATOMSTYLE, "c", "none");
 	static StaticCommandNode cmdatom(Command::CA_ATOMSTYLE, "ci", "none", 0);
-	if (nSelected > 1)
+	if (gui.mainView.displayModel()->nSelected() > 1)
 	{
 		cmd.pokeArguments("c", Atom::drawStyle(ds));
 		cmd.execute();
@@ -105,7 +96,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
 	static StaticCommandNode cmd(Command::CA_LABEL, "c", "none");
 	static StaticCommandNode cmdatom(Command::CA_LABEL, "ci", "none", 0);
-	if (nSelected > 1)
+	if (gui.mainView.displayModel()->nSelected() > 1)
 	{
 		cmd.pokeArguments("c", Atom::atomLabel(al));
 		cmd.execute();
@@ -126,7 +117,7 @@ void AtenForm::removeAtomLabels(bool all)
 	static StaticCommandNode cmdatom(Command::CA_REMOVELABELS, "i", 0);
 	static StaticCommandNode cmdall(Command::CA_CLEARLABELS, "");
 	if (all) cmdall.execute();
-	else if (nSelected > 1) cmd.execute();
+	else if (gui.mainView.displayModel()->nSelected() > 1) cmd.execute();
 	else
 	{
 		cmdatom.pokeArguments("i", target->id());
@@ -178,7 +169,7 @@ void AtenForm::setAtomHidden(bool hidden)
 	static StaticCommandNode cmdhatom(Command::CA_HIDE, "i", 0);
 	static StaticCommandNode cmds(Command::CA_SHOW, "");
 	static StaticCommandNode cmdsatom(Command::CA_SHOW, "i", 0);
-	if (nSelected > 1) hidden ? cmdh.execute() : cmds.execute();
+	if (gui.mainView.displayModel()->nSelected() > 1) hidden ? cmdh.execute() : cmds.execute();
 	else
 	{
 		if (hidden)
