@@ -63,27 +63,6 @@ bool AtenForm::runSaveModelDialog()
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
 	Filter *f;
-
-
-// 	int result = saveModelDialog->exec();
-// 	//printf("Save model dialog result = %i\n",result);
-// 	if (result == 1)
-// 	{
-// 		// Get selected filename (only grab first
-// 		//QString filename = savemodeldialog->selectedFiles().first();
-// 		saveModelFilename = qPrintable(saveModelDialog->selectedFiles().first());
-// 		// Get selected filter
-// 		QString filter = saveModelDialog->selectedFilter();
-// 		// Find the filter that was selected
-// 		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
-// 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-// 		if (f == NULL) printf("AtenForm::run_savemodel_dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
-// 		saveModelFilter = f;
-// 		return (saveModelFilter == NULL ? FALSE : TRUE);
-// 	}
-// 	else return FALSE;
-
-
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters, &selFilter);

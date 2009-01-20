@@ -256,7 +256,6 @@ void AtenAtomlist::pokeScrollBar()
 
 void AtenAtomlist::dialogFinished(int result)
 {
-	printf("result dialogfinished = %i\n", result);
 	gui.mainWindow->ui.actionAtomlistWindow->setChecked(FALSE);
 }
 
@@ -272,6 +271,8 @@ TTreeWidgetItem *AtenAtomlist::itemUnderMouse(const QPoint &pos)
 void AtenAtomlist::toggleItemSelection(TTreeWidgetItem *twi)
 {
 	if (twi == NULL) return;
+	// Check here for header items...
+	if (twi->atom() == NULL) return;
 	bool state = twi->isSelected();
 	twi->setSelected(!state);
 	state ? listLastModel_->deselectAtom(twi->atom()) : listLastModel_->selectAtom(twi->atom());
@@ -303,5 +304,6 @@ void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
 	{
 		toggleItemSelection(twi);
 		lastHovered_ = twi;
+		gui.modelChanged(FALSE, FALSE, FALSE);
 	}
 }
