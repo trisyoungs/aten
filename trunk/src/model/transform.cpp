@@ -263,7 +263,7 @@ void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix)
 	{
 		newr = i->r() - origin;
 		newr *= matrix;
-		positionAtom(i, newr);
+		positionAtom(i, newr + origin);
 	}
 	changeLog.add(Log::Visual);
 	projectSelection();

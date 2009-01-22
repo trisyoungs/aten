@@ -24,6 +24,7 @@
 #include "gui/transform.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 // Constructor
 AtenTransform::AtenTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -124,6 +125,7 @@ void AtenTransform::rotateSelection(double direction)
 
 void AtenTransform::on_TransformApplyButton_clicked(bool on)
 {
+	static StaticCommandNode cmd(Command::CA_MATRIXTRANSFORM, "ddddddddddddd", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	// Put values into our matrix...
 	Mat3<double> mat;
 	mat.set(0, ui.TransformMatrixAXSpin->value(), ui.TransformMatrixAYSpin->value(), ui.TransformMatrixAZSpin->value());
@@ -132,14 +134,12 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
-	// Perform transformation
-	char s[128];
-	Model *m = aten.currentModel();
-	sprintf(s,"Transform %i atom(s)\n", m->nSelected());
-	m->beginUndoState(s);
-	m->matrixTransformSelection(v, mat);
-	m->endUndoState();
-	m->updateMeasurements();
+
+	// Poke arguments and execute command
+	cmd.pokeArguments("ddddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
+	cmd.execute();
+
+	aten.currentModel()->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -336,7 +336,7 @@ void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 
 void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 {
-	printf("Lets do it!\n");
+	static StaticCommandNode cmd(Command::CA_MATRIXCONVERT, "ddddddddddddddddddddd", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	// Put values into our matrices...
 	Mat3<double> source, target, rotmat;
 	source.set(0, ui.ConvertSourceMatrixAXSpin->value(), ui.ConvertSourceMatrixAYSpin->value(), ui.ConvertSourceMatrixAZSpin->value());
@@ -348,25 +348,13 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.ConvertOriginXSpin->value(), ui.ConvertOriginYSpin->value(), ui.ConvertOriginZSpin->value());
-	// Generate necessary rotation matrix
-	printf("Source matrix is:\n");
-	source.print();
-	printf("Target matrix is:\n");
-	target.print();
-	printf("Necessary rotation matris is:\n");
-	target.invert();
-	rotmat = source * target;
-	rotmat.print();
-	// Perform transformation
-	char s[128];
-	Model *m = aten.currentModel();
-	sprintf(s,"Transform %i atom(s)\n", m->nSelected());
-	m->beginUndoState(s);
-	m->matrixTransformSelection(v, rotmat);
-	m->endUndoState();
-	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
 
+	// Poke arguments and execute command
+	cmd.pokeArguments("ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
+	cmd.execute();
+
+	aten.currentModel()->updateMeasurements();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 	gui.mainView.postRedisplay();
 }
 
@@ -564,6 +552,7 @@ void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
+	v.normalise();
 	gui.transformWindow->ui.ConvertTargetMatrixAXSpin->setValue(v.x);
 	gui.transformWindow->ui.ConvertTargetMatrixAYSpin->setValue(v.y);
 	gui.transformWindow->ui.ConvertTargetMatrixAZSpin->setValue(v.z);
@@ -576,6 +565,7 @@ void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
+	v.normalise();
 	gui.transformWindow->ui.ConvertTargetMatrixBXSpin->setValue(v.x);
 	gui.transformWindow->ui.ConvertTargetMatrixBYSpin->setValue(v.y);
 	gui.transformWindow->ui.ConvertTargetMatrixBZSpin->setValue(v.z);
@@ -588,6 +578,7 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
+	v.normalise();
 	gui.transformWindow->ui.ConvertTargetMatrixCXSpin->setValue(v.x);
 	gui.transformWindow->ui.ConvertTargetMatrixCYSpin->setValue(v.y);
 	gui.transformWindow->ui.ConvertTargetMatrixCZSpin->setValue(v.z);

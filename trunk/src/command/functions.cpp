@@ -405,10 +405,13 @@ void Command::initPointers()
 	pointers_[CA_SEEKFRAME] = &Command::function_CA_SEEKFRAME;
 
 	// Transform Commands
+	pointers_[CA_AXISROTATE] = &Command::function_CA_AXISROTATE;
 	pointers_[CA_CENTRE] = &Command::function_CA_CENTRE;
 	pointers_[CA_TRANSLATE] = &Command::function_CA_TRANSLATE;
 	pointers_[CA_TRANSLATEATOM] = &Command::function_CA_TRANSLATEATOM;
 	pointers_[CA_TRANSLATECELL] = &Command::function_CA_TRANSLATECELL;
+	pointers_[CA_MATRIXCONVERT] = &Command::function_CA_MATRIXCONVERT;
+	pointers_[CA_MATRIXTRANSFORM] = &Command::function_CA_MATRIXTRANSFORM;
 	pointers_[CA_MIRROR] = &Command::function_CA_MIRROR;
 
 	// Variable Commands
