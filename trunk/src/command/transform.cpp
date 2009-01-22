@@ -91,46 +91,6 @@ int Command::function_CA_CENTRE(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
-// Translate current selection in local coordinates ('translate dx dy dz')
-int Command::function_CA_TRANSLATE(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	char s[128];
-	Vec3<double> tvec = c->arg3d(0);
-	sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
-	obj.rs->beginUndoState(s);
-	obj.rs->translateSelectionLocal(tvec);
-	obj.rs->endUndoState();
-	return Command::Success;
-}
-
-// Translate activeatom ('translateatom <dx dy dz>')
-int Command::function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
-	char s[128];
-	Vec3<double> tvec = c->arg3d(0);
-	sprintf(s,"Translate Cartesian (atom %i, %f %f %f)\n", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
-	obj.rs->beginUndoState(s);
-	obj.rs->translateAtom(obj.i, tvec);
-	obj.rs->endUndoState();
-	return Command::Success;
-}
-
-// Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	Vec3<double> tvec;
-	tvec = obj.rs->cell()->axes() * c->arg3d(0);
-	char s[128];
-	sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
-	obj.rs->beginUndoState(s);
-	obj.rs->translateSelectionLocal(tvec);
-	obj.rs->endUndoState();
-	return Command::Success;
-}
-
 // Convert coordinates from one reference frame to another
 int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 {
@@ -138,36 +98,52 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 	// Determine which data has been supplied
 	Mat3<double> source, target;
 	Vec3<double> o, v;
+	bool sourcenoz = FALSE, targetnoz = FALSE;
 	int n;
-	printf("Shit.\n");
 	Atom *i, *j;
 	switch (c->nArgs())
 	{
 		// Twelve atom ids defining both matrices (and optional origin)
 		case (12):
 		case (15):
-			for (n=0; n<6; n+=2)
+			// Determine axes for the matrices
+			for (n=0; n<3; n++)
 			{
 				// Source matrix
-				i = obj.rs->atom(c->argi(n)-1);
-				j = obj.rs->atom(c->argi(n+1)-1);
-				if ((i == NULL) || (j == NULL)) return Command::Fail;
-				v = j->r() - i->r();
-				v.normalise();
-				// Adjust (if necessary) before storing)
-				if (n == 2) v.orthogonalise(source.x());
-				else if (n == 3) v.orthogonalise(source.x(), source.y());
-				source.set(n/2, v);
+				if ((n == 2) && (c->argi(n*2) == 0) && (c->argi(n*2+1) == 0)) sourcenoz = TRUE;
+				else
+				{
+					i = obj.rs->atom(c->argi(n*2)-1);
+					j = obj.rs->atom(c->argi(n*2+1)-1);
+					if ((i == NULL) || (j == NULL)) return Command::Fail;
+					v = j->r() - i->r();
+					v.normalise();
+					source.set(n, v);
+				}
 				// Target matrix
-				i = obj.rs->atom(c->argi(n+6)-1);
-				j = obj.rs->atom(c->argi(n+7)-1);
-				if ((i == NULL) || (j == NULL)) return Command::Fail;
-				v = j->r() - i->r();
-				v.normalise();
-				// Adjust (if necessary) before storing)
-				if (n == 2) v.orthogonalise(target.x());
-				else if (n == 3) v.orthogonalise(target.x(), target.y());
-				target.set(n/2, v);
+				if ((n == 2) && (c->argi(n*2+6) == 0) && (c->argi(n*2+7) == 0)) targetnoz = TRUE;
+				else
+				{
+					i = obj.rs->atom(c->argi(n*2+6)-1);
+					j = obj.rs->atom(c->argi(n*2+7)-1);
+					if ((i == NULL) || (j == NULL)) return Command::Fail;
+					v = j->r() - i->r();
+					v.normalise();
+					target.set(n, v);
+				}
+				// Adjust Y and Z axes
+				if (n == 1)
+				{
+					source.y().orthogonalise(source.x());
+					target.y().orthogonalise(target.x());
+				}
+				else if (n == 2)
+				{
+					if (sourcenoz) source.z() = source.x() * source.y();
+					else source.z().orthogonalise(source.x(), source.y());
+					if (targetnoz) target.z() = target.x() * target.y();
+					else target.z().orthogonalise(target.x(), target.y());
+				}
 			}
 			// Get origin if provided
 			if (c->nArgs() == 15) o.set(c->argd(12), c->argd(13), c->argd(14));
@@ -239,6 +215,46 @@ int Command::function_CA_MIRROR(CommandNode *&c, Bundle &obj)
 	sprintf(s,"Mirror %i atoms along %c\n", obj.rs->nSelected(), 88+c->argi(0));
 	obj.rs->beginUndoState(s);
 	obj.rs->mirrorSelectionLocal(c->argi(0));
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
+// Translate current selection in local coordinates ('translate dx dy dz')
+int Command::function_CA_TRANSLATE(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	char s[128];
+	Vec3<double> tvec = c->arg3d(0);
+	sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState(s);
+	obj.rs->translateSelectionLocal(tvec);
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
+// Translate activeatom ('translateatom <dx dy dz>')
+int Command::function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	char s[128];
+	Vec3<double> tvec = c->arg3d(0);
+	sprintf(s,"Translate Cartesian (atom %i, %f %f %f)\n", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState(s);
+	obj.rs->translateAtom(obj.i, tvec);
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
+// Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
+int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	Vec3<double> tvec;
+	tvec = obj.rs->cell()->axes() * c->arg3d(0);
+	char s[128];
+	sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState(s);
+	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
 	return Command::Success;
 }

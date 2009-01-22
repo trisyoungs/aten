@@ -35,7 +35,7 @@ void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
 	msg.print(Messenger::Verbose,"Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems())
 	{
-		cog = p->calculateCog(this,mol);
+		cog = p->calculateCog(mol,this);
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom - mim with and then subtract centre of geometry
@@ -89,7 +89,7 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	// Calculate COG before we start
-	cog = p->calculateCog(this,mol);
+	cog = p->calculateCog(mol,this);
 	//printf("rotateMolecule : Moving %i atoms starting at %i (%i atoms currently in config)\n",pnatoms,offset,natoms);
 	if (offset < atoms_.nItems())
 		for (n=offset; n<offset+pnatoms; n++)

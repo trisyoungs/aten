@@ -31,7 +31,7 @@ class PatternAccessors : public VAccess
 	// Constructor
 	PatternAccessors();
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

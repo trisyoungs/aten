@@ -35,6 +35,8 @@ PatternAccessors::PatternAccessors()
 	accessorPointers[PatternAccessors::Angles] = addListAccessor("angles",	VTypes::PatternBoundData);
 	accessorPointers[PatternAccessors::Atoms] = addListAccessor("atoms",	VTypes::AtomData);
 	accessorPointers[PatternAccessors::Bonds] = addListAccessor("bonds",	VTypes::PatternBoundData);
+	accessorPointers[PatternAccessors::Cog] = addListAccessor("cog", VTypes::RealData);
+	accessorPointers[PatternAccessors::Com] = addListAccessor("com", VTypes::RealData);
 	accessorPointers[PatternAccessors::FirstAtom] = addAccessor("firstatom",	VTypes::AtomData, TRUE);
 	accessorPointers[PatternAccessors::FirstAtomId] = addAccessor("firstatomid",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::FField] = addAccessor("forcefield",	VTypes::ForcefieldData, FALSE);
@@ -85,6 +87,14 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 			break;
 		case (PatternAccessors::Bonds):
 			rv.set(p->bond(index-1), VTypes::PatternBoundData);
+			break;
+		case (PatternAccessors::Cog):
+			printf("Retrieving COG %i\n", index);
+// 			rv.set(p->calculateCog(index-1), VTypes::RealData);
+			break;
+		case (PatternAccessors::Com):
+			printf("Retrieving COM %i\n", index);
+// 			rv.set(p->calculateCom(index-1), VTypes::RealData);
 			break;
 		case (PatternAccessors::FirstAtom):
 			rv.set(p->firstAtom(), VTypes::AtomData);

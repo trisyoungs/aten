@@ -370,7 +370,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Add a new interatomic definition to the current forcefield" },
 	{ "loadff",		"Nn",		"<filename> [name]",
 				"Load forcefield" },
-	{ "map",		"N",		"<name=element,...>",
+	{ "map",		"N*",		"<name=element,...>",
 				"Add typename mappings" },
 	{ "newff",		"N",		"<name>",
 				"Create a new, empty forcefield." },

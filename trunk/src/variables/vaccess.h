@@ -41,8 +41,6 @@ class VAccess
 	Variable *addAccessor(const char *name, VTypes::DataType dt, bool readonly, int arraysize = -1);
 	// Add new list accessor
 	Variable *addListAccessor(const char *name, VTypes::DataType dt);
-	// Add new list accessor
-	Variable *addRefListAccessor(const char *name, VTypes::DataType dt);
 	// Check array index in supplied step against target member
 	bool checkIndex(int &index, AccessStep *indexsource, Variable *member);
 

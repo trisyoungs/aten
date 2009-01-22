@@ -263,7 +263,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog)
 			for (n=0; n<p->nMolecules(); n++)
 			{
 				// Get fractional coordinate COG of this molecule
-				oldcog = p->calculateCog(this,n);
+				oldcog = p->calculateCog(n,this);
 				// Get new COG using new cell
 				newcog = newcell.fracToReal(cell_.realToFrac(oldcog));
 				// Set new atom positions

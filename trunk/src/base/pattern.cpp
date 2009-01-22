@@ -670,12 +670,13 @@ bool Pattern::validate()
 	return result;
 }
 
-// Calculate centre of geometry for molecule 'mol' in pattern, from config supplied
-Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
+// Calculate centre of geometry for molecule 'mol' in pattern, from (Model) config supplied or parent_ if NULL
+Vec3<double> Pattern::calculateCog(int mol, Model *srcmodel)
 {
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculateCog");
 	int offset = startAtom_ + mol*nAtoms_;
+	if (srcmodel == NULL) srcmodel = parent_;
 	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	Cell *cell = srcmodel->cell();
@@ -693,12 +694,13 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 }
 
 // Calculate centre of mass for molecule 'mol' in pattern, from config supplied
-Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
+Vec3<double> Pattern::calculateCom(int mol, Model *srcmodel)
 {
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculateCom");
 	msg.print(Messenger::Verbose,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMolecules_);
 	Vec3<double> com;
+	if (srcmodel == NULL) srcmodel = parent_;
 	double massnorm = 0.0;
 	static Vec3<double> mim_i;
 	int offset = startAtom_ + mol*nAtoms_;

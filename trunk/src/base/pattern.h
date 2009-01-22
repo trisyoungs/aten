@@ -352,9 +352,9 @@ class Pattern
 	*/
 	public:
 	// Calculate centre of geometry of molecule in specified config
-	Vec3<double> calculateCog(Model*, int);
+	Vec3<double> calculateCog(int, Model *source = NULL);
 	// Calculate centre of mass of molecule in specified config
-	Vec3<double> calculateCom(Model*, int);
+	Vec3<double> calculateCom(int, Model *source = NULL);
 };
 
 #endif
