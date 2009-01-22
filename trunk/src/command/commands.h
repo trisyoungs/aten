@@ -137,6 +137,8 @@ class Command {
 		CA_ENDCHAIN,
 		CA_LOCATE,
 		CA_MOVE,
+		CA_MOVETOEND,
+		CA_MOVETOSTART,
 		CA_NEWATOM,
 		CA_NEWATOMFRAC,
 		CA_RESETPEN,
@@ -145,8 +147,6 @@ class Command {
 		CA_ROTZ,
 		CA_SHIFTDOWN,
 		CA_SHIFTUP,
-		CA_TOEND,
-		CA_TOSTART,
 		CA_TRANSMUTE,
 	
 		// Cell commands
@@ -555,6 +555,8 @@ class Command {
 	static int function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOCATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_MOVE(CommandNode *&c, Bundle &obj);
+	static int function_CA_MOVETOEND(CommandNode *&c, Bundle &obj);
+	static int function_CA_MOVETOSTART(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWATOM(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj);
 	static int function_CA_RESETPEN(CommandNode *&c, Bundle &obj);
@@ -563,8 +565,6 @@ class Command {
 	static int function_CA_ROTZ(CommandNode *&c, Bundle &obj);
 	static int function_CA_SHIFTDOWN(CommandNode *&c, Bundle &obj);
 	static int function_CA_SHIFTUP(CommandNode *&c, Bundle &obj);
-	static int function_CA_TOEND(CommandNode *&c, Bundle &obj);
-	static int function_CA_TOSTART(CommandNode *&c, Bundle &obj);
 	static int function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj);
 	// Cell commands
 	static int function_CA_ADDGENERATOR(CommandNode *&c, Bundle &obj);

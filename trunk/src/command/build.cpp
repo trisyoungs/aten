@@ -124,6 +124,26 @@ int Command::function_CA_MOVE(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Move current selection to end of list ('toend')
+int Command::function_CA_MOVETOEND(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->beginUndoState("Move selection to end");
+	obj.rs->moveSelectionToEnd();
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
+// Move current selection to start of list ('tostart')
+int Command::function_CA_MOVETOSTART(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->beginUndoState("Move selection to start");
+	obj.rs->moveSelectionToStart();
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
 // Draw unbound atom ('newatom <el> [x y z]')
 int Command::function_CA_NEWATOM(CommandNode *&c, Bundle &obj)
 {
@@ -271,26 +291,6 @@ int Command::function_CA_SHIFTUP(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Shift selection up");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
-	obj.rs->endUndoState();
-	return Command::Success;
-}
-
-// Move current selection to end of list ('toend')
-int Command::function_CA_TOEND(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	obj.rs->beginUndoState("Move selection to end");
-	obj.rs->moveSelectionToEnd();
-	obj.rs->endUndoState();
-	return Command::Success;
-}
-
-// Move current selection to start of list ('tostart')
-int Command::function_CA_TOSTART(CommandNode *&c, Bundle &obj)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	obj.rs->beginUndoState("Move selection to start");
-	obj.rs->moveSelectionToStart();
 	obj.rs->endUndoState();
 	return Command::Success;
 }

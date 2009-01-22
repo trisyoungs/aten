@@ -81,6 +81,8 @@ void Command::initPointers()
 	pointers_[CA_ENDCHAIN] = &Command::function_CA_ENDCHAIN;
 	pointers_[CA_LOCATE] = &Command::function_CA_LOCATE;
 	pointers_[CA_MOVE] = &Command::function_CA_MOVE;
+	pointers_[CA_MOVETOEND] = &Command::function_CA_MOVETOEND;
+	pointers_[CA_MOVETOSTART] = &Command::function_CA_MOVETOSTART;
 	pointers_[CA_NEWATOM] = &Command::function_CA_NEWATOM;
 	pointers_[CA_NEWATOMFRAC] = &Command::function_CA_NEWATOMFRAC;
 	pointers_[CA_RESETPEN] = &Command::function_CA_RESETPEN;
@@ -89,8 +91,6 @@ void Command::initPointers()
 	pointers_[CA_ROTZ] = &Command::function_CA_ROTZ;
 	pointers_[CA_SHIFTDOWN] = &Command::function_CA_SHIFTDOWN;
 	pointers_[CA_SHIFTUP] = &Command::function_CA_SHIFTUP;
-	pointers_[CA_TOEND] = &Command::function_CA_TOEND;
-	pointers_[CA_TOSTART] = &Command::function_CA_TOSTART;
 	pointers_[CA_TRANSMUTE] = &Command::function_CA_TRANSMUTE;
 
 	// Cell commands

@@ -232,7 +232,7 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_TOSTART, "");
+	static StaticCommandNode cmd(Command::CA_MOVETOSTART, "");
 	cmd.execute();
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -240,7 +240,7 @@ void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_TOEND, "");
+	static StaticCommandNode cmd(Command::CA_MOVETOEND, "");
 	cmd.execute();
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
