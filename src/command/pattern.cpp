@@ -52,7 +52,7 @@ int Command::function_CA_CREATEPATTERNS(CommandNode *&c, Bundle &obj)
 int Command::function_CA_GETPATTERN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
+	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL)
 	{
  		obj.p = p;

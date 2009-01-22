@@ -541,7 +541,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							// Translate the coordinates of the molecule in cfg
 							destmodel->translateMolecule(p,mol,v);
 							// Check new COG is inside region
-							cog = p->calculateCog(destmodel,mol);
+							cog = p->calculateCog(mol,destmodel);
 							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
 							break;
 						// Rotate molecule about COG

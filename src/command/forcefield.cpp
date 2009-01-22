@@ -202,18 +202,21 @@ int Command::function_CA_LOADFF(CommandNode *&c, Bundle &obj)
 // Add manual type mappings ('map <name=element,...>')
 int Command::function_CA_MAP(CommandNode *&c, Bundle &obj)
 {
-	// Get the argument and parse it internally
-	parser.getArgsDelim(c->argc(0), Parser::Defaults);
-	int n, el;
+	// Get each argument and parse it internally
+	int el;
 	Namemap<int> *nm;
-	for (n=0; n<parser.nArgs(); n++)
+	for (int m=0; m<c->nArgs(); m++)
 	{
-		el = elements().find(afterChar(parser.argc(n), '='));
-		if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
-		else
+		parser.getArgsDelim(c->argc(m), Parser::Defaults);
+		for (int n=0; n<parser.nArgs(); n++)
 		{
-			nm = aten.typeMap.add();
-			nm->set(beforeChar(parser.argc(n),'='), el);
+			el = elements().find(afterChar(parser.argc(n), '='));
+			if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+			else
+			{
+				nm = aten.typeMap.add();
+				nm->set(beforeChar(parser.argc(n),'='), el);
+			}
 		}
 	}
 	return Command::Success;
