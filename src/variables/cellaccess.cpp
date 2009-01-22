@@ -106,7 +106,7 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (CellAccessors::CX):
 		case (CellAccessors::CY):
 		case (CellAccessors::CZ):
-			rv.set(c->axes().getElement(vid - CellAccessors::AX));
+			rv.set(c->axes().element(vid - CellAccessors::AX));
 			break;
 		case (CellAccessors::CentreX):
 		case (CellAccessors::CentreY):
@@ -117,7 +117,7 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(c->density());
 			break;
 		case (CellAccessors::Matrix):
-			rv.set(c->axes().getElement(index-1));
+			rv.set(c->axes().element(index-1));
 			break;
 		case (CellAccessors::SpacegroupId):
 			rv.set(c->spacegroup());

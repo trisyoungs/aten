@@ -463,11 +463,14 @@ class Command {
 		CA_SEEKFRAME,
 
 		// Transformation Commands
+		CA_AXISROTATE,
 		CA_CENTRE,
+		CA_MATRIXCONVERT,
+		CA_MATRIXTRANSFORM,
+		CA_MIRROR,
 		CA_TRANSLATE,
 		CA_TRANSLATEATOM,
 		CA_TRANSLATECELL,
-		CA_MIRROR,
 
 		// Variables
 		CA_AFTERCHAR,
@@ -854,11 +857,14 @@ class Command {
 	static int function_CA_PREVFRAME(CommandNode *&c, Bundle &obj);
 	static int function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj);
 	// Transform Commands
+	static int function_CA_AXISROTATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_CENTRE(CommandNode *&c, Bundle &obj);
+	static int function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj);
+	static int function_CA_MATRIXTRANSFORM(CommandNode *&c, Bundle &obj);
+	static int function_CA_MIRROR(CommandNode *&c, Bundle &obj);
 	static int function_CA_TRANSLATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj);
 	static int function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_MIRROR(CommandNode *&c, Bundle &obj);
 	// Variables
 	static int function_CA_AFTERCHAR(CommandNode *&c, Bundle &obj);
 	static int function_CA_BEFORECHAR(CommandNode *&c, Bundle &obj);

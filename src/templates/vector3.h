@@ -93,6 +93,8 @@ template <class T> class Vec3
 	void normalise();
 	// Orthogonalise (Gram-Schmidt) w.r.t. supplied vector
 	void orthogonalise(const Vec3<T>&);
+	// Orthogonalise (two vectors)
+	void orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2);
 	// Returns the largest compone&nt of the vector
 	T max() const;
 	// Returns the smallest component of the vector
@@ -388,6 +390,18 @@ template <class T> void Vec3<T>::orthogonalise(const Vec3<T> &source)
 	x = x - dpovermagsq * source.x;
 	y = y - dpovermagsq * source.y;
 	z = z - dpovermagsq * source.z;
+}
+
+// Orthogonalise (two vectors)
+template <class T> void Vec3<T>::orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2)
+{
+	// This routine actually generates the orthogonal vector via the cross-product
+	// We also calculate the scalar resolute (dp) to ensure the new vector points in the same direction
+	Vec3<T> newvec = source1 * source2;
+	newvec.normalise();
+	double dp = newvec.dp(*this);
+	if (dp < 0.0) newvec *= -1.0;
+	*this = newvec;
 }
 
 // Largest value

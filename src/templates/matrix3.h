@@ -77,7 +77,9 @@ template <class T> class Mat3
 	// Puts the matrix into the passed 1D-array of type <T>, column-major
 	void copyColumnMajor(T*);
 	// Returns the specified element of the matrix
-	T getElement(int i);
+	T element(int i);
+	// Element access operator
+	T operator[](int);
 
 	/*
 	// Operators
@@ -189,9 +191,20 @@ template <class T> Vec3<T> Mat3<T>::get(int i)
 }
 
 // Returns the specified element of the matrix
-template <class T> T Mat3<T>::getElement(int i)
+template <class T> T Mat3<T>::element(int i)
 {
 	return rows[i/3].get(i%3);
+}
+
+// Element access operator
+template <class T> T Mat3<T>::operator[](int index)
+{
+	if ((index < 0) || (index > 8))
+	{
+		printf("Mat3 <<<< SEVERE - Array index (%i) out of bounds (0-8) >>>>\n",index);
+		return NULL;
+	}
+	return element(index);
 }
 
 // Get (array)
@@ -386,9 +399,9 @@ template <class T> void Mat3<T>::rowMultiply(const Vec3<T> &v)
 // Print
 template <class T> void Mat3<T>::print() const
 {
-	printf("Mat3_X %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
-	printf("Mat3_Y %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
-	printf("Mat3_Z %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);
+	printf("X: %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
+	printf("Y: %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
+	printf("Z: %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);
 }
 
 // Create matrix of orthogonal vectors
