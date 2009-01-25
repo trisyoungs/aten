@@ -422,6 +422,7 @@ void Command::initPointers()
 	pointers_[CA_LET] = &Command::function_CA_LET;
 	pointers_[CA_LETCHAR] = &Command::function_CA_LETCHAR;
 	pointers_[CA_LETPTR] = &Command::function_CA_LETPTR;
+	pointers_[CA_LETVECTOR] = &Command::function_CA_LETVECTOR;
 	pointers_[CA_STRIPCHARS] = &Command::function_CA_STRIPCHARS;
 
 	// View Commands

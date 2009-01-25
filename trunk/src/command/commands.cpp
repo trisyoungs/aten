@@ -36,6 +36,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create integer variables with the names provided" },
 	{ "real",		"",		"<variables>",
 				"Create real (floating-point) variables with the names provided" },
+	{ "_constvector_",	"",		"<variables>",
+				"Create constvectors with the names provided" },
 	{ "atom",		"",		"<variables>",
 				"Create atom& variables with the names provided" },
 	{ "bond",		"",		"<variables>",
@@ -60,6 +62,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create prefs& variables with the names provided" },
 	{ "_elementsvar_",	"",		"<variables>",
 				"Create elements& variables with the names provided" },
+	{ "vector",		"",		"<variables>",
+				"Create vector variables with the names provided" },
 
 	// Root node
 	{ "_ROOTNODE_",		"",		"",
@@ -790,6 +794,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set the specified character variable" },
 	{ "letptr",		"V=V",		"<variable> = <variable>",
 				"Set the specified pointer variable" },
+	{ "letvector",		"VON",		"<variable> = <variable>",
+				"Set the specified vector variable" },
 	{ "stripchars",		"VN",		"<variable> <chars>",
 				"Strip all occurrences of the supplied characters from <variable>" },
 	
@@ -824,7 +830,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 Command::Function Command::command(const char *s)
 {
 	int result;
-	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
+	for (result = CA_CHARACTER; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
 	return (Command::Function) result;
 }
 

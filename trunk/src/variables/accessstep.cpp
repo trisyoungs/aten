@@ -225,6 +225,14 @@ void *AccessStep::asPointer(VTypes::DataType dt)
 	return 0;
 }
 
+// // Get return value as vector
+Vec3<double> AccessStep::asVector()
+{
+	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a vector.\n");
+	else return target_->asVector( arrayIndex_ );
+	return Vec3<double>();
+}
+
 // Get return type of step (i.e. DataType of target variable)
 VTypes::DataType AccessStep::type()
 {
@@ -254,6 +262,22 @@ void AccessStep::setTargetVariable(Variable *srcvar)
 			break;
 		case (VTypes::RealData):
 			target_->set(srcvar->asDouble(), arrayIndex_ );
+			break;
+		case (VTypes::VectorData):
+			switch (srcvar->type())
+			{
+				case (VTypes::RealData):
+				case (VTypes::IntegerData):
+				case (VTypes::CharacterData):
+					target_->set(srcvar->asDouble());
+					break;
+				case (VTypes::VectorData):
+					target_->set(srcvar->asPointer(VTypes::VectorData), VTypes::VectorData, arrayIndex_ );
+					break;
+				default:
+					msg.print("A vector variable cannot be set from a pointer.\n");
+					break;
+			}
 			break;
 		default:
 			target_->set(srcvar->asPointer(dt), dt, arrayIndex_ );

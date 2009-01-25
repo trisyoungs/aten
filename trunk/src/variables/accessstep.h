@@ -24,6 +24,7 @@
 
 #include "base/parser.h"
 #include "base/vtypes.h"
+#include "templates/vector3.h"
 
 // Forward declarations
 class AccessPath;
@@ -79,6 +80,8 @@ class AccessStep
 	bool asBool();
 	// Get target value as pointer
 	void *asPointer(VTypes::DataType dt);
+	// Get target value as pointer
+ 	Vec3<double> asVector();
 	// Get return type of step (i.e. DataType of target variable)
 	VTypes::DataType type();
 	// Set value of target variable from source variable

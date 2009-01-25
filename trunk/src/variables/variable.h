@@ -25,6 +25,7 @@
 #include "base/dnchar.h"
 #include "base/vtypes.h"
 #include <stdlib.h>
+#include "templates/vector3.h"
 
 // Forward declaration
 class VariableList;
@@ -94,6 +95,8 @@ class Variable
 	virtual bool set(double d, Variable *index = NULL);
 	// Set value of variable (pointer)
 	virtual bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
+	// Set value of variable (vector)
+	virtual bool set(Vec3<double> v, Variable *index = NULL);
 	// Get value of variable as character string
 	virtual const char *asCharacter(Variable *index = NULL);
 	// Get value of variable as integer
@@ -106,6 +109,8 @@ class Variable
 	virtual bool asBool(Variable *index = NULL);
 	// Get value of variable as pointer of specified type
 	virtual void *asPointer(VTypes::DataType type, Variable *index = NULL);
+	// Get value of variable as vector (pointer)
+	virtual Vec3<double> asVector(Variable *index = NULL);
 	// Step variable
 	virtual bool step(int delta, Variable *index = NULL);
 	// Reset variable contents

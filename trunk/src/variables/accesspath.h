@@ -67,6 +67,8 @@ class AccessPath : public Variable
 	bool set(double d, Variable *index = NULL);
 	// Set value of variable (pointer)
 	bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
+	// Set value of variable (vector)
+	bool set(Vec3<double> v, Variable *index = NULL);
 	// Get value of variable as character string
 	const char *asCharacter(Variable *index = NULL);
 	// Get value of variable as integer
@@ -79,6 +81,8 @@ class AccessPath : public Variable
 	bool asBool(Variable *index = NULL);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, Variable *index = NULL);
+	// Get value of variable as vector
+	Vec3<double> asVector(Variable *index = NULL);
 	// Step variable
 	bool step(int delta, Variable *index = NULL);
 };

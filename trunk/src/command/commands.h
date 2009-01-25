@@ -67,9 +67,10 @@ class Command {
 	enum Function {
 	
 		// Variable declaration
-		CA_CHAR,
-		CA_INT,
+		CA_CHARACTER,
+		CA_INTEGER,
 		CA_REAL,
+		CA_CONSTVECTOR,
 		CA_ATOM,
 		CA_BOND,
 		CA_PATTERN,
@@ -82,6 +83,7 @@ class Command {
 		CA_FORCEFIELD,
 		CA_PREFSVAR,
 		CA_ELEMENTSVAR,
+		CA_VECTOR,
 	
 		// Root node
 		CA_ROOTNODE,
@@ -480,6 +482,7 @@ class Command {
 		CA_LET,
 		CA_LETCHAR,
 		CA_LETPTR,
+		CA_LETVECTOR,
 		CA_STRIPCHARS,
 
 		// View
@@ -873,6 +876,7 @@ class Command {
 	static int function_CA_LET(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETCHAR(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETPTR(CommandNode *&c, Bundle &obj);
+	static int function_CA_LETVECTOR(CommandNode *&c, Bundle &obj);
 	static int function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj);
 	// View
 	static int function_CA_GETVIEW(CommandNode *&c, Bundle &obj);
@@ -912,7 +916,6 @@ class Command {
 	// Execute specified command
 	int call(Command::Function cf, CommandNode *&c);
 	int call(Command::Function cf);
-	// 	int callFromPointer(Command::Function cf, CommandNode *c);
 };
 
 // External declaration

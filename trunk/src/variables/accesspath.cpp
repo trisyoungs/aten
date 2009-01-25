@@ -31,6 +31,7 @@
 #include "variables/patternaccess.h"
 #include "variables/patternboundaccess.h"
 #include "variables/prefsaccess.h"
+#include "variables/vectoraccess.h"
 #include "variables/returnvalue.h"
 #include "variables/variablelist.h"
 #include "base/messenger.h"
@@ -79,7 +80,7 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 			}
 			else rv.set(step);
 		}
-		else if (VTypes::isPointer(lastType))
+		else if (VTypes::isPointer(lastType) || (lastType == VTypes::VectorData))
 		{
 			// Get pointer to accesslist
 			switch (lastType)
@@ -114,6 +115,9 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 				case (VTypes::ElementsData):
 					accesslist = &elementsAccessors;
 					break;
+				case (VTypes::VectorData):
+					accesslist = &vectorAccessors;
+					break;
 				default:
 					printf("Subvariable access within reference variables of type '%s' is not implemented.\n", VTypes::dataType(lastType));
 					accesslist = NULL;
@@ -127,6 +131,8 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 			// If this is not the last step, retrieve. Otherwise, set or step.
 			if (step->next == NULL) 
 			{
+				// Vector-setting exception
+				// If the target variable is a vector itself then set from the 
 				if (srcvar != NULL) result = accesslist->set(rv.asPointer(), step, srcvar);
 				else if (delta != 0)
 				{
@@ -180,8 +186,6 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 		c = opath;
 		while (*c != '\0')
 		{
-			// Get section of path existing before the next '.'
-// 			bit = beforeChar(c, '.');
 			done = FALSE;
 			n = 0;
 			nsqbrackets = 0;
@@ -256,6 +260,10 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 					success = step->setTarget(bit, parent_, elementsAccessors.accessors());
 					if (success) step->setVariableId(elementsAccessors.accessorId(step->target()));
 					break;
+				case (VTypes::VectorData):
+					success = step->setTarget(bit, parent_, vectorAccessors.accessors());
+					if (success) step->setVariableId(vectorAccessors.accessorId(step->target()));
+					break;
 				default:
 					printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
 					success = FALSE;
@@ -266,10 +274,6 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 				msg.print("Unable to resolve path '%s'.\n", path);
 				break;
 			}
-			// Increase the char pointer
-// 			for (n=0; n<bit.length(); n++) c ++;
-			// If we're on a '.', skip on a further character
-// 			if (*c == '.') c++;
 			// Store lasttype
 			lastType = step->type();
 		}
@@ -306,26 +310,8 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 			success = FALSE;
 		}
 	}
-	// Set the return type of the path as the type of the last step, and create a suitable return variable
+	// Set the return type of the path as the type of the last step
 	if (success) dataType_ = step->type();
-// 	{
-// 		dataType_ = step->type();
-// 		switch (dataType_)
-// 		{
-// 			case (VTypes::IntegerData):
-// 				resultVariable_ = new IntegerVariable;
-// 				break;
-// 			case (VTypes::RealData):
-// 				resultVariable_ = new RealVariable;
-// 				break;
-// 			case (VTypes::CharacterData):
-// 				resultVariable_ = new CharacterVariable;
-// 				break;
-// 			default:
-// 				resultVariable_ = new PointerVariable(dataType_);
-// 				break;
-// 		}
-// 	}
 	msg.exit("AccessPath::setPath");
 	return success;
 }
@@ -337,8 +323,6 @@ int AccessPath::asInteger(Variable *index)
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
 		return rv.value()->asInteger();
-/*		if (!resultVariable_->set(rv.value()->asInteger())) return 0;
-		return resultVariable_->asInteger();*/
 	}
 	else return 0;
 }
@@ -364,8 +348,6 @@ const char *AccessPath::asCharacter(Variable *index)
 	{
 		charResult_ = rv.value()->asCharacter();
 		return charResult_.get();
-/*		if (!resultVariable_->set(rv.value()->asCharacter())) return "NULL";
-		return resultVariable_->asCharacter();*/
 	}
 	else return "NULL";
 }
@@ -377,8 +359,6 @@ bool AccessPath::asBool(Variable *index)
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
 		return rv.value()->asBool();
-/*		if (!resultVariable_->set(rv.value()->asCharacter())) return FALSE;
-		return resultVariable_->asBool();*/
 	}
 	else return FALSE;
 }
@@ -390,10 +370,19 @@ void *AccessPath::asPointer(VTypes::DataType dt, Variable *index)
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
 		return rv.value()->asPointer(dt);
-/*		if (!resultVariable_->set(rv.value()->asPointer(dt), dt)) return NULL;
-		return resultVariable_->asPointer(dt);*/
 	}
 	else return NULL;
+}
+
+// // Get return value as vector
+Vec3<double> AccessPath::asVector(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asVector();
+	}
+	else return Vec3<double>();
 }
 
 // Increase variable by integer amount
@@ -438,4 +427,13 @@ bool AccessPath::set(void *ptr, VTypes::DataType dt, Variable *index)
 	pvar.reset(ptr, dt);
 	ReturnValue rv;
 	return walk(rv, &pvar, dt, 0);
+}
+
+// Set variable target from vector
+bool AccessPath::set(Vec3<double> v, Variable *index)
+{
+	static VectorVariable vvar;
+	vvar.set(v);
+	ReturnValue rv;
+	return walk(rv, &vvar, VTypes::VectorData, 0);
 }

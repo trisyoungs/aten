@@ -56,6 +56,9 @@ void ReturnValue::set(AccessStep *source)
 		case (VTypes::CharacterData):
 			valueC_.set(source->asCharacter());
 			break;
+		case (VTypes::ConstVectorData):
+			valueV_.set(source->asVector());
+			break;
 		default:
 			valueP_.reset(source->asPointer(type_), type_);
 			break;
@@ -90,6 +93,13 @@ void ReturnValue::set(void *ptr, VTypes::DataType dt)
 	valueP_.reset(ptr, type_);
 }
 
+// Set from vector value
+void ReturnValue::set(Vec3<double> v)
+{
+	type_ = VTypes::ConstVectorData;
+	valueV_.set(v);
+}
+
 // Return local variable containing last stored value
 Variable *ReturnValue::value()
 {
@@ -109,6 +119,9 @@ Variable *ReturnValue::value()
 		case (VTypes::CharacterData):
 			result = &valueC_;
 			break;
+		case (VTypes::ConstVectorData):
+			result = &valueV_;
+			break;
 		default:
 			result = &valueP_;
 			break;
@@ -119,6 +132,7 @@ Variable *ReturnValue::value()
 // Return pointer value from local PointerVariable
 void *ReturnValue::asPointer()
 {
+	if (type_ == VTypes::VectorData) return valueP_.asPointer(type_);
 	if ((type_ < VTypes::AtomData) || (type_ >= VTypes::NoData)) msg.print("ReturnValue contains no pointer to return.\n");
 	else return valueP_.asPointer(type_);
 	return NULL;

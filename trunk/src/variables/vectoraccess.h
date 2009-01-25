@@ -1,6 +1,6 @@
 /*
-	*** Variable Types
-	*** src/base/vtypes.h
+	*** Vector Accessors
+	*** src/variables/vectoraccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,18 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VTYPES_H
-#define ATEN_VTYPES_H
+#ifndef ATEN_VECTORACCESS_H
+#define ATEN_VECTORACCESS_H
 
-// Variable description
-class VTypes
+#include "variables/vaccess.h"
+
+// Vector Accessor
+class VectorAccessors : public VAccess
 {
 	public:
-	// Data Types
-	enum DataType { CharacterData, IntegerData, RealData, ConstVectorData, AtomData, BondData, PatternData, PatternBoundData, ModelData, GridData, ForcefieldAtomData, ForcefieldBoundData, CellData, ForcefieldData, PrefsData, ElementsData, VectorData, NoData, nDataTypes };
-	static const char *dataType(DataType);
-	static bool isPointer(DataType);
-	static VTypes::DataType determineType(const char *s);
+	// Constructor
+	VectorAccessors();
+	// Accessor list
+	enum Accessors { X, Y, Z, nAccessors };
+
+	private:
+	// Array of acessor pointers for look-up
+	Variable *accessorPointers[VectorAccessors::nAccessors];
+
+	public:
+	// Retrieve specified data
+	bool retrieve(void *classptr, AccessStep *step, ReturnValue &rv);
+	// Set specified data
+	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
+
+extern VectorAccessors vectorAccessors;
 
 #endif

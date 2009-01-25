@@ -88,6 +88,8 @@ int Command::function_CA_LET(CommandNode *&c, Bundle &obj)
 			return Command::Fail;
 			break;
 	}
+	// Create undostate if a valid model is available
+	if (obj.rs != NULL) obj.rs->beginUndoState("Set vector quantity\n");
 	// Perform assignment operation requested
 	switch (c->argi(1))
 	{
@@ -108,6 +110,62 @@ int Command::function_CA_LET(CommandNode *&c, Bundle &obj)
 			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
 			break;
 	}
+	if (obj.rs != NULL) obj.rs->endUndoState();
+	return Command::Success;
+}
+
+// Set vector variable
+int Command::function_CA_LETVECTOR(CommandNode *&c, Bundle &obj)
+{
+	// Our action depends on the type of the variable being assigned to
+	VTypes::DataType type2 = c->argt(2);
+	VTypes::DataType type1 = c->argt(0);
+	// Failsafe check for type of lhs argument
+	if (type1 != VTypes::VectorData)
+	{
+		msg.print( "'letvector' cannot be used to assign values to a variable of type '%s'\n", VTypes::dataType(type1));
+		return Command::Fail;
+	}
+	// Get LHS value
+	Vec3<double> v1 = c->arg(0)->asVector();
+	// Vector variables may only be set from character, integer, real, vector, or constvector variables
+	if ((type2 >= VTypes::AtomData) && (type2 < VTypes::VectorData))
+	{
+		msg.print( "Cannot set vector variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+		return Command::Fail;
+	}
+	// Get RHS value
+	Vec3<double> v2;
+	bool rhsvector = FALSE;
+	if ((type2 == VTypes::VectorData) || (type2 == VTypes::ConstVectorData)) rhsvector = TRUE;
+	if (rhsvector) v2 = c->arg(2)->asVector();
+	// Create undostate if a valid model is available
+	if (obj.rs != NULL) obj.rs->beginUndoState("Set vector quantity\n");
+	// Perform assignment operation requested
+	switch (c->argi(1))
+	{
+		case (AssignOps::Equals):
+			if (rhsvector) c->arg(0)->set(v2);
+			else c->arg(0)->set(c->arg(2)->asDouble());
+			break;
+		case (AssignOps::MinusEquals):
+			if (rhsvector) c->arg(0)->set( v1 - v2 );
+			else c->arg(0)->set( v1 - c->arg(2)->asDouble() );
+			break;
+		case (AssignOps::PlusEquals):
+			if (rhsvector) c->arg(0)->set( v1 + v2 );
+			else c->arg(0)->set( v1 + c->arg(2)->asDouble() );
+			break;
+		case (AssignOps::DivideEquals):
+			if (rhsvector) c->arg(0)->set( v1 / v2 );
+			else c->arg(0)->set( v1 / c->arg(2)->asDouble() );
+			break;
+		case (AssignOps::MultiplyEquals):
+			if (rhsvector) c->arg(0)->set( v1 * v2 );
+			else c->arg(0)->set( v1 * c->arg(2)->asDouble() );
+			break;
+	}
+	if (obj.rs != NULL) obj.rs->endUndoState();
 	return Command::Success;
 }
 

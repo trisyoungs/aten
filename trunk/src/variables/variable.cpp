@@ -154,6 +154,13 @@ bool Variable::set(void *ptr, VTypes::DataType type, Variable *index)
 	return FALSE;
 }
 
+// Set value of variable (vector)
+bool Variable::set(Vec3<double> v, Variable *index)
+{
+	printf("A variable of type '%s' cannot be set from a vector (%s).\n", VTypes::dataType(dataType_), name_.get());
+	return FALSE;
+}
+
 // Get value of variable as character string
 const char *Variable::asCharacter(Variable *index)
 {
@@ -193,6 +200,13 @@ void *Variable::asPointer(VTypes::DataType type, Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as a pointer (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return NULL;
+}
+
+// // Get value of variable as pointer
+Vec3<double> Variable::asVector(Variable *index)
+{
+	printf("A variable of type '%s' cannot be returned as a vector (%s).\n", VTypes::dataType(dataType_), name_.get());
+	return Vec3<double>();
 }
 
 // Step variable
