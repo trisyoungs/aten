@@ -31,7 +31,7 @@ int Command::function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj)
 	if (ds == Atom::nDrawStyles) return Command::Fail;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1));
+		Atom *i = obj.rs->atom(c->argi(1)-1);
 		if (i == NULL) return Command::Fail;
 		obj.rs->beginUndoState("Style individual atom");
 		obj.rs->styleAtom(i, ds);

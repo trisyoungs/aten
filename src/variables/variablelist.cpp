@@ -25,6 +25,7 @@
 #include "variables/integer.h"
 #include "variables/character.h"
 #include "variables/real.h"
+#include "variables/vector.h"
 #include "variables/pointer.h"
 #include "variables/pointerlist.h"
 #include "variables/bundle.h"
@@ -67,6 +68,7 @@ int VariableList::variableId(Variable *v)
 // Create variable of specified type (private function)
 Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 {
+	Vec3<double> v;
 	Variable *result = NULL;
 	switch (dt)
 	{
@@ -78,6 +80,10 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 			break;
 		case (VTypes::RealData):
 			result = new RealVariable;
+			break;
+		case (VTypes::VectorData):
+		case (VTypes::ConstVectorData):
+			result = new VectorVariable;
 			break;
 		case (VTypes::AtomData):
 		case (VTypes::BondData):

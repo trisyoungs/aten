@@ -176,9 +176,10 @@ bool CommandList::addCommand(Command::Function cf)
 		// Variable Declaration
 		// All arguments to commands are names of variables to create
 		*/
-		case (Command::CA_CHAR):
-		case (Command::CA_INT):
+		case (Command::CA_CHARACTER):
+		case (Command::CA_INTEGER):
 		case (Command::CA_REAL):
+		case (Command::CA_VECTOR):
 		case (Command::CA_ATOM):
 		case (Command::CA_BOND):
 		case (Command::CA_PATTERN):
@@ -418,6 +419,9 @@ bool CommandList::cacheCommand()
 				case (VTypes::IntegerData):
 				case (VTypes::RealData):
 					addcmd = addCommand(Command::CA_LET);
+					break;
+				case (VTypes::VectorData):
+					addcmd = addCommand(Command::CA_LETVECTOR);
 					break;
 				default:
 					addcmd = addCommand(Command::CA_LETPTR);

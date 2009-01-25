@@ -25,14 +25,14 @@
 #include <stdio.h>
 
 // Variable Types
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom&", "bond&", "pattern&", "patternbound&", "model&", "grid&", "ffatom&", "bound&", "cell&", "forcefield&", "prefs&", "elements&", "none" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "_CONSTVECTOR_", "atom&", "bond&", "pattern&", "patternbound&", "model&", "grid&", "ffatom&", "bound&", "cell&", "forcefield&", "prefs&", "elements&", "vector", "none" };
 const char *VTypes::dataType(VTypes::DataType dt)
 {
 	return DataTypeKeywords[dt];
 }
 bool VTypes::isPointer(VTypes::DataType dt)
 {
-	if (dt > VTypes::RealData) return TRUE;
+	if (dt > VTypes::ConstVectorData) return TRUE;
 	return FALSE;
 }
 VTypes::DataType VTypes::determineType(const char *s)

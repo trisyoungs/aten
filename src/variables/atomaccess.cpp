@@ -32,6 +32,7 @@ AtomAccessors atomAccessors;
 AtomAccessors::AtomAccessors()
 {
 	accessorPointers[AtomAccessors::Fixed] = addAccessor("fixed",	VTypes::IntegerData,	FALSE);
+	accessorPointers[AtomAccessors::F] = addAccessor("f",		VTypes::ConstVectorData,FALSE);
 	accessorPointers[AtomAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::FY] = addAccessor("fy",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::FZ] = addAccessor("fz",		VTypes::RealData,	FALSE);
@@ -40,12 +41,14 @@ AtomAccessors::AtomAccessors()
 	accessorPointers[AtomAccessors::Mass] = addAccessor("mass",	VTypes::RealData,	TRUE);
 	accessorPointers[AtomAccessors::Name] = addAccessor("name",	VTypes::CharacterData,	TRUE);
 	accessorPointers[AtomAccessors::Q] = addAccessor("q",		VTypes::RealData, FALSE);
+	accessorPointers[AtomAccessors::R] = addAccessor("r",		VTypes::ConstVectorData,FALSE);
 	accessorPointers[AtomAccessors::RX] = addAccessor("rx",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::RZ] = addAccessor("rz",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::Selected] = addAccessor("selected",	VTypes::IntegerData,	FALSE);
 	accessorPointers[AtomAccessors::Symbol] = addAccessor("symbol",	VTypes::CharacterData,	TRUE);
 	accessorPointers[AtomAccessors::Type] = addAccessor("type",	VTypes::ForcefieldAtomData,	FALSE);
+	accessorPointers[AtomAccessors::V] = addAccessor("v",		VTypes::ConstVectorData,FALSE);
 	accessorPointers[AtomAccessors::VX] = addAccessor("vx",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::VY] = addAccessor("vy",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::VZ] = addAccessor("vz",		VTypes::RealData,	FALSE);
@@ -82,6 +85,9 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (AtomAccessors::Fixed):
 			rv.set(i->isPositionFixed());
 			break;
+		case (AtomAccessors::F):
+			rv.set(i->f());
+			break;
 		case (AtomAccessors::FX):
 		case (AtomAccessors::FY):
 		case (AtomAccessors::FZ):
@@ -102,6 +108,9 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (AtomAccessors::Q):
 			rv.set(i->charge());
 			break;
+		case (AtomAccessors::R):
+			rv.set(i->r());
+			break;
 		case (AtomAccessors::RX):
 		case (AtomAccessors::RY):
 		case (AtomAccessors::RZ):
@@ -115,6 +124,9 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			break;
 		case (AtomAccessors::Type):
 			rv.set(i->type(), VTypes::ForcefieldAtomData);
+			break;
+		case (AtomAccessors::V):
+			rv.set(i->v());
 			break;
 		case (AtomAccessors::VX):
 		case (AtomAccessors::VY):
@@ -171,6 +183,9 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (AtomAccessors::Fixed):
 			i->setPositionFixed(srcvar->asBool());
 			break;
+		case (AtomAccessors::F):
+			i->f() = srcvar->asVector();
+			break;
 		case (AtomAccessors::FX):
 		case (AtomAccessors::FY):
 		case (AtomAccessors::FZ):
@@ -181,6 +196,9 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (AtomAccessors::Q):
 			i->parent()->chargeAtom(i, srcvar->asDouble());
+			break;
+		case (AtomAccessors::R):
+			i->parent()->positionAtom(i, srcvar->asVector());
 			break;
 		case (AtomAccessors::RX):
 		case (AtomAccessors::RY):
@@ -194,6 +212,9 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (AtomAccessors::Type):
 			i->setType( (ForcefieldAtom*) srcvar->asPointer(VTypes::ForcefieldAtomData));
+			break;
+		case (AtomAccessors::V):
+			i->v() = srcvar->asVector();
 			break;
 		case (AtomAccessors::VX):
 		case (AtomAccessors::VY):

@@ -27,10 +27,8 @@
 #include "variables/character.h"
 #include "variables/real.h"
 #include "variables/pointer.h"
+#include "variables/vector.h"
 #include "base/vtypes.h"
-// #include "base/parser.h"
-// #include "base/dnchar.h"
-// #include "templates/list.h"
 
 // Forward declarations
 class AccessStep;
@@ -50,6 +48,7 @@ class ReturnValue
 	RealVariable valueR_;
 	CharacterVariable valueC_;
 	PointerVariable valueP_;
+ 	VectorVariable valueV_;
 
 	public:
 	// Reset data
@@ -64,6 +63,8 @@ class ReturnValue
 	void set(const char *c);
 	// Set from pointer value
 	void set(void *ptr, VTypes::DataType type);
+	// Set from vector value
+	void set(Vec3<double> v);
 	// Return local variable containing last stored value
 	Variable *value();
 	// Return pointer value from local PointerVariable

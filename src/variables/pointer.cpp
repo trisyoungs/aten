@@ -146,6 +146,42 @@ int PointerVariable::asInteger(Variable *index)
 	return result;
 }
 
+// Get value of variable as vector
+Vec3<double> PointerVariable::asVector(Variable *index)
+{
+	// Check type of pointer
+	if (dataType_ != VTypes::VectorData)
+	{
+		msg.print("Pointer variable of type '%s' cannot be returned as a vector.\n", VTypes::dataType(dataType_));
+		return Vec3<double>();
+	}
+	// Check array index given
+	if (index == NULL)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return Vec3<double>();
+		}
+		return *((Vec3<double>*) ptrData_);
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return Vec3<double>();
+		}
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
+			return Vec3<double>();
+		}
+		else return *((Vec3<double>*) ptrArrayData_[n-1]);
+	}
+}
+
 // Get value of variable as pointer of specified type
 void *PointerVariable::asPointer(VTypes::DataType type, Variable *index)
 {

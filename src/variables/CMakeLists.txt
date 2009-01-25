@@ -24,6 +24,8 @@ special.h
 vaccess.h
 variable.h
 variablelist.h
+vector.h
+vectoraccess.h
 accesspath.cpp
 accessstep.cpp
 atomaccess.cpp
@@ -48,6 +50,8 @@ special.cpp
 vaccess.cpp
 variable.cpp
 variablelist.cpp
+vector.cpp
+vectoraccess.cpp
 )
 
 include_directories(
