@@ -29,6 +29,7 @@ VectorAccessors vectorAccessors;
 // Constructor
 VectorAccessors::VectorAccessors()
 {
+	accessorPointers[VectorAccessors::Magnitude] = addAccessor("mag",VTypes::RealData, TRUE);
 	accessorPointers[VectorAccessors::X] = addAccessor("x",	VTypes::RealData, FALSE);
 	accessorPointers[VectorAccessors::Y] = addAccessor("y",	VTypes::RealData, FALSE);
 	accessorPointers[VectorAccessors::Z] = addAccessor("z",	VTypes::RealData, FALSE);
@@ -61,6 +62,9 @@ bool VectorAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
+		case (VectorAccessors::Magnitude):
+			rv.set(v->magnitude());
+			break;
 		case (VectorAccessors::X):
 			rv.set(v->x);
 			break;
