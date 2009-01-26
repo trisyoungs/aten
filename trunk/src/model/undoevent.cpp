@@ -118,7 +118,7 @@ void BondEvent::undo(Model *m)
 	else
 	{
 		// Add bond between stored atom ids
-		msg.print(Messenger::Verbose,"Replaying bond deletion - atom ids = %i %i\n", targetId1_, targetId2_);
+		msg.print(Messenger::Verbose,"Reversing bond deletion - atom ids = %i %i\n", targetId1_, targetId2_);
 		m->bondAtoms(i,j,bondType_);
 	}
 	msg.exit("BondEvent::undo");

@@ -41,6 +41,14 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 		m->endUndoState();
 	}
+	else if (slxn->type() == VTypes::PatternData)
+	{
+		Pattern *pp = (Pattern*) slxn->asPointer(VTypes::PatternData);
+		sprintf(s,"%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", pp->name(), pp->totalAtoms());
+		m->beginUndoState(s);
+		m->selectPattern(pp, FALSE, deselect);
+		m->endUndoState();
+	}
 	else
 	{
 		// Copy variable contents into local character array
