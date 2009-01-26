@@ -31,7 +31,7 @@ class VectorAccessors : public VAccess
 	// Constructor
 	VectorAccessors();
 	// Accessor list
-	enum Accessors { X, Y, Z, nAccessors };
+	enum Accessors { Magnitude, X, Y, Z, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up
