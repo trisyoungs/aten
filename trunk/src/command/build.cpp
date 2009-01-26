@@ -110,6 +110,69 @@ int Command::function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Draw unbound atom with ID specified ('insertatom <el> <id> [x y z]')
+int Command::function_CA_INSERTATOM(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	// Determine element (based on type of variable provided)
+	Forcefield *f;
+	Atom *i;
+	ForcefieldAtom *ffa;
+	Namemap<int> *nm;
+	int el;
+	switch (c->argt(0))
+	{
+		case (VTypes::IntegerData):
+			el = c->argi(0);
+			break;
+		case (VTypes::RealData):
+			el = (int) floor(c->argd(0) + 0.15);
+			break;
+		case (VTypes::CharacterData):
+			// Attempt conversion of the string first from the users type list
+			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
+				if (strcmp(nm->name(),c->argc(0)) == 0) break;
+			if (nm == NULL) el = elements().find(c->argc(0));
+			else el = nm->data();
+			break;
+		case (VTypes::AtomData):
+			i = (Atom*) c->argp(0, VTypes::AtomData);
+			i == NULL ? el = 0 : i->element();
+			break;
+		default:
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(c->argt(0)));
+			el = 0;
+			break;
+	}
+	obj.rs->beginUndoState("Draw Atom");
+	// Get and check requested ID
+	int id = c->argi(1);
+	if ((id < 1) && (id > (obj.rs->nAtoms()+1)))
+	{
+		msg.print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs->nAtoms());
+		return Command::Fail;
+	}
+	if (c->hasArg(4)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), id-1);
+	else aten.current.i = obj.rs->addAtomAtPen(el, id-1);
+	// Add the name to the model's namesForcefield, if requested and it exists
+ 	if (prefs.keepNames() && obj.rs->namesForcefield())
+ 	{
+ 		// Search for this typename in the ff
+ 		f = obj.rs->namesForcefield();
+ 		ffa = f->findType(c->argc(0));
+ 		if (ffa == NULL) 
+ 		{
+ 			ffa = f->addType();
+ 			ffa->setName(c->argc(0));
+			ffa->atomtype()->setCharacterElement(el);
+ 		}
+ 		aten.current.i->setType(ffa);
+ 		aten.current.i->setTypeFixed(TRUE);
+ 	}
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
 // Set pen coordinates ('locate <dx dy dz>')
 int Command::function_CA_LOCATE(CommandNode *&c, Bundle &obj)
 {

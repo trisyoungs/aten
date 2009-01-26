@@ -160,6 +160,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"",
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },
+	{ "insertatom",		"NNeee",	"<element> <id> [x y z]",
+				"Insert a new atom into the model such that it has the ID specified" },
 	{ "locate",		"EEE",		"<x> <y> <z>",
 				"Position pen at specified coordinates" },
 	{ "move",		"EEE",		"<dx> <dy> <dz>",

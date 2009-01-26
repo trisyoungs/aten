@@ -38,13 +38,16 @@ int Model::nAtoms() const
 }
 
 // Add atom
-Atom *Model::addAtom(short int newel, Vec3<double> pos)
+Atom *Model::addAtom(short int newel, Vec3<double> pos, int targetid)
 {
 	msg.enter("Model::addAtom");
-	Atom *newatom = atoms_.add();
+	Atom *newatom;
+	if (targetid == -1) newatom = atoms_.add();
+	else newatom = atoms_.insert(targetid == 0 ? NULL : atoms_[targetid-1]);
 	newatom->setParent(this);
 	newatom->setElement(newel);
-	newatom->setId(atoms_.nItems() - 1);
+	newatom->setId(targetid == -1 ? atoms_.nItems() - 1 : targetid);
+	if (targetid != -1) renumberAtoms(newatom);
 	newatom->r() = pos;
 	mass_ += elements().atomicMass(newel);
 	calculateDensity();
@@ -61,9 +64,9 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 }
 
 // Create a new atom at the Model's current pen position
-Atom *Model::addAtomAtPen(short int el)
+Atom *Model::addAtomAtPen(short int el, int targetid)
 {
-	return addAtom(el, penPosition_);
+	return addAtom(el, penPosition_, targetid);
 }
 
 // Add atom copy
