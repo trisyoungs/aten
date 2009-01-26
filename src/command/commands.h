@@ -137,6 +137,7 @@ class Command {
 		CA_BOHR,
 		CA_CHAIN,
 		CA_ENDCHAIN,
+		CA_INSERTATOM,
 		CA_LOCATE,
 		CA_MOVE,
 		CA_MOVETOEND,
@@ -556,6 +557,7 @@ class Command {
 	static int function_CA_BOHR(CommandNode *&c, Bundle &obj);
 	static int function_CA_CHAIN(CommandNode *&c, Bundle &obj);
 	static int function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj);
+	static int function_CA_INSERTATOM(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOCATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_MOVE(CommandNode *&c, Bundle &obj);
 	static int function_CA_MOVETOEND(CommandNode *&c, Bundle &obj);

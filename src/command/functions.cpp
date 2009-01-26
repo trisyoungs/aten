@@ -79,6 +79,7 @@ void Command::initPointers()
 	pointers_[CA_BOHR] = &Command::function_CA_BOHR;
 	pointers_[CA_CHAIN] = &Command::function_CA_CHAIN;
 	pointers_[CA_ENDCHAIN] = &Command::function_CA_ENDCHAIN;
+	pointers_[CA_INSERTATOM] = &Command::function_CA_INSERTATOM;
 	pointers_[CA_LOCATE] = &Command::function_CA_LOCATE;
 	pointers_[CA_MOVE] = &Command::function_CA_MOVE;
 	pointers_[CA_MOVETOEND] = &Command::function_CA_MOVETOEND;

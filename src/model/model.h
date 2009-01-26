@@ -124,9 +124,9 @@ class Model
 	
 	public:
 	// Create a new atom
-	Atom *addAtom(short int el, Vec3<double> r);
+	Atom *addAtom(short int el, Vec3<double> r, int position = -1);
 	// Create a new atom at the Model's current pen position
-	Atom *addAtomAtPen(short int el);
+	Atom *addAtomAtPen(short int el, int position = -1);
 	// Create copy of supplied atom
 	Atom *addCopy(Atom *source);
 	// Create copy of supplied atom at the specified position
