@@ -285,8 +285,8 @@ class Model
 	void selectionExpand(bool markonly = FALSE);
 	// Return the atom at the clicked screen coordinates (if any)
 	Atom *atomOnScreen(double, double);
-	// TODO Make private
-	void selectPattern(Pattern*);
+	// Select all atoms in specified pattern
+	void selectPattern(Pattern *p, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms within the rectangular boundary specified
 	void selectBox(double, double, double, double, bool deselect = FALSE);
 	// Select all atoms connected by a path from the specified atom

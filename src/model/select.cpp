@@ -120,21 +120,47 @@ void Model::selectionDelete(bool markonly)
 	msg.enter("Model::selectionDelete");
 	Atom *i, *tempi;
 	int count = 0;
-	aten.initialiseProgress("Deleting atoms...", atoms_.nItems());
-	i = atoms_.first();
-	while (i != NULL)
+	bool cancelled = FALSE;
+	aten.initialiseProgress("Deleting atoms...", atoms_.nItems()*2);
+	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
+	// 1) First, delete all measurements and bonds to the selected atoms
+	Refitem<Bond,int> *bref;
+	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
-		if (i->isSelected(markonly))
+		if (!i->isSelected(markonly)) continue;
+		// Remove measurements
+		removeMeasurements(i);
+		// Delete All Bonds To Specific Atom
+		bref = i->bonds();
+		while (bref != NULL)
 		{
-			tempi = i->next;
-			deleteAtom(i, TRUE);
-			i = tempi;
+			// Need to detach the bond from both atoms involved
+			Bond *b = bref->item;
+			Atom *j = b->partner(i);
+			unbondAtoms(i,j,b);
+			bref = i->bonds();
 		}
-		else i = i->next;
-		if (!aten.updateProgress(++count)) break;
+		if (!aten.updateProgress(++count)) cancelled = TRUE;
+		if (cancelled) break;
+	}
+	// 2) Delete the actual atoms
+	if (!cancelled)
+	{
+		i = atoms_.last();
+		while (i != NULL)
+		{
+			if (i->isSelected(markonly))
+			{
+				tempi = i->prev;
+				removeAtom(i, TRUE);
+				i = tempi;
+			}
+			else i = i->prev;
+			if (!aten.updateProgress(++count)) break;
+		}
 	}
 	aten.cancelProgress();
-	// Renumber atoms and recalculate density here
+	// Renumber atoms and recalculate density here, since we request deletion with no updates
 	renumberAtoms();
 	calculateDensity();
 	msg.exit("Model::selectionDelete");
@@ -354,15 +380,24 @@ void Model::selectRadial(Atom *target, double radius)
 	msg.exit("Model::selectRadial");
 }
 
-// Select Pattern
-void Model::selectPattern(Pattern *p)
+// Select all atoms in specified pattern
+void Model::selectPattern(Pattern *p, bool markonly, bool deselect)
 {
 	// Select all atoms covered by the specified pattern.
 	msg.enter("Model::selectPattern");
+	// Check that this pattern is valid and belongs to this model...
+	bool found = FALSE;
+	for (Pattern *modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
+	if (!found)
+	{
+		msg.print("Pattern does not belong to this model, or is out of date.\n");
+		msg.exit("Model::selectPattern");
+		return;
+	}
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->totalAtoms(); n++)
 	{
-		selectAtom(i);
+		deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 		i = i->next;
 	}
 	msg.exit("Model::selectPattern");

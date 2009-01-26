@@ -38,7 +38,7 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 			i = obj.rs->atom(c->argi(0)-1);
 			j = obj.rs->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return Command::Fail;
-			v = j->r() - i->r();
+			v = obj.rs->cell()->mimd(j,i);
 			angle = c->argd(2);
 			break;
 		// Axis and theta
@@ -51,7 +51,7 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 			i = obj.rs->atom(c->argi(0)-1);
 			j = obj.rs->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return Command::Fail;
-			v = j->r() - i->r();
+			v = obj.rs->cell()->mimd(j,i);
 			angle = c->argd(2);
 			o.set(c->argd(3), c->argd(4), c->argd(5));
 			break;
@@ -116,7 +116,7 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 					i = obj.rs->atom(c->argi(n*2)-1);
 					j = obj.rs->atom(c->argi(n*2+1)-1);
 					if ((i == NULL) || (j == NULL)) return Command::Fail;
-					v = j->r() - i->r();
+					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
 					source.set(n, v);
 				}
@@ -127,7 +127,7 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 					i = obj.rs->atom(c->argi(n*2+6)-1);
 					j = obj.rs->atom(c->argi(n*2+7)-1);
 					if ((i == NULL) || (j == NULL)) return Command::Fail;
-					v = j->r() - i->r();
+					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
 					target.set(n, v);
 				}
