@@ -44,7 +44,9 @@ class AtenAtomlist : public QDialog
 	void peekScrollBar();
 	void pokeScrollBar();
 	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
-	void toggleItemSelection(TTreeWidgetItem *twi);
+	void toggleItem(TTreeWidgetItem *twi);
+	void selectItem(TTreeWidgetItem *twi);
+	void deselectItem(TTreeWidgetItem *twi);
 	private slots:
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);

@@ -64,40 +64,7 @@ void AtenAtomlist::showWindow()
 	show();
 }
 
-// void AtenAtomlist::on_AtomTree_itemPressed(QTreeWidgetItem *item, int column)
-// {
-// 	if (refreshing_) return;
-// 	// Cast *item into a TTreeWidgetItem
-// 	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
-// 	Model *m = aten.currentModel();
-// 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
-// 	if (ti->pattern() != NULL)
-// 	{
-// 		Atom *i = ti->pattern()->firstAtom();
-// 		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
-// 		{
-// 			item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
-// 			i = i->next;
-// 		}
-// 	}
-// 	else if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
-// 	gui.modelChanged(FALSE,FALSE,FALSE);
-// }
-
-// void AtenAtomlist::on_AtomTree_itemSelectionChanged()
-// {
-// 	printf("Selection changed.\n");
-// 	gui.mainWidget->setEnabled(FALSE);
-// 	Model *m = aten.currentModel();
-// 	TTreeWidgetItem *ti;
-// 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
-// 	{
-// 		ti = (TTreeWidgetItem*) item;
-// 		if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
-// 	}
-// 	gui.mainWidget->setEnabled(TRUE);
-// }
-
+// Update slection states of TTreeWidgetItems from selection in model
 void AtenAtomlist::updateSelection()
 {
 	//printf("Selection has been updated.\n");
@@ -268,22 +235,56 @@ TTreeWidgetItem *AtenAtomlist::itemUnderMouse(const QPoint &pos)
 }
 
 // Toggle the selection state in the model
-void AtenAtomlist::toggleItemSelection(TTreeWidgetItem *twi)
+void AtenAtomlist::toggleItem(TTreeWidgetItem *twi)
 {
+	// Check for no item or header item
 	if (twi == NULL) return;
-	// Check here for header items...
 	if (twi->atom() == NULL) return;
 	bool state = twi->isSelected();
 	twi->setSelected(!state);
 	state ? listLastModel_->deselectAtom(twi->atom()) : listLastModel_->selectAtom(twi->atom());
 }
 
+// Select tree widget item *and* model atom, provided the tree widget item is not selected already
+void AtenAtomlist::selectItem(TTreeWidgetItem *twi)
+{
+	if (twi == NULL) return;
+	if (twi->isSelected()) return;
+	twi->setSelected(TRUE);
+	listLastModel_->selectAtom(twi->atom());
+}
+
+// Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
+void AtenAtomlist::deselectItem(TTreeWidgetItem *twi)
+{
+	if (twi == NULL) return;
+	if (!twi->isSelected()) return;
+	twi->setSelected(FALSE);
+	listLastModel_->deselectAtom(twi->atom());
+}
+
 void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
-// 	printf("Mouse press event\n");
+	// Start an undo state for the model
+	listLastModel_->beginUndoState("Change selection through atomlist");
 	lastClicked_ = itemUnderMouse(event->pos());
-	toggleItemSelection(lastClicked_);
+	// Check for header items to we can (un)collapse them or select all atoms within them
+	if (lastClicked_ != NULL)
+	{
+		if (lastClicked_->atom() != NULL) toggleItem(lastClicked_);
+		else if (lastClicked_->pattern() != NULL)
+		{
+			// If the x-coordinate is less than 15, change the collapsed state of the item
+			if (event->x() < 15) lastClicked_->setExpanded(!lastClicked_->isExpanded());
+			else
+			{
+				if (event->modifiers()&Qt::ShiftModifier) for (int n=0; n < lastClicked_->childCount(); n++) deselectItem((TTreeWidgetItem*) lastClicked_->child(n));
+				else if (event->modifiers()&Qt::ControlModifier) for (int n=0; n < lastClicked_->childCount(); n++) toggleItem((TTreeWidgetItem*) lastClicked_->child(n));
+				else for (int n=0; n < lastClicked_->childCount(); n++) selectItem((TTreeWidgetItem*) lastClicked_->child(n));
+			}
+		}
+	}
 	lastHovered_ = lastClicked_;
 }
 
@@ -291,6 +292,7 @@ void AtenAtomlist::treeMouseReleaseEvent(QMouseEvent *event)
 {
 // 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
+	listLastModel_->endUndoState();
 	gui.modelChanged(FALSE, FALSE, FALSE);
 }
 
@@ -302,7 +304,7 @@ void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
 	// If the current hovered item is the same as the last one, ignore it
 	if (twi != lastHovered_)
 	{
-		toggleItemSelection(twi);
+		toggleItem(twi);
 		lastHovered_ = twi;
 		gui.modelChanged(FALSE, FALSE, FALSE);
 	}
