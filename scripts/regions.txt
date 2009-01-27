@@ -3,7 +3,7 @@
 #
 
 # Use Universal FF for VDW parameters
-loadff data/ff/uff.ff uff
+loadff uff.ff uff
 
 # Create component models (all single atoms of different types)
 

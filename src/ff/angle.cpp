@@ -89,6 +89,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
 					rij = srcmodel->distance(i, j) - eq;
 					energy += 0.5 * forcek * rij * rij;
+					break;
 				default:
 					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
@@ -175,7 +176,6 @@ void Pattern::angleForces(Model *srcmodel)
 					mim_ik = cell->mimd(modelatoms[k]->r(), modelatoms[i]->r());
 					rij = mim_ik.magnitude();
 					du_dtheta = forcek * (rij - eq);
-
 					break;
 				default:
 					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);

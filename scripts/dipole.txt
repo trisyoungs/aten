@@ -5,7 +5,7 @@ real dx,dy,dz,cogx,cogy,cogz,mag
 atom i
 
 # Check that we have enough atoms to do the calculation
-if $natoms < 2
+if $model.natoms < 2
 	print "Less than two atoms in the model - no dipole to calculate!
 	quit
 end
@@ -17,7 +17,7 @@ $cogx = 0
 $cogy = 0
 $cogz = 0
 
-# Perform a loop over all atoms in the model
+# Perform a loop over all atoms in the current model
 for $i
 	$dx += $i.rx*$i.q"
 	$dy += $i.ry*$i.q"
@@ -28,12 +28,12 @@ for $i
 end
 
 # Take averages and get dipole magnitude
-$dx /= $natoms
-$dy /= $natoms
-$dz /= $natoms
-$cogx /= $natoms
-$cogy /= $natoms
-$cogz /= $natoms
+$dx /= $model.natoms
+$dy /= $model.natoms
+$dz /= $model.natoms
+$cogx /= $model.natoms
+$cogy /= $model.natoms
+$cogz /= $model.natoms
 $mag = 'sqrt($dx*$dx + $dy*$dy + $dz*$dz)'
 
 # Add glyph to model
