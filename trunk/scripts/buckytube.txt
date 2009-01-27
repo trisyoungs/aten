@@ -49,3 +49,7 @@ for $stack,1,$nstacks
 	rotz $deltaz
 
 end
+
+# Rebond and augment
+rebond
+augment

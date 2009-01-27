@@ -4,7 +4,7 @@
 
 # Load Canongia Lopes ionic liquids forcefield (giving it a nickname of 'ilff')
 # This will become the current forcefield (used by the 'ff' commands later on)
-loadff data/ff/cldp-il.ff ilff
+loadff cldp-il.ff ilff
 
 # Prepare first component to add in - [dmim] cation
 # Request that we want 100 molecules maximum of each (how many you end up with will vary)
