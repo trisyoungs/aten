@@ -29,7 +29,7 @@
 
 #define ATENVERSION "1.1"
 #define ATENREVISION "778"
-#define ATENDATE "Tue 27 Jan - 09:02"
+#define ATENDATE "Tue 27 Jan - 11:45"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
