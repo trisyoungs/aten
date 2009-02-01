@@ -1,7 +1,7 @@
 /*
 	*** Pattern command functions
 	*** src/command/pattern.cpp
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 

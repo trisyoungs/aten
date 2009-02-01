@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
-    <height>200</height>
+    <width>598</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -25,7 +25,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="RotateTab" >
       <attribute name="title" >
@@ -2870,6 +2870,97 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>RotateOriginXSpin</tabstop>
+  <tabstop>RotateOriginYSpin</tabstop>
+  <tabstop>RotateOriginZSpin</tabstop>
+  <tabstop>RotateAxisXSpin</tabstop>
+  <tabstop>RotateAxisYSpin</tabstop>
+  <tabstop>RotateAxisZSpin</tabstop>
+  <tabstop>RotateDefineOriginButton</tabstop>
+  <tabstop>RotateDefineAxisButton</tabstop>
+  <tabstop>RotatePickAxisButton</tabstop>
+  <tabstop>RotateAngleSpin</tabstop>
+  <tabstop>RotateAnticlockwiseButton</tabstop>
+  <tabstop>RotateClockwiseButton</tabstop>
+  <tabstop>ConvertSourceMatrixAXSpin</tabstop>
+  <tabstop>ConvertSourceMatrixAYSpin</tabstop>
+  <tabstop>ConvertSourceMatrixAZSpin</tabstop>
+  <tabstop>ConvertSourceMatrixBXSpin</tabstop>
+  <tabstop>ConvertSourceMatrixBYSpin</tabstop>
+  <tabstop>ConvertSourceMatrixBZSpin</tabstop>
+  <tabstop>ConvertSourceMatrixCXSpin</tabstop>
+  <tabstop>ConvertSourceMatrixCYSpin</tabstop>
+  <tabstop>ConvertSourceMatrixCZSpin</tabstop>
+  <tabstop>ConvertOriginXSpin</tabstop>
+  <tabstop>ConvertOriginYSpin</tabstop>
+  <tabstop>ConvertOriginZSpin</tabstop>
+  <tabstop>ConvertSourceDefineAButton</tabstop>
+  <tabstop>ConvertSourceNormaliseAButton</tabstop>
+  <tabstop>ConvertSourceOrthogonaliseAButton</tabstop>
+  <tabstop>ConvertSourceGenerateAButton</tabstop>
+  <tabstop>ConvertSourceDefineBButton</tabstop>
+  <tabstop>ConvertSourceNormaliseBButton</tabstop>
+  <tabstop>ConvertSourceOrthogonaliseBButton</tabstop>
+  <tabstop>ConvertSourceGenerateBButton</tabstop>
+  <tabstop>ConvertSourceDefineCButton</tabstop>
+  <tabstop>ConvertSourceNormaliseCButton</tabstop>
+  <tabstop>ConvertSourceOrthogonaliseCButton</tabstop>
+  <tabstop>ConvertSourceGenerateCButton</tabstop>
+  <tabstop>ConvertDefineOriginButton</tabstop>
+  <tabstop>ConvertOriginCellCentreButton</tabstop>
+  <tabstop>ConvertRotateIntoButton</tabstop>
+  <tabstop>TransformApplyButton</tabstop>
+  <tabstop>ConvertTargetOrthogonaliseCButton</tabstop>
+  <tabstop>tabWidget_3</tabstop>
+  <tabstop>TransformMatrixAYSpin</tabstop>
+  <tabstop>TransformMatrixAZSpin</tabstop>
+  <tabstop>TransformMatrixAXSpin</tabstop>
+  <tabstop>TransformMatrixBYSpin</tabstop>
+  <tabstop>TransformMatrixBZSpin</tabstop>
+  <tabstop>TransformMatrixCXSpin</tabstop>
+  <tabstop>TransformMatrixCYSpin</tabstop>
+  <tabstop>TransformDefineOriginButton</tabstop>
+  <tabstop>TransformNormaliseCButton</tabstop>
+  <tabstop>TransformMatrixBXSpin</tabstop>
+  <tabstop>TransformOriginZSpin</tabstop>
+  <tabstop>TransformDefineAButton</tabstop>
+  <tabstop>TransformNormaliseAButton</tabstop>
+  <tabstop>TransformOrthogonaliseAButton</tabstop>
+  <tabstop>TransformGenerateAButton</tabstop>
+  <tabstop>TransformDefineBButton</tabstop>
+  <tabstop>TransformNormaliseBButton</tabstop>
+  <tabstop>TransformOrthogonaliseBButton</tabstop>
+  <tabstop>TransformGenerateBButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>TransformDefineCButton</tabstop>
+  <tabstop>TransformOrthogonaliseCButton</tabstop>
+  <tabstop>ConvertTargetGenerateCButton</tabstop>
+  <tabstop>TransformGenerateCButton</tabstop>
+  <tabstop>TransformOriginCellCentreButton</tabstop>
+  <tabstop>ConvertTargetMatrixAXSpin</tabstop>
+  <tabstop>ConvertTargetMatrixAYSpin</tabstop>
+  <tabstop>ConvertTargetMatrixAZSpin</tabstop>
+  <tabstop>ConvertTargetMatrixBXSpin</tabstop>
+  <tabstop>ConvertTargetMatrixBYSpin</tabstop>
+  <tabstop>ConvertTargetMatrixBZSpin</tabstop>
+  <tabstop>ConvertTargetMatrixCXSpin</tabstop>
+  <tabstop>ConvertTargetMatrixCYSpin</tabstop>
+  <tabstop>ConvertTargetMatrixCZSpin</tabstop>
+  <tabstop>TransformMatrixCZSpin</tabstop>
+  <tabstop>TransformOriginXSpin</tabstop>
+  <tabstop>TransformOriginYSpin</tabstop>
+  <tabstop>ConvertTargetDefineAButton</tabstop>
+  <tabstop>ConvertTargetNormaliseAButton</tabstop>
+  <tabstop>ConvertTargetOrthogonaliseAButton</tabstop>
+  <tabstop>ConvertTargetGenerateAButton</tabstop>
+  <tabstop>ConvertTargetDefineBButton</tabstop>
+  <tabstop>ConvertTargetNormaliseBButton</tabstop>
+  <tabstop>ConvertTargetOrthogonaliseBButton</tabstop>
+  <tabstop>ConvertTargetGenerateBButton</tabstop>
+  <tabstop>ConvertTargetDefineCButton</tabstop>
+  <tabstop>ConvertTargetNormaliseCButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc" />
  </resources>

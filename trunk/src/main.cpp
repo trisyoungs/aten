@@ -1,7 +1,7 @@
 /*
 	*** Aten Main
 	*** src/main.cpp
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	if (!aten.parseCliEarly(argc, argv)) return -1;
 
 	// Print GPL license information
-	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007,2008  T. Youngs.\n", ATENVERSION);
+	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2009  T. Youngs.\n", ATENVERSION);
 	msg.print(Messenger::Verbose, "Built from %s@%s.\n", ATENURL, ATENREVISION);
 	msg.print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
