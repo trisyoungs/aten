@@ -1,7 +1,7 @@
 /*
 	*** Variable Storage Object Template
 	*** src/templates/vobject.h
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 

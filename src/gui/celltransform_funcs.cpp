@@ -1,7 +1,7 @@
 /*
 	*** Qt GUI: Cell Transform Window
 	*** src/gui/celltransform_funcs.cpp
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 

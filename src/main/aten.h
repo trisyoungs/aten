@@ -1,7 +1,7 @@
 /*
 	*** Aten's master structure
 	*** src/aten/aten.h
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 
@@ -28,8 +28,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "778"
-#define ATENDATE "Tue 27 Jan - 11:45"
+#define ATENREVISION "780"
+#define ATENDATE "Sun 01 Feb - 17:33"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations

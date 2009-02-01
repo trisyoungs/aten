@@ -1,7 +1,7 @@
 /*
 	*** Cell command functions
 	*** src/command/cell.cpp
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 

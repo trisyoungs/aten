@@ -1,7 +1,7 @@
 /*
 	*** Qt forcefield action functions
 	*** src/gui/forcefieldactions.cpp
-	Copyright T. Youngs 2007,2008
+	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
 
