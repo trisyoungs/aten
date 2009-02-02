@@ -12,7 +12,6 @@ importmodel
 	exact CONFIG,REVCON,config,revcon
 	nickname dlpoly
 	id 2
-	zmap ff
 
 	# Variable Declaration
 	character e, title

@@ -186,7 +186,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setTypeId(newffid);
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
-		ffa->atomtype()->setCharacterElement(elements().find(parser.argc(2),ElementMap::AlphaZmap));
+		ffa->atomtype()->setCharacterElement(elements().findAlpha(parser.argc(2)));
 		if (!ffa->setAtomtype(parser.argc(3), this, ffa))
 		{
 			msg.exit("Forcefield::readTypes");

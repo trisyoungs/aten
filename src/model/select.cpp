@@ -324,7 +324,7 @@ void Model::deselectElement(int el, bool markonly)
 }
 
 // Select all atoms which match the provided type
-void Model::selectType(int element, const char *typedesc)
+void Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
 {
 	msg.enter("Model::selectType");
 	Atomtype testat;
@@ -350,7 +350,7 @@ void Model::selectType(int element, const char *typedesc)
 			if (atomscore > 0)
 			{
 				// Select this atom in all pattern molecules
-				p->selectAtom(n);
+				p->selectAtom(n, markonly, deselect);
 				count += p->nMolecules();
 				matchscore = atomscore;
 			}

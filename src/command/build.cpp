@@ -69,7 +69,7 @@ int Command::function_CA_CHAIN(CommandNode *&c, Bundle &obj)
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
-		i = obj.rs->addAtom(elements().find(c->argc(0),ElementMap::AlphaZmap), pos);
+		i = obj.rs->addAtom(elements().find(c->argc(0)), pos);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -84,7 +84,7 @@ int Command::function_CA_CHAIN(CommandNode *&c, Bundle &obj)
 	}
 	else
 	{
-		i = obj.rs->addAtomAtPen(elements().find(c->argc(0),ElementMap::AlphaZmap));
+		i = obj.rs->addAtomAtPen(elements().find(c->argc(0)));
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -362,7 +362,7 @@ int Command::function_CA_SHIFTUP(CommandNode *&c, Bundle &obj)
 int Command::function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	int el = elements().find(c->argc(0));
+	int el = elements().findAlpha(c->argc(0));
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	obj.rs->endUndoState();

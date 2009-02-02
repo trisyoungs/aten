@@ -432,6 +432,7 @@ class Command {
 
 		// Select Commands
 		CA_DESELECT,
+		CA_DESELECTTYPE,
 		CA_EXPAND,
 		CA_INVERT,
 		CA_SELECT,
@@ -832,6 +833,7 @@ class Command {
 	static int function_CA_RUNSCRIPT(CommandNode *&c, Bundle &obj);
 	// Select Commands
 	static int function_CA_DESELECT(CommandNode *&c, Bundle &obj);
+	static int function_CA_DESELECTTYPE(CommandNode *&c, Bundle &obj);
 	static int function_CA_EXPAND(CommandNode *&c, Bundle &obj);
 	static int function_CA_INVERT(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECT(CommandNode *&c, Bundle &obj);

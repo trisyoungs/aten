@@ -210,7 +210,7 @@ int Command::function_CA_MAP(CommandNode *&c, Bundle &obj)
 		parser.getArgsDelim(c->argc(m), Parser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
-			el = elements().find(afterChar(parser.argc(n), '='));
+			el = elements().findAlpha(afterChar(parser.argc(n), '='));
 			if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 			else
 			{
@@ -306,7 +306,7 @@ int Command::function_CA_TYPEDEF(CommandNode *&c, Bundle &obj)
 	ffa->setTypeId(newffid);
 	ffa->setName(c->argc(1));
 	ffa->setEquivalent(c->argc(1));
-	ffa->atomtype()->setCharacterElement(elements().find(c->argc(2), ElementMap::AlphaZmap));
+	ffa->atomtype()->setCharacterElement(elements().findAlpha(c->argc(2)));
 	ffa->setAtomtype(c->argc(3), obj.ff, ffa);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
 	return Command::Success;

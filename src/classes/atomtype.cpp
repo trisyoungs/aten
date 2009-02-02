@@ -167,7 +167,7 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 		else
 		{
 			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
-			el = elements().find(parser.argc(n),ElementMap::AlphaZmap);
+			el = elements().findAlpha(parser.argc(n));
 			if (el == 0)
 			{
 				msg.print("Unrecognised element in list of bound atoms: '%s'\n",parser.argc(n));
