@@ -165,8 +165,8 @@ int Command::function_CA_EXPAND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Expand current selection");
-	obj.rs->endUndoState();
 	obj.rs->selectionExpand();
+	obj.rs->endUndoState();
 	return Command::Success;
 }
 
