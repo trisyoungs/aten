@@ -106,8 +106,8 @@ void Canvas::renderScene(Model *source)
 	}
 	else
 	{
-		bottom = tan(prefs.perspectiveFov() / DEGRAD) * displayModel_->camera().z;
-		top = -bottom;
+		top = tan(prefs.perspectiveFov() / DEGRAD) * displayModel_->camera().z;
+		bottom = -top;
 		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 
