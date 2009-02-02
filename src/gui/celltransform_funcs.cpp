@@ -110,6 +110,34 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 
+/*
+// Rotate Functions
+*/
+
+void AtenCellTransform::on_CellRotateXClockwise_clicked(bool checked)
+{
+}
+
+void AtenCellTransform::on_CellRotateXAnticlockwise_clicked(bool checked)
+{
+}
+
+void AtenCellTransform::on_CellRotateYClockwise_clicked(bool checked)
+{
+}
+
+void AtenCellTransform::on_CellRotateYAnticlockwise_clicked(bool checked)
+{
+}
+
+void AtenCellTransform::on_CellRotateZClockwise_clicked(bool checked)
+{
+}
+
+void AtenCellTransform::on_CellRotateZAnticlockwise_clicked(bool checked)
+{
+}
+
 void AtenCellTransform::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionCellTransformWindow->setChecked(FALSE);

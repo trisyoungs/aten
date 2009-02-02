@@ -45,6 +45,7 @@ AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	listPosition_ = -1;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
+	viewingByAtom_ = TRUE;
 
 	QObject::connect(ui.AtomTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.AtomTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
@@ -80,7 +81,8 @@ void AtenAtomlist::updateSelection()
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
-void AtenAtomlist::refresh()
+// Refresh the atom list
+void AtenAtomlist::refresh(bool forceupdate)
 {
 	msg.enter("AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
@@ -90,7 +92,6 @@ void AtenAtomlist::refresh()
 		msg.exit("AtenAtomlist::refresh");
 		return;
 	}
-	//printf("Refreshing atompage.....\n");
 	Model *m = aten.currentModel();
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
@@ -99,43 +100,36 @@ void AtenAtomlist::refresh()
 		listSelectionPoint_ = -1;
 	}
 	listLastModel_ = m;
-	// Start the refresh (note, this does not run in a thread yet!)
+	// Start the refresh
 	Pattern *p;
 	TTreeWidgetItem *item;
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
-	int n, count;
-	// Set progress bar
-	count = 0;
-	if (gui.atomlistWindow->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates)))
+	int mol, n, count, endatom;
+	if (forceupdate || (gui.atomlistWindow->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))))
 	{
-		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
 		ui.AtomTree->clear();
 		ui.AtomTree->clearAtomItems();
-		// Add patterns as root nodes in the list, followed by atoms in each pattern.
-		// If no patterns are yet defined, store them in a generic rootnode.
-		if (m->nPatterns() == 0)
+		// If we're viewing all atoms, just add all atoms!
+		if (viewingByAtom_)
 		{
-			// Create new root node for all atoms (still a TTreeWidgetItem
-			TTreeWidgetItem *pat = new TTreeWidgetItem(ui.AtomTree);
-			ui.AtomTree->setItemExpanded(pat, TRUE);
-			pat->setText(0, "All");
 			for (i = m->atoms(); i != NULL; i = i->next)
 			{
 				// Add the atom
-				item = ui.AtomTree->addTreeItem(pat);
-				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+				item = ui.AtomTree->addTreeItem(ui.AtomTree);
 				item->setAtom(i);
 				item->setAtomColumns();
 				// Set the row selection property here.
-				ui.AtomTree->setItemSelected(item, i->isSelected());
+				item->setSelected(i->isSelected());
 			}
+
 		}
 		else
 		{
+			// We must have at least the default pattern definition...
+			m->autocreatePatterns(TRUE);
 			// Get pointer to first atom in model. We'll skip through it numerically in each pattern
-			i = m->atoms();
 			for (p = m->patterns(); p != NULL; p = p->next)
 			{
 				// Create new root node for the pattern
@@ -143,15 +137,29 @@ void AtenAtomlist::refresh()
 				ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->name());
 				pat->setPattern(p);
-				for (n = 0; n<p->totalAtoms(); n++)
+				// Get first atom
+				i = p->firstAtom();
+				count = p->firstAtom()->id();
+				// Loop over atoms in molecule
+				for (n = 0; n<p->nAtoms(); n++)
 				{
 					// Create atom in the pattern root node
 					item = ui.AtomTree->addTreeItem(pat);
-					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 					item->setAtom(i);
+					item->setPattern(p);
 					item->setAtomColumns();
-					// Set the row selection property here
-					ui.AtomTree->setItemSelected(item, i->isSelected());
+					if (i->isSelected()) item->setSelected(TRUE);
+					// Check related atoms in other molecules for selection state
+					for (mol = 1; mol<p->nMolecules(); mol++)
+					{
+						if (m->atom(count+mol*p->nAtoms())->isSelected() && (!item->isSelected()))
+						{
+							QBrush brush(Qt::Dense4Pattern);
+							item->setSelected(TRUE);
+							item->setForeground(3,brush);
+						}
+					}
+					count++;
 					i = i->next;
 				}
 			}
@@ -163,18 +171,41 @@ void AtenAtomlist::refresh()
 	else if (gui.atomlistWindow->listSelectionPoint_ != m->changeLog.log(Log::Selection))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
-		// Grab the list of TTreeWidgetItems
-		//printf("Just updating selection....\n");
-		for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+		if (viewingByAtom_)
 		{
-			i = ri->item->atom();
-			//ui.AtomTree->setItemSelected(ri->item, i->isSelected());
-			ri->item->setSelected(i->isSelected());
+			for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+			{
+				i = ri->item->atom();
+				ri->item->setSelected(i->isSelected());
+			}
 		}
+		else refresh(TRUE);
 		listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	msg.exit("AtenAtomlist::refresh");
+}
+
+void AtenAtomlist::on_ViewByAtomButton_clicked(bool checked)
+{
+	// Check previous state and refresh if necessary
+	if (!viewingByAtom_)
+	{
+		viewingByAtom_ = TRUE;
+		refresh(TRUE);
+	}
+	else viewingByAtom_ = TRUE;
+}
+
+void AtenAtomlist::on_ViewByPatternButton_clicked(bool checked)
+{
+	// Must clear selection in the current model
+	if (viewingByAtom_)
+	{
+		viewingByAtom_ = FALSE;
+		refresh(TRUE);
+	}
+	else viewingByAtom_ = FALSE;
 }
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
