@@ -345,7 +345,7 @@ class Pattern
 	// Copy bondtypes for first molecule to all other molecules
 	void propagateBondTypes();
 	// Select atom 'i' in all molecules
-	void selectAtom(int id);
+	void selectAtom(int id, bool markonly = FALSE, bool deselect = FALSE);
 
 	/*
 	// Properties

@@ -793,7 +793,7 @@ void Pattern::propagateBondTypes()
 }
 
 // Select atom 'i' in all molecules
-void Pattern::selectAtom(int id)
+void Pattern::selectAtom(int id, bool markonly, bool deselect)
 {
 	msg.exit("Pattern::selectAtom");
 	int n,m;
@@ -802,7 +802,7 @@ void Pattern::selectAtom(int id)
 	{
 		for (n=0; n<nAtoms_; n++)
 		{
-			if (n == id) parent_->selectAtom(i);
+			if (n == id) deselect ? parent_->deselectAtom(i, markonly) : parent_->selectAtom(i, markonly);
 			i = i->next;
 		}
 	}

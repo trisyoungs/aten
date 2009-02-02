@@ -91,7 +91,7 @@ int Command::function_CA_SETELEMENT(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
-	obj.i->setElement(elements().find(c->argc(0)));
+	obj.i->setElement(elements().findAlpha(c->argc(0)));
 	return Command::Success;
 }
 

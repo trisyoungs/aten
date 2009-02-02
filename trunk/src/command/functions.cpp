@@ -372,6 +372,7 @@ void Command::initPointers()
 
 	// Select Commands
 	pointers_[CA_DESELECT] = &Command::function_CA_DESELECT;
+	pointers_[CA_DESELECTTYPE] = &Command::function_CA_DESELECTTYPE;
 	pointers_[CA_EXPAND] = &Command::function_CA_EXPAND;
 	pointers_[CA_INVERT] = &Command::function_CA_INVERT;
 	pointers_[CA_SELECT] = &Command::function_CA_SELECT;

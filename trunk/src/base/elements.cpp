@@ -41,7 +41,7 @@ ElementMap &elements()
 #define ACTINIDES 99
 
 // ZMapping types
-const char *ZmapTypeKeywords[ElementMap::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
+const char *ZmapTypeKeywords[ElementMap::nZmapTypes] = { "alpha", "firstalpha", "singlealpha", "name", "numeric", "ff", "auto" };
 ElementMap::ZmapType ElementMap::zmapType(const char *s)
 {
 	return (ElementMap::ZmapType) enumSearch("element mapping style", ElementMap::nZmapTypes, ZmapTypeKeywords, s);
@@ -533,6 +533,31 @@ int ElementMap::firstAlphaToZ(const char *s)
 	return result;
 }
 
+// Convert string from first alpha character to element number
+int ElementMap::singleAlphaToZ(const char *s)
+{
+	// Convert first alpha character.
+	char cleaned[2];
+	int n, result = -1;
+	cleaned[0] = '\0';
+	for (n=0; s[n] != '\0'; n++)
+	{
+		if (s[n] == ' ') continue;
+		else if (s[n] > 64 && s[n] < 91) cleaned[0] = s[n];
+		else if (s[n] > 96 && s[n] < 123) cleaned[0] = s[n] - 32;
+		else break;
+		if (cleaned[0] != '\0') break;
+	}
+	cleaned[1] = '\0';
+	for (n=0; n<nElements_; n++)
+		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
+		{
+			result = n;
+			break;
+		}
+	return result;
+}
+
 // Convert string from name to element number
 int ElementMap::nameToZ(const char *s)
 {
@@ -623,6 +648,10 @@ int ElementMap::find(const char *query)
 		case (ElementMap::FirstAlphaZmap):
 			result = firstAlphaToZ(query);
 			break;
+		// Convert based on first alpha-character of atom name only
+		case (ElementMap::SingleAlphaZmap):
+			result = singleAlphaToZ(query);
+			break;
 		// Convert based on numeric part only
 		case (ElementMap::NumericZmap):
 			result = numberToZ(query);
@@ -643,3 +672,8 @@ int ElementMap::find(const char *query, ElementMap::ZmapType zmt)
 	return result;
 }
 
+// Search for element named 'query' in the list of known elements
+int ElementMap::findAlpha(const char *query)
+{
+	return find(query, ElementMap::AlphaZmap);
+}

@@ -94,13 +94,13 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 			else
 			{
-				i = elements().find(from);
+				i = elements().findAlpha(from);
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) in select.\n", from);
 					return;
 				}
-				if (plus == 0) m->selectElement(i);
+				if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
 				else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 				else if (plus == 1) for (n=i; n <= elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
@@ -116,13 +116,13 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 			else
 			{
-				i = elements().find(from);
+				i = elements().findAlpha(from);
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
 					return;
 				}
-				j = elements().find(to);
+				j = elements().findAlpha(to);
 				if (j == 0)
 				{
 					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
@@ -143,10 +143,29 @@ int Command::function_CA_DESELECT(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Deselect by supplied atom type description ('deselecttype <el> <typedesc>')
+int Command::function_CA_DESELECTTYPE(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.rs->autocreatePatterns())
+	{
+		char s[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
+		sprintf(s,"Deselect %s by type (%s)", c->argc(0), c->argc(1));
+		obj.rs->beginUndoState(s);
+		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1), FALSE, TRUE);
+		obj.rs->endUndoState();
+		return Command::Success;
+	}
+	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
+	return Command::Fail;
+}
+
 // Expand current selection
 int Command::function_CA_EXPAND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->beginUndoState("Expand current selection");
+	obj.rs->endUndoState();
 	obj.rs->selectionExpand();
 	return Command::Success;
 }
@@ -262,7 +281,11 @@ int Command::function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs->autocreatePatterns())
 	{
-		obj.rs->selectType(elements().find(c->argc(0)), c->argc(1));
+		char s[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
+		sprintf(s,"Select %s by type (%s)", c->argc(0), c->argc(1));
+		obj.rs->beginUndoState(s);
+		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1));
+		obj.rs->endUndoState();
 		return Command::Success;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");

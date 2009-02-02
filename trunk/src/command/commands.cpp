@@ -704,6 +704,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	// Selection commands
 	{ "deselect",		"Q*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Deselect specific atoms / ranges in the current model" },
+	{ "deselecttype",	"NN",		"<element> <typedesc>",
+				"Deselect all atoms that match the provided atomtype description" },
 	{ "expand",		"",		"",
 				"Expands the current atom selection" },
 	{ "invert",		"",		"",
