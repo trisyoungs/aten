@@ -23,6 +23,8 @@
 #define ATEN_CELLTRANSFORMWINDOW_H
 
 #include "gui/ui_celltransform.h"
+#include "templates/vector3.h"
+#include "templates/matrix3.h"
 
 // Cell transform window
 class AtenCellTransform : public QDialog
@@ -36,11 +38,19 @@ class AtenCellTransform : public QDialog
 	public:
 	void showWindow();
 	void refresh();
+	private:
+	void rotateCell(Mat3<double> &mat);
 	private slots:
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellReplicateFoldCheck_clicked(bool checked);
 	void on_CellReplicateTrimCheck_clicked(bool checked);
 	void on_CellScaleButton_clicked(bool checked);
+	void on_CellRotateXClockwise_clicked(bool checked);
+	void on_CellRotateXAnticlockwise_clicked(bool checked);
+	void on_CellRotateYClockwise_clicked(bool checked);
+	void on_CellRotateYAnticlockwise_clicked(bool checked);
+	void on_CellRotateZClockwise_clicked(bool checked);
+	void on_CellRotateZAnticlockwise_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*

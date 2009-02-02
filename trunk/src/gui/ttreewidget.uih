@@ -49,8 +49,13 @@ class TTreeWidget : public QTreeWidget
 	void clearAtomItems() { atomItems_.clear(); }
 
 	public:
-	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>
+	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>)
 	TTreeWidgetItem *addTreeItem(QTreeWidgetItem *parent)
+	{
+		atomItems_.add(new TTreeWidgetItem(parent));
+		return atomItems_.last()->item;
+	}
+	TTreeWidgetItem *addTreeItem(TTreeWidget *parent)
 	{
 		atomItems_.add(new TTreeWidgetItem(parent));
 		return atomItems_.last()->item;

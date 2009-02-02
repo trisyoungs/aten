@@ -39,7 +39,7 @@ class AtenAtomlist : public QDialog
 	*/
 	public:
 	void showWindow();
-	void refresh();
+	void refresh(bool forceupdate = FALSE);
 	private:
 	void peekScrollBar();
 	void pokeScrollBar();
@@ -48,6 +48,8 @@ class AtenAtomlist : public QDialog
 	void selectItem(TTreeWidgetItem *twi);
 	void deselectItem(TTreeWidgetItem *twi);
 	private slots:
+	void on_ViewByAtomButton_clicked(bool checked);
+	void on_ViewByPatternButton_clicked(bool checked);
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
@@ -64,6 +66,8 @@ class AtenAtomlist : public QDialog
 	private:
 	// Log points of model info displayed in list
 	int listStructurePoint_, listSelectionPoint_;
+	// Whether the current view is by atom (or not)
+	bool viewingByAtom_;
 	// Last model displayed in list
 	Model *listLastModel_;
 	// Whether the widget should refresh when it is next shown
