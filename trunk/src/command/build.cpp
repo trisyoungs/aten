@@ -306,6 +306,16 @@ int Command::function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Reorder current atom selection ('reorder')
+int Command::function_CA_REORDER(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->beginUndoState("Reorder selected atoms");
+	obj.rs->reorderSelectedAtoms();
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
 // Reset pen orientation
 int Command::function_CA_RESETPEN(CommandNode *&c, Bundle &obj)
 {

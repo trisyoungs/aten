@@ -86,6 +86,7 @@ void Command::initPointers()
 	pointers_[CA_MOVETOSTART] = &Command::function_CA_MOVETOSTART;
 	pointers_[CA_NEWATOM] = &Command::function_CA_NEWATOM;
 	pointers_[CA_NEWATOMFRAC] = &Command::function_CA_NEWATOMFRAC;
+	pointers_[CA_REORDER] = &Command::function_CA_REORDER;
 	pointers_[CA_RESETPEN] = &Command::function_CA_RESETPEN;
 	pointers_[CA_ROTX] = &Command::function_CA_ROTX;
 	pointers_[CA_ROTY] = &Command::function_CA_ROTY;
@@ -229,6 +230,7 @@ void Command::initPointers()
 	pointers_[CA_GRIDALPHA] = &Command::function_CA_GRIDALPHA;
 	pointers_[CA_GRIDAXES] = &Command::function_CA_GRIDAXES;
 	pointers_[CA_GRIDCOLOUR] = &Command::function_CA_GRIDCOLOUR;
+	pointers_[CA_GRIDCOLOURNEGATIVE] = &Command::function_CA_GRIDCOLOURNEGATIVE;
 	pointers_[CA_GRIDCOLOURSCALE] = &Command::function_CA_GRIDCOLOURSCALE;
 	pointers_[CA_GRIDCUBIC] = &Command::function_CA_GRIDCUBIC;
 	pointers_[CA_GRIDCUTOFF] = &Command::function_CA_GRIDCUTOFF;

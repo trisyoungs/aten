@@ -35,6 +35,71 @@ int Model::nMarked()
 	return nMarked_;
 }
 
+// Match marked atoms to current selection
+void Model::markSelectedAtoms()
+{
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->isSelected() ? selectAtom(i, TRUE) : deselectAtom(i, TRUE);
+	msg.print(Messenger::Verbose, "There are now %i atoms marked.\n", nMarked_);
+}
+
+// Move specified atom up in the list (to lower ID)
+void Model::shiftAtomUp(Atom *i)
+{
+	msg.enter("Model::shiftAtomUp");
+	if (i == NULL)
+	{
+		printf("NULL Atom pointer passed to shiftAtomDown.");
+		msg.exit("Model::shiftAtomUp");
+		return;
+	}
+	int tempid, oldid;
+	oldid = i->id();
+	// Shift atom up
+	atoms_.shiftUp(i);
+	// Swap atomids with the new 'next' atom
+	tempid = i->next->id();
+	i->next->setId(oldid);
+	i->setId(tempid);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		IdShiftEvent *newchange = new IdShiftEvent;
+		newchange->set(oldid, -1);
+		recordingState_->addEvent(newchange);
+	}
+	changeLog.add(Log::Structure);
+	msg.exit("Model::shiftAtomUp");
+}
+
+// Move specified atom up in the list (to higher ID)
+void Model::shiftAtomDown(Atom *i)
+{
+	msg.enter("Model::shiftAtomDown");
+	if (i == NULL)
+	{
+		printf("NULL Atom pointer passed to shiftAtomDown.");
+		msg.exit("Model::shiftAtomDown");
+		return;
+	}
+	int tempid, oldid;
+	oldid = i->id();
+	// Shift atom down
+	atoms_.shiftDown(i);
+	// Swap atomids with the new 'next' atom
+	tempid = i->prev->id();
+	i->prev->setId(oldid);
+	i->setId(tempid);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		IdShiftEvent *newchange = new IdShiftEvent;
+		newchange->set(oldid, 1);
+		recordingState_->addEvent(newchange);
+	}
+	changeLog.add(Log::Structure);
+	msg.exit("Model::shiftAtomDown");
+}
+
 // Move atoms 'up'
 void Model::shiftSelectionUp()
 {
@@ -45,30 +110,13 @@ void Model::shiftSelectionUp()
 		msg.exit("Model::shiftSelectionUp");
 		return;
 	}
-	int tempid, oldid;
 	Atom *i, *next;
 	// For each selected atom in the model, shift it one place 'up' the atom list
 	i = atoms_.first()->next;
 	while (i != NULL)
 	{
 		next = i->next;
-		if (i->isSelected() && (i != atoms_.first()))
-		{
-			oldid = i->id();
-			// Shift atom up
-			atoms_.shiftUp(i);
-			// Swap atomids with the new 'next' atom
-			tempid = i->next->id();
-			i->next->setId(oldid);
-			i->setId(tempid);
-			// Add the change to the undo state (if there is one)
-			if (recordingState_ != NULL)
-			{
-				IdShiftEvent *newchange = new IdShiftEvent;
-				newchange->set(oldid, -1);
-				recordingState_->addEvent(newchange);
-			}
-		}
+		if (i->isSelected() && (i != atoms_.first())) shiftAtomUp(i);
 		i = next;
 	}
 	changeLog.add(Log::Structure);
@@ -85,7 +133,6 @@ void Model::shiftSelectionDown()
 		msg.exit("Model::shiftSelectionDown");
 		return;
 	}
-	int tempid, oldid;
 	Atom *i, *next;
 	//for (n=0; n<atoms.nItems(); n++)
 	// For each selected atom in the model, shift it one place 'down' the atom list
@@ -93,23 +140,7 @@ void Model::shiftSelectionDown()
 	while (i != NULL)
 	{
 		next = i->prev;
-		if (i->isSelected())
-		{
-			oldid = i->id();
-			// Shift atom down
-			atoms_.shiftDown(i);
-			// Swap atomids with the new 'next' atom
-			tempid = i->prev->id();
-			i->prev->setId(oldid);
-			i->setId(tempid);
-			// Add the change to the undo state (if there is one)
-			if (recordingState_ != NULL)
-			{
-				IdShiftEvent *newchange = new IdShiftEvent;
-				newchange->set(oldid, 1);
-				recordingState_->addEvent(newchange);
-			}
-		}
+		if (i->isSelected()) shiftAtomDown(i);
 		i = next;
 	}
 	changeLog.add(Log::Structure);
@@ -223,4 +254,30 @@ void Model::fragmentFromSelection(Atom *start, Reflist<Atom,int> &list)
 	deselectAtom(start);
 	fragmentFromSelectionSelector(start, list);
 	msg.exit("Model::fragmentFromSelection");
+}
+
+// Reorder bound atoms/fragments within the selection so that they are consecutive
+void Model::reorderSelectedAtoms()
+{
+	msg.enter("Model::reorderSelectedAtoms");
+	// First, mark atoms from current selection
+	markSelectedAtoms();
+	// Loop over marked atoms in ID order. For each move any bound neighbour that is not adjacent to the index above this one.
+	Atom *i, *j;
+	Refitem<Bond,int> *rb;
+	int diff, n;
+	for (i = firstMarked(); i != NULL; i = i->nextMarked())
+	{
+		// Loop over bonds
+		for (rb = i->bonds(); rb != NULL; rb = rb->next)
+		{
+			j = rb->item->partner(i);
+			if (!j->isSelected(TRUE)) continue;
+			diff = j->id() - i->id();
+			for (n=1; n<diff; n++) shiftAtomUp(j);
+		}
+		// De-mark the root atom
+		deselectAtom(i, TRUE);
+	}
+	msg.exit("Model::reorderSelectedAtoms");
 }

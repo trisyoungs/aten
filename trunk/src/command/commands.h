@@ -144,6 +144,7 @@ class Command {
 		CA_MOVETOSTART,
 		CA_NEWATOM,
 		CA_NEWATOMFRAC,
+		CA_REORDER,
 		CA_RESETPEN,
 		CA_ROTX,
 		CA_ROTY,
@@ -565,6 +566,7 @@ class Command {
 	static int function_CA_MOVETOSTART(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWATOM(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj);
+	static int function_CA_REORDER(CommandNode *&c, Bundle &obj);
 	static int function_CA_RESETPEN(CommandNode *&c, Bundle &obj);
 	static int function_CA_ROTX(CommandNode *&c, Bundle &obj);
 	static int function_CA_ROTY(CommandNode *&c, Bundle &obj);

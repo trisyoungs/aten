@@ -174,6 +174,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create a new atom in the current model" },
 	{ "newatomfrac",	"NEEE",		"<element> <fracx> <fracy> <fracz>",
 				"Create a new atom in the current model, converting fractional coordinates to real coordinates" },
+	{ "reorder",		""		"",
+				"Reorder atoms in the current selection such that bond partners have adjacent atom IDs" },
 	{ "resetpen",		""		"",
 				"Reset the pen orientation to the identity matrix (but leave the current position intact)" },
 	{ "rotx",		"E",		"<angle>",

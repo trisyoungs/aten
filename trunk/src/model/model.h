@@ -56,6 +56,7 @@ class Model
 	// Friend declarations
 	friend class IdShiftEvent;
 
+
 	/*
 	// Model
 	*/
@@ -121,6 +122,10 @@ class Model
 	List<Atom> atoms_;
 	// Delete the specified atom (internal function)
 	void removeAtom(Atom*, bool noupdate);
+	// Move specified atom one place 'up' in the list (to lower ID)
+	void shiftAtomUp(Atom *i);
+	// Move specified atom one place 'down' in the list (to higher ID)
+	void shiftAtomDown(Atom *i);
 	
 	public:
 	// Create a new atom
@@ -214,6 +219,7 @@ class Model
 	// Scale cell and contents
 	bool scaleCell(const Vec3<double> &scale, bool usecogs);
 
+
 	/*
 	// Bonds
 	*/
@@ -249,8 +255,9 @@ class Model
 	// Clear bonding in current atom selection
 	void selectionClearBonding();
 
+
 	/*
-	// Selection
+	// Selection / Marked Atoms
 	*/
 	private:
 	// Number of selected atoms
@@ -277,6 +284,8 @@ class Model
 	int nSelected();
 	// Return the number of marked atoms
 	int nMarked();
+	// Match marked atoms to current selection
+	void markSelectedAtoms();
 	// Invert current atom selection
 	void selectionInvert(bool markonly = FALSE);
 	// Delete current atom selection
@@ -311,6 +320,7 @@ class Model
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()
 	void fragmentFromSelectionSelector(Atom *start, Reflist<Atom,int> &list);
+
 
 	/*
 	// View
@@ -378,6 +388,7 @@ class Model
 	// Calculate and return drawing pixel width
 	double drawPixelWidth();
 
+
 	/*
 	// Labelling
 	*/
@@ -403,6 +414,7 @@ class Model
 	// Sets the 'fixed' variable of all selected atoms to FALSE
 	void selectionSetFree();
 
+
 	/*
 	// Forcefield
 	*/
@@ -425,6 +437,7 @@ class Model
 	void setNamesForcefield(Forcefield *f);
 	// Return the forcefield containing original atom names for the model
 	Forcefield *namesForcefield();
+
 
 	/*
 	// Expression / Typing
@@ -487,6 +500,7 @@ class Model
 	// Generate parameters for total energy function
 	void fillExpression(int);
 
+
 	/*
 	// Energy / Forces
 	*/
@@ -509,6 +523,7 @@ class Model
 	void zeroForces();
 	// Zero forces on all atoms that have their 'fixed' property set to true
 	void zeroForcesFixed();
+
 
 	/*
 	// Patterns
@@ -569,6 +584,7 @@ class Model
 	// Print patterns
 	void printPatterns();
 
+
 	/*
 	// Model Building
 	*/
@@ -596,6 +612,7 @@ class Model
 	// Set the pen position absolutely
 	void setPenPosition(Vec3<double> v);
 
+
 	/*
 	// Geometry (using staticatoms[])
 	*/
@@ -609,6 +626,7 @@ class Model
 	// Calculate torsion
 	double torsion(int i, int j, int k, int l);
 	double torsion(Atom *i, Atom *j, Atom *k, Atom *l);
+
 
 	/*
 	// Transformations
@@ -641,6 +659,7 @@ class Model
 	void mirrorSelectionLocal(int axis);
 	// Matrix transform current selection
 	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix);
+
 
 	/*
 	// Trajectory Frames
@@ -711,6 +730,7 @@ class Model
 	// Seek to specified frame
 	void seekFrame(int frameno);
 
+
 	/*
 	// Rendering
 	*/
@@ -726,6 +746,7 @@ class Model
 	// Return the current rendering source for the model
 	Model *renderSource();
 
+
 	/*
 	// Coordinate Transformations
 	*/
@@ -739,6 +760,7 @@ class Model
 	void angstromToBohr();
 	// Cnvert fractional coordinates to real coordinates
 	void fracToReal();
+
 
 	/*
 	// Measurements
@@ -781,6 +803,7 @@ class Model
 	// List stored measurements
 	void listMeasurements();
 
+
 	/*
 	// Sites
 	*/
@@ -794,6 +817,7 @@ class Model
 	// Calculate local coordinate system for site / molecule ID supplied
 	Mat3<double> siteAxes(Site *s, int molid);
 
+
 	/*
 	// Calculated quantities
 	*/
@@ -803,6 +827,7 @@ class Model
 	// List of pending or calculating quantities
 	List<Calculable> pendingQuantities;
 
+
 	/*
 	// Selection Actions
 	*/
@@ -811,6 +836,9 @@ class Model
 	void selectionEmpirical(Dnchar&, bool markonly);
 	// Get selection's centre of geometry
 	Vec3<double> selectionCog();
+	// Reorder bound atoms/fragments within the selection so that they are consecutive
+	void reorderSelectedAtoms();
+
 
 	/*
 	// Glyphs
@@ -830,6 +858,7 @@ class Model
 	void addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut);
 	// Automatically add ellipsoids to current atom selection
 	void addEllipsoidGlyphs();
+
 
 	/*
 	// Undo / Redo
@@ -862,6 +891,7 @@ class Model
 	// List undo states
 	void listUndoStates();
 
+
 	/*
 	// Component Definition (for disordered builder only)
 	*/
@@ -888,6 +918,7 @@ class Model
 	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
 	// Set whether the Component may be translated
 	bool isMoveAllowed(MonteCarlo::MoveType m);
+
 
 	/*
 	// Grid Data
