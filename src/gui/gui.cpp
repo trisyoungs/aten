@@ -700,6 +700,6 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	prefs.setLabelSize(oldlabelsize);
 
 	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
-	msg.print("Saved current view as '%s'\n", filename);
+	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, GuiQt::bitmapFormatFilter(bf));
 	return TRUE;
 }
