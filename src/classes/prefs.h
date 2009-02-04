@@ -92,8 +92,8 @@ class Prefs
 	// Rendering - View Objects
 	*/
 	private:
-	// List of visibilities of renderable objects on screen and on image
-	int screenObjects_, imageObjects_;
+	// List of visibilities of renderable objects on screen and off-screen (on image)
+	int screenObjects_, offScreenObjects_;
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
@@ -106,20 +106,20 @@ class Prefs
 	public:
 	// Set the visibility of an object on-screen
 	void setVisibleOnScreen(ViewObject vo, bool b);
-	// Set the visibility of an object in saved images
-	void setVisibleOnImage(ViewObject vo, bool b);
+	// Set the visibility of an object off-screen
+	void setVisibleOffScreen(ViewObject vo, bool b);
 	// Return whether the specified object is visible (i.e. should be rendered)
 	bool isVisibleOnScreen(ViewObject vo);
-	// Return whether the specified object is visible (i.e. should be rendered) in saved images
-	bool isVisibleOnImage(ViewObject vo);
+	// Return whether the specified object is visible (i.e. should be rendered) offscreen
+	bool isVisibleOffScreen(ViewObject vo);
 	// Return screenobjects bitvector
 	int screenObjects();
 	// Set screenobjects bitvector
 	void setScreenObjects(int i);
 	// Return screenobjects bitvector
-	int imageObjects();
+	int offScreenObjects();
 	// Set imageobjects bitvector
-	void setImageObjects(int i);
+	void setOffScreenObjects(int i);
 	// Return the radius of an atom calculated from the element and draw style
 	double screenRadius(Atom*);
 	// Set the drawing style of models

@@ -613,7 +613,7 @@ void Canvas::renderSurfaces()
 		if (!g->isVisible()) continue;
 
 		// Get GL display list and check render point
-		list = g->displayList();
+		list = g->displayList(renderOffScreen_);
 
 		if (g->shouldRerender())
 		{

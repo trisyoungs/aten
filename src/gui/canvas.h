@@ -105,6 +105,8 @@ class Canvas
 	bool noDraw_;
 	// Qt Target widget
 	TCanvas *contextWidget_;
+	// Flag used by some sub-rendering processes (e.g. surfaces) in order to decide which display list to use
+	bool renderOffScreen_;
 
 	public:
 	// Set the internal name of the canvas
@@ -133,6 +135,10 @@ class Canvas
 	void enableDrawing();
 	// Disable rendering
 	void disableDrawing();
+	// Set whether offscreen rendering is being performed
+	void setOffScreenRendering(bool b);
+	// Return whether offscreen renderinf is being performed
+	bool offScreenRendering();
 
 	/*
 	// Rendering display lists

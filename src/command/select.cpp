@@ -149,11 +149,12 @@ int Command::function_CA_DESELECTTYPE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs->autocreatePatterns())
 	{
-		char s[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
+		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
 		sprintf(s,"Deselect %s by type (%s)", c->argc(0), c->argc(1));
 		obj.rs->beginUndoState(s);
 		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1), FALSE, TRUE);
 		obj.rs->endUndoState();
+		delete[] s;
 		return Command::Success;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
@@ -281,11 +282,12 @@ int Command::function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs->autocreatePatterns())
 	{
-		char s[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
+		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
 		sprintf(s,"Select %s by type (%s)", c->argc(0), c->argc(1));
 		obj.rs->beginUndoState(s);
 		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1));
 		obj.rs->endUndoState();
+		delete[] s;
 		return Command::Success;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");

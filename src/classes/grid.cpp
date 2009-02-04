@@ -47,6 +47,7 @@ Grid::Grid()
 	log_ = -1;
 	style_ = Grid::SolidSurface;
 	displayList_ = 0;
+	offScreenDisplayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
 	positiveColour_[0] = 0.0f;
@@ -246,7 +247,7 @@ void Grid::updateRenderPoint()
 	renderPoint_ = log_;
 }
 
-// Request re-rendering of the surface
+// Request re-rendering of the surface inside a new display list
 void Grid::requestRerender()
 {
 	log_ ++;
@@ -586,9 +587,16 @@ void Grid::bohrToAngstrom()
 }
 
 // Return displaylist (create first if necessary)
-GLuint Grid::displayList()
+GLuint Grid::displayList(bool offscreenlist)
 {
-	if (displayList_ == 0)
+	// If an offscreen list is requested, we shouldn't have to (and its probably dangerous to try) and delete any previous off-screen list
+	// since it will have been destroyed along with the off-screen temporary context.
+	if (offscreenlist)
+	{
+		offScreenDisplayList_ = glGenLists(1);
+		return offScreenDisplayList_;
+	}
+	else if (displayList_ == 0)
 	{
 		displayList_ = glGenLists(1);
 		if (displayList_ == 0) printf("Critical - couldn't generate display list for grid data.\n");

@@ -156,8 +156,8 @@ class Grid
 	private:
 	// Log for changes to Grid, display style etc.
 	int log_;
-	// GL display list of rendered surface
-	GLuint displayList_;
+	// GL display lists of rendered surface on screen and in temporary offscreen context
+	GLuint displayList_, offScreenDisplayList_;
 	// Log point corresponding to the last render
 	int renderPoint_;
 	// Whether the surface is currently visible
@@ -177,12 +177,12 @@ class Grid
 	// Increase the internal log
 	void logChange();
 	// Return the surface display list
-	GLuint displayList();
+	GLuint displayList(bool offscreenlist = FALSE);
 	// Return whether re-rendering is necessary
 	bool shouldRerender();
 	// Update the log point of the surface
 	void updateRenderPoint();
-	// Request re-rendering of the surface
+	// Request rerendering of the surface (update log)
 	void requestRerender();
 	// Set whether the surface is visible
 	void setVisible(bool v);
