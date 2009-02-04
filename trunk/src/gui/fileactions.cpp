@@ -197,7 +197,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// Find the filter that was selected
 		bf = GuiQt::bitmapFormatFromFilter(qPrintable(selFilter));
 		// Save the image
-		gui.saveImage(qPrintable(filename), bf, width, height, 100);
+		gui.saveImage(qPrintable(filename), bf, width, height, -1);
 	}
 }
 

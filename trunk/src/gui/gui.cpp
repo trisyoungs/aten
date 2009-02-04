@@ -674,11 +674,9 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 		return FALSE;
 	}
 
-	// Flag any surfaces to be rerendered for use in this context
-	aten.current.rs->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
 	int screenbits = prefs.screenObjects();
-	prefs.setScreenObjects(prefs.imageObjects());
+	prefs.setScreenObjects(prefs.offScreenObjects());
 	QPixmap pixmap;
 	// Get current widget geometry if none was specified
 	if (width == 0) width = mainWidget->width();
@@ -688,14 +686,22 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget->height()) ));
 	prefs.setLabelSize(newlabelsize);
 	mainView.postRedisplay();
+	mainView.setOffScreenRendering(TRUE);
+
+	// Flag any surfaces to be rerendered for use in this context
+	aten.current.rs->rerenderGrids();
 
 	pixmap = mainWidget->renderPixmap(width, height, FALSE);
 
+	mainView.setOffScreenRendering(FALSE);
 	prefs.setScreenObjects(screenbits);
-	// Flag any surfaces to be rerendered so they are redisplayed in the original context
+
+	// Flag any surfaces to be rerendered so they are redisplayed correctly in the GUI's original GLcontext
 	aten.current.rs->rerenderGrids();
+
 	// Reconfigure canvas to widget size (necessary if image size was changed)
 	mainView.configure(mainWidget->width(), mainWidget->height());
+
 	// Restore label size
 	prefs.setLabelSize(oldlabelsize);
 

@@ -371,7 +371,7 @@ int Command::function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj)
 	if (c->hasArg(0))
 	{
 		Prefs::ViewObject vo = Prefs::viewObject(c->argc(0));
-		if (vo != Prefs::nViewObjects) prefs.setVisibleOnImage(vo, c->argb(1));
+		if (vo != Prefs::nViewObjects) prefs.setVisibleOffScreen(vo, c->argb(1));
 		else return Command::Fail;
 	}
 	else
@@ -384,7 +384,7 @@ int Command::function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj)
 		msg.print( "Current on-image object status:\n");
 		for (int i=0; i<Prefs::nViewObjects; i++)
 		{
-			if (prefs.isVisibleOnImage( (Prefs::ViewObject) i))
+			if (prefs.isVisibleOffScreen( (Prefs::ViewObject) i))
 			{
 				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) i));
 				strcat(shown, " ");

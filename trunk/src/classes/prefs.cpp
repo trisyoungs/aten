@@ -169,7 +169,7 @@ Prefs::Prefs()
 
 	// Rendering - Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
-	imageObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
+	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
 	renderStyle_ = Atom::StickStyle;
 
 	// Build
@@ -318,11 +318,11 @@ void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
 	else if ((!b) && (screenObjects_&(1 << vo))) screenObjects_ -= (1 << vo);
 }
 
-// Set the visibility of an object on-screen
-void Prefs::setVisibleOnImage(ViewObject vo, bool b)
+// Set the visibility of an object off-screen
+void Prefs::setVisibleOffScreen(ViewObject vo, bool b)
 {
-	if (b && (!(imageObjects_&(1 << vo)))) imageObjects_ += (1 << vo);
-	else if ((!b) && (imageObjects_&(1 << vo))) imageObjects_ -= (1 << vo);
+	if (b && (!(offScreenObjects_&(1 << vo)))) offScreenObjects_ += (1 << vo);
+	else if ((!b) && (offScreenObjects_&(1 << vo))) offScreenObjects_ -= (1 << vo);
 }
 
 // Return whether the specified object is visible (i.e. should be rendered) on screen
@@ -331,10 +331,10 @@ bool Prefs::isVisibleOnScreen(ViewObject vo)
 	return (screenObjects_&(1 << vo) ? TRUE : FALSE);
 }
 
-// Return whether the specified object is visible (i.e. should be rendered) on saved images
-bool Prefs::isVisibleOnImage(ViewObject vo)
+// Return whether the specified object is visible (i.e. should be rendered) offscreen on saved images
+bool Prefs::isVisibleOffScreen(ViewObject vo)
 {
-	return (imageObjects_&(1 << vo) ? TRUE : FALSE);
+	return (offScreenObjects_&(1 << vo) ? TRUE : FALSE);
 }
 
 // Return screenobjects bitvector
@@ -349,16 +349,16 @@ void Prefs::setScreenObjects(int i)
 	screenObjects_ = i;
 }
 
-// Return screenobjects bitvector
-int Prefs::imageObjects()
+// Return offscreenobjects bitvector
+int Prefs::offScreenObjects()
 {
-	return imageObjects_;
+	return offScreenObjects_;
 }
 
-// Set imageobjects bitvector
-void Prefs::setImageObjects(int i)
+// Set offscreenobjects bitvector
+void Prefs::setOffScreenObjects(int i)
 {
-	imageObjects_ = i;
+	offScreenObjects_ = i;
 }
 
 // Set the drawing style of models

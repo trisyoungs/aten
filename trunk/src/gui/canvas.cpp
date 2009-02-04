@@ -41,6 +41,7 @@ Canvas::Canvas()
 	renderPoint_ = -1;
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
+	renderOffScreen_ = FALSE;
 	displayModel_ = NULL;
 	displayFrame_ = -1;
 	activeMode_ = Canvas::NoAction;
@@ -181,6 +182,18 @@ void Canvas::enableDrawing()
 void Canvas::disableDrawing()
 {
 	noDraw_ = TRUE;
+}
+
+// Set whether offscreen rendering is being performed
+void Canvas::setOffScreenRendering(bool b)
+{
+	renderOffScreen_ = b;
+}
+
+// Return whether offscreen renderinf is being performed
+bool Canvas::offScreenRendering()
+{
+	return renderOffScreen_;
 }
 
 /*
