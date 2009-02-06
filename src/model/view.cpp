@@ -197,26 +197,11 @@ void Model::resetCamera(const Vec3<double> &newr)
 {
 	// Adjust the models camera variables
 	msg.enter("Model::resetCamera");
-	if (trajectoryParent_ == NULL)
-	{
-		camera_ = newr;
-		cameraRotation_ = 0.0;
-		// Now create the new matrix
-		cameraMatrix_.rows[0].set(1.0,0.0,0.0,camera_.x);
-		cameraMatrix_.rows[1].set(0.0,1.0,0.0,camera_.y);
-		cameraMatrix_.rows[2].set(0.0,0.0,1.0,camera_.z);
-		cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
-	}
-	else
-	{
-		trajectoryParent_->camera_ = newr;
-		trajectoryParent_->cameraRotation_ = 0.0;
-		// Now create the new matrix
-		trajectoryParent_->cameraMatrix_.rows[0].set(1.0,0.0,0.0,trajectoryParent_->camera_.x);
-		trajectoryParent_->cameraMatrix_.rows[1].set(0.0,1.0,0.0,trajectoryParent_->camera_.y);
-		trajectoryParent_->cameraMatrix_.rows[2].set(0.0,0.0,1.0,trajectoryParent_->camera_.z);
-		trajectoryParent_->cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
-	}
+	// Reset current camera position
+	camera_.zero();
+	cameraRotation_ = 0.0;
+	// Set specified position
+	adjustCamera(newr.x, -newr.y, newr.z, 0.0);
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -228,7 +213,6 @@ void Model::resetCamera(const Vec3<double> &newr)
 void Model::resetView()
 {
 	// Reset the modelview matrix and the camera
-	//return;
 	msg.enter("Model::resetView");
 	static Vec3<double> newcam, newscreen;
 	Atom *i, target;
