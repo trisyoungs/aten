@@ -107,7 +107,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	sinx = sin(rotx);
 	siny = sin(roty);
 	rotmat.set(0,cosy,0.0,siny);
-	rotmat.set(1,-sinx*-siny,cosx,-sin(rotx)*cos(roty));
+	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy);
 	rotmat.set(2,cosx*-siny,sinx,cosx*cosy);
 	// Now, make the rotation 
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
@@ -148,10 +148,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	ut = u.transpose();
 
 	// Create rotation matrix
-	step /= DEGRAD;
-	r.set(0,1.0,0.0,0.0);
-	r.set(1,0.0,cos(step),sin(step));
-	r.set(2,0.0,-sin(step),cos(step));
+	r.createRotation(0, step);
 
 	// Create grand rotation matrix
 	gr = ut * r * u;
@@ -255,11 +252,11 @@ void Model::centre(double newx, double newy, double newz)
 }
 
 // Matrix transform current selection
-void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix)
+void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markedonly)
 {
 	msg.enter("Model::matrixTransformSelection");
 	Vec3<double> newr;
-	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected())
+	for (Atom *i = firstSelected(markedonly); i != NULL; i = i->nextSelected(markedonly))
 	{
 		newr = i->r() - origin;
 		newr *= matrix;

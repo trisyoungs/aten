@@ -218,6 +218,8 @@ class Model
 	void replicateCell(const Vec3<double>&, const Vec3<double>&);
 	// Scale cell and contents
 	bool scaleCell(const Vec3<double> &scale, bool usecogs);
+	// Rotate cell and contents
+	void rotateCell(int axis, double angle);
 
 
 	/*
@@ -302,6 +304,8 @@ class Model
 	int nSelected();
 	// Return the number of marked atoms
 	int nMarked();
+	// Mark all atoms
+	void markAll();
 	// Match marked atoms to current selection
 	void markSelectedAtoms();
 	// Invert current atom selection
@@ -329,9 +333,7 @@ class Model
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
-	Atom *firstSelected();
-	// Return the first marked atom in the model (if any)
-	Atom *firstMarked();
+	Atom *firstSelected(bool markonly = FALSE);
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
@@ -676,7 +678,7 @@ class Model
 	// Mirror selection about specified axis
 	void mirrorSelectionLocal(int axis);
 	// Matrix transform current selection
-	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix);
+	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markonly = FALSE);
 
 
 	/*

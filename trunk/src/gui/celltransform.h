@@ -38,8 +38,6 @@ class AtenCellTransform : public QDialog
 	public:
 	void showWindow();
 	void refresh();
-	private:
-	void rotateCell(Mat3<double> &mat);
 	private slots:
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellReplicateFoldCheck_clicked(bool checked);

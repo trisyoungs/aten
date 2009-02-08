@@ -214,7 +214,7 @@ void Model::initialiseBondingCuboids()
 	freeBondingCuboids();
 	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
 	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
-// 	printf("Box counts: x = %i, y = %i, z = %i, cube = %i\n", boxes.x, boxes.y, boxes.z, nCuboids_);
+// 	printf("Box counts: x = %i, y = %i, z = %i, cube = %i\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, nCuboids_);
 // 	printf("ExtentMin = "); extentMin_.print(); 
 // 	printf("ExtentMax = "); extentMax_.print();
 // 	printf("ExtentRange = "); extentRange_.print();
@@ -223,8 +223,8 @@ void Model::initialiseBondingCuboids()
 // Free any created reflists
 void Model::freeBondingCuboids()
 {
-	if (bondingCuboids_ == NULL) delete[] bondingCuboids_;
-	if (bondingOverlays_ == NULL) delete[] bondingOverlays_;
+	if (bondingCuboids_ != NULL) delete[] bondingCuboids_;
+	if (bondingOverlays_ != NULL) delete[] bondingOverlays_;
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
 }
@@ -251,14 +251,14 @@ void Model::addAtomToCuboid(Atom *i)
 	x = int(r.x / cuboidSize_.x);
 	y = int(r.y / cuboidSize_.y);
 	z = int(r.z / cuboidSize_.z);
-// 	printf("and overlay %i-%i-%i (%i)\n",x,y,z,x*boxes.y*boxes.z+y*boxes.z+z);
+// 	printf("and overlay %i-%i-%i (%i)\n",x,y,z,x*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+z);
 	bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// We also add atoms that are on the very edges of the overlays to the ones on the other side (to account for MIM)
-// 	printf("If x == 0, overlay is %i\n",(boxes.x-1)*boxes.y*boxes.z+y*boxes.z+z);
+// 	printf("If x == 0, overlay is %i\n",(cuboidBoxes_.x-1)*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+z);
 	if (x == 0) bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// xyz
-// 	printf("If x == y, overlay is %i\n",x*boxes.y*boxes.z+(boxes.y-1)*boxes.z+z);
+// 	printf("If x == y, overlay is %i\n",x*cuboidBoxes_.y*cuboidBoxes_.z+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z);
 	if (y == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	// xYz
-// 	printf("If x == z, overlay is %i\n",x*boxes.y*boxes.z+y*boxes.z+boxes.z-1);
+// 	printf("If x == z, overlay is %i\n",x*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+cuboidBoxes_.z-1);
 	if (z == 0) bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius);	// xyZ
 }
 
@@ -300,7 +300,7 @@ void Model::rebond()
 				if (i->element() == 0) continue;
 				for (m=0; m<8; m++)
 				{
-					for (rj = bondingCuboids_[checklist[m]].first(); rj != NULL; rj = rj->next)
+					for (rj = bondingOverlays_[checklist[m]].first(); rj != NULL; rj = rj->next)
 					{
 						j = rj->item;
 						if (i == j) continue;

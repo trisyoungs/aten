@@ -263,7 +263,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 				// Atoms
 				*/
 				clipi = patclip.atoms();
-				for (isel = firstMarked(); isel != NULL; isel = isel->nextMarked())
+				for (isel = firstSelected(TRUE); isel != NULL; isel = isel->nextSelected(TRUE))
 				{
 					// Element check
 					if (clipi->element() != isel->element())
@@ -289,8 +289,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					clipi = clipi->next;
 				}
 				// Bonding between atoms_...
-				idoff = firstMarked()->id();
-				if (same) for (isel = firstMarked(); isel != NULL; isel = isel->nextMarked())
+				idoff = firstSelected(TRUE)->id();
+				if (same) for (isel = firstSelected(TRUE); isel != NULL; isel = isel->nextSelected(TRUE))
 				{
 					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
 					idi = isel->id() - idoff;

@@ -27,6 +27,7 @@
 
 #include "templates/vector3.h"
 #include "base/messenger.h"
+#include "base/constants.h"
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
@@ -80,6 +81,8 @@ template <class T> class Mat3
 	T element(int i);
 	// Element access operator
 	T operator[](int);
+	// Create rotation matrix about specified axis
+	void createRotation(int axis, double angle);
 
 	/*
 	// Operators
@@ -239,6 +242,38 @@ template <class T> void Mat3<T>::zero()
 	rows[0].zero();
 	rows[1].zero();
 	rows[2].zero();
+}
+
+// Create rotation matrix about specified axis
+template <class T> void Mat3<T>::createRotation(int axis, double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	switch (axis)
+	{
+		// X axis
+		case (0):
+			set(0,1.0,0.0,0.0);
+			set(1,0.0,cosx,sinx);
+			set(2,0.0,-sinx,cosx);
+			break;
+		// Y axis
+		case (1):
+			set(0,cosx,0.0,-sinx);
+			set(1,0.0,1.0,0.0);
+			set(2,sinx,0.0,cosx);
+			break;
+		// Z axis
+		case (2):
+			set(0,cosx,sinx,0.0);
+			set(1,-sinx,cosx,0.0);
+			set(2,0.0,0.0,1.0);
+			break;
+		default:
+			printf("Axis type %i not recognised - rotation matrix not created.\n", axis);
+			break;
+	}
 }
 
 /*

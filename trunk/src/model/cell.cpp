@@ -416,6 +416,41 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	msg.exit("Model::replicateCell");
 }
 
+// Rotate cell and contents
+void Model::rotateCell(int axis, double angle)
+{
+	msg.enter("Model::rotateCell");
+	if (cell_.type() == Cell::NoCell)
+	{
+		msg.print("This model has no cell, and so it can't be rotated.\n");
+		return;
+	}
+	Mat3<double> rotmat;
+	rotmat.createRotation(axis, angle);
+	// Create new cell axes
+	Mat3<double> axes = cell_.axes();
+	axes *= rotmat;
+// 	cell_.set(axes);
+	Vec3<double> lengths, angles;
+	lengths = cell_.lengths();
+	angles = cell_.angles();
+	double temp;
+	temp = lengths.z;
+	lengths.z = lengths.y;
+	lengths.y = temp;
+	temp = angles.z;
+	angles.z = angles.y;
+	angles.y = temp;
+	cell_.set(lengths, angles);
+	// Ensure that our new axes point along positive directions
+	
+	// Transform atoms
+	markAll();
+	Vec3<double> origin; 
+	matrixTransformSelection(origin,rotmat,TRUE);
+	msg.exit("Model::rotateCell");
+}
+
 // Frac to Real
 void Model::fracToReal()
 {

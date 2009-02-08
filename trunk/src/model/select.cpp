@@ -404,14 +404,14 @@ void Model::selectPattern(Pattern *p, bool markonly, bool deselect)
 }
 
 // Get first selected
-Atom *Model::firstSelected()
+Atom *Model::firstSelected(bool markonly)
 {
 	msg.enter("Model::firstSelected");
 	Atom *result = NULL;
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
-		if (i->isSelected())
+		if (i->isSelected(markonly))
 		{
 			result = i;
 			break;
@@ -419,25 +419,6 @@ Atom *Model::firstSelected()
 		i = i->next;
 	}
 	msg.exit("Model::firstSelected");
-	return result;
-}
-
-// Get first marked
-Atom *Model::firstMarked()
-{
-	msg.enter("Model::firstMarked");
-	Atom *result = NULL;
-	Atom *i = atoms_.first();
-	while (i != NULL)
-	{
-		if (i->isSelected(TRUE))
-		{
-			result = i;
-			break;
-		}
-		i = i->next;
-	}
-	msg.exit("Model::firstMarked");
 	return result;
 }
 

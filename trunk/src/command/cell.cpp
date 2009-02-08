@@ -128,6 +128,44 @@ int Command::function_CA_REPLICATE(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Rotate cell and contents ('rotatecell <axis> <angle>')
+int Command::function_CA_ROTATECELL(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	// Determine supplied axis and get angle
+	int axis = -1;
+	char ch = c->argc(0)[0];
+	switch (ch)
+	{
+		case ('X'):
+		case ('x'):
+		case ('1'):
+			axis = 0;
+			break;
+		case ('Y'):
+		case ('y'):
+		case ('2'):
+			axis = 1;
+			break;
+		case ('Z'):
+		case ('z'):
+		case ('3'):
+			axis = 2;
+			break;
+		default:
+			msg.print("Unrecognised axis '%c' given to 'rotatecell'.\n",ch);
+			return Command::Fail;
+			break;
+	}
+	double angle = c->argd(1);
+	char s[128];
+	sprintf(s, "Rotate cell %fdeg about %c-axis", angle, 88+axis);
+	obj.rs->beginUndoState(s);
+	obj.rs->rotateCell(axis, angle);
+	obj.rs->endUndoState();
+	return Command::Success;
+}
+
 // Scale cell and atom positions ('scale <x y z>')
 int Command::function_CA_SCALE(CommandNode *&c, Bundle &obj)
 {

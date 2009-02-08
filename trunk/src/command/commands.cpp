@@ -214,6 +214,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Print the unit cell of the current model" },
 	{ "replicate",		"EEEEEE",	"<negx> <negy> <negz> <posx> <posy> <posz>",
 				"Replicate the cell along the directions given" },
+	{ "rotatecell",		"NE",		"<axis> <angle>",
+				"Rotate the cell and its contents about the specified orthogonal axis (x, y, or z)" },
 	{ "scale",		"EEE",		"<x> <y> <z>",
 				"Scale the unit cell and atomic positions of the current model" },
 	{ "scalemolecules",	"EEE",		"<x> <y> <z>",
