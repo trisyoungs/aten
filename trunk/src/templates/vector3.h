@@ -61,6 +61,8 @@ template <class T> class Vec3
 	// Operators
 	*/
 	public:
+	// Operator =
+	void operator=(T);
 	// Operators + and +=
 	void operator+=(T);
 	void operator+=(const Vec3<T>&);
@@ -186,6 +188,14 @@ template <class T> void Vec3<T>::add(T a, T b, T c)
 /*
 // Operators
 */
+
+// Assignment from single value
+template <class T> void Vec3<T>::operator=(T a)
+{
+	x = a;
+	y = a;
+	z = a;
+}
 
 // Operator += (T)
 template <class T> void Vec3<T>::operator+=(T v)
@@ -511,7 +521,7 @@ template <class T> T Vec3<T>::get(int el) const
 // Print
 template <class T> void Vec3<T>::print() const
 {
-	printf("vec = %8.4f %8.4f %8.4f\n",(double)x,(double)y,(double)z);
+	printf("%8.4f %8.4f %8.4f\n",(double)x,(double)y,(double)z);
 }
 
 // Generate random unit vector

@@ -226,6 +226,24 @@ class Model
 	private:
 	// Bonds in the model
 	List<Bond> bonds_;
+	// Atom reflists (pointers) for bond calculation
+	Reflist<Atom,double> *bondingCuboids_, *bondingOverlays_;
+	// Number of cuboids in atom reflists
+	int nCuboids_;
+	// Integer number of boxes in each direction
+	Vec3<int> cuboidBoxes_;
+	// Product of y and z cuboidBoxes_
+	int cuboidYZ_;
+	// Extent of model, and size of cuboids
+	Vec3<double> extentMin_, extentMax_, extentRange_, cuboidSize_;
+	// Initialise reflists based on current extent of model
+	void initialiseBondingCuboids();
+	// Free any created reflists
+	void freeBondingCuboids();
+	// Add atom to cuboid reflists
+	void addAtomToCuboid(Atom *i);
+	// Calculate bonding from stored cuboid lists
+	void rebond();
 
 	public:
 	// Return first bond in the model
