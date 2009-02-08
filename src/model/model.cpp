@@ -75,6 +75,9 @@ Model::Model()
 	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
 	undoRedoEnabled_ = FALSE;
 	cell_.setParent(this);
+	bondingCuboids_ = NULL;
+	bondingOverlays_ = NULL;
+	nCuboids_ = 0;
 
 	// Public variables
 	next = NULL;
