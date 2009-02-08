@@ -240,18 +240,11 @@ bool Atom::isEnvironment(Atom::AtomEnvironment ae)
 }
 
 // Get next selected
-Atom *Atom::nextSelected()
+Atom *Atom::nextSelected(bool markonly)
 {
 	Atom *i;
-	for (i = this->next; i != NULL; i = i->next) if (i->selected_) break;
-	return i;
-}
-
-// Get next marked
-Atom *Atom::nextMarked()
-{
-	Atom *i;
-	for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
+	if (markonly) for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
+	else for (i = this->next; i != NULL; i = i->next) if (i->selected_) break;
 	return i;
 }
 

@@ -35,6 +35,14 @@ int Model::nMarked()
 	return nMarked_;
 }
 
+// Mark all atoms in model
+void Model::markAll()
+{
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->setSelected(TRUE,TRUE);
+	nMarked_ = atoms_.nItems();
+	msg.print(Messenger::Verbose, "All atoms marked.\n");
+}
+
 // Match marked atoms to current selection
 void Model::markSelectedAtoms()
 {
@@ -266,7 +274,7 @@ void Model::reorderSelectedAtoms()
 	Atom *i, *j;
 	Refitem<Bond,int> *rb;
 	int diff, n;
-	for (i = firstMarked(); i != NULL; i = i->nextMarked())
+	for (i = firstSelected(TRUE); i != NULL; i = i->nextSelected(TRUE))
 	{
 		// Loop over bonds
 		for (rb = i->bonds(); rb != NULL; rb = rb->next)

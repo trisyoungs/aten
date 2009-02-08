@@ -165,6 +165,7 @@ class Command {
 		CA_PACK,
 		CA_PRINTCELL,
 		CA_REPLICATE,
+		CA_ROTATECELL,
 		CA_SCALE,
 		CA_SCALEMOLECULES,
 		CA_SETCELL,
@@ -586,6 +587,7 @@ class Command {
 	static int function_CA_PACK(CommandNode *&c, Bundle &obj);
 	static int function_CA_PRINTCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_REPLICATE(CommandNode *&c, Bundle &obj);
+	static int function_CA_ROTATECELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_SCALE(CommandNode *&c, Bundle &obj);
 	static int function_CA_SCALEMOLECULES(CommandNode *&c, Bundle &obj);
 	static int function_CA_SETCELL(CommandNode *&c, Bundle &obj);

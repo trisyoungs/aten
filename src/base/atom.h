@@ -40,9 +40,7 @@ class Atom
 	// List pointers
 	Atom *prev, *next;
 	// Get next selected atom in list
-	Atom *nextSelected();
-	// Get next marked atom in list
-	Atom *nextMarked();
+	Atom *nextSelected(bool markonly = FALSE);
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
 	static DrawStyle drawStyle(const char*);

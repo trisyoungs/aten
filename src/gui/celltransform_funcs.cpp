@@ -25,6 +25,7 @@
 #include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "command/staticcommand.h"
+
 // Constructor
 AtenCellTransform::AtenCellTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
@@ -116,6 +117,11 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 
 void AtenCellTransform::on_CellRotateXClockwise_clicked(bool checked)
 {
+	// Construct rotation matrix
+	Mat3<double> mat;
+	mat.set(0,1.0,0.0,0.0);
+	mat.set(1,1.0,cos(HALFPI),sin(HALFPI));
+	mat.set(2,1.0,0.0,0.0);
 }
 
 void AtenCellTransform::on_CellRotateXAnticlockwise_clicked(bool checked)
