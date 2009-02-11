@@ -65,6 +65,8 @@ Cli cliSwitches[] = {
 		"",		"Keep (don't reset) view when GUI starts" },
 	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
+	{ Cli::NewModelSwitch,		'n',"new",		0,
+		"",		"Creates a new, empty model" },
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",		"Prevent (re)calculation of bonding in the model" },
 	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
@@ -384,6 +386,10 @@ int Aten::parseCli(int argc, char *argv[])
 							nm->set(beforeChar(parser.argc(n),'='), el);
 						}
 					}
+					break;
+				// Create a new model
+				case (Cli::NewModelSwitch):
+					aten.addModel();
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
