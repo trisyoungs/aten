@@ -500,7 +500,6 @@ void Cell::calculateInverse()
 Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
 	// Returns the minimum image coordinates of r1 with respect to r2.
-	// Since we work in fractional cell coordinates, can do simple integer subtraction for cubic and pseudo-cubic boundary conditions
 	static Vec3<double> R;
 	static double half;
 	switch (type_)
