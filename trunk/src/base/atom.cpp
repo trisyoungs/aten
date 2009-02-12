@@ -243,7 +243,10 @@ bool Atom::isEnvironment(Atom::AtomEnvironment ae)
 Atom *Atom::nextSelected(bool markonly)
 {
 	Atom *i;
-	if (markonly) for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
+	if (markonly)
+	{
+		for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
+	}
 	else for (i = this->next; i != NULL; i = i->next) if (i->selected_) break;
 	return i;
 }
