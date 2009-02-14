@@ -319,12 +319,20 @@ int Dnchar::asInteger() const
 bool Dnchar::asBool() const
 {
 	// Convert string to boolean
-	bool result = TRUE;
+	bool result = FALSE;
 	static char lcase[512];
 	strcpy(lcase,lowerCase(data_));
 	if (strcmp(lcase,"off") == 0) result = FALSE;
+	else if (strcmp(lcase,"on") == 0) result = TRUE;
 	else if (strcmp(lcase,"no") == 0) result = FALSE;
+	else if (strcmp(lcase,"yes") == 0) result = TRUE;
 	else if (strcmp(lcase,"false") == 0) result = FALSE;
+	else if (strcmp(lcase,"true") == 0) result = TRUE;
+	else
+	{
+		printf("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", lcase);
+		result = FALSE;
+	}
 	return result;
 }
 

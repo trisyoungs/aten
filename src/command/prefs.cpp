@@ -287,6 +287,7 @@ int Command::function_CA_RADIUS(CommandNode *&c, Bundle &obj)
 int Command::function_CA_REPLICATEFOLD(CommandNode *&c, Bundle &obj)
 {
 	prefs.setReplicateFold(c->argb(0));
+	msg.print("Folding of atoms into unit cell before replicate is %s.\n", prefs.replicateFold() ? "on" : "off");
 	return Command::Success;
 }
 
@@ -294,6 +295,7 @@ int Command::function_CA_REPLICATEFOLD(CommandNode *&c, Bundle &obj)
 int Command::function_CA_REPLICATETRIM(CommandNode *&c, Bundle &obj)
 {
 	prefs.setReplicateTrim(c->argb(0));
+	msg.print("Trimming of atoms outside of unit cell after replicate is %s.\n", prefs.replicateTrim() ? "on" : "off");
 	return Command::Success;
 }
 
