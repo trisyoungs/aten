@@ -382,7 +382,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	selectNone();
 
 	// Now trim off atoms that are outside the new cell
-	if (prefs.replicateFold())
+	if (prefs.replicateTrim())
 	{
 		bool delatom;
 		Atom *i, *j;
