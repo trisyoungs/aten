@@ -22,6 +22,7 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
+#include "base/elements.h"
 
 // Return the number of selected atoms
 int Model::nSelected()
@@ -198,14 +199,37 @@ void Model::moveSelectionToEnd()
 // Get selection cog
 Vec3<double> Model::selectionCog()
 {
-        Vec3<double> result;
+	Vec3<double> result;
 	Atom *first = firstSelected();
-        if (first != NULL)
+	if (first != NULL)
 	{
 		for (Atom *i = first; i != NULL; i = i->nextSelected()) result += cell_.mim(i,first);
 		result /= nSelected_;
 	}
-        return result;
+	return result;
+}
+
+// Get selection com
+Vec3<double> Model::selectionCom()
+{
+	Vec3<double> result;
+	double massnorm = 0.0;
+	Atom *first = firstSelected();
+	if (first != NULL)
+	{
+		for (Atom *i = first->nextSelected(); i != NULL; i = i->nextSelected())
+		{
+			result += cell_.mim(i,first) * elements().atomicMass(i);
+			massnorm += elements().atomicMass(i);
+			if (i->element() == 0)
+			{
+				msg.print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
+				massnorm += 1.0;
+			}
+		}
+		result /= massnorm;
+	}
+	return result;
 }
 
 // Set selection visibility

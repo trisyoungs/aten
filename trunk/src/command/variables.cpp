@@ -205,6 +205,17 @@ int Command::function_CA_LETPTR(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Normalise 3-vector
+int Command::function_CA_NORMALISE(CommandNode *&c, Bundle &obj)
+{
+	Vec3<double> v = c->arg3d(0);
+	v.normalise();
+	c->arg(0)->set(v.x);
+	c->arg(1)->set(v.y);
+	c->arg(2)->set(v.z);
+	return Command::Success;
+}
+
 // Strip characters from supplied string
 int Command::function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj)
 {

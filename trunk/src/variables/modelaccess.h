@@ -31,7 +31,7 @@ class ModelAccessors : public VAccess
 	// Constructor
 	ModelAccessors();
 	// Accessor list
-	enum Accessors { Atoms, Atomtypes, Bonds, Cell, Frame, Name, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NPatterns, NTorsionTerms, Patterns, nAccessors };
+	enum Accessors { Atoms, Atomtypes, Bonds, Cell, Frame, Name, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NPatterns, NSelected, NTorsionTerms, Patterns, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

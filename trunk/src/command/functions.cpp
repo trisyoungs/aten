@@ -381,6 +381,8 @@ void Command::initPointers()
 	pointers_[CA_SELECT] = &Command::function_CA_SELECT;
 	pointers_[CA_SELECTALL] = &Command::function_CA_SELECTALL;
 	pointers_[CA_SELECTFFTYPE] = &Command::function_CA_SELECTFFTYPE;
+	pointers_[CA_SELECTIONCOG] = &Command::function_CA_SELECTIONCOG;
+	pointers_[CA_SELECTIONCOM] = &Command::function_CA_SELECTIONCOM;
 	pointers_[CA_SELECTNONE] = &Command::function_CA_SELECTNONE;
 	pointers_[CA_SELECTOVERLAPS] = &Command::function_CA_SELECTOVERLAPS;
 	pointers_[CA_SELECTPATTERN] = &Command::function_CA_SELECTPATTERN;
@@ -428,6 +430,7 @@ void Command::initPointers()
 	pointers_[CA_LETCHAR] = &Command::function_CA_LETCHAR;
 	pointers_[CA_LETPTR] = &Command::function_CA_LETPTR;
 	pointers_[CA_LETVECTOR] = &Command::function_CA_LETVECTOR;
+	pointers_[CA_NORMALISE] = &Command::function_CA_NORMALISE;	
 	pointers_[CA_STRIPCHARS] = &Command::function_CA_STRIPCHARS;
 
 	// View Commands
