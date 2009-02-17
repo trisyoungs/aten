@@ -440,6 +440,8 @@ class Command {
 		CA_SELECT,
 		CA_SELECTALL,
 		CA_SELECTFFTYPE,
+		CA_SELECTIONCOG,
+		CA_SELECTIONCOM,
 		CA_SELECTNONE,
 		CA_SELECTOVERLAPS,
 		CA_SELECTPATTERN,
@@ -487,6 +489,7 @@ class Command {
 		CA_LETCHAR,
 		CA_LETPTR,
 		CA_LETVECTOR,
+		CA_NORMALISE,
 		CA_STRIPCHARS,
 
 		// View
@@ -843,6 +846,8 @@ class Command {
 	static int function_CA_SELECT(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECTALL(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECTFFTYPE(CommandNode *&c, Bundle &obj);
+	static int function_CA_SELECTIONCOG(CommandNode *&c, Bundle &obj);
+	static int function_CA_SELECTIONCOM(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECTNONE(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECTOVERLAPS(CommandNode *&c, Bundle &obj);
 	static int function_CA_SELECTPATTERN(CommandNode *&c, Bundle &obj);
@@ -885,6 +890,7 @@ class Command {
 	static int function_CA_LETCHAR(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETPTR(CommandNode *&c, Bundle &obj);
 	static int function_CA_LETVECTOR(CommandNode *&c, Bundle &obj);
+	static int function_CA_NORMALISE(CommandNode *&c, Bundle &obj);
 	static int function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj);
 	// View
 	static int function_CA_GETVIEW(CommandNode *&c, Bundle &obj);

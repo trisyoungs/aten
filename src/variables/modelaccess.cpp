@@ -43,6 +43,7 @@ ModelAccessors::ModelAccessors()
  	accessorPointers[ModelAccessors::NBonds] = addAccessor("nbonds",		VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NBondTerms] = addAccessor("nbondterms",	VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NPatterns] = addAccessor("npatterns",		VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NSelected] = addAccessor("nselected",		VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NTorsionTerms] = addAccessor("ntorsionterms",	VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::Patterns] = addListAccessor("patterns",	VTypes::PatternData);
 };
@@ -126,6 +127,9 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			break;
 		case (ModelAccessors::NPatterns):
 			rv.set(m->nPatterns());
+			break;
+		case (ModelAccessors::NSelected):
+			rv.set(m->nSelected());
 			break;
 		case (ModelAccessors::NTorsionTerms):
 			rv.set(m->nUniqueTorsionTerms());

@@ -21,6 +21,7 @@
 
 #include "variables/accesspath.h"
 #include "command/commandlist.h"
+#include "command/format.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
@@ -186,7 +187,26 @@ int Command::function_CA_SELECT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), FALSE);
+	CharacterVariable charvar;
+	for (int i=0; i<c->nArgs(); i++)
+	{
+		// If the argument contains a variable delimiter '$' anywhere then we must create a format/string from it to simplify the string
+		if (strchr(c->argc(i), '$') == NULL) selectAtoms(obj.rs, c->arg(i), FALSE);	
+		else
+		{
+			c->createFormat(c->argc(i), FALSE);
+			if (c->format()->createString())
+			{
+				charvar.set(c->format()->createdString());
+				selectAtoms(obj.rs, &charvar, FALSE);
+			}
+			else
+			{
+				msg.print("Failed to process variables in selection string.\n");
+				return Command::Fail;
+			}
+		}
+	}
 	return Command::Success;
 }
 
@@ -213,6 +233,37 @@ int Command::function_CA_SELECTFFTYPE(CommandNode *&c, Bundle &obj)
 		}
 	}
 	obj.rs->endUndoState();
+	return Command::Success;
+}
+
+
+// Get selection centre of geometry ('selectioncog [x y z]')
+int Command::function_CA_SELECTIONCOG(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	Vec3<double> v = obj.rs->selectionCog();
+	if (c->hasArg(2))
+	{
+		c->arg(0)->set(v.x);
+		c->arg(1)->set(v.y);
+		c->arg(2)->set(v.z);
+	}
+	else msg.print("Selection centre of geometry is at %f %f %f.\n", v.x, v.y, v.z);
+	return Command::Success;
+}
+
+// Get selection centre of mass ('selectioncom [x y z]')
+int Command::function_CA_SELECTIONCOM(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	Vec3<double> v = obj.rs->selectionCom();
+	if (c->hasArg(2))
+	{
+		c->arg(0)->set(v.x);
+		c->arg(1)->set(v.y);
+		c->arg(2)->set(v.z);
+	}
+	else msg.print("Selection centre of mass is at %f %f %f.\n", v.x, v.y, v.z);
 	return Command::Success;
 }
 

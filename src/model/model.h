@@ -856,6 +856,8 @@ class Model
 	void selectionEmpirical(Dnchar&, bool markonly);
 	// Get selection's centre of geometry
 	Vec3<double> selectionCog();
+	// Get selection's centre of mass
+	Vec3<double> selectionCom();
 	// Reorder bound atoms/fragments within the selection so that they are consecutive
 	void reorderSelectedAtoms();
 
