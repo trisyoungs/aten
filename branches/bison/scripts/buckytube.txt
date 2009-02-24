@@ -1,0 +1,55 @@
+# Create a buckytube of some length and 'radius' along the z-axis
+
+# Variables
+integer nbenz, nstacks, stack, benz
+real rcc, deltaz
+
+# Setup
+# The number of benzene laying on the same stack circumference is nbenz
+$nbenz = 10
+# C-C bond length is given by rcc
+$rcc = 1.39
+# Number of stacks of molecules to generate (length of tube, will be doubled later on)
+$nstacks = 5
+# Rotation increment around circumference is deltaz
+$deltaz = 360.0/($nbenz*2.0)
+
+# Create target model
+newmodel buckytube
+
+$nstacks *= 2
+$nstacks -= 1
+
+# Outer loop - loop over stacks
+for $stack,1,$nstacks
+
+	# Inner loop - loop over benzene molecules
+	for $benz,1,$nbenz
+		if $stack = 1
+			move 0.0 0.0 -1.0
+			newatom H
+			move 0 0 1.0
+		end
+		newatom C
+		move $rcc*cos(30.0) 0.0 $rcc*sin(30.0)
+		rotz $deltaz
+		if $stack = $nstacks
+			move 0.0 0.0 1.0
+			newatom H
+			move 0 0 -1.0
+		end
+		newatom C
+		move $rcc*cos(30.0) 0.0 -$rcc*sin(30.0)
+		rotz $deltaz
+	end
+	
+	# Move pen along tube length, and one step around circumference to offset next layer
+	move 0.0 0.0 $rcc*1.5
+	move $rcc*cos(30.0) 0 0
+	rotz $deltaz
+
+end
+
+# Rebond and augment
+rebond
+augment

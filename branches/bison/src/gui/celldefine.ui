@@ -1,0 +1,624 @@
+<ui version="4.0" >
+ <class>CellDefineDialog</class>
+ <widget class="QDialog" name="CellDefineDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>408</width>
+    <height>165</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Cell Definition</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+  </property>
+  <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>2</number>
+   </property>
+   <property name="spacing" >
+    <number>4</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="CellDefinitionGroup" >
+     <property name="title" >
+      <string>Has Cell?</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>2</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>4</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>16</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_16" >
+              <property name="text" >
+               <string>Lengths</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>16</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_17" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>a</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellLengthASpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>10000.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>10.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_18" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>b</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellLengthBSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>10000.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>10.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_19" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>c</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellLengthCSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>10000.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>10.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>16</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_15" >
+              <property name="text" >
+               <string>Angles</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>16</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_12" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>&amp;#945;</string>
+              </property>
+              <property name="textFormat" >
+               <enum>Qt::RichText</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellAngleASpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>180.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>90.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_13" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>&amp;#946;</string>
+              </property>
+              <property name="textFormat" >
+               <enum>Qt::RichText</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellAngleBSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>180.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>90.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_14" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text" >
+               <string>&amp;#947;</string>
+              </property>
+              <property name="textFormat" >
+               <enum>Qt::RichText</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="CellAngleCSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>0</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>4</number>
+              </property>
+              <property name="maximum" >
+               <double>180.000000000000000</double>
+              </property>
+              <property name="value" >
+               <double>90.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="CellVolumeLabel" >
+        <property name="text" >
+         <string> Volume : </string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="CellSpacegroupGroup" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="title" >
+        <string>Spacegroup</string>
+       </property>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>2</number>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="SpacegroupLabel" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>None (0)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="CellSpacegroupRemoveButton" >
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>10000</width>
+              <height>10000</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="CellSpacegroupEdit" >
+            <property name="toolTip" >
+             <string>Name or ID of spacegroup to set</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="CellSpacegroupSetButton" >
+            <property name="text" >
+             <string>Set</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="CellSpacegroupPackButton" >
+            <property name="text" >
+             <string>Pack</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>CellLengthASpin</tabstop>
+  <tabstop>CellLengthBSpin</tabstop>
+  <tabstop>CellLengthCSpin</tabstop>
+  <tabstop>CellAngleASpin</tabstop>
+  <tabstop>CellAngleBSpin</tabstop>
+  <tabstop>CellAngleCSpin</tabstop>
+  <tabstop>CellSpacegroupEdit</tabstop>
+  <tabstop>CellSpacegroupPackButton</tabstop>
+  <tabstop>CellSpacegroupRemoveButton</tabstop>
+  <tabstop>CellSpacegroupSetButton</tabstop>
+ </tabstops>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,43 @@
+# Simple-style volumetric data definition
+# Last modified: 11/02/2009
+# ChangeLog:
+#	11/02/2009 - Non-cubic grid axes now used correctly
+#	12/10/2008 - Adjusted to use new variable access rules.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
+
+importgrid
+	name "Probability Densities from pdens"
+	nickname pdens
+	extension pdens
+	glob *.pdens*
+
+	# Variable declarations
+	character order
+	integer n,nx,ny,nz,npoints
+	real ox,oy,oz,data,ax,ay,az,bx,by,bz,cx,cy,cz
+
+	# Create new grid
+	newgrid $infile
+
+	# First line contains number of gridpoints in each direction x,y,z
+	readline "$nx $ny $nz"
+	gridsize $nx $ny $nz
+	# Second line contains axis system
+	readline "$ax $ay $az $bx $by $bz $cx $cy $cz"
+	gridaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+	# Third line contains grid origin (lower left-hand corner)
+	readline "$ox $oy $oz"
+	gridorigin $ox $oy $oz
+	# Fourth line is loop order
+	readline $order
+	gridlooporder $order
+
+
+	# Read in grid data
+	$npoints = $nx*$ny*$nz
+	for $n,1,$npoints
+		readline "$data"
+		addnextgridpoint $data
+	end
+	finalisegrid
+end
