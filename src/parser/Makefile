@@ -47,7 +47,8 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
-am_libparser_a_OBJECTS = grammar.$(OBJEXT) treenode.$(OBJEXT)
+am_libparser_a_OBJECTS = grammar.$(OBJEXT) lexer.$(OBJEXT) \
+	treenode.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -79,12 +80,12 @@ DIST_SOURCES = $(libparser_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /tris/work/aten-bison/config/missing --run aclocal-1.10
-AMTAR = ${SHELL} /tris/work/aten-bison/config/missing --run tar
+ACLOCAL = ${SHELL} /home/tris/src/aten-bison/config/missing --run aclocal-1.10
+AMTAR = ${SHELL} /home/tris/src/aten-bison/config/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /tris/work/aten-bison/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /tris/work/aten-bison/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /tris/work/aten-bison/config/missing --run automake-1.10
+AUTOCONF = ${SHELL} /home/tris/src/aten-bison/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/tris/src/aten-bison/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/tris/src/aten-bison/config/missing --run automake-1.10
 AWK = gawk
 BUILDDIR = 
 CC = gcc
@@ -124,7 +125,7 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
 MAC_LIBS = 
-MAKEINFO = ${SHELL} /tris/work/aten-bison/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/tris/src/aten-bison/config/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NMEDIT = 
 OBJEXT = o
@@ -147,12 +148,12 @@ SET_MAKE =
 SHELL = /bin/sh
 STRIP = strip
 VERSION = 1.1
-YACC = bison -y
+YACC = yacc
 YFLAGS = 
-abs_builddir = /tris/work/aten-bison/src/parser
-abs_srcdir = /tris/work/aten-bison/src/parser
-abs_top_builddir = /tris/work/aten-bison
-abs_top_srcdir = /tris/work/aten-bison
+abs_builddir = /home/tris/src/aten-bison/src/parser
+abs_srcdir = /home/tris/src/aten-bison/src/parser
+abs_top_builddir = /home/tris/src/aten-bison
+abs_top_srcdir = /home/tris/src/aten-bison
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_F77 = gfortran
@@ -181,7 +182,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = $(SHELL) /tris/work/aten-bison/config/install-sh
+install_sh = $(SHELL) /home/tris/src/aten-bison/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -207,7 +208,7 @@ top_srcdir = ../..
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = grammar.yy treenode.cpp
+libparser_a_SOURCES = grammar.yy lexer.cpp treenode.cpp
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui -DQT_SHARED -I/usr/include/QtGui   -I/usr/include/readline
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -263,6 +264,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/grammar.Po
+include ./$(DEPDIR)/lexer.Po
 include ./$(DEPDIR)/treenode.Po
 
 .cc.o:

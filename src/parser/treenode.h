@@ -22,11 +22,14 @@
 #ifndef ATEN_TREENODE_H
 #define ATEN_TREENODE_H
 
-//#include "base/vtypes.h"
+#include "templates/list.h"
+#include "templates/vector3.h"
+#include "base/vtypes.h"
 
 // Forward declarations
 //class CommandList;
 class VariableList;
+class Variable;
 
 // Tree Node
 class TreeNode
@@ -39,17 +42,20 @@ class TreeNode
 	TreeNode *prev, *next;
 
 	/*
-	// Execute
+	// Create /Execute
 	*/
 	public:
+	// Static function to create AST, putting result in static member
+	static bool createTree(const char *s);
+	// Returned node
+	static TreeNode *createdTree;
+	// Execute AST
 	void execute();
 
 	/*
 	// Argument Data
 	*/
 	private:
-	// Add variable argument to reference list, given the name
-	bool addArgument(int argid, Parser::ArgumentForm af = Parser::UnknownForm);
 	// Variable list from which the command arguments were set
 	VariableList *variableList_;
 	// Argument list
