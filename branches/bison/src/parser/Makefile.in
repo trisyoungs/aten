@@ -47,7 +47,8 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
-am_libparser_a_OBJECTS = grammar.$(OBJEXT) treenode.$(OBJEXT)
+am_libparser_a_OBJECTS = grammar.$(OBJEXT) lexer.$(OBJEXT) \
+	treenode.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -207,7 +208,7 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = grammar.yy treenode.cpp
+libparser_a_SOURCES = grammar.yy lexer.cpp treenode.cpp
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -263,6 +264,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grammar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/treenode.Po@am__quote@
 
 .cc.o:

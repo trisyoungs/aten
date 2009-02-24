@@ -28,8 +28,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "795"
-#define ATENDATE "Tue 24 Feb - 17:39"
+#define ATENREVISION "796"
+#define ATENDATE "Tue 24 Feb - 21:24"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations

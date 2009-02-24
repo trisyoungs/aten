@@ -40,32 +40,34 @@
       know about them.  */
    enum yytokentype {
      INTEGER = 258,
-     VARIABLE = 259,
-     WHILE = 260,
-     IF = 261,
-     PRINT = 262,
-     IFX = 263,
-     ELSE = 264,
-     NE = 265,
-     EQ = 266,
-     LE = 267,
-     GE = 268,
-     UMINUS = 269
+     REAL = 259,
+     VARIABLE = 260,
+     WHILE = 261,
+     IF = 262,
+     PRINT = 263,
+     IFX = 264,
+     ELSE = 265,
+     NE = 266,
+     EQ = 267,
+     LE = 268,
+     GE = 269,
+     UMINUS = 270
    };
 #endif
 /* Tokens.  */
 #define INTEGER 258
-#define VARIABLE 259
-#define WHILE 260
-#define IF 261
-#define PRINT 262
-#define IFX 263
-#define ELSE 264
-#define NE 265
-#define EQ 266
-#define LE 267
-#define GE 268
-#define UMINUS 269
+#define REAL 259
+#define VARIABLE 260
+#define WHILE 261
+#define IF 262
+#define PRINT 263
+#define IFX 264
+#define ELSE 265
+#define NE 266
+#define EQ 267
+#define LE 268
+#define GE 269
+#define UMINUS 270
 
 
 
@@ -80,7 +82,7 @@ typedef union YYSTYPE
 	TreeNode *node;             /* node pointer */
 }
 /* Line 1489 of yacc.c.  */
-#line 84 "grammar.h"
+#line 86 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
