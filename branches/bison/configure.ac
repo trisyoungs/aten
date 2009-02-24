@@ -25,6 +25,7 @@ AM_INIT_AUTOMAKE(aten,ATEN_VERSION)
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_YACC
 
 
 #
@@ -141,6 +142,7 @@ src/ff/Makefile
 src/gui/Makefile
 src/main/Makefile
 src/methods/Makefile
+src/parser/Makefile
 src/model/Makefile
 src/render/Makefile
 src/templates/Makefile
