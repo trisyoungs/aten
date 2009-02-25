@@ -28,12 +28,6 @@ NuVariable::NuVariable()
 {
 	// Private variables
 	name_.set("unnamed");
-	returnType_ = VTypes::NoData;
-	readOnly_ = FALSE;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor (virtual)

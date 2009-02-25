@@ -22,7 +22,8 @@
 #ifndef ATEN_TREENODE_H
 #define ATEN_TREENODE_H
 
-#include "templates/list.h"
+#include "parser/returnvalue.h"
+#include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "base/vtypes.h"
 
@@ -30,7 +31,7 @@
 //class CommandList;
 class VariableList;
 class Variable;
-class Tree;
+// class Tree;
 
 // Tree Node
 class TreeNode
@@ -39,24 +40,21 @@ class TreeNode
 	// Constructor / Destructor
 	TreeNode();
 	~TreeNode();
-	// List pointers
-	TreeNode *prev, *next;
 
 	/*
 	// Argument Data
 	*/
 	private:
 	// Arguments (if any) to leaf node operation
-	List<Tree> args_;
+	Reflist<TreeNode,int> args_;
 
 	public:
-	// Return number of arguments given to node
+	// Return number of arguments currently assigned to node
 	int nArgs();
-	// Return argument as integer
-	int argi(int argno);
-
-	// Return return type of argument
-	VTypes::DataType argt(int argno);
+	// Add new argument to node
+	void addArgument(TreeNode *leaf);
+	// Return argument specified
+	TreeNode *arg(int i);
 
 	/*
 	// Node Character
@@ -68,10 +66,6 @@ class TreeNode
 	bool readOnly_;
 
 	public:
-	// Set name of variable
-	void setName(const char* s);
-	// Get name of variable
-	const char *name();
 	// Sets the content type of the variable
 	void setReturnType(VTypes::DataType dt);
 	// Returns content type of the variable

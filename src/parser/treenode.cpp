@@ -29,125 +29,14 @@
 TreeNode::TreeNode()
 {
 	// Private variables
-
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
+	returnType_ = VTypes::NoData;
+	readOnly_ = TRUE;
 }
 
 // Destructor
 TreeNode::~TreeNode()
 {
 }
-
-/*
-// Execute
-*/
-
-
-/*
-// Argument Creation
-*/
-
-
-/*
-// Argument Access
-*/
-
-// Return variable argument
-// Variable *TreeNode::arg(int argno)
-// {
-// 	Refitem<Variable,int> *ri = args_[argno];
-// 	return ri->item;
-// }
-
-// Return argument as character
-// const char *TreeNode::argc(int argno)
-// {
-// 	Tree *t = args_[argno];
-// 	return (t == NULL ?  "NULL" : ri->item->asCharacter());
-// }
-
-// Return argument as integer
-int TreeNode::argi(int argno)
-{
-	Tree *t = args_[argno];
-// 	return (t == NULL ?  0 : ri->item->asInteger());
-}
-
-// Return argument as double
-// double TreeNode::argd(int argno)
-// {
-// 	Refitem<Variable,int> *ri = args_[argno];
-// 	return (ri == NULL ? 0.0 : ri->item->asDouble());
-// }
-
-// Return argument as float
-// float TreeNode::argf(int argno)
-// {
-// 	return (float) argd(argno);
-// }
-
-// Return argument as bool
-// bool TreeNode::argb(int argno)
-// {
-// 	Refitem<Variable,int> *ri = args_[argno];
-// 	return (ri == NULL ? -1 : ri->item->asBool());
-// }
-
-// Return argument as pointer
-// void *TreeNode::argp(int argno, VTypes::DataType dt)
-// {
-// 	Refitem<Variable,int> *ri = args_[argno];
-// 	return (ri == NULL ? NULL : ri->item->asPointer(dt));
-// }
-
-// Returns whether argument 'n' was provided
-// bool TreeNode::hasArg(int argno)
-// {
-// 	return ((argno+1) > args_.nItems() ? FALSE : TRUE);
-// }
-
-// Return variable type of argument
-VTypes::DataType TreeNode::argt(int argno)
-{
-	Tree *t = args_[argno];
-// 	return (ri == NULL ? VTypes::NoData : ri->item->type());
-}
-
-// Return arguments as Vec3<double>
-// Vec3<double> TreeNode::arg3d(int i)
-// {
-// 	msg.enter("TreeNode::arg3d");
-//         static Vec3<double> result;
-//         if (i > (args_.nItems()-3)) printf("TreeNode::arg3d - Starting point too close to end of argument list.\n");
-//         result.set(args_[i]->item->asDouble(), args_[i+1]->item->asDouble(), args_[i+2]->item->asDouble());
-// 	msg.exit("TreeNode::arg3d");
-//         return result;
-// }
-
-// Return arguments as Vec3<float>
-// Vec3<float> TreeNode::arg3f(int i)
-// {
-// 	msg.enter("TreeNode::arg3f");
-//         static Vec3<float> result;
-//         if (i > (args_.nItems()-3)) printf("TreeNode::arg3f - Starting point too close to end of argument list.\n");
-//         result.set(args_[i]->item->asFloat(), args_[i+1]->item->asFloat(), args_[i+2]->item->asFloat());
-// 	msg.exit("TreeNode::arg3f");
-//         return result;
-// }
-
-// Return arguments as Vec3<int>
-// Vec3<int> TreeNode::arg3i(int i)
-// {
-// 	msg.enter("TreeNode::arg3i");
-// 	static Vec3<int> result;
-// 	if (i > (args_.nItems()-3)) printf("TreeNode::arg3i - Starting point too close to end of argument list.\n");
-//         result.set(args_[i]->item->asInteger(), args_[i+1]->item->asInteger(), args_[i+2]->item->asInteger());
-// 	msg.exit("TreeNode::arg3i");
-// 	return result;
-// }
 
 // Sets the content type of the variable
 void TreeNode::setReturnType(VTypes::DataType dt)
@@ -173,10 +62,29 @@ void TreeNode::setReadOnly()
 	readOnly_ = TRUE;
 }
 
-// Return number of arguments given to command
+// Return number of arguments currently assigned to node
 int TreeNode::nArgs()
 {
 	return args_.nItems();
+}
+
+// Add argument to node
+void TreeNode::addArgument(TreeNode *leaf)
+{
+	printf("Leaf to be added as an argument is %li\n", leaf);
+	args_.add(leaf);
+	printf("Added argument %i to node....\n", args_.nItems());
+}
+
+// Return argument specified
+TreeNode *TreeNode::arg(int i)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return NULL;
+	}
+	return args_[i]->item;
 }
 
 /*

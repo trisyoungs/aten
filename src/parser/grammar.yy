@@ -36,16 +36,39 @@ void yyerror(char *s);
 %left '*' '/'
 %nonassoc UMINUS
 
-%type <node> expr
+%type <node> expr statement compound
 
 %%
 
+function:
+          function statement         { Tree::currentTree->setHeadNode($2); }
+        | /* NULL */
+        ;
+
+statement:
+          ';'                            { $$ = Tree::currentTree->addJoiner(NULL,NULL); }
+        | expr ';'                       { $$ = $1; }
+/*        | PRINT expr ';'                 { $$ = opr(PRINT, 1, $2); } */
+/*        | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); } */
+/*        | WHILE '(' expr ')' stmt        { $$ = opr(WHILE, 2, $3, $5); } */
+/*        | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); } */
+/*        | IF '(' expr ')' stmt ELSE stmt { $$ = opr(IF, 3, $3, $5, $7); } */
+/*        | '{' stmt_list '}'              { $$ = $2; } */
+        ;
+
+compound:
+          statement                  { $$ = $1; }
+        | compound statement         { $$ = Tree::currentTree->addJoiner($1,$2); }
+        ;
+
 expr:
-          INTEGER				{ $$ = Tree::currentTree->addLeaf($1); }
+          INTEGER				{ $$ = $1; }
        /* | VARIABLE				{ $$ = id($1); } */
  /*        | '-' expr %prec UMINUS			{ $$ = opr(UMINUS, 1, $2); } */
-        | expr '+' expr				{ $$ = Tree::currentTree->addCommand(NuCommand::Addition, 2, $1, $3); }
-        | expr '-' expr				{ $$ = Tree::currentTree->addCommand(NuCommand::Subtraction, 2, $1, $3); }
+        | expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Addition);
+						  $$->addArgument($1); $$->addArgument($3); }
+        | expr '-' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Subtraction);
+						  $$->addArgument($1); $$->addArgument($3); }
 /*        | expr '*' expr				{ $$ = opr('*', 2, $1, $3); } */
 /*        | expr '/' expr				{ $$ = opr('/', 2, $1, $3); } */
 /*        | expr '<' expr				{ $$ = opr('<', 2, $1, $3); } */

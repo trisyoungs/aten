@@ -70,3 +70,10 @@ bool NuIntegerVariable::reset(NuVariable *index)
 	integerData_ = 0;
 	return TRUE;
 }
+
+// Return value of node
+int NuIntegerVariable::execute(NuReturnValue &rv)
+{
+	rv.set(integerData_);
+	return TRUE;
+}

@@ -50,8 +50,8 @@ libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
 am_libparser_a_OBJECTS = commandnode.$(OBJEXT) commands.$(OBJEXT) \
 	functions.$(OBJEXT) grammar.$(OBJEXT) integer.$(OBJEXT) \
-	lexer.$(OBJEXT) returnvalue.$(OBJEXT) tree.$(OBJEXT) \
-	treenode.$(OBJEXT) variable.$(OBJEXT)
+	lexer.$(OBJEXT) returnvalue.$(OBJEXT) testfuncs.$(OBJEXT) \
+	tree.$(OBJEXT) treenode.$(OBJEXT) variable.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -212,7 +212,7 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp returnvalue.cpp tree.cpp treenode.cpp variable.cpp
+libparser_a_SOURCES = commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp returnvalue.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp
 noinst_HEADERS = commandnode.h commands.h integer.h returnvalue.h tree.h treenode.h variable.h
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
 all: $(BUILT_SOURCES)
@@ -275,6 +275,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/returnvalue.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testfuncs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/treenode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/variable.Po@am__quote@

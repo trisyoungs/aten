@@ -39,7 +39,7 @@ class NuCommandNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	NuCommandNode();
+	NuCommandNode(NuCommand::Function func = NuCommand::NoFunction);
 	~NuCommandNode();
 
 	/*

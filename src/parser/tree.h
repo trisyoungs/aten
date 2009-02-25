@@ -45,8 +45,6 @@ class Tree
 	// Constructor / Destructor
 	Tree();
 	~Tree();
-	// List pointers
-	Tree *prev, *next;
 
 	/*
 	// Create / Execute
@@ -75,28 +73,28 @@ class Tree
 	// Current tree (target of node creation)
 	static Tree *currentTree;
 	// Get return value of tree (for use by child nodes)
-	NuReturnValue &returnValue();
+// 	NuReturnValue &returnValue();
 
 	/*
 	// Node Data
 	*/
-	public:
-	// Add simple leaf node (e.g. constant, variable) to topmost branch on stack
-	TreeNode *addLeaf(TreeNode *leaf);
-	// Add command-based leaf node to topmost branch on stack
-	TreeNode *addCommand(NuCommand::Function func, int nargs, TreeNode *arg1, TreeNode *leaf2);
-	// Return topmost branch on stack
-	Tree *topBranch();
-	// Push current branch onto stack
-
 	private:
 	// Global variable list for the whole tree
 	VariableList *variableList_;
-	// Node list
-	List<TreeNode> nodes_;
-	// Branch stack
-	Reflist<Tree,int> stack_;
+	// Node list - a disordered list of all nodes owned by the Tree
+	Reflist<TreeNode,int> nodeList_;
+	// Head of the actual AST
+	TreeNode *headNode_;
 
+	public:
+	// Associate a simple leaf node (e.g. constant, variable) to the Tree
+	TreeNode *addLeaf(TreeNode *leaf);
+	// Asosciate a command-based leaf node to the Tree
+	TreeNode *addCommandLeaf(NuCommand::Function funcs);
+	// Add joiner
+	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	// Set head node
+	void setHeadNode(TreeNode *node);
 };
 
 #endif
