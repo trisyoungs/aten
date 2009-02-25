@@ -34,6 +34,9 @@ class NuReturnValue
 	// Operator=
 	void operator=(NuReturnValue &rv);
 
+	/*
+	// Data
+	*/
 	private:
 	// Data type contained in class
 	VTypes::DataType type_;
@@ -41,10 +44,24 @@ class NuReturnValue
 	int valueI_;
 
 	public:
+	// Return type of the stored data
+	VTypes::DataType type();
 	// Reset data
 	void reset();
+
+	/*
+	// Set
+	*/
+	public:
 	// Set from integer value
 	void set(int i);
+
+	/*
+	// Get
+	*/
+	public:
+	// Return integer value
+	int asInteger();
 };
 
 #endif

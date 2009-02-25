@@ -29,45 +29,14 @@
 NuCommand nucommands;
 
 // Command action
-NuCommandData NuCommand::data[NuCommand::CA_NITEMS] = {
-	// Variables
-	{ "character",		"",		"<variables>", VTypes::IntegerData,
-				"Create character (string) variables with the names provided" },
-	{ "integer",		"",		"<variables>", VTypes::IntegerData,
-				"Create integer variables with the names provided" },
-	{ "real",		"",		"<variables>", VTypes::IntegerData,
-				"Create real (floating-point) variables with the names provided" },
-	{ "_constvector_",	"",		"<variables>", VTypes::IntegerData,
-				"Create constvectors with the names provided" },
-	{ "atom",		"",		"<variables>", VTypes::IntegerData,
-				"Create atom& variables with the names provided" },
-	{ "bond",		"",		"<variables>", VTypes::IntegerData,
-				"Create bond& variables with the names provided" },
-	{ "pattern",		"",		"<variables>", VTypes::IntegerData,
-				"Create pattern& variables with the names provided" },
-	{ "bound",		"",		"<variables>", VTypes::IntegerData,
-				"Create bound& variables with the names provided" },
-	{ "model",		"",		"<variables>", VTypes::IntegerData,
-				"Create model& variables with the names provided" },
-	{ "grid",		"",		"<variables>", VTypes::IntegerData,
-				"Create grid& variables with the names provided" },
-	{ "ffatom",		"",		"<variables>", VTypes::IntegerData,
-				"Create ffatom& variables with the names provided" },
-	{ "ffbound",		"",		"<variables>", VTypes::IntegerData,
-				"Create ffbound& variables with the names provided" },
-	{ "_cellvar_",		"",		"<variables>", VTypes::IntegerData,
-				"Create cell& variables with the names provided" },
-	{ "forcefield",		"",		"<variables>", VTypes::IntegerData,
-				"Create forcefield& variables with the names provided" },
-	{ "_prefsvar_",		"",		"<variables>", VTypes::IntegerData,
-				"Create prefs& variables with the names provided" },
-	{ "_elementsvar_",	"",		"<variables>", VTypes::IntegerData,
-				"Create elements& variables with the names provided" },
-	{ "vector",		"",		"<variables>", VTypes::IntegerData,
-				"Create vector variables with the names provided" },
+NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 
 	// Root node
-	{ "_ROOTNODE_",		"",		"", VTypes::IntegerData,
+	{ "_ROOTNODE_",		"",		"", VTypes::NoData,
+				"" },
+
+	// Joiner
+	{ "_JOINER_",		"",		"", VTypes::NoData,
 				"" },
 
 	// Analysis commands
@@ -791,8 +760,44 @@ NuCommandData NuCommand::data[NuCommand::CA_NITEMS] = {
 				"Translate the current atom" },
 	{ "translatecell",	"EEE",		"<dx> <dy> <dz>", VTypes::IntegerData,
 				"Translate the current selection along the cell axes by the fractional axes specified" },
-	
+
 	// Variables
+	{ "character",		"",		"<variables>", VTypes::IntegerData,
+				"Create character (string) variables with the names provided" },
+	{ "integer",		"",		"<variables>", VTypes::IntegerData,
+				"Create integer variables with the names provided" },
+	{ "real",		"",		"<variables>", VTypes::IntegerData,
+				"Create real (floating-point) variables with the names provided" },
+	{ "_constvector_",	"",		"<variables>", VTypes::IntegerData,
+				"Create constvectors with the names provided" },
+	{ "atom",		"",		"<variables>", VTypes::IntegerData,
+				"Create atom& variables with the names provided" },
+	{ "bond",		"",		"<variables>", VTypes::IntegerData,
+				"Create bond& variables with the names provided" },
+	{ "pattern",		"",		"<variables>", VTypes::IntegerData,
+				"Create pattern& variables with the names provided" },
+	{ "bound",		"",		"<variables>", VTypes::IntegerData,
+				"Create bound& variables with the names provided" },
+	{ "model",		"",		"<variables>", VTypes::IntegerData,
+				"Create model& variables with the names provided" },
+	{ "grid",		"",		"<variables>", VTypes::IntegerData,
+				"Create grid& variables with the names provided" },
+	{ "ffatom",		"",		"<variables>", VTypes::IntegerData,
+				"Create ffatom& variables with the names provided" },
+	{ "ffbound",		"",		"<variables>", VTypes::IntegerData,
+				"Create ffbound& variables with the names provided" },
+	{ "_cellvar_",		"",		"<variables>", VTypes::IntegerData,
+				"Create cell& variables with the names provided" },
+	{ "forcefield",		"",		"<variables>", VTypes::IntegerData,
+				"Create forcefield& variables with the names provided" },
+	{ "_prefsvar_",		"",		"<variables>", VTypes::IntegerData,
+				"Create prefs& variables with the names provided" },
+	{ "_elementsvar_",	"",		"<variables>", VTypes::IntegerData,
+				"Create elements& variables with the names provided" },
+	{ "vector",		"",		"<variables>", VTypes::IntegerData,
+				"Create vector variables with the names provided" },
+	
+	// Variable Manipulation
 	{ "_ADDITION_",		"",		"", VTypes::IntegerData,
 				"Internal Function (+)" },
 	{ "afterchar",		"NNV",		"<string> <char> <result>", VTypes::IntegerData,
@@ -849,14 +854,13 @@ NuCommandData NuCommand::data[NuCommand::CA_NITEMS] = {
 NuCommand::Function NuCommand::command(const char *s)
 {
 	int result;
-	for (result = CA_CHARACTER; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
+	for (result = NuCommand::NoFunction; result < NuCommand::nFunctions; result++) if (strcmp(data[result].keyword,s) == 0) break;
 	return (NuCommand::Function) result;
 }
 
 // Constructor
 NuCommand::NuCommand()
 {
-	printf("Crap.\n");
 	// Create pointer list
 	initPointers();
 	// Create dummyCommandList complete with a single dummy command
@@ -879,9 +883,9 @@ bool NuCommandData::hasArguments()
 }
 
 // Execute command
-int NuCommand::call(NuCommand::Function cf, NuCommandNode *c)
+int NuCommand::call(NuCommand::Function cf, NuCommandNode *c, NuReturnValue &rv)
 {
 // 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
-	return (this->pointers_[cf])(c, aten.current, c->parent()->returnValue());
+	return (this->pointers_[cf])(c, aten.current, rv);
 }
 

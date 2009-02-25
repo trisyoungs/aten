@@ -65,6 +65,7 @@ int yylex()
 		} while (!done);
 		// We now have the number, so create a constant and return it
 		NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
+	printf("New integer constant is %li\n", var);
 		yylval.node = var;
 // 		while ((c == '.') || isdigit(c) || c == )
 // 		ungetc (c, stdin);

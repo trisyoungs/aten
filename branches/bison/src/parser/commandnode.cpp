@@ -25,10 +25,9 @@
 #include "base/sysfunc.h"
 
 // Constructor
-NuCommandNode::NuCommandNode()
+NuCommandNode::NuCommandNode(NuCommand::Function func) : function_(func)
 {
 	// Private variables
-	function_ = NuCommand::CA_ROOTNODE;
 	parent_ = NULL;
 }
 

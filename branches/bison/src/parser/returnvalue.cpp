@@ -50,11 +50,21 @@ void NuReturnValue::operator=(NuReturnValue &source)
 	}
 }
 
+// Return type of the stored data
+VTypes::DataType NuReturnValue::type()
+{
+	return type_;
+}
+
 // Reset data
 void NuReturnValue::reset()
 {
 	type_ = VTypes::NoData;
 }
+
+/*
+// Set
+*/
 
 // Set from integer value
 void NuReturnValue::set(int i)
@@ -63,4 +73,25 @@ void NuReturnValue::set(int i)
 	valueI_ = i;
 }
 
+/*
+// Get
+*/
 
+// Return as integer value
+int NuReturnValue::asInteger()
+{
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("No data in ReturnValue to return!\n");
+			return 0;
+			break;
+		case (VTypes::IntegerData):
+			return valueI_;
+			break;
+		default:
+			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			break;
+	}
+	return 0;
+}

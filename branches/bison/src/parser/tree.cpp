@@ -21,6 +21,7 @@
 
 #include "parser/tree.h"
 #include "parser/treenode.h"
+#include "parser/commandnode.h"
 #include "parser/grammar.h"
 
 // YYParse forward
@@ -37,6 +38,7 @@ Tree::Tree()
 	fileSource_ = NULL;
 	stringPos_ = -1;
 	stringLength_ = 0;
+	headNode_ = NULL;
 
 	// Public variables
 	currentTree = NULL;
@@ -45,6 +47,44 @@ Tree::Tree()
 // Destructor
 Tree::~Tree()
 {
+}
+
+/*
+// Create / Execute
+*/
+
+// Create tree from string
+bool Tree::generate(const char *s)
+{
+	msg.enter("Tree::generate");
+	// Push this tree branch onto the stack
+// 	stack_.add(this);
+	currentTree = this;
+	// Store the source string
+	stringSource_ = s;
+	stringPos_ = 0;
+	stringLength_ = stringSource_.length();
+	isFileSource_ = FALSE;
+	int n = yyparse();
+	printf("Result of yyparse = %i\n", n);
+	msg.exit("Tree::generate");
+}
+
+// Execute tree
+int Tree::execute(NuReturnValue &rv)
+{
+	msg.enter("Tree::execute");
+	// Walk the individual nodes of the tree, which will set ReturnValue at each stage
+	int result;
+// 	for (TreeNode *node = nodes_.first(); node != NULL; node = node->TreeNode::next)
+// 	{
+		result = headNode_->execute(rv); 
+// 	}
+	// Copy current return value into supplied variable
+	rv = returnValue_;
+	printf("Final result type of tree execution is '%s'.\n", VTypes::dataType(rv.type()));
+	msg.exit("Tree::execute");
+	return result;
 }
 
 /*
@@ -84,54 +124,46 @@ void Tree::unGetChar()
 // Add simple leaf node (e.g. constant, variable) to topmost branch on stack
 TreeNode *Tree::addLeaf(TreeNode *leaf)
 {
-	Refitem<Tree,int> *ri = stack_.last();
-	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
-	Tree *topmost = ri->item;
-	topmost->nodes_.own(leaf);
+// 	Refitem<Tree,int> *ri = stack_.last();
+// 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
+// 	Tree *topmost = ri->item;
+// 	topmost->nodes_.own(leaf);
+	nodeList_.add(leaf);
 	return leaf;
 }
 
 // Add command-based leaf node to topmost branch on stack
-TreeNode *Tree::addCommand(NuCommand::Function func, int nargs, TreeNode *arg1, TreeNode *leaf2)
+TreeNode *Tree::addCommandLeaf(NuCommand::Function func)
 {
-	Refitem<Tree,int> *ri = stack_.last();
-	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
-	Tree *topmost = ri->item;
+// 	Refitem<Tree,int> *ri = stack_.last();
+// 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
+// 	Tree *topmost = ri->item;
 	// Create the new command node
-	TreeNode *leaf = topmost->nodes_.add();
-	// XXXX
+// 	printf("COMMAND ADDED.\n");
+	NuCommandNode *leaf = new NuCommandNode(func);
+	nodeList_.add(leaf);
 	return leaf;
 }
 
-// Create tree from string
-bool Tree::generate(const char *s)
+// Add joiner
+TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 {
-	msg.enter("Tree::generate");
-	// Push this tree branch onto the stack
-	stack_.add(this);
-	currentTree = this;
-	// Store the source string
-	stringSource_ = s;
-	stringPos_ = 0;
-	stringLength_ = stringSource_.length();
-	isFileSource_ = FALSE;
-	int n = yyparse();
-	printf("Result of yyparse = %i\n", n);
-	msg.exit("Tree::generate");
+	printf("Adding a joiner...\n");
+	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
+	nodeList_.add(leaf);
+	if (node1 != NULL) leaf->addArgument(node1);
+	if (node2 != NULL) leaf->addArgument(node2);
+	return leaf;
 }
 
-// Execute tree
-int Tree::execute(NuReturnValue &rv)
+// Set head node
+void Tree::setHeadNode(TreeNode *node)
 {
-	msg.enter("Tree::execute");
-	// Walk the individual nodes of the tree, which will sett ReturnValue at each stage
-	int result;
-	for (TreeNode *node = nodes_.first(); node != NULL; node = node->TreeNode::next)
+	// Check for previously-set headnode
+	if (headNode_ != NULL) printf("Error - headnode has already been set.\n");
+	else
 	{
-		result = node->execute(); 
+		headNode_ = node;
+		printf("Head node set to %li\n", headNode_);
 	}
-	// Copy current return value into supplied variable
-	rv = returnValue_;
-	msg.exit("Tree::execute");
-	return result;
 }
