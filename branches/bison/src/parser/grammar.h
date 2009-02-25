@@ -40,49 +40,45 @@
       know about them.  */
    enum yytokentype {
      INTEGER = 258,
-     REAL = 259,
-     VARIABLE = 260,
-     WHILE = 261,
-     IF = 262,
-     PRINT = 263,
-     IFX = 264,
-     ELSE = 265,
-     NE = 266,
-     EQ = 267,
-     LE = 268,
-     GE = 269,
-     UMINUS = 270
+     WHILE = 259,
+     IF = 260,
+     PRINT = 261,
+     IFX = 262,
+     ELSE = 263,
+     NE = 264,
+     EQ = 265,
+     LE = 266,
+     GE = 267,
+     UMINUS = 268
    };
 #endif
 /* Tokens.  */
 #define INTEGER 258
-#define REAL 259
-#define VARIABLE 260
-#define WHILE 261
-#define IF 262
-#define PRINT 263
-#define IFX 264
-#define ELSE 265
-#define NE 266
-#define EQ 267
-#define LE 268
-#define GE 269
-#define UMINUS 270
+#define WHILE 259
+#define IF 260
+#define PRINT 261
+#define IFX 262
+#define ELSE 263
+#define NE 264
+#define EQ 265
+#define LE 266
+#define GE 267
+#define UMINUS 268
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 20 "grammar.yy"
+#line 22 "grammar.yy"
 {
-	int iValue;                 /* integer value */
-	double rValue;              /* real value */
-	char sIndex;                /* symbol table index */
+	/* int iValue;                  integer value */
+	/* double rValue;               real value */
+	/* char sIndex;                 symbol table index */
 	TreeNode *node;             /* node pointer */
 }
 /* Line 1489 of yacc.c.  */
-#line 86 "grammar.h"
+#line 82 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
