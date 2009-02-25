@@ -30,6 +30,7 @@
 //class CommandList;
 class VariableList;
 class Variable;
+class Tree;
 
 // Tree Node
 class TreeNode
@@ -42,58 +43,60 @@ class TreeNode
 	TreeNode *prev, *next;
 
 	/*
-	// Create /Execute
-	*/
-	public:
-	// Static function to create AST, putting result in static member
-	static bool createTree(const char *s);
-	// Returned node
-	static TreeNode *createdTree;
-	// Execute AST
-	void execute();
-
-	/*
 	// Argument Data
 	*/
 	private:
-	// Variable list from which the command arguments were set
-	VariableList *variableList_;
-	// Argument list
-	List<TreeNode> args_;
+	// Arguments (if any) to leaf node operation
+	List<Tree> args_;
 
 	public:
-	// Add constant argument
-	void addConstant(const char *s, bool forcechar = FALSE);
-	// Add integer constant argument
-	void addConstant(int i);
-	// Add real constant argument
-	void addConstant(double d);
 	// Return number of arguments given to node
 	int nArgs();
-	// Return variable argument
-	Variable *arg(int argno);
-	// Return argument as character
-	const char *argc(int argno);
 	// Return argument as integer
 	int argi(int argno);
-	// Return argument as double
-	double argd(int argno);
-	// Return argument as float
-	float argf(int argno);
-	// Return argument as bool
-	bool argb(int argno);
-	// Return arguments as Vec3<double>
-	Vec3<double> arg3d(int);
-	// Return arguments as Vec3<float>
-	Vec3<float> arg3f(int);
-	// Return arguments as Vec3<int>
-	Vec3<int> arg3i(int);
-	// Return argument as pointer
-	void *argp(int argno, VTypes::DataType );
-	// Returns whether argument 'n' was provided
-	bool hasArg(int argno);
-	// Return variable type of argument
+
+	// Return return type of argument
 	VTypes::DataType argt(int argno);
+
+	/*
+	// Node Character
+	*/
+	protected:
+	// Node return value datatype
+	VTypes::DataType returnType_;
+	// Whether node is read-only
+	bool readOnly_;
+
+	public:
+	// Set name of variable
+	void setName(const char* s);
+	// Get name of variable
+	const char *name();
+	// Sets the content type of the variable
+	void setReturnType(VTypes::DataType dt);
+	// Returns content type of the variable
+	VTypes::DataType returnType();
+	// Set parent variablelist
+// 	void setParent(VariableList *vlist);
+	// Set the readonly status of the node to TRUE
+	void setReadOnly();
+	// Return the readonly status of the node
+	bool readOnly();
+
+	/*
+	// Node Data Set / Get / Execute
+	*/
+	public:
+	// Set value of node (int)
+	virtual bool set(int i);
+	// Get value of node as integer
+	virtual int asInteger();
+	// Step node
+	virtual bool step(int delta);
+	// Reset node contents
+	virtual bool reset();
+	// Get reduced value of node
+	virtual int execute(NuReturnValue &rv);
 };
 
 #endif

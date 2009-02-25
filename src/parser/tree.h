@@ -1,0 +1,102 @@
+/*
+	*** Tree
+	*** src/parser/tree.h
+	Copyright T. Youngs 2007-2009
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TREE_H
+#define ATEN_TREE_H
+
+#include "parser/returnvalue.h"
+#include "parser/commands.h"
+#include "templates/list.h"
+#include "templates/reflist.h"
+#include "templates/vector3.h"
+#include "base/vtypes.h"
+#include "base/dnchar.h"
+#include <fstream>
+#include <iostream>
+
+// Forward declarations
+//class CommandList;
+class VariableList;
+class Variable;
+class TreeNode;
+
+// Tree
+class Tree
+{
+	public:
+	// Constructor / Destructor
+	Tree();
+	~Tree();
+	// List pointers
+	Tree *prev, *next;
+
+	/*
+	// Create / Execute
+	*/
+	private:
+	// Whether this Tree is being created from string, file etc.
+	bool isFileSource_;
+	// Character string source
+	Dnchar stringSource_;
+	// Integer position in stringSource, and total length of string
+	int stringPos_, stringLength_;
+	// File source
+	ifstream *fileSource_;
+	// Return value of tree
+	NuReturnValue returnValue_;
+
+	public:
+	// Get next character from current input stream
+	char getChar();
+	// 'Replace' last character read from current input stream
+	void unGetChar();
+	// Static function to create AST, putting result in static member
+	bool generate(const char *s);
+	// Execute AST, placing result in ReturnValue provided
+	int execute(NuReturnValue &rv);
+	// Current tree (target of node creation)
+	static Tree *currentTree;
+	// Get return value of tree (for use by child nodes)
+	NuReturnValue &returnValue();
+
+	/*
+	// Node Data
+	*/
+	public:
+	// Add simple leaf node (e.g. constant, variable) to topmost branch on stack
+	TreeNode *addLeaf(TreeNode *leaf);
+	// Add command-based leaf node to topmost branch on stack
+	TreeNode *addCommand(NuCommand::Function func, int nargs, TreeNode *arg1, TreeNode *leaf2);
+	// Return topmost branch on stack
+	Tree *topBranch();
+	// Push current branch onto stack
+
+	private:
+	// Global variable list for the whole tree
+	VariableList *variableList_;
+	// Node list
+	List<TreeNode> nodes_;
+	// Branch stack
+	Reflist<Tree,int> stack_;
+
+};
+
+#endif

@@ -19,65 +19,81 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "parser/tree.h"
+#include "parser/treenode.h"
 #include "parser/grammar.h"
-#include "variables/accesspath.h"
+#include "parser/integer.h"
 #include "base/sysfunc.h"
+#include <ctype.h>
 
+// Lexical Analyser - Used the getchar function of the current active Tree (stored in static member Tree::currentTree)
 int yylex()
 {
-	int c;
-     
+	if (Tree::currentTree == NULL)
+	{
+		printf("Lexer called when no current tree pointer available.\n");
+		return 0;
+	}
+
+	int c, length;
+	bool done;
+	static char token[256];
+	length = 0;
+	token[0] = '\0';
+
 	/* Ignore white space, get first nonwhite character.  */
-	while ((c = getchar ()) == ' ' || c == '\t');
-     
+	while ((c = Tree::currentTree->getChar()) == ' ' || c == '\t');
+
 	if (c == EOF) return 0;
-     
+
 	/* Char starts a number => parse the number.	  */
 	if (c == '.' || isdigit (c))
 	{
-		ungetc (c, stdin);
-		scanf ("%lf", &yylval.val);
-		return NUM;
+		token[length++] = c;
+		done = FALSE;
+		do
+		{
+			c = Tree::currentTree->getChar();
+			if ((c == '.') || isdigit(c)) token[length++] = c;
+// 			else if ((c == 'e') || (c == 'E'))
+			else
+			{
+				Tree::currentTree->unGetChar();
+				token[length] = '\0';
+				done = TRUE;
+			}
+		} while (!done);
+		// We now have the number, so create a constant and return it
+		NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
+		yylval.node = var;
+// 		while ((c == '.') || isdigit(c) || c == )
+// 		ungetc (c, stdin);
+// 		scanf ("%lf", &yylval.val);
+		return INTEGER;
 	}
-     
+
 	/* Char starts an identifier => read the name.	*/
 	if (isalpha (c))
 	{
-		symrec *s;
-		static char *symbuf = 0;
-		static int length = 0;
-		int i;
-     
-		/* Initially make the buffer long enough
-		for a 40-character symbol name.  */
-		if (length == 0)
-		  length = 40, symbuf = (char *)malloc (length + 1);
-     
-		i = 0;
+		done = FALSE;
 		do
 		{
-			/* If buffer is full, make it bigger.	 */
-			if (i == length)
-			{
-				length *= 2;
-				symbuf = (char *) realloc (symbuf, length + 1);
-		 	}
-			 /* Add this character to the buffer.	  */
-			 symbuf[i++] = c;
-			 /* Get another character.			  */
-			 c = getchar ();
+			/* Add this character to the buffer.	  */
+			token[length++] = c;
+			/* Get another character.			  */
+			c = Tree::currentTree->getChar();
 		}
 		while (isalnum (c));
-     
-		ungetc (c, stdin);
-		symbuf[i] = '\0';
-     
-		s = getsym (symbuf);
+		Tree::currentTree->unGetChar();
+		token[length] = '\0';
+
+		// Search for token name....
+/*		s = getsym (symbuf);
 		if (s == 0) s = putsym (symbuf, VAR);
-		yylval.tptr = s;
-		return s->type;
+		yylval.node = s;
+		return s->type;*/
 	}
-     
+
 	/* Any other character is a token by itself.	 */
 	return c;
 }

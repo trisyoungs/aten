@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "classes/prefs.h"
+#include "parser/tree.h"
 #include "base/sysfunc.h"
 #include <iostream>
 #include <readline/readline.h>
@@ -31,6 +32,8 @@
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
+	{ Cli::ASTSwitch,		'a',"ast",		1,
+		"",		"Run any commands supplied with -c or --command on all models and save" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
 		"",		"Run any commands supplied with -c or --command on all models and save" },
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
@@ -209,6 +212,8 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
+	Tree *tree;
+	NuReturnValue rv;
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -273,6 +278,12 @@ int Aten::parseCli(int argc, char *argv[])
 			// Ready to perform switch action!
 			switch (opt)
 			{
+				// Test new AST code
+				case (Cli::ASTSwitch):
+					tree = new Tree;
+					if (!tree->generate(argv[++argn])) return -1;
+					n = tree->execute(rv);
+					break;
 				// All of the following switches were dealt with in parseCliEarly()
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
