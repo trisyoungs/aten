@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.h
+	*** Character Variable
+	*** src/parser/character.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,27 +19,26 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_INTEGERVARIABLE_H
-#define ATEN_INTEGERVARIABLE_H
+#ifndef ATEN_CHARACTERVARIABLE_H
+#define ATEN_CHARACTERVARIABLE_H
 
 #include "parser/variable.h"
+#include "base/dnchar.h"
 
-// Integer Variable
-class NuIntegerVariable : public NuVariable
+// Character Variable
+class NuCharacterVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuIntegerVariable(int i = 0, bool constant = FALSE);
-	~NuIntegerVariable();
+	NuCharacterVariable(const char *s, bool constant = FALSE);
+	~NuCharacterVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (int)
-	bool set(int i);
-	// Step variable
-	bool step(int delta, NuVariable *index = NULL);
+	// Set value of variable (character)
+	bool set(const char *s);
 	// Clears value of variable
 	bool reset(NuVariable *index = NULL);
 	// Return value of node
@@ -49,8 +48,8 @@ class NuIntegerVariable : public NuVariable
 	// Variable Data
 	*/
 	private:
-	// Integer data
-	int integerData_;
+	// Character data
+	Dnchar characterData_;
 };
 
 #endif

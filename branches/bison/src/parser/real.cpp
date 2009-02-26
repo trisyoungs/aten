@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.cpp
+	*** Real Variable
+	*** src/parser/real.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,19 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/integer.h"
+#include "parser/real.h"
 #include "base/constants.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // Constructor
-NuIntegerVariable::NuIntegerVariable(int i, bool constant) : integerData_(i)
+NuRealVariable::NuRealVariable(double d, bool constant) : realData_(d)
 {
 	// Private variables
-	returnType_ = VTypes::IntegerData;
+	returnType_ = VTypes::RealData;
 	readOnly_ = constant;
 }
 
 // Destructor
-NuIntegerVariable::~NuIntegerVariable()
+NuRealVariable::~NuRealVariable()
 {
 }
 
@@ -39,30 +41,31 @@ NuIntegerVariable::~NuIntegerVariable()
 // Set / Get
 */
 
-// Set value of variable (int)
-bool NuIntegerVariable::set(int i)
+// Set value of variable (real)
+bool NuRealVariable::set(double d)
 {
-	integerData_ = i;
+	realData_ = d;
 	return TRUE;
 }
 
+
 // Step variable
-bool NuIntegerVariable::step(int delta, NuVariable *index)
+bool NuRealVariable::step(int delta, NuVariable *index)
 {
-	integerData_ += delta;
+	realData_ += delta;
 	return TRUE;
 }
 
 // Clears value of variable
-bool NuIntegerVariable::reset(NuVariable *index)
+bool NuRealVariable::reset(NuVariable *index)
 {
-	integerData_ = 0;
+	realData_ = 0.0;
 	return TRUE;
 }
 
 // Return value of node
-int NuIntegerVariable::execute(NuReturnValue &rv)
+int NuRealVariable::execute(NuReturnValue &rv)
 {
-	rv.set(integerData_);
+	rv.set(realData_);
 	return TRUE;
 }

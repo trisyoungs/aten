@@ -798,8 +798,6 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Create vector variables with the names provided" },
 	
 	// Variable Manipulation
-	{ "_ADDITION_",		"",		"", VTypes::IntegerData,
-				"Internal Function (+)" },
 	{ "afterchar",		"NNV",		"<string> <char> <result>", VTypes::IntegerData,
 				"Return part of the <string> after the first occurrence of the character <char>" },
 	{ "beforechar",		"NNV",		"<string> <char> <result>", VTypes::IntegerData,
@@ -818,10 +816,18 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Set the specified vector variable" },
 	{ "normalise",		"VVV",		"<x> <y> <z>", VTypes::IntegerData,
 				"Normalise the values of the 3-vector supplied" },
+	{ "+",			"",		"", VTypes::NoData,
+				"Internal Operator (+)" },
+	{ "/",			"",		"", VTypes::NoData,
+				"Internal Operator (/)" },
+	{ "*",			"",		"", VTypes::NoData,
+				"Internal Operator (*)" },
+	{ "^",			"",		"", VTypes::NoData,
+				"Internal Operator (^)" },
+	{ "-",			"",		"", VTypes::NoData,
+				"Internal Operator (-)" },
 	{ "stripchars",		"VN",		"<variable> <chars>", VTypes::IntegerData,
 				"Strip all occurrences of the supplied characters from <variable>" },
-	{ "_SUBTRACTION_",	"",		"", VTypes::IntegerData,
-				"Internal Function (-)" },
 	
 	// View
 	{ "getview",		"",		"", VTypes::IntegerData,

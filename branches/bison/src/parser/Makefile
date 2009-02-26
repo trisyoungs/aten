@@ -48,10 +48,11 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
-am_libparser_a_OBJECTS = commandnode.$(OBJEXT) commands.$(OBJEXT) \
-	functions.$(OBJEXT) grammar.$(OBJEXT) integer.$(OBJEXT) \
-	lexer.$(OBJEXT) returnvalue.$(OBJEXT) testfuncs.$(OBJEXT) \
-	tree.$(OBJEXT) treenode.$(OBJEXT) variable.$(OBJEXT)
+am_libparser_a_OBJECTS = character.$(OBJEXT) commandnode.$(OBJEXT) \
+	commands.$(OBJEXT) functions.$(OBJEXT) grammar.$(OBJEXT) \
+	integer.$(OBJEXT) lexer.$(OBJEXT) real.$(OBJEXT) \
+	returnvalue.$(OBJEXT) testfuncs.$(OBJEXT) tree.$(OBJEXT) \
+	treenode.$(OBJEXT) variable.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -84,12 +85,12 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/tris/src/aten-bison/config/missing --run aclocal-1.10
-AMTAR = ${SHELL} /home/tris/src/aten-bison/config/missing --run tar
+ACLOCAL = ${SHELL} /u/tristan/work/aten-bison/config/missing --run aclocal-1.10
+AMTAR = ${SHELL} /u/tristan/work/aten-bison/config/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/tris/src/aten-bison/config/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/tris/src/aten-bison/config/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/tris/src/aten-bison/config/missing --run automake-1.10
+AUTOCONF = ${SHELL} /u/tristan/work/aten-bison/config/missing --run autoconf
+AUTOHEADER = ${SHELL} /u/tristan/work/aten-bison/config/missing --run autoheader
+AUTOMAKE = ${SHELL} /u/tristan/work/aten-bison/config/missing --run automake-1.10
 AWK = gawk
 BUILDDIR = 
 CC = gcc
@@ -129,7 +130,7 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
 LTLIBOBJS = 
 MAC_LIBS = 
-MAKEINFO = ${SHELL} /home/tris/src/aten-bison/config/missing --run makeinfo
+MAKEINFO = ${SHELL} /u/tristan/work/aten-bison/config/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NMEDIT = 
 OBJEXT = o
@@ -154,10 +155,10 @@ STRIP = strip
 VERSION = 1.1
 YACC = bison -y
 YFLAGS = 
-abs_builddir = /home/tris/src/aten-bison/src/parser
-abs_srcdir = /home/tris/src/aten-bison/src/parser
-abs_top_builddir = /home/tris/src/aten-bison
-abs_top_srcdir = /home/tris/src/aten-bison
+abs_builddir = /u/tristan/work/aten-bison/src/parser
+abs_srcdir = /u/tristan/work/aten-bison/src/parser
+abs_top_builddir = /u/tristan/work/aten-bison
+abs_top_srcdir = /u/tristan/work/aten-bison
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_F77 = gfortran
@@ -186,7 +187,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = $(SHELL) /home/tris/src/aten-bison/config/install-sh
+install_sh = $(SHELL) /u/tristan/work/aten-bison/config/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -212,8 +213,8 @@ top_srcdir = ../..
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp returnvalue.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp
-noinst_HEADERS = commandnode.h commands.h integer.h returnvalue.h tree.h treenode.h variable.h
+libparser_a_SOURCES = character.cpp commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp
+noinst_HEADERS = character.h commandnode.h commands.h integer.h real.h returnvalue.h tree.h treenode.h variable.h
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui -DQT_SHARED -I/usr/include/QtGui   -I/usr/include/readline
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -268,12 +269,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+include ./$(DEPDIR)/character.Po
 include ./$(DEPDIR)/commandnode.Po
 include ./$(DEPDIR)/commands.Po
 include ./$(DEPDIR)/functions.Po
 include ./$(DEPDIR)/grammar.Po
 include ./$(DEPDIR)/integer.Po
 include ./$(DEPDIR)/lexer.Po
+include ./$(DEPDIR)/real.Po
 include ./$(DEPDIR)/returnvalue.Po
 include ./$(DEPDIR)/testfuncs.Po
 include ./$(DEPDIR)/tree.Po

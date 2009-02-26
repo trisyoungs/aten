@@ -1,5 +1,5 @@
 /*
-	*** Tree Return Value
+	*** Tree[Node] Return Value
 	*** src/parser/returnvalue.h
 	Copyright T. Youngs 2007-2009
 
@@ -24,6 +24,7 @@
 
 #include "parser/returnvalue.h"
 #include "base/vtypes.h"
+#include "base/dnchar.h"
 
 // Tree Return Value
 class NuReturnValue
@@ -42,12 +43,16 @@ class NuReturnValue
 	VTypes::DataType type_;
 	// Variable members for returns
 	int valueI_;
+	double valueR_;
+	Dnchar valueC_;
 
 	public:
 	// Return type of the stored data
 	VTypes::DataType type();
 	// Reset data
 	void reset();
+	// Print info on data contents
+	void info();
 
 	/*
 	// Set
@@ -55,6 +60,10 @@ class NuReturnValue
 	public:
 	// Set from integer value
 	void set(int i);
+	// Set from real value
+	void set(double d);
+	// Set from character value
+	void set(const char *s);
 
 	/*
 	// Get
@@ -62,6 +71,10 @@ class NuReturnValue
 	public:
 	// Return integer value
 	int asInteger();
+	// Return real value
+	double asReal();
+	// Return character string
+	const char *asCharacter();
 };
 
 #endif

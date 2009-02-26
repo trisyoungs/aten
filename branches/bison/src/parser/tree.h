@@ -58,22 +58,20 @@ class Tree
 	int stringPos_, stringLength_;
 	// File source
 	ifstream *fileSource_;
-	// Return value of tree
-	NuReturnValue returnValue_;
 
 	public:
 	// Get next character from current input stream
 	char getChar();
 	// 'Replace' last character read from current input stream
 	void unGetChar();
-	// Static function to create AST, putting result in static member
+	// Clear all node data
+	void clear();
+	// Function to create AST, putting result in static member
 	bool generate(const char *s);
 	// Execute AST, placing result in ReturnValue provided
 	int execute(NuReturnValue &rv);
 	// Current tree (target of node creation)
 	static Tree *currentTree;
-	// Get return value of tree (for use by child nodes)
-// 	NuReturnValue &returnValue();
 
 	/*
 	// Node Data
@@ -81,16 +79,20 @@ class Tree
 	private:
 	// Global variable list for the whole tree
 	VariableList *variableList_;
-	// Node list - a disordered list of all nodes owned by the Tree
-	Reflist<TreeNode,int> nodeList_;
-	// Head of the actual AST
-	TreeNode *headNode_;
+	// Others nodes list - a disordered reflist of all nodes owned by the Tree
+	Reflist<TreeNode,int> otherNodes_;
+	// Node list - a disordered reflist of all nodes owned by the Tree
+	Reflist<TreeNode,int> ownedNodes_;
+	// Reflist of all statements in the Tree, to be executed sequentially
+	Reflist<TreeNode,int> statements_;
 
 	public:
+	// Add a node representing a whole statement to the execution list
+	void addStatement(TreeNode *leaf);
 	// Associate a simple leaf node (e.g. constant, variable) to the Tree
 	TreeNode *addLeaf(TreeNode *leaf);
-	// Asosciate a command-based leaf node to the Tree
-	TreeNode *addCommandLeaf(NuCommand::Function funcs);
+	// Associate a command-based leaf node to the Tree
+	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Set head node

@@ -23,6 +23,7 @@
 #include "parser/treenode.h"
 #include "parser/commandnode.h"
 #include "parser/grammar.h"
+#include <stdarg.h>
 
 // YYParse forward
 int yyparse();
@@ -38,7 +39,6 @@ Tree::Tree()
 	fileSource_ = NULL;
 	stringPos_ = -1;
 	stringLength_ = 0;
-	headNode_ = NULL;
 
 	// Public variables
 	currentTree = NULL;
@@ -47,42 +47,59 @@ Tree::Tree()
 // Destructor
 Tree::~Tree()
 {
+	clear();
 }
 
 /*
 // Create / Execute
 */
 
+// Clear contents of tree
+void Tree::clear()
+{
+	// Just clear the list of nodes that are present in other lists
+	otherNodes_.clear();
+	// Manually delete the nodes owned by this Tree
+	for (Refitem<TreeNode,int> *ri = ownedNodes_.first(); ri != NULL; ri = ri->next) delete ri->item;
+	ownedNodes_.clear();
+	statements_.clear();
+}
+
 // Create tree from string
 bool Tree::generate(const char *s)
 {
 	msg.enter("Tree::generate");
-	// Push this tree branch onto the stack
-// 	stack_.add(this);
+	// Store this as the current Tree (for Bison)
 	currentTree = this;
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
 	isFileSource_ = FALSE;
-	int n = yyparse();
-	printf("Result of yyparse = %i\n", n);
+	int result = yyparse();
+	currentTree = NULL;
+	if (result != 0)
+	{
+		// Delete any tree node information
+		clear();
+		msg.print("Failed to parse data.\n");
+	}
 	msg.exit("Tree::generate");
+	return (result == 0);
 }
 
 // Execute tree
 int Tree::execute(NuReturnValue &rv)
 {
 	msg.enter("Tree::execute");
-	// Walk the individual nodes of the tree, which will set ReturnValue at each stage
 	int result;
-// 	for (TreeNode *node = nodes_.first(); node != NULL; node = node->TreeNode::next)
-// 	{
-		result = headNode_->execute(rv); 
-// 	}
-	// Copy current return value into supplied variable
-	rv = returnValue_;
-	printf("Final result type of tree execution is '%s'.\n", VTypes::dataType(rv.type()));
+	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
+	{
+		result = ri->item->execute(rv);
+		if (result != NuCommand::Success) break;
+	}
+	printf("Final result of tree execution:\n");
+	rv.info();
 	msg.exit("Tree::execute");
 	return result;
 }
@@ -121,6 +138,12 @@ void Tree::unGetChar()
 	}
 }
 
+// Add a node representing a whole statement to the execution list
+void Tree::addStatement(TreeNode *leaf)
+{
+	statements_.add(leaf);
+}
+
 // Add simple leaf node (e.g. constant, variable) to topmost branch on stack
 TreeNode *Tree::addLeaf(TreeNode *leaf)
 {
@@ -128,20 +151,27 @@ TreeNode *Tree::addLeaf(TreeNode *leaf)
 // 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
 // 	Tree *topmost = ri->item;
 // 	topmost->nodes_.own(leaf);
-	nodeList_.add(leaf);
+	otherNodes_.add(leaf);
 	return leaf;
 }
 
 // Add command-based leaf node to topmost branch on stack
-TreeNode *Tree::addCommandLeaf(NuCommand::Function func)
+TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 {
 // 	Refitem<Tree,int> *ri = stack_.last();
 // 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
 // 	Tree *topmost = ri->item;
 	// Create the new command node
 // 	printf("COMMAND ADDED.\n");
+	// Create variable argument parser
+	va_list vars;
+	va_start(vars,nargs);
+	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
-	nodeList_.add(leaf);
+	ownedNodes_.add(leaf);
+	// Add arguments
+	for (int n=0; n<nargs; n++) leaf->addArgument(va_arg(vars, TreeNode*));
+	va_end(vars);
 	return leaf;
 }
 
@@ -150,20 +180,8 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 {
 	printf("Adding a joiner...\n");
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
-	nodeList_.add(leaf);
+	ownedNodes_.add(leaf);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
 	return leaf;
-}
-
-// Set head node
-void Tree::setHeadNode(TreeNode *node)
-{
-	// Check for previously-set headnode
-	if (headNode_ != NULL) printf("Error - headnode has already been set.\n");
-	else
-	{
-		headNode_ = node;
-		printf("Head node set to %li\n", headNode_);
-	}
 }

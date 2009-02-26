@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.h
+	*** Real Variable
+	*** src/parser/real.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,25 +19,25 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_INTEGERVARIABLE_H
-#define ATEN_INTEGERVARIABLE_H
+#ifndef ATEN_REALVARIABLE_H
+#define ATEN_REALVARIABLE_H
 
 #include "parser/variable.h"
 
-// Integer Variable
-class NuIntegerVariable : public NuVariable
+// Real Variable
+class NuRealVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuIntegerVariable(int i = 0, bool constant = FALSE);
-	~NuIntegerVariable();
+	NuRealVariable(double d = 0, bool constant = FALSE);
+	~NuRealVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (int)
-	bool set(int i);
+	// Set value of variable (real)
+	bool set(double d);
 	// Step variable
 	bool step(int delta, NuVariable *index = NULL);
 	// Clears value of variable
@@ -49,8 +49,8 @@ class NuIntegerVariable : public NuVariable
 	// Variable Data
 	*/
 	private:
-	// Integer data
-	int integerData_;
+	// Real data
+	double realData_;
 };
 
 #endif

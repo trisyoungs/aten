@@ -1,7 +1,8 @@
 lexer.o: lexer.cpp ../../src/parser/tree.h ../../src/parser/returnvalue.h \
-  ../../src/base/vtypes.h ../../src/parser/commands.h \
-  ../../src/base/bundle.h ../../src/templates/list.h \
-  /usr/include/stdlib.h /usr/include/features.h /usr/include/sys/cdefs.h \
+  ../../src/base/vtypes.h ../../src/base/dnchar.h \
+  ../../src/parser/commands.h ../../src/base/bundle.h \
+  ../../src/templates/list.h /usr/include/stdlib.h \
+  /usr/include/features.h /usr/include/sys/cdefs.h \
   /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
   /usr/include/gnu/stubs-64.h \
   /usr/lib64/gcc/x86_64-suse-linux/4.3/include/stddef.h \
@@ -49,10 +50,9 @@ lexer.o: lexer.cpp ../../src/parser/tree.h ../../src/parser/returnvalue.h \
   /usr/include/bits/nan.h /usr/include/bits/mathdef.h \
   /usr/include/bits/mathcalls.h /usr/include/bits/mathinline.h \
   ../../src/templates/matrix4.h ../../src/templates/vector4.h \
-  ../../src/base/mathfunc.h ../../src/base/dnchar.h \
-  /usr/include/c++/4.3/fstream /usr/include/c++/4.3/istream \
-  /usr/include/c++/4.3/ios /usr/include/c++/4.3/iosfwd \
-  /usr/include/c++/4.3/bits/stringfwd.h \
+  ../../src/base/mathfunc.h /usr/include/c++/4.3/fstream \
+  /usr/include/c++/4.3/istream /usr/include/c++/4.3/ios \
+  /usr/include/c++/4.3/iosfwd /usr/include/c++/4.3/bits/stringfwd.h \
   /usr/include/c++/4.3/bits/postypes.h /usr/include/c++/4.3/cwchar \
   /usr/include/wchar.h /usr/include/bits/wchar.h /usr/include/stdint.h \
   /usr/include/c++/4.3/bits/char_traits.h /usr/include/c++/4.3/cstdio \
@@ -97,13 +97,15 @@ lexer.o: lexer.cpp ../../src/parser/tree.h ../../src/parser/returnvalue.h \
   /usr/include/c++/4.3/bits/fstream.tcc /usr/include/c++/4.3/iostream \
   ../../src/parser/treenode.h ../../src/parser/grammar.h \
   ../../src/parser/integer.h ../../src/parser/variable.h \
-  ../../src/base/sysfunc.h /usr/include/ctype.h
+  ../../src/parser/real.h ../../src/base/sysfunc.h /usr/include/ctype.h
 
 ../../src/parser/tree.h:
 
 ../../src/parser/returnvalue.h:
 
 ../../src/base/vtypes.h:
+
+../../src/base/dnchar.h:
 
 ../../src/parser/commands.h:
 
@@ -265,8 +267,6 @@ lexer.o: lexer.cpp ../../src/parser/tree.h ../../src/parser/returnvalue.h \
 
 ../../src/base/mathfunc.h:
 
-../../src/base/dnchar.h:
-
 /usr/include/c++/4.3/fstream:
 
 /usr/include/c++/4.3/istream:
@@ -406,6 +406,8 @@ lexer.o: lexer.cpp ../../src/parser/tree.h ../../src/parser/returnvalue.h \
 ../../src/parser/integer.h:
 
 ../../src/parser/variable.h:
+
+../../src/parser/real.h:
 
 ../../src/base/sysfunc.h:
 
