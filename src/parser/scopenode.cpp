@@ -20,10 +20,6 @@
 */
 
 #include "parser/scopenode.h"
-#include "main/aten.h"
-#include "model/model.h"
-#include "base/sysfunc.h"
-#include <string.h>
 
 // Constructor
 ScopeNode::ScopeNode(NuCommand::Function func) : NuCommandNode(func)

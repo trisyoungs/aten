@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "parser/tree.h"
 #include "parser/commands.h"
 #include "parser/commandnode.h"
-#include "parser/tree.h"
 #include "main/aten.h"
 #include "base/bundle.h"
 

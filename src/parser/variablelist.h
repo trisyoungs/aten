@@ -53,7 +53,9 @@ class NuVariableList
 	// Pass a newly-created variable / constant to the list for it to take ownership of
 	void take(NuVariable *v);
 	// Retrieve a named variable from the list
-	NuVariable *get(const char *name);
+	NuVariable *find(const char *name);
+	// Create a new variable in the list
+	NuVariable *create(NuVTypes::DataType type, const char *name);
 	// Add a named variable or constant to the list
 	//NuVariable *add(const char *name, NuVTypes::DataType vt, bool constant = FALSE);
 

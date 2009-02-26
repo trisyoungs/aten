@@ -27,6 +27,7 @@
 #include "parser/real.h"
 #include "base/sysfunc.h"
 #include <ctype.h>
+#include <string.h>
 
 // Lexical Analyser - Used the getchar function of the current active Tree (stored in static member Tree::currentTree)
 int yylex()
@@ -37,13 +38,13 @@ int yylex()
 		return 0;
 	}
 
-	int c, length;
+	int c, length, n;
 	bool done, integer, hasexp;
 	static char token[256];
 	length = 0;
 	token[0] = '\0';
 
-	// Skip over whitespace    XXX Unless inside character constant....
+	// Skip over whitespace
 	while ((c = Tree::currentTree->getChar()) == ' ' || c == '\t');
 
 	if (c == EOF) return 0;
@@ -149,12 +150,28 @@ int yylex()
 		while (isalnum (c));
 		Tree::currentTree->unGetChar();
 		token[length] = '\0';
-		printf("Lexer ffound an unknown token name = [%s]\n", token);
-		// Search for token name....
-/*		s = getsym (symbuf);
-		if (s == 0) s = putsym (symbuf, VAR);
-		yylval.node = s;
-		return s->type;*/
+
+		// Is this a recognised high-level keyword?
+		if (strcmp(token,"integer") == 0) return INTEGER;
+		else if (strcmp(token,"real") == 0) return REAL;
+		else if (strcmp(token,"character") == 0) return CHARACTER;
+
+		// If we get to here then its not a high-level keyword.
+		// Is it a function keyword?
+		for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
+		if (n != NuCommand::nFunctions)
+		{
+			printf("Command is [%s]\n", token);
+			yylval.functionId = n;
+			return FUNCTION;
+		}
+
+		// The token isn't a high- or low-level function.
+		// Is it a variable? Search the lists currently in scope...
+		NuVariable *v = Tree::currentTree->isVariableInScope(token);
+		
+		printf("Lexer found an unknown token name = [%s]\n", token);
+		
 	}
 
 	/* Any other character is a token by itself.	 */

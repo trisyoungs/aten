@@ -36,7 +36,7 @@ class ScopeNode : public NuCommandNode
 	/*
 	// Variable List
 	*/
-	NuVariableList vars_;
+	NuVariableList variables;
 };
 
 #endif
