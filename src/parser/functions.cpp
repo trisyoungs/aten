@@ -29,8 +29,11 @@ void NuCommand::initPointers()
 	*/
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
-	pointers_[Addition] = &function_Addition;
-	pointers_[Subtraction] = &function_Subtraction;
+	pointers_[OperatorAdd] = &function_OperatorAdd;
+	pointers_[OperatorDivide] = &function_OperatorDivide;
+	pointers_[OperatorMultiply] = &function_OperatorMultiply;
+	pointers_[OperatorPower] = &function_OperatorPower;
+	pointers_[OperatorSubtract] = &function_OperatorSubtract;
 
 /*
 	// Analyse commands

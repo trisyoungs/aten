@@ -488,7 +488,6 @@ class NuCommand {
 		Vector,
 
 		// Variable Manipulation
-		Addition,
 		AfterChar,
 		BeforeChar,
 		Decrease,
@@ -498,8 +497,12 @@ class NuCommand {
 		LetPtr,
 		LetVector,
 		Normalise,
+		OperatorAdd,
+		OperatorDivide,
+		OperatorMultiply,
+		OperatorPower,
+		OperatorSubtract,
 		StripChars,
-		Subtraction,
 
 		// View
 		GetView,
@@ -915,7 +918,6 @@ class NuCommand {
 	static int function_ElementsVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_Vector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Variable Manipulation
-	static int function_Addition(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_Decrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -925,8 +927,12 @@ class NuCommand {
 	static int function_LetPtr(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_LetVector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static int function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static int function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static int function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static int function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static int function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static int function_Subtraction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// View
 	static int function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static int function_Orthographic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

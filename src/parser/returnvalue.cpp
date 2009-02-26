@@ -23,6 +23,7 @@
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // Constructor
 NuReturnValue::NuReturnValue()
@@ -44,6 +45,12 @@ void NuReturnValue::operator=(NuReturnValue &source)
 		case (VTypes::IntegerData):
 			valueI_ = source.valueI_;
 			break;
+		case (VTypes::RealData):
+			valueR_ = source.valueR_;
+			break;
+		case (VTypes::CharacterData):
+			valueC_ = source.valueC_;
+			break;
 		default:
 			printf("NuReturnValue::operator= - unrecognised variable type.\n");
 			break;
@@ -62,6 +69,30 @@ void NuReturnValue::reset()
 	type_ = VTypes::NoData;
 }
 
+// Print info on data contents
+void NuReturnValue::info()
+{
+	printf("This returnvalue contains data of type '%s':", VTypes::dataType(type_));
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("<nothing>\n");
+			break;
+		case (VTypes::IntegerData):
+			printf("%i\n",valueI_);
+			break;
+		case (VTypes::RealData):
+			printf("%f\n",valueR_);
+			break;
+		case (VTypes::CharacterData):
+			printf("%s\n",valueC_.get());
+			break;
+		default:
+			printf("<Don't know how to print this data type>\n");
+			break;
+	}
+}
+
 /*
 // Set
 */
@@ -71,6 +102,20 @@ void NuReturnValue::set(int i)
 {
 	type_ = VTypes::IntegerData;
 	valueI_ = i;
+}
+
+// Set from double value
+void NuReturnValue::set(double d)
+{
+	type_ = VTypes::RealData;
+	valueR_ = d;
+}
+
+// Set from character value
+void NuReturnValue::set(const char *s)
+{
+	type_ = VTypes::CharacterData;
+	valueC_ = s;
 }
 
 /*
@@ -83,11 +128,67 @@ int NuReturnValue::asInteger()
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			printf("No data in ReturnValue to return!\n");
+			printf("Internal error: No data in ReturnValue to return as an integer!\n");
 			return 0;
 			break;
 		case (VTypes::IntegerData):
 			return valueI_;
+			break;
+		case (VTypes::RealData):
+			return (int)valueR_;
+			break;
+		case (VTypes::CharacterData):
+			return atoi(valueC_.get());
+			break;
+		default:
+			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			break;
+	}
+	return 0;
+}
+
+// Return as real value
+double NuReturnValue::asReal()
+{
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a real!\n");
+			return 0;
+			break;
+		case (VTypes::IntegerData):
+			return (double)valueI_;
+			break;
+		case (VTypes::RealData):
+			return valueR_;
+			break;
+		case (VTypes::CharacterData):
+			return atof(valueC_.get());
+			break;
+		default:
+			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			break;
+	}
+	return 0;
+}
+
+// Return as character value
+const char *NuReturnValue::asCharacter()
+{
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			return "_NULL_";
+			break;
+		case (VTypes::IntegerData):
+			return itoa(valueI_);
+			break;
+		case (VTypes::RealData):
+			return ftoa(valueR_);
+			break;
+		case (VTypes::CharacterData):
+			return valueC_.get();
 			break;
 		default:
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");

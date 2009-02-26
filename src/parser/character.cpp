@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.cpp
+	*** Character Variable
+	*** src/parser/character.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,19 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/integer.h"
+#include "parser/character.h"
 #include "base/constants.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // Constructor
-NuIntegerVariable::NuIntegerVariable(int i, bool constant) : integerData_(i)
+NuCharacterVariable::NuCharacterVariable(const char *s, bool constant) : characterData_(s)
 {
 	// Private variables
-	returnType_ = VTypes::IntegerData;
+	returnType_ = VTypes::CharacterData;
 	readOnly_ = constant;
 }
 
 // Destructor
-NuIntegerVariable::~NuIntegerVariable()
+NuCharacterVariable::~NuCharacterVariable()
 {
 }
 
@@ -39,30 +41,23 @@ NuIntegerVariable::~NuIntegerVariable()
 // Set / Get
 */
 
-// Set value of variable (int)
-bool NuIntegerVariable::set(int i)
+// Set value of variable (character)
+bool NuCharacterVariable::set(const char *s)
 {
-	integerData_ = i;
-	return TRUE;
-}
-
-// Step variable
-bool NuIntegerVariable::step(int delta, NuVariable *index)
-{
-	integerData_ += delta;
+	characterData_ = s;
 	return TRUE;
 }
 
 // Clears value of variable
-bool NuIntegerVariable::reset(NuVariable *index)
+bool NuCharacterVariable::reset(NuVariable *index)
 {
-	integerData_ = 0;
+	characterData_.clear();
 	return TRUE;
 }
 
 // Return value of node
-int NuIntegerVariable::execute(NuReturnValue &rv)
+int NuCharacterVariable::execute(NuReturnValue &rv)
 {
-	rv.set(integerData_);
+	rv.set(characterData_.get());
 	return TRUE;
 }

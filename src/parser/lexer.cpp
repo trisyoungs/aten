@@ -23,6 +23,7 @@
 #include "parser/treenode.h"
 #include "parser/grammar.h"
 #include "parser/integer.h"
+#include "parser/real.h"
 #include "base/sysfunc.h"
 #include <ctype.h>
 
@@ -36,26 +37,56 @@ int yylex()
 	}
 
 	int c, length;
-	bool done;
+	bool done, integer, hasexp;
 	static char token[256];
 	length = 0;
 	token[0] = '\0';
 
-	/* Ignore white space, get first nonwhite character.  */
+	// Skip over whitespace    XXX Unless inside character constant....
 	while ((c = Tree::currentTree->getChar()) == ' ' || c == '\t');
 
 	if (c == EOF) return 0;
 
-	/* Char starts a number => parse the number.	  */
+	/*
+	// Number Detection - Either '.' or  a digit begins a number
+	*/
 	if (c == '.' || isdigit (c))
 	{
+		integer = TRUE;
+		hasexp = FALSE;
 		token[length++] = c;
 		done = FALSE;
 		do
 		{
 			c = Tree::currentTree->getChar();
-			if ((c == '.') || isdigit(c)) token[length++] = c;
-// 			else if ((c == 'e') || (c == 'E'))
+			if (isdigit(c)) token[length++] = c;
+			else if (c == '.')
+			{
+				integer = FALSE;
+				token[length++] = '.';
+			}
+			else if ((c == 'e') || (c == 'E'))
+			{
+				// Check for previous exponential in number
+				if (hasexp)
+				{
+					msg.print("Parse error: Number has two exponentiations (e/E).\n");
+					return 0;
+				}
+				hasexp = TRUE;
+				token[length++] = 'E';
+			}
+			else if ((c == '-') || (c == '+'))
+			{
+				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
+				if (token[length-1] != 'E')
+				{
+					Tree::currentTree->unGetChar();
+					token[length] = '\0';
+					done = TRUE;
+				}
+				else token[length++] = c;
+			}
 			else
 			{
 				Tree::currentTree->unGetChar();
@@ -64,13 +95,18 @@ int yylex()
 			}
 		} while (!done);
 		// We now have the number, so create a constant and return it
-		NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
-	printf("New integer constant is %li\n", var);
-		yylval.node = var;
-// 		while ((c == '.') || isdigit(c) || c == )
-// 		ungetc (c, stdin);
-// 		scanf ("%lf", &yylval.val);
-		return INTEGER;
+		if (integer)
+		{
+			NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
+			yylval.node = var;
+			return INTEGER;
+		}
+		else
+		{
+			NuRealVariable *var = new NuRealVariable(atof(token), TRUE);
+			yylval.node = var;
+			return REAL;
+		}
 	}
 
 	/* Char starts an identifier => read the name.	*/
