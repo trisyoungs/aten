@@ -14,9 +14,7 @@ void yyerror(char *s);
 
 /* Type Definition */
 %union {
-	/* int iValue;                  integer value */
-	/* double rValue;               real value */
-	/* char sIndex;                 symbol table index */
+	int functionId;			/* function id */
 	const char *name;		/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 };

@@ -22,20 +22,15 @@
 #ifndef ATEN_TREE_H
 #define ATEN_TREE_H
 
+#include <fstream>
 #include "parser/returnvalue.h"
 #include "parser/commands.h"
-#include "templates/list.h"
 #include "templates/reflist.h"
-#include "templates/vector3.h"
 #include "base/vtypes.h"
 #include "base/dnchar.h"
-#include <fstream>
-#include <iostream>
 
 // Forward declarations
-//class CommandList;
-class VariableList;
-class Variable;
+class NuVariable;
 class TreeNode;
 class ScopeNode;
 
@@ -80,8 +75,6 @@ class Tree
 	// Node Data
 	*/
 	private:
-	// Global variable list for the whole tree
-	VariableList *variableList_;
 	// Node list - a disordered reflist of all nodes owned by the Tree
 	Reflist<TreeNode,int> ownedNodes_;
 	// Reflist of all statements in the Tree, to be executed sequentially
@@ -98,8 +91,8 @@ class Tree
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Add variable to topmost ScopeNode
 	void addVariable(NuVTypes::DataType type, const char *name);
-	// Set head node
-	void setHeadNode(TreeNode *node);
+	// Search for variable in current scope
+	NuVariable *isVariableInScope(const char *name);
 };
 
 #endif

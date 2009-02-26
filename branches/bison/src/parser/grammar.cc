@@ -151,14 +151,12 @@ void yyerror(char *s);
 typedef union YYSTYPE
 #line 16 "grammar.yy"
 {
-	/* int iValue;                  integer value */
-	/* double rValue;               real value */
-	/* char sIndex;                 symbol table index */
+	int functionId;			/* function id */
 	const char *name;		/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 }
 /* Line 187 of yacc.c.  */
-#line 162 "grammar.cc"
+#line 160 "grammar.cc"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -171,7 +169,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 175 "grammar.cc"
+#line 173 "grammar.cc"
 
 #ifdef short
 # undef short
@@ -459,8 +457,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    42,    42,    43,    47,    48,    52,    53,    54,    65,
-      66,    67,    70,    71,    72,    73,    74
+       0,    40,    40,    41,    45,    46,    50,    51,    52,    63,
+      64,    65,    68,    69,    70,    71,    72
 };
 #endif
 
@@ -1377,73 +1375,73 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 42 "grammar.yy"
+#line 40 "grammar.yy"
     { Tree::currentTree->addStatement((yyvsp[(2) - (2)].node)); }
     break;
 
   case 4:
-#line 47 "grammar.yy"
+#line 45 "grammar.yy"
     {  }
     break;
 
   case 6:
-#line 52 "grammar.yy"
+#line 50 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addJoiner(NULL,NULL); }
     break;
 
   case 7:
-#line 53 "grammar.yy"
+#line 51 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (2)].node); }
     break;
 
   case 8:
-#line 54 "grammar.yy"
+#line 52 "grammar.yy"
     { Tree::currentTree->addVariable(NuVTypes::IntegerData,(yyvsp[(2) - (3)].name)); }
     break;
 
   case 9:
-#line 65 "grammar.yy"
+#line 63 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 10:
-#line 66 "grammar.yy"
+#line 64 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 11:
-#line 67 "grammar.yy"
+#line 65 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 12:
-#line 70 "grammar.yy"
+#line 68 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 13:
-#line 71 "grammar.yy"
+#line 69 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addCommandLeaf(NuCommand::OperatorSubtract, 2, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 14:
-#line 72 "grammar.yy"
+#line 70 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addCommandLeaf(NuCommand::OperatorMultiply, 2, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 15:
-#line 73 "grammar.yy"
+#line 71 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addCommandLeaf(NuCommand::OperatorDivide, 2, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 16:
-#line 74 "grammar.yy"
+#line 72 "grammar.yy"
     { (yyval.node) = Tree::currentTree->addCommandLeaf(NuCommand::OperatorPower, 2, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1447 "grammar.cc"
+#line 1445 "grammar.cc"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1657,7 +1655,7 @@ yyreturn:
 }
 
 
-#line 84 "grammar.yy"
+#line 82 "grammar.yy"
 
 
 void yyerror(char *s) {

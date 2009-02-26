@@ -59,3 +59,29 @@ void NuVariableList::take(NuVariable *v)
 NuVariable *NuVariableList::get(const char *name)
 {
 }
+
+// Create a new variable in the list
+NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name)
+{
+	NuVariable *v = NULL;
+	switch (type)
+	{
+		case (NuVTypes::NoData):
+			printf("No data type passed to VariableList::create().\n");
+			break;
+		case (NuVTypes::IntegerData):
+			v = (NuVariable*) new NuIntegerVariable(0, name);
+			break;
+		case (NuVTypes::RealData):
+			v = (NuVariable*) new NuRealVariable(0.0, name);
+			break;
+		case (NuVTypes::CharacterData):
+			v = (NuVariable*) new NuCharacterVariable("", name);
+			break;
+		default:
+			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
+			break;
+	}
+	if (v != NULL) variables_.own(v);
+	return v;
+}

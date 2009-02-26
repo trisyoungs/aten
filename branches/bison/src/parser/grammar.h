@@ -90,14 +90,12 @@
 typedef union YYSTYPE
 #line 16 "grammar.yy"
 {
-	/* int iValue;                  integer value */
-	/* double rValue;               real value */
-	/* char sIndex;                 symbol table index */
+	int functionId;			/* function id */
 	const char *name;		/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 }
 /* Line 1489 of yacc.c.  */
-#line 101 "grammar.h"
+#line 99 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

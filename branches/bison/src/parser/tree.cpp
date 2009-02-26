@@ -188,3 +188,23 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	if (node2 != NULL) leaf->addArgument(node2);
 	return leaf;
 }
+
+// Add variable to topmost scope
+void Tree::addVariable(NuVTypes::DataType type, const char *name)
+{
+	// Create the supplied variable in the list of the topmost scope
+	if (!scopeNodes_.last()->item->variables.create(type, name)) printf("ERROR!\n");
+}
+
+// Search for variable in current scope
+NuVariable *Tree::isVariableInScope(const char *name)
+{
+	// Search the current ScopeNode list for the variable name requested
+	NuVariable *v = NULL;
+	for (Refitem<ScopeNode,int> *ri = scopeNodes_.first(); ri != NULL; ri =ri->next)
+	{
+		v = ri->item->variables.find(name);
+		if (v != NULL) break;
+	}
+	return v;
+}
