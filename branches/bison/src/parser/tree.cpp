@@ -21,6 +21,7 @@
 
 #include "parser/tree.h"
 #include "parser/treenode.h"
+#include "parser/scopenode.h"
 #include "parser/commandnode.h"
 #include "parser/grammar.h"
 #include <stdarg.h>
@@ -57,8 +58,6 @@ Tree::~Tree()
 // Clear contents of tree
 void Tree::clear()
 {
-	// Just clear the list of nodes that are present in other lists
-	otherNodes_.clear();
 	// Manually delete the nodes owned by this Tree
 	for (Refitem<TreeNode,int> *ri = ownedNodes_.first(); ri != NULL; ri = ri->next) delete ri->item;
 	ownedNodes_.clear();
@@ -69,8 +68,12 @@ void Tree::clear()
 bool Tree::generate(const char *s)
 {
 	msg.enter("Tree::generate");
-	// Store this as the current Tree (for Bison)
+	clear();
+	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
 	currentTree = this;
+	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
+	ownedNodes_.add(root);
+	scopeNodes_.add(root);
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -84,6 +87,7 @@ bool Tree::generate(const char *s)
 		clear();
 		msg.print("Failed to parse data.\n");
 	}
+	else print();
 	msg.exit("Tree::generate");
 	return (result == 0);
 }
@@ -102,6 +106,21 @@ int Tree::execute(NuReturnValue &rv)
 	rv.info();
 	msg.exit("Tree::execute");
 	return result;
+}
+
+// Print tree
+void Tree::print()
+{
+	printf("Leaf Structure:\n");
+	int n=0;
+	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
+	{
+		printf("-------------------------------------------------------------\n");
+		printf("Statement %i:\n", n);
+		ri->item->nodePrint(1);
+		n ++;
+		printf("-------------------------------------------------------------\n");
+	}
 }
 
 /*
@@ -144,25 +163,9 @@ void Tree::addStatement(TreeNode *leaf)
 	statements_.add(leaf);
 }
 
-// Add simple leaf node (e.g. constant, variable) to topmost branch on stack
-TreeNode *Tree::addLeaf(TreeNode *leaf)
-{
-// 	Refitem<Tree,int> *ri = stack_.last();
-// 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
-// 	Tree *topmost = ri->item;
-// 	topmost->nodes_.own(leaf);
-	otherNodes_.add(leaf);
-	return leaf;
-}
-
 // Add command-based leaf node to topmost branch on stack
 TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 {
-// 	Refitem<Tree,int> *ri = stack_.last();
-// 	if (ri == NULL) printf("Severe - no topmost branch on stack. A crash is coming!\n");
-// 	Tree *topmost = ri->item;
-	// Create the new command node
-// 	printf("COMMAND ADDED.\n");
 	// Create variable argument parser
 	va_list vars;
 	va_start(vars,nargs);

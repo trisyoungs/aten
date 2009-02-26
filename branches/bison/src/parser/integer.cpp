@@ -21,12 +21,13 @@
 
 #include "parser/integer.h"
 #include "base/constants.h"
+#include <string.h>
 
 // Constructor
 NuIntegerVariable::NuIntegerVariable(int i, bool constant) : integerData_(i)
 {
 	// Private variables
-	returnType_ = VTypes::IntegerData;
+	returnType_ = NuVTypes::IntegerData;
 	readOnly_ = constant;
 }
 
@@ -65,4 +66,19 @@ int NuIntegerVariable::execute(NuReturnValue &rv)
 {
 	rv.set(integerData_);
 	return TRUE;
+}
+
+// Print node contents
+void NuIntegerVariable::nodePrint(int offset)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+10];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	// Output node data
+	if (readOnly_) printf("%s%i (constant value)\n", tab, integerData_);
+	else printf("%s%i (variable, name=%s)\n", tab, integerData_, name_.get());
+	delete[] tab;
 }

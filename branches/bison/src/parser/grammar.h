@@ -39,35 +39,49 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     INTEGER = 258,
-     REAL = 259,
-     CHARACTER = 260,
-     WHILE = 261,
-     IF = 262,
-     PRINT = 263,
-     IFX = 264,
-     ELSE = 265,
-     NE = 266,
-     EQ = 267,
-     LE = 268,
-     GE = 269,
-     UMINUS = 270
+     TOKENNAME = 258,
+     INTCONST = 259,
+     REALCONST = 260,
+     CHARCONST = 261,
+     VARIABLE = 262,
+     FUNCTION = 263,
+     INTEGER = 264,
+     REAL = 265,
+     CHARACTER = 266,
+     VECTOR = 267,
+     WHILE = 268,
+     IF = 269,
+     PRINT = 270,
+     IFX = 271,
+     ELSE = 272,
+     NE = 273,
+     EQ = 274,
+     LE = 275,
+     GE = 276,
+     UMINUS = 277
    };
 #endif
 /* Tokens.  */
-#define INTEGER 258
-#define REAL 259
-#define CHARACTER 260
-#define WHILE 261
-#define IF 262
-#define PRINT 263
-#define IFX 264
-#define ELSE 265
-#define NE 266
-#define EQ 267
-#define LE 268
-#define GE 269
-#define UMINUS 270
+#define TOKENNAME 258
+#define INTCONST 259
+#define REALCONST 260
+#define CHARCONST 261
+#define VARIABLE 262
+#define FUNCTION 263
+#define INTEGER 264
+#define REAL 265
+#define CHARACTER 266
+#define VECTOR 267
+#define WHILE 268
+#define IF 269
+#define PRINT 270
+#define IFX 271
+#define ELSE 272
+#define NE 273
+#define EQ 274
+#define LE 275
+#define GE 276
+#define UMINUS 277
 
 
 
@@ -79,10 +93,11 @@ typedef union YYSTYPE
 	/* int iValue;                  integer value */
 	/* double rValue;               real value */
 	/* char sIndex;                 symbol table index */
-	TreeNode *node;             /* node pointer */
+	const char *name;		/* character pointer for names */
+	TreeNode *node;			/* node pointer */
 }
 /* Line 1489 of yacc.c.  */
-#line 86 "grammar.h"
+#line 101 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

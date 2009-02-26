@@ -49,7 +49,7 @@ class NuCommandData
 	// Command argument names
 	const char *argText;
 	// Return-value datatype (if definite)
-	VTypes::DataType returnType;
+	NuVTypes::DataType returnType;
 	// Command syntax
 	const char *syntax;
 

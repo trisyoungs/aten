@@ -23,12 +23,13 @@
 #include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Constructor
 NuCharacterVariable::NuCharacterVariable(const char *s, bool constant) : characterData_(s)
 {
 	// Private variables
-	returnType_ = VTypes::CharacterData;
+	returnType_ = NuVTypes::CharacterData;
 	readOnly_ = constant;
 }
 
@@ -60,4 +61,19 @@ int NuCharacterVariable::execute(NuReturnValue &rv)
 {
 	rv.set(characterData_.get());
 	return TRUE;
+}
+
+// Print node contents
+void NuCharacterVariable::nodePrint(int offset)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+10];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	// Output node data
+	if (readOnly_) printf("%s\"%s\" (constant value)\n", tab, characterData_.get());
+	else printf("%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
+	delete[] tab;
 }

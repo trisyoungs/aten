@@ -37,6 +37,7 @@
 class VariableList;
 class Variable;
 class TreeNode;
+class ScopeNode;
 
 // Tree
 class Tree
@@ -72,6 +73,8 @@ class Tree
 	int execute(NuReturnValue &rv);
 	// Current tree (target of node creation)
 	static Tree *currentTree;
+	// Print layout of current tree
+	void print();
 
 	/*
 	// Node Data
@@ -79,22 +82,22 @@ class Tree
 	private:
 	// Global variable list for the whole tree
 	VariableList *variableList_;
-	// Others nodes list - a disordered reflist of all nodes owned by the Tree
-	Reflist<TreeNode,int> otherNodes_;
 	// Node list - a disordered reflist of all nodes owned by the Tree
 	Reflist<TreeNode,int> ownedNodes_;
 	// Reflist of all statements in the Tree, to be executed sequentially
 	Reflist<TreeNode,int> statements_;
+	// Reflist of ScopeNodes
+	Reflist<ScopeNode,int> scopeNodes_;
 
 	public:
 	// Add a node representing a whole statement to the execution list
 	void addStatement(TreeNode *leaf);
-	// Associate a simple leaf node (e.g. constant, variable) to the Tree
-	TreeNode *addLeaf(TreeNode *leaf);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	// Add variable to topmost ScopeNode
+	void addVariable(NuVTypes::DataType type, const char *name);
 	// Set head node
 	void setHeadNode(TreeNode *node);
 };

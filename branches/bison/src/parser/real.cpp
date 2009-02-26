@@ -23,12 +23,13 @@
 #include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Constructor
 NuRealVariable::NuRealVariable(double d, bool constant) : realData_(d)
 {
 	// Private variables
-	returnType_ = VTypes::RealData;
+	returnType_ = NuVTypes::RealData;
 	readOnly_ = constant;
 }
 
@@ -68,4 +69,19 @@ int NuRealVariable::execute(NuReturnValue &rv)
 {
 	rv.set(realData_);
 	return TRUE;
+}
+
+// Print node contents
+void NuRealVariable::nodePrint(int offset)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+10];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	// Output node data
+	if (readOnly_) printf("%s%f (constant value)\n", tab, realData_);
+	else printf("%s%f (variable, name=%s)\n", tab, realData_, name_.get());
+	delete[] tab;
 }

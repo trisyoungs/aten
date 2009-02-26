@@ -23,7 +23,7 @@
 #define ATEN_NURETURNVALUE_H
 
 #include "parser/returnvalue.h"
-#include "base/vtypes.h"
+#include "parser/vtypes.h"
 #include "base/dnchar.h"
 
 // Tree Return Value
@@ -40,7 +40,7 @@ class NuReturnValue
 	*/
 	private:
 	// Data type contained in class
-	VTypes::DataType type_;
+	NuVTypes::DataType type_;
 	// Variable members for returns
 	int valueI_;
 	double valueR_;
@@ -48,7 +48,7 @@ class NuReturnValue
 
 	public:
 	// Return type of the stored data
-	VTypes::DataType type();
+	NuVTypes::DataType type();
 	// Reset data
 	void reset();
 	// Print info on data contents
