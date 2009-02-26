@@ -29,8 +29,9 @@
 TreeNode::TreeNode()
 {
 	// Private variables
-	returnType_ = VTypes::NoData;
+	returnType_ = NuVTypes::NoData;
 	readOnly_ = TRUE;
+	parentScope_ = NULL;
 }
 
 // Destructor
@@ -39,13 +40,13 @@ TreeNode::~TreeNode()
 }
 
 // Sets the content type of the variable
-void TreeNode::setReturnType(VTypes::DataType dt)
+void TreeNode::setReturnType(NuVTypes::DataType dt)
 {
 	returnType_ = dt;
 }
 
 // Returns content type of the variable
-VTypes::DataType TreeNode::returnType()
+NuVTypes::DataType TreeNode::returnType()
 {
 	return returnType_;
 }
@@ -71,9 +72,9 @@ int TreeNode::nArgs()
 // Add argument to node
 void TreeNode::addArgument(TreeNode *leaf)
 {
-	printf("Leaf to be added as an argument is %li\n", leaf);
+// 	printf("Leaf to be added as an argument is %li\n", leaf);
 	args_.add(leaf);
-	printf("Added argument %i to node....\n", args_.nItems());
+// 	printf("Added argument %i to node....\n", args_.nItems());
 }
 
 // Return argument specified
@@ -126,3 +127,8 @@ int TreeNode::execute(NuReturnValue &rv)
 	return -1;
 }
 
+// Print node contents
+void TreeNode::nodePrint(int offset)
+{
+	printf("No data to print - this is a base-class node.\n");
+}

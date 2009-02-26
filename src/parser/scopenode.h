@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.h
+	*** Scoped Command Node
+	*** src/parser/scopenode.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,40 +19,24 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_INTEGERVARIABLE_H
-#define ATEN_INTEGERVARIABLE_H
+#ifndef ATEN_SCOPENODE_H
+#define ATEN_SCOPENODE_H
 
-#include "parser/variable.h"
+#include "parser/commandnode.h"
+#include "parser/variablelist.h"
 
-// Integer Variable
-class NuIntegerVariable : public NuVariable
+// Scoped Command Node
+class ScopeNode : public NuCommandNode
 {
 	public:
 	// Constructor / Destructor
-	NuIntegerVariable(int i = 0, bool constant = FALSE);
-	~NuIntegerVariable();
+	ScopeNode(NuCommand::Function func = NuCommand::NoFunction);
+	~ScopeNode();
 
 	/*
-	// Set / Get
+	// Variable List
 	*/
-	public:
-	// Set value of variable (int)
-	bool set(int i);
-	// Step variable
-	bool step(int delta, NuVariable *index = NULL);
-	// Clears value of variable
-	bool reset(NuVariable *index = NULL);
-	// Return value of node
-	int execute(NuReturnValue &rv);
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Integer data
-	int integerData_;
-	// Print node contents
-	void nodePrint(int offset);
+	NuVariableList vars_;
 };
 
 #endif

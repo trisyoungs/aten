@@ -50,6 +50,8 @@ class NuCharacterVariable : public NuVariable
 	private:
 	// Character data
 	Dnchar characterData_;
+	// Print node contents
+	void nodePrint(int offset);
 };
 
 #endif

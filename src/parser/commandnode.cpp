@@ -23,29 +23,17 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include <string.h>
 
 // Constructor
 NuCommandNode::NuCommandNode(NuCommand::Function func) : function_(func)
 {
 	// Private variables
-	parent_ = NULL;
 }
 
 // Destructor
 NuCommandNode::~NuCommandNode()
 {
-}
-
-// Set parent Tree
-void NuCommandNode::setParent(Tree *t)
-{
-	parent_ = t;
-}
-
-// Get parent Tree
-Tree *NuCommandNode::parent()
-{
-	return parent_;
 }
 
 // Set function
@@ -67,4 +55,21 @@ int NuCommandNode::execute(NuReturnValue &rv)
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
 	// Check whether to disregard flow control nodes
 	return nucommands.call(function_, this, rv);
+}
+
+// Print node contents
+void NuCommandNode::nodePrint(int offset)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+10];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	if (offset == 1) strcat(tab,"\t");
+	// Output node data
+	printf("%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
+	// Output Argument data
+	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	delete[] tab;
 }

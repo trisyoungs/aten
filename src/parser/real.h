@@ -51,6 +51,8 @@ class NuRealVariable : public NuVariable
 	private:
 	// Real data
 	double realData_;
+	// Print node contents
+	void nodePrint(int offset);
 };
 
 #endif

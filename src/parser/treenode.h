@@ -25,13 +25,13 @@
 #include "parser/returnvalue.h"
 #include "templates/reflist.h"
 #include "templates/vector3.h"
-#include "base/vtypes.h"
+#include "parser/vtypes.h"
 
 // Forward declarations
 //class CommandList;
 class VariableList;
 class Variable;
-// class Tree;
+class ScopeNode;
 
 // Tree Node
 class TreeNode
@@ -44,7 +44,7 @@ class TreeNode
 	/*
 	// Argument Data
 	*/
-	private:
+	protected:
 	// Arguments (if any) to leaf node operation
 	Reflist<TreeNode,int> args_;
 
@@ -61,15 +61,18 @@ class TreeNode
 	*/
 	protected:
 	// Node return value datatype
-	VTypes::DataType returnType_;
+	NuVTypes::DataType returnType_;
 	// Whether node is read-only
 	bool readOnly_;
+	// Pointer to parent ScopeNode
+	ScopeNode *parentScope_;
+	
 
 	public:
 	// Sets the content type of the variable
-	void setReturnType(VTypes::DataType dt);
+	void setReturnType(NuVTypes::DataType dt);
 	// Returns content type of the variable
-	VTypes::DataType returnType();
+	NuVTypes::DataType returnType();
 	// Set parent variablelist
 // 	void setParent(VariableList *vlist);
 	// Set the readonly status of the node to TRUE
@@ -91,6 +94,8 @@ class TreeNode
 	virtual bool reset();
 	// Get reduced value of node
 	virtual int execute(NuReturnValue &rv);
+	// Print layout of current node
+	virtual void nodePrint(int offset);
 };
 
 #endif

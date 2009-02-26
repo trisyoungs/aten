@@ -45,23 +45,19 @@ class NuCommandNode : public TreeNode
 	/*
 	// Command Data
 	*/
-	private:
+	protected:
 	// Command that this node performs
 	NuCommand::Function function_;
-	// Parent tree
-	Tree *parent_;
 	
 	public:
-	// Set parent Tree
-	void setParent(Tree *t);
-	// Get parent Tree
-	Tree *parent();
 	// Set command function
 	void setFunction(NuCommand::Function ca);
 	// Get command function
 	NuCommand::Function function();
 	// Execute command
 	int execute(NuReturnValue &rv);
+	// Print node contents
+	void nodePrint(int offset);
 };
 
 #endif

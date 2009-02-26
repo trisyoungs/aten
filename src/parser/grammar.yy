@@ -17,11 +17,13 @@ void yyerror(char *s);
 	/* int iValue;                  integer value */
 	/* double rValue;               real value */
 	/* char sIndex;                 symbol table index */
-	TreeNode *node;             /* node pointer */
+	const char *name;		/* character pointer for names */
+	TreeNode *node;			/* node pointer */
 };
 
-%token <node> INTEGER REAL CHARACTER
-%token WHILE IF PRINT
+%token <name> TOKENNAME
+%token <node> INTCONST REALCONST CHARCONST VARIABLE FUNCTION
+%token INTEGER REAL CHARACTER VECTOR WHILE IF PRINT
 %nonassoc IFX
 %nonassoc ELSE
 
@@ -31,7 +33,8 @@ void yyerror(char *s);
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement compound
+%type <node> expr statement
+%type <name> namelist
 
 %%
 
@@ -40,10 +43,16 @@ function:
         | /* NULL */
         ;
 
+namelist:
+	TOKENNAME {  }
+	| namelist TOKENNAME
+       ;
+
 statement:
-          ';'                            { $$ = Tree::currentTree->addJoiner(NULL,NULL); }
-        | expr ';'                       { $$ = $1; }
-/*        | PRINT expr ';'                 { $$ = opr(PRINT, 1, $2); } */
+	';'					{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
+	| expr ';'				{ $$ = $1; }
+	| INTEGER namelist ';'			{ Tree::currentTree->addVariable(NuVTypes::IntegerData,$2); }
+       /*| PRINT expr ';'                 { $$ = opr(PRINT, 1, $2); } */
 /*        | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); } */
 /*        | WHILE '(' expr ')' stmt        { $$ = opr(WHILE, 2, $3, $5); } */
 /*        | IF '(' expr ')' stmt %prec IFX { $$ = opr(IF, 2, $3, $5); } */
@@ -51,21 +60,18 @@ statement:
 /*        | '{' stmt_list '}'              { $$ = $2; } */
         ;
 
-compound:
-          statement                  { $$ = $1; }
-        | compound statement         { $$ = Tree::currentTree->addJoiner($1,$2); }
-        ;
 
 expr:
-          REAL					{ $$ = $1; }
-          | INTEGER				{ $$ = $1; }
+	INTCONST				{ $$ = $1; }
+	| REALCONST				{ $$ = $1; }
+	| CHARCONST				{ $$ = $1; }
        /* | VARIABLE				{ $$ = id($1); } */
  /*        | '-' expr %prec UMINUS			{ $$ = opr(UMINUS, 1, $2); } */
-        | expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, $1, $3); }
-        | expr '-' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorSubtract, 2, $1, $3); }
-        | expr '*' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorMultiply, 2, $1, $3); }
-        | expr '/' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorDivide, 2, $1, $3); }
-        | expr '^' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorPower, 2, $1, $3); }
+	| expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, $1, $3); }
+	| expr '-' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorSubtract, 2, $1, $3); }
+	| expr '*' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorMultiply, 2, $1, $3); }
+	| expr '/' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorDivide, 2, $1, $3); }
+	| expr '^' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorPower, 2, $1, $3); }
 /*        | expr '<' expr				{ $$ = opr('<', 2, $1, $3); } */
 /*        | expr '>' expr				{ $$ = opr('>', 2, $1, $3); } */
 /*        | expr GE expr				{ $$ = opr(GE, 2, $1, $3); } */

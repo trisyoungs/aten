@@ -51,8 +51,9 @@ libparser_a_LIBADD =
 am_libparser_a_OBJECTS = character.$(OBJEXT) commandnode.$(OBJEXT) \
 	commands.$(OBJEXT) functions.$(OBJEXT) grammar.$(OBJEXT) \
 	integer.$(OBJEXT) lexer.$(OBJEXT) real.$(OBJEXT) \
-	returnvalue.$(OBJEXT) testfuncs.$(OBJEXT) tree.$(OBJEXT) \
-	treenode.$(OBJEXT) variable.$(OBJEXT)
+	returnvalue.$(OBJEXT) scopenode.$(OBJEXT) testfuncs.$(OBJEXT) \
+	tree.$(OBJEXT) treenode.$(OBJEXT) variable.$(OBJEXT) \
+	variablelist.$(OBJEXT) vtypes.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -213,8 +214,8 @@ top_srcdir = ../..
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = character.cpp commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp
-noinst_HEADERS = character.h commandnode.h commands.h integer.h real.h returnvalue.h tree.h treenode.h variable.h
+libparser_a_SOURCES = character.cpp commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp scopenode.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp variablelist.cpp vtypes.cpp
+noinst_HEADERS = character.h commandnode.h commands.h integer.h real.h returnvalue.h scopenode.h tree.h treenode.h variable.h variablelist.h vtypes.h 
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui -DQT_SHARED -I/usr/include/QtGui   -I/usr/include/readline
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -278,10 +279,13 @@ include ./$(DEPDIR)/integer.Po
 include ./$(DEPDIR)/lexer.Po
 include ./$(DEPDIR)/real.Po
 include ./$(DEPDIR)/returnvalue.Po
+include ./$(DEPDIR)/scopenode.Po
 include ./$(DEPDIR)/testfuncs.Po
 include ./$(DEPDIR)/tree.Po
 include ./$(DEPDIR)/treenode.Po
 include ./$(DEPDIR)/variable.Po
+include ./$(DEPDIR)/variablelist.Po
+include ./$(DEPDIR)/vtypes.Po
 
 .cc.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

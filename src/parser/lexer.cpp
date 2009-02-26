@@ -23,6 +23,7 @@
 #include "parser/treenode.h"
 #include "parser/grammar.h"
 #include "parser/integer.h"
+#include "parser/character.h"
 #include "parser/real.h"
 #include "base/sysfunc.h"
 #include <ctype.h>
@@ -99,14 +100,39 @@ int yylex()
 		{
 			NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
 			yylval.node = var;
-			return INTEGER;
+			return INTCONST;
 		}
 		else
 		{
 			NuRealVariable *var = new NuRealVariable(atof(token), TRUE);
 			yylval.node = var;
-			return REAL;
+			return REALCONST;
 		}
+	}
+
+	/*
+	// Literal Character String - surrounded by ""
+	*/
+	if (c == '"')
+	{
+		// Just read everything until we find another '"'
+		done = FALSE;
+		do
+		{
+			c = Tree::currentTree->getChar();
+			if (c == '"')
+			{
+				// Check for null string...
+				if (length == 0) done = TRUE;
+				else if (token[length-1] == '\\') token[length++] = '"';
+				else done = TRUE;
+			}
+			else token[length++] = c;
+		} while (!done);
+		token[length] = '\0';
+		NuCharacterVariable *var = new NuCharacterVariable(token, TRUE);
+		yylval.node = var;
+		return CHARCONST;
 	}
 
 	/* Char starts an identifier => read the name.	*/
@@ -123,7 +149,7 @@ int yylex()
 		while (isalnum (c));
 		Tree::currentTree->unGetChar();
 		token[length] = '\0';
-
+		printf("Lexer ffound an unknown token name = [%s]\n", token);
 		// Search for token name....
 /*		s = getsym (symbuf);
 		if (s == 0) s = putsym (symbuf, VAR);
