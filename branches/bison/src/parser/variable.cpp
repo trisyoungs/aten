@@ -28,6 +28,11 @@ NuVariable::NuVariable()
 {
 	// Private variables
 	name_.set("unnamed");
+	initialValue_ = NULL;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 // Destructor (virtual)
@@ -45,4 +50,36 @@ void NuVariable::setName(const char* s)
 const char *NuVariable::name()
 {
 	return name_.get();
+}
+
+// Initialise variable
+bool NuVariable::initialise()
+{
+	if (initialValue_ == NULL) reset();
+	else
+	{
+		NuReturnValue rv;
+		if (initialValue_->execute(rv))
+		{
+			if (set(rv)) return TRUE;
+			else
+			{
+				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), NuVTypes::dataType(returnType_), NuVTypes::dataType(rv.type()));
+				return FALSE;
+			}
+		}
+		return FALSE;
+	}	
+}
+
+// Set initial value expression
+void NuVariable::setInitialValue(TreeNode *node)
+{
+	initialValue_ = node;
+}
+
+// Return TreeNode corresponding to initial value
+TreeNode *NuVariable::initialValue()
+{
+	return initialValue_;
 }

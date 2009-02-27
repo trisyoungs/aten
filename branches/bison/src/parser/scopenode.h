@@ -36,7 +36,20 @@ class ScopeNode : public NuCommandNode
 	/*
 	// Variable List
 	*/
+	public:
 	NuVariableList variables;
+
+	/*
+	// Set / Get / Execute
+	*/
+	public:
+	// Set from returnvalue node
+	bool set(NuReturnValue &rv);
+	// Reset node
+	void reset();
+	// Print layout of current node
+	void nodePrint(int offset, const char *prefix = "");
+
 };
 
 #endif

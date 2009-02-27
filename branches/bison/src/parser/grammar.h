@@ -88,10 +88,10 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 16 "grammar.yy"
+#line 17 "grammar.yy"
 {
 	int functionId;			/* function id */
-	const char *name;		/* character pointer for names */
+	Dnchar *name;			/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 }
 /* Line 1489 of yacc.c.  */

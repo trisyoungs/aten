@@ -43,43 +43,34 @@ NuRealVariable::~NuRealVariable()
 */
 
 // Set value of variable (real)
-bool NuRealVariable::set(double d)
+bool NuRealVariable::set(NuReturnValue &rv)
 {
-	realData_ = d;
-	return TRUE;
+	return FALSE;
 }
 
-
-// Step variable
-bool NuRealVariable::step(int delta, NuVariable *index)
-{
-	realData_ += delta;
-	return TRUE;
-}
-
-// Clears value of variable
-bool NuRealVariable::reset(NuVariable *index)
+// Reset variable
+void NuRealVariable::reset()
 {
 	realData_ = 0.0;
-	return TRUE;
 }
 
 // Return value of node
-int NuRealVariable::execute(NuReturnValue &rv)
+bool NuRealVariable::execute(NuReturnValue &rv)
 {
 	rv.set(realData_);
 	return TRUE;
 }
 
 // Print node contents
-void NuRealVariable::nodePrint(int offset)
+void NuRealVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
-	tab = new char[offset+10];
+	tab = new char[offset+32];
 	tab[0] = '\0';
 	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
 	if (offset > 1) strcat(tab,"   |--> ");
+	strcat(tab,prefix);
 	// Output node data
 	if (readOnly_) printf("%s%f (constant value)\n", tab, realData_);
 	else printf("%s%f (variable, name=%s)\n", tab, realData_, name_.get());

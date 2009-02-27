@@ -46,12 +46,20 @@ class NuVariable : public TreeNode
 	protected:
 	// Name of the variable
 	Dnchar name_;
+	// Initial value of new variable
+	TreeNode *initialValue_;
 
 	public:
 	// Set name of variable
 	void setName(const char* s);
 	// Get name of variable
 	const char *name();
+	// Set initial value expression
+	void setInitialValue(TreeNode *node);
+	// Return TreeNode corresponding to initial value
+	TreeNode *initialValue();
+	// Initialise variable
+	bool initialise();
 };
 
 #endif

@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/tree.h"
 #include "parser/treenode.h"
 #include "parser/grammar.h"
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
 #include "base/sysfunc.h"
+#include "parser/tree.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -41,6 +41,7 @@ int yylex()
 	int c, length, n;
 	bool done, integer, hasexp;
 	static char token[256];
+	static Dnchar name;
 	length = 0;
 	token[0] = '\0';
 
@@ -136,15 +137,14 @@ int yylex()
 		return CHARCONST;
 	}
 
-	/* Char starts an identifier => read the name.	*/
+	/*
+	// Alphanumeric-token - function or variable
+	*/
 	if (isalpha (c))
 	{
-		done = FALSE;
 		do
 		{
-			/* Add this character to the buffer.	  */
 			token[length++] = c;
-			/* Get another character.			  */
 			c = Tree::currentTree->getChar();
 		}
 		while (isalnum (c));
@@ -169,8 +169,18 @@ int yylex()
 		// The token isn't a high- or low-level function.
 		// Is it a variable? Search the lists currently in scope...
 		NuVariable *v = Tree::currentTree->isVariableInScope(token);
+		if (v != NULL)
+		{
+			yylval.node = v;
+			return VARIABLE;
+		}
 		
+		// If we get to here then we have found an unrecognised named token (a new variable?)
 		printf("Lexer found an unknown token name = [%s]\n", token);
+		name = token;
+		yylval.name = &name;
+		return TOKENNAME;
+
 		
 	}
 

@@ -56,12 +56,15 @@ void NuVariableList::take(NuVariable *v)
 }
 
 // Retrieve a named variable from the list
-NuVariable *NuVariableList::get(const char *name)
+NuVariable *NuVariableList::find(const char *name)
 {
+	NuVariable *result = NULL;
+	for (result = variables_.first(); result != NULL; result = result->next) if (strcmp(name,result->name()) == 0) break;
+	return result;
 }
 
 // Create a new variable in the list
-NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name)
+NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
 {
 	NuVariable *v = NULL;
 	switch (type)
@@ -70,18 +73,35 @@ NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name)
 			printf("No data type passed to VariableList::create().\n");
 			break;
 		case (NuVTypes::IntegerData):
-			v = (NuVariable*) new NuIntegerVariable(0, name);
+			v = (NuVariable*) new NuIntegerVariable(0, FALSE);
 			break;
 		case (NuVTypes::RealData):
-			v = (NuVariable*) new NuRealVariable(0.0, name);
+			v = (NuVariable*) new NuRealVariable(0.0, FALSE);
 			break;
 		case (NuVTypes::CharacterData):
-			v = (NuVariable*) new NuCharacterVariable("", name);
+			v = (NuVariable*) new NuCharacterVariable("", FALSE);
 			break;
 		default:
 			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
 			break;
+	} 
+	if (v != NULL)
+	{
+		v->setName(name);
+		v->setInitialValue(initialValue);
+		variables_.own(v);
 	}
-	if (v != NULL) variables_.own(v);
 	return v;
+}
+
+// Return the number of variables (not constants) contained in the list
+int NuVariableList::nVariables()
+{
+	return variables_.nItems();
+}
+
+// Return first variable in the list
+NuVariable *NuVariableList::first()
+{
+	return variables_.first();
 }

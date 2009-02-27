@@ -36,14 +36,12 @@ class NuIntegerVariable : public NuVariable
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (int)
-	bool set(int i);
-	// Step variable
-	bool step(int delta, NuVariable *index = NULL);
-	// Clears value of variable
-	bool reset(NuVariable *index = NULL);
 	// Return value of node
-	int execute(NuReturnValue &rv);
+	bool execute(NuReturnValue &rv);
+	// Set from returnvalue node
+	bool set(NuReturnValue &rv);
+	// Reset variable
+	void reset();
 
 	/*
 	// Variable Data
@@ -52,7 +50,7 @@ class NuIntegerVariable : public NuVariable
 	// Integer data
 	int integerData_;
 	// Print node contents
-	void nodePrint(int offset);
+	void nodePrint(int offset, const char *prefix);
 };
 
 #endif

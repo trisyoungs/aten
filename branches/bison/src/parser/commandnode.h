@@ -55,9 +55,13 @@ class NuCommandNode : public TreeNode
 	// Get command function
 	NuCommand::Function function();
 	// Execute command
-	int execute(NuReturnValue &rv);
+	bool execute(NuReturnValue &rv);
 	// Print node contents
-	void nodePrint(int offset);
+	void nodePrint(int offset, const char *prefix = "");
+	// Set from returnvalue node
+	bool set(NuReturnValue &rv);
+	// Reset node
+	void reset();
 };
 
 #endif

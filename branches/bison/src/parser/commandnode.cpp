@@ -49,7 +49,7 @@ NuCommand::Function NuCommandNode::function()
 }
 
 // Execute command
-int NuCommandNode::execute(NuReturnValue &rv)
+bool NuCommandNode::execute(NuReturnValue &rv)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
@@ -58,18 +58,32 @@ int NuCommandNode::execute(NuReturnValue &rv)
 }
 
 // Print node contents
-void NuCommandNode::nodePrint(int offset)
+void NuCommandNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
-	tab = new char[offset+10];
+	tab = new char[offset+32];
 	tab[0] = '\0';
 	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
 	if (offset > 1) strcat(tab,"   |--> ");
 	if (offset == 1) strcat(tab,"\t");
+	strcat(tab,prefix);
 	// Output node data
 	printf("%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
+}
+
+// Set from returnvalue node
+bool NuCommandNode::set(NuReturnValue &rv)
+{
+	printf("Internal Error: Trying to 'set' a CommandNode.\n");
+	return FALSE;
+}
+
+// Reset node
+void NuCommandNode::reset()
+{
+	printf("XXX RESET COMMANDNODE.\n");
 }
