@@ -55,7 +55,11 @@ class NuVariableList
 	// Retrieve a named variable from the list
 	NuVariable *find(const char *name);
 	// Create a new variable in the list
-	NuVariable *create(NuVTypes::DataType type, const char *name);
+	NuVariable *create(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	// Return the number of variables (not constants) contained in the list
+	int nVariables();
+	// Return first variable in the list
+	NuVariable *first();
 	// Add a named variable or constant to the list
 	//NuVariable *add(const char *name, NuVTypes::DataType vt, bool constant = FALSE);
 

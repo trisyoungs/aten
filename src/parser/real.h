@@ -29,21 +29,19 @@ class NuRealVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuRealVariable(double d = 0, bool constant = FALSE);
+	NuRealVariable(double d = 0.0, bool constant = FALSE);
 	~NuRealVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (real)
-	bool set(double d);
-	// Step variable
-	bool step(int delta, NuVariable *index = NULL);
-	// Clears value of variable
-	bool reset(NuVariable *index = NULL);
 	// Return value of node
-	int execute(NuReturnValue &rv);
+	bool execute(NuReturnValue &rv);
+	// Set from returnvalue node
+	bool set(NuReturnValue &rv);
+	// Reset node
+	void reset();
 
 	/*
 	// Variable Data
@@ -52,7 +50,7 @@ class NuRealVariable : public NuVariable
 	// Real data
 	double realData_;
 	// Print node contents
-	void nodePrint(int offset);
+	void nodePrint(int offset, const char *prefix = "");
 };
 
 #endif

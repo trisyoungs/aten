@@ -84,18 +84,14 @@ class TreeNode
 	// Node Data Set / Get / Execute
 	*/
 	public:
-	// Set value of node (int)
-	virtual bool set(int i);
-	// Get value of node as integer
-	virtual int asInteger();
-	// Step node
-	virtual bool step(int delta);
-	// Reset node contents
-	virtual bool reset();
+	// Set from returnvalue node
+	virtual bool set(NuReturnValue &rv) = 0;
+	// Reset variable
+	virtual void reset() = 0;
 	// Get reduced value of node
-	virtual int execute(NuReturnValue &rv);
+	virtual bool execute(NuReturnValue &rv) = 0;
 	// Print layout of current node
-	virtual void nodePrint(int offset);
+	virtual void nodePrint(int offset, const char *prefix = "") = 0;
 };
 
 #endif

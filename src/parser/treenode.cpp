@@ -19,11 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/tree.h"
 #include "parser/treenode.h"
+#include "parser/tree.h"
 #include "variables/accesspath.h"
 #include "base/sysfunc.h"
 #include "templates/reflist.h"
+
 
 // Constructors
 TreeNode::TreeNode()
@@ -88,47 +89,3 @@ TreeNode *TreeNode::arg(int i)
 	return args_[i]->item;
 }
 
-/*
-// Set/get (virtuals)
-*/
-
-// Set value of variable (int)
-bool TreeNode::set(int i)
-{
-	printf("This node cannot be 'set'.\n");
-	return FALSE;
-}
-
-// Get value of variable as integer
-int TreeNode::asInteger()
-{
-	printf("This node cannot be returned as an integer.\n");
-	return 0;
-}
-
-// Step variable
-bool TreeNode::step(int delta)
-{
-	printf("This node cannot be 'stepped'.\n");
-	return FALSE;
-}
-
-// Reset variable contents
-bool TreeNode::reset()
-{
-	printf("This node cannot be 'reset'.\n");
-	return FALSE;
-}
-
-// Get reduced value of node
-int TreeNode::execute(NuReturnValue &rv)
-{
-	printf("This node cannot be executed since it is of base-class type.\n");
-	return -1;
-}
-
-// Print node contents
-void TreeNode::nodePrint(int offset)
-{
-	printf("No data to print - this is a base-class node.\n");
-}

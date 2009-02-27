@@ -22,7 +22,7 @@
 #ifndef ATEN_TREE_H
 #define ATEN_TREE_H
 
-#include <fstream>
+#include <iostream>
 #include "parser/returnvalue.h"
 #include "parser/commands.h"
 #include "templates/reflist.h"
@@ -65,7 +65,7 @@ class Tree
 	// Function to create AST, putting result in static member
 	bool generate(const char *s);
 	// Execute AST, placing result in ReturnValue provided
-	int execute(NuReturnValue &rv);
+	bool execute(NuReturnValue &rv);
 	// Current tree (target of node creation)
 	static Tree *currentTree;
 	// Print layout of current tree
@@ -90,7 +90,7 @@ class Tree
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Add variable to topmost ScopeNode
-	void addVariable(NuVTypes::DataType type, const char *name);
+	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Search for variable in current scope
 	NuVariable *isVariableInScope(const char *name);
 };

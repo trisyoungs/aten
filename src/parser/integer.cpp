@@ -40,43 +40,35 @@ NuIntegerVariable::~NuIntegerVariable()
 // Set / Get
 */
 
-// Set value of variable (int)
-bool NuIntegerVariable::set(int i)
+// Set from returnvalue node
+bool NuIntegerVariable::set(NuReturnValue &rv)
 {
-	integerData_ = i;
-	return TRUE;
 }
 
-// Step variable
-bool NuIntegerVariable::step(int delta, NuVariable *index)
-{
-	integerData_ += delta;
-	return TRUE;
-}
-
-// Clears value of variable
-bool NuIntegerVariable::reset(NuVariable *index)
+// Reset variable
+void NuIntegerVariable::reset()
 {
 	integerData_ = 0;
-	return TRUE;
 }
 
+
 // Return value of node
-int NuIntegerVariable::execute(NuReturnValue &rv)
+bool NuIntegerVariable::execute(NuReturnValue &rv)
 {
 	rv.set(integerData_);
 	return TRUE;
 }
 
 // Print node contents
-void NuIntegerVariable::nodePrint(int offset)
+void NuIntegerVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
-	tab = new char[offset+10];
+	tab = new char[offset+32];
 	tab[0] = '\0';
 	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
 	if (offset > 1) strcat(tab,"   |--> ");
+	strcat(tab,prefix);
 	// Output node data
 	if (readOnly_) printf("%s%i (constant value)\n", tab, integerData_);
 	else printf("%s%i (variable, name=%s)\n", tab, integerData_, name_.get());

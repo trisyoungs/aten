@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/tree.h"
 #include "parser/treenode.h"
 #include "parser/scopenode.h"
 #include "parser/commandnode.h"
 #include "parser/grammar.h"
+#include "parser/tree.h"
 #include <stdarg.h>
 
 // YYParse forward
@@ -74,6 +74,7 @@ bool Tree::generate(const char *s)
 	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
 	ownedNodes_.add(root);
 	scopeNodes_.add(root);
+	statements_.add(root);
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -93,14 +94,14 @@ bool Tree::generate(const char *s)
 }
 
 // Execute tree
-int Tree::execute(NuReturnValue &rv)
+bool Tree::execute(NuReturnValue &rv)
 {
 	msg.enter("Tree::execute");
-	int result;
+	bool result;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		result = ri->item->execute(rv);
-		if (result != NuCommand::Success) break;
+		if (!result) break;
 	}
 	printf("Final result of tree execution:\n");
 	rv.info();
@@ -111,16 +112,16 @@ int Tree::execute(NuReturnValue &rv)
 // Print tree
 void Tree::print()
 {
-	printf("Leaf Structure:\n");
-	int n=0;
+	printf("Leaf Structure (%i statements):\n", statements_.nItems());
+	int n=1;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		printf("-------------------------------------------------------------\n");
 		printf("Statement %i:\n", n);
 		ri->item->nodePrint(1);
 		n ++;
-		printf("-------------------------------------------------------------\n");
 	}
+	printf("-------------------------------------------------------------\n");
 }
 
 /*
@@ -160,6 +161,7 @@ void Tree::unGetChar()
 // Add a node representing a whole statement to the execution list
 void Tree::addStatement(TreeNode *leaf)
 {
+
 	statements_.add(leaf);
 }
 
@@ -190,10 +192,15 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 }
 
 // Add variable to topmost scope
-void Tree::addVariable(NuVTypes::DataType type, const char *name)
+TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
+	printf("Adding a variable called %s\n", name->get());
 	// Create the supplied variable in the list of the topmost scope
-	if (!scopeNodes_.last()->item->variables.create(type, name)) printf("ERROR!\n");
+	if (!scopeNodes_.last()->item->variables.create(type, name->get(), initialValue)) printf("ERROR!\n");
+	// Create a placeholder node with no function
+	NuCommandNode *leaf = new NuCommandNode(NuCommand::Declarations);
+	ownedNodes_.add(leaf);
+	return leaf;
 }
 
 // Search for variable in current scope
@@ -201,7 +208,7 @@ NuVariable *Tree::isVariableInScope(const char *name)
 {
 	// Search the current ScopeNode list for the variable name requested
 	NuVariable *v = NULL;
-	for (Refitem<ScopeNode,int> *ri = scopeNodes_.first(); ri != NULL; ri =ri->next)
+	for (Refitem<ScopeNode,int> *ri = scopeNodes_.last(); ri != NULL; ri =ri->prev)
 	{
 		v = ri->item->variables.find(name);
 		if (v != NULL) break;

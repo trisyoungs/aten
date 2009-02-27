@@ -42,36 +42,36 @@ NuCharacterVariable::~NuCharacterVariable()
 // Set / Get
 */
 
-// Set value of variable (character)
-bool NuCharacterVariable::set(const char *s)
+// Set value of node from returnvalue
+bool NuCharacterVariable::set(NuReturnValue &rv)
 {
-	characterData_ = s;
-	return TRUE;
+
+	return FALSE;
 }
 
-// Clears value of variable
-bool NuCharacterVariable::reset(NuVariable *index)
+// Reset node
+void NuCharacterVariable::reset()
 {
 	characterData_.clear();
-	return TRUE;
 }
 
 // Return value of node
-int NuCharacterVariable::execute(NuReturnValue &rv)
+bool NuCharacterVariable::execute(NuReturnValue &rv)
 {
 	rv.set(characterData_.get());
 	return TRUE;
 }
 
 // Print node contents
-void NuCharacterVariable::nodePrint(int offset)
+void NuCharacterVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
-	tab = new char[offset+10];
+	tab = new char[offset+32];
 	tab[0] = '\0';
 	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
 	if (offset > 1) strcat(tab,"   |--> ");
+	strcat(tab,prefix);
 	// Output node data
 	if (readOnly_) printf("%s\"%s\" (constant value)\n", tab, characterData_.get());
 	else printf("%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());

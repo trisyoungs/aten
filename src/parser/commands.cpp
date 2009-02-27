@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/tree.h"
 #include "parser/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "base/bundle.h"
+#include "parser/tree.h"
 
 // Singleton
 NuCommand nucommands;
@@ -31,12 +31,12 @@ NuCommand nucommands;
 // Command action
 NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 
-	// Root node
-	{ "_ROOTNODE_",		"",		"", NuVTypes::NoData,
+	// AST Nodes
+	{ "_nofunction",	"",		"", NuVTypes::NoData,
 				"" },
-
-	// Joiner
-	{ "_JOINER_",		"",		"", NuVTypes::NoData,
+	{ "_joiner",		"",		"", NuVTypes::NoData,
+				"" },
+	{ "_declarations",	"",		"", NuVTypes::NoData,
 				"" },
 
 	// Analysis commands

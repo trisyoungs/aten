@@ -168,75 +168,79 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 }
 
 // Add two quantities together
-int NuCommand::function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("add.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
 	c->arg(0)->execute(v1);
 	c->arg(1)->execute(v2);
-	return (operate(NuCommand::OperatorAdd, &v1, &v2, rv) ? NuCommand::Success : NuCommand::Fail);
+	return operate(NuCommand::OperatorAdd, &v1, &v2, rv);
 }
 
 // Subtract one quantity from another
-int NuCommand::function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("Subtract........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
 	c->arg(0)->execute(v1);
 	c->arg(1)->execute(v2);
-	return (operate(NuCommand::OperatorSubtract, &v1, &v2, rv) ? NuCommand::Success : NuCommand::Fail);
+	return operate(NuCommand::OperatorSubtract, &v1, &v2, rv);
 }
 
 // Multiply one quantity by another
-int NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("Multiply........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
 	c->arg(0)->execute(v1);
 	c->arg(1)->execute(v2);
-	return (operate(NuCommand::OperatorMultiply, &v1, &v2, rv) ? NuCommand::Success : NuCommand::Fail);
+	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
 // Divide one quantity by another
-int NuCommand::function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("Divide........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
 	c->arg(0)->execute(v1);
 	c->arg(1)->execute(v2);
-	return (operate(NuCommand::OperatorDivide, &v1, &v2, rv) ? NuCommand::Success : NuCommand::Fail);
+	return operate(NuCommand::OperatorDivide, &v1, &v2, rv);
 }
 
 // Raise one quantity to the power of another
-int NuCommand::function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("Power........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
 	c->arg(0)->execute(v1);
 	c->arg(1)->execute(v2);
-	return (operate(NuCommand::OperatorPower, &v1, &v2, rv) ? NuCommand::Success : NuCommand::Fail);
+	return operate(NuCommand::OperatorPower, &v1, &v2, rv);
 }
 
-// Dummy Function
-int NuCommand::function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Dummy Node
+bool NuCommand::function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("This is a dummy node.\n");
-	rv.reset();
-	return NuCommand::Success;
+	return TRUE;
 }
 
 // Joiner
-int NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("Joiner.\n");
 	// Execute both commands
-	int result = c->arg(0)->execute(rv);
-	// XXXX
-	return NuCommand::Success;
+	if (!c->arg(0)->execute(rv)) return FALSE;
+	return c->arg(1)->execute(rv);
 }
 
+// Variable Declarations Node
+bool NuCommand::function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("This was a variable declaration.\n");
+	return TRUE;
+}
