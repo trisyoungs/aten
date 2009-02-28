@@ -30,18 +30,20 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 };
 
 %token <name> TOKENNAME
-%token <node> INTCONST REALCONST CHARCONST VARIABLE FUNCTIONCALL
-%token INTEGER REAL CHARACTER VECTOR 
-%token WHILE IF PRINT FOR 
+%token <node> INTCONST REALCONST CHARCONST VARIABLE
+%token <functionId> FUNCTIONCALL
+%token INTEGER REAL CHARACTER VECTOR
+%token WHILE IF PRINT FOR
 %nonassoc ELSE
 
 %left GE LE EQ NE '>' '<'
 %left '+' '-'
 %left '*' '/'
+%left '^'
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement statementlist declaration argumentlist
+%type <node> expr statement statementlist declaration function argumentlist
 %type <name> namelist
 
 %%
@@ -86,19 +88,11 @@ namelist:
 
 declaration:
 	INTEGER { variableType = NuVTypes::IntegerData; }
-	namelist ';'				{  $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| REAL { variableType = NuVTypes::RealData; }
-	namelist ';'				{  $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| CHARACTER { variableType = NuVTypes::CharacterData; }
-	namelist ';'				{  $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
-	;
-
-/* Function argument list */
-
-argumentlist:
-	/* empty */
-	| expr					{ Tree::currentTree->addArgument($1); }
-	| argumentlist ',' expr			{ Tree::currentTree->addArgument($3); }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	;
 
 /* Expressions */
@@ -117,9 +111,22 @@ expr:
 /*        | expr '<' expr				{ $$ = opr('<', 2, $1, $3); } */
 /*        | expr '>' expr				{ $$ = opr('>', 2, $1, $3); } */
 /*        | '(' expr ')'				{ $$ = $2; } */
-	| FUNCTIONCALL				{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function)yylval.functionId ); }
-		'(' argumentlist ')' ';'			{ Tree::currentTree->popFunctionLeaf(); }
-        ;
+	| function				{ $$ = $1; }
+	;
+
+/* Function / argument list */
+
+argumentlist:
+	/* empty */				{ printf("No args given to function.\n"); }
+	| expr					{ printf("Expression argument.\n");  }
+	| argumentlist ',' expr			{ printf("Expression arguments.\n");  }
+	;
+
+function:
+	FUNCTIONCALL 				{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function)yylval.functionId ); }
+	'(' argumentlist ')'			{  }
+	;
+
 
 %%
 

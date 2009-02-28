@@ -165,7 +165,7 @@ int yylex()
 		for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
 		if (n != NuCommand::nFunctions)
 		{
-			printf("Command is [%s]\n", token);
+			printf("Command is [%s], id = %i\n", token, n);
 			yylval.functionId = n;
 			// XXX If this function can be called without arguments, we don't require brackets so return an ARGLESSFUNCTION
 // 			if ((NuCommand::data[n].arguments[0] > 64) && (NuCommand::data[n].arguments[0] < 91)) return FUNCTION;
