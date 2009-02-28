@@ -33,8 +33,12 @@ void NuCommand::initPointers()
 	pointers_[OperatorAdd] = &function_OperatorAdd;
 	pointers_[OperatorDivide] = &function_OperatorDivide;
 	pointers_[OperatorMultiply] = &function_OperatorMultiply;
+	pointers_[OperatorNegate] = &function_OperatorNegate;
 	pointers_[OperatorPower] = &function_OperatorPower;
 	pointers_[OperatorSubtract] = &function_OperatorSubtract;
+	pointers_[If] = &function_If;
+	pointers_[Break] = &function_Break;
+	pointers_[Goto] = &function_Goto;
 
 /*
 	// Analyse commands

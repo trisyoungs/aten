@@ -155,6 +155,10 @@ int yylex()
 		if (strcmp(token,"integer") == 0) return INTEGER;
 		else if (strcmp(token,"real") == 0) return REAL;
 		else if (strcmp(token,"character") == 0) return CHARACTER;
+		else if (strcmp(token,"if") == 0) return IF;
+		else if (strcmp(token,"else") == 0) return ELSE;
+		else if (strcmp(token,"for") == 0) return FOR;
+		else if (strcmp(token,"while") == 0) return WHILE;
 
 		// If we get to here then its not a high-level keyword.
 		// Is it a function keyword?
@@ -163,7 +167,9 @@ int yylex()
 		{
 			printf("Command is [%s]\n", token);
 			yylval.functionId = n;
-			return FUNCTION;
+			// XXX If this function can be called without arguments, we don't require brackets so return an ARGLESSFUNCTION
+// 			if ((NuCommand::data[n].arguments[0] > 64) && (NuCommand::data[n].arguments[0] < 91)) return FUNCTION;
+			return FUNCTIONCALL;
 		}
 
 		// The token isn't a high- or low-level function.
@@ -180,8 +186,6 @@ int yylex()
 		name = token;
 		yylval.name = &name;
 		return TOKENNAME;
-
-		
 	}
 
 	/* Any other character is a token by itself.	 */

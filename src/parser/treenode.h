@@ -55,6 +55,8 @@ class TreeNode
 	void addArgument(TreeNode *leaf);
 	// Return argument specified
 	TreeNode *arg(int i);
+	// Return whether argument i was given
+	bool hasArg(int i);
 
 	/*
 	// Node Character
@@ -73,8 +75,6 @@ class TreeNode
 	void setReturnType(NuVTypes::DataType dt);
 	// Returns content type of the variable
 	NuVTypes::DataType returnType();
-	// Set parent variablelist
-// 	void setParent(VariableList *vlist);
 	// Set the readonly status of the node to TRUE
 	void setReadOnly();
 	// Return the readonly status of the node

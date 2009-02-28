@@ -180,6 +180,35 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 	return leaf;
 }
 
+// Associate a function-based leaf node to the Tree - arguments to be added later
+TreeNode *Tree::addFunctionLeaf(NuCommand::Function func)
+{
+	// Create the new function and add it to the relevant lists
+	NuCommandNode *leaf = new NuCommandNode(func);
+	ownedNodes_.add(leaf);
+	functionStack_.add(leaf);
+	return leaf;
+}
+
+// Pop the most recent function leaf from the stack
+void Tree::popFunctionLeaf()
+{
+	functionStack_.remove( functionStack_.last() );
+}
+
+// Add an argument to the most recently pushed function on the stack
+bool Tree::addArgument(TreeNode *arg)
+{
+	Refitem<TreeNode,int> *ri = functionStack_.last();
+	if (ri == NULL)
+	{
+		msg.print("Internal Error: No function on stack to add argument to.\n");
+		return FALSE;
+	}
+	ri->item->addArgument(arg);
+	return TRUE;
+}
+
 // Add joiner
 TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 {
@@ -192,15 +221,19 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 }
 
 // Add variable to topmost scope
-TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
 	printf("Adding a variable called %s\n", name->get());
 	// Create the supplied variable in the list of the topmost scope
-	if (!scopeNodes_.last()->item->variables.create(type, name->get(), initialValue)) printf("ERROR!\n");
+	if (!scopeNodes_.last()->item->variables.create(type, name->get(), initialValue))
+	{
+		printf("ERROR!\n");
+		return FALSE;
+	}
 	// Create a placeholder node with no function
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Declarations);
 	ownedNodes_.add(leaf);
-	return leaf;
+	return TRUE;
 }
 
 // Search for variable in current scope

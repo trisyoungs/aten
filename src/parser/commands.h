@@ -497,6 +497,7 @@ class NuCommand {
 		OperatorAdd,
 		OperatorDivide,
 		OperatorMultiply,
+		OperatorNegate,
 		OperatorPower,
 		OperatorSubtract,
 		StripChars,
@@ -928,6 +929,7 @@ class NuCommand {
 	static bool function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

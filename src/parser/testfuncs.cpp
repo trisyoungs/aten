@@ -70,7 +70,6 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 	// We will decide what to do based on data types of integer, real, character, or vector
 	rv[0]->info();
 	rv[1]->info();
-	printf(" %i  %i\n ", t[0], t[1]);
 	if (t[0] == t[1])
 	{
 		switch (func)
@@ -200,6 +199,17 @@ bool NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuRetur
 	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
+// Negate value
+bool NuCommand::function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("Multiply........\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	c->arg(0)->execute(v1);
+	c->arg(1)->execute(v2);
+	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
+}
+
 // Divide one quantity by another
 bool NuCommand::function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
@@ -242,5 +252,29 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 bool NuCommand::function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("This was a variable declaration.\n");
+	return TRUE;
+}
+
+// If test
+bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	NuReturnValue ifval;
+	c->arg(0)->execute(ifval);
+	if (ifval.asInteger()) c->arg(1)->execute(rv);
+	else if (c->hasArg(2)) c->arg(2)->execute(rv);
+	return TRUE;
+}
+
+// If test
+bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("BREAK\n");
+	return TRUE;
+}
+
+// If test
+bool NuCommand::function_Goto(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("GOTO\n");
 	return TRUE;
 }
