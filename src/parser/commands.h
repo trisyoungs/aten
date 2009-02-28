@@ -494,13 +494,22 @@ class NuCommand {
 		LetPtr,
 		LetVector,
 		Normalise,
+		StripChars,
+
+		// Variable Operators
 		OperatorAdd,
+		OperatorAssignment,
 		OperatorDivide,
+		OperatorEqualTo,
+		OperatorGreaterThan,
+		OperatorGreaterThanEqualTo,
+		OperatorLessThan,
+		OperatorLessThanEqualTo,
 		OperatorMultiply,
 		OperatorNegate,
+		OperatorNotEqualTo,
 		OperatorPower,
 		OperatorSubtract,
-		StripChars,
 
 		// View
 		GetView,
@@ -926,13 +935,21 @@ class NuCommand {
 	static bool function_LetPtr(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_LetVector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	// Variable Operators
 	static bool function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorGreaterThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorGreaterThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorLessThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorLessThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// View
 	static bool function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Orthographic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

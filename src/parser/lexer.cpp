@@ -21,6 +21,7 @@
 
 #include "parser/treenode.h"
 #include "parser/grammar.h"
+#include "parser/commandnode.h"
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
@@ -73,7 +74,7 @@ int yylex()
 				// Check for previous exponential in number
 				if (hasexp)
 				{
-					msg.print("Parse error: Number has two exponentiations (e/E).\n");
+					msg.print("Parse Error: Number has two exponentiations (e/E).\n");
 					return 0;
 				}
 				hasexp = TRUE;
@@ -166,9 +167,12 @@ int yylex()
 		if (n != NuCommand::nFunctions)
 		{
 			printf("Command is [%s], id = %i\n", token, n);
-			yylval.functionId = n;
+
 			// XXX If this function can be called without arguments, we don't require brackets so return an ARGLESSFUNCTION
 // 			if ((NuCommand::data[n].arguments[0] > 64) && (NuCommand::data[n].arguments[0] < 91)) return FUNCTION;
+			// Create the CommandNode here and pass it as the lvalue
+			NuCommandNode *leaf = new NuCommandNode( (NuCommand::Function) n);
+			yylval.node = leaf;
 			return FUNCTIONCALL;
 		}
 
@@ -188,7 +192,27 @@ int yylex()
 		return TOKENNAME;
 	}
 
-	/* Any other character is a token by itself.	 */
-	return c;
+	/* We have found a symbolic character (or a pair) that corresponds to an operator */
+	// Return immediately in the case of a bracket
+	if ((c == '(') || (c == ')') || (c == ';')) return c;
+	do
+	{
+		token[length++] = c;
+		c = Tree::currentTree->getChar();
+	}
+	while (ispunct(c));
+	Tree::currentTree->unGetChar();
+	token[length] = '\0';
+	printf("Token is %s\n",token);
+	if (length == 1) return token[0];
+	else
+	{
+		if (strcmp(token,"==") == 0) return EQ;
+		else if (strcmp(token,">=") == 0) return GEQ;
+		else if (strcmp(token,"<=") == 0) return LEQ;
+		else if (strcmp(token,"!=") == 0) return NEQ;
+		else if (strcmp(token,"<>") == 0) return NEQ;
+	}
+	return 0;
 }
 

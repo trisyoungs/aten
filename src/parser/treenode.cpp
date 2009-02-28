@@ -79,9 +79,9 @@ bool TreeNode::hasArg(int i)
 // Add argument to node
 void TreeNode::addArgument(TreeNode *leaf)
 {
-// 	printf("Leaf to be added as an argument is %li\n", leaf);
+	printf("Leaf to be added as an argument is %li\n", leaf);
 	args_.add(leaf);
-// 	printf("Added argument %i to node....\n", args_.nItems());
+	printf("Added argument %i to node....\n", args_.nItems());
 }
 
 // Return argument specified
