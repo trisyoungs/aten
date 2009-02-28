@@ -118,6 +118,7 @@ void Tree::print()
 	{
 		printf("-------------------------------------------------------------\n");
 		printf("Statement %i:\n", n);
+		printf("item pointer is %li\n", ri->item);
 		ri->item->nodePrint(1);
 		n ++;
 	}
@@ -161,7 +162,12 @@ void Tree::unGetChar()
 // Add a node representing a whole statement to the execution list
 void Tree::addStatement(TreeNode *leaf)
 {
-
+	if (leaf == NULL)
+	{
+		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
+		return;
+	}
+	printf("Added statement leaf node %li\n", leaf);
 	statements_.add(leaf);
 }
 
@@ -187,6 +193,7 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func)
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
 	functionStack_.add(leaf);
+	printf("The function leaf is %li, containing funcid %i\n", leaf, func);
 	return leaf;
 }
 
@@ -205,6 +212,7 @@ bool Tree::addArgument(TreeNode *arg)
 		msg.print("Internal Error: No function on stack to add argument to.\n");
 		return FALSE;
 	}
+	printf("Adding argument to function %li\n", ri->item);
 	ri->item->addArgument(arg);
 	return TRUE;
 }
