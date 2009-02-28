@@ -139,6 +139,7 @@ char Tree::getChar()
 	else
 	{
 		// Return current character
+		if (stringPos_ == stringLength_) return '\0';
 		c = stringSource_[stringPos_];
 		// Increment string position
 		stringPos_++;

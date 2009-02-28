@@ -24,26 +24,24 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 
 /* Type Definition */
 %union {
-	int functionId;			/* function id */
 	Dnchar *name;			/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 };
 
 %token <name> TOKENNAME
-%token <node> INTCONST REALCONST CHARCONST VARIABLE
-%token <functionId> FUNCTIONCALL
+%token <node> INTCONST REALCONST CHARCONST VARIABLE FUNCTIONCALL
 %token INTEGER REAL CHARACTER VECTOR
 %token WHILE IF PRINT FOR
 %nonassoc ELSE
 
-%left GE LE EQ NE '>' '<'
+%left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
 %left '*' '/'
 %left '^'
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement statementlist declaration function argumentlist
+%type <node> expr statement statementlist declaration exprlist
 %type <name> namelist
 
 %%
@@ -57,22 +55,20 @@ program:
 
 statementlist:
 	statement				{ $$ = $1; }
-        | statementlist statement		{ $$ = Tree::currentTree->addJoiner($1, $2); }
+	| '{' statement '}'			{ $$ = $2; }
+        | '{' statementlist statement '}'	{ $$ = Tree::currentTree->addJoiner($2, $3); }
         ;
 
 /* Single Statement */
+/* {} doesn't work after ELSE */
 
 statement:
 	';'						{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
 	| declaration					{ $$ = $1; }
 	| expr ';'					{ $$ = $1; }
-       /*| PRINT expr ';'                	 { $$ = opr(PRINT, 1, $2); } */
-/*        | VARIABLE '=' expr ';'          { $$ = opr('=', 2, id($1), $3); } */
-/*        | WHILE '(' expr ')' stmt        { $$ = opr(WHILE, 2, $3, $5); } */
-	| IF '(' expr ')' statement			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
-	| IF '(' expr ')' '{' statementlist '}' 	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$6);  }
-	| IF '(' expr ')' '{' statementlist '}' ELSE statement	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$9);  }
-	| IF '(' expr ')' '{' statementlist '}' ELSE '{' statementlist '}' { $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$10);  }
+	| VARIABLE '=' expr ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAssignment,2,$1,$3); }
+	| IF '(' expr ')' statementlist			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
+	| IF '(' expr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$5,$7);  }
 	;
 
 /* Variable declaration / assignment list */
@@ -97,6 +93,11 @@ declaration:
 
 /* Expressions */
 
+exprlist:
+	expr					{ printf("Expression argument.\n");  }
+	| exprlist ',' expr			{ printf("Expression arguments.\n");  }
+	;
+
 expr:
 	INTCONST				{ $$ = $1; }
 	| REALCONST				{ $$ = $1; }
@@ -108,25 +109,16 @@ expr:
 	| expr '*' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorMultiply, 2, $1, $3); }
 	| expr '/' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorDivide, 2, $1, $3); }
 	| expr '^' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorPower, 2, $1, $3); }
-/*        | expr '<' expr				{ $$ = opr('<', 2, $1, $3); } */
-/*        | expr '>' expr				{ $$ = opr('>', 2, $1, $3); } */
+	| expr EQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorEqualTo, 2, $1, $3); }
+	| expr NEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorNotEqualTo, 2, $1, $3); }
+	| expr '>' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorGreaterThan, 2, $1, $3); }
+	| expr GEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorGreaterThanEqualTo, 2, $1, $3); }
+	| expr '<' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThan, 2, $1, $3); }
+	| expr LEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThanEqualTo, 2, $1, $3); }
 /*        | '(' expr ')'				{ $$ = $2; } */
-	| function				{ $$ = $1; }
+	| FUNCTIONCALL '(' ')'			{ $$ = $1; }
+	| FUNCTIONCALL	'(' exprlist ')'	{ $$ = $1; $1->addArgument($3); }
 	;
-
-/* Function / argument list */
-
-argumentlist:
-	/* empty */				{ printf("No args given to function.\n"); }
-	| expr					{ printf("Expression argument.\n");  }
-	| argumentlist ',' expr			{ printf("Expression arguments.\n");  }
-	;
-
-function:
-	FUNCTIONCALL 				{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function)yylval.functionId ); }
-	'(' argumentlist ')'			{  }
-	;
-
 
 %%
 

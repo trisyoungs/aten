@@ -30,12 +30,21 @@ void NuCommand::initPointers()
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
 	pointers_[Declarations] = &function_Declarations;
+
 	pointers_[OperatorAdd] = &function_OperatorAdd;
+	pointers_[OperatorAssignment] = &function_OperatorAssignment;
 	pointers_[OperatorDivide] = &function_OperatorDivide;
+	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
+	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
+	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
+	pointers_[OperatorLessThan] = &function_OperatorLessThan;
+	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
 	pointers_[OperatorMultiply] = &function_OperatorMultiply;
 	pointers_[OperatorNegate] = &function_OperatorNegate;
+	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
 	pointers_[OperatorPower] = &function_OperatorPower;
 	pointers_[OperatorSubtract] = &function_OperatorSubtract;
+
 	pointers_[If] = &function_If;
 	pointers_[Break] = &function_Break;
 	pointers_[Goto] = &function_Goto;

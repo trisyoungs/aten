@@ -34,7 +34,6 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 	// Array or returnvalue structures
 	NuReturnValue *rv[2];
 	NuVTypes::DataType t[2];
-	int hi, lo;
 	rv[0] = rv1;
 	rv[1] = rv2;
 	// Swap values over if the type of rv2 is 'greater than' rv1, and store data type values
@@ -166,14 +165,128 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 	return TRUE;
 }
 
+// Test!
+bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuReturnValue &result)
+{
+	// Grab data types of operands
+	NuVTypes::DataType t[2];
+	t[0] = rv1->type();
+	t[1] = rv2->type();
+	bool failed = FALSE;
+	if (t[0] == NuVTypes::NoData)
+	{
+		msg.print("Error: LHS of operator %s has no data type.\n", NuCommand::data[func].keyword);
+		return FALSE;
+	}
+	if (t[1] == NuVTypes::NoData)
+	{
+		msg.print("Error: RHS of operator %s has no data type.\n", NuCommand::data[func].keyword);
+		return FALSE;
+	}
+	// Provided the types are the same (or a mix of real/int) we're okay....
+	if ((t[0] < NuVTypes::CharacterData) && (t[1] < NuVTypes::CharacterData) && (t[0] != t[1])) t[0] = t[1] = NuVTypes::RealData;
+	if (t[0] == t[1])
+	{
+		switch (func)
+		{
+			case (NuCommand::OperatorEqualTo):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() == rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() == rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) == 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			case (NuCommand::OperatorNotEqualTo):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() != rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() != rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) != 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			case (NuCommand::OperatorGreaterThan):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() > rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() > rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) > 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			case (NuCommand::OperatorGreaterThanEqualTo):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() >= rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() >= rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) >= 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			case (NuCommand::OperatorLessThan):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() < rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() < rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) < 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			case (NuCommand::OperatorLessThanEqualTo):
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() <= rv2->asInteger());
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() <= rv2->asReal());
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) <= 0);
+				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else failed = TRUE;
+				break;
+			default:
+				failed = TRUE;
+				break;
+		}
+	}
+	else 
+	{
+		// Get 'highest' type of the two operands
+		NuReturnValue *rv[2];
+		// Swap values over if the type of rv2 is 'greater than' rv1, and store data type values
+		// The first value rv[0] (and t[0]) will always contain the 'highest' type
+		if (t[1] > t[0])
+		{
+			rv[0] = rv2;
+			rv[1] = rv1;
+			t[0] = rv[0]->type();
+			t[1] = rv[1]->type();
+		}
+		else
+		{
+			rv[0] = rv1;
+			rv[1] = rv2;
+		}
+		// There are no operations we can do between character/vector and another different type
+		if ((t[0] == NuVTypes::CharacterData) || (t[0] == NuVTypes::VectorData)) failed = TRUE;
+		else if (t[0] > NuVTypes::RealData)
+		{
+			switch (func)
+			{
+				// Comparison between pointer type and integer (from real or integer)
+				case (NuCommand::OperatorEqualTo):
+// 					result.set( rv[0]->asPointer() == rv[1]->asInteger() );
+					break;
+				default:
+					failed = TRUE;
+					break;
+			}
+		}
+	}
+	if (failed)
+	{
+		msg.print("Error: the expression '%s %s %s' does not return a valid result.\n", NuVTypes::dataType(rv1->type()), NuCommand::data[func].keyword, NuVTypes::dataType(rv2->type()));
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
 // Add two quantities together
 bool NuCommand::function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("add.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorAdd, &v1, &v2, rv);
 }
 
@@ -183,8 +296,8 @@ bool NuCommand::function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuRetur
 	printf("Subtract........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorSubtract, &v1, &v2, rv);
 }
 
@@ -194,8 +307,8 @@ bool NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuRetur
 	printf("Multiply........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
@@ -205,8 +318,8 @@ bool NuCommand::function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnV
 	printf("Multiply........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
@@ -216,8 +329,8 @@ bool NuCommand::function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnV
 	printf("Divide........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorDivide, &v1, &v2, rv);
 }
 
@@ -227,8 +340,8 @@ bool NuCommand::function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnVa
 	printf("Power........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	c->arg(0)->execute(v1);
-	c->arg(1)->execute(v2);
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
 	return operate(NuCommand::OperatorPower, &v1, &v2, rv);
 }
 
@@ -278,3 +391,86 @@ bool NuCommand::function_Goto(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	printf("GOTO\n");
 	return TRUE;
 }
+
+// Equal To
+bool NuCommand::function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("equate.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorEqualTo, &v1, &v2, rv);
+}
+
+// Not Equal To
+bool NuCommand::function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("not equal to.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorNotEqualTo, &v1, &v2, rv);
+}
+
+// Greater Than
+bool NuCommand::function_OperatorGreaterThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("greater than.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorGreaterThan, &v1, &v2, rv);
+}
+
+// Greater Than Equal To
+bool NuCommand::function_OperatorGreaterThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("greater than equal to.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorGreaterThanEqualTo, &v1, &v2, rv);
+}
+
+// Less Than
+bool NuCommand::function_OperatorLessThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("less than.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorLessThan, &v1, &v2, rv);
+}
+
+// Less Than Equal To
+bool NuCommand::function_OperatorLessThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("less than equal to.......\n");
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0)->execute(v1)) return FALSE;
+	if (!c->arg(1)->execute(v2)) return FALSE;
+	return test(NuCommand::OperatorLessThanEqualTo, &v1, &v2, rv);
+}
+
+// Assignment
+bool NuCommand::function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("assignment.......\n");
+	// Grab the second argument result and assign it to the first
+	if (!c->arg(1)->execute(rv)) return FALSE;
+	return (c->arg(0)->set(rv));
+}
+
+/*
+	| IF '(' expr ')' statement			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
+	| IF '(' expr ')' statement ELSE statement			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
+	| IF '(' expr ')' '{' statementlist '}' 	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$6);  }
+	| IF '(' expr ')' '{' statementlist '}' ELSE statement	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$9);  }
+	| IF '(' expr ')' '{' statementlist '}' ELSE '{' statementlist '}' { $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$10);  }
+*/
