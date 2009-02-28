@@ -81,16 +81,24 @@ class Tree
 	Reflist<TreeNode,int> statements_;
 	// Reflist of ScopeNodes
 	Reflist<ScopeNode,int> scopeNodes_;
+	// Function stack
+	Reflist<TreeNode,int> functionStack_;
 
 	public:
 	// Add a node representing a whole statement to the execution list
 	void addStatement(TreeNode *leaf);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
+	// Associate a function-based leaf node to the Tree - arguments to be added later
+	TreeNode *addFunctionLeaf(NuCommand::Function func);
+	// Pop the most recent function leaf from the stack
+	void popFunctionLeaf();
+	// Add an argument to the most recently pushed function on the stack
+	bool addArgument(TreeNode *arg);
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	bool addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Search for variable in current scope
 	NuVariable *isVariableInScope(const char *name);
 };

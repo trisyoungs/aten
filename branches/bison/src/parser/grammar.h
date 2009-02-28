@@ -44,7 +44,7 @@
      REALCONST = 260,
      CHARCONST = 261,
      VARIABLE = 262,
-     FUNCTION = 263,
+     FUNCTIONCALL = 263,
      INTEGER = 264,
      REAL = 265,
      CHARACTER = 266,
@@ -52,7 +52,7 @@
      WHILE = 268,
      IF = 269,
      PRINT = 270,
-     IFX = 271,
+     FOR = 271,
      ELSE = 272,
      NE = 273,
      EQ = 274,
@@ -67,7 +67,7 @@
 #define REALCONST 260
 #define CHARCONST 261
 #define VARIABLE 262
-#define FUNCTION 263
+#define FUNCTIONCALL 263
 #define INTEGER 264
 #define REAL 265
 #define CHARACTER 266
@@ -75,7 +75,7 @@
 #define WHILE 268
 #define IF 269
 #define PRINT 270
-#define IFX 271
+#define FOR 271
 #define ELSE 272
 #define NE 273
 #define EQ 274
@@ -88,7 +88,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 17 "grammar.yy"
+#line 26 "grammar.yy"
 {
 	int functionId;			/* function id */
 	Dnchar *name;			/* character pointer for names */

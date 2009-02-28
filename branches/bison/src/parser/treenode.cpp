@@ -70,6 +70,12 @@ int TreeNode::nArgs()
 	return args_.nItems();
 }
 
+// Return whether argument i was given
+bool TreeNode::hasArg(int i)
+{
+	return (i < args_.nItems());
+}
+
 // Add argument to node
 void TreeNode::addArgument(TreeNode *leaf)
 {
