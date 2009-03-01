@@ -43,6 +43,9 @@ NuIntegerVariable::~NuIntegerVariable()
 // Set from returnvalue node
 bool NuIntegerVariable::set(NuReturnValue &rv)
 {
+	bool success;
+	integerData_ = rv.asInteger(success);
+	return success;
 }
 
 // Reset variable

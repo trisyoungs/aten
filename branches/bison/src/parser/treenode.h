@@ -40,7 +40,7 @@ class TreeNode
 	// Constructor / Destructor
 	TreeNode();
 	~TreeNode();
-	// List pointers (for argument list)
+	// List pointers (for argument list)asReal(
 	TreeNode *nextArgument, *prevArgument;
 
 	/*

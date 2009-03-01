@@ -25,6 +25,7 @@
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
+#include "parser/variablenode.h"
 #include "base/sysfunc.h"
 #include "parser/tree.h"
 #include <ctype.h>
@@ -167,12 +168,7 @@ int yylex()
 		if (n != NuCommand::nFunctions)
 		{
 			printf("Command is [%s], id = %i\n", token, n);
-
-			// XXX If this function can be called without arguments, we don't require brackets so return an ARGLESSFUNCTION
-// 			if ((NuCommand::data[n].arguments[0] > 64) && (NuCommand::data[n].arguments[0] < 91)) return FUNCTION;
-			// Create the CommandNode here and pass it as the lvalue
-			NuCommandNode *leaf = new NuCommandNode( (NuCommand::Function) n);
-			yylval.node = leaf;
+			yylval.functionId = n;
 			return FUNCTIONCALL;
 		}
 
@@ -181,7 +177,9 @@ int yylex()
 		NuVariable *v = Tree::currentTree->isVariableInScope(token);
 		if (v != NULL)
 		{
-			yylval.node = v;
+			// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
+			VariableNode *vnode = new VariableNode(v);
+			yylval.node = vnode;
 			return VARIABLE;
 		}
 		
@@ -195,10 +193,12 @@ int yylex()
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of a bracket
 	if ((c == '(') || (c == ')') || (c == ';')) return c;
+	// If the following character is '"', we also return immediately - have a clause in the following loop...
 	do
 	{
 		token[length++] = c;
 		c = Tree::currentTree->getChar();
+		if (c == '"') break;
 	}
 	while (ispunct(c));
 	Tree::currentTree->unGetChar();

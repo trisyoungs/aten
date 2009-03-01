@@ -30,7 +30,7 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 {
 	static char s[8096];
 	s[0] = '\0';
-	bool failed = FALSE;
+	bool failed = FALSE, b;
 	// Array or returnvalue structures
 	NuReturnValue *rv[2];
 	NuVTypes::DataType t[2];
@@ -74,38 +74,38 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 		switch (func)
 		{
 			case (NuCommand::OperatorAdd):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() + rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() + rv2->asReal());
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) + rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) + rv2->asReal(b));
 				else if (t[0] == NuVTypes::CharacterData)
 				{
-					strcpy(s, rv1->asCharacter());
-					strcat(s, rv2->asCharacter());
+					strcpy(s, rv1->asCharacter(b));
+					strcat(s, rv2->asCharacter(b));
 					result.set(s);
 				}
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorSubtract):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() - rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() - rv2->asReal());
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) - rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) - rv2->asReal(b));
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorMultiply):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() * rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() * rv2->asReal());
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) * rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) * rv2->asReal(b));
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorDivide):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() / rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() / rv2->asReal());
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) / rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) / rv2->asReal(b));
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorPower):
-				if (t[0] == NuVTypes::IntegerData) result.set(power(rv1->asInteger(), rv2->asInteger()));
-				else if (t[0] == NuVTypes::RealData) result.set(pow(rv1->asReal(), rv2->asReal()));
+				if (t[0] == NuVTypes::IntegerData) result.set(power(rv1->asInteger(b), rv2->asInteger(b)));
+				else if (t[0] == NuVTypes::RealData) result.set(pow(rv1->asReal(b), rv2->asReal(b)));
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
@@ -125,7 +125,7 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 				if ((t[1] == NuVTypes::IntegerData) || (t[1] == NuVTypes::RealData))
 				{
 					s[0] = '\0';
-					for (int n=0; n<rv[1]->asInteger(); n++) strcat(s, rv[0]->asCharacter());
+					for (int n=0; n<rv[1]->asInteger(b); n++) strcat(s, rv[0]->asCharacter(b));
 					result.set(s);
 				}
 				else failed = TRUE;
@@ -141,19 +141,19 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 		switch (func)
 		{
 			case (NuCommand::OperatorAdd):
-				result.set(rv1->asReal() + rv2->asReal());
+				result.set(rv1->asReal(b) + rv2->asReal(b));
 				break;
 			case (NuCommand::OperatorSubtract):
-				result.set(rv1->asReal() - rv2->asReal());
+				result.set(rv1->asReal(b) - rv2->asReal(b));
 				break;
 			case (NuCommand::OperatorMultiply):
-				result.set(rv1->asReal() * rv2->asReal());
+				result.set(rv1->asReal(b) * rv2->asReal(b));
 				break;
 			case (NuCommand::OperatorDivide):
-				result.set(rv1->asReal() / rv2->asReal());
+				result.set(rv1->asReal(b) / rv2->asReal(b));
 				break;
 			case (NuCommand::OperatorPower):
-				result.set(pow(rv1->asReal(), rv2->asReal()));
+				result.set(pow(rv1->asReal(b), rv2->asReal(b)));
 				break;
 		}
 	}
@@ -173,6 +173,7 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 	t[0] = rv1->type();
 	t[1] = rv2->type();
 	bool failed = FALSE;
+	bool b;
 	if (t[0] == NuVTypes::NoData)
 	{
 		msg.print("Error: LHS of operator %s has no data type.\n", NuCommand::data[func].keyword);
@@ -190,44 +191,44 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 		switch (func)
 		{
 			case (NuCommand::OperatorEqualTo):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() == rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() == rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) == 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) == rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) == rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) == 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorNotEqualTo):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() != rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() != rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) != 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) != rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) != rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) != 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorGreaterThan):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() > rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() > rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) > 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) > rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) > rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) > 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorGreaterThanEqualTo):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() >= rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() >= rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) >= 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) >= rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) >= rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) >= 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorLessThan):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() < rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() < rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) < 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) < rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) < rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) < 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorLessThanEqualTo):
-				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger() <= rv2->asInteger());
-				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal() <= rv2->asReal());
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(), rv2->asCharacter()) <= 0);
+				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) <= rv2->asInteger(b));
+				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) <= rv2->asReal(b));
+				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) <= 0);
 				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
@@ -262,7 +263,7 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 			{
 				// Comparison between pointer type and integer (from real or integer)
 				case (NuCommand::OperatorEqualTo):
-// 					result.set( rv[0]->asPointer() == rv[1]->asInteger() );
+// 					result.set( rv[0]->asPointer() == rv[1]->asInteger(b) );
 					break;
 				default:
 					failed = TRUE;
@@ -373,7 +374,7 @@ bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	NuReturnValue ifval;
 	c->arg(0)->execute(ifval);
-	if (ifval.asInteger()) c->arg(1)->execute(rv);
+	if (ifval.asBool()) c->arg(1)->execute(rv);
 	else if (c->hasArg(2)) c->arg(2)->execute(rv);
 	return TRUE;
 }
@@ -466,11 +467,3 @@ bool NuCommand::function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuRet
 	if (!c->arg(1)->execute(rv)) return FALSE;
 	return (c->arg(0)->set(rv));
 }
-
-/*
-	| IF '(' expr ')' statement			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
-	| IF '(' expr ')' statement ELSE statement			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
-	| IF '(' expr ')' '{' statementlist '}' 	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$6);  }
-	| IF '(' expr ')' '{' statementlist '}' ELSE statement	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$9);  }
-	| IF '(' expr ')' '{' statementlist '}' ELSE '{' statementlist '}' { $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$6,$10);  }
-*/

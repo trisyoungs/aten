@@ -70,11 +70,13 @@ class NuReturnValue
 	*/
 	public:
 	// Return integer value
-	int asInteger();
+	int asInteger(bool &success);
 	// Return real value
-	double asReal();
+	double asReal(bool &success);
 	// Return character string
-	const char *asCharacter();
+	const char *asCharacter(bool &success);
+	// Return as boolean (guaranteed conversion)
+	bool asBool();
 };
 
 #endif

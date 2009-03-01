@@ -184,25 +184,15 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 	// Add arguments
 	for (int n=0; n<nargs; n++) leaf->addArguments(va_arg(vars, TreeNode*));
 	va_end(vars);
+	// Check that the correct arguments were given to the command
+ 	printf("The function leaf is %li, containing funcid %i, and has %i arguments\n", leaf, func, leaf->nArgs());
+	for (const char *c = NuCommand::data[func].arguments; c != '\0'; c++)
+	{
+
+	}
+
 	return leaf;
 }
-
-// Associate a function-based leaf node to the Tree - arguments to be added later
-TreeNode *Tree::addFunctionLeaf(NuCommand::Function func)
-{
-	// Create the new function and add it to the relevant lists
-	NuCommandNode *leaf = new NuCommandNode(func);
-	ownedNodes_.add(leaf);
-	functionStack_.add(leaf);
-	printf("The function leaf is %li, containing funcid %i\n", leaf, func);
-	return leaf;
-}
-
-// Pop the most recent function leaf from the stack
-// void Tree::popFunctionLeaf()
-// {
-// 	functionStack_.remove( functionStack_.last() );
-// }
 
 // Add an argument to the most recently pushed function on the stack
 TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
@@ -216,7 +206,7 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 // Add joiner
 TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 {
-	printf("Adding a joiner...\n");
+	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
 	ownedNodes_.add(leaf);
 	if (node1 != NULL) leaf->addArguments(node1);
