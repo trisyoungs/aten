@@ -182,7 +182,7 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
 	// Add arguments
-	for (int n=0; n<nargs; n++) leaf->addArgument(va_arg(vars, TreeNode*));
+	for (int n=0; n<nargs; n++) leaf->addArguments(va_arg(vars, TreeNode*));
 	va_end(vars);
 	return leaf;
 }
@@ -199,23 +199,18 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func)
 }
 
 // Pop the most recent function leaf from the stack
-void Tree::popFunctionLeaf()
-{
-	functionStack_.remove( functionStack_.last() );
-}
+// void Tree::popFunctionLeaf()
+// {
+// 	functionStack_.remove( functionStack_.last() );
+// }
 
 // Add an argument to the most recently pushed function on the stack
-bool Tree::addArgument(TreeNode *arg)
+TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 {
-	Refitem<TreeNode,int> *ri = functionStack_.last();
-	if (ri == NULL)
-	{
-		msg.print("Internal Error: No function on stack to add argument to.\n");
-		return FALSE;
-	}
-	printf("Adding argument to function %li\n", ri->item);
-	ri->item->addArgument(arg);
-	return TRUE;
+	arg1->prevArgument = arg2;
+	arg2->nextArgument = arg1;
+	printf("Joining arguments %li and %li\n", arg1, arg2);
+	return arg1;
 }
 
 // Add joiner
@@ -224,8 +219,8 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	printf("Adding a joiner...\n");
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
 	ownedNodes_.add(leaf);
-	if (node1 != NULL) leaf->addArgument(node1);
-	if (node2 != NULL) leaf->addArgument(node2);
+	if (node1 != NULL) leaf->addArguments(node1);
+	if (node2 != NULL) leaf->addArguments(node2);
 	return leaf;
 }
 

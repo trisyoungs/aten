@@ -91,10 +91,10 @@ class Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
 	// Associate a function-based leaf node to the Tree - arguments to be added later
 	TreeNode *addFunctionLeaf(NuCommand::Function func);
-	// Pop the most recent function leaf from the stack
-	void popFunctionLeaf();
 	// Add an argument to the most recently pushed function on the stack
-	bool addArgument(TreeNode *arg);
+	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
+	// Pop the most recent function leaf from the stack and own any stored arguments
+	void finaliseFunction();
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Add variable to topmost ScopeNode
