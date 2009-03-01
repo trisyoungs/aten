@@ -81,10 +81,13 @@ bool TreeNode::hasArg(int i)
 // Add argument(s) to node
 void TreeNode::addArguments(TreeNode *leaf)
 {
-	// The supplied leaf may be a single node, or it may be a list of nodes joined with the nextArgument member
-	printf("Leaf to be added as an argument is %li\n", leaf);
-	for (TreeNode *node = leaf; node != NULL; node = node->nextArgument) args_.add(node);
-// 	printf("Added argument %i to node....\n", args_.nItems());
+	/*
+	The supplied leaf may be a single node, or it may be a list of nodes.
+	In the case of a list, we must walk backwards through the list to get to the beginning since the parser will provide only the last node of the list
+	*/
+	TreeNode *first;
+	for (first = leaf; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
+	for (TreeNode *node = first; node != NULL; node = node->nextArgument) args_.add(node);
 }
 
 // Return argument specified

@@ -22,6 +22,7 @@
 #include "parser/returnvalue.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
+#include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -123,8 +124,9 @@ void NuReturnValue::set(const char *s)
 */
 
 // Return as integer value
-int NuReturnValue::asInteger()
+int NuReturnValue::asInteger(bool &success)
 {
+	success = TRUE;
 	switch (type_)
 	{
 		case (NuVTypes::NoData):
@@ -144,16 +146,19 @@ int NuReturnValue::asInteger()
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
 			break;
 	}
+	success = FALSE;
 	return 0;
 }
 
 // Return as real value
-double NuReturnValue::asReal()
+double NuReturnValue::asReal(bool &success)
 {
+	success = TRUE;
 	switch (type_)
 	{
 		case (NuVTypes::NoData):
 			printf("Internal error: No data in ReturnValue to return as a real!\n");
+			success = FALSE;
 			return 0;
 			break;
 		case (NuVTypes::IntegerData):
@@ -169,12 +174,14 @@ double NuReturnValue::asReal()
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
 			break;
 	}
+	success = FALSE;
 	return 0;
 }
 
 // Return as character value
-const char *NuReturnValue::asCharacter()
+const char *NuReturnValue::asCharacter(bool &success)
 {
+	success = TRUE;
 	switch (type_)
 	{
 		case (NuVTypes::NoData):
@@ -194,5 +201,30 @@ const char *NuReturnValue::asCharacter()
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
 			break;
 	}
+	success = FALSE;
 	return 0;
+}
+
+// Return as boolean value
+bool NuReturnValue::asBool()
+{
+	switch (type_)
+	{
+		case (NuVTypes::NoData):
+			return FALSE;
+			break;
+		case (NuVTypes::IntegerData):
+			return (valueI_ > 0);
+			break;
+		case (NuVTypes::RealData):
+			return (valueR_ > 0.0);
+			break;
+		case (NuVTypes::CharacterData):
+			return valueC_.asBool();
+			break;
+		default:
+			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			break;
+	}
+	return FALSE;
 }

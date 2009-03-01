@@ -81,16 +81,12 @@ class Tree
 	Reflist<TreeNode,int> statements_;
 	// Reflist of ScopeNodes
 	Reflist<ScopeNode,int> scopeNodes_;
-	// Function stack
-	Reflist<TreeNode,int> functionStack_;
 
 	public:
 	// Add a node representing a whole statement to the execution list
 	void addStatement(TreeNode *leaf);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
-	// Associate a function-based leaf node to the Tree - arguments to be added later
-	TreeNode *addFunctionLeaf(NuCommand::Function func);
 	// Add an argument to the most recently pushed function on the stack
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments

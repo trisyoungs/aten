@@ -24,12 +24,14 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 
 /* Type Definition */
 %union {
+	int functionId;			/* Function enum id */
 	Dnchar *name;			/* character pointer for names */
 	TreeNode *node;			/* node pointer */
 };
 
 %token <name> TOKENNAME
-%token <node> INTCONST REALCONST CHARCONST VARIABLE FUNCTIONCALL
+%token <node> INTCONST REALCONST CHARCONST VARIABLE
+%token <functionId> FUNCTIONCALL
 %token INTEGER REAL CHARACTER VECTOR
 %token WHILE IF PRINT FOR
 %nonassoc ELSE
@@ -116,13 +118,13 @@ expr:
 	| expr GEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorGreaterThanEqualTo, 2, $1, $3); }
 	| expr '<' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThan, 2, $1, $3); }
 	| expr LEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThanEqualTo, 2, $1, $3); }
-/*        | '(' expr ')'				{ $$ = $2; } */
+	| '(' expr ')'				{ $$ = $2; }
 	;
 
 /* Function Definitions */
 function:
-	FUNCTIONCALL '(' ')'			{ $$ = $1; }
-	| FUNCTIONCALL	'(' exprlist ')' 	{ $1->addArguments($3); $$ = $1; }
+	FUNCTIONCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| FUNCTIONCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
 	;
 
 %%
