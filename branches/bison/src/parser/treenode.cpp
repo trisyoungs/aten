@@ -33,6 +33,8 @@ TreeNode::TreeNode()
 	returnType_ = NuVTypes::NoData;
 	readOnly_ = TRUE;
 	parentScope_ = NULL;
+	nextArgument = NULL;
+	prevArgument = NULL;
 }
 
 // Destructor
@@ -76,12 +78,13 @@ bool TreeNode::hasArg(int i)
 	return (i < args_.nItems());
 }
 
-// Add argument to node
-void TreeNode::addArgument(TreeNode *leaf)
+// Add argument(s) to node
+void TreeNode::addArguments(TreeNode *leaf)
 {
+	// The supplied leaf may be a single node, or it may be a list of nodes joined with the nextArgument member
 	printf("Leaf to be added as an argument is %li\n", leaf);
-	args_.add(leaf);
-	printf("Added argument %i to node....\n", args_.nItems());
+	for (TreeNode *node = leaf; node != NULL; node = node->nextArgument) args_.add(node);
+// 	printf("Added argument %i to node....\n", args_.nItems());
 }
 
 // Return argument specified

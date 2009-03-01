@@ -41,7 +41,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement statementlist declaration exprlist
+%type <node> expr statement statementlist declaration exprlist function
 %type <name> namelist
 
 %%
@@ -94,8 +94,8 @@ declaration:
 /* Expressions */
 
 exprlist:
-	expr					{ printf("Expression argument.\n");  }
-	| exprlist ',' expr			{ printf("Expression arguments.\n");  }
+	expr					{ $$ = $1; }
+	| exprlist ',' expr			{ $$ = Tree::joinArguments($3,$1); }
 	;
 
 expr:
@@ -103,6 +103,7 @@ expr:
 	| REALCONST				{ $$ = $1; }
 	| CHARCONST				{ $$ = $1; }
 	| VARIABLE				{ $$ = $1; }
+	| function				{ $$ = $1; }
 	| '-' expr %prec UMINUS			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorNegate, 1, $2); }
 	| expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, $1, $3); }
 	| expr '-' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorSubtract, 2, $1, $3); }
@@ -116,8 +117,12 @@ expr:
 	| expr '<' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThan, 2, $1, $3); }
 	| expr LEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThanEqualTo, 2, $1, $3); }
 /*        | '(' expr ')'				{ $$ = $2; } */
-	| FUNCTIONCALL '(' ')'			{ $$ = $1; }
-	| FUNCTIONCALL	'(' exprlist ')'	{ $$ = $1; $1->addArgument($3); }
+	;
+
+/* Function Definitions */
+function:
+	FUNCTIONCALL '(' ')'			{ $$ = $1; }
+	| FUNCTIONCALL	'(' exprlist ')' 	{ $1->addArguments($3); $$ = $1; }
 	;
 
 %%

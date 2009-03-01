@@ -40,6 +40,8 @@ class TreeNode
 	// Constructor / Destructor
 	TreeNode();
 	~TreeNode();
+	// List pointers (for argument list)
+	TreeNode *nextArgument, *prevArgument;
 
 	/*
 	// Argument Data
@@ -52,7 +54,7 @@ class TreeNode
 	// Return number of arguments currently assigned to node
 	int nArgs();
 	// Add new argument to node
-	void addArgument(TreeNode *leaf);
+	void addArguments(TreeNode *args);
 	// Return argument specified
 	TreeNode *arg(int i);
 	// Return whether argument i was given
