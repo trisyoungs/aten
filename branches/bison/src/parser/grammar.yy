@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 #include "parser/treenode.h"
 
 #include "parser/tree.h"
@@ -30,8 +30,8 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 };
 
 %token <name> TOKENNAME
-%token <node> INTCONST REALCONST CHARCONST VARIABLE
-%token <functionId> FUNCTIONCALL
+%token <node> INTCONST REALCONST CHARCONST NUMVAR CHARVAR VECVAR PTRVAR
+%token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
 %token INTEGER REAL CHARACTER VECTOR ATOM FORCEFIELD GRID MODEL PATTERN
 %token WHILE IF PRINT FOR
 %nonassoc ELSE
@@ -43,7 +43,9 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement statementlist declaration exprlist function VECCONST
+%type <node> numexpr charexpr ptrexpr vecexpr anyexpr
+%type <node> numfunc charfunc ptrfunc vecfunc voidfunc
+%type <node> statement statementlist declaration exprlist VECCONST
 %type <name> namelist
 
 %%
@@ -62,22 +64,25 @@ statementlist:
         ;
 
 /* Single Statement */
-/* {} doesn't work after ELSE */
 
 statement:
 	';'						{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
 	| declaration					{ $$ = $1; }
-	| expr ';'					{ $$ = $1; }
-	| IF '(' expr ')' statementlist			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
-	| IF '(' expr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$5,$7);  }
+	| numexpr ';'					{ $$ = $1; }
+	| charexpr ';'					{ $$ = $1; }
+	| vecexpr ';'					{ $$ = $1; }
+	| ptrexpr ';'					{ $$ = $1; }
+	| voidfunc ';'					{ $$ = $1; }
+	| IF '(' anyexpr ')' statementlist			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
+	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$5,$7);  }
 	;
 
 /* Variable declaration / assignment list */
 
 namelist:
 	TOKENNAME				{ Tree::currentTree->addVariable(variableType,$1); }
-	| TOKENNAME '=' expr			{ Tree::currentTree->addVariable(variableType,$1,$3); }
-	| namelist ',' TOKENNAME '=' expr	{ Tree::currentTree->addVariable(variableType,$3,$5);}
+	| TOKENNAME '=' anyexpr			{ Tree::currentTree->addVariable(variableType,$1,$3); }
+	| namelist ',' TOKENNAME '=' anyexpr	{ Tree::currentTree->addVariable(variableType,$3,$5);}
 	| namelist ',' TOKENNAME		{ Tree::currentTree->addVariable(variableType,$3); }
 	;
 
@@ -107,46 +112,100 @@ declaration:
 /* Expressions */
 
 exprlist:
-	expr					{ $$ = $1; }
-	| exprlist ',' expr			{ $$ = Tree::joinArguments($3,$1); }
+	anyexpr					{ $$ = $1; }
+	| exprlist ',' anyexpr			{ $$ = Tree::joinArguments($3,$1); }
 	;
 
-expr:
+anyexpr:
+	numexpr					{ $$ = $1; }
+	| charexpr				{ $$ = $1; }
+	| ptrexpr				{ $$ = $1; }
+	| vecexpr				{ $$ = $1; }
+	;
+
+charexpr:
+	CHARCONST				{ $$ = $1; }
+	| CHARVAR				{ $$ = $1; }
+	| charfunc				{ $$ = $1; }
+	| CHARVAR '=' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| charexpr '+' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
+	| charexpr '*' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
+	| numexpr '*' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 2, $1, $3); }
+	;
+
+ptrexpr:
+	PTRVAR					{ $$ = $1; }
+	| ptrfunc				{ $$ = $1; }
+	| PTRVAR '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| ptrexpr EQ ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); }
+	;
+
+vecexpr:
+	VECVAR					{ $$ = $1; }
+	| VECCONST				{ $$ = $1; }
+	| vecfunc				{ $$ = $1; }
+	| VECVAR '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| vecexpr '*' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
+	| vecexpr '-' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
+	| vecexpr '+' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 1, $1, $3); }
+	;
+
+numexpr:
 	INTCONST				{ $$ = $1; }
 	| REALCONST				{ $$ = $1; }
-	| CHARCONST				{ $$ = $1; }
-	| VECCONST				{ $$ = $1; }
-	| VARIABLE				{ $$ = $1; }
-	| VARIABLE '=' expr			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAssignment,2,$1,$3); }
-	| function				{ $$ = $1; }
-	| '-' expr %prec UMINUS			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorNegate, 1, $2); }
-	| expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, $1, $3); }
-	| expr '-' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorSubtract, 2, $1, $3); }
-	| expr '*' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorMultiply, 2, $1, $3); }
-	| expr '/' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorDivide, 2, $1, $3); }
-	| expr '^' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorPower, 2, $1, $3); }
-	| expr EQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorEqualTo, 2, $1, $3); }
-	| expr NEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorNotEqualTo, 2, $1, $3); }
-	| expr '>' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorGreaterThan, 2, $1, $3); }
-	| expr GEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorGreaterThanEqualTo, 2, $1, $3); }
-	| expr '<' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThan, 2, $1, $3); }
-	| expr LEQ expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorLessThanEqualTo, 2, $1, $3); }
-	| '(' expr ')'				{ $$ = $2; }
+	| NUMVAR				{ $$ = $1; }
+	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| numfunc				{ $$ = $1; }
+	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }
+	| numexpr '+' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); }
+	| numexpr '-' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); }
+	| numexpr '*' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 0, $1, $3); }
+	| numexpr '/' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorDivide, 0, $1, $3); }
+	| numexpr '^' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorPower, 0, $1, $3); }
+	| numexpr EQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); }
+	| numexpr NEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); }
+	| numexpr '>' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); }
+	| numexpr GEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); }
+	| numexpr '<' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorLessThan, 99, $1, $3); }
+	| numexpr LEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); }
+	| '(' numexpr ')'			{ $$ = $2; }
+	;
+
+/* 3-Vector Constant / Assignment Group */
+VECCONST:
+	'{' numexpr ',' numexpr ',' numexpr '}'	{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
 	;
 
 /* Function Definitions */
-function:
-	FUNCTIONCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| FUNCTIONCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+
+numfunc:
+	NUMFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| NUMFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
 	;
 
-/* 3-Vector */
-VECCONST:
-	'{' expr ',' expr ',' expr '}'		{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
+charfunc:
+	CHARFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| CHARFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	;
+
+ptrfunc:
+	PTRFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| PTRFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	;
+
+vecfunc:
+	VECFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| VECFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	;
+
+voidfunc:
+	VOIDFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
+	| VOIDFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
 	;
 
 %%
 
-void yyerror(char *s) {
-    fprintf(stdout, "%s\n", s);
+void yyerror(char *s)
+{
+//    fprintf(stdout, "%s\n", s);
 }

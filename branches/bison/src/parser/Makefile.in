@@ -49,9 +49,8 @@ ARFLAGS = cru
 libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
 am_libparser_a_OBJECTS = character.$(OBJEXT) commandnode.$(OBJEXT) \
-	commands.$(OBJEXT) functions.$(OBJEXT) grammar.$(OBJEXT) \
-	integer.$(OBJEXT) lexer.$(OBJEXT) real.$(OBJEXT) \
-	returnvalue.$(OBJEXT) scopenode.$(OBJEXT) testfuncs.$(OBJEXT) \
+	grammar.$(OBJEXT) integer.$(OBJEXT) lexer.$(OBJEXT) \
+	real.$(OBJEXT) returnvalue.$(OBJEXT) scopenode.$(OBJEXT) \
 	tree.$(OBJEXT) treenode.$(OBJEXT) variable.$(OBJEXT) \
 	variablelist.$(OBJEXT) variablenode.$(OBJEXT) vector.$(OBJEXT) \
 	vtypes.$(OBJEXT)
@@ -215,8 +214,8 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = character.cpp commandnode.cpp commands.cpp functions.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp scopenode.cpp testfuncs.cpp tree.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
-noinst_HEADERS = character.h commandnode.h commands.h integer.h real.h returnvalue.h scopenode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
+libparser_a_SOURCES = character.cpp commandnode.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp scopenode.cpp tree.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
+noinst_HEADERS = character.h commandnode.h integer.h real.h returnvalue.h scopenode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -273,15 +272,12 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/character.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/commandnode.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/commands.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/functions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grammar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/returnvalue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scopenode.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/testfuncs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tree.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/treenode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/variable.Po@am__quote@

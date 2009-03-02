@@ -43,6 +43,8 @@ class ScopeNode : public NuCommandNode
 	// Set / Get / Execute
 	*/
 	public:
+	// Execute command
+	bool execute(NuReturnValue &rv);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
 	// Reset node

@@ -48,7 +48,7 @@ class NuCommandData
 	const char *arguments;
 	// Command argument names
 	const char *argText;
-	// Return-value datatype (if definite)
+	// Return-value datatype
 	NuVTypes::DataType returnType;
 	// Command syntax
 	const char *syntax;
@@ -58,7 +58,8 @@ class NuCommandData
 };
 
 // Command actions
-class NuCommand {
+class NuCommand
+{
 
 	public:
 	// Constructor / Destructor

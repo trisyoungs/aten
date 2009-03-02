@@ -26,10 +26,11 @@
 #include "templates/list.h"
 #include "command/filter.h"
 #include "templates/namemap.h"
+#include "nucommand/commands.h"
 
 #define ATENVERSION "1.1"
 #define ATENREVISION "811"
-#define ATENDATE "Mon 02 Mar - 13:14"
+#define ATENDATE "Mon 02 Mar - 17:08"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -287,6 +288,14 @@ class Aten
 	void processModels();
 	// Save all models under their original names
 	void saveModels();
+
+
+	/*
+	// Commands
+	*/
+	public:
+	// Command Definitions
+	NuCommand commands;
 };
 
 extern Aten aten;

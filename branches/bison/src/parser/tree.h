@@ -24,7 +24,7 @@
 
 #include <iostream>
 #include "parser/returnvalue.h"
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 #include "templates/reflist.h"
 #include "base/vtypes.h"
 #include "base/dnchar.h"
@@ -81,10 +81,14 @@ class Tree
 	Reflist<TreeNode,int> statements_;
 	// Reflist of ScopeNodes
 	Reflist<ScopeNode,int> scopeNodes_;
+	// Number of syntactic errors encountered
+	int nErrors_;
 
 	public:
 	// Add a node representing a whole statement to the execution list
 	void addStatement(TreeNode *leaf);
+	// Add an operator to the Tree
+	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
 	// Add an argument to the most recently pushed function on the stack

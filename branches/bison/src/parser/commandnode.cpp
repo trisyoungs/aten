@@ -53,8 +53,8 @@ bool NuCommandNode::execute(NuReturnValue &rv)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
-	// Check whether to disregard flow control nodes
-	return nucommands.call(function_, this, rv);
+	// Execute the command
+	return aten.commands.call(function_, this, rv);
 }
 
 // Print node contents
