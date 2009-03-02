@@ -43,9 +43,13 @@ NuIntegerVariable::~NuIntegerVariable()
 // Set from returnvalue node
 bool NuIntegerVariable::set(NuReturnValue &rv)
 {
-	bool success;
-	integerData_ = rv.asInteger(success);
-	return success;
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case an integer) cannot be assigned to.\n");
+		return FALSE;
+	}
+	integerData_ = rv.asInteger();
+	return TRUE;
 }
 
 // Reset variable

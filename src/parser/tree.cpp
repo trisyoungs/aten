@@ -401,6 +401,12 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	return leaf;
 }
 
+// Add constane to topmost ScopeNode
+void Tree::addConstant(NuVariable *v)
+{
+	scopeNodes_.last()->item->variables.take(v);
+}
+
 // Add variable to topmost scope
 bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {

@@ -108,3 +108,9 @@ NuVariable *NuVariableList::first()
 {
 	return variables_.first();
 }
+
+// Initialise/reset all variables
+void NuVariableList::initialise()
+{
+	for (NuVariable *v = variables_.first(); v != NULL; v = v->next) v->initialise();
+}
