@@ -45,7 +45,14 @@ NuRealVariable::~NuRealVariable()
 // Set value of variable (real)
 bool NuRealVariable::set(NuReturnValue &rv)
 {
-	return FALSE;
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case a real) cannot be assigned to.\n");
+		return FALSE;
+	}
+	realData_ = rv.asReal();
+	return TRUE;
+
 }
 
 // Reset variable

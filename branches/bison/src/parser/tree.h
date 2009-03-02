@@ -97,6 +97,8 @@ class Tree
 	void finaliseFunction();
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	// Add constane to topmost ScopeNode
+	void addConstant(NuVariable *v);
 	// Add variable to topmost ScopeNode
 	bool addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add 'constant' vector value

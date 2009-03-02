@@ -1,0 +1,439 @@
+/*
+	*** Variable Access Path
+	*** src/parser/accesspath.cpp
+	Copyright T. Youngs 2007-2009
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "parser/accesspath.h"
+// #include "variables/accessstep.h"
+// #include "variables/atomaccess.h"
+// #include "variables/bondaccess.h"
+// #include "variables/cellaccess.h"
+// #include "variables/elementsaccess.h"
+// #include "variables/ffatomaccess.h"
+// #include "variables/ffboundaccess.h"
+// #include "variables/modelaccess.h"
+// #include "variables/patternaccess.h"
+// #include "variables/patternboundaccess.h"
+// #include "variables/prefsaccess.h"
+// #include "variables/vectoraccess.h"
+#include "parser/returnvalue.h"
+// #include "variables/variablelist.h"
+#include "base/messenger.h"
+#include "base/sysfunc.h"
+#include <string.h>
+
+// Constructor
+NuAccessPath::NuAccessPath()
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Destructor
+NuAccessPath::~NuAccessPath()
+{
+}
+
+// Walk path to retrieve/set/step end variable
+bool NuAccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, int delta)
+{
+	msg.enter("NuAccessPath::walk");
+	AccessStep *step = NULL;
+	int arrayindex;
+	VAccess *accesslist;
+	rv.reset();
+	bool result = TRUE;
+	msg.print(Messenger::Commands, "Walking path '%s' which returns something of type '%s'...\n", name_.get(), VTypes::dataType(dataType_));
+	// DataType of the most recently 'got' value
+	VTypes::DataType lastType = VTypes::NoData;
+	// Go through nodes in the list one by one, calling the relevant static member functions in access-enabled objects
+	for (step = path_.first(); step != NULL; step = step->next)
+	{
+		// If a previous ptrType was set, use this to determine the accessor set to search. Otherwise, get the value stored in the variable.
+//  		printf("Current step = %s\n", step->target()->name());
+
+		// If no previous data set (i.e. this is the first step) don't use an access list
+		if (lastType == VTypes::NoData)
+		{
+			if (step->next == NULL)
+			{
+				if (srcvar != NULL) step->setTargetVariable(srcvar);
+				else if (delta != 0) step->stepTargetVariable(delta);
+				else rv.set(step);
+			}
+			else rv.set(step);
+		}
+		else if (VTypes::isPointer(lastType) || (lastType == VTypes::VectorData))
+		{
+			// Get pointer to accesslist
+			switch (lastType)
+			{
+				case (VTypes::ModelData):
+					accesslist = &modelAccessors;
+					break;
+				case (VTypes::CellData):
+					accesslist = &cellAccessors;
+					break;
+				case (VTypes::AtomData):
+					accesslist = &atomAccessors;
+					break;
+				case (VTypes::BondData):
+					accesslist = &bondAccessors;
+					break;
+				case (VTypes::PatternData):
+					accesslist = &patternAccessors;
+					break;
+				case (VTypes::PatternBoundData):
+					accesslist = &patternboundAccessors;
+					break;
+				case (VTypes::PrefsData):
+					accesslist = &prefsAccessors;
+					break;
+				case (VTypes::ForcefieldAtomData):
+					accesslist = &ffatomAccessors;
+					break;
+				case (VTypes::ForcefieldBoundData):
+					accesslist = &ffboundAccessors;
+					break;
+				case (VTypes::ElementsData):
+					accesslist = &elementsAccessors;
+					break;
+				case (VTypes::VectorData):
+					accesslist = &vectorAccessors;
+					break;
+				default:
+					printf("Subvariable access within reference variables of type '%s' is not implemented.\n", VTypes::dataType(lastType));
+					accesslist = NULL;
+					break;
+			}
+			if (accesslist == NULL)
+			{
+				result = FALSE;
+				break;
+			}
+			// If this is not the last step, retrieve. Otherwise, set or step.
+			if (step->next == NULL) 
+			{
+				// Vector-setting exception
+				// If the target variable is a vector itself then set from the 
+				if (srcvar != NULL) result = accesslist->set(rv.asPointer(), step, srcvar);
+				else if (delta != 0)
+				{
+					msg.print("Subvariables of pointer classes cannot be stepped.\n");
+					result = FALSE;
+				}
+				else result = accesslist->retrieve(rv.asPointer(), step, rv);
+			}
+			else result = accesslist->retrieve(rv.asPointer(), step, rv);
+		}
+		else
+		{
+			msg.print("NuAccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
+			result = FALSE;
+			rv.reset();
+			break;
+		}
+		if (!result) break;
+		// Prepare for next step
+		lastType = step->type();
+	}
+	msg.exit("NuAccessPath::walk");
+	return result;
+}
+
+// Set (create) access path from text path
+bool NuAccessPath::setPath(const char *path, bool isArrayIndex)
+{
+	msg.enter("NuAccessPath::setPath");
+	static char opath[512], bit[256];
+	bool done;
+	AccessStep *step;
+	int n, nsqbrackets;
+	char *c;
+	VTypes::DataType lastType = VTypes::NoData;
+	bool success;
+	// Make sure the parent variable list has been set...
+	if (parent_ == NULL)
+	{
+		printf("Internal error - parent VariableList has not been set in NuAccessPath.\n");
+		msg.exit("NuAccessPath::setPath");
+		return FALSE;
+	}
+	Parser::ArgumentForm af = parser.argumentForm(path);
+	if (af <= Parser::VariablePathForm)
+	{
+		// Store original path
+		name_ = path;
+		// Take a copy of the original path to work on
+		strcpy(opath, path);
+		c = opath;
+		while (*c != '\0')
+		{
+			done = FALSE;
+			n = 0;
+			nsqbrackets = 0;
+			while (!done)
+			{
+				// Do bracket increments
+				if (*c == '[') nsqbrackets ++;
+				else if (*c == ']') nsqbrackets --;
+				// Check for end of path step
+				if ((*c == '.') && (nsqbrackets == 0)) done = TRUE;
+				else
+				{
+					bit[n] = *c;
+					n ++;
+				}
+				c++;
+				if (*c == '\0') done = TRUE;
+			}
+			bit[n] = '\0';
+			// Check for an empty string bit - caused by '..'
+			if (bit[0] == '\0')
+			{
+				msg.print("Empty section found in variable path.\n");
+				msg.exit("NuAccessPath::setPath");
+				return FALSE;
+			}
+			// If this is the first added node then the variable must exist in the local VariableList.
+			step = path_.add();
+			// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+			switch (lastType)
+			{
+				case (VTypes::NoData):
+					success = step->setTarget(bit, parent_, parent_);
+					break;
+				case (VTypes::ModelData):
+					success = step->setTarget(bit, parent_, modelAccessors.accessors());
+					if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::CellData):
+					success = step->setTarget(bit, parent_, cellAccessors.accessors());
+					if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::AtomData):
+					success = step->setTarget(bit, parent_, atomAccessors.accessors());
+					if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::BondData):
+					success = step->setTarget(bit, parent_, bondAccessors.accessors());
+					if (success) step->setVariableId(bondAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PatternData):
+					success = step->setTarget(bit, parent_, patternAccessors.accessors());
+					if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PatternBoundData):
+					success = step->setTarget(bit, parent_, patternboundAccessors.accessors());
+					if (success) step->setVariableId(patternboundAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PrefsData):
+					success = step->setTarget(bit, parent_, prefsAccessors.accessors());
+					if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ForcefieldAtomData):
+					success = step->setTarget(bit, parent_, ffatomAccessors.accessors());
+					if (success) step->setVariableId(ffatomAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ForcefieldBoundData):
+					success = step->setTarget(bit, parent_, ffboundAccessors.accessors());
+					if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ElementsData):
+					success = step->setTarget(bit, parent_, elementsAccessors.accessors());
+					if (success) step->setVariableId(elementsAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::VectorData):
+					success = step->setTarget(bit, parent_, vectorAccessors.accessors());
+					if (success) step->setVariableId(vectorAccessors.accessorId(step->target()));
+					break;
+				default:
+					printf("This variable type (%s) has not been implemented in NuAccessPath::setPath.\n", VTypes::dataType(lastType));
+					success = FALSE;
+					break;
+			}
+			if (!success)
+			{
+				msg.print("Unable to resolve path '%s'.\n", path);
+				break;
+			}
+			// Store lasttype
+			lastType = step->type();
+		}
+	}
+	else
+	{
+		// If this is an array index path, then it might be a constant value or an expression....
+		if (isArrayIndex)
+		{
+			if (af == Parser::ConstantForm)
+			{
+				if (VTypes::determineType(path) != VTypes::IntegerData)
+				{
+					msg.print("This array index variable (%s) is not a pure integer.\n", path);
+					success = FALSE;
+				}
+				else
+				{
+					step = path_.add();
+					step->setConstant(atoi(path), parent_);
+					success = TRUE;
+				}
+			}
+			else if (af == Parser::ExpressionForm)
+			{
+				step = path_.add();
+				success = step->setExpression(path, parent_);
+			}
+			else success = FALSE;
+		}
+		else
+		{
+			printf("Error - Trying to set a path from a non-path string (%s).\n",path);
+			success = FALSE;
+		}
+	}
+	// Set the return type of the path as the type of the last step
+	if (success) dataType_ = step->type();
+	msg.exit("NuAccessPath::setPath");
+	return success;
+}
+
+// Get return value as integer
+int NuAccessPath::asInteger(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asInteger();
+	}
+	else return 0;
+}
+
+// Get return value as double
+double NuAccessPath::asDouble(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asDouble();
+/*		if (!resultVariable_->set(rv.value()->asDouble())) return 0.0;
+		return resultVariable_->asDouble();*/
+	}
+	else return 0.0;
+}
+
+// Get return value as character
+const char *NuAccessPath::asCharacter(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		charResult_ = rv.value()->asCharacter();
+		return charResult_.get();
+	}
+	else return "NULL";
+}
+
+// Get return value as bool
+bool NuAccessPath::asBool(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asBool();
+	}
+	else return FALSE;
+}
+
+// Get return value as pointer
+void *NuAccessPath::asPointer(VTypes::DataType dt, Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asPointer(dt);
+	}
+	else return NULL;
+}
+
+// // Get return value as vector
+Vec3<double> NuAccessPath::asVector(Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		return rv.value()->asVector();
+	}
+	else return Vec3<double>();
+}
+
+// Increase variable by integer amount
+bool NuAccessPath::step(int delta, Variable *index)
+{
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, delta)) return TRUE;
+	else return FALSE;
+}
+
+// Set variable target from integer
+bool NuAccessPath::set(int i, Variable *index)
+{
+	static IntegerVariable ivar;
+	ivar.set(i);
+	ReturnValue rv;
+	return walk(rv, &ivar, VTypes::IntegerData, 0);
+}
+
+// Set variable target from double
+bool NuAccessPath::set(double d, Variable *index)
+{
+	static RealVariable dvar;
+	dvar.set(d);
+	ReturnValue rv;
+	return walk(rv, &dvar, VTypes::RealData, 0);
+}
+
+// Set variable target from character
+bool NuAccessPath::set(const char *s, Variable *index)
+{
+	static CharacterVariable cvar;
+	cvar.set(s);
+	ReturnValue rv;
+	return walk(rv, &cvar, VTypes::CharacterData, 0);
+}
+
+// Set variable target from pointer
+bool NuAccessPath::set(void *ptr, VTypes::DataType dt, Variable *index)
+{
+	static PointerVariable pvar;
+	pvar.reset(ptr, dt);
+	ReturnValue rv;
+	return walk(rv, &pvar, dt, 0);
+}
+
+// Set variable target from vector
+bool NuAccessPath::set(Vec3<double> v, Variable *index)
+{
+	static VectorVariable vvar;
+	vvar.set(v);
+	ReturnValue rv;
+	return walk(rv, &vvar, VTypes::VectorData, 0);
+}

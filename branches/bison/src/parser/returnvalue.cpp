@@ -52,8 +52,11 @@ void NuReturnValue::operator=(NuReturnValue &source)
 		case (NuVTypes::CharacterData):
 			valueC_ = source.valueC_;
 			break;
+		case (NuVTypes::VectorData):
+			valueV_ = source.valueV_;
+			break;
 		default:
-			printf("NuReturnValue::operator= - unrecognised variable type.\n");
+			valueP_ = source.valueP_;
 			break;
 	}
 }
@@ -88,8 +91,11 @@ void NuReturnValue::info()
 		case (NuVTypes::CharacterData):
 			printf("%s\n",valueC_.get());
 			break;
+		case (NuVTypes::VectorData):
+			printf("{%f,%f,%f}\n",valueV_.x,valueV_.y,valueV_.z);
+			break;
 		default:
-			printf("<Don't know how to print this data type>\n");
+			printf("%li\n",valueP_);
 			break;
 	}
 }
@@ -235,6 +241,28 @@ const char *NuReturnValue::asCharacter(bool &success)
 	return 0;
 }
 
+// Return as vector value
+Vec3<double> NuReturnValue::asVector(bool &success)
+{
+	success = TRUE;
+	switch (type_)
+	{
+		case (NuVTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			success = FALSE;
+			return Vec3<double>();
+			break;
+		case (NuVTypes::VectorData):
+			return valueV_;
+			break;
+		default:
+			printf("Cannot convert return value of type '%s' into a vector.\n", NuVTypes::dataType(type_));
+			break;
+	}
+	success = FALSE;
+	return Vec3<double>();
+}
+
 void *NuReturnValue::asPointer(NuVTypes::DataType ptrtype, bool &success)
 {
 	success = TRUE;
@@ -297,6 +325,12 @@ void *NuReturnValue::asPointer(NuVTypes::DataType type)
 {
 	static bool success;
 	return asPointer(type, success);
+}
+// Return as vector value
+Vec3<double> NuReturnValue::asVector()
+{
+	static bool success;
+	return asVector(success);
 }
 
 // Return as boolean value

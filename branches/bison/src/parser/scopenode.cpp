@@ -20,6 +20,8 @@
 */
 
 #include "parser/scopenode.h"
+#include "main/aten.h"
+#include "model/model.h"
 #include <string.h>
 
 // Constructor
@@ -39,7 +41,7 @@ bool ScopeNode::execute(NuReturnValue &rv)
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
 	// Reset/initialise all variables in the list
-	variables.initialist();
+	variables.initialise();
 	// Execute the command
 	return aten.commands.call(function_, this, rv);
 }

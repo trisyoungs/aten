@@ -69,7 +69,8 @@ bool NuVariable::initialise()
 			}
 		}
 		return FALSE;
-	}	
+	}
+	return TRUE;
 }
 
 // Set initial value expression

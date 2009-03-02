@@ -45,8 +45,13 @@ NuCharacterVariable::~NuCharacterVariable()
 // Set value of node from returnvalue
 bool NuCharacterVariable::set(NuReturnValue &rv)
 {
-
-	return FALSE;
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case a character) cannot be assigned to.\n");
+		return FALSE;
+	}
+	characterData_ = rv.asCharacter();
+	return TRUE;
 }
 
 // Reset node

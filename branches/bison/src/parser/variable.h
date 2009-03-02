@@ -25,8 +25,8 @@
 #include "parser/treenode.h"
 #include "base/dnchar.h"
 #include "base/vtypes.h"
-#include <stdlib.h>
 #include "templates/vector3.h"
+#include <stdlib.h>
 
 // Forward declaration
 
@@ -60,6 +60,8 @@ class NuVariable : public TreeNode
 	TreeNode *initialValue();
 	// Initialise variable
 	bool initialise();
+	// Reset variable
+	virtual void reset() = 0;
 };
 
 #endif

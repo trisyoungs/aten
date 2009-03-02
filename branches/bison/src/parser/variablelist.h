@@ -60,13 +60,10 @@ class NuVariableList
 	int nVariables();
 	// Return first variable in the list
 	NuVariable *first();
-	// Add a named variable or constant to the list
-	//NuVariable *add(const char *name, NuVTypes::DataType vt, bool constant = FALSE);
-
 	// Add a variable access path to the list
 	//Variable *addPath(const char *s);
 	// Reset all variable values
-	void resetVariables();
+	void initialise();
 	// Clear all variables, expressions etc. stored in class
 	void clear();
 	// Print list of variables and their values

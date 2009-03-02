@@ -171,6 +171,12 @@ numexpr:
 	| '(' numexpr ')'			{ $$ = $2; }
 	;
 
+/* Variable Path */
+path:
+	path '.' PTRVAR				{ printf("PATH PATH\n"); }
+	| path '.' NUMVAR			{ printf("Its a path.\n"); }
+	;
+
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
 	'{' numexpr ',' numexpr ',' numexpr '}'	{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }

@@ -104,12 +104,14 @@ int yylex()
 		{
 			NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
 			yylval.node = var;
+			Tree::currentTree->addConstant(var);
 			return INTCONST;
 		}
 		else
 		{
 			NuRealVariable *var = new NuRealVariable(atof(token), TRUE);
 			yylval.node = var;
+			Tree::currentTree->addConstant(var);	
 			return REALCONST;
 		}
 	}
@@ -135,7 +137,7 @@ int yylex()
 		} while (!done);
 		token[length] = '\0';
 		NuCharacterVariable *var = new NuCharacterVariable(token, TRUE);
-		TAKE IT HERE
+		Tree::currentTree->addConstant(var);
 		yylval.node = var;
 		return CHARCONST;
 	}

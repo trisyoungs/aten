@@ -29,8 +29,8 @@
 
 // Forward declarations
 //class CommandList;
-class VariableList;
-class Variable;
+// class NuVariableList;
+// class Variable;
 class ScopeNode;
 
 // Tree Node
@@ -100,8 +100,6 @@ class TreeNode
 	public:
 	// Set from returnvalue node
 	virtual bool set(NuReturnValue &rv) = 0;
-	// Reset variable
-	virtual void reset() = 0;
 	// Get reduced value of node
 	virtual bool execute(NuReturnValue &rv) = 0;
 	// Print layout of current node
