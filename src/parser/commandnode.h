@@ -25,7 +25,7 @@
 #include "templates/reflist.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
 #include "base/parser.h"

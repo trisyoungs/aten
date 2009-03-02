@@ -135,6 +135,7 @@ int yylex()
 		} while (!done);
 		token[length] = '\0';
 		NuCharacterVariable *var = new NuCharacterVariable(token, TRUE);
+		TAKE IT HERE
 		yylval.node = var;
 		return CHARCONST;
 	}
@@ -157,6 +158,12 @@ int yylex()
 		if (strcmp(token,"integer") == 0) return INTEGER;
 		else if (strcmp(token,"real") == 0) return REAL;
 		else if (strcmp(token,"character") == 0) return CHARACTER;
+		else if (strcmp(token,"vector") == 0) return VECTOR;
+		else if (strcmp(token,"atom") == 0) return ATOM;
+		else if (strcmp(token,"forcefield") == 0) return FORCEFIELD;
+		else if (strcmp(token,"grid") == 0) return GRID;
+		else if (strcmp(token,"model") == 0) return MODEL;
+		else if (strcmp(token,"pattern") == 0) return PATTERN;
 		else if (strcmp(token,"if") == 0) return IF;
 		else if (strcmp(token,"else") == 0) return ELSE;
 		else if (strcmp(token,"for") == 0) return FOR;
@@ -169,7 +176,26 @@ int yylex()
 		{
 			printf("Command is [%s], id = %i\n", token, n);
 			yylval.functionId = n;
-			return FUNCTIONCALL;
+			// Our return type here depends on the return type of the function
+			switch (NuCommand::data[n].returnType)
+			{
+				case (NuVTypes::NoData):
+					return VOIDFUNCCALL;
+					break;
+				case (NuVTypes::IntegerData):
+				case (NuVTypes::RealData):
+					return NUMFUNCCALL;
+					break;
+				case (NuVTypes::CharacterData):
+					return CHARFUNCCALL;
+					break;
+				case (NuVTypes::VectorData):
+					return VECFUNCCALL;
+					break;
+				default:
+					return PTRFUNCCALL;
+					break;
+			}
 		}
 
 		// The token isn't a high- or low-level function.
@@ -180,7 +206,26 @@ int yylex()
 			// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
 			VariableNode *vnode = new VariableNode(v);
 			yylval.node = vnode;
-			return VARIABLE;
+			// Our return type here depends on the type of the variable
+			switch (v->returnType())
+			{
+				case (NuVTypes::NoData):
+					return 0;
+					break;
+				case (NuVTypes::IntegerData):
+				case (NuVTypes::RealData):
+					return NUMVAR;
+					break;
+				case (NuVTypes::CharacterData):
+					return CHARVAR;
+					break;
+				case (NuVTypes::VectorData):
+					return VECVAR;
+					break;
+				default:
+					return PTRVAR;
+					break;
+			}
 		}
 		
 		// If we get to here then we have found an unrecognised named token (a new variable?)

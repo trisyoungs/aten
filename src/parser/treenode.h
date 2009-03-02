@@ -53,6 +53,8 @@ class TreeNode
 	public:
 	// Return number of arguments currently assigned to node
 	int nArgs();
+	// Return datatype of nth argument
+	NuVTypes::DataType argType(int i);
 	// Add new argument to node
 	void addArguments(TreeNode *args);
 	// Return (execute) argument specified

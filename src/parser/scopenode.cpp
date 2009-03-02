@@ -33,6 +33,17 @@ ScopeNode::~ScopeNode()
 {
 }
 
+// Execute command
+bool ScopeNode::execute(NuReturnValue &rv)
+{
+	// Make sure the current rendersource is up-to-date
+	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
+	// Reset/initialise all variables in the list
+	variables.initialist();
+	// Execute the command
+	return aten.commands.call(function_, this, rv);
+}
+
 // Set from returnvalue node
 bool ScopeNode::set(NuReturnValue &rv)
 {

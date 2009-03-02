@@ -23,7 +23,7 @@
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
-// #include "parser/vector.h"
+#include "parser/vector.h"
 #include <string.h>
 #include <stdarg.h>
 
@@ -80,6 +80,9 @@ NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, Tr
 			break;
 		case (NuVTypes::CharacterData):
 			v = (NuVariable*) new NuCharacterVariable("", FALSE);
+			break;
+		case (NuVTypes::VectorData):
+			v = (NuVariable*) new NuVectorVariable(FALSE);
 			break;
 		default:
 			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 
 // Initialise Command Pointers
 void NuCommand::initPointers()

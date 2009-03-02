@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "base/bundle.h"
@@ -37,10 +37,8 @@
 	V	Pointer		Any pointer (void*) object
 	*	<Repeat>	Any number of the last type again
 	^	Require Var	Next token must be a modifiable variable and not a constant
+	[]	Cluster		Surrounds groups of optional arguments that must be specified together
 */
-
-// Singleton
-NuCommand nucommands;
 
 // Command action
 NuCommandData NuCommand::data[NuCommand::nFunctions] = {
@@ -144,7 +142,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"", NuVTypes::AtomData,
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },
-	{ "insertatom",		"SNnnn",	"<element> <id> [x y z]", NuVTypes::AtomData,
+	{ "insertatom",		"SN[nnn]",	"<element> <id> [x y z]", NuVTypes::AtomData,
 				"Insert a new atom into the model such that it has the ID specified" },
 	{ "locate",		"NNN",		"<x> <y> <z>", NuVTypes::NoData,
 				"Position pen at specified coordinates" },
@@ -154,7 +152,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Move current atom selection to end of list" },
 	{ "movetostart",	"",		"", NuVTypes::NoData,
 				"Move current atom selection to start of list" },
-	{ "newatom",		"Snnn",		"<element> [x y z]", NuVTypes::AtomData,
+	{ "newatom",		"S[nnn]",	"<element> [x y z]", NuVTypes::AtomData,
 				"Create a new atom in the current model" },
 	{ "newatomfrac",	"SNNN",		"<element> <fracx> <fracy> <fracz>", NuVTypes::AtomData,
 				"Create a new atom in the current model, converting fractional coordinates to real coordinates" },
@@ -778,31 +776,31 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Strip all occurrences of the supplied characters from the supplied variable" },
 
 	// Variable Operators
-	{ "+",			"",		"", NuVTypes::NoData,
+	{ "+",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (+)" },
-	{ "=",			"",		"", NuVTypes::NoData,
+	{ "=",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (=)" },
-	{ "/",			"",		"", NuVTypes::NoData,
+	{ "/",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (/)" },
-	{ "==",			"",		"", NuVTypes::NoData,
+	{ "==",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (==)" },
-	{ ">",			"",		"", NuVTypes::NoData,
+	{ ">",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (>)" },
-	{ ">=",			"",		"", NuVTypes::NoData,
+	{ ">=",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (>=)" },
-	{ "<",			"",		"", NuVTypes::NoData,
+	{ "<",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (<)" },
-	{ "<=",			"",		"", NuVTypes::NoData,
+	{ "<=",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (<=)" },
-	{ "*",			"",		"", NuVTypes::NoData,
+	{ "*",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (*)" },
-	{ "-NEG",		"",		"", NuVTypes::NoData,
+	{ "-NEG",		".",		"", NuVTypes::NoData,
 				"Internal Operator (negate)" },
-	{ "!=",			"",		"", NuVTypes::NoData,
+	{ "!=",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (!=)" },
-	{ "^",			"",		"", NuVTypes::NoData,
+	{ "^",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (^)" },
-	{ "-",			"",		"", NuVTypes::NoData,
+	{ "-",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (-)" },
 	
 	// View

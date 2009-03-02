@@ -72,6 +72,18 @@ int TreeNode::nArgs()
 	return args_.nItems();
 }
 
+// Return datatype of nth argument
+NuVTypes::DataType TreeNode::argType(int i)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return NuVTypes::NoData;
+	}
+	return args_[i]->item->returnType();
+}
+
+
 // Set argument specified
 bool TreeNode::setArg(int i, NuReturnValue &rv)
 {

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/commands.h"
+#include "nucommand/commands.h"
 #include "parser/commandnode.h"
 #include "base/mathfunc.h"
 #include <stdio.h>

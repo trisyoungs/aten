@@ -292,6 +292,13 @@ const char *NuReturnValue::asCharacter()
 	return asCharacter(success);
 }
 
+// Return as pointer value
+void *NuReturnValue::asPointer(NuVTypes::DataType type)
+{
+	static bool success;
+	return asPointer(type, success);
+}
+
 // Return as boolean value
 bool NuReturnValue::asBool()
 {
