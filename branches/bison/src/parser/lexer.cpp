@@ -191,8 +191,8 @@ int yylex()
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
-	// Return immediately in the case of a bracket
-	if ((c == '(') || (c == ')') || (c == ';')) return c;
+	// Return immediately in the case of string single-character literals
+	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
 	// If the following character is '"', we also return immediately - have a clause in the following loop...
 	do
 	{

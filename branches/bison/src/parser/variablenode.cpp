@@ -27,6 +27,7 @@
 VariableNode::VariableNode(NuVariable *var) : variable_(var)
 {
 	// Private variables
+	readOnly_ = FALSE;
 }
 
 // Destructor

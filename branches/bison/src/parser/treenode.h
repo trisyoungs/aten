@@ -55,8 +55,18 @@ class TreeNode
 	int nArgs();
 	// Add new argument to node
 	void addArguments(TreeNode *args);
-	// Return argument specified
-	TreeNode *arg(int i);
+	// Return (execute) argument specified
+	bool arg(int i, NuReturnValue &rv);
+	// Return (execute) argument specified as an integer
+	int argi(int i);
+	// Return (execute) argument specified as a double
+	double argd(int i);
+	// Return (execute) argument specified as a character
+	const char *argc(int i);
+	// Return (execute) triplet of arguments, starting from argument specified
+	Vec3<double> arg3d(int i);
+	// Set argument specified
+	bool setArg(int i, NuReturnValue &rv);
 	// Return whether argument i was given
 	bool hasArg(int i);
 

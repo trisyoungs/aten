@@ -137,6 +137,7 @@ src/Makefile
 src/base/Makefile
 src/classes/Makefile
 src/command/Makefile
+src/nucommand/Makefile
 src/variables/Makefile
 src/ff/Makefile
 src/gui/Makefile

@@ -72,6 +72,24 @@ int TreeNode::nArgs()
 	return args_.nItems();
 }
 
+// Set argument specified
+bool TreeNode::setArg(int i, NuReturnValue &rv)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	// Check readonly attribute of argument
+	if (args_[i]->item->readOnly())
+	{
+		args_[i]->item->nodePrint(0);
+		msg.print("Argument %i is read-only and can't be set.\n", i);
+		return FALSE;
+	}
+	return args_[i]->item->set(rv);
+}
+
 // Return whether argument i was given
 bool TreeNode::hasArg(int i)
 {
@@ -90,14 +108,77 @@ void TreeNode::addArguments(TreeNode *leaf)
 	for (TreeNode *node = first; node != NULL; node = node->nextArgument) args_.add(node);
 }
 
-// Return argument specified
-TreeNode *TreeNode::arg(int i)
+// Return (execute) argument specified
+bool TreeNode::arg(int i, NuReturnValue &rv)
 {
 	if ((i < -1) || (i >= args_.nItems()))
 	{
 		printf("Argument index %i is out of range.\n", i);
-		return NULL;
+		return FALSE;
 	}
-	return args_[i]->item;
+	return args_[i]->item->execute(rv);
 }
 
+// Return (execute) argument specified as an integer
+int TreeNode::argi(int i)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	static NuReturnValue rv;
+	bool success;
+	int result = 0;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = rv.asInteger(success);
+	if (!success) msg.print("Couldn't cast argument %i into an integer.\n", i+1);
+	return result;
+}
+
+// Return (execute) argument specified as a double
+double TreeNode::argd(int i)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	static NuReturnValue rv;
+	bool success;
+	double result = 0.0;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = rv.asReal(success);
+	if (!success) msg.print("Couldn't cast argument %i into a real.\n", i+1);
+	return result;
+}
+
+// Return (execute) argument specified as a character
+const char *TreeNode::argc(int i)
+{
+	if ((i < -1) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	static NuReturnValue rv;
+	bool success;
+	const char *result = NULL;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = rv.asCharacter(success);
+	if (!success) msg.print("Couldn't cast argument %i into a character.\n", i+1);
+	return result;
+}
+
+// Return (execute) argument triplet specified
+Vec3<double> TreeNode::arg3d(int i)
+{
+	if ((i < -1) || (i > (args_.nItems()-3)))
+	{
+		printf("Argument index %i is out of range for a triplet.\n", i);
+		return FALSE;
+	}
+	Vec3<double> result;
+	result.set(argd(i), argd(i+1), argd(i+2));
+	return result;
+}

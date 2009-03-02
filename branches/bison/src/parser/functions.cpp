@@ -47,7 +47,6 @@ void NuCommand::initPointers()
 
 	pointers_[If] = &function_If;
 	pointers_[Break] = &function_Break;
-	pointers_[Goto] = &function_Goto;
 
 /*
 	// Analyse commands
@@ -93,28 +92,29 @@ void NuCommand::initPointers()
 	pointers_[Rebond] = &NuCommand::function_Rebond;
 	pointers_[Rebondpatterns] = &NuCommand::function_Rebondpatterns;
 	pointers_[Rebondselection] = &NuCommand::function_Rebondselection;
-
+*/
 	// Build commands
-	pointers_[Addhydrogen] = &NuCommand::function_Addhydrogen;
+	pointers_[AddHydrogen] = &NuCommand::function_AddHydrogen;
 	pointers_[Bohr] = &NuCommand::function_Bohr;
 	pointers_[Chain] = &NuCommand::function_Chain;
-	pointers_[Endchain] = &NuCommand::function_Endchain;
-	pointers_[Insertatom] = &NuCommand::function_Insertatom;
+	pointers_[EndChain] = &NuCommand::function_EndChain;
+	pointers_[InsertAtom] = &NuCommand::function_InsertAtom;
 	pointers_[Locate] = &NuCommand::function_Locate;
 	pointers_[Move] = &NuCommand::function_Move;
-	pointers_[Movetoend] = &NuCommand::function_Movetoend;
-	pointers_[Movetostart] = &NuCommand::function_Movetostart;
-	pointers_[Newatom] = &NuCommand::function_Newatom;
-	pointers_[Newatomfrac] = &NuCommand::function_Newatomfrac;
-	pointers_[Reorder] = &NuCommand::function_Reorder;
-	pointers_[Resetpen] = &NuCommand::function_Resetpen;
-	pointers_[Rotx] = &NuCommand::function_Rotx;
-	pointers_[Roty] = &NuCommand::function_Roty;
-	pointers_[Rotz] = &NuCommand::function_Rotz;
-	pointers_[Shiftdown] = &NuCommand::function_Shiftdown;
-	pointers_[Shiftup] = &NuCommand::function_Shiftup;
+	pointers_[MoveToEnd] = &NuCommand::function_MoveToEnd;
+	pointers_[MoveToStart] = &NuCommand::function_MoveToStart;
+	pointers_[NewAtom] = &NuCommand::function_NewAtom;
+	pointers_[NewAtomFrac] = &NuCommand::function_NewAtomFrac;
+	pointers_[ReOrder] = &NuCommand::function_ReOrder;
+	pointers_[ResetPen] = &NuCommand::function_ResetPen;
+	pointers_[RotX] = &NuCommand::function_RotX;
+	pointers_[RotY] = &NuCommand::function_RotY;
+	pointers_[RotZ] = &NuCommand::function_RotZ;
+	pointers_[ShiftDown] = &NuCommand::function_ShiftDown;
+	pointers_[ShiftUp] = &NuCommand::function_ShiftUp;
 	pointers_[Transmute] = &NuCommand::function_Transmute;
 
+/*
 	// Cell commands
 	pointers_[Addgenerator] = &NuCommand::function_Addgenerator;
 	pointers_[Adjustcell] = &NuCommand::function_Adjustcell;
