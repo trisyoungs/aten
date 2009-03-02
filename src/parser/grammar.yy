@@ -32,7 +32,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %token <name> TOKENNAME
 %token <node> INTCONST REALCONST CHARCONST VARIABLE
 %token <functionId> FUNCTIONCALL
-%token INTEGER REAL CHARACTER VECTOR
+%token INTEGER REAL CHARACTER VECTOR ATOM FORCEFIELD GRID MODEL PATTERN
 %token WHILE IF PRINT FOR
 %nonassoc ELSE
 
@@ -43,7 +43,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %nonassoc UMINUS
 %token ';'
 
-%type <node> expr statement statementlist declaration exprlist function
+%type <node> expr statement statementlist declaration exprlist function VECCONST
 %type <name> namelist
 
 %%
@@ -68,7 +68,6 @@ statement:
 	';'						{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
 	| declaration					{ $$ = $1; }
 	| expr ';'					{ $$ = $1; }
-	| VARIABLE '=' expr ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAssignment,2,$1,$3); }
 	| IF '(' expr ')' statementlist			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
 	| IF '(' expr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$5,$7);  }
 	;
@@ -91,6 +90,18 @@ declaration:
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| CHARACTER { variableType = NuVTypes::CharacterData; }
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| VECTOR { variableType = NuVTypes::VectorData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| ATOM { variableType = NuVTypes::AtomData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| FORCEFIELD { variableType = NuVTypes::ForcefieldData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| GRID { variableType = NuVTypes::GridData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| MODEL { variableType = NuVTypes::ModelData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| PATTERN { variableType = NuVTypes::PatternData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	;
 
 /* Expressions */
@@ -104,7 +115,9 @@ expr:
 	INTCONST				{ $$ = $1; }
 	| REALCONST				{ $$ = $1; }
 	| CHARCONST				{ $$ = $1; }
+	| VECCONST				{ $$ = $1; }
 	| VARIABLE				{ $$ = $1; }
+	| VARIABLE '=' expr			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAssignment,2,$1,$3); }
 	| function				{ $$ = $1; }
 	| '-' expr %prec UMINUS			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorNegate, 1, $2); }
 	| expr '+' expr				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::OperatorAdd, 2, $1, $3); }
@@ -125,6 +138,11 @@ expr:
 function:
 	FUNCTIONCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
 	| FUNCTIONCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	;
+
+/* 3-Vector */
+VECCONST:
+	'{' expr ',' expr ',' expr '}'		{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
 	;
 
 %%

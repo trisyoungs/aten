@@ -24,6 +24,7 @@
 #include "parser/commandnode.h"
 #include "parser/grammar.h"
 #include "parser/tree.h"
+#include "parser/vector.h"
 #include <stdarg.h>
 
 // YYParse forward
@@ -228,6 +229,12 @@ bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialV
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Declarations);
 	ownedNodes_.add(leaf);
 	return TRUE;
+}
+
+// Add constant value
+TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
+{
+	NuVectorVariable *var = new NuVectorVariable(value1, value2, value3);
 }
 
 // Search for variable in current scope

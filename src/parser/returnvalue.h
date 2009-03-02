@@ -25,6 +25,7 @@
 #include "parser/returnvalue.h"
 #include "parser/vtypes.h"
 #include "base/dnchar.h"
+#include "templates/vector3.h"
 
 // Tree Return Value
 class NuReturnValue
@@ -45,6 +46,8 @@ class NuReturnValue
 	int valueI_;
 	double valueR_;
 	Dnchar valueC_;
+	Vec3<double> valueV_;
+	void *valueP_;
 
 	public:
 	// Return type of the stored data
@@ -64,9 +67,17 @@ class NuReturnValue
 	void set(double d);
 	// Set from character value
 	void set(const char *s);
+	// Set from vector value
+	void set(Vec3<double> &v);
+	// Set from individual vector data
+	void set(double x, double y, double z);
+	// Set from single vector data
+	void set(int id, double xyz);
+	// Set from pointer value
+	void set(NuVTypes::DataType type, void *ptr);
 
 	/*
-	// Get
+	// Get (with type checking)
 	*/
 	public:
 	// Return integer value
@@ -75,6 +86,25 @@ class NuReturnValue
 	double asReal(bool &success);
 	// Return character string
 	const char *asCharacter(bool &success);
+	// Return vector data
+	Vec3<double> asVector(bool &success);
+	// Return pointer data
+	void *asPointer(NuVTypes::DataType type, bool &success);
+
+	/*
+	// Get (no type checking)
+	*/
+	public:
+	// Return integer value
+	int asInteger();
+	// Return real value
+	double asReal();
+	// Return character string
+	const char *asCharacter();
+	// Return vector data
+	Vec3<double> asVector();
+	// Return pointer data
+	void *asPointer(NuVTypes::DataType type);
 	// Return as boolean (guaranteed conversion)
 	bool asBool();
 };

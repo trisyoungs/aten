@@ -95,6 +95,8 @@ class Tree
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
 	// Add variable to topmost ScopeNode
 	bool addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add 'constant' vector value
+	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
 	NuVariable *isVariableInScope(const char *name);
 };

@@ -286,8 +286,8 @@ bool NuCommand::function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValu
 	printf("add.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
 	return operate(NuCommand::OperatorAdd, &v1, &v2, rv);
 }
 
@@ -297,8 +297,8 @@ bool NuCommand::function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuRetur
 	printf("Subtract........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
 	return operate(NuCommand::OperatorSubtract, &v1, &v2, rv);
 }
 
@@ -308,8 +308,8 @@ bool NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuRetur
 	printf("Multiply........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
 	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
@@ -319,8 +319,8 @@ bool NuCommand::function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnV
 	printf("Multiply........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return operate(NuCommand::OperatorMultiply, &v1, &v2, rv);
 }
 
@@ -330,8 +330,8 @@ bool NuCommand::function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnV
 	printf("Divide........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return operate(NuCommand::OperatorDivide, &v1, &v2, rv);
 }
 
@@ -341,8 +341,8 @@ bool NuCommand::function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnVa
 	printf("Power........\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return operate(NuCommand::OperatorPower, &v1, &v2, rv);
 }
 
@@ -358,8 +358,8 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 {
 	printf("Joiner.\n");
 	// Execute both commands
-	if (!c->arg(0)->execute(rv)) return FALSE;
-	return c->arg(1)->execute(rv);
+	if (!c->arg(0, rv)) return FALSE;
+	return c->arg(1, rv);
 }
 
 // Variable Declarations Node
@@ -373,23 +373,16 @@ bool NuCommand::function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnVal
 bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	NuReturnValue ifval;
-	c->arg(0)->execute(ifval);
-	if (ifval.asBool()) c->arg(1)->execute(rv);
-	else if (c->hasArg(2)) c->arg(2)->execute(rv);
+	c->arg(0, ifval);
+	if (ifval.asBool()) c->arg(1, rv);
+	else if (c->hasArg(2)) c->arg(2, rv);
 	return TRUE;
 }
 
-// If test
+// TEST COMMAND
 bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	printf("BREAK\n");
-	return TRUE;
-}
-
-// If test
-bool NuCommand::function_Goto(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	printf("GOTO\n");
 	return TRUE;
 }
 
@@ -399,8 +392,8 @@ bool NuCommand::function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturn
 	printf("equate.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorEqualTo, &v1, &v2, rv);
 }
 
@@ -410,8 +403,8 @@ bool NuCommand::function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuRet
 	printf("not equal to.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorNotEqualTo, &v1, &v2, rv);
 }
 
@@ -421,8 +414,8 @@ bool NuCommand::function_OperatorGreaterThan(NuCommandNode *c, Bundle &obj, NuRe
 	printf("greater than.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorGreaterThan, &v1, &v2, rv);
 }
 
@@ -432,8 +425,8 @@ bool NuCommand::function_OperatorGreaterThanEqualTo(NuCommandNode *c, Bundle &ob
 	printf("greater than equal to.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorGreaterThanEqualTo, &v1, &v2, rv);
 }
 
@@ -443,8 +436,8 @@ bool NuCommand::function_OperatorLessThan(NuCommandNode *c, Bundle &obj, NuRetur
 	printf("less than.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorLessThan, &v1, &v2, rv);
 }
 
@@ -454,8 +447,8 @@ bool NuCommand::function_OperatorLessThanEqualTo(NuCommandNode *c, Bundle &obj, 
 	printf("less than equal to.......\n");
 	// Grab both argument (return) values and send them to be operated on
 	NuReturnValue v1, v2;
-	if (!c->arg(0)->execute(v1)) return FALSE;
-	if (!c->arg(1)->execute(v2)) return FALSE;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
 	return test(NuCommand::OperatorLessThanEqualTo, &v1, &v2, rv);
 }
 
@@ -464,6 +457,6 @@ bool NuCommand::function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuRet
 {
 	printf("assignment.......\n");
 	// Grab the second argument result and assign it to the first
-	if (!c->arg(1)->execute(rv)) return FALSE;
-	return (c->arg(0)->set(rv));
+	if (!c->arg(1, rv)) return FALSE;
+	return (c->setArg(0, rv));
 }

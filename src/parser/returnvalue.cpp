@@ -119,8 +119,36 @@ void NuReturnValue::set(const char *s)
 	valueC_ = s;
 }
 
+// Set from vector value
+void NuReturnValue::set(Vec3<double> &v)
+{
+	type_ = NuVTypes::VectorData;
+	valueV_ = v;
+}
+
+// Set from individual vector data
+void NuReturnValue::set(double x, double y, double z)
+{
+	type_ = NuVTypes::VectorData;
+	valueV_.set(x,y,z);
+}
+
+// Set from single vector data
+void NuReturnValue::set(int id, double xyz)
+{
+	type_ = NuVTypes::VectorData;
+	valueV_.set(id, xyz);
+}
+
+// Set from pointer value
+void NuReturnValue::set(NuVTypes::DataType ptrtype, void *ptr)
+{
+	type_ = ptrtype;
+	valueP_ = ptr;
+}
+
 /*
-// Get
+// Get (with type checking)
 */
 
 // Return as integer value
@@ -131,6 +159,7 @@ int NuReturnValue::asInteger(bool &success)
 	{
 		case (NuVTypes::NoData):
 			printf("Internal error: No data in ReturnValue to return as an integer!\n");
+			success = FALSE;
 			return 0;
 			break;
 		case (NuVTypes::IntegerData):
@@ -186,6 +215,7 @@ const char *NuReturnValue::asCharacter(bool &success)
 	{
 		case (NuVTypes::NoData):
 			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			success = FALSE;
 			return "_NULL_";
 			break;
 		case (NuVTypes::IntegerData):
@@ -203,6 +233,63 @@ const char *NuReturnValue::asCharacter(bool &success)
 	}
 	success = FALSE;
 	return 0;
+}
+
+void *NuReturnValue::asPointer(NuVTypes::DataType ptrtype, bool &success)
+{
+	success = TRUE;
+	switch (type_)
+	{
+		case (NuVTypes::NoData):
+			printf("Error: No data in ReturnValue to return as a pointer!\n");
+			success = FALSE;
+			return NULL;
+			break;
+		case (NuVTypes::IntegerData):
+		case (NuVTypes::RealData):
+		case (NuVTypes::CharacterData):
+			msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", NuVTypes::dataType(type_), NuVTypes::dataType(ptrtype));
+			success = FALSE;
+			return NULL;
+			break;
+		default:
+			// Check that internal pointer type matches requested pointer type
+			if (ptrtype != type_)
+			{
+				msg.print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", NuVTypes::dataType(type_), NuVTypes::dataType(ptrtype));
+				success = FALSE;
+				return NULL;
+			}
+			else return valueP_;
+			break;
+	}
+	success = FALSE;
+	return 0;
+}
+
+/*
+// Get (no type checking)
+*/
+
+// Return as integer value
+int NuReturnValue::asInteger()
+{
+	static bool success;
+	return asInteger(success);
+}
+
+// Return as real value
+double NuReturnValue::asReal()
+{
+	static bool success;
+	return asReal(success);
+}
+
+// Return as character value
+const char *NuReturnValue::asCharacter()
+{
+	static bool success;
+	return asCharacter(success);
 }
 
 // Return as boolean value
