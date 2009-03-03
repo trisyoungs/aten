@@ -115,3 +115,25 @@ void NuVectorVariable::nodePrint(int offset, const char *prefix)
 	else printf("%s{%f,%f,%f} (variable, name=%s)\n", tab, vectorData_.x, vectorData_.y, vectorData_.z, name_.get());
 	delete[] tab;
 }
+
+/*
+// Accessors
+*/
+
+// Search variable access list for provided accessor
+TreeNode *NuVectorVariable::findAccessor(const char *s)
+{
+	msg.enter("NuVectorVariable::searchAccessors");
+	TreeNode *result = NULL;
+	int i = 0;
+	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
+	if (i == nAccessors)
+	{
+		msg.exit("NuVectorVariable::searchAccessors");
+		return NULL;
+	}
+	// Create a suitable variable to return...
+	
+	msg.exit("NuVectorVariable::searchAccessors");
+	return result;
+}

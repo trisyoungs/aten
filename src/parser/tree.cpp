@@ -511,11 +511,12 @@ TreeNode *Tree::addPath(TreeNode *basevar, TreeNode *path)
 }
 
 // Expand the topmost path on the stack
-bool Tree::searchAccessors(const char *s)
+NuVariable *Tree::searchAccessors(const char *s)
 {
 	msg.enter("Tree::searchAccessors");
 	// Get last item on path stack
-	NuVariable *v = pathStack_.last()->item;
+	Refitem<TreeNode,int> *ri = pathStack_.last();
+	TreeNode *laststep = ri->item;
 	
 	msg.exit("Tree::searchAccessors");
 }

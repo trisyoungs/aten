@@ -23,6 +23,7 @@
 #define ATEN_REALVARIABLE_H
 
 #include "parser/variable.h"
+#include "parser/accessor.h"
 
 // Real Variable
 class NuRealVariable : public NuVariable
@@ -51,6 +52,19 @@ class NuRealVariable : public NuVariable
 	double realData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
+
+	/*
+	// Access Data
+	*/
+	public:
+	// Accessor list
+	enum Accessors { nAccessors };
+	// Search variable access list for provided accessor
+	TreeNode *findAccessor(const char *s);
+
+	private:
+	// Accessor data
+	static Accessor accessorData[nAccessors];
 };
 
 #endif
