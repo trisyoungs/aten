@@ -291,12 +291,12 @@ void AtenGrids::refreshGridInfo()
 	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
-	if (!g->usesColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
+	if (!g->useColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->alpha() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
-	ui.GridColourscaleSpin->setEnabled( g->usesColourScale() );
-	ui.GridNegativeColourButton->setEnabled( !g->usesColourScale() );
-	ui.GridPositiveColourButton->setEnabled( !g->usesColourScale() );
+	ui.GridColourscaleSpin->setEnabled( g->useColourScale() );
+	ui.GridNegativeColourButton->setEnabled( !g->useColourScale() );
+	ui.GridPositiveColourButton->setEnabled( !g->useColourScale() );
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refreshGridInfo");
 }
@@ -459,7 +459,7 @@ void AtenGrids::on_GridUseColourScaleCheck_clicked(bool checked)
 	if (row == -1) return;
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
-	g->setColourScale(checked ? ui.GridColourscaleSpin->value()-1 : -1);
+	g->setUseColourScale(checked);
 	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }

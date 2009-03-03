@@ -122,6 +122,8 @@ class Grid
 	void setCutoff(double d);
 	// Return isovalue cutoff for surface
 	double cutoff();
+	// Return whether supplied number is within cutoff range
+	bool withinCutoff(double d);
 	// Return 3D data array
 	double ***data3d();
 	// Return 2D data array
@@ -132,7 +134,7 @@ class Grid
 	void axesForGl(double *glmat);
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
-	// Whether to use data2d_ value sfor z-component of 2D surface
+	// Whether to use data2d_ values for z-component of 2D surface
 	bool useDataForZ();
 
 	/*
@@ -166,7 +168,7 @@ class Grid
 	SurfaceStyle style_;
 	// Local colours (including alpha component)
 	GLfloat positiveColour_[4], negativeColour_[4];
-	// Colour scale to take colouring from (zero for internal colours)
+	// Colour scale to take colouring from (if used)
 	int colourScale_;
 	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
 	bool useColourScale_;
@@ -208,8 +210,10 @@ class Grid
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
 	int colourScale();
+	// Set whether the surfce should be rendered with an associated colourscale
+	void setUseColourScale(bool b);
 	// Whether the surface uses the defined colour scale or not
-	bool usesColourScale();
+	bool useColourScale();
 	// Set whether to use both signs of a symmetric isovalue distribution
 	void setSymmetric(bool b);
 	// Returns whether to use both signs of a symmetric isovalue distribution

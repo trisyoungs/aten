@@ -51,6 +51,17 @@ int Command::function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Retrieve grid and make it current
+int Command::function_CA_GETGRID(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	Grid *g = obj.m->grid(c->argi(0)-1);
+	if (c->hasArg(1)) c->arg(1)->set(g, VTypes::GridData);
+	if (g != NULL) obj.g = g;
+	printf("Retrieved grid is %li\n", g);
+	return Command::Success;
+}
+
 // Set transparency of grid
 int Command::function_CA_GRIDALPHA(CommandNode *&c, Bundle &obj)
 {
@@ -99,7 +110,12 @@ int Command::function_CA_GRIDCOLOURSCALE(CommandNode *&c, Bundle &obj)
 		msg.print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
 		return Command::Fail;
 	}
-	obj.g->setColourScale(cs-1);
+	if (cs == 0) obj.g->setUseColourScale(FALSE);
+	else
+	{
+		obj.g->setColourScale(cs-1);
+		obj.g->setUseColourScale(TRUE);
+	}
 	return Command::Success;
 }
 
@@ -208,6 +224,14 @@ int Command::function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Set visibility of grid
+int Command::function_CA_GRIDVISIBLE(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
+	obj.g->setVisible(c->argb(0));
+	return Command::Success;
+}
+
 // Load grid ('loadgrid <filename>')
 int Command::function_CA_LOADGRID(CommandNode *&c, Bundle &obj)
 {
@@ -216,7 +240,8 @@ int Command::function_CA_LOADGRID(CommandNode *&c, Bundle &obj)
 	{
 		if (f->execute(c->argc(0))) return Command::Success;
 		else return Command::Fail;
-	} else return Command::Fail;
+	}
+	else return Command::Fail;
 }
 
 // Create new grid in the current model

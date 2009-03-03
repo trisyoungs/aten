@@ -301,6 +301,7 @@ class Command {
 		CA_GRIDSTYLE,
 		CA_GRIDSYMMETRIC,
 		CA_GRIDUSEZ,
+		CA_GRIDVISIBLE,
 		CA_LOADGRID,
 		CA_NEWGRID,
 	
@@ -724,6 +725,7 @@ class Command {
 	static int function_CA_GRIDSTYLE(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj);
 	static int function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj);
+	static int function_CA_GRIDVISIBLE(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOADGRID(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWGRID(CommandNode *&c, Bundle &obj);
 	// Image Commands

@@ -359,10 +359,11 @@ void renderSurfaceGrid(Grid *g)
 // Render volumetric isosurface with Marching Cubes
 void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 {
-	int i, j, k, n, cubetype, *faces;
+	int i, j, k, n, cubetype, *faces, cscale;
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
 	bool symm;
+	GLfloat colour[4];
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
@@ -375,6 +376,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	twody = r.y / npoints.y * 2.0;
 	twodz = r.z / npoints.z * 2.0;
 	glEnable(GL_BLEND);
+
 	// Set glBegin based on the surface style
 	switch (ss)
 	{
@@ -394,7 +396,9 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	// Set colour / transparency for surface
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+	if (g->useColourScale()) cscale = g->colourScale();
+	else cscale = -1;
+	if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
@@ -443,14 +447,22 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 				cubetype = 0;
 				if (!symm)
 				{
-					if (vertex[0] >= cutoff) cubetype += 1;
-					if (vertex[1] >= cutoff) cubetype += 2;
-					if (vertex[2] >= cutoff) cubetype += 4;
-					if (vertex[3] >= cutoff) cubetype += 8;
-					if (vertex[4] >= cutoff) cubetype += 16;
-					if (vertex[5] >= cutoff) cubetype += 32;
-					if (vertex[6] >= cutoff) cubetype += 64;
-					if (vertex[7] >= cutoff) cubetype += 128;
+					if (g->withinCutoff(vertex[0])) cubetype += 1;
+					if (g->withinCutoff(vertex[1])) cubetype += 2;
+					if (g->withinCutoff(vertex[2])) cubetype += 4;
+					if (g->withinCutoff(vertex[3])) cubetype += 8;
+					if (g->withinCutoff(vertex[4])) cubetype += 16;
+					if (g->withinCutoff(vertex[5])) cubetype += 32;
+					if (g->withinCutoff(vertex[6])) cubetype += 64;
+					if (g->withinCutoff(vertex[7])) cubetype += 128;
+// 					if (vertex[0] >= cutoff) cubetype += 1;
+// 					if (vertex[1] >= cutoff) cubetype += 2;
+// 					if (vertex[2] >= cutoff) cubetype += 4;
+// 					if (vertex[3] >= cutoff) cubetype += 8;
+// 					if (vertex[4] >= cutoff) cubetype += 16;
+// 					if (vertex[5] >= cutoff) cubetype += 32;
+// 					if (vertex[6] >= cutoff) cubetype += 64;
+// 					if (vertex[7] >= cutoff) cubetype += 128;
 				}
 				else
 				{
@@ -464,7 +476,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] <= -cutoff) cubetype += 32;
 						if (vertex[6] <= -cutoff) cubetype += 64;
 						if (vertex[7] <= -cutoff) cubetype += 128;
-						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
+						if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
 						mult = -1.0;
 					}
 					else
@@ -477,7 +489,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] >= cutoff) cubetype += 32;
 						if (vertex[6] >= cutoff) cubetype += 64;
 						if (vertex[7] >= cutoff) cubetype += 128;
-						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+						if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 						mult = 1.0;
 					}
 				}
@@ -500,6 +512,12 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					r.add(i+v1[0], j+v1[1], k+v1[2]);
 					// Set triangle coordinates and add cube position
 					glNormal3d(normal.x, normal.y, normal.z);
+					if (cscale != -1)
+					{
+						prefs.colourScale[cscale].colour((a+b)/2.0, colour);
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
+					}
+
 					glVertex3d(r.x, r.y, r.z);
 				}
 			}
@@ -537,8 +555,8 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	// Set colour / transparency for surface
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	cscale = g->colourScale();
-	if (!g->usesColourScale()) cscale = -1;
+	if (g->useColourScale()) cscale = g->colourScale();
+	else cscale = -1;
 	if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
