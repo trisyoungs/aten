@@ -74,7 +74,7 @@ bool Tree::generate(const char *s)
 	currentTree = this;
 	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
 	ownedNodes_.add(root);
-	scopeNodes_.add(root);
+	scopeStack_.add(root);
 	statements_.add(root);
 	// Store the source string
 	stringSource_ = s;
@@ -151,6 +151,22 @@ char Tree::getChar()
 	return c;
 }
 
+// Peek next character from current input stream
+char Tree::peekChar()
+{
+	char c = 0;
+	if (isFileSource_)
+	{
+	}
+	else
+	{
+		// Return current character
+		if (stringPos_ == stringLength_) return '\0';
+		c = stringSource_[stringPos_];
+	}
+	return c;
+}
+
 // 'Replace' last character read from current input stream
 void Tree::unGetChar()
 {
@@ -163,6 +179,10 @@ void Tree::unGetChar()
 		stringPos_--;
 	}
 }
+
+/*
+// Statements / Commands / Operators
+*/
 
 // Add a node representing a whole statement to the execution list
 void Tree::addStatement(TreeNode *leaf)
@@ -401,10 +421,14 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	return leaf;
 }
 
-// Add constane to topmost ScopeNode
+/*
+// Variables / Constants
+*/
+
+// Add constant to topmost ScopeNode
 void Tree::addConstant(NuVariable *v)
 {
-	scopeNodes_.last()->item->variables.take(v);
+	scopeStack_.last()->item->variables.take(v);
 }
 
 // Add variable to topmost scope
@@ -412,7 +436,7 @@ bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialV
 {
 	printf("Adding a variable called %s\n", name->get());
 	// Create the supplied variable in the list of the topmost scope
-	if (!scopeNodes_.last()->item->variables.create(type, name->get(), initialValue))
+	if (!scopeStack_.last()->item->variables.create(type, name->get(), initialValue))
 	{
 		printf("ERROR!\n");
 		return FALSE;
@@ -427,7 +451,7 @@ bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialV
 TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
 {
 	NuVectorVariable *leaf = new NuVectorVariable(value1, value2, value3);
-	scopeNodes_.last()->item->variables.take(leaf);
+	scopeStack_.last()->item->variables.take(leaf);
 	return leaf;
 }
 
@@ -436,10 +460,62 @@ NuVariable *Tree::isVariableInScope(const char *name)
 {
 	// Search the current ScopeNode list for the variable name requested
 	NuVariable *v = NULL;
-	for (Refitem<ScopeNode,int> *ri = scopeNodes_.last(); ri != NULL; ri =ri->prev)
+	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
 	{
 		v = ri->item->variables.find(name);
 		if (v != NULL) break;
 	}
 	return v;
+}
+
+/*
+// Paths
+*/
+
+// Flag that the next token to expect is a path step
+void Tree::setExpectPathStep(bool b)
+{
+	expectPathStep_ = b;
+}
+
+// Whether to treat the next alphanumeric token as a path step variable
+bool Tree::expectPathStep()
+{
+	return expectPathStep_;
+}
+
+// Add node to path stack
+void Tree::pushPath(TreeNode *var)
+{
+	printf("PUUUUUUUSH\n");
+	pathStack_.add(var);
+}
+
+// Remove last node from path stack
+void Tree::popPath()
+{
+	printf("POP!\n");
+	pathStack_.remove( pathStack_.last() );
+}
+
+// Return topmost path refitem on stack
+Refitem<TreeNode,int> *Tree::topPath()
+{
+	return pathStack_.last();
+}
+
+// Add (begin) a new path putting it on the stack
+TreeNode *Tree::addPath(TreeNode *basevar, TreeNode *path)
+{
+	printf("Adding path.\n");
+}
+
+// Expand the topmost path on the stack
+bool Tree::searchAccessors(const char *s)
+{
+	msg.enter("Tree::searchAccessors");
+	// Get last item on path stack
+	NuVariable *v = pathStack_.last()->item;
+	
+	msg.exit("Tree::searchAccessors");
 }

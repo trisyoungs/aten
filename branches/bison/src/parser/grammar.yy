@@ -30,7 +30,9 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 };
 
 %token <name> TOKENNAME
-%token <node> INTCONST REALCONST CHARCONST NUMVAR CHARVAR VECVAR PTRVAR
+%token <node> INTCONST REALCONST CHARCONST
+%token <node> NUMVAR CHARVAR VECVAR PTRVAR
+%token <node> STEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
 %token INTEGER REAL CHARACTER VECTOR ATOM FORCEFIELD GRID MODEL PATTERN
 %token WHILE IF PRINT FOR
@@ -39,12 +41,13 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
 %left '*' '/'
-%left '^'
+%left '^' '.'
 %nonassoc UMINUS
 %token ';'
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc charfunc ptrfunc vecfunc voidfunc
+%type <node> numpath path
 %type <node> statement statementlist declaration exprlist VECCONST
 %type <name> namelist
 
@@ -156,6 +159,7 @@ numexpr:
 	| NUMVAR				{ $$ = $1; }
 	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| numfunc				{ $$ = $1; }
+	| numpath				{ $$ = $1; }
 	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }
 	| numexpr '+' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); }
 	| numexpr '-' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); }
@@ -172,9 +176,15 @@ numexpr:
 	;
 
 /* Variable Path */
+
 path:
-	path '.' PTRVAR				{ printf("PATH PATH\n"); }
-	| path '.' NUMVAR			{ printf("Its a path.\n"); }
+	STEP					{ $$ = $1; }
+	| path '.' STEP				{ $$ = Tree::currentTree->joinArguments($1, $3); }
+	;
+
+numpath:
+	PTRVAR 					{  } '.' path '.' NUMVAR		{}
+	| VECVAR '.' { Tree::currentTree->pushPath($1); } STEP { $$ = Tree::currentTree->addPath($1, $4); Tree::currentTree->popPath(); }
 	;
 
 /* 3-Vector Constant / Assignment Group */

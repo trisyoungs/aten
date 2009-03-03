@@ -60,6 +60,18 @@ class NuVectorVariable : public NuVariable
 	TreeNode *constX_, *constY_, *constZ_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
+
+	/*
+	// Access Data
+	*/
+	public:
+	// Accessor list
+	enum Accessors { Magnitude, X, Y, Z, nAccessors };
+	// Retrieve specified data via accessor
+	static bool retrieve(int accessor, NuReturnValue &rv);
+	// Set specified data
+	static bool set(int accessor, NuReturnValue &rv);
+	
 };
 
 #endif

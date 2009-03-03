@@ -33,6 +33,7 @@
 class NuVariable;
 class TreeNode;
 class ScopeNode;
+class PathNode;
 
 // Tree
 class Tree
@@ -58,6 +59,8 @@ class Tree
 	public:
 	// Get next character from current input stream
 	char getChar();
+	// Peek next character from current input stream
+	char peekChar();
 	// 'Replace' last character read from current input stream
 	void unGetChar();
 	// Clear all node data
@@ -79,11 +82,17 @@ class Tree
 	Reflist<TreeNode,int> ownedNodes_;
 	// Reflist of all statements in the Tree, to be executed sequentially
 	Reflist<TreeNode,int> statements_;
-	// Reflist of ScopeNodes
-	Reflist<ScopeNode,int> scopeNodes_;
+	private:
+	// Stack of ScopeNodes
+	Reflist<ScopeNode,int> scopeStack_;
+	// Stack of variable path nodes
+	Reflist<TreeNode,int> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
 
+	/*
+	// Statement / Command Addition
+	*/
 	public:
 	// Add a node representing a whole statement to the execution list
 	void addStatement(TreeNode *leaf);
@@ -97,7 +106,12 @@ class Tree
 	void finaliseFunction();
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
-	// Add constane to topmost ScopeNode
+
+	/*
+	// Variables / Constants
+	*/
+	public:
+	// Add constant to topmost ScopeNode
 	void addConstant(NuVariable *v);
 	// Add variable to topmost ScopeNode
 	bool addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
@@ -105,6 +119,31 @@ class Tree
 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
 	NuVariable *isVariableInScope(const char *name);
+
+	/*
+	// Paths	
+	*/
+	private:
+	// Nested path depth for lexer
+	int pathDepth_;
+	// Whether the next token to expect is a path step
+	bool expectPathStep_;
+
+	public:
+	// Flag that the next token to expect is a path step
+	void setExpectPathStep(bool b);
+	// Whether to treat the next alphanumeric token as a path step variable
+	bool expectPathStep();
+	// Add node to path stack
+	void pushPath(TreeNode *var);
+	// Remove last node from path stack
+	void popPath();
+	// Return topmost path refitem on stack
+	Refitem<TreeNode,int> *topPath();
+	// Add (begin) a new path putting it on the stack
+	TreeNode *addPath(TreeNode *rootvar, TreeNode *path);
+	// Expand the topmost path on the stack
+	bool searchAccessors(const char *s);
 };
 
 #endif

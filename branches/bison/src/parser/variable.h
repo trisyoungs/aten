@@ -60,8 +60,7 @@ class NuVariable : public TreeNode
 	TreeNode *initialValue();
 	// Initialise variable
 	bool initialise();
-	// Reset variable
-	virtual void reset() = 0;
+	// 
 };
 
 #endif
