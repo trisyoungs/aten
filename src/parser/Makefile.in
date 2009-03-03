@@ -50,10 +50,10 @@ libparser_a_AR = $(AR) $(ARFLAGS)
 libparser_a_LIBADD =
 am_libparser_a_OBJECTS = character.$(OBJEXT) commandnode.$(OBJEXT) \
 	grammar.$(OBJEXT) integer.$(OBJEXT) lexer.$(OBJEXT) \
-	real.$(OBJEXT) returnvalue.$(OBJEXT) scopenode.$(OBJEXT) \
-	tree.$(OBJEXT) treenode.$(OBJEXT) variable.$(OBJEXT) \
-	variablelist.$(OBJEXT) variablenode.$(OBJEXT) vector.$(OBJEXT) \
-	vtypes.$(OBJEXT)
+	pathnode.$(OBJEXT) real.$(OBJEXT) returnvalue.$(OBJEXT) \
+	scopenode.$(OBJEXT) tree.$(OBJEXT) treenode.$(OBJEXT) \
+	variable.$(OBJEXT) variablelist.$(OBJEXT) \
+	variablenode.$(OBJEXT) vector.$(OBJEXT) vtypes.$(OBJEXT)
 libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -214,8 +214,8 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
-libparser_a_SOURCES = character.cpp commandnode.cpp grammar.yy integer.cpp lexer.cpp real.cpp returnvalue.cpp scopenode.cpp tree.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
-noinst_HEADERS = character.h commandnode.h integer.h real.h returnvalue.h scopenode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
+libparser_a_SOURCES = character.cpp commandnode.cpp grammar.yy integer.cpp lexer.cpp pathnode.cpp real.cpp returnvalue.cpp scopenode.cpp tree.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
+noinst_HEADERS = character.h commandnode.h integer.h pathnode.h real.h returnvalue.h scopenode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -275,6 +275,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/grammar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pathnode.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/real.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/returnvalue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scopenode.Po@am__quote@

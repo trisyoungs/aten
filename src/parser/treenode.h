@@ -104,6 +104,8 @@ class TreeNode
 	virtual bool execute(NuReturnValue &rv) = 0;
 	// Print layout of current node
 	virtual void nodePrint(int offset, const char *prefix = "") = 0;
+	// Reset node
+	virtual void reset() = 0;
 };
 
 #endif

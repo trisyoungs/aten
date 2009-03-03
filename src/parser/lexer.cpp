@@ -53,6 +53,16 @@ int yylex()
 	if (c == EOF) return 0;
 
 	/*
+	// A '.' followed by a character indicates a variable path - stop here and return '.'
+	*/
+	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
+	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
+	{
+		Tree::currentTree->setExpectPathStep();
+		return '.';
+	}
+	
+	/*
 	// Number Detection - Either '.' or  a digit begins a number
 	*/
 	if (c == '.' || isdigit (c))
@@ -147,96 +157,113 @@ int yylex()
 	*/
 	if (isalpha (c))
 	{
+		printf("An alphanumeric token...\n");
 		do
 		{
 			token[length++] = c;
 			c = Tree::currentTree->getChar();
 		}
 		while (isalnum (c));
+		printf("Character that terminated alphtoken = %c\n", c);
 		Tree::currentTree->unGetChar();
 		token[length] = '\0';
 
-		// Is this a recognised high-level keyword?
-		if (strcmp(token,"integer") == 0) return INTEGER;
-		else if (strcmp(token,"real") == 0) return REAL;
-		else if (strcmp(token,"character") == 0) return CHARACTER;
-		else if (strcmp(token,"vector") == 0) return VECTOR;
-		else if (strcmp(token,"atom") == 0) return ATOM;
-		else if (strcmp(token,"forcefield") == 0) return FORCEFIELD;
-		else if (strcmp(token,"grid") == 0) return GRID;
-		else if (strcmp(token,"model") == 0) return MODEL;
-		else if (strcmp(token,"pattern") == 0) return PATTERN;
-		else if (strcmp(token,"if") == 0) return IF;
-		else if (strcmp(token,"else") == 0) return ELSE;
-		else if (strcmp(token,"for") == 0) return FOR;
-		else if (strcmp(token,"while") == 0) return WHILE;
-
-		// If we get to here then its not a high-level keyword.
-		// Is it a function keyword?
-		for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
-		if (n != NuCommand::nFunctions)
+		// Skip over keyword detection if we are expecting a path step
+		if (!Tree::currentTree->expectPathStep())
 		{
-			printf("Command is [%s], id = %i\n", token, n);
-			yylval.functionId = n;
-			// Our return type here depends on the return type of the function
-			switch (NuCommand::data[n].returnType)
+			// Is this a recognised high-level keyword?
+			if (strcmp(token,"integer") == 0) return INTEGER;
+			else if (strcmp(token,"real") == 0) return REAL;
+			else if (strcmp(token,"character") == 0) return CHARACTER;
+			else if (strcmp(token,"vector") == 0) return VECTOR;
+			else if (strcmp(token,"atom") == 0) return ATOM;
+			else if (strcmp(token,"forcefield") == 0) return FORCEFIELD;
+			else if (strcmp(token,"grid") == 0) return GRID;
+			else if (strcmp(token,"model") == 0) return MODEL;
+			else if (strcmp(token,"pattern") == 0) return PATTERN;
+			else if (strcmp(token,"if") == 0) return IF;
+			else if (strcmp(token,"else") == 0) return ELSE;
+			else if (strcmp(token,"for") == 0) return FOR;
+			else if (strcmp(token,"while") == 0) return WHILE;
+	
+			// If we get to here then its not a high-level keyword.
+			// Is it a function keyword?
+			for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
+			if (n != NuCommand::nFunctions)
 			{
-				case (NuVTypes::NoData):
-					return VOIDFUNCCALL;
-					break;
-				case (NuVTypes::IntegerData):
-				case (NuVTypes::RealData):
-					return NUMFUNCCALL;
-					break;
-				case (NuVTypes::CharacterData):
-					return CHARFUNCCALL;
-					break;
-				case (NuVTypes::VectorData):
-					return VECFUNCCALL;
-					break;
-				default:
-					return PTRFUNCCALL;
-					break;
+				printf("Command is [%s], id = %i\n", token, n);
+				yylval.functionId = n;
+				// Our return type here depends on the return type of the function
+				switch (NuCommand::data[n].returnType)
+				{
+					case (NuVTypes::NoData):
+						return VOIDFUNCCALL;
+						break;
+					case (NuVTypes::IntegerData):
+					case (NuVTypes::RealData):
+						return NUMFUNCCALL;
+						break;
+					case (NuVTypes::CharacterData):
+						return CHARFUNCCALL;
+						break;
+					case (NuVTypes::VectorData):
+						return VECFUNCCALL;
+						break;
+					default:
+						return PTRFUNCCALL;
+						break;
+				}
 			}
 		}
 
-		// The token isn't a high- or low-level function.
-		// Is it a variable? Search the lists currently in scope...
-		NuVariable *v = Tree::currentTree->isVariableInScope(token);
-		if (v != NULL)
+		// The token isn't a high- or low-level function. It's either a path step or a normal variable
+		if (Tree::currentTree->expectPathStep())
 		{
-			// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
-			VariableNode *vnode = new VariableNode(v);
-			yylval.node = vnode;
-			// Our return type here depends on the type of the variable
-			switch (v->returnType())
+			// Search the path variable at the top of the pathStack for an accessor matching this token...
+			NuVariable *v = Tree::currentTree->searchAccessors(token);
+		}
+		else
+		{
+			// Search the variable lists currently in scope...
+			NuVariable *v = Tree::currentTree->isVariableInScope(token);
+			if (v != NULL)
 			{
-				case (NuVTypes::NoData):
-					return 0;
-					break;
-				case (NuVTypes::IntegerData):
-				case (NuVTypes::RealData):
-					return NUMVAR;
-					break;
-				case (NuVTypes::CharacterData):
-					return CHARVAR;
-					break;
-				case (NuVTypes::VectorData):
-					return VECVAR;
-					break;
-				default:
-					return PTRVAR;
-					break;
+				// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
+				VariableNode *vnode = new VariableNode(v);
+				yylval.node = vnode;
+				// Are we already 'in' a path?
+				// Peek the next character - if it is 
+				// Our return type here depends on the type of the variable
+				switch (v->returnType())
+				{
+					case (NuVTypes::NoData):
+						return 0;
+						break;
+					case (NuVTypes::IntegerData):
+					case (NuVTypes::RealData):
+						return NUMVAR;
+						break;
+					case (NuVTypes::CharacterData):
+						return CHARVAR;
+						break;
+					case (NuVTypes::VectorData):
+						return VECVAR;
+						break;
+					default:
+						return PTRVAR;
+						break;
+				}
 			}
 		}
-		
-		// If we get to here then we have found an unrecognised named token (a new variable?)
+
+		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
 		printf("Lexer found an unknown token name = [%s]\n", token);
 		name = token;
 		yylval.name = &name;
 		return TOKENNAME;
 	}
 
+	printf("Symbolic character...\n");
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of string single-character literals
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
