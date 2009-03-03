@@ -1,5 +1,6 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 10/11/2008
+# Last modified: 03/03/2009
+#	03/03/2009 - Removed translation of cell contents on export.
 #	10/11/2008 - Added id.
 #	12/10/2008 - Modified to properly use variable paths.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
@@ -89,14 +90,11 @@ exportmodel
 	for $n,1,$model.natoms
 		# Get variable pointer to make manipulation a little less cluttered
 		$i = $model.atoms[$n]
-		$rx = $i.rx-$model.cell.centrex
-		$ry = $i.ry-$model.cell.centrey
-		$rz = $i.rz-$model.cell.centrez
 		if $i.type = 0
 			writeline "${i.symbol@-8}${i.id@10}   $i.mass"
 		else
 			writeline "${i.type.name@-8}${i.id@10}   $i.mass"
 		end
-		writeline "$rx@20.14$ry@20.14$rz@20.14"
+		writeline "$i.rx@20.14$i.ry@20.14$i.rz@20.14"
 	end
 end
