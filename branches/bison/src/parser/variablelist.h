@@ -46,8 +46,8 @@ class NuVariableList
 	List<NuVariable> variables_;
 	// List of constants
 	List<NuVariable> constants_;
-	// List of variable paths
-	//List<Variable> paths_;
+	// Create variable of specified type
+	static NuVariable *createVariable(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
@@ -56,6 +56,8 @@ class NuVariableList
 	NuVariable *find(const char *name);
 	// Create a new variable in the list
 	NuVariable *create(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	// Create a new variable (static function, so we don't take ownership of it).
+	NuVariable *createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Return the number of variables (not constants) contained in the list
 	int nVariables();
 	// Return first variable in the list

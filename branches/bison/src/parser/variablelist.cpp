@@ -23,6 +23,7 @@
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
+// #include "parser/atom.h"
 #include "parser/vector.h"
 #include <string.h>
 #include <stdarg.h>
@@ -64,7 +65,7 @@ NuVariable *NuVariableList::find(const char *name)
 }
 
 // Create a new variable in the list
-NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
 {
 	NuVariable *v = NULL;
 	switch (type)
@@ -84,6 +85,9 @@ NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, Tr
 		case (NuVTypes::VectorData):
 			v = (NuVariable*) new NuVectorVariable(FALSE);
 			break;
+// 		case (NuVTypes::AtomData):
+// 			v = (NuVariable*) new NuAtomVariable(NULL, FALSE);
+			break;
 		default:
 			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
 			break;
@@ -92,9 +96,22 @@ NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, Tr
 	{
 		v->setName(name);
 		v->setInitialValue(initialValue);
-		variables_.own(v);
 	}
 	return v;
+}
+
+// Create variable
+NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+{
+	NuVariable *v = createVariable(type, name, initialValue);
+	if (v != NULL) variables_.own(v);
+	return v;
+}
+
+// Create variable without owning it
+NuVariable *NuVariableList::createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+{
+	return createVariable(type, name, initialValue);
 }
 
 // Return the number of variables (not constants) contained in the list

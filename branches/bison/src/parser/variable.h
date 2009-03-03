@@ -60,7 +60,8 @@ class NuVariable : public TreeNode
 	TreeNode *initialValue();
 	// Initialise variable
 	bool initialise();
-	// 
+	// Search variable access list for provided accessor
+	virtual TreeNode *findAccessor(const char *s) = 0;
 };
 
 #endif

@@ -82,3 +82,25 @@ void NuCharacterVariable::nodePrint(int offset, const char *prefix)
 	else printf("%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
 	delete[] tab;
 }
+
+/*
+// Accessors
+*/
+
+// Search variable access list for provided accessor
+TreeNode *NuCharacterVariable::findAccessor(const char *s)
+{
+	msg.enter("NuCharacterVariable::searchAccessors");
+	TreeNode *result = NULL;
+	int i = 0;
+	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
+	if (i == nAccessors)
+	{
+		msg.exit("NuCharacterVariable::searchAccessors");
+		return NULL;
+	}
+	// Create a suitable variable to return...
+	
+	msg.exit("NuCharacterVariable::searchAccessors");
+	return result;
+}

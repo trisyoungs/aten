@@ -23,6 +23,7 @@
 #define ATEN_VECTORVARIABLE_H
 
 #include "parser/variable.h"
+#include "parser/accessor.h"
 
 // Forward Declarations
 class TreeNode;
@@ -67,11 +68,12 @@ class NuVectorVariable : public NuVariable
 	public:
 	// Accessor list
 	enum Accessors { Magnitude, X, Y, Z, nAccessors };
-	// Retrieve specified data via accessor
-	static bool retrieve(int accessor, NuReturnValue &rv);
-	// Set specified data
-	static bool set(int accessor, NuReturnValue &rv);
-	
+	// Search variable access list for provided accessor
+	TreeNode *findAccessor(const char *s);
+
+	private:
+	// Accessor data
+	static Accessor accessorData[nAccessors];
 };
 
 #endif

@@ -81,3 +81,25 @@ void NuIntegerVariable::nodePrint(int offset, const char *prefix)
 	else printf("%s%i (variable, name=%s)\n", tab, integerData_, name_.get());
 	delete[] tab;
 }
+
+/*
+// Accessors
+*/
+
+// Search variable access list for provided accessor
+TreeNode *NuIntegerVariable::findAccessor(const char *s)
+{
+	msg.enter("NuIntegerVariable::searchAccessors");
+	TreeNode *result = NULL;
+	int i = 0;
+	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
+	if (i == nAccessors)
+	{
+		msg.exit("NuIntegerVariable::searchAccessors");
+		return NULL;
+	}
+	// Create a suitable variable to return...
+	
+	msg.exit("NuIntegerVariable::searchAccessors");
+	return result;
+}

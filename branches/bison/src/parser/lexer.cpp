@@ -58,7 +58,7 @@ int yylex()
 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
 	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
 	{
-		Tree::currentTree->setExpectPathStep();
+		Tree::currentTree->setExpectPathStep(TRUE);
 		return '.';
 	}
 	
@@ -220,7 +220,7 @@ int yylex()
 		if (Tree::currentTree->expectPathStep())
 		{
 			// Search the path variable at the top of the pathStack for an accessor matching this token...
-			NuVariable *v = Tree::currentTree->searchAccessors(token);
+			NuVariable *var = Tree::currentTree->searchAccessors(token);
 		}
 		else
 		{
