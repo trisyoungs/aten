@@ -60,8 +60,8 @@ Grid::Grid()
 	negativeColour_[3] = 0.5f;
 	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
-	colourScale_ = -1;
-	//prefs.colourScale[0].addLink(this);
+	colourScale_ = 0;
+	prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
 
@@ -177,7 +177,8 @@ Vec3<double> Grid::lengths()
 // Set data origin
 void Grid::setOrigin(const Vec3<double> v)
 {
-	origin_ = v; log_++;
+	origin_ = v;
+	log_++;
 }
 
 // Return the origin of the Grid data
@@ -215,6 +216,14 @@ void Grid::setCutoff(double d)
 double Grid::cutoff()
 {
 	return cutoff_;
+}
+
+// Return whether supplied number is within cutoff range
+bool Grid::withinCutoff(double d)
+{
+	// TEST
+	if (d < cutoff_) return TRUE;
+	return FALSE;
 }
 
 // Return 3D data array
@@ -313,22 +322,11 @@ void Grid::logChange()
 // Set the colourscale associated with the data
 void Grid::setColourScale(int id)
 {
-	// Check range of supplied id
-	if ((id < 0) || (id > 9))
-	{
-		// Remove link in old colourscale if necessary
-		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
-		useColourScale_ = FALSE;
-		//colourScale_ = -1;
-		log_ ++;
-		return;
-	}
-	// Remove old colourscale link (if one existed)
-	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
+	// Remove old colourscale link from current colourscale value
+	prefs.colourScale[colourScale_].breakLink(this);
 	colourScale_ = id;
 	log_ ++;
 	prefs.colourScale[colourScale_].addLink(this);
-	useColourScale_ = TRUE;
 	int i, j, k;
 	double **data2, *data1;
 	// Adjust the colour scale to encompass all grid values...
@@ -360,8 +358,15 @@ int Grid::colourScale()
 	return colourScale_;
 }
 
+// Set whether the surfce should be rendered with an associated colourscale
+void Grid::setUseColourScale(bool b)
+{
+	useColourScale_ = b;
+	log_ ++;
+}
+
 // Whether the surface uses the defined colour scale or not
-bool Grid::usesColourScale()
+bool Grid::useColourScale()
 {
 	return useColourScale_;
 }

@@ -182,6 +182,7 @@ bool CommandList::addCommand(Command::Function cf)
 		case (Command::CA_VECTOR):
 		case (Command::CA_ATOM):
 		case (Command::CA_BOND):
+		case (Command::CA_GRID):
 		case (Command::CA_PATTERN):
 		case (Command::CA_PATTERNBOUND):
 		case (Command::CA_MODEL):
