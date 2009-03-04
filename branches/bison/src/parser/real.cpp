@@ -83,25 +83,3 @@ void NuRealVariable::nodePrint(int offset, const char *prefix)
 	else printf("%s%f (variable, name=%s)\n", tab, realData_, name_.get());
 	delete[] tab;
 }
-
-/*
-// Accessors
-*/
-
-// Search variable access list for provided accessor
-TreeNode *NuRealVariable::findAccessor(const char *s)
-{
-	msg.enter("NuRealVariable::searchAccessors");
-	TreeNode *result = NULL;
-	int i = 0;
-	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
-	if (i == nAccessors)
-	{
-		msg.exit("NuRealVariable::searchAccessors");
-		return NULL;
-	}
-	// Create a suitable variable to return...
-	
-	msg.exit("NuRealVariable::searchAccessors");
-	return result;
-}

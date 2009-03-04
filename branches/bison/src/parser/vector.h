@@ -65,11 +65,17 @@ class NuVectorVariable : public NuVariable
 	/*
 	// Access Data
 	*/
+	private:
+	// Private static function to search accessors
+	static AccessNode *accessorSearch(const char *s);
+
 	public:
 	// Accessor list
-	enum Accessors { Magnitude, X, Y, Z, nAccessors };
+	enum Accessors { X, Y, Z, nAccessors };
 	// Search variable access list for provided accessor
-	TreeNode *findAccessor(const char *s);
+	AccessNode *findAccessor(const char *s);
+	// Retrieve desired value
+	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 
 	private:
 	// Accessor data

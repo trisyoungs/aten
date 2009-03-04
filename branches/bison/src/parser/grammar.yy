@@ -184,7 +184,7 @@ path:
 
 numpath:
 	PTRVAR 					{  } '.' path '.' NUMVAR		{}
-	| VECVAR '.' { Tree::currentTree->pushPath($1); } STEP { $$ = Tree::currentTree->addPath($1, $4); Tree::currentTree->popPath(); }
+	| VECVAR '.' { Tree::currentTree->pushPath($1); } STEP { $$ = Tree::currentTree->addPath($1, $4); }
 	;
 
 /* 3-Vector Constant / Assignment Group */

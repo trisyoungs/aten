@@ -220,7 +220,14 @@ int yylex()
 		if (Tree::currentTree->expectPathStep())
 		{
 			// Search the path variable at the top of the pathStack for an accessor matching this token...
-			NuVariable *var = Tree::currentTree->searchAccessors(token);
+			AccessNode *newstep = Tree::currentTree->searchAccessors(token);
+	printf("Accessor token is %li\n", newstep);
+			if (newstep == NULL) return 0;
+
+			// Flag that we don't necessarily expect another path step. This will be set to true on the next discovery of a '.' before an alpha
+			Tree::currentTree->setExpectPathStep(FALSE);
+			yylval.node = (TreeNode*) newstep;
+			return STEP;
 		}
 		else
 		{

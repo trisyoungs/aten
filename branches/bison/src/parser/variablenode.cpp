@@ -48,6 +48,17 @@ NuVariable *VariableNode::variable()
 	return variable_;
 }
 
+// Return name of variable target
+const char *VariableNode::name()
+{
+	if (variable_ == NULL)
+	{
+		printf("Internal Error: VariableNode contains a NULL Variable pointer.\n");
+		return "NULL";
+	}
+	return variable_->name();
+}
+
 // Execute command
 bool VariableNode::execute(NuReturnValue &rv)
 {
@@ -98,4 +109,15 @@ void VariableNode::reset()
 		return;
 	}
 	variable_->reset();
+}
+
+// Search accessors (if any) available for linked variable
+AccessNode *VariableNode::findAccessor(const char *s)
+{
+	if (variable_ == NULL)
+	{
+		printf("Internal Error: No variable stored in VariableNode to use for accessoro search.\n");
+		return NULL;
+	}
+	return variable_->findAccessor(s);
 }

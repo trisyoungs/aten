@@ -47,6 +47,13 @@ class VariableNode : public TreeNode
 	void setVariable(NuVariable *v);
 	// Get variable target
 	NuVariable* variable();
+	// Return name of variable target
+	const char *name();
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
 	// Execute node
 	bool execute(NuReturnValue &rv);
 	// Print node contents
@@ -55,6 +62,8 @@ class VariableNode : public TreeNode
 	bool set(NuReturnValue &rv);
 	// Reset node
 	void reset();
+	// Search accessors (if any) available for linked variable
+	AccessNode *findAccessor(const char *s);
 };
 
 #endif

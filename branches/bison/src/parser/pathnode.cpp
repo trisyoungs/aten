@@ -20,13 +20,20 @@
 */
 
 #include "parser/pathnode.h"
+#include "parser/variablenode.h"
 #include <string.h>
 
 // Constructor
-PathNode::PathNode(int ac, NuVTypes::DataType prevtype) : accessor_(ac), previousType_(prevtype)
+PathNode::PathNode(TreeNode *base, TreeNode *path) : baseVariable_(base)
 {
-	// Private variables
-	returnType_ = NuVTypes::NoData;
+	// Similar to command argument lists, we must reverse and store the provided linked list of path nodes
+	if (path == NULL) printf("Internal Error: NULL path passed in construction of PathNode.\n");
+	else addArguments(path);
+
+	// Return type of last argument is return type of PathNode
+	if (args_.last() == NULL) returnType_ = NuVTypes::NoData;
+	else returnType_ = args_.last()->item->returnType();
+	printf("Return type of PathNode is '%s'\n", NuVTypes::dataType(returnType_));
 }
 
 // Destructor
@@ -37,6 +44,12 @@ PathNode::~PathNode()
 // Execute node
 bool PathNode::execute(NuReturnValue &rv)
 {
+	printf("Executing pathnode...\n");
+	// First step - retrieve the base variable result
+	if (!baseVariable_->execute(rv)) return FALSE;
+	// Next, step through accessnodes, passing the returnvalue to each in turn
+	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) if (!ri->item->execute(rv)) return FALSE;
+	return TRUE;
 }
 
 // Set from returnvalue node
@@ -64,9 +77,7 @@ void PathNode::nodePrint(int offset, const char *prefix)
 	if (offset == 1) strcat(tab,"\t");
 	strcat(tab,prefix);
 	// Output node data
-// 	printf("%s (Path Node) (%i variables)\n", tab, variables.nVariables());
-	int n = 1;
-	//printf("%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
+	printf("%s%s (Path) (%i steps)\n", tab, ((VariableNode*) baseVariable_)->name(), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
