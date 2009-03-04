@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_REALVARIABLE_H
-#define ATEN_REALVARIABLE_H
+#ifndef ATEN_NUREALVARIABLE_H
+#define ATEN_NUREALVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"

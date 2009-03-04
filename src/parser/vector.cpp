@@ -155,10 +155,12 @@ AccessNode *NuVectorVariable::accessorSearch(const char *s)
 // Retrieve desired value
 bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
+	msg.enter("NuVectorVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		msg.exit("NuVectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -170,13 +172,13 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	else if (!hasArrayIndex)
 	{
 		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("NuVectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	bool success;
-	Vec3<double> v = rv.asVector(success);
-	if (!success) return FALSE;
-	switch (acc)
+	bool result;
+	Vec3<double> v = rv.asVector(result);
+	if (result) switch (acc)
 	{
 		case (NuVectorVariable::X):
 			rv.set(v.x);
@@ -187,6 +189,11 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 		case (NuVectorVariable::Z):
 			rv.set(v.z);
 			break;
+		default:
+			printf("Internal Error: Access to member '%s' has not been defined in VectorVariable.\n", accessorData[i].name);
+			result = FALSE;
+			break;
 	}
-	return FALSE;
+	msg.exit("NuVectorVariable::retrieveAccessor");
+	return result;
 }

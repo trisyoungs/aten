@@ -44,12 +44,24 @@ PathNode::~PathNode()
 // Execute node
 bool PathNode::execute(NuReturnValue &rv)
 {
-	printf("Executing pathnode...\n");
+	msg.enter("PathNode::execute");
+	bool result;
 	// First step - retrieve the base variable result
-	if (!baseVariable_->execute(rv)) return FALSE;
+	result = baseVariable_->execute(rv);
 	// Next, step through accessnodes, passing the returnvalue to each in turn
-	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) if (!ri->item->execute(rv)) return FALSE;
-	return TRUE;
+	if (result) for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+	{
+		result = ri->item->execute(rv);
+		if (!result) break;
+	}
+	if (result)
+	{
+		printf("Final result of path walk is:\n");
+		rv.info();
+	}
+	else printf("Path walk failed.\n");
+	msg.exit("PathNode::execute");
+	return result;
 }
 
 // Set from returnvalue node

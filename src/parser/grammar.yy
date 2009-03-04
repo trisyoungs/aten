@@ -34,7 +34,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %token <node> NUMVAR CHARVAR VECVAR PTRVAR
 %token <node> STEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
-%token INTEGER REAL CHARACTER VECTOR ATOM FORCEFIELD GRID MODEL PATTERN
+%token INTEGER REAL CHARACTER VECTOR ATOM BOND CELL FORCEFIELD FFATOM FFBOUND GRID MODEL PATTERN
 %token WHILE IF PRINT FOR
 %nonassoc ELSE
 
@@ -102,7 +102,15 @@ declaration:
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| ATOM { variableType = NuVTypes::AtomData; }
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| BOND { variableType = NuVTypes::BondData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| CELL { variableType = NuVTypes::CellData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| FORCEFIELD { variableType = NuVTypes::ForcefieldData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| FFATOM { variableType = NuVTypes::ForcefieldAtomData; }
+	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	| FFBOUND { variableType = NuVTypes::ForcefieldBoundData; }
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
 	| GRID { variableType = NuVTypes::GridData; }
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }

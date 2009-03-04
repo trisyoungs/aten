@@ -274,6 +274,9 @@ int yylex()
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of string single-character literals
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
+	// Similarly, if the next character is a bracket, return immediately
+	char c2 = Tree::currentTree->peekChar();
+	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}')) return c;
 	// If the following character is '"', we also return immediately - have a clause in the following loop...
 	do
 	{

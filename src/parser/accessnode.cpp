@@ -40,27 +40,30 @@ AccessNode::~AccessNode()
 // Execute command
 bool AccessNode::execute(NuReturnValue &rv)
 {
+	msg.enter("AccessNode::execute");
 	// Check that the ReturnValue contains the type that we are expecting
 	if (rv.type() != previousType_)
 	{
 		printf("Internal Error: AccessNode was expecting a type of '%s' but was given type '%s'\n", NuVTypes::dataType(previousType_), NuVTypes::dataType(rv.type()));
+		msg.exit("AccessNode::execute");
 		return FALSE;
 	}
 	// Retrieve a value from the relevant class
+	bool result = FALSE;
 	switch (previousType_)
 	{
 		case (NuVTypes::NoData):
 			printf("Internal Error: AccessNode was expecting NoData.\n");
-			return FALSE;
 			break;
 		case (NuVTypes::VectorData):
-			if (!NuVectorVariable::retrieveAccessor(accessor_, rv, FALSE)) return FALSE;
+			result = NuVectorVariable::retrieveAccessor(accessor_, rv, FALSE);
 			break;
 		default:
 			printf("Internal Error: AccessNode doesn't recognise this type (%s)\n", NuVTypes::dataType(previousType_));
-			return FALSE;
+			break;
 	}
-	return TRUE;
+	msg.exit("AccessNode::execute");
+	return result;
 }
 
 // Print node contents
