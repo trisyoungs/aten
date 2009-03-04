@@ -1,6 +1,6 @@
 /*
-	*** Integer Variable
-	*** src/parser/integer.h
+	*** Atom Variable
+	*** src/parser/atom.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,19 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUINTEGERVARIABLE_H
-#define ATEN_NUINTEGERVARIABLE_H
+#ifndef ATEN_ATOMVARIABLE_H
+#define ATEN_ATOMVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
 
-// Integer Variable
-class NuIntegerVariable : public NuVariable
+// Forward Declarations
+class Atom;
+
+// Atom Variable
+class AtomVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuIntegerVariable(int i = 0, bool constant = FALSE);
-	~NuIntegerVariable();
+	AtomVariable(Atom *i = NULL, bool constant = FALSE);
+	~AtomVariable();
 
 	/*
 	// Set / Get
@@ -41,17 +44,37 @@ class NuIntegerVariable : public NuVariable
 	bool execute(NuReturnValue &rv);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset variable
+	// Reset node
 	void reset();
 
 	/*
 	// Variable Data
 	*/
 	private:
-	// Integer data
-	int integerData_;
+	// Atom data
+	void *atomData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char *prefix = "");
+
+	/*
+	// Access Data
+	*/
+	private:
+	// Private static function to search accessors
+	static AccessNode *accessorSearch(const char *s);
+
+	public:
+	// Accessor list
+        enum Accessors { Fixed, F, FX, FY, FZ, Hidden, Id, Mass, Name, Q, R, RX, RY, RZ, Selected, Symbol, Type, V, VX, VY, VZ, Z, nAccessors };
+	// Search variable access list for provided accessor
+	AccessNode *findAccessor(const char *s);
+	// Retrieve desired value
+	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+
+	private:
+	// Accessor data
+	static Accessor accessorData[nAccessors];
 };
 
 #endif
+

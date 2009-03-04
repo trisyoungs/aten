@@ -62,18 +62,18 @@ const char *VariableNode::name()
 // Execute command
 bool VariableNode::execute(NuReturnValue &rv)
 {
+	msg.enter("VariableNode::execute");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer.\n");
+		msg.exit("VariableNode::execute");
 		return FALSE;
 	}
 	// Call the local variable's execute() function
-	printf("Executing variable.\n");
-	variable_->execute(rv);
+	bool result = variable_->execute(rv);
 	rv.info();
-	printf("Done executing variable.\n");
-// 	return variable_->execute(rv);
-	return TRUE;
+	msg.exit("VariableNode::execute");
+	return result;
 }
 
 // Print node contents
