@@ -28,10 +28,8 @@
 #include "parser/vtypes.h"
 
 // Forward declarations
-//class CommandList;
-// class NuVariableList;
-// class Variable;
 class ScopeNode;
+class AccessNode;
 
 // Tree Node
 class TreeNode
@@ -40,7 +38,7 @@ class TreeNode
 	// Constructor / Destructor
 	TreeNode();
 	~TreeNode();
-	// List pointers (for argument list)asReal(
+	// List pointers (for argument list)
 	TreeNode *nextArgument, *prevArgument;
 
 	/*
@@ -106,6 +104,8 @@ class TreeNode
 	virtual void nodePrint(int offset, const char *prefix = "") = 0;
 	// Reset node
 	virtual void reset() = 0;
+	// Search accessors (if any) available for node
+	virtual AccessNode *findAccessor(const char *s);
 };
 
 #endif

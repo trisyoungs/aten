@@ -194,3 +194,14 @@ Vec3<double> TreeNode::arg3d(int i)
 	result.set(argd(i), argd(i+1), argd(i+2));
 	return result;
 }
+
+/*
+// Virtuals
+*/
+
+// Search accessors (if any) available for node
+AccessNode *TreeNode::findAccessor(const char *s)
+{
+	// Default is to retun NULL since there are no accessors available
+	return NULL;
+}

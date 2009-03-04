@@ -1,6 +1,6 @@
 /*
-	*** Path Node
-	*** src/parser/pathnode.h
+	*** Access Node
+	*** src/parser/accessnode.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,33 +19,28 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PATHNODE_H
-#define ATEN_PATHNODE_H
+#ifndef ATEN_ACCESSNODE_H
+#define ATEN_ACCESSNODE_H
 
 #include "parser/treenode.h"
-// #include "parser/accessstep.h"
-// #include "base/vtypes.h"
-// #include "base/parser.h"
-// #include "base/dnchar.h"
-// #include "templates/list.h"
+#include "parser/vtypes.h"
 
-// Forward declarations
-class NuVariable;
-// class ReturnValue;
-
-// Path Node
-class PathNode : public TreeNode
+// Access Node
+class AccessNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	PathNode(TreeNode *base, TreeNode *path);
-	~PathNode();
+	AccessNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype);
+	~AccessNode();
 
+	/*
+	// Accessor Data
+	*/
 	private:
-	// Base variable where the path starts
-	TreeNode *baseVariable_;
-	// Path leading to final value
-	Reflist<TreeNode,int> path_;
+	// Expected type of preceding return value
+	NuVTypes::DataType previousType_;
+	// Accessor that this node attempts to access
+	int accessor_;
 
 	/*
 	// Inherited Virtuals

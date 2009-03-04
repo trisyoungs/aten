@@ -84,3 +84,11 @@ TreeNode *NuVariable::initialValue()
 {
 	return initialValue_;
 }
+
+// Search accessors (if any) available for node
+AccessNode *NuVariable::findAccessor(const char *s)
+{
+	// Default is to return NULL since no accessors are defined
+	printf("Error: No accessors are available for a variable of type '%s'.\n", NuVTypes::dataType(returnType_));
+	return NULL;
+}

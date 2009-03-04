@@ -20,7 +20,7 @@
 */
 
 #include "parser/vector.h"
-#include "parser/treenode.h"
+#include "parser/accessnode.h"
 #include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -120,20 +120,73 @@ void NuVectorVariable::nodePrint(int offset, const char *prefix)
 // Accessors
 */
 
-// Search variable access list for provided accessor
-TreeNode *NuVectorVariable::findAccessor(const char *s)
+// Accessor data
+Accessor NuVectorVariable::accessorData[NuVectorVariable::nAccessors] = {
+	{ "x", NuVTypes::RealData, FALSE, FALSE },
+	{ "y", NuVTypes::RealData, FALSE, FALSE },
+	{ "z", NuVTypes::RealData, FALSE, FALSE }
+};
+
+// Search variable access list for provided accessor (call private static function)
+AccessNode *NuVectorVariable::findAccessor(const char *s)
 {
-	msg.enter("NuVectorVariable::searchAccessors");
-	TreeNode *result = NULL;
+	return NuVectorVariable::accessorSearch(s);
+}
+
+// Private static function to search accessors
+AccessNode *NuVectorVariable::accessorSearch(const char *s)
+{
+	msg.enter("NuVectorVariable::accessorSearch");
+	AccessNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.exit("NuVectorVariable::searchAccessors");
+		msg.exit("NuVectorVariable::accessorSearch");
 		return NULL;
 	}
-	// Create a suitable variable to return...
-	
-	msg.exit("NuVectorVariable::searchAccessors");
+	// Create a suitable AccessNode to return...
+	printf("Accessor match = %i\n", i);
+	result = new AccessNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	msg.exit("NuVectorVariable::accessorSearch");
 	return result;
+}
+
+// Retrieve desired value
+bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+{
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool success;
+	Vec3<double> v = rv.asVector(success);
+	if (!success) return FALSE;
+	switch (acc)
+	{
+		case (NuVectorVariable::X):
+			rv.set(v.x);
+			break;
+		case (NuVectorVariable::Y):
+			rv.set(v.y);
+			break;
+		case (NuVectorVariable::Z):
+			rv.set(v.z);
+			break;
+	}
+	return FALSE;
 }

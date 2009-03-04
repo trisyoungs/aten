@@ -22,6 +22,7 @@
 #include "parser/treenode.h"
 #include "parser/scopenode.h"
 #include "parser/commandnode.h"
+#include "parser/pathnode.h"
 #include "parser/grammar.h"
 #include "parser/tree.h"
 #include "parser/vector.h"
@@ -487,15 +488,7 @@ bool Tree::expectPathStep()
 // Add node to path stack
 void Tree::pushPath(TreeNode *var)
 {
-	printf("PUUUUUUUSH\n");
 	pathStack_.add(var);
-}
-
-// Remove last node from path stack
-void Tree::popPath()
-{
-	printf("POP!\n");
-	pathStack_.remove( pathStack_.last() );
 }
 
 // Return topmost path refitem on stack
@@ -504,19 +497,28 @@ Refitem<TreeNode,int> *Tree::topPath()
 	return pathStack_.last();
 }
 
-// Add (begin) a new path putting it on the stack
+// Add a completed path to the Tree
 TreeNode *Tree::addPath(TreeNode *basevar, TreeNode *path)
 {
 	printf("Adding path.\n");
+	// Create new PathNode...
+	PathNode *node = new PathNode(basevar, path);
+	// Remove topmost path node
+	pathStack_.remove( pathStack_.last() );
+	return (TreeNode*) node;
 }
 
 // Expand the topmost path on the stack
-NuVariable *Tree::searchAccessors(const char *s)
+AccessNode *Tree::searchAccessors(const char *s)
 {
 	msg.enter("Tree::searchAccessors");
 	// Get last item on path stack
 	Refitem<TreeNode,int> *ri = pathStack_.last();
 	TreeNode *laststep = ri->item;
-	
+	printf("Last path node:\n");
+	laststep->nodePrint(2);
+	// Find next step accessor
+	AccessNode *result = laststep->findAccessor(s);
 	msg.exit("Tree::searchAccessors");
+	return result;
 }

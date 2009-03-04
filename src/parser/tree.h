@@ -34,6 +34,7 @@ class NuVariable;
 class TreeNode;
 class ScopeNode;
 class PathNode;
+class AccessNode;
 
 // Tree
 class Tree
@@ -143,7 +144,7 @@ class Tree
 	// Add (begin) a new path putting it on the stack
 	TreeNode *addPath(TreeNode *rootvar, TreeNode *path);
 	// Expand the topmost path on the stack
-	NuVariable *searchAccessors(const char *s);
+	AccessNode *searchAccessors(const char *s);
 };
 
 #endif
