@@ -144,7 +144,7 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Model type.\n");
 		msg.exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}

@@ -86,6 +86,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "model",	NuVTypes::ModelData,	FALSE, TRUE },
+	{ "elements",	NuVTypes::ElementsData,	FALSE, TRUE },
 	{ "models",	NuVTypes::ModelData,	FALSE, TRUE }
 };
 

@@ -177,7 +177,7 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	bool result;
+	bool result = TRUE;
 	Vec3<double> v = rv.asVector(result);
 	if (result) switch (acc)
 	{
