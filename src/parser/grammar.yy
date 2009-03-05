@@ -31,8 +31,8 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 
 %token <name> TOKENNAME
 %token <node> INTCONST REALCONST CHARCONST
-%token <node> NUMVAR CHARVAR VECVAR PTRVAR
-%token <node> STEP
+%token <node> NUMVAR CHARVAR PTRVAR VECVAR
+%token <node> NUMSTEP PTRSTEP CHARSTEP VECSTEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
 %token INTEGER REAL CHARACTER VECTOR ATOM BOND CELL FORCEFIELD FFATOM FFBOUND GRID MODEL PATTERN
 %token WHILE IF PRINT FOR
@@ -46,8 +46,9 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %token ';'
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
-%type <node> numfunc charfunc ptrfunc vecfunc voidfunc
-%type <node> numpath path
+%type <node> numfunc ptrfunc vecfunc charfunc voidfunc
+%type <node> numlval ptrlval charlval veclval variable
+%type <node> path step steplist
 %type <node> statement statementlist declaration exprlist VECCONST
 %type <name> namelist
 
@@ -91,6 +92,7 @@ namelist:
 
 /* Declaration statements - uses mid-rule action to store type for use in namelist rule */
 
+/* Can this be reduced to a rule which stores the variable type in yylval and then retrieves it here? i.e. DECLARATION {vari.....} namelist;  */
 declaration:
 	INTEGER { variableType = NuVTypes::IntegerData; }
 	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
@@ -136,26 +138,26 @@ anyexpr:
 
 charexpr:
 	CHARCONST				{ $$ = $1; }
-	| CHARVAR				{ $$ = $1; }
 	| charfunc				{ $$ = $1; }
-	| CHARVAR '=' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| charlval				{ $$ = $1; }
+	| charlval '=' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| charexpr '+' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
 	| charexpr '*' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
 	| numexpr '*' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 2, $1, $3); }
 	;
 
 ptrexpr:
-	PTRVAR					{ $$ = $1; }
+	ptrlval					{ $$ = $1; }
 	| ptrfunc				{ $$ = $1; }
-	| PTRVAR '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| ptrlval '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| ptrexpr EQ ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); }
 	;
 
 vecexpr:
-	VECVAR					{ $$ = $1; }
-	| VECCONST				{ $$ = $1; }
+	VECCONST				{ $$ = $1; }
 	| vecfunc				{ $$ = $1; }
-	| VECVAR '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| veclval				{ $$ = $1; }
+	| veclval '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| vecexpr '*' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
 	| vecexpr '-' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
 	| vecexpr '+' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 1, $1, $3); }
@@ -164,10 +166,9 @@ vecexpr:
 numexpr:
 	INTCONST				{ $$ = $1; }
 	| REALCONST				{ $$ = $1; }
-	| NUMVAR				{ $$ = $1; }
-	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| numfunc				{ $$ = $1; }
-	| numpath				{ $$ = $1; }
+	| numlval				{ $$ = $1; }
+	| numlval '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }
 	| numexpr '+' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); }
 	| numexpr '-' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); }
@@ -183,17 +184,53 @@ numexpr:
 	| '(' numexpr ')'			{ $$ = $2; }
 	;
 
-/* Variable Path */
+/* L-Values - Variables and paths */
+
+step:
+	NUMSTEP					{ $$ = $1; }
+	| CHARSTEP				{ $$ = $1; }
+	| PTRSTEP				{ $$ = $1; }
+	| VECSTEP				{ $$ = $1; }
+	;
+
+steplist:
+	step					{ $$ = $1; }
+	| steplist '.' step			{ $$ = Tree::currentTree->joinArguments($1, $3); }
+	;
+
+variable:
+	NUMVAR					{ $$ = $1; }
+	| PTRVAR				{ $$ = $1; }
+	| CHARVAR				{ $$ = $1; }
+	| VECVAR				{ $$ = $1; }
+	;
 
 path:
-	STEP					{ $$ = $1; }
-	| path '.' STEP				{ $$ = Tree::currentTree->joinArguments($1, $3); }
+	variable				{ $$ = Tree::currentTree->createPath($1); printf("CREATED PATHNODE %li\n", $$); }
+		'.' steplist			{ Tree::currentTree->expandPath($4); printf("jjkjkj\n"); }
 	;
 
-numpath:
-	PTRVAR 					{  } '.' path '.' NUMVAR		{}
-	| VECVAR '.' { Tree::currentTree->pushPath($1); } STEP { $$ = Tree::currentTree->addPath($1, $4); }
+numlval:
+	NUMVAR					{ $$ = $1; }
+	| path '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); printf("Completed a numlval %li.\n", $$); $$->nodePrint(1,"BISON"); }
 	;
+
+charlval:
+	CHARVAR					{ $$ = $1; }
+	| path '.' CHARSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	;
+
+veclval:
+	VECVAR					{ $$ = $1; }
+	| path '.' VECSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	;
+
+ptrlval:
+	PTRVAR					{ $$ = $1; }
+	| path '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	;
+
+
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:

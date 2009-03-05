@@ -1,6 +1,6 @@
 /*
-	*** Access Node
-	*** src/parser/accessnode.h
+	*** Step Node
+	*** src/parser/stepnode.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,19 +19,19 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ACCESSNODE_H
-#define ATEN_ACCESSNODE_H
+#ifndef ATEN_STEPNODE_H
+#define ATEN_STEPNODE_H
 
 #include "parser/treenode.h"
 #include "parser/vtypes.h"
 
-// Access Node
-class AccessNode : public TreeNode
+// Path Step Node
+class StepNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	AccessNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype);
-	~AccessNode();
+	StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype);
+	~StepNode();
 
 	/*
 	// Accessor Data
@@ -54,6 +54,8 @@ class AccessNode : public TreeNode
 	bool set(NuReturnValue &rv);
 	// Reset node
 	void reset();
+	// Search accessors for the type represented by this node
+	StepNode *findAccessor(const char *s);
 };
 
 #endif

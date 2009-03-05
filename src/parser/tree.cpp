@@ -74,6 +74,7 @@ bool Tree::generate(const char *s)
 	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
 	currentTree = this;
 	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
+	root->createGlobalVariables();
 	ownedNodes_.add(root);
 	scopeStack_.add(root);
 	statements_.add(root);
@@ -433,19 +434,19 @@ void Tree::addConstant(NuVariable *v)
 }
 
 // Add variable to topmost scope
-bool Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
 	printf("Adding a variable called %s\n", name->get());
 	// Create the supplied variable in the list of the topmost scope
 	if (!scopeStack_.last()->item->variables.create(type, name->get(), initialValue))
 	{
 		printf("ERROR!\n");
-		return FALSE;
+		return NULL;
 	}
 	// Create a placeholder node with no function
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Declarations);
 	ownedNodes_.add(leaf);
-	return TRUE;
+	return leaf;
 }
 
 // Add constant value
@@ -485,40 +486,66 @@ bool Tree::expectPathStep()
 	return expectPathStep_;
 }
 
-// Add node to path stack
-void Tree::pushPath(TreeNode *var)
+// Create a new path on the stack
+TreeNode *Tree::createPath(TreeNode *basevar)
 {
-	pathStack_.add(var);
-}
-
-// Return topmost path refitem on stack
-Refitem<TreeNode,int> *Tree::topPath()
-{
-	return pathStack_.last();
-}
-
-// Add a completed path to the Tree
-TreeNode *Tree::addPath(TreeNode *basevar, TreeNode *path)
-{
-	printf("Adding path.\n");
-	// Create new PathNode...
-	PathNode *node = new PathNode(basevar, path);
-	// Remove topmost path node
-	pathStack_.remove( pathStack_.last() );
+	msg.enter("Tree::createPath");
+	// Create a new pathnode
+	PathNode *node = new PathNode(basevar);
+	pathStack_.add(node, node);
+	printf("New node for tree is %li\n", node);
+	msg.exit("Tree::createPath");
 	return (TreeNode*) node;
 }
 
-// Expand the topmost path on the stack
-AccessNode *Tree::searchAccessors(const char *s)
+// Expand topmost path
+void Tree::expandPath(TreeNode *steps)
 {
-	msg.enter("Tree::searchAccessors");
+	msg.enter("Tree::expandPath");
+	// Finalise the path before we remove it
+	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	if (ri == NULL)
+	{
+		msg.print("Internal Error: No path on stack to expand!\n");
+		return;
+	}
+	ri->item->addArguments(steps);
+	msg.exit("Tree::expandPath");
+}
+
+// Pop topmost path from stack
+void Tree::popPath()
+{
+	msg.enter("Tree::popPath");
+	// Finalise the path before we remove it
+	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	if (ri == NULL)
+	{
+		msg.print("Internal Error: No path on stack to pop!\n");
+		return;
+	}
+	ri->item->finalise();
+	pathStack_.remove(ri);
+	msg.exit("Tree::popPath");
+}
+
+// Expand the topmost path on the stack
+StepNode *Tree::evaluateAccessor(const char *s)
+{
+	msg.enter("Tree::evaluateAccessor");
 	// Get last item on path stack
-	Refitem<TreeNode,int> *ri = pathStack_.last();
-	TreeNode *laststep = ri->item;
+	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	TreeNode *laststep = ri->data;
 	printf("Last path node:\n");
 	laststep->nodePrint(2);
 	// Find next step accessor
-	AccessNode *result = laststep->findAccessor(s);
-	msg.exit("Tree::searchAccessors");
+	StepNode *result = laststep->findAccessor(s);
+	// If we found a valid accessor, update the pathstack entry
+	if (result)
+	{
+		ri->data = (TreeNode*) result;
+// 		ri->item->setReturnType(result->returnType());
+	}
+	msg.exit("Tree::evaluateAccessor");
 	return result;
 }

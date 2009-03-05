@@ -59,15 +59,13 @@ class AtomVariable : public NuVariable
 	/*
 	// Access Data
 	*/
-	private:
-	// Private static function to search accessors
-	static AccessNode *accessorSearch(const char *s);
-
 	public:
 	// Accessor list
         enum Accessors { Fixed, F, FX, FY, FZ, Hidden, Id, Mass, Name, Q, R, RX, RY, RZ, Selected, Symbol, Type, V, VX, VY, VZ, Z, nAccessors };
 	// Search variable access list for provided accessor
-	AccessNode *findAccessor(const char *s);
+	StepNode *findAccessor(const char *s);
+	// Static function to search accessors
+	static StepNode *accessorSearch(const char *s);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 

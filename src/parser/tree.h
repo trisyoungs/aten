@@ -34,7 +34,7 @@ class NuVariable;
 class TreeNode;
 class ScopeNode;
 class PathNode;
-class AccessNode;
+class StepNode;
 
 // Tree
 class Tree
@@ -86,8 +86,8 @@ class Tree
 	private:
 	// Stack of ScopeNodes
 	Reflist<ScopeNode,int> scopeStack_;
-	// Stack of variable path nodes
-	Reflist<TreeNode,int> pathStack_;
+	// Stack of variable path nodes (and last added stepnode)
+	Reflist<PathNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
 
@@ -115,7 +115,7 @@ class Tree
 	// Add constant to topmost ScopeNode
 	void addConstant(NuVariable *v);
 	// Add variable to topmost ScopeNode
-	bool addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add 'constant' vector value
 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
@@ -135,16 +135,14 @@ class Tree
 	void setExpectPathStep(bool b);
 	// Whether to treat the next alphanumeric token as a path step variable
 	bool expectPathStep();
-	// Add node to path stack
-	void pushPath(TreeNode *var);
-	// Remove last node from path stack
+	// Create a new path on the stack with the specified base 'variable'
+	TreeNode *createPath(TreeNode *var);
+	// Expand topmost path
+	void expandPath(TreeNode *steps);
+	// Remove the topmost path from the path stack
 	void popPath();
-	// Return topmost path refitem on stack
-	Refitem<TreeNode,int> *topPath();
-	// Add (begin) a new path putting it on the stack
-	TreeNode *addPath(TreeNode *rootvar, TreeNode *path);
 	// Expand the topmost path on the stack
-	AccessNode *searchAccessors(const char *s);
+	StepNode *evaluateAccessor(const char *s);
 };
 
 #endif

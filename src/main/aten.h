@@ -29,8 +29,8 @@
 #include "nucommand/commands.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "819"
-#define ATENDATE "Wed 04 Mar - 21:13"
+#define ATENREVISION "818"
+#define ATENDATE "Thu 05 Mar - 18:11"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations

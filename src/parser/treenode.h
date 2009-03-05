@@ -29,7 +29,7 @@
 
 // Forward declarations
 class ScopeNode;
-class AccessNode;
+class StepNode;
 
 // Tree Node
 class TreeNode
@@ -105,7 +105,7 @@ class TreeNode
 	// Reset node
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node
-	virtual AccessNode *findAccessor(const char *s);
+	virtual StepNode *findAccessor(const char *s);
 };
 
 #endif

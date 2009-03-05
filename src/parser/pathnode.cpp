@@ -24,21 +24,29 @@
 #include <string.h>
 
 // Constructor
-PathNode::PathNode(TreeNode *base, TreeNode *path) : baseVariable_(base)
+PathNode::PathNode(TreeNode *base) : baseVariable_(base)
 {
-	// Similar to command argument lists, we must reverse and store the provided linked list of path nodes
-	if (path == NULL) printf("Internal Error: NULL path passed in construction of PathNode.\n");
-	else addArguments(path);
-
-	// Return type of last argument is return type of PathNode
-	if (args_.last() == NULL) returnType_ = NuVTypes::NoData;
-	else returnType_ = args_.last()->item->returnType();
-	printf("Return type of PathNode is '%s'\n", NuVTypes::dataType(returnType_));
 }
 
 // Destructor
 PathNode::~PathNode()
 {
+}
+
+// Finalise path, setting return value and readOnly property from last step node
+void PathNode::finalise()
+{
+	msg.enter("PathNode::finalise");
+	printf("there are %i steps in the pathnode...\n", args_.nItems());
+	// Return type of last argument is return type of PathNode
+	if (args_.last() == NULL) returnType_ = NuVTypes::NoData;
+	else
+	{
+		returnType_ = args_.last()->item->returnType();
+		readOnly_ = args_.last()->item->readOnly();
+	}
+	printf("Return type of PathNode is '%s' and read_only status is '%s'\n", NuVTypes::dataType(returnType_), readOnly_ ? "true" : "false");
+	msg.exit("PathNode::finalise");
 }
 
 // Execute node
@@ -89,8 +97,20 @@ void PathNode::nodePrint(int offset, const char *prefix)
 	if (offset == 1) strcat(tab,"\t");
 	strcat(tab,prefix);
 	// Output node data
-	printf("%s%s (Path) (%i steps)\n", tab, ((VariableNode*) baseVariable_)->name(), args_.nItems());
+	printf("[PN]%s%s (Path) (%i steps)\n", tab, ((VariableNode*) baseVariable_)->name(), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
+}
+
+// Search accessors (if any) available for node
+StepNode *PathNode::findAccessor(const char *s)
+{
+	// Call the base variables findAccessor
+	if (baseVariable_ == NULL)
+	{
+		printf("Internal Error: No base variable set in PathNode.\n");
+		return NULL;
+	}
+	return baseVariable_->findAccessor(s);
 }

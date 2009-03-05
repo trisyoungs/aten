@@ -23,29 +23,28 @@
 #define ATEN_PATHNODE_H
 
 #include "parser/treenode.h"
-// #include "parser/accessstep.h"
-// #include "base/vtypes.h"
-// #include "base/parser.h"
-// #include "base/dnchar.h"
-// #include "templates/list.h"
 
 // Forward declarations
 class NuVariable;
-// class ReturnValue;
 
 // Path Node
 class PathNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	PathNode(TreeNode *base, TreeNode *path);
+	PathNode(TreeNode *basevar);
 	~PathNode();
 
 	private:
 	// Base variable where the path starts
 	TreeNode *baseVariable_;
-	// Path leading to final value
-	Reflist<TreeNode,int> path_;
+
+	/*
+	// Path Functions
+	*/
+	public:
+	// Finalise path, setting return value and redOnly property from last step node
+	void finalise();
 
 	/*
 	// Inherited Virtuals
@@ -59,6 +58,8 @@ class PathNode : public TreeNode
 	bool set(NuReturnValue &rv);
 	// Reset node
 	void reset();
+	// Search accessors (if any) available for node
+	StepNode *findAccessor(const char *s);
 };
 
 #endif

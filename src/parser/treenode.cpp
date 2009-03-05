@@ -200,8 +200,9 @@ Vec3<double> TreeNode::arg3d(int i)
 */
 
 // Search accessors (if any) available for node
-AccessNode *TreeNode::findAccessor(const char *s)
+StepNode *TreeNode::findAccessor(const char *s)
 {
 	// Default is to retun NULL since there are no accessors available
+	printf("Internal Error: This node type does not have any accessors.\n");
 	return NULL;
 }

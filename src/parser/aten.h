@@ -1,6 +1,6 @@
 /*
-	*** Variable Node
-	*** src/parser/variablenode.h
+	*** Aten Variable
+	*** src/parser/aten.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,51 +19,57 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VARIABLENODE_H
-#define ATEN_VARIABLENODE_H
+#ifndef ATEN_ATENVARIABLE_H
+#define ATEN_ATENVARIABLE_H
 
-#include "parser/treenode.h"
+#include "parser/variable.h"
+#include "parser/accessor.h"
 
 // Forward Declarations
-class NuVariable;
+class TreeNode;
 
-// Variable Node
-class VariableNode : public TreeNode
+// Aten Master Variable
+class NuAtenVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	VariableNode(NuVariable *v = NULL);
-	~VariableNode();
+	NuAtenVariable();
+	~NuAtenVariable();
+
+	/*
+	// Set / Get
+	*/
+	public:
+	// Return value of node
+	bool execute(NuReturnValue &rv);
+	// Set from returnvalue node
+	bool set(NuReturnValue &rv);
+	// Reset node
+	void reset();
 
 	/*
 	// Variable Data
 	*/
 	private:
-	// Variable that this node links to
-	NuVariable* variable_;
-	
-	public:
-	// Set variable target
-	void setVariable(NuVariable *v);
-	// Get variable target
-	NuVariable* variable();
-	// Return name of variable target
-	const char *name();
-
-	/*
-	// Inherited Virtuals
-	*/
-	public:
-	// Execute node
-	bool execute(NuReturnValue &rv);
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
-	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
-	// Search accessors (if any) available for linked variable
+
+	/*
+	// Access Data
+	*/
+	public:
+	// Accessor list
+	enum Accessors { CurrentModel, Models, nAccessors };
+	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s);
+	// Static function to search accessors
+	static StepNode *accessorSearch(const char *s);
+	// Retrieve desired value
+	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+
+	private:
+	// Accessor data
+	static Accessor accessorData[nAccessors];
 };
 
 #endif
