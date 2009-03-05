@@ -29,12 +29,12 @@
 class TreeNode;
 
 // Aten Master Variable
-class NuAtenVariable : public NuVariable
+class AtenVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuAtenVariable();
-	~NuAtenVariable();
+	AtenVariable();
+	~AtenVariable();
 
 	/*
 	// Set / Get

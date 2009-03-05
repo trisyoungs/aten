@@ -58,6 +58,9 @@ bool StepNode::execute(NuReturnValue &rv)
 		case (NuVTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
+		case (NuVTypes::AtenData):
+			result = AtenVariable::retrieveAccessor(accessor_, rv, FALSE);
+			break;
 		case (NuVTypes::AtomData):
 			result = AtomVariable::retrieveAccessor(accessor_, rv, FALSE);
 			break;

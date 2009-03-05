@@ -28,7 +28,7 @@
 #include <string.h>
 
 // Constructors
-NuAtenVariable::NuAtenVariable()
+AtenVariable::AtenVariable()
 {
 	// Private variables
 	returnType_ = NuVTypes::AtenData;
@@ -36,7 +36,7 @@ NuAtenVariable::NuAtenVariable()
 }
 
 // Destructor
-NuAtenVariable::~NuAtenVariable()
+AtenVariable::~AtenVariable()
 {
 }
 
@@ -45,27 +45,27 @@ NuAtenVariable::~NuAtenVariable()
 */
 
 // Set value of variable
-bool NuAtenVariable::set(NuReturnValue &rv)
+bool AtenVariable::set(NuReturnValue &rv)
 {
 	msg.print("A constant value (in this case Aten itself) cannot be assigned to.\n");
 	return FALSE;
 }
 
 // Reset variable
-void NuAtenVariable::reset()
+void AtenVariable::reset()
 {
 	// No action
 }
 
 // Return value of node
-bool NuAtenVariable::execute(NuReturnValue &rv)
+bool AtenVariable::execute(NuReturnValue &rv)
 {
 	rv.set(NuVTypes::AtenData, &aten);
 	return TRUE;
 }
 
 // Print node contents
-void NuAtenVariable::nodePrint(int offset, const char *prefix)
+void AtenVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -84,46 +84,46 @@ void NuAtenVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Accessor data
-Accessor NuAtenVariable::accessorData[NuAtenVariable::nAccessors] = {
-	{ "model",	NuVTypes::ModelData,	TRUE, FALSE },
-	{ "models",	NuVTypes::ModelData,	TRUE, TRUE }
+Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
+	{ "model",	NuVTypes::ModelData,	FALSE, TRUE },
+	{ "models",	NuVTypes::ModelData,	FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *NuAtenVariable::findAccessor(const char *s)
+StepNode *AtenVariable::findAccessor(const char *s)
 {
-	return NuAtenVariable::accessorSearch(s);
+	return AtenVariable::accessorSearch(s);
 }
 
 // Private static function to search accessors
-StepNode *NuAtenVariable::accessorSearch(const char *s)
+StepNode *AtenVariable::accessorSearch(const char *s)
 {
-	msg.enter("NuAtenVariable::accessorSearch");
+	msg.enter("AtenVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
 		msg.print("Error: Type 'aten&' has no member named '%s'.\n", s);
-		msg.exit("NuAtenVariable::accessorSearch");
+		msg.exit("AtenVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
 	result = new StepNode(i, NuVTypes::AtenData, accessorData[i].returnType);
-	msg.exit("NuAtenVariable::accessorSearch");
+	msg.exit("AtenVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool NuAtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("NuAtenVariable::retrieveAccessor");
+	msg.enter("AtenVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n");
-		msg.exit("NuAtenVariable::retrieveAccessor");
+		msg.exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -135,18 +135,18 @@ bool NuAtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInd
 	else if (!hasArrayIndex)
 	{
 		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("NuAtenVariable::retrieveAccessor");
+		msg.exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Variables used in retrieval
 	Model *m;
-	bool result;
+	bool result = TRUE;
 	if (result) switch (acc)
 	{
-		case (NuAtenVariable::CurrentModel):
+		case (AtenVariable::CurrentModel):
 			rv.set(NuVTypes::ModelData, aten.currentModel());
 			break;
-		case (NuAtenVariable::Models):
+		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);
 			if (m == NULL) result = FALSE;
 			else rv.set(NuVTypes::ModelData, m);
@@ -156,6 +156,6 @@ bool NuAtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInd
 			result = FALSE;
 			break;
 	}
-	msg.exit("NuAtenVariable::retrieveAccessor");
+	msg.exit("AtenVariable::retrieveAccessor");
 	return result;
 }

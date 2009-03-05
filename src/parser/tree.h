@@ -139,8 +139,8 @@ class Tree
 	TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
 	void expandPath(TreeNode *steps);
-	// Remove the topmost path from the path stack
-	void popPath();
+	// Finalise and remove the topmost path on the stack
+	TreeNode *finalisePath();
 	// Expand the topmost path on the stack
 	StepNode *evaluateAccessor(const char *s);
 };

@@ -206,28 +206,28 @@ variable:
 	;
 
 path:
-	variable				{ $$ = Tree::currentTree->createPath($1); printf("CREATED PATHNODE %li\n", $$); }
-		'.' steplist			{ Tree::currentTree->expandPath($4); printf("jjkjkj\n"); }
+	variable				{ $$ = Tree::currentTree->createPath($1); }
+		'.' steplist			{ Tree::currentTree->expandPath($4); }
 	;
 
 numlval:
 	NUMVAR					{ $$ = $1; }
-	| path '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); printf("Completed a numlval %li.\n", $$); $$->nodePrint(1,"BISON"); }
+	| path '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
 	;
 
 charlval:
 	CHARVAR					{ $$ = $1; }
-	| path '.' CHARSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	| path '.' CHARSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
 	;
 
 veclval:
 	VECVAR					{ $$ = $1; }
-	| path '.' VECSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	| path '.' VECSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
 	;
 
 ptrlval:
 	PTRVAR					{ $$ = $1; }
-	| path '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = $1; Tree::currentTree->popPath(); }
+	| path '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
 	;
 
 
