@@ -20,7 +20,7 @@
 */
 
 #include "parser/atom.h"
-#include "parser/accessnode.h"
+#include "parser/stepnode.h"
 #include "base/atom.h"
 #include "base/constants.h"
 #include "base/elements.h"
@@ -119,26 +119,27 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-AccessNode *AtomVariable::findAccessor(const char *s)
+StepNode *AtomVariable::findAccessor(const char *s)
 {
 	return AtomVariable::accessorSearch(s);
 }
 
 // Private static function to search accessors
-AccessNode *AtomVariable::accessorSearch(const char *s)
+StepNode *AtomVariable::accessorSearch(const char *s)
 {
 	msg.enter("AtomVariable::accessorSearch");
-	AccessNode *result = NULL;
+	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
+		msg.print("Error: Type 'atom&' has no member named '%s'.\n", s);
 		msg.exit("AtomVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new AccessNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
 	msg.exit("AtomVariable::accessorSearch");
 	return result;
 }

@@ -35,6 +35,13 @@ ScopeNode::~ScopeNode()
 {
 }
 
+// Add global variables to list
+void ScopeNode::createGlobalVariables()
+{
+	// Add the global Aten variable
+	NuVariable *v = variables.create(NuVTypes::AtenData, "aten");
+}
+
 // Execute command
 bool ScopeNode::execute(NuReturnValue &rv)
 {
@@ -71,14 +78,14 @@ void ScopeNode::nodePrint(int offset, const char *prefix)
 	if (offset == 1) strcat(tab,"\t");
 	strcat(tab,prefix);
 	// Output node data
-	printf("%s (Scoped Node) (%i variables)\n", tab, variables.nVariables());
+	printf("[SN]%s (Scoped Node) (%i variables)\n", tab, variables.nVariables());
 	int n = 1;
 	for (NuVariable *v = variables.first(); v != NULL; v = v->next)
 	{
 		printf("%s --> %3i: %s (%s)\n", tab, n++, v->name(), NuVTypes::dataType(v->returnType()));
 		if (v->initialValue() != NULL) v->initialValue()->nodePrint(offset+1, "init: ");
 	}
-	printf("%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
+	printf("[SN]%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;

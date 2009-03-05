@@ -78,7 +78,7 @@ void NuCharacterVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("%s\"%s\" (constant value)\n", tab, characterData_.get());
-	else printf("%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
+	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, characterData_.get());
+	else printf("[v]%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
 	delete[] tab;
 }

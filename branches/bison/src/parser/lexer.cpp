@@ -20,6 +20,7 @@
 */
 
 #include "parser/treenode.h"
+#include "parser/stepnode.h"
 #include "parser/grammar.h"
 #include "parser/commandnode.h"
 #include "parser/integer.h"
@@ -219,15 +220,35 @@ int yylex()
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
 		if (Tree::currentTree->expectPathStep())
 		{
-			// Search the path variable at the top of the pathStack for an accessor matching this token...
-			AccessNode *newstep = Tree::currentTree->searchAccessors(token);
+			// Expand the path at the top of the stack with an accessor matching this token...
+			StepNode *newstep = Tree::currentTree->evaluateAccessor(token);
 	printf("Accessor token is %li\n", newstep);
 			if (newstep == NULL) return 0;
 
 			// Flag that we don't necessarily expect another path step. This will be set to true on the next discovery of a '.' before an alpha
 			Tree::currentTree->setExpectPathStep(FALSE);
 			yylval.node = (TreeNode*) newstep;
-			return STEP;
+	printf("Return type of accessor is %s\n", NuVTypes::dataType(newstep->returnType()));
+			switch (newstep->returnType())
+			{
+				case (NuVTypes::NoData):
+					return 0;
+					break;
+				case (NuVTypes::IntegerData):
+				case (NuVTypes::RealData):
+					return NUMSTEP;
+					break;
+				case (NuVTypes::CharacterData):
+					return CHARSTEP;
+					break;
+				case (NuVTypes::VectorData):
+					return VECSTEP;
+					break;
+				default:
+					return PTRSTEP;
+					break;
+			}
+			return 0;
 		}
 		else
 		{
@@ -238,8 +259,6 @@ int yylex()
 				// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
 				VariableNode *vnode = new VariableNode(v);
 				yylval.node = vnode;
-				// Are we already 'in' a path?
-				// Peek the next character - if it is 
 				// Our return type here depends on the type of the variable
 				switch (v->returnType())
 				{

@@ -20,7 +20,7 @@
 */
 
 #include "parser/model.h"
-#include "parser/accessnode.h"
+#include "parser/stepnode.h"
 #include "model/model.h"
 #include "base/constants.h"
 #include <stdio.h>
@@ -96,42 +96,43 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
  	{ "atoms",		NuVTypes::AtomData,		TRUE, TRUE },
  	{ "atomtypes",		NuVTypes::ForcefieldAtomData,	TRUE, TRUE },
  	{ "bonds",		NuVTypes::BondData,		TRUE, TRUE },
- 	{ "cell",		NuVTypes::CellData,		TRUE, FALSE },
- 	{ "frame",		NuVTypes::ModelData,		TRUE, FALSE },
+ 	{ "cell",		NuVTypes::CellData,		FALSE, TRUE },
+ 	{ "frame",		NuVTypes::ModelData,		FALSE, TRUE },
 //  	{ "frames",		NuVTypes::ModelData };
  	{ "name",		NuVTypes::CharacterData,	FALSE, FALSE },
- 	{ "nangleterms",	NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "natoms",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "natomtypes",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "nbonds",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "nbondterms",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "npatterns",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "nselected",		NuVTypes::IntegerData,		TRUE, FALSE },
- 	{ "ntorsionterms",	NuVTypes::IntegerData,		TRUE, FALSE },
+ 	{ "nangleterms",	NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "natoms",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "natomtypes",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nbonds",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nbondterms",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "npatterns",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nselected",		NuVTypes::IntegerData,		FALSE, TRUE },
+ 	{ "ntorsionterms",	NuVTypes::IntegerData,		FALSE, TRUE },
  	{ "patterns",		NuVTypes::PatternData,		TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
-AccessNode *ModelVariable::findAccessor(const char *s)
+StepNode *ModelVariable::findAccessor(const char *s)
 {
 	return ModelVariable::accessorSearch(s);
 }
 
 // Private static function to search accessors
-AccessNode *ModelVariable::accessorSearch(const char *s)
+StepNode *ModelVariable::accessorSearch(const char *s)
 {
 	msg.enter("ModelVariable::accessorSearch");
-	AccessNode *result = NULL;
+	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
+		msg.print("Error: Type 'model&' has no member named '%s'.\n", s);
 		msg.exit("ModelVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new AccessNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
 	msg.exit("ModelVariable::accessorSearch");
 	return result;
 }

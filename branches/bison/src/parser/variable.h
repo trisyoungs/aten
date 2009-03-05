@@ -28,8 +28,6 @@
 #include "templates/vector3.h"
 #include <stdlib.h>
 
-// Forward declaration
-
 // Variable
 class NuVariable : public TreeNode
 {
@@ -61,7 +59,7 @@ class NuVariable : public TreeNode
 	// Initialise variable
 	bool initialise();
 	// Search accessors (if any) available for node
-	virtual AccessNode *findAccessor(const char *s);
+	virtual StepNode *findAccessor(const char *s);
 };
 
 #endif

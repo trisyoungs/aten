@@ -20,7 +20,7 @@
 */
 
 #include "parser/vector.h"
-#include "parser/accessnode.h"
+#include "parser/stepnode.h"
 #include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -110,9 +110,9 @@ void NuVectorVariable::nodePrint(int offset, const char *prefix)
 	if (readOnly_)
 	{
 		reCreate();
-		printf("%s{%f,%f,%f} (constant value)\n", tab, vectorData_.x, vectorData_.y, vectorData_.z);
+		printf("[C]%s{%f,%f,%f} (constant value)\n", tab, vectorData_.x, vectorData_.y, vectorData_.z);
 	}
-	else printf("%s{%f,%f,%f} (variable, name=%s)\n", tab, vectorData_.x, vectorData_.y, vectorData_.z, name_.get());
+	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", tab, vectorData_.x, vectorData_.y, vectorData_.z, name_.get());
 	delete[] tab;
 }
 
@@ -128,26 +128,27 @@ Accessor NuVectorVariable::accessorData[NuVectorVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-AccessNode *NuVectorVariable::findAccessor(const char *s)
+StepNode *NuVectorVariable::findAccessor(const char *s)
 {
 	return NuVectorVariable::accessorSearch(s);
 }
 
 // Private static function to search accessors
-AccessNode *NuVectorVariable::accessorSearch(const char *s)
+StepNode *NuVectorVariable::accessorSearch(const char *s)
 {
 	msg.enter("NuVectorVariable::accessorSearch");
-	AccessNode *result = NULL;
+	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
+		msg.print("Error: Type 'vector' has no member named '%s'.\n", s);
 		msg.exit("NuVectorVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new AccessNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
 	msg.exit("NuVectorVariable::accessorSearch");
 	return result;
 }

@@ -77,7 +77,7 @@ void NuIntegerVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("%s%i (constant value)\n", tab, integerData_);
-	else printf("%s%i (variable, name=%s)\n", tab, integerData_, name_.get());
+	if (readOnly_) printf("[C]%s%i (constant value)\n", tab, integerData_);
+	else printf("[V]%s%i (variable, name=%s)\n", tab, integerData_, name_.get());
 	delete[] tab;
 }

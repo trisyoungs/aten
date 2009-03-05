@@ -34,10 +34,13 @@ class ScopeNode : public NuCommandNode
 	~ScopeNode();
 
 	/*
-	// Variable List
+	// Variables
 	*/
 	public:
+	// List of variables (and constants) owned by this scope
 	NuVariableList variables;
+	// Add global variables to list
+	void createGlobalVariables();
 
 	/*
 	// Set / Get / Execute

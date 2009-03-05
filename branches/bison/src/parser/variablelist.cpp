@@ -23,7 +23,9 @@
 #include "parser/integer.h"
 #include "parser/character.h"
 #include "parser/real.h"
-// #include "parser/atom.h"
+#include "parser/aten.h"
+#include "parser/atom.h"
+#include "parser/model.h"
 #include "parser/vector.h"
 #include <string.h>
 #include <stdarg.h>
@@ -85,9 +87,18 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 		case (NuVTypes::VectorData):
 			v = (NuVariable*) new NuVectorVariable(FALSE);
 			break;
-// 		case (NuVTypes::AtomData):
-// 			v = (NuVariable*) new NuAtomVariable(NULL, FALSE);
+		case (NuVTypes::AtenData):
+			v = (NuVariable*) new NuAtenVariable();
 			break;
+		case (NuVTypes::AtomData):
+			v = (NuVariable*) new AtomVariable(NULL, FALSE);
+			break;
+		case (NuVTypes::ModelData):
+			v = (NuVariable*) new ModelVariable(NULL, FALSE);
+			break;
+// 		case (NuVTypes::BondData):
+// 			v = (NuVariable*) new NuBondVariable(NULL, FALSE);
+// 			break;
 		default:
 			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
 			break;

@@ -79,7 +79,7 @@ void NuRealVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("%s%f (constant value)\n", tab, realData_);
-	else printf("%s%f (variable, name=%s)\n", tab, realData_, name_.get());
+	if (readOnly_) printf("[C]%s%f (constant value)\n", tab, realData_);
+	else printf("[V]%s%f (variable, name=%s)\n", tab, realData_, name_.get());
 	delete[] tab;
 }
