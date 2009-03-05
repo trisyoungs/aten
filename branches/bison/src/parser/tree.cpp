@@ -493,7 +493,7 @@ TreeNode *Tree::createPath(TreeNode *basevar)
 	// Create a new pathnode
 	PathNode *node = new PathNode(basevar);
 	pathStack_.add(node, node);
-	printf("New node for tree is %li\n", node);
+	printf("New PathNode for tree is %li\n", node);
 	msg.exit("Tree::createPath");
 	return (TreeNode*) node;
 }
@@ -514,19 +514,21 @@ void Tree::expandPath(TreeNode *steps)
 }
 
 // Pop topmost path from stack
-void Tree::popPath()
+TreeNode *Tree::finalisePath()
 {
-	msg.enter("Tree::popPath");
+	msg.enter("Tree::finalisePath");
 	// Finalise the path before we remove it
 	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
 	if (ri == NULL)
 	{
-		msg.print("Internal Error: No path on stack to pop!\n");
-		return;
+		msg.print("Internal Error: No path on stack to finalise.\n");
+		return NULL;
 	}
 	ri->item->finalise();
+	TreeNode *result = ri->item;
 	pathStack_.remove(ri);
-	msg.exit("Tree::popPath");
+	msg.exit("Tree::finalisePath");
+	return result;
 }
 
 // Expand the topmost path on the stack

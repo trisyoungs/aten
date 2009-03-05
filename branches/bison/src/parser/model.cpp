@@ -132,7 +132,7 @@ StepNode *ModelVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::ModelData, accessorData[i].returnType);
 	msg.exit("ModelVariable::accessorSearch");
 	return result;
 }
@@ -161,7 +161,7 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	bool result;
+	bool result = TRUE;
 	Model *ptr= (Model*) rv.asPointer(NuVTypes::ModelData, result);
 	if (result) switch (acc)
 	{

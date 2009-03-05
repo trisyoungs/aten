@@ -88,7 +88,7 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 			v = (NuVariable*) new NuVectorVariable(FALSE);
 			break;
 		case (NuVTypes::AtenData):
-			v = (NuVariable*) new NuAtenVariable();
+			v = (NuVariable*) new AtenVariable();
 			break;
 		case (NuVTypes::AtomData):
 			v = (NuVariable*) new AtomVariable(NULL, FALSE);
