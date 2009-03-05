@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 // Variable Types
-const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "no data", "integer", "real", "character", "vector", "aten&", "atom&", "bond&", "cell&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&" };
+const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "no data", "integer", "real", "character", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&" };
 const char *NuVTypes::dataType(NuVTypes::DataType dt)
 {
 	return NuDataTypeKeywords[dt];

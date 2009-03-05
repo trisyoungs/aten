@@ -50,8 +50,9 @@ bool NuCharacterVariable::set(NuReturnValue &rv)
 		msg.print("A constant value (in this case a character) cannot be assigned to.\n");
 		return FALSE;
 	}
-	characterData_ = rv.asCharacter();
-	return TRUE;
+	bool success;
+	characterData_ = rv.asCharacter(success);
+	return success;
 }
 
 // Reset node
@@ -79,6 +80,6 @@ void NuCharacterVariable::nodePrint(int offset, const char *prefix)
 	strcat(tab,prefix);
 	// Output node data
 	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, characterData_.get());
-	else printf("[v]%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
+	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
 	delete[] tab;
 }

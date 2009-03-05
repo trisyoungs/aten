@@ -48,8 +48,9 @@ bool NuIntegerVariable::set(NuReturnValue &rv)
 		msg.print("A constant value (in this case an integer) cannot be assigned to.\n");
 		return FALSE;
 	}
-	integerData_ = rv.asInteger();
-	return TRUE;
+	bool success;
+	integerData_ = rv.asInteger(success);
+	return success;
 }
 
 // Reset variable

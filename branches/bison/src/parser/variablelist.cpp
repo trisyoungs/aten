@@ -20,15 +20,21 @@
 */
 
 #include "parser/variablelist.h"
-#include "parser/integer.h"
-#include "parser/character.h"
-#include "parser/real.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
+#include "parser/bond.h"
+#include "parser/cell.h"
+#include "parser/character.h"
+#include "parser/elements.h"
+#include "parser/integer.h"
+#include "parser/forcefield.h"
+#include "parser/forcefieldatom.h"
+#include "parser/forcefieldbound.h"
 #include "parser/model.h"
+#include "parser/real.h"
 #include "parser/vector.h"
 #include <string.h>
-#include <stdarg.h>
+// #include <stdarg.h>
 
 // Constructor
 NuVariableList::NuVariableList()
@@ -41,13 +47,7 @@ NuVariableList::NuVariableList()
 //	v->set("none");
 //	v = addVariable("outfile", VTypes::CharacterData);
 //	v->set("none");
-//	v = addBundlePointer("model", VTypes::ModelData);
-//	v->set(&aten.current, VTypes::ModelData);
-//	v = addListVariable("models", VTypes::ModelData, aten.modelList());
 //	v = addVariable("prefs", VTypes::PrefsData);
-//	v = addVariable("elements", VTypes::ElementsData);
-//	v = addSpecialVariable("nmodels", SpecialVariable::SpecialNModels);
-//	v = addSpecialVariable("random", SpecialVariable::SpecialRandom);
 }
 
 // Pass a newly-created variable / constant to the list for it to take ownership of
@@ -93,12 +93,27 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 		case (NuVTypes::AtomData):
 			v = (NuVariable*) new AtomVariable(NULL, FALSE);
 			break;
+		case (NuVTypes::BondData):
+			v = (NuVariable*) new BondVariable(NULL, FALSE);
+			break;
+		case (NuVTypes::CellData):
+			v = (NuVariable*) new CellVariable(NULL, FALSE);
+			break;
+		case (NuVTypes::ElementsData):
+			v = (NuVariable*) new ElementsVariable();
+			break;
+		case (NuVTypes::ForcefieldData):
+			v = (NuVariable*) new ForcefieldVariable(NULL, FALSE);
+			break;
+		case (NuVTypes::ForcefieldAtomData):
+			v = (NuVariable*) new ForcefieldAtomVariable(NULL, FALSE);
+			break;
+		case (NuVTypes::ForcefieldBoundData):
+			v = (NuVariable*) new ForcefieldBoundVariable(NULL, FALSE);
+			break;
 		case (NuVTypes::ModelData):
 			v = (NuVariable*) new ModelVariable(NULL, FALSE);
 			break;
-// 		case (NuVTypes::BondData):
-// 			v = (NuVariable*) new NuBondVariable(NULL, FALSE);
-// 			break;
 		default:
 			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
 			break;

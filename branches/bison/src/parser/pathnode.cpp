@@ -75,7 +75,10 @@ bool PathNode::execute(NuReturnValue &rv)
 // Set from returnvalue node
 bool PathNode::set(NuReturnValue &rv)
 {
+	msg.enter("PathNode::set");
+	// First check - does the path point to a read-only value
 	printf("Internal Error: Trying to 'set' a PathNode.\n");
+	msg.exit("PathNode::set");
 	return FALSE;
 }
 

@@ -50,8 +50,9 @@ bool NuRealVariable::set(NuReturnValue &rv)
 		msg.print("A constant value (in this case a real) cannot be assigned to.\n");
 		return FALSE;
 	}
-	realData_ = rv.asReal();
-	return TRUE;
+	bool success;
+	realData_ = rv.asReal(success);
+	return FALSE;
 
 }
 

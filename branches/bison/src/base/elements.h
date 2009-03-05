@@ -149,5 +149,6 @@ class ElementMap
 };
 
 extern ElementMap &elements();
+extern ElementMap *elementsAsPointer();
 
 #endif

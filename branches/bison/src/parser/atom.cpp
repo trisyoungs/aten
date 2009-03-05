@@ -22,10 +22,7 @@
 #include "parser/atom.h"
 #include "parser/stepnode.h"
 #include "base/atom.h"
-#include "base/constants.h"
 #include "base/elements.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 // Constructor
@@ -50,7 +47,7 @@ bool AtomVariable::set(NuReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
+		msg.print("A constant value (in this case a atom&) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success;
@@ -100,22 +97,22 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "fy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "fz",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "hidden",	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "id",		NuVTypes::IntegerData,		TRUE, FALSE },
-	{ "mass",	NuVTypes::RealData,		TRUE, FALSE },
-	{ "name",	NuVTypes::CharacterData,	TRUE, FALSE },
+	{ "id",		NuVTypes::IntegerData,		FALSE, TRUE },
+	{ "mass",	NuVTypes::RealData,		FALSE, TRUE },
+	{ "name",	NuVTypes::CharacterData,	FALSE, TRUE },
 	{ "q",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "r",		NuVTypes::VectorData,		FALSE, FALSE },
 	{ "rx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "ry",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "rz",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "selected",	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "symbol",	NuVTypes::CharacterData,	TRUE, FALSE },
+	{ "symbol",	NuVTypes::CharacterData,	FALSE, TRUE },
 	{ "type",	NuVTypes::ForcefieldAtomData,	FALSE, FALSE },
 	{ "v",		NuVTypes::VectorData,		FALSE, FALSE },
 	{ "vx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vz",		NuVTypes::RealData,		FALSE, FALSE },
-	{ "z",		NuVTypes::IntegerData, 		TRUE, FALSE }
+	{ "z",		NuVTypes::IntegerData, 		FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -139,7 +136,7 @@ StepNode *AtomVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::AtomData, accessorData[i].returnType);
 	msg.exit("AtomVariable::accessorSearch");
 	return result;
 }
@@ -151,7 +148,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Atom type.\n");
 		msg.exit("AtomVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -168,7 +165,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	bool result;
+	bool result = TRUE;
 	Atom *ptr= (Atom*) rv.asPointer(NuVTypes::AtomData, result);
 	if (result) switch (acc)
 	{

@@ -1,6 +1,6 @@
 /*
-	*** Aten Variable
-	*** src/parser/aten.h
+	*** ForcefieldAtom Variable
+	*** src/parser/forcefieldatom.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,22 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATENVARIABLE_H
-#define ATEN_ATENVARIABLE_H
+#ifndef ATEN_FORCEFIELDATOMVARIABLE_H
+#define ATEN_FORCEFIELDATOMVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class TreeNode;
+class ForcefieldAtom;
 
-// Aten Master Variable
-class AtenVariable : public NuVariable
+// ForcefieldAtom Variable
+class ForcefieldAtomVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	AtenVariable();
-	~AtenVariable();
+	ForcefieldAtomVariable(ForcefieldAtom *ptr = NULL, bool constant = FALSE);
+	~ForcefieldAtomVariable();
 
 	/*
 	// Set / Get
@@ -51,6 +51,8 @@ class AtenVariable : public NuVariable
 	// Variable Data
 	*/
 	private:
+	// ForcefieldAtom data
+	void *ffatomData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
 
@@ -59,7 +61,7 @@ class AtenVariable : public NuVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { CurrentModel, Elements, Models, nAccessors };
+	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Form, Id, Name, ParentFF, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s);
 	// Static function to search accessors
@@ -73,3 +75,4 @@ class AtenVariable : public NuVariable
 };
 
 #endif
+
