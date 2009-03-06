@@ -30,7 +30,7 @@ class StepNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype);
+	StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype, bool readonly);
 	~StepNode();
 
 	/*

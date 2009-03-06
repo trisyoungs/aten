@@ -148,7 +148,7 @@ StepNode *NuVectorVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("NuVectorVariable::accessorSearch");
 	return result;
 }

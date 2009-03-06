@@ -45,9 +45,6 @@ void NuCommand::initPointers()
 	pointers_[OperatorPower] = &function_OperatorPower;
 	pointers_[OperatorSubtract] = &function_OperatorSubtract;
 
-	pointers_[If] = &function_If;
-	pointers_[Break] = &function_Break;
-
 /*
 	// Analyse commands
 	pointers_[Finalise] = &NuCommand::function_Finalise;
@@ -184,19 +181,16 @@ void NuCommand::initPointers()
 	pointers_[Printenergy] = &NuCommand::function_Printenergy;
 	pointers_[Printsummary] = &NuCommand::function_Printsummary;
 	pointers_[Printvdw] = &NuCommand::function_Printvdw;
-
+*/
 	// Flow control
+	pointers_[If] = &function_If;
 	pointers_[Break] = &NuCommand::function_Break;
 	pointers_[Continue] = &NuCommand::function_Continue;
-	pointers_[Else] = &NuCommand::function_Else;
-	pointers_[Elseif] = &NuCommand::function_Elseif;
-	pointers_[End] = &NuCommand::function_End;
+// 	pointers_[End] = &NuCommand::function_End;
 	pointers_[For] = &NuCommand::function_For;
-	pointers_[Goto] = &NuCommand::function_Goto;
-	pointers_[Gotononif] = &NuCommand::function_Gotononif;
 	pointers_[If] = &NuCommand::function_If;
-	pointers_[Terminate] = &NuCommand::function_Terminate;
-
+// 	pointers_[Terminate] = &NuCommand::function_Terminate;
+/*
 	// Force Commands
 	pointers_[Frameforces] = &NuCommand::function_Frameforces;
 	pointers_[Modelforces] = &NuCommand::function_Modelforces;

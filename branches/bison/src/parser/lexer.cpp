@@ -182,7 +182,12 @@ int yylex()
 			else if (strcmp(token,"grid") == 0) return GRID;
 			else if (strcmp(token,"model") == 0) return MODEL;
 			else if (strcmp(token,"pattern") == 0) return PATTERN;
-			else if (strcmp(token,"if") == 0) return IF;
+			else if (strcmp(token,"if") == 0)
+			{
+				// Create a scopenode to contain the IF
+				yylval.node = Tree::currentTree->addScopedLeaf(NuCommand::If,0);
+				return IF;
+			}
 			else if (strcmp(token,"else") == 0) return ELSE;
 			else if (strcmp(token,"for") == 0) return FOR;
 			else if (strcmp(token,"while") == 0) return WHILE;

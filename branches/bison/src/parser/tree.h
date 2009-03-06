@@ -101,6 +101,8 @@ class Tree
 	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
+	// Associate a scoped command leaf node to the Tree
+	TreeNode *addScopedLeaf(NuCommand::Function funcs, int nargs, ...);
 	// Add an argument to the most recently pushed function on the stack
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments

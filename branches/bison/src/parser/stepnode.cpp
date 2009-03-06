@@ -27,10 +27,10 @@
 #include <string.h>
 
 // Constructor
-StepNode::StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType rtntype) : accessor_(id), previousType_(prevtype)
+StepNode::StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType rtntype, bool readonly) : accessor_(id), previousType_(prevtype)
 {
 	// Private variables
-	readOnly_ = FALSE;
+	readOnly_ = readonly;
 	returnType_ = rtntype;
 	printf("Return type of StepNode is %s\n", NuVTypes::dataType(returnType_));
 }

@@ -123,7 +123,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::ForcefieldAtomData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::ForcefieldAtomData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }

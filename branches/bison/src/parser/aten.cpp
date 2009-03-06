@@ -111,7 +111,7 @@ StepNode *AtenVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::AtenData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::AtenData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("AtenVariable::accessorSearch");
 	return result;
 }
