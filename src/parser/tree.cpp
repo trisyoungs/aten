@@ -205,8 +205,8 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
 	// Add arguments
-	leaf->addArguments(arg1);
-	if (arg2 != NULL) leaf->addArguments(arg2);
+	leaf->addArguments(1,arg1);
+	if (arg2 != NULL) leaf->addArguments(1,arg2);
 	// Store return type - if we were passed 1 or 2, store the return type of this argument
 	// If we were passed 99, it is a logical operator and should return an integer
 	// If we were passed 0, assume its a number and work out which number type we actually return
@@ -232,8 +232,8 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
-	// Add arguments
-	for (int n=0; n<nargs; n++) leaf->addArguments(va_arg(vars, TreeNode*));
+	// Add arguments in the order they were provided
+	for (int n=0; n<nargs; n++) leaf->addArguments(1, va_arg(vars, TreeNode*));
 	va_end(vars);
 	// Store the function's return type
 	leaf->setReturnType(NuCommand::data[func].returnType);
@@ -400,6 +400,24 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 		count++;
 	} while (*c != '\0');
 	msg.exit("Tree::addCommandLeaf");
+	return leaf;
+}
+
+// Add ascoped command to the Tree
+TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
+{
+	// Create new scoped node and push it onto the stack
+	ScopeNode *leaf = new ScopeNode(func);
+	ownedNodes_.add(leaf);
+	scopeStack_.add(leaf);
+	// Create variable argument parser
+	va_list vars;
+	va_start(vars,nargs);
+	// Add arguments in the order they were provided
+	for (int n=0; n<nargs; n++) leaf->addArguments(1, va_arg(vars, TreeNode*));
+	va_end(vars);
+	// Store the function's return type
+	leaf->setReturnType(NuCommand::data[func].returnType);
 	return leaf;
 }
 

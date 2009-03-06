@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libnucommand.a
 
 #libcommand_a_SOURCES = analyse.cpp atom.cpp bonds.cpp build.cpp cell.cpp charge.cpp colourscale.cpp command.cpp commandlist.cpp commands.cpp disorder.cpp edit.cpp energy.cpp filter.cpp flow.cpp forcefield.cpp forces.cpp format.cpp formatnode.cpp functions.cpp glyph.cpp grid.cpp image.cpp labels.cpp mc.cpp measure.cpp messaging.cpp minimise.cpp model.cpp pattern.cpp prefs.cpp readwrite.cpp script.cpp select.cpp site.cpp staticcommand.cpp system.cpp trajectory.cpp transform.cpp variables.cpp view.cpp
-libnucommand_a_SOURCES = build.cpp commands.cpp functions.cpp testfuncs.cpp
+libnucommand_a_SOURCES = build.cpp commands.cpp flow.cpp functions.cpp operators.cpp
 
 noinst_HEADERS = commands.h
 

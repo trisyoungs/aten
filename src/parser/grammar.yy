@@ -35,7 +35,8 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %token <node> NUMSTEP PTRSTEP CHARSTEP VECSTEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
 %token INTEGER REAL CHARACTER VECTOR ATOM BOND CELL FORCEFIELD FFATOM FFBOUND GRID MODEL PATTERN
-%token WHILE IF PRINT FOR
+%token WHILE FOR
+%token <node> IF
 %nonassoc ELSE
 
 %left GEQ LEQ EQ NEQ '>' '<'
@@ -77,8 +78,10 @@ statement:
 	| vecexpr ';'					{ $$ = $1; }
 	| ptrexpr ';'					{ $$ = $1; }
 	| voidfunc ';'					{ $$ = $1; }
-	| IF '(' anyexpr ')' statementlist			{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,2,$3,$5);  }
-	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::If,3,$3,$5,$7);  }
+	| IF '(' anyexpr ')' statementlist		{ $$ = $1; $1->addArguments(2,$3,$5);  }
+	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $1->addArguments(3,$3,$5,$7);  }
+	| FOR '(' NUMVAR '=' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,4,$3,$5,$7,$9); };
+	| FOR '(' NUMVAR '=' numexpr ',' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,5,$3,$5,$7,$9,$11); };
 	;
 
 /* Variable declaration / assignment list */

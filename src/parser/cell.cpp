@@ -140,7 +140,7 @@ StepNode *CellVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::CellData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::CellData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("CellVariable::accessorSearch");
 	return result;
 }

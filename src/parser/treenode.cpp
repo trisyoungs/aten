@@ -109,7 +109,7 @@ bool TreeNode::hasArg(int i)
 }
 
 // Add argument(s) to node
-void TreeNode::addArguments(TreeNode *leaf)
+void TreeNode::addArgumentList(TreeNode *leaf)
 {
 	/*
 	The supplied leaf may be a single node, or it may be a list of nodes.
@@ -118,6 +118,17 @@ void TreeNode::addArguments(TreeNode *leaf)
 	TreeNode *first;
 	for (first = leaf; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
 	for (TreeNode *node = first; node != NULL; node = node->nextArgument) args_.add(node);
+}
+
+// Add multiple arguments to node
+void TreeNode::addArguments(int nargs, ...)
+{
+	ASDSAD
+}
+
+// Add multiple arguments to node
+void TreeNode::addArgument(TreeNode *arg)
+{
 }
 
 // Return (execute) argument specified

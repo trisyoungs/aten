@@ -121,7 +121,7 @@ StepNode *BondVariable::accessorSearch(const char *s)
 	}
 	// Create a suitable AccessNode to return...
 	printf("Accessor match = %i\n", i);
-	result = new StepNode(i, NuVTypes::BondData, accessorData[i].returnType);
+	result = new StepNode(i, NuVTypes::BondData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("BondVariable::accessorSearch");
 	return result;
 }

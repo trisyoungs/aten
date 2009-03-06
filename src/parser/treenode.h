@@ -53,8 +53,12 @@ class TreeNode
 	int nArgs();
 	// Return datatype of nth argument
 	NuVTypes::DataType argType(int i);
-	// Add new argument to node
-	void addArguments(TreeNode *args);
+	// Add reverse-sorted list of arguments
+	void addArgumentList(TreeNode *args);
+	// Add multiple arguments to node
+	void addArguments(int nargs, ...);
+	// Add multiple arguments to node
+	void addArgument(TreeNode *arg);
 	// Return (execute) argument specified
 	bool arg(int i, NuReturnValue &rv);
 	// Return (execute) argument specified as an integer

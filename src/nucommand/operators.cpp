@@ -1,6 +1,6 @@
 /*
-	*** Test Command Functions
-	*** src/parser/testfuncs.cpp
+	*** Operator Functions
+	*** src/parser/operators.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -338,42 +338,6 @@ bool NuCommand::function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnVa
 	if (!c->arg(0, v1)) return FALSE;
 	if (!c->arg(1, v2)) return FALSE;
 	return operate(NuCommand::OperatorPower, &v1, &v2, rv);
-}
-
-// Dummy Node
-bool NuCommand::function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	return TRUE;
-}
-
-// Joiner
-bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	// Execute both commands
-	if (!c->arg(0, rv)) return FALSE;
-	if (c->hasArg(1)) return c->arg(1, rv);
-}
-
-// Variable Declarations Node
-bool NuCommand::function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	return TRUE;
-}
-
-// If test
-bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	NuReturnValue ifval;
-	c->arg(0, ifval);
-	if (ifval.asBool()) c->arg(1, rv);
-	else if (c->hasArg(2)) c->arg(2, rv);
-	return TRUE;
-}
-
-// TEST COMMAND
-bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	return TRUE;
 }
 
 // Equal To
