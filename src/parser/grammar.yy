@@ -197,8 +197,9 @@ step:
 	;
 
 steplist:
-	step					{ $$ = $1; }
-	| steplist '.' step			{ $$ = Tree::currentTree->joinArguments($1, $3); }
+	/* empty */				{ $$ = NULL; }
+	| step '.'				{ $$ = $1; printf("Crap.\n"); }
+	| steplist step				{ $$ = Tree::currentTree->joinArguments($1, $2); }
 	;
 
 variable:
@@ -209,13 +210,13 @@ variable:
 	;
 
 path:
-	variable				{ $$ = Tree::currentTree->createPath($1); }
+	variable 				{ $$ = Tree::currentTree->createPath($1); }
 		'.' steplist			{ Tree::currentTree->expandPath($4); }
 	;
 
 numlval:
 	NUMVAR					{ $$ = $1; }
-	| path '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
+	| path NUMSTEP			{ Tree::currentTree->expandPath($2); $$ = Tree::currentTree->finalisePath(); }
 	;
 
 charlval:

@@ -436,8 +436,8 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
 	ownedNodes_.add(leaf);
-	if (node1 != NULL) leaf->addArguments(node1);
-	if (node2 != NULL) leaf->addArguments(node2);
+	if (node1 != NULL) leaf->addArgument(node1);
+	if (node2 != NULL) leaf->addArgument(node2);
 	return leaf;
 }
 
@@ -527,7 +527,7 @@ void Tree::expandPath(TreeNode *steps)
 		msg.print("Internal Error: No path on stack to expand!\n");
 		return;
 	}
-	ri->item->addArguments(steps);
+	ri->item->addArgumentList(steps);
 	msg.exit("Tree::expandPath");
 }
 
