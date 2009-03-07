@@ -29,7 +29,7 @@ void NuCommand::initPointers()
 	*/
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
-	pointers_[Declarations] = &function_Declarations;
+	pointers_[Initialisations] = &function_Initialisations;
 
 	pointers_[OperatorAdd] = &function_OperatorAdd;
 	pointers_[OperatorAssignment] = &function_OperatorAssignment;

@@ -39,9 +39,11 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	if (c->hasArg(1)) return c->arg(1, rv);
 }
 
-// Variable Declarations Node
-bool NuCommand::function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Variable Initialisations Node
+bool NuCommand::function_Initialisations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
+	// For each argument, initialise (or reset) the node
+	for (int n = 0; n < c->nArgs(); n++) if (!c->argNode(n)->initialise()) return FALSE;
 	return TRUE;
 }
 

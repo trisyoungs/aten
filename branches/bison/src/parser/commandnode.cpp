@@ -83,8 +83,9 @@ bool NuCommandNode::set(NuReturnValue &rv)
 	return FALSE;
 }
 
-// Reset node
-void NuCommandNode::reset()
+// Initialise node
+bool NuCommandNode::initialise()
 {
-	printf("XXX RESET COMMANDNODE.\n");
+	printf("Internal Error: A CommandNode cannot be initialised.\n");
+	return FALSE;
 }

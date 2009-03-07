@@ -49,6 +49,8 @@ class VariableNode : public TreeNode
 	NuVariable* variable();
 	// Return name of variable target
 	const char *name();
+	// Finalise variable path (if there is one)
+	void finalisePath();
 
 	/*
 	// Inherited Virtuals
@@ -60,8 +62,8 @@ class VariableNode : public TreeNode
 	void nodePrint(int offset, const char *prefix = "");
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
+	// Initialise node
+	bool initialise();
 	// Search accessors (if any) available for linked variable
 	StepNode *findAccessor(const char *s);
 };

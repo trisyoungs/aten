@@ -50,8 +50,8 @@ class ScopeNode : public NuCommandNode
 	bool execute(NuReturnValue &rv);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
+	// Initialise node
+	bool initialise();
 	// Print layout of current node
 	void nodePrint(int offset, const char *prefix = "");
 

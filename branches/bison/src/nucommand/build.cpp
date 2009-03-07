@@ -30,7 +30,7 @@
 // Add hydrogens to model ('addhydrogen')
 bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument specifies an atom, either by id or pointer
 	if (c->hasArg(0))
 	{
@@ -53,19 +53,19 @@ bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValu
 		obj.rs->hydrogenSatisfy();
 	}
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
 bool NuCommand::function_Bohr(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
 bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
 	obj.rs->beginUndoState("Draw Chain");
 	Atom *i;
@@ -105,7 +105,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	}
 	obj.rs->endUndoState();
 	aten.current.i = i;
-	return Command::Success;
+	return TRUE;
 }
 
 // Terminate chain ('endchain')
@@ -113,13 +113,13 @@ bool NuCommand::function_EndChain(NuCommandNode *c, Bundle &obj, NuReturnValue &
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
-	return Command::Success;
+	return TRUE;
 }
 
 // Draw unbound atom with ID specified ('insertatom <el> <id> [x y z]')
 bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
 	Atom *i;
@@ -158,7 +158,7 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
 	if ((id < 1) && (id > (obj.rs->nAtoms()+1)))
 	{
 		msg.print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs->nAtoms());
-		return Command::Fail;
+		return FALSE;
 	}
 	if (c->hasArg(4)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), id-1);
 	else aten.current.i = obj.rs->addAtomAtPen(el, id-1);
@@ -178,47 +178,47 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
 bool NuCommand::function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.rs->setPenPosition(c->arg3d(0));
-	return Command::Success;
+	return TRUE;
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
 bool NuCommand::function_Move(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.rs->movePenPosition(c->arg3d(0));
-	return Command::Success;
+	return TRUE;
 }
 
 // Move current selection to end of list ('toend')
 bool NuCommand::function_MoveToEnd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Move selection to end");
 	obj.rs->moveSelectionToEnd();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Move current selection to start of list ('tostart')
 bool NuCommand::function_MoveToStart(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Move selection to start");
 	obj.rs->moveSelectionToStart();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Draw unbound atom ('newatom <el> [x y z]')
 bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
 	Atom *i;
@@ -270,13 +270,13 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Draw unbound atom ('newatom <el> [fracx fracy fracz]')
 bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	int el;
 	Atom *i;
@@ -315,78 +315,78 @@ bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValu
 	obj.rs->beginUndoState("Draw atom (fractional)");
 	aten.current.i = obj.rs->addAtom(el, r);
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Reorder current atom selection ('reorder')
 bool NuCommand::function_ReOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Reorder selected atoms");
 	obj.rs->reorderSelectedAtoms();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Reset pen orientation
 bool NuCommand::function_ResetPen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->resetPenOrientation();
-	return Command::Success;
+	return TRUE;
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
 bool NuCommand::function_RotX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(0, c->argd(0));
-	return Command::Success;
+	return TRUE;
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
 bool NuCommand::function_RotY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(1, c->argd(0));
-	return Command::Success;
+	return TRUE;
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
 bool NuCommand::function_RotZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(2, c->argd(0));
-	return Command::Success;
+	return TRUE;
 }
 
 // Shift the current selection down ('shiftdown [n]')
 bool NuCommand::function_ShiftDown(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Shift selection down");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Shift the current selection up ('shiftup [n]')
 bool NuCommand::function_ShiftUp(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Shift selection up");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Transmute the current selection ('transmute <el>')
 bool NuCommand::function_Transmute(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int el = elements().findAlpha(c->argc(0));
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }

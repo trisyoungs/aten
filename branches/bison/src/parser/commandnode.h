@@ -60,8 +60,8 @@ class NuCommandNode : public TreeNode
 	void nodePrint(int offset, const char *prefix = "");
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
+	// Initialise node
+	bool initialise();
 };
 
 #endif

@@ -56,10 +56,17 @@ class NuVariable : public TreeNode
 	void setInitialValue(TreeNode *node);
 	// Return TreeNode corresponding to initial value
 	TreeNode *initialValue();
-	// Initialise variable
-	bool initialise();
+	// Reset variable
+	virtual void reset() = 0;
 	// Search accessors (if any) available for node
 	virtual StepNode *findAccessor(const char *s);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Initialise node
+	bool initialise();
 };
 
 #endif
