@@ -24,7 +24,7 @@
 #include "variables/accesspath.h"
 #include "base/sysfunc.h"
 #include "templates/reflist.h"
-
+#include <stdarg.h>
 
 // Constructors
 TreeNode::TreeNode()
@@ -123,12 +123,18 @@ void TreeNode::addArgumentList(TreeNode *leaf)
 // Add multiple arguments to node
 void TreeNode::addArguments(int nargs, ...)
 {
-	ASDSAD
+	// Create variable argument parser
+	va_list vars;
+	va_start(vars,nargs);
+	// Add arguments in the order they were provided
+	for (int n=0; n<nargs; n++) addArgument(va_arg(vars, TreeNode*));
+	va_end(vars);
 }
 
 // Add multiple arguments to node
 void TreeNode::addArgument(TreeNode *arg)
 {
+	args_.add(arg);
 }
 
 // Return (execute) argument specified
