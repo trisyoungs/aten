@@ -32,7 +32,8 @@ StepNode::StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType rtnty
 	// Private variables
 	readOnly_ = readonly;
 	returnType_ = rtntype;
-	printf("Return type of StepNode is %s\n", NuVTypes::dataType(returnType_));
+	nodeType_ = TreeNode::SteppedNode;
+// 	printf("Return type of StepNode is %s\n", NuVTypes::dataType(returnType_));
 }
 
 // Destructor

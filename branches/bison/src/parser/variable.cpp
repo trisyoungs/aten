@@ -29,6 +29,7 @@ NuVariable::NuVariable()
 	// Private variables
 	name_.set("unnamed");
 	initialValue_ = NULL;
+	nodeType_ = TreeNode::VarNode;
 
 	// Public variables
 	prev = NULL;

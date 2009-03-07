@@ -28,6 +28,7 @@
 ScopeNode::ScopeNode(NuCommand::Function func) : NuCommandNode(func)
 {
 	// Private variables
+	nodeType_ = TreeNode::ScopedNode;
 }
 
 // Destructor

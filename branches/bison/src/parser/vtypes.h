@@ -28,6 +28,7 @@ class NuVTypes
 	public:
 	// Data Types
 	enum DataType { NoData, IntegerData, RealData, CharacterData, VectorData, AtenData, AtomData, BondData, CellData, ElementsData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, nDataTypes };
+	static NuVTypes::DataType dataType(const char *s);
 	static const char *dataType(DataType);
 	static bool isPointer(DataType);
 	static NuVTypes::DataType determineType(const char *s);

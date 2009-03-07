@@ -29,6 +29,7 @@
 NuCommandNode::NuCommandNode(NuCommand::Function func) : function_(func)
 {
 	// Private variables
+	nodeType_ = TreeNode::CmdNode;
 }
 
 // Destructor
