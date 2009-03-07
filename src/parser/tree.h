@@ -113,11 +113,19 @@ class Tree
 	/*
 	// Variables / Constants
 	*/
+	private:
+	// Current variable type to use for creating variables
+	NuVTypes::DataType declaredType_;
+
 	public:
 	// Add constant to topmost ScopeNode
 	void addConstant(NuVariable *v);
+	// Set current type for variable declarations
+	void setDeclaredVariableType(NuVTypes::DataType type);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add variable to topmost ScopeNode using the most recently declared type
+	TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
 	// Add 'constant' vector value
 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope

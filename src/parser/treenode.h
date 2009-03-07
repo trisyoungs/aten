@@ -40,6 +40,19 @@ class TreeNode
 	~TreeNode();
 	// List pointers (for argument list)
 	TreeNode *nextArgument, *prevArgument;
+	// Node Types
+	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, nNodeTypes };
+
+	/*
+	// Node Type
+	*/
+	protected:
+	// Type of node
+	NodeType nodeType_;
+
+	public:
+	// Retrieve node type
+	NodeType nodeType();
 
 	/*
 	// Argument Data

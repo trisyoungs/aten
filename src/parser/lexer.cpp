@@ -171,18 +171,16 @@ int yylex()
 		// Skip over keyword detection if we are expecting a path step
 		if (!Tree::currentTree->expectPathStep())
 		{
+			// Is this a variable declaration statement?
+			NuVTypes::DataType dt = NuVTypes::dataType(token);
+			if (dt != NuVTypes::nDataTypes)
+			{
+				Tree::currentTree->setDeclaredVariableType(dt);
+				return DECLARATION;
+			}
 
 			// Is this a recognised high-level keyword?
-			if (strcmp(token,"integer") == 0) return INTEGER;
-			else if (strcmp(token,"real") == 0) return REAL;
-			else if (strcmp(token,"character") == 0) return CHARACTER;
-			else if (strcmp(token,"vector") == 0) return VECTOR;
-			else if (strcmp(token,"atom") == 0) return ATOM;
-			else if (strcmp(token,"forcefield") == 0) return FORCEFIELD;
-			else if (strcmp(token,"grid") == 0) return GRID;
-			else if (strcmp(token,"model") == 0) return MODEL;
-			else if (strcmp(token,"pattern") == 0) return PATTERN;
-			else if (strcmp(token,"if") == 0)
+			if (strcmp(token,"if") == 0)
 			{
 				// Create a scopenode to contain the IF
 				yylval.node = Tree::currentTree->addScopedLeaf(NuCommand::If,0);

@@ -30,11 +30,13 @@
 	N	Number		IntegerData, RealData
 	C	Character	CharacterData
 	S	Any Simple	IntegerData, RealData, CharacterData
+	U	Vector		VectorData
 	B	Boolean		Any
 	A	Atom/Id		IntegerData, AtomData
 	M	Model/ID/Name	ModelData, CharacterData, IntegerData
 	P	Pattern/ID/Name	PatternData, CharacterData, IntegerData
-	V	Pointer		Any pointer (void*) object
+	X	Pointer		Any pointer object
+	V	Variable	Any simple variable (not path)
 	*	<Repeat>	Any number of the last type again
 	^	Require Var	Next token must be a modifiable variable and not a constant
 	[]	Cluster		Surrounds groups of optional arguments that must be specified together
@@ -48,7 +50,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"" },
 	{ "_joiner",		"",		"", NuVTypes::NoData,
 				"" },
-	{ "_initialisations",	"",		"", NuVTypes::NoData,
+	{ "_initialisations",	"V*",		"<variable| variable = expr> ...", NuVTypes::NoData,
 				"" },
 
 	// Analysis commands
@@ -136,7 +138,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 	// Build commands
 	{ "addhydrogen",	"a",		"[atom|id]", NuVTypes::NoData,
 				"Hydrogen satisfy all (or specified) atom in model" },
-	{ "bohr",		"V*",		"<object> [object...]", NuVTypes::NoData,
+	{ "bohr",		"X*",		"<object> [object...]", NuVTypes::NoData,
 				"Convert coordinates in the specified object(s) from Angstroms to Bohr" },
 	{ "chain",		"Neeee",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]", NuVTypes::AtomData,
 				"Create a new atom in the current model, bound to the last" },
@@ -770,7 +772,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Return part of the <string> after the first occurrence of the character <char>" },
 	{ "beforechar",		"CC",		"<string> <char>", NuVTypes::CharacterData,
 				"Return part of the <string> before the first occurrence of the character <char>" },
-	{ "normalise",		"VVV",		"<x> <y> <z>", NuVTypes::NoData,
+	{ "normalise",		"U",		"<vector>", NuVTypes::RealData,
 				"Normalise the values of the 3-vector supplied" },
 	{ "stripchars",		"^CC",		"<variable> <chars>", NuVTypes::NoData,
 				"Strip all occurrences of the supplied characters from the supplied variable" },

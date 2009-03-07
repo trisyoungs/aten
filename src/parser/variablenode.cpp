@@ -29,6 +29,7 @@ VariableNode::VariableNode(NuVariable *var) : variable_(var)
 {
 	// Private variables
 	readOnly_ = FALSE;
+	nodeType_ = TreeNode::VarWrapperNode;
 	if (variable_ != NULL) returnType_ = var->returnType();
 }
 

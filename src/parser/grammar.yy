@@ -18,7 +18,7 @@ int yylex(void);
 void yyerror(char *s);
 
 /* Local Variables */
-NuVTypes::DataType variableType = NuVTypes::NoData;
+/* NuVTypes::DataType variableType = NuVTypes::NoData;  */
 
 %}
 
@@ -34,8 +34,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %token <node> NUMVAR CHARVAR PTRVAR VECVAR
 %token <node> NUMSTEP PTRSTEP CHARSTEP VECSTEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
-%token INTEGER REAL CHARACTER VECTOR ATOM BOND CELL FORCEFIELD FFATOM FFBOUND GRID MODEL PATTERN
-%token WHILE FOR
+%token DECLARATION WHILE FOR
 %token <node> IF
 %nonassoc ELSE
 
@@ -49,8 +48,8 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
 %type <node> pathvar step steplist
-%type <node> statement statementlist declaration exprlist VECCONST
-%type <name> namelist
+%type <node> statement statementlist exprlist VECCONST
+%type <node> namelist newname
 
 %%
 
@@ -71,7 +70,7 @@ statementlist:
 
 statement:
 	';'						{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
-	| declaration					{ $$ = $1; }
+	| DECLARATION namelist ';'			{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); }
 	| numexpr ';'					{ $$ = $1; }
 	| charexpr ';'					{ $$ = $1; }
 	| vecexpr ';'					{ $$ = $1; }
@@ -83,45 +82,16 @@ statement:
 	| FOR '(' NUMVAR '=' numexpr ',' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,5,$3,$5,$7,$9,$11); };
 	;
 
-/* Variable declaration / assignment list */
+/* Variable declaration  name / assignment list */
 
-namelist:
-	TOKENNAME				{ Tree::currentTree->addVariable(variableType,$1); }
-	| TOKENNAME '=' anyexpr			{ Tree::currentTree->addVariable(variableType,$1,$3); }
-	| namelist ',' TOKENNAME '=' anyexpr	{ Tree::currentTree->addVariable(variableType,$3,$5);}
-	| namelist ',' TOKENNAME		{ Tree::currentTree->addVariable(variableType,$3); }
+newname:
+	TOKENNAME				{ $$ = Tree::currentTree->addVariable($1); }
+	| TOKENNAME '=' anyexpr			{ $$ = Tree::currentTree->addVariable($1,$3); }
 	;
-
-/* Declaration statements - uses mid-rule action to store type for use in namelist rule */
-
-/* Can this be reduced to a rule which stores the variable type in yylval and then retrieves it here? i.e. DECLARATION {vari.....} namelist;  */
-declaration:
-	INTEGER { variableType = NuVTypes::IntegerData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| REAL { variableType = NuVTypes::RealData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| CHARACTER { variableType = NuVTypes::CharacterData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| VECTOR { variableType = NuVTypes::VectorData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| ATOM { variableType = NuVTypes::AtomData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| BOND { variableType = NuVTypes::BondData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| CELL { variableType = NuVTypes::CellData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| FORCEFIELD { variableType = NuVTypes::ForcefieldData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| FFATOM { variableType = NuVTypes::ForcefieldAtomData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| FFBOUND { variableType = NuVTypes::ForcefieldBoundData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| GRID { variableType = NuVTypes::GridData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| MODEL { variableType = NuVTypes::ModelData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
-	| PATTERN { variableType = NuVTypes::PatternData; }
-	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
+	
+namelist:
+	newname					{ $$ = $1; }
+	| namelist ',' newname			{ $$ = Tree::joinArguments($3,$1); }
 	;
 
 /* Expressions */

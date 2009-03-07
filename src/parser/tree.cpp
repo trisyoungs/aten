@@ -44,6 +44,7 @@ Tree::Tree()
 	stringPos_ = -1;
 	stringLength_ = 0;
 	expectPathStep_ = FALSE;
+	declaredType_ = NuVTypes::NoData;
 
 	// Public variables
 	currentTree = NULL;
@@ -339,6 +340,14 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 					failed = TRUE;
 				}
 				break;	
+			// Vector		(VectorData)
+			case ('U'):
+				if (rtype != NuVTypes::VectorData)
+				{
+					msg.print("Argument %i to command '%s' must be a vector.\n", count+1, NuCommand::data[func].keyword);
+					failed = TRUE;
+				}
+				break;	
 			// Any Simple		(IntegerData, RealData, CharacterData)
 			case ('S'):
 				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::CharacterData))
@@ -380,10 +389,18 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 				}
 				break;
 			// Pointer		(Any pointer (void*) object)
-			case ('V'):
+			case ('X'):
 				if (rtype < NuVTypes::AtomData)
 				{
 					msg.print("Argument %i to command '%s' must be a reference of some kind.\n", count+1, NuCommand::data[func].keyword);
+					failed = TRUE;
+				}
+				break;
+			// Variable of any type (but not a path)
+			case ('V'):
+				if (leaf->argNode(count)->nodeType() != TreeNode::VarNode) 
+				{
+					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, NuCommand::data[func].keyword);
 					failed = TRUE;
 				}
 				break;
@@ -451,18 +468,37 @@ void Tree::addConstant(NuVariable *v)
 	scopeStack_.last()->item->variables.take(v);
 }
 
+// Set current declared variable type
+void Tree::setDeclaredVariableType(NuVTypes::DataType type)
+{
+	declaredType_ = type;
+}
+
 // Add variable to topmost scope
 TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
-	printf("Adding a variable called %s\n", name->get());
+	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(type));
+	// Get topmost scopenode
+	Refitem<ScopeNode,int> *ri = scopeStack_.last();
+	if (ri == NULL)
+	{
+		printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
+		return NULL;
+	}
 	// Create the supplied variable in the list of the topmost scope
-	NuVariable *var = scopeStack_.last()->item->variables.create(type, name->get(), initialValue);
+	NuVariable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
 		printf("ERROR!\n");
 		return NULL;
 	}
 	return var;
+}
+
+// Add variable to topmost scope using most recently set declared variable type
+TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
+{
+	return addVariable(declaredType_, name, initialValue);
 }
 
 // Add constant value

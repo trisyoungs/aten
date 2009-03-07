@@ -21,14 +21,20 @@
 
 #include "parser/vtypes.h"
 #include "base/constants.h"
+#include "base/sysfunc.h"
 #include <string.h>
 #include <stdio.h>
 
 // Variable Types
-const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "no data", "integer", "real", "character", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&" };
+const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "integer", "real", "character", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&" };
+const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "integer", "real", "character", "vector", "_ATEN", "atom", "bond", "cell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern" };
+NuVTypes::DataType NuVTypes::dataType(const char *s)
+{
+	return (NuVTypes::DataType) enumSearch("", NuVTypes::nDataTypes, NuDataTypeKeywords, s);
+}
 const char *NuVTypes::dataType(NuVTypes::DataType dt)
 {
-	return NuDataTypeKeywords[dt];
+	return NuDataTypeNames[dt];
 }
 bool NuVTypes::isPointer(NuVTypes::DataType dt)
 {
