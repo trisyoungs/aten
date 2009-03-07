@@ -81,7 +81,28 @@ bool StepNode::execute(NuReturnValue &rv)
 // Print node contents
 void StepNode::nodePrint(int offset, const char *prefix)
 {
-	printf("Cannot print the contents of an StepNode (yet).\n");
+	// Stepnodes print in a slightly different way, with no newlines...
+	switch (previousType_)
+	{
+		case (NuVTypes::NoData):
+			printf("Internal Error: StepNode was expecting NoData.\n");
+			break;
+		case (NuVTypes::AtenData):
+			printf("%s", AtenVariable::accessorData[accessor_].name);
+			break;
+		case (NuVTypes::AtomData):
+			printf("%s", AtomVariable::accessorData[accessor_].name);
+			break;
+		case (NuVTypes::ModelData):
+			printf("%s", ModelVariable::accessorData[accessor_].name);
+			break;
+		case (NuVTypes::VectorData):
+			printf("%s", NuVectorVariable::accessorData[accessor_].name);
+			break;
+		default:
+			printf("Internal Error: StepNode doesn't know how to print a member from type (%s)\n", NuVTypes::dataType(previousType_));
+			break;
+	}
 }
 
 // Set from returnvalue node
@@ -91,10 +112,11 @@ bool StepNode::set(NuReturnValue &rv)
 	return FALSE;
 }
 
-// Reset node
-void StepNode::reset()
+// Initialise node
+bool StepNode::initialise()
 {
-	return;
+	printf("Internal Error: A StepNode cannot be initialised.\n");
+	return FALSE;
 }
 
 // Static function to search accessors of type represented by this path step

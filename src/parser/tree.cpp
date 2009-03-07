@@ -22,7 +22,8 @@
 #include "parser/treenode.h"
 #include "parser/scopenode.h"
 #include "parser/commandnode.h"
-#include "parser/pathnode.h"
+#include "parser/variablenode.h"
+#include "parser/stepnode.h"
 #include "parser/grammar.h"
 #include "parser/tree.h"
 #include "parser/vector.h"
@@ -42,6 +43,7 @@ Tree::Tree()
 	fileSource_ = NULL;
 	stringPos_ = -1;
 	stringLength_ = 0;
+	expectPathStep_ = FALSE;
 
 	// Public variables
 	currentTree = NULL;
@@ -64,6 +66,7 @@ void Tree::clear()
 	for (Refitem<TreeNode,int> *ri = ownedNodes_.first(); ri != NULL; ri = ri->next) delete ri->item;
 	ownedNodes_.clear();
 	statements_.clear();
+	expectPathStep_ = FALSE;
 }
 
 // Create tree from string
@@ -106,6 +109,7 @@ bool Tree::execute(NuReturnValue &rv)
 	bool result;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
+		printf("Executing tree statement %li...\n", ri->item);
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
@@ -222,19 +226,15 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	return leaf;
 }
 
-// Add command-based leaf node to topmost branch on stack
-TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
+// Add function-based leaf node to topmost branch on stack
+TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 {
-	msg.enter("Tree::addCommandLeaf");
-	// Create variable argument parser
-	va_list vars;
-	va_start(vars,nargs);
+	msg.enter("Tree::addFunctionLeaf");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
-	// Add arguments in the order they were provided
-	for (int n=0; n<nargs; n++) leaf->addArguments(1, va_arg(vars, TreeNode*));
-	va_end(vars);
+	// Add argument list to node
+	leaf->addArgumentList(arglist);
 	// Store the function's return type
 	leaf->setReturnType(NuCommand::data[func].returnType);
 	// Check that the correct arguments were given to the command
@@ -284,12 +284,12 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 			{
 				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", leaf->nArgs()-count, NuCommand::data[func].keyword, NuCommand::data[func].keyword, NuCommand::data[func].argText);
 				nErrors_ ++;
-				msg.exit("Tree::addCommandLeaf");
+				msg.exit("Tree::addFunctionLeaf");
 				return leaf;
 			}
 			else
 			{
-				msg.enter("Tree::addCommandLeaf");
+				msg.enter("Tree::addFunctionLeaf");
 				return leaf;
 			}
 		}
@@ -301,7 +301,7 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 				msg.print("Error: The function '%s' requires argument %i.\n", NuCommand::data[func].keyword, count+1);
 				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[func].keyword, NuCommand::data[func].argText);
 				nErrors_ ++;
-				msg.exit("Tree::addCommandLeaf");
+				msg.exit("Tree::addFunctionLeaf");
 				return leaf;
 			}
 			else if (cluster && (ngroup != 0))
@@ -309,12 +309,12 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, NuCommand::data[func].keyword);
 				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[func].keyword, NuCommand::data[func].argText);
 				nErrors_ ++;
-				msg.exit("Tree::addCommandLeaf");
+				msg.exit("Tree::addFunctionLeaf");
 				return leaf;
 			}
 			else
 			{
-				msg.exit("Tree::addCommandLeaf");
+				msg.exit("Tree::addFunctionLeaf");
 				return leaf;
 			}
 		}
@@ -391,7 +391,7 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 		// Check for failure
 		if (failed)
 		{
-			msg.exit("Tree::addCommandLeaf");
+			msg.exit("Tree::addFunctionLeaf");
 			nErrors_ ++;
 			return leaf;
 		}
@@ -399,7 +399,7 @@ TreeNode *Tree::addCommandLeaf(NuCommand::Function func, int nargs, ...)
 		if (cluster) ngroup++;
 		count++;
 	} while (*c != '\0');
-	msg.exit("Tree::addCommandLeaf");
+	msg.exit("Tree::addFunctionLeaf");
 	return leaf;
 }
 
@@ -456,15 +456,13 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 {
 	printf("Adding a variable called %s\n", name->get());
 	// Create the supplied variable in the list of the topmost scope
-	if (!scopeStack_.last()->item->variables.create(type, name->get(), initialValue))
+	NuVariable *var = scopeStack_.last()->item->variables.create(type, name->get(), initialValue);
+	if (!var)
 	{
 		printf("ERROR!\n");
 		return NULL;
 	}
-	// Create a placeholder node with no function
-	NuCommandNode *leaf = new NuCommandNode(NuCommand::Declarations);
-	ownedNodes_.add(leaf);
-	return leaf;
+	return var;
 }
 
 // Add constant value
@@ -505,15 +503,16 @@ bool Tree::expectPathStep()
 }
 
 // Create a new path on the stack
-TreeNode *Tree::createPath(TreeNode *basevar)
+TreeNode *Tree::createPath(TreeNode *node)
 {
 	msg.enter("Tree::createPath");
 	// Create a new pathnode
-	PathNode *node = new PathNode(basevar);
-	pathStack_.add(node, node);
-	printf("New PathNode for tree is %li\n", node);
+// 	VariableNode *node = new VariableNode(basevar);
+ 	VariableNode *vnode = (VariableNode*) node;
+	pathStack_.add(vnode, vnode);
+	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
 	msg.exit("Tree::createPath");
-	return (TreeNode*) node;
+	return vnode;
 }
 
 // Expand topmost path
@@ -521,7 +520,7 @@ void Tree::expandPath(TreeNode *steps)
 {
 	msg.enter("Tree::expandPath");
 	// Finalise the path before we remove it
-	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
 	if (ri == NULL)
 	{
 		msg.print("Internal Error: No path on stack to expand!\n");
@@ -536,13 +535,13 @@ TreeNode *Tree::finalisePath()
 {
 	msg.enter("Tree::finalisePath");
 	// Finalise the path before we remove it
-	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
 	if (ri == NULL)
 	{
 		msg.print("Internal Error: No path on stack to finalise.\n");
 		return NULL;
 	}
-	ri->item->finalise();
+	ri->item->finalisePath();
 	TreeNode *result = ri->item;
 	pathStack_.remove(ri);
 	msg.exit("Tree::finalisePath");
@@ -554,18 +553,24 @@ StepNode *Tree::evaluateAccessor(const char *s)
 {
 	msg.enter("Tree::evaluateAccessor");
 	// Get last item on path stack
-	Refitem<PathNode,TreeNode*> *ri = pathStack_.last();
+	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
+	if (ri == NULL)
+	{
+		printf("Internal Error: No path on stack for which to evaluate accessor '%s'.\n", s);
+		return NULL;
+	}
 	TreeNode *laststep = ri->data;
-	printf("Last path node:\n");
-	laststep->nodePrint(2);
+	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", s, ri->item->nArgs()+1, ri->item->name());
 	// Find next step accessor
 	StepNode *result = laststep->findAccessor(s);
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
+		msg.print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", NuVTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
 // 		ri->item->setReturnType(result->returnType());
 	}
+	else msg.print(Messenger::Parse,"...FAILED - no matching accessor for '%s' found.\n", s);
 	msg.exit("Tree::evaluateAccessor");
 	return result;
 }

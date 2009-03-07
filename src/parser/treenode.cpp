@@ -212,6 +212,17 @@ Vec3<double> TreeNode::arg3d(int i)
 	return result;
 }
 
+// Return the TreeNode corresponding to the argument, rather than executing it
+TreeNode *TreeNode::argNode(int i)
+{
+	if ((i < -1) || (i > (args_.nItems()-3)))
+	{
+		printf("Argument index %i is out of range for a triplet.\n", i);
+		return FALSE;
+	}
+	return args_[i]->item;
+}
+
 /*
 // Virtuals
 */

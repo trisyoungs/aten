@@ -60,10 +60,11 @@ bool ScopeNode::set(NuReturnValue &rv)
 	return FALSE;
 }
 
-// Reset variable
-void ScopeNode::reset()
+// Initialise node
+bool ScopeNode::initialise()
 {
-	printf("XXX RESET SCOPENODE\n");
+	printf("Internal Error: A ScopeNode cannot be initialised.\n");
+	return FALSE;
 }
 
 // Print node contents

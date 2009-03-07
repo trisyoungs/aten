@@ -53,7 +53,7 @@ class StepNode : public TreeNode
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
 	// Reset node
-	void reset();
+	bool initialise();
 	// Search accessors for the type represented by this node
 	StepNode *findAccessor(const char *s);
 };

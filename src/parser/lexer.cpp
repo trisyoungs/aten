@@ -54,9 +54,9 @@ int yylex()
 	if (c == EOF) return 0;
 
 	/*
-	// A '.' followed by a character indicates a variable path - stop here and return '.'
+	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
+// 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
 	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
 	{
 		Tree::currentTree->setExpectPathStep(TRUE);
@@ -158,20 +158,20 @@ int yylex()
 	*/
 	if (isalpha (c))
 	{
-		printf("An alphanumeric token...\n");
+// 		printf("An alphanumeric token...\n");
 		do
 		{
 			token[length++] = c;
 			c = Tree::currentTree->getChar();
 		}
 		while (isalnum (c));
-		printf("Character that terminated alphtoken = %c\n", c);
+// 		printf("Character that terminated alphtoken = %c\n", c);
 		Tree::currentTree->unGetChar();
 		token[length] = '\0';
-
 		// Skip over keyword detection if we are expecting a path step
 		if (!Tree::currentTree->expectPathStep())
 		{
+
 			// Is this a recognised high-level keyword?
 			if (strcmp(token,"integer") == 0) return INTEGER;
 			else if (strcmp(token,"real") == 0) return REAL;
@@ -197,7 +197,7 @@ int yylex()
 			for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
 			if (n != NuCommand::nFunctions)
 			{
-				printf("Command is [%s], id = %i\n", token, n);
+				msg.print(Messenger::Parse, "Found function '%s' (is %i).\n", token, n);
 				yylval.functionId = n;
 				// Our return type here depends on the return type of the function
 				switch (NuCommand::data[n].returnType)
@@ -227,13 +227,11 @@ int yylex()
 		{
 			// Expand the path at the top of the stack with an accessor matching this token...
 			StepNode *newstep = Tree::currentTree->evaluateAccessor(token);
-	printf("Accessor token is %li\n", newstep);
 			if (newstep == NULL) return 0;
 
 			// Flag that we don't necessarily expect another path step. This will be set to true on the next discovery of a '.' before an alpha
 			Tree::currentTree->setExpectPathStep(FALSE);
 			yylval.node = (TreeNode*) newstep;
-	printf("Return type of accessor is %s\n", NuVTypes::dataType(newstep->returnType()));
 			switch (newstep->returnType())
 			{
 				case (NuVTypes::NoData):
@@ -288,13 +286,13 @@ int yylex()
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		printf("Lexer found an unknown token name = [%s]\n", token);
+		msg.print(Messenger::Parse, "Found unknown token '%s'...\n", token);
 		name = token;
 		yylval.name = &name;
 		return TOKENNAME;
 	}
 
-	printf("Symbolic character...\n");
+// 	printf("Symbolic character...\n");
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of string single-character literals
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
@@ -311,7 +309,7 @@ int yylex()
 	while (ispunct(c));
 	Tree::currentTree->unGetChar();
 	token[length] = '\0';
-	printf("Token is %s\n",token);
+// 	printf("Token is %s\n",token);
 	if (length == 1) return token[0];
 	else
 	{

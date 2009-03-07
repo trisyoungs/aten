@@ -48,7 +48,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"" },
 	{ "_joiner",		"",		"", NuVTypes::NoData,
 				"" },
-	{ "_declarations",	"",		"", NuVTypes::NoData,
+	{ "_initialisations",	"",		"", NuVTypes::NoData,
 				"" },
 
 	// Analysis commands

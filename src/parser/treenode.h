@@ -69,6 +69,8 @@ class TreeNode
 	const char *argc(int i);
 	// Return (execute) triplet of arguments, starting from argument specified
 	Vec3<double> arg3d(int i);
+	// Return the TreeNode corresponding to the argument, rather than executing it
+	TreeNode *argNode(int i);
 	// Set argument specified
 	bool setArg(int i, NuReturnValue &rv);
 	// Return whether argument i was given
@@ -107,7 +109,7 @@ class TreeNode
 	// Print layout of current node
 	virtual void nodePrint(int offset, const char *prefix = "") = 0;
 	// Reset node
-	virtual void reset() = 0;
+	virtual bool initialise() = 0;
 	// Search accessors (if any) available for node
 	virtual StepNode *findAccessor(const char *s);
 };

@@ -48,8 +48,7 @@ NuVTypes::DataType variableType = NuVTypes::NoData;
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
-%type <node> numlval ptrlval charlval veclval variable
-%type <node> path step steplist
+%type <node> pathvar step steplist
 %type <node> statement statementlist declaration exprlist VECCONST
 %type <name> namelist
 
@@ -98,31 +97,31 @@ namelist:
 /* Can this be reduced to a rule which stores the variable type in yylval and then retrieves it here? i.e. DECLARATION {vari.....} namelist;  */
 declaration:
 	INTEGER { variableType = NuVTypes::IntegerData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| REAL { variableType = NuVTypes::RealData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| CHARACTER { variableType = NuVTypes::CharacterData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| VECTOR { variableType = NuVTypes::VectorData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| ATOM { variableType = NuVTypes::AtomData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| BOND { variableType = NuVTypes::BondData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| CELL { variableType = NuVTypes::CellData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| FORCEFIELD { variableType = NuVTypes::ForcefieldData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| FFATOM { variableType = NuVTypes::ForcefieldAtomData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| FFBOUND { variableType = NuVTypes::ForcefieldBoundData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| GRID { variableType = NuVTypes::GridData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| MODEL { variableType = NuVTypes::ModelData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	| PATTERN { variableType = NuVTypes::PatternData; }
-	namelist ';'				{ $$ = Tree::currentTree->addCommandLeaf(NuCommand::Declarations,0); }
+	namelist ';'				{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations,0); }
 	;
 
 /* Expressions */
@@ -142,25 +141,27 @@ anyexpr:
 charexpr:
 	CHARCONST				{ $$ = $1; }
 	| charfunc				{ $$ = $1; }
-	| charlval				{ $$ = $1; }
-	| charlval '=' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| CHARVAR '=' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| CHARVAR				{ $$ = $1; }
 	| charexpr '+' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
 	| charexpr '*' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
 	| numexpr '*' charexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 2, $1, $3); }
 	;
 
 ptrexpr:
-	ptrlval					{ $$ = $1; }
-	| ptrfunc				{ $$ = $1; }
-	| ptrlval '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	ptrfunc					{ $$ = $1; }
+	| pathvar '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
+	| pathvar '.' steplist '.' PTRSTEP	{ printf("POINTERPOOP.\n"); Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
+	| PTRVAR '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| PTRVAR				{ $$ = $1; }
 	| ptrexpr EQ ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); }
 	;
 
 vecexpr:
 	VECCONST				{ $$ = $1; }
 	| vecfunc				{ $$ = $1; }
-	| veclval				{ $$ = $1; }
-	| veclval '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| VECVAR '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| VECVAR				{ $$ = $1; }
 	| vecexpr '*' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
 	| vecexpr '-' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
 	| vecexpr '+' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 1, $1, $3); }
@@ -170,8 +171,10 @@ numexpr:
 	INTCONST				{ $$ = $1; }
 	| REALCONST				{ $$ = $1; }
 	| numfunc				{ $$ = $1; }
-	| numlval				{ $$ = $1; }
-	| numlval '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| pathvar '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
+	| pathvar '.' steplist '.' NUMSTEP	{ printf("POOP.\n"); Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
+	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| NUMVAR				{ $$ = $1; }
 	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }
 	| numexpr '+' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); }
 	| numexpr '-' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); }
@@ -187,54 +190,24 @@ numexpr:
 	| '(' numexpr ')'			{ $$ = $2; }
 	;
 
-/* L-Values - Variables and paths */
+/* Variable paths */
 
 step:
-	NUMSTEP					{ $$ = $1; }
-	| CHARSTEP				{ $$ = $1; }
-	| PTRSTEP				{ $$ = $1; }
+	PTRSTEP					{ $$ = $1; Tree::currentTree->expandPath($1); }
 	| VECSTEP				{ $$ = $1; }
 	;
 
 steplist:
 	/* empty */				{ $$ = NULL; }
-	| step '.'				{ $$ = $1; printf("Crap.\n"); }
-	| steplist step				{ $$ = Tree::currentTree->joinArguments($1, $2); }
+	| step 					{ $$ = $1; printf("Crap.\n"); }
+/*	| step '[' numexpr ']'			{ } */
+	| steplist '.' step			{ $$ = Tree::currentTree->joinArguments($1, $3); }
 	;
 
-variable:
-	NUMVAR					{ $$ = $1; }
-	| PTRVAR				{ $$ = $1; }
-	| CHARVAR				{ $$ = $1; }
-	| VECVAR				{ $$ = $1; }
+pathvar:
+	PTRVAR					{ printf("HEllo ptrpathvar.\n"); $$ = Tree::currentTree->createPath($1); }
+	| VECVAR				{ printf("HEllo vacpathvar.\n"); $$ = Tree::currentTree->createPath($1); }
 	;
-
-path:
-	variable 				{ $$ = Tree::currentTree->createPath($1); }
-		'.' steplist			{ Tree::currentTree->expandPath($4); }
-	;
-
-numlval:
-	NUMVAR					{ $$ = $1; }
-	| path NUMSTEP			{ Tree::currentTree->expandPath($2); $$ = Tree::currentTree->finalisePath(); }
-	;
-
-charlval:
-	CHARVAR					{ $$ = $1; }
-	| path '.' CHARSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
-	;
-
-veclval:
-	VECVAR					{ $$ = $1; }
-	| path '.' VECSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
-	;
-
-ptrlval:
-	PTRVAR					{ $$ = $1; }
-	| path '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
-	;
-
-
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
@@ -244,28 +217,28 @@ VECCONST:
 /* Function Definitions */
 
 numfunc:
-	NUMFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| NUMFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	NUMFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); }
+	| NUMFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); }
 	;
 
 charfunc:
-	CHARFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| CHARFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	CHARFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); }
+	| CHARFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); }
 	;
 
 ptrfunc:
-	PTRFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| PTRFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	PTRFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); }
+	| PTRFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); }
 	;
 
 vecfunc:
-	VECFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| VECFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	VECFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); }
+	| VECFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); }
 	;
 
 voidfunc:
-	VOIDFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,0); }
-	| VOIDFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addCommandLeaf( (NuCommand::Function) $1,1,$3); }
+	VOIDFUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); }
+	| VOIDFUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); }
 	;
 
 %%

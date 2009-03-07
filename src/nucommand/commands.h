@@ -72,7 +72,7 @@ class NuCommand
 		// AST-Specific nodes
 		NoFunction,
 		Joiner,
-		Declarations,
+		Initialisations,
 	
 		// Analysis commands
 		Finalise,
@@ -509,7 +509,7 @@ class NuCommand
 	// AST-specific commands
 	static bool function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Declarations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Initialisations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Analyse commands
 	static bool function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

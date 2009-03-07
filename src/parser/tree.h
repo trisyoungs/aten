@@ -33,7 +33,7 @@
 class NuVariable;
 class TreeNode;
 class ScopeNode;
-class PathNode;
+class VariableNode;
 class StepNode;
 
 // Tree
@@ -86,8 +86,8 @@ class Tree
 	private:
 	// Stack of ScopeNodes
 	Reflist<ScopeNode,int> scopeStack_;
-	// Stack of variable path nodes (and last added stepnode)
-	Reflist<PathNode,TreeNode*> pathStack_;
+	// Stack of variable paths (and last added stepnode)
+	Reflist<VariableNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
 
@@ -100,9 +100,9 @@ class Tree
 	// Add an operator to the Tree
 	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addCommandLeaf(NuCommand::Function funcs, int nargs, ...);
+	TreeNode *addFunctionLeaf(NuCommand::Function func, TreeNode *arglist);
 	// Associate a scoped command leaf node to the Tree
-	TreeNode *addScopedLeaf(NuCommand::Function funcs, int nargs, ...);
+	TreeNode *addScopedLeaf(NuCommand::Function func, int nargs, ...);
 	// Add an argument to the most recently pushed function on the stack
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments
