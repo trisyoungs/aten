@@ -68,7 +68,7 @@ class NuReturnValue
 	// Set from character value
 	void set(const char *s);
 	// Set from vector value
-	void set(Vec3<double> &v);
+	void set(Vec3<double> v);
 	// Set from individual vector data
 	void set(double x, double y, double z);
 	// Set from single vector data

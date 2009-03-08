@@ -75,14 +75,18 @@ bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	// Argument 1 - Initial value expression
 	// Argument 2 - Loop condition
 	// Argument 3 - Action on loop cycle
-	// Get initial variable value
+	// Argument 4 - Statementlist
+	 // Get initial variable value
 	if (!c->arg(0, rv)) return FALSE;
 	NuReturnValue ifval;
 	while (TRUE)
 	{
+		// Termination condition
 		if (!c->arg(1, ifval)) return FALSE;
 		if (!ifval.asBool()) break;
+		// Loop 'increment' statement
 		if (!c->arg(2, rv)) return FALSE;
+		if (!c->arg(3, rv)) return FALSE;
 	}
 	return TRUE;
 }

@@ -32,6 +32,15 @@
 #include <ctype.h>
 #include <string.h>
 
+// Symbolic tokens - array of corresponding values refers to Bison's tokens
+class Tokens
+{
+	public:
+	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, nSymbolTokens };
+};
+const char *SymbolTokenKeywords[Tokens::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=" };
+int SymbolTokenValues[Tokens::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ};
+
 // Lexical Analyser - Used the getchar function of the current active Tree (stored in static member Tree::currentTree)
 int yylex()
 {
@@ -56,7 +65,7 @@ int yylex()
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-// 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
+	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
 	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
 	{
 		Tree::currentTree->setExpectPathStep(TRUE);
@@ -292,7 +301,7 @@ int yylex()
 
 // 	printf("Symbolic character...\n");
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
-	// Return immediately in the case of string single-character literals
+	// Return immediately in the case of single-character literals
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
 	// Similarly, if the next character is a bracket, return immediately
 	char c2 = Tree::currentTree->peekChar();
@@ -311,11 +320,9 @@ int yylex()
 	if (length == 1) return token[0];
 	else
 	{
-		if (strcmp(token,"==") == 0) return EQ;
-		else if (strcmp(token,">=") == 0) return GEQ;
-		else if (strcmp(token,"<=") == 0) return LEQ;
-		else if (strcmp(token,"!=") == 0) return NEQ;
-		else if (strcmp(token,"<>") == 0) return NEQ;
+		Tokens::SymbolToken st = (Tokens::SymbolToken) enumSearch("", Tokens::nSymbolTokens, SymbolTokenKeywords, token);
+		if (st != Tokens::nSymbolTokens) return SymbolTokenValues[st];
+		else msg.print("Error: Unrecognised symbol found in input.\n");
 	}
 	return 0;
 }

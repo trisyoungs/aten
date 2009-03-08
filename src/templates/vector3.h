@@ -67,7 +67,7 @@ template <class T> class Vec3
 	void operator+=(T);
 	void operator+=(const Vec3<T>&);
 	Vec3<T> operator+(T) const;
-	Vec3<T> operator+(const Vec3<T>&) const;
+	Vec3<T> &operator+(const Vec3<T>&) const;
 	// Operators - and -=
 	void operator-=(T);
 	void operator-=(const Vec3<T>&);
@@ -224,7 +224,7 @@ template <class T> Vec3<T> Vec3<T>::operator+(T v) const
 }
 
 // Operator + (Vec3)
-template <class T> Vec3<T> Vec3<T>::operator+(const Vec3<T> &v) const
+template <class T> Vec3<T> &Vec3<T>::operator+(const Vec3<T> &v) const
 {
 	Vec3<T> result;
 	result.x = x+v.x;

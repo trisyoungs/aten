@@ -126,7 +126,7 @@ void NuReturnValue::set(const char *s)
 }
 
 // Set from vector value
-void NuReturnValue::set(Vec3<double> &v)
+void NuReturnValue::set(Vec3<double> v)
 {
 	type_ = NuVTypes::VectorData;
 	valueV_ = v;

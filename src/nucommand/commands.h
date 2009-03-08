@@ -471,6 +471,10 @@ class NuCommand
 		// Variable Operators
 		OperatorAdd,
 		OperatorAssignment,
+		OperatorAssignmentDivide,
+		OperatorAssignmentMinus,
+		OperatorAssignmentMultiply,
+		OperatorAssignmentPlus,
 		OperatorDivide,
 		OperatorEqualTo,
 		OperatorGreaterThan,
@@ -889,6 +893,10 @@ class NuCommand
 	// Variable Operators
 	static bool function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAssignmentDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAssignmentMinus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAssignmentMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAssignmentPlus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorGreaterThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

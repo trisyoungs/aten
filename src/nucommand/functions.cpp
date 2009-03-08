@@ -33,6 +33,10 @@ void NuCommand::initPointers()
 
 	pointers_[OperatorAdd] = &function_OperatorAdd;
 	pointers_[OperatorAssignment] = &function_OperatorAssignment;
+	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
+	pointers_[OperatorAssignmentMinus] = &function_OperatorAssignmentMinus;
+	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
+	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
 	pointers_[OperatorDivide] = &function_OperatorDivide;
 	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
 	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
