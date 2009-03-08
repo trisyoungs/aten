@@ -458,6 +458,15 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	return leaf;
 }
 
+// Pop the topmost scope node
+void Tree::popScope()
+{
+	Refitem<ScopeNode,int> *ri = scopeStack_.last();
+	if (ri == NULL) printf("Internal Error: No scoped node to pop from stack.\n");
+	else scopeStack_.remove(ri);
+	printf("ScopeNode is popped.\n");
+}
+
 /*
 // Variables / Constants
 */
@@ -479,6 +488,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 {
 	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(type));
 	// Get topmost scopenode
+	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
 	if (ri == NULL)
 	{
@@ -492,6 +502,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 		printf("ERROR!\n");
 		return NULL;
 	}
+	printf("Created variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
 	return var;
 }
 
@@ -516,7 +527,9 @@ NuVariable *Tree::isVariableInScope(const char *name)
 	NuVariable *v = NULL;
 	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
 	{
+		printf("searching scopenode %li for variable '%s'\n", ri->item, name);
 		v = ri->item->variables.find(name);
+		if (v !=NULL) printf("Found it!\n");
 		if (v != NULL) break;
 	}
 	return v;

@@ -43,7 +43,7 @@ void yyerror(char *s);
 %left '*' '/'
 %left '^' '.'
 %nonassoc UMINUS
-%token ';'
+%token ';' '}' '{'
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
@@ -76,8 +76,8 @@ statement:
 	| vecexpr ';'					{ $$ = $1; }
 	| ptrexpr ';'					{ $$ = $1; }
 	| voidfunc ';'					{ $$ = $1; }
-	| IF '(' anyexpr ')' statementlist		{ $$ = $1; $1->addArguments(2,$3,$5);  }
-	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $1->addArguments(3,$3,$5,$7);  }
+	| IF '(' anyexpr ')' statementlist		{ printf("bloop.\n"); $$ = $1; $1->addArguments(2,$3,$5); Tree::currentTree->popScope(); }
+	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = $1; $1->addArguments(3,$3,$5,$7); Tree::currentTree->popScope(); }
 	| FOR '(' NUMVAR '=' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,4,$3,$5,$7,$9); };
 	| FOR '(' NUMVAR '=' numexpr ',' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,5,$3,$5,$7,$9,$11); };
 	;

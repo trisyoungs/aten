@@ -184,6 +184,7 @@ int yylex()
 			{
 				// Create a scopenode to contain the IF
 				yylval.node = Tree::currentTree->addScopedLeaf(NuCommand::If,0);
+	printf("HERE IS THE IF\n");
 				return IF;
 			}
 			else if (strcmp(token,"else") == 0) return ELSE;
