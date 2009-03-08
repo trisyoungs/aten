@@ -38,11 +38,12 @@ void yyerror(char *s);
 %token <node> IF
 %nonassoc ELSE
 
+%left '=' PEQ MEQ TEQ DEQ
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
 %left '*' '/'
-%left '^' '.' '{' '}'
 %nonassoc UMINUS
+%right '^'
 %token ';'
 %nonassoc BOB
 
@@ -80,7 +81,7 @@ statement:
 	| IF '(' anyexpr ')' statementlist	%prec BOB	{ $$ = $1; $1->addArguments(2,$3,$5); Tree::currentTree->popScope(); }
 	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = $1; $1->addArguments(3,$3,$5,$7); Tree::currentTree->popScope(); }
 	| FOR '(' numexpr ';' numexpr ';' numexpr ')' statementlist
-				{ $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,3,$3,$5,$7); Tree::currentTree->popScope(); };
+				{ $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,4,$3,$5,$7,$9); Tree::currentTree->popScope(); };
 	;
 
 /* Variable declaration  name / assignment list */
@@ -132,6 +133,10 @@ vecexpr:
 	VECCONST				{ $$ = $1; }
 	| vecfunc				{ $$ = $1; }
 	| VECVAR '=' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| VECVAR PEQ vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); }
+	| VECVAR MEQ vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); }
+	| VECVAR TEQ vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); }
+	| VECVAR DEQ vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); }
 	| VECVAR				{ $$ = $1; }
 	| vecexpr '*' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 1, $1, $3); }
 	| vecexpr '-' vecexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 1, $1, $3); }
@@ -145,6 +150,10 @@ numexpr:
 	| pathvar '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
 	| pathvar '.' steplist '.' NUMSTEP	{ Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
 	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
+	| NUMVAR PEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); }
+	| NUMVAR MEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); }
+	| NUMVAR TEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); }
+	| NUMVAR DEQ numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); }
 	| NUMVAR				{ $$ = $1; }
 	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }
 	| numexpr '+' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); }

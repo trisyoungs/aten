@@ -82,31 +82,30 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 					strcat(s, rv2->asCharacter(b));
 					result.set(s);
 				}
-				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else if (t[0] == NuVTypes::VectorData) result.set(rv1->asVector() + rv2->asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorSubtract):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) - rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) - rv2->asReal(b));
-				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else if (t[0] == NuVTypes::VectorData) result.set(rv1->asVector() - rv2->asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorMultiply):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) * rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) * rv2->asReal(b));
-				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else if (t[0] == NuVTypes::VectorData) result.set(rv1->asVector() * rv2->asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorDivide):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) / rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) / rv2->asReal(b));
-				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
+				else if (t[0] == NuVTypes::VectorData) result.set(rv1->asVector() / rv2->asVector());
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorPower):
 				if (t[0] == NuVTypes::IntegerData) result.set(power(rv1->asInteger(b), rv2->asInteger(b)));
 				else if (t[0] == NuVTypes::RealData) result.set(pow(rv1->asReal(b), rv2->asReal(b)));
-				//else if (t1 == NuVTypes::VectorData) result.set(v1.asVector() + v2.asVector());
 				else failed = TRUE;
 				break;
 			default:
@@ -114,7 +113,27 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 				break;
 		}
 	}
-// 	else if (t[0] == NuVTypes::VectorData)
+ 	else if (t[0] == NuVTypes::VectorData)
+	{
+		// A vector operation with a number is fine - a character string is not...
+		if (t[1] == NuVTypes::CharacterData) failed = TRUE;
+		else switch (func)
+		{
+			// Multiply string by the (integer) number specified
+			case (NuCommand::OperatorMultiply):
+				if ((t[1] == NuVTypes::IntegerData) || (t[1] == NuVTypes::RealData))
+				{
+					s[0] = '\0';
+					for (int n=0; n<rv[1]->asInteger(b); n++) strcat(s, rv[0]->asCharacter(b));
+					result.set(s);
+				}
+				else failed = TRUE;
+				break;
+			default:
+				failed = TRUE;
+				break;
+		}
+	}
 	else if (t[0] == NuVTypes::CharacterData)
 	{
 		// There are limited operations that we can do with character strings....
@@ -159,7 +178,7 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 	}
 	if (failed)
 	{
-		msg.print("Error: the expression '%s %s %s' does not return a valid result.\n", NuVTypes::dataType(rv1->type()), NuCommand::data[func].keyword, NuVTypes::dataType(rv2->type()));
+		msg.print("Error: the expression '%s %s %s' does not return a meaningful result.\n", NuVTypes::dataType(rv1->type()), NuCommand::data[func].keyword, NuVTypes::dataType(rv2->type()));
 		return FALSE;
 	}
 	return TRUE;
@@ -278,7 +297,6 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 	}
 	return TRUE;
 }
-
 
 // Add two quantities together
 bool NuCommand::function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
@@ -405,5 +423,53 @@ bool NuCommand::function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuRet
 {
 	// Grab the second argument result and assign it to the first
 	if (!c->arg(1, rv)) return FALSE;
+	return (c->setArg(0, rv));
+}
+
+// Assignment Divide
+bool NuCommand::function_OperatorAssignmentDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	if (!test(NuCommand::OperatorDivide, &v1, &v2, rv)) return FALSE;
+	// Now, set the first argument to our return value
+	return (c->setArg(0, rv));
+}
+
+// Assignment Minus
+bool NuCommand::function_OperatorAssignmentMinus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	if (!test(NuCommand::OperatorSubtract, &v1, &v2, rv)) return FALSE;
+	// Now, set the first argument to our return value
+	return (c->setArg(0, rv));
+}
+
+// Assignment Plus
+bool NuCommand::function_OperatorAssignmentMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	if (!test(NuCommand::OperatorMultiply, &v1, &v2, rv)) return FALSE;
+	// Now, set the first argument to our return value
+	return (c->setArg(0, rv));
+}
+
+// Assignment Plus
+bool NuCommand::function_OperatorAssignmentPlus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	NuReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	if (!test(NuCommand::OperatorAdd, &v1, &v2, rv)) return FALSE;
+	// Now, set the first argument to our return value
 	return (c->setArg(0, rv));
 }
