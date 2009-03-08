@@ -109,6 +109,8 @@ class Tree
 	void finaliseFunction();
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	// Pop the topmost scope node
+	void popScope();
 
 	/*
 	// Variables / Constants
