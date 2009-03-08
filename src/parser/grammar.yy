@@ -41,9 +41,10 @@ void yyerror(char *s);
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
 %left '*' '/'
-%left '^' '.'
+%left '^' '.' '{' '}'
 %nonassoc UMINUS
-%token ';' '}' '{'
+%token ';'
+%nonassoc BOB
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
@@ -61,25 +62,25 @@ program:
 /* Compound Statement */
 
 statementlist:
-	statement				{ $$ = $1; }
-	| '{' statement '}'			{ $$ = $2; }
-        | '{' statementlist statement '}'	{ $$ = Tree::currentTree->addJoiner($2, $3); }
+	statement				{ $$ = $1;printf("End of statement(list).\n");  }
+	| '{' statement '}'			{ $$ = $2; printf("End of statement(inbrackets).\n"); }
+        | '{' statementlist statement '}'	{ $$ = Tree::currentTree->addJoiner($2, $3); printf("End of statementlist.\n"); }
         ;
 
 /* Single Statement */
 
 statement:
-	';'						{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
-	| DECLARATION namelist ';'			{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); }
-	| numexpr ';'					{ $$ = $1; }
-	| charexpr ';'					{ $$ = $1; }
-	| vecexpr ';'					{ $$ = $1; }
-	| ptrexpr ';'					{ $$ = $1; }
-	| voidfunc ';'					{ $$ = $1; }
-	| IF '(' anyexpr ')' statementlist		{ printf("bloop.\n"); $$ = $1; $1->addArguments(2,$3,$5); Tree::currentTree->popScope(); }
+	';'					{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
+	| DECLARATION namelist ';'		{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); Tree::currentTree->setDeclaredVariableType(NuVTypes::NoData); }
+	| numexpr ';'				{ $$ = $1; }
+	| charexpr ';'				{ $$ = $1; }
+	| vecexpr ';'				{ $$ = $1; }
+	| ptrexpr ';'				{ $$ = $1; }
+	| voidfunc ';'				{ $$ = $1; }
+	| IF '(' anyexpr ')' statementlist	%prec BOB	{ $$ = $1; $1->addArguments(2,$3,$5); Tree::currentTree->popScope(); }
 	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = $1; $1->addArguments(3,$3,$5,$7); Tree::currentTree->popScope(); }
-	| FOR '(' NUMVAR '=' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,4,$3,$5,$7,$9); };
-	| FOR '(' NUMVAR '=' numexpr ',' numexpr ',' numexpr ')' statementlist { $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,5,$3,$5,$7,$9,$11); };
+	| FOR '(' numexpr ';' numexpr ';' numexpr ')' statementlist
+				{ $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,3,$3,$5,$7); Tree::currentTree->popScope(); };
 	;
 
 /* Variable declaration  name / assignment list */
@@ -121,7 +122,7 @@ charexpr:
 ptrexpr:
 	ptrfunc					{ $$ = $1; }
 	| pathvar '.' PTRSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
-	| pathvar '.' steplist '.' PTRSTEP	{ printf("POINTERPOOP.\n"); Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
+	| pathvar '.' steplist '.' PTRSTEP	{ Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
 	| PTRVAR '=' ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| PTRVAR				{ $$ = $1; }
 	| ptrexpr EQ ptrexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); }
@@ -142,7 +143,7 @@ numexpr:
 	| REALCONST				{ $$ = $1; }
 	| numfunc				{ $$ = $1; }
 	| pathvar '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }
-	| pathvar '.' steplist '.' NUMSTEP	{ printf("POOP.\n"); Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
+	| pathvar '.' steplist '.' NUMSTEP	{ Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }
 	| NUMVAR '=' numexpr			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); }
 	| NUMVAR				{ $$ = $1; }
 	| '-' numexpr %prec UMINUS		{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); }

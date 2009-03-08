@@ -51,7 +51,7 @@ bool NuCommand::function_Initialisations(NuCommandNode *c, Bundle &obj, NuReturn
 bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	NuReturnValue ifval;
-	c->arg(0, ifval);
+	if (!c->arg(0, ifval)) return FALSE;
 	if (ifval.asBool()) c->arg(1, rv);
 	else if (c->hasArg(2)) c->arg(2, rv);
 	return TRUE;
@@ -72,5 +72,17 @@ bool NuCommand::function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // For loop
 bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
+	// Argument 1 - Initial value expression
+	// Argument 2 - Loop condition
+	// Argument 3 - Action on loop cycle
+	// Get initial variable value
+	if (!c->arg(0, rv)) return FALSE;
+	NuReturnValue ifval;
+	while (TRUE)
+	{
+		if (!c->arg(1, ifval)) return FALSE;
+		if (!ifval.asBool()) break;
+		if (!c->arg(2, rv)) return FALSE;
+	}
 	return TRUE;
 }

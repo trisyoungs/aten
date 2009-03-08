@@ -527,10 +527,14 @@ NuVariable *Tree::isVariableInScope(const char *name)
 	NuVariable *v = NULL;
 	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
 	{
-		printf("searching scopenode %li for variable '%s'\n", ri->item, name);
 		v = ri->item->variables.find(name);
-		if (v !=NULL) printf("Found it!\n");
 		if (v != NULL) break;
+	}
+	// If the current declared variable type is NuVTypes::NoData then this is not a variable declaration and we must find the variable...
+	if ((declaredType_ == NuVTypes::NoData) && (v == NULL))
+	{
+		msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
+		return NULL;
 	}
 	return v;
 }
