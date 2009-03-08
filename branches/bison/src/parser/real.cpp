@@ -52,8 +52,7 @@ bool NuRealVariable::set(NuReturnValue &rv)
 	}
 	bool success;
 	realData_ = rv.asReal(success);
-	return FALSE;
-
+	return success;
 }
 
 // Reset variable
