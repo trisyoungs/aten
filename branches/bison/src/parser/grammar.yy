@@ -43,15 +43,12 @@ void yyerror(char *s);
 %left '*' '/'
 %nonassoc UMINUS
 %right '^'
-%token ';'
-%nonassoc BOB
 
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
 %type <node> pathvar step steplist
-%type <node> flowstatement statementexpr statement statementlist exprlist VECCONST
+%type <node> flowstatement statementexpr statement block blockment statementlist exprlist VECCONST
 %type <node> namelist newname
-%type <node> beginscope
 
 %%
 
@@ -62,18 +59,20 @@ program:
 
 /* Compound Statement */
 
-statementlist:
-	statement				{ $$ = $1; printf("End of statement(list).\n");  }
-	| beginscope statement endscope		{ $$ = $2; printf("End of statement(inbrackets).\n"); }
-        | beginscope statementlist statement endscope	{ $$ = Tree::currentTree->addJoiner(Tree::currentTree->addJoiner($1, $2), $3); printf("End of statementlist.\n"); }
+block:
+	'{'					{ printf("HERE IS A START BLOCK.\n");  Tree::currentTree->pushScope(); }
+		statementlist '}'		{ $$ = $3; Tree::currentTree->popScope();  printf("HERE IS A BLOCK.\n"); }
         ;
 
-beginscope:
-	'{'					{ $$ = Tree::currentTree->pushScope(); }
-	;
+statementlist:
+	statement				{ $$ = $1; }
+        | statementlist statement 		{ $$ = Tree::currentTree->addJoiner($1, $2); }
+        | statementlist block	 		{ $$ = Tree::currentTree->addJoiner($1, $2); }
+        ;
 
-endscope:
-	'}'					{ Tree::currentTree->popScope(); }
+blockment:
+	statement				{ $$ = $1; }
+	| block					{ $$ = $1; }
 	;
 
 /* Single Statement / Flow Control */
@@ -94,16 +93,20 @@ statementexpr:
 	;
 
 flowstatement:
-	IF '(' anyexpr ')' statementlist	{ $$ = Tree::currentTree->addIf($3,$5); }
-	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addIf($3,$5,$7); }
-	| FOR 					{ $$ = Tree::currentTree->pushScope(); }
-		'(' statementexpr ';' statementexpr ';' statementexpr ')' statementlist	{ $$ = Tree::currentTree->join(Tree::currentTree->addFor($4,$6,$8,$10), $$); Tree::currentTree->popScope(); }
+	IF '(' anyexpr ')' blockment ELSE blockment	{ $$ = Tree::currentTree->addIf($3,$5,$7); }
+	| IF '(' anyexpr ')' blockment		{ $$ = Tree::currentTree->addIf($3,$5); }
+	| FOR createscope '(' statementexpr ';' statementexpr ';' statementexpr ')' blockment	{ $$ = Tree::currentTree->join(Tree::currentTree->addFor($4,$6,$8,$10), $$); Tree::currentTree->popScope(); }
 	;
 
+createscope:
+	/* empty */				{ Tree::currentTree->pushScope(); }
+	;
+	
 /* Variable declaration  name / assignment list */
 
 newname:
 	TOKENNAME				{ $$ = Tree::currentTree->addVariable($1); }
+	| TOKENNAME '[' numexpr ']'		{ $$ = Tree::currentTree->addArrayVariable($1,$3); }
 	| TOKENNAME '=' 			{ Tree::currentTree->setDeclarationAssignment(TRUE); }
 			anyexpr			{ $$ = Tree::currentTree->addVariable($1,$4); Tree::currentTree->setDeclarationAssignment(FALSE); }
 	;
@@ -208,7 +211,7 @@ pathvar:
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
-	'{' numexpr ',' numexpr ',' numexpr '}'	{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
+	'#' numexpr ',' numexpr ',' numexpr '#'	{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
 	;
 
 /* Function Definitions */

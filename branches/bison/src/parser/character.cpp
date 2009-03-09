@@ -26,6 +26,14 @@
 #include <string.h>
 
 // Constructor
+NuCharacterVariable::NuCharacterVariable()
+{
+	// Private variables
+	returnType_ = NuVTypes::CharacterData;
+	readOnly_ = FALSE;
+}
+
+
 NuCharacterVariable::NuCharacterVariable(const char *s, bool constant) : characterData_(s)
 {
 	// Private variables

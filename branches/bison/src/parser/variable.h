@@ -56,6 +56,10 @@ class NuVariable : public TreeNode
 	void setInitialValue(TreeNode *node);
 	// Return TreeNode corresponding to initial value
 	TreeNode *initialValue();
+	// Execute as an array
+	virtual bool executeAsArray(NuReturnValue &rv, int arrayindex);
+	// Set as an array
+	virtual bool setAsArray(NuReturnValue &rv, int arrayindex);
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node

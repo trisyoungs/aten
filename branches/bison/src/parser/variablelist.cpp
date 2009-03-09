@@ -20,6 +20,7 @@
 */
 
 #include "parser/variablelist.h"
+#include "parser/array.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
 #include "parser/bond.h"
@@ -138,6 +139,15 @@ NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, Tr
 NuVariable *NuVariableList::createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
 {
 	return createVariable(type, name, initialValue);
+}
+
+// Create a new array variable in the list
+NuVariable *NuVariableList::createArray(NuVTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+{
+	ArrayVariable *array = new ArrayVariable(type, sizeexpr);
+	array->setName(name);
+	array->setInitialValue(initialValue);
+	return array;
 }
 
 // Return the number of variables (not constants) contained in the list

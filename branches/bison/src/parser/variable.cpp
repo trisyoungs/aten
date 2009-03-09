@@ -86,6 +86,22 @@ TreeNode *NuVariable::initialValue()
 	return initialValue_;
 }
 
+// Execute as an array
+bool NuVariable::executeAsArray(NuReturnValue &rv, int arrayindex)
+{
+	// Secondary array 'retrieval' executor
+	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	return FALSE;
+}
+
+// Set as an array
+bool NuVariable::setAsArray(NuReturnValue &rv, int arrayindex)
+{
+	// Secondary array 'set' executor
+	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
+	return FALSE;
+}
+
 // Search accessors (if any) available for node
 StepNode *NuVariable::findAccessor(const char *s)
 {

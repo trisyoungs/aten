@@ -58,6 +58,8 @@ class NuVariableList
 	NuVariable *create(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new variable (static function, so we don't take ownership of it).
 	NuVariable *createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	// Create a new array variable in the list
+	NuVariable *createArray(NuVTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
 	// Return the number of variables (not constants) contained in the list
 	int nVariables();
 	// Return first variable in the list

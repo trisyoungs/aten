@@ -531,7 +531,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 {
 	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(type));
 	// Get topmost scopenode
-	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
 	if (ri == NULL)
 	{
@@ -542,7 +542,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 	NuVariable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
-		printf("ERROR!\n");
+		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
 	printf("Created variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
@@ -553,6 +553,29 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
 {
 	return addVariable(declaredType_, name, initialValue);
+}
+
+// Add array variable to topmost ScopeNode using the most recently declared type
+TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+{
+	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(declaredType_));
+	// Get topmost scopenode
+// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+	Refitem<ScopeNode,int> *ri = scopeStack_.last();
+	if (ri == NULL)
+	{
+		printf("Internal Error: No current scope in which to define array variable '%s'.\n", name->get());
+		return NULL;
+	}
+	// Create the supplied variable in the list of the topmost scope
+	NuVariable *var = ri->item->variables.createArray(declaredType_, name->get(), sizeexpr, initialvalue);
+	if (!var)
+	{
+		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
+		return NULL;
+	}
+	printf("Created array variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
+	return var;
 }
 
 // Add constant value
