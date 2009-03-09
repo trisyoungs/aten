@@ -136,6 +136,7 @@ void TreeNode::addArguments(int nargs, ...)
 	// Add arguments in the order they were provided
 	for (int n=0; n<nargs; n++) addArgument(va_arg(vars, TreeNode*));
 	va_end(vars);
+	msg.print(Messenger::Parse,"Node %li now has %i arguments.\n", this, args_.nItems());
 }
 
 // Add multiple arguments to node

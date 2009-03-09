@@ -99,16 +99,22 @@ class Tree
 	void addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
 	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
+	// Add 'if' statement
+	TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
+	// Add 'for' statement
+	TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addFunctionLeaf(NuCommand::Function func, TreeNode *arglist);
 	// Associate a scoped command leaf node to the Tree
 	TreeNode *addScopedLeaf(NuCommand::Function func, int nargs, ...);
-	// Add an argument to the most recently pushed function on the stack
-	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
+	// Join two nodes together
+	static TreeNode *join(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments
 	void finaliseFunction();
 	// Add joiner
 	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	// Add on a new scope to the stack
+	TreeNode *pushScope();
 	// Pop the topmost scope node
 	void popScope();
 
@@ -118,12 +124,16 @@ class Tree
 	private:
 	// Current variable type to use for creating variables
 	NuVTypes::DataType declaredType_;
+	// Flag to indicate that we are assigning in a declaration, andthe whole variable scope should be searched
+	bool declarationAssignment_;
 
 	public:
 	// Add constant to topmost ScopeNode
 	void addConstant(NuVariable *v);
 	// Set current type for variable declarations
 	void setDeclaredVariableType(NuVTypes::DataType type);
+	// Set declarations assignment flag
+	void setDeclarationAssignment(bool b);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable to topmost ScopeNode using the most recently declared type
@@ -131,7 +141,7 @@ class Tree
 	// Add 'constant' vector value
 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
-	NuVariable *isVariableInScope(const char *name);
+	bool isVariableInScope(const char *name, NuVariable *&result);
 
 	/*
 	// Paths	
