@@ -29,13 +29,12 @@ void yyerror(char *s);
 	TreeNode *node;			/* node pointer */
 };
 
-%token <name> TOKENNAME
+%token <name> TOKENNAME VARNAME
 %token <node> INTCONST REALCONST CHARCONST
 %token <node> NUMVAR CHARVAR PTRVAR VECVAR
 %token <node> NUMSTEP PTRSTEP CHARSTEP VECSTEP
 %token <functionId> NUMFUNCCALL CHARFUNCCALL VOIDFUNCCALL PTRFUNCCALL VECFUNCCALL
-%token DECLARATION WHILE FOR
-%token <node> IF
+%token DECLARATION WHILE FOR IF
 %nonassoc ELSE
 
 %left '=' PEQ MEQ TEQ DEQ
@@ -50,8 +49,9 @@ void yyerror(char *s);
 %type <node> numexpr charexpr ptrexpr vecexpr anyexpr
 %type <node> numfunc ptrfunc vecfunc charfunc voidfunc
 %type <node> pathvar step steplist
-%type <node> statement statementlist exprlist VECCONST
+%type <node> flowstatement statementexpr statement statementlist exprlist VECCONST
 %type <node> namelist newname
+%type <node> beginscope
 
 %%
 
@@ -63,44 +63,61 @@ program:
 /* Compound Statement */
 
 statementlist:
-	statement				{ $$ = $1;printf("End of statement(list).\n");  }
-	| '{' statement '}'			{ $$ = $2; printf("End of statement(inbrackets).\n"); }
-        | '{' statementlist statement '}'	{ $$ = Tree::currentTree->addJoiner($2, $3); printf("End of statementlist.\n"); }
+	statement				{ $$ = $1; printf("End of statement(list).\n");  }
+	| beginscope statement endscope		{ $$ = $2; printf("End of statement(inbrackets).\n"); }
+        | beginscope statementlist statement endscope	{ $$ = Tree::currentTree->addJoiner(Tree::currentTree->addJoiner($1, $2), $3); printf("End of statementlist.\n"); }
         ;
 
-/* Single Statement */
+beginscope:
+	'{'					{ $$ = Tree::currentTree->pushScope(); }
+	;
+
+endscope:
+	'}'					{ Tree::currentTree->popScope(); }
+	;
+
+/* Single Statement / Flow Control */
 
 statement:
 	';'					{ $$ = Tree::currentTree->addJoiner(NULL,NULL); }
-	| DECLARATION namelist ';'		{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); Tree::currentTree->setDeclaredVariableType(NuVTypes::NoData); }
-	| numexpr ';'				{ $$ = $1; }
-	| charexpr ';'				{ $$ = $1; }
-	| vecexpr ';'				{ $$ = $1; }
-	| ptrexpr ';'				{ $$ = $1; }
-	| voidfunc ';'				{ $$ = $1; }
-	| IF '(' anyexpr ')' statementlist	%prec BOB	{ $$ = $1; $1->addArguments(2,$3,$5); Tree::currentTree->popScope(); }
-	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = $1; $1->addArguments(3,$3,$5,$7); Tree::currentTree->popScope(); }
-	| FOR '(' numexpr ';' numexpr ';' numexpr ')' statementlist
-				{ $$ = Tree::currentTree->addScopedLeaf(NuCommand::For,4,$3,$5,$7,$9); Tree::currentTree->popScope(); };
+	| statementexpr ';'			{ $$ = $1; }
+	| flowstatement				{ $$ = $1; }
+	;
+
+statementexpr:
+	DECLARATION namelist 			{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); Tree::currentTree->setDeclaredVariableType(NuVTypes::NoData); }
+	| numexpr				{ $$ = $1; }
+	| charexpr				{ $$ = $1; }
+	| vecexpr				{ $$ = $1; }
+	| ptrexpr				{ $$ = $1; }
+	| voidfunc				{ $$ = $1; }
+	;
+
+flowstatement:
+	IF '(' anyexpr ')' statementlist	{ $$ = Tree::currentTree->addIf($3,$5); }
+	| IF '(' anyexpr ')' statementlist ELSE statementlist	{ $$ = Tree::currentTree->addIf($3,$5,$7); }
+	| FOR 					{ $$ = Tree::currentTree->pushScope(); }
+		'(' statementexpr ';' statementexpr ';' statementexpr ')' statementlist	{ $$ = Tree::currentTree->join(Tree::currentTree->addFor($4,$6,$8,$10), $$); Tree::currentTree->popScope(); }
 	;
 
 /* Variable declaration  name / assignment list */
 
 newname:
 	TOKENNAME				{ $$ = Tree::currentTree->addVariable($1); }
-	| TOKENNAME '=' anyexpr			{ $$ = Tree::currentTree->addVariable($1,$3); }
+	| TOKENNAME '=' 			{ Tree::currentTree->setDeclarationAssignment(TRUE); }
+			anyexpr			{ $$ = Tree::currentTree->addVariable($1,$4); Tree::currentTree->setDeclarationAssignment(FALSE); }
 	;
 	
 namelist:
 	newname					{ $$ = $1; }
-	| namelist ',' newname			{ $$ = Tree::joinArguments($3,$1); }
+	| namelist ',' newname			{ $$ = Tree::join($3,$1); }
 	;
 
 /* Expressions */
 
 exprlist:
 	anyexpr					{ $$ = $1; }
-	| exprlist ',' anyexpr			{ $$ = Tree::joinArguments($3,$1); }
+	| exprlist ',' anyexpr			{ $$ = Tree::join($3,$1); }
 	;
 
 anyexpr:
@@ -181,7 +198,7 @@ steplist:
 	/* empty */				{ $$ = NULL; }
 	| step 					{ $$ = $1; printf("Crap.\n"); }
 /*	| step '[' numexpr ']'			{ } */
-	| steplist '.' step			{ $$ = Tree::currentTree->joinArguments($1, $3); }
+	| steplist '.' step			{ $$ = Tree::currentTree->join($1, $3); }
 	;
 
 pathvar:

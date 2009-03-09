@@ -65,7 +65,7 @@ int yylex()
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
+// 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
 	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
 	{
 		Tree::currentTree->setExpectPathStep(TRUE);
@@ -189,12 +189,7 @@ int yylex()
 			}
 
 			// Is this a recognised high-level keyword?
-			if (strcmp(token,"if") == 0)
-			{
-				// Create a scopenode to contain the IF
-				yylval.node = Tree::currentTree->addScopedLeaf(NuCommand::If,0);
-				return IF;
-			}
+			if (strcmp(token,"if") == 0) return IF;
 			else if (strcmp(token,"else") == 0) return ELSE;
 			else if (strcmp(token,"for") == 0) return FOR;
 			else if (strcmp(token,"while") == 0) return WHILE;
@@ -263,9 +258,11 @@ int yylex()
 		else
 		{
 			// Search the variable lists currently in scope...
-			NuVariable *v = Tree::currentTree->isVariableInScope(token);
-			if (v != NULL)
+			NuVariable *v;
+			if (!Tree::currentTree->isVariableInScope(token, v)) return 0;
+			else if (v != NULL)
 			{
+		printf("pof\n");
 				// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
 				VariableNode *vnode = new VariableNode(v);
 				yylval.node = vnode;

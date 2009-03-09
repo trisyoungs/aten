@@ -433,7 +433,7 @@ bool NuCommand::function_OperatorAssignmentDivide(NuCommandNode *c, Bundle &obj,
 	NuReturnValue v1, v2;
 	if (!c->arg(0, v1)) return FALSE;
 	if (!c->arg(1, v2)) return FALSE;
-	if (!test(NuCommand::OperatorDivide, &v1, &v2, rv)) return FALSE;
+	if (!operate(NuCommand::OperatorDivide, &v1, &v2, rv)) return FALSE;
 	// Now, set the first argument to our return value
 	return (c->setArg(0, rv));
 }
@@ -445,7 +445,7 @@ bool NuCommand::function_OperatorAssignmentMinus(NuCommandNode *c, Bundle &obj, 
 	NuReturnValue v1, v2;
 	if (!c->arg(0, v1)) return FALSE;
 	if (!c->arg(1, v2)) return FALSE;
-	if (!test(NuCommand::OperatorSubtract, &v1, &v2, rv)) return FALSE;
+	if (!operate(NuCommand::OperatorSubtract, &v1, &v2, rv)) return FALSE;
 	// Now, set the first argument to our return value
 	return (c->setArg(0, rv));
 }
@@ -457,7 +457,7 @@ bool NuCommand::function_OperatorAssignmentMultiply(NuCommandNode *c, Bundle &ob
 	NuReturnValue v1, v2;
 	if (!c->arg(0, v1)) return FALSE;
 	if (!c->arg(1, v2)) return FALSE;
-	if (!test(NuCommand::OperatorMultiply, &v1, &v2, rv)) return FALSE;
+	if (!operate(NuCommand::OperatorMultiply, &v1, &v2, rv)) return FALSE;
 	// Now, set the first argument to our return value
 	return (c->setArg(0, rv));
 }
@@ -469,7 +469,7 @@ bool NuCommand::function_OperatorAssignmentPlus(NuCommandNode *c, Bundle &obj, N
 	NuReturnValue v1, v2;
 	if (!c->arg(0, v1)) return FALSE;
 	if (!c->arg(1, v2)) return FALSE;
-	if (!test(NuCommand::OperatorAdd, &v1, &v2, rv)) return FALSE;
+	if (!operate(NuCommand::OperatorAdd, &v1, &v2, rv)) return FALSE;
 	// Now, set the first argument to our return value
 	return (c->setArg(0, rv));
 }

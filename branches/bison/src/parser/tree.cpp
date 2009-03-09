@@ -45,6 +45,7 @@ Tree::Tree()
 	stringLength_ = 0;
 	expectPathStep_ = FALSE;
 	declaredType_ = NuVTypes::NoData;
+	declarationAssignment_ = FALSE;
 
 	// Public variables
 	currentTree = NULL;
@@ -224,6 +225,33 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 		else if (arg1->returnType() == arg2->returnType()) leaf->setReturnType(arg1->returnType());
 		else leaf->setReturnType(NuVTypes::RealData);
 	}
+	return leaf;
+}
+
+// Add 'if' statement
+TreeNode *Tree::addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2)
+{
+	msg.enter("Tree::addIf");
+	// Create new command node
+	NuCommandNode *leaf = new NuCommandNode(NuCommand::If);
+	ownedNodes_.add(leaf);
+	leaf->addArguments(2, condition, expr1);
+	if (expr2 != NULL) leaf->addArgument(expr2);
+	msg.print(Messenger::Parse, "'If' statement added (%li).\n", leaf);
+	msg.exit("Tree::addIf");
+	return leaf;
+}
+
+// Add 'for' statement
+TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements)
+{
+	msg.enter("Tree::addFor");
+	// Create new command node
+	NuCommandNode *leaf = new NuCommandNode(NuCommand::For);
+	ownedNodes_.add(leaf);
+	leaf->addArguments(4, init, condition, action, statements);
+	msg.print(Messenger::Parse, "'For' statement added (%li).\n", leaf);
+	msg.exit("Tree::addFor");
 	return leaf;
 }
 
@@ -439,7 +467,7 @@ TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
 }
 
 // Add an argument to the most recently pushed function on the stack
-TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
+TreeNode *Tree::join(TreeNode *arg1, TreeNode *arg2)
 {
 	arg1->prevArgument = arg2;
 	arg2->nextArgument = arg1;
@@ -456,6 +484,15 @@ TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
 	return leaf;
+}
+
+// Add on a new scope to the stack
+TreeNode *Tree::pushScope()
+{
+	ScopeNode *node = new ScopeNode();
+	scopeStack_.add(node);
+	printf("ScopeNode is pushed.\n");
+	return node;
 }
 
 // Pop the topmost scope node
@@ -481,6 +518,12 @@ void Tree::addConstant(NuVariable *v)
 void Tree::setDeclaredVariableType(NuVTypes::DataType type)
 {
 	declaredType_ = type;
+}
+
+// Set declarations assignment flag
+void Tree::setDeclarationAssignment(bool b)
+{
+	declarationAssignment_ = b;
 }
 
 // Add variable to topmost scope
@@ -521,22 +564,47 @@ TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNo
 }
 
 // Search for variable in current scope
-NuVariable *Tree::isVariableInScope(const char *name)
+bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 {
-	// Search the current ScopeNode list for the variable name requested
-	NuVariable *v = NULL;
-	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
+
+	// If the declaredVariableType is set then this token has been found in a declaration statement.
+	// ---> it must not exist in the local scope
+	// In addition, if this is a declaration assignment, then we search as normal
+	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
+	if (declarationAssignment_ || (declaredType_ == NuVTypes::NoData))
 	{
-		v = ri->item->variables.find(name);
-		if (v != NULL) break;
+	printf("kljlk\n");
+		// Search the current ScopeNode list for the variable name requested
+		result = NULL;
+		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
+		{
+			result = ri->item->variables.find(name);
+			if (result != NULL) break;
+		}
+		// If result is NULL then we must return FALSE since the variable is not in a declaration
+		// If the current declared variable type is NuVTypes::NoData then this is not a variable declaration and we must find the variable...
+// 		if (result == NULL)
+// 		{
+// 			msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
+// 			return FALSE;
+// 		}
+		return TRUE;
 	}
-	// If the current declared variable type is NuVTypes::NoData then this is not a variable declaration and we must find the variable...
-	if ((declaredType_ == NuVTypes::NoData) && (v == NULL))
+	else
 	{
-		msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
-		return NULL;
+	printf("kljlk23423432\n");
+		// So, we are declaring a variable in the local scope, which may shadow another in the global scope.
+		// We are only concerned with whether this variable currently exists in the local scope...
+	printf("searching scopenode %li...\n", scopeStack_.last());
+		result = scopeStack_.last()->item->variables.find(name);
+		if (result)
+		{
+			msg.print("Error: Repeat declaration of variable '%s' in the local scope.\n", name);
+			return FALSE;
+		}
+		return TRUE;
 	}
-	return v;
+	return FALSE;
 }
 
 /*
