@@ -299,6 +299,7 @@ int yylex()
 // 	printf("Symbolic character...\n");
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of single-character literals
+	printf("Symbol is %c\n", c);
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
 	// Similarly, if the next character is a bracket, return immediately
 	char c2 = Tree::currentTree->peekChar();

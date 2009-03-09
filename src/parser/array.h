@@ -1,6 +1,6 @@
 /*
-	*** Character Variable
-	*** src/parser/character.h
+	*** Array Variable
+	*** src/parser/array.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,43 +19,54 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUCHARACTERVARIABLE_H
-#define ATEN_NUCHARACTERVARIABLE_H
+#ifndef ATEN_NUARRAYVARIABLE_H
+#define ATEN_NUARRAYVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
-#include "base/dnchar.h"
 
-// Character Variable
-class NuCharacterVariable : public NuVariable
+// Array Variable
+class ArrayVariable : public NuVariable
 {
 	public:
-	// Constructor / Destructor
-	NuCharacterVariable();
-	NuCharacterVariable(const char *s, bool constant = FALSE);
-	~NuCharacterVariable();
+	// Constructors / Destructor
+	ArrayVariable(NuVTypes::DataType arraytype, TreeNode *sizeexpr);
+	~ArrayVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (character)
-	bool set(const char *s);
 	// Return value of node
 	bool execute(NuReturnValue &rv);
+	// Return value of node as array
+	bool execute(NuReturnValue &rv, int arrayindex);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset variable
+	// Set from returnvalue node as array
+	bool set(NuReturnValue &rv, int arrayindex);
+	// Reset array
 	void reset();
 
 	/*
 	// Variable Data
 	*/
 	private:
-	// Character data
-	Dnchar characterData_;
+	// TreeNode determining array size on initialisation
+	TreeNode *arraySizeExpression_;
+	// Current array size
+	int arraySize_;
+	// Array data
+	NuVariable *arrayData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char *prefix);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Initialise node (take over from Variable::initialise())
+	bool initialise();
 };
 
 #endif

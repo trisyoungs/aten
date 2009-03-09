@@ -1,6 +1,6 @@
 /*
-	*** Character Variable
-	*** src/parser/character.h
+	*** Pattern Variable
+	*** src/parser/pattern.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,43 +19,58 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUCHARACTERVARIABLE_H
-#define ATEN_NUCHARACTERVARIABLE_H
+#ifndef ATEN_PATTERNVARIABLE_H
+#define ATEN_PATTERNVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
-#include "base/dnchar.h"
 
-// Character Variable
-class NuCharacterVariable : public NuVariable
+// Forward Declarations
+class Pattern;
+
+// Pattern Variable
+class PatternVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuCharacterVariable();
-	NuCharacterVariable(const char *s, bool constant = FALSE);
-	~NuCharacterVariable();
+	PatternVariable(Pattern *ptr = NULL, bool constant = FALSE);
+	~PatternVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (character)
-	bool set(const char *s);
 	// Return value of node
 	bool execute(NuReturnValue &rv);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
-	// Reset variable
+	// Reset node
 	void reset();
 
 	/*
 	// Variable Data
 	*/
 	private:
-	// Character data
-	Dnchar characterData_;
+	// Pattern data
+	void *patternData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
+
+	/*
+	// Access Data
+	*/
+	public:
+	// Accessor list
+	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s);
+	// Static function to search accessors
+	static StepNode *accessorSearch(const char *s);
+	// Retrieve desired value
+	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	// Accessor data
+	static Accessor accessorData[nAccessors];
 };
 
 #endif
+

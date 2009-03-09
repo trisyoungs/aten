@@ -27,7 +27,7 @@ class NuVTypes
 {
 	public:
 	// Data Types
-	enum DataType { NoData, IntegerData, RealData, CharacterData, VectorData, AtenData, AtomData, BondData, CellData, ElementsData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, nDataTypes };
+	enum DataType { NoData, IntegerData, RealData, CharacterData, VectorData, AtenData, AtomData, BondData, CellData, ElementsData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, PatternBoundData, nDataTypes };
 	static NuVTypes::DataType dataType(const char *s);
 	static const char *dataType(DataType);
 	static bool isPointer(DataType);
