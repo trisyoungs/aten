@@ -115,6 +115,7 @@ bool NuCommand::function_EndChain(NuCommandNode *c, Bundle &obj, NuReturnValue &
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
+	rv.reset();
 	return TRUE;
 }
 
