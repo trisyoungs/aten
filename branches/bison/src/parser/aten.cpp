@@ -91,13 +91,13 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *AtenVariable::findAccessor(const char *s)
+StepNode *AtenVariable::findAccessor(const char *s, bool array)
 {
-	return AtenVariable::accessorSearch(s);
+	return AtenVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *AtenVariable::accessorSearch(const char *s)
+StepNode *AtenVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("AtenVariable::accessorSearch");
 	StepNode *result = NULL;

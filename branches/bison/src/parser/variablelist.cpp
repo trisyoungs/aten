@@ -145,9 +145,34 @@ NuVariable *NuVariableList::createFree(NuVTypes::DataType type, const char *name
 NuVariable *NuVariableList::createArray(NuVTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
 {
 	ArrayVariable *array = new ArrayVariable(type, sizeexpr);
+	variables_.own(array);
 	array->setName(name);
 	array->setInitialValue(initialValue);
 	return array;
+}
+
+// Create a constant from supplied integer data
+NuVariable *NuVariableList::createConstant(int i)
+{
+	NuIntegerVariable *var = new NuIntegerVariable(i, TRUE);
+	constants_.own(var);
+	return var;
+}
+
+// Create a constant from supplied real data
+NuVariable *NuVariableList::createConstant(double d)
+{
+	NuRealVariable *var = new NuRealVariable(d, TRUE);
+	constants_.own(var);
+	return var;
+}
+
+// Create a constant from supplied character data
+NuVariable *NuVariableList::createConstant(const char *s)
+{
+	NuCharacterVariable *var = new NuCharacterVariable(s, TRUE);
+	constants_.own(var);
+	return var;
 }
 
 // Return the number of variables (not constants) contained in the list

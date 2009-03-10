@@ -101,13 +101,13 @@ Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *BondVariable::findAccessor(const char *s)
+StepNode *BondVariable::findAccessor(const char *s, bool array)
 {
-	return BondVariable::accessorSearch(s);
+	return BondVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *BondVariable::accessorSearch(const char *s)
+StepNode *BondVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("BondVariable::accessorSearch");
 	StepNode *result = NULL;

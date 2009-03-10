@@ -43,6 +43,7 @@ ArrayVariable::ArrayVariable(NuVTypes::DataType type, TreeNode *sizeexpr) : arra
 	readOnly_ = FALSE;
 	arrayData_ = NULL;
 	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
 }
 
 // Destructor
@@ -69,7 +70,7 @@ bool ArrayVariable::set(NuReturnValue &rv)
 		return FALSE;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) if (!arrayData_[i].set(rv)) return FALSE;
+	for (int i=0; i<arraySize_; i++) if (!arrayData_[i]->set(rv)) return FALSE;
 	return TRUE;
 }
 
@@ -82,7 +83,7 @@ void ArrayVariable::reset()
 		return;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) arrayData_[i].reset();
+	for (int i=0; i<arraySize_; i++) { printf("Reset %i\n", i); arrayData_[i]->reset(); }
 }
 
 
@@ -91,6 +92,19 @@ bool ArrayVariable::execute(NuReturnValue &rv)
 {
 	msg.print("A whole array ('%s') cannot be passed as value.\n", name_.get());
 	return FALSE;
+}
+
+// Return value of node as array
+bool ArrayVariable::executeAsArray(NuReturnValue &rv, int arrayindex)
+{
+	// Check bounds
+	if ((arrayindex < 1) || (arrayindex > arraySize_))
+	{
+		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex, name_.get());
+		return FALSE;
+	}
+	printf("DEATH TO THE INFIDE.\n");
+	return arrayData_[arrayindex-1]->execute(rv);
 }
 
 // Print node contents
@@ -111,60 +125,78 @@ void ArrayVariable::nodePrint(int offset, const char *prefix)
 // Initialise variable
 bool ArrayVariable::initialise()
 {
+	printf("DIE!\n");
 	// We define our own initialise() function to take over from the inherited default from NuVariable
 	// If the array is already allocated, free it.
-	if (arrayData_ != NULL) delete[] arrayData_;
+	if (arrayData_ != NULL) printf("Array exists already...\n");	
+	if (arrayData_ != NULL)
+	{
+		for (int i=0; i<arraySize_; i++) delete arrayData_[i];
+		delete[] arrayData_;
+	}
+	printf("dslkfjdlkjl\n");
 	// Get size of array to create
 	NuReturnValue newsize;
+	printf("dslkfjdlkjl\n");
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		msg.print("Failed to find array size for '%s'.\n", name_.get());
 		return FALSE;
 	}
+	printf("dslkfjdlkjl\n");
 	// Create new array
-	int n = newsize.asInteger();
-	if (n > 0)
+	arraySize_ = newsize.asInteger();
+	printf("New array size is %i\n", arraySize_);
+	if (arraySize_ > 0)
 	{
 		switch (returnType_)
 		{
 			case (NuVTypes::IntegerData):
-				arrayData_ = new NuIntegerVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuIntegerVariable;
 				break;
 			case (NuVTypes::RealData):
-				arrayData_ = new NuRealVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuIntegerVariable;
 				break;
 			case (NuVTypes::CharacterData):
-				arrayData_ = new NuCharacterVariable[n];
-				break;
-			case (NuVTypes::VectorData):
-				arrayData_ = new NuVectorVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuCharacterVariable;
 				break;
 			case (NuVTypes::AtomData):
-				arrayData_ = new AtomVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new AtomVariable;
 				break;
 			case (NuVTypes::BondData):
-				arrayData_ = new BondVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new BondVariable;
 				break;
 			case (NuVTypes::CellData):
-				arrayData_ = new CellVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new CellVariable;
 				break;
 			case (NuVTypes::ForcefieldData):
-				arrayData_ = new ForcefieldVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new ForcefieldVariable;
 				break;
 			case (NuVTypes::ForcefieldAtomData):
-				arrayData_ = new ForcefieldAtomVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new ForcefieldAtomVariable;
 				break;
 			case (NuVTypes::ForcefieldBoundData):
-				arrayData_ = new ForcefieldBoundVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new ForcefieldBoundVariable;
 				break;
 // 			case (NuVTypes::GridData):
-// 				arrayData_ = new NuGridVariable[n];
+// 				arrayData_ = new NuGridVariable[arraySize_];
 // 				break;
 			case (NuVTypes::ModelData):
-				arrayData_ = new ModelVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new ModelVariable;
 				break;
 			case (NuVTypes::PatternData):
-				arrayData_ = new PatternVariable[n];
+				arrayData_ = new NuVariable*[arraySize_];
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new PatternVariable;
 				break;
 			default:
 				printf("Internal Error: Array variable doesn't know how to create an array of type '%s'.\n", NuVTypes::dataType(returnType_));

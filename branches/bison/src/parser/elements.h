@@ -58,9 +58,9 @@ class ElementsVariable : public NuVariable
 	// Accessor list
         enum Accessors { Mass, Name, NElements, Symbol, nAccessors };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s);
+	StepNode *findAccessor(const char *s, bool array);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s);
+	static StepNode *accessorSearch(const char *s, bool array);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data

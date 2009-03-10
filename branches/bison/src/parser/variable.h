@@ -63,7 +63,7 @@ class NuVariable : public TreeNode
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s);
+	virtual StepNode *findAccessor(const char *s, bool array);
 
 	/*
 	// Inherited Virtuals

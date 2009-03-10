@@ -236,7 +236,7 @@ TreeNode *TreeNode::argNode(int i)
 */
 
 // Search accessors (if any) available for node
-StepNode *TreeNode::findAccessor(const char *s)
+StepNode *TreeNode::findAccessor(const char *s, bool array)
 {
 	// Default is to retun NULL since there are no accessors available
 	printf("Internal Error: This node type does not have any accessors.\n");

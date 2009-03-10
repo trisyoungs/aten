@@ -53,6 +53,7 @@ bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValu
 		obj.rs->hydrogenSatisfy();
 	}
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -105,6 +106,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	}
 	obj.rs->endUndoState();
 	aten.current.i = i;
+	rv.set(NuVTypes::AtomData, i);
 	return TRUE;
 }
 
@@ -178,6 +180,7 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
+	rv.set(NuVTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -185,6 +188,7 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.rs->setPenPosition(c->arg3d(0));
+	rv.reset();
 	return TRUE;
 }
 
@@ -192,6 +196,7 @@ bool NuCommand::function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 bool NuCommand::function_Move(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.rs->movePenPosition(c->arg3d(0));
+	rv.reset();
 	return TRUE;
 }
 
@@ -202,6 +207,7 @@ bool NuCommand::function_MoveToEnd(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	obj.rs->beginUndoState("Move selection to end");
 	obj.rs->moveSelectionToEnd();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -212,6 +218,7 @@ bool NuCommand::function_MoveToStart(NuCommandNode *c, Bundle &obj, NuReturnValu
 	obj.rs->beginUndoState("Move selection to start");
 	obj.rs->moveSelectionToStart();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -270,6 +277,7 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
+	rv.set(NuVTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -315,6 +323,7 @@ bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValu
 	obj.rs->beginUndoState("Draw atom (fractional)");
 	aten.current.i = obj.rs->addAtom(el, r);
 	obj.rs->endUndoState();
+	rv.set(NuVTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -325,6 +334,7 @@ bool NuCommand::function_ReOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	obj.rs->beginUndoState("Reorder selected atoms");
 	obj.rs->reorderSelectedAtoms();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -333,6 +343,7 @@ bool NuCommand::function_ResetPen(NuCommandNode *c, Bundle &obj, NuReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->resetPenOrientation();
+	rv.reset();
 	return TRUE;
 }
 
@@ -341,6 +352,7 @@ bool NuCommand::function_RotX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(0, c->argd(0));
+	rv.reset();
 	return TRUE;
 }
 
@@ -349,6 +361,7 @@ bool NuCommand::function_RotY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(1, c->argd(0));
+	rv.reset();
 	return TRUE;
 }
 
@@ -357,6 +370,7 @@ bool NuCommand::function_RotZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(2, c->argd(0));
+	rv.reset();
 	return TRUE;
 }
 
@@ -367,6 +381,7 @@ bool NuCommand::function_ShiftDown(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	obj.rs->beginUndoState("Shift selection down");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -377,6 +392,7 @@ bool NuCommand::function_ShiftUp(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	obj.rs->beginUndoState("Shift selection up");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -388,5 +404,6 @@ bool NuCommand::function_Transmute(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }

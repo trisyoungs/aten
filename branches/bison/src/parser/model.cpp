@@ -112,13 +112,13 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ModelVariable::findAccessor(const char *s)
+StepNode *ModelVariable::findAccessor(const char *s, bool array)
 {
-	return ModelVariable::accessorSearch(s);
+	return ModelVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *ModelVariable::accessorSearch(const char *s)
+StepNode *ModelVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("ModelVariable::accessorSearch");
 	StepNode *result = NULL;

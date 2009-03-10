@@ -124,7 +124,7 @@ class TreeNode
 	// Reset node
 	virtual bool initialise() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s);
+	virtual StepNode *findAccessor(const char *s, bool array);
 };
 
 #endif

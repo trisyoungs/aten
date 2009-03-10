@@ -92,7 +92,7 @@ void AtomVariable::nodePrint(int offset, const char *prefix)
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "fixed", 	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "f",		NuVTypes::VectorData,		FALSE, FALSE },
+	{ "f",		NuVTypes::RealData,		TRUE, FALSE },
 	{ "fx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "fy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "fz",		NuVTypes::RealData,		FALSE, FALSE },
@@ -101,14 +101,14 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "mass",	NuVTypes::RealData,		FALSE, TRUE },
 	{ "name",	NuVTypes::CharacterData,	FALSE, TRUE },
 	{ "q",		NuVTypes::RealData,		FALSE, FALSE },
-	{ "r",		NuVTypes::VectorData,		FALSE, FALSE },
+	{ "r",		NuVTypes::RealData,		TRUE, FALSE },
 	{ "rx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "ry",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "rz",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "selected",	NuVTypes::IntegerData,		FALSE, FALSE },
 	{ "symbol",	NuVTypes::CharacterData,	FALSE, TRUE },
 	{ "type",	NuVTypes::ForcefieldAtomData,	FALSE, FALSE },
-	{ "v",		NuVTypes::VectorData,		FALSE, FALSE },
+	{ "v",		NuVTypes::RealData,		TRUE, FALSE },
 	{ "vx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vz",		NuVTypes::RealData,		FALSE, FALSE },
@@ -116,13 +116,13 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *AtomVariable::findAccessor(const char *s)
+StepNode *AtomVariable::findAccessor(const char *s, bool array)
 {
-	return AtomVariable::accessorSearch(s);
+	return AtomVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *AtomVariable::accessorSearch(const char *s)
+StepNode *AtomVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("AtomVariable::accessorSearch");
 	StepNode *result = NULL;

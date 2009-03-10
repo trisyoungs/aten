@@ -121,7 +121,7 @@ bool StepNode::initialise()
 }
 
 // Static function to search accessors of type represented by this path step
-StepNode *StepNode::findAccessor(const char *s)
+StepNode *StepNode::findAccessor(const char *s, bool array)
 {
 	msg.enter("StepNode::findAccessor");
 	// From the return type of the node, determine which (static) function to call
@@ -132,16 +132,16 @@ StepNode *StepNode::findAccessor(const char *s)
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
 		case (NuVTypes::AtomData):
-			result = AtomVariable::accessorSearch(s);
+			result = AtomVariable::accessorSearch(s, array);
 			break;
 		case (NuVTypes::ModelData):
-			result = ModelVariable::accessorSearch(s);
+			result = ModelVariable::accessorSearch(s, array);
 			break;
 		case (NuVTypes::VectorData):
-			result = NuVectorVariable::accessorSearch(s);
+			result = NuVectorVariable::accessorSearch(s, array);
 			break;
 		default:
-			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", NuVTypes::dataType(returnType_));
+			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", NuVTypes::dataType(returnType_));
 			break;
 	}
 	msg.exit("StepNode::findAccessor");

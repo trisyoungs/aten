@@ -103,13 +103,13 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldAtomVariable::findAccessor(const char *s)
+StepNode *ForcefieldAtomVariable::findAccessor(const char *s, bool array)
 {
-	return ForcefieldAtomVariable::accessorSearch(s);
+	return ForcefieldAtomVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldAtomVariable::accessorSearch(const char *s)
+StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("ForcefieldAtomVariable::accessorSearch");
 	StepNode *result = NULL;

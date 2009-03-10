@@ -24,17 +24,17 @@
 
 #include <iostream>
 #include "parser/returnvalue.h"
+#include "parser/variable.h"
 #include "nucommand/commands.h"
 #include "templates/reflist.h"
 #include "base/vtypes.h"
 #include "base/dnchar.h"
 
 // Forward declarations
-class NuVariable;
 class TreeNode;
 class ScopeNode;
 class VariableNode;
-class StepNode;
+class StepNode; 
 
 // Tree
 class Tree
@@ -56,6 +56,8 @@ class Tree
 	int stringPos_, stringLength_;
 	// File source
 	ifstream *fileSource_;
+	// Line number in source file that we've just read
+	int lineNumber_;
 
 	public:
 	// Get next character from current input stream
@@ -74,6 +76,8 @@ class Tree
 	static Tree *currentTree;
 	// Print layout of current tree
 	void print();
+	// Print error information and location
+	void printErrorInfo();
 
 	/*
 	// Node Data
@@ -83,13 +87,14 @@ class Tree
 	Reflist<TreeNode,int> ownedNodes_;
 	// Reflist of all statements in the Tree, to be executed sequentially
 	Reflist<TreeNode,int> statements_;
-	private:
 	// Stack of ScopeNodes
 	Reflist<ScopeNode,int> scopeStack_;
 	// Stack of variable paths (and last added stepnode)
 	Reflist<VariableNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
+	// Check operator type compatibility
+	NuVTypes::DataType checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
 
 	/*
 	// Statement / Command Addition
@@ -108,11 +113,11 @@ class Tree
 	// Associate a scoped command leaf node to the Tree
 	TreeNode *addScopedLeaf(NuCommand::Function func, int nargs, ...);
 	// Join two nodes together
-	static TreeNode *join(TreeNode *arg1, TreeNode *arg2);
+	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments
 	void finaliseFunction();
 	// Add joiner
-	TreeNode *addJoiner(TreeNode *node1, TreeNode *node2);
+	TreeNode *joinFunctions(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
 	TreeNode *pushScope();
 	// Pop the topmost scope node
@@ -128,12 +133,12 @@ class Tree
 	bool declarationAssignment_;
 
 	public:
-	// Add constant to topmost ScopeNode
-	void addConstant(NuVariable *v);
 	// Set current type for variable declarations
 	void setDeclaredVariableType(NuVTypes::DataType type);
 	// Set declarations assignment flag
 	void setDeclarationAssignment(bool b);
+	// Add constant value to tompost scope
+	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable to topmost ScopeNode using the most recently declared type
@@ -141,9 +146,11 @@ class Tree
 	// Add array variable to topmost ScopeNode using the most recently declared type
 	TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value
-	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
+// 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
 	bool isVariableInScope(const char *name, NuVariable *&result);
+	// Wrap named variable (and array index)
+	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
 
 	/*
 	// Paths	
@@ -162,11 +169,9 @@ class Tree
 	// Create a new path on the stack with the specified base 'variable'
 	TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
-	void expandPath(TreeNode *steps);
+	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode *finalisePath();
-	// Expand the topmost path on the stack
-	StepNode *evaluateAccessor(const char *s);
 };
 
 #endif
