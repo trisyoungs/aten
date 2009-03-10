@@ -19,16 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/treenode.h"
-#include "parser/stepnode.h"
-#include "parser/grammar.h"
-#include "parser/commandnode.h"
-#include "parser/integer.h"
-#include "parser/character.h"
-#include "parser/real.h"
-#include "parser/variablenode.h"
-#include "base/sysfunc.h"
 #include "parser/tree.h"
+#include "parser/grammar.h"
+#include "base/sysfunc.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -119,21 +112,10 @@ int yylex()
 				done = TRUE;
 			}
 		} while (!done);
-		// We now have the number, so create a constant and return it
-		if (integer)
-		{
-			NuIntegerVariable *var = new NuIntegerVariable(atoi(token), TRUE);
-			yylval.node = var;
-			Tree::currentTree->addConstant(var);
-			return INTCONST;
-		}
-		else
-		{
-			NuRealVariable *var = new NuRealVariable(atof(token), TRUE);
-			yylval.node = var;
-			Tree::currentTree->addConstant(var);	
-			return REALCONST;
-		}
+		// We now have the number as a text token...
+		name = token;
+		yylval.name = &name;
+		return (integer ? INTCONST : REALCONST);
 	}
 
 	/*
@@ -156,9 +138,8 @@ int yylex()
 			else token[length++] = c;
 		} while (!done);
 		token[length] = '\0';
-		NuCharacterVariable *var = new NuCharacterVariable(token, TRUE);
-		Tree::currentTree->addConstant(var);
-		yylval.node = var;
+		name = token;
+		yylval.name = &name;
 		return CHARCONST;
 	}
 
@@ -201,59 +182,16 @@ int yylex()
 			{
 				msg.print(Messenger::Parse, "Found function '%s' (is %i).\n", token, n);
 				yylval.functionId = n;
-				// Our return type here depends on the return type of the function
-				switch (NuCommand::data[n].returnType)
-				{
-					case (NuVTypes::NoData):
-						return VOIDFUNCCALL;
-						break;
-					case (NuVTypes::IntegerData):
-					case (NuVTypes::RealData):
-						return NUMFUNCCALL;
-						break;
-					case (NuVTypes::CharacterData):
-						return CHARFUNCCALL;
-						break;
-					case (NuVTypes::VectorData):
-						return VECFUNCCALL;
-						break;
-					default:
-						return PTRFUNCCALL;
-						break;
-				}
+				return FUNCCALL;
 			}
 		}
 
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
 		if (Tree::currentTree->expectPathStep())
 		{
-			// Expand the path at the top of the stack with an accessor matching this token...
-			StepNode *newstep = Tree::currentTree->evaluateAccessor(token);
-			if (newstep == NULL) return 0;
-
-			// Flag that we don't necessarily expect another path step. This will be set to true on the next discovery of a '.' before an alpha
-			Tree::currentTree->setExpectPathStep(FALSE);
-			yylval.node = (TreeNode*) newstep;
-			switch (newstep->returnType())
-			{
-				case (NuVTypes::NoData):
-					return 0;
-					break;
-				case (NuVTypes::IntegerData):
-				case (NuVTypes::RealData):
-					return NUMSTEP;
-					break;
-				case (NuVTypes::CharacterData):
-					return CHARSTEP;
-					break;
-				case (NuVTypes::VectorData):
-					return VECSTEP;
-					break;
-				default:
-					return PTRSTEP;
-					break;
-			}
-			return 0;
+			name = token;
+			yylval.name = &name;
+			return STEPTOKEN;
 		}
 		else
 		{
@@ -262,30 +200,8 @@ int yylex()
 			if (!Tree::currentTree->isVariableInScope(token, v)) return 0;
 			else if (v != NULL)
 			{
-		printf("pof\n");
-				// Since this is a proper, modifiable variable we must encapsulate it in a VariableNode and pass that instead
-				VariableNode *vnode = new VariableNode(v);
-				yylval.node = vnode;
-				// Our return type here depends on the type of the variable
-				switch (v->returnType())
-				{
-					case (NuVTypes::NoData):
-						return 0;
-						break;
-					case (NuVTypes::IntegerData):
-					case (NuVTypes::RealData):
-						return NUMVAR;
-						break;
-					case (NuVTypes::CharacterData):
-						return CHARVAR;
-						break;
-					case (NuVTypes::VectorData):
-						return VECVAR;
-						break;
-					default:
-						return PTRVAR;
-						break;
-				}
+				yylval.variable = v;
+				return VARNAME;
 			}
 		}
 
@@ -293,10 +209,9 @@ int yylex()
 		msg.print(Messenger::Parse, "Found unknown token '%s'...\n", token);
 		name = token;
 		yylval.name = &name;
-		return TOKENNAME;
+		return NEWTOKEN;
 	}
 
-// 	printf("Symbolic character...\n");
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of single-character literals
 	printf("Symbol is %c\n", c);

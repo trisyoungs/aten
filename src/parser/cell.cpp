@@ -120,13 +120,13 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *CellVariable::findAccessor(const char *s)
+StepNode *CellVariable::findAccessor(const char *s, bool array)
 {
-	return CellVariable::accessorSearch(s);
+	return CellVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *CellVariable::accessorSearch(const char *s)
+StepNode *CellVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("CellVariable::accessorSearch");
 	StepNode *result = NULL;

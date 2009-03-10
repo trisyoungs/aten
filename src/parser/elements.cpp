@@ -91,13 +91,13 @@ Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ElementsVariable::findAccessor(const char *s)
+StepNode *ElementsVariable::findAccessor(const char *s, bool array)
 {
-	return ElementsVariable::accessorSearch(s);
+	return ElementsVariable::accessorSearch(s, array);
 }
 
 // Private static function to search accessors
-StepNode *ElementsVariable::accessorSearch(const char *s)
+StepNode *ElementsVariable::accessorSearch(const char *s, bool array)
 {
 	msg.enter("ElementsVariable::accessorSearch");
 	StepNode *result = NULL;

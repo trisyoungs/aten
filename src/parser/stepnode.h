@@ -41,6 +41,14 @@ class StepNode : public TreeNode
 	NuVTypes::DataType previousType_;
 	// Accessor that this node attempts to access
 	int accessor_;
+	// Array index (if present)
+	TreeNode *arrayIndex_;
+
+	public:
+	// Set array index
+	bool setArrayIndex(TreeNode *index);
+	// Return associated array index
+	TreeNode *arrayIndex();
 
 	/*
 	// Inherited Virtuals
@@ -55,7 +63,7 @@ class StepNode : public TreeNode
 	// Reset node
 	bool initialise();
 	// Search accessors for the type represented by this node
-	StepNode *findAccessor(const char *s);
+	StepNode *findAccessor(const char *s, bool array);
 };
 
 #endif

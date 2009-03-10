@@ -50,6 +50,18 @@ NuVariable *VariableNode::variable()
 	return variable_;
 }
 
+// Set array index
+void VariableNode::setArrayIndex(TreeNode *index)
+{
+	arrayIndex_ = index;
+}
+
+// Return array index
+TreeNode *VariableNode::arrayIndex()
+{
+	return arrayIndex_;
+}
+
 // Return name of variable target
 const char *VariableNode::name()
 {
@@ -92,7 +104,14 @@ bool VariableNode::execute(NuReturnValue &rv)
 		return FALSE;
 	}
 	// Call the local variable's execute() function to get the base value
-	bool result = variable_->execute(rv);
+	bool result;
+	if (arrayIndex_ == NULL) result = variable_->execute(rv);
+	else
+	{
+		NuReturnValue index;
+		if (!arrayIndex_->execute(index)) return FALSE;
+		result = variable_->executeAsArray(rv, index.asInteger());
+	}
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
 	// Next, step through accessnodes, passing the returnvalue to each in turn
 	if (result) for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
@@ -166,12 +185,12 @@ bool VariableNode::initialise()
 }
 
 // Search accessors (if any) available for linked variable
-StepNode *VariableNode::findAccessor(const char *s)
+StepNode *VariableNode::findAccessor(const char *s, bool array)
 {
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: No variable stored in VariableNode to use for accessor search.\n");
 		return NULL;
 	}
-	return variable_->findAccessor(s);
+	return variable_->findAccessor(s, array);
 }

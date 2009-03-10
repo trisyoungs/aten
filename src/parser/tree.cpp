@@ -46,6 +46,7 @@ Tree::Tree()
 	expectPathStep_ = FALSE;
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
+	lineNumber_ = 0;
 
 	// Public variables
 	currentTree = NULL;
@@ -95,7 +96,8 @@ bool Tree::generate(const char *s)
 	{
 		// Delete any tree node information
 		clear();
-		msg.print("Failed to parse data.\n");
+		msg.print("Error occurred here:\n");
+		printErrorInfo();
 		msg.exit("Tree::generate");
 		return FALSE;		
 	}
@@ -135,6 +137,27 @@ void Tree::print()
 		n ++;
 	}
 	printf("-------------------------------------------------------------\n");
+}
+
+// Print error information and location
+void Tree::printErrorInfo()
+{
+	// QUICK'n'DIRTY!
+	char *temp = new char[stringLength_+32];
+	for (int i=0; i<stringPos_; i++) temp[i] = ' ';
+	temp[stringPos_] = '\0';
+	// Print current string
+	if (isFileSource_)
+	{
+		printf("(Line %4i) : %s\n", stringSource_.get());
+		printf("           : %s^\n", temp);
+	}
+	else
+	{
+		printf(" %s\n", stringSource_.get());
+		printf(" %s^\n", temp);
+	}
+	delete[] temp;
 }
 
 /*
@@ -192,6 +215,131 @@ void Tree::unGetChar()
 // Statements / Commands / Operators
 */
 
+// Check operator type compatibility
+NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2)
+{
+	// Check for no data type
+	if ((type1 == NuVTypes::NoData) || (type2 == NuVTypes::NoData))
+	{
+		printf("Internal Error: One or both operands have no defined type.\n");
+		return NuVTypes::NoData;
+	}
+	// Put types in 'precedence' order
+	if (type2 > type1)
+	{
+		NuVTypes::DataType temp = type1;
+		type1 = type2;
+		type2 = temp;
+	}
+	// Like types first... (make int equivalent to real if both types are numeric)
+	if ((type1 <= NuVTypes::RealData) && (type2 <= NuVTypes::RealData) && (type1 != type2)) type1 = type2 = NuVTypes::RealData;
+	NuVTypes::DataType result = NuVTypes::NoData;
+	if (type1 == type2)
+	{
+		switch (func)
+		{
+			// Arithmetic
+			case (NuCommand::OperatorAdd):
+				// Any pair of the same type except pointers can be added together
+				if (type1 < NuVTypes::AtenData) result = type1;
+				break;
+			case (NuCommand::OperatorSubtract):
+			case (NuCommand::OperatorMultiply):
+			case (NuCommand::OperatorDivide):
+				if ((type1 == NuVTypes::CharacterData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
+				else result = type1;
+				break;
+			case (NuCommand::OperatorPower):
+				// Only numerical types
+				if (type1 > NuVTypes::RealData) result = NuVTypes::NoData;
+				else result = type1;
+				break;
+			// Tests
+			case (NuCommand::OperatorEqualTo):
+			case (NuCommand::OperatorNotEqualTo):
+			case (NuCommand::OperatorGreaterThan):
+			case (NuCommand::OperatorGreaterThanEqualTo):
+			case (NuCommand::OperatorLessThan):
+			case (NuCommand::OperatorLessThanEqualTo):
+				// All other test operators are fine, unless its a vector
+				if (type1 != NuVTypes::VectorData) result = NuVTypes::IntegerData;
+				break;
+			// Assignment
+			case (NuCommand::OperatorAssignment):
+				// Any value of the same type can be assigned
+				result = type1;
+				break;
+			case (NuCommand::OperatorAssignmentDivide):
+			case (NuCommand::OperatorAssignmentMinus):
+			case (NuCommand::OperatorAssignmentMultiply):
+			case (NuCommand::OperatorAssignmentPlus):
+				// Nonsensical for character types and pointer types
+				if ((type1 == NuVTypes::CharacterData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
+				else result = type1;
+				break;
+			default:
+				printf("Operator '%s' not in table for checkOperatorTypes.\n", NuCommand::data[func].keyword);
+				result = NuVTypes::NoData;
+				break;
+		}
+	}
+	else
+	{
+		// Dissimilar types
+		// First, there are no operations that we allow involving a pointer*except* for and also (in)equality with an integer
+		if (type1 >= NuVTypes::AtenData)
+		{
+			if (type2 != NuVTypes::IntegerData) result = NuVTypes::NoData;
+			else if ((func == NuCommand::OperatorEqualTo) || (func == NuCommand::OperatorNotEqualTo)) result = NuVTypes::IntegerData;
+			else result = NuVTypes::NoData;
+		}
+		else if (type1 == NuVTypes::VectorData)
+		{
+			// We can do arithmetic and in-place assignments with simple numbers, but no test comparisons
+			switch (func)
+			{
+				case (NuCommand::OperatorAdd):
+				case (NuCommand::OperatorSubtract):
+				case (NuCommand::OperatorMultiply):
+				case (NuCommand::OperatorDivide):
+				case (NuCommand::OperatorAssignment):
+				case (NuCommand::OperatorAssignmentDivide):
+				case (NuCommand::OperatorAssignmentMinus):
+				case (NuCommand::OperatorAssignmentMultiply):
+				case (NuCommand::OperatorAssignmentPlus):
+					if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData)) result = NuVTypes::VectorData;
+					else result = NuVTypes::NoData;
+					break;
+				default:
+					result = NuVTypes::NoData;
+					break;
+			}
+		}
+		else if (type1 == NuVTypes::CharacterData)
+		{
+			// We allow multiplication of a string by a number...
+			if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData))
+			{
+				switch (func)
+				{
+					case (NuCommand::OperatorMultiply):
+					case (NuCommand::OperatorAssignment):
+					case (NuCommand::OperatorAssignmentMultiply):
+						result = NuVTypes::CharacterData;
+						break;
+					default:
+						result = NuVTypes::NoData;
+						break;
+				}
+			}
+			else result = NuVTypes::NoData;
+		}
+	}
+	// Print error message
+	if (result == NuVTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", NuCommand::data[func].keyword, NuVTypes::dataType(type1), NuVTypes::dataType(type2));
+	return result;
+}
+
 // Add a node representing a whole statement to the execution list
 void Tree::addStatement(TreeNode *leaf)
 {
@@ -207,6 +355,9 @@ void Tree::addStatement(TreeNode *leaf)
 // Add an operator to the Tree
 TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2)
 {
+	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer
+	NuVTypes::DataType rtype = checkOperatorTypes(func, arg1->returnType(), arg2->returnType());
+	if (rtype == NuVTypes::NoData) return NULL;
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
@@ -216,15 +367,16 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	// Store return type - if we were passed 1 or 2, store the return type of this argument
 	// If we were passed 99, it is a logical operator and should return an integer
 	// If we were passed 0, assume its a number and work out which number type we actually return
-	if (typearg == 1) leaf->setReturnType(arg1->returnType());
-	else if (typearg == 2) leaf->setReturnType(arg2->returnType());
-	else if (typearg == 99) leaf->setReturnType(NuVTypes::IntegerData);
-	else
-	{
-		if (arg2 == NULL) leaf->setReturnType(arg1->returnType());
-		else if (arg1->returnType() == arg2->returnType()) leaf->setReturnType(arg1->returnType());
-		else leaf->setReturnType(NuVTypes::RealData);
-	}
+// 	if (typearg == 1) leaf->setReturnType(arg1->returnType());
+// 	else if (typearg == 2) leaf->setReturnType(arg2->returnType());
+// 	else if (typearg == 99) leaf->setReturnType(NuVTypes::IntegerData);
+// 	else
+// 	{
+// 		if (arg2 == NULL) leaf->setReturnType(arg1->returnType());
+// 		else if (arg1->returnType() == arg2->returnType()) leaf->setReturnType(arg1->returnType());
+// 		else leaf->setReturnType(NuVTypes::RealData);
+// 	}
+	leaf->setReturnType(rtype);
 	return leaf;
 }
 
@@ -426,7 +578,7 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 				break;
 			// Variable of any type (but not a path)
 			case ('V'):
-				if (leaf->argNode(count)->nodeType() != TreeNode::VarNode) 
+				if ((leaf->argNode(count)->nodeType() != TreeNode::VarNode) && (leaf->argNode(count)->nodeType() != TreeNode::ArrayVarNode))
 				{
 					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, NuCommand::data[func].keyword);
 					failed = TRUE;
@@ -438,7 +590,7 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 		{
 			msg.exit("Tree::addFunctionLeaf");
 			nErrors_ ++;
-			return leaf;
+			return NULL;
 		}
 		if (upc != '*') c++;
 		if (cluster) ngroup++;
@@ -466,8 +618,8 @@ TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
 	return leaf;
 }
 
-// Add an argument to the most recently pushed function on the stack
-TreeNode *Tree::join(TreeNode *arg1, TreeNode *arg2)
+// Link two arguments together with their member pointers
+TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 {
 	arg1->prevArgument = arg2;
 	arg2->nextArgument = arg1;
@@ -475,8 +627,8 @@ TreeNode *Tree::join(TreeNode *arg1, TreeNode *arg2)
 	return arg1;
 }
 
-// Add joiner
-TreeNode *Tree::addJoiner(TreeNode *node1, TreeNode *node2)
+// Join two functions together
+TreeNode *Tree::joinFunctions(TreeNode *node1, TreeNode *node2)
 {
 	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
@@ -508,10 +660,26 @@ void Tree::popScope()
 // Variables / Constants
 */
 
-// Add constant to topmost ScopeNode
-void Tree::addConstant(NuVariable *v)
+// Add constant value to tompost scope
+TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 {
-	scopeStack_.last()->item->variables.take(v);
+	NuVariable *result = NULL;
+	switch (type)
+	{
+		case (NuVTypes::IntegerData):
+			result = scopeStack_.last()->item->variables.createConstant(atoi(token->get()));
+			break;
+		case (NuVTypes::RealData):
+			result = scopeStack_.last()->item->variables.createConstant(atof(token->get()));
+			break;
+		case (NuVTypes::CharacterData):
+			result = scopeStack_.last()->item->variables.createConstant(token->get());
+			break;
+		default:
+			printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", NuVTypes::dataType(type));
+			break;
+	}
+	return result;
 }
 
 // Set current declared variable type
@@ -578,13 +746,13 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 	return var;
 }
 
-// Add constant value
-TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
-{
-	NuVectorVariable *leaf = new NuVectorVariable(value1, value2, value3);
-	scopeStack_.last()->item->variables.take(leaf);
-	return leaf;
-}
+// // Add constant value
+// TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
+// {
+// 	NuVectorVariable *leaf = new NuVectorVariable(value1, value2, value3);
+// 	scopeStack_.last()->item->variables.take(leaf);
+// 	return leaf;
+// }
 
 // Search for variable in current scope
 bool Tree::isVariableInScope(const char *name, NuVariable *&result)
@@ -596,11 +764,12 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
 	if (declarationAssignment_ || (declaredType_ == NuVTypes::NoData))
 	{
-	printf("kljlk\n");
+		printf("kljlk\n");
 		// Search the current ScopeNode list for the variable name requested
 		result = NULL;
 		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
 		{
+			ri->item->nodePrint(1, "SCOPENODE DATA");
 			result = ri->item->variables.find(name);
 			if (result != NULL) break;
 		}
@@ -628,6 +797,20 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 		return TRUE;
 	}
 	return FALSE;
+}
+
+// Wrap named variable (and array index)
+TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
+{
+	// If an array index was given, check that the target variable is actually an array....
+	if (arrayindex && (var->nodeType() != TreeNode::ArrayVarNode))
+	{
+		msg.print("Error: Array index given to variable '%s', but it is not an array.\n", var->name());
+		return NULL;
+	}
+	VariableNode *vnode = new VariableNode(var);
+	vnode->setArrayIndex(arrayindex);
+	return vnode;
 }
 
 /*
@@ -659,21 +842,6 @@ TreeNode *Tree::createPath(TreeNode *node)
 	return vnode;
 }
 
-// Expand topmost path
-void Tree::expandPath(TreeNode *steps)
-{
-	msg.enter("Tree::expandPath");
-	// Finalise the path before we remove it
-	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
-	if (ri == NULL)
-	{
-		msg.print("Internal Error: No path on stack to expand!\n");
-		return;
-	}
-	ri->item->addArgumentList(steps);
-	msg.exit("Tree::expandPath");
-}
-
 // Pop topmost path from stack
 TreeNode *Tree::finalisePath()
 {
@@ -693,28 +861,37 @@ TreeNode *Tree::finalisePath()
 }
 
 // Expand the topmost path on the stack
-StepNode *Tree::evaluateAccessor(const char *s)
+bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 {
-	msg.enter("Tree::evaluateAccessor");
+	msg.enter("Tree::expandPath");
 	// Get last item on path stack
 	Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
 	if (ri == NULL)
 	{
-		printf("Internal Error: No path on stack for which to evaluate accessor '%s'.\n", s);
+		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", name->get());
 		return NULL;
 	}
 	TreeNode *laststep = ri->data;
-	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", s, ri->item->nArgs()+1, ri->item->name());
+	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
 	// Find next step accessor
-	StepNode *result = laststep->findAccessor(s);
+	StepNode *result = laststep->findAccessor(name->get(), arrayindex != NULL);
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
 		msg.print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", NuVTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
-// 		ri->item->setReturnType(result->returnType());
+
+		// Finalise the path before we remove it
+		Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
+		if (ri == NULL)
+		{
+			msg.print("Internal Error: No path on stack to expand!\n");
+			msg.exit("Tree::expandPath");
+			return FALSE;
+		}
+		ri->item->addArgument(result);
 	}
-	else msg.print(Messenger::Parse,"...FAILED - no matching accessor for '%s' found.\n", s);
-	msg.exit("Tree::evaluateAccessor");
+	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", NuVTypes::dataType(laststep->returnType()), name->get());
+	msg.exit("Tree::expandPath");
 	return result;
 }

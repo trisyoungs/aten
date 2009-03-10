@@ -40,7 +40,7 @@ class ArrayVariable : public NuVariable
 	// Return value of node
 	bool execute(NuReturnValue &rv);
 	// Return value of node as array
-	bool execute(NuReturnValue &rv, int arrayindex);
+	bool executeAsArray(NuReturnValue &rv, int arrayindex);
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
 	// Set from returnvalue node as array
@@ -57,7 +57,7 @@ class ArrayVariable : public NuVariable
 	// Current array size
 	int arraySize_;
 	// Array data
-	NuVariable *arrayData_;
+	NuVariable **arrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
 

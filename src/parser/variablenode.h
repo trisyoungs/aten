@@ -41,12 +41,18 @@ class VariableNode : public TreeNode
 	private:
 	// Variable that this node links to
 	NuVariable* variable_;
+	// Array index (if any)
+	TreeNode *arrayIndex_;
 	
 	public:
 	// Set variable target
 	void setVariable(NuVariable *v);
 	// Get variable target
 	NuVariable* variable();
+	// Set array index
+	void setArrayIndex(TreeNode *index);
+	// Return array index
+	TreeNode *arrayIndex();	
 	// Return name of variable target
 	const char *name();
 	// Finalise variable path (if there is one)
@@ -65,7 +71,7 @@ class VariableNode : public TreeNode
 	// Initialise node
 	bool initialise();
 	// Search accessors (if any) available for linked variable
-	StepNode *findAccessor(const char *s);
+	StepNode *findAccessor(const char *s, bool array);
 };
 
 #endif
