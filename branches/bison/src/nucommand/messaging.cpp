@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "command/format.h"
 
 // Write line to msg output and stop

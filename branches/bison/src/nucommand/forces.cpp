@@ -20,30 +20,34 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Calculate forces at trajectory configuration ('frameforces')
-bool NuCommand::function_Frameforces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FrameForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->createExpression()) obj.m->calculateForces(obj.rs);
-	else return FALSE;
+	if (!obj.m->createExpression()) return FALSE;
+	obj.m->calculateForces(obj.rs);
+	rv.reset();
 	return TRUE;
 }
 
 // Calculate atomic forces of model ('modelforces')
-bool NuCommand::function_Modelforces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ModelForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->createExpression()) obj.m->calculateForces(obj.m);
-	else return FALSE;
+	if (!obj.m->createExpression()) return FALSE;
+	obj.m->calculateForces(obj.m);
+	rv.reset();
 	return TRUE;
 }
 
 // Print forces of model ('printforces')
-bool NuCommand::function_Printforces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_PrintForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printForces();
+	rv.reset();
 	return TRUE;
 }

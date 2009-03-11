@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "base/pattern.h"
 #include "classes/site.h"
 #include "model/model.h"

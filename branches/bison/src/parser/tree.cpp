@@ -164,6 +164,12 @@ void Tree::printErrorInfo()
 // Character Stream Retrieval
 */
 
+// Return whether the current input stream is a file
+bool Tree::isFileSource()
+{
+	return isFileSource_;
+}
+
 // Get next character from current input stream
 char Tree::getChar()
 {
@@ -349,6 +355,7 @@ void Tree::addStatement(TreeNode *leaf)
 		return;
 	}
 	printf("Added statement leaf node %li\n", leaf);
+	leaf->setParent(this);
 	statements_.add(leaf);
 }
 
@@ -361,8 +368,9 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
-	// Add arguments
+	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
+	leaf->setParent(this);
 	if (arg2 != NULL) leaf->addArguments(1,arg2);
 	// Store return type - if we were passed 1 or 2, store the return type of this argument
 	// If we were passed 99, it is a logical operator and should return an integer
@@ -389,6 +397,7 @@ TreeNode *Tree::addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2)
 	ownedNodes_.add(leaf);
 	leaf->addArguments(2, condition, expr1);
 	if (expr2 != NULL) leaf->addArgument(expr2);
+	leaf->setParent(this);
 	msg.print(Messenger::Parse, "'If' statement added (%li).\n", leaf);
 	msg.exit("Tree::addIf");
 	return leaf;
@@ -402,6 +411,7 @@ TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, Tr
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::For);
 	ownedNodes_.add(leaf);
 	leaf->addArguments(4, init, condition, action, statements);
+	leaf->setParent(this);
 	msg.print(Messenger::Parse, "'For' statement added (%li).\n", leaf);
 	msg.exit("Tree::addFor");
 	return leaf;
@@ -414,8 +424,9 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	ownedNodes_.add(leaf);
-	// Add argument list to node
+	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
+	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(NuCommand::data[func].returnType);
 	// Check that the correct arguments were given to the command
@@ -607,6 +618,7 @@ TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
 	ScopeNode *leaf = new ScopeNode(func);
 	ownedNodes_.add(leaf);
 	scopeStack_.add(leaf);
+	leaf->setParent(this);
 	// Create variable argument parser
 	va_list vars;
 	va_start(vars,nargs);
@@ -633,6 +645,7 @@ TreeNode *Tree::joinFunctions(TreeNode *node1, TreeNode *node2)
 	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
 	ownedNodes_.add(leaf);
+	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
 	return leaf;
@@ -809,7 +822,9 @@ TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 		return NULL;
 	}
 	VariableNode *vnode = new VariableNode(var);
+	ownedNodes_.add(vnode);
 	vnode->setArrayIndex(arrayindex);
+	vnode->setParent(this);
 	return vnode;
 }
 
@@ -833,8 +848,6 @@ bool Tree::expectPathStep()
 TreeNode *Tree::createPath(TreeNode *node)
 {
 	msg.enter("Tree::createPath");
-	// Create a new pathnode
-// 	VariableNode *node = new VariableNode(basevar);
  	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
 	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());

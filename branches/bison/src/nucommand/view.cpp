@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "base/messenger.h"
 #include "gui/gui.h"
 #include "model/model.h"

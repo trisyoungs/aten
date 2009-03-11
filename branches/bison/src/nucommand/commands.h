@@ -79,9 +79,9 @@ class NuCommand
 		FrameAnalyse,
 		Geometry,
 		ModelAnalyse,
-		Pdens,
+		PDens,
 		PrintJobs,
-		Rdf,
+		RDF,
 		SaveQuantities,
 		TrajAnalyse,
 	
@@ -231,7 +231,6 @@ class NuCommand
 		Equivalent,
 		FFModel,
 		FFPattern,
-		FFPatternId,
 		FinaliseFF,
 		GenConvert,
 		Generator,
@@ -273,7 +272,7 @@ class NuCommand
 		GridAxes,
 		GridColour,
 		GridColourNegative,
-		GridColourScale,
+		GridColourscale,
 		GridCubic,
 		GridCutoff,
 		GridLoopOrder,
@@ -519,9 +518,9 @@ class NuCommand
 	static bool function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);	
 	static bool function_ModelAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Pdens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_PDens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_PrintJobs(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Rdf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_RDF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SaveQuantities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_TrajAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Atom Commands
@@ -616,7 +615,7 @@ class NuCommand
 	static bool function_Region(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RegionCentre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RegionCentreFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionFrc(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_RegionFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RegionGeometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RegionGeometryFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RegionOverlaps(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -666,13 +665,12 @@ class NuCommand
 	static bool function_AngleDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_BondDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ClearMap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CreatEexpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_CreateExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_DefaultFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Equivalent(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FinaliseFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FFModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FFPatternId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GenConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Generator(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GetFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -711,7 +709,7 @@ class NuCommand
 	static bool function_GridAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GridColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GridColourNegative(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridColourScale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_GridColourscale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GridCubic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GridCutoff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GridOrtho(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

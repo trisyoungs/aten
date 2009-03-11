@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
 #include "command/filter.h"
@@ -38,7 +38,7 @@ bool NuCommand::function_Createatoms(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Return (or set) the current model
-bool NuCommand::function_Currentmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_CurrentModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// Check the presence of arg(0)
 	if (c->hasArg(0))
@@ -64,15 +64,16 @@ bool NuCommand::function_Currentmodel(NuCommandNode *c, Bundle &obj, NuReturnVal
 		else
 		{
 			aten.setCurrentModel(m);
-			msg.print("Current model is now '%s'.\n", aten.current.rs->name());
+			msg.print("Current model is now '%s'.\n", aten.current.m->name());
 		}
 	}
-	else msg.print("Current model is '%s'.\n", aten.current.rs->name());
+	else msg.print("Current model is '%s'.\n", aten.current.m->name());
+	rv.set(NuVTypes::ModelData, aten.current.m);
 	return TRUE;
 }
 
 // Finalise current model
-bool NuCommand::function_Finalisemodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If this command is being run from a filter, set the output filter in the model.
@@ -99,13 +100,15 @@ bool NuCommand::function_Finalisemodel(NuCommandNode *c, Bundle &obj, NuReturnVa
 	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();
 	obj.m->changeLog.updateSavePoint();
+	rv.reset();
 	return TRUE;
 }
 
 // Set current model to be first loaded/created model
-bool NuCommand::function_Firstmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FirstModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	Model *m = aten.model(0);
+	rv.set(NuVTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -116,11 +119,12 @@ bool NuCommand::function_Firstmodel(NuCommandNode *c, Bundle &obj, NuReturnValue
 	return TRUE;
 }
 
-// Select working model ('getmodel <name> [variable]')
-bool NuCommand::function_Getmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Select working model ('getmodel <name>')
+bool NuCommand::function_GetModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
 	Model *m = (c->argt(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
+	rv.set(NuVTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -130,7 +134,7 @@ bool NuCommand::function_Getmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	}
 	else
 	{
-		msg.print("No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
+		msg.print("No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0), c->argi(0));
 		return FALSE;
 	}
 }
@@ -140,13 +144,15 @@ bool NuCommand::function_Info(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->renderSource()->print();
+	rv.reset();
 	return TRUE;
 }
 
 // Set current model to be last loaded/created model
-bool NuCommand::function_Lastmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LastModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	Model *m = aten.model(aten.nModels()-1);
+	rv.set(NuVTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -158,16 +164,17 @@ bool NuCommand::function_Lastmodel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Print loaded models ('listmodels')
-bool NuCommand::function_Listmodels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ListModels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (aten.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 		msg.print("%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
+	rv.reset();
 	return TRUE;
 }
 
 // Load model ('loadmodel <filename> [name]')
-bool NuCommand::function_Loadmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LoadModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	Filter *f = aten.probeFile(c->argc(0), Filter::ModelImport);
 	if (f != NULL)
@@ -177,10 +184,12 @@ bool NuCommand::function_Loadmodel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
+			rv.set(NuVTypes::ModelData, m);
 			return TRUE;
 		}
 		else return FALSE;
-	} else return FALSE;
+	}
+	else return FALSE;
 }
 
 // Print log information for model ('loginfo')
@@ -188,11 +197,12 @@ bool NuCommand::function_Loginfo(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->renderSource()->printLogs();
+	rv.reset();
 	return TRUE;
 }
 
 // Use parent model as atom template
-bool NuCommand::function_Modeltemplate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ModelTemplate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m == obj.rs)
@@ -208,11 +218,12 @@ bool NuCommand::function_Modeltemplate(NuCommandNode *c, Bundle &obj, NuReturnVa
 		j = obj.rs->addAtom(obj.i->element(), v);
 		j->copyStyle(obj.i);
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Create new model ('newmodel <name>')
-bool NuCommand::function_Newmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_NewModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
@@ -227,11 +238,12 @@ bool NuCommand::function_Newmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (c->parent()->inputFile() == NULL) obj.m->enableUndoRedo();
+	rv.set(NuVTypes::ModelData, obj.m);
 	return TRUE;
 }
 
 // Skip to next loaded model ('nextmodel')
-bool NuCommand::function_Nextmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_NextModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
@@ -240,11 +252,12 @@ bool NuCommand::function_Nextmodel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
 	}
+	rv.set(NuVTypes::ModelData, obj.m);
 	return TRUE;
 }
 
 // Skip to previous loaded model ('prevmodel')
-bool NuCommand::function_Prevmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_PrevModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
@@ -253,6 +266,7 @@ bool NuCommand::function_Prevmodel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
 	}
+	rv.set(NuVTypes::ModelData, obj.m);
 	return TRUE;
 }
 

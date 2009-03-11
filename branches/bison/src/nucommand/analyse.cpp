@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "base/messenger.h"
 #include "methods/rdf.h"
 #include "methods/pdens.h"
@@ -31,16 +32,18 @@ bool NuCommand::function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
+	rv.reset();
 	return TRUE;
 }
 
 // Accumulate data for current frame ('frameanalyse')
-bool NuCommand::function_Frameanalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
 	Model *frame = obj.m->currentFrame();
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
+	rv.reset();
 	return TRUE;
 }
 
@@ -48,7 +51,7 @@ bool NuCommand::function_Frameanalyse(NuCommandNode *c, Bundle &obj, NuReturnVal
 bool NuCommand::function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Geometry *newgeom = new Geometry;
+	Geometry::Geometry *newgeom = new Geometry::Geometry;
 	obj.m->pendingQuantities.own(newgeom);
 	// Set quantity name and destination filename
 	newgeom->setName(c->argc(0));
@@ -59,19 +62,21 @@ bool NuCommand::function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	if (c->hasArg(7)) newgeom->setSite(1,obj.m->findSite(c->argc(7)));
 	if (c->hasArg(8)) newgeom->setSite(1,obj.m->findSite(c->argc(8)));
 	newgeom->setRange(c->argd(1), c->argd(2), c->argi(3));
+	rv.reset();
 	return (newgeom->initialise() ? TRUE : FALSE);
 }
 
 // Accumulate data for current model ('modelanalyse')
-bool NuCommand::function_Modelanalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ModelAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
+	rv.reset();
 	return TRUE;
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
-bool NuCommand::function_Pdens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_PDens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pdens *newpdens = new Pdens;
@@ -83,17 +88,18 @@ bool NuCommand::function_Pdens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	newpdens->setSite(0,obj.m->findSite(c->argc(4)));
 	newpdens->setSite(1,obj.m->findSite(c->argc(5)));
 	newpdens->setRange(c->argd(1), c->argi(2));
+	rv.reset();
 	return (newpdens->initialise() ? TRUE : FALSE);
 }
 
 // Print current job list ('printjobs')
-bool NuCommand::function_Printjobs(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_PrintJobs(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	return FALSE;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
-bool NuCommand::function_Rdf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_RDF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Rdf *newrdf = new Rdf;
@@ -105,19 +111,21 @@ bool NuCommand::function_Rdf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	newrdf->setSite(0,obj.m->findSite(c->argc(5)));
 	newrdf->setSite(1,obj.m->findSite(c->argc(6)));
 	newrdf->setRange(c->argd(1), c->argd(2), c->argi(3));
+	rv.reset();
 	return (newrdf->initialise() ? TRUE : FALSE);
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
-bool NuCommand::function_Savequantities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SaveQuantities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
+	rv.reset();
 	return TRUE;
 }
 
 // Calculate quantities over entire trajectory
-bool NuCommand::function_Trajanalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TrajAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
@@ -129,6 +137,7 @@ bool NuCommand::function_Trajanalyse(NuCommandNode *c, Bundle &obj, NuReturnValu
 	if (totalframes == 0)
 	{
 		msg.print("No trajectory associated to model.\n");
+		rv.reset();
 		return FALSE;
 	}
 	// Get start frame, frame skip, and frames to do (if supplied)
@@ -157,5 +166,6 @@ bool NuCommand::function_Trajanalyse(NuCommandNode *c, Bundle &obj, NuReturnValu
 		if (n != totalframes) obj.m->seekNextFrame();
 	}
 	msg.print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
+	rv.reset();
 	return TRUE;
 }

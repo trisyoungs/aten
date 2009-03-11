@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
@@ -27,7 +28,7 @@
 #include "classes/prefs.h"
 
 // Save current view as bitmap image
-bool NuCommand::function_Savebitmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SaveBitmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
@@ -47,11 +48,12 @@ bool NuCommand::function_Savebitmap(NuCommandNode *c, Bundle &obj, NuReturnValue
 	}
 	if (c->hasArg(4)) quality = c->argi(4);
 
+	rv.reset();
 	return (gui.saveImage(c->argc(1), bf, width, height, quality) ? TRUE : FALSE);
 }
 
 // Save current view a vector graphic
-bool NuCommand::function_Savevector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SaveVector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 // 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 // 	vector_format vf = VIF_from_text(c->argc(0));
@@ -62,6 +64,7 @@ bool NuCommand::function_Savevector(NuCommandNode *c, Bundle &obj, NuReturnValue
 // 	}
 // 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
 // 	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
+	rv.reset();
 	msg.print("Saving images in vector format is not yet available.\n");
 	return FALSE;
 }

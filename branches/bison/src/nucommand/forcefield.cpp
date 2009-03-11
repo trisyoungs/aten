@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 #include "base/elements.h"
 #include "ff/forcefield.h"
@@ -31,7 +32,7 @@
 
 
 // Add a new angle definition to the current forcefield
-bool NuCommand::function_Angledef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_AngleDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -49,12 +50,12 @@ bool NuCommand::function_Angledef(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	ForcefieldBound *ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
-	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));	rv.reset();
 	return TRUE;
 }
 
 // Add a new bond definition to the current forcefield
-bool NuCommand::function_Bonddef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_BondDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -73,73 +74,89 @@ bool NuCommand::function_Bonddef(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-3, c->argd(n));
 	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
+	rv.reset();
 	return TRUE;
 }
 
 // Clear manual type mapping list ('clearmap')
-bool NuCommand::function_Clearmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ClearMap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	aten.typeMap.clear();
+	rv.reset();
 	return TRUE;
 }
 
 // Create energy expression for current model ('createexpression'}
-bool NuCommand::function_Createexpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_CreateExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->autocreatePatterns()) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
+	rv.reset();
 	return TRUE;
 }
 
 // Set default forcefield ('defaultff <ff>')
-bool NuCommand::function_Defaultff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_DefaultFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	aten.setDefaultForcefield(aten.findForcefield(c->argc(0)));
+	rv.reset();
 	return TRUE;
 }
 
 // Set equivalent 
 bool NuCommand::function_Equivalent(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
+	rv.reset();
 	return FALSE;
 }
 
 // Associate current ff to current model ('ffmodel [name]')
-bool NuCommand::function_Ffmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FFModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	if (c->hasArg(0)) obj.m->setForcefield(aten.findForcefield(c->argc(0)));
 	else obj.m->setForcefield(obj.ff);
+	rv.reset();
 	return TRUE;
 }
 
 // Set current forcefield for named pattern ('ffpattern')
-bool NuCommand::function_Ffpattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
-	obj.p->setForcefield(obj.ff);
-	return TRUE;
-}
-
-// Set current forcefield for pattern id given ('ffpatternid <id>')
-bool NuCommand::function_Ffpatternid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
-	int nodeid = c->argi(0) - 1;
-	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
+	// If no argument was given, set the current pattern
+	if (!c->hasArg(0)) obj.p->setForcefield(obj.ff);
+	else
 	{
-		msg.print("Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, obj.m->nPatterns());
-		return FALSE;
+		Pattern *p = NULL;
+		switch (c->argType(0))
+		{
+			case (NuVTypes::IntegerData):
+				p = obj.m->pattern(c->argi(0)-1);
+				break;
+			case (NuVTypes::CharacterData):
+				p = obj.m->findPattern(c->argc(0));
+				break;
+			case (NuVTypes::PatternData):
+				p = (Pattern*) c->argp(0, NuVTypes::ModelData);
+				break;
+		}
+		if (p == NULL)
+		{
+			msg.print("Invalid pattern specified - current model unchanged.\n");
+			return FALSE;
+		}
+		p->setForcefield(obj.ff);
 	}
-	else obj.m->pattern(nodeid)->setForcefield(obj.ff);
+	rv.reset();
 	return TRUE;
 }
 
 // Finalise current forcefield
-bool NuCommand::function_Finaliseff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FinaliseFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Print some information about the terms read in from the forcefield
@@ -149,14 +166,16 @@ bool NuCommand::function_Finaliseff(NuCommandNode *c, Bundle &obj, NuReturnValue
 	msg.print("Read in %i torsion definitions\n", obj.ff->nTorsions());
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
+	rv.reset();
 	return TRUE;
 }
 
 // Set energetic parameters to convert in generator data
-bool NuCommand::function_Genconvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_GenConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	for (int n=0; n<c->nArgs(); n++) obj.ff->setEnergyGenerator(c->argi(n));
+	rv.reset();
 	return TRUE;
 }
 
@@ -174,20 +193,22 @@ bool NuCommand::function_Generator(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	// Create generator array on atom
 	ffa->initialiseGenerator();
 	for (n=1; n<c->nArgs(); n++) ffa->setGenerator(n-1, c->argd(n));
+	rv.reset();
 	return TRUE;
 }
 
 // Select current forcefield ('getff <name>')
-bool NuCommand::function_Getff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_GetFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Forcefield *ff = (c->argt(0) == VTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
-	if (ff != NULL)	aten.setCurrentForcefield(ff);
-	else return FALSE;
+	Forcefield *ff = (c->argType(0) == NuVTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	if (ff == NULL)	return FALSE;
+	aten.setCurrentForcefield(ff);
+	rv.set(NuVTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
 // Load forcefield ('loadff <filename> [nickname]')
-bool NuCommand::function_Loadff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LoadFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	Forcefield *ff = aten.loadForcefield(c->argc(0));
 	if (ff == NULL) return FALSE;
@@ -196,6 +217,7 @@ bool NuCommand::function_Loadff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
+	rv.set(NuVTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
@@ -219,25 +241,28 @@ bool NuCommand::function_Map(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 			}
 		}
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Create new, empty forcefield ('newff <name>')
-bool NuCommand::function_Newff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_NewFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.ff = aten.addForcefield();
 	obj.ff->setName(c->argc(0));
+	rv.set(NuVTypes::ForcefieldData, obj.ff);
 	return TRUE;
 }
 
-// Print expression setup ('printexpression')
-bool NuCommand::function_Printsetup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Print expression setup ('printsetup')
+bool NuCommand::function_PrintSetup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	msg.print("Current Energy Setup:\n");
 	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
 	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
 	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
+	rv.reset();
 	return TRUE;
 }
 
@@ -252,7 +277,7 @@ bool NuCommand::function_Rules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Save expression ('saveexpression <format> <file>')
-bool NuCommand::function_Saveexpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
@@ -264,11 +289,12 @@ bool NuCommand::function_Saveexpression(NuCommandNode *c, Bundle &obj, NuReturnV
 		return FALSE;
 	}
 	f->execute(c->argc(1));
+	rv.reset();
 	return TRUE;
 }
 
 // Add a new torsion definition to the current forcefield
-bool NuCommand::function_Torsiondef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TorsionDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -287,11 +313,12 @@ bool NuCommand::function_Torsiondef(NuCommandNode *c, Bundle &obj, NuReturnValue
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-5, c->argd(n));
 	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	rv.reset();
 	return TRUE;
 }
 
 // Add a new type definition to the current forcefield
-bool NuCommand::function_Typedef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TypeDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Search for this ID to make sure it hasn't already been used
@@ -309,18 +336,20 @@ bool NuCommand::function_Typedef(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	ffa->atomtype()->setCharacterElement(elements().findAlpha(c->argc(2)));
 	ffa->setAtomtype(c->argc(3), obj.ff, ffa);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
+	rv.reset();
 	return TRUE;
 }
 
 // Perform typing on current model
-bool NuCommand::function_Typemodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TypeModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
 	return (obj.m->typeAll() ? TRUE : FALSE);
 }
 
 // Test specified type ID of current forcefield
-bool NuCommand::function_Typetest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TypeTest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
 	// Find the specified type...
@@ -345,6 +374,7 @@ bool NuCommand::function_Typetest(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		}
 		else return FALSE;
 	}
+	rv.reset();
 	return TRUE;
 }
 
@@ -356,11 +386,12 @@ bool NuCommand::function_Units(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	if (newunit == Prefs::nEnergyUnits) return FALSE;
 	obj.ff->setEnergyUnit(newunit);
 	msg.print("Forcefield energy unit set to %s\n", Prefs::energyUnit(newunit));
+	rv.reset();
 	return TRUE;
 }
 
 // Add a new intermolecular definition to the current forcefield
-bool NuCommand::function_Interdef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_InterDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Get functional form of vdw
@@ -377,5 +408,6 @@ bool NuCommand::function_Interdef(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
 	ffa->setVdwForm(vdwstyle);
 	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
+	rv.reset();
 	return TRUE;
 }

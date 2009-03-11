@@ -26,10 +26,12 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "parser/vtypes.h"
+#include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
 class ScopeNode;
 class StepNode;
+class Tree;
 
 // Tree Node
 class TreeNode
@@ -43,16 +45,24 @@ class TreeNode
 	// Node Types
 	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, nNodeTypes };
 
+
 	/*
 	// Node Type
 	*/
 	protected:
 	// Type of node
 	NodeType nodeType_;
+	// Pointer to parent tree
+	Tree *parent_;
 
 	public:
 	// Retrieve node type
 	NodeType nodeType();
+	// Set parent 
+	void setParent(Tree *parent);
+	// Retrieve parent
+	Tree *parent();
+
 
 	/*
 	// Argument Data
@@ -74,20 +84,29 @@ class TreeNode
 	void addArgument(TreeNode *arg);
 	// Return (execute) argument specified
 	bool arg(int i, NuReturnValue &rv);
+	// Return (execute) argument specified as a bool
+	bool argb(int i);
 	// Return (execute) argument specified as an integer
 	int argi(int i);
 	// Return (execute) argument specified as a double
 	double argd(int i);
+	// Return (execute) argument specified as a GLFloat
+	GLfloat argGLf(int i);
 	// Return (execute) argument specified as a character
 	const char *argc(int i);
-	// Return (execute) triplet of arguments, starting from argument specified
+	// Return (execute) argument specified as a pointer
+	void *argp(int i, NuVTypes::DataType type);
+	// Return (execute) triplet of 'double' arguments, starting from argument specified
 	Vec3<double> arg3d(int i);
+	// Return (execute) triplet of 'int' arguments, starting from argument specified
+	Vec3<int> arg3i(int i);
 	// Return the TreeNode corresponding to the argument, rather than executing it
 	TreeNode *argNode(int i);
 	// Set argument specified
 	bool setArg(int i, NuReturnValue &rv);
 	// Return whether argument i was given
 	bool hasArg(int i);
+
 
 	/*
 	// Node Character
@@ -96,10 +115,7 @@ class TreeNode
 	// Node return value datatype
 	NuVTypes::DataType returnType_;
 	// Whether node is read-only
-	bool readOnly_;
-	// Pointer to parent ScopeNode
-	ScopeNode *parentScope_;
-	
+	bool readOnly_;	
 
 	public:
 	// Sets the content type of the variable

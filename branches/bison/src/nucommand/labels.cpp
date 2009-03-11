@@ -20,10 +20,11 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Clear labels in selection
-bool NuCommand::function_Clearlabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ClearLabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Clear all labels in selection");
@@ -52,11 +53,12 @@ bool NuCommand::function_Label(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 		obj.rs->selectionAddLabels(al);
 		obj.rs->endUndoState();
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Remove label from current selection or specified atom
-bool NuCommand::function_Removelabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_RemoveLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
@@ -75,11 +77,12 @@ bool NuCommand::function_Removelabel(NuCommandNode *c, Bundle &obj, NuReturnValu
 		obj.rs->selectionRemoveLabels(al);
 		obj.rs->endUndoState();
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Remove all labels from current selection or specified atom
-bool NuCommand::function_Removelabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_RemoveLabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
@@ -96,5 +99,6 @@ bool NuCommand::function_Removelabels(NuCommandNode *c, Bundle &obj, NuReturnVal
 		obj.rs->selectionClearLabels();
 		obj.rs->endUndoState();
 	}
+	rv.reset();
 	return TRUE;
 }
