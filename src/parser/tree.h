@@ -60,6 +60,8 @@ class Tree
 	int lineNumber_;
 
 	public:
+	// Return whether the current input stream is a file
+	bool isFileSource();
 	// Get next character from current input stream
 	char getChar();
 	// Peek next character from current input stream
@@ -79,6 +81,7 @@ class Tree
 	// Print error information and location
 	void printErrorInfo();
 
+
 	/*
 	// Node Data
 	*/
@@ -95,6 +98,7 @@ class Tree
 	int nErrors_;
 	// Check operator type compatibility
 	NuVTypes::DataType checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
+
 
 	/*
 	// Statement / Command Addition
@@ -122,6 +126,7 @@ class Tree
 	TreeNode *pushScope();
 	// Pop the topmost scope node
 	void popScope();
+
 
 	/*
 	// Variables / Constants
@@ -152,12 +157,11 @@ class Tree
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
 
+
 	/*
 	// Paths	
 	*/
 	private:
-	// Nested path depth for lexer
-	int pathDepth_;
 	// Whether the next token to expect is a path step
 	bool expectPathStep_;
 

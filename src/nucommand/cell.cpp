@@ -21,6 +21,7 @@
 
 #include "nucommand/commands.h"
 #include "parser/commandnode.h"
+#include "parser/tree.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/messenger.h"
@@ -32,7 +33,7 @@ bool NuCommand::function_AddGenerator(NuCommandNode *c, Bundle &obj, NuReturnVal
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
-	Generator *gen = generators.generator(c->argc(0));
+	Generator::Generator *gen = generators.generator(c->argc(0));
 	if (gen != NULL)
 	{
 		obj.rs->cell()->addGenerator(gen);
@@ -47,7 +48,7 @@ bool NuCommand::function_AddGenerator(NuCommandNode *c, Bundle &obj, NuReturnVal
 		else
 		{
 			msg.print("Failed to create new generator definition.\n");
-			return FALSEContinue;
+			return FALSE;
 		}
 	}
 	rv.reset();
@@ -68,7 +69,7 @@ bool NuCommand::function_AdjustCell(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Fold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->parent()->inputFile() == NULL)
+	if (!c->parent()->isFileSource())
 	{
 		obj.rs->beginUndoState("Fold Atoms");
 		obj.rs->foldAllAtoms();
@@ -105,7 +106,7 @@ bool NuCommand::function_FracToReal(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Pack(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->parent()->inputFile() == NULL)
+	if (!c->parent()->isFileSource())
 	{
 		obj.rs->beginUndoState("Pack Cell");
 		obj.rs->pack();
@@ -253,7 +254,7 @@ bool NuCommand::function_Spacegroup(NuCommandNode *c, Bundle &obj, NuReturnValue
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argt(0) == VTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
+	if (c->argType(0) == NuVTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
 	else
 	{
 		msg.print("Searching for spacegroup '%s'...",c->argc(0));

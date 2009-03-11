@@ -32,7 +32,7 @@ TreeNode::TreeNode()
 	// Private variables
 	returnType_ = NuVTypes::NoData;
 	readOnly_ = TRUE;
-	parentScope_ = NULL;
+	parent_ = NULL;
 	nextArgument = NULL;
 	prevArgument = NULL;
 	nodeType_ = TreeNode::BasicNode;
@@ -47,6 +47,18 @@ TreeNode::~TreeNode()
 TreeNode::NodeType TreeNode::nodeType()
 {
 	return nodeType_;
+}
+
+// Set parent 
+void TreeNode::setParent(Tree *parent)
+{
+	parent_ = parent;
+}
+
+// Retrieve parent
+Tree *TreeNode::parent()
+{
+	return parent_;
 }
 
 // Sets the content type of the variable
@@ -156,6 +168,23 @@ bool TreeNode::arg(int i, NuReturnValue &rv)
 	return args_[i]->item->execute(rv);
 }
 
+// Return (execute) argument specified as a bool
+bool TreeNode::argb(int i)
+{
+	if ((i < 0) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	static NuReturnValue rv;
+	bool success;
+	bool result;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = (rv.asInteger(success) > 0);
+	if (!success) msg.print("Couldn't cast argument %i into an integer.\n", i+1);
+	return result;
+}
+
 // Return (execute) argument specified as an integer
 int TreeNode::argi(int i)
 {
@@ -190,6 +219,12 @@ double TreeNode::argd(int i)
 	return result;
 }
 
+// Return (execute) argument specified as a GLFloat
+GLfloat TreeNode::argGLf(int i)
+{
+	return (GLfloat) argd(i);
+}
+
 // Return (execute) argument specified as a character
 const char *TreeNode::argc(int i)
 {
@@ -207,6 +242,23 @@ const char *TreeNode::argc(int i)
 	return result;
 }
 
+// Return (execute) argument specified as a pointer
+void *TreeNode::argp(int i, NuVTypes::DataType type)
+{
+	if ((i < 0) || (i >= args_.nItems()))
+	{
+		printf("Argument index %i is out of range.\n", i);
+		return FALSE;
+	}
+	static NuReturnValue rv;
+	bool success;
+	void *result = NULL;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = rv.asPointer(type, success);
+	if (!success) msg.print("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, NuVTypes::dataType(type));
+	return result;
+}
+
 // Return (execute) argument triplet specified
 Vec3<double> TreeNode::arg3d(int i)
 {
@@ -217,6 +269,19 @@ Vec3<double> TreeNode::arg3d(int i)
 	}
 	Vec3<double> result;
 	result.set(argd(i), argd(i+1), argd(i+2));
+	return result;
+}
+
+// Return (execute) argument triplet specified
+Vec3<int> TreeNode::arg3i(int i)
+{
+	if ((i < 0) || (i > (args_.nItems()-3)))
+	{
+		printf("Argument index %i is out of range for a triplet.\n", i);
+		return FALSE;
+	}
+	Vec3<int> result;
+	result.set(argi(i), argi(i+1), argi(i+2));
 	return result;
 }
 

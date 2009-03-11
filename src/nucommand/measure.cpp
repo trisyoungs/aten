@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Measure angle between supplied atoms
@@ -29,7 +30,7 @@ bool NuCommand::function_Angle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	obj.rs->beginUndoState("Measure angle");
 	double a = obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
 	obj.rs->endUndoState();
-	if (c->hasArg(3)) c->arg(3)->set(a);
+	rv.set(a);
 	return TRUE;
 }
 
@@ -40,16 +41,18 @@ bool NuCommand::function_Angles(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	obj.rs->beginUndoState("Measure bond angles in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Angle);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Clear all measurements in current model
-bool NuCommand::function_Clearmeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ClearMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Remove all measurements");
 	obj.rs->clearMeasurements();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -60,7 +63,7 @@ bool NuCommand::function_Distance(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	obj.rs->beginUndoState("Measure distance");
 	double d = obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
 	obj.rs->endUndoState();
-	if (c->hasArg(2)) c->arg(2)->set(d);
+	rv.set(d);
 	return TRUE;
 }
 
@@ -71,14 +74,16 @@ bool NuCommand::function_Distances(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	obj.rs->beginUndoState("Measure bond distances in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Distance);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // List all measurements in current model
-bool NuCommand::function_Listmeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ListMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->listMeasurements();
+	rv.reset();
 	return TRUE;
 }
 
@@ -86,23 +91,24 @@ bool NuCommand::function_Listmeasurements(NuCommandNode *c, Bundle &obj, NuRetur
 bool NuCommand::function_Measure(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	double result = 0.0;
 	if (c->hasArg(3))
 	{
-		
 		obj.rs->beginUndoState("Measure torsion");
-		obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
+		result = obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs->beginUndoState("Measure angle");
-		obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
+		result = obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
 	}
 	else
 	{
 		obj.rs->beginUndoState("Measure distance");
-		obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
+		result = obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
 	}
 	obj.rs->endUndoState();
+	rv.set(result);
 	return TRUE;
 }
 
@@ -113,7 +119,7 @@ bool NuCommand::function_Torsion(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	obj.rs->beginUndoState("Measure torsion");
 	double t = obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
 	obj.rs->endUndoState();
-	if (c->hasArg(4)) c->arg(4)->set(t);
+	rv.set(t);
 	return TRUE;
 }
 
@@ -124,5 +130,6 @@ bool NuCommand::function_Torsions(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	obj.rs->beginUndoState("Measure torsions in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Torsion);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }

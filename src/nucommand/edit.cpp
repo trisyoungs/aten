@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "model/clipboard.h"

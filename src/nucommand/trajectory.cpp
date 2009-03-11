@@ -19,7 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/gui.h"

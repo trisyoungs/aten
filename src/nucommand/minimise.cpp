@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/commandnode.h"
 #include "methods/sd.h"
 #include "methods/mc.h"
 #include "methods/cg.h"

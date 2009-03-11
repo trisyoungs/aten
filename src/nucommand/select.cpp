@@ -20,6 +20,7 @@
 */
 
 #include "variables/accesspath.h"
+#include "parser/commandnode.h"
 #include "nucommand/commands.h"
 #include "command/format.h"
 #include "model/model.h"
