@@ -31,24 +31,6 @@ void NuCommand::initPointers()
 	pointers_[Joiner] = &function_Joiner;
 	pointers_[Initialisations] = &function_Initialisations;
 
-	pointers_[OperatorAdd] = &function_OperatorAdd;
-	pointers_[OperatorAssignment] = &function_OperatorAssignment;
-	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
-	pointers_[OperatorAssignmentMinus] = &function_OperatorAssignmentMinus;
-	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
-	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
-	pointers_[OperatorDivide] = &function_OperatorDivide;
-	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
-	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
-	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
-	pointers_[OperatorLessThan] = &function_OperatorLessThan;
-	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
-	pointers_[OperatorMultiply] = &function_OperatorMultiply;
-	pointers_[OperatorNegate] = &function_OperatorNegate;
-	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
-	pointers_[OperatorPower] = &function_OperatorPower;
-	pointers_[OperatorSubtract] = &function_OperatorSubtract;
-
 /*
 	// Analyse commands
 	pointers_[Finalise] = &NuCommand::function_Finalise;
@@ -439,25 +421,6 @@ void NuCommand::initPointers()
 	pointers_[Matrixtransform] = &NuCommand::function_Matrixtransform;
 	pointers_[Mirror] = &NuCommand::function_Mirror;
 
-	// Variables
-	pointers_[Character] = &NuCommand::function_Character;
-	pointers_[Integer] = &NuCommand::function_Integer;
-	pointers_[Real] = &NuCommand::function_Real;
-	pointers_[ConstVector] = &NuCommand::function_ConstVector;
-	pointers_[Atom] = &NuCommand::function_Atom;
-	pointers_[Bond] = &NuCommand::function_Bond;
-	pointers_[Pattern] = &NuCommand::function_Pattern;
-	pointers_[PatternBound] = &NuCommand::function_PatternBound;
-	pointers_[Model] = &NuCommand::function_Model;
-	pointers_[Grid] = &NuCommand::function_Grid;
-	pointers_[FFAtom] = &NuCommand::function_FFAtom;
-	pointers_[FFBound] = &NuCommand::function_FFBound;
-	pointers_[CellVar] = &NuCommand::function_CellVar;
-	pointers_[Forcefield] = &NuCommand::function_Forcefield;
-	pointers_[PrefsVar] = &NuCommand::function_PrefsVar;
-	pointers_[ElementsVar] = &NuCommand::function_ElementsVar;
-	pointers_[Vector] = &NuCommand::function_Vector;
-
 	// Variable Manipulation Commands
 	pointers_[AfterChar] = &NuCommand::function_AfterChar;
 	pointers_[BeforeChar] = &NuCommand::function_BeforeChar;
@@ -469,7 +432,28 @@ void NuCommand::initPointers()
 	pointers_[LetVector] = &NuCommand::function_LetVector;
 	pointers_[Normalise] = &NuCommand::function_Normalise;	
 	pointers_[StripChars] = &NuCommand::function_StripChars;
+*/
 
+	// Variable Operators
+	pointers_[OperatorAdd] = &function_OperatorAdd;
+	pointers_[OperatorAssignment] = &function_OperatorAssignment;
+	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
+	pointers_[OperatorAssignmentMinus] = &function_OperatorAssignmentMinus;
+	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
+	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
+	pointers_[OperatorDivide] = &function_OperatorDivide;
+	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
+	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
+	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
+	pointers_[OperatorLessThan] = &function_OperatorLessThan;
+	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
+	pointers_[OperatorMultiply] = &function_OperatorMultiply;
+	pointers_[OperatorNegate] = &function_OperatorNegate;
+	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
+	pointers_[OperatorPower] = &function_OperatorPower;
+	pointers_[OperatorSubtract] = &function_OperatorSubtract;
+
+/*
 	// View Commands
 	pointers_[GetView] = &NuCommand::function_GetView;
 	pointers_[Orthographic] = &NuCommand::function_Orthographic;

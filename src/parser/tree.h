@@ -26,9 +26,12 @@
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "nucommand/commands.h"
+#include "templates/namemap.h"
+#include "templates/list.h"
 #include "templates/reflist.h"
-#include "base/vtypes.h"
 #include "base/dnchar.h"
+#include "base/elements.h"
+#include "base/vtypes.h"
 
 // Forward declarations
 class TreeNode;
@@ -43,51 +46,28 @@ class Tree
 	// Constructor / Destructor
 	Tree();
 	~Tree();
-
-	/*
-	// Create / Execute
-	*/
-	private:
-	// Whether this Tree is being created from string, file etc.
-	bool isFileSource_;
-	// Character string source
-	Dnchar stringSource_;
-	// Integer position in stringSource, and total length of string
-	int stringPos_, stringLength_;
-	// File source
-	ifstream *fileSource_;
-	// Line number in source file that we've just read
-	int lineNumber_;
-
-	public:
-	// Return whether the current input stream is a file
-	bool isFileSource();
-	// Get next character from current input stream
-	char getChar();
-	// Peek next character from current input stream
-	char peekChar();
-	// 'Replace' last character read from current input stream
-	void unGetChar();
-	// Clear all node data
-	void clear();
-	// Function to create AST, putting result in static member
-	bool generate(const char *s);
-	// Execute AST, placing result in ReturnValue provided
-	bool execute(NuReturnValue &rv);
-	// Current tree (target of node creation)
-	static Tree *currentTree;
-	// Print layout of current tree
-	void print();
-	// Print error information and location
-	void printErrorInfo();
+	// List pointers
+	Tree *prev, *next;
+	// Filter Types
+	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
+	static const char *filterType(FilterType ft);
+	static FilterType filterType(const char *s);
+	// Filter commands
+	enum FilterCommmand { ExactCommand, ExtensionCommand, GlobCommand, IdCommand, NameCommand, NicknameCommand, WithinCommand, ZMapCommand, nFilterCommands };
+	static FilterCommmand filterCommand(const char *s);
+	static const char *filterCommand(FilterCommmand fc);
 
 
 	/*
 	// Node Data
 	*/
 	private:
-	// Node list - a disordered reflist of all nodes owned by the Tree
-	Reflist<TreeNode,int> ownedNodes_;
+	// Clear all data contained in the Tree
+	void clear();
+	// (Re)Initialise the tree read for node addition
+	void initialise();
+	// Node list - a disordered list of all nodes owned by the Tree
+	List<TreeNode> nodes_;
 	// Reflist of all statements in the Tree, to be executed sequentially
 	Reflist<TreeNode,int> statements_;
 	// Stack of ScopeNodes
@@ -126,6 +106,9 @@ class Tree
 	TreeNode *pushScope();
 	// Pop the topmost scope node
 	void popScope();
+	public:
+	// Print statement info
+	void print();
 
 
 	/*
@@ -134,7 +117,7 @@ class Tree
 	private:
 	// Current variable type to use for creating variables
 	NuVTypes::DataType declaredType_;
-	// Flag to indicate that we are assigning in a declaration, andthe whole variable scope should be searched
+	// Flag to indicate that we are assigning in a declaration, and the whole variable scope should be searched
 	bool declarationAssignment_;
 
 	public:
@@ -161,10 +144,6 @@ class Tree
 	/*
 	// Paths	
 	*/
-	private:
-	// Whether the next token to expect is a path step
-	bool expectPathStep_;
-
 	public:
 	// Flag that the next token to expect is a path step
 	void setExpectPathStep(bool b);
@@ -176,6 +155,114 @@ class Tree
 	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode *finalisePath();
+
+
+	/*
+	// Filter Properties
+	*/
+	private:
+	// Filter ID
+	int id_;
+	// Type of data the filter describes
+	FilterType filterType_;
+	// Long name of the filter
+	Dnchar name_;
+	// Nickname for the filter
+	Dnchar nickname_;
+	// File extension(s)
+	List<Dnchar> extensions_;
+	// List of 'within' specifications
+	List< Namemap<int> > idStrings_;
+	// File filter glob (for gui)
+	Dnchar glob_;
+	// Partner filter
+	Tree *partner_;
+	// Filter description
+	Dnchar description_;
+	// Filename alias list
+	List<Dnchar> exactNames_;
+	// Whether the file has an associated extension
+	bool hasExtension_;
+	// Whether separate zmapping has been defined
+	bool hasZmapping_;
+	// Type of element mapping to use
+	ElementMap::ZmapType zmapping_;
+
+	public:
+	// Return the ID of the filter
+	int id();
+	// Return the descriptive name of the filter
+	const char *name();
+	// Return the short nickname of the filter
+	const char *nickname();
+	// Return the first file extension
+	Dnchar *extensions();
+	// Return the first alias
+	Dnchar *exactNames();
+	// Return the number of identifying strings defined
+	int nIdStrings();
+	// Return the first identifying text string
+	Namemap<int> *idStrings();
+	// Return whether filter has an extension
+	bool hasExtension();
+	// Set the partner filter
+	void setPartner(Tree *partner);
+	// Return the partner filter
+	Tree *partner();
+	// Return the file filter
+	const char *glob();
+	// Set the type of filter
+	void setType(FilterType ft);
+	// Return the type of filter
+	FilterType type();
+	// Return the long description of the filter (including glob)
+	const char *description();
+
+
+	/*
+	// Execution
+	*/
+	private:
+	// File source (if any)
+	ifstream *inputFile_;
+	// File destination (if any)
+	ofstream *outputFile_;
+
+	public:
+	// Return whether a current input file is defined
+	bool hasFileSource();
+	// Execute
+	bool execute(NuReturnValue &rv);
+	// Execute, with specified file as data source (no return value)
+	bool executeRead(const char *filename, ifstream *trajfile = NULL, bool trajheader = FALSE);
+	// Execute, with specified file as data target
+	bool executeWrite(const char *filename);
+};
+
+// Forest
+class Forest
+{
+	public:
+	// Constructor / Destructor
+	Forest();
+	~Forest();
+
+	/*
+	// Tree data
+	*/
+	private:
+	// User-defined functions (local to this structure)
+	List<Tree> functions_;
+	// List of trees belonging to this forest
+	List<Tree> trees_;
+
+	public:
+	// Clear contents of forest
+	void clear();
+	// Return number of trees in forest
+	int nTrees();
+	// Create a new tree
+	Tree *createTree();
 };
 
 #endif

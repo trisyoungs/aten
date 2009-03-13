@@ -63,7 +63,7 @@ void NuVariableList::take(NuVariable *v)
 NuVariable *NuVariableList::find(const char *name)
 {
 	NuVariable *result = NULL;
-	for (result = variables_.first(); result != NULL; result = result->next) if (strcmp(name,result->name()) == 0) break;
+	for (result = variables_.first(); result != NULL; result = (NuVariable*) result->next) if (strcmp(name,result->name()) == 0) break;
 	return result;
 }
 
@@ -151,30 +151,6 @@ NuVariable *NuVariableList::createArray(NuVTypes::DataType type, const char *nam
 	return array;
 }
 
-// Create a constant from supplied integer data
-NuVariable *NuVariableList::createConstant(int i)
-{
-	NuIntegerVariable *var = new NuIntegerVariable(i, TRUE);
-	constants_.own(var);
-	return var;
-}
-
-// Create a constant from supplied real data
-NuVariable *NuVariableList::createConstant(double d)
-{
-	NuRealVariable *var = new NuRealVariable(d, TRUE);
-	constants_.own(var);
-	return var;
-}
-
-// Create a constant from supplied character data
-NuVariable *NuVariableList::createConstant(const char *s)
-{
-	NuCharacterVariable *var = new NuCharacterVariable(s, TRUE);
-	constants_.own(var);
-	return var;
-}
-
 // Return the number of variables (not constants) contained in the list
 int NuVariableList::nVariables()
 {
@@ -190,5 +166,5 @@ NuVariable *NuVariableList::first()
 // Initialise/reset all variables
 void NuVariableList::initialise()
 {
-	for (NuVariable *v = variables_.first(); v != NULL; v = v->next) v->initialise();
+	for (NuVariable *v = variables_.first(); v != NULL; v = (NuVariable*) v->next) v->initialise();
 }

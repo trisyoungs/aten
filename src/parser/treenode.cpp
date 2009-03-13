@@ -36,6 +36,10 @@ TreeNode::TreeNode()
 	nextArgument = NULL;
 	prevArgument = NULL;
 	nodeType_ = TreeNode::BasicNode;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 // Destructor

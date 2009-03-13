@@ -24,13 +24,14 @@
 
 #include "base/bundle.h"
 #include "templates/list.h"
-#include "command/filter.h"
+#include "templates/reflist.h"
 #include "templates/namemap.h"
 #include "nucommand/commands.h"
+#include "parser/tree.h"
 
 #define ATENVERSION "1.1"
 #define ATENREVISION "834"
-#define ATENDATE "Wed 11 Mar - 15:20"
+#define ATENDATE "Fri 13 Mar - 17:55"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -95,19 +96,19 @@ class Aten
 
 
 	/*
-	// Import / Export
+	// Filters
 	*/
 	private:
 	// Whether or not filters were loaded without error on startup
 	bool filterLoadSuccessful_;
 	// Parse filter index and load filters
 	bool parseFilterIndex(const char *path, ifstream *indexfile);
-	// Load filter(s) from specified file
-	bool loadFilter(const char *filename);
 	// Set export partners for import filters
 	void partnerFilters();
-	// List of file filters 
-	List<Filter> filters_[Filter::nFilterTypes];
+	// List of Filter Forests
+	List<Forest> filterForests_;
+	// Reflists of file filters of different types
+	Reflist<Tree,int> filters_[Tree::nFilterTypes];
 
 	public:
 	// Load filters
@@ -117,11 +118,11 @@ class Aten
 	// Reload filters
 	bool reloadFilters();
 	// Probe file for its format
-	Filter *probeFile(const char *filename, Filter::FilterType);
+	Tree *probeFile(const char *filename, Tree::FilterType);
 	// Find filter of specified type with nickname provided
-	Filter *findFilter(Filter::FilterType ft, const char *nickname) const;
+	Tree *findFilter(Tree::FilterType ft, const char *nickname) const;
 	// Return first filter in list (of a given type)
-	Filter *filters(Filter::FilterType ft) const;
+	Tree *filters(Tree::FilterType ft) const;
 
 
 	/*
@@ -219,11 +220,11 @@ class Aten
 	// Return the current program mode
 	ProgramMode programMode();
 	// Cached scripts
-	List<CommandList> scripts;
+	List<Forest> scripts;
 	// Script to store temporary typed commands
-	CommandList tempScript;
+	Forest tempScript;
 	// Interactive mode command list
-	CommandList interactiveScript;
+	Forest interactiveScript;
 
 
 	/*
@@ -273,17 +274,17 @@ class Aten
 	*/
 	private:
 	// Model format in which to export models
-	Filter *exportFilter_;
+	Tree *exportFilter_;
 	// Cached commands to use in batch processing mode
-	List<CommandList> batchCommands_;
+	List<Forest> batchCommands_;
 
 	public:
 	// Set format to use in export
-	void setExportFilter(Filter *f);
+	void setExportFilter(Tree *f);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
-	CommandList *addBatchCommand();
+	Forest *addBatchCommand();
 	// Run all stored commands on all loaded models
 	void processModels();
 	// Save all models under their original names

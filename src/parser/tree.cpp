@@ -27,29 +27,37 @@
 #include "parser/grammar.h"
 #include "parser/tree.h"
 #include "parser/vector.h"
+#include "parser/character.h"
+#include "parser/integer.h"
+#include "parser/real.h"
 #include <stdarg.h>
 
 // YYParse forward
 int yyparse();
 
-// Singleton
-Tree *Tree::currentTree;
-
 // Constructor
 Tree::Tree()
 {
 	// Private variables
-	isFileSource_ = FALSE;
-	fileSource_ = NULL;
-	stringPos_ = -1;
-	stringLength_ = 0;
-	expectPathStep_ = FALSE;
+	inputFile_ = NULL;
+	outputFile_ = NULL;
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
-	lineNumber_ = 0;
+	filterType_ = Tree::nFilterTypes;
+	hasExtension_ = FALSE;
+	hasZmapping_ = FALSE;
+	zmapping_ = ElementMap::AlphaZmap;
+	name_.set("unnamed");
+	glob_.set("*");
+	id_ = -1;
+	partner_ = NULL;
 
 	// Public variables
-	currentTree = NULL;
+	prev = NULL;
+	next = NULL;
+
+	// Initialise
+	initialise();
 }
 
 // Destructor
@@ -65,45 +73,22 @@ Tree::~Tree()
 // Clear contents of tree
 void Tree::clear()
 {
-	// Manually delete the nodes owned by this Tree
-	for (Refitem<TreeNode,int> *ri = ownedNodes_.first(); ri != NULL; ri = ri->next) delete ri->item;
-	ownedNodes_.clear();
+	nodes_.clear();
 	statements_.clear();
-	expectPathStep_ = FALSE;
 }
 
-// Create tree from string
-bool Tree::generate(const char *s)
+// (Re)Initialise Tree
+void Tree::initialise()
 {
-	msg.enter("Tree::generate");
+	msg.enter("Tree::initialise");
 	clear();
 	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
-	currentTree = this;
 	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
 	root->createGlobalVariables();
-	ownedNodes_.add(root);
+	nodes_.own(root);
 	scopeStack_.add(root);
 	statements_.add(root);
-	// Store the source string
-	stringSource_ = s;
-	stringPos_ = 0;
-	stringLength_ = stringSource_.length();
-	isFileSource_ = FALSE;
-	nErrors_ = 0;
-	int result = yyparse();
-	currentTree = NULL;
-	if ((result != 0) || (nErrors_ != 0))
-	{
-		// Delete any tree node information
-		clear();
-		msg.print("Error occurred here:\n");
-		printErrorInfo();
-		msg.exit("Tree::generate");
-		return FALSE;		
-	}
-	else print();
-	msg.exit("Tree::generate");
-	return TRUE;
+	msg.exit("Tree::initialise");
 }
 
 // Execute tree
@@ -123,6 +108,12 @@ bool Tree::execute(NuReturnValue &rv)
 	return result;
 }
 
+// Return whether a current input file is defined
+bool Tree::hasFileSource()
+{
+	return (inputFile_ != NULL);
+}
+
 // Print tree
 void Tree::print()
 {
@@ -137,84 +128,6 @@ void Tree::print()
 		n ++;
 	}
 	printf("-------------------------------------------------------------\n");
-}
-
-// Print error information and location
-void Tree::printErrorInfo()
-{
-	// QUICK'n'DIRTY!
-	char *temp = new char[stringLength_+32];
-	for (int i=0; i<stringPos_; i++) temp[i] = ' ';
-	temp[stringPos_] = '\0';
-	// Print current string
-	if (isFileSource_)
-	{
-		printf("(Line %4i) : %s\n", stringSource_.get());
-		printf("           : %s^\n", temp);
-	}
-	else
-	{
-		printf(" %s\n", stringSource_.get());
-		printf(" %s^\n", temp);
-	}
-	delete[] temp;
-}
-
-/*
-// Character Stream Retrieval
-*/
-
-// Return whether the current input stream is a file
-bool Tree::isFileSource()
-{
-	return isFileSource_;
-}
-
-// Get next character from current input stream
-char Tree::getChar()
-{
-	char c = 0;
-	if (isFileSource_)
-	{
-	}
-	else
-	{
-		// Return current character
-		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_[stringPos_];
-		// Increment string position
-		stringPos_++;
-	}
-	return c;
-}
-
-// Peek next character from current input stream
-char Tree::peekChar()
-{
-	char c = 0;
-	if (isFileSource_)
-	{
-	}
-	else
-	{
-		// Return current character
-		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_[stringPos_];
-	}
-	return c;
-}
-
-// 'Replace' last character read from current input stream
-void Tree::unGetChar()
-{
-	if (isFileSource_)
-	{
-	}
-	else
-	{
-		// Decrement string position
-		stringPos_--;
-	}
 }
 
 /*
@@ -367,7 +280,7 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	if (rtype == NuVTypes::NoData) return NULL;
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
@@ -394,7 +307,7 @@ TreeNode *Tree::addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2)
 	msg.enter("Tree::addIf");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::If);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	leaf->addArguments(2, condition, expr1);
 	if (expr2 != NULL) leaf->addArgument(expr2);
 	leaf->setParent(this);
@@ -409,7 +322,7 @@ TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, Tr
 	msg.enter("Tree::addFor");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::For);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	leaf->addArguments(4, init, condition, action, statements);
 	leaf->setParent(this);
 	msg.print(Messenger::Parse, "'For' statement added (%li).\n", leaf);
@@ -423,190 +336,14 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 	msg.enter("Tree::addFunctionLeaf");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(NuCommand::data[func].returnType);
 	// Check that the correct arguments were given to the command
-	printf("The function leaf is %li, containing funcid %i, and has %i arguments\n", leaf, func, leaf->nArgs());
-	const char *c = NuCommand::data[func].arguments;
-	char upc;
-	int count = 0, ngroup;
-	bool optional, requirevar, failed, cluster = FALSE;
-	NuVTypes::DataType rtype;
-	do
-	{
-		// Retain last character if this is a repeat
-		if (*c != '*')
-		{
-			// If the character is '^', then we get the next char and set the requirevar flag
-			// If it is '[' or ']' then set the cluster flag and get the next char
-			requirevar = FALSE;
-			if (*c == '^')
-			{
-				requirevar = TRUE;
-				c++;
-			}
-			else if ((*c == '[') || (*c == ']'))
-			{
-				cluster = (*c == '[');
-				ngroup = 0;
-				c++;
-			}
-			// Get character and convert to upper case if necessary
-			if ((*c > 96) && (*c < 123))
-			{
-				upc = *c - 32;
-				optional = TRUE;
-			}
-			else
-			{
-				upc = *c;
-				optional = FALSE;
-			}
-		}
-		else optional = TRUE;
-		printf("The next argument token is '%c'\n", upc);
-		// If we have reached the end of the argument specification, do we still have arguments left in the command?
-		if (upc == '\0')
-		{
-			if (leaf->nArgs() > count)
-			{
-				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", leaf->nArgs()-count, NuCommand::data[func].keyword, NuCommand::data[func].keyword, NuCommand::data[func].argText);
-				nErrors_ ++;
-				msg.exit("Tree::addFunctionLeaf");
-				return leaf;
-			}
-			else
-			{
-				msg.enter("Tree::addFunctionLeaf");
-				return leaf;
-			}
-		}
-		// If we have gone over the number of arguments provided, is this an optional argument?
-		if (count >= leaf->nArgs())
-		{
-			if (!optional)
-			{
-				msg.print("Error: The function '%s' requires argument %i.\n", NuCommand::data[func].keyword, count+1);
-				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[func].keyword, NuCommand::data[func].argText);
-				nErrors_ ++;
-				msg.exit("Tree::addFunctionLeaf");
-				return leaf;
-			}
-			else if (cluster && (ngroup != 0))
-			{
-				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, NuCommand::data[func].keyword);
-				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[func].keyword, NuCommand::data[func].argText);
-				nErrors_ ++;
-				msg.exit("Tree::addFunctionLeaf");
-				return leaf;
-			}
-			else
-			{
-				msg.exit("Tree::addFunctionLeaf");
-				return leaf;
-			}
-		}
-		// Check argument type
-		rtype = leaf->argType(count);
-		failed = FALSE;
-		switch (upc)
-		{
-			// Number		(IntegerData, RealData)
-			case ('N'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData))
-				{
-					msg.print("Argument %i to command '%s' must be a number.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Character		(CharacterData)
-			case ('C'):
-				if (rtype != NuVTypes::CharacterData)
-				{
-					msg.print("Argument %i to command '%s' must be a character string.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;	
-			// Vector		(VectorData)
-			case ('U'):
-				if (rtype != NuVTypes::VectorData)
-				{
-					msg.print("Argument %i to command '%s' must be a vector.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;	
-			// Any Simple		(IntegerData, RealData, CharacterData)
-			case ('S'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::CharacterData))
-				{
-					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Boolean		(Any Except NoData)
-			case ('B'):
-				if (rtype == NuVTypes::NoData)
-				{
-					msg.print("Argument %i to command '%s' must return something!\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Atom/Id		(IntegerData, AtomData)
-			case ('A'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::AtomData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer or an atom&.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Model/ID/Name	(ModelData, CharacterData, IntegerData)
-			case ('M'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::ModelData) && (rtype != NuVTypes::CharacterData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer, a model& or a character string.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Pattern/ID/Name	(PatternData, CharacterData, IntegerData)
-			case ('P'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::PatternData) && (rtype != NuVTypes::CharacterData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer, a pattern& or a character string.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Pointer		(Any pointer (void*) object)
-			case ('X'):
-				if (rtype < NuVTypes::AtomData)
-				{
-					msg.print("Argument %i to command '%s' must be a reference of some kind.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-			// Variable of any type (but not a path)
-			case ('V'):
-				if ((leaf->argNode(count)->nodeType() != TreeNode::VarNode) && (leaf->argNode(count)->nodeType() != TreeNode::ArrayVarNode))
-				{
-					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, NuCommand::data[func].keyword);
-					failed = TRUE;
-				}
-				break;
-		}
-		// Check for failure
-		if (failed)
-		{
-			msg.exit("Tree::addFunctionLeaf");
-			nErrors_ ++;
-			return NULL;
-		}
-		if (upc != '*') c++;
-		if (cluster) ngroup++;
-		count++;
-	} while (*c != '\0');
+	if (!leaf->checkArguments()) leaf = NULL;
 	msg.exit("Tree::addFunctionLeaf");
 	return leaf;
 }
@@ -616,7 +353,7 @@ TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
 {
 	// Create new scoped node and push it onto the stack
 	ScopeNode *leaf = new ScopeNode(func);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	scopeStack_.add(leaf);
 	leaf->setParent(this);
 	// Create variable argument parser
@@ -644,7 +381,7 @@ TreeNode *Tree::joinFunctions(TreeNode *node1, TreeNode *node2)
 {
 	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
-	ownedNodes_.add(leaf);
+	nodes_.own(leaf);
 	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
@@ -677,22 +414,26 @@ void Tree::popScope()
 TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 {
 	NuVariable *result = NULL;
-	switch (type)
+	if (type == NuVTypes::IntegerData)
 	{
-		case (NuVTypes::IntegerData):
-			result = scopeStack_.last()->item->variables.createConstant(atoi(token->get()));
-			break;
-		case (NuVTypes::RealData):
-			result = scopeStack_.last()->item->variables.createConstant(atof(token->get()));
-			break;
-		case (NuVTypes::CharacterData):
-			result = scopeStack_.last()->item->variables.createConstant(token->get());
-			break;
-		default:
-			printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", NuVTypes::dataType(type));
-			break;
+		NuIntegerVariable *var = new NuIntegerVariable(atoi(token->get()), TRUE);
+		nodes_.own(var);
+		return var;
 	}
-	return result;
+	else if (type == NuVTypes::RealData)
+	{
+		NuRealVariable *var = new NuRealVariable(atof(token->get()), TRUE);
+		nodes_.own(var);
+		return var;
+	}
+	else if (type == NuVTypes::CharacterData)
+	{
+		NuCharacterVariable *var = new NuCharacterVariable(token->get(), TRUE);
+		nodes_.own(var);
+		return var;
+	}
+	else printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", NuVTypes::dataType(type));
+	return NULL;
 }
 
 // Set current declared variable type
@@ -822,7 +563,7 @@ TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 		return NULL;
 	}
 	VariableNode *vnode = new VariableNode(var);
-	ownedNodes_.add(vnode);
+	nodes_.own(vnode);
 	vnode->setArrayIndex(arrayindex);
 	vnode->setParent(this);
 	return vnode;
@@ -831,18 +572,6 @@ TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 /*
 // Paths
 */
-
-// Flag that the next token to expect is a path step
-void Tree::setExpectPathStep(bool b)
-{
-	expectPathStep_ = b;
-}
-
-// Whether to treat the next alphanumeric token as a path step variable
-bool Tree::expectPathStep()
-{
-	return expectPathStep_;
-}
 
 // Create a new path on the stack
 TreeNode *Tree::createPath(TreeNode *node)
@@ -907,4 +636,19 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", NuVTypes::dataType(laststep->returnType()), name->get());
 	msg.exit("Tree::expandPath");
 	return result;
+}
+
+
+/*
+// Forest
+*/
+
+// Return number of trees in forest
+int Forest::nTrees()
+{
+}
+
+// Create a new tree
+Tree *Forest::createTree()
+{
 }

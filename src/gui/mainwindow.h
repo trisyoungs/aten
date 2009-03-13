@@ -33,7 +33,6 @@ enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP
 #define MAXRECENTFILES 10
 
 // Forward Declarations
-// class QFileDialog;
 class QDoubleSpinBox;
 class QLabel;
 class QTimer;
@@ -44,8 +43,7 @@ class QFrame;
 class QSettings;
 class QActionGroup;
 class QButtonGroup;
-class CommandList;
-class Filter;
+class Tree;
 
 class AtenForm : public QMainWindow
 {
@@ -245,7 +243,7 @@ class AtenForm : public QMainWindow
 	*/
 	private:
 	// Pointers to recent file actions
-	Reflist<QAction, CommandList* > scriptActions_;
+	Reflist<QAction, Tree* > scriptActions_;
 	private slots:
 	void runScript();
 	void on_actionLoadScript_triggered(bool v);
@@ -365,7 +363,7 @@ class AtenForm : public QMainWindow
 	// String lists to hold file dialog filter definitions
 	QString loadModelFilters, saveModelFilters, loadTrajectoryFilters, saveTrajectoryFilters, loadExpressionFilters, saveExpressionFilters, saveBitmapFilters, saveVectorFilters, loadScriptFilters, loadGridFilters, saveGridFilters;
 	// Filter set from save model dialog
-	Filter *saveModelFilter;
+	Tree *saveModelFilter;
 	// Filename set from save model dialog
 	Dnchar saveModelFilename;
 	// Group for actions that determine the current user action

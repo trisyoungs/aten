@@ -315,7 +315,7 @@ class NuCommand
 	
 		// Messaging
 		Error,
-		Print,
+		Printf,
 		Verbose,
 		Warn,
 	
@@ -747,7 +747,7 @@ class NuCommand
 	static bool function_Torsions(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Messaging
 	static bool function_Error(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Print(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Verbose(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Warn(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Minimisation Commands
@@ -760,7 +760,7 @@ class NuCommand
 	// Model Commands
 	static bool function_CreateAtoms(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_CurrentModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FinalisMmodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FirstModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GetModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Info(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

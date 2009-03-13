@@ -107,13 +107,13 @@ const char *Model::filename() const
 }
 
 // Sets the file filter of the model
-void Model::setFilter(Filter *f)
+void Model::setFilter(Tree *f)
 {
 	filter_ = f;
 }
 
 // Return the stored file filter of the model
-Filter *Model::filter() const
+Tree *Model::filter() const
 {
 	return filter_;
 }

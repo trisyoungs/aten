@@ -36,7 +36,7 @@ class Forcefield;
 class ForcefieldBound;
 class Constraint;
 class Pattern;
-class Filter;
+class Tree;
 class Site;
 class UndoState;
 class Atomaddress;
@@ -68,7 +68,7 @@ class Model
 	// Name of model
 	Dnchar name_;
 	// Format of model when loaded / last saved
-	Filter *filter_;
+	Tree *filter_;
 	// Filename of model when loaded / last saved
 	Dnchar filename_;
 
@@ -78,9 +78,9 @@ class Model
 	// Return the stored filename of the model
 	const char *filename() const;
 	// Sets the file filter of the model
-	void setFilter(Filter *f);
+	void setFilter(Tree *f);
 	// Return the stored file filter of the model
-	Filter *filter() const;
+	Tree *filter() const;
 	// Sets the name of the model
 	void setName(const char *s);
 	// Return the name of the model
@@ -692,7 +692,7 @@ class Model
 	// Filename of file
 	Dnchar trajectoryFilename_;
 	// Format of trajectory file
-	Filter *trajectoryFilter_;
+	Tree *trajectoryFilter_;
 	// File structure
 	ifstream *trajectoryFile_;
 	// File offsets for frames
@@ -726,11 +726,11 @@ class Model
 	// Return parent model of trajectory
 	Model *trajectoryParent();
 	// Initialise trajectory from file specified
-	bool initialiseTrajectory(const char*, Filter*);
+	bool initialiseTrajectory(const char*, Tree*);
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
 	// Set the format of the trajectory
-	void setTrajectoryFilter(Filter *f);
+	void setTrajectoryFilter(Tree *f);
 	// Return the trajectory file pointer
 	ifstream *trajectoryFile();
 	// Return the current frame pointer

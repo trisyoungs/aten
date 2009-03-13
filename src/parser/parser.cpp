@@ -1,6 +1,6 @@
 /*
-	*** Lexical Analyzer
-	*** src/parser/lexer.cpp
+	*** Parser
+	*** src/parser/parser.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,25 +19,130 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/tree.h"
+#include "base/dnchar.h"
+#include "parser/variable.h"
 #include "parser/grammar.h"
+#include "parser/parser.h"
+#include "parser/tree.h"
+#include "nucommand/commands.h"
 #include "base/sysfunc.h"
-#include <ctype.h>
-#include <string.h>
 
-// Symbolic tokens - array of corresponding values refers to Bison's tokens
-class Tokens
+// External Declarations
+NuParser nuparser;
+int yyparse();
+
+// Symbols
+const char *SymbolTokenKeywords[NuParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=" };
+int SymbolTokenValues[NuParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ};
+
+// Constructor
+NuParser::NuParser()
 {
-	public:
-	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, nSymbolTokens };
-};
-const char *SymbolTokenKeywords[Tokens::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=" };
-int SymbolTokenValues[Tokens::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ};
+	// Private variables
+	isFileSource_ = FALSE;
+	fileSource_ = NULL;
+	stringPos_ = -1;
+	stringLength_ = 0;
+	lineNumber_ = 0;
+	expectPathStep_ = FALSE;
 
-// Lexical Analyser - Used the getchar function of the current active Tree (stored in static member Tree::currentTree)
+	// Public variables
+	tree = NULL;
+}
+
+// Destructor
+NuParser::~NuParser()
+{
+}
+
+// Print error information and location
+void NuParser::printErrorInfo()
+{
+	// QUICK'n'DIRTY!
+	char *temp = new char[stringLength_+32];
+	for (int i=0; i<stringPos_; i++) temp[i] = ' ';
+	temp[stringPos_] = '\0';
+	// Print current string
+	if (isFileSource_)
+	{
+		printf("(Line %4i) : %s\n", stringSource_.get());
+		printf("           : %s^\n", temp);
+	}
+	else
+	{
+		printf(" %s\n", stringSource_.get());
+		printf(" %s^\n", temp);
+	}
+	delete[] temp;
+}
+
+/*
+// Character Stream Retrieval
+*/
+
+// Return whether the current input stream is a file
+bool NuParser::isFileSource()
+{
+	return isFileSource_;
+}
+
+// Get next character from current input stream
+char NuParser::getChar()
+{
+	char c = 0;
+	if (isFileSource_)
+	{
+	}
+	else
+	{
+		// Return current character
+		if (stringPos_ == stringLength_) return '\0';
+		c = stringSource_[stringPos_];
+		// Increment string position
+		stringPos_++;
+	}
+	return c;
+}
+
+// Peek next character from current input stream
+char NuParser::peekChar()
+{
+	char c = 0;
+	if (isFileSource_)
+	{
+	}
+	else
+	{
+		// Return current character
+		if (stringPos_ == stringLength_) return '\0';
+		c = stringSource_[stringPos_];
+	}
+	return c;
+}
+
+// 'Replace' last character read from current input stream
+void NuParser::unGetChar()
+{
+	if (isFileSource_)
+	{
+	}
+	else
+	{
+		// Decrement string position
+		stringPos_--;
+	}
+}
+
+// Original yylex()
 int yylex()
 {
-	if (Tree::currentTree == NULL)
+	return nuparser.lex();
+}
+
+// Parser lexer, called by yylex()
+int NuParser::lex()
+{
+	if (tree == NULL)
 	{
 		printf("Lexer called when no current tree pointer available.\n");
 		return 0;
@@ -51,7 +156,7 @@ int yylex()
 	token[0] = '\0';
 
 	// Skip over whitespace
-	while ((c = Tree::currentTree->getChar()) == ' ' || c == '\t');
+	while ((c = getChar()) == ' ' || c == '\t');
 
 	if (c == EOF) return 0;
 
@@ -59,9 +164,9 @@ int yylex()
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
 // 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
-	if ((c == '.') && isalpha(Tree::currentTree->peekChar()))
+	if ((c == '.') && isalpha(peekChar()))
 	{
-		Tree::currentTree->setExpectPathStep(TRUE);
+		expectPathStep_ = TRUE;
 		return '.';
 	}
 	
@@ -76,7 +181,7 @@ int yylex()
 		done = FALSE;
 		do
 		{
-			c = Tree::currentTree->getChar();
+			c = getChar();
 			if (isdigit(c)) token[length++] = c;
 			else if (c == '.')
 			{
@@ -99,7 +204,7 @@ int yylex()
 				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
 				if (token[length-1] != 'E')
 				{
-					Tree::currentTree->unGetChar();
+					unGetChar();
 					token[length] = '\0';
 					done = TRUE;
 				}
@@ -107,7 +212,7 @@ int yylex()
 			}
 			else
 			{
-				Tree::currentTree->unGetChar();
+				unGetChar();
 				token[length] = '\0';
 				done = TRUE;
 			}
@@ -127,7 +232,7 @@ int yylex()
 		done = FALSE;
 		do
 		{
-			c = Tree::currentTree->getChar();
+			c = getChar();
 			if (c == '"')
 			{
 				// Check for null string...
@@ -152,20 +257,20 @@ int yylex()
 		do
 		{
 			token[length++] = c;
-			c = Tree::currentTree->getChar();
+			c = getChar();
 		}
 		while (isalnum (c));
 // 		printf("Character that terminated alphtoken = %c\n", c);
-		Tree::currentTree->unGetChar();
+		unGetChar();
 		token[length] = '\0';
 		// Skip over keyword detection if we are expecting a path step
-		if (!Tree::currentTree->expectPathStep())
+		if (!expectPathStep_)
 		{
 			// Is this a variable declaration statement?
 			NuVTypes::DataType dt = NuVTypes::dataType(token);
 			if (dt != NuVTypes::nDataTypes)
 			{
-				Tree::currentTree->setDeclaredVariableType(dt);
+				tree->setDeclaredVariableType(dt);
 				return DECLARATION;
 			}
 
@@ -187,7 +292,7 @@ int yylex()
 		}
 
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
-		if (Tree::currentTree->expectPathStep())
+		if (expectPathStep_)
 		{
 			name = token;
 			yylval.name = &name;
@@ -197,7 +302,7 @@ int yylex()
 		{
 			// Search the variable lists currently in scope...
 			NuVariable *v;
-			if (!Tree::currentTree->isVariableInScope(token, v)) return 0;
+			if (!tree->isVariableInScope(token, v)) return 0;
 			else if (v != NULL)
 			{
 				yylval.variable = v;
@@ -217,26 +322,75 @@ int yylex()
 	printf("Symbol is %c\n", c);
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
 	// Similarly, if the next character is a bracket, return immediately
-	char c2 = Tree::currentTree->peekChar();
+	char c2 = peekChar();
 	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}')) return c;
 	// If the following character is '"', we also return immediately - have a clause in the following loop...
 	do
 	{
 		token[length++] = c;
-		c = Tree::currentTree->getChar();
+		getChar();
 		if (c == '"') break;
 	}
 	while (ispunct(c));
-	Tree::currentTree->unGetChar();
+	unGetChar();
 	token[length] = '\0';
 // 	printf("Token is %s\n",token);
 	if (length == 1) return token[0];
 	else
 	{
-		Tokens::SymbolToken st = (Tokens::SymbolToken) enumSearch("", Tokens::nSymbolTokens, SymbolTokenKeywords, token);
-		if (st != Tokens::nSymbolTokens) return SymbolTokenValues[st];
+		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token);
+		if (st != nSymbolTokens) return SymbolTokenValues[st];
 		else msg.print("Error: Unrecognised symbol found in input.\n");
 	}
 	return 0;
 }
 
+/*
+// Tree Data
+*/
+
+// Create a new tree in the forest
+void NuParser::createTree()
+{
+}
+
+// Create a new function tree in the forest
+void NuParser::createFunction()
+{
+}
+
+/*
+// Tree Generation
+*/
+
+// Fill target forest from specified character string
+bool NuParser::generate(Forest *f, const char *s)
+{
+	msg.enter("NuParser::generate[string]");
+	// Clear any data in the existing forest
+	if (f == NULL)
+	{
+		printf("Internal Error: No Forest passted to NuParser::generate().\n");
+		msg.exit("NuParser::generate[string]");
+		return FALSE;
+	}
+	f->clear();
+	// Store the source string
+	stringSource_ = s;
+	stringPos_ = 0;
+	stringLength_ = stringSource_.length();
+	isFileSource_ = FALSE;
+	expectPathStep_ = FALSE;
+	// Perform the parsing
+	int result = yyparse();
+	if (result != 0)
+	{
+		msg.print("Error occurred here:\n");
+		printErrorInfo();
+		msg.exit("NuParser::generate[string]");
+		return FALSE;		
+	}
+	else print();
+	msg.exit("NuParser::generate[string]");
+	return TRUE;
+}
