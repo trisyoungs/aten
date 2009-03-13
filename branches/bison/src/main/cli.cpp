@@ -280,8 +280,9 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				// Test new AST code
 				case (Cli::ASTSwitch):
-					tree = new Tree;
-					if (!tree->generate(argv[++argn])) return -1;
+					Forest *forest = new Forest;
+					if (!nuparser.generate(forest, argv[++argn])) return -1;
+					printf("Resulting forest contains %i trees.\n", forest->nTrees());
 					n = tree->execute(rv);
 					break;
 				// All of the following switches were dealt with in parseCliEarly()

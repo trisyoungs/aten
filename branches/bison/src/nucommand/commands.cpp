@@ -496,7 +496,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 	// Messaging
 	{ "error",		"C",		"<message>", NuVTypes::NoData,
 				"Raise an error message (causes exit of current command list)" },
-	{ "print",		"C",		"<message>", NuVTypes::NoData,
+	{ "printf",		"C",		"<message>", NuVTypes::NoData,
 				"Print a message" },
 	{ "verbose",		"C",		"<message>", NuVTypes::NoData,
 				"Print a message when verbose output is enabled" },
@@ -546,7 +546,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Skip to the next loaded model" },
 	{ "prevmodel",		"",		"", NuVTypes::ModelData,
 				"Skip to the previous loaded model" },
-	{ "savemodel",		"CC",		"<format> <filename>", NuVTypes::NoData,
+	{ "savemodel",		"CC",		"<format> <filename>", NuVTypes::IntegerData,
 				"Save the current model to <filename> in the specified model <format>" },
 	{ "setname",		"C",		"<name>", NuVTypes::NoData,
 				"Set the name of the current model" },

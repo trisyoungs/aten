@@ -28,6 +28,7 @@
 #include "nucommand/commands.h"
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
+#include "parser/format.h"
 #include "base/parser.h"
 #include "base/vtypes.h"
 
@@ -48,12 +49,20 @@ class NuCommandNode : public TreeNode
 	protected:
 	// Command that this node performs
 	NuCommand::Function function_;
+	// Associated format node (if any)
+	NuFormat *format_;
 	
 	public:
 	// Set command function
 	void setFunction(NuCommand::Function ca);
 	// Get command function
 	NuCommand::Function function();
+	// Return associated format node
+	NuFormat *format();
+	// Check validity of supplied arguments
+	bool checkArguments();
+	// Perform any necessary actions specific to the function
+	bool initFunction();
 	// Execute command
 	bool execute(NuReturnValue &rv);
 	// Print node contents

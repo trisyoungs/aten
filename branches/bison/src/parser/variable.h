@@ -35,8 +35,6 @@ class NuVariable : public TreeNode
 	// Constructor / Destructor
 	NuVariable();
 	virtual ~NuVariable();
-	// List pointers
-	NuVariable *prev, *next;
 
 	/*
 	// Variable Character

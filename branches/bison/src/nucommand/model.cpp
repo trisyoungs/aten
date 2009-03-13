@@ -20,6 +20,7 @@
 */
 
 #include "nucommand/commands.h"
+#include "parser/tree.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
@@ -29,7 +30,7 @@
 #include "base/sysfunc.h"
 
 // Create 'n' new atoms at once in model
-bool NuCommand::function_Createatoms(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_CreateAtoms(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v;
@@ -44,7 +45,7 @@ bool NuCommand::function_CurrentModel(NuCommandNode *c, Bundle &obj, NuReturnVal
 	if (c->hasArg(0))
 	{
 		Model *m = NULL;
-		switch (c->argt(0))
+		switch (c->argType(0))
 		{
 			case (VTypes::IntegerData):
 				m = aten.model(c->argi(0)-1);
@@ -53,7 +54,7 @@ bool NuCommand::function_CurrentModel(NuCommandNode *c, Bundle &obj, NuReturnVal
 				m = aten.findModel(c->argc(0));
 				break;
 			case (VTypes::ModelData):
-				m = (Model*) c->argp(0, VTypes::ModelData);
+				m = (Model*) c->argp(0, NuVTypes::ModelData);
 				break;
 		}
 		if (m == NULL)
@@ -123,7 +124,7 @@ bool NuCommand::function_FirstModel(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_GetModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
+	Model *m = (c->argType(0) == NuVTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
 	rv.set(NuVTypes::ModelData, m);
 	if (m != NULL) 
 	{
@@ -193,7 +194,7 @@ bool NuCommand::function_LoadModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Print log information for model ('loginfo')
-bool NuCommand::function_Loginfo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LogInfo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->renderSource()->printLogs();
@@ -237,7 +238,7 @@ bool NuCommand::function_NewModel(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		obj.m->setNamesForcefield(f);
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
-	if (c->parent()->inputFile() == NULL) obj.m->enableUndoRedo();
+	if (!c->parent()->isFileSource()) obj.m->enableUndoRedo();
 	rv.set(NuVTypes::ModelData, obj.m);
 	return TRUE;
 }
@@ -271,7 +272,7 @@ bool NuCommand::function_PrevModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Save current model ('savemodel <format> <filename>')
-bool NuCommand::function_Savemodel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SaveModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
@@ -284,11 +285,13 @@ bool NuCommand::function_Savemodel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	}
 	obj.rs->setFilter(f);
 	obj.rs->setFilename(c->argc(1));
-	return (f->execute(c->argc(1)) ? TRUE : FALSE);
+	bool result = f->execute(c->argc(1));
+	rv.set(result);
+	return (result);
 }
 
 // Set name of current model ('setname <name>')
-bool NuCommand::function_Setname(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SetName(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->setName(c->argc(0));

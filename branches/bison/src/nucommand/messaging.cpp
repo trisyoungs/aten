@@ -21,60 +21,56 @@
 
 #include "nucommand/commands.h"
 #include "parser/commandnode.h"
-#include "command/format.h"
 
 // Write line to msg output and stop
 bool NuCommand::function_Error(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Format *fmt = c->format();
+	NuFormat *fmt = c->format();
 	if (fmt == NULL)
 	{
-		msg.print("Warning - No format defined in 'error' command.\n");
+		printf("Warning - No format defined in 'error' command.\n");
 		return FALSE;
 	}
-	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
-	else return FALSE;
-	return Command::ExitWithError;
+	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
+	return FALSE;
 }
 
 // Print formatted string
-bool NuCommand::function_Print(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Format *fmt = c->format();
+	NuFormat *fmt = c->format();
 	if (fmt == NULL)
 	{
-		printf("Warning - No format defined in 'print' command.\n");
+		printf("Warning - No format defined in 'printf' command.\n");
 		return FALSE;
 	}
-	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
-	else return FALSE;
+	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
 	return TRUE;
 }
 
 // Print formatted string (in verbose output only)
 bool NuCommand::function_Verbose(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Format *fmt = c->format();
+	NuFormat *fmt = c->format();
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'verbose' command.\n");
 		return FALSE;
 	}
-	else if (fmt->createString()) msg.print(Messenger::Verbose,"%s\n", fmt->createdString());
-	else return FALSE;
+	if (!msg.isOutputActive(Messenger::Verbose)) return TRUE;
+	if (fmt->writeToString()) msg.print(Messenger::Verbose, "%s\n",fmt->string());
 	return TRUE;
 }
 
 // Write line to msg output
 bool NuCommand::function_Warn(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Format *fmt = c->format();
+	NuFormat *fmt = c->format();
 	if (fmt == NULL)
 	{
-		printf("Warning - No format defined in 'error' command.\n");
+		printf("Warning - No format defined in 'warn' command.\n");
 		return FALSE;
 	}
-	else if (fmt->createString()) msg.print("Warning: %s\n",fmt->createdString());
-	else return FALSE;
+	if (fmt->writeToString()) msg.print("Warning: %s\n",fmt->string());
 	return TRUE;
 }

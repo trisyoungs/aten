@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include "nucommand/commands.h"
+#include "parser/parser.h"
 #include "parser/tree.h"
 
 /* Prototypes */
@@ -16,8 +17,6 @@ void yyerror(char *s);
 
 /* Local Variables */
 Dnchar newVarName;
-
-/* NuVTypes::DataType variableType = NuVTypes::NoData;  */
 
 %}
 
@@ -49,21 +48,25 @@ Dnchar newVarName;
 %%
 
 program:
-	program statementlist			{ Tree::currentTree->addStatement($2); }
+	program statementlist			{ nuparser.tree->addStatement($2); }
 	| /* NULL */
 	;
 
+/* Filter Definitions */
+
+
+	
 /* Compound Statement */
 
 block:
-	'{'					{ Tree::currentTree->pushScope(); }
-		statementlist '}'		{ $$ = $3; Tree::currentTree->popScope(); }
+	'{'					{ nuparser.tree->pushScope(); }
+		statementlist '}'		{ $$ = $3; nuparser.tree->popScope(); }
         ;
 
 statementlist:
 	statement				{ $$ = $1; }
-        | statementlist statement 		{ $$ = Tree::currentTree->joinFunctions($1, $2); }
-        | statementlist block	 		{ $$ = Tree::currentTree->joinFunctions($1, $2); }
+        | statementlist statement 		{ $$ = nuparser.tree->joinFunctions($1, $2); }
+        | statementlist block	 		{ $$ = nuparser.tree->joinFunctions($1, $2); }
         ;
 
 blockment:
@@ -74,49 +77,49 @@ blockment:
 /* Single Statement / Flow Control */
 
 statement:
-	';'					{ $$ = Tree::currentTree->joinFunctions(NULL,NULL); }
+	';'					{ $$ = nuparser.tree->joinFunctions(NULL,NULL); }
 	| statementexpr ';'			{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
 	;
 
 statementexpr:
-	DECLARATION namelist 			{ $$ = Tree::currentTree->addFunctionLeaf(NuCommand::Initialisations, $2); Tree::currentTree->setDeclaredVariableType(NuVTypes::NoData); }
+	DECLARATION namelist 			{ $$ = nuparser.tree->addFunctionLeaf(NuCommand::Initialisations, $2); nuparser.tree->setDeclaredVariableType(NuVTypes::NoData); }
 	| expr					{ $$ = $1; }
 	;
 
 flowstatement:
-	IF '(' expr ')' blockment ELSE blockment	{ $$ = Tree::currentTree->addIf($3,$5,$7); }
-	| IF '(' expr ')' blockment		{ $$ = Tree::currentTree->addIf($3,$5); }
-	| FOR createscope '(' statementexpr ';' statementexpr ';' statementexpr ')' blockment	{ $$ = Tree::currentTree->joinArguments(Tree::currentTree->addFor($4,$6,$8,$10), $$); Tree::currentTree->popScope(); }
+	IF '(' expr ')' blockment ELSE blockment	{ $$ = nuparser.tree->addIf($3,$5,$7); }
+	| IF '(' expr ')' blockment		{ $$ = nuparser.tree->addIf($3,$5); }
+	| FOR createscope '(' statementexpr ';' statementexpr ';' statementexpr ')' blockment	{ $$ = nuparser.tree->joinArguments(nuparser.tree->addFor($4,$6,$8,$10), $$); nuparser.tree->popScope(); }
 	;
 
 createscope:
-	/* empty */				{ Tree::currentTree->pushScope(); }
+	/* empty */				{ nuparser.tree->pushScope(); }
 	;
 
 /* Constants */
 
 constant:
-	INTCONST				{ $$ = Tree::currentTree->addConstant(NuVTypes::IntegerData, $1); }
-	| REALCONST				{ $$ = Tree::currentTree->addConstant(NuVTypes::RealData, $1); }
-	| CHARCONST				{ $$ = Tree::currentTree->addConstant(NuVTypes::CharacterData, $1); }
+	INTCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::IntegerData, $1); }
+	| REALCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::RealData, $1); }
+	| CHARCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::CharacterData, $1); }
 	;
 
 /* Variable declaration  name / assignment list */
 
 assign:
-	/* empty */				{ newVarName = *yylval.name; Tree::currentTree->setDeclarationAssignment(TRUE); }
+	/* empty */				{ newVarName = *yylval.name; nuparser.tree->setDeclarationAssignment(TRUE); }
 	;
 
 noassign:
-	/* empty */				{ Tree::currentTree->setDeclarationAssignment(FALSE); }
+	/* empty */				{ nuparser.tree->setDeclarationAssignment(FALSE); }
 	;
 
 newname:
-	NEWTOKEN					{ $$ = Tree::currentTree->addVariable($1); }
-	| NEWTOKEN assign '[' expr ']' noassign		{ $$ = Tree::currentTree->addArrayVariable(&newVarName,$4); }
-	| NEWTOKEN assign '=' expr noassign		{ $$ = Tree::currentTree->addVariable(&newVarName,$4); }
-	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = Tree::currentTree->addArrayVariable(&newVarName,$4,$7); }
+	NEWTOKEN				{ $$ = nuparser.tree->addVariable($1); }
+	| NEWTOKEN assign '[' expr ']' noassign	{ $$ = nuparser.tree->addArrayVariable(&newVarName,$4); }
+	| NEWTOKEN assign '=' expr noassign	{ $$ = nuparser.tree->addVariable(&newVarName,$4); }
+	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = nuparser.tree->addArrayVariable(&newVarName,$4,$7); }
 	;
 	
 namelist:
@@ -129,8 +132,8 @@ namelist:
 /* Variables / Paths */
 
 step:
-	STEPTOKEN				{ if (!Tree::currentTree->expandPath($1)) YYERROR; }
-	| STEPTOKEN '[' expr ']'		{ if (!Tree::currentTree->expandPath($1, $3)) YYERROR; }
+	STEPTOKEN				{ if (!nuparser.tree->expandPath($1)) YYERROR; }
+	| STEPTOKEN '[' expr ']'		{ if (!nuparser.tree->expandPath($1, $3)) YYERROR; }
 ;
 
 steplist:
@@ -139,10 +142,10 @@ steplist:
 	;
 
 var:
-	VARNAME '[' expr ']'			{ $$ = Tree::currentTree->wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
-	| VARNAME				{ $$ = Tree::currentTree->wrapVariable($1); if ($$ == NULL) YYERROR; }
-	| var '.' 				{ printf("HEllO pathvar.\n"); $$ = Tree::currentTree->createPath($1); }
-		steplist			{ $$ = Tree::currentTree->finalisePath(); }
+	VARNAME '[' expr ']'			{ $$ = nuparser.tree->wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
+	| VARNAME				{ $$ = nuparser.tree->wrapVariable($1); if ($$ == NULL) YYERROR; }
+	| var '.' 				{ printf("HEllO pathvar.\n"); $$ = nuparser.tree->createPath($1); }
+		steplist			{ $$ = nuparser.tree->finalisePath(); }
 	;
 
 /* Expressions */
@@ -155,26 +158,26 @@ exprlist:
 expr:
 	constant				{ $$ = $1; }
 	| func					{ $$ = $1; }
-/*	| pathvar '.' NUMSTEP			{ Tree::currentTree->expandPath($3); $$ = Tree::currentTree->finalisePath(); }  */
-/*	| pathvar '.' steplist '.' NUMSTEP	{ Tree::currentTree->expandPath($5); $$ = Tree::currentTree->finalisePath(); }  */
-	| var '=' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var PEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var MEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var TEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var DEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
+/*	| pathvar '.' NUMSTEP			{ nuparser.tree->expandPath($3); $$ = nuparser.tree->finalisePath(); }  */
+/*	| pathvar '.' steplist '.' NUMSTEP	{ nuparser.tree->expandPath($5); $$ = nuparser.tree->finalisePath(); }  */
+	| var '=' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var PEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var MEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var TEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var DEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var					{ $$ = $1; }
-	| '-' expr %prec UMINUS			{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
-	| expr '+' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '-' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '*' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '/' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '^' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr EQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr NEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '>' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr GEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '<' expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr LEQ expr				{ $$ = Tree::currentTree->addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| '-' expr %prec UMINUS			{ $$ = nuparser.tree->addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
+	| expr '+' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '-' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '*' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '/' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '^' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr EQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr NEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '>' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr GEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '<' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr LEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
 	| '(' expr ')'				{ $$ = $2; }
 	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared.\n", yylval.name->get()); YYERROR; }
 	;
@@ -182,14 +185,14 @@ expr:
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
-	'#' expr ',' expr ',' expr '#'		{ $$ = Tree::currentTree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
+	'#' expr ',' expr ',' expr '#'		{ $$ = nuparser.tree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
 	;
 
 /* Function */
 
 func:
-	FUNCCALL '(' ')'			{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYERROR; }
-	| FUNCCALL	'(' exprlist ')' 	{ $$ = Tree::currentTree->addFunctionLeaf( (NuCommand::Function) $1,$3); if ($$ == NULL) YYERROR; }
+	FUNCCALL '(' ')'			{ $$ = nuparser.tree->addFunctionLeaf( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYERROR; }
+	| FUNCCALL	'(' exprlist ')' 	{ $$ = nuparser.tree->addFunctionLeaf( (NuCommand::Function) $1,$3); if ($$ == NULL) YYERROR; }
 	;
 
 %%

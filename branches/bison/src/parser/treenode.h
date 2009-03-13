@@ -40,6 +40,8 @@ class TreeNode
 	// Constructor / Destructor
 	TreeNode();
 	~TreeNode();
+	// List pointers
+	TreeNode *prev, *next;
 	// List pointers (for argument list)
 	TreeNode *nextArgument, *prevArgument;
 	// Node Types

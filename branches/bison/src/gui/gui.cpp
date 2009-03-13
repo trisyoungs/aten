@@ -424,7 +424,7 @@ bool GuiQt::saveBeforeClose()
 	// Check the status of all models, asking to save before close if necessary
 	char text[512];
 	int returnvalue;
-	Filter *f;
+	Tree *f;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->changeLog.isModified())
@@ -444,12 +444,12 @@ bool GuiQt::saveBeforeClose()
 				case (QMessageBox::Save):
 					// If model has a filter set, just save it
 					f = m->filter();
-					if (f != NULL) f->execute(m->filename());
+					if (f != NULL) f->executeWrite(m->filename());
 					else if (mainWindow->runSaveModelDialog())
 					{
 						m->setFilter(mainWindow->saveModelFilter);
 						m->setFilename(mainWindow->saveModelFilename.get());
-						mainWindow->saveModelFilter->execute(m->filename());
+						mainWindow->saveModelFilter->executeWrite(m->filename());
 					}
 					else return FALSE;
 					break;

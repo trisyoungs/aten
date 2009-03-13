@@ -30,6 +30,7 @@
 #include "classes/grid.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
+#include "parser/parser.h"
 
 // Singleton definition
 Aten aten;
@@ -590,6 +591,7 @@ bool Aten::reloadFilters()
 	filters_[Filter::ExpressionExport].clear();
 	filters_[Filter::GridImport].clear();
 	filters_[Filter::GridExport].clear();
+	filterForests_.clear();
 	sprintf(path,"%s%s", dataDir_.get(), "/filters");
 	msg.print("Reading filters from '%s'...\n", path);
 	sprintf(indexfile, "%s/%s", path, "index");
@@ -601,7 +603,9 @@ bool Aten::reloadFilters()
 			if (parser.getArgsDelim(file, Parser::SkipBlanks) != 0) break;
 			strcpy(shortname, parser.argc(0));
 			sprintf(filterfile, "%s/%s", path, shortname);
-			if (!loadFilter(filterfile))
+			// For each filter file found, create a Forest to be populated with Filter(Trees)
+			ifstream file(filterfile,ios::in);
+			if (!nuparser.generate(filterForests_.add(), &file))
 			{
 				sprintf(message, "Error(s) encountered while reading filter file '%s' (see message box for details).\nOne or more filters contained within will be unavailable.\n", shortname);
 				QMessageBox::warning(gui.mainWindow, "Aten", message, QMessageBox::Ok);
@@ -640,7 +644,9 @@ bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
 		strcat(filterfile, parser.argc(0));
 		sprintf(bit, "%s  ",parser.argc(0));
 		strcat(s, bit);
-		if (!loadFilter(filterfile))
+		// For each filter file found, create a Forest to be populated with Filter(Trees)
+		ifstream file(filterfile,ios::in);
+		if (!nuparser.generate(filterForests_.add(), &file))
 		{
 			msg.exit("Aten::parseFilterIndex");
 			return FALSE;
@@ -652,56 +658,13 @@ bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
 	return TRUE;
 }
 
-// Read commands from filter file
-bool Aten::loadFilter(const char *filename)
-{
-	msg.enter("Aten::loadFilter");
-	Filter::FilterType ft;
-	Filter *newfilter;
-	bool error;
-	int success;
-	ifstream filterfile(filename,ios::in);
-
-	// Pre-read first line to check
-	success = parser.getArgsDelim(&filterfile,Parser::UseQuotes+Parser::SkipBlanks);
-	error = FALSE;
-	while (!filterfile.eof())
-	{
-		// Get filter type from first argument
-		ft = Filter::filterType(parser.argc(0));
-		// Unrecognised filter section?
-		if (ft == Filter::nFilterTypes)
-		{
-			msg.print(Messenger::Error, "Unrecognised section '%s' in filter.\n",parser.argc(0));
-			error = TRUE;
-			break;
-		}
-		// Add main filter section
-		newfilter = filters_[ft].add();
-		newfilter->setType(ft);
-		// Call the filter to load its commands.
-		// If the load is not successful, remove the filter we just created
-		if (!newfilter->load(filterfile))
-		{
-			msg.print(Messenger::Error, "Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
-			filters_[ft].remove(newfilter);
-			error = TRUE;
-			break;
-		}
-	}
-	parser.close();
-	//variables.print();
-	msg.exit("Aten::loadFilter");
-	return (!error);
-}
-
 // Set filter partners
 void Aten::partnerFilters()
 {
 	msg.enter("Aten::partnerFilters");
 	// Loop through import filters and search / set export partners
 	char s[512], bit[32];
-	Filter *imp, *exp;
+	Refitem< *imp, *exp;
 	int importid;
 	strcpy(s,"Model Formats:");
 	for (imp = filters_[Filter::ModelImport].first(); imp != NULL; imp = imp->next)

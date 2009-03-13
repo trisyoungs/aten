@@ -30,11 +30,13 @@ NuCommandNode::NuCommandNode(NuCommand::Function func) : function_(func)
 {
 	// Private variables
 	nodeType_ = TreeNode::CmdNode;
+	format_ = NULL;
 }
 
 // Destructor
 NuCommandNode::~NuCommandNode()
 {
+	if (format_ != NULL) delete format_;
 }
 
 // Set function
@@ -47,6 +49,212 @@ void NuCommandNode::setFunction(NuCommand::Function cf)
 NuCommand::Function NuCommandNode::function()
 {
 	return function_;
+}
+
+// Return associated format node
+NuFormat *NuCommandNode::format()
+{
+	return format_;
+}
+
+// Check validity of supplied arguments
+bool NuCommandNode::checkArguments()
+{
+	msg.enter("NuCommandNode::checkArguments");
+	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), NuCommand::data[function_].keyword);
+	const char *c = NuCommand::data[function_].arguments;
+	char upc;
+	int count = 0, ngroup;
+	bool optional, requirevar, result, cluster = FALSE;
+	NuVTypes::DataType rtype;
+	result = TRUE;
+	do
+	{
+		// Retain last character if this is a repeat
+		if (*c != '*')
+		{
+			// If the character is '^', then we get the next char and set the requirevar flag
+			// If it is '[' or ']' then set the cluster flag and get the next char
+			requirevar = FALSE;
+			if (*c == '^')
+			{
+				requirevar = TRUE;
+				c++;
+			}
+			else if ((*c == '[') || (*c == ']'))
+			{
+				cluster = (*c == '[');
+				ngroup = 0;
+				c++;
+			}
+			// Get character and convert to upper case if necessary
+			if ((*c > 96) && (*c < 123))
+			{
+				upc = *c - 32;
+				optional = TRUE;
+			}
+			else
+			{
+				upc = *c;
+				optional = FALSE;
+			}
+		}
+		else optional = TRUE;
+// 		printf("The next argument token is '%c'\n", upc);
+		// If we have reached the end of the argument specification, do we still have arguments left in the command?
+		if (upc == '\0')
+		{
+			if (args_.nItems() > count)
+			{
+				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, NuCommand::data[function_].keyword, NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
+				msg.exit("Tree::addFunctionLeaf");
+				return FALSE;
+			}
+			else
+			{
+				msg.enter("Tree::addFunctionLeaf");
+				return FALSE;
+			}
+		}
+		// If we have gone over the number of arguments provided, is this an optional argument?
+		if (count >= args_.nItems())
+		{
+			if (!optional)
+			{
+				msg.print("Error: The function '%s' requires argument %i.\n", NuCommand::data[function_].keyword, count+1);
+				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
+				msg.exit("Tree::addFunctionLeaf");
+				return FALSE;
+			}
+			else if (cluster && (ngroup != 0))
+			{
+				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, NuCommand::data[function_].keyword);
+				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
+				msg.exit("Tree::addFunctionLeaf");
+				return FALSE;
+			}
+			else
+			{
+				msg.exit("Tree::addFunctionLeaf");
+				return TRUE;
+			}
+		}
+		// Check argument type
+		rtype = argType(count);
+		result = TRUE;
+		switch (upc)
+		{
+			// Number		(IntegerData, RealData)
+			case ('N'):
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData))
+				{
+					msg.print("Argument %i to command '%s' must be a number.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Character		(CharacterData)
+			case ('C'):
+				if (rtype != NuVTypes::CharacterData)
+				{
+					msg.print("Argument %i to command '%s' must be a character string.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;	
+			// Vector		(VectorData)
+			case ('U'):
+				if (rtype != NuVTypes::VectorData)
+				{
+					msg.print("Argument %i to command '%s' must be a vector.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;	
+			// Any Simple		(IntegerData, RealData, CharacterData)
+			case ('S'):
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::CharacterData))
+				{
+					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Boolean		(Any Except NoData)
+			case ('B'):
+				if (rtype == NuVTypes::NoData)
+				{
+					msg.print("Argument %i to command '%s' must return something!\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Atom/Id		(IntegerData, AtomData)
+			case ('A'):
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::AtomData))
+				{
+					msg.print("Argument %i to command '%s' must be an integer or an atom&.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Model/ID/Name	(ModelData, CharacterData, IntegerData)
+			case ('M'):
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::ModelData) && (rtype != NuVTypes::CharacterData))
+				{
+					msg.print("Argument %i to command '%s' must be an integer, a model& or a character string.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Pattern/ID/Name	(PatternData, CharacterData, IntegerData)
+			case ('P'):
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::PatternData) && (rtype != NuVTypes::CharacterData))
+				{
+					msg.print("Argument %i to command '%s' must be an integer, a pattern& or a character string.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Pointer		(Any pointer (void*) object)
+			case ('X'):
+				if (rtype < NuVTypes::AtomData)
+				{
+					msg.print("Argument %i to command '%s' must be a reference of some kind.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Variable of any type (but not a path)
+			case ('V'):
+				if ((argNode(count)->nodeType() != TreeNode::VarNode) && (argNode(count)->nodeType() != TreeNode::ArrayVarNode))
+				{
+					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, NuCommand::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+		}
+		// Check for failure
+		if (!result) break;
+		if (upc != '*') c++;
+		if (cluster) ngroup++;
+		count++;
+	} while (*c != '\0');
+	msg.exit("NuCommandNode::checkArguments");
+	return result;
+}
+
+// Perform any necessary actions specific to the function
+bool NuCommandNode::initFunction()
+{
+	msg.enter("NuCommandNode::initFunction");
+	bool result = TRUE;
+	switch (function_)
+	{
+		// All printing commands require a format to be created
+		case (NuCommand::Error):
+		case (NuCommand::Verbose):
+		case (NuCommand::Printf):
+		case (NuCommand::Warn):
+			format_ = new NuFormat(argc(0));
+			break;
+		default:
+			result = TRUE;
+			break;
+	}
+	msg.exit("NuCommandNode::initFunction");
+	return result;
 }
 
 // Execute command
@@ -90,3 +298,4 @@ bool NuCommandNode::initialise()
 	printf("Internal Error: A CommandNode cannot be initialised.\n");
 	return FALSE;
 }
+

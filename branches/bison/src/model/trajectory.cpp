@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/filter.h"
+#include "parser/tree.h"
 #include "model/model.h"
 #include "gui/gui.h"
 #include "classes/prefs.h"
@@ -38,7 +38,7 @@ Model *Model::trajectoryParent()
 }
 
 // Set the format of the trajectory
-void Model::setTrajectoryFilter(Filter *f)
+void Model::setTrajectoryFilter(Tree *f)
 {
 	trajectoryFilter_ = f;
 }
@@ -90,7 +90,7 @@ void Model::clearTrajectory()
 }
 
 // Initialise trajectory
-bool Model::initialiseTrajectory(const char *fname, Filter *f)
+bool Model::initialiseTrajectory(const char *fname, Tree *f)
 {
 	// Associate the supplied trajectory file with the model
 	msg.enter("Model::initialiseTrajectory");
@@ -113,7 +113,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
 	// Read header
-	if (!trajectoryFilter_->execute("",trajectoryFile_,TRUE))
+	if (!trajectoryFilter_->executeRead("",trajectoryFile_,TRUE))
 	{
 		msg.print("Error reading header of trajectory file.\n");
 		trajectoryFile_->close();
@@ -129,7 +129,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	//printf("Initialised config\n");
 	Model *newframe = addFrame();
 	setRenderFromFrames();
-	if (!trajectoryFilter_->execute("",trajectoryFile_,FALSE))
+	if (!trajectoryFilter_->executeRead("",trajectoryFile_,FALSE))
 	{
 		msg.print("Error testing frame read from trajectory.\n");
 		trajectoryFile_->close();
@@ -164,7 +164,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
-			success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+			success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
 			if (success)
 			{
 				//msg.print("Read frame %i from file.\n", n+1);
@@ -372,7 +372,7 @@ void Model::seekFrame(int frameno)
 		{
 			currentFrame_->clear();
 			trajectoryFile_->seekg(trajectoryOffsets_[frameno-1]);
-			bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+			bool success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
 			// If this was the highest offset stored, the file position now corresponds to the next frame
 			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nTrajectoryFrames_))
 			{
@@ -389,7 +389,7 @@ void Model::seekFrame(int frameno)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
-				bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+				bool success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
 				if (!success)
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);
