@@ -51,6 +51,7 @@ Tree::Tree()
 	glob_.set("*");
 	id_ = -1;
 	partner_ = NULL;
+	isFilter_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -105,6 +106,51 @@ bool Tree::execute(NuReturnValue &rv)
 	printf("Final result of tree execution:\n");
 	rv.info();
 	msg.exit("Tree::execute");
+	return result;
+}
+
+// Execute tree after opening corresponding input stream
+bool Tree::executeRead(const char *filename)
+{
+	msg.enter("Tree::executeRead[filename]");
+	// Open file...
+	inputFile_ = new ifstream(filename, ios::in);
+	if (!inputFile_->good())
+	{
+		delete inputFile_;
+		inputFile_ = NULL;
+		msg.print("Unable to open file '%s' for execution of commands.\n", filename);
+		msg.exit("Tree::executeRead[filename]");
+		return FALSE;
+	}
+	// Execute the commands
+	NuReturnValue rv;
+	bool result = execute(rv);
+	// Close the file
+	inputFile_->close();
+	delete inputFile_;
+	inputFile_ = NULL;
+	msg.exit("Tree::executeRead[filename]");
+	return result;
+}
+
+// Execute tree with corresponding input stream
+bool Tree::executeRead(ifstream *file)
+{
+	msg.enter("Tree::executeRead[ifstream]");
+	inputFile_ = file;
+	if (!inputFile_->good())
+	{
+		inputFile_ = NULL;
+		msg.print("Bad file pointer passed for execution of commands.\n");
+		msg.exit("Tree::executeRead[ifstream]");
+		return FALSE;
+	}
+	// Execute the commands
+	NuReturnValue rv;
+	bool result = execute(rv);
+	inputFile_ = NULL;
+	msg.exit("Tree::executeRead[ifstream]");
 	return result;
 }
 
@@ -376,8 +422,8 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 	return arg1;
 }
 
-// Join two functions together
-TreeNode *Tree::joinFunctions(TreeNode *node1, TreeNode *node2)
+// Join two commands together
+TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 {
 	printf("Adding a statement joiner for %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
@@ -642,6 +688,25 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 /*
 // Forest
 */
+
+Forest::Forest()
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Set name of forest
+void Forest::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return name of forest
+const char *Forest::name()
+{
+	return name_.get();
+}
 
 // Return number of trees in forest
 int Forest::nTrees()

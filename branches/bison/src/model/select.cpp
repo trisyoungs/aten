@@ -324,7 +324,7 @@ void Model::deselectElement(int el, bool markonly)
 }
 
 // Select all atoms which match the provided type
-void Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
+int Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
 {
 	msg.enter("Model::selectType");
 	Atomtype testat;
@@ -333,7 +333,7 @@ void Model::selectType(int element, const char *typedesc, bool markonly, bool de
 	{
 		msg.print("Failed to create type description.\n");
 		msg.exit("Model::selectType");
-		return;
+		return 0;
 	}
 	int count = 0, matchscore = 0, atomscore, n;
 	// Prepare for typing
@@ -362,6 +362,7 @@ void Model::selectType(int element, const char *typedesc, bool markonly, bool de
 	// Write results
 	msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
 	msg.exit("Model::selectType");
+	return count;
 }
 
 // Select with bounding Sphere

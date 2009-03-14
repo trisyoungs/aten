@@ -1,6 +1,6 @@
 /*
-	*** Minimiser functions
-	*** src/parser/minimise.cpp
+	*** Minimiser Commands
+	*** src/nucommand/minimise.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

@@ -225,16 +225,16 @@ void AtenForm::finaliseUi()
 void AtenForm::createDialogFilters()
 {
 	msg.enter("AtenForm::createDialogFilters");
-	Filter *f;
+	Tree *filter;
 	int n;
 
 	// Model Import
 	loadModelFilters.clear();
 	loadModelFilters += "All files (*)";
-	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
+	for (filter = aten.filters(Tree::ModelImport); filter != NULL; filter = filter->next)
 	{
 		loadModelFilters += ";;";
-		loadModelFilters += f->description();
+		loadModelFilters += filter->description();
 	}
 	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
 	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
@@ -242,19 +242,19 @@ void AtenForm::createDialogFilters()
 	// Trajectory Import
 	loadTrajectoryFilters.clear();
 	loadTrajectoryFilters += "All files (*)";
-	for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
+	for (filter = aten.filters(Tree::TrajectoryImport); filter != NULL; filter = filter->next)
 	{
 		loadTrajectoryFilters += ";;";
-		loadTrajectoryFilters += f->description();
+		loadTrajectoryFilters += filter->description();
 	}
 	ui.actionFileAddTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
 	saveModelFilters.clear();
-	for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
+	for (filter = aten.filters(Tree::ModelExport); filter != NULL; filter = filter->next)
 	{
 		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
-		saveModelFilters += f->description();
+		saveModelFilters += filter->description();
 	}
 	// Check for empty filters list
 	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
@@ -276,10 +276,10 @@ void AtenForm::createDialogFilters()
 
 	// Expression Export
 	saveExpressionFilters.clear();
-	for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next)
+	for (filter = aten.filters(Tree::ExpressionExport); filter != NULL; filter = filter->next)
 	{
 		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
-		saveExpressionFilters += f->description();
+		saveExpressionFilters += filter->description();
 	}
 	// Check for empty filters list
 	ui.actionFileSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
@@ -287,10 +287,10 @@ void AtenForm::createDialogFilters()
 	// Grid import
 	loadGridFilters.clear();
 	loadGridFilters += "All files (*)";
-	for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next)
+	for (filter = aten.filters(Tree::GridImport); filter != NULL; filter = filter->next)
 	{
 		loadGridFilters += ";;";
-		loadGridFilters += f->description();
+		loadGridFilters += filter->description();
 	}
 	gui.gridsWindow->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 

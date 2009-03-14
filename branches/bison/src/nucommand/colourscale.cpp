@@ -1,6 +1,6 @@
 /*
-	*** ColourScale functions
-	*** src/parser/colourscale.cpp
+	*** ColourScale Commands
+	*** src/nucommand/colourscale.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

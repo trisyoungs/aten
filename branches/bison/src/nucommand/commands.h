@@ -500,7 +500,7 @@ class NuCommand
 		ZoomView,
 		ZRotateView,
 
-		nFunctions
+		nCommands
 	};
 	// Return enumerated command id from string
 	NuCommand::Function command(const char*);
@@ -884,8 +884,6 @@ class NuCommand
 	// Variable Manipulation
 	static bool function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Decrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Increase(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Variable Operators
@@ -925,7 +923,7 @@ class NuCommand
 	*/
 	private:
 	// Function pointers
-	NuCommandFunction pointers_[NuCommand::nFunctions];
+	NuCommandFunction pointers_[NuCommand::nCommands];
 	// Dummy CommandList for use with non-flow call() function
 	NuCommandList *dummyCommandList_;
 	// Dummy CommandNode (owned by dummyCommandList_)
@@ -933,7 +931,7 @@ class NuCommand
 
 	public:
 	// Function data
-	static NuCommandData data[NuCommand::nFunctions];
+	static NuCommandData data[NuCommand::nCommands];
 	// Initialise function pointers
 	void initPointers();
 	// Execute specified command

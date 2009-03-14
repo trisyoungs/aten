@@ -65,8 +65,8 @@ block:
 
 statementlist:
 	statement				{ $$ = $1; }
-        | statementlist statement 		{ $$ = nuparser.tree->joinFunctions($1, $2); }
-        | statementlist block	 		{ $$ = nuparser.tree->joinFunctions($1, $2); }
+        | statementlist statement 		{ $$ = nuparser.tree->joinCommands($1, $2); }
+        | statementlist block	 		{ $$ = nuparser.tree->joinCommands($1, $2); }
         ;
 
 blockment:
@@ -77,7 +77,7 @@ blockment:
 /* Single Statement / Flow Control */
 
 statement:
-	';'					{ $$ = nuparser.tree->joinFunctions(NULL,NULL); }
+	';'					{ $$ = nuparser.tree->joinCommands(NULL,NULL); }
 	| statementexpr ';'			{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
 	;
@@ -97,6 +97,9 @@ createscope:
 	/* empty */				{ nuparser.tree->pushScope(); }
 	;
 
+/* Range (X~Y) */
+range:
+	expr '~' expr				{ printf("GENERATE RANGE. TGAY\n"); }
 /* Constants */
 
 constant:

@@ -1,6 +1,6 @@
 /*
-	*** Forces functions
-	*** src/parser/forces.cpp
+	*** Forces Commands
+	*** src/nucommand/forces.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

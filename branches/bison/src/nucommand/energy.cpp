@@ -1,6 +1,6 @@
 /*
-	*** Energy functions
-	*** src/parser/energy.cpp
+	*** Energy Commands
+	*** src/nucommand/energy.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

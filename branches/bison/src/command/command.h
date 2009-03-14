@@ -32,7 +32,6 @@
 // Forward declarations
 class CommandList;
 class Format;
-class Filter;
 class Model;
 class ForcefieldAtom;
 class PatternBound;

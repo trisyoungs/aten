@@ -1,6 +1,6 @@
 /*
-	*** Atom functions
-	*** src/parser/atom.cpp
+	*** Atom Commands
+	*** src/nucommand/atom.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

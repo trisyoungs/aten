@@ -1,6 +1,6 @@
 /*
-	*** Script functions
-	*** src/parser/script.cpp
+	*** Script Commands
+	*** src/nucommand/script.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -24,41 +24,45 @@
 #include "main/aten.h"
 
 // List available scripts
-bool NuCommand::function_Listscripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
-	for (CommandList *cl = aten.scripts.first(); cl != NULL; cl = cl->next)
-		msg.print("  %s (%s)\n", cl->scriptFilename(), cl->name());
+	for (Forest *f = aten.scripts.first(); f != NULL; f = f->next)
+		msg.print("  %s (%s)\n", f->filename(), f->name());
+	rv.reset();
 	return TRUE;
 }
 
 // Load script from disk
-bool NuCommand::function_Loadscript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	CommandList *cl = aten.scripts.add();
-	if (!cl->load(c->argc(0)))
+	Forest *f = aten.scripts.add();
+	ifstream inputfile(c->argc(0), ios::in);
+	if (!f->generate(&inputfile))
 	{
-		aten.scripts.remove(cl);
+		aten.scripts.remove(f);
 		return FALSE;
 	}
-	if (c->hasArg(1)) cl->setName(c->argc(1));
-	else cl->setName(c->argc(0));
+	if (c->hasArg(1)) f->setName(c->argc(1));
+	else f->setName(c->argc(0));
+	rv.reset();
 	return TRUE;
 }
 
 // Run specified script
-bool NuCommand::function_Runscript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_RunScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// Find the script...
-	CommandList *cl;
-	for (cl = aten.scripts.first(); cl != NULL; cl = cl->next)
-		if (strcmp(c->argc(0), cl->name()) == 0) break;
-	if (cl != NULL)
+	Forest *f;
+	for (f = aten.scripts.first(); f != NULL; f = f->next) if (strcmp(c->argc(0), f->name()) == 0) break;
+	if (f != NULL)
 	{
 		msg.print("Executing script '%s':\n",c->argc(0));
-		cl->execute();
+		NuReturnValue result;
+		f->executeAll(result);
 	}
 	else msg.print("Couldn't find script '%s'.\n",c->argc(0));
+	rv.reset();
 	return TRUE;
 }

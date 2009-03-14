@@ -1,6 +1,6 @@
 /*
-	*** Labelling functions
-	*** src/parser/labels.cpp
+	*** Labelling Commands
+	*** src/nucommand/labels.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

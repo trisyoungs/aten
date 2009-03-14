@@ -1,6 +1,6 @@
 /*
-	*** Transformation functions
-	*** src/parser/transform.cpp
+	*** Transformation Commands
+	*** src/nucommand/transform.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -21,11 +21,12 @@
 
 #include "nucommand/commands.h"
 #include "parser/commandnode.h"
+#include "parser/tree.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 
 // Rotate selection about specified axis / origin
-bool NuCommand::function_Axisrotate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_AxisRotate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double angle;
@@ -72,6 +73,7 @@ bool NuCommand::function_Axisrotate(NuCommandNode *c, Bundle &obj, NuReturnValue
 	obj.rs->beginUndoState(s);
 	obj.rs->rotateSelectionVector(o, v, angle);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -79,7 +81,7 @@ bool NuCommand::function_Axisrotate(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Centre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->parent()->inputFile() == NULL)
+	if (!c->parent()->isFilter())
 	{
 		char s[128];
 		Vec3<double> centre = c->arg3d(0);
@@ -89,11 +91,12 @@ bool NuCommand::function_Centre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 		obj.rs->endUndoState();
 	}
 	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.rs->centre(c->arg3d(0));
+	rv.reset();
 	return TRUE;
 }
 
 // Convert coordinates from one reference frame to another
-bool NuCommand::function_Matrixconvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_MatrixConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -176,11 +179,12 @@ bool NuCommand::function_Matrixconvert(NuCommandNode *c, Bundle &obj, NuReturnVa
 	obj.rs->beginUndoState(s);
 	obj.rs->matrixTransformSelection(o, rotmat);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Transform coordinates using supplied matrix / origin
-bool NuCommand::function_Matrixtransform(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_MatrixTransform(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -205,6 +209,7 @@ bool NuCommand::function_Matrixtransform(NuCommandNode *c, Bundle &obj, NuReturn
 	obj.rs->beginUndoState(s);
 	obj.rs->matrixTransformSelection(o, mat);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -217,6 +222,7 @@ bool NuCommand::function_Mirror(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	obj.rs->beginUndoState(s);
 	obj.rs->mirrorSelectionLocal(c->argi(0));
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -230,11 +236,12 @@ bool NuCommand::function_Translate(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-bool NuCommand::function_Translateatom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TranslateAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	char s[128];
@@ -243,11 +250,12 @@ bool NuCommand::function_Translateatom(NuCommandNode *c, Bundle &obj, NuReturnVa
 	obj.rs->beginUndoState(s);
 	obj.rs->translateAtom(obj.i, tvec);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-bool NuCommand::function_Translatecell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
@@ -257,5 +265,6 @@ bool NuCommand::function_Translatecell(NuCommandNode *c, Bundle &obj, NuReturnVa
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }

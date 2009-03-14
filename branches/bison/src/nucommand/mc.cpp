@@ -1,6 +1,6 @@
 /*
-	*** Monte Carlo functions
-	*** src/parser/mc.cpp
+	*** Monte Carlo Commands
+	*** src/nucommand/mc.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

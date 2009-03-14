@@ -1,6 +1,6 @@
 /*
 	*** Flow Commands
-	*** src/parser/flow..cpp
+	*** src/nucommand/flow..cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

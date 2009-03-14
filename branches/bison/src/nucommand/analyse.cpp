@@ -1,6 +1,6 @@
 /*
-	*** Analysis functions
-	*** src/parser/analyse.cpp
+	*** Analysis Commands
+	*** src/nucommand/analyse.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

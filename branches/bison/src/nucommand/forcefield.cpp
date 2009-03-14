@@ -1,6 +1,6 @@
 /*
-	*** Forcefield functions
-	*** src/parser/forcefield.cpp
+	*** Forcefield Commands
+	*** src/nucommand/forcefield.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -281,14 +281,14 @@ bool NuCommand::function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnV
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = aten.findFilter(Filter::ExpressionExport, c->argc(0));
+	Tree *filter = aten.findFilter(Tree::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found
-	if (f == NULL)
+	if (filter == NULL)
 	{
 		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
 		return FALSE;
 	}
-	f->execute(c->argc(1));
+	filter->executeWrite(c->argc(1));
 	rv.reset();
 	return TRUE;
 }

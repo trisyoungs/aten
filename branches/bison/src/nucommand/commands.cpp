@@ -1,6 +1,6 @@
 /*
 	*** Command Function Definitions
-	*** src/parser/commands.cpp
+	*** src/nucommand/commands.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -43,7 +43,7 @@
 */
 
 // Command action
-NuCommandData NuCommand::data[NuCommand::nFunctions] = {
+NuCommandData NuCommand::data[NuCommand::nCommands] = {
 
 	// AST Nodes
 	{ "_nofunction",	"",		"", NuVTypes::NoData,
@@ -680,32 +680,32 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Execute the named script" },
 
 	// Selection commands
-	{ "deselect",		"S*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", NuVTypes::NoData,
+	{ "deselect",		"S*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", NuVTypes::IntegerData,
 				"Deselect specific atoms / ranges in the current model" },
-	{ "deselecttype",	"SC",		"<element> <typedesc>", NuVTypes::NoData,
+	{ "deselecttype",	"SC",		"<element> <typedesc>", NuVTypes::IntegerData,
 				"Deselect all atoms that match the provided atomtype description" },
 	{ "expand",		"",		"", NuVTypes::NoData,
 				"Expands the current atom selection" },
 	{ "invert",		"",		"", NuVTypes::NoData,
 				"Invert the current selection" },
-	{ "select",		"S*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", NuVTypes::NoData,
+	{ "select",		"S*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", NuVTypes::IntegerData,
 				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"", NuVTypes::NoData,
 				"Select all atoms in the current model" },
 	{ "selectfftype",	"C",		"<typename>", NuVTypes::NoData,
 				"Select all atoms of a specific forcefield type" },
-	{ "selectioncog",	"",		"", NuVTypes::RealData,
+	{ "selectioncog",	"",		"", NuVTypes::VectorData,
 				"Return centre of geometry of current selection" },
-	{ "selectioncom",	"",		"", NuVTypes::RealData,
+	{ "selectioncom",	"",		"", NuVTypes::VectorData,
 				"Return centre of mass of current selection (and place in variables if supplied" },
 	{ "selectnone",		"",		"", NuVTypes::NoData,
 				"Deselect all atoms in the current model" },
-	{ "selectoverlaps",	"n",		"[tolerance = 0.2]", NuVTypes::NoData,
+	{ "selectoverlaps",	"n",		"[tolerance = 0.2]", NuVTypes::IntegerData,
 				"Select all atoms which are within a given distance of each other" },
 	{ "selectpattern",	"p",		"[name]", NuVTypes::NoData,
 				"Select all atoms in the current (or named) pattern" },
-	{ "selecttype",		"SN",		"<element> <typedesc>", NuVTypes::NoData,
-				"Select all atoms that match the provided atomtype description" },
+	{ "selecttype",		"SC",		"<element> <typedesc>", NuVTypes::IntegerData,
+				"Select all atoms that match the provided atomtype description (returning the number matched)" },
 	
 	// Site commands
 	{ "getsite",		"C",		"<name>", NuVTypes::NoData,
@@ -772,7 +772,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 				"Return part of the <string> before the first occurrence of the character <char>" },
 	{ "normalise",		"U",		"<vector>", NuVTypes::RealData,
 				"Normalise the values of the 3-vector supplied" },
-	{ "stripchars",		"^CC",		"<variable> <chars>", NuVTypes::NoData,
+	{ "stripchars",		"^CC",		"<variable> <chars>", NuVTypes::CharacterData,
 				"Strip all occurrences of the supplied characters from the supplied variable" },
 
 	// Variable Operators
@@ -842,7 +842,7 @@ NuCommandData NuCommand::data[NuCommand::nFunctions] = {
 NuCommand::Function NuCommand::command(const char *s)
 {
 	int result;
-	for (result = NuCommand::NoFunction; result < NuCommand::nFunctions; result++) if (strcmp(data[result].keyword,s) == 0) break;
+	for (result = NuCommand::NoFunction; result < NuCommand::nCommands; result++) if (strcmp(data[result].keyword,s) == 0) break;
 	return (NuCommand::Function) result;
 }
 

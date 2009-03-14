@@ -1,6 +1,6 @@
 /*
-	*** Site functions
-	*** src/parser/site.cpp
+	*** Site Commands
+	*** src/nucommand/site.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -26,7 +26,7 @@
 #include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-bool NuCommand::function_Newsite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_NewSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -47,11 +47,12 @@ bool NuCommand::function_Newsite(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 		}
 	}
 	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	rv.reset();
 	return TRUE;
 }
 
 // Print site definitions for model ('listsites')
-bool NuCommand::function_Listsites(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ListSites(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s = obj.m->sites.first();
@@ -67,22 +68,24 @@ bool NuCommand::function_Listsites(NuCommandNode *c, Bundle &obj, NuReturnValue 
 			msg.print("\n");
 		}
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-bool NuCommand::function_Getsite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_GetSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
 	if (s == NULL) msg.print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else obj.s = s;
+	rv.reset();
 	return FALSE;
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
-bool NuCommand::function_Siteaxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SiteAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;
@@ -103,5 +106,6 @@ bool NuCommand::function_Siteaxes(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		// Store n-1 since internally we work in 0-n range
 		li->data = parser.argi(n) - 1;
 	}
+	rv.reset();
 	return TRUE;
 }

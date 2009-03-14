@@ -25,7 +25,7 @@
 #include <iostream>
 
 // Probe model
-Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
+Tree *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
 	msg.enter("Aten::probeFile");

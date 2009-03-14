@@ -1,6 +1,6 @@
 /*
-	*** Model functions
-	*** src/parser/model.cpp
+	*** Model Commands
+	*** src/nucommand/model.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -35,6 +35,7 @@ bool NuCommand::function_CreateAtoms(NuCommandNode *c, Bundle &obj, NuReturnValu
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v;
 	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs->addAtom(0, v);
+	rv.reset();
 	return TRUE;
 }
 
@@ -78,12 +79,12 @@ bool NuCommand::function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnVa
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If this command is being run from a filter, set the output filter in the model.
-	Filter *f = c->parent()->filter();
-	if (f != NULL)
+	if (c->parent()->isFilter())
 	{
+		Tree *filter = c->parent();
 // 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
 		obj.m->setFilename(c->parent()->filename());
-		obj.m->setFilter(f->partner());
+		obj.m->setFilter(filter->partner());
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
@@ -177,10 +178,10 @@ bool NuCommand::function_ListModels(NuCommandNode *c, Bundle &obj, NuReturnValue
 // Load model ('loadmodel <filename> [name]')
 bool NuCommand::function_LoadModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Filter *f = aten.probeFile(c->argc(0), Filter::ModelImport);
-	if (f != NULL)
+	Tree *filter = aten.probeFile(c->argc(0), Tree::ModelImport);
+	if (filter != NULL)
 	{
-		if (f->execute(c->argc(0)))
+		if (filter->executeRead(c->argc(0)))
 		{
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
@@ -238,7 +239,7 @@ bool NuCommand::function_NewModel(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		obj.m->setNamesForcefield(f);
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
-	if (!c->parent()->isFileSource()) obj.m->enableUndoRedo();
+	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(NuVTypes::ModelData, obj.m);
 	return TRUE;
 }
@@ -276,16 +277,16 @@ bool NuCommand::function_SaveModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = aten.findFilter(Filter::ModelExport, c->argc(0));
+	Tree *filter = aten.findFilter(Tree::ModelExport, c->argc(0));
 	// Check that a suitable format was found
-	if (f == NULL)
+	if (filter == NULL)
 	{
 		msg.print("No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return FALSE;
 	}
-	obj.rs->setFilter(f);
+	obj.rs->setFilter(filter);
 	obj.rs->setFilename(c->argc(1));
-	bool result = f->execute(c->argc(1));
+	bool result = filter->executeWrite(c->argc(1));
 	rv.set(result);
 	return (result);
 }

@@ -211,7 +211,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Forcefield *ff;
 	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
-	CommandList cl, *script;
+	Tree cl, *script;
 	Tree *tree;
 	NuReturnValue rv;
 	Filter *f, *modelfilter = NULL;
