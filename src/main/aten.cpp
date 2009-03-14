@@ -73,7 +73,7 @@ void Aten::clear()
 	forcefields_.clear();
 	userClipboard->clear();
 	scripts.clear();
-	for (int i=0; i<Filter::nFilterTypes; i++) filters_[i].clear();
+	for (int i=0; i<Tree::nFilterTypes; i++) filters_[i].clear();
 }
 
 // Sets the current program mode
@@ -568,10 +568,10 @@ void Aten::openFilters()
 	if ((!failed) && found)
 	{
 		partnerFilters();
-		msg.print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
-		msg.print(Messenger::Verbose, "Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
-		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
-		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
+		msg.print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[Tree::ModelImport].nItems(), filters_[Tree::ModelExport].nItems());
+		msg.print(Messenger::Verbose, "Trajectory (%i/%i) ", filters_[Tree::TrajectoryImport].nItems(), filters_[Tree::TrajectoryExport].nItems());
+		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Tree::ExpressionImport].nItems(), filters_[Tree::ExpressionExport].nItems());
+		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Tree::GridImport].nItems(), filters_[Tree::GridExport].nItems());
 	}
 	msg.exit("Aten::openFilters");
 }
@@ -583,14 +583,14 @@ bool Aten::reloadFilters()
 	char indexfile[512], path[512], filterfile[128], message[512], shortname[128];
 	ifstream *file;
 	msg.print("Clearing current filters....\n");
-	filters_[Filter::ModelImport].clear();
-	filters_[Filter::ModelExport].clear();
-	filters_[Filter::TrajectoryImport].clear();
-	filters_[Filter::TrajectoryExport].clear();
-	filters_[Filter::ExpressionImport].clear();
-	filters_[Filter::ExpressionExport].clear();
-	filters_[Filter::GridImport].clear();
-	filters_[Filter::GridExport].clear();
+	filters_[Tree::ModelImport].clear();
+	filters_[Tree::ModelExport].clear();
+	filters_[Tree::TrajectoryImport].clear();
+	filters_[Tree::TrajectoryExport].clear();
+	filters_[Tree::ExpressionImport].clear();
+	filters_[Tree::ExpressionExport].clear();
+	filters_[Tree::GridImport].clear();
+	filters_[Tree::GridExport].clear();
 	filterForests_.clear();
 	sprintf(path,"%s%s", dataDir_.get(), "/filters");
 	msg.print("Reading filters from '%s'...\n", path);
@@ -613,10 +613,10 @@ bool Aten::reloadFilters()
 		}
 		// Print out info and partner filters 
 		partnerFilters();
-		msg.print("Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
-		msg.print("Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
-		msg.print("Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
-		msg.print("Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
+		msg.print("Found (import/export):  Models (%i/%i) ", filters_[Tree::ModelImport].nItems(), filters_[Tree::ModelExport].nItems());
+		msg.print("Trajectory (%i/%i) ", filters_[Tree::TrajectoryImport].nItems(), filters_[Tree::TrajectoryExport].nItems());
+		msg.print("Expression (%i/%i) ", filters_[Tree::ExpressionImport].nItems(), filters_[Tree::ExpressionExport].nItems());
+		msg.print("Grid (%i/%i)\n", filters_[Tree::GridImport].nItems(), filters_[Tree::GridExport].nItems());
 	}
 	parser.close();
 	delete file;
@@ -664,18 +664,21 @@ void Aten::partnerFilters()
 	msg.enter("Aten::partnerFilters");
 	// Loop through import filters and search / set export partners
 	char s[512], bit[32];
-	Refitem< *imp, *exp;
+	Refitem<Tree,int> *ri, *rj;
+	Tree *imp, *exp;
 	int importid;
 	strcpy(s,"Model Formats:");
-	for (imp = filters_[Filter::ModelImport].first(); imp != NULL; imp = imp->next)
+	for (ri = filters_[Tree::ModelImport].first(); ri != NULL; ri = ri->next)
 	{
+		imp = ri->item;
 		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[Filter::ModelExport].first(); exp != NULL; exp = exp->next)
+			for (rj = filters_[Tree::ModelExport].first(); rj != NULL; rj = rj->next)
 			{
+				exp = rj->item;
 				if (importid == exp->id())
 				{
 					msg.print(Messenger::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->nickname(), imp->id());
@@ -690,15 +693,17 @@ void Aten::partnerFilters()
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
 	strcpy(s,"Grid Formats:");
-	for (imp = filters_[Filter::GridImport].first(); imp != NULL; imp = imp->next)
+	for (ri = filters_[Tree::GridImport].first(); ri != NULL; ri = ri->next)
 	{
+		imp = ri->item;
 		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[Filter::GridExport].first(); exp != NULL; exp = exp->next)
+			for (rj = filters_[Tree::GridExport].first(); rj != NULL; rj = rj->next)
 			{
+				exp = rj->item;
 				if (importid == exp->id())
 				{
 					msg.print(Messenger::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->nickname(), imp->id());
@@ -717,19 +722,19 @@ void Aten::partnerFilters()
 }
 
 // Find filter with specified type and nickname
-Filter *Aten::findFilter(Filter::FilterType ft, const char *nickname) const
+Tree *Aten::findFilter(Tree::FilterType ft, const char *nickname) const
 {
 	msg.enter("Aten::findFilter");
 	Filter *result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->nickname(), nickname) == 0) break;
-	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
+	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Tree::filterType(ft), nickname);
 	msg.exit("Aten::findFilter");
 	return result;
 }
 
 // Return first filter in list (of a given type)
-Filter *Aten::filters(Filter::FilterType ft) const
+Tree *Aten::filters(Tree::FilterType ft) const
 {
 	return filters_[ft].first();
 }

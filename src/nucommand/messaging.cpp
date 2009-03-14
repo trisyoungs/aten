@@ -1,6 +1,6 @@
 /*
-	*** Messaging functions
-	*** src/parser/messaging.cpp
+	*** Messaging Commands
+	*** src/nucommand/messaging.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

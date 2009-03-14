@@ -100,8 +100,8 @@ class Tree
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Pop the most recent function leaf from the stack and own any stored arguments
 	void finaliseFunction();
-	// Add joiner
-	TreeNode *joinFunctions(TreeNode *node1, TreeNode *node2);
+	// Join two commands together
+	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
 	TreeNode *pushScope();
 	// Pop the topmost scope node
@@ -161,6 +161,8 @@ class Tree
 	// Filter Properties
 	*/
 	private:
+	// Whether this tree is a filter
+	bool isFilter_;
 	// Filter ID
 	int id_;
 	// Type of data the filter describes
@@ -189,6 +191,10 @@ class Tree
 	ElementMap::ZmapType zmapping_;
 
 	public:
+	// Flag that this tree is actually a file filter
+	void markAsFilter();
+	// Return whether this tree is a filter
+	bool isFilter();
 	// Return the ID of the filter
 	int id();
 	// Return the descriptive name of the filter
@@ -227,14 +233,20 @@ class Tree
 	ifstream *inputFile_;
 	// File destination (if any)
 	ofstream *outputFile_;
+	// Filename corresponding to fstream
+	Dnchar filename_;
 
 	public:
 	// Return whether a current input file is defined
 	bool hasFileSource();
+	// Return the filename (if any)
+	const char *filename();
 	// Execute
 	bool execute(NuReturnValue &rv);
-	// Execute, with specified file as data source (no return value)
-	bool executeRead(const char *filename, ifstream *trajfile = NULL, bool trajheader = FALSE);
+	// Execute, opening specified file as input source (no return value)
+	bool executeRead(const char *filename);
+	// Execute, using specified file as input source (no return value)
+	bool executeRead(ifstream *inputfile);
 	// Execute, with specified file as data target
 	bool executeWrite(const char *filename);
 };
@@ -246,11 +258,17 @@ class Forest
 	// Constructor / Destructor
 	Forest();
 	~Forest();
+	// List pointers
+	Forest *prev, *next;
 
 	/*
 	// Tree data
 	*/
 	private:
+	// Name, if any
+	Dnchar name_;
+	// Original source filename, if any
+	Dnchar filename_;
 	// User-defined functions (local to this structure)
 	List<Tree> functions_;
 	// List of trees belonging to this forest
@@ -259,10 +277,24 @@ class Forest
 	public:
 	// Clear contents of forest
 	void clear();
+	// Set name of forest
+	void setName(const char *s);
+	// Return name of forest
+	const char *name();
+	// Return associated filename (if any)
+	const char *filename();
+	// Generate forest from string 
+	bool generate(const char *, const char *name = NULL);
+	// Generate forest from input file
+	bool generate(ifstream *file, const char *name = NULL);
 	// Return number of trees in forest
 	int nTrees();
-	// Create a new tree
+	// Create a new, generic (script or command) tree
 	Tree *createTree();
+	// Create a new file filter-style tree
+	Tree *createFilterTree();
+	// Execute all trees in forest
+	bool executeAll(NuReturnValue &rv);
 };
 
 #endif

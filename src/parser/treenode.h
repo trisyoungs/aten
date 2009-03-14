@@ -102,6 +102,8 @@ class TreeNode
 	Vec3<double> arg3d(int i);
 	// Return (execute) triplet of 'int' arguments, starting from argument specified
 	Vec3<int> arg3i(int i);
+	// Return (execute) triplet of 'GLfloat' arguments, starting from argument specified
+	Vec3<GLfloat> arg3GLf(int i);
 	// Return the TreeNode corresponding to the argument, rather than executing it
 	TreeNode *argNode(int i);
 	// Set argument specified

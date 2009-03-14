@@ -43,6 +43,7 @@ class QFrame;
 class QSettings;
 class QActionGroup;
 class QButtonGroup;
+class Forest;
 class Tree;
 
 class AtenForm : public QMainWindow
@@ -243,7 +244,7 @@ class AtenForm : public QMainWindow
 	*/
 	private:
 	// Pointers to recent file actions
-	Reflist<QAction, Tree* > scriptActions_;
+	Reflist<QAction, Forest*> scriptActions_;
 	private slots:
 	void runScript();
 	void on_actionLoadScript_triggered(bool v);

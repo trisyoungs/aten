@@ -1,6 +1,6 @@
 /*
-	*** Selection functions
-	*** src/parser/select.cpp
+	*** Selection Commands
+	*** src/nucommand/select.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,33 +19,35 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "variables/accesspath.h"
 #include "parser/commandnode.h"
+#include "parser/variable.h"
 #include "nucommand/commands.h"
-#include "command/format.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
-void selectAtoms(Model *m, Variable *slxn, bool deselect)
+void selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
 	static char from[32], to[32], text[256], s[512];
 	int i, j, n, plus;
 	bool range;
+	// Execute argument to get result
+	NuReturnValue value;
+	if (!node->execute(value)) return;
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (slxn->type() == VTypes::AtomData)
+	if (value.type() == NuVTypes::AtomData)
 	{
-		Atom *ii = (Atom*) slxn->asPointer(VTypes::AtomData);
+		Atom *ii = (Atom*) value.asPointer(NuVTypes::AtomData);
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 		m->endUndoState();
 	}
-	else if (slxn->type() == VTypes::PatternData)
+	else if (value.type() == NuVTypes::PatternData)
 	{
-		Pattern *pp = (Pattern*) slxn->asPointer(VTypes::PatternData);
+		Pattern *pp = (Pattern*) value.asPointer(NuVTypes::PatternData);
 		sprintf(s,"%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", pp->name(), pp->totalAtoms());
 		m->beginUndoState(s);
 		m->selectPattern(pp, FALSE, deselect);
@@ -54,7 +56,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 	else
 	{
 		// Copy variable contents into local character array
-		strcpy(text, slxn->asCharacter());
+		strcpy(text, value.asCharacter());
 		// If arg contains a '-', select by range
 		if (strchr(text, '-') != NULL)
 		{
@@ -82,11 +84,11 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 		}
 		// Do the selection
-		sprintf(s,"%select (%s)", deselect ? "Des" : "S", slxn->asCharacter());
+		sprintf(s,"%select (%s)", deselect ? "Des" : "S", value.asCharacter());
 		m->beginUndoState(s);
 		if (!range)
 		{
-			if (VTypes::determineType(from) == VTypes::IntegerData)
+			if (NuVTypes::determineType(from) == NuVTypes::IntegerData)
 			{
 				i = atoi(from);
 				// Integer atom ID selection
@@ -110,7 +112,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		else
 		{
 			// Range of id's or elements
-			if (VTypes::determineType(from) == VTypes::IntegerData)
+			if (NuVTypes::determineType(from) == NuVTypes::IntegerData)
 			{
 				i = atoi(from);
 				j = atoi(to);
@@ -138,25 +140,33 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 }
 
 // Deselect atom, range of atoms, or elements ('select <n>')
-bool NuCommand::function_Deselect(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_DeSelect(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), TRUE);
+	// Store current number of selected atoms
+	int nselected = obj.rs->nSelected();
+	// Loop over arguments given to command, passing them in turn to selectAtoms
+	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->argNode(i), TRUE);
+	rv.set(nselected - obj.rs->nSelected());
 	return TRUE;
 }
 
 // Deselect by supplied atom type description ('deselecttype <el> <typedesc>')
-bool NuCommand::function_Deselecttype(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_DeSelectType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	if (obj.rs->autocreatePatterns())
 	{
+		// Store current number of selected atoms
+		int nselected = obj.rs->nSelected();
 		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
 		sprintf(s,"Deselect %s by type (%s)", c->argc(0), c->argc(1));
 		obj.rs->beginUndoState(s);
 		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1), FALSE, TRUE);
 		obj.rs->endUndoState();
 		delete[] s;
+		rv.set(nselected - obj.rs->nSelected());
 		return TRUE;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
@@ -170,16 +180,18 @@ bool NuCommand::function_Expand(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	obj.rs->beginUndoState("Expand current selection");
 	obj.rs->selectionExpand();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Select all ('selectall')
-bool NuCommand::function_Selectall(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectAll(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Select all atoms");
 	obj.rs->selectAll();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
@@ -187,32 +199,16 @@ bool NuCommand::function_Selectall(NuCommandNode *c, Bundle &obj, NuReturnValue 
 bool NuCommand::function_Select(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Store current number of selected atoms
+	int nselected = obj.rs->nSelected();
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	CharacterVariable charvar;
-	for (int i=0; i<c->nArgs(); i++)
-	{
-		// If the argument contains a variable delimiter '$' anywhere then we must create a format/string from it to simplify the string
-		if (strchr(c->argc(i), '$') == NULL) selectAtoms(obj.rs, c->arg(i), FALSE);	
-		else
-		{
-			c->createFormat(c->argc(i), FALSE);
-			if (c->format()->createString())
-			{
-				charvar.set(c->format()->createdString());
-				selectAtoms(obj.rs, &charvar, FALSE);
-			}
-			else
-			{
-				msg.print("Failed to process variables in selection string.\n");
-				return FALSE;
-			}
-		}
-	}
+	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->argNode(i), FALSE);	
+	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
 }
 
 // Select by forcefield type ('selecffttype <fftype>')
-bool NuCommand::function_Selectfftype(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectFFType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Forcefield *ff = obj.rs->forcefield();
@@ -221,6 +217,8 @@ bool NuCommand::function_Selectfftype(NuCommandNode *c, Bundle &obj, NuReturnVal
 		msg.print("No forcefield associated to model.\n");
 		return FALSE;
 	}
+	// Store current number of selected atoms
+	int nselected = obj.rs->nSelected();
 	ForcefieldAtom *ffa;
 	char s[128];
 	sprintf(s,"Select by forcefield type (%s)", c->argc(0));
@@ -234,37 +232,25 @@ bool NuCommand::function_Selectfftype(NuCommandNode *c, Bundle &obj, NuReturnVal
 		}
 	}
 	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
 }
 
-
-// Get selection centre of geometry ('selectioncog [x y z]')
-bool NuCommand::function_Selectioncog(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Get selection centre of geometry ('selectioncog')
+bool NuCommand::function_SelectionCog(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v = obj.rs->selectionCog();
-	if (c->hasArg(2))
-	{
-		c->arg(0)->set(v.x);
-		c->arg(1)->set(v.y);
-		c->arg(2)->set(v.z);
-	}
-	else msg.print("Selection centre of geometry is at %f %f %f.\n", v.x, v.y, v.z);
+	rv.set(v);
 	return TRUE;
 }
 
-// Get selection centre of mass ('selectioncom [x y z]')
-bool NuCommand::function_Selectioncom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Get selection centre of mass ('selectioncom')
+bool NuCommand::function_SelectionCom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> v = obj.rs->selectionCom();
-	if (c->hasArg(2))
-	{
-		c->arg(0)->set(v.x);
-		c->arg(1)->set(v.y);
-		c->arg(2)->set(v.z);
-	}
-	else msg.print("Selection centre of mass is at %f %f %f.\n", v.x, v.y, v.z);
+	rv.set(v);
 	return TRUE;
 }
 
@@ -275,21 +261,23 @@ bool NuCommand::function_Invert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	obj.rs->beginUndoState("Invert selection");
 	obj.rs->selectionInvert();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Select no atoms ('selectnone')
-bool NuCommand::function_Selectnone(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectNone(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Deselect all atoms");
 	obj.rs->selectNone();
 	obj.rs->endUndoState();
+	rv.reset();
 	return TRUE;
 }
 
 // Detect and select overlapping atoms
-bool NuCommand::function_Selectoverlaps(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectOverlaps(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -297,17 +285,18 @@ bool NuCommand::function_Selectoverlaps(NuCommandNode *c, Bundle &obj, NuReturnV
 	obj.rs->beginUndoState(s);
 	obj.rs->selectOverlaps(c->argd(0));
 	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected());
 	return TRUE;
 }
 
 // Select all atoms in current (or named/id'd) pattern ('selectpattern [name|id]')
-bool NuCommand::function_Selectpattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pattern *p = NULL;
 	if (c->hasArg(0))
 	{
-		if (c->argt(0) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(0)-1);
+		if (c->argType(0) == NuVTypes::IntegerData) p = obj.rs->pattern(c->argi(0)-1);
 		else p = obj.rs->findPattern(c->argc(0));
 	}
 	else p = obj.p;
@@ -325,23 +314,28 @@ bool NuCommand::function_Selectpattern(NuCommandNode *c, Bundle &obj, NuReturnVa
 		}
 		obj.rs->endUndoState();
 	}
+	rv.reset();
 	return TRUE;
 }
 
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
-bool NuCommand::function_Selecttype(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SelectType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs->autocreatePatterns())
 	{
+		// Store current number of selected atoms
+		int nselected = obj.rs->nSelected();
 		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
 		sprintf(s,"Select %s by type (%s)", c->argc(0), c->argc(1));
 		obj.rs->beginUndoState(s);
 		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1));
 		obj.rs->endUndoState();
 		delete[] s;
+		rv.set(obj.rs->nSelected() - nselected);
 		return TRUE;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
+	rv.reset();
 	return FALSE;
 }

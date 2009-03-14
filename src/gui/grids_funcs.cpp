@@ -89,9 +89,7 @@ void AtenGrids::refresh()
 void AtenGrids::loadGrid()
 {
 	msg.enter("AtenGrids::loadGrid");
-
-
-	Filter *f;
+	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), gui.mainWindow->loadGridFilters, &selFilter);
@@ -100,12 +98,12 @@ void AtenGrids::loadGrid()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next) if (selFilter == f->description()) break;
-		if (f != NULL) f->execute(qPrintable(filename));
+		for (filter = aten.filters(Tree::GridImport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
+		if (filter != NULL) filter->executeRead(qPrintable(filename));
 		else
 		{
-			f = aten.probeFile(qPrintable(filename), Filter::GridImport);
-			if (f != NULL) f->execute(qPrintable(filename));
+			filter = aten.probeFile(qPrintable(filename), Tree::GridImport);
+			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
 	gui.gridsWindow->refresh();

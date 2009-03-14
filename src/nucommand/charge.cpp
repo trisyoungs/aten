@@ -1,5 +1,5 @@
 /*
-	*** Charge functions
+	*** Charge Commands
 	*** src/nucommand/charge.cpp
 	Copyright T. Youngs 2007-2009
 

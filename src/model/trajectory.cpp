@@ -112,8 +112,8 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Associate the file with the trajectory
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
-	// Read header
-	if (!trajectoryFilter_->executeRead("",trajectoryFile_,TRUE))
+	// Read header      XXX TGAY
+	if (!trajectoryFilter_->executeRead(trajectoryFile_))
 	{
 		msg.print("Error reading header of trajectory file.\n");
 		trajectoryFile_->close();
@@ -129,7 +129,8 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	//printf("Initialised config\n");
 	Model *newframe = addFrame();
 	setRenderFromFrames();
-	if (!trajectoryFilter_->executeRead("",trajectoryFile_,FALSE))
+	// XXXXX TGAY   Read header
+	if (!trajectoryFilter_->executeRead(trajectoryFile_))
 	{
 		msg.print("Error testing frame read from trajectory.\n");
 		trajectoryFile_->close();
@@ -164,7 +165,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
-			success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
+			success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read frame
 			if (success)
 			{
 				//msg.print("Read frame %i from file.\n", n+1);
@@ -372,7 +373,7 @@ void Model::seekFrame(int frameno)
 		{
 			currentFrame_->clear();
 			trajectoryFile_->seekg(trajectoryOffsets_[frameno-1]);
-			bool success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
+			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
 			// If this was the highest offset stored, the file position now corresponds to the next frame
 			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nTrajectoryFrames_))
 			{
@@ -389,7 +390,7 @@ void Model::seekFrame(int frameno)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
-				bool success = trajectoryFilter_->executeRead("", trajectoryFile_, FALSE);
+				bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read header
 				if (!success)
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);

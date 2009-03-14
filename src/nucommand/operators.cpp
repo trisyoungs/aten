@@ -1,6 +1,6 @@
 /*
-	*** Operator Functions
-	*** src/parser/operators.cpp
+	*** Operators
+	*** src/nucommand/operators.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

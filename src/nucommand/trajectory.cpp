@@ -1,6 +1,6 @@
 /*
-	*** Trajectory functions
-	*** src/parser/trajectory.cpp
+	*** Trajectory Commands
+	*** src/nucommand/trajectory.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -26,7 +26,7 @@
 #include "gui/gui.h"
 
 // Finalise current trajectory frame
-bool NuCommand::function_Finaliseframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FinaliseFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs == obj.m)
@@ -48,11 +48,12 @@ bool NuCommand::function_Finaliseframe(NuCommandNode *c, Bundle &obj, NuReturnVa
 	obj.rs->setFilename("frame");
 	obj.rs->enableUndoRedo();
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
+	rv.reset();
 	return TRUE;
 }
 
 // Skip to first frame ('firstframe')
-bool NuCommand::function_Firstframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_FirstFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -62,11 +63,12 @@ bool NuCommand::function_Firstframe(NuCommandNode *c, Bundle &obj, NuReturnValue
 	}
 	obj.m->seekFirstFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }
 
 // Skip to last frame ('lastframe')
-bool NuCommand::function_Lastframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LastFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -76,20 +78,22 @@ bool NuCommand::function_Lastframe(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	}
 	obj.m->seekLastFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-bool NuCommand::function_Loadtrajectory(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LoadTrajectory(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
-	if (f == NULL) return FALSE;
-	return (obj.m->initialiseTrajectory(c->argc(0),f) ? TRUE : FALSE);
+	Tree *filter = aten.probeFile(c->argc(0), Tree::TrajectoryImport);
+	if (filter == NULL) return FALSE;
+	rv.reset();
+	return (obj.m->initialiseTrajectory(c->argc(0),filter) ? TRUE : FALSE);
 }
 
 // Go to next frame ('nextframe')
-bool NuCommand::function_Nextframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_NextFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -99,11 +103,12 @@ bool NuCommand::function_Nextframe(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	}
 	obj.m->seekNextFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }
 
 // Go to previous frame ('prevframe')
-bool NuCommand::function_Prevframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_PrevFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -113,11 +118,12 @@ bool NuCommand::function_Prevframe(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	}
 	obj.m->seekPreviousFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }
 
 // Seek to specified frame ('seekframe <n>')
-bool NuCommand::function_Seekframe(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SeekFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -127,5 +133,6 @@ bool NuCommand::function_Seekframe(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	}
 	obj.m->seekFrame(c->argi(0));
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }

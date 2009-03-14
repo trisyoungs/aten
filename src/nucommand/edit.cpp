@@ -1,6 +1,6 @@
 /*
-	*** Edit functions
-	*** src/parser/edit.cpp
+	*** Edit Commands
+	*** src/nucommand/edit.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

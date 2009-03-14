@@ -1,6 +1,6 @@
 /*
-	*** Grid functions
-	*** src/parser/grid.cpp
+	*** Grid Commands
+	*** src/nucommand/grid.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -239,12 +239,13 @@ bool NuCommand::function_GridUseZ(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // Load grid ('loadgrid <filename>')
 bool NuCommand::function_LoadGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Filter *f = aten.probeFile(c->argc(0), Filter::GridImport);
-	if (f != NULL)
+	Tree *filter = aten.probeFile(c->argc(0), Tree::GridImport);
+	if (filter != NULL)
 	{
-		if (f->execute(c->argc(0))) return TRUE;
+		if (filter->executeRead(c->argc(0))) return TRUE;
 		else return FALSE;
-	} else return FALSE;
+	}
+	else return FALSE;
 }
 
 // Create new grid in the current model

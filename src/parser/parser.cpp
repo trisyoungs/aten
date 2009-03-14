@@ -282,8 +282,8 @@ int NuParser::lex()
 	
 			// If we get to here then its not a high-level keyword.
 			// Is it a function keyword?
-			for (n=0; n<NuCommand::nFunctions; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
-			if (n != NuCommand::nFunctions)
+			for (n=0; n<NuCommand::nCommands; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
+			if (n != NuCommand::nCommands)
 			{
 				msg.print(Messenger::Parse, "Found function '%s' (is %i).\n", token, n);
 				yylval.functionId = n;
@@ -352,11 +352,18 @@ int NuParser::lex()
 // Create a new tree in the forest
 void NuParser::createTree()
 {
+	if (forest_ == NULL)
+	{
+		printf("Internal Error: No Forest specified in Parser.\n");
+		return;
+	}
+	tree = forest_->createTree();
 }
 
 // Create a new function tree in the forest
 void NuParser::createFunction()
 {
+	exit(0);
 }
 
 /*
@@ -374,7 +381,8 @@ bool NuParser::generate(Forest *f, const char *s)
 		msg.exit("NuParser::generate[string]");
 		return FALSE;
 	}
-	f->clear();
+	forest_ = f;
+	forest_->clear();
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -387,10 +395,13 @@ bool NuParser::generate(Forest *f, const char *s)
 	{
 		msg.print("Error occurred here:\n");
 		printErrorInfo();
+		forest_->clear();
+		forest_ = NULL;
 		msg.exit("NuParser::generate[string]");
-		return FALSE;		
+		return FALSE;
 	}
 	else print();
+	forest_ = NULL;
 	msg.exit("NuParser::generate[string]");
 	return TRUE;
 }

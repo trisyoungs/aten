@@ -1,6 +1,6 @@
 /*
-	*** View functions
-	*** src/parser/view.cpp
+	*** View Commands
+	*** src/nucommand/view.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -27,13 +27,14 @@
 #include <ctime>
 
 // Get current view
-bool NuCommand::function_Getview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Mat4<double> rmat = obj.rs->rotationMatrix();
 	Vec3<double> camr = obj.rs->camera();
 	double camrot = obj.rs->cameraRotation();
 	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
+	rv.reset();
 	return TRUE;
 }
 
@@ -42,6 +43,7 @@ bool NuCommand::function_Orthographic(NuCommandNode *c, Bundle &obj, NuReturnVal
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
@@ -51,28 +53,31 @@ bool NuCommand::function_Perspective(NuCommandNode *c, Bundle &obj, NuReturnValu
 	prefs.setPerspective(TRUE);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // Reset view
-bool NuCommand::function_Resetview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ResetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	obj.rs->resetView();
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // Rotate view
-bool NuCommand::function_Rotateview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_RotateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotate(c->argd(0), c->argd(1));
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // Set current view
-bool NuCommand::function_Setview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Mat4<double> rmat;
@@ -88,11 +93,12 @@ bool NuCommand::function_Setview(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	obj.rs->setRotationMatrix(rmat);
 	// Get camera z-rotation (if present)
 	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
+	rv.reset();
 	return TRUE;
 }
 
 // Render speed test
-bool NuCommand::function_Speedtest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_SpeedTest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!gui.exists())
@@ -112,53 +118,59 @@ bool NuCommand::function_Speedtest(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	printf("%f    %f    %f \n", double(tstart), double(tfinish), double(CLOCKS_PER_SEC));
 	double nsec = (tfinish-tstart) / double(CLOCKS_PER_SEC);
 	msg.print("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
+	rv.reset();
 	return TRUE;
 }
 
 // Translate view
-bool NuCommand::function_Translateview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TranslateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->adjustCamera(c->arg3d(0),0.0);
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // View along specified axis
-bool NuCommand::function_Viewalong(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ViewAlong(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs->viewAlong(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // View along specified cell axis
-bool NuCommand::function_Viewalongcell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ViewAlongCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // Zoom view
-bool NuCommand::function_Zoomview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ZoomView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
 // 	obj.rs->adjustOrthoSize(-c->argd(0));   TGAY
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }
 
 // ZRotate view
-bool NuCommand::function_Zrotateview(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_ZRotateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->zRotate(-c->argd(0));
 	gui.mainView.postRedisplay();
+	rv.reset();
 	return TRUE;
 }

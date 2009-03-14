@@ -329,7 +329,7 @@ class Model
 	// DeSelect all atoms of the same element as the atom with the specified id
 	void deselectElement(int el, bool markonly = FALSE);
 	// Select all atoms which match the provided type
-	void selectType(int element, const char *typedesc, bool markonly = FALSE, bool deselect = FALSE);
+	int selectType(int element, const char *typedesc, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)

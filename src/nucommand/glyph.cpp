@@ -1,6 +1,6 @@
 /*
-	*** Glyph functions
-	*** src/parser/glyph.cpp
+	*** Glyph Commands
+	*** src/nucommand/glyph.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

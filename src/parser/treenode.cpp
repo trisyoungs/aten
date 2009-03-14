@@ -289,6 +289,19 @@ Vec3<int> TreeNode::arg3i(int i)
 	return result;
 }
 
+// Return (execute) argument triplet specified
+Vec3<GLfloat> TreeNode::arg3GLf(int i)
+{
+	if ((i < 0) || (i > (args_.nItems()-3)))
+	{
+		printf("Argument index %i is out of range for a triplet.\n", i);
+		return FALSE;
+	}
+	Vec3<GLfloat> result;
+	result.set(argGLf(i), argGLf(i+1), argGLf(i+2));
+	return result;
+}
+
 // Return the TreeNode corresponding to the argument, rather than executing it
 TreeNode *TreeNode::argNode(int i)
 {

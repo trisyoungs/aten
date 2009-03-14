@@ -1,6 +1,6 @@
 /*
 	*** Command Function Pointers
-	*** src/parse/functions.cpp
+	*** src/nucommand/functions.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
