@@ -226,7 +226,7 @@ class NuCommand
 		AngleDef,
 		BondDef,
 		ClearMap,
-		CreatEexpression,
+		CreateExpression,
 		DefaultFF,
 		Equivalent,
 		FFModel,
@@ -305,7 +305,7 @@ class NuCommand
 		// Measurements
 		Angle,
 		Angles,
-		ClearMEasurements,
+		ClearMeasurements,
 		Distance,
 		Distances,
 		ListMeasurements,

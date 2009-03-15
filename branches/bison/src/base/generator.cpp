@@ -21,7 +21,7 @@
 
 #include "base/generator.h"
 #include "base/dnchar.h"
-#include "base/parser.h"
+#include "base/lineparser.h"
 #include "base/sysfunc.h"
 #include <string.h>
 
@@ -896,12 +896,12 @@ bool Generator::set(int row, const char *s)
 bool Generator::set(const char *s)
 {
 	msg.enter("Generator::set");
-	static Parser lp;
+	static LineParser lp;
 	char part[32], sub[16];
 	int n, count;
 	char *c;
 	// Split line into three arguments
-	lp.getArgsDelim(s, Parser::Defaults);
+	lp.getArgsDelim(s, LineParser::Defaults);
 	if (lp.nArgs() != 3)
 	{
 		msg.print("Tried to set a symmetry Generator from text that didn't split into three arguments.\n");

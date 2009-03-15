@@ -20,7 +20,7 @@
 */
 
 #include "gui/selectelement.h"
-#include "base/parser.h"
+#include "base/lineparser.h"
 #include "base/sysfunc.h"
 
 // Constructor
@@ -130,7 +130,8 @@ void AtenSelectElement::finaliseUi()
 	QHBoxLayout *hbox = new QHBoxLayout(ui.CommonGroup);
 	//ui.CommonGroup->setLayout()
 	// Parse prefs value 
-	parser.getArgsDelim(prefs.commonElements(), Parser::Defaults);
+	LineParser parser;
+	parser.getArgsDelim(prefs.commonElements(), LineParser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		z = elements().find(parser.argc(n));

@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"
@@ -272,16 +271,17 @@ void Prefs::load(const char *filename)
 	msg.enter("Prefs::load");
 	int success;
 	// Open the file
-	ifstream prefsfile(filename,ios::in);
+/*	ifstream prefsfile(filename,ios::in);
 	if (!prefsfile.good())
 	{
 		printf("Couldn't open preferences file in '%s'\n",filename);
 		prefsfile.close();
 		msg.exit("Prefs::load");
 		return;
-	}
+	}*/
 	// Create script structure and initialise
-	CommandList prefcmds;
+	// TGAY - Simplify prefs file somehow - options available through prefs/elements accessors is easy what about loadff etc?
+/*	CommandList prefcmds;
 	prefcmds.clear();
 	while (!prefsfile.eof())
 	{
@@ -303,7 +303,7 @@ void Prefs::load(const char *filename)
 		msg.exit("prefs::load");
 		return;
 	}
-	prefcmds.execute();
+	prefcmds.execute();*/
 	msg.exit("prefs::load");
 }
 

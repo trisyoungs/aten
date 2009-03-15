@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "command/filter.h"
+#include "parser/tree.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"

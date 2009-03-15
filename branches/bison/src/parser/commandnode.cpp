@@ -299,3 +299,48 @@ bool NuCommandNode::initialise()
 	return FALSE;
 }
 
+// Create, run, and free a single command with simple arguments
+static bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
+{
+	msg.enter("NuCommandNode::run");
+	// Local constants given as arguments
+	List<TreeNode> constantArgs_;
+
+	// Set node character
+	function_ = func;
+	parent_ = NULL;
+
+	// Set arguments from supplied list
+	const char *c;
+	va_list vars;
+	va_start(vars,args);
+	Variable *v = NULL;
+	for (c = arglist; *c != '\0'; c = c + 1)
+	{
+		switch (*c)
+		{
+			case ('i'):
+				NuVariable *var = new NuIntegerVariable(atoi(va_arg(vars, int)), TRUE);
+				constantArgs_.own(var);
+				break;
+			case ('d'):
+				NuRealVariable *var = new NuRealVariable(atof(va_arg(vars, double)), TRUE);
+				constantArgs_.own(var);
+				break;
+			case ('c'):
+			case ('s'):
+				NuCharacterVariable *var = new NuCharacterVariable(va_arg(vars, const char*), TRUE);
+				constantArgs_.own(var);
+				break;
+			default:
+				printf("Invalid argument specifier '%c' in NuCommandNode::run.\n", *c);
+				v = NULL;
+				break;
+		}
+		cmd_.addArgument(v);
+	}
+	va_end(vars);
+	// Now, run the command...
+	msg.enter("NuCommandNode::run");
+	return result;
+}

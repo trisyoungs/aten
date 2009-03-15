@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
+#include "parser/commandnode.h"
 
 /*
 // Model Menu Actions
@@ -60,19 +61,13 @@ void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 
 void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
-	m->beginUndoState("Fold all atoms");
-	m->foldAllAtoms();
-	m->endUndoState();
+	NuCommandNode::run(NuCommand::Fold, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
-	m->beginUndoState("Fold all molecules");
-	m->foldAllMolecules();
-	m->endUndoState();
+	NuCommandNode::run(NuCommand::FoldMolecules, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -98,10 +93,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
-	// Make all atoms in model visible
-	Model *m = aten.currentModel();
-	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
-	m->changeLog.add(Log::Visual);
+	NuCommandNode::run(NuCommand::ShowAll, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -112,9 +104,7 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		m->beginUndoState("Rename Model");
-		m->setName(qPrintable(text));
-		m->endUndoState();
+		NuCommandNode::run(NuCommand::SetName, "c", qPrintable(text));
 		refreshModelTabs();
 		gui.updateWindowTitle();
 	}

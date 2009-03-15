@@ -24,7 +24,7 @@
 #include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
@@ -113,8 +113,7 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_ADDHYDROGEN,"");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::AddHydrogen, "");
 	gui.modelChanged();
 }
 
