@@ -27,7 +27,7 @@
 #include "gui/gui.h"
 #include "gui/minimiser.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Minimisation algorithms
 enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
@@ -75,13 +75,12 @@ void AtenMinimiser::doMinimisation()
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			cmdlinetol.pokeArguments("d", pow(10.0,ui.SDLineToleranceSpin->value()));
-			cmdlinetol.execute();
-			cmdmin.setFunction(Command::CA_SDMINIMISE);
-			cmdmin.pokeArguments("i", maxcycles);
-			cmdmin.execute();
+			NuCommandNode::run(NuCommand::LineTol, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			NuCommandNode::run(NuCommand::SDMinimise, "i", maxcycles);
 			break;
 		case (MM_CONJUGATE):
+			NuCommandNode::run(NuCommand::LineTol, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			NuCommandNode::run(NuCommand::SDMinimise, "i", maxcycles);
 			cmdmin.setFunction(Command::CA_CGMINIMISE);
 			cmdmin.pokeArguments("i", maxcycles);
 			cmdmin.execute();

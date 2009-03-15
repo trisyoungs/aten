@@ -23,7 +23,6 @@
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
-#include "base/parser.h"
 
 // Local variables
 double escale14 = 0.5;
@@ -36,14 +35,8 @@ bool Forcefield::load(const char *filename)
 	bool done, okay;
 	int success, n;
 	Prefs::EnergyUnit ffunit;
-	ifstream fffile(filename,ios::in);
-	if (!fffile.good())
-	{
-		fffile.close();
-		msg.print("Failed to open forcefield file.\n");
-		msg.exit("Forcefield::load");
-		return FALSE;
-	}
+	// Open file for reading
+	ffparser.openFile(filename);
 	// Store the filename of the forcefield
 	filename_.set(filename);
 	// Now follows blocks of keywords
@@ -52,25 +45,25 @@ bool Forcefield::load(const char *filename)
 	do
 	{
 		okay = FALSE;
-		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
 		if (success == 1)
 		{
 			msg.print("Error reading FF directive.\n");
-			parser.close();
+			ffparser.closeFile();
 			msg.exit("Forcefield::load");
 			return FALSE;
 		}
 		if (success == -1) break;
 		// Call subroutines to read in data based on keywords
-		switch (forcefieldCommand(parser.argc(0)))
+		switch (forcefieldCommand(ffparser.argc(0)))
 		{
 			case (Forcefield::NameCommand):
-				name_.set(parser.argc(1));
+				name_.set(ffparser.argc(1));
 				msg.print("\t: '%s'\n",name_.get());
 				okay = TRUE;
 				break;
 			case (Forcefield::UnitsCommand):
-				ffunit = Prefs::energyUnit(parser.argc(1));
+				ffunit = Prefs::energyUnit(ffparser.argc(1));
 				if (ffunit != Prefs::nEnergyUnits)
 				{
 					energyUnit_ = ffunit;
@@ -80,63 +73,63 @@ bool Forcefield::load(const char *filename)
 				else okay = FALSE;
 				break;
 			case (Forcefield::RulesCommand):
-				rules_ = Rules::forcefieldRules(parser.argc(1));
+				rules_ = Rules::forcefieldRules(ffparser.argc(1));
 				msg.print("\t: Rule-set to use is '%s'\n", Rules::forcefieldRules(rules_));
 				okay = TRUE;
 				break;
 			case (Forcefield::TypesCommand):
-				okay = readTypes(fffile);
+				okay = readTypes();
 				break;
 			case (Forcefield::GeneratorCommand):
-				okay = readGenerator(fffile);
+				okay = readGenerator();
 				break;
 			case (Forcefield::EquivalentsCommand):
-				okay = readEquivalents(fffile);
+				okay = readEquivalents();
 				break;
 			case (Forcefield::ConvertCommand):
 				// Check that generator data has been initialised
-				for (n=1; n<parser.nArgs(); n++) energyGenerators_[parser.argi(n)-1] = TRUE;
+				for (n=1; n<ffparser.nArgs(); n++) energyGenerators_[ffparser.argi(n)-1] = TRUE;
 				okay = TRUE;
 				break;
 			case (Forcefield::VdwCommand):
 				msg.print("The 'vdw' keyword is deprecated - use 'inter' instead.\n");
 			case (Forcefield::InterCommand):
-				okay = readInter(fffile);
+				okay = readInter();
 				break;
 			case (Forcefield::BondsCommand):
-				okay = readBonds(fffile);
+				okay = readBonds();
 				break;
 			case (Forcefield::AnglesCommand):
-				okay = readAngles(fffile);
+				okay = readAngles();
 				break;
 			case (Forcefield::TorsionsCommand):
-				okay = readTorsions(fffile);
+				okay = readTorsions();
 				break;
 			case (Forcefield::VScaleCommand):
-				vscale14 = parser.argd(1);	// 1-4 VDW scaling
+				vscale14 = ffparser.argd(1);	// 1-4 VDW scaling
 				msg.print("\t: VDW 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
 				break;
 			case (Forcefield::EScaleCommand):
-				escale14 = parser.argd(1);	// 1-4 electrostatic scaling
+				escale14 = ffparser.argd(1);	// 1-4 electrostatic scaling
 				msg.print("\t: Electrostatic 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
 				break;
 			default:
-				msg.print("Unrecognised forcefield keyword '%s'\n.",parser.argc(0));
+				msg.print("Unrecognised forcefield keyword '%s'\n.",ffparser.argc(0));
 				break;
 		}
 		// Check on 'okay'
 		if (!okay)
 		{
 			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
-			msg.print("Error at line %i of file.\n", parser.lastLine());
+			msg.print("Error at line %i of file.\n", ffparser.lastLine());
 			msg.exit("Forcefield::load");
-			parser.close();
+			ffparser.closeFile();
 			return FALSE;
 		}
-	} while ( !fffile.eof() );
-	parser.close();
+	} while (okay);
+	ffparser.closeFile();
 	// Check that some forcefield types were defined...
 	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
 	// Check that all generator data was provided...
@@ -152,7 +145,7 @@ bool Forcefield::load(const char *filename)
 }
 
 // Read in forcefield atom types.
-bool Forcefield::readTypes(ifstream &fffile)
+bool Forcefield::readTypes()
 {
 	msg.enter("Forcefield::readTypes");
 	int success, newffid, nadded = 0;
@@ -162,7 +155,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 	// Format of lines is 'ffid typename element description [text]'
 	do
 	{
-		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error while reading atom type description %i.\n", types_.nItems());
@@ -170,9 +163,9 @@ bool Forcefield::readTypes(ifstream &fffile)
 			msg.exit("Forcefield::readTypes");
 			return FALSE;
 		}
-		else if (strcmp(parser.argc(0),"end") == 0) break;
+		else if (strcmp(ffparser.argc(0),"end") == 0) break;
 		// Search for this ID to make sure it hasn't already been used
-		newffid = parser.argi(0);
+		newffid = ffparser.argi(0);
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
@@ -184,23 +177,23 @@ bool Forcefield::readTypes(ifstream &fffile)
 		nadded ++;
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
-		ffa->setName(parser.argc(1));
-		ffa->setEquivalent(parser.argc(1));
-		ffa->atomtype()->setCharacterElement(elements().findAlpha(parser.argc(2)));
-		if (!ffa->setAtomtype(parser.argc(3), this, ffa))
+		ffa->setName(ffparser.argc(1));
+		ffa->setEquivalent(ffparser.argc(1));
+		ffa->atomtype()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
+		if (!ffa->setAtomtype(ffparser.argc(3), this, ffa))
 		{
 			msg.exit("Forcefield::readTypes");
 			return FALSE;
 		}
-		ffa->setDescription(parser.argc(4));
+		ffa->setDescription(ffparser.argc(4));
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", parser.line());
+	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.line());
 	else msg.print("\t: Read in %i type descriptions\n", nadded);
 	msg.exit("Forcefield::readTypes");
 	return TRUE;
 }
 
-bool Forcefield::readGenerator(ifstream &fffile)
+bool Forcefield::readGenerator()
 {
 	// Read in generator data for atom types in rule-based forcefields
 	// We expect there to be the same number of sets of data as there are types...
@@ -212,7 +205,7 @@ bool Forcefield::readGenerator(ifstream &fffile)
 	count = 0;
 	do
 	{
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error while reading generator data for atom %i.\n",count+1);
@@ -220,21 +213,21 @@ bool Forcefield::readGenerator(ifstream &fffile)
 			msg.exit("Forcefield::readGenerator");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Convert type name to internal index and read in generator data...
 			// Format of lines is : ffid  typename data1  data2 ...
 			// Typename is unused, but is present in the file to aid readability
-			ffa = findType(parser.argi(0));
+			ffa = findType(ffparser.argi(0));
 			if (ffa == NULL)
 			{
-				msg.print("Unrecognised forcefield atom id in generator list: '%s'\n",parser.argc(0));
+				msg.print("Unrecognised forcefield atom id in generator list: '%s'\n",ffparser.argc(0));
 				msg.exit("Forcefield::readGenerator");
 				return FALSE;
 			}
 			ffa->initialiseGenerator();
-			for (n=0; n<MAXFFGENDATA; n++) ffa->setGenerator(n,parser.argd(n+2));
+			for (n=0; n<MAXFFGENDATA; n++) ffa->setGenerator(n,ffparser.argd(n+2));
 			count ++;
 		}
 	} while (!done);
@@ -249,7 +242,7 @@ bool Forcefield::readGenerator(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readEquivalents(ifstream &fffile)
+bool Forcefield::readEquivalents()
 {
 	/* Read in equivalent atom type names.
 	By default, the 'equiv' name is set to the same as the atomtype name.
@@ -263,7 +256,7 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 	count = 0;
 	do
 	{
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error while reading equivalents data for atom %i.\n",count+1);
@@ -271,15 +264,15 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 			msg.exit("Forcefield::readEquivalents");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Format of lines is : equivname_  fftype1  fftype2  ... fftypeN
 			// Search atom types for typenames given in the list
-			for (argpos=1; argpos<parser.nArgs(); argpos++)
+			for (argpos=1; argpos<ffparser.nArgs(); argpos++)
 			{
 				for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
-					if (matchType(ffa->name(),parser.argc(argpos)) < 10) ffa->setEquivalent(parser.argc(0));
+					if (matchType(ffa->name(),ffparser.argc(argpos)) < 10) ffa->setEquivalent(ffparser.argc(0));
 			}
 			count ++;
 		}
@@ -289,18 +282,18 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readInter(ifstream &fffile)
+bool Forcefield::readInter()
 {
 	// Format of lines is: 'ffid  fftype  charge  data1  data2  ... dataN'
 	msg.enter("Forcefield::readInter");
 	int success, count, n;
 	ForcefieldAtom *ffa;
 	// Get functional form of vdw
-	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(parser.argc(1));
+	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(ffparser.argc(1));
 	if (vdwstyle == VdwFunctions::nVdwFunctions)
 	{
 		vdwstyle = VdwFunctions::None;
-		msg.print("VDW functional form not recognised - '%s'\n",parser.argc(1));
+		msg.print("VDW functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -308,7 +301,7 @@ bool Forcefield::readInter(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'ffid  fftype   charge  data1  data2  ...  dataN'
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error reading VDW data for atom %i.\n",count+1);
@@ -316,20 +309,20 @@ bool Forcefield::readInter(ifstream &fffile)
 			msg.exit("Forcefield::readInter");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Need not specify the data in the same order as for the type data above, so search for the fftype read in...
-			ffa = findType(parser.argi(0));
+			ffa = findType(ffparser.argi(0));
 			if (ffa == NULL)
 			{
-				msg.print("Unrecognised forcefield atom id in VDW list: '%s'\n", parser.argc(0));
+				msg.print("Unrecognised forcefield atom id in VDW list: '%s'\n", ffparser.argc(0));
 				msg.exit("Forcefield::readInter");
 				return FALSE;
 			}
-			ffa->setCharge(parser.argd(2));
+			ffa->setCharge(ffparser.argd(2));
 			ffa->setVdwForm(vdwstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) ffa->setParameter(n, parser.argd(n+3));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+3)) ffa->setParameter(n, ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
 			count ++;
 		}
@@ -339,7 +332,7 @@ bool Forcefield::readInter(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readBonds(ifstream &fffile)
+bool Forcefield::readBonds()
 {
 	// Read in bond specifications
 	msg.enter("Forcefield::readBonds");
@@ -347,18 +340,18 @@ bool Forcefield::readBonds(ifstream &fffile)
 	bool done = FALSE;
 	int count, success, n;
 	// Get functional form of bond potential
-	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(parser.argc(1));
+	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(ffparser.argc(1));
 	if (bondstyle == BondFunctions::nBondFunctions)
 	{
 		bondstyle = BondFunctions::None;
-		msg.print("Bond stretch functional form not recognised - '%s'\n",parser.argc(1));
+		msg.print("Bond stretch functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	count = 0;
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2   data1  data2  ...  dataN'
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error reading bond data %i.\n",count+1);
@@ -366,23 +359,23 @@ bool Forcefield::readBonds(ifstream &fffile)
 			msg.exit("Forcefield::readBonds");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '?', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<2; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
-					msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", parser.argc(n));
+				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
+					msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", ffparser.argc(n));
 			}
 			// Create new ff_bond structure
 			newffbond = bonds_.add();
 			newffbond->setType(ForcefieldBound::BondInteraction);
-			newffbond->setTypeName(0,parser.argc(0));
-			newffbond->setTypeName(1,parser.argc(1));
+			newffbond->setTypeName(0,ffparser.argc(0));
+			newffbond->setTypeName(1,ffparser.argc(1));
 			newffbond->setBondStyle(bondstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+2)) newffbond->setParameter(n, parser.argd(n+2));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
 			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
 		}
@@ -392,18 +385,18 @@ bool Forcefield::readBonds(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readAngles(ifstream &fffile)
+bool Forcefield::readAngles()
 {
 	// Read in angle specifications
 	msg.enter("Forcefield::readAngles");
 	ForcefieldBound *newffangle;
 	int count, success, n;
 	// Grab functional form of angle potential
-	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(parser.argc(1));
+	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(ffparser.argc(1));
 	if (anglestyle == AngleFunctions::nAngleFunctions)
 	{
 		anglestyle = AngleFunctions::None;
-		msg.print("Angle bend functional form not recognised - '%s'\n",parser.argc(1));
+		msg.print("Angle bend functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -411,7 +404,7 @@ bool Forcefield::readAngles(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error reading angle data %i.\n",count+1);
@@ -419,24 +412,24 @@ bool Forcefield::readAngles(ifstream &fffile)
 			msg.exit("Forcefield::readAngles");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<3; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
-					msg.print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n",parser.argc(n));
+				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
+					msg.print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newffangle = angles_.add();
 			newffangle->setType(ForcefieldBound::AngleInteraction);
-			newffangle->setTypeName(0, parser.argc(0));
-			newffangle->setTypeName(1, parser.argc(1));
-			newffangle->setTypeName(2, parser.argc(2));
+			newffangle->setTypeName(0, ffparser.argc(0));
+			newffangle->setTypeName(1, ffparser.argc(1));
+			newffangle->setTypeName(2, ffparser.argc(2));
 			newffangle->setAngleStyle(anglestyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) newffangle->setParameter(n,parser.argd(n+3));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
 		}
@@ -446,18 +439,18 @@ bool Forcefield::readAngles(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readTorsions(ifstream &fffile)
+bool Forcefield::readTorsions()
 {
 	// Read in torsion data
 	msg.enter("Forcefield::readTorsions");
 	ForcefieldBound *newfftorsion;
 	int count, success, n;
 	// Get functional form of torsion potential
-	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(parser.argc(1));
+	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(ffparser.argc(1));
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
 		torsionstyle = TorsionFunctions::None;
-		msg.print("Torsion twist functional form not recognised - '%s'\n",parser.argc(1));
+		msg.print("Torsion twist functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
 	}
 	count = 0;
@@ -465,7 +458,7 @@ bool Forcefield::readTorsions(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
-		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg.print("File error reading torsion data %i.\n",count+1);
@@ -473,27 +466,27 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			msg.exit("Forcefield::readTorsions");
 			return FALSE;
 		}
-		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<4; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
-					msg.print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n",parser.argc(n));
+				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
+					msg.print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
 			}
 			// Create new ff_angle structure
 			newfftorsion = torsions_.add();
 			newfftorsion->setType(ForcefieldBound::TorsionInteraction);
-			newfftorsion->setTypeName(0,parser.argc(0));
-			newfftorsion->setTypeName(1,parser.argc(1));
-			newfftorsion->setTypeName(2,parser.argc(2));
-			newfftorsion->setTypeName(3,parser.argc(3));
+			newfftorsion->setTypeName(0,ffparser.argc(0));
+			newfftorsion->setTypeName(1,ffparser.argc(1));
+			newfftorsion->setTypeName(2,ffparser.argc(2));
+			newfftorsion->setTypeName(3,ffparser.argc(3));
 			newfftorsion->setTorsionStyle(torsionstyle);
 			newfftorsion->setParameter(TF_ESCALE, escale14);
 			newfftorsion->setParameter(TF_VSCALE, vscale14);
-			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!parser.isBlank(n+4)) newfftorsion->setParameter(n, parser.argd(n+4));
+			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!ffparser.isBlank(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}

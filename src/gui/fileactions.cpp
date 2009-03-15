@@ -28,7 +28,7 @@
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 #include "base/sysfunc.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)
@@ -232,7 +232,6 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SAVEEXPRESSION, "cc", "none", "none");
 	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
@@ -243,12 +242,8 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
 		for (filter = aten.filters(Tree::ExpressionExport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
-		if (filter == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
-		else
-		{
-			cmd.pokeArguments("cc", filter->nickname(), qPrintable(filename));
-			cmd.execute();
-		}
+		if (filter == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
+		else NuCommandNode::run(NuCommand::SaveExpression, "cc", filter->nickname(), qPrintable(filename));
 	}
 }
 

@@ -1,6 +1,6 @@
 /*
-	*** File parsing routines
-	*** src/base/parser.cpp
+	*** Line Parsing Routines
+	*** src/base/lineparser.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,183 +19,191 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/parser.h"
+#include "base/lineparser.h"
 #include "base/sysfunc.h"
 #include "base/mathfunc.h"
 #include "base/constants.h"
 #include "base/messenger.h"
 #include <string.h>
 
-// Singleton
-Parser parser;
-
 // Parse options
-const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
-Parser::ParseOption Parser::parseOption(const char *s)
+const char *LineParserOptionKeywords[LineParser::nLineParserOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
+LineParser::LineParserOption LineParser::lineParserOption(const char *s)
 {
-	return (Parser::ParseOption) (1 << enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s));
+	return (LineParser::LineParserOption) (1 << enumSearch("line parser option", LineParser::nLineParserOptions, LineParserOptionKeywords, s));
 }
 
 // Constructor
-Parser::Parser()
+LineParser::LineParser()
 {
 	// Private variables
 	endOfLine_ = FALSE;
-	nArgs_ = 0;
-	line_[0] = '\0';
 	lineLength_ = 0;
 	linePos_ = 0;
-	optionMask_ = Parser::Defaults;
-	sourceFile_ = NULL;
+	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
 }
 
-// Determine form of argument (internal argument id)
-Parser::ArgumentForm Parser::argumentForm(int argno, bool implicitdollar)
-{
-	// If the argument was quoted with single-quotes then we assume it is an expression
-	// Similarly, if it was double-quoted we assume it is a character constant
-	if (quoted_[argno] == 34) return Parser::ConstantForm;
-	else if (quoted_[argno] == 39) return Parser::ExpressionForm;
-	else return argumentForm(arguments_[argno].get(), implicitdollar);
-}
-
-// Determine form of argument (from character string, no quoting recognition)
-Parser::ArgumentForm Parser::argumentForm(const char *s, bool implicitdollar)
-{
-	// At least one full stop surrounded by a letter on the right and a letter or a square bracket on the left indicates a variable path
-	int noperators, n, nvars, nbrackets, nsqbrackets;
-	noperators = countChars(s, "-+*/^%", 1);
-	nbrackets = countChars(s, "()");
-	nsqbrackets = countChars(s, "[]");
-	nvars = countChars(s, "$");
-	if (implicitdollar) nvars ++;
-	bool hasneg = s[0] == '-';
-	// If there are operators or round brackets it can only be an expression
-	if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
-	else if ((hasneg) && (nvars > 0)) return Parser::ExpressionForm;
-	else if (nsqbrackets > 0) return Parser::VariablePathForm;
-	// Full stops are either decimal points, member delimiters in paths, or part of a filename...
-	const char *c = strchr(s, '.');
-	if (c != '\0')
-	{
-		const char *r = c + 1;
-		const char *l = c - 1;
-		//printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
-		if ((!isdigit(*l)) && (!isdigit(*r)))
-		{
-			// Neither character surrounding the '.' is a digit, so...
-			if (nvars > 0) return Parser::VariablePathForm;
-			else return Parser::ConstantForm;
-		}
-	}
-	if (nvars == 1) return Parser::VariableForm;
-	else return Parser::ConstantForm;
-}
-
 // Returns number of arguments grabbed from last parse
-int Parser::nArgs()
+int LineParser::nArgs()
 {
-	return nArgs_;
+	return arguments_.nItems();
 }
 
 // Returns the specified argument as a character string
-const char *Parser::argc(int i)
+const char *LineParser::argc(int i)
 {
-	return arguments_[i].get();
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n");
+		return "NULL";
+	}
+	return arguments_[i]->get();
 }
 
 // Returns the specified argument as an integer
-int Parser::argi(int i)
+int LineParser::argi(int i)
 {
-	return arguments_[i].asInteger();
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0...\n");
+		return 0;
+	}
+	return arguments_[i]->asInteger();
 }
 
 // Returns the specified argument as a double
-double Parser::argd(int i)
+double LineParser::argd(int i)
 {
-	return arguments_[i].asDouble();
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0.0...\n");
+		return 0.0;
+	}
+	return arguments_[i]->asDouble();
 }
 
 // Returns the specified argument as a bool
-bool Parser::argb(int i)
+bool LineParser::argb(int i)
 {
-	return arguments_[i].asBool();
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning FALSE...\n");
+		return FALSE;
+	}
+	return arguments_[i]->asBool();
 }
 
 // Returns the specified argument as a float
-float Parser::argf(int i)
+float LineParser::argf(int i)
 {
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0.0f...\n");
+		return 0.0f;
+	}
 	return (float) argd(i);
 }
 
 // Returns whether the specified argument is empty
-bool Parser::isBlank(int i)
+bool LineParser::isBlank(int i)
 {
-	return (arguments_[i][0] == '\0' ? TRUE : FALSE);
-}
-
-// Returns whether the specified argument was quoted
-bool Parser::wasQuoted(int i)
-{
-	return (quoted_[i] == 0 ? FALSE : TRUE);
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n");
+		return FALSE;
+	}
+	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);
 }
 
 // Set argument manually
-void Parser::setArg(int i, const char *s)
-{
-	arguments_[i] = s;
-}
+//void LineParser::setArg(int i, const char *s)
+//{
+//	arguments_[i] = s;
+//}
 
 // Return pointer to current line
-const char *Parser::line()
+const char *LineParser::line()
 {
 	return line_;
 }
 
 // Return integer line number of last read line
-int Parser::lastLine()
+int LineParser::lastLine()
 {
 	return lastLine_;
+}
+
+// Open file for parsing
+bool LineParser::openFile(const char *filename)
+{
+	msg.enter("LineParser::openFile");
+	// Check existing input file
+	if (sourceFile_.is_open())
+	{
+		printf("Warning - LineParser already appears to have an open file...\n");
+		sourceFile_.close();
+	}
+	// Open new file
+	sourceFile_.open(filename, ios::in);
+	if (!sourceFile_.good())
+	{
+		sourceFile_.close();
+		msg.print("Failed to open file '%s'.\n", filename);
+		msg.exit("LineParser::openFile");
+		return FALSE;
+	}
+	// Reset variables
+	lastLine_ = 0;
+	msg.exit("LineParser::openFile");
+	return TRUE;
+}
+
+// Close file 
+void LineParser::closeFile()
+{
+	if (sourceFile_.is_open())
+	{
+		sourceFile_.close();
+		lastLine_ = 0;
+	}
+	else printf("Warning: LineParser tried to close file again.\n");
 }
 
 /*
 // String parsing methods
 */
 
-// Read single line from file
-int Parser::readLine(ifstream *xfile)
+// Read single line from internal file source
+int LineParser::readLine()
 {
-	msg.enter("Parser::readLine");
+	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
-	// Check previous pointer - if different from this one reset lastLine_.
-	if (sourceFile_ != xfile) lastLine_ = 0;
-	sourceFile_ = xfile;
-	sourceFile_->getline(line_, MAXLINELENGTH-1);
-	if (sourceFile_->eof())
+	sourceFile_.getline(line_, MAXLINELENGTH-1);
+	if (sourceFile_.eof())
 	{
-		sourceFile_->close();
-		msg.exit("Parser::readLine");
+		closeFile();
+		msg.exit("LineParser::readLine");
 		return -1;
 	}
-	if (sourceFile_->fail())
+	if (sourceFile_.fail())
 	{
-		sourceFile_->close();
-		msg.exit("Parser::readLine");
+		closeFile();
+		msg.exit("LineParser::readLine");
 		return 1;
 	}
 	lineLength_ = strlen(line_);
 	linePos_ = 0;
 	lastLine_ ++;
 	//printf("Line = [%s], length = %i\n",line_,lineLength_);
-	msg.exit("Parser::readLine");
+	msg.exit("LineParser::readLine");
 	return 0;
 }
 
-bool Parser::getNextArg(int destarg)
+bool LineParser::getNextArg(Dnchar *destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
-	msg.enter("Parser::getNextArg");
+	msg.enter("LineParser::getNextArg");
 	static int arglen, readresult;
 	static bool done, hadquotes, expression, failed;
 	static char c, quotechar, d;
@@ -215,7 +223,7 @@ bool Parser::getNextArg(int destarg)
 			// If we're inside quotes, keep backslash *and* next character
 			case (92):
 				d = line_[linePos_ + 1];
-				if ((optionMask_&Parser::NoEscapes) || (quotechar != '\0'))
+				if ((optionMask_&LineParser::NoEscapes) || (quotechar != '\0'))
 				{
 					tempArg_[arglen] = c;
 					arglen ++;
@@ -234,7 +242,7 @@ bool Parser::getNextArg(int destarg)
 					else
 					{
 						// Read a new line
-						readresult = readLine(sourceFile_);
+						readresult = readLine();
 						if (readresult != 0)
 						{
 							failed = TRUE;
@@ -268,18 +276,16 @@ bool Parser::getNextArg(int destarg)
 				else if (arglen != 0) done = TRUE;
 				break;
 			// Quote marks
-			// If Parser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
+			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
 				if (expression) break;
-				if (!(optionMask_&Parser::UseQuotes)) break;
+				if (!(optionMask_&LineParser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
 				{
 					quotechar = '\0';
 					hadquotes = TRUE;
-					// If double-quotes, set the quotes flag
-					if (destarg != -1) quoted_[destarg] = c;
 					done = TRUE;
 				}
 				else
@@ -291,7 +297,7 @@ bool Parser::getNextArg(int destarg)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if ((optionMask_&Parser::StripBrackets) && (!expression)) break;
+				if ((optionMask_&LineParser::StripBrackets) && (!expression)) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -314,25 +320,22 @@ bool Parser::getNextArg(int destarg)
 	tempArg_[arglen] = '\0';
 	if (linePos_ == lineLength_) endOfLine_ = TRUE;
 	// Store the result in the desired destination
-	if (destarg != -1) arguments_[destarg] = tempArg_;
-	// Strip off the characters up to position 'n', but not including position 'n' itself
-	//line_.eraseStart(n+1);
-	//printf("Rest of line is now [%s]\n",line.get());
-	msg.exit("Parser::getNextArg");
+	if (destarg != NULL) *destarg = tempArg_;
+	msg.exit("LineParser::getNextArg");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
 
 // Rip next n characters
-bool Parser::getNextN(int length)
+bool LineParser::getNextN(int length)
 {
 	// Put the next 'length' characters from line_ into temparg.
-	msg.enter("Parser::getNextN");
+	msg.enter("LineParser::getNextN");
 	int arglen = 0;
 	char c;
 	if (lineLength_ == 0)
 	{
-		msg.exit("Parser::getNextN");
+		msg.exit("LineParser::getNextN");
 		return FALSE;
 	}
 	int charsleft = lineLength_ - linePos_;
@@ -346,7 +349,7 @@ bool Parser::getNextN(int length)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&Parser::StripBrackets) break;
+				if (optionMask_&LineParser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -363,31 +366,31 @@ bool Parser::getNextN(int length)
 	tempArg_[arglen] = '\0';
 	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);
-	msg.exit("Parser::getNextN");
+	msg.exit("LineParser::getNextN");
 	return TRUE;
 }
 
-// Get all arguments (delimited) from Parser::line_
-void Parser::getAllArgsDelim()
+// Get all arguments (delimited) from LineParser::line_
+void LineParser::getAllArgsDelim()
 {
 	// Parse the string in 'line_' into arguments in 'args'
-	msg.enter("Parser::getAllArgsDelim");
-	nArgs_ = 0; 
-	for (int n=0; n<MAXARGS; n++)
-	{
-		arguments_[n].clear();
-		quoted_[n] = 0;
-	}
+	msg.enter("LineParser::getAllArgsDelim");
+	arguments_.clear();
 	endOfLine_ = FALSE;
+	Dnchar *arg;
 	while (!endOfLine_)
 	{
-		if (getNextArg(nArgs_))
+		// Create new, empty dnchar
+		arg = new Dnchar;
+		if (getNextArg(arg))
 		{
-			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", nArgs_, argc(nArgs_));
-			nArgs_ ++;
+			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
+			// Add this char to the list
+			arguments_.own(arg);
 		}
+		else delete arg;
 	}
-	msg.exit("Parser::getAllArgsDelim");
+	msg.exit("LineParser::getAllArgsDelim");
 }
 
 /*
@@ -395,11 +398,11 @@ void Parser::getAllArgsDelim()
 */
 
 // Parse delimited (from file)
-int Parser::getArgsDelim(ifstream *xfile, int options)
+int LineParser::getArgsDelim(int options)
 {
 	// Standard file parse routine.
 	// Splits the line from the file into delimited arguments via the 'parseline' function
-	msg.enter("Parser::getArgsDelim[ifstream]");
+	msg.enter("LineParser::getArgsDelim[ifstream]");
 	bool done = FALSE;
 	int result;
 	// Lines beginning with '#' are ignored as comments
@@ -409,26 +412,26 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 	do
 	{
 		// Read line from file and parse it
-		result = readLine(xfile);
+		result = readLine();
 		if (result != 0)
 		{
-			msg.exit("Parser::getArgsDelim[ifstream]");
+			msg.exit("LineParser::getArgsDelim[ifstream]");
 			return result;
 		}
 		// Assume that we will finish after parsing the line we just read in
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsDelim();
-		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
+		if ((optionMask_&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
 	} while (!done);
-	msg.exit("Parser::getArgsDelim[ifstream]");
+	msg.exit("LineParser::getArgsDelim[ifstream]");
 	return 0;
 }
 
 // Get next argument (delimited) from file stream
-const char *Parser::getArgDelim(ifstream *xfile)
+const char *LineParser::getArgDelim()
 {
-	msg.enter("Parser::getArgDelim[ifstream]");
+	msg.enter("LineParser::getArgDelim");
 	static char result[512];
 	static int length;
 	static bool done;
@@ -436,13 +439,13 @@ const char *Parser::getArgDelim(ifstream *xfile)
 	result[0] = '\0';
 	length = 0;
 	done = FALSE;
-	*xfile >> result;
-	msg.exit("Parser::getArgDelim[ifstream]");
+	sourceFile_ >> result;
+	msg.exit("LineParser::getArgDelim");
 	return result;
 }
 
 // Parse all arguments (delimited) from string
-void Parser::getArgsDelim(const char *s, int options)
+void LineParser::getArgsDelim(const char *s, int options)
 {
 	strcpy(line_,s);
 	lineLength_ = strlen(line_);
@@ -451,102 +454,34 @@ void Parser::getArgsDelim(const char *s, int options)
 	getAllArgsDelim();
 }
 
-// Parse string into lines
-void Parser::getLinesDelim(const char *s)
-{
-	static int n, arglen;
-	static bool done;
-	static char c, quotechar, arg[MAXARGLENGTH];
-	done = FALSE;
-	quotechar = '\0';
-	endOfLine_ = FALSE;
-	nArgs_ = 0;
-	arglen = 0;
-	for (n=0; s[n] != '\0'; n++)
-	{
-		c = s[n];
-		switch (c)
-		{
-			// End of line delimiters
-			case (10):	// Line feed (\n)
-			case (13):	// Carriage Return
-			case (';'):	// Semicolon
-				// Store the current argument and reset counters
-				arg[arglen] = '\0';
-				arguments_[nArgs_] = arg;
-				nArgs_++;
-				arglen = 0;
-				break;
-			// Otherwise, add the character to the string
-			default:
-				arg[arglen] = c;
-				arglen ++;
-				break;
-		}
-	}
-	// Check current length of arg since we will miss the last argument as it terminates with '\0'
-	if (arglen != 0)
-	{
-		arg[arglen] = '\0';
-		arguments_[nArgs_] = arg;
-		nArgs_ ++;
-	}
-}
-
 // Skip lines from file
-int Parser::skipLines(ifstream *xfile, int nlines)
+int LineParser::skipLines(int nlines)
 {
-	msg.enter("Parser::skipLines");
+	msg.enter("LineParser::skipLines");
 	int result;
 	for (int n=0; n<nlines; n++)
 	{
-		result = readLine(xfile);
+		result = readLine();
 		if (result != 0)
 		{
-			msg.exit("Parser::skipLines");
+			msg.exit("LineParser::skipLines");
 			return result;
 		}
 	}
-	msg.exit("Parser::skipLines");
+	msg.exit("LineParser::skipLines");
 	return 0;
-}
-
-// Close file and nullify pointer
-void Parser::close()
-{
-	if (sourceFile_ != NULL)
-	{
-		sourceFile_->close();
-		sourceFile_ = NULL;
-		lastLine_ = 0;
-	}
-	else printf("Parser tried to close file, but sourceFile_ is NULL.\n");
-}
-
-// Shift all arguments up one position (leaving arg[0] blank)
-void Parser::shiftArgsUp()
-{
-	msg.enter("Parser::shiftArgsUp");
-	for (int i=MAXARGS-1; i>0; i--)
-	{
-		arguments_[i] = arguments_[i-1];
-		quoted_[i] = quoted_[i-1];
-	}
-	nArgs_ ++;
-	arguments_[0].clear();
-	msg.exit("Parser::shiftArgsUp");
 }
 
 /*
 // Atom type definition functions
 */
 
-const char *Parser::parseAtomtypeString(Dnchar &source)
+const char *LineParser::parseAtomtypeString(Dnchar &source)
 {
 	// Cut the next atomtype command from the supplied string. Put in 'dest', along with any bracketed
 	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
 	// Ignore spaces and horizontal tabs. Commas separate commands.
-	msg.enter("Parser::parseAtomtypeString");
+	msg.enter("LineParser::parseAtomtypeString");
 	static int n, nchars, bracketlevel;
 	static bool done, el_list;
 	static Dnchar typecmd;
@@ -604,15 +539,15 @@ const char *Parser::parseAtomtypeString(Dnchar &source)
 	source.eraseStart(n+1);
 	//printf("Result = ");
 	//typecmd.print();
-	msg.exit("Parser::parseAtomtypeString");
+	msg.exit("LineParser::parseAtomtypeString");
 	return typecmd.get();
 }
 
-const char *Parser::trimAtomtypeKeyword(Dnchar &source)
+const char *LineParser::trimAtomtypeKeyword(Dnchar &source)
 {
 	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
-	msg.enter("Parser::trimAtomtypeKeyword");
+	msg.enter("LineParser::trimAtomtypeKeyword");
 	static bool done, equals;
 	static Dnchar keywd;
 	done = FALSE;
@@ -661,6 +596,6 @@ const char *Parser::trimAtomtypeKeyword(Dnchar &source)
 			source.eraseStart(1);
 			source.eraseEnd(1);
 		}
-	msg.exit("Parser::trimAtomtypeKeyword");
+	msg.exit("LineParser::trimAtomtypeKeyword");
 	return keywd.get();
 }

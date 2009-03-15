@@ -25,7 +25,7 @@
 #include "gui/atomlist.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 #include "gui/tcanvas.uih"
 
 /*

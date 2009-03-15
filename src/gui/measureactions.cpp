@@ -23,7 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 void AtenForm::on_actionMeasureDistance_triggered(bool on)
 {
@@ -42,29 +42,25 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 
 void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_CLEARMEASUREMENTS, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ClearMeasurements, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_DISTANCES, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::Distances, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_ANGLES, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::Angles, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_TORSIONS, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::Torsions, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 

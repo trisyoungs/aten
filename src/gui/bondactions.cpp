@@ -23,46 +23,39 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_REBOND, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ReBond, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_CLEARBONDS, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ClearBonds, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_REBONDSELECTION, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ReBondSelection, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_CLEARSELECTEDBONDS, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ClearSelectedBonds, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_AUGMENT, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::Augment, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::bondTolerance_valueChanged(double value)
 {
-	static StaticCommandNode cmd(Command::CA_BONDTOLERANCE, "d", 1.1);
-	cmd.pokeArguments("d", value);
-	cmd.execute();
+	NuCommandNode::run(NuCommand::BondTolerance, "d", 1.1);
 }

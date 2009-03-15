@@ -295,7 +295,9 @@ bool NuCommand::function_SaveModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 bool NuCommand::function_SetName(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Rename Model");
 	obj.rs->setName(c->argc(0));
+	obj.rs->endUndoState();
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return TRUE;
 }

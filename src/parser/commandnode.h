@@ -29,7 +29,6 @@
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
 #include "parser/format.h"
-#include "base/parser.h"
 #include "base/vtypes.h"
 
 // Forward Declarations
@@ -71,6 +70,8 @@ class NuCommandNode : public TreeNode
 	bool set(NuReturnValue &rv);
 	// Initialise node
 	bool initialise();
+	// Create, run, and free a single command with simple arguments
+	static bool run(NuCommand::Function func, const char *arglist, ...);
 };
 
 #endif
