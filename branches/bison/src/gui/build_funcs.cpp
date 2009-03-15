@@ -24,7 +24,7 @@
 #include "gui/build.h"
 #include "gui/gui.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Constructor
 AtenBuild::AtenBuild(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -46,17 +46,13 @@ void AtenBuild::showWindow()
 
 void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
-	static StaticCommandNode cmd(Command::CA_NEWATOM, "iddd", 1, 0.0, 0.0, 0.0);
-	static StaticCommandNode cmdfrac(Command::CA_NEWATOMFRAC, "iddd", 1, 0.0, 0.0, 0.0);
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		cmdfrac.pokeArguments("iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-		cmdfrac.execute();
+		NuCommandNode::run(NuCommand::NewAtomFrac, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	else
 	{
-		cmd.pokeArguments("iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-		cmd.execute();
+		NuCommandNode::run(NuCommand::NewAtom, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	gui.modelChanged();
 }

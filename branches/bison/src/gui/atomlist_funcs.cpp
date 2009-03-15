@@ -210,19 +210,16 @@ void AtenAtomlist::on_ViewByPatternButton_clicked(bool checked)
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SHIFTUP, "i", 1);
 	peekScrollBar();
-	cmd.execute();
-	refresh();
+	NuCommandNode::run(NuCommand::ShiftUp, "i", 1);
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SHIFTDOWN, "i", 1);
 	peekScrollBar();
-	cmd.execute();
+	NuCommandNode::run(NuCommand::ShiftDown, "i", 1);
 	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -230,16 +227,14 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_MOVETOSTART, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::MoveToStart, "");
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_MOVETOEND, "");
-	cmd.execute();
+	NuCommandNode::run(NuCommand::MoveToEnd, "");
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
