@@ -24,7 +24,6 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
-#include "command/filter.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"

@@ -157,7 +157,7 @@ bool ArrayVariable::initialise()
 				break;
 			case (NuVTypes::RealData):
 				arrayData_ = new NuVariable*[arraySize_];
-				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuIntegerVariable;
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuRealVariable;
 				break;
 			case (NuVTypes::CharacterData):
 				arrayData_ = new NuVariable*[arraySize_];

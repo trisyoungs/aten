@@ -268,3 +268,18 @@ bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnVa
 	rv.reset();
 	return TRUE;
 }
+
+// Translate current selection in world coordinates ('translateworld dx dy dz')
+bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Vec3<double> tvec;
+	tvec = c->arg3d(0);
+	char s[128];
+	sprintf(s,"Translate World (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState(s);
+	obj.rs->translateSelectionWorld(tvec);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}

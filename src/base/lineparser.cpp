@@ -27,10 +27,10 @@
 #include <string.h>
 
 // Parse options
-const char *LineParserOptionKeywords[LineParser::nLineParserOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
-LineParser::LineParserOption LineParser::lineParserOption(const char *s)
+const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
+LineParser::ParseOption LineParser::parseOption(const char *s)
 {
-	return (LineParser::LineParserOption) (1 << enumSearch("line parser option", LineParser::nLineParserOptions, LineParserOptionKeywords, s));
+	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
 }
 
 // Constructor
@@ -168,6 +168,12 @@ void LineParser::closeFile()
 		lastLine_ = 0;
 	}
 	else printf("Warning: LineParser tried to close file again.\n");
+}
+
+// Return whether current file source is good for reading/writing
+bool LineParser::isFileGood()
+{
+	return sourceFile_.good();
 }
 
 /*
@@ -429,19 +435,28 @@ int LineParser::getArgsDelim(int options)
 }
 
 // Get next argument (delimited) from file stream
-const char *LineParser::getArgDelim()
+const char *LineParser::getArgDelim(int flags)
 {
 	msg.enter("LineParser::getArgDelim");
-	static char result[512];
-	static int length;
-	static bool done;
-	// Clear old result
-	result[0] = '\0';
-	length = 0;
-	done = FALSE;
-	sourceFile_ >> result;
+	optionMask_ = flags;
+	if (getNextArg(NULL)) msg.print(Messenger::Parse,"getArgDelim [%s]\n", tempArg_);
 	msg.exit("LineParser::getArgDelim");
-	return result;
+	return tempArg_;
+}
+
+// Parse supplied line according to format
+int LineParser::getArgsFormatted(const char *s, NuFormat *format, int flags, bool usecurrentline)
+{
+	if (!usecurrentline) strcpy(line_,s);
+	for (FormatChunk *chunk = format->chunks(); chunk != NULL; chunk = chunk->next)
+	{
+	}
+}
+
+// Read line and parse according to format
+int LineParser::getArgsFormatted(NuFormat *format, int flags)
+{
+	
 }
 
 // Parse all arguments (delimited) from string
@@ -452,6 +467,97 @@ void LineParser::getArgsDelim(const char *s, int options)
 	linePos_ = 0;
 	optionMask_ = options;
 	getAllArgsDelim();
+}
+
+// Return a number of characters from the input stream
+const char *LineParser::getChars(int nchars)
+{
+	// Check number of characters requested
+	if (nchars == 0) return NULL;
+	else if (nchars > MAXLINELENGTH)
+	{
+		msg.print("Error: The maximum number of characters read at once from a file is currently %i.\n", MAXLINELENGTH);
+		return NULL;
+	}
+	else if (nchars < 0)
+	{
+		tempArg_[0]   = '\0';
+		for (int i=nchars; i<0; i++) sourceFile_.unget();
+	}
+	else sourceFile_.getline(tempArg_, nchars);
+	if (sourceFile_.eof())
+	{
+		closeFile();
+		msg.exit("LineParser::readLine");
+		return NULL;
+	}
+	if (sourceFile_.fail())
+	{
+		closeFile();
+		msg.exit("LineParser::readLine");
+		return NULL;
+	}
+	return tempArg_;
+}
+
+// Return an integer value from reading 'n' chars of an (unformatted) input file
+int LineParser::getInteger(int nbytes)
+{
+	// Use default size if none specified
+	if (nbytes == 0)
+	{
+		int readi;
+		sourceFile_.read((char*) &readi, sizeof(int));
+		return readi;
+	}
+	// Try and select a suitable type for the read, based on nbytes
+	if (sizeof(short int) == nbytes)
+	{
+		short int readi;
+		sourceFile_.read((char*) &readi, nbytes);
+		return (int) readi;
+	}
+	else if (sizeof(int) == nbytes)
+	{
+		int readi;
+		sourceFile_.read((char*) &readi, nbytes);
+		return readi;
+	}
+	else if (sizeof(long int) == nbytes)
+	{
+		long int readi;
+		sourceFile_.read((char*) &readi, nbytes);
+		return (int) readi;
+	}
+	else msg.print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
+	return 0;
+}
+
+// Return a double value from reading 'n' chars of an (unformatted) input file
+double LineParser::getReal(int nbytes)
+{
+	// Use default size if none specified
+	if (nbytes == 0)
+	{
+		double readd;
+		sourceFile_.read((char*) &readd, sizeof(double));
+		return readd;
+	}
+	// Try and select a suitable type for the read, based on nbytes
+	if (sizeof(double) == nbytes)
+	{
+		double readd;
+		sourceFile_.read((char*) &readd, nbytes);
+		return readd;
+	}
+	else if (sizeof(long double) == nbytes)
+	{
+		long double readd;
+		sourceFile_.read((char*) &readd, nbytes);
+		return (double) readd;
+	}
+	else msg.print("Error: Real of size %i bytes does not correspond to any internal type.\n", nbytes);
+	return 0.0;
 }
 
 // Skip lines from file

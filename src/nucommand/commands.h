@@ -322,7 +322,7 @@ class NuCommand
 		// Minimisation Commands
 		CGMinimise,
 		Converge,
-		Linetol,
+		LineTolerance,
 		MCMinimise,
 		SDMinimise,
 		SimplexMinimise,
@@ -396,10 +396,11 @@ class NuCommand
 		Find,
 		GetLine,
 		ReadChars,
-		ReadFloat,
 		ReadInteger,
 		ReadLine,
+		ReadLineFormatted,
 		ReadNext,
+		ReadReal,
 		ReadVar,
 		RemoveReadOption,
 		Rewind,
@@ -460,6 +461,7 @@ class NuCommand
 		Translate,
 		TranslateAtom,
 		TranslateCell,
+		TranslateWorld,
 
 		// Variable Manipulation
 		AfterChar,
@@ -753,7 +755,7 @@ class NuCommand
 	// Minimisation Commands
 	static bool function_CGMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Converge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LineTol(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_LineTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_MCMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SDMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SimplexMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -823,10 +825,11 @@ class NuCommand
 	static bool function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadFloat(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadInteger(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadNext(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RemoveReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Rewind(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -881,6 +884,7 @@ class NuCommand
 	static bool function_Translate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_TranslateAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_TranslateWorld(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Variable Manipulation
 	static bool function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

@@ -106,7 +106,7 @@ class TreeNode
 	Vec3<GLfloat> arg3GLf(int i);
 	// Return the TreeNode corresponding to the argument, rather than executing it
 	TreeNode *argNode(int i);
-	// Set argument specified
+	// Set argument specified from ReturnValue
 	bool setArg(int i, NuReturnValue &rv);
 	// Return whether argument i was given
 	bool hasArg(int i);

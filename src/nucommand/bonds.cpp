@@ -120,7 +120,7 @@ bool NuCommand::function_ReBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If we're reading from a file (via a filter) check for prefs override
-	if (!c->parent()->hasFileSource())
+	if (!c->parent()->isFilter())
 	{
 		obj.rs->beginUndoState("Calculate Bonding");
 		obj.rs->clearBonding();

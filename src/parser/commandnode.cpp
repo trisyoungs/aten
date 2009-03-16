@@ -62,11 +62,13 @@ bool NuCommandNode::checkArguments()
 {
 	msg.enter("NuCommandNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), NuCommand::data[function_].keyword);
-	const char *c = NuCommand::data[function_].arguments;
+	const char *c = NuCommand::data[function_].arguments, altargs;
 	char upc;
 	int count = 0, ngroup;
 	bool optional, requirevar, result, cluster = FALSE;
 	NuVTypes::DataType rtype;
+	// Search for an alternative set of arguments
+	altargs = strchr(c, '|');
 	result = TRUE;
 	do
 	{
@@ -75,6 +77,7 @@ bool NuCommandNode::checkArguments()
 		{
 			// If the character is '^', then we get the next char and set the requirevar flag
 			// If it is '[' or ']' then set the cluster flag and get the next char
+			// If it is '<' or '>' then set the vector flag and get the next char
 			requirevar = FALSE;
 			if (*c == '^')
 			{

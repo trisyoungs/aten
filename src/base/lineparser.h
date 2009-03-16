@@ -30,6 +30,9 @@ using namespace std;
 
 #define MAXLINELENGTH 1024
 
+// Forward Declarations
+class NuFormat;
+
 // Line Parser
 class LineParser
 {
@@ -37,8 +40,8 @@ class LineParser
 	// Constructor
 	LineParser();
 	// Parse Options
-	enum LineParserOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nLineParserOptions=6};
-	static LineParserOption lineParserOption(const char*);
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
+	static ParseOption parseOption(const char*);
 
 	/*
 	// Source line, options, and argument data
@@ -68,26 +71,38 @@ class LineParser
 	bool getNextN(int length);
 	// Gets all delimited args from internal line
 	void getAllArgsDelim();
-	// Read next line from internal source file
-	int readLine();
 
 	public:
 	// Return pointer to start of current line
 	const char *line();
 	// Return integer line number of last read line
 	int lastLine();
-	// Open file for parsing
+	// Open new file for parsing
 	bool openFile(const char *filename);
 	// Close file 
 	void closeFile();
+	// Return whether current file source is good for reading/writing
+	bool isFileGood();
 	// Read line from file and do delimited parse
 	int getArgsDelim(int flags);
 	// Set line and parse using delimiters
 	void getArgsDelim(const char *string, int flags);
+	// Read line and parse according to format
+	int getArgsFormatted(const char *line, NuFormat *format, int flags, bool usecurrentline = FALSE);
+	// Read line and parse according to format
+	int getArgsFormatted(NuFormat *format, int flags);
+	// Read next line from internal source file, setting as parsing source
+	int readLine();
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal file
-	const char *getArgDelim();
+	const char *getArgDelim(int flags);
+	// Return a number of characters from the input stream
+	const char *getChars(int nchars);
+	// Return an integer value from reading 'n' chars of an (unformatted) input file
+	int getInteger(int nbytes = 0);
+	// Return a double value from reading 'n' chars of an (unformatted) input file
+	double getReal(int nbytes = 0);
 
 	/*
 	// Argument Access
@@ -107,8 +122,6 @@ class LineParser
 	float argf(int i);
 	// Returns whether the specified argument is empty
 	bool isBlank(int i);
-	// Set argument manually
-	//void setArg(int i, const char *s);
 
 	/*
 	// Atom type parsing
