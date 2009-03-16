@@ -26,11 +26,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Constructor
+// Constructors
 NuReturnValue::NuReturnValue()
 {
 	// Private variables
 	type_ = NuVTypes::NoData;
+}
+NuReturnValue::NuReturnValue(int i) : type_(NuVTypes::IntegerData), valueI_(i)
+{
+}
+NuReturnValue::NuReturnValue(double d) : type_(NuVTypes::RealData), valueR_(d)
+{
+}
+NuReturnValue::NuReturnValue(const char *s) : type_(NuVTypes::CharacterData), valueC_(s)
+{
+}
+NuReturnValue::NuReturnValue(Vec3<double> v) : type_(NuVTypes::VectorData), valueV_(v)
+{
+}
+NuReturnValue::NuReturnValue(NuVTypes::DataType ptrtype, void *ptr) : type_(NuVTypes::PointerData), valueP_(ptr)
+{
 }
 
 // Operator =

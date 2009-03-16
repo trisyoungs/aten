@@ -227,9 +227,10 @@ bool NuCommand::function_Map(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	// Get each argument and parse it internally
 	int el;
 	Namemap<int> *nm;
+	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
-		parser.getArgsDelim(c->argc(m), Parser::Defaults);
+		parser.getArgsDelim(c->argc(m), LineParser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			el = elements().findAlpha(afterChar(parser.argc(n), '='));
@@ -404,7 +405,7 @@ bool NuCommand::function_InterDef(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
 		return FALSE;
 	}
-	ffa->setCharge(parser.argd(2));
+	ffa->setCharge(c->argd(2));
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
 	ffa->setVdwForm(vdwstyle);
 	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());

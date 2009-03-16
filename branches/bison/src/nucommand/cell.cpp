@@ -69,7 +69,7 @@ bool NuCommand::function_AdjustCell(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Fold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!c->parent()->hasFileSource())
+	if (!c->parent()->isFilter())
 	{
 		obj.rs->beginUndoState("Fold Atoms");
 		obj.rs->foldAllAtoms();
@@ -106,7 +106,7 @@ bool NuCommand::function_FracToReal(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Pack(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!c->parent()->hasFileSource())
+	if (!c->parent()->isFilter())
 	{
 		obj.rs->beginUndoState("Pack Cell");
 		obj.rs->pack();

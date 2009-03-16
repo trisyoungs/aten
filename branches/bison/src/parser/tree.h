@@ -31,6 +31,7 @@
 #include "templates/reflist.h"
 #include "base/dnchar.h"
 #include "base/elements.h"
+#include "base/lineparser.h"
 #include "base/vtypes.h"
 
 // Forward declarations
@@ -229,16 +230,18 @@ class Tree
 	// Execution
 	*/
 	private:
-	// File source (if any)
-	ifstream *inputFile_;
-	// File destination (if any)
-	ofstream *outputFile_;
-	// Filename corresponding to fstream
-	Dnchar filename_;
+	// Read options for parser
+	int readOptions_;
 
 	public:
-	// Return whether a current input file is defined
-	bool hasFileSource();
+	// Parser for use by read/write routines
+	LineParser parser;
+	// Add read option
+	void addReadOption(LineParser::ParseOption po);
+	// Remove read option
+	void removeReadOption(LineParser::ParseOption po);
+	// Return read options
+	int readOptions();
 	// Return the filename (if any)
 	const char *filename();
 	// Execute

@@ -37,9 +37,11 @@
 	P	Pattern/ID/Name	PatternData, CharacterData, IntegerData
 	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
+	Z	Any		Any
 	*	<Repeat>	Any number of the last type again
-	^	Require Var	Next token must be a modifiable variable and not a constant
-	[]	Cluster		Surrounds groups of optional arguments that must be specified together
+	^	<Require Var>	Next token must be a modifiable variable and not a constant
+	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
+	|	<Or>		Separates alternative lists of arguments for the command
 */
 
 // Command action
@@ -643,20 +645,22 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 	{ "addreadoption",	"C",		"<option>", NuVTypes::NoData,
 				"Add a read option: usequotes, skipblanks, stripbrackets" },
 	{ "find",		"C^c",		"<string> [linevar]", NuVTypes::IntegerData,
-				"Search for a string in the input file" },
-	{ "getline",		"",		"", NuVTypes::CharacterData,
-				"Read the next line from the file" },
+				"Search for a string in the input file (placing matching line in optional variable" },
+	{ "getline",		"^C",		"", NuVTypes::IntegerData,
+				"Read the next line from the file, placing in variable supplied, and returning read success" },
 	{ "readchars",		"N",		"<nchars>", NuVTypes::CharacterData,
 				"Read a number of characters from the input file" },
-	{ "readfloat",		"",		"", NuVTypes::RealData,
-				"Read a floating point value from the input file" },
-	{ "readint",		"",		"", NuVTypes::IntegerData,
-				"Read an integer value from the input file" },
-	{ "readline",		"C",		"<formatting string>", NuVTypes::NoData,
-				"Read and parse a line from the input file" },
-	{ "readnext",		"",		"", NuVTypes::CharacterData,
-				"Read the next delimited item from the file" },
-	{ "readvar",		"CC",		"<variable> <formatting string>", NuVTypes::NoData,
+	{ "readint",		"n",		"[nbytes=4]", NuVTypes::IntegerData,
+				"Read an integer value from the (binary) input file" },
+	{ "readline",		"z*",		"<data1>, data2...]", NuVTypes::NoData,
+				"Read a line from the input file, and parse into supplied variables using whitespace delimiters" },
+	{ "readlinef",		"C^z*",		"<formatting string> [data1, data2...]", NuVTypes::IntegerData,
+				"Read a line from the input file, and parse into supplied variables using format string" },
+	{ "readnext",		"^Z",		"<variable>", NuVTypes::IntegerData,
+				"Read the next delimited item from the file and place in the variable supplied" },
+	{ "readreal",		"n",		"[nbytes=8]", NuVTypes::RealData,
+				"Read a floating point value from the (binary) input file" },
+	{ "readvar",		"CC^z*",	"<variable> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
 				"Parse a character variable according to the supplied format" },
 	{ "removereadoption",	"C",		"<option>", NuVTypes::NoData,
 				"Remove a read option" },
@@ -666,10 +670,10 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Skip a number of characters in the input file" },
 	{ "skipline",		"n",		"[nlines]", NuVTypes::NoData,
 				"Skip a number of lines in the input file" },
-	{ "writeline",		"C",		"<formatting string>", NuVTypes::NoData,
-				"Write a line to the output file" },
-	{ "writevar",		"C",		"<formatting string>", NuVTypes::CharacterData,
-				"Return a formatted line" },
+	{ "writeline",		"Cz*",		"<formatting string> [data1, data2...]", NuVTypes::IntegerData,
+				"Write a formatted line to the output file" },
+	{ "writevar",		"C^Cz*",	"<variable> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
+				"Return a formatted line to the character variable supplied" },
 
 	// Script commands
 	{ "listscripts",	"",		"", NuVTypes::NoData,
@@ -748,7 +752,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Jump to the specified frame in the current trajectory" },
 	
 	// Transformation commands
-	{ "axisrotate",		"NNNnnnn",	"<ax> <ay> <ax> <theta> [ox oy oz] | <i> <j> <theta> [ox oy oz]", NuVTypes::NoData,
+	{ "axisrotate",		"NNNNnnn|AANnnn",	"<ax> <ay> <ax> <theta> [ox oy oz] | <i> <j> <theta> [ox oy oz]", NuVTypes::NoData,
 				"Rotate the current selection about a defined axis and origin" },
 	{ "centre",		"NNN",		"<x> <y> <z>", NuVTypes::NoData,
 				"Centre the atom selection of the current model at the specified coordinates" },
@@ -764,6 +768,8 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Translate the current atom" },
 	{ "translatecell",	"NNN",		"<dx> <dy> <dz>", NuVTypes::NoData,
 				"Translate the current selection along the cell axes by the fractional axes specified" },
+	{ "translateworld",	"NNN",		"<dx> <dy> <dz>", NuVTypes::NoData,
+				"Translate the current selection in world (view) coordinates" },
 
 	// Variable Manipulation
 	{ "afterchar",		"CC",		"<string> <char>", NuVTypes::CharacterData,

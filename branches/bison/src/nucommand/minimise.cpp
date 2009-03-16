@@ -55,7 +55,7 @@ bool NuCommand::function_Converge(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set line minimiser tolerance
-bool NuCommand::function_LineTol(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_LineTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	linetolerance = c->argd(0);
 	rv.reset();

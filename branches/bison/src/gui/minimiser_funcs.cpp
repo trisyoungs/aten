@@ -62,33 +62,23 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 
 void AtenMinimiser::doMinimisation()
 {
-	static StaticCommandNode cmdmin(Command::CA_SDMINIMISE, "i", 10);
-	static StaticCommandNode cmdconv(Command::CA_CONVERGE, "dd", 0.001, 0.001);
-	static StaticCommandNode cmdlinetol(Command::CA_LINETOL, "d", 0.001);
-
 	// Set convergence criteria and get maxcycles data
-	cmdconv.pokeArguments("dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
-	cmdconv.execute();
+	NuCommandNode::run(NuCommand::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
 	int maxcycles = ui.MinimiseCyclesSpin->value();
 	
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			NuCommandNode::run(NuCommand::LineTol, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			NuCommandNode::run(NuCommand::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
 			NuCommandNode::run(NuCommand::SDMinimise, "i", maxcycles);
 			break;
 		case (MM_CONJUGATE):
-			NuCommandNode::run(NuCommand::LineTol, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
-			NuCommandNode::run(NuCommand::SDMinimise, "i", maxcycles);
-			cmdmin.setFunction(Command::CA_CGMINIMISE);
-			cmdmin.pokeArguments("i", maxcycles);
-			cmdmin.execute();
+			NuCommandNode::run(NuCommand::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			NuCommandNode::run(NuCommand::CGMinimise, "i", maxcycles);
 			break;
 		case (MM_MONTECARLO):
-			cmdmin.setFunction(Command::CA_MCMINIMISE);
-			cmdmin.pokeArguments("i", maxcycles);
-			cmdmin.execute();
+			NuCommandNode::run(NuCommand::MCMinimise, "i", maxcycles);
 			break;
 		case (MM_SIMPLEX):
 			msg.print("Simplex minimiser not yet written!\n");

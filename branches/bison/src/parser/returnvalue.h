@@ -33,6 +33,11 @@ class NuReturnValue
 	public:
 	// Constructor
 	NuReturnValue();
+	NuReturnValue(int i);
+	NuReturnValue(double d);
+	NuReturnValue(const char *s);
+	NuReturnValue(Vec3<double> v);
+	NuReturnValue(NuVTypes::DataType ptrtype, void *ptr);
 	// Operator=
 	void operator=(NuReturnValue &rv);
 

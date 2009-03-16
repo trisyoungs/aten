@@ -71,6 +71,24 @@ Tree::~Tree()
 // Create / Execute
 */
 
+// Add read option
+void CommandList::addReadOption(Parser::ParseOption po)
+{
+	if (!(readOptions_&po)) readOptions_ += po;
+}
+
+// Remove read option
+void CommandList::removeReadOption(Parser::ParseOption po)
+{
+	if (readOptions_&po) readOptions_ -= po;
+}
+
+// Return read options
+int CommandList::readOptions()
+{
+	return readOptions_;
+}
+
 // Clear contents of tree
 void Tree::clear()
 {
@@ -113,13 +131,9 @@ bool Tree::execute(NuReturnValue &rv)
 bool Tree::executeRead(const char *filename)
 {
 	msg.enter("Tree::executeRead[filename]");
-	// Open file...
-	inputFile_ = new ifstream(filename, ios::in);
-	if (!inputFile_->good())
+	// Open file in LineParser
+	if (!parser.openFile(filename))
 	{
-		delete inputFile_;
-		inputFile_ = NULL;
-		msg.print("Unable to open file '%s' for execution of commands.\n", filename);
 		msg.exit("Tree::executeRead[filename]");
 		return FALSE;
 	}
@@ -127,9 +141,7 @@ bool Tree::executeRead(const char *filename)
 	NuReturnValue rv;
 	bool result = execute(rv);
 	// Close the file
-	inputFile_->close();
-	delete inputFile_;
-	inputFile_ = NULL;
+	parser.closeFile();
 	msg.exit("Tree::executeRead[filename]");
 	return result;
 }
@@ -331,18 +343,6 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
 	if (arg2 != NULL) leaf->addArguments(1,arg2);
-	// Store return type - if we were passed 1 or 2, store the return type of this argument
-	// If we were passed 99, it is a logical operator and should return an integer
-	// If we were passed 0, assume its a number and work out which number type we actually return
-// 	if (typearg == 1) leaf->setReturnType(arg1->returnType());
-// 	else if (typearg == 2) leaf->setReturnType(arg2->returnType());
-// 	else if (typearg == 99) leaf->setReturnType(NuVTypes::IntegerData);
-// 	else
-// 	{
-// 		if (arg2 == NULL) leaf->setReturnType(arg1->returnType());
-// 		else if (arg1->returnType() == arg2->returnType()) leaf->setReturnType(arg1->returnType());
-// 		else leaf->setReturnType(NuVTypes::RealData);
-// 	}
 	leaf->setReturnType(rtype);
 	return leaf;
 }
