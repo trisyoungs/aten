@@ -94,10 +94,10 @@ void BondVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
-	{ "i",		NuVTypes::AtomData,	 FALSE, TRUE },
-	{ "j",		NuVTypes::AtomData,	 FALSE, TRUE },
-	{ "order",	NuVTypes::RealData,	 FALSE, TRUE },
-	{ "type",	NuVTypes::CharacterData, FALSE, TRUE }
+	{ "i",		NuVTypes::AtomData,	FALSE, TRUE },
+	{ "j",		NuVTypes::AtomData,	FALSE, TRUE },
+	{ "order",	NuVTypes::RealData,	FALSE, TRUE },
+	{ "type",	NuVTypes::StringData,	FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)

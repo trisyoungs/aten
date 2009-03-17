@@ -81,7 +81,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 			if (c->hasArg(4))
 			{
 				if (!c->arg(4, v1)) return FALSE;
-				if (v1.type() == NuVTypes::CharacterData) bt = Bond::bondType(rv.asCharacter());
+				if (v1.type() == NuVTypes::StringData) bt = Bond::bondType(rv.asString());
 				else bt = Bond::bondType(rv.asInteger());
 			}
 			else bt = Bond::Single;
@@ -97,7 +97,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 			if (c->hasArg(1))
 			{
 				if (!c->arg(1, v1)) return FALSE;
-				if (v1.type() == NuVTypes::CharacterData) bt = Bond::bondType(rv.asCharacter());
+				if (v1.type() == NuVTypes::StringData) bt = Bond::bondType(rv.asString());
 				else bt = Bond::bondType(rv.asInteger());
 			}
 			else bt = Bond::Single;
@@ -139,11 +139,11 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
 		case (NuVTypes::RealData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
-		case (NuVTypes::CharacterData):
+		case (NuVTypes::StringData):
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
-				if (strcmp(nm->name(),v1.asCharacter()) == 0) break;
-			if (nm == NULL) el = elements().find(v1.asCharacter());
+				if (strcmp(nm->name(),v1.asString()) == 0) break;
+			if (nm == NULL) el = elements().find(v1.asString());
 			else el = nm->data();
 			break;
 		case (NuVTypes::AtomData):
@@ -243,11 +243,11 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 		case (NuVTypes::RealData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
-		case (NuVTypes::CharacterData):
+		case (NuVTypes::StringData):
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
-				if (strcmp(nm->name(),v1.asCharacter()) == 0) break;
-			if (nm == NULL) el = elements().find(v1.asCharacter());
+				if (strcmp(nm->name(),v1.asString()) == 0) break;
+			if (nm == NULL) el = elements().find(v1.asString());
 			else el = nm->data();
 			break;
 		case (NuVTypes::AtomData):
@@ -299,8 +299,8 @@ bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValu
 		case (NuVTypes::RealData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
-		case (NuVTypes::CharacterData):
-			el = elements().find(v1.asCharacter());
+		case (NuVTypes::StringData):
+			el = elements().find(v1.asString());
 			break;
 		case (NuVTypes::AtomData):
 			i = (Atom*) v1.asPointer(NuVTypes::AtomData);

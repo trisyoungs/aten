@@ -84,10 +84,10 @@ void ElementsVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
-	{ "mass",	NuVTypes::RealData,	 TRUE, TRUE },
-	{ "name",	NuVTypes::RealData,	 TRUE, TRUE },
-	{ "nelements",	NuVTypes::IntegerData,	 FALSE, TRUE },
-	{ "symbol",	NuVTypes::CharacterData, TRUE, TRUE }
+	{ "mass",	NuVTypes::RealData,	TRUE, TRUE },
+	{ "name",	NuVTypes::RealData,	TRUE, TRUE },
+	{ "nelements",	NuVTypes::IntegerData,	FALSE, TRUE },
+	{ "symbol",	NuVTypes::StringData,	TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)

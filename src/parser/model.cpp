@@ -99,7 +99,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
  	{ "cell",		NuVTypes::CellData,		FALSE, TRUE },
  	{ "frame",		NuVTypes::ModelData,		FALSE, TRUE },
 //  	{ "frames",		NuVTypes::ModelData };
- 	{ "name",		NuVTypes::CharacterData,	FALSE, FALSE },
+ 	{ "name",		NuVTypes::StringData,		FALSE, FALSE },
  	{ "nangleterms",	NuVTypes::IntegerData,		FALSE, TRUE },
  	{ "natoms",		NuVTypes::IntegerData,		FALSE, TRUE },
  	{ "natomtypes",		NuVTypes::IntegerData,		FALSE, TRUE },

@@ -20,6 +20,9 @@
 */
 
 #include "parser/commandnode.h"
+#include "parser/integer.h"
+#include "parser/real.h"
+#include "parser/character.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
@@ -62,8 +65,8 @@ bool NuCommandNode::checkArguments()
 {
 	msg.enter("NuCommandNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), NuCommand::data[function_].keyword);
-	const char *c = NuCommand::data[function_].arguments, altargs;
-	char upc;
+	const char *c = NuCommand::data[function_].arguments;
+	char upc, *altargs;
 	int count = 0, ngroup;
 	bool optional, requirevar, result, cluster = FALSE;
 	NuVTypes::DataType rtype;
@@ -155,9 +158,9 @@ bool NuCommandNode::checkArguments()
 					result = FALSE;
 				}
 				break;
-			// Character		(CharacterData)
+			// Character		(StringData)
 			case ('C'):
-				if (rtype != NuVTypes::CharacterData)
+				if (rtype != NuVTypes::StringData)
 				{
 					msg.print("Argument %i to command '%s' must be a character string.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;
@@ -171,9 +174,9 @@ bool NuCommandNode::checkArguments()
 					result = FALSE;
 				}
 				break;	
-			// Any Simple		(IntegerData, RealData, CharacterData)
+			// Any Simple		(IntegerData, RealData, StringData)
 			case ('S'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::CharacterData))
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::StringData))
 				{
 					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;
@@ -195,17 +198,17 @@ bool NuCommandNode::checkArguments()
 					result = FALSE;
 				}
 				break;
-			// Model/ID/Name	(ModelData, CharacterData, IntegerData)
+			// Model/ID/Name	(ModelData, StringData, IntegerData)
 			case ('M'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::ModelData) && (rtype != NuVTypes::CharacterData))
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::ModelData) && (rtype != NuVTypes::StringData))
 				{
 					msg.print("Argument %i to command '%s' must be an integer, a model& or a character string.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;
 				}
 				break;
-			// Pattern/ID/Name	(PatternData, CharacterData, IntegerData)
+			// Pattern/ID/Name	(PatternData, StringData, IntegerData)
 			case ('P'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::PatternData) && (rtype != NuVTypes::CharacterData))
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::PatternData) && (rtype != NuVTypes::StringData))
 				{
 					msg.print("Argument %i to command '%s' must be an integer, a pattern& or a character string.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;
@@ -250,7 +253,16 @@ bool NuCommandNode::initFunction()
 		case (NuCommand::Verbose):
 		case (NuCommand::Printf):
 		case (NuCommand::Warn):
-			format_ = new NuFormat(argc(0));
+			format_ = new NuFormat(argc(0),args_[1]);
+			if (!format_->isValid()) return FALSE;
+			break;
+		case (NuCommand::ReadLineFormatted):
+			format_ = new NuFormat(argc(0),args_[2]);
+			if (!format_->isValid()) return FALSE;
+			break;
+		case (NuCommand::ReadVar):
+			format_ = new NuFormat(argc(1),args_[3]);
+			if (!format_->isValid()) return FALSE;
 			break;
 		default:
 			result = TRUE;
@@ -303,47 +315,49 @@ bool NuCommandNode::initialise()
 }
 
 // Create, run, and free a single command with simple arguments
-static bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
+bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
 {
 	msg.enter("NuCommandNode::run");
 	// Local constants given as arguments
 	List<TreeNode> constantArgs_;
 
-	// Set node character
-	function_ = func;
-	parent_ = NULL;
+	// Create our temporary node
+	NuCommandNode node(func);
+	node.parent_ = NULL;
 
 	// Set arguments from supplied list
 	const char *c;
 	va_list vars;
-	va_start(vars,args);
-	Variable *v = NULL;
+	va_start(vars, arglist);
+	NuVariable *var = NULL;
 	for (c = arglist; *c != '\0'; c = c + 1)
 	{
 		switch (*c)
 		{
 			case ('i'):
-				NuVariable *var = new NuIntegerVariable(atoi(va_arg(vars, int)), TRUE);
+				var = new NuIntegerVariable(va_arg(vars, int), TRUE);
 				constantArgs_.own(var);
 				break;
 			case ('d'):
-				NuRealVariable *var = new NuRealVariable(atof(va_arg(vars, double)), TRUE);
+				var = new NuRealVariable(va_arg(vars, double), TRUE);
 				constantArgs_.own(var);
 				break;
 			case ('c'):
 			case ('s'):
-				NuCharacterVariable *var = new NuCharacterVariable(va_arg(vars, const char*), TRUE);
+				var = new StringVariable(va_arg(vars, const char*), TRUE);
 				constantArgs_.own(var);
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in NuCommandNode::run.\n", *c);
-				v = NULL;
+				var = NULL;
 				break;
 		}
-		cmd_.addArgument(v);
+		node.addArgument(var);
 	}
 	va_end(vars);
 	// Now, run the command...
-	msg.enter("NuCommandNode::run");
+	NuReturnValue rv;
+	bool result = node.execute(rv);
+	msg.exit("NuCommandNode::run");
 	return result;
 }

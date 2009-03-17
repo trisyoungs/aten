@@ -39,8 +39,6 @@ int yyparse();
 Tree::Tree()
 {
 	// Private variables
-	inputFile_ = NULL;
-	outputFile_ = NULL;
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
 	filterType_ = Tree::nFilterTypes;
@@ -72,19 +70,19 @@ Tree::~Tree()
 */
 
 // Add read option
-void CommandList::addReadOption(Parser::ParseOption po)
+void Tree::addReadOption(LineParser::ParseOption po)
 {
 	if (!(readOptions_&po)) readOptions_ += po;
 }
 
 // Remove read option
-void CommandList::removeReadOption(Parser::ParseOption po)
+void Tree::removeReadOption(LineParser::ParseOption po)
 {
 	if (readOptions_&po) readOptions_ -= po;
 }
 
 // Return read options
-int CommandList::readOptions()
+int Tree::readOptions()
 {
 	return readOptions_;
 }
@@ -146,30 +144,20 @@ bool Tree::executeRead(const char *filename)
 	return result;
 }
 
-// Execute tree with corresponding input stream
-bool Tree::executeRead(ifstream *file)
+// Execute tree with current input stream
+bool Tree::executeRead()
 {
-	msg.enter("Tree::executeRead[ifstream]");
-	inputFile_ = file;
-	if (!inputFile_->good())
+	msg.enter("Tree::executeRead");
+	if (!parser.isFileGood())
 	{
-		inputFile_ = NULL;
-		msg.print("Bad file pointer passed for execution of commands.\n");
-		msg.exit("Tree::executeRead[ifstream]");
+		printf("Current input file is not valid.\n");
 		return FALSE;
 	}
 	// Execute the commands
 	NuReturnValue rv;
 	bool result = execute(rv);
-	inputFile_ = NULL;
-	msg.exit("Tree::executeRead[ifstream]");
+	msg.exit("Tree::executeRead");
 	return result;
-}
-
-// Return whether a current input file is defined
-bool Tree::hasFileSource()
-{
-	return (inputFile_ != NULL);
 }
 
 // Print tree
@@ -223,7 +211,7 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 			case (NuCommand::OperatorSubtract):
 			case (NuCommand::OperatorMultiply):
 			case (NuCommand::OperatorDivide):
-				if ((type1 == NuVTypes::CharacterData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
+				if ((type1 == NuVTypes::StringData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
 				else result = type1;
 				break;
 			case (NuCommand::OperatorPower):
@@ -251,7 +239,7 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 			case (NuCommand::OperatorAssignmentMultiply):
 			case (NuCommand::OperatorAssignmentPlus):
 				// Nonsensical for character types and pointer types
-				if ((type1 == NuVTypes::CharacterData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
+				if ((type1 == NuVTypes::StringData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
 				else result = type1;
 				break;
 			default:
@@ -292,7 +280,7 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 					break;
 			}
 		}
-		else if (type1 == NuVTypes::CharacterData)
+		else if (type1 == NuVTypes::StringData)
 		{
 			// We allow multiplication of a string by a number...
 			if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData))
@@ -302,7 +290,7 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 					case (NuCommand::OperatorMultiply):
 					case (NuCommand::OperatorAssignment):
 					case (NuCommand::OperatorAssignmentMultiply):
-						result = NuVTypes::CharacterData;
+						result = NuVTypes::StringData;
 						break;
 					default:
 						result = NuVTypes::NoData;
@@ -472,9 +460,9 @@ TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 		nodes_.own(var);
 		return var;
 	}
-	else if (type == NuVTypes::CharacterData)
+	else if (type == NuVTypes::StringData)
 	{
-		NuCharacterVariable *var = new NuCharacterVariable(token->get(), TRUE);
+		StringVariable *var = new StringVariable(token->get(), TRUE);
 		nodes_.own(var);
 		return var;
 	}

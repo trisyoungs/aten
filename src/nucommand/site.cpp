@@ -38,7 +38,8 @@ bool NuCommand::function_NewSite(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	// Parse the atom list which should have been given as: "1,2,3,4,5......"
 	if (c->hasArg(2))
 	{
-		parser.getArgsDelim(c->argc(2), Parser::Defaults);
+		LineParser parser;
+		parser.getArgsDelim(c->argc(2), LineParser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			ListItem<int> *li = obj.s->atoms.add();
@@ -90,8 +91,9 @@ bool NuCommand::function_SiteAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;
 	ListItem<int> *li;
+	LineParser parser;
 	// Parse atom list for x-axis
-	parser.getArgsDelim(c->argc(0), Parser::Defaults);
+	parser.getArgsDelim(c->argc(0), LineParser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->xAxisAtoms.add();
@@ -99,7 +101,7 @@ bool NuCommand::function_SiteAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		li->data = parser.argi(n) - 1;
 	}
 	// Parse atom list for y-axis
-	parser.getArgsDelim(c->argc(1), Parser::Defaults);
+	parser.getArgsDelim(c->argc(1), LineParser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->yAxisAtoms.add();

@@ -1,5 +1,5 @@
 /*
-	*** Tree[Node] Return Value
+	*** Return Value
 	*** src/parser/returnvalue.h
 	Copyright T. Youngs 2007-2009
 
@@ -50,7 +50,7 @@ class NuReturnValue
 	// Variable members for returns
 	int valueI_;
 	double valueR_;
-	Dnchar valueC_;
+	Dnchar valueS_;
 	Vec3<double> valueV_;
 	void *valueP_;
 
@@ -90,7 +90,7 @@ class NuReturnValue
 	// Return real value
 	double asReal(bool &success);
 	// Return character string
-	const char *asCharacter(bool &success);
+	const char *asString(bool &success);
 	// Return vector data
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
@@ -105,7 +105,7 @@ class NuReturnValue
 	// Return real value
 	double asReal();
 	// Return character string
-	const char *asCharacter();
+	const char *asString();
 	// Return vector data
 	Vec3<double> asVector();
 	// Return pointer data

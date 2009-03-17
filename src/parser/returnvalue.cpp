@@ -1,5 +1,5 @@
 /*
-	*** Tree Return Value
+	*** Return Value
 	*** src/parser/treevalue.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -38,13 +38,13 @@ NuReturnValue::NuReturnValue(int i) : type_(NuVTypes::IntegerData), valueI_(i)
 NuReturnValue::NuReturnValue(double d) : type_(NuVTypes::RealData), valueR_(d)
 {
 }
-NuReturnValue::NuReturnValue(const char *s) : type_(NuVTypes::CharacterData), valueC_(s)
+NuReturnValue::NuReturnValue(const char *s) : type_(NuVTypes::StringData), valueS_(s)
 {
 }
 NuReturnValue::NuReturnValue(Vec3<double> v) : type_(NuVTypes::VectorData), valueV_(v)
 {
 }
-NuReturnValue::NuReturnValue(NuVTypes::DataType ptrtype, void *ptr) : type_(NuVTypes::PointerData), valueP_(ptr)
+NuReturnValue::NuReturnValue(NuVTypes::DataType ptrtype, void *ptr) : type_(ptrtype), valueP_(ptr)
 {
 }
 
@@ -64,8 +64,8 @@ void NuReturnValue::operator=(NuReturnValue &source)
 		case (NuVTypes::RealData):
 			valueR_ = source.valueR_;
 			break;
-		case (NuVTypes::CharacterData):
-			valueC_ = source.valueC_;
+		case (NuVTypes::StringData):
+			valueS_ = source.valueS_;
 			break;
 		case (NuVTypes::VectorData):
 			valueV_ = source.valueV_;
@@ -103,8 +103,8 @@ void NuReturnValue::info()
 		case (NuVTypes::RealData):
 			printf("%f\n",valueR_);
 			break;
-		case (NuVTypes::CharacterData):
-			printf("%s\n",valueC_.get());
+		case (NuVTypes::StringData):
+			printf("%s\n",valueS_.get());
 			break;
 		case (NuVTypes::VectorData):
 			printf("{%f,%f,%f}\n",valueV_.x,valueV_.y,valueV_.z);
@@ -136,8 +136,8 @@ void NuReturnValue::set(double d)
 // Set from character value
 void NuReturnValue::set(const char *s)
 {
-	type_ = NuVTypes::CharacterData;
-	valueC_ = s;
+	type_ = NuVTypes::StringData;
+	valueS_ = s;
 }
 
 // Set from vector value
@@ -189,8 +189,8 @@ int NuReturnValue::asInteger(bool &success)
 		case (NuVTypes::RealData):
 			return (int)valueR_;
 			break;
-		case (NuVTypes::CharacterData):
-			return atoi(valueC_.get());
+		case (NuVTypes::StringData):
+			return atoi(valueS_.get());
 			break;
 		default:
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
@@ -217,8 +217,8 @@ double NuReturnValue::asReal(bool &success)
 		case (NuVTypes::RealData):
 			return valueR_;
 			break;
-		case (NuVTypes::CharacterData):
-			return atof(valueC_.get());
+		case (NuVTypes::StringData):
+			return atof(valueS_.get());
 			break;
 		default:
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
@@ -228,8 +228,8 @@ double NuReturnValue::asReal(bool &success)
 	return 0;
 }
 
-// Return as character value
-const char *NuReturnValue::asCharacter(bool &success)
+// Return as character string
+const char *NuReturnValue::asString(bool &success)
 {
 	success = TRUE;
 	switch (type_)
@@ -245,8 +245,8 @@ const char *NuReturnValue::asCharacter(bool &success)
 		case (NuVTypes::RealData):
 			return ftoa(valueR_);
 			break;
-		case (NuVTypes::CharacterData):
-			return valueC_.get();
+		case (NuVTypes::StringData):
+			return valueS_.get();
 			break;
 		default:
 			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
@@ -290,7 +290,7 @@ void *NuReturnValue::asPointer(NuVTypes::DataType ptrtype, bool &success)
 			break;
 		case (NuVTypes::IntegerData):
 		case (NuVTypes::RealData):
-		case (NuVTypes::CharacterData):
+		case (NuVTypes::StringData):
 			msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", NuVTypes::dataType(type_), NuVTypes::dataType(ptrtype));
 			success = FALSE;
 			return NULL;
@@ -329,10 +329,10 @@ double NuReturnValue::asReal()
 }
 
 // Return as character value
-const char *NuReturnValue::asCharacter()
+const char *NuReturnValue::asString()
 {
 	static bool success;
-	return asCharacter(success);
+	return asString(success);
 }
 
 // Return as pointer value
@@ -362,11 +362,11 @@ bool NuReturnValue::asBool()
 		case (NuVTypes::RealData):
 			return (valueR_ > 0.0);
 			break;
-		case (NuVTypes::CharacterData):
-			return valueC_.asBool();
+		case (NuVTypes::StringData):
+			return valueS_.asBool();
 			break;
 		default:
-			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			printf("NuReturnValue::asBool() doesn't recognise this type.\n");
 			break;
 	}
 	return FALSE;
