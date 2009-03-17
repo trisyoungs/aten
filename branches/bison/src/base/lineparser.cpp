@@ -444,21 +444,6 @@ const char *LineParser::getArgDelim(int flags)
 	return tempArg_;
 }
 
-// Parse supplied line according to format
-int LineParser::getArgsFormatted(const char *s, NuFormat *format, int flags, bool usecurrentline)
-{
-	if (!usecurrentline) strcpy(line_,s);
-	for (FormatChunk *chunk = format->chunks(); chunk != NULL; chunk = chunk->next)
-	{
-	}
-}
-
-// Read line and parse according to format
-int LineParser::getArgsFormatted(NuFormat *format, int flags)
-{
-	
-}
-
 // Parse all arguments (delimited) from string
 void LineParser::getArgsDelim(const char *s, int options)
 {
@@ -576,6 +561,13 @@ int LineParser::skipLines(int nlines)
 	}
 	msg.exit("LineParser::skipLines");
 	return 0;
+}
+
+// Rewind file to start
+void LineParser::rewind()
+{
+	if (sourceFile_.is_open()) sourceFile_.seekg(0, ios::beg);
+	else msg.print("No file currently open to rewind.\n");
 }
 
 /*

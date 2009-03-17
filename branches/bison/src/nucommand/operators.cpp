@@ -76,10 +76,10 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 			case (NuCommand::OperatorAdd):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) + rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) + rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData)
+				else if (t[0] == NuVTypes::StringData)
 				{
-					strcpy(s, rv1->asCharacter(b));
-					strcat(s, rv2->asCharacter(b));
+					strcpy(s, rv1->asString(b));
+					strcat(s, rv2->asString(b));
 					result.set(s);
 				}
 				else failed = TRUE;
@@ -109,7 +109,7 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 				break;
 		}
 	}
-	else if (t[0] == NuVTypes::CharacterData)
+	else if (t[0] == NuVTypes::StringData)
 	{
 		// There are limited operations that we can do with character strings....
 		switch (func)
@@ -119,7 +119,7 @@ bool operate(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, N
 				if ((t[1] == NuVTypes::IntegerData) || (t[1] == NuVTypes::RealData))
 				{
 					s[0] = '\0';
-					for (int n=0; n<rv[1]->asInteger(b); n++) strcat(s, rv[0]->asCharacter(b));
+					for (int n=0; n<rv[1]->asInteger(b); n++) strcat(s, rv[0]->asString(b));
 					result.set(s);
 				}
 				else failed = TRUE;
@@ -179,7 +179,7 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 		return FALSE;
 	}
 	// Provided the types are the same (or a mix of real/int) we're okay....
-	if ((t[0] < NuVTypes::CharacterData) && (t[1] < NuVTypes::CharacterData) && (t[0] != t[1])) t[0] = t[1] = NuVTypes::RealData;
+	if ((t[0] < NuVTypes::StringData) && (t[1] < NuVTypes::StringData) && (t[0] != t[1])) t[0] = t[1] = NuVTypes::RealData;
 	if (t[0] == t[1])
 	{
 		switch (func)
@@ -187,42 +187,42 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 			case (NuCommand::OperatorEqualTo):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) == rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) == rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) == 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) == 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) == rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorNotEqualTo):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) != rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) != rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) != 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) != 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) != rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorGreaterThan):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) > rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) > rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) > 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) > 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) > rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorGreaterThanEqualTo):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) >= rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) >= rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) >= 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) >= 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) >= rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorLessThan):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) < rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) < rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) < 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) < 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) < rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
 			case (NuCommand::OperatorLessThanEqualTo):
 				if (t[0] == NuVTypes::IntegerData) result.set(rv1->asInteger(b) <= rv2->asInteger(b));
 				else if (t[0] == NuVTypes::RealData) result.set(rv1->asReal(b) <= rv2->asReal(b));
-				else if (t[0] == NuVTypes::CharacterData) result.set( strcmp(rv1->asCharacter(b), rv2->asCharacter(b)) <= 0);
+				else if (t[0] == NuVTypes::StringData) result.set( strcmp(rv1->asString(b), rv2->asString(b)) <= 0);
 				else if (t[0] >= NuVTypes::AtenData) result.set( rv1->asPointer(t[0],b) <= rv2->asPointer(t[1],b) );
 				else failed = TRUE;
 				break;
@@ -250,7 +250,7 @@ bool test(NuCommand::Function func, NuReturnValue *rv1, NuReturnValue *rv2, NuRe
 			rv[1] = rv2;
 		}
 		// There are no tests we can do between a character or a vector and another type
-		if ((t[0] == NuVTypes::CharacterData) || (t[0] == NuVTypes::VectorData)) failed = TRUE;
+		if ((t[0] == NuVTypes::StringData) || (t[0] == NuVTypes::VectorData)) failed = TRUE;
 		else if (t[0] >= NuVTypes::AtenData)
 		{
 			// We will allow (in)equality between pointer and integer but not real

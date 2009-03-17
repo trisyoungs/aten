@@ -1,5 +1,5 @@
 /*
-	*** Character Variable
+	*** String (Character) Variable
 	*** src/parser/character.h
 	Copyright T. Youngs 2007-2009
 
@@ -19,21 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUCHARACTERVARIABLE_H
-#define ATEN_NUCHARACTERVARIABLE_H
+#ifndef ATEN_NUSTRINGVARIABLE_H
+#define ATEN_NUSTRINGVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
 #include "base/dnchar.h"
 
-// Character Variable
-class NuCharacterVariable : public NuVariable
+// String Variable
+class StringVariable : public NuVariable
 {
 	public:
 	// Constructor / Destructor
-	NuCharacterVariable();
-	NuCharacterVariable(const char *s, bool constant = FALSE);
-	~NuCharacterVariable();
+	StringVariable();
+	StringVariable(const char *s, bool constant = FALSE);
+	~StringVariable();
 
 	/*
 	// Set / Get
@@ -53,7 +53,7 @@ class NuCharacterVariable : public NuVariable
 	*/
 	private:
 	// Character data
-	Dnchar characterData_;
+	Dnchar stringData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
 };

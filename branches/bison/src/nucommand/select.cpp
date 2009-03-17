@@ -56,7 +56,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 	else
 	{
 		// Copy variable contents into local character array
-		strcpy(text, value.asCharacter());
+		strcpy(text, value.asString());
 		// If arg contains a '-', select by range
 		if (strchr(text, '-') != NULL)
 		{
@@ -84,7 +84,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 			}
 		}
 		// Do the selection
-		sprintf(s,"%select (%s)", deselect ? "Des" : "S", value.asCharacter());
+		sprintf(s,"%select (%s)", deselect ? "Des" : "S", value.asString());
 		m->beginUndoState(s);
 		if (!range)
 		{

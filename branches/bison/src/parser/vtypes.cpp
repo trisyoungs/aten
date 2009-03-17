@@ -26,8 +26,9 @@
 #include <stdio.h>
 
 // Variable Types
-const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "integer", "real", "character", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
-const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "integer", "real", "character", "vector", "_ATEN", "atom", "bond", "cell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
+const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "integer", "real", "string", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
+const char *NuDataTypePhrases[NuVTypes::nDataTypes] = { "no data", "an integer", "a real", "a string", "a vector", "aten&", "an atom&", "a bond&", "a cell&", "elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&" };
+const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "integer", "real", "string", "vector", "_ATEN", "atom", "bond", "cell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
 NuVTypes::DataType NuVTypes::dataType(const char *s)
 {
 	return (NuVTypes::DataType) enumSearch("", NuVTypes::nDataTypes, NuDataTypeKeywords, s);

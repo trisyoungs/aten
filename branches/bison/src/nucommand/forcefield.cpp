@@ -137,7 +137,7 @@ bool NuCommand::function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue 
 			case (NuVTypes::IntegerData):
 				p = obj.m->pattern(c->argi(0)-1);
 				break;
-			case (NuVTypes::CharacterData):
+			case (NuVTypes::StringData):
 				p = obj.m->findPattern(c->argc(0));
 				break;
 			case (NuVTypes::PatternData):

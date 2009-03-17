@@ -23,6 +23,7 @@
 #define ATEN_LINEPARSER_H
 
 #include "base/dnchar.h"
+#include "base/constants.h"
 #include "templates/list.h"
 #include <fstream>
 #include <iostream>
@@ -87,14 +88,12 @@ class LineParser
 	int getArgsDelim(int flags);
 	// Set line and parse using delimiters
 	void getArgsDelim(const char *string, int flags);
-	// Read line and parse according to format
-	int getArgsFormatted(const char *line, NuFormat *format, int flags, bool usecurrentline = FALSE);
-	// Read line and parse according to format
-	int getArgsFormatted(NuFormat *format, int flags);
 	// Read next line from internal source file, setting as parsing source
 	int readLine();
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
+	// Rewind file to start
+	void rewind();
 	// Get next delimited argument from internal file
 	const char *getArgDelim(int flags);
 	// Return a number of characters from the input stream

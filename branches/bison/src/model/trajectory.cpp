@@ -373,7 +373,7 @@ void Model::seekFrame(int frameno)
 		{
 			currentFrame_->clear();
 			trajectoryFile_->seekg(trajectoryOffsets_[frameno-1]);
-			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
+// 			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
 			// If this was the highest offset stored, the file position now corresponds to the next frame
 			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nTrajectoryFrames_))
 			{
@@ -390,7 +390,7 @@ void Model::seekFrame(int frameno)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
-				bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read header
+// 				bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read header
 				if (!success)
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);

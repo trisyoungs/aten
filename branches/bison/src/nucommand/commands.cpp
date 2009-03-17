@@ -28,13 +28,13 @@
 /* Argument Specification Tokens:
        Char	Meaning		Acceptable Types in VTypes
 	N	Number		IntegerData, RealData
-	C	Character	CharacterData
-	S	Any Simple	IntegerData, RealData, CharacterData
+	C	Character	StringData
+	S	Any Simple	IntegerData, RealData, StringData
 	U	Vector		VectorData
 	B	Boolean		Any
 	A	Atom/Id		IntegerData, AtomData
-	M	Model/ID/Name	ModelData, CharacterData, IntegerData
-	P	Pattern/ID/Name	PatternData, CharacterData, IntegerData
+	M	Model/ID/Name	ModelData, StringData, IntegerData
+	P	Pattern/ID/Name	PatternData, StringData, IntegerData
 	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
 	Z	Any		Any
@@ -234,7 +234,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"List details on all colourscales" },
 	{ "removepoint",	"NN",		"<scaleid> <point>", NuVTypes::NoData,
 				"Remove the selected point from the specified colourscale" },
-	{ "scalename",		"Nc",		"<scaleid> [name]", NuVTypes::CharacterData,
+	{ "scalename",		"Nc",		"<scaleid> [name]", NuVTypes::StringData,
 				"Print (or set) the name of the colourscale specified" },
 	{ "scalevisible",	"NB",		"<scaleid> true|false", NuVTypes::NoData,
 				"Set the visibility of the specified colourscale" },
@@ -522,7 +522,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 	// Model commands
 	{ "createatoms",	"",		"", NuVTypes::NoData,
 				"Create enough atoms in the current trajectory frame to match the parent model" },
-	{ "currentmodel",	"m",		"[model]", NuVTypes::CharacterData,
+	{ "currentmodel",	"m",		"[model]", NuVTypes::StringData,
 				"Print the name of the current model, or set the current displayed model" },
 	{ "finalisemodel",	"",		"", NuVTypes::NoData,
 				"Finalise the current model" },
@@ -648,7 +648,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Search for a string in the input file (placing matching line in optional variable" },
 	{ "getline",		"^C",		"", NuVTypes::IntegerData,
 				"Read the next line from the file, placing in variable supplied, and returning read success" },
-	{ "readchars",		"N",		"<nchars>", NuVTypes::CharacterData,
+	{ "readchars",		"N",		"<nchars>", NuVTypes::StringData,
 				"Read a number of characters from the input file" },
 	{ "readint",		"n",		"[nbytes=4]", NuVTypes::IntegerData,
 				"Read an integer value from the (binary) input file" },
@@ -772,13 +772,13 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Translate the current selection in world (view) coordinates" },
 
 	// Variable Manipulation
-	{ "afterchar",		"CC",		"<string> <char>", NuVTypes::CharacterData,
+	{ "afterchar",		"CC",		"<string> <char>", NuVTypes::StringData,
 				"Return part of the <string> after the first occurrence of the character <char>" },
-	{ "beforechar",		"CC",		"<string> <char>", NuVTypes::CharacterData,
+	{ "beforechar",		"CC",		"<string> <char>", NuVTypes::StringData,
 				"Return part of the <string> before the first occurrence of the character <char>" },
 	{ "normalise",		"U",		"<vector>", NuVTypes::RealData,
 				"Normalise the values of the 3-vector supplied" },
-	{ "stripchars",		"^CC",		"<variable> <chars>", NuVTypes::CharacterData,
+	{ "stripchars",		"^CC",		"<variable> <chars>", NuVTypes::StringData,
 				"Strip all occurrences of the supplied characters from the supplied variable" },
 
 	// Variable Operators

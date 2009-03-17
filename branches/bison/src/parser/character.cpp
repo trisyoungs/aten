@@ -1,5 +1,5 @@
 /*
-	*** Character Variable
+	*** String (Character) Variable
 	*** src/parser/character.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -26,23 +26,23 @@
 #include <string.h>
 
 // Constructor
-NuCharacterVariable::NuCharacterVariable()
+StringVariable::StringVariable()
 {
 	// Private variables
-	returnType_ = NuVTypes::CharacterData;
+	returnType_ = NuVTypes::StringData;
 	readOnly_ = FALSE;
 }
 
 
-NuCharacterVariable::NuCharacterVariable(const char *s, bool constant) : characterData_(s)
+StringVariable::StringVariable(const char *s, bool constant) : stringData_(s)
 {
 	// Private variables
-	returnType_ = NuVTypes::CharacterData;
+	returnType_ = NuVTypes::StringData;
 	readOnly_ = constant;
 }
 
 // Destructor
-NuCharacterVariable::~NuCharacterVariable()
+StringVariable::~StringVariable()
 {
 }
 
@@ -51,7 +51,7 @@ NuCharacterVariable::~NuCharacterVariable()
 */
 
 // Set value of node from returnvalue
-bool NuCharacterVariable::set(NuReturnValue &rv)
+bool StringVariable::set(NuReturnValue &rv)
 {
 	if (readOnly_)
 	{
@@ -59,25 +59,25 @@ bool NuCharacterVariable::set(NuReturnValue &rv)
 		return FALSE;
 	}
 	bool success;
-	characterData_ = rv.asCharacter(success);
+	stringData_ = rv.asString(success);
 	return success;
 }
 
 // Reset node
-void NuCharacterVariable::reset()
+void StringVariable::reset()
 {
-	characterData_.clear();
+	stringData_.clear();
 }
 
 // Return value of node
-bool NuCharacterVariable::execute(NuReturnValue &rv)
+bool StringVariable::execute(NuReturnValue &rv)
 {
-	rv.set(characterData_.get());
+	rv.set(stringData_.get());
 	return TRUE;
 }
 
 // Print node contents
-void NuCharacterVariable::nodePrint(int offset, const char *prefix)
+void StringVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -87,7 +87,7 @@ void NuCharacterVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, characterData_.get());
-	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab, characterData_.get(), name_.get());
+	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, stringData_.get());
+	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab, stringData_.get(), name_.get());
 	delete[] tab;
 }

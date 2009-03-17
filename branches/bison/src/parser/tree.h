@@ -248,8 +248,8 @@ class Tree
 	bool execute(NuReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)
 	bool executeRead(const char *filename);
-	// Execute, using specified file as input source (no return value)
-	bool executeRead(ifstream *inputfile);
+	// Execute, using current file as input source (no return value)
+	bool executeRead();
 	// Execute, with specified file as data target
 	bool executeWrite(const char *filename);
 };

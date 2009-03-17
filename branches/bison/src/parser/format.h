@@ -23,17 +23,22 @@
 #define ATEN_NUFORMAT_H
 
 #include "base/dnchar.h"
+#include "base/lineparser.h"
 #include "templates/list.h"
+#include "templates/reflist.h"
+
+// Forward Declarations
+class TreeNode;
 
 // Format node
 class FormatChunk
 {
 	public:
 	// Node types
-	enum ChunkType { PlainTextChunk, nChunkTypes };
+	enum ChunkType { PlainTextChunk, FormattedChunk, nChunkTypes };
 	// Constructors
 	FormatChunk(const char *plaintext);
-	FormatChunk(ChunkType type, const char *format, int argid);
+	FormatChunk(ChunkType type, const char *format, TreeNode *arg);
 	// List pointers
 	FormatChunk *next, *prev;
 
@@ -46,16 +51,16 @@ class FormatChunk
 	ChunkType type_;
 	// C-style format relevant to chunk *or* plain text data if PlainTextChunk
 	Dnchar cFormat_;
-	// Argument ID specifying source (in the case of read) or destination (in the case of write) command arguments
-	int argId_;
+	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
+	TreeNode *arg_;
 
 	public:
 	// Return chunktype
 	ChunkType type();
 	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
 	const char *cFormat();
-	// Return argument id
-	int argId();
+	// Return associated argument
+	TreeNode *arg();
 };
 
 // Format
@@ -63,7 +68,7 @@ class NuFormat
 {
 	public:
 	// Constructor / Destructor
-	NuFormat(const char *s);
+	NuFormat(const char *s, Refitem<TreeNode,int> *firstarg);
 	~NuFormat();
 
 
@@ -71,19 +76,33 @@ class NuFormat
 	// Data
 	*/
 	private:
+	// Whether the format was created succesfully
+	bool isValid_;
 	// Chunk list
 	List<FormatChunk> chunks_;
 	// Created string
 	static char createdString_[8096];
 
+	public:
+	// Return whether the format was created successfully
+	bool isValid();
+
 	/*
 	// Read/Write
 	*/
+	private:
+	// Use specified parser to perform formatted read
+	int read(LineParser &parser, int flags);
+
 	public:
 	// Return last written string
 	const char *string();
 	// Write format to internal string
 	bool writeToString();
+	// Read line and parse according to format
+	int readFormatted(const char *line, int flags);
+	// Read line from file and parse according to format
+	int readFormatted(LineParser &parser, int flags);
 };
 
 #endif

@@ -159,9 +159,9 @@ bool ArrayVariable::initialise()
 				arrayData_ = new NuVariable*[arraySize_];
 				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuRealVariable;
 				break;
-			case (NuVTypes::CharacterData):
+			case (NuVTypes::StringData):
 				arrayData_ = new NuVariable*[arraySize_];
-				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuCharacterVariable;
+				for (int i=0; i<arraySize_; i++) arrayData_[i] = new StringVariable;
 				break;
 			case (NuVTypes::AtomData):
 				arrayData_ = new NuVariable*[arraySize_];

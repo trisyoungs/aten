@@ -92,7 +92,7 @@ bool NuCommand::function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		return FALSE;
 	}
 	rv.set( c->parent()->parser.getChars(c->argi(0)) );
-	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asCharacter());
+	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asString());
 	return TRUE;
 }
 
@@ -119,8 +119,13 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'readline' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	c->parent()->parser.getArgsFormatted(c->format(), c->parent()->readOptions());
-// 	c->format()->getArgsFormatted(inputfile,c->parent()->readOptions());
+	NuFormat *format = c->format();
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'readline'.\n");
+		return FALSE;
+	}
+	rv.set( format->readFormatted( c->parent()->parser, c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -154,7 +159,13 @@ bool NuCommand::function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // Parse given variable with format
 bool NuCommand::function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	int result = c->parent()->parser.getArgsFormatted( c->argc(0), c->format(), c->parent()->readOptions());
+	NuFormat *format = c->format();
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'readline'.\n");
+		return FALSE;
+	}
+	rv.set( format->readFormatted( c->argc(0), c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -162,93 +173,87 @@ bool NuCommand::function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 bool NuCommand::function_RemoveReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// Get parse option from variable
-	Parser::ParseOption po = Parser::parseOption(c->argc(0));
-	if (po != Parser::nParseOptions) c->parent()->removeReadOption(po);
+	LineParser::ParseOption po = LineParser::parseOption(c->argc(0));
+	if (po != LineParser::nParseOptions) c->parent()->removeReadOption(po);
 	return TRUE;
 }
 
 // Go to start of current file
 bool NuCommand::function_Rewind(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	ifstream *inputfile = c->parent()->inputFile();
-	if (inputfile == NULL)
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
 	{
-		msg.print("No input file active.\n");
-		return Command::Fail;
+		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		return FALSE;
 	}
-	inputfile->seekg(0, ios::beg);
+	c->parent()->parser.rewind();
 	return TRUE;
 }
 
 // Discard N characters from unformatted file
 bool NuCommand::function_SkipChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	ifstream *inputfile = c->parent()->inputFile();
-	if (inputfile == NULL)
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
 	{
-		msg.print("No input file active.\n");
-		return Command::Fail;
+		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		return FALSE;
 	}
-	inputfile->ignore(c->argi(0));
+	c->parent()->parser.getChars(c->argi(0));
 	return TRUE;
 }
 
 // Skip line(s) of file
 bool NuCommand::function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	ifstream *inputfile = c->parent()->inputFile();
-	if (inputfile == NULL)
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
 	{
-		msg.print("No input file active.\n");
-		return Command::Fail;
+		msg.print("The 'skipline' command can only be used from within a Filter.\n");
+		return FALSE;
 	}
-	if (c->hasArg(0)) parser.skipLines(inputfile,c->argi(0));
-	else parser.skipLines(inputfile,1);
+	c->parent()->parser.skipLines( c->hasArg(0) ? c->argi(0) : 1 );
 	return TRUE;
 }
 
 // Write line with format
 bool NuCommand::function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	ofstream *outputfile = c->parent()->outputFile();
-	if (outputfile == NULL)
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
 	{
-		msg.print("No output file active.\n");
-		return Command::Fail;
+		msg.print("The 'writeline' command can only be used from within a Filter.\n");
+		return FALSE;
 	}
-	if (c->format()->createString())
-	{
-		*outputfile << c->format()->createdString();
-		*outputfile << "\n";
-		return TRUE;
-	}
-	return Command::Fail;
+	// TGAY WRiteline
+	return FALSE;
 }
 
 // Write line to variable
 bool NuCommand::function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	// If the format node in the command is empty create a new (temporary) one
-	if (c->format() == NULL)
-	{
-		// Create format from character variable arg(1)
-		if (!c->createFormat(c->argc(1), FALSE)) return Command::Fail;
-		if (c->format()->createString())
-		{
-			c->arg(0)->set(c->format()->createdString());
-			c->deleteFormat();
-			return TRUE;
-		}
-		else return Command::Fail;
-	}
-	else
-	{
-		if (c->format()->createString())
-		{
-			c->arg(0)->set(c->format()->createdString());
-			return TRUE;
-		}
-		else return Command::Fail;
-	}
-	return TRUE;
+// TGAY	// If the format node in the command is empty create a new (temporary) one
+// 	if (c->format() == NULL)
+// 	{
+// 		// Create format from character variable arg(1)
+// 		if (!c->createFormat(c->argc(1), FALSE)) return Command::Fail;
+// 		if (c->format()->createString())
+// 		{
+// 			c->arg(0)->set(c->format()->createdString());
+// 			c->deleteFormat();
+// 			return TRUE;
+// 		}
+// 		else return Command::Fail;
+// 	}
+// 	else
+// 	{
+// 		if (c->format()->createString())
+// 		{
+// 			c->arg(0)->set(c->format()->createdString());
+// 			return TRUE;
+// 		}
+// 		else return Command::Fail;
+// 	}
+	return FALSE;
 }

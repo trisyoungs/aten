@@ -105,7 +105,7 @@ range:
 constant:
 	INTCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::IntegerData, $1); }
 	| REALCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::RealData, $1); }
-	| CHARCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::CharacterData, $1); }
+	| CHARCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::StringData, $1); }
 	;
 
 /* Variable declaration  name / assignment list */

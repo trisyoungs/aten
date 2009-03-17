@@ -270,7 +270,7 @@ bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Translate current selection in world coordinates ('translateworld dx dy dz')
-bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool NuCommand::function_TranslateWorld(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
