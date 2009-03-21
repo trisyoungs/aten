@@ -27,9 +27,9 @@
 */
 
 // Set format to use in export
-void Aten::setExportFilter(Filter *f)
+void Aten::setExportFilter(Tree *filter)
 {
-	exportFilter_ = f;
+	exportFilter_ = filter;
 }
 
 // Export all currently loaded models in the referenced format

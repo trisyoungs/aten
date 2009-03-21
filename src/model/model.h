@@ -29,6 +29,7 @@
 #include "base/glyph.h"
 #include "base/bond.h"
 #include "base/atom.h"
+#include "base/lineparser.h"
 #include "methods/mc.h"
 
 // Forward Declarations
@@ -693,8 +694,8 @@ class Model
 	Dnchar trajectoryFilename_;
 	// Format of trajectory file
 	Tree *trajectoryFilter_;
-	// File structure
-	ifstream *trajectoryFile_;
+	// Trajectory file parser
+	LineParser trajectoryParser_;
 	// File offsets for frames
 	streampos *trajectoryOffsets_;
 	// Number of highest frame file offset stored

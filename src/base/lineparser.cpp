@@ -44,83 +44,10 @@ LineParser::LineParser()
 	lastLine_ = 0;
 }
 
-// Returns number of arguments grabbed from last parse
-int LineParser::nArgs()
-{
-	return arguments_.nItems();
-}
 
-// Returns the specified argument as a character string
-const char *LineParser::argc(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n");
-		return "NULL";
-	}
-	return arguments_[i]->get();
-}
-
-// Returns the specified argument as an integer
-int LineParser::argi(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range - returning 0...\n");
-		return 0;
-	}
-	return arguments_[i]->asInteger();
-}
-
-// Returns the specified argument as a double
-double LineParser::argd(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range - returning 0.0...\n");
-		return 0.0;
-	}
-	return arguments_[i]->asDouble();
-}
-
-// Returns the specified argument as a bool
-bool LineParser::argb(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range - returning FALSE...\n");
-		return FALSE;
-	}
-	return arguments_[i]->asBool();
-}
-
-// Returns the specified argument as a float
-float LineParser::argf(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range - returning 0.0f...\n");
-		return 0.0f;
-	}
-	return (float) argd(i);
-}
-
-// Returns whether the specified argument is empty
-bool LineParser::isBlank(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n");
-		return FALSE;
-	}
-	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);
-}
-
-// Set argument manually
-//void LineParser::setArg(int i, const char *s)
-//{
-//	arguments_[i] = s;
-//}
+/*
+// Source line/file and read options
+*/
 
 // Return pointer to current line
 const char *LineParser::line()
@@ -176,8 +103,38 @@ bool LineParser::isFileGood()
 	return sourceFile_.good();
 }
 
+// Tell current position of file stream
+streampos LineParser::tellg()
+{
+	streampos result = 0;
+	if (sourceFile_.is_open()) result = sourceFile_.tellg();
+	else printf("Warning: LineParser tried to tellg() on a non-existent file.\n");
+	return result;
+}
+
+// Seek position in file
+void LineParser::seekg(streampos pos)
+{
+	if (sourceFile_.is_open()) sourceFile_.seekg(pos);
+	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
+}
+
+// Seek n bytes in specified direction
+void LineParser::seekg(streamoff off, ios_base::seekdir dir)
+{
+	if (sourceFile_.is_open()) sourceFile_.seekg(off, dir);
+	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
+}
+
+// Rewind file to start
+void LineParser::rewind()
+{
+	if (sourceFile_.is_open()) sourceFile_.seekg(0, ios::beg);
+	else msg.print("No file currently open to rewind.\n");
+}
+
 /*
-// String parsing methods
+// Read/Write Routines
 */
 
 // Read single line from internal file source
@@ -563,11 +520,80 @@ int LineParser::skipLines(int nlines)
 	return 0;
 }
 
-// Rewind file to start
-void LineParser::rewind()
+/*
+// Argument Data
+*/
+
+// Returns number of arguments grabbed from last parse
+int LineParser::nArgs()
 {
-	if (sourceFile_.is_open()) sourceFile_.seekg(0, ios::beg);
-	else msg.print("No file currently open to rewind.\n");
+	return arguments_.nItems();
+}
+
+// Returns the specified argument as a character string
+const char *LineParser::argc(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n");
+		return "NULL";
+	}
+	return arguments_[i]->get();
+}
+
+// Returns the specified argument as an integer
+int LineParser::argi(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0...\n");
+		return 0;
+	}
+	return arguments_[i]->asInteger();
+}
+
+// Returns the specified argument as a double
+double LineParser::argd(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0.0...\n");
+		return 0.0;
+	}
+	return arguments_[i]->asDouble();
+}
+
+// Returns the specified argument as a bool
+bool LineParser::argb(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning FALSE...\n");
+		return FALSE;
+	}
+	return arguments_[i]->asBool();
+}
+
+// Returns the specified argument as a float
+float LineParser::argf(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range - returning 0.0f...\n");
+		return 0.0f;
+	}
+	return (float) argd(i);
+}
+
+// Returns whether the specified argument is empty
+bool LineParser::isBlank(int i)
+{
+	if ((i < 0) || (i >= nArgs()))
+	{
+		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n");
+		return FALSE;
+	}
+	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);
 }
 
 /*

@@ -40,16 +40,16 @@ class LineParser
 	public:
 	// Constructor
 	LineParser();
+	LineParser(const char *ifilename);
 	// Parse Options
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
 
+
 	/*
-	// Source line, options, and argument data
+	// Source line/file and read options
 	*/
-	protected:
-	// Temporary string variable
-	char tempArg_[MAXLINELENGTH];
+	private:
 	// Line to parse
 	char line_[MAXLINELENGTH];
 	// Length of line_
@@ -60,18 +60,8 @@ class LineParser
 	int lastLine_;
 	// Source file
 	std::ifstream sourceFile_;
-	// Parsed arguments
-	List<Dnchar> arguments_;
-	// Whether the end of the string has been found in get_next_arg()
-	bool endOfLine_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
-	// Gets next delimited arg from internal line
-	bool getNextArg(Dnchar *destarg);
-	// Gets next n chars from internal line
-	bool getNextN(int length);
-	// Gets all delimited args from internal line
-	void getAllArgsDelim();
 
 	public:
 	// Return pointer to start of current line
@@ -84,6 +74,26 @@ class LineParser
 	void closeFile();
 	// Return whether current file source is good for reading/writing
 	bool isFileGood();
+	// Tell current position of file stream
+	streampos tellg();
+	// Seek position in file
+	void seekg(streampos pos);
+	// Seek n bytes in specified direction
+	void seekg(streamoff off, ios_base::seekdir dir);
+	// Rewind file to start
+	void rewind();
+
+
+	/*
+	// Read/Write Routines
+	*/
+	public:
+	// Gets next delimited arg from internal line
+	bool getNextArg(Dnchar *destarg);
+	// Gets next n chars from internal line
+	bool getNextN(int length);
+	// Gets all delimited args from internal line
+	void getAllArgsDelim();
 	// Read line from file and do delimited parse
 	int getArgsDelim(int flags);
 	// Set line and parse using delimiters
@@ -92,8 +102,6 @@ class LineParser
 	int readLine();
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
-	// Rewind file to start
-	void rewind();
 	// Get next delimited argument from internal file
 	const char *getArgDelim(int flags);
 	// Return a number of characters from the input stream
@@ -103,9 +111,18 @@ class LineParser
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getReal(int nbytes = 0);
 
+
 	/*
-	// Argument Access
+	// Argument Data
 	*/
+	private:
+	// Temporary string variable
+	char tempArg_[MAXLINELENGTH];
+	// Parsed arguments
+	List<Dnchar> arguments_;
+	// Whether the end of the string has been found in get_next_arg()
+	bool endOfLine_;
+
 	public:
 	// Returns number of arguments grabbed from last parse
 	int nArgs();
@@ -121,6 +138,7 @@ class LineParser
 	float argf(int i);
 	// Returns whether the specified argument is empty
 	bool isBlank(int i);
+
 
 	/*
 	// Atom type parsing

@@ -232,25 +232,27 @@ class Tree
 	private:
 	// Read options for parser
 	int readOptions_;
+	// Current input stream target, in the form of a LineParser
+	LineParser *parser_;
 
 	public:
-	// Parser for use by read/write routines
-	LineParser parser;
 	// Add read option
 	void addReadOption(LineParser::ParseOption po);
 	// Remove read option
 	void removeReadOption(LineParser::ParseOption po);
 	// Return read options
 	int readOptions();
+	// Return the current LineParser pointer
+	LineParser *parser();
 	// Return the filename (if any)
 	const char *filename();
 	// Execute
 	bool execute(NuReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)
 	bool executeRead(const char *filename);
-	// Execute, using current file as input source (no return value)
-	bool executeRead();
-	// Execute, with specified file as data target
+	// Execute, using specified parser as input source (no return value)
+	bool executeRead(LineParser *parser);
+	// Execute, with specified filename as data target
 	bool executeWrite(const char *filename);
 };
 

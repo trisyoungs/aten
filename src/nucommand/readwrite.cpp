@@ -47,16 +47,16 @@ bool NuCommand::function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	do
 	{
 		// Get line from file
-		int result = c->parent()->parser.readLine();
+		int result = c->parent()->parser()->readLine();
 		if (result != 0) break;
 		// Check for string
-		if (strstr(c->parent()->parser.line(), c->argc(0)) != '\0')
+		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')
 		{
 			rv.set(1);
 			// Store the line if a second argument was given
 			if (c->hasArg(1))
 			{
-				NuReturnValue val(c->parent()->parser.line());
+				NuReturnValue val(c->parent()->parser()->line());
 				c->setArg(1, val);
 			}
 		}
@@ -73,9 +73,9 @@ bool NuCommand::function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 		msg.print("The 'getline' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	int result = c->parent()->parser.readLine();
+	int result = c->parent()->parser()->readLine();
 	NuReturnValue val;
-	if (result == 0) val.set(c->parent()->parser.line());
+	if (result == 0) val.set(c->parent()->parser()->line());
 	else val.set("");
 	c->setArg(0, val);
 	rv.set(result);
@@ -91,7 +91,7 @@ bool NuCommand::function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		msg.print("The 'readchars' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser.getChars(c->argi(0)) );
+	rv.set( c->parent()->parser()->getChars(c->argi(0)) );
 	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asString());
 	return TRUE;
 }
@@ -105,7 +105,7 @@ bool NuCommand::function_ReadInteger(NuCommandNode *c, Bundle &obj, NuReturnValu
 		msg.print("The 'readinteger' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser.getInteger( c->hasArg(0) ? c->argi(0) : 0 ) );
+	rv.set( c->parent()->parser()->getInteger( c->hasArg(0) ? c->argi(0) : 0 ) );
 	msg.print(Messenger::Commands,"Unformatted integer read got '%s'\n", rv.asInteger());
 	return TRUE;
 }
@@ -125,7 +125,7 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		printf("Internal Error: No format node associated to command 'readline'.\n");
 		return FALSE;
 	}
-	rv.set( format->readFormatted( c->parent()->parser, c->parent()->readOptions() ) );
+	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -138,7 +138,7 @@ bool NuCommand::function_ReadNext(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'readnext' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	rv.set(c->parent()->parser.getArgDelim(c->parent()->readOptions()));
+	rv.set(c->parent()->parser()->getArgDelim(c->parent()->readOptions()));
 	return TRUE;
 }
 
@@ -151,7 +151,7 @@ bool NuCommand::function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'readchars' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser.getReal(c->hasArg(0) ? c->argi(0) : 0) );
+	rv.set( c->parent()->parser()->getReal(c->hasArg(0) ? c->argi(0) : 0) );
 	msg.print(Messenger::Commands,"Unformatted real read got '%s'\n", rv.asReal());
 	return TRUE;
 }
@@ -187,7 +187,7 @@ bool NuCommand::function_Rewind(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 		msg.print("The 'readchars' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	c->parent()->parser.rewind();
+	c->parent()->parser()->rewind();
 	return TRUE;
 }
 
@@ -200,7 +200,7 @@ bool NuCommand::function_SkipChars(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		msg.print("The 'readchars' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	c->parent()->parser.getChars(c->argi(0));
+	c->parent()->parser()->getChars(c->argi(0));
 	return TRUE;
 }
 
@@ -213,7 +213,7 @@ bool NuCommand::function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'skipline' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	c->parent()->parser.skipLines( c->hasArg(0) ? c->argi(0) : 1 );
+	c->parent()->parser()->skipLines( c->hasArg(0) ? c->argi(0) : 1 );
 	return TRUE;
 }
 

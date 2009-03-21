@@ -82,8 +82,8 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 		case (NuVTypes::RealData):
 			v = (NuVariable*) new NuRealVariable(0.0, FALSE);
 			break;
-		case (NuVTypes::CharacterData):
-			v = (NuVariable*) new NuCharacterVariable("", FALSE);
+		case (NuVTypes::StringData):
+			v = (NuVariable*) new StringVariable("", FALSE);
 			break;
 		case (NuVTypes::VectorData):
 			v = (NuVariable*) new NuVectorVariable(FALSE);

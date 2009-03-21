@@ -92,7 +92,7 @@ class NuFormat
 	*/
 	private:
 	// Use specified parser to perform formatted read
-	int read(LineParser &parser, int flags);
+	int read(LineParser *parser, int flags);
 
 	public:
 	// Return last written string
@@ -102,7 +102,7 @@ class NuFormat
 	// Read line and parse according to format
 	int readFormatted(const char *line, int flags);
 	// Read line from file and parse according to format
-	int readFormatted(LineParser &parser, int flags);
+	int readFormatted(LineParser *parser, int flags);
 };
 
 #endif

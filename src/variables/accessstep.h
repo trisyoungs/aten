@@ -22,7 +22,6 @@
 #ifndef ATEN_ACCESSSTEP_H
 #define ATEN_ACCESSSTEP_H
 
-#include "base/parser.h"
 #include "base/vtypes.h"
 #include "templates/vector3.h"
 

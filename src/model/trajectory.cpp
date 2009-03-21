@@ -43,12 +43,6 @@ void Model::setTrajectoryFilter(Tree *f)
 	trajectoryFilter_ = f;
 }
 
-// Return the trajectory file pointer
-ifstream *Model::trajectoryFile()
-{
-	return trajectoryFile_;
-}
-
 // Return the current frame pointer
 Model *Model::currentFrame()
 {
@@ -73,11 +67,8 @@ void Model::clearTrajectory()
 	// Clear frames - can simply delete the master config pointed to by 'frames_head'
 	msg.enter("Model::clearTrajectory");
 	frames_.clear();
-	if (trajectoryFile_ != NULL)
-	{
-		trajectoryFile_->close();
-		delete trajectoryFile_;
-	}
+	// Close file in parser
+	trajectoryParser_.closeFile();
 	if (trajectoryOffsets_ != NULL) delete[] trajectoryOffsets_;
 	trajectoryOffsets_ = NULL;
 	highestFrameOffset_ = -1;
@@ -86,6 +77,7 @@ void Model::clearTrajectory()
 	nTrajectoryFrames_ = 0;
 	trajectoryPosition_ = 0;
 	trajectoryCached_ = FALSE;
+	trajectoryFilter_ = NULL;
 	msg.exit("Model::clearTrajectory");
 }
 
@@ -96,16 +88,12 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	msg.enter("Model::initialiseTrajectory");
 	bool success;
 	// Delete old frames and unset old file
-	if (trajectoryFile_ != NULL) trajectoryFile_->close();
 	clearTrajectory();
-	// Check that we can open the specified file
-	trajectoryFile_ = new ifstream(fname,ios::in);
-	if (!trajectoryFile_->good())
+	// Open the specified file
+	if (!trajectoryParser_.openFile(fname))
 	{
 		msg.print("Trajectory file '%s' couldn't be opened.\n",fname);
-		trajectoryFile_->close();
-		trajectoryFile_ = NULL;
-		trajectoryFilter_ = NULL;
+		clearTrajectory();
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
@@ -113,43 +101,38 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
 	// Read header      XXX TGAY
-	if (!trajectoryFilter_->executeRead(trajectoryFile_))
+	if (!trajectoryFilter_->executeRead(&trajectoryParser_))
 	{
 		msg.print("Error reading header of trajectory file.\n");
-		trajectoryFile_->close();
-		trajectoryFile_ = NULL;
-		trajectoryFilter_ = NULL;
+		clearTrajectory();
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
 	// Store this file position, since it should represent the start of the frame data
-	streampos firstframe = trajectoryFile_->tellg();
+	streampos firstframe = trajectoryParser_.tellg();
 	// Determine frame size and number of frames in file
 	msg.print(Messenger::Verbose,"Testing trajectory frame read...\n");
 	//printf("Initialised config\n");
 	Model *newframe = addFrame();
 	setRenderFromFrames();
 	// XXXXX TGAY   Read header
-	if (!trajectoryFilter_->executeRead(trajectoryFile_))
+	if (!trajectoryFilter_->executeRead(&trajectoryParser_))
 	{
 		msg.print("Error testing frame read from trajectory.\n");
-		trajectoryFile_->close();
-		trajectoryFile_ = NULL;
-		trajectoryFilter_ = NULL;
 		clearTrajectory();
 		setRenderFromSelf();
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
-	streampos secondframe = trajectoryFile_->tellg();
+	streampos secondframe = trajectoryParser_.tellg();
 	frameSize_ = secondframe - firstframe;
-	if ((frameSize_/1024) < 10) msg.print("Single frame is (approximately) %i bytes.\n", frameSize_);
+	if ((frameSize_/1024) < 10) msg.print("Single frame is %i bytes.\n", frameSize_);
 	else msg.print("Single frame is (approximately) %i kb.\n", frameSize_/1024);
-	trajectoryFile_->seekg(0,ios::end);
-	streampos endoffile = trajectoryFile_->tellg();
+	trajectoryParser_.seekg(0,ios::end);
+	streampos endoffile = trajectoryParser_.tellg();
 	nTrajectoryFrames_ = (endoffile - firstframe) / frameSize_;
 	// Skip back to end of first frame ready to read in next frame...
-	trajectoryFile_->seekg(secondframe);
+	trajectoryParser_.seekg(secondframe);
 	// Pre-Cache frame(s)
 	msg.print("Successfully associated trajectory.\n"); 
 	msg.print("Number of frames in file : %i\n", nTrajectoryFrames_);
@@ -165,7 +148,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
-			success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read frame
+			success = trajectoryFilter_->executeRead(&trajectoryParser_);	// TGAY Read frame
 			if (success)
 			{
 				//msg.print("Read frame %i from file.\n", n+1);
@@ -181,7 +164,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		gui.progressTerminate();
 		msg.print("Cached %i frames from file.\n", trajectoryPosition_);
 		trajectoryCached_ = TRUE;
-		trajectoryFile_->close();
+		trajectoryParser_.closeFile();
 	}
 	else
 	{
@@ -372,25 +355,25 @@ void Model::seekFrame(int frameno)
 		if (frameno <= highestFrameOffset_)
 		{
 			currentFrame_->clear();
-			trajectoryFile_->seekg(trajectoryOffsets_[frameno-1]);
+			trajectoryParser_.seekg(trajectoryOffsets_[frameno-1]);
 // 			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
 			// If this was the highest offset stored, the file position now corresponds to the next frame
 			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nTrajectoryFrames_))
 			{
-				trajectoryOffsets_[frameno] = trajectoryFile_->tellg();
+				trajectoryOffsets_[frameno] = trajectoryParser_.tellg();
 				highestFrameOffset_ ++;
 			}
 		}
 		else
 		{
 			// Seek to last frame position stored
-			trajectoryFile_->seekg(trajectoryOffsets_[highestFrameOffset_]);
+			trajectoryParser_.seekg(trajectoryOffsets_[highestFrameOffset_]);
 			// Read in consecutive frames until we get to the desired point, storing pointers as we go.
 			for (int i = highestFrameOffset_; i < frameno; i++)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
-// 				bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY Read header
+				bool success = trajectoryFilter_->executeRead(&trajectoryParser_);	// TGAY Read header
 				if (!success)
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);
@@ -398,7 +381,7 @@ void Model::seekFrame(int frameno)
 					return;
 				}
 				// Store the next file offset (remember, array is 0 - N)
-				trajectoryOffsets_[i] = trajectoryFile_->tellg();
+				trajectoryOffsets_[i] = trajectoryParser_.tellg();
 			}
 			highestFrameOffset_ = frameno;
 		}
