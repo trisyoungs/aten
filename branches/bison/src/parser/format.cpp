@@ -129,7 +129,7 @@ NuFormat::~NuFormat()
 */
 
 // Use specified parser to perform formatted read
-int NuFormat::read(LineParser &parser, int flags)
+int NuFormat::read(LineParser *parser, int flags)
 {
 	msg.enter("NuFormat::read");
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
@@ -161,7 +161,7 @@ int NuFormat::readFormatted(const char *line, int flags)
 }
 
 // Read line from file and parse according to format
-int NuFormat::readFormatted(LineParser &parser, int flags)
+int NuFormat::readFormatted(LineParser *parser, int flags)
 {
 	msg.enter("NuFormat::readFormatted[file]");
 	// Set line in specified parser

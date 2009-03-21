@@ -50,6 +50,7 @@ Tree::Tree()
 	id_ = -1;
 	partner_ = NULL;
 	isFilter_ = FALSE;
+	parser_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -126,37 +127,21 @@ bool Tree::execute(NuReturnValue &rv)
 }
 
 // Execute tree after opening corresponding input stream
-bool Tree::executeRead(const char *filename)
+bool Tree::executeRead(LineParser *parser)
 {
-	msg.enter("Tree::executeRead[filename]");
-	// Open file in LineParser
-	if (!parser.openFile(filename))
+	msg.enter("Tree::executeRead[LineParser]");
+	// Check LineParser
+	parser_ = parser;
+	if (parser_ == NULL)
 	{
-		msg.exit("Tree::executeRead[filename]");
+		msg.print("Error: NULL parsing source passed.\n");
+		msg.exit("Tree::executeRead[LineParser]");
 		return FALSE;
 	}
 	// Execute the commands
 	NuReturnValue rv;
 	bool result = execute(rv);
-	// Close the file
-	parser.closeFile();
-	msg.exit("Tree::executeRead[filename]");
-	return result;
-}
-
-// Execute tree with current input stream
-bool Tree::executeRead()
-{
-	msg.enter("Tree::executeRead");
-	if (!parser.isFileGood())
-	{
-		printf("Current input file is not valid.\n");
-		return FALSE;
-	}
-	// Execute the commands
-	NuReturnValue rv;
-	bool result = execute(rv);
-	msg.exit("Tree::executeRead");
+	msg.exit("Tree::executeRead[LineParser]");
 	return result;
 }
 

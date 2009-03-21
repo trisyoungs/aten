@@ -21,7 +21,6 @@
 
 #include "parser/treenode.h"
 #include "parser/tree.h"
-#include "variables/accesspath.h"
 #include "base/sysfunc.h"
 #include "templates/reflist.h"
 #include <stdarg.h>
@@ -241,7 +240,7 @@ const char *TreeNode::argc(int i)
 	bool success;
 	const char *result = NULL;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
-	result = rv.asCharacter(success);
+	result = rv.asString(success);
 	if (!success) msg.print("Couldn't cast argument %i into a character.\n", i+1);
 	return result;
 }

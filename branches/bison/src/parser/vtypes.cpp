@@ -57,7 +57,7 @@ NuVTypes::DataType NuVTypes::determineType(const char *s)
 		else nch ++;
 	}
 	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return NuVTypes::CharacterData;
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return NuVTypes::StringData;
 	else if (ndp == 1) return NuVTypes::RealData;
 	else return NuVTypes::IntegerData;
 }
