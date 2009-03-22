@@ -61,9 +61,9 @@ template <class T, class D> class Reflist
 
 	public:
 	// Returns the head of the atom list
-	Refitem<T,D> *first();
+	Refitem<T,D> *first() const;
 	// Returns the last item in the list
-	Refitem<T,D> *last();
+	Refitem<T,D> *last() const;
 	// Returns the number of atoms in the list
 	int nItems();
 	// Add reference to the list
@@ -132,13 +132,13 @@ template <class T, class D> void Reflist<T,D>::operator=(Reflist<T,D> &source)
 }
 
 // Returns the head of the atom list
-template <class T, class D> Refitem<T,D> *Reflist<T,D>::first()
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::first() const
 {
 	return itemsHead_;
 }
 
 // Returns the last item in the list
-template <class T, class D> Refitem<T,D> *Reflist<T,D>::last()
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::last() const
 {
 	return itemsTail_;
 }

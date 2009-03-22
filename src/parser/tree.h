@@ -162,8 +162,6 @@ class Tree
 	// Filter Properties
 	*/
 	private:
-	// Whether this tree is a filter
-	bool isFilter_;
 	// Filter ID
 	int id_;
 	// Type of data the filter describes
@@ -192,8 +190,6 @@ class Tree
 	ElementMap::ZmapType zmapping_;
 
 	public:
-	// Flag that this tree is actually a file filter
-	void markAsFilter();
 	// Return whether this tree is a filter
 	bool isFilter();
 	// Return the ID of the filter
@@ -219,9 +215,9 @@ class Tree
 	// Return the file filter
 	const char *glob();
 	// Set the type of filter
-	void setType(FilterType ft);
+	void setFilterType(FilterType ft);
 	// Return the type of filter
-	FilterType type();
+	FilterType filterType();
 	// Return the long description of the filter (including glob)
 	const char *description();
 
@@ -291,15 +287,17 @@ class Forest
 	// Generate forest from string 
 	bool generate(const char *, const char *name = NULL);
 	// Generate forest from input file
-	bool generate(ifstream *file, const char *name = NULL);
+	bool generateFromFile(const char *filename, const char *name = NULL);
 	// Return number of trees in forest
 	int nTrees();
 	// Create a new, generic (script or command) tree
 	Tree *createTree();
 	// Create a new file filter-style tree
-	Tree *createFilterTree();
+	Tree *createFilter(Tree::FilterType ft);
 	// Execute all trees in forest
 	bool executeAll(NuReturnValue &rv);
+	// Print forest information
+	void print();
 };
 
 #endif

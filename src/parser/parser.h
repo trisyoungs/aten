@@ -22,6 +22,7 @@
 #ifndef ATEN_NUPARSER_H
 #define ATEN_NUPARSER_H
 
+#include "base/lineparser.h"
 #include "templates/reflist.h"
 #include "base/dnchar.h"
 #include <fstream>
@@ -39,6 +40,8 @@ class NuParser
 	~NuParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, nSymbolTokens };
+	// Friend declarations
+	friend class Forest;
 
 	/*
 	// Create / Execute
@@ -48,8 +51,8 @@ class NuParser
 	Dnchar stringSource_;
 	// Integer position in stringSource, and total length of string
 	int stringPos_, stringLength_;
-	// File source
-	std::ifstream *fileSource_;
+	// Line parser
+	LineParser parser_;
 	// Line number in source file that we've just read
 	int lineNumber_;
 	// Whether the current input source is a file or not
@@ -93,13 +96,13 @@ class NuParser
 
 
 	/*
-	// Tree Generation
+	// Tree Generation - Private functions
 	*/
-	public:
-	// Fill target forest from specified character string
+	private:
+	// Populate target forest from specified character string
 	bool generate(Forest *f, const char *s);
-	// Fill target forest from specified ifstream
-	bool generate(Forest *f, ifstream *file);
+	// Populate target forest from specified file
+	bool generateFromFile(Forest *f, const char *filename);
 };
 
 // External declaration

@@ -33,7 +33,7 @@ LineParser::ParseOption LineParser::parseOption(const char *s)
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
 }
 
-// Constructor
+// Constructors
 LineParser::LineParser()
 {
 	// Private variables
@@ -43,7 +43,17 @@ LineParser::LineParser()
 	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
 }
-
+LineParser::LineParser(const char *filename, bool outputstream)
+{
+	// Private variables
+	endOfLine_ = FALSE;
+	lineLength_ = 0;
+	linePos_ = 0;
+	optionMask_ = LineParser::Defaults;
+	lastLine_ = 0;
+	// Open new file for reading or writing
+	openFile(filename, outputstream);
+}
 
 /*
 // Source line/file and read options
@@ -62,21 +72,21 @@ int LineParser::lastLine()
 }
 
 // Open file for parsing
-bool LineParser::openFile(const char *filename)
+bool LineParser::openFile(const char *filename, bool outputstream)
 {
 	msg.enter("LineParser::openFile");
 	// Check existing input file
-	if (sourceFile_.is_open())
+	if (file_.is_open())
 	{
 		printf("Warning - LineParser already appears to have an open file...\n");
-		sourceFile_.close();
+		file_.close();
 	}
 	// Open new file
-	sourceFile_.open(filename, ios::in);
-	if (!sourceFile_.good())
+	file_.open(filename, outputstream ? ios::out : ios::in);
+	if (!file_.good())
 	{
-		sourceFile_.close();
-		msg.print("Failed to open file '%s'.\n", filename);
+		file_.close();
+		msg.print("Failed to open file '%s' for %s.\n", filename, outputstream ? "writing" : "reading");
 		msg.exit("LineParser::openFile");
 		return FALSE;
 	}
@@ -89,9 +99,9 @@ bool LineParser::openFile(const char *filename)
 // Close file 
 void LineParser::closeFile()
 {
-	if (sourceFile_.is_open())
+	if (file_.is_open())
 	{
-		sourceFile_.close();
+		file_.close();
 		lastLine_ = 0;
 	}
 	else printf("Warning: LineParser tried to close file again.\n");
@@ -100,14 +110,20 @@ void LineParser::closeFile()
 // Return whether current file source is good for reading/writing
 bool LineParser::isFileGood()
 {
-	return sourceFile_.good();
+	return file_.good();
+}
+
+// Peek next character in file
+char LineParser::peek()
+{
+	return file_.peek();
 }
 
 // Tell current position of file stream
 streampos LineParser::tellg()
 {
 	streampos result = 0;
-	if (sourceFile_.is_open()) result = sourceFile_.tellg();
+	if (file_.is_open()) result = file_.tellg();
 	else printf("Warning: LineParser tried to tellg() on a non-existent file.\n");
 	return result;
 }
@@ -115,21 +131,21 @@ streampos LineParser::tellg()
 // Seek position in file
 void LineParser::seekg(streampos pos)
 {
-	if (sourceFile_.is_open()) sourceFile_.seekg(pos);
+	if (file_.is_open()) file_.seekg(pos);
 	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
 }
 
 // Seek n bytes in specified direction
 void LineParser::seekg(streamoff off, ios_base::seekdir dir)
 {
-	if (sourceFile_.is_open()) sourceFile_.seekg(off, dir);
+	if (file_.is_open()) file_.seekg(off, dir);
 	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
 }
 
 // Rewind file to start
 void LineParser::rewind()
 {
-	if (sourceFile_.is_open()) sourceFile_.seekg(0, ios::beg);
+	if (file_.is_open()) file_.seekg(0, ios::beg);
 	else msg.print("No file currently open to rewind.\n");
 }
 
@@ -142,14 +158,15 @@ int LineParser::readLine()
 {
 	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
-	sourceFile_.getline(line_, MAXLINELENGTH-1);
-	if (sourceFile_.eof())
+	file_.getline(line_, MAXLINELENGTH-1);
+	msg.print(Messenger::Parse, "  Line from file is: [%s]\n", line_);
+	if (file_.eof())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
 		return -1;
 	}
-	if (sourceFile_.fail())
+	if (file_.fail())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
@@ -160,6 +177,41 @@ int LineParser::readLine()
 	lastLine_ ++;
 	//printf("Line = [%s], length = %i\n",line_,lineLength_);
 	msg.exit("LineParser::readLine");
+	return 0;
+}
+
+// Read single line from internal file, ignoring comments and skipping blank lines
+int LineParser::getLine()
+{
+	msg.enter("LineParser::getLine");
+	// Returns : 0=ok, 1=error, -1=eof
+	int result;
+	do
+	{
+		result = readLine();
+		if (result != 0) return result;
+		// Search for a '#' in the file to remove comment
+		char *c;
+		for (c = line_; *c != '\0'; c++)
+		{
+			if (*c == '#')
+			{
+				*c = '\0';
+				break;
+			}
+		}
+		// Now, see if our line contains only blanks
+		int nchars = 0, nspaces = 0;
+		for (c = line_; *c != '\0'; c++)
+		{
+			nchars++;
+			if (isspace(*c)) nspaces++;
+		}
+		if (nchars == nspaces) result = -1;
+	}
+	while (result != 0);
+	//printf("Line = [%s], length = %i\n",line_,lineLength_);
+	msg.exit("LineParser::getLine");
 	return 0;
 }
 
@@ -197,7 +249,7 @@ bool LineParser::getNextArg(Dnchar *destarg)
 				else if ((d == 10) || (d == 13))
 				{
 					// Next char is newline, so read another line from file if we have one
-					if (sourceFile_ == NULL)
+					if (file_ == NULL)
 					{
 						done = TRUE;
 						endOfLine_ = TRUE;
@@ -424,16 +476,16 @@ const char *LineParser::getChars(int nchars)
 	else if (nchars < 0)
 	{
 		tempArg_[0]   = '\0';
-		for (int i=nchars; i<0; i++) sourceFile_.unget();
+		for (int i=nchars; i<0; i++) file_.unget();
 	}
-	else sourceFile_.getline(tempArg_, nchars);
-	if (sourceFile_.eof())
+	else file_.getline(tempArg_, nchars);
+	if (file_.eof())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
 		return NULL;
 	}
-	if (sourceFile_.fail())
+	if (file_.fail())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
@@ -449,26 +501,26 @@ int LineParser::getInteger(int nbytes)
 	if (nbytes == 0)
 	{
 		int readi;
-		sourceFile_.read((char*) &readi, sizeof(int));
+		file_.read((char*) &readi, sizeof(int));
 		return readi;
 	}
 	// Try and select a suitable type for the read, based on nbytes
 	if (sizeof(short int) == nbytes)
 	{
 		short int readi;
-		sourceFile_.read((char*) &readi, nbytes);
+		file_.read((char*) &readi, nbytes);
 		return (int) readi;
 	}
 	else if (sizeof(int) == nbytes)
 	{
 		int readi;
-		sourceFile_.read((char*) &readi, nbytes);
+		file_.read((char*) &readi, nbytes);
 		return readi;
 	}
 	else if (sizeof(long int) == nbytes)
 	{
 		long int readi;
-		sourceFile_.read((char*) &readi, nbytes);
+		file_.read((char*) &readi, nbytes);
 		return (int) readi;
 	}
 	else msg.print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
@@ -482,20 +534,20 @@ double LineParser::getReal(int nbytes)
 	if (nbytes == 0)
 	{
 		double readd;
-		sourceFile_.read((char*) &readd, sizeof(double));
+		file_.read((char*) &readd, sizeof(double));
 		return readd;
 	}
 	// Try and select a suitable type for the read, based on nbytes
 	if (sizeof(double) == nbytes)
 	{
 		double readd;
-		sourceFile_.read((char*) &readd, nbytes);
+		file_.read((char*) &readd, nbytes);
 		return readd;
 	}
 	else if (sizeof(long double) == nbytes)
 	{
 		long double readd;
-		sourceFile_.read((char*) &readd, nbytes);
+		file_.read((char*) &readd, nbytes);
 		return (double) readd;
 	}
 	else msg.print("Error: Real of size %i bytes does not correspond to any internal type.\n", nbytes);

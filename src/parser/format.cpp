@@ -28,6 +28,9 @@
 // Format
 */
 
+// Singleton
+char NuFormat::createdString_[8096];
+
 // Constructor
 NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 {
@@ -121,6 +124,11 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 
 // Destructor
 NuFormat::~NuFormat()
+{
+}
+
+// Return whether the format was created successfully
+bool NuFormat::isValid()
 {
 }
 
