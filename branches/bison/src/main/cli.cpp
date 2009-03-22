@@ -209,12 +209,12 @@ int Aten::parseCli(int argc, char *argv[])
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
 	char *arg, *line, prompt[32];
 	Forcefield *ff;
+	LineParser parser;
 	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
-	Tree cl, *script;
-	Tree *tree;
+	Forest *forest, *script, tempforest;
 	NuReturnValue rv;
-	Filter *f, *modelfilter = NULL;
+	Tree *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -280,10 +280,10 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				// Test new AST code
 				case (Cli::ASTSwitch):
-					Forest *forest = new Forest;
-					if (!nuparser.generate(forest, argv[++argn])) return -1;
+					forest = new Forest;
+					if (forest->generate(argv[++argn], "cli")) return -1;
 					printf("Resulting forest contains %i trees.\n", forest->nTrees());
-					n = tree->execute(rv);
+					n = forest->executeAll(rv);
 					break;
 				// All of the following switches were dealt with in parseCliEarly()
 				case (Cli::DebugSwitch):
@@ -318,21 +318,21 @@ int Aten::parseCli(int argc, char *argv[])
 					if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
 					{
 						script = aten.addBatchCommand();
-						if (!script->cacheLine(argv[++argn])) return -1;
+						if (!script->generate(argv[++argn], "batchcommand")) return -1;
 					}
 					else
 					{
-						cl.clear();
-						if (cl.cacheLine(argv[++argn]))
+						tempforest.clear();
+						if (tempforest.generate(argv[++argn], "command"))
 						{
-							if (!cl.execute()) return -1;
+							if (!tempforest.executeAll(rv)) return -1;
 						}
 						else return -1;
 					}
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
-					f = aten.findFilter(Filter::ModelExport, argv[++argn]);
+					f = aten.findFilter(Tree::ModelExport, argv[++argn]);
 					if (f == NULL) return -1;
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
@@ -349,15 +349,15 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = aten.findFilter(Filter::ModelImport, argv[++argn]);
+					modelfilter = aten.findFilter(Tree::ModelImport, argv[++argn]);
 					if (modelfilter == NULL) return -1;
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
 					argn++;
-					f = aten.probeFile(argv[argn], Filter::GridImport);
+					f = aten.probeFile(argv[argn], Tree::GridImport);
 					if (f == NULL) return -1;
-					else if (!f->execute(argv[argn])) return -1;
+					else if (!f->executeRead(argv[argn])) return -1;
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
@@ -369,7 +369,7 @@ int Aten::parseCli(int argc, char *argv[])
 						// Get string from user
 						line = readline(prompt);
 						aten.interactiveScript.clear();
-						if (aten.interactiveScript.cacheLine(line)) aten.interactiveScript.execute();
+						if (aten.interactiveScript.generate(line)) aten.interactiveScript.executeAll(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;
@@ -387,7 +387,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(argv[++argn], Parser::Defaults);
+					parser.getArgsDelim(argv[++argn]);
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						el = elements().findAlpha(afterChar(parser.argc(n), '='));
@@ -426,10 +426,10 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-					if (script->load(argv[++argn]))
+					if (script->generateFromFile(argv[++argn]))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
+						if (!script->executeAll(rv)) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
 					}
@@ -445,7 +445,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
 					else
 					{
-						Filter *f = probeFile(argv[++argn], Filter::TrajectoryImport);
+						Tree *f = probeFile(argv[++argn], Tree::TrajectoryImport);
 						if (f == NULL) return -1;
 						if (!current.m->initialiseTrajectory(argv[argn],f)) return -1;
 					}
@@ -466,8 +466,8 @@ int Aten::parseCli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = aten.probeFile(argv[argn], Filter::ModelImport);
-			if (f != NULL) f->execute(argv[argn]);
+			else f = aten.probeFile(argv[argn], Tree::ModelImport);
+			if (f != NULL) f->executeRead(argv[argn]);
 			else return -1;
 		}
 	}

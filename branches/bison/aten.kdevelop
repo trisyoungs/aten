@@ -19,7 +19,7 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/tris/src/aten-bison</mainprogram>
+      <mainprogram>/home/tris/src/aten-bison/src/aten</mainprogram>
       <programargs>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</programargs>
       <globaldebugarguments>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</globaldebugarguments>
       <globalcwd>/home/tris/src/aten-bison</globalcwd>
@@ -57,10 +57,10 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>true</abortonerror>
-      <runmultiplejobs>true</runmultiplejobs>
+      <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>4</prio>
     </make>
   </kdevautoproject>

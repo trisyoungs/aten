@@ -40,7 +40,6 @@ NuParser::NuParser()
 {
 	// Private variables
 	isFileSource_ = FALSE;
-	fileSource_ = NULL;
 	stringPos_ = -1;
 	stringLength_ = 0;
 	lineNumber_ = 0;
@@ -65,8 +64,8 @@ void NuParser::printErrorInfo()
 	// Print current string
 	if (isFileSource_)
 	{
-		printf("(Line %4i) : %s\n", stringSource_.get());
-		printf("           : %s^\n", temp);
+		printf("(Line %4i) : %s\n", parser_.lastLine(), stringSource_.get());
+		printf("            : %s^\n", temp);
 	}
 	else
 	{
@@ -92,15 +91,20 @@ char NuParser::getChar()
 	char c = 0;
 	if (isFileSource_)
 	{
+		// If the stringPos_ is equal to the string length, read in another line
+		if (stringPos_ == stringLength_)
+		{
+			if (parser_.getLine() != 0) return '\0';
+			stringSource_ = parser_.line();
+			stringLength_ = stringSource_.length();
+			stringPos_ = 0;
+		}
 	}
-	else
-	{
-		// Return current character
-		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_[stringPos_];
-		// Increment string position
-		stringPos_++;
-	}
+	// Return current character
+	if (stringPos_ == stringLength_) return '\0';
+	c = stringSource_[stringPos_];
+	// Increment string position
+	stringPos_++;
 	return c;
 }
 
@@ -110,6 +114,8 @@ char NuParser::peekChar()
 	char c = 0;
 	if (isFileSource_)
 	{
+		if (stringPos_ == stringLength_) return parser_.peek();
+		c = stringSource_[stringPos_];
 	}
 	else
 	{
@@ -125,6 +131,8 @@ void NuParser::unGetChar()
 {
 	if (isFileSource_)
 	{
+		// If we are at position 0, then we need the last character from the previous line!
+		if (stringPos_ == 0) printf("Fix Required: last character from previous line...\n");
 	}
 	else
 	{
@@ -142,9 +150,9 @@ int yylex()
 // Parser lexer, called by yylex()
 int NuParser::lex()
 {
-	if (tree == NULL)
+	if (forest_ == NULL)
 	{
-		printf("Lexer called when no current tree pointer available.\n");
+		printf("Lexer called when no target Forest set.\n");
 		return 0;
 	}
 
@@ -279,7 +287,16 @@ int NuParser::lex()
 			else if (strcmp(token,"else") == 0) return ELSE;
 			else if (strcmp(token,"for") == 0) return FOR;
 			else if (strcmp(token,"while") == 0) return WHILE;
-	
+
+			// Is this the start of a filter or a function?
+			Tree::FilterType ft = Tree::filterType(token);
+			if (ft != Tree::nFilterTypes)
+			{
+				printf("Its a filter...\n");
+				tree = forest_->createFilter(ft);
+				return FILTERBLOCK;
+			}
+
 			// If we get to here then its not a high-level keyword.
 			// Is it a function keyword?
 			for (n=0; n<NuCommand::nCommands; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
@@ -334,7 +351,7 @@ int NuParser::lex()
 	while (ispunct(c));
 	unGetChar();
 	token[length] = '\0';
-// 	printf("Token is %s\n",token);
+	printf("Token is %s\n",token);
 	if (length == 1) return token[0];
 	else
 	{
@@ -377,7 +394,7 @@ bool NuParser::generate(Forest *f, const char *s)
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
-		printf("Internal Error: No Forest passted to NuParser::generate().\n");
+		printf("Internal Error: No Forest passed to NuParser::generate().\n");
 		msg.exit("NuParser::generate[string]");
 		return FALSE;
 	}
@@ -400,8 +417,51 @@ bool NuParser::generate(Forest *f, const char *s)
 		msg.exit("NuParser::generate[string]");
 		return FALSE;
 	}
-	else print();
 	forest_ = NULL;
 	msg.exit("NuParser::generate[string]");
+	return TRUE;
+}
+
+// Fill target forest from specified character string
+bool NuParser::generateFromFile(Forest *f, const char *filename)
+{
+	msg.enter("NuParser::generate[file]");
+	// Clear any data in the existing forest
+	if (f == NULL)
+	{
+		printf("Internal Error: No Forest passed to NuParser::generate().\n");
+		msg.exit("NuParser::generate[file]");
+		return FALSE;
+	}
+	forest_ = f;
+	forest_->clear();
+	// Open the file
+	parser_.openFile(filename);
+	if (!parser_.isFileGood())
+	{
+		msg.print("Error: File '%s' could not be opened.\n", filename);
+		msg.exit("NuParser::generate[file]");
+		return FALSE;
+	}
+	// Set initial string pos and string length so we read in a line on the first getChar.
+	stringPos_ = 0;
+	stringLength_ = 0;
+	isFileSource_ = TRUE;
+	expectPathStep_ = FALSE;
+	// Perform the parsing
+	int result = yyparse();
+	if (result != 0)
+	{
+		msg.print("Error occurred here:\n");
+		printErrorInfo();
+		forest_->clear();
+		forest_ = NULL;
+		isFileSource_ = NULL;
+		msg.exit("NuParser::generate[file]");
+		return FALSE;
+	}
+	isFileSource_ = NULL;
+	forest_ = NULL;
+	msg.exit("NuParser::generate[file]");
 	return TRUE;
 }

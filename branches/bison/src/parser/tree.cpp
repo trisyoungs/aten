@@ -25,15 +25,29 @@
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
 #include "parser/grammar.h"
+#include "parser/parser.h"
 #include "parser/tree.h"
 #include "parser/vector.h"
 #include "parser/character.h"
 #include "parser/integer.h"
 #include "parser/real.h"
+#include "base/sysfunc.h"
+#include "main/aten.h"
 #include <stdarg.h>
 
 // YYParse forward
 int yyparse();
+
+// Filter types
+const char *FilterTypeKeywords[Tree::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
+const char *Tree::filterType(Tree::FilterType ft)
+{
+        return FilterTypeKeywords[ft];
+}
+Tree::FilterType Tree::filterType(const char *s)
+{
+        return (Tree::FilterType) enumSearch("filter type", Tree::nFilterTypes, FilterTypeKeywords, s);
+}
 
 // Constructor
 Tree::Tree()
@@ -49,7 +63,6 @@ Tree::Tree()
 	glob_.set("*");
 	id_ = -1;
 	partner_ = NULL;
-	isFilter_ = FALSE;
 	parser_ = NULL;
 
 	// Public variables
@@ -143,6 +156,18 @@ bool Tree::executeRead(LineParser *parser)
 	bool result = execute(rv);
 	msg.exit("Tree::executeRead[LineParser]");
 	return result;
+}
+
+// Execute, opening specified file as input source (no return value)
+bool Tree::executeRead(const char *filename)
+{
+	printf("XXXX NOT WRITTEN YET.\n");
+}
+
+// Execute, with specified filename as data target
+bool Tree::executeWrite(const char *filename)
+{
+	printf("XXXX NOT WRITTEN YET.\n");
 }
 
 // Print tree
@@ -656,17 +681,125 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	msg.exit("Tree::expandPath");
 	return result;
 }
+ 
+/*
+// Filter-specific data
+*/
 
+// Return the ID of the filter
+int Tree::id()
+{
+	return id_;
+}
+
+// Return the descriptive name of the filter
+const char *Tree::name()
+{
+	return name_.get();
+}
+
+// Return the short nickname of the filter
+const char *Tree::nickname()
+{
+	return nickname_.get();
+}
+
+// Return the first file extension
+Dnchar *Tree::extensions()
+{
+	return extensions_.first();
+}
+
+// Return the first alias
+Dnchar *Tree::exactNames()
+{
+	return exactNames_.first();
+}
+
+// Return the number of identifying strings defined
+int Tree::nIdStrings()
+{
+	return idStrings_.nItems();
+}
+
+// Return the first identifying text string
+Namemap<int> *Tree::idStrings()
+{
+	return idStrings_.first();
+}
+
+// Return whether filter has an extension
+bool Tree::hasExtension()
+{
+	return hasExtension_;
+}
+
+// Set the partner filter
+void Tree::setPartner(Tree *filter)
+{
+	partner_ = filter;
+}
+
+// Return the partner filter
+Tree *Tree::partner()
+{
+	return partner_;
+}
+
+// Return the file filter
+const char *Tree::glob()
+{
+	return glob_.get();
+}
+
+// Set the type of filter
+void Tree::setFilterType(FilterType ft)
+{
+	filterType_ = ft;
+}
+
+// Return the type of filter
+Tree::FilterType Tree::filterType()
+{
+	return filterType_;
+}
+
+// Return the type of filter
+bool Tree::isFilter()
+{
+	return (filterType_ != Tree::nFilterTypes);
+}
+
+// Return the long description of the filter (including glob)
+const char *Tree::description()
+{
+	return description_.get();
+}
 
 /*
 // Forest
 */
 
+// Constructor
 Forest::Forest()
 {
+	// Private variables
+	name_ = "NewForest";
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Destructor
+Forest::~Forest()
+{
+}
+
+// Clear forest
+void Forest::clear()
+{
+	functions_.clear();
+	trees_.clear();
 }
 
 // Set name of forest
@@ -689,4 +822,49 @@ int Forest::nTrees()
 // Create a new tree
 Tree *Forest::createTree()
 {
+	return trees_.add();
+}
+
+// Generate forest from string 
+bool Forest::generate(const char *, const char *name)
+{
+	msg.enter("Forest::generate[string]");
+	printf("XXX Not DOnw Yet.\n");
+	msg.exit("Forest::generate[string]");
+}
+
+// Generate forest from input file
+bool Forest::generateFromFile(const char *filename, const char *name)
+{
+	msg.enter("Forest::generateFromFile");
+	bool result = nuparser.generateFromFile(this, filename);
+	msg.exit("Forest::generateFromFile");
+	return result;
+}
+
+// Create a new file filter-style tree
+Tree *Forest::createFilter(Tree::FilterType ft)
+{
+	msg.enter("Forest::createFilter");
+	// Create tree and set its filter type
+	Tree *tree = trees_.add();
+	tree->setFilterType(ft);
+	// Register the filter with the master
+	aten.registerFilter(tree, ft);
+	msg.exit("Forest::createFilter");
+	return tree;
+}
+
+// Execute all trees in forest
+bool Forest::executeAll(NuReturnValue &rv)
+{
+	msg.enter("Forest::executeAll");
+	printf("XXX Not DOnw Yet.\n");
+	msg.exit("Forest::executeAll");
+}
+
+// Print forest information
+void Forest::print()
+{
+	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), functions_.nItems(), trees_.nItems());	
 }

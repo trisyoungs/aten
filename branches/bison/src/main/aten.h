@@ -30,8 +30,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "840"
-#define ATENDATE "Tue 17 Mar - 22:15"
+#define ATENREVISION "842"
+#define ATENDATE "Sun 22 Mar - 22:50"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -102,7 +102,7 @@ class Aten
 	// Whether or not filters were loaded without error on startup
 	bool filterLoadSuccessful_;
 	// Parse filter index and load filters
-	bool parseFilterIndex(const char *path, ifstream *indexfile);
+	bool parseFilterIndex(const char *path);
 	// Set export partners for import filters
 	void partnerFilters();
 	// List of Filter Forests
@@ -113,6 +113,8 @@ class Aten
 	public:
 	// Load filters
 	void openFilters();
+	// Register a filter of a gien type
+	void registerFilter(Tree *filter, Tree::FilterType ft);
 	// Whether filters loaded succesfully on startup
 	bool filterLoadSuccessful();
 	// Reload filters

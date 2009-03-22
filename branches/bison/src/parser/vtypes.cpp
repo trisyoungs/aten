@@ -37,6 +37,10 @@ const char *NuVTypes::dataType(NuVTypes::DataType dt)
 {
 	return NuDataTypeNames[dt];
 }
+const char *NuVTypes::aDataType(NuVTypes::DataType dt)
+{
+	return NuDataTypePhrases[dt];
+}
 bool NuVTypes::isPointer(NuVTypes::DataType dt)
 {
 	if (dt > NuVTypes::VectorData) return TRUE;

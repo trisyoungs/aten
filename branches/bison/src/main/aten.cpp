@@ -445,7 +445,6 @@ void Aten::openFilters()
 	msg.enter("Aten::openFilters");
 	char filename[512], path[512];
 	bool found = FALSE, failed = FALSE;
-	ifstream *listfile;
 
 	// If ATENDATA is set, take data from there
 	if (!aten.dataDir_.isEmpty())
@@ -453,14 +452,8 @@ void Aten::openFilters()
 		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
 		sprintf(path,"%s%s", dataDir_.get(), "/filters/");
 		sprintf(filename,"%s%s", dataDir_.get(), "/filters/index");
-		listfile = new ifstream(filename,ios::in);
-		if (listfile->is_open())
-		{
-			if (parseFilterIndex(path, listfile)) found = TRUE;
-			else failed = TRUE;
-		}
-		listfile->close();
-		delete listfile;
+		if (parseFilterIndex(path)) found = TRUE;
+		else failed = TRUE;
 	}
 	else msg.print(Messenger::Verbose, "$ATENDATA has not been set. Searching default locations...\n");
 	if ((!found) && (!failed))
@@ -469,36 +462,24 @@ void Aten::openFilters()
 		sprintf(path,"%s%s", "/usr/share/aten", "/filters/");
 		msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 		sprintf(filename,"%s%s", path, "index");
-		listfile = new ifstream(filename, ios::in);
-		if (listfile->is_open())
+		if (parseFilterIndex(path))
 		{
-			if (parseFilterIndex(path, listfile))
-			{
-				found = TRUE;
-				dataDir_ = "/usr/share/aten/";
-			}
-			else failed = TRUE;
+			found = TRUE;
+			dataDir_ = "/usr/share/aten/";
 		}
-		listfile->close();
-		delete listfile;
+		else failed = TRUE;
 
 		if ((!found) && (!failed))
 		{
 			sprintf(path,"%s%s", "/usr/local/share/aten", "/filters/");
 			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
+			if (parseFilterIndex(path))
 			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = "/usr/local/share/aten/";
-				}
-				else failed = TRUE;
+				found = TRUE;
+				dataDir_ = "/usr/local/share/aten/";
 			}
-			listfile->close();
-			delete listfile;
+			else failed = TRUE;
 		}
 
 		if ((!found) && (!failed))
@@ -506,18 +487,12 @@ void Aten::openFilters()
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/");
 			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
+			if (parseFilterIndex(path))
 			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../share/aten/");
-				}
-				else failed = TRUE;
+				found = TRUE;
+				dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../share/aten/");
 			}
-			listfile->close();
-			delete listfile;
+			else failed = TRUE;
 		}
 
 		if ((!found) && (!failed))
@@ -525,18 +500,12 @@ void Aten::openFilters()
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/");
 			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
+			if (parseFilterIndex(path))
 			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../SharedSupport/");
-				}
-				else failed = TRUE;
+				found = TRUE;
+				dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../SharedSupport/");
 			}
-			listfile->close();
-			delete listfile;
+			else failed = TRUE;
 		}
 
 		if (!found)
@@ -554,14 +523,8 @@ void Aten::openFilters()
 		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
 		msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
 		sprintf(filename, "%s%s", path, "index");
-		listfile = new ifstream(filename, ios::in);
-		if (listfile->is_open())
-		{
-			if (parseFilterIndex(path, listfile)) found = TRUE;
-			else failed = TRUE;
-		}
-		listfile->close();
-		delete listfile;
+		if (parseFilterIndex(path)) found = TRUE;
+		else failed = TRUE;
 	}
 
 	// Print out info and partner filters if all was successful
@@ -576,11 +539,17 @@ void Aten::openFilters()
 	msg.exit("Aten::openFilters");
 }
 
+// Register a filter of a gien type
+void Aten::registerFilter(Tree *filter, Tree::FilterType ft)
+{
+	filters_[ft].add(filter);
+}
+
 // Reload filters
 bool Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
-	char indexfile[512], path[512], filterfile[128], message[512], shortname[128];
+	char indexfile[512], path[512], filename[128], message[512];
 	ifstream *file;
 	msg.print("Clearing current filters....\n");
 	filters_[Tree::ModelImport].clear();
@@ -595,31 +564,30 @@ bool Aten::reloadFilters()
 	sprintf(path,"%s%s", dataDir_.get(), "/filters");
 	msg.print("Reading filters from '%s'...\n", path);
 	sprintf(indexfile, "%s/%s", path, "index");
-	file = new ifstream(indexfile, ios::in);
-	if (file->is_open())
+	LineParser parser(indexfile);
+	if (!parser.isFileGood())
 	{
-		while (!file->eof())
-		{
-			if (parser.getArgsDelim(file, Parser::SkipBlanks) != 0) break;
-			strcpy(shortname, parser.argc(0));
-			sprintf(filterfile, "%s/%s", path, shortname);
-			// For each filter file found, create a Forest to be populated with Filter(Trees)
-			ifstream file(filterfile,ios::in);
-			if (!nuparser.generate(filterForests_.add(), &file))
-			{
-				sprintf(message, "Error(s) encountered while reading filter file '%s' (see message box for details).\nOne or more filters contained within will be unavailable.\n", shortname);
-				QMessageBox::warning(gui.mainWindow, "Aten", message, QMessageBox::Ok);
-			}
-		}
-		// Print out info and partner filters 
-		partnerFilters();
-		msg.print("Found (import/export):  Models (%i/%i) ", filters_[Tree::ModelImport].nItems(), filters_[Tree::ModelExport].nItems());
-		msg.print("Trajectory (%i/%i) ", filters_[Tree::TrajectoryImport].nItems(), filters_[Tree::TrajectoryExport].nItems());
-		msg.print("Expression (%i/%i) ", filters_[Tree::ExpressionImport].nItems(), filters_[Tree::ExpressionExport].nItems());
-		msg.print("Grid (%i/%i)\n", filters_[Tree::GridImport].nItems(), filters_[Tree::GridExport].nItems());
+		msg.exit("Aten::reloadFilters");
+		return FALSE;
 	}
-	parser.close();
-	delete file;
+	while (parser.getArgsDelim(LineParser::SkipBlanks) != 0)
+	{
+		sprintf(filename, "%s/%s", path, parser.argc(0));
+		// For each filter file found, create a Forest to be populated with Filter(Trees)
+		Forest *f = filterForests_.add();
+		if (!f->generateFromFile(filename, parser.argc(0)))
+		{
+			sprintf(message, "Error(s) encountered while reading filter file '%s' (see message box for details).\nOne or more filters contained within will be unavailable.\n", parser.argc(0));
+			QMessageBox::warning(gui.mainWindow, "Aten", message, QMessageBox::Ok);
+		}
+	}
+	parser.closeFile();
+	// Print out info and partner filters 
+	partnerFilters();
+	msg.print("Found (import/export):  Models (%i/%i) ", filters_[Tree::ModelImport].nItems(), filters_[Tree::ModelExport].nItems());
+	msg.print("Trajectory (%i/%i) ", filters_[Tree::TrajectoryImport].nItems(), filters_[Tree::TrajectoryExport].nItems());
+	msg.print("Expression (%i/%i) ", filters_[Tree::ExpressionImport].nItems(), filters_[Tree::ExpressionExport].nItems());
+	msg.print("Grid (%i/%i)\n", filters_[Tree::GridImport].nItems(), filters_[Tree::GridExport].nItems());
 	msg.exit("Aten::reloadFilters");
 	return TRUE;
 }
@@ -630,27 +598,38 @@ bool Aten::filterLoadSuccessful()
 	return filterLoadSuccessful_;
 }
 
-// Parse filter index file
-bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
+// Parse filter index file (rooted in the path provided)
+bool Aten::parseFilterIndex(const char *path)
 {
 	msg.enter("Aten::parseFilterIndex");
 	// Read filter names from file and open them
-	char filterfile[512], s[512], bit[64];
+	char filename[512], s[512], bit[64];
 	strcpy(s, "--> ");
-	while (!indexfile->eof())
+	// Open the filter index
+	strcpy(filename,path);
+	strcat(filename, "index");
+	LineParser parser(filename);
+	if (!parser.isFileGood())
 	{
-		strcpy(filterfile,path);
-		if (parser.getArgsDelim(indexfile, Parser::SkipBlanks) != 0) break;
-		strcat(filterfile, parser.argc(0));
-		sprintf(bit, "%s  ",parser.argc(0));
-		strcat(s, bit);
-		// For each filter file found, create a Forest to be populated with Filter(Trees)
-		ifstream file(filterfile,ios::in);
-		if (!nuparser.generate(filterForests_.add(), &file))
+		msg.print("Couldn't open filter index file '%s'.\n", filename);
+		return FALSE;
+	}
+	while (parser.getArgsDelim(LineParser::SkipBlanks) == 0)
+	{
+		// Construct filter filename and path string
+		strcpy(filename,path);
+		strcat(filename, parser.argc(0));
+		// Construct Forest...
+		Forest *f = filterForests_.add();
+		printf("XXX The filter file to read is called %s\n", parser.argc(0));
+		if (!f->generateFromFile(filename, parser.argc(0)))
 		{
 			msg.exit("Aten::parseFilterIndex");
 			return FALSE;
 		}
+		// Add on a bit of useful text to print out
+		sprintf(bit, "%s  ", parser.argc(0));
+		strcat(s, bit);
 	}
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
@@ -725,18 +704,19 @@ void Aten::partnerFilters()
 Tree *Aten::findFilter(Tree::FilterType ft, const char *nickname) const
 {
 	msg.enter("Aten::findFilter");
-	Filter *result;
+	Refitem<Tree,int> *result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
-		if (strcmp(result->nickname(), nickname) == 0) break;
+		if (strcmp(result->item->nickname(), nickname) == 0) break;
 	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Tree::filterType(ft), nickname);
 	msg.exit("Aten::findFilter");
-	return result;
+	return (result == NULL ? NULL : result->item);
 }
 
 // Return first filter in list (of a given type)
 Tree *Aten::filters(Tree::FilterType ft) const
 {
-	return filters_[ft].first();
+	Refitem<Tree,int> *result = filters_[ft].first();
+	return (result == NULL ? NULL : result->item);
 }
 
 /*

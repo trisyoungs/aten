@@ -103,7 +103,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Similarly, if no filename has been set, raise the file dialog.
 	Model *m = aten.currentModel();
 	Tree *filter = m->filter();
-	if ((filter != NULL) && (filter->type() != Tree::ModelExport)) filter = NULL;
+	if ((filter != NULL) && (filter->filterType() != Tree::ModelExport)) filter = NULL;
 	Dnchar filename;
 	filename = m->filename();
 	if (filename.isEmpty() || (filter == NULL))

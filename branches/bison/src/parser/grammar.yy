@@ -31,7 +31,7 @@ Dnchar newVarName;
 %token <name> NEWTOKEN INTCONST REALCONST CHARCONST STEPTOKEN
 %token <variable> VARNAME
 %token <functionId> FUNCCALL
-%token DECLARATION WHILE FOR IF
+%token DECLARATION WHILE FOR IF FILTERBLOCK
 %nonassoc ELSE
 
 %left '=' PEQ MEQ TEQ DEQ
@@ -44,22 +44,20 @@ Dnchar newVarName;
 %type <node> constant expr func var
 %type <node> flowstatement statementexpr statement block blockment statementlist exprlist VECCONST
 %type <node> namelist newname
+%type <node> filter
 
 %%
 
 program:
 	program statementlist			{ nuparser.tree->addStatement($2); }
+	| filter				{ nuparser.tree->addStatement($1); }
 	| /* NULL */
 	;
 
-/* Filter Definitions */
-
-
-	
 /* Compound Statement */
 
 block:
-	'{'					{ nuparser.tree->pushScope(); }
+	'{'					{ printf("kjsdafkjdskfjdskjf\n"); nuparser.tree->pushScope(); }
 		statementlist '}'		{ $$ = $3; nuparser.tree->popScope(); }
         ;
 
@@ -74,6 +72,12 @@ blockment:
 	| block					{ $$ = $1; }
 	;
 
+/* Filter Definitions */
+
+filter:
+	FILTERBLOCK block			{ $$ = $2; }
+	;
+	
 /* Single Statement / Flow Control */
 
 statement:
@@ -100,6 +104,8 @@ createscope:
 /* Range (X~Y) */
 range:
 	expr '~' expr				{ printf("GENERATE RANGE. TGAY\n"); }
+	;
+
 /* Constants */
 
 constant:
@@ -170,7 +176,7 @@ expr:
 	| var DEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var					{ $$ = $1; }
 	| '-' expr %prec UMINUS			{ $$ = nuparser.tree->addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
-	| expr '+' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '+' expr				{ printf("sdasjdsakl\n"); $$ = nuparser.tree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '-' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '*' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '/' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }

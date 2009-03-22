@@ -38,8 +38,7 @@ bool NuCommand::function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValu
 bool NuCommand::function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	Forest *f = aten.scripts.add();
-	ifstream inputfile(c->argc(0), ios::in);
-	if (!f->generate(&inputfile))
+	if (!f->generateFromFile(c->argc(0)))
 	{
 		aten.scripts.remove(f);
 		return FALSE;

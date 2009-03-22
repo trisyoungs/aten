@@ -316,8 +316,7 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		currentDirectory_.setPath(filename);
 		// Create script and model variables within it
 		Forest *ca = aten.scripts.add();
-		std::ifstream scriptfile(qPrintable(filename));
-		if (ca->generate(&scriptfile)) refreshScriptsMenu();
+		if (ca->generateFromFile(qPrintable(filename))) refreshScriptsMenu();
 		else aten.scripts.remove(ca);
 	}
 }

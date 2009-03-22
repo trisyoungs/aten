@@ -40,7 +40,7 @@ class LineParser
 	public:
 	// Constructor
 	LineParser();
-	LineParser(const char *ifilename);
+	LineParser(const char *ifilename, bool outputstream = FALSE);
 	// Parse Options
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
@@ -58,8 +58,10 @@ class LineParser
 	int linePos_;
 	// Integer line number of last read line
 	int lastLine_;
-	// Source file
-	std::ifstream sourceFile_;
+	// Source file (for reading) 
+	std::fstream file_;
+	// Destination file (for writing)
+// 	std::ofstream destFile_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
 
@@ -68,14 +70,16 @@ class LineParser
 	const char *line();
 	// Return integer line number of last read line
 	int lastLine();
-	// Open new file for parsing
-	bool openFile(const char *filename);
-	// Close file 
+	// Open new file for parsing or writing
+	bool openFile(const char *filename, bool outputstream = FALSE);
+	// Close file(s)
 	void closeFile();
 	// Return whether current file source is good for reading/writing
 	bool isFileGood();
 	// Tell current position of file stream
 	streampos tellg();
+	// Peek next character in file
+	char peek();
 	// Seek position in file
 	void seekg(streampos pos);
 	// Seek n bytes in specified direction
@@ -95,11 +99,13 @@ class LineParser
 	// Gets all delimited args from internal line
 	void getAllArgsDelim();
 	// Read line from file and do delimited parse
-	int getArgsDelim(int flags);
+	int getArgsDelim(int flags = LineParser::Defaults);
 	// Set line and parse using delimiters
-	void getArgsDelim(const char *string, int flags);
+	void getArgsDelim(const char *string, int flags = LineParser::Defaults);
 	// Read next line from internal source file, setting as parsing source
 	int readLine();
+	// Read next line from source file, skipping blank lines and removing comments
+	int getLine();
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal file
