@@ -41,10 +41,10 @@ ElementMap &elements()
 #define ACTINIDES 99
 
 // ZMapping types
-const char *ZmapTypeKeywords[ElementMap::nZmapTypes] = { "alpha", "firstalpha", "singlealpha", "name", "numeric", "ff", "auto" };
-ElementMap::ZmapType ElementMap::zmapType(const char *s)
+const char *ZMapTypeKeywords[ElementMap::nZMapTypes] = { "alpha", "firstalpha", "singlealpha", "name", "numeric", "ff", "auto" };
+ElementMap::ZMapType ElementMap::zMapType(const char *s)
 {
-	return (ElementMap::ZmapType) enumSearch("element mapping style", ElementMap::nZmapTypes, ZmapTypeKeywords, s);
+	return (ElementMap::ZMapType) enumSearch("element mapping style", ElementMap::nZMapTypes, ZMapTypeKeywords, s);
 }
 
 /*
@@ -614,10 +614,10 @@ int ElementMap::find(const char *query)
 		return 0;
 	}
 	// Convert the query string according to the specified rule
-	switch (prefs.zmapType())
+	switch (prefs.zMapType())
 	{
 		// Automatic determination
-		case (ElementMap::AutoZmap):
+		case (ElementMap::AutoZMap):
 			// First, try pure numeric conversion
 			result = numberToZ(query);
 			if (result != -1) break;
@@ -631,29 +631,29 @@ int ElementMap::find(const char *query)
 			result = ffToZ(query);
 			break;
 		// Name search
-		case (ElementMap::NameZmap):
+		case (ElementMap::NameZMap):
 			result = nameToZ(query);
 			break;
 		// Search loaded forcefields for atom names
-		case (ElementMap::ForcefieldZmap):
+		case (ElementMap::ForcefieldZMap):
 			result = ffToZ(query);
 			// Attempt an alpha conversion if the FF conversion failed
 			if (result == -1) result = alphaToZ(query);
 			break;
 		// Convert based on alpha-part of atom name only
-		case (ElementMap::AlphaZmap):
+		case (ElementMap::AlphaZMap):
 			result = alphaToZ(query);
 			break;
 		// Convert based on first alpha-part of atom name only
-		case (ElementMap::FirstAlphaZmap):
+		case (ElementMap::FirstAlphaZMap):
 			result = firstAlphaToZ(query);
 			break;
 		// Convert based on first alpha-character of atom name only
-		case (ElementMap::SingleAlphaZmap):
+		case (ElementMap::SingleAlphaZMap):
 			result = singleAlphaToZ(query);
 			break;
 		// Convert based on numeric part only
-		case (ElementMap::NumericZmap):
+		case (ElementMap::NumericZMap):
 			result = numberToZ(query);
 			break;
 	}
@@ -662,18 +662,19 @@ int ElementMap::find(const char *query)
 }
 
 // Search for element named 'query' in the list of known elements, using the specified algorithm
-int ElementMap::find(const char *query, ElementMap::ZmapType zmt)
+int ElementMap::find(const char *query, ElementMap::ZMapType zmt)
 {
 	// Store the old zmapping type, and temporarily set a new one
-	ElementMap::ZmapType last = prefs.zmapType();
-	prefs.setZmapType(zmt);
+	ElementMap::ZMapType last = prefs.zMapType();
+	prefs.setZMapType(zmt);
 	int result = find(query);
-	prefs.setZmapType(last);
+	prefs.setZMapType(last);
 	return result;
 }
 
 // Search for element named 'query' in the list of known elements
 int ElementMap::findAlpha(const char *query)
 {
-	return find(query, ElementMap::AlphaZmap);
+	return find(query, ElementMap::AlphaZMap);
 }
+

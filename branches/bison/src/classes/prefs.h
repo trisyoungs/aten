@@ -330,7 +330,7 @@ class Prefs
 	// Size limit (kbytes) for caching trajectory frames
 	int cacheLimit_;
 	// Type of name->Z mapping to use
-	ElementMap::ZmapType zmapType_;
+	ElementMap::ZMapType zMapType_;
 	// Whether to retain file atom type names on load (in a new forcefield)
 	bool keepNames_;
 	// Whether to retain view when GUI starts (i.e. don't reset it)
@@ -362,9 +362,9 @@ class Prefs
 	// Return the cache limit for trajectory files
 	int cacheLimit();
 	// Sets the style of element conversion to use
-	void setZmapType(ElementMap::ZmapType i);
+	void setZMapType(ElementMap::ZMapType i);
 	// Return the style of element conversion in use
-	ElementMap::ZmapType zmapType();
+	ElementMap::ZMapType zMapType();
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom

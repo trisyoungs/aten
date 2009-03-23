@@ -225,7 +225,7 @@ Prefs::Prefs()
 	packOnLoad_ = Prefs::SwitchAsFilter;
 	loadAllCoords_ = TRUE;
 	cacheLimit_ = 1024;
-	zmapType_ = ElementMap::AutoZmap;
+	zMapType_ = ElementMap::AutoZMap;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
 	keepView_ = FALSE;
@@ -873,15 +873,15 @@ int Prefs::cacheLimit()
 }
 
 // Sets the style of element conversion to use
-void Prefs::setZmapType(ElementMap::ZmapType i)
+void Prefs::setZMapType(ElementMap::ZMapType i)
 {
-	zmapType_ = i;
+	zMapType_ = i;
 }
 
 // Return the style of element conversion in use
-ElementMap::ZmapType Prefs::zmapType()
+ElementMap::ZMapType Prefs::zMapType()
 {
-	return zmapType_;
+	return zMapType_;
 }
 
 // Sets whether to convert coords from Bohr to Angstrom on load

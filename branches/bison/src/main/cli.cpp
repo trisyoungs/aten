@@ -215,7 +215,7 @@ int Aten::parseCli(int argc, char *argv[])
 	char *arg, *line, prompt[32];
 	Forcefield *ff;
 	LineParser parser;
-	ElementMap::ZmapType zm;
+	ElementMap::ZMapType zm;
 	Namemap<int> *nm;
 	Forest *forest, *script, tempforest;
 	NuReturnValue rv;
@@ -463,8 +463,8 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zmapType(argv[++argn]);
-					if (zm != ElementMap::nZmapTypes) prefs.setZmapType(zm);
+					zm = ElementMap::zMapType(argv[++argn]);
+					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
 					break;
 			}
 		}

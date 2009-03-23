@@ -59,15 +59,15 @@ Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
 	{
 		filter = ri->item;
 		// Try to match text within files
-		if (filter->nIdStrings() != 0)
+		if (filter->searchStrings() != NULL)
 		{
 			bool done = FALSE;
 			parser.openFile(filename);
-			for (Namemap<int> *ids = filter->idStrings(); ids != NULL; ids = ids->next)
+			for (Dnchar *ss = filter->searchStrings(); ss != NULL; ss = ss->next)
 			{
 				// Make sure file is completely rewound
 				parser.rewind();
-				for (n = 0; n<ids->data(); n++)
+				for (n = 0; n<filter->nLinesToSearch(); n++)
 				{
 					m = parser.readLine();
 					if (m == -1) break;
@@ -77,7 +77,7 @@ Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
 						done = TRUE;
 						break;
 					}
-					if (strstr(parser.line(), ids->name()) != NULL)
+					if (strstr(parser.line(), ss->get()) != NULL)
 					{
 						result = filter;
 						done = TRUE;

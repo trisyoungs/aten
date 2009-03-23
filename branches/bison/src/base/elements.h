@@ -62,8 +62,8 @@ class ElementMap
 	// Constructor
 	ElementMap();
 	// Name->Z mapping methods
-	enum ZmapType { AlphaZmap, FirstAlphaZmap, SingleAlphaZmap, NameZmap, NumericZmap, ForcefieldZmap, AutoZmap, nZmapTypes };
-	static ElementMap::ZmapType zmapType(const char *s);
+	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
+	static ElementMap::ZMapType zMapType(const char *s);
 
 	private:
 	// Element data array
@@ -87,7 +87,7 @@ class ElementMap
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm
-	int find(const char*, ElementMap::ZmapType);
+	int find(const char*, ElementMap::ZMapType);
 	// Return atomic number of element provided using standard Alpha mapping
 	int findAlpha(const char *);
 	// Return number of defined elements
