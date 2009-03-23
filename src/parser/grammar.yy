@@ -74,10 +74,16 @@ blockment:
 
 /* Filter Definitions */
 
-filter:
-	FILTERBLOCK block			{ $$ = $2; }
+optlist:
+	NEWTOKEN assign '=' constant noassign	{ if (!nuparser.tree->setFilterOption(&newVarName, $4)) YYERROR; }
+	| optlist ',' NEWTOKEN assign '=' constant noassign	{ if (!nuparser.tree->setFilterOption(&newVarName, $6)) YYERROR; }
 	;
-	
+
+filter:
+	FILTERBLOCK '(' optlist ')' block	{ $$ = $5; }
+	| FILTERBLOCK error			{ msg.print("Error reading filter block definition.\n"); YYERROR; }
+	;
+
 /* Single Statement / Flow Control */
 
 statement:
@@ -130,7 +136,7 @@ newname:
 	| NEWTOKEN assign '=' expr noassign	{ $$ = nuparser.tree->addVariable(&newVarName,$4); }
 	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = nuparser.tree->addArrayVariable(&newVarName,$4,$7); }
 	;
-	
+
 namelist:
 	newname					{ $$ = $1; }
 	| namelist ',' newname			{ $$ = Tree::joinArguments($3,$1); }

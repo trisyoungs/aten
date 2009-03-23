@@ -25,6 +25,9 @@
 #include "base/bundle.h"
 #include "parser/tree.h"
 
+// Static singletom
+NuCommand nucommands;
+
 /* Argument Specification Tokens:
        Char	Meaning		Acceptable Types in VTypes
 	N	Number		IntegerData, RealData

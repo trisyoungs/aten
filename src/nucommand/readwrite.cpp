@@ -21,7 +21,6 @@
 
 #include "parser/commandnode.h"
 #include "parser/tree.h"
-// #include <fstream>
 #include <cstring>
 
 // Add file read option
@@ -127,6 +126,13 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	}
 	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
 	return TRUE;
+}
+
+// Read line and parse with format
+bool NuCommand::function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	printf("Not done yet!!!!\n");
+	return FALSE;
 }
 
 // Get next whitespace-delimited argument from file

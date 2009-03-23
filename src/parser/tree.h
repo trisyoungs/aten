@@ -54,9 +54,9 @@ class Tree
 	static const char *filterType(FilterType ft);
 	static FilterType filterType(const char *s, bool quiet = FALSE);
 	// Filter commands
-	enum FilterCommmand { ExactCommand, ExtensionCommand, GlobCommand, IdCommand, NameCommand, NicknameCommand, WithinCommand, ZMapCommand, nFilterCommands };
-	static FilterCommmand filterCommand(const char *s);
-	static const char *filterCommand(FilterCommmand fc);
+	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, WithinOption, ZMapOption, nFilterOptions };
+	static FilterOption filterOption(const char *s);
+	static const char *filterOption(FilterOption fo);
 
 
 	/*
@@ -172,8 +172,10 @@ class Tree
 	Dnchar nickname_;
 	// File extension(s)
 	List<Dnchar> extensions_;
-	// List of 'within' specifications
-	List< Namemap<int> > idStrings_;
+	// Number of lines to search when looking for any of the searchStrings_
+	int nLinesToSearch_;
+	// List of identifying search strings
+	List<Dnchar> searchStrings_;
 	// File filter glob (for gui)
 	Dnchar glob_;
 	// Partner filter
@@ -187,11 +189,13 @@ class Tree
 	// Whether separate zmapping has been defined
 	bool hasZmapping_;
 	// Type of element mapping to use
-	ElementMap::ZmapType zmapping_;
+	ElementMap::ZMapType zMapType_;
 
 	public:
 	// Return whether this tree is a filter
 	bool isFilter();
+	// Set filter option
+	bool setFilterOption(Dnchar *name, TreeNode *value);
 	// Return the ID of the filter
 	int id();
 	// Return the descriptive name of the filter
@@ -204,8 +208,10 @@ class Tree
 	Dnchar *exactNames();
 	// Return the number of identifying strings defined
 	int nIdStrings();
-	// Return the first identifying text string
-	Namemap<int> *idStrings();
+	// Return the number of lines to search for the identifying strings
+	int nLinesToSearch();
+	// Return the first identifying search string
+	Dnchar *searchStrings();
 	// Return whether filter has an extension
 	bool hasExtension();
 	// Set the partner filter

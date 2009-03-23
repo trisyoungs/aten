@@ -49,6 +49,18 @@ Tree::FilterType Tree::filterType(const char *s, bool quiet)
         return (Tree::FilterType) enumSearch( quiet ? "filter type" : "", Tree::nFilterTypes, FilterTypeKeywords, s);
 }
 
+// Filter options
+const char* FilterOptionKeywords[Tree::nFilterOptions] =  { "exact", "extension", "glob", "id", "name", "nickname", "search", "within", "zmap" };
+Tree::FilterOption Tree::filterOption(const char* s)
+{
+	return (Tree::FilterOption) enumSearch("", Tree::nFilterOptions, FilterOptionKeywords, s);
+}
+const char *Tree::filterOption(Tree::FilterOption fc)
+{
+	return FilterOptionKeywords[fc];
+}
+NuVTypes::DataType FilterOptionTypes[Tree::nFilterOptions] =  { NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData };
+
 // Constructor
 Tree::Tree()
 {
@@ -58,9 +70,10 @@ Tree::Tree()
 	filterType_ = Tree::nFilterTypes;
 	hasExtension_ = FALSE;
 	hasZmapping_ = FALSE;
-	zmapping_ = ElementMap::AlphaZmap;
+	zMapType_ = ElementMap::AlphaZMap;
 	name_.set("unnamed");
 	glob_.set("*");
+	nLinesToSearch_ = 10;
 	id_ = -1;
 	partner_ = NULL;
 	parser_ = NULL;
@@ -161,6 +174,7 @@ bool Tree::executeRead(LineParser *parser)
 	// Execute the commands
 	NuReturnValue rv;
 	bool result = execute(rv);
+	parser_ = NULL;
 	msg.exit("Tree::executeRead[LineParser]");
 	return result;
 }
@@ -168,7 +182,21 @@ bool Tree::executeRead(LineParser *parser)
 // Execute, opening specified file as input source (no return value)
 bool Tree::executeRead(const char *filename)
 {
-	printf("XXXX NOT WRITTEN YET.\n");
+	msg.enter("Tree::executeRead[filename]");
+	// Check for a previous parser pointer
+	if (parser_ != NULL) printf("Warning: LineParser already defined in executeRead.\n");
+	parser_ = new LineParser(filename);
+	if (!parser_->isFileGood())
+	{
+		msg.exit("Tree::executeRead[filename]");
+		return FALSE;
+	}
+	// Execute the commands
+	NuReturnValue rv;
+	bool result = execute(rv);
+	parser_->closeFile();
+	delete parser_;
+	msg.exit("Tree::executeRead[filename]");
 }
 
 // Execute, with specified filename as data target
@@ -727,16 +755,16 @@ Dnchar *Tree::exactNames()
 	return exactNames_.first();
 }
 
-// Return the number of identifying strings defined
-int Tree::nIdStrings()
+// Return the number of lines to search for defining strings
+int Tree::nLinesToSearch()
 {
-	return idStrings_.nItems();
+	return nLinesToSearch_;
 }
 
 // Return the first identifying text string
-Namemap<int> *Tree::idStrings()
+Dnchar *Tree::searchStrings()
 {
-	return idStrings_.first();
+	return searchStrings_.first();
 }
 
 // Return whether filter has an extension
@@ -779,6 +807,82 @@ Tree::FilterType Tree::filterType()
 bool Tree::isFilter()
 {
 	return (filterType_ != Tree::nFilterTypes);
+}
+
+// Set filter option
+bool Tree::setFilterOption(Dnchar *name, TreeNode *value)
+{
+	msg.enter("Tree::setFilterOption");
+	// Determine filter option supplied
+	Tree::FilterOption fo = Tree::filterOption(name->get());
+	if (fo == Tree::nFilterOptions)
+	{
+		msg.print("Error: '%s' is not a valid filter option.\n", name->get());
+		msg.exit("Tree::setFilterOption");
+		return FALSE;
+	}
+	// Check argument type
+	if (FilterOptionTypes[fo] != value->returnType())
+	{
+		msg.print("Error: Filter option '%s' takes %s value.\n", name->get(), NuVTypes::dataType(FilterOptionTypes[fo]));
+		msg.exit("Tree::setFilterOption");
+		return FALSE;
+	}
+	Dnchar *d;
+	NuReturnValue rv;
+	ElementMap::ZMapType zm;
+	switch (fo)
+	{
+		case (Tree::ExactOption):
+			d = exactNames_.add();
+			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
+			d->set(rv.asString());
+			break;
+		case (Tree::ExtensionOption):
+			d = extensions_.add();
+			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
+			d->set(rv.asString());
+			break;
+		case (Tree::GlobOption):
+			if (!value->execute(rv)) printf("Error retrieving 'glob' filter option value.\n");
+			glob_ = rv.asString();
+			break;
+		case (Tree::IdOption):
+			if (!value->execute(rv)) printf("Error retrieving 'id' filter option value.\n");
+			id_ = rv.asInteger();
+			break;
+		case (Tree::NameOption):
+			if (!value->execute(rv)) printf("Error retrieving 'name' filter option value.\n");
+			name_ = rv.asString();
+			break;
+		case (Tree::NicknameOption):
+			if (!value->execute(rv)) printf("Error retrieving 'nickname' filter option value.\n");
+			nickname_ = rv.asString();
+			break;
+		case (Tree::SearchOption):
+			d = searchStrings_.add();
+			if (!value->execute(rv)) printf("Error retrieving filter option value.\n");
+			d->set(rv.asString());
+			break;
+		case (Tree::WithinOption):
+			if (!value->execute(rv)) printf("Error retrieving 'within' filter option value.\n");
+			nLinesToSearch_ = rv.asInteger();
+			break;
+		case (Tree::ZMapOption):
+			if (!value->execute(rv)) printf("Error retrieving 'zmap' filter option value.\n");
+			zm = ElementMap::zMapType(rv.asString());
+			if (zm == ElementMap::nZMapTypes)
+			{
+				msg.exit("Tree::setFilterOption");
+				return TRUE;
+			}
+			zMapType_ = zm;
+			break;
+		default:
+			printf("Internal Error: UNrecognised filter option.\n");
+	}
+	msg.exit("Tree::setFilterOption");
+	return TRUE;
 }
 
 // Return the long description of the filter (including glob)
@@ -825,6 +929,12 @@ const char *Forest::name()
 	return name_.get();
 }
 
+// Return filename of source file
+const char *Forest::filename()
+{
+	return filename_.get();
+}
+
 // Return number of trees in forest
 int Forest::nTrees()
 {
@@ -841,6 +951,7 @@ bool Forest::generate(const char *, const char *name)
 {
 	msg.enter("Forest::generate[string]");
 	printf("XXX Not DOnw Yet.\n");
+	name_ = name;
 	msg.exit("Forest::generate[string]");
 }
 
@@ -848,6 +959,8 @@ bool Forest::generate(const char *, const char *name)
 bool Forest::generateFromFile(const char *filename, const char *name)
 {
 	msg.enter("Forest::generateFromFile");
+	filename_ = filename;
+	name_ = name;
 	bool result = nuparser.generateFromFile(this, filename);
 	msg.exit("Forest::generateFromFile");
 	return result;
