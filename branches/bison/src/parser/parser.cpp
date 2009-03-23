@@ -59,7 +59,7 @@ void NuParser::printErrorInfo()
 {
 	// QUICK'n'DIRTY!
 	char *temp = new char[stringLength_+32];
-	for (int i=0; i<stringPos_; i++) temp[i] = ' ';
+	for (int i=0; i<stringPos_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
 	temp[stringPos_] = '\0';
 	// Print current string
 	if (isFileSource_)
@@ -94,7 +94,7 @@ char NuParser::getChar()
 		// If the stringPos_ is equal to the string length, read in another line
 		if (stringPos_ == stringLength_)
 		{
-			if (parser_.getLine() != 0) return '\0';
+			if (parser_.getLine() != 0) return 0;
 			stringSource_ = parser_.line();
 			stringLength_ = stringSource_.length();
 			stringPos_ = 0;
@@ -133,12 +133,9 @@ void NuParser::unGetChar()
 	{
 		// If we are at position 0, then we need the last character from the previous line!
 		if (stringPos_ == 0) printf("Fix Required: last character from previous line...\n");
+		else stringPos_ --;
 	}
-	else
-	{
-		// Decrement string position
-		stringPos_--;
-	}
+	else stringPos_--;
 }
 
 // Original yylex()
@@ -166,12 +163,12 @@ int NuParser::lex()
 	// Skip over whitespace
 	while ((c = getChar()) == ' ' || c == '\t');
 
-	if (c == EOF) return 0;
+	if (c == 0) return 0;
 
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-// 	printf("LEx begin at (%c), peek = %c\n",c, Tree::currentTree->peekChar());
+// 	printf("LEx begin at (%c), peek = [%c]\n",c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
 		expectPathStep_ = TRUE;
@@ -268,7 +265,7 @@ int NuParser::lex()
 			c = getChar();
 		}
 		while (isalnum (c));
-// 		printf("Character that terminated alphtoken = %c\n", c);
+// 		printf("Character that terminated alphatoken = %c\n", c);
 		unGetChar();
 		token[length] = '\0';
 		// Skip over keyword detection if we are expecting a path step
@@ -292,7 +289,6 @@ int NuParser::lex()
 			Tree::FilterType ft = Tree::filterType(token);
 			if (ft != Tree::nFilterTypes)
 			{
-				printf("Its a filter...\n");
 				tree = forest_->createFilter(ft);
 				return FILTERBLOCK;
 			}
@@ -311,6 +307,7 @@ int NuParser::lex()
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
 		if (expectPathStep_)
 		{
+			expectPathStep_ = FALSE;
 			name = token;
 			yylval.name = &name;
 			return STEPTOKEN;
@@ -345,7 +342,7 @@ int NuParser::lex()
 	do
 	{
 		token[length++] = c;
-		getChar();
+		c = getChar();
 		if (c == '"') break;
 	}
 	while (ispunct(c));

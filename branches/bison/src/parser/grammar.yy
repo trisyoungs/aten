@@ -153,7 +153,7 @@ steplist:
 var:
 	VARNAME '[' expr ']'			{ $$ = nuparser.tree->wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
 	| VARNAME				{ $$ = nuparser.tree->wrapVariable($1); if ($$ == NULL) YYERROR; }
-	| var '.' 				{ printf("HEllO pathvar.\n"); $$ = nuparser.tree->createPath($1); }
+	| var '.' 				{ $$ = nuparser.tree->createPath($1); }
 		steplist			{ $$ = nuparser.tree->finalisePath(); }
 	;
 
@@ -167,8 +167,6 @@ exprlist:
 expr:
 	constant				{ $$ = $1; }
 	| func					{ $$ = $1; }
-/*	| pathvar '.' NUMSTEP			{ nuparser.tree->expandPath($3); $$ = nuparser.tree->finalisePath(); }  */
-/*	| pathvar '.' steplist '.' NUMSTEP	{ nuparser.tree->expandPath($5); $$ = nuparser.tree->finalisePath(); }  */
 	| var '=' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var PEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var MEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }

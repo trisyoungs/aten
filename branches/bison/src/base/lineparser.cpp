@@ -59,6 +59,12 @@ LineParser::LineParser(const char *filename, bool outputstream)
 // Source line/file and read options
 */
 
+// Return filename of opened (or recently closed) file
+const char *LineParser::filename()
+{
+	return filename_.get();
+}
+
 // Return pointer to current line
 const char *LineParser::line()
 {
@@ -92,6 +98,7 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 	}
 	// Reset variables
 	lastLine_ = 0;
+	filename_ = filename;
 	msg.exit("LineParser::openFile");
 	return TRUE;
 }

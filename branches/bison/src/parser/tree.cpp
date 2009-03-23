@@ -44,9 +44,9 @@ const char *Tree::filterType(Tree::FilterType ft)
 {
         return FilterTypeKeywords[ft];
 }
-Tree::FilterType Tree::filterType(const char *s)
+Tree::FilterType Tree::filterType(const char *s, bool quiet)
 {
-        return (Tree::FilterType) enumSearch("filter type", Tree::nFilterTypes, FilterTypeKeywords, s);
+        return (Tree::FilterType) enumSearch( quiet ? "filter type" : "", Tree::nFilterTypes, FilterTypeKeywords, s);
 }
 
 // Constructor
@@ -100,6 +100,13 @@ int Tree::readOptions()
 {
 	return readOptions_;
 }
+
+// Return parser object pointer
+LineParser *Tree::parser()
+{
+	return parser_;
+}
+
 
 // Clear contents of tree
 void Tree::clear()
@@ -193,6 +200,7 @@ void Tree::print()
 // Check operator type compatibility
 NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2)
 {
+	msg.enter("Tree::checkOperatorTypes");
 	// Check for no data type
 	if ((type1 == NuVTypes::NoData) || (type2 == NuVTypes::NoData))
 	{
@@ -312,6 +320,7 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 	}
 	// Print error message
 	if (result == NuVTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", NuCommand::data[func].keyword, NuVTypes::dataType(type1), NuVTypes::dataType(type2));
+	msg.exit("Tree::checkOperatorTypes");
 	return result;
 }
 
@@ -331,6 +340,7 @@ void Tree::addStatement(TreeNode *leaf)
 // Add an operator to the Tree
 TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2)
 {
+	msg.enter("Tree::addOperator");
 	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer
 	NuVTypes::DataType rtype = checkOperatorTypes(func, arg1->returnType(), arg2->returnType());
 	if (rtype == NuVTypes::NoData) return NULL;
@@ -342,6 +352,7 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	leaf->setParent(this);
 	if (arg2 != NULL) leaf->addArguments(1,arg2);
 	leaf->setReturnType(rtype);
+	msg.exit("Tree::addOperator");
 	return leaf;
 }
 

@@ -98,7 +98,7 @@ void AtenGrids::loadGrid()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (filter = aten.filters(Tree::GridImport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
+		filter = aten.findFilterByDescription(Tree::GridImport, qPrintable(selFilter));
 		if (filter != NULL) filter->executeRead(qPrintable(filename));
 		else
 		{

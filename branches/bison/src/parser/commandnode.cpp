@@ -106,20 +106,20 @@ bool NuCommandNode::checkArguments()
 			}
 		}
 		else optional = TRUE;
-// 		printf("The next argument token is '%c'\n", upc);
+		printf("The next argument token is '%c'\n", upc);
 		// If we have reached the end of the argument specification, do we still have arguments left in the command?
 		if (upc == '\0')
 		{
 			if (args_.nItems() > count)
 			{
 				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, NuCommand::data[function_].keyword, NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
-				msg.exit("Tree::addFunctionLeaf");
+				msg.exit("Tree::checkArguments");
 				return FALSE;
 			}
 			else
 			{
-				msg.enter("Tree::addFunctionLeaf");
-				return FALSE;
+				msg.exit("Tree::checkArguments");
+				return TRUE;
 			}
 		}
 		// If we have gone over the number of arguments provided, is this an optional argument?
@@ -129,19 +129,19 @@ bool NuCommandNode::checkArguments()
 			{
 				msg.print("Error: The function '%s' requires argument %i.\n", NuCommand::data[function_].keyword, count+1);
 				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
-				msg.exit("Tree::addFunctionLeaf");
+				msg.exit("Tree::checkArguments");
 				return FALSE;
 			}
 			else if (cluster && (ngroup != 0))
 			{
 				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, NuCommand::data[function_].keyword);
 				msg.print("       Command syntax is '%s %s'.\n", NuCommand::data[function_].keyword, NuCommand::data[function_].argText);
-				msg.exit("Tree::addFunctionLeaf");
+				msg.exit("Tree::checkArguments");
 				return FALSE;
 			}
 			else
 			{
-				msg.exit("Tree::addFunctionLeaf");
+				msg.exit("Tree::checkArguments");
 				return TRUE;
 			}
 		}
@@ -256,6 +256,10 @@ bool NuCommandNode::initFunction()
 			format_ = new NuFormat(argc(0),args_[1]);
 			if (!format_->isValid()) return FALSE;
 			break;
+		case (NuCommand::ReadLine):
+			format_ = new NuFormat("", args_[0]);
+			if (!format_->isValid()) return FALSE;
+			break;
 		case (NuCommand::ReadLineFormatted):
 			format_ = new NuFormat(argc(0),args_[2]);
 			if (!format_->isValid()) return FALSE;
@@ -330,8 +334,9 @@ bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
 	va_list vars;
 	va_start(vars, arglist);
 	NuVariable *var = NULL;
-	for (c = arglist; *c != '\0'; c = c + 1)
+	for (c = arglist; *c != '\0'; c++)
 	{
+	printf("Doing argument %c\n", *c);
 		switch (*c)
 		{
 			case ('i'):
@@ -352,6 +357,7 @@ bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
 				var = NULL;
 				break;
 		}
+	printf("lksjdlkj.\n");
 		node.addArgument(var);
 	}
 	va_end(vars);
