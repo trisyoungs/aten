@@ -49,6 +49,7 @@ Aten::Aten()
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
 	filterLoadSuccessful_ = TRUE;
+	dataDirSet_ = FALSE;
 
 	// Clipboards
 	userClipboard = new Clipboard;
@@ -427,12 +428,19 @@ const char *Aten::workDir()
 void Aten::setDataDir(const char *path)
 {
 	dataDir_ = path;
+	dataDirSet_ = TRUE;
 }
 
 // Return the data directory path
 const char *Aten::dataDir()
 {
 	return dataDir_.get();
+}
+
+// Return whether the data dir has already been set
+bool Aten::dataDirSet()
+{
+	return dataDirSet_;
 }
 
 /*
@@ -712,11 +720,22 @@ Tree *Aten::findFilter(Tree::FilterType ft, const char *nickname) const
 	return (result == NULL ? NULL : result->item);
 }
 
-// Return first filter in list (of a given type)
-Tree *Aten::filters(Tree::FilterType ft) const
+// Find filter by description
+Tree *Aten::findFilterByDescription(Tree::FilterType ft, const char *description) const
 {
-	Refitem<Tree,int> *result = filters_[ft].first();
+	msg.enter("Aten::findFilterByDescription");
+	Refitem<Tree,int> *result;
+	for (result = filters_[ft].first(); result != NULL; result = result->next)
+		if (strcmp(result->item->description(), description) == 0) break;
+// 	if (result == NULL) msg.print("Internal Error: No %s filter matches description '%s'.\n", Tree::filterType(ft), description);
+	msg.exit("Aten::findFilterByDescription");
 	return (result == NULL ? NULL : result->item);
+}
+
+// Return first filter refitem in list (of a given type)
+Refitem<Tree,int> *Aten::filters(Tree::FilterType ft) const
+{
+	return filters_[ft].first();
 }
 
 /*

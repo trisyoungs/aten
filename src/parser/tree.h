@@ -52,7 +52,7 @@ class Tree
 	// Filter Types
 	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
 	static const char *filterType(FilterType ft);
-	static FilterType filterType(const char *s);
+	static FilterType filterType(const char *s, bool quiet = FALSE);
 	// Filter commands
 	enum FilterCommmand { ExactCommand, ExtensionCommand, GlobCommand, IdCommand, NameCommand, NicknameCommand, WithinCommand, ZMapCommand, nFilterCommands };
 	static FilterCommmand filterCommand(const char *s);
@@ -240,8 +240,6 @@ class Tree
 	int readOptions();
 	// Return the current LineParser pointer
 	LineParser *parser();
-	// Return the filename (if any)
-	const char *filename();
 	// Execute
 	bool execute(NuReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)

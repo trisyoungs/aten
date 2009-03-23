@@ -30,8 +30,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "842"
-#define ATENDATE "Sun 22 Mar - 22:50"
+#define ATENREVISION "834"
+#define ATENDATE "Mon 23 Mar - 17:13"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -123,8 +123,10 @@ class Aten
 	Tree *probeFile(const char *filename, Tree::FilterType);
 	// Find filter of specified type with nickname provided
 	Tree *findFilter(Tree::FilterType ft, const char *nickname) const;
+	// Find filter by description
+	Tree *findFilterByDescription(Tree::FilterType ft, const char *description) const;
 	// Return first filter in list (of a given type)
-	Tree *filters(Tree::FilterType ft) const;
+	Refitem<Tree,int> *filters(Tree::FilterType ft) const;
 
 
 	/*
@@ -193,6 +195,8 @@ class Aten
 	Dnchar workDir_;
 	// Data directory
 	Dnchar dataDir_;
+	// Whether data dir has been set
+	bool dataDirSet_;
 
 	public:
 	// Set location of users's home directory
@@ -207,6 +211,8 @@ class Aten
 	void setDataDir(const char *path);
 	// Return the data directory path
 	const char *dataDir();
+	// Return whether the data dir has already been set
+	bool dataDirSet();
 
 
 	/*

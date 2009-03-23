@@ -50,6 +50,8 @@ class LineParser
 	// Source line/file and read options
 	*/
 	private:
+	// Filename of current file target (if any)
+	Dnchar filename_;
 	// Line to parse
 	char line_[MAXLINELENGTH];
 	// Length of line_
@@ -66,6 +68,8 @@ class LineParser
 	int optionMask_;
 
 	public:
+	// Return filename of opened (or recently closed) file
+	const char *filename();
 	// Return pointer to start of current line
 	const char *line();
 	// Return integer line number of last read line

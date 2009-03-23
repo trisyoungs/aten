@@ -33,7 +33,9 @@
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
 	{ Cli::ASTSwitch,		'a',"ast",		1,
-		"",		"Run any commands supplied with -c or --command on all models and save" },
+		"<string>",	"Test the new tree parser-generator code with the supplied string" },
+	{ Cli::AtenDataSwitch,		'\0',"atendata",		1,
+		"<dir>",	"Set the data location to the supplied directory (and don't read $ATENDATA)" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
 		"",		"Run any commands supplied with -c or --command on all models and save" },
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
@@ -167,6 +169,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			// We recognise only a specific selection of switches here, mostly to do with debugging / versioning etc.
 			switch (opt)
 			{
+				case (Cli::AtenDataSwitch):
+					aten.setDataDir(argv[++argn]);
+					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
 					if ((!hasNextArg) || nextArgIsSwitch) msg.addOutputType(Messenger::Calls);
@@ -285,7 +290,9 @@ int Aten::parseCli(int argc, char *argv[])
 					printf("Resulting forest contains %i trees.\n", forest->nTrees());
 					n = forest->executeAll(rv);
 					break;
-				// All of the following switches were dealt with in parseCliEarly()
+				// All of the following switches were dealt with in parseCliEarly(), so ignore them
+				case (Cli::AtenDataSwitch):
+					argn++;
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::QuietSwitch):

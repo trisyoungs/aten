@@ -82,7 +82,7 @@ bool NuCommand::function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnVa
 	{
 		Tree *filter = c->parent();
 // 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
-		obj.m->setFilename(c->parent()->filename());
+		obj.m->setFilename(c->parent()->parser()->filename());
 		obj.m->setFilter(filter->partner());
 	}
 	// Do various necessary calculations

@@ -71,7 +71,7 @@ bool AtenForm::runSaveModelDialog()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (filter = aten.filters(Tree::ModelExport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
+		filter = aten.findFilterByDescription(Tree::ModelExport, qPrintable(selFilter));
 		if (filter == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
@@ -213,7 +213,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (filter = aten.filters(Tree::TrajectoryImport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
+		filter = aten.findFilterByDescription(Tree::TrajectoryImport, qPrintable(selFilter));
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
 		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), Tree::TrajectoryImport);
 		if (filter != NULL)
@@ -241,7 +241,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (filter = aten.filters(Tree::ExpressionExport); filter != NULL; filter = filter->next) if (selFilter == filter->description()) break;
+		filter = aten.findFilterByDescription(Tree::ExpressionExport, qPrintable(selFilter));
 		if (filter == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
 		else NuCommandNode::run(NuCommand::SaveExpression, "cc", filter->nickname(), qPrintable(filename));
 	}
