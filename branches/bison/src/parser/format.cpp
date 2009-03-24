@@ -25,11 +25,78 @@
 #include <ctype.h>
 
 /*
+// Format Chunks
+*/
+
+// Constructors
+FormatChunk::FormatChunk(const char *plaintext)
+{
+	// Private variables
+	type_ = PlainTextChunk;
+	cFormat_ = plaintext;
+	arg_ = NULL;
+	msg.print(Messenger::Parse, "...created PlainTextChunk for string '%s'\n", plaintext);
+
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+FormatChunk::FormatChunk(TreeNode *node) : arg_(node)
+{
+	// Private variables
+	type_ = DelimitedChunk;
+	msg.print(Messenger::Parse, "...created DelimitedChunk for argument %li\n", node);
+
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+FormatChunk::FormatChunk(const char *format, TreeNode *node) : arg_(node)
+{
+	// Private variables
+	cFormat_ = format;
+	type_ = FormattedChunk;
+	msg.print(Messenger::Parse, "...created FormattedChunk ('%s') for argument %li\n", format, node);
+
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+// Return chunktype
+FormatChunk::ChunkType FormatChunk::type()
+{
+	return type_;
+}
+
+// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+const char *FormatChunk::cFormat()
+{
+	return cFormat_.get();
+}
+
+// Return argument id
+TreeNode *FormatChunk::arg()
+{
+	return arg_;
+}
+
+/*
 // Format
 */
 
 // Singleton
 char NuFormat::createdString_[8096];
+
+// Constructor
+NuFormat::NuFormat(Refitem<TreeNode,int> *firstarg)
+{
+	// Construct a delimited list of chunks with no specific format
+	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) chunks_.own( new FormatChunk(ri->item) );
+	isValid_ = TRUE;
+}
 
 // Constructor
 NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
@@ -41,6 +108,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 	const char *c = s;
 	bool isformatter = FALSE;
 	Refitem<TreeNode,int> *arg = firstarg;
+	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
 	int length = 0, n;
 	do
 	{
@@ -64,6 +132,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 				delete[] plaintext;
 			}
 			isformatter = TRUE;
+			c++;
 			continue;
 		}
 		// If we're currently in the middle of a formatter, it's terminated by an alpha character
@@ -71,7 +140,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 		{
 			length ++;
 			// If the terminating character is 'l', 'h', or 'L', don't break yet..
-			if ((*c == 'l') || (*c == 'h') || (*c == 'L')) continue;
+			if ((*c == 'l') || (*c == 'h') || (*c == 'L')) { c++; continue; }
 			isformatter = FALSE;
 			char *format = new char[length+1];
 			for (n=0; n<length; n++) format[n] = c[n];
@@ -113,13 +182,15 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 				}
 			}
 			TreeNode *node = (arg == NULL ? NULL : arg->item);
-			chunks_.own( new FormatChunk(FormatChunk::FormattedChunk, format, node) );
+			chunks_.own( new FormatChunk(format, node) );
 			delete[] format;
+			c++;
 			continue;
 		}
 		// Increment length
+		c++;
 		length++;
-	} while (c != NULL);
+	} while (*c != '\0');
 }
 
 // Destructor
@@ -130,6 +201,7 @@ NuFormat::~NuFormat()
 // Return whether the format was created successfully
 bool NuFormat::isValid()
 {
+	return isValid_;
 }
 
 /*
@@ -140,11 +212,50 @@ bool NuFormat::isValid()
 int NuFormat::read(LineParser *parser, int flags)
 {
 	msg.enter("NuFormat::read");
+	int nparsed = 0;
+	NuReturnValue rv;
+	Dnchar bit;
+	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{
-		printf("Formatting for read...\n");
+		// Retrieve the required characters from the input stream
+		switch (chunk->type())
+		{
+			case (FormatChunk::DelimitedChunk):
+				// Get next delimited argument from LineParser
+				parser->getNextArg(&bit);
+				
+				break;
+			default:
+				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
+				msg.exit("NuFormat::read");
+				return 1;
+		}
+		// Set the corresponding argument accordingly
+		if (chunk->type() != FormatChunk::PlainTextChunk)
+		{
+			switch (chunk->arg()->returnType())
+			{
+				case (NuVTypes::IntegerData):
+					rv.set( atoi(bit.get()) );
+					break;
+				case (NuVTypes::RealData):
+					rv.set( atof(bit.get()) );
+					break;
+				case (NuVTypes::StringData):
+					rv.set( bit.get() );
+					break;
+				default:
+					printf("Internal Error: Formatted conversion to %s is not possible.\n", NuVTypes::aDataType(chunk->arg()->returnType()));
+					nparsed = -1;
+					break;
+			}
+			if (nparsed == -1) break;
+			chunk->arg()->set( rv );
+		}
 	}
 	msg.exit("NuFormat::read");
+	return nparsed;
 }
 
 // Return last written string
@@ -156,68 +267,38 @@ const char *NuFormat::string()
 // Write format to internal string
 bool NuFormat::writeToString()
 {
-
+	msg.enter("NuFormat::writeToString");
+	printf("NuFormat::writeToString not implemented yet.\n");
+	createdString_[0] = '\0';
+	msg.exit("NuFormat::writeToString");
+	return FALSE;
 }
 
 // Read line and parse according to format
 int NuFormat::readFormatted(const char *line, int flags)
 {
 	msg.enter("NuFormat::readFormatted[string]");
-	LineParser parser;
-	// Set line in specified parser
+	static LineParser parser;
+	parser.setLine(line);
+	int result = read(&parser, flags);
 	msg.exit("NuFormat::readFormatted[string]");
+	return result;
 }
 
 // Read line from file and parse according to format
 int NuFormat::readFormatted(LineParser *parser, int flags)
 {
 	msg.enter("NuFormat::readFormatted[file]");
-	// Set line in specified parser
+	// Read a new line using the supplied parser
+	if (parser == NULL)
+	{
+		printf("Internal Error: No LineParser given to NuFormat::readFormatted.\n");
+		msg.exit("NuFormat::readFormatted[file]");
+		return 1;
+	}
+	// Get next line from file
+	int result = parser->readLine();
+	if (result == 0) result = read(parser, flags);
 	msg.exit("NuFormat::readFormatted[file]");
+	return result;
 }
-
-/*
-// Format node
-*/
-
-// Constructors
-FormatChunk::FormatChunk(const char *plaintext)
-{
-	// Private variables
-	type_ = PlainTextChunk;
-	cFormat_ = plaintext;
-	arg_ = NULL;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
-FormatChunk::FormatChunk(FormatChunk::ChunkType type, const char *format, TreeNode *node) : type_(type), arg_(node)
-{
-	// Private variables
-	cFormat_ = format;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
-// Return chunktype
-FormatChunk::ChunkType FormatChunk::type()
-{
-	return type_;
-}
-
-// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
-const char *FormatChunk::cFormat()
-{
-	return cFormat_.get();
-}
-
-// Return argument id
-TreeNode *FormatChunk::arg()
-{
-	return arg_;
-}
-

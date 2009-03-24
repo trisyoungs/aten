@@ -35,10 +35,11 @@ class FormatChunk
 {
 	public:
 	// Node types
-	enum ChunkType { PlainTextChunk, FormattedChunk, nChunkTypes };
+	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, nChunkTypes };
 	// Constructors
 	FormatChunk(const char *plaintext);
-	FormatChunk(ChunkType type, const char *format, TreeNode *arg);
+	FormatChunk(TreeNode *arg);
+	FormatChunk(const char *format, TreeNode *arg);
 	// List pointers
 	FormatChunk *next, *prev;
 
@@ -67,7 +68,8 @@ class FormatChunk
 class NuFormat
 {
 	public:
-	// Constructor / Destructor
+	// Constructors / Destructor
+	NuFormat(Refitem<TreeNode,int> *firstarg);
 	NuFormat(const char *s, Refitem<TreeNode,int> *firstarg);
 	~NuFormat();
 

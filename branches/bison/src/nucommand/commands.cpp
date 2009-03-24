@@ -663,7 +663,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Read the next delimited item from the file and place in the variable supplied" },
 	{ "readreal",		"n",		"[nbytes=8]", NuVTypes::RealData,
 				"Read a floating point value from the (binary) input file" },
-	{ "readvar",		"CC^z*",	"<variable> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
+	{ "readvar",		"CC^z*",	"<string> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
 				"Parse a character variable according to the supplied format" },
 	{ "removereadoption",	"C",		"<option>", NuVTypes::NoData,
 				"Remove a read option" },

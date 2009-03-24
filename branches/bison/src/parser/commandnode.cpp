@@ -54,12 +54,6 @@ NuCommand::Function NuCommandNode::function()
 	return function_;
 }
 
-// Return associated format node
-NuFormat *NuCommandNode::format()
-{
-	return format_;
-}
-
 // Check validity of supplied arguments
 bool NuCommandNode::checkArguments()
 {
@@ -241,39 +235,45 @@ bool NuCommandNode::checkArguments()
 	return result;
 }
 
-// Perform any necessary actions specific to the function
-bool NuCommandNode::initFunction()
+// Create format node (if necessary) from supplied argument id
+NuFormat *NuCommandNode::createFormat(int fmtargid, int firstargid)
 {
-	msg.enter("NuCommandNode::initFunction");
-	bool result = TRUE;
-	switch (function_)
+	msg.enter("NuCommandNode::createFormat");
+	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
+	// firstargid = id of first data argument
+	// If we do not currently have a format associated to the node, create it regardless
+	bool result;
+	if (format_ == NULL)
 	{
-		// All printing commands require a format to be created
-		case (NuCommand::Error):
-		case (NuCommand::Verbose):
-		case (NuCommand::Printf):
-		case (NuCommand::Warn):
-			format_ = new NuFormat(argc(0),args_[1]);
-			if (!format_->isValid()) return FALSE;
-			break;
-		case (NuCommand::ReadLine):
-			format_ = new NuFormat("", args_[0]);
-			if (!format_->isValid()) return FALSE;
-			break;
-		case (NuCommand::ReadLineFormatted):
-			format_ = new NuFormat(argc(0),args_[2]);
-			if (!format_->isValid()) return FALSE;
-			break;
-		case (NuCommand::ReadVar):
-			format_ = new NuFormat(argc(1),args_[3]);
-			if (!format_->isValid()) return FALSE;
-			break;
-		default:
-			result = TRUE;
-			break;
+		result = TRUE;
+		format_ = fmtargid == -1 ? new NuFormat(args_[firstargid]) : new NuFormat(argc(fmtargid), args_[firstargid]);
+		if (!format_->isValid())
+		{
+			result = FALSE;
+			delete format_;
+			format_ = NULL;
+		}
 	}
-	msg.exit("NuCommandNode::initFunction");
-	return result;
+	else
+	{
+		// So a format already exists. If the source argument is a constant (or there is no source argument) don't recreate it
+		if ((fmtargid == -1) || (argNode(fmtargid)->readOnly())) result = TRUE;
+		else
+		{
+			// Delete old format
+			delete format_;
+			// Create new format
+			format_ = fmtargid == -1 ? new NuFormat(args_[firstargid]) : new NuFormat(argc(fmtargid), args_[firstargid]);
+			if (!format_->isValid())
+			{
+				result = FALSE;
+				delete format_;
+				format_ = NULL;
+			}
+		}
+	}
+	msg.exit("NuCommandNode::createFormat");
+	return (result == FALSE ? NULL : format_);
 }
 
 // Execute command

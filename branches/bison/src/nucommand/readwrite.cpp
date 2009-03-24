@@ -118,7 +118,7 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'readline' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	NuFormat *format = c->format();
+	NuFormat *format = c->createFormat(-1,0);
 	if (format == NULL)
 	{
 		printf("Internal Error: No format node associated to command 'readline'.\n");
@@ -131,7 +131,19 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // Read line and parse with format
 bool NuCommand::function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	printf("Not done yet!!!!\n");
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The 'readlinef' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	NuFormat *format = c->createFormat(0,1);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'readlinef'.\n");
+		return FALSE;
+	}
+	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
 	return FALSE;
 }
 
@@ -154,7 +166,7 @@ bool NuCommand::function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	// Check that we are in a filter.
 	if (!c->parent()->isFilter())
 	{
-		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		msg.print("The 'readreal' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getReal(c->hasArg(0) ? c->argi(0) : 0) );
@@ -165,13 +177,15 @@ bool NuCommand::function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // Parse given variable with format
 bool NuCommand::function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	NuFormat *format = c->format();
+	NuFormat *format = c->createFormat(1,2);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'readline'.\n");
+		printf("Internal Error: No format node associated to command 'readvar'.\n");
 		return FALSE;
 	}
-	rv.set( format->readFormatted( c->argc(0), c->parent()->readOptions() ) );
+	// TGAY Write to string
+		printf("RW not available.\n");
+// 	rv.set( format->readFormatted( c->argc(0), c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -233,12 +247,14 @@ bool NuCommand::function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		return FALSE;
 	}
 	// TGAY WRiteline
+	printf("RW not available.\n");
 	return FALSE;
 }
 
 // Write line to variable
 bool NuCommand::function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
+	printf("RW not available.\n");
 // TGAY	// If the format node in the command is empty create a new (temporary) one
 // 	if (c->format() == NULL)
 // 	{

@@ -56,12 +56,10 @@ class NuCommandNode : public TreeNode
 	void setFunction(NuCommand::Function ca);
 	// Get command function
 	NuCommand::Function function();
-	// Return associated format node
-	NuFormat *format();
 	// Check validity of supplied arguments
 	bool checkArguments();
-	// Perform any necessary actions specific to the function
-	bool initFunction();
+	// Create format node (if necessary) from supplied argument id
+	NuFormat *createFormat(int fmtargid, int firstargid);
 	// Execute command
 	bool execute(NuReturnValue &rv);
 	// Print node contents

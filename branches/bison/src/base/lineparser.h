@@ -72,6 +72,8 @@ class LineParser
 	const char *filename();
 	// Return pointer to start of current line
 	const char *line();
+	// Set line target
+	void setLine(const char *s);
 	// Return integer line number of last read line
 	int lastLine();
 	// Open new file for parsing or writing
