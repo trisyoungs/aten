@@ -202,7 +202,7 @@ bool Tree::executeRead(const char *filename)
 // Execute, with specified filename as data target
 bool Tree::executeWrite(const char *filename)
 {
-	printf("XXXX NOT WRITTEN YET.\n");
+	printf("XXXX Tree::executeWrite NOT WRITTEN YET.\n");
 }
 
 // Print tree
@@ -353,16 +353,17 @@ NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::
 }
 
 // Add a node representing a whole statement to the execution list
-void Tree::addStatement(TreeNode *leaf)
+bool Tree::addStatement(TreeNode *leaf)
 {
 	if (leaf == NULL)
 	{
 		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
-		return;
+		return FALSE;
 	}
 	printf("Added statement leaf node %li\n", leaf);
 	leaf->setParent(this);
 	statements_.add(leaf);
+	return TRUE;
 }
 
 // Add an operator to the Tree
@@ -414,9 +415,9 @@ TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, Tr
 }
 
 // Add function-based leaf node to topmost branch on stack
-TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
+TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *arglist)
 {
-	msg.enter("Tree::addFunctionLeaf");
+	msg.enter("Tree::addFunction");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	nodes_.own(leaf);
@@ -427,26 +428,7 @@ TreeNode *Tree::addFunctionLeaf(NuCommand::Function func, TreeNode *arglist)
 	leaf->setReturnType(NuCommand::data[func].returnType);
 	// Check that the correct arguments were given to the command
 	if (!leaf->checkArguments()) leaf = NULL;
-	msg.exit("Tree::addFunctionLeaf");
-	return leaf;
-}
-
-// Add ascoped command to the Tree
-TreeNode *Tree::addScopedLeaf(NuCommand::Function func, int nargs, ...)
-{
-	// Create new scoped node and push it onto the stack
-	ScopeNode *leaf = new ScopeNode(func);
-	nodes_.own(leaf);
-	scopeStack_.add(leaf);
-	leaf->setParent(this);
-	// Create variable argument parser
-	va_list vars;
-	va_start(vars,nargs);
-	// Add arguments in the order they were provided
-	for (int n=0; n<nargs; n++) leaf->addArguments(1, va_arg(vars, TreeNode*));
-	va_end(vars);
-	// Store the function's return type
-	leaf->setReturnType(NuCommand::data[func].returnType);
+	msg.exit("Tree::addFunction");
 	return leaf;
 }
 
@@ -481,12 +463,17 @@ TreeNode *Tree::pushScope()
 }
 
 // Pop the topmost scope node
-void Tree::popScope()
+bool Tree::popScope()
 {
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
-	if (ri == NULL) printf("Internal Error: No scoped node to pop from stack.\n");
+	if (ri == NULL)
+	{
+		printf("Internal Error: No scoped node to pop from stack.\n");
+		return FALSE;
+	}
 	else scopeStack_.remove(ri);
 	printf("ScopeNode is popped.\n");
+	return TRUE;
 }
 
 /*
@@ -520,15 +507,17 @@ TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 }
 
 // Set current declared variable type
-void Tree::setDeclaredVariableType(NuVTypes::DataType type)
+bool Tree::setDeclaredVariableType(NuVTypes::DataType type)
 {
 	declaredType_ = type;
+	return TRUE;
 }
 
 // Set declarations assignment flag
-void Tree::setDeclarationAssignment(bool b)
+bool Tree::setDeclarationAssignment(bool b)
 {
 	declarationAssignment_ = b;
+	return TRUE;
 }
 
 // Add variable to topmost scope
@@ -601,12 +590,12 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
 	if (declarationAssignment_ || (declaredType_ == NuVTypes::NoData))
 	{
-		printf("kljlk\n");
+// 		printf("kljlk\n");
 		// Search the current ScopeNode list for the variable name requested
 		result = NULL;
 		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
 		{
-			ri->item->nodePrint(1, "SCOPENODE DATA");
+// 			ri->item->nodePrint(1, "SCOPENODE DATA");
 			result = ri->item->variables.find(name);
 			if (result != NULL) break;
 		}
@@ -621,10 +610,10 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 	}
 	else
 	{
-	printf("kljlk23423432\n");
+// 	printf("kljlk23423432\n");
 		// So, we are declaring a variable in the local scope, which may shadow another in the global scope.
 		// We are only concerned with whether this variable currently exists in the local scope...
-	printf("searching scopenode %li...\n", scopeStack_.last());
+// 	printf("searching scopenode %li...\n", scopeStack_.last());
 		result = scopeStack_.last()->item->variables.find(name);
 		if (result)
 		{
@@ -888,6 +877,16 @@ bool Tree::setFilterOption(Dnchar *name, TreeNode *value)
 // Return the long description of the filter (including glob)
 const char *Tree::description()
 {
+	// If the description string is empty, create a new one
+	if (description_.length() < 3)
+	{
+		int size = name_.length() + glob_.length() + 10;
+		char *longname = new char[size];
+		// Generate the filter desciption string
+		sprintf(longname,"%s (%s)",name_.get(),glob_.get());
+		description_ = longname;
+		delete[] longname;
+	}
 	return description_.get();
 }
 
@@ -900,6 +899,7 @@ Forest::Forest()
 {
 	// Private variables
 	name_ = "NewForest";
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -935,6 +935,16 @@ const char *Forest::filename()
 	return filename_.get();
 }
 
+// Finalise forest
+void Forest::finalise()
+{
+	// Register any filters with the master
+	for (Tree *t = trees_.first(); t != NULL; t = t->next)
+	{
+		if (t->isFilter()) aten.registerFilter(t, t->filterType());
+	}
+}
+
 // Return number of trees in forest
 int Forest::nTrees()
 {
@@ -947,11 +957,12 @@ Tree *Forest::createTree()
 }
 
 // Generate forest from string 
-bool Forest::generate(const char *, const char *name)
+bool Forest::generate(const char *s, const char *name)
 {
 	msg.enter("Forest::generate[string]");
-	printf("XXX Not DOnw Yet.\n");
 	name_ = name;
+	bool result = nuparser.generate(this, s);
+	finalise();
 	msg.exit("Forest::generate[string]");
 }
 
@@ -962,6 +973,8 @@ bool Forest::generateFromFile(const char *filename, const char *name)
 	filename_ = filename;
 	name_ = name;
 	bool result = nuparser.generateFromFile(this, filename);
+	print();
+	finalise();
 	msg.exit("Forest::generateFromFile");
 	return result;
 }
@@ -973,8 +986,6 @@ Tree *Forest::createFilter(Tree::FilterType ft)
 	// Create tree and set its filter type
 	Tree *tree = trees_.add();
 	tree->setFilterType(ft);
-	// Register the filter with the master
-	aten.registerFilter(tree, ft);
 	msg.exit("Forest::createFilter");
 	return tree;
 }
@@ -983,12 +994,25 @@ Tree *Forest::createFilter(Tree::FilterType ft)
 bool Forest::executeAll(NuReturnValue &rv)
 {
 	msg.enter("Forest::executeAll");
-	printf("XXX Not DOnw Yet.\n");
+	int count = 0;
+	bool result = TRUE;
+	for (Tree *t = trees_.first(); t != NULL; t = t->next)
+	{
+		count ++;
+		if (t->isFilter()) msg.print(Messenger::Parse, "Skipping '%s' (%i of %i in set) since its a filter....\n", t->name(), count, trees_.nItems());
+		else
+		{
+			msg.print(Messenger::Parse, "Executing '%s' (%i of %i in set)....\n", t->name(), count, trees_.nItems());
+			result = t->execute(rv);
+			if (!result) break;
+		}
+	}
 	msg.exit("Forest::executeAll");
+	return result;
 }
 
 // Print forest information
 void Forest::print()
 {
-	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), functions_.nItems(), trees_.nItems());	
+	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), trees_.nItems(), functions_.nItems());	
 }

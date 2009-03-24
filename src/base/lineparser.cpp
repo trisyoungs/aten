@@ -71,6 +71,12 @@ const char *LineParser::line()
 	return line_;
 }
 
+// Set line target
+void LineParser::setLine(const char *s)
+{
+	strncpy(line_, s, MAXLINELENGTH);
+}
+
 // Return integer line number of last read line
 int LineParser::lastLine()
 {

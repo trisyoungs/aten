@@ -49,22 +49,22 @@ Dnchar newVarName;
 %%
 
 program:
-	program statementlist			{ nuparser.tree->addStatement($2); }
-	| filter				{ nuparser.tree->addStatement($1); }
+	program statementlist			{ if (nuparser.addStatement($2)) YYERROR; }
+	| filter				{ if (nuparser.addStatement($1)) YYERROR; }
 	| /* NULL */
 	;
 
 /* Compound Statement */
 
 block:
-	'{'					{ printf("kjsdafkjdskfjdskjf\n"); nuparser.tree->pushScope(); }
-		statementlist '}'		{ $$ = $3; nuparser.tree->popScope(); }
+	'{'					{ nuparser.pushScope(); }
+		statementlist '}'		{ $$ = $3; nuparser.popScope(); }
         ;
 
 statementlist:
 	statement				{ $$ = $1; }
-        | statementlist statement 		{ $$ = nuparser.tree->joinCommands($1, $2); }
-        | statementlist block	 		{ $$ = nuparser.tree->joinCommands($1, $2); }
+        | statementlist statement 		{ $$ = nuparser.joinCommands($1, $2); }
+        | statementlist block	 		{ $$ = nuparser.joinCommands($1, $2); }
         ;
 
 blockment:
@@ -75,8 +75,8 @@ blockment:
 /* Filter Definitions */
 
 optlist:
-	NEWTOKEN assign '=' constant noassign	{ if (!nuparser.tree->setFilterOption(&newVarName, $4)) YYERROR; }
-	| optlist ',' NEWTOKEN assign '=' constant noassign	{ if (!nuparser.tree->setFilterOption(&newVarName, $6)) YYERROR; }
+	NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $4)) YYERROR; }
+	| optlist ',' NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $6)) YYERROR; }
 	;
 
 filter:
@@ -87,24 +87,24 @@ filter:
 /* Single Statement / Flow Control */
 
 statement:
-	';'					{ $$ = nuparser.tree->joinCommands(NULL,NULL); }
+	';'					{ $$ = nuparser.joinCommands(NULL,NULL); }
 	| statementexpr ';'			{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
 	;
 
 statementexpr:
-	DECLARATION namelist 			{ $$ = nuparser.tree->addFunctionLeaf(NuCommand::Initialisations, $2); nuparser.tree->setDeclaredVariableType(NuVTypes::NoData); }
+	DECLARATION namelist 			{ $$ = nuparser.addFunction(NuCommand::Initialisations, $2); nuparser.setDeclaredVariableType(NuVTypes::NoData); }
 	| expr					{ $$ = $1; }
 	;
 
 flowstatement:
-	IF '(' expr ')' blockment ELSE blockment	{ $$ = nuparser.tree->addIf($3,$5,$7); }
-	| IF '(' expr ')' blockment		{ $$ = nuparser.tree->addIf($3,$5); }
-	| FOR createscope '(' statementexpr ';' statementexpr ';' statementexpr ')' blockment	{ $$ = nuparser.tree->joinArguments(nuparser.tree->addFor($4,$6,$8,$10), $$); nuparser.tree->popScope(); }
+	IF '(' expr ')' blockment ELSE blockment	{ $$ = nuparser.addIf($3,$5,$7); }
+	| IF '(' expr ')' blockment		{ $$ = nuparser.addIf($3,$5); }
+	| FOR createscope '(' statementexpr ';' statementexpr ';' statementexpr ')' blockment	{ $$ = nuparser.joinArguments(nuparser.addFor($4,$6,$8,$10), $$); nuparser.popScope(); }
 	;
 
 createscope:
-	/* empty */				{ nuparser.tree->pushScope(); }
+	/* empty */				{ if (!nuparser.pushScope()) YYERROR; }
 	;
 
 /* Range (X~Y) */
@@ -115,26 +115,26 @@ range:
 /* Constants */
 
 constant:
-	INTCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::IntegerData, $1); }
-	| REALCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::RealData, $1); }
-	| CHARCONST				{ $$ = nuparser.tree->addConstant(NuVTypes::StringData, $1); }
+	INTCONST				{ $$ = nuparser.addConstant(NuVTypes::IntegerData, $1); }
+	| REALCONST				{ $$ = nuparser.addConstant(NuVTypes::RealData, $1); }
+	| CHARCONST				{ $$ = nuparser.addConstant(NuVTypes::StringData, $1); }
 	;
 
 /* Variable declaration  name / assignment list */
 
 assign:
-	/* empty */				{ newVarName = *yylval.name; nuparser.tree->setDeclarationAssignment(TRUE); }
+	/* empty */				{ newVarName = *yylval.name; nuparser.setDeclarationAssignment(TRUE); }
 	;
 
 noassign:
-	/* empty */				{ nuparser.tree->setDeclarationAssignment(FALSE); }
+	/* empty */				{ nuparser.setDeclarationAssignment(FALSE); }
 	;
 
 newname:
-	NEWTOKEN				{ $$ = nuparser.tree->addVariable($1); }
-	| NEWTOKEN assign '[' expr ']' noassign	{ $$ = nuparser.tree->addArrayVariable(&newVarName,$4); }
-	| NEWTOKEN assign '=' expr noassign	{ $$ = nuparser.tree->addVariable(&newVarName,$4); }
-	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = nuparser.tree->addArrayVariable(&newVarName,$4,$7); }
+	NEWTOKEN				{ $$ = nuparser.addVariable($1); }
+	| NEWTOKEN assign '[' expr ']' noassign	{ $$ = nuparser.addArrayVariable(&newVarName,$4); }
+	| NEWTOKEN assign '=' expr noassign	{ $$ = nuparser.addVariable(&newVarName,$4); }
+	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = nuparser.addArrayVariable(&newVarName,$4,$7); }
 	;
 
 namelist:
@@ -147,8 +147,8 @@ namelist:
 /* Variables / Paths */
 
 step:
-	STEPTOKEN				{ if (!nuparser.tree->expandPath($1)) YYERROR; }
-	| STEPTOKEN '[' expr ']'		{ if (!nuparser.tree->expandPath($1, $3)) YYERROR; }
+	STEPTOKEN				{ if (!nuparser.expandPath($1)) YYERROR; }
+	| STEPTOKEN '[' expr ']'		{ if (!nuparser.expandPath($1, $3)) YYERROR; }
 ;
 
 steplist:
@@ -157,10 +157,10 @@ steplist:
 	;
 
 var:
-	VARNAME '[' expr ']'			{ $$ = nuparser.tree->wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
-	| VARNAME				{ $$ = nuparser.tree->wrapVariable($1); if ($$ == NULL) YYERROR; }
-	| var '.' 				{ $$ = nuparser.tree->createPath($1); }
-		steplist			{ $$ = nuparser.tree->finalisePath(); }
+	VARNAME '[' expr ']'			{ $$ = nuparser.wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
+	| VARNAME				{ $$ = nuparser.wrapVariable($1); if ($$ == NULL) YYERROR; }
+	| var '.' 				{ $$ = nuparser.createPath($1); }
+		steplist			{ $$ = nuparser.finalisePath(); }
 	;
 
 /* Expressions */
@@ -173,24 +173,24 @@ exprlist:
 expr:
 	constant				{ $$ = $1; }
 	| func					{ $$ = $1; }
-	| var '=' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var PEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var MEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var TEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var DEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var '=' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var PEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var MEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var TEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var DEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var					{ $$ = $1; }
-	| '-' expr %prec UMINUS			{ $$ = nuparser.tree->addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
-	| expr '+' expr				{ printf("sdasjdsakl\n"); $$ = nuparser.tree->addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '-' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '*' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '/' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '^' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr EQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr NEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '>' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr GEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '<' expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr LEQ expr				{ $$ = nuparser.tree->addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| '-' expr %prec UMINUS			{ $$ = nuparser.addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
+	| expr '+' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '-' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '*' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '/' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '^' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr EQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr NEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '>' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr GEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr '<' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| expr LEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
 	| '(' expr ')'				{ $$ = $2; }
 	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared.\n", yylval.name->get()); YYERROR; }
 	;
@@ -198,19 +198,20 @@ expr:
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
-	'#' expr ',' expr ',' expr '#'		{ $$ = nuparser.tree->addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
+	'#' expr ',' expr ',' expr '#'		{ $$ = nuparser.addVecConstant(NuVTypes::VectorData, $2, $4, $6); }
 	;
 
 /* Function */
 
 func:
-	FUNCCALL '(' ')'			{ $$ = nuparser.tree->addFunctionLeaf( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYERROR; }
-	| FUNCCALL	'(' exprlist ')' 	{ $$ = nuparser.tree->addFunctionLeaf( (NuCommand::Function) $1,$3); if ($$ == NULL) YYERROR; }
+	FUNCCALL '(' ')'			{ $$ = nuparser.addFunction( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYERROR; }
+	| FUNCCALL	'(' exprlist ')' 	{ $$ = nuparser.addFunction( (NuCommand::Function) $1,$3); if ($$ == NULL) YYERROR; }
 	;
 
 %%
 
 void yyerror(char *s)
 {
+	printf("LKJSFLKJASLKFDJ\n");
 //    fprintf(stdout, "%s\n", s);
 }

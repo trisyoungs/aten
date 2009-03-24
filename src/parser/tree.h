@@ -57,7 +57,8 @@ class Tree
 	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, WithinOption, ZMapOption, nFilterOptions };
 	static FilterOption filterOption(const char *s);
 	static const char *filterOption(FilterOption fo);
-
+	// Friend class (to allow access to node generation calls
+	friend class NuParser;
 
 	/*
 	// Node Data
@@ -86,28 +87,23 @@ class Tree
 	*/
 	public:
 	// Add a node representing a whole statement to the execution list
-	void addStatement(TreeNode *leaf);
+	virtual bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
+	virtual TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Add 'if' statement
-	TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
+	virtual TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
 	// Add 'for' statement
-	TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
+	virtual TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addFunctionLeaf(NuCommand::Function func, TreeNode *arglist);
-	// Associate a scoped command leaf node to the Tree
-	TreeNode *addScopedLeaf(NuCommand::Function func, int nargs, ...);
+	virtual TreeNode *addFunction(NuCommand::Function func, TreeNode *arglist);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
-	// Pop the most recent function leaf from the stack and own any stored arguments
-	void finaliseFunction();
 	// Join two commands together
-	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	virtual TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	TreeNode *pushScope();
+	virtual TreeNode *pushScope();
 	// Pop the topmost scope node
-	void popScope();
-	public:
+	virtual bool popScope();
 	// Print statement info
 	void print();
 
@@ -123,39 +119,23 @@ class Tree
 
 	public:
 	// Set current type for variable declarations
-	void setDeclaredVariableType(NuVTypes::DataType type);
+	virtual bool setDeclaredVariableType(NuVTypes::DataType type);
 	// Set declarations assignment flag
-	void setDeclarationAssignment(bool b);
+	virtual bool setDeclarationAssignment(bool b);
 	// Add constant value to tompost scope
-	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
+	virtual TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	virtual TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable to topmost ScopeNode using the most recently declared type
-	TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
+	virtual TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode using the most recently declared type
-	TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	virtual TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value
 // 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
-	bool isVariableInScope(const char *name, NuVariable *&result);
+	virtual bool isVariableInScope(const char *name, NuVariable *&result);
 	// Wrap named variable (and array index)
-	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
-
-
-	/*
-	// Paths	
-	*/
-	public:
-	// Flag that the next token to expect is a path step
-	void setExpectPathStep(bool b);
-	// Whether to treat the next alphanumeric token as a path step variable
-	bool expectPathStep();
-	// Create a new path on the stack with the specified base 'variable'
-	TreeNode *createPath(TreeNode *var);
-	// Expand topmost path
-	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
-	// Finalise and remove the topmost path on the stack
-	TreeNode *finalisePath();
+	virtual TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
 
 
 	/*
@@ -195,7 +175,7 @@ class Tree
 	// Return whether this tree is a filter
 	bool isFilter();
 	// Set filter option
-	bool setFilterOption(Dnchar *name, TreeNode *value);
+	virtual bool setFilterOption(Dnchar *name, TreeNode *value);
 	// Return the ID of the filter
 	int id();
 	// Return the descriptive name of the filter
@@ -292,6 +272,8 @@ class Forest
 	bool generate(const char *, const char *name = NULL);
 	// Generate forest from input file
 	bool generateFromFile(const char *filename, const char *name = NULL);
+	// Finalise forest
+	void finalise();
 	// Return number of trees in forest
 	int nTrees();
 	// Create a new, generic (script or command) tree

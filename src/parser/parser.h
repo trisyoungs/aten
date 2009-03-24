@@ -23,16 +23,17 @@
 #define ATEN_NUPARSER_H
 
 #include "base/lineparser.h"
+#include "parser/tree.h"
 #include "templates/reflist.h"
 #include "base/dnchar.h"
 #include <fstream>
 
 // Forward declarations
 class Forest;
-class Tree;
+class TreeNode;
 
 // Parser
-class NuParser
+class NuParser : public Tree
 {
 	public:
 	// Constructor / Destructor
@@ -85,14 +86,8 @@ class NuParser
 	private:
 	// Current forest target
 	Forest *forest_;
-
-	public:
 	// Current tree (target of node creation)
-	Tree *tree;
-	// Create a new tree in the forest
-	void createTree();
-	// Create a new function tree in the forest
-	void createFunction();
+	static Tree *tree_;
 
 
 	/*
@@ -103,6 +98,64 @@ class NuParser
 	bool generate(Forest *f, const char *s);
 	// Populate target forest from specified file
 	bool generateFromFile(Forest *f, const char *filename);
+
+
+	/*
+	// Path Generation
+	*/
+	public:	
+	// Flag that the next token to expect is a path step
+	bool setExpectPathStep(bool b);
+	// Whether to treat the next alphanumeric token as a path step variable
+	bool expectPathStep();
+	// Create a new path on the stack with the specified base 'variable'
+	TreeNode *createPath(TreeNode *var);
+	// Expand topmost path
+	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
+	// Finalise and remove the topmost path on the stack
+	TreeNode *finalisePath();
+
+
+	/*
+	// Tree Interface
+	*/
+	public:
+	// Add a node representing a whole statement to the execution list
+	bool addStatement(TreeNode *leaf);
+	// Add an operator to the Tree
+	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
+	// Add 'if' statement
+	TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
+	// Add 'for' statement
+	TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
+	// Associate a command-based leaf node to the Tree
+	TreeNode *addFunction(NuCommand::Function func, TreeNode *arglist);
+	// Join two nodes together
+	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
+	// Join two commands together
+	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
+	// Add on a new scope to the stack
+	TreeNode *pushScope();
+	// Pop the topmost scope node
+	bool popScope();
+
+	// Variables / Constants
+	// Set current type for variable declarations
+	bool setDeclaredVariableType(NuVTypes::DataType type);
+	// Set declarations assignment flag
+	bool setDeclarationAssignment(bool b);
+	// Add constant value to tompost scope
+	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
+	// Add variable to topmost ScopeNode
+	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add variable to topmost ScopeNode using the most recently declared type
+	TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
+	// Add array variable to topmost ScopeNode using the most recently declared type
+	TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	// Search for variable in current scope
+	bool isVariableInScope(const char *name, NuVariable *&result);
+	// Wrap named variable (and array index)
+	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
 };
 
 // External declaration
