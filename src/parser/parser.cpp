@@ -19,13 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "base/dnchar.h"
-// #include "parser/variable.h"
-// #include "parser/grammar.h"
 #include "parser/parser.h"
-// #include "parser/tree.h"
-// #include "nucommand/commands.h"
-// #include "base/sysfunc.h"
 
 // External Declarations
 NuParser nuparser;

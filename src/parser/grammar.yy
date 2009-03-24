@@ -49,16 +49,16 @@ Dnchar newVarName;
 %%
 
 program:
-	program statementlist			{ if (nuparser.addStatement($2)) YYERROR; }
-	| filter				{ if (nuparser.addStatement($1)) YYERROR; }
+	program statementlist			{ if (!nuparser.addStatement($2)) YYERROR; }
+	| filter				{ if (!nuparser.addStatement($1)) YYERROR; }
 	| /* NULL */
 	;
 
 /* Compound Statement */
 
 block:
-	'{'					{ nuparser.pushScope(); }
-		statementlist '}'		{ $$ = $3; nuparser.popScope(); }
+	'{'					{ if (!nuparser.pushScope()) YYERROR; }
+		statementlist '}'		{ $$ = $3; if (!nuparser.popScope()) YYERROR; }
         ;
 
 statementlist:

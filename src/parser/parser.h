@@ -156,6 +156,11 @@ class NuParser : public Tree
 	bool isVariableInScope(const char *name, NuVariable *&result);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
+
+	// Filters
+	// Set filter option
+	bool setFilterOption(Dnchar *name, TreeNode *value);
+
 };
 
 // External declaration
