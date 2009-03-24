@@ -546,6 +546,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 // Add variable to topmost scope using most recently set declared variable type
 TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
 {
+	printf("Tree's addVar withoutzkldjsflkjk,m\n");
 	return addVariable(declaredType_, name, initialValue);
 }
 

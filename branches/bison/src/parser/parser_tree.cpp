@@ -22,6 +22,39 @@
 #include "parser/parser.h"
 #include "nucommand/commands.h"
 
+// Create a new path on the stack with the specified base 'variable'
+TreeNode *NuParser::createPath(TreeNode *var)
+{
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (createPath).\n");
+		return FALSE;
+	}
+	else return tree_->createPath(var);
+}
+
+// Expand topmost path
+bool NuParser::expandPath(Dnchar *name, TreeNode *arrayindex)
+{
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (expandPath).\n");
+		return FALSE;
+	}
+	else return tree_->expandPath(name, arrayindex);
+}
+
+// Finalise and remove the topmost path on the stack
+TreeNode *NuParser::finalisePath()
+{
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (finalisePath).\n");
+		return FALSE;
+	}
+	else return tree_->finalisePath();
+}
+
 // Add a node representing a whole statement to the execution list
 bool NuParser::addStatement(TreeNode *leaf)
 {
@@ -89,18 +122,6 @@ TreeNode *NuParser::joinArguments(TreeNode *arg1, TreeNode *arg2)
 	else return tree_->joinArguments(arg1, arg2);
 }
 
-// Pop the most recent function leaf from the stack and own any stored arguments
-bool NuParser::finaliseFunction()
-{
-	if (tree_ == NULL)
-	{
-		printf("Internal Error: No current Tree target for Parser (finaliseFunction).\n");
-		return FALSE;
-	}
-	else tree_->finaliseFunction();
-	return TRUE;
-}
-
 // Join two commands together
 TreeNode *NuParser::joinCommands(TreeNode *node1, TreeNode *node2)
 {
@@ -143,7 +164,7 @@ bool NuParser::setDeclaredVariableType(NuVTypes::DataType type)
 		printf("Internal Error: No current Tree target for Parser (setDeclaredVariableType).\n");
 		return FALSE;
 	}
-	else return tree_->setDeclarationAssignment(type);
+	else return tree_->setDeclaredVariableType(type);
 }
 
 // Set declarations assignment flag
@@ -171,6 +192,7 @@ TreeNode *NuParser::addConstant(NuVTypes::DataType type, Dnchar *token)
 // Add variable to topmost ScopeNode
 TreeNode *NuParser::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
+	printf("aaaaaaaaaaaaasdasdasd\n");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addVariable).\n");
@@ -182,6 +204,7 @@ TreeNode *NuParser::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode 
 // Add variable to topmost ScopeNode using the most recently declared type
 TreeNode *NuParser::addVariable(Dnchar *name, TreeNode *initialValue)
 {
+	printf("aaaaaaaaaaaaaaaddddddddddddddddddddddasd\n");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addVariable).\n");
@@ -223,3 +246,14 @@ TreeNode *NuParser::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 	else return tree_->wrapVariable(var, arrayindex);
 }
 
+
+// Set filter option
+bool NuParser::setFilterOption(Dnchar *name, TreeNode *value)
+{
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (setFilterOption).\n");
+		return FALSE;
+	}
+	else return tree_->setFilterOption(name, value);
+}

@@ -77,7 +77,7 @@ const char *VariableNode::name()
 void VariableNode::finalisePath()
 {
 	msg.enter("VariableNode::finalisePath");
-	printf("There are %i steps in the pathnode...\n", args_.nItems());
+	msg.print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
 	// Return type of last argument is return type of PathNode
 	if (args_.last() == NULL) returnType_ = NuVTypes::NoData;
 	else
@@ -85,7 +85,7 @@ void VariableNode::finalisePath()
 		returnType_ = args_.last()->item->returnType();
 		readOnly_ = args_.last()->item->readOnly();
 	}
-	printf("Return type of VariableNode path is '%s' and read_only status is '%s'\n", NuVTypes::dataType(returnType_), readOnly_ ? "true" : "false");
+	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s' and read_only status is '%s'\n", NuVTypes::dataType(returnType_), readOnly_ ? "true" : "false");
 	msg.exit("VariableNode::finalisePath");
 }
 

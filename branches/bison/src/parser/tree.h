@@ -60,6 +60,7 @@ class Tree
 	// Friend class (to allow access to node generation calls
 	friend class NuParser;
 
+
 	/*
 	// Node Data
 	*/
@@ -80,6 +81,14 @@ class Tree
 	int nErrors_;
 	// Check operator type compatibility
 	NuVTypes::DataType checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
+
+	public:
+	// Create a new path on the stack with the specified base 'variable'
+	virtual TreeNode *createPath(TreeNode *var);
+	// Expand topmost path
+	virtual bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
+	// Finalise and remove the topmost path on the stack
+	virtual TreeNode *finalisePath();
 
 
 	/*
