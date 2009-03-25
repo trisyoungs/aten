@@ -35,9 +35,6 @@
 #include "main/aten.h"
 #include <stdarg.h>
 
-// YYParse forward
-int yyparse();
-
 // Filter types
 const char *FilterTypeKeywords[Tree::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
 const char *Tree::filterType(Tree::FilterType ft)
@@ -841,6 +838,7 @@ bool Forest::generate(const char *s, const char *name)
 	bool result = nuparser.generate(this, s);
 	finalise();
 	msg.exit("Forest::generate[string]");
+	return result;
 }
 
 // Generate forest from input file

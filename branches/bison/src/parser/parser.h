@@ -40,7 +40,7 @@ class NuParser : public Tree
 	NuParser();
 	~NuParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
-	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, nSymbolTokens };
+	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, nSymbolTokens };
 	// Friend declarations
 	friend class Forest;
 

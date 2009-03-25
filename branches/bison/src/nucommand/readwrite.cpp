@@ -237,13 +237,32 @@ bool NuCommand::function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	return TRUE;
 }
 
-// Write line with format
+// Write line without format, delimiting arguments with spaces
 bool NuCommand::function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// Check that we are in a filter.
 	if (!c->parent()->isFilter())
 	{
 		msg.print("The 'writeline' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	NuFormat *format = c->createFormat(0,1);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'writeline'.\n");
+		return FALSE;
+	}
+// 	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
+	return TRUE;
+}
+
+// Write line with C-style format
+bool NuCommand::function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The 'writelinef' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
 	// TGAY WRiteline

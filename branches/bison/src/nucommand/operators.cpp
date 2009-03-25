@@ -310,11 +310,20 @@ bool NuCommand::function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuRetur
 // Negate value
 bool NuCommand::function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	// Grab both argument (return) values and send them to be operated on
-	NuReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return operate(NuCommand::OperatorNegate, &v1, &v2, rv);
+	if (!c->arg(0, rv)) return FALSE;
+	switch (c->argType(0))
+	{
+		case (NuVTypes::IntegerData):
+			rv.set(-rv.asInteger());
+			break;
+		case (NuVTypes::RealData):
+			rv.set(-rv.asReal());
+			break;
+		case (NuVTypes::VectorData):
+			rv.set(-rv.asVector());
+			break;
+	}
+	return c->setArg(0, rv);
 }
 
 // Divide one quantity by another
@@ -456,4 +465,46 @@ bool NuCommand::function_OperatorAssignmentPlus(NuCommandNode *c, Bundle &obj, N
 	// Now, set the first argument to our return value
 	if (!c->setArg(0, rv)) return FALSE;
 	return (c->arg(0, rv));
+}
+
+// Postfix Increase
+bool NuCommand::function_OperatorPostfixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Get current value of argument
+	if (!c->arg(0, rv)) return FALSE;
+	NuReturnValue newvalue;
+	if (c->argType(0) == NuVTypes::IntegerData) newvalue.set( rv.asInteger()+1 );
+	else if (c->argType(0) == NuVTypes::RealData) newvalue.set( rv.asReal()+1 );
+	return c->setArg(0, newvalue);
+}
+
+// Postfix Decrease
+bool NuCommand::function_OperatorPostfixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Get current value of argument
+	if (!c->arg(0, rv)) return FALSE;
+	NuReturnValue newvalue;
+	if (c->argType(0) == NuVTypes::IntegerData) newvalue.set( rv.asInteger()-1 );
+	else if (c->argType(0) == NuVTypes::RealData) newvalue.set( rv.asReal()-1 );
+	return c->setArg(0, newvalue);
+}
+
+// Prefix Increase
+bool NuCommand::function_OperatorPrefixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Get current value of argument
+	if (!c->arg(0, rv)) return FALSE;
+	if (c->argType(0) == NuVTypes::IntegerData) rv.set( rv.asInteger()+1 );
+	else if (c->argType(0) == NuVTypes::RealData) rv.set( rv.asReal()+1 );
+	return c->setArg(0, rv);
+}
+
+// Prefix Decrease
+bool NuCommand::function_OperatorPrefixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Get current value of argument
+	if (!c->arg(0, rv)) return FALSE;
+	if (c->argType(0) == NuVTypes::IntegerData) rv.set( rv.asInteger()-1 );
+	else if (c->argType(0) == NuVTypes::RealData) rv.set( rv.asReal()-1 );
+	return c->setArg(0, rv);
 }

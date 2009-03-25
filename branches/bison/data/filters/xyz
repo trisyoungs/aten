@@ -15,7 +15,7 @@ importmodel(name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="
 	readline(natoms);
 	getline(title);
 	newmodel(title);
-	for (n=1; n<=natoms; n += 1)
+	for (n=1; n<=natoms; n ++)
 	{
 		readline(e,rx,ry,rz,q);
 		i = newatom(e, rx, ry, rz);
@@ -25,85 +25,45 @@ importmodel(name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="
 	finalisemodel();
 }
 
-
-# XMol-style XYZ coordinates files (for v1.1+)
-# Created:	 25/03/2009
-# Last modified: 25/03/2009
-# ChangeLog:
-
-importmodel
-	name "XMol XYZ Coordinates"
-	nickname xyz
-	extension xyz
-	glob *.xyz
-	id 3
-
+exportmodel(name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
+{
 	# Variable declaration
-	integer natoms,n,m
-	character e,title
-	real rx,ry,rz,q
+	integer n;
+	string e;
+	real rx,ry,rz;
+	atom i;
+sdsd = 0;
+	model.atoms[0];
 
-	# Loop over model(s) in file
-	for $m
-		# Read data
-		readline "$natoms"
-		getline $title
-		newmodel $title
-		for $n,1,$natoms
-			readline "$e $rx $ry $rz $q"
-			newatom $e
-			setcoords $rx $ry $rz
-			setcharge $q
-		end
-		rebond
-		finalisemodel
-	end
-end
+	writeline("$model.natoms");
+	writeline("$model.name");
+	for (i=model.atoms[0]; i; i++) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
+}
 
-exportmodel
-	name "XMol XYZ Coordinates"
-	extension xyz
-	glob *.xyz
-	nickname xyz
-	id 3
-
-	# Variable declaration
-	integer n
-	character e
-	real rx,ry,rz
-	atom i
-
-	writeline "$model.natoms"
-	writeline "$model.name"
-	for $i
-		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
-	end
-end
-
-importtrajectory
-	name "XMol XYZ Coordinates"
-	extension xyz
-	glob *xyz
-	nickname xyz
-
-	# Variable declaration
-	integer n,natoms
-	character e,title
-	real rx,ry,rz
-
-	# No header in XYZ trajectories, so only check for frames
-	if $header <> true
-		readline "$natoms"
-		getline $title
-		setname $title
-		newglyph text
-		glyphtext $title
-		glyphdata 1 10 10 0
-		for $n,1,$natoms
-			readline "$e $rx $ry $rz"
-			newatom $e $rx $ry $rz
-		end
-		rebond
-		finaliseframe
-	end
-end
+#importtrajectory
+#	name "XMol XYZ Coordinates"
+#	extension xyz
+#	glob *xyz
+#	nickname xyz
+#
+#	# Variable declaration
+#	integer n,natoms
+#	character e,title
+#	real rx,ry,rz
+#
+#	# No header in XYZ trajectories, so only check for frames
+#	if $header <> true
+#		readline "$natoms"
+#		getline $title
+#		setname $title
+#		newglyph text
+#		glyphtext $title
+#		glyphdata 1 10 10 0
+#		for $n,1,$natoms
+#			readline "$e $rx $ry $rz"
+#			newatom $e $rx $ry $rz
+#		end
+#		rebond
+#		finaliseframe
+#	end
+#end

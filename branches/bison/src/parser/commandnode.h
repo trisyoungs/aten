@@ -60,6 +60,8 @@ class NuCommandNode : public TreeNode
 	bool checkArguments();
 	// Create format node (if necessary) from supplied argument id
 	NuFormat *createFormat(int fmtargid, int firstargid);
+	// Create a 'delimited' writeable format (if necessary) from supplied argument id
+	NuFormat *createFormat(const char *delimiter);
 	// Execute command
 	bool execute(NuReturnValue &rv);
 	// Print node contents

@@ -75,7 +75,7 @@ class NuFormat
 	public:
 	// Constructors / Destructor
 	NuFormat(Refitem<TreeNode,int> *firstarg);
-	NuFormat(const char *s, Refitem<TreeNode,int> *firstarg);
+	NuFormat(const char *format, Refitem<TreeNode,int> *firstarg);
 	~NuFormat();
 
 
@@ -85,6 +85,8 @@ class NuFormat
 	private:
 	// Whether the format was created succesfully
 	bool isValid_;
+	// Whether the format was created from a C-style format, or just a list of data items
+	bool delimited_;
 	// Chunk list
 	List<FormatChunk> chunks_;
 	// Created string

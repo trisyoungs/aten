@@ -204,7 +204,7 @@ void GuiQt::run()
 	if (!aten.filterLoadSuccessful())
 	{
 		int ret = QMessageBox::warning(NULL, "Aten",
-		"Filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.",
+		"One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.",
 		QMessageBox::Cancel, QMessageBox::Cancel);
 	}
 

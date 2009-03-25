@@ -101,6 +101,7 @@ NuFormat::NuFormat(Refitem<TreeNode,int> *firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
 	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) chunks_.own( new FormatChunk(ri->item) );
+	delimited_ = TRUE;
 	isValid_ = TRUE;
 }
 
@@ -109,6 +110,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 {
 	// Private variables
 	isValid_ = TRUE;
+	delimited_ = FALSE;
 
 	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
 	const char *c = s;
