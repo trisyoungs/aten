@@ -49,9 +49,13 @@ Dnchar newVarName;
 
 %%
 
+forest:
+	filter					{ }
+	| forest filter				{ }
+	;
+
 program:
 	program statementlist			{ if (!nuparser.addStatement($2)) YYERROR; }
-	| filter				{ }
 	| /* NULL */
 	;
 
@@ -181,10 +185,10 @@ expr:
 	| var DEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var					{ $$ = $1; }
 	| '-' expr %prec UMINUS			{ $$ = nuparser.addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
-	| var PP				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixAdd, 0, $1); if ($$ == NULL) YYERROR; }
-	| var MM				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixSubtract, 0, $1); if ($$ == NULL) YYERROR; }
-	| PP var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixAdd, 0, $2); if ($$ == NULL) YYERROR; }
-	| MM var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixSubtract, 0, $2); if ($$ == NULL) YYERROR; }
+	| var PP				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixIncrease, 0, $1); if ($$ == NULL) YYERROR; }
+	| var MM				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixDecrease, 0, $1); if ($$ == NULL) YYERROR; }
+	| PP var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixIncrease, 0, $2); if ($$ == NULL) YYERROR; }
+	| MM var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixDecrease, 0, $2); if ($$ == NULL) YYERROR; }
 	| expr '+' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '-' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '*' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }

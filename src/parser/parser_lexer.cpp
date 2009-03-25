@@ -28,8 +28,8 @@
 #include "base/sysfunc.h"
 
 // Symbols
-const char *SymbolTokenKeywords[NuParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=" };
-int SymbolTokenValues[NuParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ};
+const char *SymbolTokenKeywords[NuParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--" };
+int SymbolTokenValues[NuParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM };
 
 // Original yylex()
 int yylex()
@@ -209,7 +209,11 @@ int NuParser::lex()
 		{
 			// Search the variable lists currently in scope...
 			NuVariable *v;
-			if (!isVariableInScope(token, v)) return 0;
+			if (!isVariableInScope(token, v))
+			{
+				printf("kjjjjjjjjjjjjjjjjjjj\n");
+				return 0;
+			}
 			else if (v != NULL)
 			{
 				yylval.variable = v;
@@ -225,29 +229,24 @@ int NuParser::lex()
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
-	// Return immediately in the case of single-character literals
+	// Return immediately in the case of brackets and the semicolon
 // 	printf("Symbol is %c\n", c);
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
-	// Similarly, if the next character is a bracket, return immediately
+	token[0] = c;
+	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
-	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}')) return c;
-	// If the following character is '"', we also return immediately - have a clause in the following loop...
-	do
+	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
+	// If it is 'punctuation', add this second character to our operator and search for it
+	if (ispunct(c2))
 	{
-		token[length++] = c;
 		c = getChar();
-		if (c == '"') break;
-	}
-	while (ispunct(c));
-	unGetChar();
-	token[length] = '\0';
-// 	printf("Token is %s\n",token);
-	if (length == 1) return token[0];
-	else
-	{
+		token[1] = c;
+		token[2] = '\0';
+		printf("Symbol token is %s\n",token);
 		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token);
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
 		else msg.print("Error: Unrecognised symbol found in input.\n");
-	}
+ 	}
+	else return c;
 	return 0;
 }

@@ -407,6 +407,7 @@ class NuCommand
 		SkipChars,
 		SkipLine,
 		WriteLine,
+		WriteLineFormatted,
 		WriteVar,
 
 		// Script Commands
@@ -486,10 +487,10 @@ class NuCommand
 		OperatorNegate,
 		OperatorNotEqualTo,
 		OperatorPower,
-		OperatorPostfixAdd,
-		OperatorPostfixSubtract,
-		OperatorPrefixAdd,
-		OperatorPrefixSubtract,
+		OperatorPostfixDecrease,
+		OperatorPostfixIncrease,
+		OperatorPrefixDecrease,
+		OperatorPrefixIncrease,
 		OperatorSubtract,
 
 		// View
@@ -840,6 +841,7 @@ class NuCommand
 	static bool function_SkipChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Script Commands
 	static bool function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -911,10 +913,10 @@ class NuCommand
 	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPostfixAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPostfixSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPrefixAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPrefixSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPostfixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPostfixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPrefixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPrefixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// View
 	static bool function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

@@ -365,6 +365,7 @@ void NuCommand::initPointers()
 	pointers_[SkipChars] = &NuCommand::function_SkipChars;
 	pointers_[SkipLine] = &NuCommand::function_SkipLine;
 	pointers_[WriteLine] = &NuCommand::function_WriteLine;
+	pointers_[WriteLineFormatted] = &NuCommand::function_WriteLineFormatted;
 	pointers_[WriteVar] = &NuCommand::function_WriteVar;
 
 	// Script Commands
@@ -443,6 +444,10 @@ void NuCommand::initPointers()
 	pointers_[OperatorNegate] = &function_OperatorNegate;
 	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
 	pointers_[OperatorPower] = &function_OperatorPower;
+	pointers_[OperatorPostfixIncrease] = &function_OperatorPostfixIncrease;
+	pointers_[OperatorPostfixDecrease] = &function_OperatorPostfixDecrease;
+	pointers_[OperatorPrefixIncrease] = &function_OperatorPrefixIncrease;
+	pointers_[OperatorPrefixDecrease] = &function_OperatorPrefixDecrease;
 	pointers_[OperatorSubtract] = &function_OperatorSubtract;
 
 /*

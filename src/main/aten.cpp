@@ -544,6 +544,7 @@ void Aten::openFilters()
 		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Tree::ExpressionImport].nItems(), filters_[Tree::ExpressionExport].nItems());
 		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Tree::GridImport].nItems(), filters_[Tree::GridExport].nItems());
 	}
+	else if (failed) filterLoadSuccessful_ = FALSE;
 	msg.exit("Aten::openFilters");
 }
 
@@ -612,6 +613,7 @@ bool Aten::parseFilterIndex(const char *path)
 	msg.enter("Aten::parseFilterIndex");
 	// Read filter names from file and open them
 	char filename[512], s[512], bit[64];
+	bool result = TRUE;
 	strcpy(s, "--> ");
 	// Open the filter index
 	strcpy(filename,path);
@@ -620,6 +622,7 @@ bool Aten::parseFilterIndex(const char *path)
 	if (!parser.isFileGood())
 	{
 		msg.print("Couldn't open filter index file '%s'.\n", filename);
+		msg.exit("Aten::parseFilterIndex");
 		return FALSE;
 	}
 	while (parser.getArgsDelim(LineParser::SkipBlanks) == 0)
@@ -632,8 +635,8 @@ bool Aten::parseFilterIndex(const char *path)
 		printf("XXX The filter file to read is called %s\n", parser.argc(0));
 		if (!f->generateFromFile(filename, parser.argc(0)))
 		{
-			msg.exit("Aten::parseFilterIndex");
-			return FALSE;
+			msg.print("Failed to load filters from '%s'...\n", parser.argc(0));
+			result = FALSE;
 		}
 		// Add on a bit of useful text to print out
 		sprintf(bit, "%s  ", parser.argc(0));
@@ -642,7 +645,7 @@ bool Aten::parseFilterIndex(const char *path)
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
 	msg.exit("Aten::parseFilterIndex");
-	return TRUE;
+	return FALSE;
 }
 
 // Set filter partners

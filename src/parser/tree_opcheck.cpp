@@ -19,8 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/treenode.h"
-
+#include "parser/tree.h"
 
 // Check binary operator type compatibility
 NuVTypes::DataType Tree::checkUnaryOperatorTypes(NuCommand::Function func, NuVTypes::DataType type)
@@ -37,13 +36,15 @@ NuVTypes::DataType Tree::checkUnaryOperatorTypes(NuCommand::Function func, NuVTy
 	switch (func)
 	{
 		// Postfix and prefix operators (must have integer or real types)
-		case (NuCommand::OperatorPostfixAdd):
-		case (NuCommand::OperatorPostfixSubtract):
-		case (NuCommand::OperatorPrefixAdd):
-		case (NuCommand::OperatorPrefixSubtract):
+		case (NuCommand::OperatorPostfixIncrease):
+		case (NuCommand::OperatorPostfixDecrease):
+		case (NuCommand::OperatorPrefixIncrease):
+		case (NuCommand::OperatorPrefixDecrease):
 			if ((type == NuVTypes::IntegerData) || (type == NuVTypes::RealData)) result = type;
 			break;
-
+		case (NuCommand::OperatorNegate):
+			if ((type <= NuVTypes::VectorData) && (type != NuVTypes::StringData)) result = type;
+			break;
 	}
 	// Print error message if necessary
 	if (result == NuVTypes::NoData) msg.print("Error: Unary operator %s cannot act on %s.\n", NuCommand::data[func].keyword, NuVTypes::aDataType(type));
