@@ -23,6 +23,7 @@
 #include "parser/stepnode.h"
 #include "base/atom.h"
 #include "base/elements.h"
+#include "model/model.h"
 #include <string.h>
 
 // Constructor
@@ -156,7 +157,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -232,91 +233,85 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	return result;
 }
 
-/*
 // Set specified data
-bool AtomVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("AtomVariable::set");
+	msg.enter("AtomVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Atom type.\n");
+		msg.exit("AtomVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("AtomVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
 	bool result = TRUE;
-	// Cast pointer into Atom*
-	Atom *i = (Atom*) classptr;
-	if (i == NULL) printf("Warning - NULL Atom pointer passed to AtomVariable::set.\n");
-// 	printf("Enumerated ID supplied to AtomAccessors is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > AtomVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to AtomVariable::set.\n", vid);
-		msg.exit("AtomVariable::set");
-		return FALSE;
-	}
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'atom' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("AtomVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("AtomVariable::set");
-		return FALSE;
-	}
 	Vec3<double> v;
+	Atom *ptr= (Atom*) sourcerv.asPointer(NuVTypes::AtomData, result);
 	// Set value based on enumerated id
-	switch (vid)
+	if (result) switch (acc)
 	{
 		case (AtomVariable::Fixed):
-			ptr->setPositionFixed(srcvar->asBool());
+			ptr->setPositionFixed(newvalue.asBool());
 			break;
 		case (AtomVariable::F):
-			ptr->f() = srcvar->asVector();
+			ptr->f() = newvalue.asVector();
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
 		case (AtomVariable::FZ):
-			ptr->f().set(vid - AtomVariable::FX, srcvar->asDouble());
+			ptr->f().set(acc - AtomVariable::FX, newvalue.asReal());
 			break;
 		case (AtomVariable::Hidden):
-			ptr->parent()->setHidden(i, srcvar->asBool());
+			ptr->parent()->setHidden(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::Q):
-			ptr->parent()->chargeAtom(i, srcvar->asDouble());
+			ptr->parent()->chargeAtom(ptr, newvalue.asReal());
 			break;
 		case (AtomVariable::R):
-			ptr->parent()->positionAtom(i, srcvar->asVector());
+			ptr->parent()->positionAtom(ptr, newvalue.asVector());
 			break;
 		case (AtomVariable::RX):
 		case (AtomVariable::RY):
 		case (AtomVariable::RZ):
 			v = ptr->r();
-			v.set(vid - AtomVariable::RX, srcvar->asDouble());
-			ptr->parent()->positionAtom(i, v);
+			v.set(acc - AtomVariable::RX, newvalue.asReal());
+			ptr->parent()->positionAtom(ptr, v);
 			break;
 		case (AtomVariable::Selected):
-			srcvar->asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(i);
+			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
 			break;
 		case (AtomVariable::Type):
-			ptr->setType( (ForcefieldAtom*) srcvar->asPointer(VTypes::ForcefieldAtomData));
+			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(NuVTypes::ForcefieldAtomData));
 			break;
 		case (AtomVariable::V):
-			ptr->v() = srcvar->asVector();
+			ptr->v() = newvalue.asVector();
 			break;
 		case (AtomVariable::VX):
 		case (AtomVariable::VY):
 		case (AtomVariable::VZ):
-			ptr->v().set(vid - AtomVariable::VX, srcvar->asDouble());
+			ptr->v().set(acc - AtomVariable::VX, newvalue.asReal());
 			break;
 		case (AtomVariable::Z):
-			ptr->parent()->transmuteAtom(i, srcvar->asInteger());
+			ptr->parent()->transmuteAtom(ptr, newvalue.asInteger());
 			break;
 		default:
-			printf("AtomVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("AtomVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtomVariable::set");
+	msg.exit("AtomVariable::setAccessor");
 	return result;
-}*/
+}

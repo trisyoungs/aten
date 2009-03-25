@@ -22,6 +22,7 @@
 #include "parser/variablenode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
+#include "parser/stepnode.h"
 #include <string.h>
 
 // Constructor
@@ -162,15 +163,57 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 }
 
 // Set from returnvalue node
-bool VariableNode::set(NuReturnValue &rv)
+bool VariableNode::set(NuReturnValue &setrv)
 {
+	msg.enter("VariableNode::set");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be set.\n");
+		msg.exit("VariableNode::set");
 		return FALSE;
 	}
-	// Call the local variables set() function
-	return variable_->set(rv);
+	// If there are no path nodes then just set the local variable
+	bool result = TRUE;
+	NuReturnValue executerv;
+	if (args_.nItems() == 0)
+	{
+		// Call the local variable's set() function
+		if (arrayIndex_ == NULL) result = variable_->set(setrv);
+		else
+		{
+			NuReturnValue index;
+			if (!arrayIndex_->execute(index)) result = FALSE;
+			else result = variable_->setAsArray(setrv, index.asInteger());
+		}
+	}
+	else
+	{
+		// Call the local variable's execute() function to get the base value
+		bool result2;
+		if (arrayIndex_ == NULL) result2 = variable_->execute(executerv);
+		else
+		{
+			NuReturnValue index;
+			if (!arrayIndex_->execute(index)) result2 =  FALSE;
+			else result2 = variable_->executeAsArray(executerv, index.asInteger());
+		}
+		// Next, step through accessnodes up until the last one, passing the returnvalue to each in turn
+		if (result2)
+		{
+			for (Refitem<TreeNode,int> *ri = args_.first(); ri != args_.last(); ri = ri->next)
+			{
+				result = ri->item->execute(executerv);
+				if (!result) break;
+			}
+			// For the last accessnode in the list, cast into a StepNode and use the set function
+// 		printf("Node type of args_>last() is %i\n", args_.last()->nodeType());
+			((StepNode*) args_.last()->item)->set(executerv, setrv);
+		}
+		else result = FALSE;
+	}
+	if (!result) printf("Variable set failed.\n");
+	msg.exit("VariableNode::set");
+	return result;
 }
 
 // Initialise node

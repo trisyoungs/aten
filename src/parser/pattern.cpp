@@ -137,7 +137,7 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -213,54 +213,46 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 	return result;
 }
 
-/*
-// Set specified data
-bool PatternVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool PatternVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("PatternVariable::set");
+	msg.enter("PatternVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n");
+		msg.exit("PatternVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("PatternVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
 	bool result = TRUE;
-	// Cast pointer into Pattern*
-	Pattern *p = (Pattern*) classptr;
-	if (p == NULL) printf("Warning - NULL Pattern pointer passed to PatternVariable::set.\n");
-// 	printf("Enumerated ID supplied to PatternVariable is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > PatternVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to PatternVariable::set.\n", vid);
-		msg.exit("PatternVariable::set");
-		return FALSE;
-	} 
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'pattern' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("PatternVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("PatternVariable::set");
-		return FALSE;
-	}
+	Pattern *ptr= (Pattern*) sourcerv.asPointer(NuVTypes::PatternData, result);
 	// Set value based on enumerated id
-	switch (vid)
+	if (result) switch (acc)
 	{
 		case (PatternVariable::Name):
-			p->setName(srcvar->asCharacter());
+			ptr->setName(newvalue.asString());
 			break;
 		case (PatternVariable::FField):
- 			p->setForcefield( (Forcefield*) srcvar->asPointer(NuVTypes::ForcefieldData));
+ 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(NuVTypes::ForcefieldData));
 			break;
 		default:
-			printf("PatternVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("PatternVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("PatternVariable::set");
+	msg.exit("PatternVariable::setAccessor");
 	return result;
 }
-*/
-

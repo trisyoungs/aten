@@ -289,6 +289,8 @@ class Forest
 	Tree *createTree();
 	// Create a new file filter-style tree
 	Tree *createFilter(Tree::FilterType ft);
+	// Delete specified tree
+	void deleteTree(Tree *t);
 	// Execute all trees in forest
 	bool executeAll(NuReturnValue &rv);
 	// Print forest information

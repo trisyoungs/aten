@@ -221,7 +221,7 @@ double NuReturnValue::asReal(bool &success)
 			return atof(valueS_.get());
 			break;
 		default:
-			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			printf("NuReturnValue::asReal() doesn't recognise this type.\n");
 			break;
 	}
 	success = FALSE;
@@ -231,6 +231,7 @@ double NuReturnValue::asReal(bool &success)
 // Return as character string
 const char *NuReturnValue::asString(bool &success)
 {
+	static char converted[128];
 	success = TRUE;
 	switch (type_)
 	{
@@ -248,12 +249,22 @@ const char *NuReturnValue::asString(bool &success)
 		case (NuVTypes::StringData):
 			return valueS_.get();
 			break;
+		case (NuVTypes::VectorData):
+			converted[0] = '\0';
+			sprintf(converted, "{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
+			tempString_ = converted;
+			return tempString_.get();
+			break;
 		default:
-			printf("NuReturnValue::asInteger() doesn't recognise this type.\n");
+			// All pointer types
+			converted[0] = '\0';
+			sprintf(converted, "%li", valueP_);
+			tempString_ = converted;
+			return tempString_.get();
 			break;
 	}
 	success = FALSE;
-	return 0;
+	return "NULL";
 }
 
 // Return as vector value
@@ -291,6 +302,7 @@ void *NuReturnValue::asPointer(NuVTypes::DataType ptrtype, bool &success)
 		case (NuVTypes::IntegerData):
 		case (NuVTypes::RealData):
 		case (NuVTypes::StringData):
+		case (NuVTypes::VectorData):
 			msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", NuVTypes::dataType(type_), NuVTypes::dataType(ptrtype));
 			success = FALSE;
 			return NULL;
@@ -365,8 +377,13 @@ bool NuReturnValue::asBool()
 		case (NuVTypes::StringData):
 			return valueS_.asBool();
 			break;
+		case (NuVTypes::VectorData):
+			msg.print("Can't convert an object of type 'vector' into a bool.\n");
+			return FALSE;
+			break;
 		default:
-			printf("NuReturnValue::asBool() doesn't recognise this type.\n");
+			// All pointer types here...
+			return (valueP_ != NULL);
 			break;
 	}
 	return FALSE;

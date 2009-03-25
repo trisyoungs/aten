@@ -44,7 +44,7 @@ bool NuCommand::function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 		printf("Warning - No format defined in 'printf' command.\n");
 		return FALSE;
 	}
-	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
+	if (fmt->writeToString()) msg.print("%s",fmt->string());
 	return TRUE;
 }
 

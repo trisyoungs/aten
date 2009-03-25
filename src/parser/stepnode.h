@@ -49,6 +49,8 @@ class StepNode : public TreeNode
 	bool setArrayIndex(TreeNode *index);
 	// Return associated array index
 	TreeNode *arrayIndex();
+	// Set from returnvalue nodes
+	bool set(NuReturnValue &executerv, NuReturnValue &setrv);
 
 	/*
 	// Inherited Virtuals

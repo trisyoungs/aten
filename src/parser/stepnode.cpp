@@ -57,7 +57,7 @@ bool StepNode::execute(NuReturnValue &rv)
 	switch (previousType_)
 	{
 		case (NuVTypes::NoData):
-			printf("Internal Error: StepNode was expecting NoData.\n");
+			printf("Internal Error: StepNode was expecting NoData (execute).\n");
 			break;
 		case (NuVTypes::AtenData):
 			result = AtenVariable::retrieveAccessor(accessor_, rv, FALSE);
@@ -86,7 +86,7 @@ void StepNode::nodePrint(int offset, const char *prefix)
 	switch (previousType_)
 	{
 		case (NuVTypes::NoData):
-			printf("Internal Error: StepNode was expecting NoData.\n");
+			printf("Internal Error: StepNode was expecting NoData (print).\n");
 			break;
 		case (NuVTypes::AtenData):
 			printf("%s", AtenVariable::accessorData[accessor_].name);
@@ -106,10 +106,48 @@ void StepNode::nodePrint(int offset, const char *prefix)
 	}
 }
 
+// Set from returnvalue nodes
+bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
+{
+	msg.enter("StepNode::set");
+	// Check that the ReturnValue contains the type that we are expecting
+	if (executerv.type() != previousType_)
+	{
+		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s' (in set)\n", NuVTypes::dataType(previousType_), NuVTypes::dataType(executerv.type()));
+		msg.exit("StepNode::set");
+		return FALSE;
+	}
+	// Retrieve a value from the relevant class
+	bool result = FALSE;
+	switch (previousType_)
+	{
+		case (NuVTypes::NoData):
+			printf("Internal Error: StepNode was expecting NoData (set).\n");
+			break;
+// 		case (NuVTypes::AtenData):
+// 			result = AtenVariable::setAccessor(accessor_, rv, FALSE);
+// 			break;
+		case (NuVTypes::AtomData):
+			result = AtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+// 		case (NuVTypes::ModelData):
+// 			result = ModelVariable::retrieveAccessor(accessor_, rv, FALSE);
+// 			break;
+// 		case (NuVTypes::VectorData):
+// 			result = NuVectorVariable::retrieveAccessor(accessor_, rv, FALSE);
+// 			break;
+		default:
+			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", NuVTypes::dataType(previousType_));
+			break;
+	}
+	msg.exit("StepNode::set");
+	return result;
+}
+
 // Set from returnvalue node
 bool StepNode::set(NuReturnValue &rv)
 {
-	printf("Cannot SET an StepNode (yet).\n");
+	printf("Internal Error: Use StepNode::set(NUreturnValue,NuReturnValue) for StepNodes.\n");
 	return FALSE;
 }
 

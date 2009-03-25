@@ -74,6 +74,8 @@ template <class T> class List
 	void own(T*);
 	// Remove an item from the list
 	void remove(T*);
+	// Return whether the item is owned by the list
+	bool ownsItem(T*);
 	// Remove an item from the list, and return the next in the list
 	T* removeAndGetNext(T*);
 	// Bridge items either side of the specified item
@@ -219,6 +221,14 @@ template <class T> void List<T>::remove(T *xitem)
 	delete xitem;
 	nItems_ --;
 	regenerate_ = 1;
+}
+
+	// Return whether the item is owned by the list
+template <class T> bool List<T>::ownsItem(T *searchitem)
+{
+	T *item;
+	for (item = listHead_; item != NULL; item = item->next) if (searchitem == item) break;
+	return (item != NULL);
 }
 
 // Remove the specified item from the list, returning the next

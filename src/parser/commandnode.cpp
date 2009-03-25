@@ -243,10 +243,11 @@ NuFormat *NuCommandNode::createFormat(int fmtargid, int firstargid)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
 	bool result;
+	Refitem<TreeNode,int> *firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
 	if (format_ == NULL)
 	{
 		result = TRUE;
-		format_ = fmtargid == -1 ? new NuFormat(args_[firstargid]) : new NuFormat(argc(fmtargid), args_[firstargid]);
+		format_ = fmtargid == -1 ? new NuFormat(firstarg) : new NuFormat(argc(fmtargid), firstarg);
 		if (!format_->isValid())
 		{
 			result = FALSE;
@@ -263,7 +264,7 @@ NuFormat *NuCommandNode::createFormat(int fmtargid, int firstargid)
 			// Delete old format
 			delete format_;
 			// Create new format
-			format_ = fmtargid == -1 ? new NuFormat(args_[firstargid]) : new NuFormat(argc(fmtargid), args_[firstargid]);
+			format_ = fmtargid == -1 ? new NuFormat(firstarg) : new NuFormat(argc(fmtargid), firstarg);
 			if (!format_->isValid())
 			{
 				result = FALSE;

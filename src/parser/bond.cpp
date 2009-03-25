@@ -141,7 +141,7 @@ bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -175,47 +175,39 @@ bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	return result;
 }
 
-/*
-// Set specified data
-bool BondVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool BondVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BondVariable::set");
+	msg.enter("BondVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Bond type.\n");
+		msg.exit("BondVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("BondVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
 	bool result = TRUE;
-	// Cast pointer into Bond*
-	Bond *i = (Bond*) classptr;
-	if (i == NULL) printf("Warning - NULL Bond pointer passed to BondVariable::set.\n");
-// 	printf("Enumerated ID supplied to BondVariable is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > BondVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to BondVariable::set.\n", vid);
-		msg.exit("BondVariable::set");
-		return FALSE;
-	}
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'bond' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("BondVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("BondVariable::set");
-		return FALSE;
-	}
-	// Set value based on enumerated id
-	switch (vid)
+	Bond *ptr= (Bond*) sourcerv.asPointer(NuVTypes::BondData, result);
+	switch (acc)
 	{
 		default:
-			printf("BondVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("BondVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("BondVariable::set");
+	msg.exit("BondVariable::setAccessor");
 	return result;
 }
-*/

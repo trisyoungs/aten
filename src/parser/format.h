@@ -24,6 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/lineparser.h"
+#include "parser/vtypes.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
 
@@ -39,7 +40,7 @@ class FormatChunk
 	// Constructors
 	FormatChunk(const char *plaintext);
 	FormatChunk(TreeNode *arg);
-	FormatChunk(const char *format, TreeNode *arg);
+	FormatChunk(const char *format, TreeNode *arg, NuVTypes::DataType retrievetype);
 	// List pointers
 	FormatChunk *next, *prev;
 
@@ -54,6 +55,8 @@ class FormatChunk
 	Dnchar cFormat_;
 	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
 	TreeNode *arg_;
+	// Variable type to retrieve variable data as (related to contents of cFormat_)
+	NuVTypes::DataType retrieveType_;
 
 	public:
 	// Return chunktype
@@ -62,6 +65,8 @@ class FormatChunk
 	const char *cFormat();
 	// Return associated argument
 	TreeNode *arg();
+	// Return variable type to retrieve variable data as
+	NuVTypes::DataType retrieveType();
 };
 
 // Format

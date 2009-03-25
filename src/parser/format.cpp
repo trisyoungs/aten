@@ -53,7 +53,7 @@ FormatChunk::FormatChunk(TreeNode *node) : arg_(node)
 	prev = NULL;
 }
 
-FormatChunk::FormatChunk(const char *format, TreeNode *node) : arg_(node)
+FormatChunk::FormatChunk(const char *format, TreeNode *node, NuVTypes::DataType retrievetype) : arg_(node), retrieveType_(retrievetype)
 {
 	// Private variables
 	cFormat_ = format;
@@ -83,6 +83,12 @@ TreeNode *FormatChunk::arg()
 	return arg_;
 }
 
+// Return variable type to retrieve variable data as
+NuVTypes::DataType FormatChunk::retrieveType()
+{
+	return retrieveType_;
+}
+
 /*
 // Format
 */
@@ -106,6 +112,9 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 
 	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
 	const char *c = s;
+	char prevchar;
+	static char plaintext[8096];
+	NuVTypes::DataType type;
 	bool isformatter = FALSE;
 	Refitem<TreeNode,int> *arg = firstarg;
 	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
@@ -122,75 +131,123 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 				isValid_ = FALSE;
 				return;
 			}
-			length++;
+			
 			if (length > 0)
 			{
-				char *plaintext = new char[length+1];
-				for (n=0; n<length; n++) plaintext[n] = c[n];
-				plaintext[length] = '\0'; 
+				plaintext[length] = '\0';
 				chunks_.own( new FormatChunk(plaintext) );
-				delete[] plaintext;
+				length = 0;
 			}
 			isformatter = TRUE;
-			c++;
-			continue;
 		}
 		// If we're currently in the middle of a formatter, it's terminated by an alpha character
-		if (isformatter && (isalpha(*c)))
+		else if (isformatter && (isalpha(*c)))
 		{
-			length ++;
-			// If the terminating character is 'l', 'h', or 'L', don't break yet..
-			if ((*c == 'l') || (*c == 'h') || (*c == 'L')) { c++; continue; }
-			isformatter = FALSE;
-			char *format = new char[length+1];
-			for (n=0; n<length; n++) format[n] = c[n];
-			format[length] = '\0';
-			// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
-			if (arg == NULL) msg.print("Formatter '%s' in string has no corresponding argument.\n", format);
-			else
+			// If the terminating character is 'l', 'h', or 'L' don't terminate yet
+			if ((*c != 'l') && (*c != 'h') && (*c != 'L'))
 			{
-				NuVTypes::DataType type = arg->item->returnType();
-				switch (tolower(*c))
+				plaintext[length] = *c;
+				length ++;
+				plaintext[length] = '\0';
+				printf("Detected format bit [%s]\n", plaintext);
+				// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
+				if (arg == NULL) msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
+				else
 				{
-					// Integer types
-					case ('i'):
-					case ('d'):
-					case ('x'):
-					case ('u'):
-						if (type == NuVTypes::IntegerData) break;
-						msg.print("Format '%s' expects an integer, but has been given %s.\n", format, NuVTypes::aDataType(type));
-						isValid_ = FALSE;
-						break;
-					// Floating-point types
-					case ('e'):
-					case ('f'):
-					case ('g'):
-						if (type == NuVTypes::RealData) break;
-						msg.print("Format '%s' expects a real, but has been given %s.\n", format, NuVTypes::aDataType(type));
-						isValid_ = FALSE;
-						break;
-					// Character types
-					case ('s'):
-						if (type == NuVTypes::StringData) break;
-						msg.print("Format '%s' expects a string, but has been given %s.\n", format, NuVTypes::aDataType(type));
-						isValid_ = FALSE;
-						break;
-					default:
-						msg.print("Unsupported format '%s'.\n", format);
-						isValid_ = FALSE;
-						break;
+					type = arg->item->returnType();
+					prevchar = plaintext[length-2];
+					if (!isalpha(prevchar)) prevchar = '\0';
+					switch (tolower(*c))
+					{
+						// Integer types
+						case ('i'):
+						case ('d'):
+						case ('x'):
+						case ('u'):
+							// If a preceeding 'l' was specified, then we must have a pointer
+							if (prevchar == 'l')
+							{
+								if (type >= NuVTypes::AtenData) break;
+								msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+								isValid_ = FALSE;
+							}
+							else if ((prevchar == '\0') || (prevchar == 'h'))
+							{
+								if (type == NuVTypes::IntegerData) break;
+								msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+								isValid_ = FALSE;
+							}
+							else
+							{
+								msg.print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+								isValid_ = FALSE;
+							}
+							break;
+						// Floating-point types
+						case ('e'):
+						case ('f'):
+						case ('g'):
+							// If a preceeding 'L' was specified, we complain!
+							if (prevchar == 'L')
+							{
+								msg.print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
+								isValid_ = FALSE;
+							}
+							else if (prevchar == '\0')
+							{
+								if (type == NuVTypes::RealData) break;
+								msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+								isValid_ = FALSE;
+							}
+							else
+							{
+								msg.print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+								isValid_ = FALSE;
+							}
+							break;
+						// Character types
+						case ('s'):
+							if (prevchar != '\0')
+							{
+								msg.print("String format 's' cannot be preceeded by the identifier '%c'.\n", prevchar);
+								isValid_ = FALSE;
+							}
+							if (type == NuVTypes::StringData) break;
+							msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							isValid_ = FALSE;
+							break;
+						case ('c'):
+							msg.print("Character format 'c'is not supported.\n");
+							isValid_ = FALSE;
+							break;
+						default:
+							msg.print("Unsupported format '%s'.\n", plaintext);
+							isValid_ = FALSE;
+							break;
+					}
 				}
+				TreeNode *node = (arg == NULL ? NULL : arg->item);
+				chunks_.own( new FormatChunk(plaintext, node, type) );
+				arg = arg->next;
+				length = 0;
+				isformatter = FALSE;
+				c++;
+				if (*c == '\0') break;
 			}
-			TreeNode *node = (arg == NULL ? NULL : arg->item);
-			chunks_.own( new FormatChunk(format, node) );
-			delete[] format;
-			c++;
-			continue;
 		}
 		// Increment length
+		plaintext[length] = *c;
 		c++;
 		length++;
 	} while (*c != '\0');
+	// Do we have some text left over?
+	if (length > 0)
+	{
+		plaintext[length] = '\0'; 
+		chunks_.own( new FormatChunk(plaintext) );
+	}
+	// Are there any supplied arguments remaining?
+	if (arg != NULL) msg.print("Warning: Extra data arguments given to format '%s'...\n", s);
 }
 
 // Destructor
@@ -268,10 +325,47 @@ const char *NuFormat::string()
 bool NuFormat::writeToString()
 {
 	msg.enter("NuFormat::writeToString");
-	printf("NuFormat::writeToString not implemented yet.\n");
+	static char bit[4096];
 	createdString_[0] = '\0';
+	NuReturnValue rv;
+	// Cycle through the list of FormatChunks
+	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
+	{
+		// Retrieve the required characters from the input stream
+		switch (chunk->type())
+		{
+			case (FormatChunk::FormattedChunk):
+				chunk->arg()->execute(rv);
+				bit[0] = '\0';
+				switch (chunk->retrieveType())
+				{
+					case (NuVTypes::IntegerData):
+						sprintf(bit, chunk->cFormat(), rv.asInteger());
+						break;
+					case (NuVTypes::RealData):
+						sprintf(bit, chunk->cFormat(), rv.asReal());
+						break;
+					case (NuVTypes::StringData):
+						sprintf(bit, chunk->cFormat(), rv.asString());
+						break;
+					default:
+						// Pointer types
+						sprintf(bit, chunk->cFormat(), rv.asPointer(chunk->retrieveType()));
+						break;
+				}
+				strcat(createdString_, bit);
+				break;
+			case (FormatChunk::PlainTextChunk):
+				strcat(createdString_, chunk->cFormat());
+				break;
+			default:
+				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
+				msg.exit("NuFormat::read");
+				return FALSE;
+		}
+	}
 	msg.exit("NuFormat::writeToString");
-	return FALSE;
+	return TRUE;
 }
 
 // Read line and parse according to format
