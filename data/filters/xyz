@@ -1,9 +1,35 @@
-# XMol-style XYZ coordinates files
-# Last modified: 10/11/2008
+# XMol-style XYZ coordinates files (for v1.1+)
+# Created:	 25/03/2009
+# Last modified: 25/03/2009
 # ChangeLog:
-#	10/11/2008 - Multiple models now recognised on import. Removed centreing of trajectory frames.
-#	10/10/2008 - Adjusted to use new variable access style.
-#	24/09/2008 - Modified to correctly read trajectories containing different numbers/ordering of atoms
+
+importmodel(name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
+{
+	# Variable declaration
+	integer natoms,n,m;
+	string e,title;
+	real rx,ry,rz,q;
+	atom i;
+
+	# Read data
+	readline(natoms);
+	getline(title);
+	newmodel(title);
+	for (n=1; n<=natoms; n += 1)
+	{
+		readline(e,rx,ry,rz,q);
+		i = newatom(e, rx, ry, rz);
+		i.q = q;
+	}
+	rebond();
+	finalisemodel();
+}
+
+
+# XMol-style XYZ coordinates files (for v1.1+)
+# Created:	 25/03/2009
+# Last modified: 25/03/2009
+# ChangeLog:
 
 importmodel
 	name "XMol XYZ Coordinates"

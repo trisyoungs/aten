@@ -34,11 +34,12 @@ Dnchar newVarName;
 %token DECLARATION WHILE FOR IF FILTERBLOCK
 %nonassoc ELSE
 
-%left '=' PEQ MEQ TEQ DEQ
+%left '=' PEQ MEQ TEQ DEQ 
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
 %left '*' '/'
 %nonassoc UMINUS
+%left PP MM
 %right '^'
 
 %type <node> constant expr func var
@@ -180,6 +181,10 @@ expr:
 	| var DEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
 	| var					{ $$ = $1; }
 	| '-' expr %prec UMINUS			{ $$ = nuparser.addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
+	| var PP				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixAdd, 0, $1); if ($$ == NULL) YYERROR; }
+	| var MM				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixSubtract, 0, $1); if ($$ == NULL) YYERROR; }
+	| PP var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixAdd, 0, $2); if ($$ == NULL) YYERROR; }
+	| MM var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixSubtract, 0, $2); if ($$ == NULL) YYERROR; }
 	| expr '+' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '-' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
 	| expr '*' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }

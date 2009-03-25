@@ -79,8 +79,10 @@ class Tree
 	Reflist<VariableNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
-	// Check operator type compatibility
-	NuVTypes::DataType checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
+	// Check unary operator type compatibility
+	NuVTypes::DataType checkUnaryOperatorTypes(NuCommand::Function func, NuVTypes::DataType type);
+	// Check binary operator type compatibility
+	NuVTypes::DataType checkBinaryOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
 
 	public:
 	// Create a new path on the stack with the specified base 'variable'

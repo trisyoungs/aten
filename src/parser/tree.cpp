@@ -226,133 +226,6 @@ void Tree::print()
 // Statements / Commands / Operators
 */
 
-// Check operator type compatibility
-NuVTypes::DataType Tree::checkOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2)
-{
-	msg.enter("Tree::checkOperatorTypes");
-	// Check for no data type
-	if ((type1 == NuVTypes::NoData) || (type2 == NuVTypes::NoData))
-	{
-		printf("Internal Error: One or both operands have no defined type.\n");
-		return NuVTypes::NoData;
-	}
-	// Put types in 'precedence' order
-	if (type2 > type1)
-	{
-		NuVTypes::DataType temp = type1;
-		type1 = type2;
-		type2 = temp;
-	}
-	// Like types first... (make int equivalent to real if both types are numeric)
-	if ((type1 <= NuVTypes::RealData) && (type2 <= NuVTypes::RealData) && (type1 != type2)) type1 = type2 = NuVTypes::RealData;
-	NuVTypes::DataType result = NuVTypes::NoData;
-	if (type1 == type2)
-	{
-		switch (func)
-		{
-			// Arithmetic
-			case (NuCommand::OperatorAdd):
-				// Any pair of the same type except pointers can be added together
-				if (type1 < NuVTypes::AtenData) result = type1;
-				break;
-			case (NuCommand::OperatorSubtract):
-			case (NuCommand::OperatorMultiply):
-			case (NuCommand::OperatorDivide):
-				if ((type1 == NuVTypes::StringData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
-				else result = type1;
-				break;
-			case (NuCommand::OperatorPower):
-				// Only numerical types
-				if (type1 > NuVTypes::RealData) result = NuVTypes::NoData;
-				else result = type1;
-				break;
-			// Tests
-			case (NuCommand::OperatorEqualTo):
-			case (NuCommand::OperatorNotEqualTo):
-			case (NuCommand::OperatorGreaterThan):
-			case (NuCommand::OperatorGreaterThanEqualTo):
-			case (NuCommand::OperatorLessThan):
-			case (NuCommand::OperatorLessThanEqualTo):
-				// All other test operators are fine, unless its a vector
-				if (type1 != NuVTypes::VectorData) result = NuVTypes::IntegerData;
-				break;
-			// Assignment
-			case (NuCommand::OperatorAssignment):
-				// Any value of the same type can be assigned
-				result = type1;
-				break;
-			case (NuCommand::OperatorAssignmentDivide):
-			case (NuCommand::OperatorAssignmentMinus):
-			case (NuCommand::OperatorAssignmentMultiply):
-			case (NuCommand::OperatorAssignmentPlus):
-				// Nonsensical for character types and pointer types
-				if ((type1 == NuVTypes::StringData) || (type1 >= NuVTypes::AtenData)) result = NuVTypes::NoData;
-				else result = type1;
-				break;
-			default:
-				printf("Operator '%s' not in table for checkOperatorTypes.\n", NuCommand::data[func].keyword);
-				result = NuVTypes::NoData;
-				break;
-		}
-	}
-	else
-	{
-		// Dissimilar types
-		// First, there are no operations that we allow involving a pointer*except* for and also (in)equality with an integer
-		if (type1 >= NuVTypes::AtenData)
-		{
-			if (type2 != NuVTypes::IntegerData) result = NuVTypes::NoData;
-			else if ((func == NuCommand::OperatorEqualTo) || (func == NuCommand::OperatorNotEqualTo)) result = NuVTypes::IntegerData;
-			else result = NuVTypes::NoData;
-		}
-		else if (type1 == NuVTypes::VectorData)
-		{
-			// We can do arithmetic and in-place assignments with simple numbers, but no test comparisons
-			switch (func)
-			{
-				case (NuCommand::OperatorAdd):
-				case (NuCommand::OperatorSubtract):
-				case (NuCommand::OperatorMultiply):
-				case (NuCommand::OperatorDivide):
-				case (NuCommand::OperatorAssignment):
-				case (NuCommand::OperatorAssignmentDivide):
-				case (NuCommand::OperatorAssignmentMinus):
-				case (NuCommand::OperatorAssignmentMultiply):
-				case (NuCommand::OperatorAssignmentPlus):
-					if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData)) result = NuVTypes::VectorData;
-					else result = NuVTypes::NoData;
-					break;
-				default:
-					result = NuVTypes::NoData;
-					break;
-			}
-		}
-		else if (type1 == NuVTypes::StringData)
-		{
-			// We allow multiplication of a string by a number...
-			if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData))
-			{
-				switch (func)
-				{
-					case (NuCommand::OperatorMultiply):
-					case (NuCommand::OperatorAssignment):
-					case (NuCommand::OperatorAssignmentMultiply):
-						result = NuVTypes::StringData;
-						break;
-					default:
-						result = NuVTypes::NoData;
-						break;
-				}
-			}
-			else result = NuVTypes::NoData;
-		}
-	}
-	// Print error message
-	if (result == NuVTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", NuCommand::data[func].keyword, NuVTypes::dataType(type1), NuVTypes::dataType(type2));
-	msg.exit("Tree::checkOperatorTypes");
-	return result;
-}
-
 // Add a node representing a whole statement to the execution list
 bool Tree::addStatement(TreeNode *leaf)
 {
@@ -371,8 +244,10 @@ bool Tree::addStatement(TreeNode *leaf)
 TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2)
 {
 	msg.enter("Tree::addOperator");
-	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer
-	NuVTypes::DataType rtype = checkOperatorTypes(func, arg1->returnType(), arg2->returnType());
+	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer.
+	NuVTypes::DataType rtype;
+	if (arg2 == NULL) rtype = checkUnaryOperatorTypes(func, arg1->returnType());
+	else rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg2->returnType());
 	if (rtype == NuVTypes::NoData) return NULL;
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
