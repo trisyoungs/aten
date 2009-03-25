@@ -486,6 +486,10 @@ class NuCommand
 		OperatorNegate,
 		OperatorNotEqualTo,
 		OperatorPower,
+		OperatorPostfixAdd,
+		OperatorPostfixSubtract,
+		OperatorPrefixAdd,
+		OperatorPrefixSubtract,
 		OperatorSubtract,
 
 		// View
@@ -907,6 +911,10 @@ class NuCommand
 	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPostfixAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPostfixSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPrefixAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorPrefixSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// View
 	static bool function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
