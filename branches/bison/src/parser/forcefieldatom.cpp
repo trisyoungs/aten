@@ -143,7 +143,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -197,68 +197,60 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 	return result;
 }
 
-/*
-// Set specified data
-bool ForcefieldAtomVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool ForcefieldAtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldAtomVariable::set");
-	bool result = TRUE;
+	msg.enter("ForcefieldAtomVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n");
+		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		return FALSE;
+	}
 	VdwFunctions::VdwFunction vf;
-	// Cast pointer into ForcefieldAtom*
-	ForcefieldAtom *ffa = (ForcefieldAtom*) classptr;
-	if (ffa == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to ForcefieldAtomVariable::set.\n");
-// 	printf("Enumerated ID supplied to FFAtomAccessors is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > ForcefieldAtomVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to ForcefieldAtomVariable::set.\n", vid);
-		msg.exit("ForcefieldAtomVariable::set");
-		return FALSE;
-	}
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'prefs' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("PrefsAccessors::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("ForcefieldAtomVariable::set");
-		return FALSE;
-	}
-	// Set value based on enumerated id
-	switch (vid)
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(NuVTypes::ForcefieldAtomData, result);
+	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Charge):
-			ptr->setCharge(srcvar->asDouble());
+			ptr->setCharge(newvalue.asReal());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			ptr->setParameter(index-1, srcvar->asDouble());
+			ptr->setParameter(arrayIndex-1, newvalue.asReal());
 			break;
 		case (ForcefieldAtomVariable::Description):
-			ptr->setDescription(srcvar->asCharacter());
+			ptr->setDescription(newvalue.asString());
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
-			ptr->setEquivalent(srcvar->asCharacter());
+			ptr->setEquivalent(newvalue.asString());
 			break;
 		case (ForcefieldAtomVariable::Form):
-			vf = VdwFunctions::vdwFunction(srcvar->asCharacter());
+			vf = VdwFunctions::vdwFunction(newvalue.asString());
 			if (vf == VdwFunctions::None) result = FALSE;
 			else ptr->setVdwForm(vf);
 			break;
 		case (ForcefieldAtomVariable::Name):
-			ptr->setName(srcvar->asCharacter());
+			ptr->setName(newvalue.asString());
 			break;
 		default:
-			printf("ForcefieldAtomVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("ForcefieldAtomVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldAtomVariable::set");
+	msg.exit("ForcefieldAtomVariable::setAccessor");
 	return result;
 }
-*/

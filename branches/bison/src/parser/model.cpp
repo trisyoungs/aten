@@ -152,7 +152,7 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -240,49 +240,42 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	return result;
 }
 
-/*
-bool ModelVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool ModelVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ModelVariable::set");
+	msg.enter("ModelVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Model type.\n");
+		msg.exit("ModelVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("ModelVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
 	bool result = TRUE;
-	// Cast pointer into Model*
-	Model *m = (Model*) classptr;
-	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelVariable::set.\n");
-// 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > ModelVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to ModelVariable::set.\n", vid);
-		msg.exit("ModelVariable::set");
-		return FALSE;
-	} 
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'model' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("ModelVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("ModelVariable::set");
-		return FALSE;
-	}
-	// Set value based on enumerated id
-	switch (vid)
+	Model *ptr= (Model*) sourcerv.asPointer(NuVTypes::ModelData, result);
+	if (result) switch (acc)
 	{
 		case (ModelVariable::Name):
-			m->setName(srcvar->asCharacter());
+			ptr->setName(newvalue.asString());
 			break;
 		default:
-			printf("ModelVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ModelVariable::set");
+	msg.exit("ModelVariable::setAccessor");
 	return result;
 }
-*/

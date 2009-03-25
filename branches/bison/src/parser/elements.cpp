@@ -131,7 +131,7 @@ bool ElementsVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -179,45 +179,37 @@ bool ElementsVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	return result;
 }
 
-/*
-// Set specified data
-bool ElementsVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool ElementsVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ElementsVariable::set");
+	msg.enter("ElementsVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Elements type.\n");
+		msg.exit("ElementsVariable::retrieveAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("ElementsVariable::retrieveAccessor");
+		return FALSE;
+	}
 	bool result = TRUE;
-	// We don't need to cast the classptr since we use the global singleton
-// 	printf("Enumerated ID supplied to ElementsVariable is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > ElementsVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to ElementsVariable::set.\n", vid);
-		msg.exit("ElementsVariable::set");
-		return FALSE;
-	}
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'elements' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("ElementsVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("ElementsVariable::set");
-		return FALSE;
-	}
-	// Set value based on enumerated id
-	switch (vid)
+	switch (acc)
 	{
 		default:
-			printf("ElementsVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("ElementsVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ElementsVariable::set");
+	msg.exit("ElementsVariable::setAccessor");
 	return result;
 }
-*/

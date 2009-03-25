@@ -45,6 +45,8 @@ class NuReturnValue
 	// Data
 	*/
 	private:
+	// Temporary variable for converted string return
+	Dnchar tempString_;
 	// Data type contained in class
 	NuVTypes::DataType type_;
 	// Variable members for returns

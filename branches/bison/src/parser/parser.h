@@ -89,6 +89,11 @@ class NuParser : public Tree
 	// Current tree (target of node creation)
 	static Tree *tree_;
 
+	public:
+	// Finish current tree (i.e. nullify tree_)
+	void finishTree();
+	// Discard current tree and its contents
+	void deleteCurrentTree();
 
 	/*
 	// Tree Generation - Private functions

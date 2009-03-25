@@ -196,6 +196,7 @@ bool Tree::executeRead(const char *filename)
 	bool result = execute(rv);
 	parser_->closeFile();
 	delete parser_;
+	parser_ = NULL;
 	msg.exit("Tree::executeRead[filename]");
 }
 
@@ -989,6 +990,15 @@ Tree *Forest::createFilter(Tree::FilterType ft)
 	tree->setFilterType(ft);
 	msg.exit("Forest::createFilter");
 	return tree;
+}
+
+// Delete specified tree
+void Forest::deleteTree(Tree *t)
+{
+	// Search for the specified tree...
+	if (trees_.ownsItem(t)) trees_.remove(t);
+	else if (functions_.ownsItem(t)) functions_.remove(t);
+	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 
 // Execute all trees in forest

@@ -142,7 +142,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, NuReturnValue &rv, bool ha
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
@@ -161,6 +161,43 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, NuReturnValue &rv, bool ha
 			break;
 	}
 	msg.exit("ForcefieldBoundVariable::retrieveAccessor");
+	return result;
+}
+
+// Set desired value
+bool ForcefieldBoundVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+{
+	msg.enter("ForcefieldBoundVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for ForcefieldBound type.\n");
+		msg.exit("ForcefieldBoundVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("ForcefieldBoundVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	ForcefieldBound *ptr= (ForcefieldBound*) sourcerv.asPointer(NuVTypes::ForcefieldBoundData, result);
+	if (result) switch (acc)
+	{
+		default:
+			printf("ForcefieldBoundVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("ForcefieldBoundVariable::setAccessor");
 	return result;
 }
 

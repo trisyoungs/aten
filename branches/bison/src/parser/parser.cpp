@@ -144,6 +144,7 @@ bool NuParser::generate(Forest *f, const char *s)
 	}
 	forest_ = f;
 	forest_->clear();
+	tree_ = f->createTree();
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -208,4 +209,18 @@ bool NuParser::generateFromFile(Forest *f, const char *filename)
 	forest_ = NULL;
 	msg.exit("NuParser::generate[file]");
 	return TRUE;
+}
+
+// Finish current tree (i.e. nullify tree_)
+void NuParser::finishTree()
+{
+	tree_ = NULL;
+}
+
+// Discard current tree and its contents
+void NuParser::deleteCurrentTree()
+{
+	// Delete the current tree from its parent forest
+	forest_->deleteTree(tree_);
+	tree_ = NULL;
 }

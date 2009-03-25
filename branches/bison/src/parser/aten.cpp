@@ -131,7 +131,7 @@ bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	// Check for correct lack/presence of array index given
 	if (!accessorData[i].isArray)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevent array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{

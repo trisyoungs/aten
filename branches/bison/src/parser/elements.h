@@ -63,6 +63,8 @@ class ElementsVariable : public NuVariable
 	static StepNode *accessorSearch(const char *s, bool array);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	// Set desired value
+	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 };

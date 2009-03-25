@@ -50,7 +50,7 @@ Dnchar newVarName;
 
 program:
 	program statementlist			{ if (!nuparser.addStatement($2)) YYERROR; }
-	| filter				{ if (!nuparser.addStatement($1)) YYERROR; }
+	| filter				{ }
 	| /* NULL */
 	;
 
@@ -80,7 +80,7 @@ optlist:
 	;
 
 filter:
-	FILTERBLOCK '(' optlist ')' block	{ $$ = $5; }
+	FILTERBLOCK '(' optlist ')' block	{ if (!nuparser.addStatement($5)) YYERROR; nuparser.finishTree(); }
 	| FILTERBLOCK error			{ msg.print("Error reading filter block definition.\n"); YYERROR; }
 	;
 
@@ -213,5 +213,6 @@ func:
 void yyerror(char *s)
 {
 	printf("LKJSFLKJASLKFDJ\n");
+	nuparser.deleteCurrentTree();
 //    fprintf(stdout, "%s\n", s);
 }
