@@ -230,7 +230,7 @@ int NuParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets and the semicolon
-// 	printf("Symbol is %c\n", c);
+	printf("Symbol is %c\n", c);
 	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
 	token[0] = c;
 	// Similarly, if the next character is a bracket or double quotes, return immediately
