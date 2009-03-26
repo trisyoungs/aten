@@ -17,6 +17,7 @@ void yyerror(char *s);
 
 /* Local Variables */
 Dnchar newVarName;
+Dnchar newStepName;
 
 %}
 
@@ -49,22 +50,29 @@ Dnchar newVarName;
 
 %%
 
-forest:
-	filter					{ }
-	| forest filter				{ }
+programlist:
+	program					{ }
+	| programlist program			{ }
 	;
 
 program:
-	program statementlist			{ if (!nuparser.addStatement($2)) YYERROR; }
-	| /* NULL */
+	statementlist				{ if (!nuparser.addStatement($1)) YYERROR; }
+	| filter				{ if (!nuparser.addStatement($1)) YYERROR; nuparser.finishTree(); }
 	;
 
 /* Compound Statement */
 
 block:
-	'{'					{ if (!nuparser.pushScope()) YYERROR; }
-		statementlist '}'		{ $$ = $3; if (!nuparser.popScope()) YYERROR; }
+	'{' scope statementlist '}' descope	{ $$ = $3; }
         ;
+
+scope:
+	/* empty */				{ if (!nuparser.pushScope()) YYERROR; }
+	;
+
+descope:
+	/* empty */				{ if (!nuparser.popScope()) YYERROR; }
+	;
 
 statementlist:
 	statement				{ $$ = $1; }
@@ -85,7 +93,7 @@ optlist:
 	;
 
 filter:
-	FILTERBLOCK '(' optlist ')' block	{ if (!nuparser.addStatement($5)) YYERROR; nuparser.finishTree(); }
+	FILTERBLOCK '(' optlist ')' block	{ $$ = $5; }
 	| FILTERBLOCK error			{ msg.print("Error reading filter block definition.\n"); YYERROR; }
 	;
 
@@ -152,9 +160,13 @@ namelist:
 /* Variables / Paths */
 
 step:
-	STEPTOKEN				{ if (!nuparser.expandPath($1)) YYERROR; }
-	| STEPTOKEN '[' expr ']'		{ if (!nuparser.expandPath($1, $3)) YYERROR; }
-;
+	STEPTOKEN savename '[' expr ']'		{ if (!nuparser.expandPath(&newStepName, $4)) YYERROR; }
+	| STEPTOKEN				{ if (!nuparser.expandPath($1)) YYERROR; }
+	;
+
+savename:
+	/* empty */				{ newStepName = *yylval.name; }
+	;
 
 steplist:
 	step 					{  }

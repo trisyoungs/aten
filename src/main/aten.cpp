@@ -645,7 +645,7 @@ bool Aten::parseFilterIndex(const char *path)
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
 	msg.exit("Aten::parseFilterIndex");
-	return FALSE;
+	return result;
 }
 
 // Set filter partners
