@@ -121,8 +121,14 @@ LineParser *Tree::parser()
 // Clear contents of tree
 void Tree::clear()
 {
+	printf("Clearing %li\n", this);
+	print();
+	printf("NODES....%i\n", nodes_.nItems());
 	nodes_.clear();
+	printf("STATEMENTS....\n");
 	statements_.clear();
+	printf("SCOPESTACK....\n");
+	scopeStack_.clear();
 }
 
 // (Re)Initialise Tree
@@ -282,7 +288,7 @@ TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, Tr
 	nodes_.own(leaf);
 	leaf->addArguments(4, init, condition, action, statements);
 	leaf->setParent(this);
-	msg.print(Messenger::Parse, "'For' statement added (%li).\n", leaf);
+	msg.print(Messenger::Parse, "'For' statement added (%li, with init=%li, condition=%li, action=%li and statements=%li).\n", leaf, init, condition, action, statements);
 	msg.exit("Tree::addFor");
 	return leaf;
 }
@@ -330,8 +336,9 @@ TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 TreeNode *Tree::pushScope()
 {
 	ScopeNode *node = new ScopeNode();
+	nodes_.own(node);
 	scopeStack_.add(node);
-	printf("ScopeNode is pushed.\n");
+	printf("ScopeNode %li is pushed.\n", node);
 	return node;
 }
 
@@ -344,8 +351,9 @@ bool Tree::popScope()
 		printf("Internal Error: No scoped node to pop from stack.\n");
 		return FALSE;
 	}
-	else scopeStack_.remove(ri);
-	printf("ScopeNode is popped.\n");
+	ScopeNode *temp = ri->item;
+	scopeStack_.remove(ri);
+	printf("ScopeNode %li is popped.\n", temp);
 	return TRUE;
 }
 
@@ -412,6 +420,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
+	nodes_.own(var);
 	printf("Created variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
 	return var;
 }
@@ -419,7 +428,6 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 // Add variable to topmost scope using most recently set declared variable type
 TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
 {
-	printf("Tree's addVar withoutzkldjsflkjk,m\n");
 	return addVariable(declaredType_, name, initialValue);
 }
 
@@ -442,6 +450,7 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
+	nodes_.own(var);
 	printf("Created array variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
 	return var;
 }
@@ -467,15 +476,15 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 // 		printf("kljlk\n");
 		// Search the current ScopeNode list for the variable name requested
 		result = NULL;
-		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri =ri->prev)
+		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
 		{
-// 			ri->item->nodePrint(1, "SCOPENODE DATA");
+			msg.print(Messenger::Parse," ... scopenode %li...\n", ri->item);
 			result = ri->item->variables.find(name);
 			if (result != NULL) break;
 		}
 		// If result is NULL then we must return FALSE since the variable is not in a declaration
 		// If the current declared variable type is NuVTypes::NoData then this is not a variable declaration and we must find the variable...
-// 		if (result == NULL)
+		if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
 // 		{
 // 			msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
 // 			return FALSE;
@@ -488,6 +497,7 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 		// So, we are declaring a variable in the local scope, which may shadow another in the global scope.
 		// We are only concerned with whether this variable currently exists in the local scope...
 // 	printf("searching scopenode %li...\n", scopeStack_.last());
+		msg.print(Messenger::Parse, "Searching topmost scope %li for existence of new variable '%s'...\n", scopeStack_.last()->item, name);
 		result = scopeStack_.last()->item->variables.find(name);
 		if (result)
 		{
@@ -525,6 +535,7 @@ TreeNode *Tree::createPath(TreeNode *node)
 	msg.enter("Tree::createPath");
  	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
+	nodes_.own(vnode);
 	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
 	msg.exit("Tree::createPath");
 	return vnode;
@@ -568,7 +579,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	{
 		msg.print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", NuVTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
-
+		nodes_.own(result);
 		// Finalise the path before we remove it
 		Refitem<VariableNode,TreeNode*> *ri = pathStack_.last();
 		if (ri == NULL)

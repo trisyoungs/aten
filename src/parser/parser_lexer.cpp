@@ -58,12 +58,16 @@ int NuParser::lex()
 
 	if (c == 0) return 0;
 
+	// Set this point as the start of our new token (for error reporting)
+	tokenStart_ = stringPos_-1;
+
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-// 	printf("LEx begin at (%c), peek = [%c]\n",c, peekChar());
+	msg.print(Messenger::Parse, "LEXER: begins at [%c], peek = [%c]\n",c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
+		msg.print(Messenger::Parse, "LEXER (%li): found a '.' before an alpha character - expecting a path step next...\n",tree_);
 		expectPathStep_ = TRUE;
 		return '.';
 	}
@@ -116,6 +120,7 @@ int NuParser::lex()
 			}
 		} while (!done);
 		// We now have the number as a text token...
+		msg.print(Messenger::Parse, "LEXER (%li): found a number [%s]\n", tree_,token);
 		name = token;
 		yylval.name = &name;
 		return (integer ? INTCONST : REALCONST);
@@ -141,6 +146,7 @@ int NuParser::lex()
 			else token[length++] = c;
 		} while (!done);
 		token[length] = '\0';
+		msg.print(Messenger::Parse, "LEXER (%li): found a literal string [%s]...\n",tree_,token);
 		name = token;
 		yylval.name = &name;
 		return CHARCONST;
@@ -151,16 +157,15 @@ int NuParser::lex()
 	*/
 	if (isalpha (c))
 	{
-// 		printf("An alphanumeric token...\n");
 		do
 		{
 			token[length++] = c;
 			c = getChar();
 		}
 		while (isalnum (c));
-// 		printf("Character that terminated alphatoken = %c\n", c);
 		unGetChar();
 		token[length] = '\0';
+		msg.print(Messenger::Parse, "LEXER (%li): found an alpha token [%s]...\n", tree_, token);
 		// Skip over keyword detection if we are expecting a path step
 		if (!expectPathStep_)
 		{
@@ -168,20 +173,29 @@ int NuParser::lex()
 			NuVTypes::DataType dt = NuVTypes::dataType(token);
 			if (dt != NuVTypes::nDataTypes)
 			{
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->DECLARATION)\n",tree_);
+
 				setDeclaredVariableType(dt);
 				return DECLARATION;
 			}
 
 			// Is this a recognised high-level keyword?
-			if (strcmp(token,"if") == 0) return IF;
-			else if (strcmp(token,"else") == 0) return ELSE;
-			else if (strcmp(token,"for") == 0) return FOR;
-			else if (strcmp(token,"while") == 0) return WHILE;
+			n = 0;
+			if (strcmp(token,"if") == 0) n = IF;
+			else if (strcmp(token,"else") == 0) n = ELSE;
+			else if (strcmp(token,"for") == 0) n = FOR;
+			else if (strcmp(token,"while") == 0) n = WHILE;
+			if (n != 0)
+			{
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a high-level keyword (%i)\n",tree_,n);
+				return n;
+			}
 
 			// Is this the start of a filter or a function?
 			Tree::FilterType ft = Tree::filterType(token);
 			if (ft != Tree::nFilterTypes)
 			{
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block name (->FILTERBLOCK)\n",tree_,n);
 				tree_ = forest_->createFilter(ft);
 				return FILTERBLOCK;
 			}
@@ -191,7 +205,7 @@ int NuParser::lex()
 			for (n=0; n<NuCommand::nCommands; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
 			if (n != NuCommand::nCommands)
 			{
-				msg.print(Messenger::Parse, "Found function '%s' (is %i).\n", token, n);
+				msg.print(Messenger::Parse, "LEXER (%li): ... which is a function (->FUNCCALL).\n", tree_);
 				yylval.functionId = n;
 				return FUNCCALL;
 			}
@@ -201,6 +215,7 @@ int NuParser::lex()
 		if (expectPathStep_)
 		{
 			expectPathStep_ = FALSE;
+			msg.print(Messenger::Parse, "LEXER (%li): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
 			name = token;
 			yylval.name = &name;
 			return STEPTOKEN;
@@ -211,18 +226,18 @@ int NuParser::lex()
 			NuVariable *v;
 			if (!isVariableInScope(token, v))
 			{
-				printf("kjjjjjjjjjjjjjjjjjjj\n");
 				return 0;
 			}
 			else if (v != NULL)
 			{
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing variable (->VARNAME)\n", tree_);
 				yylval.variable = v;
 				return VARNAME;
 			}
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		msg.print(Messenger::Parse, "Found unknown token '%s'...\n", token);
+		msg.print(Messenger::Parse, "LEXER (%li): ...which is is unrecognised (->NEWTOKEN)\n", tree_);
 		name = token;
 		yylval.name = &name;
 		return NEWTOKEN;
@@ -230,8 +245,11 @@ int NuParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets and the semicolon
-	printf("Symbol is %c\n", c);
-	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}')) return c;
+	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}'))
+	{
+		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%c]\n",tree_,c);
+		return c;
+	}
 	token[0] = c;
 	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
@@ -242,7 +260,7 @@ int NuParser::lex()
 		c = getChar();
 		token[1] = c;
 		token[2] = '\0';
-		printf("Symbol token is %s\n",token);
+		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%s]\n",tree_,token);
 		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token);
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
 		else msg.print("Error: Unrecognised symbol found in input.\n");

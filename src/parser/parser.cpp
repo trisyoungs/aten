@@ -23,7 +23,7 @@
 
 // External Declarations
 NuParser nuparser;
-Tree *NuParser::tree_;
+// Tree *NuParser::tree_;
 int yyparse();
 
 // Constructor
@@ -32,6 +32,7 @@ NuParser::NuParser()
 	// Private variables
 	isFileSource_ = FALSE;
 	stringPos_ = -1;
+	tokenStart_ = 0;
 	stringLength_ = 0;
 	lineNumber_ = 0;
 	expectPathStep_ = FALSE;
@@ -48,13 +49,15 @@ void NuParser::printErrorInfo()
 {
 	// QUICK'n'DIRTY!
 	char *temp = new char[stringLength_+32];
-	for (int i=0; i<stringPos_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
+	int i;
+	for (int i=0; i<tokenStart_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
+	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
 	if (isFileSource_)
 	{
 		printf("(Line %4i) : %s\n", parser_.lastLine(), stringSource_.get());
-		printf("            : %s^\n", temp);
+		printf("            : %s\n", temp);
 	}
 	else
 	{

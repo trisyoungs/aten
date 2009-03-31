@@ -20,8 +20,8 @@
     </general>
     <run>
       <mainprogram>/home/tris/src/aten-bison/src/aten</mainprogram>
-      <programargs>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</programargs>
-      <globaldebugarguments>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</globaldebugarguments>
+      <programargs/>
+      <globaldebugarguments>--atendata ./data -c &quot;quit();&quot;</globaldebugarguments>
       <globalcwd>/home/tris/src/aten-bison</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>

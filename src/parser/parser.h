@@ -50,8 +50,8 @@ class NuParser : public Tree
 	private:
 	// Character string source
 	Dnchar stringSource_;
-	// Integer position in stringSource, and total length of string
-	int stringPos_, stringLength_;
+	// Integer position in stringSource, total length of string, and starting position of current token
+	int stringPos_, stringLength_, tokenStart_;
 	// Line parser
 	LineParser parser_;
 	// Line number in source file that we've just read
@@ -87,7 +87,7 @@ class NuParser : public Tree
 	// Current forest target
 	Forest *forest_;
 	// Current tree (target of node creation)
-	static Tree *tree_;
+	Tree *tree_;
 
 	public:
 	// Finish current tree (i.e. nullify tree_)
@@ -135,8 +135,6 @@ class NuParser : public Tree
 	TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
 	// Associate a command-based leaf node to the Tree
 	TreeNode *addFunction(NuCommand::Function func, TreeNode *arglist);
-	// Join two nodes together
-	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together
 	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
