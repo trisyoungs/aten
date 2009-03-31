@@ -142,21 +142,6 @@ TreeNode *NuParser::addFunction(NuCommand::Function func, TreeNode *arglist)
 	return result;
 }
 
-// Join two nodes together
-TreeNode *NuParser::joinArguments(TreeNode *arg1, TreeNode *arg2)
-{
-	msg.enter("NuParser::joinArguments");
-	if (tree_ == NULL)
-	{
-		printf("Internal Error: No current Tree target for Parser (joinArguments).\n");
-		msg.exit("NuParser::joinArguments");	
-		return NULL;
-	}
-	TreeNode *result = tree_->joinArguments(arg1, arg2);
-	msg.exit("NuParser::joinArguments");
-	return result;
-}
-
 // Join two commands together
 TreeNode *NuParser::joinCommands(TreeNode *node1, TreeNode *node2)
 {
@@ -321,7 +306,6 @@ TreeNode *NuParser::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 	msg.exit("NuParser::wrapVariable");
 	return result;
 }
-
 
 // Set filter option
 bool NuParser::setFilterOption(Dnchar *name, TreeNode *value)

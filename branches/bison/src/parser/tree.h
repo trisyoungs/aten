@@ -46,7 +46,7 @@ class Tree
 	public:
 	// Constructor / Destructor
 	Tree();
-	~Tree();
+	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
 	// Filter Types

@@ -40,7 +40,19 @@ NuVTypes::DataType Tree::checkUnaryOperatorTypes(NuCommand::Function func, NuVTy
 		case (NuCommand::OperatorPostfixDecrease):
 		case (NuCommand::OperatorPrefixIncrease):
 		case (NuCommand::OperatorPrefixDecrease):
-			if ((type == NuVTypes::IntegerData) || (type == NuVTypes::RealData)) result = type;
+			// Easier to list those types that we *can't* do...
+			switch (type)
+			{
+				case (NuVTypes::AtenData):
+				case (NuVTypes::ElementsData):
+				case (NuVTypes::CellData):
+				case (NuVTypes::ForcefieldAtomData):
+				case (NuVTypes::ForcefieldBoundData):
+					break;
+				default:
+					result = type;
+					break;
+			}
 			break;
 		case (NuCommand::OperatorNegate):
 			if ((type <= NuVTypes::VectorData) && (type != NuVTypes::StringData)) result = type;

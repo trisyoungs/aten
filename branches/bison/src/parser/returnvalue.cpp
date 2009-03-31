@@ -23,6 +23,10 @@
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "model/model.h"
+#include "ff/forcefield.h"
+#include "classes/grid.h"
+#include "base/pattern.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -387,4 +391,112 @@ bool NuReturnValue::asBool()
 			break;
 	}
 	return FALSE;
+}
+
+/*
+// In-place modify
+*/
+
+// Increase the contained variable
+bool NuReturnValue::increase()
+{
+	bool result = TRUE;
+	switch (type_)
+	{
+		case (NuVTypes::NoData):
+		case (NuVTypes::StringData):
+		case (NuVTypes::VectorData):
+		case (NuVTypes::AtenData):
+		case (NuVTypes::CellData):
+		case (NuVTypes::ElementsData):
+			result = FALSE;
+			break;
+		case (NuVTypes::IntegerData):
+			++valueI_;
+			break;
+		case (NuVTypes::RealData):
+			++valueR_;
+			break;
+		case (NuVTypes::AtomData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Atom*) valueP_)->next;
+			break;
+		case (NuVTypes::BondData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Bond*) valueP_)->next;
+			break;
+		case (NuVTypes::ForcefieldData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Forcefield*) valueP_)->next;
+			break;
+		case (NuVTypes::GridData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Grid*) valueP_)->next;
+			break;
+		case (NuVTypes::ModelData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Model*) valueP_)->next;
+			break;
+		case (NuVTypes::PatternData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Pattern*) valueP_)->next;
+			break;
+		// TGAY What about ForcefieldAtomData, ForcefieldBoundData, PatternBoundData
+		default:
+			printf("Internal Error: No 'increase' has been defined for %s.\n", NuVTypes::aDataType(type_));
+			break;
+	}
+	return result;
+}
+
+// Decrease the contained variable
+bool NuReturnValue::decrease()
+{
+	bool result = TRUE;
+	switch (type_)
+	{
+		case (NuVTypes::NoData):
+		case (NuVTypes::StringData):
+		case (NuVTypes::VectorData):
+		case (NuVTypes::AtenData):
+		case (NuVTypes::CellData):
+		case (NuVTypes::ElementsData):
+			result = FALSE;
+			break;
+		case (NuVTypes::IntegerData):
+			--valueI_;
+			break;
+		case (NuVTypes::RealData):
+			--valueR_;
+			break;
+		case (NuVTypes::AtomData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Atom*) valueP_)->prev;
+			break;
+		case (NuVTypes::BondData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Bond*) valueP_)->prev;
+			break;
+		case (NuVTypes::ForcefieldData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Forcefield*) valueP_)->prev;
+			break;
+		case (NuVTypes::GridData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Grid*) valueP_)->prev;
+			break;
+		case (NuVTypes::ModelData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Model*) valueP_)->prev;
+			break;
+		case (NuVTypes::PatternData):
+			if (valueP_ == NULL) result = FALSE;
+			else valueP_ = ((Pattern*) valueP_)->prev;
+			break;
+		// TGAY What about ForcefieldAtomData, ForcefieldBoundData, PatternBoundData
+		default:
+			printf("Internal Error: No 'decrease' has been defined for %s.\n", NuVTypes::aDataType(type_));
+			break;
+	}
+	return result;
 }

@@ -41,6 +41,7 @@ class NuReturnValue
 	// Operator=
 	void operator=(NuReturnValue &rv);
 
+
 	/*
 	// Data
 	*/
@@ -64,6 +65,7 @@ class NuReturnValue
 	// Print info on data contents
 	void info();
 
+
 	/*
 	// Set
 	*/
@@ -83,6 +85,7 @@ class NuReturnValue
 	// Set from pointer value
 	void set(NuVTypes::DataType type, void *ptr);
 
+
 	/*
 	// Get (with type checking)
 	*/
@@ -97,6 +100,7 @@ class NuReturnValue
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
 	void *asPointer(NuVTypes::DataType type, bool &success);
+
 
 	/*
 	// Get (no type checking)
@@ -114,6 +118,16 @@ class NuReturnValue
 	void *asPointer(NuVTypes::DataType type);
 	// Return as boolean (guaranteed conversion)
 	bool asBool();
+
+
+	/*
+	// In-place modify
+	*/
+	public:
+	// Increase the contained variable
+	bool increase();
+	// Decrease the contained variable
+	bool decrease();
 };
 
 #endif
