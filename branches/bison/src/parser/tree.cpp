@@ -121,13 +121,8 @@ LineParser *Tree::parser()
 // Clear contents of tree
 void Tree::clear()
 {
-	printf("Clearing %li\n", this);
-	print();
-	printf("NODES....%i\n", nodes_.nItems());
 	nodes_.clear();
-	printf("STATEMENTS....\n");
 	statements_.clear();
-	printf("SCOPESTACK....\n");
 	scopeStack_.clear();
 }
 
@@ -152,7 +147,8 @@ bool Tree::execute(NuReturnValue &rv)
 	bool result;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
-		printf("Executing tree statement %li...\n", ri->item);
+		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
+// 		ri->item->nodePrint(1);
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
@@ -237,7 +233,7 @@ bool Tree::addStatement(TreeNode *leaf)
 		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
 		return FALSE;
 	}
-	printf("Added statement leaf node %li\n", leaf);
+	msg.print(Messenger::Parse, "Added statement node %li\n", leaf);
 	leaf->setParent(this);
 	statements_.add(leaf);
 	return TRUE;
@@ -255,6 +251,7 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added operator '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
@@ -300,6 +297,7 @@ TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *arglist)
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
 	leaf->setParent(this);
@@ -323,7 +321,7 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 // Join two commands together
 TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 {
-	printf("Adding a statement joiner for %li and %li\n", node1, node2);
+	msg.print(Messenger::Parse, "Joining command nodes %li and %li\n", node1, node2);
 	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
 	nodes_.own(leaf);
 	leaf->setParent(this);
@@ -338,7 +336,7 @@ TreeNode *Tree::pushScope()
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
 	scopeStack_.add(node);
-	printf("ScopeNode %li is pushed.\n", node);
+	msg.print(Messenger::Parse, "ScopeNode %li is pushed.\n", node);
 	return node;
 }
 
@@ -353,7 +351,7 @@ bool Tree::popScope()
 	}
 	ScopeNode *temp = ri->item;
 	scopeStack_.remove(ri);
-	printf("ScopeNode %li is popped.\n", temp);
+	msg.print(Messenger::Parse, "ScopeNode %li is popped.\n", temp);
 	return TRUE;
 }
 
@@ -420,8 +418,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	nodes_.own(var);
-	printf("Created variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
+	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
 	return var;
 }
 
@@ -533,9 +530,9 @@ TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 TreeNode *Tree::createPath(TreeNode *node)
 {
 	msg.enter("Tree::createPath");
- 	VariableNode *vnode = (VariableNode*) node;
+	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
-	nodes_.own(vnode);
+// 	nodes_.own(vnode);	// Should not be called, since the passed *node is already owned by the tree
 	msg.print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
 	msg.exit("Tree::createPath");
 	return vnode;
@@ -859,7 +856,7 @@ bool Forest::generateFromFile(const char *filename, const char *name)
 	filename_ = filename;
 	name_ = name;
 	bool result = nuparser.generateFromFile(this, filename);
-	print();
+// 	print();
 	finalise();
 	msg.exit("Forest::generateFromFile");
 	return result;

@@ -100,13 +100,13 @@ filter:
 /* Single Statement / Flow Control */
 
 statement:
-	';'					{ $$ = nuparser.joinCommands(NULL,NULL); }
+	';'					{ $$ = nuparser.addFunction(NuCommand::NoFunction, NULL); }
 	| statementexpr ';'			{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
 	;
 
 statementexpr:
-	DECLARATION namelist 			{ $$ = nuparser.addFunction(NuCommand::Initialisations, $2); nuparser.setDeclaredVariableType(NuVTypes::NoData); }
+	DECLARATION namelist 			{ $$ = nuparser.addFunction(NuCommand::NoFunction, NULL); nuparser.setDeclaredVariableType(NuVTypes::NoData); }
 	| expr					{ $$ = $1; }
 	| DECLARATION error			{ msg.print("Invalid declaration statement.\n"); YYERROR; }
 	;

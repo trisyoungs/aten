@@ -60,7 +60,7 @@ bool NuCommandNode::checkArguments()
 	msg.enter("NuCommandNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), NuCommand::data[function_].keyword);
 	const char *c = NuCommand::data[function_].arguments;
-	printf("Argument list is [%s]\n", c);
+	msg.print(Messenger::Parse, "...argument list is [%s]\n", c);
 	char upc, *altargs;
 	int count = 0, ngroup;
 	bool optional, requirevar, result, cluster = FALSE;
@@ -303,12 +303,7 @@ void NuCommandNode::nodePrint(int offset, const char *prefix)
 // 	printf("Function id = %li\n", function_);
 	printf("[CN]%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
-	{
-		printf("ri = %li\n", ri);
-		if (ri != NULL) printf("and ri->item is %li\n", ri->item);
-		ri->item->nodePrint(offset+1);
-	}
+	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
 }
 

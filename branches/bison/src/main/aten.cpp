@@ -632,7 +632,6 @@ bool Aten::parseFilterIndex(const char *path)
 		strcat(filename, parser.argc(0));
 		// Construct Forest...
 		Forest *f = filterForests_.add();
-		printf("XXX The filter file to read is called %s\n", parser.argc(0));
 		if (!f->generateFromFile(filename, parser.argc(0)))
 		{
 			msg.print("Failed to load filters from '%s'...\n", parser.argc(0));

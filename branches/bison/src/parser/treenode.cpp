@@ -99,7 +99,7 @@ NuVTypes::DataType TreeNode::argType(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argType : Argument index %i is out of range (node = %li).\n", i, this);
 		return NuVTypes::NoData;
 	}
 	return args_[i]->item->returnType();
@@ -111,7 +111,7 @@ bool TreeNode::setArg(int i, NuReturnValue &rv)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::setArg : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	// Check readonly attribute of argument
@@ -165,7 +165,7 @@ bool TreeNode::arg(int i, NuReturnValue &rv)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::arg : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	return args_[i]->item->execute(rv);
@@ -176,7 +176,7 @@ bool TreeNode::argb(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argb : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	static NuReturnValue rv;
@@ -193,7 +193,7 @@ int TreeNode::argi(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argi : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	static NuReturnValue rv;
@@ -210,7 +210,7 @@ double TreeNode::argd(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argd : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	static NuReturnValue rv;
@@ -233,7 +233,7 @@ const char *TreeNode::argc(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argc : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	static NuReturnValue rv;
@@ -250,7 +250,7 @@ void *TreeNode::argp(int i, NuVTypes::DataType type)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("Argument index %i is out of range.\n", i);
+		printf("TreeNode::argp : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
 	static NuReturnValue rv;
@@ -267,7 +267,7 @@ Vec3<double> TreeNode::arg3d(int i)
 {
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
-		printf("Argument index %i is out of range for a triplet.\n", i);
+		printf("TreeNode::arg3d : Argument index %i is out of range for a triplet (node = %li).\n", i, this);
 		return FALSE;
 	}
 	Vec3<double> result;
@@ -280,7 +280,7 @@ Vec3<int> TreeNode::arg3i(int i)
 {
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
-		printf("Argument index %i is out of range for a triplet.\n", i);
+		printf("TreeNode::arg3i : Argument index %i is out of range for a triplet (node = %li).\n", i, this);
 		return FALSE;
 	}
 	Vec3<int> result;
@@ -293,7 +293,7 @@ Vec3<GLfloat> TreeNode::arg3GLf(int i)
 {
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
-		printf("Argument index %i is out of range for a triplet.\n", i);
+		printf("TreeNode::arg3GLf : Argument index %i is out of range for a triplet (node = %li).\n", i, this);
 		return FALSE;
 	}
 	Vec3<GLfloat> result;
@@ -306,7 +306,7 @@ TreeNode *TreeNode::argNode(int i)
 {
 	if ((i < 0) || (i > args_.nItems()))
 	{
-		printf("Argument index %i is out of range for returning the argument node.\n", i);
+		printf("TreeNode::argNode : Argument index %i is out of range for returning the argument node (node = %li).\n", i, this);
 		return FALSE;
 	}
 	return args_[i]->item;
