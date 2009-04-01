@@ -121,7 +121,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, bool array)
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
-	printf("Accessor match = %i\n", i);
+	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 	result = new StepNode(i, NuVTypes::ForcefieldBoundData, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ForcefieldBoundVariable::accessorSearch");
 	return result;

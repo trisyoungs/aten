@@ -36,8 +36,10 @@ bool NuCommand::function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue
 bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	// Execute both commands
-	if (!c->arg(0, rv)) return FALSE;
-	if (c->hasArg(1)) return c->arg(1, rv);
+	bool result = TRUE;
+	if (c->hasArg(0)) result = c->arg(0, rv);
+	if (c->hasArg(1)) result = c->arg(1, rv);
+	return result;
 }
 
 // Variable Initialisations Node

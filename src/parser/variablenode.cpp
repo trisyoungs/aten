@@ -122,8 +122,8 @@ bool VariableNode::execute(NuReturnValue &rv)
 	}
 	if (result)
 	{
-		printf("Final result of path walk / variable retrieval is:\n");
-		rv.info();
+// 		printf("Final result of path walk / variable retrieval is:\n");
+// 		rv.info();
 	}
 	else printf("Variable retrieval failed.\n");
 	msg.exit("VariableNode::execute");

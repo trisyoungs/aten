@@ -148,12 +148,11 @@ bool NuParser::generate(Forest *f, const char *s)
 	forest_ = f;
 	forest_->clear();
 	tree_ = f->createTree();
-	printf("Target tree is %li\n", tree_);
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	printf("Source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
+	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
 	isFileSource_ = FALSE;
 	expectPathStep_ = FALSE;
 	// Perform the parsing
