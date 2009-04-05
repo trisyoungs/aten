@@ -80,10 +80,10 @@ bool NuCommand::function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnVa
 	// If this command is being run from a filter, set the output filter in the model.
 	if (c->parent()->isFilter())
 	{
-		Tree *filter = c->parent();
+		Tree *t = c->parent();
 // 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
 		obj.m->setFilename(c->parent()->parser()->filename());
-		obj.m->setFilter(filter->partner());
+		obj.m->setFilter(t->filter.partner());
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
@@ -177,7 +177,7 @@ bool NuCommand::function_ListModels(NuCommandNode *c, Bundle &obj, NuReturnValue
 // Load model ('loadmodel <filename> [name]')
 bool NuCommand::function_LoadModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Tree *filter = aten.probeFile(c->argc(0), Tree::ModelImport);
+	Tree *filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
 	if (filter != NULL)
 	{
 		if (filter->executeRead(c->argc(0)))
@@ -276,7 +276,7 @@ bool NuCommand::function_SaveModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
-	Tree *filter = aten.findFilter(Tree::ModelExport, c->argc(0));
+	Tree *filter = aten.findFilter(FilterData::ModelExport, c->argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{

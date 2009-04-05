@@ -339,7 +339,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
-					f = aten.findFilter(Tree::ModelExport, argv[++argn]);
+					f = aten.findFilter(FilterData::ModelExport, argv[++argn]);
 					if (f == NULL) return -1;
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
@@ -356,13 +356,13 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = aten.findFilter(Tree::ModelImport, argv[++argn]);
+					modelfilter = aten.findFilter(FilterData::ModelImport, argv[++argn]);
 					if (modelfilter == NULL) return -1;
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
 					argn++;
-					f = aten.probeFile(argv[argn], Tree::GridImport);
+					f = aten.probeFile(argv[argn], FilterData::GridImport);
 					if (f == NULL) return -1;
 					else if (!f->executeRead(argv[argn])) return -1;
 					break;
@@ -452,7 +452,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
 					else
 					{
-						Tree *f = probeFile(argv[++argn], Tree::TrajectoryImport);
+						Tree *f = probeFile(argv[++argn], FilterData::TrajectoryImport);
 						if (f == NULL) return -1;
 						if (!current.m->initialiseTrajectory(argv[argn],f)) return -1;
 					}
@@ -473,7 +473,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = aten.probeFile(argv[argn], Tree::ModelImport);
+			else f = aten.probeFile(argv[argn], FilterData::ModelImport);
 			if (f != NULL) f->executeRead(argv[argn]);
 			else return -1;
 		}

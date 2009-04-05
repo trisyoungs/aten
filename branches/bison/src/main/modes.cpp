@@ -53,7 +53,7 @@ void Aten::exportModels()
 		if (n != -1) filename[n] = '\0';
 		// Append new suffix
 		strcat(filename,".");
-		strcat(filename,exportFilter_->extensions()->get());
+		strcat(filename,exportFilter_->filter.extensions()->get());
 		// Make sure that the new filename is not the same as the old filename
 		if (strcmp(filename, m->filename()) == 0)
 		{
@@ -100,19 +100,19 @@ void Aten::saveModels()
 	{
 		setCurrentModel(m);
 		// Check model's filter - it will be the import filter, so try to get the partner
-		Tree *filter = m->filter();
-		if (filter == NULL)
+		Tree *t = m->filter();
+		if (t == NULL)
 		{
 			msg.print("No export filter available for model '%s'. Not saved.\n", m->name());
 			continue;
 		}
-		if (filter->filterType() != Tree::ModelExport)
+		if (t->filter.type() != FilterData::ModelExport)
 		{
-			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), filter->nickname());
+			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
 			continue;
 		}
 		Dnchar filename;
 		filename = m->filename();
-		if (!filename.isEmpty()) filter->executeWrite(m->filename());
+		if (!filename.isEmpty()) t->executeWrite(m->filename());
 	}
 }

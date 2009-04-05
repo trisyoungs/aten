@@ -148,7 +148,7 @@ bool NuParser::generate(Forest *f, const char *s)
 	}
 	forest_ = f;
 	forest_->clear();
-	tree_ = f->createTree();
+	tree_ = f->pushTree();
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;

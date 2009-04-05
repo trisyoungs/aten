@@ -893,6 +893,7 @@ bool NuCommandData::hasArguments()
 int NuCommand::call(NuCommand::Function cf, NuCommandNode *c, NuReturnValue &rv)
 {
 // 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
+	msg.print(Messenger::Commands, "Calling command '%s' (node is %li)...\n", data[cf].keyword, c);
 	return (this->pointers_[cf])(c, aten.current, rv);
 }
 

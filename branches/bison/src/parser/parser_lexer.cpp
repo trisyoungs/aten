@@ -193,11 +193,16 @@ int NuParser::lex()
 			}
 
 			// Is this the start of a filter or a function?
-			Tree::FilterType ft = Tree::filterType(token);
-			if (ft != Tree::nFilterTypes)
+			if (strcmp(token,"filter") == 0)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block name (->FILTERBLOCK)\n",tree_,n);
-				tree_ = forest_->createFilter(ft);
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
+				tree_ = forest_->pushTree();
+				return FILTERBLOCK;
+			}
+			else if (strcmp(token,"function") == 0)
+			{
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
+				tree_ = forest_->pushTree();
 				return FILTERBLOCK;
 			}
 

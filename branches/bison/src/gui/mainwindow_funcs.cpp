@@ -198,7 +198,7 @@ void AtenForm::loadRecent()
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	filter = aten.probeFile(filename.get(), Tree::ModelImport);
+	filter = aten.probeFile(filename.get(), FilterData::ModelImport);
 	if (filter != NULL)
 	{
 		filter->executeRead(filename.get());

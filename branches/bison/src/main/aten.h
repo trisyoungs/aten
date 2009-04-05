@@ -31,8 +31,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.1"
-#define ATENREVISION "853"
-#define ATENDATE "Sun 05 Apr - 16:26"
+#define ATENREVISION "854"
+#define ATENDATE "Sun 05 Apr - 19:02"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -109,25 +109,25 @@ class Aten
 	// List of Filter Forests
 	List<Forest> filterForests_;
 	// Reflists of file filters of different types
-	Reflist<Tree,int> filters_[Tree::nFilterTypes];
+	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
 
 	public:
 	// Load filters
 	void openFilters();
 	// Register a filter of a gien type
-	void registerFilter(Tree *filter, Tree::FilterType ft);
+	void registerFilter(Tree *filter, FilterData::FilterType ft);
 	// Whether filters loaded succesfully on startup
 	bool filterLoadSuccessful();
 	// Reload filters
 	bool reloadFilters();
 	// Probe file for its format
-	Tree *probeFile(const char *filename, Tree::FilterType);
+	Tree *probeFile(const char *filename, FilterData::FilterType);
 	// Find filter of specified type with nickname provided
-	Tree *findFilter(Tree::FilterType ft, const char *nickname) const;
+	Tree *findFilter(FilterData::FilterType ft, const char *nickname) const;
 	// Find filter by description
-	Tree *findFilterByDescription(Tree::FilterType ft, const char *description) const;
+	Tree *findFilterByDescription(FilterData::FilterType ft, const char *description) const;
 	// Return first filter in list (of a given type)
-	Refitem<Tree,int> *filters(Tree::FilterType ft) const;
+	Refitem<Tree,int> *filters(FilterData::FilterType ft) const;
 
 
 	/*

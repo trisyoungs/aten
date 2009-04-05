@@ -70,19 +70,33 @@ void Forest::finalise()
 	// Register any filters with the master
 	for (Tree *t = trees_.first(); t != NULL; t = t->next)
 	{
-		if (t->isFilter()) aten.registerFilter(t, t->filterType());
+		if (t->isFilter()) aten.registerFilter(t, t->filter.type());
 	}
 }
 
 // Return number of trees in forest
 int Forest::nTrees()
 {
+	return trees_.nItems();
 }
 
 // Create a new tree
-Tree *Forest::createTree()
+Tree *Forest::pushTree()
 {
-	return trees_.add();
+	msg.enter("Forest::pushTree");
+	Tree *tree = trees_.add();
+	tree->setParent(this);
+	stack_.add(tree);
+	msg.exit("Forest::pushTree");
+	return tree;
+}
+
+// Finish the last tree
+void Forest::popTree()
+{
+	msg.enter("Forest::pushTree");
+	stack_.remove( stack_.last() );
+	msg.exit("Forest::pushTree");
 }
 
 // Generate forest from string 
@@ -109,17 +123,6 @@ bool Forest::generateFromFile(const char *filename, const char *name)
 	return result;
 }
 
-// Create a new file filter-style tree
-Tree *Forest::createFilter(Tree::FilterType ft)
-{
-	msg.enter("Forest::createFilter");
-	// Create tree and set its filter type
-	Tree *tree = trees_.add();
-	tree->setFilterType(ft);
-	msg.exit("Forest::createFilter");
-	return tree;
-}
-
 // Delete specified tree
 void Forest::deleteTree(Tree *t)
 {
@@ -138,10 +141,10 @@ bool Forest::executeAll(NuReturnValue &rv)
 	for (Tree *t = trees_.first(); t != NULL; t = t->next)
 	{
 		count ++;
-		if (t->isFilter()) msg.print(Messenger::Parse, "Skipping '%s' (%i of %i in set) since its a filter....\n", t->name(), count, trees_.nItems());
+		if (t->isFilter()) msg.print(Messenger::Parse, "Skipping tree %i of %i since it's a filter....\n", count, trees_.nItems());
 		else
 		{
-			msg.print(Messenger::Parse, "Executing '%s' (%i of %i in set '%s')....\n", t->name(), count, trees_.nItems(), name_.get());
+			msg.print(Messenger::Parse, "Executing tree %i of %i in set '%s')....\n", count, trees_.nItems(), name_.get());
 			result = t->execute(rv);
 			if (!result) break;
 		}

@@ -47,6 +47,8 @@ class Forest
 	List<Tree> functions_;
 	// List of trees belonging to this forest
 	List<Tree> trees_;
+	// Stack of created trees
+	Reflist<Tree,int> stack_;
 
 	public:
 	// Clear contents of forest
@@ -66,9 +68,9 @@ class Forest
 	// Return number of trees in forest
 	int nTrees();
 	// Create a new, generic (script or command) tree
-	Tree *createTree();
-	// Create a new file filter-style tree
-	Tree *createFilter(Tree::FilterType ft);
+	Tree *pushTree();
+	// Finish the last created tree
+	void popTree();
 	// Delete specified tree
 	void deleteTree(Tree *t);
 	// Execute all trees in forest
