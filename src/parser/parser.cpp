@@ -20,6 +20,7 @@
 */
 
 #include "parser/parser.h"
+#include "parser/forest.h"
 
 // External Declarations
 NuParser nuparser;
