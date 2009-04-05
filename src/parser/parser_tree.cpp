@@ -317,7 +317,7 @@ bool NuParser::setFilterOption(Dnchar *name, TreeNode *value)
 		msg.exit("NuParser::setFilterOption");	
 		return FALSE;
 	}
-	bool result = tree_->setFilterOption(name, value);
+	bool result = tree_->filter.setOption(name, value);
 	msg.exit("NuParser::setFilterOption");
 	return result;
 }

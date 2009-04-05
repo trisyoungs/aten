@@ -282,7 +282,7 @@ bool NuCommand::function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnV
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
-	Tree *filter = aten.findFilter(Tree::ExpressionExport, c->argc(0));
+	Tree *filter = aten.findFilter(FilterData::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{

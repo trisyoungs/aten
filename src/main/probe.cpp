@@ -25,7 +25,7 @@
 #include <iostream>
 
 // Probe model
-Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
+Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
 	msg.enter("Aten::probeFile");
@@ -50,24 +50,24 @@ Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
 	const char *dotpos;
 	Dnchar nameonly;
 	Refitem<Tree,int> *ri;
-	Tree *filter, *result = NULL;
+	Tree *t, *result = NULL;
 	dotpos = strrchr(filename,'.');
 	if (dotpos != NULL) dotpos++;
 	nameonly = removePath(filename);
 	// Go through list of filters and do checks...
 	for (ri = filters_[probetype].first(); ri != NULL; ri = ri->next)
 	{
-		filter = ri->item;
+		t = ri->item;
 		// Try to match text within files
-		if (filter->searchStrings() != NULL)
+		if (t->filter.searchStrings() != NULL)
 		{
 			bool done = FALSE;
 			parser.openFile(filename);
-			for (Dnchar *ss = filter->searchStrings(); ss != NULL; ss = ss->next)
+			for (Dnchar *ss = t->filter.searchStrings(); ss != NULL; ss = ss->next)
 			{
 				// Make sure file is completely rewound
 				parser.rewind();
-				for (n = 0; n<filter->nLinesToSearch(); n++)
+				for (n = 0; n<t->filter.nLinesToSearch(); n++)
 				{
 					m = parser.readLine();
 					if (m == -1) break;
@@ -79,7 +79,7 @@ Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
 					}
 					if (strstr(parser.line(), ss->get()) != NULL)
 					{
-						result = filter;
+						result = t;
 						done = TRUE;
 						break;
 					}
@@ -92,28 +92,28 @@ Tree *Aten::probeFile(const char *filename, Tree::FilterType probetype)
 		// Try to match file extension
 		if (dotpos != NULL)
 		{
-			for (Dnchar *d = filter->extensions(); d != NULL; d = d->next)
+			for (Dnchar *d = t->filter.extensions(); d != NULL; d = d->next)
 				if (*d == dotpos)
 				{
-					result = filter;
+					result = t;
 					break;
 				}
 		}
 		if (result != NULL) break;
 		// Try to match exact filename
-		for (Dnchar *d = filter->exactNames(); d != NULL; d = d->next)
+		for (Dnchar *d = t->filter.exactNames(); d != NULL; d = d->next)
 		{
 			//printf("Comparing '%s' with '%s'\n",nameonly.get(),parser.argc(n));
 			if (*d == nameonly)
 			{
-				result = filter;
+				result = t;
 				break;
 			}
 		}
 
 	}
 	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
-	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->name());
+	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->filter.name());
 	msg.exit("Aten::probeFile");
 	return result;
 }

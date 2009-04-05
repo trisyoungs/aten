@@ -23,6 +23,7 @@
 #define ATEN_TREE_H
 
 #include <iostream>
+#include "parser/filterdata.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "nucommand/commands.h"
@@ -50,14 +51,6 @@ class Tree
 	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
-	// Filter Types
-	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
-	static const char *filterType(FilterType ft);
-	static FilterType filterType(const char *s, bool quiet = FALSE);
-	// Filter commands
-	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, WithinOption, ZMapOption, nFilterOptions };
-	static FilterOption filterOption(const char *s);
-	static const char *filterOption(FilterOption fo);
 	// Friend class (to allow access to node generation calls
 	friend class NuParser;
 
@@ -166,71 +159,11 @@ class Tree
 	/*
 	// Filter Properties
 	*/
-	private:
-	// Filter ID
-	int id_;
-	// Type of data the filter describes
-	FilterType filterType_;
-	// Long name of the filter
-	Dnchar name_;
-	// Nickname for the filter
-	Dnchar nickname_;
-	// File extension(s)
-	List<Dnchar> extensions_;
-	// Number of lines to search when looking for any of the searchStrings_
-	int nLinesToSearch_;
-	// List of identifying search strings
-	List<Dnchar> searchStrings_;
-	// File filter glob (for gui)
-	Dnchar glob_;
-	// Partner filter
-	Tree *partner_;
-	// Filter description
-	Dnchar description_;
-	// Filename alias list
-	List<Dnchar> exactNames_;
-	// Whether the file has an associated extension
-	bool hasExtension_;
-	// Whether separate zmapping has been defined
-	bool hasZmapping_;
-	// Type of element mapping to use
-	ElementMap::ZMapType zMapType_;
-
 	public:
+	// Filter data
+	FilterData filter;
 	// Return whether this tree is a filter
 	bool isFilter();
-	// Set filter option
-	virtual bool setFilterOption(Dnchar *name, TreeNode *value);
-	// Return the ID of the filter
-	int id();
-	// Return the descriptive name of the filter
-	const char *name();
-	// Return the short nickname of the filter
-	const char *nickname();
-	// Return the first file extension
-	Dnchar *extensions();
-	// Return the first alias
-	Dnchar *exactNames();
-	// Return the number of identifying strings defined
-	int nIdStrings();
-	// Return the number of lines to search for the identifying strings
-	int nLinesToSearch();
-	// Return the first identifying search string
-	Dnchar *searchStrings();
-	// Return whether filter has an extension
-	bool hasExtension();
-	// Set the partner filter
-	void setPartner(Tree *partner);
-	// Return the partner filter
-	Tree *partner();
-	// Return the file filter
-	const char *glob();
-	// Set the type of filter
-	void setFilterType(FilterType ft);
-	// Return the type of filter
-	FilterType filterType();
-	// Return the long description of the filter (including glob)
-	const char *description();
 
 
 	/*

@@ -35,29 +35,6 @@
 #include "main/aten.h"
 #include <stdarg.h>
 
-// Filter types
-const char *FilterTypeKeywords[Tree::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
-const char *Tree::filterType(Tree::FilterType ft)
-{
-        return FilterTypeKeywords[ft];
-}
-Tree::FilterType Tree::filterType(const char *s, bool quiet)
-{
-        return (Tree::FilterType) enumSearch( quiet ? "filter type" : "", Tree::nFilterTypes, FilterTypeKeywords, s);
-}
-
-// Filter options
-const char* FilterOptionKeywords[Tree::nFilterOptions] =  { "exact", "extension", "glob", "id", "name", "nickname", "search", "within", "zmap" };
-Tree::FilterOption Tree::filterOption(const char* s)
-{
-	return (Tree::FilterOption) enumSearch("", Tree::nFilterOptions, FilterOptionKeywords, s);
-}
-const char *Tree::filterOption(Tree::FilterOption fc)
-{
-	return FilterOptionKeywords[fc];
-}
-NuVTypes::DataType FilterOptionTypes[Tree::nFilterOptions] =  { NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData };
-
 // Constructor
 Tree::Tree()
 {
@@ -65,15 +42,6 @@ Tree::Tree()
 	parent_ = NULL;
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
-	filterType_ = Tree::nFilterTypes;
-	hasExtension_ = FALSE;
-	hasZmapping_ = FALSE;
-	zMapType_ = ElementMap::AlphaZMap;
-	name_.set("unnamed");
-	glob_.set("*");
-	nLinesToSearch_ = 10;
-	id_ = -1;
-	partner_ = NULL;
 	parser_ = NULL;
 
 	// Public variables
@@ -100,6 +68,12 @@ void Tree::setParent(Forest *f)
 Forest *Tree::parent()
 {
 	return parent_;
+}
+
+// Return whether this tree is a filter
+bool Tree::isFilter()
+{
+	return (filter.type() != FilterData::nFilterTypes);
 }
 
 /*
@@ -158,6 +132,7 @@ bool Tree::execute(NuReturnValue &rv)
 {
 	msg.enter("Tree::execute");
 	bool result;
+	rv.reset();
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
@@ -165,7 +140,8 @@ bool Tree::execute(NuReturnValue &rv)
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
-	msg.print("Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());
+	if (isFilter()) msg.print("Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
+	else msg.print("Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
 	msg.exit("Tree::execute");
 	return result;
 }
@@ -617,184 +593,4 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", NuVTypes::dataType(laststep->returnType()), name->get());
 	msg.exit("Tree::expandPath");
 	return result;
-}
- 
-/*
-// Filter-specific data
-*/
-
-// Return the ID of the filter
-int Tree::id()
-{
-	return id_;
-}
-
-// Return the descriptive name of the filter
-const char *Tree::name()
-{
-	return name_.get();
-}
-
-// Return the short nickname of the filter
-const char *Tree::nickname()
-{
-	return nickname_.get();
-}
-
-// Return the first file extension
-Dnchar *Tree::extensions()
-{
-	return extensions_.first();
-}
-
-// Return the first alias
-Dnchar *Tree::exactNames()
-{
-	return exactNames_.first();
-}
-
-// Return the number of lines to search for defining strings
-int Tree::nLinesToSearch()
-{
-	return nLinesToSearch_;
-}
-
-// Return the first identifying text string
-Dnchar *Tree::searchStrings()
-{
-	return searchStrings_.first();
-}
-
-// Return whether filter has an extension
-bool Tree::hasExtension()
-{
-	return hasExtension_;
-}
-
-// Set the partner filter
-void Tree::setPartner(Tree *filter)
-{
-	partner_ = filter;
-}
-
-// Return the partner filter
-Tree *Tree::partner()
-{
-	return partner_;
-}
-
-// Return the file filter
-const char *Tree::glob()
-{
-	return glob_.get();
-}
-
-// Set the type of filter
-void Tree::setFilterType(FilterType ft)
-{
-	filterType_ = ft;
-}
-
-// Return the type of filter
-Tree::FilterType Tree::filterType()
-{
-	return filterType_;
-}
-
-// Return the type of filter
-bool Tree::isFilter()
-{
-	return (filterType_ != Tree::nFilterTypes);
-}
-
-// Set filter option
-bool Tree::setFilterOption(Dnchar *name, TreeNode *value)
-{
-	msg.enter("Tree::setFilterOption");
-	// Determine filter option supplied
-	Tree::FilterOption fo = Tree::filterOption(name->get());
-	if (fo == Tree::nFilterOptions)
-	{
-		msg.print("Error: '%s' is not a valid filter option.\n", name->get());
-		msg.exit("Tree::setFilterOption");
-		return FALSE;
-	}
-	// Check argument type
-	if (FilterOptionTypes[fo] != value->returnType())
-	{
-		msg.print("Error: Filter option '%s' takes %s value.\n", name->get(), NuVTypes::dataType(FilterOptionTypes[fo]));
-		msg.exit("Tree::setFilterOption");
-		return FALSE;
-	}
-	Dnchar *d;
-	NuReturnValue rv;
-	ElementMap::ZMapType zm;
-	switch (fo)
-	{
-		case (Tree::ExactOption):
-			d = exactNames_.add();
-			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
-			d->set(rv.asString());
-			break;
-		case (Tree::ExtensionOption):
-			d = extensions_.add();
-			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
-			d->set(rv.asString());
-			break;
-		case (Tree::GlobOption):
-			if (!value->execute(rv)) printf("Error retrieving 'glob' filter option value.\n");
-			glob_ = rv.asString();
-			break;
-		case (Tree::IdOption):
-			if (!value->execute(rv)) printf("Error retrieving 'id' filter option value.\n");
-			id_ = rv.asInteger();
-			break;
-		case (Tree::NameOption):
-			if (!value->execute(rv)) printf("Error retrieving 'name' filter option value.\n");
-			name_ = rv.asString();
-			break;
-		case (Tree::NicknameOption):
-			if (!value->execute(rv)) printf("Error retrieving 'nickname' filter option value.\n");
-			nickname_ = rv.asString();
-			break;
-		case (Tree::SearchOption):
-			d = searchStrings_.add();
-			if (!value->execute(rv)) printf("Error retrieving filter option value.\n");
-			d->set(rv.asString());
-			break;
-		case (Tree::WithinOption):
-			if (!value->execute(rv)) printf("Error retrieving 'within' filter option value.\n");
-			nLinesToSearch_ = rv.asInteger();
-			break;
-		case (Tree::ZMapOption):
-			if (!value->execute(rv)) printf("Error retrieving 'zmap' filter option value.\n");
-			zm = ElementMap::zMapType(rv.asString());
-			if (zm == ElementMap::nZMapTypes)
-			{
-				msg.exit("Tree::setFilterOption");
-				return TRUE;
-			}
-			zMapType_ = zm;
-			break;
-		default:
-			printf("Internal Error: UNrecognised filter option.\n");
-	}
-	msg.exit("Tree::setFilterOption");
-	return TRUE;
-}
-
-// Return the long description of the filter (including glob)
-const char *Tree::description()
-{
-	// If the description string is empty, create a new one
-	if (description_.length() < 3)
-	{
-		int size = name_.length() + glob_.length() + 10;
-		char *longname = new char[size];
-		// Generate the filter desciption string
-		sprintf(longname,"%s (%s)",name_.get(),glob_.get());
-		description_ = longname;
-		delete[] longname;
-	}
-	return description_.get();
 }

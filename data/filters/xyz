@@ -3,7 +3,7 @@
 # Last modified: 25/03/2009
 # ChangeLog:
 
-importmodel(name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
+filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
 {
 	# Variable declaration
 	integer natoms,n,m;
@@ -22,10 +22,10 @@ importmodel(name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="
 		i.q = q;
 	}
 	rebond();
-	finalisemodel();
+	#finalisemodel();
 }
 
-exportmodel(name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
+filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
 {
 	# Variable declaration
 	integer n;

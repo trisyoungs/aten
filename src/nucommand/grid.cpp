@@ -239,7 +239,7 @@ bool NuCommand::function_GridUseZ(NuCommandNode *c, Bundle &obj, NuReturnValue &
 // Load grid ('loadgrid <filename>')
 bool NuCommand::function_LoadGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	Tree *filter = aten.probeFile(c->argc(0), Tree::GridImport);
+	Tree *filter = aten.probeFile(c->argc(0), FilterData::GridImport);
 	if (filter != NULL)
 	{
 		if (filter->executeRead(c->argc(0))) return TRUE;

@@ -74,7 +74,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	currentDirectory_ = s;
 	ui.LoadModelEdit->setText(selectedFilename_.get());
 	// Find the corresponding Aten filter that was selected
-	selectedFilter_ = aten.findFilterByDescription(Tree::ModelImport, qPrintable(selFilter));
+	selectedFilter_ = aten.findFilterByDescription(FilterData::ModelImport, qPrintable(selFilter));
 }
 
 // Return the selected filter

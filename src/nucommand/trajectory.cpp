@@ -86,7 +86,7 @@ bool NuCommand::function_LastFrame(NuCommandNode *c, Bundle &obj, NuReturnValue 
 bool NuCommand::function_LoadTrajectory(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Tree *filter = aten.probeFile(c->argc(0), Tree::TrajectoryImport);
+	Tree *filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
 	if (filter == NULL) return FALSE;
 	rv.reset();
 	return (obj.m->initialiseTrajectory(c->argc(0),filter) ? TRUE : FALSE);

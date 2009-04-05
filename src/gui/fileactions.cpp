@@ -45,7 +45,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 	{
 		filter = gui.loadModelDialog->selectedFilter();
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), Tree::ModelImport);
+		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)
 		{
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
@@ -71,7 +71,7 @@ bool AtenForm::runSaveModelDialog()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(Tree::ModelExport, qPrintable(selFilter));
+		filter = aten.findFilterByDescription(FilterData::ModelExport, qPrintable(selFilter));
 		if (filter == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
@@ -102,11 +102,11 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
 	Model *m = aten.currentModel();
-	Tree *filter = m->filter();
-	if ((filter != NULL) && (filter->filterType() != Tree::ModelExport)) filter = NULL;
+	Tree *t = m->filter();
+	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
 	Dnchar filename;
 	filename = m->filename();
-	if (filename.isEmpty() || (filter == NULL))
+	if (filename.isEmpty() || (t == NULL))
 	{
 		if (runSaveModelDialog())
 		{
@@ -117,7 +117,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			//refreshModelTabs();
 		}
 	}
-	else filter->executeWrite(filename.get());
+	else t->executeWrite(filename.get());
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -213,9 +213,9 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(Tree::TrajectoryImport, qPrintable(selFilter));
+		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), Tree::TrajectoryImport);
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
 		if (filter != NULL)
 		{
 			m->initialiseTrajectory(qPrintable(filename), filter);
@@ -232,7 +232,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
-	Tree *filter;
+	Tree *t;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters, &selFilter);
@@ -241,9 +241,9 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		filter = aten.findFilterByDescription(Tree::ExpressionExport, qPrintable(selFilter));
-		if (filter == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
-		else NuCommandNode::run(NuCommand::SaveExpression, "cc", filter->nickname(), qPrintable(filename));
+		t = aten.findFilterByDescription(FilterData::ExpressionExport, qPrintable(selFilter));
+		if (t == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
+		else NuCommandNode::run(NuCommand::SaveExpression, "cc", t->filter.nickname(), qPrintable(filename));
 	}
 }
 
