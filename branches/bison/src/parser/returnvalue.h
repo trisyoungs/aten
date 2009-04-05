@@ -62,8 +62,8 @@ class NuReturnValue
 	NuVTypes::DataType type();
 	// Reset data
 	void reset();
-	// Print info on data contents
-	void info();
+	// Return string of contained data
+	const char *info();
 
 
 	/*

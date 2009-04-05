@@ -330,7 +330,7 @@ int Aten::parseCli(int argc, char *argv[])
 					else
 					{
 						tempforest.clear();
-						if (tempforest.generate(argv[++argn], "command"))
+						if (tempforest.generate(argv[++argn], "CLI command"))
 						{
 							if (!tempforest.executeAll(rv)) return -1;
 						}

@@ -92,31 +92,33 @@ void NuReturnValue::reset()
 	type_ = NuVTypes::NoData;
 }
 
-// Print info on data contents
-void NuReturnValue::info()
+// Return string of contained data
+const char *NuReturnValue::info()
 {
-	printf("This returnvalue contains data of type '%s':", NuVTypes::dataType(type_));
+	static char result[8096];
+	result[0] = '\0';
 	switch (type_)
 	{
 		case (NuVTypes::NoData):
-			printf("<nothing>\n");
+			sprintf(result,"nothing (%s)", NuVTypes::dataType(type_));
 			break;
 		case (NuVTypes::IntegerData):
-			printf("%i\n",valueI_);
+			sprintf(result,"%i (%s)", valueI_, NuVTypes::dataType(type_));
 			break;
 		case (NuVTypes::RealData):
-			printf("%f\n",valueR_);
+			sprintf(result,"%f (%s)", valueR_, NuVTypes::dataType(type_));
 			break;
 		case (NuVTypes::StringData):
-			printf("%s\n",valueS_.get());
+			sprintf(result,"'%s' (%s)", valueS_.get(), NuVTypes::dataType(type_));
 			break;
 		case (NuVTypes::VectorData):
-			printf("{%f,%f,%f}\n",valueV_.x,valueV_.y,valueV_.z);
+			sprintf(result,"{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, NuVTypes::dataType(type_));
 			break;
 		default:
-			printf("%li\n",valueP_);
+			sprintf(result,"%li (%s)", valueP_, NuVTypes::dataType(type_));
 			break;
 	}
+	return result;
 }
 
 /*

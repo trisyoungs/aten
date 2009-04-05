@@ -38,7 +38,8 @@
 class TreeNode;
 class ScopeNode;
 class VariableNode;
-class StepNode; 
+class StepNode;
+class Forest;
 
 // Tree
 class Tree
@@ -60,6 +61,19 @@ class Tree
 	// Friend class (to allow access to node generation calls
 	friend class NuParser;
 
+
+	/*
+	// Forest parent
+	*/
+	private:
+	// Parent
+	Forest *parent_;
+
+	public:
+	// Set parent
+	void setParent(Forest *f);
+	// Return parent
+	Forest *parent();
 
 	/*
 	// Node Data
@@ -245,58 +259,6 @@ class Tree
 	bool executeRead(LineParser *parser);
 	// Execute, with specified filename as data target
 	bool executeWrite(const char *filename);
-};
-
-// Forest
-class Forest
-{
-	public:
-	// Constructor / Destructor
-	Forest();
-	~Forest();
-	// List pointers
-	Forest *prev, *next;
-
-	/*
-	// Tree data
-	*/
-	private:
-	// Name, if any
-	Dnchar name_;
-	// Original source filename, if any
-	Dnchar filename_;
-	// User-defined functions (local to this structure)
-	List<Tree> functions_;
-	// List of trees belonging to this forest
-	List<Tree> trees_;
-
-	public:
-	// Clear contents of forest
-	void clear();
-	// Set name of forest
-	void setName(const char *s);
-	// Return name of forest
-	const char *name();
-	// Return associated filename (if any)
-	const char *filename();
-	// Generate forest from string 
-	bool generate(const char *, const char *name = NULL);
-	// Generate forest from input file
-	bool generateFromFile(const char *filename, const char *name = NULL);
-	// Finalise forest
-	void finalise();
-	// Return number of trees in forest
-	int nTrees();
-	// Create a new, generic (script or command) tree
-	Tree *createTree();
-	// Create a new file filter-style tree
-	Tree *createFilter(Tree::FilterType ft);
-	// Delete specified tree
-	void deleteTree(Tree *t);
-	// Execute all trees in forest
-	bool executeAll(NuReturnValue &rv);
-	// Print forest information
-	void print();
 };
 
 #endif

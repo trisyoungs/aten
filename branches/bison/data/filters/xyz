@@ -33,12 +33,9 @@ exportmodel(name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname
 	real rx,ry,rz;
 	atom i;
 
-	# This will cause an error, but not in the right place - YYERROR does not quit and return from the parser?
-	#model.atoms[0];
-
 	writeline(aten.model.natoms);
-	writeline(aten.model.name);
-	for (i=aten.model.atoms[1]; i; i++) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
+	#writeline(aten.model.name);
+	#for (i=aten.model.atoms[1]; i; i++) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory

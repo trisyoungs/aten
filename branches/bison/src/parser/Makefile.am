@@ -3,8 +3,8 @@ noinst_LIBRARIES = libparser.a
 BUILT_SOURCES = grammar.h
 AM_YFLAGS = -d
 
-libparser_a_SOURCES = array.cpp aten.cpp atom.cpp bond.cpp cell.cpp character.cpp commandnode.cpp elements.cpp forcefield.cpp forcefieldatom.cpp forcefieldbound.cpp format.cpp grammar.yy integer.cpp model.cpp parser.cpp parser_lexer.cpp parser_tree.cpp pattern.cpp real.cpp returnvalue.cpp scopenode.cpp stepnode.cpp tree.cpp tree_opcheck.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
+libparser_a_SOURCES = array.cpp aten.cpp atom.cpp bond.cpp cell.cpp character.cpp commandnode.cpp elements.cpp forest.cpp forcefield.cpp forcefieldatom.cpp forcefieldbound.cpp format.cpp grammar.yy integer.cpp model.cpp parser.cpp parser_lexer.cpp parser_tree.cpp pattern.cpp real.cpp returnvalue.cpp scopenode.cpp stepnode.cpp tree.cpp tree_opcheck.cpp treenode.cpp variable.cpp variablelist.cpp variablenode.cpp vector.cpp vtypes.cpp
 
-noinst_HEADERS = array.h accessor.h aten.h atom.h bond.h cell.h character.h commandnode.h elements.h forcefield.h forcefieldatom.h forcefieldbound.h format.h integer.h model.h parser.h pattern.h real.h returnvalue.h scopenode.h stepnode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
+noinst_HEADERS = array.h accessor.h aten.h atom.h bond.h cell.h character.h commandnode.h elements.h forest.h forcefield.h forcefieldatom.h forcefieldbound.h format.h integer.h model.h parser.h pattern.h real.h returnvalue.h scopenode.h stepnode.h tree.h treenode.h variable.h variablelist.h variablenode.h vector.h vtypes.h 
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@

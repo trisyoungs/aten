@@ -62,6 +62,7 @@ NuVTypes::DataType FilterOptionTypes[Tree::nFilterOptions] =  { NuVTypes::String
 Tree::Tree()
 {
 	// Private variables
+	parent_ = NULL;
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
 	filterType_ = Tree::nFilterTypes;
@@ -87,6 +88,18 @@ Tree::Tree()
 Tree::~Tree()
 {
 	clear();
+}
+
+// Set parent
+void Tree::setParent(Forest *f)
+{
+	parent_ = f;
+}
+
+// Return parent
+Forest *Tree::parent()
+{
+	return parent_;
 }
 
 /*
@@ -152,8 +165,7 @@ bool Tree::execute(NuReturnValue &rv)
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
-	printf("Final result of tree execution:\n");
-	rv.info();
+	msg.print("Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());
 	msg.exit("Tree::execute");
 	return result;
 }
@@ -202,7 +214,22 @@ bool Tree::executeRead(const char *filename)
 // Execute, with specified filename as data target
 bool Tree::executeWrite(const char *filename)
 {
-	printf("XXXX Tree::executeWrite NOT WRITTEN YET.\n");
+	msg.enter("Tree::executeWrite[filename]");
+	// Check for a previous parser pointer
+	if (parser_ != NULL) printf("Warning: LineParser already defined in executeWrite.\n");
+	parser_ = new LineParser(filename, TRUE);
+	if (!parser_->isFileGood())
+	{
+		msg.exit("Tree::executeWrite[filename]");
+		return FALSE;
+	}
+	// Execute the commands
+	NuReturnValue rv;
+	bool result = execute(rv);
+	parser_->closeFile();
+	delete parser_;
+	parser_ = NULL;
+	msg.exit("Tree::executeWrite[filename]");
 }
 
 // Print tree
@@ -314,7 +341,7 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 {
 	arg1->prevArgument = arg2;
 	arg2->nextArgument = arg1;
-	printf("Joining arguments %li and %li\n", arg1, arg2);
+	msg.print(Messenger::Parse, "Joining arguments %li and %li\n", arg1, arg2);
 	return arg1;
 }
 
@@ -770,141 +797,4 @@ const char *Tree::description()
 		delete[] longname;
 	}
 	return description_.get();
-}
-
-/*
-// Forest
-*/
-
-// Constructor
-Forest::Forest()
-{
-	// Private variables
-	name_ = "NewForest";
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
-// Destructor
-Forest::~Forest()
-{
-}
-
-// Clear forest
-void Forest::clear()
-{
-	functions_.clear();
-	trees_.clear();
-}
-
-// Set name of forest
-void Forest::setName(const char *s)
-{
-	name_ = s;
-}
-
-// Return name of forest
-const char *Forest::name()
-{
-	return name_.get();
-}
-
-// Return filename of source file
-const char *Forest::filename()
-{
-	return filename_.get();
-}
-
-// Finalise forest
-void Forest::finalise()
-{
-	// Register any filters with the master
-	for (Tree *t = trees_.first(); t != NULL; t = t->next)
-	{
-		if (t->isFilter()) aten.registerFilter(t, t->filterType());
-	}
-}
-
-// Return number of trees in forest
-int Forest::nTrees()
-{
-}
-
-// Create a new tree
-Tree *Forest::createTree()
-{
-	return trees_.add();
-}
-
-// Generate forest from string 
-bool Forest::generate(const char *s, const char *name)
-{
-	msg.enter("Forest::generate[string]");
-	name_ = name;
-	bool result = nuparser.generate(this, s);
-	finalise();
-	msg.exit("Forest::generate[string]");
-	return result;
-}
-
-// Generate forest from input file
-bool Forest::generateFromFile(const char *filename, const char *name)
-{
-	msg.enter("Forest::generateFromFile");
-	filename_ = filename;
-	name_ = name;
-	bool result = nuparser.generateFromFile(this, filename);
-// 	print();
-	finalise();
-	msg.exit("Forest::generateFromFile");
-	return result;
-}
-
-// Create a new file filter-style tree
-Tree *Forest::createFilter(Tree::FilterType ft)
-{
-	msg.enter("Forest::createFilter");
-	// Create tree and set its filter type
-	Tree *tree = trees_.add();
-	tree->setFilterType(ft);
-	msg.exit("Forest::createFilter");
-	return tree;
-}
-
-// Delete specified tree
-void Forest::deleteTree(Tree *t)
-{
-	// Search for the specified tree...
-	if (trees_.ownsItem(t)) trees_.remove(t);
-	else if (functions_.ownsItem(t)) functions_.remove(t);
-	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
-}
-
-// Execute all trees in forest
-bool Forest::executeAll(NuReturnValue &rv)
-{
-	msg.enter("Forest::executeAll");
-	int count = 0;
-	bool result = TRUE;
-	for (Tree *t = trees_.first(); t != NULL; t = t->next)
-	{
-		count ++;
-		if (t->isFilter()) msg.print(Messenger::Parse, "Skipping '%s' (%i of %i in set) since its a filter....\n", t->name(), count, trees_.nItems());
-		else
-		{
-			msg.print(Messenger::Parse, "Executing '%s' (%i of %i in set)....\n", t->name(), count, trees_.nItems());
-			result = t->execute(rv);
-			if (!result) break;
-		}
-	}
-	msg.exit("Forest::executeAll");
-	return result;
-}
-
-// Print forest information
-void Forest::print()
-{
-	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), trees_.nItems(), functions_.nItems());	
 }
