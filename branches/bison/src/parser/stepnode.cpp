@@ -43,6 +43,12 @@ StepNode::~StepNode()
 {
 }
 
+// Return accessor id
+int StepNode::accessor()
+{
+	return accessor_;
+}
+
 // Execute command
 bool StepNode::execute(NuReturnValue &rv)
 {
@@ -149,20 +155,20 @@ bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
 		case (NuVTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData (set).\n");
 			break;
-// 		case (NuVTypes::AtenData):
-// 			result = AtenVariable::setAccessor(accessor_, rv, FALSE);
-// 			break;
+		case (NuVTypes::AtenData):
+			result = AtenVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
 		case (NuVTypes::AtomData):
 			result = AtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-// 		case (NuVTypes::ModelData):
-// 			result = ModelVariable::retrieveAccessor(accessor_, rv, FALSE);
-// 			break;
-// 		case (NuVTypes::VectorData):
-// 			result = NuVectorVariable::retrieveAccessor(accessor_, rv, FALSE);
-// 			break;
+ 		case (NuVTypes::ModelData):
+ 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+ 			break;
+ 		case (NuVTypes::VectorData):
+ 			result = NuVectorVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+ 			break;
 		default:
-			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", NuVTypes::dataType(previousType_));
+			printf("Internal Error: StepNode doesn't recognise this type (%s) (set)\n", NuVTypes::dataType(previousType_));
 			break;
 	}
 	msg.exit("StepNode::set");

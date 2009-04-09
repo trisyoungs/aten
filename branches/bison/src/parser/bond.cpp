@@ -139,13 +139,9 @@ bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("BondVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -204,7 +200,7 @@ bool BondVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	switch (acc)
 	{
 		default:
-			printf("BondVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("BondVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}

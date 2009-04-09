@@ -15,7 +15,7 @@ filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension
 	readline(natoms);
 	getline(title);
 	newmodel(title);
-	for (n=1; n<=natoms; n ++)
+	for (n=1; n<=natoms; ++n)
 	{
 		readline(e,rx,ry,rz,q);
 		i = newatom(e, rx, ry, rz);
@@ -35,7 +35,7 @@ filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.
 
 	writeline(aten.model.natoms);
 	writeline(aten.model.name);
-	for (i=aten.model.atoms[1]; i; i++) writeline(i.mass,i.rx,i.ry,i.rz,i.q);
+	for (i=aten.model.atoms; i != 0; ++i) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory

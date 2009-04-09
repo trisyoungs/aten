@@ -87,7 +87,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "model",	NuVTypes::ModelData,	FALSE, TRUE },
 	{ "elements",	NuVTypes::ElementsData,	FALSE, TRUE },
-	{ "models",	NuVTypes::ModelData,	FALSE, TRUE }
+	{ "models",	NuVTypes::ModelData,	TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -129,13 +129,9 @@ bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -158,5 +154,42 @@ bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 			break;
 	}
 	msg.exit("AtenVariable::retrieveAccessor");
+	return result;
+}
+
+// Set desired value
+bool AtenVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+{
+	msg.enter("AtenVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Aten type.\n");
+		msg.exit("AtenVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("AtenVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Aten *ptr= (Aten*) sourcerv.asPointer(NuVTypes::AtenData, result);
+	switch (acc)
+	{
+		default:
+			printf("AtenVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("AtenVariable::setAccessor");
 	return result;
 }

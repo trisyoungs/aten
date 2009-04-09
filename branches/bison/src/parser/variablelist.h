@@ -65,7 +65,7 @@ class NuVariableList
 	// Return first variable in the list
 	NuVariable *first();
 	// Reset all variable values
-	void initialise();
+	bool initialise();
 	// Clear all variables, expressions etc. stored in class
 	void clear();
 	// Print list of variables and their values

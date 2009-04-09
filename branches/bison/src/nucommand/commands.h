@@ -938,10 +938,6 @@ class NuCommand
 	private:
 	// Function pointers
 	NuCommandFunction pointers_[NuCommand::nCommands];
-	// Dummy CommandList for use with non-flow call() function
-	NuCommandList *dummyCommandList_;
-	// Dummy CommandNode (owned by dummyCommandList_)
-	NuCommandNode *dummyCommandNode_;
 
 	public:
 	// Function data
@@ -949,7 +945,7 @@ class NuCommand
 	// Initialise function pointers
 	void initPointers();
 	// Execute specified command
-	int call(NuCommand::Function cf, NuCommandNode *node, NuReturnValue &rv);
+	bool call(NuCommand::Function cf, NuCommandNode *node, NuReturnValue &rv);
 };
 
 // External declaration

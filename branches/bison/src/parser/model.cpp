@@ -150,15 +150,9 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	printf("This accessor %s an array.\n", accessorData[i].isArray ? "expects" : "does not expect" );
-	printf("An array %s provided\n", hasArrayIndex ? "was" : "was not" );
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -168,21 +162,28 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Atoms):
-			if (arrayIndex > ptr->nAtoms())
+			if (!hasArrayIndex) rv.set(NuVTypes::AtomData, ptr->atoms());
+			else if (arrayIndex > ptr->nAtoms())
 			{
-				msg.print("Atom array index is out of bounds for model '%s'\n", ptr->name());
+				msg.print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(NuVTypes::AtomData, ptr->atom(arrayIndex-1));
-			printf("THIS RESULT IS %s.\n", rv.info());
 			break;
 		case (ModelVariable::Atomtypes):
-			rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
+			if (!hasArrayIndex) rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueTypes());
+			else if (arrayIndex > ptr->nUniqueTypes())
+			{
+				msg.print("Unique types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
 			break;
 		case (ModelVariable::Bonds):
-			if (arrayIndex > ptr->nBonds())
+			if (!hasArrayIndex) rv.set(NuVTypes::BondData, ptr->bonds());
+			else if (arrayIndex > ptr->nBonds())
 			{
-				msg.print("Bond array index is out of bounds for model '%s'\n", ptr->name());
+				msg.print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(NuVTypes::BondData, ptr->bond(arrayIndex-1));
@@ -228,9 +229,10 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->nUniqueTorsionTerms());
 			break;
 		case (ModelVariable::Patterns):
-			if (arrayIndex > ptr->nPatterns())
+			if (!hasArrayIndex) rv.set(NuVTypes::PatternData, ptr->patterns());
+			else if (arrayIndex > ptr->nPatterns())
 			{
-				msg.print("Pattern array index is out of bounds for model '%s'\n", ptr->name());
+				msg.print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(NuVTypes::PatternData, ptr->pattern(arrayIndex-1));

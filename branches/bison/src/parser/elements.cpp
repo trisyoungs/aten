@@ -86,7 +86,7 @@ void ElementsVariable::nodePrint(int offset, const char *prefix)
 Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
 	{ "mass",	NuVTypes::RealData,	TRUE, TRUE },
 	{ "name",	NuVTypes::RealData,	TRUE, TRUE },
-	{ "nelements",	NuVTypes::IntegerData,	FALSE, TRUE },
+	{ "nelements",	NuVTypes::IntegerData,	FALSE,	 TRUE },
 	{ "symbol",	NuVTypes::StringData,	TRUE, TRUE }
 };
 
@@ -129,13 +129,9 @@ bool ElementsVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ElementsVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -206,7 +202,7 @@ bool ElementsVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue
 	switch (acc)
 	{
 		default:
-			printf("ElementsVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ElementsVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}

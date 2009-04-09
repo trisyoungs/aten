@@ -47,6 +47,8 @@ class StepNode : public TreeNode
 	public:
 	// Return associated array index
 	TreeNode *arrayIndex();
+	// Return accessor ID
+	int accessor();
 	// Set from returnvalue nodes
 	bool set(NuReturnValue &executerv, NuReturnValue &setrv);
 

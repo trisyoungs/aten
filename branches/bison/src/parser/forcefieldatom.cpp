@@ -141,13 +141,9 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -247,7 +243,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuRetur
 			ptr->setName(newvalue.asString());
 			break;
 		default:
-			printf("ForcefieldAtomVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ForcefieldAtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
