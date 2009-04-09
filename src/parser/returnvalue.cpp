@@ -284,6 +284,12 @@ Vec3<double> NuReturnValue::asVector(bool &success)
 			success = FALSE;
 			return Vec3<double>();
 			break;
+		case (NuVTypes::IntegerData):
+			return Vec3<double>(valueI_, valueI_, valueI_);
+			break;
+		case (NuVTypes::RealData):
+			return Vec3<double>(valueR_, valueR_, valueR_);
+			break;
 		case (NuVTypes::VectorData):
 			return valueV_;
 			break;

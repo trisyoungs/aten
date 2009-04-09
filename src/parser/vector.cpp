@@ -198,3 +198,49 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	msg.exit("NuVectorVariable::retrieveAccessor");
 	return result;
 }
+
+// Set desired value
+bool NuVectorVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+{
+	msg.enter("NuVectorVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		msg.exit("NuVectorVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("NuVectorVariable::setAccessor");
+		return FALSE;
+	}
+	// ReturnValue contains a copy of the vector data...
+	bool result = TRUE;
+	Vec3<double> v = sourcerv.asVector(result);
+	if (result) switch (acc)
+	{
+		case (NuVectorVariable::X):
+			sourcerv.set(0, newvalue.asReal(result));
+			break;
+		case (NuVectorVariable::Y):
+			v.y = newvalue.asReal(result);
+			break;
+		case (NuVectorVariable::Z):
+			v.z = newvalue.asReal(result);
+			break;
+		default:
+			printf("NuVectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("NuVectorVariable::setAccessor");
+	return result;
+}

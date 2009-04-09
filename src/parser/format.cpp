@@ -151,7 +151,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 				plaintext[length] = *c;
 				length ++;
 				plaintext[length] = '\0';
-				printf("Detected format bit [%s]\n", plaintext);
+				msg.print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
 				// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
 				if (arg == NULL) msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
 				else

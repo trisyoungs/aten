@@ -136,13 +136,9 @@ bool ForcefieldVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArra
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ForcefieldVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -189,7 +185,7 @@ bool ForcefieldVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnVal
 	if (result) switch (acc)
 	{
 		default:
-			printf("ForcefieldVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ForcefieldVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}

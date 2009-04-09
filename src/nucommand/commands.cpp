@@ -870,17 +870,11 @@ NuCommand::NuCommand()
 {
 	// Create pointer list
 	initPointers();
-	// Create dummyCommandList complete with a single dummy command
-// 	dummyCommandList_ = new NuCommandList;
-// 	dummyCommandNode_ = new NuCommandNode;
-// 	dummyCommandNode_->setParent(dummyCommandList_);
 }
 
 // Constructor
 NuCommand::~NuCommand()
 {
-// 	delete dummyCommandNode_;
-// 	delete dummyCommandList_;
 }
 
 // Return whether command accepts any arguments
@@ -890,9 +884,8 @@ bool NuCommandData::hasArguments()
 }
 
 // Execute command
-int NuCommand::call(NuCommand::Function cf, NuCommandNode *c, NuReturnValue &rv)
+bool NuCommand::call(NuCommand::Function cf, NuCommandNode *c, NuReturnValue &rv)
 {
-// 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
 	msg.print(Messenger::Commands, "Calling command '%s' (node is %li)...\n", data[cf].keyword, c);
 	return (this->pointers_[cf])(c, aten.current, rv);
 }

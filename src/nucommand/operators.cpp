@@ -473,8 +473,8 @@ bool NuCommand::function_OperatorPostfixIncrease(NuCommandNode *c, Bundle &obj, 
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
 	NuReturnValue newvalue;
-	if (c->argType(0) == NuVTypes::IntegerData) newvalue.set( rv.asInteger()+1 );
-	else if (c->argType(0) == NuVTypes::RealData) newvalue.set( rv.asReal()+1 );
+	newvalue = rv;
+	newvalue.increase();
 	return c->setArg(0, newvalue);
 }
 
@@ -484,8 +484,8 @@ bool NuCommand::function_OperatorPostfixDecrease(NuCommandNode *c, Bundle &obj, 
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
 	NuReturnValue newvalue;
-	if (c->argType(0) == NuVTypes::IntegerData) newvalue.set( rv.asInteger()-1 );
-	else if (c->argType(0) == NuVTypes::RealData) newvalue.set( rv.asReal()-1 );
+	newvalue = rv;
+	newvalue.decrease();
 	return c->setArg(0, newvalue);
 }
 
@@ -494,8 +494,7 @@ bool NuCommand::function_OperatorPrefixIncrease(NuCommandNode *c, Bundle &obj, N
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
-	if (c->argType(0) == NuVTypes::IntegerData) rv.set( rv.asInteger()+1 );
-	else if (c->argType(0) == NuVTypes::RealData) rv.set( rv.asReal()+1 );
+	rv.increase();
 	return c->setArg(0, rv);
 }
 
@@ -504,7 +503,6 @@ bool NuCommand::function_OperatorPrefixDecrease(NuCommandNode *c, Bundle &obj, N
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
-	if (c->argType(0) == NuVTypes::IntegerData) rv.set( rv.asInteger()-1 );
-	else if (c->argType(0) == NuVTypes::RealData) rv.set( rv.asReal()-1 );
+	rv.decrease();
 	return c->setArg(0, rv);
 }

@@ -164,7 +164,8 @@ NuVariable *NuVariableList::first()
 }
 
 // Initialise/reset all variables
-void NuVariableList::initialise()
+bool NuVariableList::initialise()
 {
-	for (NuVariable *v = variables_.first(); v != NULL; v = (NuVariable*) v->next) v->initialise();
+	for (NuVariable *v = variables_.first(); v != NULL; v = (NuVariable*) v->next) if (!v->initialise()) return FALSE;
+	return TRUE;
 }

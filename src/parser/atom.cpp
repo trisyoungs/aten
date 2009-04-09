@@ -93,7 +93,7 @@ void AtomVariable::nodePrint(int offset, const char *prefix)
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "fixed", 	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "f",		NuVTypes::RealData,		TRUE, FALSE },
+	{ "f",		NuVTypes::VectorData,		FALSE, FALSE },
 	{ "fx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "fy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "fz",		NuVTypes::RealData,		FALSE, FALSE },
@@ -102,14 +102,14 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "mass",	NuVTypes::RealData,		FALSE, TRUE },
 	{ "name",	NuVTypes::StringData,		FALSE, TRUE },
 	{ "q",		NuVTypes::RealData,		FALSE, FALSE },
-	{ "r",		NuVTypes::RealData,		TRUE, FALSE },
+	{ "r",		NuVTypes::VectorData,		FALSE, FALSE },
 	{ "rx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "ry",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "rz",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "selected",	NuVTypes::IntegerData,		FALSE, FALSE },
 	{ "symbol",	NuVTypes::StringData,		FALSE, TRUE },
 	{ "type",	NuVTypes::ForcefieldAtomData,	FALSE, FALSE },
-	{ "v",		NuVTypes::RealData,		TRUE, FALSE },
+	{ "v",		NuVTypes::VectorData,		FALSE, FALSE },
 	{ "vx",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vy",		NuVTypes::RealData,		FALSE, FALSE },
 	{ "vz",		NuVTypes::RealData,		FALSE, FALSE },
@@ -155,13 +155,9 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("AtomVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -188,10 +184,10 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 			rv.set(ptr->id()+1);
 			break;
 		case (AtomVariable::Mass):
-			rv.set(elements().atomicMass(i));
+			rv.set(elements().atomicMass(ptr));
 			break;
 		case (AtomVariable::Name):
-			rv.set(elements().name(i));
+			rv.set(elements().name(ptr));
 			break;
 		case (AtomVariable::Q):
 			rv.set(ptr->charge());
@@ -208,7 +204,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 			rv.set(ptr->isSelected());
 			break;
 		case (AtomVariable::Symbol):
-			rv.set(elements().symbol(i));
+			rv.set(elements().symbol(ptr));
 			break;
 		case (AtomVariable::Type):
 			rv.set(NuVTypes::ForcefieldAtomData, ptr->type());
@@ -308,7 +304,7 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 			ptr->parent()->transmuteAtom(ptr, newvalue.asInteger());
 			break;
 		default:
-			printf("AtomVariable::set doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}

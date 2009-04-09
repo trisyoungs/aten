@@ -38,7 +38,7 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	// Execute both commands
 	bool result = TRUE;
 	if (c->hasArg(0)) result = c->arg(0, rv);
-	if (c->hasArg(1)) result = c->arg(1, rv);
+	if (result && c->hasArg(1)) result = c->arg(1, rv);
 	return result;
 }
 

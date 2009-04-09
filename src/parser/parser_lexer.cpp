@@ -137,6 +137,11 @@ int NuParser::lex()
 		do
 		{
 			c = getChar();
+			// Check for escaped characters....
+			if (c == '\\')
+			{
+				
+			}
 			if (c == '"')
 			{
 				// Check for null string...

@@ -24,6 +24,7 @@
 #include "base/cell.h"
 #include "base/sysfunc.h"
 #include "base/spacegroup.h"
+#include "model/model.h"
 #include <string.h>
 
 // Constructor
@@ -110,13 +111,13 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "centrex",	NuVTypes::RealData,	FALSE, TRUE },
 	{ "centrey",	NuVTypes::RealData,	FALSE, TRUE },
 	{ "centrez",	NuVTypes::RealData,	FALSE, TRUE },
-	{ "density",	 NuVTypes::RealData,	FALSE, TRUE },
+	{ "density",	NuVTypes::RealData,	FALSE, TRUE },
 	{ "matrix", 	NuVTypes::RealData,	TRUE, FALSE },
 	{ "sgid",	NuVTypes::IntegerData,	FALSE, FALSE },
 	{ "sgname",	NuVTypes::StringData,	FALSE, FALSE },
 	{ "sgsetting",	NuVTypes::IntegerData,	FALSE, FALSE },
 	{ "type",	NuVTypes::StringData,	FALSE, TRUE },
-	{ "volume",	 NuVTypes::RealData,	FALSE, TRUE },
+	{ "volume",	NuVTypes::RealData,	FALSE, TRUE },
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -158,13 +159,9 @@ bool CellVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if ((!accessorData[i].isArray) && hasArrayIndex)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-	}
-	else if (!hasArrayIndex)
-	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("CellVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -234,42 +231,33 @@ bool CellVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	return result;
 }
 
-/*
-// Set specified data
-bool CellVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
+// Set desired value
+bool CellVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("CellVariable::set");
+	msg.enter("CellVariable::setAccessor");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nAccessors))
+	{
+		printf("Internal Error: Accessor id %i is out of range for Cell type.\n");
+		msg.exit("CellVariable::setAccessor");
+		return FALSE;
+	}
+	Accessors acc = (Accessors) i;
+	// Check for correct lack/presence of array index given
+	if (!accessorData[i].isArray)
+	{
+		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+	}
+	else if (!hasArrayIndex)
+	{
+		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
+		msg.exit("CellVariable::setAccessor");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
 	bool result = TRUE;
-	// Cast pointer into Cell*
-	Cell *c = (Cell*) classptr;
-	if (c == NULL) printf("Warning - NULL Cell pointer passed to CellVariable::set.\n");
-// 	printf("Enumerated ID supplied to CellAccessors is %i.\n", vid);
-	// Check range of supplied vid
-	int vid = step->variableId();
-	if ((vid < 0) || (vid > CellVariable::nAccessors))
-	{
-		printf("Unknown enumeration %i given to CellVariable::set.\n", vid);
-		msg.exit("CellVariable::set");
-		return FALSE;
-	}
-	// Check read-only status
-	if (accessorPointers[vid]->readOnly())
-	{
-		msg.print("Member '%s' of 'cell' type is read-only.\n", accessorPointers[vid]->name());
-		msg.exit("CellVariable::set");
-		return FALSE;
-	}
-	// Get arrayindex (if there is one) and check that we needed it in the first place
-	int index;
-	if (!checkIndex(index, step, accessorPointers[vid]))
-	{
-		msg.exit("CellVariable::set");
-		return FALSE;
-	}
-	Mat3<double> m;
-	Vec3<double> v;
-	// Set value based on enumerated id
-	switch (vid)
+	Cell *ptr = (Cell*) sourcerv.asPointer(NuVTypes::CellData, result);
+	if (result) switch (acc)
 	{
 		case (CellVariable::A):
 		case (CellVariable::B):
@@ -286,19 +274,18 @@ bool CellVariable::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (CellVariable::CX):
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
-			// Cast vid into a CellParameter
-			c->parent()->setCell( (Cell::CellParameter) vid, srcvar->asDouble());
+			// Cast accessor into a CellParameter
+			ptr->parent()->setCell( (Cell::CellParameter) acc, newvalue.asReal());
 			break;
 		case (CellVariable::Matrix):
-			// Cast vid into a CellParameter
-			c->parent()->setCell( (Cell::CellParameter) ((index-1) + Cell::CellAX), srcvar->asDouble());
+			// Cast accessor into a CellParameter
+			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asReal());
 			break;
 		default:
-			printf("CellVariable::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("CellVariable::set");
+	msg.exit("CellVariable::setAccessor");
 	return result;
 }
-*/

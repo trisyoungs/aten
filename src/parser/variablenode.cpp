@@ -172,9 +172,10 @@ bool VariableNode::set(NuReturnValue &setrv)
 		msg.exit("VariableNode::set");
 		return FALSE;
 	}
-	// If there are no path nodes then just set the local variable
 	bool result = TRUE;
-	NuReturnValue executerv;
+	NuReturnValue executerv, lastresult;
+	// If there are no path nodes then just set the local variable
+	// Also, if the base variable is of vector type, set it in a special way...
 	if (args_.nItems() == 0)
 	{
 		// Call the local variable's set() function
@@ -184,6 +185,17 @@ bool VariableNode::set(NuReturnValue &setrv)
 			NuReturnValue index;
 			if (!arrayIndex_->execute(index)) result = FALSE;
 			else result = variable_->setAsArray(setrv, index.asInteger());
+		}
+	}
+	else if (variable_->returnType() == NuVTypes::VectorData)
+	{
+		// Grab accessor ID from last (only) step and use it to set the vector component
+		int component = ((StepNode*) args_.last()->item)->accessor();
+		if (!variable_->execute(executerv)) result = FALSE;
+		else
+		{
+			executerv.set(component, setrv.asReal());
+			variable_->set(executerv);
 		}
 	}
 	else
@@ -197,17 +209,29 @@ bool VariableNode::set(NuReturnValue &setrv)
 			if (!arrayIndex_->execute(index)) result2 =  FALSE;
 			else result2 = variable_->executeAsArray(executerv, index.asInteger());
 		}
-		// Next, step through accessnodes up until the last one, passing the returnvalue to each in turn
+		// Next, step through accessnodes up until the last one, passing the returnvalue to each in turn.
 		if (result2)
 		{
+			lastresult = executerv;
 			for (Refitem<TreeNode,int> *ri = args_.first(); ri != args_.last(); ri = ri->next)
 			{
 				result = ri->item->execute(executerv);
 				if (!result) break;
 			}
 			// For the last accessnode in the list, cast into a StepNode and use the set function
-// 		printf("Node type of args_>last() is %i\n", args_.last()->nodeType());
+// 			printf("Node type of args_>last() is %i\n", args_.last()->nodeType());
+// 			printf("Penultimate result is %s\n", lastresult.info());
 			((StepNode*) args_.last()->item)->set(executerv, setrv);
+// 			printf("Path set result execute = %s\n", executerv.info());
+			// If the node prior to the last is a vector, we must do something special!
+			Refitem<TreeNode,int> *ri = args_.last()->prev;
+			if (ri != NULL)
+			{
+				StepNode *step = (StepNode*) ri->item;
+// 				printf("Previous step type = %s.\n", NuVTypes::dataType(step->returnType()));
+				// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
+				((StepNode*) ri->item)->set(lastresult,executerv);
+			}
 		}
 		else result = FALSE;
 	}
@@ -221,7 +245,7 @@ bool VariableNode::initialise()
 {
 	if (variable_ == NULL)
 	{
-		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be initialise.\n");
+		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be initialised.\n");
 		return FALSE;
 	}
 	return variable_->initialise();
