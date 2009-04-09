@@ -140,9 +140,21 @@ int NuParser::lex()
 			// Check for escaped characters....
 			if (c == '\\')
 			{
-				
+				// Look at next character and either add it as-is, or convert it to its proper control code
+				c2 = getChar();
+				switch (c2)
+				{
+					case ('n'):
+						token[length++] = '\n'; break;
+					case ('t'):
+						token[length++] = '\t'; break;
+					case ('r'):
+						token[length++] = '\r'; break;
+					default:
+						token[length++] = c2; break;
+				}
 			}
-			if (c == '"')
+			else if (c == '"')
 			{
 				// Check for null string...
 				if (length == 0) done = TRUE;
