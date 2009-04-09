@@ -120,13 +120,13 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *CellVariable::findAccessor(const char *s, bool array)
+StepNode *CellVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return CellVariable::accessorSearch(s, array);
+	return CellVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *CellVariable::accessorSearch(const char *s, bool array)
+StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("CellVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -140,7 +140,7 @@ StepNode *CellVariable::accessorSearch(const char *s, bool array)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::CellData, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, NuVTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("CellVariable::accessorSearch");
 	return result;
 }

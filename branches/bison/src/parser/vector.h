@@ -69,9 +69,9 @@ class NuVectorVariable : public NuVariable
 	// Accessor list
 	enum Accessors { X, Y, Z, nAccessors };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, bool array);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, bool array);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data

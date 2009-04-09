@@ -56,8 +56,8 @@ programlist:
 	;
 
 program:
-	statementlist				{ if (!nuparser.addStatement($1)) YYERROR; }
-	| filter				{ if (!nuparser.addStatement($1)) YYERROR; nuparser.finishTree(); }
+	statementlist				{ if (!nuparser.addStatement($1)) YYABORT; }
+	| filter				{ if (!nuparser.addStatement($1)) YYABORT; nuparser.finishTree(); }
 	;
 
 /* Compound Statement */
@@ -67,11 +67,11 @@ block:
         ;
 
 scope:
-	/* empty */				{ $$ = nuparser.pushScope(); if ($$ == NULL) YYERROR; }
+	/* empty */				{ $$ = nuparser.pushScope(); if ($$ == NULL) YYABORT; }
 	;
 
 descope:
-	/* empty */				{ if (!nuparser.popScope()) YYERROR; }
+	/* empty */				{ if (!nuparser.popScope()) YYABORT; }
 	;
 
 statementlist:
@@ -88,13 +88,13 @@ blockment:
 /* Filter Definitions */
 
 optlist:
-	NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $4)) YYERROR; }
-	| optlist ',' NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $6)) YYERROR; }
+	NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $4)) YYABORT; }
+	| optlist ',' NEWTOKEN assign '=' constant noassign	{ if (!nuparser.setFilterOption(&newVarName, $6)) YYABORT; }
 	;
 
 filter:
 	FILTERBLOCK '(' optlist ')' block	{ $$ = $5; }
-	| FILTERBLOCK error			{ msg.print("Error reading filter block definition.\n"); YYERROR; }
+	| FILTERBLOCK error			{ msg.print("Error reading filter block definition.\n"); YYABORT; }
 	;
 
 /* Single Statement / Flow Control */
@@ -108,7 +108,7 @@ statement:
 statementexpr:
 	DECLARATION namelist 			{ $$ = nuparser.addFunction(NuCommand::NoFunction, NULL); nuparser.setDeclaredVariableType(NuVTypes::NoData); }
 	| expr					{ $$ = $1; }
-	| DECLARATION error			{ msg.print("Invalid declaration statement.\n"); YYERROR; }
+	| DECLARATION error			{ msg.print("Invalid declaration statement.\n"); YYABORT; }
 	;
 
 flowstatement:
@@ -150,15 +150,16 @@ newname:
 namelist:
 	newname					{ $$ = $1; }
 	| namelist ',' newname			{ $$ = Tree::joinArguments($3,$1); }
-	| constant				{ msg.print("Error: Constant value found in declaration.\n"); YYERROR; }
-	| namelist newname			{ msg.print("Error: Missing comma between declarations?\n"); YYERROR; }
+	| constant				{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
+	| namelist newname			{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
 	;
 
 /* Variables / Paths */
 
 step:
-	STEPTOKEN savename '[' expr ']'		{ if (!nuparser.expandPath(&newStepName, $4)) YYERROR; }
-	| STEPTOKEN				{ if (!nuparser.expandPath($1)) YYERROR; }
+	STEPTOKEN savename '[' expr ']'		{ if (!nuparser.expandPath(&newStepName, $4)) YYABORT; }
+	| STEPTOKEN savename '[' constant ']'	{ if (!nuparser.expandPath(&newStepName, $4)) YYABORT; }
+	| STEPTOKEN				{ if (!nuparser.expandPath($1)) YYABORT; }
 	;
 
 savename:
@@ -171,8 +172,8 @@ steplist:
 	;
 
 var:
-	VARNAME '[' expr ']'			{ $$ = nuparser.wrapVariable($1,$3); if ($$ == NULL) YYERROR; }
-	| VARNAME				{ $$ = nuparser.wrapVariable($1); if ($$ == NULL) YYERROR; }
+	VARNAME '[' expr ']'			{ $$ = nuparser.wrapVariable($1,$3); if ($$ == NULL) YYABORT; }
+	| VARNAME				{ $$ = nuparser.wrapVariable($1); if ($$ == NULL) YYABORT; }
 	| var '.' 				{ $$ = nuparser.createPath($1); }
 		steplist			{ $$ = nuparser.finalisePath(); }
 	;
@@ -187,35 +188,35 @@ exprlist:
 expr:
 	constant				{ $$ = $1; }
 	| func					{ $$ = $1; }
-	| var '=' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var '=' error				{ msg.print("Mangled expression used in assignment.\n"); YYERROR; }
-	| var PEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var MEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var TEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYERROR; }
-	| var DEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYERROR; }
+	| var '=' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignment,1,$1,$3); if ($$ == NULL) YYABORT; }
+	| var '=' error				{ msg.print("Mangled expression used in assignment.\n"); YYABORT; }
+	| var PEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentPlus,1,$1,$3); if ($$ == NULL) YYABORT; }
+	| var MEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMinus,1,$1,$3); if ($$ == NULL) YYABORT; }
+	| var TEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentMultiply,1,$1,$3); if ($$ == NULL) YYABORT; }
+	| var DEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAssignmentDivide,1,$1,$3); if ($$ == NULL) YYABORT; }
 	| var					{ $$ = $1; }
-	| '-' expr %prec UMINUS			{ $$ = nuparser.addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYERROR; }
-	| var PP				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixIncrease, 0, $1); if ($$ == NULL) YYERROR; }
-	| var MM				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixDecrease, 0, $1); if ($$ == NULL) YYERROR; }
-	| PP var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixIncrease, 0, $2); if ($$ == NULL) YYERROR; }
-	| MM var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixDecrease, 0, $2); if ($$ == NULL) YYERROR; }
-	| PP error				{ msg.print("Prefix increment can only act on a variable value.\n"); YYERROR; }
-	| MM error				{ msg.print("Prefix decrement can only act on a variable value.\n"); YYERROR; }
-	| error PP				{ msg.print("Postfix increment can only act on a variable value.\n"); YYERROR; }
-	| error MM				{ msg.print("Postfix decrement can only act on a variable value.\n"); YYERROR; }
-	| expr '+' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '-' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '*' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '/' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '^' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr EQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr NEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '>' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr GEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr '<' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYERROR; }
-	| expr LEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYERROR; }
+	| '-' expr %prec UMINUS			{ $$ = nuparser.addOperator(NuCommand::OperatorNegate,1, $2); if ($$ == NULL) YYABORT; }
+	| var PP				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixIncrease, 0, $1); if ($$ == NULL) YYABORT; }
+	| var MM				{ $$ = nuparser.addOperator(NuCommand::OperatorPostfixDecrease, 0, $1); if ($$ == NULL) YYABORT; }
+	| PP var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixIncrease, 0, $2); if ($$ == NULL) YYABORT; }
+	| MM var				{ $$ = nuparser.addOperator(NuCommand::OperatorPrefixDecrease, 0, $2); if ($$ == NULL) YYABORT; }
+	| PP error				{ msg.print("Prefix increment can only act on a variable value.\n"); YYABORT; }
+	| MM error				{ msg.print("Prefix decrement can only act on a variable value.\n"); YYABORT; }
+	| error PP				{ msg.print("Postfix increment can only act on a variable value.\n"); YYABORT; }
+	| error MM				{ msg.print("Postfix decrement can only act on a variable value.\n"); YYABORT; }
+	| expr '+' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorAdd, 0, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '-' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorSubtract, 0, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '*' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorMultiply, 0, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '/' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorDivide, 0, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '^' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorPower, 0, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr EQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorEqualTo, 99, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr NEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorNotEqualTo, 99, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '>' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThan, 99, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr GEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorGreaterThanEqualTo, 99, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr '<' expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThan, 99, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr LEQ expr				{ $$ = nuparser.addOperator(NuCommand::OperatorLessThanEqualTo, 99, $1, $3); if ($$ == NULL) YYABORT; }
 	| '(' expr ')'				{ $$ = $2; }
-	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared.\n", yylval.name->get()); YYERROR; }
+	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared.\n", yylval.name->get()); YYABORT; }
 	;
 
 
@@ -227,8 +228,8 @@ VECCONST:
 /* Function */
 
 func:
-	FUNCCALL '(' ')'			{ $$ = nuparser.addFunction( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYERROR; }
-	| FUNCCALL	'(' exprlist ')' 	{ $$ = nuparser.addFunction( (NuCommand::Function) $1,$3); if ($$ == NULL) YYERROR; }
+	FUNCCALL '(' ')'			{ $$ = nuparser.addFunction( (NuCommand::Function) $1,NULL); if ($$ == NULL) YYABORT; }
+	| FUNCCALL	'(' exprlist ')' 	{ $$ = nuparser.addFunction( (NuCommand::Function) $1,$3); if ($$ == NULL) YYABORT; }
 	;
 
 %%

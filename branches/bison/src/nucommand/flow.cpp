@@ -87,10 +87,10 @@ bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 		// Termination condition
 		if (!c->arg(1, ifval)) return FALSE;
 		if (!ifval.asBool()) break;
-		// Loop 'increment' statement
-		if (!c->arg(2, rv)) return FALSE;
 		// Loop body
 		if (!c->arg(3, rv)) return FALSE;
+		// Loop 'increment' statement
+		if (!c->arg(2, rv)) return FALSE;
 	}
 	return TRUE;
 }

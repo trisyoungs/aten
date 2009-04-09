@@ -360,12 +360,19 @@ bool NuFormat::writeToString()
 			case (FormatChunk::PlainTextChunk):
 				strcat(createdString_, chunk->cFormat());
 				break;
+			case (FormatChunk::DelimitedChunk):
+				chunk->arg()->execute(rv);
+				strcat(createdString_, rv.asString());
+				if (chunk->next != NULL) strcat(createdString_, " ");
+				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
 				msg.exit("NuFormat::read");
 				return FALSE;
 		}
 	}
+	// If this was originally a delimited chunk, append a newline
+	if (delimited_) strcat(createdString_, "\n");
 	msg.exit("NuFormat::writeToString");
 	return TRUE;
 }

@@ -102,13 +102,13 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldBoundVariable::findAccessor(const char *s, bool array)
+StepNode *ForcefieldBoundVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return ForcefieldBoundVariable::accessorSearch(s, array);
+	return ForcefieldBoundVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, bool array)
+StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("ForcefieldBoundVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -122,7 +122,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, bool array)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ForcefieldBoundData, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, NuVTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ForcefieldBoundVariable::accessorSearch");
 	return result;
 }

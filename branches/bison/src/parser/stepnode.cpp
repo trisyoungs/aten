@@ -22,12 +22,14 @@
 #include "parser/stepnode.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
+#include "parser/forcefield.h"
+#include "parser/forcefieldatom.h"
 #include "parser/model.h"
 #include "parser/vector.h"
 #include <string.h>
 
 // Constructor
-StepNode::StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType rtntype, bool readonly) : accessor_(id), previousType_(prevtype)
+StepNode::StepNode(int id, NuVTypes::DataType prevtype, TreeNode *arrayindex, NuVTypes::DataType rtntype, bool readonly) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype)
 {
 	// Private variables
 	readOnly_ = readonly;
@@ -54,22 +56,45 @@ bool StepNode::execute(NuReturnValue &rv)
 	}
 	// Retrieve a value from the relevant class
 	bool result = FALSE;
+	// Get array index if present
+	int i = -1;
+	if (arrayIndex_ != NULL)
+	{
+		NuReturnValue arrayrv;
+		if (!arrayIndex_->execute(arrayrv))
+		{
+			printf("Failed to retrieve array index.\n");
+			return FALSE;
+		}
+		if ((arrayrv.type() != NuVTypes::IntegerData) && (arrayrv.type() != NuVTypes::RealData))
+		{
+			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
+			return FALSE;
+		}
+		i = arrayrv.asInteger();
+	}
 	switch (previousType_)
 	{
 		case (NuVTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData (execute).\n");
 			break;
 		case (NuVTypes::AtenData):
-			result = AtenVariable::retrieveAccessor(accessor_, rv, FALSE);
+			result = AtenVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (NuVTypes::AtomData):
-			result = AtomVariable::retrieveAccessor(accessor_, rv, FALSE);
+			result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (NuVTypes::ForcefieldData):
+			result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (NuVTypes::ForcefieldAtomData):
+			result = ForcefieldAtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (NuVTypes::ModelData):
-			result = ModelVariable::retrieveAccessor(accessor_, rv, FALSE);
+			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (NuVTypes::VectorData):
-			result = NuVectorVariable::retrieveAccessor(accessor_, rv, FALSE);
+			result = NuVectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", NuVTypes::dataType(previousType_));
@@ -159,7 +184,7 @@ bool StepNode::initialise()
 }
 
 // Static function to search accessors of type represented by this path step
-StepNode *StepNode::findAccessor(const char *s, bool array)
+StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("StepNode::findAccessor");
 	// From the return type of the node, determine which (static) function to call
@@ -170,13 +195,13 @@ StepNode *StepNode::findAccessor(const char *s, bool array)
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
 		case (NuVTypes::AtomData):
-			result = AtomVariable::accessorSearch(s, array);
+			result = AtomVariable::accessorSearch(s, arrayindex);
 			break;
 		case (NuVTypes::ModelData):
-			result = ModelVariable::accessorSearch(s, array);
+			result = ModelVariable::accessorSearch(s, arrayindex);
 			break;
 		case (NuVTypes::VectorData):
-			result = NuVectorVariable::accessorSearch(s, array);
+			result = NuVectorVariable::accessorSearch(s, arrayindex);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", NuVTypes::dataType(returnType_));

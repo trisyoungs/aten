@@ -97,13 +97,13 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *PatternVariable::findAccessor(const char *s, bool array)
+StepNode *PatternVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return PatternVariable::accessorSearch(s, array);
+	return PatternVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *PatternVariable::accessorSearch(const char *s, bool array)
+StepNode *PatternVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("PatternVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -117,7 +117,7 @@ StepNode *PatternVariable::accessorSearch(const char *s, bool array)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::PatternData, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, NuVTypes::PatternData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("PatternVariable::accessorSearch");
 	return result;
 }

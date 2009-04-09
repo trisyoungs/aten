@@ -30,7 +30,7 @@ class StepNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	StepNode(int id, NuVTypes::DataType prevtype, NuVTypes::DataType returntype, bool readonly);
+	StepNode(int id, NuVTypes::DataType prevtype, TreeNode *arrayindex, NuVTypes::DataType returntype, bool readonly);
 	~StepNode();
 
 	/*
@@ -45,8 +45,6 @@ class StepNode : public TreeNode
 	TreeNode *arrayIndex_;
 
 	public:
-	// Set array index
-	bool setArrayIndex(TreeNode *index);
 	// Return associated array index
 	TreeNode *arrayIndex();
 	// Set from returnvalue nodes
@@ -65,7 +63,7 @@ class StepNode : public TreeNode
 	// Reset node
 	bool initialise();
 	// Search accessors for the type represented by this node
-	StepNode *findAccessor(const char *s, bool array);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 };
 
 #endif

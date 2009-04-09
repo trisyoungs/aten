@@ -34,8 +34,8 @@ filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.
 	atom i;
 
 	writeline(aten.model.natoms);
-	#writeline(aten.model.name);
-	#for (i=aten.model.atoms[1]; i; i++) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
+	writeline(aten.model.name);
+	for (i=aten.model.atoms[1]; i; i++) writeline(i.mass,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory
