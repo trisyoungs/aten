@@ -246,13 +246,19 @@ bool NuCommand::function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		msg.print("The 'writeline' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	NuFormat *format = c->createFormat(0,1);
+	NuFormat *format = c->createFormat(-1,0);
 	if (format == NULL)
 	{
 		printf("Internal Error: No format node associated to command 'writeline'.\n");
 		return FALSE;
 	}
-// 	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
+	// Create the string to be output
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	c->parent()->parser()->writeLine(format->string());
 	return TRUE;
 }
 
@@ -266,7 +272,7 @@ bool NuCommand::function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuRet
 		return FALSE;
 	}
 	// TGAY WRiteline
-	printf("RW not available.\n");
+	printf("Formatted writeline not available.\n");
 	return FALSE;
 }
 

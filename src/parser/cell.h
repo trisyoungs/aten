@@ -63,9 +63,9 @@ class CellVariable : public NuVariable
 	// Accessor list
 	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, SpacegroupSetting, Type, Volume, nAccessors };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, bool array);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, bool array);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value

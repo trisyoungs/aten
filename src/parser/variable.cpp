@@ -103,7 +103,7 @@ bool NuVariable::setAsArray(NuReturnValue &rv, int arrayindex)
 }
 
 // Search accessors (if any) available for node
-StepNode *NuVariable::findAccessor(const char *s, bool array)
+StepNode *NuVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", NuVTypes::dataType(returnType_));

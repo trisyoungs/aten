@@ -112,13 +112,13 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ModelVariable::findAccessor(const char *s, bool array)
+StepNode *ModelVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return ModelVariable::accessorSearch(s, array);
+	return ModelVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *ModelVariable::accessorSearch(const char *s, bool array)
+StepNode *ModelVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("ModelVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -132,7 +132,7 @@ StepNode *ModelVariable::accessorSearch(const char *s, bool array)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ModelData, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, NuVTypes::ModelData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ModelVariable::accessorSearch");
 	return result;
 }
@@ -150,6 +150,8 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
+	printf("This accessor %s an array.\n", accessorData[i].isArray ? "expects" : "does not expect" );
+	printf("An array %s provided\n", hasArrayIndex ? "was" : "was not" );
 	if (!accessorData[i].isArray)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
@@ -172,6 +174,7 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 				result = FALSE;
 			}
 			else rv.set(NuVTypes::AtomData, ptr->atom(arrayIndex-1));
+			printf("THIS RESULT IS %s.\n", rv.info());
 			break;
 		case (ModelVariable::Atomtypes):
 			rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));

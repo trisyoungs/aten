@@ -128,13 +128,13 @@ Accessor NuVectorVariable::accessorData[NuVectorVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *NuVectorVariable::findAccessor(const char *s, bool array)
+StepNode *NuVectorVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return NuVectorVariable::accessorSearch(s, array);
+	return NuVectorVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *NuVectorVariable::accessorSearch(const char *s, bool array)
+StepNode *NuVectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
 	msg.enter("NuVectorVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -148,7 +148,7 @@ StepNode *NuVectorVariable::accessorSearch(const char *s, bool array)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::VectorData, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, NuVTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("NuVectorVariable::accessorSearch");
 	return result;
 }

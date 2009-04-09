@@ -62,8 +62,8 @@ class LineParser
 	int lastLine_;
 	// Source file (for reading) 
 	std::fstream file_;
-	// Destination file (for writing)
-// 	std::ofstream destFile_;
+	// Whether the file is for reading or writing
+	bool readOnly_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
 
@@ -122,7 +122,8 @@ class LineParser
 	int getInteger(int nbytes = 0);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getReal(int nbytes = 0);
-
+	// Write line to file
+	bool writeLine(const char *s);
 
 	/*
 	// Argument Data

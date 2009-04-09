@@ -140,8 +140,8 @@ bool Tree::execute(NuReturnValue &rv)
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
-	if (isFilter()) msg.print("Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
-	else msg.print("Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
+	if (isFilter()) msg.print("Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
+	else msg.print("Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
 	msg.exit("Tree::execute");
 	return result;
 }
@@ -573,7 +573,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	TreeNode *laststep = ri->data;
 	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
 	// Find next step accessor
-	StepNode *result = laststep->findAccessor(name->get(), arrayindex != NULL);
+	StepNode *result = laststep->findAccessor(name->get(), arrayindex);
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{

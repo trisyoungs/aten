@@ -39,6 +39,7 @@ LineParser::LineParser()
 	// Private variables
 	endOfLine_ = FALSE;
 	lineLength_ = 0;
+	readOnly_ = FALSE;
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
@@ -103,6 +104,7 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 		return FALSE;
 	}
 	// Reset variables
+	readOnly_ = outputstream ? FALSE : TRUE;
 	lastLine_ = 0;
 	filename_ = filename;
 	msg.exit("LineParser::openFile");
@@ -565,6 +567,21 @@ double LineParser::getReal(int nbytes)
 	}
 	else msg.print("Error: Real of size %i bytes does not correspond to any internal type.\n", nbytes);
 	return 0.0;
+}
+
+// Write line to file
+bool LineParser::writeLine(const char *s)
+{
+	msg.enter("LineParser::writeLine");
+	if (readOnly_)
+	{
+		msg.print("Unable to write line - destination file was opened read-only!\n");
+		msg.exit("LineParser::writeLine");
+		return FALSE;
+	}
+	file_ << s;
+	msg.exit("LineParser::writeLine");
+	return TRUE;
 }
 
 // Skip lines from file

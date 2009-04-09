@@ -63,9 +63,9 @@ class ForcefieldAtomVariable : public NuVariable
 	// Accessor list
 	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Form, Id, Name, ParentFF, nAccessors };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, bool array);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, bool array);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value

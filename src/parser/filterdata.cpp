@@ -43,7 +43,7 @@ const char *FilterData::filterOption(FilterData::FilterOption fc)
 {
 	return FilterOptionKeywords[fc];
 }
-NuVTypes::DataType FilterOptionTypes[FilterData::nFilterOptions] =  { NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData };
+NuVTypes::DataType FilterOptionTypes[FilterData::nFilterOptions] =  { NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData };
 
 // Constructor
 FilterData::FilterData()

@@ -228,12 +228,12 @@ bool VariableNode::initialise()
 }
 
 // Search accessors (if any) available for linked variable
-StepNode *VariableNode::findAccessor(const char *s, bool array)
+StepNode *VariableNode::findAccessor(const char *s, TreeNode *arrayindex)
 {
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: No variable stored in VariableNode to use for accessor search.\n");
 		return NULL;
 	}
-	return variable_->findAccessor(s, array);
+	return variable_->findAccessor(s, arrayindex);
 }
