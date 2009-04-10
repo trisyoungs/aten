@@ -164,6 +164,22 @@ void LineParser::rewind()
 	else msg.print("No file currently open to rewind.\n");
 }
 
+// Return whether the end of the file has been reached (or only whitespace remains)
+bool LineParser::eofOrBlank()
+{
+	// Simple check first - is this the end of the file?
+	if (file_.eof()) return TRUE;
+	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
+	streampos pos = file_.tellg();
+	// Attempt to read a character.
+	// Since 'skipws' is on by default, if we find one without setting eofbit, then we are *NOT* at the end of the file
+	char c;
+	file_ >> c;
+	bool result = file_.eof();
+	file_.seekg(pos);
+	return result;
+}
+
 /*
 // Read/Write Routines
 */

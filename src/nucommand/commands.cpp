@@ -55,8 +55,6 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"" },
 	{ "_joiner",		"",		"", NuVTypes::NoData,
 				"" },
-	{ "_initialisations",	"V*",		"<variable| variable = expr> ...", NuVTypes::NoData,
-				"" },
 
 	// Analysis commands
 	{ "finalise",		"",		"", NuVTypes::NoData,
@@ -313,14 +311,14 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Exit from the current for loop" },
 	{ "continue",		"",		"", NuVTypes::NoData,
 				"Skip to the next iteration of the current loop" },
-	{ "end",		"",		"", NuVTypes::NoData,
-				"End the current for/if block" },
+	{ "dowhile",		"_",		"{ ... } (<expression>)", NuVTypes::NoData,
+				"Run the enclosed block or statement as many times as <expression> evaluates to TRUE" },
 	{ "for",		"_",		"(<var> = <startval>,<finalval>[,<increment>]) { ... }", NuVTypes::NoData,
 				"" },
 	{ "if",			"_",		"(<expression> <condition> <expression>) { ... } [else { ... }]", NuVTypes::NoData,
 				"Perform a conditional test between the supplied expressions (or variables or constants)" },
-	{ "_TERMINATE_",	"",		"", NuVTypes::NoData,
-				"" },
+	{ "while",		"_",		"(<expression>) { ... }", NuVTypes::NoData,
+				"Run the enclosed block or statement as many times as <expression> evaluates to TRUE" },
 	
 	// Force commands
 	{ "frameforces",	"",		"", NuVTypes::NoData,
@@ -647,6 +645,8 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 	// Read / Write Commands
 	{ "addreadoption",	"C",		"<option>", NuVTypes::NoData,
 				"Add a read option: usequotes, skipblanks, stripbrackets" },
+	{ "eof",		"",		"", NuVTypes::IntegerData,
+				"Return whether the end of the file has been reached (or only whitespace remains)" },
 	{ "find",		"C^c",		"<string> [linevar]", NuVTypes::IntegerData,
 				"Search for a string in the input file (placing matching line in optional variable" },
 	{ "getline",		"^C",		"", NuVTypes::IntegerData,
@@ -677,7 +677,7 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Write an formatted line to the output file, with data items separated by spaces" },
 	{ "writelinef",		"Cz*",		"<formatting string> [data1, data2...]", NuVTypes::IntegerData,
 				"Write a formatted line to the output file" },
-	{ "writevar",		"C^Cz*",	"<variable> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
+	{ "writevar",		"^CCz*",	"<variable> <formatting string> [data1, data2...]", NuVTypes::IntegerData,
 				"Return a formatted line to the character variable supplied" },
 
 	// Script commands
@@ -815,6 +815,8 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Internal Operator (*)" },
 	{ "-NEG",		".",		"", NuVTypes::NoData,
 				"Internal Operator (negate)" },
+	{ "!",			"..",		"", NuVTypes::NoData,
+				"Internal Operator (!)" },
 	{ "!=",			"..",		"", NuVTypes::NoData,
 				"Internal Operator (!=)" },
 	{ "^",			"..",		"", NuVTypes::NoData,

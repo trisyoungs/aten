@@ -1,6 +1,6 @@
 # XMol-style XYZ coordinates files (for v1.1+)
 # Created:	 25/03/2009
-# Last modified: 25/03/2009
+# Last modified: 10/04/2009
 # ChangeLog:
 
 filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
@@ -12,17 +12,20 @@ filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension
 	atom i;
 
 	# Read data
-	readline(natoms);
-	getline(title);
-	newmodel(title);
-	for (n=1; n<=natoms; ++n)
+	while (!eof())
 	{
-		readline(e,rx,ry,rz,q);
-		i = newatom(e, rx, ry, rz);
-		i.q = q;
+		readline(natoms);
+		getline(title);
+		newmodel(title);
+		for (n=1; n<=natoms; ++n)
+		{
+			readline(e,rx,ry,rz,q);
+			i = newatom(e, rx, ry, rz);
+			i.q = q;
+		}
+		rebond();
+		finalisemodel();
 	}
-	rebond();
-	#finalisemodel();
 }
 
 filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
@@ -35,7 +38,7 @@ filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.
 
 	writeline(aten.model.natoms);
 	writeline(aten.model.name);
-	for (i=aten.model.atoms; i != 0; ++i) writeline(i.symbol,i.rx,i.ry,i.rz,i.q);
+	for (i=aten.model.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory

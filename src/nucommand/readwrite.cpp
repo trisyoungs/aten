@@ -32,6 +32,19 @@ bool NuCommand::function_AddReadOption(NuCommandNode *c, Bundle &obj, NuReturnVa
 	return TRUE;
 }
 
+// Check for end of file (or nothing remaining but whitespace)
+bool NuCommand::function_Eof(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The 'eof' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	rv.set(c->parent()->parser()->eofOrBlank());
+	return TRUE;
+}
+
 // Search for line containing specified string
 bool NuCommand::function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
@@ -271,36 +284,39 @@ bool NuCommand::function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuRet
 		msg.print("The 'writelinef' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	// TGAY WRiteline
-	printf("Formatted writeline not available.\n");
-	return FALSE;
+	NuFormat *format = c->createFormat(0,1);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'writelinef'.\n");
+		return FALSE;
+	}
+	// Create the string to be output
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	c->parent()->parser()->writeLine(format->string());
+	return TRUE;
 }
 
 // Write line to variable
 bool NuCommand::function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	printf("RW not available.\n");
-// TGAY	// If the format node in the command is empty create a new (temporary) one
-// 	if (c->format() == NULL)
-// 	{
-// 		// Create format from character variable arg(1)
-// 		if (!c->createFormat(c->argc(1), FALSE)) return Command::Fail;
-// 		if (c->format()->createString())
-// 		{
-// 			c->arg(0)->set(c->format()->createdString());
-// 			c->deleteFormat();
-// 			return TRUE;
-// 		}
-// 		else return Command::Fail;
-// 	}
-// 	else
-// 	{
-// 		if (c->format()->createString())
-// 		{
-// 			c->arg(0)->set(c->format()->createdString());
-// 			return TRUE;
-// 		}
-// 		else return Command::Fail;
-// 	}
-	return FALSE;
+	NuFormat *format = c->createFormat(1,2);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'writevar'.\n");
+		return FALSE;
+	}
+	// Create the string to be output
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	NuReturnValue string;
+	string.set(format->string());
+	c->setArg(0, string);
+	return TRUE;
 }

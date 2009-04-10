@@ -141,106 +141,113 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 				length = 0;
 			}
 			isformatter = TRUE;
+			plaintext[0] = '%';
+			c++;
+			length = 1;
 		}
-		// If we're currently in the middle of a formatter, it's terminated by an alpha character
-		else if (isformatter && (isalpha(*c)))
-		{
-			// If the terminating character is 'l', 'h', or 'L' don't terminate yet
-			if ((*c != 'l') && (*c != 'h') && (*c != 'L'))
-			{
-				plaintext[length] = *c;
-				length ++;
-				plaintext[length] = '\0';
-				msg.print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
-				// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
-				if (arg == NULL) msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
-				else
-				{
-					type = arg->item->returnType();
-					prevchar = plaintext[length-2];
-					if (!isalpha(prevchar)) prevchar = '\0';
-					switch (tolower(*c))
-					{
-						// Integer types
-						case ('i'):
-						case ('d'):
-						case ('x'):
-						case ('u'):
-							// If a preceeding 'l' was specified, then we must have a pointer
-							if (prevchar == 'l')
-							{
-								if (type >= NuVTypes::AtenData) break;
-								msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
-								isValid_ = FALSE;
-							}
-							else if ((prevchar == '\0') || (prevchar == 'h'))
-							{
-								if (type == NuVTypes::IntegerData) break;
-								msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
-								isValid_ = FALSE;
-							}
-							else
-							{
-								msg.print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
-								isValid_ = FALSE;
-							}
-							break;
-						// Floating-point types
-						case ('e'):
-						case ('f'):
-						case ('g'):
-							// If a preceeding 'L' was specified, we complain!
-							if (prevchar == 'L')
-							{
-								msg.print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
-								isValid_ = FALSE;
-							}
-							else if (prevchar == '\0')
-							{
-								if (type == NuVTypes::RealData) break;
-								msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
-								isValid_ = FALSE;
-							}
-							else
-							{
-								msg.print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
-								isValid_ = FALSE;
-							}
-							break;
-						// Character types
-						case ('s'):
-							if (prevchar != '\0')
-							{
-								msg.print("String format 's' cannot be preceeded by the identifier '%c'.\n", prevchar);
-								isValid_ = FALSE;
-							}
-							if (type == NuVTypes::StringData) break;
-							msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
-							isValid_ = FALSE;
-							break;
-						case ('c'):
-							msg.print("Character format 'c'is not supported.\n");
-							isValid_ = FALSE;
-							break;
-						default:
-							msg.print("Unsupported format '%s'.\n", plaintext);
-							isValid_ = FALSE;
-							break;
-					}
-				}
-				TreeNode *node = (arg == NULL ? NULL : arg->item);
-				chunks_.own( new FormatChunk(plaintext, node, type) );
-				arg = arg->next;
-				length = 0;
-				isformatter = FALSE;
-				c++;
-				if (*c == '\0') break;
-			}
-		}
-		// Increment length
+
+		// Increment character position...
 		plaintext[length] = *c;
+		prevchar = *c;
 		c++;
 		length++;
+
+		// If we're currently in the middle of a formatter, it's terminated by an alpha character
+		if (isformatter && isalpha(prevchar))
+		{
+			// If the current character is 'l', 'h', or 'L' don't terminate yet
+			if ((prevchar == 'l') || (prevchar == 'h') || (prevchar == 'L')) continue;
+
+			plaintext[length] = '\0';
+			msg.print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
+			// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
+			if (arg == NULL)
+			{
+				msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
+				isValid_ = FALSE;
+				break;
+			}
+			else
+			{
+				type = arg->item->returnType();
+				prevchar = plaintext[length-2];
+				if (!isalpha(prevchar)) prevchar = '\0';
+				switch (tolower(plaintext[length-1]))
+				{
+					// Integer types
+					case ('i'):
+					case ('d'):
+					case ('x'):
+					case ('u'):
+						// If a preceeding 'l' was specified, then we must have a pointer
+						if (prevchar == 'l')
+						{
+							if (type >= NuVTypes::AtenData) break;
+							msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							isValid_ = FALSE;
+						}
+						else if ((prevchar == '\0') || (prevchar == 'h'))
+						{
+							if (type == NuVTypes::IntegerData) break;
+							msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							isValid_ = FALSE;
+						}
+						else
+						{
+							msg.print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							isValid_ = FALSE;
+						}
+						break;
+					// Floating-point types
+					case ('e'):
+					case ('f'):
+					case ('g'):
+						// If a preceeding 'L' was specified, we complain!
+						if (prevchar == 'L')
+						{
+							msg.print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
+							isValid_ = FALSE;
+						}
+						else if (prevchar == '\0')
+						{
+							if (type == NuVTypes::RealData) break;
+							msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							isValid_ = FALSE;
+						}
+						else
+						{
+							msg.print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							isValid_ = FALSE;
+						}
+						break;
+					// Character types
+					case ('s'):
+						if (prevchar != '\0')
+						{
+							msg.print("String format 's' cannot be preceeded by the identifier '%c'.\n", prevchar);
+							isValid_ = FALSE;
+						}
+						if (type == NuVTypes::StringData) break;
+						msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+						isValid_ = FALSE;
+						break;
+					case ('c'):
+						msg.print("Character format 'c'is not supported.\n");
+						isValid_ = FALSE;
+						break;
+					default:
+						msg.print("Unsupported format '%s'.\n", plaintext);
+						isValid_ = FALSE;
+						break;
+				}
+			}
+			TreeNode *node = (arg == NULL ? NULL : arg->item);
+			chunks_.own( new FormatChunk(plaintext, node, type) );
+			arg = arg->next;
+			length = 0;
+			isformatter = FALSE;
+// 			c++;
+		}
 	} while (*c != '\0');
 	// Do we have some text left over?
 	if (length > 0)

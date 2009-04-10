@@ -228,13 +228,9 @@ bool NuVectorVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue
 	if (result) switch (acc)
 	{
 		case (NuVectorVariable::X):
-			sourcerv.set(0, newvalue.asReal(result));
-			break;
 		case (NuVectorVariable::Y):
-			v.y = newvalue.asReal(result);
-			break;
 		case (NuVectorVariable::Z):
-			v.z = newvalue.asReal(result);
+			sourcerv.set(acc, newvalue.asReal(result));
 			break;
 		default:
 			printf("NuVectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

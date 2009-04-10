@@ -356,6 +356,16 @@ bool NuCommand::function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturn
 	return test(NuCommand::OperatorEqualTo, &v1, &v2, rv);
 }
 
+// Not (Reverse Logic)
+bool NuCommand::function_OperatorNot(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Grab argument and 'negate' it
+	NuReturnValue v1;
+	if (!c->arg(0, v1)) return FALSE;
+	rv.set( !v1.asBool() );
+	return TRUE;
+}
+
 // Not Equal To
 bool NuCommand::function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {

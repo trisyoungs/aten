@@ -141,7 +141,7 @@ int NuParser::lex()
 			if (c == '\\')
 			{
 				// Look at next character and either add it as-is, or convert it to its proper control code
-				c2 = getChar();
+				char c2 = getChar();
 				switch (c2)
 				{
 					case ('n'):
@@ -160,6 +160,11 @@ int NuParser::lex()
 				if (length == 0) done = TRUE;
 				else if (token[length-1] == '\\') token[length++] = '"';
 				else done = TRUE;
+			}
+			else if (c == '\0')
+			{
+				msg.print("Runaway character constant in input.\n");
+				return 0;
 			}
 			else token[length++] = c;
 		} while (!done);
@@ -202,6 +207,7 @@ int NuParser::lex()
 			if (strcmp(token,"if") == 0) n = IF;
 			else if (strcmp(token,"else") == 0) n = ELSE;
 			else if (strcmp(token,"for") == 0) n = FOR;
+			else if (strcmp(token,"do") == 0) n = DO;
 			else if (strcmp(token,"while") == 0) n = WHILE;
 			if (n != 0)
 			{
@@ -218,9 +224,9 @@ int NuParser::lex()
 			}
 			else if (strcmp(token,"function") == 0)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
-				tree_ = forest_->pushTree();
-				return FILTERBLOCK;
+// 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
+// 				tree_ = forest_->pushTree();
+// 				return FILTERBLOCK;
 			}
 
 			// If we get to here then its not a high-level keyword.
@@ -230,6 +236,7 @@ int NuParser::lex()
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ... which is a function (->FUNCCALL).\n", tree_);
 				yylval.functionId = n;
+				functionStart_ = tokenStart_;
 				return FUNCCALL;
 			}
 		}

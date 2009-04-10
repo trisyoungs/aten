@@ -72,7 +72,6 @@ class NuCommand
 		// AST-Specific nodes
 		NoFunction,
 		Joiner,
-		Initialisations,
 	
 		// Analysis commands
 		Finalise,
@@ -212,10 +211,10 @@ class NuCommand
 		// Flow control
 		Break,
 		Continue,
-		End,
+		DoWhile,
 		For,
 		If,
-		Terminate,
+		While,
 	
 		// Force Commands
 		FrameForces,
@@ -393,6 +392,7 @@ class NuCommand
 
 		// Read / Write Commands
 		AddReadOption,
+		Eof,
 		Find,
 		GetLine,
 		ReadChars,
@@ -485,6 +485,7 @@ class NuCommand
 		OperatorLessThanEqualTo,
 		OperatorMultiply,
 		OperatorNegate,
+		OperatorNot,
 		OperatorNotEqualTo,
 		OperatorPower,
 		OperatorPostfixDecrease,
@@ -519,7 +520,6 @@ class NuCommand
 	// AST-specific commands
 	static bool function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Initialisations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Analyse commands
 	static bool function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -656,14 +656,10 @@ class NuCommand
 	// Flow control
 	static bool function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Else(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ElseIf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_End(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Goto(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Gotononif(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Terminate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_While(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Force Commands
 	static bool function_FrameForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ModelForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -827,6 +823,7 @@ class NuCommand
 	static bool function_ZoomThrottle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Read / Write Commands
 	static bool function_AddReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Eof(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -911,6 +908,7 @@ class NuCommand
 	static bool function_OperatorLessThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorNot(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_OperatorPostfixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
