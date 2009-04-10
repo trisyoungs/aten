@@ -23,286 +23,303 @@
 #include "nucommand/commands.h"
 
 // Create a new path on the stack with the specified base 'variable'
-TreeNode *NuParser::createPath(TreeNode *var)
+TreeNode *CommandParser::createPath(TreeNode *var)
 {
-	msg.enter("NuParser::createPath");
+	msg.enter("CommandParser::createPath");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (createPath).\n");
-		msg.exit("NuParser::createPath");
+		msg.exit("CommandParser::createPath");
 		return FALSE;
 	}
 	TreeNode *result = tree_->createPath(var);
-	msg.exit("NuParser::createPath");
+	msg.exit("CommandParser::createPath");
 	return result;
 }
 
 // Expand topmost path
-bool NuParser::expandPath(Dnchar *name, TreeNode *arrayindex)
+bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex)
 {
-	msg.enter("NuParser::expandPath");
+	msg.enter("CommandParser::expandPath");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (expandPath).\n");
-		msg.exit("NuParser::createPath");	
+		msg.exit("CommandParser::createPath");	
 		return FALSE;
 	}
 	bool result = tree_->expandPath(name, arrayindex);
-	msg.exit("NuParser::expandPath");
+	msg.exit("CommandParser::expandPath");
 	return result;
 }
 
 // Finalise and remove the topmost path on the stack
-TreeNode *NuParser::finalisePath()
+TreeNode *CommandParser::finalisePath()
 {
-	msg.enter("NuParser::finalisePath");
+	msg.enter("CommandParser::finalisePath");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (finalisePath).\n");
-		msg.exit("NuParser::finalisePath");	
+		msg.exit("CommandParser::finalisePath");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->finalisePath();
-	msg.exit("NuParser::finalisePath");
+	msg.exit("CommandParser::finalisePath");
 	return result;
 }
 
 // Add a node representing a whole statement to the execution list
-bool NuParser::addStatement(TreeNode *leaf)
+bool CommandParser::addStatement(TreeNode *leaf)
 {
-	msg.enter("NuParser::addStatement");
+	msg.enter("CommandParser::addStatement");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addStatement).\n");
-		msg.exit("NuParser::addStatement");	
+		msg.exit("CommandParser::addStatement");	
 		return FALSE;
 	}
 	else tree_->addStatement(leaf);
-	msg.exit("NuParser::addStatement");
+	msg.exit("CommandParser::addStatement");
 	return TRUE;
 }
 
 // Add an operator to the Tree
-TreeNode *NuParser::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *CommandParser::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
 {
-	msg.enter("NuParser::addOperator");
+	msg.enter("CommandParser::addOperator");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addOperator).\n");
-		msg.exit("NuParser::addOperator");	
+		msg.exit("CommandParser::addOperator");	
 		return NULL;
 	}
 	TreeNode *result = tree_->addOperator(func, arg1, arg2);
-	msg.exit("NuParser::addOperator");
+	msg.exit("CommandParser::addOperator");
 	return result;
 }
 
 // Add a function node to the list (overloaded to accept simple arguments instead of a list)
-TreeNode *NuParser::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+TreeNode *CommandParser::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
 {
-	msg.enter("NuParser::addFunction");
+	msg.enter("CommandParser::addFunction");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addFunction).\n");
-		msg.exit("NuParser::addFunction");
+		msg.exit("CommandParser::addFunction");
 		return NULL;
 	}
 	TreeNode *result = tree_->addFunction(func, a1, a2, a3, a4);
-	msg.exit("NuParser::addFunction");
+	msg.exit("CommandParser::addFunction");
 	return result;
 }
 
 // Associate a command-based leaf node to the Tree
-TreeNode *NuParser::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
+TreeNode *CommandParser::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
 {
-	msg.enter("NuParser::addFunctionWithArglist");
+	msg.enter("CommandParser::addFunctionWithArglist");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addFunctionWithArglist).\n");
-		msg.exit("NuParser::addFunctionWithArglist");	
+		msg.exit("CommandParser::addFunctionWithArglist");	
 		return NULL;
 	}
 	TreeNode *result = tree_->addFunctionWithArglist(func, arglist);
-	msg.exit("NuParser::addFunctionWithArglist");
+	msg.exit("CommandParser::addFunctionWithArglist");
 	return result;
 }
 
 // Join two commands together
-TreeNode *NuParser::joinCommands(TreeNode *node1, TreeNode *node2)
+TreeNode *CommandParser::joinCommands(TreeNode *node1, TreeNode *node2)
 {
-	msg.enter("NuParser::joinCommands");
+	msg.enter("CommandParser::joinCommands");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (joinCommands).\n");
-		msg.exit("NuParser::joinCommands");	
+		msg.exit("CommandParser::joinCommands");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->joinCommands(node1, node2);
-	msg.exit("NuParser::joinCommands");
+	msg.exit("CommandParser::joinCommands");
 	return result;
 }
 
 // Add on a new scope to the stack
-TreeNode *NuParser::pushScope(NuCommand::Function func)
+TreeNode *CommandParser::pushScope(NuCommand::Function func)
 {
-	msg.enter("NuParser::pushScope");
+	msg.enter("CommandParser::pushScope");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (pushScope).\n");
-		msg.exit("NuParser::pushScope");	
+		msg.exit("CommandParser::pushScope");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->pushScope(func);
-	msg.exit("NuParser::pushScope");
+	msg.exit("CommandParser::pushScope");
 	return result;
 }
 
 // Pop the topmost scope node
-bool NuParser::popScope()
+bool CommandParser::popScope()
 {
-	msg.enter("NuParser::popScope");
+	msg.enter("CommandParser::popScope");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (popScope).\n");
-		msg.exit("NuParser::popScope");	
+		msg.exit("CommandParser::popScope");	
 		return FALSE;
 	}
 	else tree_->popScope();
-	msg.exit("NuParser::popScope");
+	msg.exit("CommandParser::popScope");
 	return TRUE;
 }
 
 // Set current type for variable declarations
-bool NuParser::setDeclaredVariableType(NuVTypes::DataType type)
+bool CommandParser::setDeclarationType(NuVTypes::DataType type)
 {
-	msg.enter("NuParser::setDeclaredVariableType");
+	msg.enter("CommandParser::setDeclarationType");
 	if (tree_ == NULL)
 	{
-		printf("Internal Error: No current Tree target for Parser (setDeclaredVariableType).\n");
-		msg.exit("NuParser::setDeclaredVariableType");	
+		printf("Internal Error: No current Tree target for Parser (setDeclarationType).\n");
+		msg.exit("CommandParser::setDeclarationType");	
 		return FALSE;
 	}
-	bool result = tree_->setDeclaredVariableType(type);
-	msg.exit("NuParser::setDeclaredVariableType");
+	bool result = tree_->setDeclarationType(type);
+	msg.exit("CommandParser::setDeclarationType");
 	return result;
 }
 
-// Set declarations assignment flag
-bool NuParser::setDeclarationAssignment(bool b)
+// Return current type to be used for declarations
+NuVTypes::DataType CommandParser::declarationType()
 {
-	msg.enter("NuParser::setDeclarationAssignment");
+	msg.enter("CommandParser::declarationType");
 	if (tree_ == NULL)
 	{
-		printf("Internal Error: No current Tree target for Parser (setDeclarationAssignment).\n");
-		msg.exit("NuParser::setDeclarationAssignment");	
+		printf("Internal Error: No current Tree target for Parser (declarationType).\n");
+		msg.exit("CommandParser::declarationType");	
+		return NuVTypes::NoData;
+	}
+	NuVTypes::DataType result = tree_->declarationType();
+	msg.exit("CommandParser::declarationType");
+	return result;
+}
+
+
+
+// Set declarations assignment flag
+bool CommandParser::flagDeclarationAssignment(bool b)
+{
+	msg.enter("CommandParser::flagDeclarationAssignment");
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (flagDeclarationAssignment).\n");
+		msg.exit("CommandParser::flagDeclarationAssignment");	
 		return FALSE;
 	}
-	bool result = tree_->setDeclarationAssignment(b);
-	msg.exit("NuParser::setDeclarationAssignment");
+	bool result = tree_->flagDeclarationAssignment(b);
+	msg.exit("CommandParser::flagDeclarationAssignment");
 	return result;
 }
 
 // Add constant value to tompost scope
-TreeNode *NuParser::addConstant(NuVTypes::DataType type, Dnchar *token)
+TreeNode *CommandParser::addConstant(NuVTypes::DataType type, Dnchar *token)
 {
-	msg.enter("NuParser::addConstant");
+	msg.enter("CommandParser::addConstant");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addConstant).\n");
-		msg.exit("NuParser::addConstant");	
+		msg.exit("CommandParser::addConstant");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->addConstant(type, token);
-	msg.exit("NuParser::addConstant");
+	msg.exit("CommandParser::addConstant");
 	return result;
 }
 
 // Add variable to topmost ScopeNode
-TreeNode *NuParser::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *CommandParser::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
-	msg.enter("NuParser::addVariable");
+	msg.enter("CommandParser::addVariable");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addVariable).\n");
-		msg.exit("NuParser::addVariable");	
+		msg.exit("CommandParser::addVariable");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->addVariable(type, name, initialValue);
-	msg.exit("NuParser::addVariable");
+	msg.exit("CommandParser::addVariable");
 	return result;
 }
 
 // Add variable to topmost ScopeNode using the most recently declared type
-TreeNode *NuParser::addVariable(Dnchar *name, TreeNode *initialValue)
+TreeNode *CommandParser::addVariable(Dnchar *name, TreeNode *initialValue)
 {
-	msg.enter("NuParser::addVariable");
+	msg.enter("CommandParser::addVariable");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addVariable).\n");
-		msg.exit("NuParser::addVariable");	
+		msg.exit("CommandParser::addVariable");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->addVariable(name, initialValue);
-	msg.exit("NuParser::addVariable");
+	msg.exit("CommandParser::addVariable");
 	return result;
 }
 
 // Add array variable to topmost ScopeNode using the most recently declared type
-TreeNode *NuParser::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+TreeNode *CommandParser::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
-	msg.enter("NuParser::addArrayVariable");
+	msg.enter("CommandParser::addArrayVariable");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addArrayVariable).\n");
-		msg.exit("NuParser::addArrayVariable");	
+		msg.exit("CommandParser::addArrayVariable");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->addArrayVariable(name, sizeexpr, initialvalue);
-	msg.exit("NuParser::addArrayVariable");
+	msg.exit("CommandParser::addArrayVariable");
 	return result;
 }
 
 // Search for variable in current scope
-bool NuParser::isVariableInScope(const char *name, NuVariable *&res)
+bool CommandParser::isVariableInScope(const char *name, NuVariable *&res)
 {
-	msg.enter("NuParser::isVariableInScope");
+	msg.enter("CommandParser::isVariableInScope");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (isVariableInScope).\n");
-		msg.exit("NuParser::isVariableInScope");	
+		msg.exit("CommandParser::isVariableInScope");	
 		return FALSE;
 	}
 	bool result = tree_->isVariableInScope(name, res);
-	msg.exit("NuParser::isVariableInScope");
+	msg.exit("CommandParser::isVariableInScope");
 	return result;
 }
 
 // Wrap named variable (and array index)
-TreeNode *NuParser::wrapVariable(NuVariable *var, TreeNode *arrayindex)
+TreeNode *CommandParser::wrapVariable(NuVariable *var, TreeNode *arrayindex)
 {
-	msg.enter("NuParser::wrapVariable");
+	msg.enter("CommandParser::wrapVariable");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (wrapVariable).\n");
-		msg.exit("NuParser::wrapVariable");	
+		msg.exit("CommandParser::wrapVariable");	
 		return FALSE;
 	}
 	TreeNode *result = tree_->wrapVariable(var, arrayindex);
-	msg.exit("NuParser::wrapVariable");
+	msg.exit("CommandParser::wrapVariable");
 	return result;
 }
 
 // Set filter option
-bool NuParser::setFilterOption(Dnchar *name, TreeNode *value)
+bool CommandParser::setFilterOption(Dnchar *name, TreeNode *value)
 {
-	msg.enter("NuParser::setFilterOption");
+	msg.enter("CommandParser::setFilterOption");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (setFilterOption).\n");
-		msg.exit("NuParser::setFilterOption");	
+		msg.exit("CommandParser::setFilterOption");	
 		return FALSE;
 	}
 	bool result = tree_->filter.setOption(name, value);
-	msg.exit("NuParser::setFilterOption");
+	msg.exit("CommandParser::setFilterOption");
 	return result;
 }

@@ -1,5 +1,5 @@
 /*
-	*** Base Parser
+	*** Command Parser
 	*** src/parser/parser.h
 	Copyright T. Youngs 2007-2009
 
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUPARSER_H
-#define ATEN_NUPARSER_H
+#ifndef ATEN_COMMANDPARSER_H
+#define ATEN_COMMANDPARSER_H
 
 #include "base/lineparser.h"
 #include "parser/tree.h"
@@ -33,12 +33,12 @@ class Forest;
 class TreeNode;
 
 // Parser
-class NuParser : public Tree
+class CommandParser : public Tree
 {
 	public:
 	// Constructor / Destructor
-	NuParser();
-	~NuParser();
+	CommandParser();
+	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, nSymbolTokens };
 	// Friend declarations
@@ -142,9 +142,11 @@ class NuParser : public Tree
 
 	// Variables / Constants
 	// Set current type for variable declarations
-	bool setDeclaredVariableType(NuVTypes::DataType type);
+	bool setDeclarationType(NuVTypes::DataType type);
+	// Return current type to be used for declarations
+	NuVTypes::DataType declarationType();
 	// Set declarations assignment flag
-	bool setDeclarationAssignment(bool b);
+	bool flagDeclarationAssignment(bool b);
 	// Add constant value to tompost scope
 	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
@@ -165,6 +167,6 @@ class NuParser : public Tree
 };
 
 // External declaration
-extern NuParser nuparser;
+extern CommandParser cmdparser;
 
 #endif

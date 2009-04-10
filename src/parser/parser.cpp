@@ -23,12 +23,12 @@
 #include "parser/forest.h"
 
 // External Declarations
-NuParser nuparser;
-// Tree *NuParser::tree_;
+CommandParser cmdparser;
+// Tree *CommandParser::tree_;
 int yyparse();
 
 // Constructor
-NuParser::NuParser()
+CommandParser::CommandParser()
 {
 	// Private variables
 	isFileSource_ = FALSE;
@@ -42,12 +42,12 @@ NuParser::NuParser()
 }
 
 // Destructor
-NuParser::~NuParser()
+CommandParser::~CommandParser()
 {
 }
 
 // Print error information and location
-void NuParser::printErrorInfo()
+void CommandParser::printErrorInfo()
 {
 	// QUICK'n'DIRTY!
 	char *temp = new char[stringLength_+32];
@@ -75,13 +75,13 @@ void NuParser::printErrorInfo()
 */
 
 // Return whether the current input stream is a file
-bool NuParser::isFileSource()
+bool CommandParser::isFileSource()
 {
 	return isFileSource_;
 }
 
 // Get next character from current input stream
-char NuParser::getChar()
+char CommandParser::getChar()
 {
 	char c = 0;
 	if (isFileSource_)
@@ -104,7 +104,7 @@ char NuParser::getChar()
 }
 
 // Peek next character from current input stream
-char NuParser::peekChar()
+char CommandParser::peekChar()
 {
 	char c = 0;
 	if (isFileSource_)
@@ -122,7 +122,7 @@ char NuParser::peekChar()
 }
 
 // 'Replace' last character read from current input stream
-void NuParser::unGetChar()
+void CommandParser::unGetChar()
 {
 	if (isFileSource_)
 	{
@@ -138,14 +138,14 @@ void NuParser::unGetChar()
 */
 
 // Fill target forest from specified character string
-bool NuParser::generate(Forest *f, const char *s)
+bool CommandParser::generate(Forest *f, const char *s)
 {
-	msg.enter("NuParser::generate[string]");
+	msg.enter("CommandParser::generate[string]");
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
-		printf("Internal Error: No Forest passed to NuParser::generate().\n");
-		msg.exit("NuParser::generate[string]");
+		printf("Internal Error: No Forest passed to CommandParser::generate().\n");
+		msg.exit("CommandParser::generate[string]");
 		return FALSE;
 	}
 	forest_ = f;
@@ -166,23 +166,23 @@ bool NuParser::generate(Forest *f, const char *s)
 		printErrorInfo();
 		forest_->clear();
 		forest_ = NULL;
-		msg.exit("NuParser::generate[string]");
+		msg.exit("CommandParser::generate[string]");
 		return FALSE;
 	}
 	forest_ = NULL;
-	msg.exit("NuParser::generate[string]");
+	msg.exit("CommandParser::generate[string]");
 	return TRUE;
 }
 
 // Fill target forest from specified character string
-bool NuParser::generateFromFile(Forest *f, const char *filename)
+bool CommandParser::generateFromFile(Forest *f, const char *filename)
 {
-	msg.enter("NuParser::generate[file]");
+	msg.enter("CommandParser::generate[file]");
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
-		printf("Internal Error: No Forest passed to NuParser::generate().\n");
-		msg.exit("NuParser::generate[file]");
+		printf("Internal Error: No Forest passed to CommandParser::generate().\n");
+		msg.exit("CommandParser::generate[file]");
 		return FALSE;
 	}
 	forest_ = f;
@@ -192,7 +192,7 @@ bool NuParser::generateFromFile(Forest *f, const char *filename)
 	if (!parser_.isFileGood())
 	{
 		msg.print("Error: File '%s' could not be opened.\n", filename);
-		msg.exit("NuParser::generate[file]");
+		msg.exit("CommandParser::generate[file]");
 		return FALSE;
 	}
 	// Set initial string pos and string length so we read in a line on the first getChar.
@@ -209,23 +209,23 @@ bool NuParser::generateFromFile(Forest *f, const char *filename)
 		forest_->clear();
 		forest_ = NULL;
 		isFileSource_ = NULL;
-		msg.exit("NuParser::generate[file]");
+		msg.exit("CommandParser::generate[file]");
 		return FALSE;
 	}
 	isFileSource_ = NULL;
 	forest_ = NULL;
-	msg.exit("NuParser::generate[file]");
+	msg.exit("CommandParser::generate[file]");
 	return TRUE;
 }
 
 // Finish current tree (i.e. nullify tree_)
-void NuParser::finishTree()
+void CommandParser::finishTree()
 {
 	tree_ = NULL;
 }
 
 // Discard current tree and its contents
-void NuParser::deleteCurrentTree()
+void CommandParser::deleteCurrentTree()
 {
 	// Delete the current tree from its parent forest
 	forest_->deleteTree(tree_);

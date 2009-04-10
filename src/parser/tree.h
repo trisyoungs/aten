@@ -52,7 +52,7 @@ class Tree
 	// List pointers
 	Tree *prev, *next;
 	// Friend class (to allow access to node generation calls
-	friend class NuParser;
+	friend class CommandParser;
 
 
 	/*
@@ -129,15 +129,17 @@ class Tree
 	*/
 	private:
 	// Current variable type to use for creating variables
-	NuVTypes::DataType declaredType_;
+	NuVTypes::DataType declarationType_;
 	// Flag to indicate that we are assigning in a declaration, and the whole variable scope should be searched
 	bool declarationAssignment_;
 
 	public:
 	// Set current type for variable declarations
-	virtual bool setDeclaredVariableType(NuVTypes::DataType type);
+	virtual bool setDeclarationType(NuVTypes::DataType type);
+	// Return current type to be used for declarations
+	virtual NuVTypes::DataType declarationType();
 	// Set declarations assignment flag
-	virtual bool setDeclarationAssignment(bool b);
+	virtual bool flagDeclarationAssignment(bool b);
 	// Add constant value to tompost scope
 	virtual TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode

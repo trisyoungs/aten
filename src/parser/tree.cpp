@@ -40,7 +40,7 @@ Tree::Tree()
 {
 	// Private variables
 	parent_ = NULL;
-	declaredType_ = NuVTypes::NoData;
+	declarationType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
 	parser_ = NULL;
 	acceptedFail_ = NuCommand::NoFunction;
@@ -399,14 +399,20 @@ TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 }
 
 // Set current declared variable type
-bool Tree::setDeclaredVariableType(NuVTypes::DataType type)
+bool Tree::setDeclarationType(NuVTypes::DataType type)
 {
-	declaredType_ = type;
+	declarationType_ = type;
 	return TRUE;
 }
 
+// Return current type to be used for declarations
+NuVTypes::DataType Tree::declarationType()
+{
+	return declarationType_;
+}
+
 // Set declarations assignment flag
-bool Tree::setDeclarationAssignment(bool b)
+bool Tree::flagDeclarationAssignment(bool b)
 {
 	declarationAssignment_ = b;
 	return TRUE;
@@ -438,13 +444,13 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 // Add variable to topmost scope using most recently set declared variable type
 TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
 {
-	return addVariable(declaredType_, name, initialValue);
+	return addVariable(declarationType_, name, initialValue);
 }
 
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
-	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(declaredType_));
+	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(declarationType_));
 	// Get topmost scopenode
 // 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -454,7 +460,7 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 		return NULL;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	NuVariable *var = ri->item->variables.createArray(declaredType_, name->get(), sizeexpr, initialvalue);
+	NuVariable *var = ri->item->variables.createArray(declarationType_, name->get(), sizeexpr, initialvalue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
@@ -481,7 +487,7 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 	// ---> it must not exist in the local scope
 	// In addition, if this is a declaration assignment, then we search as normal
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
-	if (declarationAssignment_ || (declaredType_ == NuVTypes::NoData))
+	if (declarationAssignment_ || (declarationType_ == NuVTypes::NoData))
 	{
 // 		printf("kljlk\n");
 		// Search the current ScopeNode list for the variable name requested
