@@ -29,17 +29,17 @@
 #include "base/sysfunc.h"
 
 // Symbols
-const char *SymbolTokenKeywords[NuParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--" };
-int SymbolTokenValues[NuParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM };
+const char *SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--" };
+int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM };
 
 // Original yylex()
 int yylex()
 {
-	return nuparser.lex();
+	return cmdparser.lex();
 }
 
 // Parser lexer, called by yylex()
-int NuParser::lex()
+int CommandParser::lex()
 {
 	if (forest_ == NULL)
 	{
@@ -198,7 +198,7 @@ int NuParser::lex()
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->DECLARATION)\n",tree_);
 
-				setDeclaredVariableType(dt);
+				setDeclarationType(dt);
 				return DECLARATION;
 			}
 

@@ -166,17 +166,23 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 	NuReturnValue rv;
 	ElementMap::ZMapType zm;
 	FilterType ft;
+	LineParser parser;
+	int n;
 	switch (fo)
 	{
 		case (FilterData::ExactOption):
-			d = exactNames_.add();
 			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
-			d->set(rv.asString());
+			parser.getArgsDelim(rv.asString());
+			for (n = 0; n < parser.nArgs(); ++n) exactNames_.add()->set(parser.argc(n));
+// 			d = exactNames_.add();
+// 			d->set(rv.asString());
 			break;
 		case (FilterData::ExtensionOption):
-			d = extensions_.add();
 			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
-			d->set(rv.asString());
+			parser.getArgsDelim(rv.asString());
+			for (n = 0; n < parser.nArgs(); ++n) extensions_.add()->set(parser.argc(n));
+// 			d = extensions_.add();
+// 			d->set(rv.asString());
 			break;
 		case (FilterData::GlobOption):
 			if (!value->execute(rv)) printf("Error retrieving 'glob' filter option value.\n");

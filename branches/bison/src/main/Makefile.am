@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libaten.a
 
-libaten_a_SOURCES = aten.cpp cli.cpp modes.cpp probe.cpp
+libaten_a_SOURCES = aten.cpp aten_filters.cpp cli.cpp modes.cpp probe.cpp
 
 noinst_HEADERS = aten.h cli.h
 

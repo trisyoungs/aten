@@ -104,7 +104,7 @@ bool Forest::generate(const char *s, const char *name)
 {
 	msg.enter("Forest::generate[string]");
 	name_ = name;
-	bool result = nuparser.generate(this, s);
+	bool result = cmdparser.generate(this, s);
 	finalise();
 	msg.exit("Forest::generate[string]");
 	return result;
@@ -116,7 +116,7 @@ bool Forest::generateFromFile(const char *filename, const char *name)
 	msg.enter("Forest::generateFromFile");
 	filename_ = filename;
 	name_ = name;
-	bool result = nuparser.generateFromFile(this, filename);
+	bool result = cmdparser.generateFromFile(this, filename);
 // 	print();
 	finalise();
 	msg.exit("Forest::generateFromFile");
