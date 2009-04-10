@@ -83,7 +83,7 @@ bool NuParser::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *NuParser::addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2)
+TreeNode *NuParser::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
 {
 	msg.enter("NuParser::addOperator");
 	if (tree_ == NULL)
@@ -92,53 +92,38 @@ TreeNode *NuParser::addOperator(NuCommand::Function func, int typearg, TreeNode 
 		msg.exit("NuParser::addOperator");	
 		return NULL;
 	}
-	TreeNode *result = tree_->addOperator(func, typearg, arg1, arg2);
+	TreeNode *result = tree_->addOperator(func, arg1, arg2);
 	msg.exit("NuParser::addOperator");
 	return result;
 }
 
-// Add 'if' statement
-TreeNode *NuParser::addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2)
-{
-	msg.enter("NuParser::addIf");
-	if (tree_ == NULL)
-	{
-		printf("Internal Error: No current Tree target for Parser (addIf).\n");
-		msg.exit("NuParser::addIf");	
-		return NULL;
-	}
-	TreeNode *result = tree_->addIf(condition, expr1, expr2);
-	msg.exit("NuParser::addIf");
-	return result;
-}
-
-// Add 'for' statement
-TreeNode *NuParser::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements)
-{
-	msg.enter("NuParser::addFor");
-	if (tree_ == NULL)
-	{
-		printf("Internal Error: No current Tree target for Parser (addFor).\n");
-		msg.exit("NuParser::addFor");	
-		return NULL;
-	}
-	TreeNode *result = tree_->addFor(init, condition, action, statements);
-	msg.exit("NuParser::addFor");
-	return result;
-}
-
-// Associate a command-based leaf node to the Tree
-TreeNode *NuParser::addFunction(NuCommand::Function func, TreeNode *arglist)
+// Add a function node to the list (overloaded to accept simple arguments instead of a list)
+TreeNode *NuParser::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
 {
 	msg.enter("NuParser::addFunction");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (addFunction).\n");
-		msg.exit("NuParser::addFunction");	
+		msg.exit("NuParser::addFunction");
 		return NULL;
 	}
-	TreeNode *result = tree_->addFunction(func, arglist);
+	TreeNode *result = tree_->addFunction(func, a1, a2, a3, a4);
 	msg.exit("NuParser::addFunction");
+	return result;
+}
+
+// Associate a command-based leaf node to the Tree
+TreeNode *NuParser::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
+{
+	msg.enter("NuParser::addFunctionWithArglist");
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (addFunctionWithArglist).\n");
+		msg.exit("NuParser::addFunctionWithArglist");	
+		return NULL;
+	}
+	TreeNode *result = tree_->addFunctionWithArglist(func, arglist);
+	msg.exit("NuParser::addFunctionWithArglist");
 	return result;
 }
 
@@ -158,7 +143,7 @@ TreeNode *NuParser::joinCommands(TreeNode *node1, TreeNode *node2)
 }
 
 // Add on a new scope to the stack
-TreeNode *NuParser::pushScope()
+TreeNode *NuParser::pushScope(NuCommand::Function func)
 {
 	msg.enter("NuParser::pushScope");
 	if (tree_ == NULL)
@@ -167,7 +152,7 @@ TreeNode *NuParser::pushScope()
 		msg.exit("NuParser::pushScope");	
 		return FALSE;
 	}
-	TreeNode *result = tree_->pushScope();
+	TreeNode *result = tree_->pushScope(func);
 	msg.exit("NuParser::pushScope");
 	return result;
 }

@@ -50,8 +50,8 @@ class NuParser : public Tree
 	private:
 	// Character string source
 	Dnchar stringSource_;
-	// Integer position in stringSource, total length of string, and starting position of current token
-	int stringPos_, stringLength_, tokenStart_;
+	// Integer position in stringSource, total length of string, and starting position of current token/function
+	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
 	LineParser parser_;
 	// Line number in source file that we've just read
@@ -128,17 +128,15 @@ class NuParser : public Tree
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
-	// Add 'if' statement
-	TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
-	// Add 'for' statement
-	TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
+	TreeNode *addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addFunction(NuCommand::Function func, TreeNode *arglist);
+	TreeNode *addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist);
+	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
+	TreeNode *addFunction(NuCommand::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Join two commands together
 	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	TreeNode *pushScope();
+	TreeNode *pushScope(NuCommand::Function func = NuCommand::NoFunction);
 	// Pop the topmost scope node
 	bool popScope();
 

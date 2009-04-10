@@ -52,8 +52,8 @@ class NuCommandNode : public TreeNode
 	NuFormat *format_;
 	
 	public:
-	// Set command function
-	void setFunction(NuCommand::Function ca);
+	// Prepare the stored command function, initialising any data and running any commands
+	bool prepFunction();
 	// Get command function
 	NuCommand::Function function();
 	// Check validity of supplied arguments

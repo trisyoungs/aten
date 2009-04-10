@@ -92,7 +92,8 @@ class LineParser
 	void seekg(streamoff off, ios_base::seekdir dir);
 	// Rewind file to start
 	void rewind();
-
+	// Return whether the end of the file has been reached (or only whitespace remains)
+	bool eofOrBlank();
 
 	/*
 	// Read/Write Routines

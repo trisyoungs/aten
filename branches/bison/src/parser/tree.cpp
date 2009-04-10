@@ -43,6 +43,7 @@ Tree::Tree()
 	declaredType_ = NuVTypes::NoData;
 	declarationAssignment_ = FALSE;
 	parser_ = NULL;
+	acceptedFail_ = NuCommand::NoFunction;
 
 	// Public variables
 	prev = NULL;
@@ -127,12 +128,26 @@ void Tree::initialise()
 	msg.exit("Tree::initialise");
 }
 
+// Set function for accepted fail
+void Tree::setAcceptedFail(NuCommand::Function func)
+{
+	if ((acceptedFail_ != NuCommand::NoFunction) && (func != NuCommand::NoFunction)) printf("Warning: An acceptedFail command is already set...\n");
+	acceptedFail_ = func;
+}
+
+// Clear accepted fail bit
+NuCommand::Function Tree::acceptedFail()
+{
+	return acceptedFail_;
+}
+
 // Execute tree
 bool Tree::execute(NuReturnValue &rv)
 {
 	msg.enter("Tree::execute");
 	bool result;
 	rv.reset();
+	acceptedFail_ = NuCommand::NoFunction;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
@@ -140,8 +155,9 @@ bool Tree::execute(NuReturnValue &rv)
 		result = ri->item->execute(rv);
 		if (!result) break;
 	}
-	if (isFilter()) msg.print("Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
-	else msg.print("Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
+	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
+	else msg.print(Messenger::Parse, "Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
+	if (!result) msg.print(Messenger::Parse, "Execution FAILED.\n");
 	msg.exit("Tree::execute");
 	return result;
 }
@@ -243,7 +259,7 @@ bool Tree::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2)
+TreeNode *Tree::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
 {
 	msg.enter("Tree::addOperator");
 	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer.
@@ -264,39 +280,10 @@ TreeNode *Tree::addOperator(NuCommand::Function func, int typearg, TreeNode *arg
 	return leaf;
 }
 
-// Add 'if' statement
-TreeNode *Tree::addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2)
-{
-	msg.enter("Tree::addIf");
-	// Create new command node
-	NuCommandNode *leaf = new NuCommandNode(NuCommand::If);
-	nodes_.own(leaf);
-	leaf->addArguments(2, condition, expr1);
-	if (expr2 != NULL) leaf->addArgument(expr2);
-	leaf->setParent(this);
-	msg.print(Messenger::Parse, "'If' statement added (%li).\n", leaf);
-	msg.exit("Tree::addIf");
-	return leaf;
-}
-
-// Add 'for' statement
-TreeNode *Tree::addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements)
-{
-	msg.enter("Tree::addFor");
-	// Create new command node
-	NuCommandNode *leaf = new NuCommandNode(NuCommand::For);
-	nodes_.own(leaf);
-	leaf->addArguments(4, init, condition, action, statements);
-	leaf->setParent(this);
-	msg.print(Messenger::Parse, "'For' statement added (%li, with init=%li, condition=%li, action=%li and statements=%li).\n", leaf, init, condition, action, statements);
-	msg.exit("Tree::addFor");
-	return leaf;
-}
-
 // Add function-based leaf node to topmost branch on stack
-TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *arglist)
+TreeNode *Tree::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
 {
-	msg.enter("Tree::addFunction");
+	msg.enter("Tree::addFunctionWithArglist");
 	// Create new command node
 	NuCommandNode *leaf = new NuCommandNode(func);
 	nodes_.own(leaf);
@@ -306,8 +293,31 @@ TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *arglist)
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(NuCommand::data[func].returnType);
-	// Check that the correct arguments were given to the command
+	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments()) leaf = NULL;
+	else if (!leaf->prepFunction()) leaf = NULL;
+	msg.exit("Tree::addFunctionWithArglist");
+	return leaf;
+}
+
+// Add a function node to the list (overloaded to accept simple arguments instead of a list)
+TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+{
+	msg.enter("Tree::addFunction");
+	// Create new command node
+	NuCommandNode *leaf = new NuCommandNode(func);
+	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
+	if (a1 != NULL) leaf->addArgument(a1);
+	if (a2 != NULL) leaf->addArgument(a2);
+	if (a3 != NULL) leaf->addArgument(a3);
+	if (a4 != NULL) leaf->addArgument(a4);
+	leaf->setParent(this);
+	// Store the function's return type
+	leaf->setReturnType(NuCommand::data[func].returnType);
+	// Check that the correct arguments were given to the command and run any prep functions
+	if (!leaf->checkArguments()) leaf = NULL;
+	else if (!leaf->prepFunction()) leaf = NULL;
 	msg.exit("Tree::addFunction");
 	return leaf;
 }
@@ -334,11 +344,11 @@ TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 }
 
 // Add on a new scope to the stack
-TreeNode *Tree::pushScope()
+TreeNode *Tree::pushScope(NuCommand::Function func)
 {
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
-	scopeStack_.add(node);
+	scopeStack_.add(node,func);
 	msg.print(Messenger::Parse, "ScopeNode %li is pushed.\n", node);
 	return node;
 }

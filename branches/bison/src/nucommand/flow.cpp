@@ -21,7 +21,7 @@
 
 #include "nucommand/commands.h"
 #include "parser/commandnode.h"
-
+#include "parser/tree.h"
 #include "base/mathfunc.h"
 #include <stdio.h>
 #include <string.h>
@@ -42,11 +42,74 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 	return result;
 }
 
-// Variable Initialisations Node
-bool NuCommand::function_Initialisations(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Break out of current for loop
+bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	// For each argument, initialise (or reset) the node
-	for (int n = 0; n < c->nArgs(); n++) if (!c->argNode(n)->initialise()) return FALSE;
+	c->parent()->setAcceptedFail(NuCommand::Break);
+	return FALSE;
+}
+
+// Continue for loop at next iteration
+bool NuCommand::function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	c->parent()->setAcceptedFail(NuCommand::Continue);
+	return FALSE;
+}
+
+// Do-While loop
+bool NuCommand::function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Argument 0 - Blockment
+	// Argument 1 - Test condition
+	NuReturnValue test;
+	bool result;
+	NuCommand::Function af;
+	do
+	{
+		// Run blockment- catch break and continue calls which return FALSE
+		result = c->arg(0, rv);
+		if (!result)
+		{
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(NuCommand::NoFunction);
+			if (af == NuCommand::Break) break;
+			else if (af != NuCommand::Continue) return FALSE;
+		}
+		// Perform test of condition
+		if (!c->arg(1, test)) return FALSE;
+	} while (test.asBool());
+	return TRUE;
+}
+
+// For loop
+bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Argument 0 - Initial value expression
+	// Argument 1 - Loop condition
+	// Argument 2 - Action on loop cycle
+	// Argument 3 - Statementlist
+	 // Get initial variable value
+	if (!c->arg(0, rv)) return FALSE;
+	NuReturnValue ifval;
+	bool result;
+	NuCommand::Function af;
+	while (TRUE)
+	{
+		// Termination condition
+		if (!c->arg(1, ifval)) return FALSE;
+		if (!ifval.asBool()) break;
+		// Loop body - catch break and continue calls which return FALSE
+		result = c->arg(3, rv);
+		if (!result)
+		{
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(NuCommand::NoFunction);
+			if (af == NuCommand::Break) break;
+			else if (af != NuCommand::Continue) return FALSE;
+		}
+		// Loop 'increment' statement
+		if (!c->arg(2, rv)) return FALSE;
+	}
 	return TRUE;
 }
 
@@ -55,42 +118,34 @@ bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	NuReturnValue ifval;
 	if (!c->arg(0, ifval)) return FALSE;
-	if (ifval.asBool()) c->arg(1, rv);
-	else if (c->hasArg(2)) c->arg(2, rv);
+	if (ifval.asBool()) return (c->arg(1, rv));
+	else if (c->hasArg(2)) return (c->arg(2, rv));
 	return TRUE;
 }
 
-// Break out of current for loop
-bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// While loop
+bool NuCommand::function_While(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	return TRUE;
-}
-
-// Continue for loop at next iteration
-bool NuCommand::function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	return TRUE;
-}
-
-// For loop
-bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
-{
-	// Argument 1 - Initial value expression
-	// Argument 2 - Loop condition
-	// Argument 3 - Action on loop cycle
-	// Argument 4 - Statementlist
-	 // Get initial variable value
-	if (!c->arg(0, rv)) return FALSE;
-	NuReturnValue ifval;
-	while (TRUE)
+	// Argument 0 - Test condition
+	// Argument 1 - Blockment
+	NuReturnValue test;
+	bool result;
+	NuCommand::Function af;
+	// Perform initial test of condition
+	if (!c->arg(0, test)) return FALSE;
+	while (test.asBool())
 	{
-		// Termination condition
-		if (!c->arg(1, ifval)) return FALSE;
-		if (!ifval.asBool()) break;
-		// Loop body
-		if (!c->arg(3, rv)) return FALSE;
-		// Loop 'increment' statement
-		if (!c->arg(2, rv)) return FALSE;
+		// Run blockment- catch break and continue calls which return FALSE
+		result = c->arg(1, rv);
+		if (!result)
+		{
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(NuCommand::NoFunction);
+			if (af == NuCommand::Break) break;
+			else if (af != NuCommand::Continue) return FALSE;
+		}
+		// Perform test of condition
+		if (!c->arg(0, test)) return FALSE;
 	}
 	return TRUE;
 }

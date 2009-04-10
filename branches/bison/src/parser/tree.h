@@ -107,19 +107,17 @@ class Tree
 	// Add a node representing a whole statement to the execution list
 	virtual bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	virtual TreeNode *addOperator(NuCommand::Function func, int typearg, TreeNode *arg1, TreeNode *arg2 = NULL);
-	// Add 'if' statement
-	virtual TreeNode *addIf(TreeNode *condition, TreeNode *expr1, TreeNode *expr2 = NULL);
-	// Add 'for' statement
-	virtual TreeNode *addFor(TreeNode *init, TreeNode *condition, TreeNode *action, TreeNode *statements);
+	virtual TreeNode *addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	virtual TreeNode *addFunction(NuCommand::Function func, TreeNode *arglist);
+	virtual TreeNode *addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist);
+	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
+	virtual TreeNode *addFunction(NuCommand::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together
 	virtual TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	virtual TreeNode *pushScope();
+	virtual TreeNode *pushScope(NuCommand::Function func = NuCommand::NoFunction);
 	// Pop the topmost scope node
 	virtual bool popScope();
 	// Print statement info
@@ -174,6 +172,8 @@ class Tree
 	int readOptions_;
 	// Current input stream target, in the form of a LineParser
 	LineParser *parser_;
+	// Flag to indicate that recent failure of this token is known and we should continue
+	NuCommand::Function acceptedFail_;
 
 	public:
 	// Add read option
@@ -184,6 +184,10 @@ class Tree
 	int readOptions();
 	// Return the current LineParser pointer
 	LineParser *parser();
+	// Set function for accepted fail
+	void setAcceptedFail(NuCommand::Function func);
+	// Return function for accepted fail
+	NuCommand::Function acceptedFail();
 	// Execute
 	bool execute(NuReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)

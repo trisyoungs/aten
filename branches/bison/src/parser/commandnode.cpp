@@ -42,10 +42,29 @@ NuCommandNode::~NuCommandNode()
 	if (format_ != NULL) delete format_;
 }
 
-// Set function
-void NuCommandNode::setFunction(NuCommand::Function cf)
+// Prepare function (if possible)
+bool NuCommandNode::prepFunction()
 {
-	function_ = cf;
+	bool result = TRUE;
+	switch (function_)
+	{
+		// For functions that use formats, attempt to create the format *if* the format string is a character constant
+		case (NuCommand::Error):
+		case (NuCommand::Warn):
+		case (NuCommand::Printf):
+		case (NuCommand::Verbose):
+		case (NuCommand::ReadLineFormatted):
+		case (NuCommand::WriteLineFormatted):
+			if (!args_.first()->item->readOnly()) break;
+			result = createFormat(0,1);
+			break;
+		case (NuCommand::WriteVar):
+			if (!args_[1]->item->readOnly()) break;
+			result = createFormat(1,2);
+			break;
+		// For continue and break functions, add an argument corresponding to the 
+	}
+	return result;
 }
 
 // Get function
@@ -62,7 +81,7 @@ bool NuCommandNode::checkArguments()
 	const char *c = NuCommand::data[function_].arguments;
 	msg.print(Messenger::Parse, "...argument list is [%s]\n", c);
 	char upc, *altargs;
-	int count = 0, ngroup;
+	int count = 0, ngroup = -1;
 	bool optional, requirevar, result, cluster = FALSE;
 	NuVTypes::DataType rtype;
 	// Search for an alternative set of arguments
@@ -227,6 +246,12 @@ bool NuCommandNode::checkArguments()
 				}
 				break;
 		}
+		// Was this argument requested to be a modifiable variable value?
+		if (requirevar && argNode(count)->readOnly())
+		{
+			msg.print("Argument %i to command '%s' must be a variable and not a constant.\n", count+1, NuCommand::data[function_].keyword);
+			result = FALSE;
+		}
 		// Check for failure
 		if (!result) break;
 		if (upc != '*') c++;
@@ -339,7 +364,6 @@ bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
 	NuVariable *var = NULL;
 	for (c = arglist; *c != '\0'; c++)
 	{
-	printf("Doing argument %c\n", *c);
 		switch (*c)
 		{
 			case ('i'):
@@ -360,7 +384,6 @@ bool NuCommandNode::run(NuCommand::Function func, const char *arglist, ...)
 				var = NULL;
 				break;
 		}
-	printf("lksjdlkj.\n");
 		node.addArgument(var);
 	}
 	va_end(vars);

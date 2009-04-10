@@ -57,6 +57,10 @@ NuVTypes::DataType Tree::checkUnaryOperatorTypes(NuCommand::Function func, NuVTy
 		case (NuCommand::OperatorNegate):
 			if ((type <= NuVTypes::VectorData) && (type != NuVTypes::StringData)) result = type;
 			break;
+		case (NuCommand::OperatorNot):
+			// Always works, and always returns an integer
+			result = NuVTypes::IntegerData;
+			break;
 	}
 	// Print error message if necessary
 	if (result == NuVTypes::NoData) msg.print("Error: Unary operator %s cannot act on %s.\n", NuCommand::data[func].keyword, NuVTypes::aDataType(type));
@@ -71,7 +75,7 @@ NuVTypes::DataType Tree::checkBinaryOperatorTypes(NuCommand::Function func, NuVT
 	// Check for no data type
 	if ((type1 == NuVTypes::NoData) || (type2 == NuVTypes::NoData))
 	{
-		printf("Internal Error: One or both operands have no defined type.\n");
+		printf("Internal Error: One or both operands have no defined type (%s,%s).\n", NuVTypes::dataType(type1), NuVTypes::dataType(type2));
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return NuVTypes::NoData;
 	}

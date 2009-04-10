@@ -29,8 +29,6 @@ void NuCommand::initPointers()
 	*/
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
-	pointers_[Initialisations] = &function_Initialisations;
-
 
 	// Analyse commands
 	pointers_[Finalise] = &NuCommand::function_Finalise;
@@ -171,10 +169,10 @@ void NuCommand::initPointers()
 	pointers_[If] = &function_If;
 	pointers_[Break] = &NuCommand::function_Break;
 	pointers_[Continue] = &NuCommand::function_Continue;
-// 	pointers_[End] = &NuCommand::function_End;
+	pointers_[DoWhile] = &NuCommand::function_DoWhile;
 	pointers_[For] = &NuCommand::function_For;
 	pointers_[If] = &NuCommand::function_If;
-// 	pointers_[Terminate] = &NuCommand::function_Terminate;
+	pointers_[While] = &NuCommand::function_While;
 
 	// Force Commands
 	pointers_[FrameForces] = &NuCommand::function_FrameForces;
@@ -351,6 +349,7 @@ void NuCommand::initPointers()
 
 	// Read / Write Commands
 	pointers_[AddReadOption] = &NuCommand::function_AddReadOption;
+	pointers_[Eof] = &NuCommand::function_Eof;
 	pointers_[Find] = &NuCommand::function_Find;
 	pointers_[GetLine] = &NuCommand::function_GetLine;
 	pointers_[ReadChars] = &NuCommand::function_ReadChars;
@@ -442,6 +441,7 @@ void NuCommand::initPointers()
 	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
 	pointers_[OperatorMultiply] = &function_OperatorMultiply;
 	pointers_[OperatorNegate] = &function_OperatorNegate;
+	pointers_[OperatorNot] = &function_OperatorNot;
 	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
 	pointers_[OperatorPower] = &function_OperatorPower;
 	pointers_[OperatorPostfixIncrease] = &function_OperatorPostfixIncrease;
