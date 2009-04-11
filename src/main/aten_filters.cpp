@@ -27,7 +27,11 @@ void Aten::openFilters()
 {
 	msg.enter("Aten::openFilters");
 	char path[512];
-	bool found = FALSE, failed = FALSE;
+	bool found = FALSE;
+	int nfailed;
+
+	nFiltersFailed_ = 0;
+	failedFilters_.clear();
 
 	// Construct a list of possible locations for the filters
 	QStringList paths;
@@ -45,41 +49,36 @@ void Aten::openFilters()
 
 	for (int i=0; i < paths.size(); i++)
 	{
-		if ((!found) && (!failed))
-		{
-			sprintf(path,"%s/filters", qPrintable(paths.at(i)));
-			msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", path);
-			int n = parseFilterDir(path);
-			if (n == -1) continue;	// Directory not found
-			else if (n == 0)	// Number failed to load = 0
-			{
-				found = TRUE;
-				dataDir_ = qPrintable(paths.at(i));
-			}
-			else failed = TRUE;
-		}
+		sprintf(path,"%s/filters", qPrintable(paths.at(i)));
+		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", path);
+		nfailed = parseFilterDir(path);
+		if (nfailed == -1) continue;	// Directory not found
+		found = TRUE;
+		nFiltersFailed_ += nfailed;
+		dataDir_ = qPrintable(paths.at(i));
+		break;
 	}
 
 	if (!found)
 	{
-		msg.print(Messenger::Error, "No filter index found in any of these locations.\n");
+		msg.print(Messenger::Error, "No filters found in any known locations.\n");
 		msg.print(Messenger::Error, "Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory:\n");
 		msg.print(Messenger::Error, "      e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
 		msg.print(Messenger::Error, "Alternatively, use the command-line switch --atendata <dir> to specify a location.\n");
-		filterLoadSuccessful_ = FALSE;
+		nFiltersFailed_ = -1;
 	}
 
-	// Try to load user filters
-	if (found && (!failed))
+	// Try to load user filters - we don't mind if the directory doesn't exist...
+	if (found)
 	{
 		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
 		msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
-		if (parseFilterDir(path)) found = TRUE;
-		else failed = TRUE;
+		nfailed = parseFilterDir(path);
+		if (nfailed > 0) nFiltersFailed_ += nfailed;
 	}
 
 	// Print out info and partner filters if all was successful
-	if ((!failed) && found)
+	if (found)
 	{
 		partnerFilters();
 		msg.print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
@@ -87,7 +86,6 @@ void Aten::openFilters()
 		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
 		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 	}
-	else if (failed) filterLoadSuccessful_ = FALSE;
 	msg.exit("Aten::openFilters");
 }
 
@@ -113,6 +111,8 @@ bool Aten::reloadFilters()
 	filters_[FilterData::GridImport].clear();
 	filters_[FilterData::GridExport].clear();
 	filterForests_.clear();
+	nFiltersFailed_ = 0;
+	failedFilters_.clear();
 
 	// Load filters
 	sprintf(path,"%s%s", dataDir_.get(), "/filters");
@@ -130,9 +130,15 @@ bool Aten::reloadFilters()
 }
 
 // Return status of filter load on startup
-bool Aten::filterLoadSuccessful()
+int Aten::nFiltersFailed()
 {
-	return filterLoadSuccessful_;
+	return nFiltersFailed_;
+}
+
+// Return status of filter load on startup
+Dnchar *Aten::failedFilters()
+{
+	return failedFilters_.first();
 }
 
 // Parse filter index file (rooted in the path provided)
@@ -158,6 +164,7 @@ int Aten::parseFilterDir(const char *path)
 		if (!f->generateFromFile(qPrintable(QString(path)+"/"+filterlist.at(i)), qPrintable(filterlist.at(i))))
 		{
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
+			failedFilters_.add()->set( qPrintable(QString(path)+"/"+filterlist.at(i)) );
 			nfailed ++;
 			filterForests_.remove(f);
 		}

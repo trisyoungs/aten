@@ -119,7 +119,7 @@ void LineParser::closeFile()
 		file_.close();
 		lastLine_ = 0;
 	}
-	else printf("Warning: LineParser tried to close file again.\n");
+// 	else printf("Warning: LineParser tried to close file again.\n");
 }
 
 // Return whether current file source is good for reading/writing

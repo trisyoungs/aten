@@ -201,11 +201,21 @@ void GuiQt::run()
 	gui.mainView.postRedisplay();
 
 	// Display message box warning if there was a filter load error
-	if (!aten.filterLoadSuccessful())
+	if (aten.nFiltersFailed() == -1)
 	{
-		int ret = QMessageBox::warning(NULL, "Aten",
-		"One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.",
-		QMessageBox::Cancel, QMessageBox::Cancel);
+		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's /data directory, or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+	}
+	else if (aten.nFiltersFailed() > 0)
+	{
+		// Construct the messagebox text
+		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
+		for (Dnchar *d = aten.failedFilters(); d != NULL; d = d->next)
+		{
+			text += "\t";
+			text += d->get();
+			if (d->next != NULL) text += "\n";
+		}
+		int ret = QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
 	// Enter main message processing loop

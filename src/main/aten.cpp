@@ -48,7 +48,7 @@ Aten::Aten()
 	sketchElement_ = 6;
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
-	filterLoadSuccessful_ = TRUE;
+	nFiltersFailed_ = 0;
 	dataDirSet_ = FALSE;
 
 	// Clipboards
