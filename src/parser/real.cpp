@@ -29,7 +29,7 @@
 NuRealVariable::NuRealVariable(double d, bool constant) : realData_(d)
 {
 	// Private variables
-	returnType_ = NuVTypes::RealData;
+	returnType_ = NuVTypes::DoubleData;
 	readOnly_ = constant;
 }
 

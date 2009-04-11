@@ -122,9 +122,9 @@ void NuVectorVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor NuVectorVariable::accessorData[NuVectorVariable::nAccessors] = {
-	{ "x", NuVTypes::RealData, FALSE, FALSE },
-	{ "y", NuVTypes::RealData, FALSE, FALSE },
-	{ "z", NuVTypes::RealData, FALSE, FALSE }
+	{ "x", NuVTypes::DoubleData, FALSE, FALSE },
+	{ "y", NuVTypes::DoubleData, FALSE, FALSE },
+	{ "z", NuVTypes::DoubleData, FALSE, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)

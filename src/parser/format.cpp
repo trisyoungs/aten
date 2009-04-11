@@ -35,6 +35,7 @@ FormatChunk::FormatChunk(const char *plaintext)
 	type_ = PlainTextChunk;
 	cFormat_ = plaintext;
 	arg_ = NULL;
+	formatLength_ = 0;
 	msg.print(Messenger::Parse, "...created PlainTextChunk for string '%s'\n", plaintext);
 
 	// Public variables
@@ -46,6 +47,7 @@ FormatChunk::FormatChunk(TreeNode *node) : arg_(node)
 {
 	// Private variables
 	type_ = DelimitedChunk;
+	formatLength_ = 0;
 	msg.print(Messenger::Parse, "...created DelimitedChunk for argument %li\n", node);
 
 	// Public variables
@@ -58,7 +60,14 @@ FormatChunk::FormatChunk(const char *format, TreeNode *node, NuVTypes::DataType 
 	// Private variables
 	cFormat_ = format;
 	type_ = FormattedChunk;
-	msg.print(Messenger::Parse, "...created FormattedChunk ('%s') for argument %li\n", format, node);
+
+	// Determine length of format
+	msg.print(Messenger::Parse, "...created FormattedChunk ('%s', length is %i) for argument %li\n", format, formatLength_, node);
+	char text[32];
+	int n = 0;
+	for (const char *c = &format[1]; isdigit(*c); c++) text[n++] = *c;
+	text[n] = '\0';
+	formatLength_ = atoi(text);
 
 	// Public variables
 	next = NULL;
@@ -75,6 +84,12 @@ FormatChunk::ChunkType FormatChunk::type()
 const char *FormatChunk::cFormat()
 {
 	return cFormat_.get();
+}
+
+// Return length of formatted chunk
+int FormatChunk::formatLength()
+{
+	return formatLength_;
 }
 
 // Return argument id
@@ -210,7 +225,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 						}
 						else if (prevchar == '\0')
 						{
-							if (type == NuVTypes::RealData) break;
+							if (type == NuVTypes::DoubleData) break;
 							msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
@@ -275,10 +290,11 @@ bool NuFormat::isValid()
 */
 
 // Use specified parser to perform formatted read
-int NuFormat::read(LineParser *parser, int flags)
+int NuFormat::executeRead(LineParser *parser, int flags)
 {
-	msg.enter("NuFormat::read");
-	int nparsed = 0;
+	msg.enter("NuFormat::executeRead");
+	printf("Executing read...\n");
+	int nparsed = 0, length;
 	NuReturnValue rv;
 	Dnchar bit;
 	// Cycle through the list of FormatChunks
@@ -290,11 +306,17 @@ int NuFormat::read(LineParser *parser, int flags)
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
 				parser->getNextArg(&bit);
-				
+				break;
+			case (FormatChunk::FormattedChunk):
+				// Get rgument from LineParser
+				length = chunk->formatLength();
+				if (length > 0) parser->getNextN(length, &bit);
+				else parser->getNextArg(&bit);
+				printf("Contents of bit are now '%s'\n", bit.get());
 				break;
 			default:
-				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
-				msg.exit("NuFormat::read");
+				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
+				msg.exit("NuFormat::executeRead");
 				return 1;
 		}
 		// Set the corresponding argument accordingly
@@ -305,7 +327,7 @@ int NuFormat::read(LineParser *parser, int flags)
 				case (NuVTypes::IntegerData):
 					rv.set( atoi(bit.get()) );
 					break;
-				case (NuVTypes::RealData):
+				case (NuVTypes::DoubleData):
 					rv.set( atof(bit.get()) );
 					break;
 				case (NuVTypes::StringData):
@@ -320,7 +342,8 @@ int NuFormat::read(LineParser *parser, int flags)
 			chunk->arg()->set( rv );
 		}
 	}
-	msg.exit("NuFormat::read");
+	printf("Done executing read...\n");
+	msg.exit("NuFormat::executeRead");
 	return nparsed;
 }
 
@@ -351,7 +374,7 @@ bool NuFormat::writeToString()
 					case (NuVTypes::IntegerData):
 						sprintf(bit, chunk->cFormat(), rv.asInteger());
 						break;
-					case (NuVTypes::RealData):
+					case (NuVTypes::DoubleData):
 						sprintf(bit, chunk->cFormat(), rv.asReal());
 						break;
 					case (NuVTypes::StringData):
@@ -385,30 +408,30 @@ bool NuFormat::writeToString()
 }
 
 // Read line and parse according to format
-int NuFormat::readFormatted(const char *line, int flags)
+int NuFormat::read(const char *line, int flags)
 {
-	msg.enter("NuFormat::readFormatted[string]");
+	msg.enter("NuFormat::read[string]");
 	static LineParser parser;
 	parser.setLine(line);
-	int result = read(&parser, flags);
-	msg.exit("NuFormat::readFormatted[string]");
+	int result = executeRead(&parser, flags);
+	msg.exit("NuFormat::read[string]");
 	return result;
 }
 
 // Read line from file and parse according to format
-int NuFormat::readFormatted(LineParser *parser, int flags)
+int NuFormat::read(LineParser *parser, int flags)
 {
-	msg.enter("NuFormat::readFormatted[file]");
+	msg.enter("NuFormat::read[file]");
 	// Read a new line using the supplied parser
 	if (parser == NULL)
 	{
-		printf("Internal Error: No LineParser given to NuFormat::readFormatted.\n");
-		msg.exit("NuFormat::readFormatted[file]");
+		printf("Internal Error: No LineParser given to NuFormat::read.\n");
+		msg.exit("NuFormat::read[file]");
 		return 1;
 	}
 	// Get next line from file
 	int result = parser->readLine();
-	if (result == 0) result = read(parser, flags);
-	msg.exit("NuFormat::readFormatted[file]");
+	if (result == 0) result = executeRead(parser, flags);
+	msg.exit("NuFormat::read[file]");
 	return result;
 }

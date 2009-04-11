@@ -146,7 +146,9 @@ class CommandParser : public Tree
 	// Return current type to be used for declarations
 	NuVTypes::DataType declarationType();
 	// Set declarations assignment flag
-	bool flagDeclarationAssignment(bool b);
+	bool setDeclarationAssignment(bool b);
+	// Return whether we are in an assignment within a declaration
+	bool isDeclarationAssignment();
 	// Add constant value to tompost scope
 	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode

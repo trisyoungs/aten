@@ -136,7 +136,7 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
 		case (NuVTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
 		case (NuVTypes::StringData):
@@ -240,7 +240,7 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 		case (NuVTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
 		case (NuVTypes::StringData):
@@ -296,7 +296,7 @@ bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValu
 		case (NuVTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			el = (int) floor(v1.asReal() + 0.15);
 			break;
 		case (NuVTypes::StringData):

@@ -39,7 +39,7 @@ NuReturnValue::NuReturnValue()
 NuReturnValue::NuReturnValue(int i) : type_(NuVTypes::IntegerData), valueI_(i)
 {
 }
-NuReturnValue::NuReturnValue(double d) : type_(NuVTypes::RealData), valueR_(d)
+NuReturnValue::NuReturnValue(double d) : type_(NuVTypes::DoubleData), valueR_(d)
 {
 }
 NuReturnValue::NuReturnValue(const char *s) : type_(NuVTypes::StringData), valueS_(s)
@@ -65,7 +65,7 @@ void NuReturnValue::operator=(NuReturnValue &source)
 		case (NuVTypes::IntegerData):
 			valueI_ = source.valueI_;
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			valueR_ = source.valueR_;
 			break;
 		case (NuVTypes::StringData):
@@ -105,7 +105,7 @@ const char *NuReturnValue::info()
 		case (NuVTypes::IntegerData):
 			sprintf(result,"%i (%s)", valueI_, NuVTypes::dataType(type_));
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			sprintf(result,"%f (%s)", valueR_, NuVTypes::dataType(type_));
 			break;
 		case (NuVTypes::StringData):
@@ -135,7 +135,7 @@ void NuReturnValue::set(int i)
 // Set from double value
 void NuReturnValue::set(double d)
 {
-	type_ = NuVTypes::RealData;
+	type_ = NuVTypes::DoubleData;
 	valueR_ = d;
 }
 
@@ -192,7 +192,7 @@ int NuReturnValue::asInteger(bool &success)
 		case (NuVTypes::IntegerData):
 			return valueI_;
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			return (int)valueR_;
 			break;
 		case (NuVTypes::StringData):
@@ -220,7 +220,7 @@ double NuReturnValue::asReal(bool &success)
 		case (NuVTypes::IntegerData):
 			return (double)valueI_;
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			return valueR_;
 			break;
 		case (NuVTypes::StringData):
@@ -249,7 +249,7 @@ const char *NuReturnValue::asString(bool &success)
 		case (NuVTypes::IntegerData):
 			return itoa(valueI_);
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			return ftoa(valueR_);
 			break;
 		case (NuVTypes::StringData):
@@ -287,7 +287,7 @@ Vec3<double> NuReturnValue::asVector(bool &success)
 		case (NuVTypes::IntegerData):
 			return Vec3<double>(valueI_, valueI_, valueI_);
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			return Vec3<double>(valueR_, valueR_, valueR_);
 			break;
 		case (NuVTypes::VectorData):
@@ -312,7 +312,7 @@ void *NuReturnValue::asPointer(NuVTypes::DataType ptrtype, bool &success)
 			return NULL;
 			break;
 		case (NuVTypes::IntegerData):
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 		case (NuVTypes::StringData):
 		case (NuVTypes::VectorData):
 			msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", NuVTypes::dataType(type_), NuVTypes::dataType(ptrtype));
@@ -383,7 +383,7 @@ bool NuReturnValue::asBool()
 		case (NuVTypes::IntegerData):
 			return (valueI_ > 0);
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			return (valueR_ > 0.0);
 			break;
 		case (NuVTypes::StringData):
@@ -422,7 +422,7 @@ bool NuReturnValue::increase()
 		case (NuVTypes::IntegerData):
 			++valueI_;
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			++valueR_;
 			break;
 		case (NuVTypes::AtomData):
@@ -474,7 +474,7 @@ bool NuReturnValue::decrease()
 		case (NuVTypes::IntegerData):
 			--valueI_;
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			--valueR_;
 			break;
 		case (NuVTypes::AtomData):

@@ -58,11 +58,15 @@ bool NuCommandNode::prepFunction()
 			if (!args_.first()->item->readOnly()) break;
 			result = createFormat(0,1);
 			break;
-		case (NuCommand::WriteVar):
+		case (NuCommand::WriteVariable):
+		case (NuCommand::ReadVariable):
+			result = createFormat(-1,1);
+			break;
+		case (NuCommand::WriteVariableFormatted):
+		case (NuCommand::ReadVariableFormatted):
 			if (!args_[1]->item->readOnly()) break;
 			result = createFormat(1,2);
 			break;
-		// For continue and break functions, add an argument corresponding to the 
 	}
 	return result;
 }
@@ -167,7 +171,7 @@ bool NuCommandNode::checkArguments()
 		{
 			// Number		(IntegerData, RealData)
 			case ('N'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData))
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::DoubleData))
 				{
 					msg.print("Argument %i to command '%s' must be a number.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;
@@ -191,7 +195,7 @@ bool NuCommandNode::checkArguments()
 				break;	
 			// Any Simple		(IntegerData, RealData, StringData)
 			case ('S'):
-				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::RealData) && (rtype != NuVTypes::StringData))
+				if ((rtype != NuVTypes::IntegerData) && (rtype != NuVTypes::DoubleData) && (rtype != NuVTypes::StringData))
 				{
 					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, NuCommand::data[function_].keyword);
 					result = FALSE;

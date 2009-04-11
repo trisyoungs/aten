@@ -94,7 +94,7 @@ void ForcefieldBoundVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
-	{ "data",	NuVTypes::RealData,	TRUE, FALSE },
+	{ "data",	NuVTypes::DoubleData,	TRUE, FALSE },
         { "form",	NuVTypes::StringData,	FALSE, FALSE },
         { "natoms",	NuVTypes::IntegerData,	FALSE, TRUE },
         { "type",	NuVTypes::StringData,	FALSE, FALSE },

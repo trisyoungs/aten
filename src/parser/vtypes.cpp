@@ -26,9 +26,9 @@
 #include <stdio.h>
 
 // Variable Types
-const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "integer", "real", "string", "vector", "aten&", "atom&", "bond&", "cell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
-const char *NuDataTypePhrases[NuVTypes::nDataTypes] = { "no data", "an integer", "a real", "a string", "a vector", "aten&", "an atom&", "a bond&", "a cell&", "elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&" };
-const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "integer", "real", "string", "vector", "_ATEN", "atom", "bond", "cell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
+const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
+const char *NuDataTypePhrases[NuVTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&" };
+const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
 NuVTypes::DataType NuVTypes::dataType(const char *s)
 {
 	return (NuVTypes::DataType) enumSearch("", NuVTypes::nDataTypes, NuDataTypeKeywords, s);
@@ -62,6 +62,6 @@ NuVTypes::DataType NuVTypes::determineType(const char *s)
 	}
 	// Based on the numbers we calculated, try to determine its type
 	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return NuVTypes::StringData;
-	else if (ndp == 1) return NuVTypes::RealData;
+	else if (ndp == 1) return NuVTypes::DoubleData;
 	else return NuVTypes::IntegerData;
 }
