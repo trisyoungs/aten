@@ -104,7 +104,6 @@ statement:
 	';'					{ $$ = cmdparser.addFunction(NuCommand::NoFunction); }
 	| stexpr ';'				{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
-	| error	{ printf("kjsdfsdljflkj\n"); }
 	;
 
 stexpr:
@@ -135,32 +134,33 @@ range:
 
 constant:
 	INTCONST				{ $$ = cmdparser.addConstant(NuVTypes::IntegerData, $1); }
-	| REALCONST				{ $$ = cmdparser.addConstant(NuVTypes::RealData, $1); }
+	| REALCONST				{ $$ = cmdparser.addConstant(NuVTypes::DoubleData, $1); }
 	| CHARCONST				{ $$ = cmdparser.addConstant(NuVTypes::StringData, $1); }
 	;
 
 /* Variable declaration  name / assignment list */
 
 assign:
-	/* empty */				{ newVarName = *yylval.name; cmdparser.flagDeclarationAssignment(TRUE); }
+	/* empty */				{ newVarName = *yylval.name; cmdparser.setDeclarationAssignment(TRUE); }
 	;
 
 noassign:
-	/* empty */				{ cmdparser.flagDeclarationAssignment(FALSE); }
+	/* empty */				{ cmdparser.setDeclarationAssignment(FALSE); }
 	;
 
 newname:
-	NEWTOKEN				{ $$ = cmdparser.addVariable($1); }
-	| NEWTOKEN assign '[' expr ']' noassign	{ $$ = cmdparser.addArrayVariable(&newVarName,$4); }
+	NEWTOKEN assign '[' expr ']' noassign	{ $$ = cmdparser.addArrayVariable(&newVarName,$4); }
 	| NEWTOKEN assign '=' expr noassign	{ $$ = cmdparser.addVariable(&newVarName,$4); }
 	| NEWTOKEN assign '[' expr ']' '=' expr noassign	{ $$ = cmdparser.addArrayVariable(&newVarName,$4,$7); }
+	| NEWTOKEN				{ $$ = cmdparser.addVariable($1); }
 	;
 
 namelist:
 	newname					{ $$ = $1; }
 	| namelist ',' newname			{ $$ = Tree::joinArguments($3,$1); }
-	| constant				{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
+	| namelist ',' constant			{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
 	| namelist newname			{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
+	| namelist error			{ YYABORT; }
 	;
 
 /* Variables / Paths */
@@ -227,7 +227,7 @@ expr:
 	| expr LEQ expr				{ $$ = cmdparser.addOperator(NuCommand::OperatorLessThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
 	| '(' expr ')'				{ $$ = $2; }
 	| '!' expr				{ $$ = cmdparser.addOperator(NuCommand::OperatorNot, $2); if ($$ == NULL) YYABORT; }
-	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared.\n", yylval.name->get()); YYABORT; }
+	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
 
 

@@ -84,8 +84,8 @@ void ElementsVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
-	{ "mass",	NuVTypes::RealData,	TRUE, TRUE },
-	{ "name",	NuVTypes::RealData,	TRUE, TRUE },
+	{ "mass",	NuVTypes::DoubleData,	TRUE, TRUE },
+	{ "name",	NuVTypes::DoubleData,	TRUE, TRUE },
 	{ "nelements",	NuVTypes::IntegerData,	FALSE,	 TRUE },
 	{ "symbol",	NuVTypes::StringData,	TRUE, TRUE }
 };

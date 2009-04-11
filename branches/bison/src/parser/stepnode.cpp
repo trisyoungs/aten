@@ -76,7 +76,7 @@ bool StepNode::execute(NuReturnValue &rv)
 			printf("Failed to retrieve array index.\n");
 			return FALSE;
 		}
-		if ((arrayrv.type() != NuVTypes::IntegerData) && (arrayrv.type() != NuVTypes::RealData))
+		if ((arrayrv.type() != NuVTypes::IntegerData) && (arrayrv.type() != NuVTypes::DoubleData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
 			return FALSE;

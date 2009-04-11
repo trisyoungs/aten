@@ -79,7 +79,7 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 		case (NuVTypes::IntegerData):
 			v = (NuVariable*) new NuIntegerVariable(0, FALSE);
 			break;
-		case (NuVTypes::RealData):
+		case (NuVTypes::DoubleData):
 			v = (NuVariable*) new NuRealVariable(0.0, FALSE);
 			break;
 		case (NuVTypes::StringData):

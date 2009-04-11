@@ -30,10 +30,38 @@ bool NuCommand::function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	return TRUE;
 }
 
+// Convert string to floating point number
+bool NuCommand::function_AToF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	rv.set( atof(c->argc(0)) );
+	return TRUE;
+}
+
+// Convert string to integer number
+bool NuCommand::function_AToI(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	rv.set( atoi(c->argc(0)) );
+	return TRUE;
+}
+
 // Get part of string before specified character
 bool NuCommand::function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	rv.set( beforeChar(c->argc(0), c->argc(1)[0]) );
+	return TRUE;
+}
+
+// Convert string to integer number
+bool NuCommand::function_FToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	rv.set( ftoa(c->argd(0)) );
+	return TRUE;
+}
+
+// Convert string to integer number
+bool NuCommand::function_IToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	rv.set( itoa(c->argi(0)) );
 	return TRUE;
 }
 

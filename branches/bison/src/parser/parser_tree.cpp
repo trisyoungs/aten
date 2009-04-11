@@ -202,20 +202,33 @@ NuVTypes::DataType CommandParser::declarationType()
 	return result;
 }
 
-
-
 // Set declarations assignment flag
-bool CommandParser::flagDeclarationAssignment(bool b)
+bool CommandParser::setDeclarationAssignment(bool b)
 {
-	msg.enter("CommandParser::flagDeclarationAssignment");
+	msg.enter("CommandParser::setDeclarationAssignment");
 	if (tree_ == NULL)
 	{
-		printf("Internal Error: No current Tree target for Parser (flagDeclarationAssignment).\n");
-		msg.exit("CommandParser::flagDeclarationAssignment");	
+		printf("Internal Error: No current Tree target for Parser (setDeclarationAssignment).\n");
+		msg.exit("CommandParser::setDeclarationAssignment");	
 		return FALSE;
 	}
-	bool result = tree_->flagDeclarationAssignment(b);
-	msg.exit("CommandParser::flagDeclarationAssignment");
+	bool result = tree_->setDeclarationAssignment(b);
+	msg.exit("CommandParser::setDeclarationAssignment");
+	return result;
+}
+
+// Return whether we are in an assignment within a declaration
+bool CommandParser::isDeclarationAssignment()
+{
+	msg.enter("CommandParser::isDeclarationAssignment");
+	if (tree_ == NULL)
+	{
+		printf("Internal Error: No current Tree target for Parser (isDeclarationAssignment).\n");
+		msg.exit("CommandParser::isDeclarationAssignment");	
+		return FALSE;
+	}
+	bool result = tree_->isDeclarationAssignment();
+	msg.exit("CommandParser::isDeclarationAssignment");
 	return result;
 }
 

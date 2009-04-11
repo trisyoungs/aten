@@ -53,6 +53,8 @@ class FormatChunk
 	ChunkType type_;
 	// C-style format relevant to chunk *or* plain text data if PlainTextChunk
 	Dnchar cFormat_;
+	// Length of formatted argument (if one was supplied)
+	int formatLength_;
 	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
 	TreeNode *arg_;
 	// Variable type to retrieve variable data as (related to contents of cFormat_)
@@ -63,6 +65,8 @@ class FormatChunk
 	ChunkType type();
 	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
 	const char *cFormat();
+	// Return length of formatted chunk
+	int formatLength();
 	// Return associated argument
 	TreeNode *arg();
 	// Return variable type to retrieve variable data as
@@ -101,7 +105,7 @@ class NuFormat
 	*/
 	private:
 	// Use specified parser to perform formatted read
-	int read(LineParser *parser, int flags);
+	int executeRead(LineParser *parser, int flags);
 
 	public:
 	// Return last written string
@@ -109,9 +113,9 @@ class NuFormat
 	// Write format to internal string
 	bool writeToString();
 	// Read line and parse according to format
-	int readFormatted(const char *line, int flags);
+	int read(const char *line, int flags);
 	// Read line from file and parse according to format
-	int readFormatted(LineParser *parser, int flags);
+	int read(LineParser *parser, int flags);
 };
 
 #endif

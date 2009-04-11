@@ -102,7 +102,7 @@ class LineParser
 	// Gets next delimited arg from internal line
 	bool getNextArg(Dnchar *destarg);
 	// Gets next n chars from internal line
-	bool getNextN(int length);
+	bool getNextN(int length, Dnchar *destarg = NULL);
 	// Gets all delimited args from internal line
 	void getAllArgsDelim();
 	// Read line from file and do delimited parse

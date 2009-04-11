@@ -358,14 +358,16 @@ void NuCommand::initPointers()
 	pointers_[ReadLineFormatted] = &NuCommand::function_ReadLineFormatted;
 	pointers_[ReadNext] = &NuCommand::function_ReadNext;
 	pointers_[ReadReal] = &NuCommand::function_ReadReal;
-	pointers_[ReadVar] = &NuCommand::function_ReadVar;
+	pointers_[ReadVariable] = &NuCommand::function_ReadVariable;
+	pointers_[ReadVariableFormatted] = &NuCommand::function_ReadVariableFormatted;
 	pointers_[RemoveReadOption] = &NuCommand::function_RemoveReadOption;
 	pointers_[Rewind] = &NuCommand::function_Rewind;
 	pointers_[SkipChars] = &NuCommand::function_SkipChars;
 	pointers_[SkipLine] = &NuCommand::function_SkipLine;
 	pointers_[WriteLine] = &NuCommand::function_WriteLine;
 	pointers_[WriteLineFormatted] = &NuCommand::function_WriteLineFormatted;
-	pointers_[WriteVar] = &NuCommand::function_WriteVar;
+	pointers_[WriteVariable] = &NuCommand::function_WriteVariable;
+	pointers_[WriteVariableFormatted] = &NuCommand::function_WriteVariableFormatted;
 
 	// Script Commands
 	pointers_[ListScripts] = &NuCommand::function_ListScripts;
@@ -422,7 +424,11 @@ void NuCommand::initPointers()
 
 	// Variable Manipulation Commands
 	pointers_[AfterChar] = &NuCommand::function_AfterChar;
+	pointers_[AToF] = &NuCommand::function_AToF;
+	pointers_[AToI] = &NuCommand::function_AToI;
 	pointers_[BeforeChar] = &NuCommand::function_BeforeChar;
+	pointers_[FToA] = &NuCommand::function_FToA;
+	pointers_[IToA] = &NuCommand::function_IToA;
 	pointers_[Normalise] = &NuCommand::function_Normalise;	
 	pointers_[StripChars] = &NuCommand::function_StripChars;
 

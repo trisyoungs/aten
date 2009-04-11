@@ -185,7 +185,7 @@ int CommandParser::lex()
 			token[length++] = c;
 			c = getChar();
 		}
-		while (isalnum (c));
+		while (isalnum(c) || (c == '_'));
 		unGetChar();
 		token[length] = '\0';
 		msg.print(Messenger::Parse, "LEXER (%li): found an alpha token [%s]...\n", tree_, token);
@@ -197,7 +197,6 @@ int CommandParser::lex()
 			if (dt != NuVTypes::nDataTypes)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->DECLARATION)\n",tree_);
-
 				setDeclarationType(dt);
 				return DECLARATION;
 			}
@@ -236,7 +235,13 @@ int CommandParser::lex()
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ... which is a function (->FUNCCALL).\n", tree_);
 				yylval.functionId = n;
+				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
+				if ((declarationType() != NuVTypes::NoData) && (!isDeclarationAssignment()))
+				{
+					msg.print("Error: '%s' cannot be declared as a variable since it is a function name.\n", token);
+					return 0;
+				}
 				return FUNCCALL;
 			}
 		}
@@ -275,7 +280,7 @@ int CommandParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets and the semicolon
-	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}'))
+	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}') || (c == '[') || (c == ']'))
 	{
 		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%c]\n",tree_,c);
 		return c;
@@ -295,6 +300,14 @@ int CommandParser::lex()
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
 		else msg.print("Error: Unrecognised symbol found in input.\n");
  	}
-	else return c;
+	else
+	{
+		// Make sure that this is a known symbol
+		if ((c == '$') || (c == '%') || (c == '&') || (c == '@') || (c == '?') || (c == ':'))
+		{
+			msg.print("Error: Unrecognised symbol found in input (%c).\n", c);
+		}
+		else return c;
+	}
 	return 0;
 }

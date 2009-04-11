@@ -87,7 +87,7 @@ NuVTypes::DataType Tree::checkBinaryOperatorTypes(NuCommand::Function func, NuVT
 		type2 = temp;
 	}
 	// Like types first... (make int equivalent to real if both types are numeric)
-	if ((type1 <= NuVTypes::RealData) && (type2 <= NuVTypes::RealData) && (type1 != type2)) type1 = type2 = NuVTypes::RealData;
+	if ((type1 <= NuVTypes::DoubleData) && (type2 <= NuVTypes::DoubleData) && (type1 != type2)) type1 = type2 = NuVTypes::DoubleData;
 	NuVTypes::DataType result = NuVTypes::NoData;
 	if (type1 == type2)
 	{
@@ -106,7 +106,7 @@ NuVTypes::DataType Tree::checkBinaryOperatorTypes(NuCommand::Function func, NuVT
 				break;
 			case (NuCommand::OperatorPower):
 				// Only numerical types
-				if (type1 > NuVTypes::RealData) result = NuVTypes::NoData;
+				if (type1 > NuVTypes::DoubleData) result = NuVTypes::NoData;
 				else result = type1;
 				break;
 			// Tests
@@ -162,7 +162,7 @@ NuVTypes::DataType Tree::checkBinaryOperatorTypes(NuCommand::Function func, NuVT
 				case (NuCommand::OperatorAssignmentMinus):
 				case (NuCommand::OperatorAssignmentMultiply):
 				case (NuCommand::OperatorAssignmentPlus):
-					if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData)) result = NuVTypes::VectorData;
+					if ((type2 == NuVTypes::DoubleData) || (type2 == NuVTypes::IntegerData)) result = NuVTypes::VectorData;
 					else result = NuVTypes::NoData;
 					break;
 				default:
@@ -173,7 +173,7 @@ NuVTypes::DataType Tree::checkBinaryOperatorTypes(NuCommand::Function func, NuVT
 		else if (type1 == NuVTypes::StringData)
 		{
 			// We allow multiplication of a string by a number...
-			if ((type2 == NuVTypes::RealData) || (type2 == NuVTypes::IntegerData))
+			if ((type2 == NuVTypes::DoubleData) || (type2 == NuVTypes::IntegerData))
 			{
 				switch (func)
 				{

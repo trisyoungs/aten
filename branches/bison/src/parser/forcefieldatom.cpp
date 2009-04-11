@@ -92,8 +92,8 @@ void ForcefieldAtomVariable::nodePrint(int offset, const char *prefix)
 // Accessor data
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
 	{ "atomtype",		NuVTypes::StringData,		FALSE, TRUE },
-	{ "charge",		NuVTypes::RealData,		FALSE, FALSE },
-	{ "data",		NuVTypes::RealData,		TRUE, FALSE },
+	{ "charge",		NuVTypes::DoubleData,		FALSE, FALSE },
+	{ "data",		NuVTypes::DoubleData,		TRUE, FALSE },
 	{ "description",	NuVTypes::StringData,		FALSE, FALSE },
 	{ "equivalent",		NuVTypes::StringData,		FALSE, FALSE },
 	{ "form",		NuVTypes::StringData,		FALSE, FALSE },

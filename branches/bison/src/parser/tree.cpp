@@ -382,7 +382,7 @@ TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
 		nodes_.own(var);
 		return var;
 	}
-	else if (type == NuVTypes::RealData)
+	else if (type == NuVTypes::DoubleData)
 	{
 		NuRealVariable *var = new NuRealVariable(atof(token->get()), TRUE);
 		nodes_.own(var);
@@ -412,10 +412,16 @@ NuVTypes::DataType Tree::declarationType()
 }
 
 // Set declarations assignment flag
-bool Tree::flagDeclarationAssignment(bool b)
+bool Tree::setDeclarationAssignment(bool b)
 {
 	declarationAssignment_ = b;
 	return TRUE;
+}
+
+// Return whether we are in an assignment within a declaration
+bool Tree::isDeclarationAssignment()
+{
+	return declarationAssignment_;
 }
 
 // Add variable to topmost scope
@@ -466,8 +472,7 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	nodes_.own(var);
-	printf("Created array variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
+// 	printf("Created array variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
 	return var;
 }
 

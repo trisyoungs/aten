@@ -250,9 +250,9 @@ bool LineParser::getNextArg(Dnchar *destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("LineParser::getNextArg");
-	static int arglen, readresult;
-	static bool done, hadquotes, expression, failed;
-	static char c, quotechar, d;
+	int arglen, readresult;
+	bool done, hadquotes, expression, failed;
+	char c, quotechar, d;
 	failed = FALSE;
 	done = FALSE;
 	hadquotes = FALSE;
@@ -373,9 +373,9 @@ bool LineParser::getNextArg(Dnchar *destarg)
 }
 
 // Rip next n characters
-bool LineParser::getNextN(int length)
+bool LineParser::getNextN(int length, Dnchar *destarg)
 {
-	// Put the next 'length' characters from line_ into temparg.
+	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	msg.enter("LineParser::getNextN");
 	int arglen = 0;
 	char c;
@@ -410,6 +410,7 @@ bool LineParser::getNextN(int length)
 	}
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
+	if (destarg != NULL) destarg->set(tempArg_);
 	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);
 	msg.exit("LineParser::getNextN");
@@ -704,9 +705,9 @@ const char *LineParser::parseAtomtypeString(Dnchar &source)
 	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
 	// Ignore spaces and horizontal tabs. Commas separate commands.
 	msg.enter("LineParser::parseAtomtypeString");
-	static int n, nchars, bracketlevel;
-	static bool done, el_list;
-	static Dnchar typecmd;
+	int n, nchars, bracketlevel;
+	bool done, el_list;
+	Dnchar typecmd;
 	nchars = 0;
 	bracketlevel = 0;
 	el_list = FALSE;
@@ -770,8 +771,8 @@ const char *LineParser::trimAtomtypeKeyword(Dnchar &source)
 	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
 	msg.enter("LineParser::trimAtomtypeKeyword");
-	static bool done, equals;
-	static Dnchar keywd;
+	bool done, equals;
+	Dnchar keywd;
 	done = FALSE;
 	equals = FALSE;
 	//printf("String given to trimAtomKeyword = '%s'\n",source.get());

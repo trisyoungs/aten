@@ -139,7 +139,9 @@ class Tree
 	// Return current type to be used for declarations
 	virtual NuVTypes::DataType declarationType();
 	// Set declarations assignment flag
-	virtual bool flagDeclarationAssignment(bool b);
+	virtual bool setDeclarationAssignment(bool b);
+	// Return whether we are in an assignment within a declaration
+	virtual bool isDeclarationAssignment();
 	// Add constant value to tompost scope
 	virtual TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode

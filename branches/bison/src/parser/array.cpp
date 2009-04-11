@@ -83,7 +83,7 @@ void ArrayVariable::reset()
 		return;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) { printf("Reset %i\n", i); arrayData_[i]->reset(); }
+	for (int i=0; i<arraySize_; i++) arrayData_[i]->reset();
 }
 
 
@@ -103,7 +103,6 @@ bool ArrayVariable::executeAsArray(NuReturnValue &rv, int arrayindex)
 		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex, name_.get());
 		return FALSE;
 	}
-	printf("DEATH TO THE INFIDE.\n");
 	return arrayData_[arrayindex-1]->execute(rv);
 }
 
@@ -125,7 +124,6 @@ void ArrayVariable::nodePrint(int offset, const char *prefix)
 // Initialise variable
 bool ArrayVariable::initialise()
 {
-	printf("DIE!\n");
 	// We define our own initialise() function to take over from the inherited default from NuVariable
 	// If the array is already allocated, free it.
 	if (arrayData_ != NULL) printf("Array exists already...\n");	
@@ -134,19 +132,15 @@ bool ArrayVariable::initialise()
 		for (int i=0; i<arraySize_; i++) delete arrayData_[i];
 		delete[] arrayData_;
 	}
-	printf("dslkfjdlkjl\n");
 	// Get size of array to create
 	NuReturnValue newsize;
-	printf("dslkfjdlkjl\n");
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		msg.print("Failed to find array size for '%s'.\n", name_.get());
 		return FALSE;
 	}
-	printf("dslkfjdlkjl\n");
 	// Create new array
 	arraySize_ = newsize.asInteger();
-	printf("New array size is %i\n", arraySize_);
 	if (arraySize_ > 0)
 	{
 		switch (returnType_)
@@ -155,7 +149,7 @@ bool ArrayVariable::initialise()
 				arrayData_ = new NuVariable*[arraySize_];
 				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuIntegerVariable;
 				break;
-			case (NuVTypes::RealData):
+			case (NuVTypes::DoubleData):
 				arrayData_ = new NuVariable*[arraySize_];
 				for (int i=0; i<arraySize_; i++) arrayData_[i] = new NuRealVariable;
 				break;

@@ -137,7 +137,7 @@ bool NuCommand::function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		printf("Internal Error: No format node associated to command 'readline'.\n");
 		return FALSE;
 	}
-	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
+	rv.set( format->read( c->parent()->parser(), c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -156,7 +156,7 @@ bool NuCommand::function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuRetu
 		printf("Internal Error: No format node associated to command 'readlinef'.\n");
 		return FALSE;
 	}
-	rv.set( format->readFormatted( c->parent()->parser(), c->parent()->readOptions() ) );
+	rv.set( format->read( c->parent()->parser(), c->parent()->readOptions() ) );
 	return FALSE;
 }
 
@@ -187,18 +187,29 @@ bool NuCommand::function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &
 	return TRUE;
 }
 
-// Parse given variable with format
-bool NuCommand::function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Parse given variable using delimiters
+bool NuCommand::function_ReadVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
-	NuFormat *format = c->createFormat(1,2);
+	NuFormat *format = c->createFormat(-1,1);
 	if (format == NULL)
 	{
 		printf("Internal Error: No format node associated to command 'readvar'.\n");
 		return FALSE;
 	}
-	// TGAY Write to string
-		printf("RW not available.\n");
-// 	rv.set( format->readFormatted( c->argc(0), c->parent()->readOptions() ) );
+	rv.set( format->read( c->argc(0), c->parent()->readOptions() ) );
+	return TRUE;
+}
+
+// Parse given variable with format
+bool NuCommand::function_ReadVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	NuFormat *format = c->createFormat(1,2);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'readvarf'.\n");
+		return FALSE;
+	}
+	rv.set( format->read( c->argc(0), c->parent()->readOptions() ) );
 	return TRUE;
 }
 
@@ -300,13 +311,34 @@ bool NuCommand::function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuRet
 	return TRUE;
 }
 
-// Write line to variable
-bool NuCommand::function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+// Write delimited line to variable
+bool NuCommand::function_WriteVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	NuFormat *format = c->createFormat(-1,1);
+	if (format == NULL)
+	{
+		printf("Internal Error: No format node associated to command 'writevar'.\n");
+		return FALSE;
+	}
+	// Create the string to be output
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	NuReturnValue string;
+	string.set(format->string());
+	c->setArg(0, string);
+	return TRUE;
+}
+
+// Write formatted line to variable
+bool NuCommand::function_WriteVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	NuFormat *format = c->createFormat(1,2);
 	if (format == NULL)
 	{
-		printf("Internal Error: No format node associated to command 'writevar'.\n");
+		printf("Internal Error: No format node associated to command 'writevarf'.\n");
 		return FALSE;
 	}
 	// Create the string to be output

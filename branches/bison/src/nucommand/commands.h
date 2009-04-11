@@ -401,14 +401,16 @@ class NuCommand
 		ReadLineFormatted,
 		ReadNext,
 		ReadReal,
-		ReadVar,
+		ReadVariable,
+		ReadVariableFormatted,
 		RemoveReadOption,
 		Rewind,
 		SkipChars,
 		SkipLine,
 		WriteLine,
 		WriteLineFormatted,
-		WriteVar,
+		WriteVariable,
+		WriteVariableFormatted,
 
 		// Script Commands
 		ListScripts,
@@ -466,7 +468,11 @@ class NuCommand
 
 		// Variable Manipulation
 		AfterChar,
+		AToF,
+		AToI,
 		BeforeChar,
+		FToA,
+		IToA,
 		Normalise,
 		StripChars,
 
@@ -832,14 +838,16 @@ class NuCommand
 	static bool function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadNext(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ReadVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ReadVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_RemoveReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Rewind(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SkipChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_WriteVar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_WriteVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_WriteVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Script Commands
 	static bool function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
@@ -890,7 +898,11 @@ class NuCommand
 	static bool function_TranslateWorld(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Variable Manipulation
 	static bool function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AToF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AToI(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_FToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_IToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	// Variable Operators

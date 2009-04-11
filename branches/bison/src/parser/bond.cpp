@@ -96,7 +96,7 @@ void BondVariable::nodePrint(int offset, const char *prefix)
 Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
 	{ "i",		NuVTypes::AtomData,	FALSE, TRUE },
 	{ "j",		NuVTypes::AtomData,	FALSE, TRUE },
-	{ "order",	NuVTypes::RealData,	FALSE, TRUE },
+	{ "order",	NuVTypes::DoubleData,	FALSE, TRUE },
 	{ "type",	NuVTypes::StringData,	FALSE, TRUE }
 };
 
