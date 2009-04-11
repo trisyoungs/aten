@@ -22,8 +22,12 @@
 #include "parser/stepnode.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
+#include "parser/bond.h"
+#include "parser/cell.h"
+#include "parser/elements.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
+#include "parser/forcefieldbound.h"
 #include "parser/model.h"
 #include "parser/vector.h"
 #include <string.h>
@@ -90,11 +94,23 @@ bool StepNode::execute(NuReturnValue &rv)
 		case (NuVTypes::AtomData):
 			result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (NuVTypes::BondData):
+			result = BondVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (NuVTypes::CellData):
+			result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (NuVTypes::ElementsData):
+			result = ElementsVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (NuVTypes::ForcefieldData):
 			result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (NuVTypes::ForcefieldAtomData):
 			result = ForcefieldAtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (NuVTypes::ForcefieldBoundData):
+			result = ForcefieldBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (NuVTypes::ModelData):
 			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -161,6 +177,21 @@ bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
 		case (NuVTypes::AtomData):
 			result = AtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
+		case (NuVTypes::CellData):
+			result = CellVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (NuVTypes::ElementsData):
+			result = ElementsVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (NuVTypes::ForcefieldData):
+			result = ForcefieldVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (NuVTypes::ForcefieldAtomData):
+			result = ForcefieldAtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (NuVTypes::ForcefieldBoundData):
+			result = ForcefieldBoundVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
  		case (NuVTypes::ModelData):
  			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
  			break;
@@ -202,6 +233,24 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 			break;
 		case (NuVTypes::AtomData):
 			result = AtomVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::BondData):
+			result = BondVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::CellData):
+			result = CellVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::ElementsData):
+			result = ElementsVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::ForcefieldData):
+			result = ForcefieldVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::ForcefieldAtomData):
+			result = ForcefieldAtomVariable::accessorSearch(s, arrayindex);
+			break;
+		case (NuVTypes::ForcefieldBoundData):
+			result = ForcefieldBoundVariable::accessorSearch(s, arrayindex);
 			break;
 		case (NuVTypes::ModelData):
 			result = ModelVariable::accessorSearch(s, arrayindex);

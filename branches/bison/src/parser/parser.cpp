@@ -178,6 +178,7 @@ bool CommandParser::generate(Forest *f, const char *s)
 bool CommandParser::generateFromFile(Forest *f, const char *filename)
 {
 	msg.enter("CommandParser::generate[file]");
+	bool result = TRUE;
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
@@ -201,21 +202,18 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	isFileSource_ = TRUE;
 	expectPathStep_ = FALSE;
 	// Perform the parsing
-	int result = yyparse();
-	if (result != 0)
+	if (yyparse() != 0)
 	{
 		msg.print("Error occurred here:\n");
 		printErrorInfo();
 		forest_->clear();
-		forest_ = NULL;
-		isFileSource_ = NULL;
-		msg.exit("CommandParser::generate[file]");
-		return FALSE;
+		result = FALSE;
 	}
+	parser_.closeFile();
 	isFileSource_ = NULL;
 	forest_ = NULL;
 	msg.exit("CommandParser::generate[file]");
-	return TRUE;
+	return result;
 }
 
 // Finish current tree (i.e. nullify tree_)

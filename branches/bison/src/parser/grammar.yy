@@ -102,15 +102,15 @@ filter:
 
 statement:
 	';'					{ $$ = cmdparser.addFunction(NuCommand::NoFunction); }
-	| stexpr ';'			{ $$ = $1; }
+	| stexpr ';'				{ $$ = $1; }
 	| flowstatement				{ $$ = $1; }
+	| error	{ printf("kjsdfsdljflkj\n"); }
 	;
 
 stexpr:
 	DECLARATION namelist 			{ $$ = cmdparser.addFunction(NuCommand::NoFunction); cmdparser.setDeclarationType(NuVTypes::NoData); }
 	| expr					{ $$ = $1; }
-	| DECLARATION '='			{ msg.print("Illegal use of reserved word '%s'.\n", NuVTypes::dataType(cmdparser.declarationType())); YYABORT; }
-	| DECLARATION '.'			{ msg.print("Illegal use of reserved word '%s'.\n", NuVTypes::dataType(cmdparser.declarationType())); YYABORT; }
+	| DECLARATION '.' steplist		{ msg.print("Illegal use of reserved word '%s'.\n", NuVTypes::dataType(cmdparser.declarationType())); YYABORT; }
 	;
 
 flowstatement:
@@ -178,6 +178,7 @@ savename:
 steplist:
 	step 					{  }
 	| steplist '.' step			{  }
+	| error	'.'				{ printf("Arse..\n"); }
 	;
 
 var:
