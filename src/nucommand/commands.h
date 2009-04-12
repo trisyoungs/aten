@@ -395,6 +395,7 @@ class NuCommand
 		Eof,
 		Find,
 		GetLine,
+		PeekChar,
 		ReadChars,
 		ReadInteger,
 		ReadLine,
@@ -832,6 +833,7 @@ class NuCommand
 	static bool function_Eof(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_PeekChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadInteger(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
 	static bool function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);

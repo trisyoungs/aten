@@ -56,7 +56,7 @@ ArrayVariable::~ArrayVariable()
 // Set / Get
 */
 
-// Set from returnvalue node
+// Set whole array from returnvalue node
 bool ArrayVariable::set(NuReturnValue &rv)
 {
 	if (readOnly_)
@@ -71,6 +71,30 @@ bool ArrayVariable::set(NuReturnValue &rv)
 	}
 	// Loop over array elements and set them
 	for (int i=0; i<arraySize_; i++) if (!arrayData_[i]->set(rv)) return FALSE;
+	return TRUE;
+}
+
+// Set array element from returnvalue node
+bool ArrayVariable::setAsArray(NuReturnValue &rv, int arrayindex)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case an array?) cannot be assigned to.\n");
+		return FALSE;
+	}
+	if (arrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return FALSE;
+	}
+	// Check index
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	{
+		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		return FALSE;
+	}
+	// Set individual element
+	arrayData_[arrayindex]->set(rv);
 	return TRUE;
 }
 

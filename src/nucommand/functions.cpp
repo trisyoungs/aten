@@ -352,6 +352,7 @@ void NuCommand::initPointers()
 	pointers_[Eof] = &NuCommand::function_Eof;
 	pointers_[Find] = &NuCommand::function_Find;
 	pointers_[GetLine] = &NuCommand::function_GetLine;
+	pointers_[PeekChar] = &NuCommand::function_PeekChar;
 	pointers_[ReadChars] = &NuCommand::function_ReadChars;
 	pointers_[ReadInteger] = &NuCommand::function_ReadInteger;
 	pointers_[ReadLine] = &NuCommand::function_ReadLine;

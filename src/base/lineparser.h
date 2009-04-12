@@ -64,7 +64,7 @@ class LineParser
 	std::fstream file_;
 	// Whether the file is for reading or writing
 	bool readOnly_;
-	// Option bitmask (set by get_args() calls)
+	// Option bitmask (set by get*() calls)
 	int optionMask_;
 
 	public:
@@ -98,13 +98,15 @@ class LineParser
 	/*
 	// Read/Write Routines
 	*/
-	public:
-	// Gets next delimited arg from internal line
-	bool getNextArg(Dnchar *destarg);
-	// Gets next n chars from internal line
-	bool getNextN(int length, Dnchar *destarg = NULL);
+	private:
 	// Gets all delimited args from internal line
 	void getAllArgsDelim();
+
+	public:
+	// Gets next delimited arg from internal line
+	bool getNextArg(Dnchar *destarg, int flags = LineParser::Defaults);
+	// Gets next n chars from internal line
+	bool getNextN(int length, Dnchar *destarg = NULL);
 	// Read line from file and do delimited parse
 	int getArgsDelim(int flags = LineParser::Defaults);
 	// Set line and parse using delimiters
@@ -116,7 +118,7 @@ class LineParser
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal file
-	const char *getArgDelim(int flags);
+	int getArgDelim(Dnchar *destarg, int flags);
 	// Return a number of characters from the input stream
 	const char *getChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file

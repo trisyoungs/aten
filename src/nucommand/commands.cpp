@@ -651,6 +651,8 @@ NuCommandData NuCommand::data[NuCommand::nCommands] = {
 				"Search for a string in the input file (placing matching line in optional variable" },
 	{ "getline",		"^C",		"", NuVTypes::IntegerData,
 				"Read the next line from the file, placing in variable supplied, and returning read success" },
+	{ "peekchar",		"",		"", NuVTypes::StringData, 
+				"Peek the next character from the current input file" },
 	{ "readchars",		"N",		"<nchars>", NuVTypes::StringData,
 				"Read a number of characters from the input file" },
 	{ "readint",		"n",		"[nbytes=4]", NuVTypes::IntegerData,

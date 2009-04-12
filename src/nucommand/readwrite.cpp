@@ -94,6 +94,23 @@ bool NuCommand::function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	return TRUE;
 }
 
+// Peek next character from file
+bool NuCommand::function_PeekChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The 'peekchar' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	char s[2];
+	s[0] = c->parent()->parser()->peek();
+	s[1] = '\0';
+	rv.set(s);
+	msg.print(Messenger::Commands,"Peek got character '%c'\n", s[0]);
+	return TRUE;
+}
+
 // Read N characters from unformatted file
 bool NuCommand::function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
@@ -169,7 +186,11 @@ bool NuCommand::function_ReadNext(NuCommandNode *c, Bundle &obj, NuReturnValue &
 		msg.print("The 'readnext' command can only be used from within a Filter.\n");
 		return FALSE;
 	}
-	rv.set(c->parent()->parser()->getArgDelim(c->parent()->readOptions()));
+	Dnchar arg;
+	rv.set( c->parent()->parser()->getArgDelim(&arg, c->parent()->readOptions()));
+	NuReturnValue argrv;
+	argrv.set(arg.get());
+	c->setArg(0, argrv);
 	return TRUE;
 }
 

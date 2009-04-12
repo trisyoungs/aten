@@ -76,6 +76,8 @@ const char *LineParser::line()
 void LineParser::setLine(const char *s)
 {
 	strncpy(line_, s, MAXLINELENGTH);
+	lineLength_ = strlen(line_);
+	linePos_ = 0;
 }
 
 // Return integer line number of last read line
@@ -190,7 +192,7 @@ int LineParser::readLine()
 	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
 	file_.getline(line_, MAXLINELENGTH-1);
-	msg.print(Messenger::Parse, "  Line from file is: [%s]\n", line_);
+	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 	if (file_.eof())
 	{
 		closeFile();
@@ -246,7 +248,7 @@ int LineParser::getLine()
 	return 0;
 }
 
-bool LineParser::getNextArg(Dnchar *destarg)
+bool LineParser::getNextArg(Dnchar *destarg, int flags)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("LineParser::getNextArg");
@@ -260,6 +262,7 @@ bool LineParser::getNextArg(Dnchar *destarg)
 	expression = FALSE;
 	endOfLine_ = FALSE;
 	arglen = 0;
+	optionMask_ = flags;
 	while (linePos_ < lineLength_)
 	{
 		c = line_[linePos_];
@@ -445,7 +448,7 @@ void LineParser::getAllArgsDelim()
 */
 
 // Parse delimited (from file)
-int LineParser::getArgsDelim(int options)
+int LineParser::getArgsDelim(int flags)
 {
 	// Standard file parse routine.
 	// Splits the line from the file into delimited arguments via the 'parseline' function
@@ -455,7 +458,7 @@ int LineParser::getArgsDelim(int options)
 	// Lines beginning with '#' are ignored as comments
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
-	optionMask_ = options;
+	optionMask_ = flags;
 	do
 	{
 		// Read line from file and parse it
@@ -476,13 +479,14 @@ int LineParser::getArgsDelim(int options)
 }
 
 // Get next argument (delimited) from file stream
-const char *LineParser::getArgDelim(int flags)
+int LineParser::getArgDelim(Dnchar *destarg, int flags)
 {
 	msg.enter("LineParser::getArgDelim");
 	optionMask_ = flags;
-	if (getNextArg(NULL)) msg.print(Messenger::Parse,"getArgDelim [%s]\n", tempArg_);
+	int result = getNextArg(destarg);
+	msg.print(Messenger::Parse,"getArgDelim = %i [%s]\n", result, destarg->get());
 	msg.exit("LineParser::getArgDelim");
-	return tempArg_;
+	return result;
 }
 
 // Parse all arguments (delimited) from string

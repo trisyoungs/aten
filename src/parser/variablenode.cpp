@@ -184,7 +184,7 @@ bool VariableNode::set(NuReturnValue &setrv)
 		{
 			NuReturnValue index;
 			if (!arrayIndex_->execute(index)) result = FALSE;
-			else result = variable_->setAsArray(setrv, index.asInteger());
+			else result = variable_->setAsArray(setrv, index.asInteger() - 1);
 		}
 	}
 	else if (variable_->returnType() == NuVTypes::VectorData)
