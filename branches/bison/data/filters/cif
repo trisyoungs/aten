@@ -10,8 +10,8 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	# and then use it to read in the data once the loop definitions are finished.
 
 	# Variables
-	string discard,data,keywd,line,char,looptype,args[10];
-	int n,cellspec,id_r[3],id_e,id_gen;
+	string discard,data,keywd,line,char,looptype,args[50];
+	int n,arg,cellspec,id_r[3],id_e,id_gen,nread;
 	double length[3],cellangle[3];
 
 	# Blank lines are significant, so don't skip them, and recognise quoting
@@ -25,7 +25,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	while (!eof())
 	{
 		readline(keywd,data);
-		printf("Main keyword = %s\n", keywd);
+		#printf("Main keyword = %s\n", keywd);
 		if (keywd == "_chemical_name_common") setname(data);
 		else if (keywd == "_cell_length_a") { length[1] = data; cellspec++; }
 		else if (keywd == "_cell_length_b") { length[2] = data; cellspec++; }
@@ -39,34 +39,48 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		else if (keywd == "loop_")
 		{
 			# Deal with loops here
-			printf("Here is a loop.........................\n");
 			n = 0;
 			looptype = "none";
 			# Loop over next lines to determine the data to expect. When we discover a data item we're interested in,
 			# store the number of the column.
 			while (1)
 			{
-				++n;
 				# Read and store whole line (we may need it later)
 				getline(line);
-				printf("Current line is '%s'\n", line);
+				#printf("Current line is '%s'\n", line);
 				# Get keyword from line
 				readvar(line,keywd);
-				printf("Keyword is now '%s'\n", keywd);
+				#printf("Keyword is now '%s'\n", keywd);
 				# Get first character and next 9 characters
 				readvarf(keywd,"%1s%9s",char,data);
+				if (char == "_") ++n;
+				#printf("In the loop - line is %i\n", n);
 				# If first character is not '_' then we have entered the actual data defined by the loop.
 				# If this was an empty line, we're done with the loop
-				printf("Keyword = [%s], firstchar=%s\n",keywd,char);
+				#printf("Keyword = [%s], firstchar=%s\n",keywd,char);
 				if (char == "") break;
 				else if (char <> "_")
 				{
+					#printf("Data begins at line %i\n", n);
 					# Already have first line of data stored in $line.
-					#print "LINE BEFORE ATOM is $line"
-					readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
+					#printf("LINE BEFORE ATOM is %s\n", line);
+					# Take arguments from current stored line - attempt to read ten...
+					nread = readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
+					# If we didn't get enough bits of data, read more lines and parse until we do
+					#printf("Nargs read = %i\n", nread);
+					if (nread < (n-1))
+					{
+						getline(line);
+						for (arg = nread+1; arg <= n-1; arg++) readnext(args[arg]);
+					}
+					# for (arg=1; arg < n; ++arg) printf("   Now argument %i = %s\n", arg, args[arg]);
+					#readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
 					# Our next action depends on the loop type
-					if (looptype == "atom") newatom(args[id_e], atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
-					else if (looptype == "gen") addgenerator(args[id_gen]);
+					if (looptype == "atom") {
+						newatom(args[id_e], atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+						printf("Created atom with coords %f %f %f\n", atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+					}
+					else if (looptype == "gen") addgenerator(line);
 				}
 				else if (data == "atom_site")
 				{

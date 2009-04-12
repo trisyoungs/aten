@@ -80,5 +80,6 @@ bool NuCommand::function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue 
 bool NuCommand::function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 {
 	rv.set( stripChars(c->argc(0), c->argc(1)) );
+	printf("Original/Stripped strings are '%s'/'%s'\n", c->argc(0), rv.asString());
 	return TRUE;
 }

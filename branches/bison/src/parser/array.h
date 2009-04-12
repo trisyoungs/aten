@@ -44,7 +44,7 @@ class ArrayVariable : public NuVariable
 	// Set from returnvalue node
 	bool set(NuReturnValue &rv);
 	// Set from returnvalue node as array
-	bool set(NuReturnValue &rv, int arrayindex);
+	bool setAsArray(NuReturnValue &rv, int arrayindex);
 	// Reset array
 	void reset();
 

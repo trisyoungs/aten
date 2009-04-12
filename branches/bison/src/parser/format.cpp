@@ -293,7 +293,6 @@ bool NuFormat::isValid()
 int NuFormat::executeRead(LineParser *parser, int flags)
 {
 	msg.enter("NuFormat::executeRead");
-	printf("Executing read...\n");
 	int nparsed = 0, length;
 	NuReturnValue rv;
 	Dnchar bit;
@@ -306,13 +305,13 @@ int NuFormat::executeRead(LineParser *parser, int flags)
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
 				parser->getNextArg(&bit);
+				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):
 				// Get rgument from LineParser
 				length = chunk->formatLength();
 				if (length > 0) parser->getNextN(length, &bit);
 				else parser->getNextArg(&bit);
-				printf("Contents of bit are now '%s'\n", bit.get());
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
@@ -342,7 +341,6 @@ int NuFormat::executeRead(LineParser *parser, int flags)
 			chunk->arg()->set( rv );
 		}
 	}
-	printf("Done executing read...\n");
 	msg.exit("NuFormat::executeRead");
 	return nparsed;
 }
@@ -397,7 +395,7 @@ bool NuFormat::writeToString()
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
-				msg.exit("NuFormat::read");
+				msg.exit("NuFormat::writeToString");
 				return FALSE;
 		}
 	}
