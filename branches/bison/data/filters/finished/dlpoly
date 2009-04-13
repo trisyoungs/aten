@@ -7,10 +7,9 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 {
 	# Variable Declaration
 	string e, title;
-	integer n,keytrj,imcon;
-	real ax,ay,az,bx,by,bz,cx,cy,cz;
-	real rx,ry,rz,vx,vy,vz,fx,fy,fz;
-	vector v1;
+	int n,keytrj,imcon;
+	double ax,ay,az,bx,by,bz,cx,cy,cz;
+	double rx,ry,rz,vx,vy,vz,fx,fy,fz;
 
 	# Title section
 	getline(title);
@@ -51,7 +50,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*", exact="CONFIG,REVCON,config,revcon", nickname="dlpoly", id=2)
 {
 	# Variable Declaration
-	integer id,n,imcon;
+	int n,imcon;
 	atom i;
 
 	# Get current model

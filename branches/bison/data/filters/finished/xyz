@@ -6,9 +6,9 @@
 filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
 {
 	# Variable declaration
-	integer natoms,n,m;
+	int natoms,n,m;
 	string e,title;
-	real rx,ry,rz,q;
+	double rx,ry,rz,q;
 	atom i;
 
 	# Read data
@@ -31,9 +31,9 @@ filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension
 filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
 {
 	# Variable declaration
-	integer n;
+	int n;
 	string e;
-	real rx,ry,rz;
+	double rx,ry,rz;
 	atom i;
 
 	writeline(aten.model.natoms);
