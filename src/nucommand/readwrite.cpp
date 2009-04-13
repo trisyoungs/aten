@@ -174,7 +174,7 @@ bool NuCommand::function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuRetu
 		return FALSE;
 	}
 	rv.set( format->read( c->parent()->parser(), c->parent()->readOptions() ) );
-	return FALSE;
+	return TRUE;
 }
 
 // Get next whitespace-delimited argument from file

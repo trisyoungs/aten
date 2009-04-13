@@ -193,6 +193,7 @@ var:
 exprlist:
 	expr					{ $$ = $1; }
 	| exprlist ',' expr			{ $$ = Tree::joinArguments($3,$1); }
+	| exprlist expr				{ msg.print("Error: Missing comma between items?\n"); YYABORT; }
 	;
 
 expr:
