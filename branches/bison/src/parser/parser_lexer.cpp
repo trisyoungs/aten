@@ -29,8 +29,8 @@
 #include "base/sysfunc.h"
 
 // Symbols
-const char *SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--" };
-int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM };
+const char *SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--", "&&", "||" };
+int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM, AND, OR };
 
 // Original yylex()
 int yylex()
@@ -298,7 +298,7 @@ int CommandParser::lex()
 		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%s]\n",tree_,token);
 		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token);
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
-		else msg.print("Error: Unrecognised symbol found in input.\n");
+		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token);
  	}
 	else
 	{

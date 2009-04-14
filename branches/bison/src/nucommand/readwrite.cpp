@@ -71,6 +71,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				ReturnValue val(c->parent()->parser()->line());
 				c->setArg(1, val);
 			}
+			break;
 		}
 	} while (1);
 	return TRUE;

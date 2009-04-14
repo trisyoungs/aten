@@ -35,6 +35,7 @@ Dnchar newStepName;
 %token DECLARATION DO WHILE FOR IF FILTERBLOCK
 %nonassoc ELSE
 
+%nonassoc AND OR
 %left '=' PEQ MEQ TEQ DEQ 
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
@@ -226,6 +227,8 @@ expr:
 	| expr GEQ expr				{ $$ = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
 	| expr '<' expr				{ $$ = cmdparser.addOperator(Command::OperatorLessThan, $1, $3); if ($$ == NULL) YYABORT; }
 	| expr LEQ expr				{ $$ = cmdparser.addOperator(Command::OperatorLessThanEqualTo, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr AND expr				{ $$ = cmdparser.addOperator(Command::OperatorAnd, $1, $3); if ($$ == NULL) YYABORT; }
+	| expr OR expr				{ $$ = cmdparser.addOperator(Command::OperatorOr, $1, $3); if ($$ == NULL) YYABORT; }
 	| '(' expr ')'				{ $$ = $2; }
 	| '!' expr				{ $$ = cmdparser.addOperator(Command::OperatorNot, $2); if ($$ == NULL) YYABORT; }
 	| NEWTOKEN				{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }

@@ -704,8 +704,6 @@ class Model
 	long int frameSize_;
 	// Frame list
 	List<Model> frames_;
-	// Add frame to trajectory
-	Model *addFrame();
 	// Remove frame from trajectory
 	void removeFrame(Model*);
 	// Number of frames cached
@@ -722,6 +720,8 @@ class Model
 	Model *currentFrame_;
 
 	public:
+	// Add frame to trajectory
+	Model *addFrame();
 	// Set parent model of trajectory
 	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory

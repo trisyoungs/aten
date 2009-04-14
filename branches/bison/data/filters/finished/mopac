@@ -1,0 +1,78 @@
+# Mopac input file (for v1.1+)
+# Created:	 13/04/2009
+# Last modified: 13/04/2009
+# ChangeLog:
+# Notes:
+#   Cartesian coordinate format is assumed
+
+filter(type="importmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
+	# Variable declaration
+	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2;
+	string e,line,title;
+	double rx,ry,rz;
+	vector v[3];
+
+	# Discard keyword lines.
+	# A '+' in a line indicates that another line of keywords will follow.
+	# A '&' in a line indicates that a title/description line is replaced by keywords.
+	while (getline(line))
+	{
+		if (contains(line,"+") == 0) break;
+		if (contains(line,"&") == 0) ntitle--;
+	}
+
+	# Description lines follow, unless replaced by keyword lines with '&' in previous lines
+	title = "Mopac Input";
+	if (ntitle > 0) getline(title);
+	if (ntitle > 1)	getline(line);
+	newmodel(title);
+
+	# All remaining lines make up the geometry
+	while (!eof())
+	{
+		readline(e,rx,fx,ry,fy,rz,fy);
+		# If the element is 'Tv' its part of the cell specification
+		if (e == "Tv")
+		{
+			++cellcount;
+			if (cellcount < 4)
+			{
+				v[cellcount].x = rx;
+				v[cellcount].y = ry;
+				v[cellcount].z = rz;
+			}
+			else printf("Extra translation vector data found - ignored...\n");
+		}
+	#	else newatom(e,rx,ry,rz);
+	}
+	rebond();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
+	# Variable declaration
+	int n,f;
+	string e;
+	double rx,ry,rz;
+	atom i;
+	model m = aten.model;
+
+	writeline("PM6 BFGS");
+	writeline(m.name);
+	writeline("Coordinates churned out by Aten.");
+	for (i = m.atoms; i != 0; ++i)
+	{
+		f = 1 - i.fixed;
+		writelinef("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", i.symbol, i.rx, f, i.ry, f, i.rz, f);
+	}
+
+	# Write translation vector for cell
+	if (m.cell.type <> "none")
+	{
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.ax,m.cell.ay,m.cell.az);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.bx,m.cell.by,m.cell.bz);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.cx,m.cell.cy,m.cell.cz);
+	}
+}

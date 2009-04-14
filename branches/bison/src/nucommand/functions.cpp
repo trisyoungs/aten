@@ -405,6 +405,8 @@ void Command::initPointers()
 	pointers_[Version] = &Command::function_Version;
 	
 	// Trajectory Commands
+	pointers_[AddFrame] = &Command::function_AddFrame;
+	pointers_[ClearTrajectory] = &Command::function_ClearTrajectory;
 	pointers_[FinaliseFrame] = &Command::function_FinaliseFrame;
 	pointers_[FirstFrame] = &Command::function_FirstFrame;
 	pointers_[LastFrame] = &Command::function_LastFrame;
@@ -436,6 +438,7 @@ void Command::initPointers()
 
 	// Variable Operators
 	pointers_[OperatorAdd] = &function_OperatorAdd;
+	pointers_[OperatorAnd] = &function_OperatorAnd;
 	pointers_[OperatorAssignment] = &function_OperatorAssignment;
 	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
 	pointers_[OperatorAssignmentMinus] = &function_OperatorAssignmentMinus;
@@ -451,6 +454,7 @@ void Command::initPointers()
 	pointers_[OperatorNegate] = &function_OperatorNegate;
 	pointers_[OperatorNot] = &function_OperatorNot;
 	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
+	pointers_[OperatorOr] = &function_OperatorOr;
 	pointers_[OperatorPower] = &function_OperatorPower;
 	pointers_[OperatorPostfixIncrease] = &function_OperatorPostfixIncrease;
 	pointers_[OperatorPostfixDecrease] = &function_OperatorPostfixDecrease;

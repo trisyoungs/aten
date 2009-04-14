@@ -40,7 +40,7 @@ class CommandParser : public Tree
 	CommandParser();
 	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
-	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, nSymbolTokens };
+	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, AndSymbol, OrSymbol, nSymbolTokens };
 	// Friend declarations
 	friend class Forest;
 
