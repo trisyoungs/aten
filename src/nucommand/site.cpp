@@ -26,7 +26,7 @@
 #include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-bool NuCommand::function_NewSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -53,7 +53,7 @@ bool NuCommand::function_NewSite(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Print site definitions for model ('listsites')
-bool NuCommand::function_ListSites(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s = obj.m->sites.first();
@@ -74,7 +74,7 @@ bool NuCommand::function_ListSites(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-bool NuCommand::function_GetSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s;
@@ -86,7 +86,7 @@ bool NuCommand::function_GetSite(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
-bool NuCommand::function_SiteAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;

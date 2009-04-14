@@ -133,7 +133,7 @@ void Forest::deleteTree(Tree *t)
 }
 
 // Execute all trees in forest
-bool Forest::executeAll(NuReturnValue &rv)
+bool Forest::executeAll(ReturnValue &rv)
 {
 	msg.enter("Forest::executeAll");
 	int count = 0;

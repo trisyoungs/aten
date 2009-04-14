@@ -43,7 +43,7 @@ const char *FilterData::filterOption(FilterData::FilterOption fc)
 {
 	return FilterOptionKeywords[fc];
 }
-NuVTypes::DataType FilterOptionTypes[FilterData::nFilterOptions] =  { NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::StringData, NuVTypes::IntegerData, NuVTypes::StringData };
+VTypes::DataType FilterOptionTypes[FilterData::nFilterOptions] =  { VTypes::StringData, VTypes::StringData, VTypes::StringData, VTypes::IntegerData, VTypes::StringData, VTypes::StringData, VTypes::StringData, VTypes::StringData, VTypes::IntegerData, VTypes::StringData };
 
 // Constructor
 FilterData::FilterData()
@@ -158,12 +158,12 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 	// Check argument type
 	if (FilterOptionTypes[fo] != value->returnType())
 	{
-		msg.print("Error: Filter option '%s' takes %s value.\n", name->get(), NuVTypes::dataType(FilterOptionTypes[fo]));
+		msg.print("Error: Filter option '%s' takes %s value.\n", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
 		msg.exit("FilterData::setOption");
 		return FALSE;
 	}
 	Dnchar *d;
-	NuReturnValue rv;
+	ReturnValue rv;
 	ElementMap::ZMapType zm;
 	FilterType ft;
 	LineParser parser;

@@ -23,9 +23,9 @@
 #include "parser/commandnode.h"
 
 // Write line to msg output and stop
-bool NuCommand::function_Error(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuFormat *fmt = c->createFormat(0,1);
+	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'error' command.\n");
@@ -36,9 +36,9 @@ bool NuCommand::function_Error(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Print formatted string
-bool NuCommand::function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuFormat *fmt = c->createFormat(0,1);
+	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'printf' command.\n");
@@ -49,9 +49,9 @@ bool NuCommand::function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Print formatted string (in verbose output only)
-bool NuCommand::function_Verbose(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuFormat *fmt = c->createFormat(0,1);
+	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'verbose' command.\n");
@@ -63,9 +63,9 @@ bool NuCommand::function_Verbose(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Write line to msg output
-bool NuCommand::function_Warn(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Warn(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuFormat *fmt = c->createFormat(0,1);
+	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'warn' command.\n");

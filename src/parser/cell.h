@@ -1,5 +1,5 @@
 /*
-	*** Cell Variable
+	*** Cell Variable and Array
 	*** src/parser/cell.h
 	Copyright T. Youngs 2007-2009
 
@@ -22,39 +22,19 @@
 #ifndef ATEN_CELLVARIABLE_H
 #define ATEN_CELLVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
 class Cell;
 
 // Cell Variable
-class CellVariable : public NuVariable
+class CellVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
 	CellVariable(Cell *i = NULL, bool constant = FALSE);
 	~CellVariable();
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(NuReturnValue &rv);
-	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Cell data
-	void *cellData_;
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
 
 	/*
 	// Access Data
@@ -67,11 +47,26 @@ class CellVariable : public NuVariable
 	// Static function to search accessors
 	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+};
+
+// Cell Array Variable
+class CellArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	CellArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 };
 
 #endif

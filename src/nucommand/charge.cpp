@@ -25,7 +25,7 @@
 #include "base/pattern.h"
 
 // Assign charges from forcefield atom types ('chargeff')
-bool NuCommand::function_ChargeFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ChargeFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Assign forcefield charges");
@@ -35,7 +35,7 @@ bool NuCommand::function_ChargeFF(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Copy atomic charges from model to model's current trajectory frame
-bool NuCommand::function_ChargeFromModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ChargeFromModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs == obj.m) 
@@ -48,7 +48,7 @@ bool NuCommand::function_ChargeFromModel(NuCommandNode *c, Bundle &obj, NuReturn
 }
 
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
-bool NuCommand::function_ChargePAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ChargePAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Charge single pattern atom");
@@ -58,7 +58,7 @@ bool NuCommand::function_ChargePAtom(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Assign charge to selected atoms in model ('charge <q>')
-bool NuCommand::function_Charge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Charge selected atoms");
@@ -68,14 +68,14 @@ bool NuCommand::function_Charge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
-bool NuCommand::function_ChargeType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ChargeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	printf("Not implemented yet!\n");
 	return FALSE;
 }
 
 // Clears charge in current model ('clearcharges')
-bool NuCommand::function_ClearCharges(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearCharges(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Remove charges");

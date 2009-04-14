@@ -1,6 +1,6 @@
 /*
-	*** String (Character) Variable
-	*** src/parser/character.cpp
+	*** Pointer Variable and Array Base
+	*** src/parser/pvariable.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,69 +19,44 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/character.h"
-#include "base/constants.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "parser/pvariable.h"
 
 /*
 // Variable
 */
 
-// Constructor
-StringVariable::StringVariable()
-{
-	// Private variables
-	returnType_ = VTypes::StringData;
-	readOnly_ = FALSE;
-}
-
-
-StringVariable::StringVariable(const char *s, bool constant) : stringData_(s)
-{
-	// Private variables
-	returnType_ = VTypes::StringData;
-	readOnly_ = constant;
-}
-
-// Destructor
-StringVariable::~StringVariable()
-{
-}
-
 /*
 // Set / Get
 */
 
-// Set value of node from returnvalue
-bool StringVariable::set(ReturnValue &rv)
+// Set value of variable
+bool PointerVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a character) cannot be assigned to.\n");
+		msg.print("A constant value (in this case %s) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	bool success;
-	stringData_ = rv.asString(success);
+	pointerData_ = rv.asPointer(returnType_, success);
 	return success;
 }
 
-// Reset node
-void StringVariable::reset()
+// Reset variable
+void PointerVariable::reset()
 {
-	stringData_.clear();
+	pointerData_ = NULL;
 }
 
 // Return value of node
-bool StringVariable::execute(ReturnValue &rv)
+bool PointerVariable::execute(ReturnValue &rv)
 {
-	rv.set(stringData_.get());
+	rv.set(returnType_, pointerData_);
 	return TRUE;
 }
 
 // Print node contents
-void StringVariable::nodePrint(int offset, const char *prefix)
+void PointerVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -91,31 +66,19 @@ void StringVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, stringData_.get());
-	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab, stringData_.get(), name_.get());
+	if (readOnly_) printf("%s%li (%s) (constant value)\n", tab, pointerData_, VTypes::dataType(returnType_));
+	else printf("%s%li (%s) (variable, name=%s)\n", tab, pointerData_, VTypes::dataType(returnType_), name_.get());
 	delete[] tab;
 }
-
 
 /*
 // Variable Array
 */
 
-// Constructor
-StringArrayVariable::StringArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
-{
-	// Private variables
-	returnType_ = VTypes::IntegerData;
-	stringArrayData_ = NULL;
-	arraySize_ = 0;
-	nodeType_ = TreeNode::ArrayVarNode;
-	readOnly_ = constant;
-}
-
 // Destructor
-StringArrayVariable::~StringArrayVariable()
+PointerArrayVariable::~PointerArrayVariable()
 {
-	if (stringArrayData_ != NULL) delete[] stringArrayData_;
+	if (pointerArrayData_ != NULL) delete[] pointerArrayData_;
 }
 
 /*
@@ -123,32 +86,32 @@ StringArrayVariable::~StringArrayVariable()
 */
 
 // Set from returnvalue node
-bool StringArrayVariable::set(ReturnValue &rv)
+bool PointerArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		msg.print("A constant value (in this case %s array) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
-	if (stringArrayData_ == NULL)
+	if (pointerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asInteger();
+	for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = rv.asPointer(returnType_);
 	return TRUE;
 }
 
 // Set array element from returnvalue node
-bool StringArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool PointerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		msg.print("A constant value (in this case %s array?) cannot be assigned to.\n", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
-	if (stringArrayData_ == NULL)
+	if (pointerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
@@ -160,31 +123,31 @@ bool StringArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Set individual element
-	stringArrayData_[arrayindex] = rv.asString();
+	pointerArrayData_[arrayindex] = rv.asPointer(returnType_);
 	return TRUE;
 }
 
 // Reset variable
-void StringArrayVariable::reset()
+void PointerArrayVariable::reset()
 {
-	if (stringArrayData_ == NULL)
+	if (pointerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return;
 	}
 	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) stringArrayData_[i].clear();
+	for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = 0;
 }
 
 // Return value of node
-bool StringArrayVariable::execute(ReturnValue &rv)
+bool PointerArrayVariable::execute(ReturnValue &rv)
 {
-	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
+	msg.print("A whole vector array ('%s') cannot be passed as value.\n", name_.get());
 	return FALSE;
 }
 
 // Return value of node as array
-bool StringArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool PointerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Check bounds
 	if ((arrayindex < 0) || (arrayindex >= arraySize_))
@@ -192,12 +155,13 @@ bool StringArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( stringArrayData_[arrayindex].get() );
+	rv.set( returnType_, pointerArrayData_[arrayindex] );
+	printf("Executed :: '%s'\n", rv.info());
 	return TRUE;
 }
 
 // Print node contents
-void StringArrayVariable::nodePrint(int offset, const char *prefix)
+void PointerArrayVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -207,17 +171,17 @@ void StringArrayVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab, name_.get(), arraySize_);
+	printf("[V]%s (%s array, name=%s, current size=%i)\n", tab, VTypes::dataType(returnType_), name_.get(), arraySize_);
 	delete[] tab;
 }
 
 // Initialise array
-bool StringArrayVariable::initialise()
+bool PointerArrayVariable::initialise()
 {
 	// We define our own initialise() function to take over from the inherited default from Variable
 	// If the array is already allocated, free it.
-	if (stringArrayData_ != NULL) printf("Array exists already...\n");	
-	if (stringArrayData_ != NULL) delete[] stringArrayData_;
+	if (pointerArrayData_ != NULL) printf("Array exists already...\n");	
+	if (pointerArrayData_ != NULL) delete[] pointerArrayData_;
 	// Get size of array to create
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
@@ -227,7 +191,7 @@ bool StringArrayVariable::initialise()
 	}
 	// Create new array
 	arraySize_ = newsize.asInteger();
-	if (arraySize_ > 0) stringArrayData_ = new Dnchar[arraySize_];
+	if (arraySize_ > 0) pointerArrayData_ = new void*[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{
@@ -245,3 +209,4 @@ bool StringArrayVariable::initialise()
 	}
 	return TRUE;
 }
+

@@ -1,6 +1,6 @@
 /*
-	*** Model Variable
-	*** src/parser/atom.cpp
+	*** Model Variable and Array
+	*** src/parser/model.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -27,12 +27,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-ModelVariable::ModelVariable(Model *ptr, bool constant) : modelData_(ptr)
+ModelVariable::ModelVariable(Model *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::ModelData;
+	returnType_ = VTypes::ModelData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -41,74 +46,27 @@ ModelVariable::~ModelVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool ModelVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	modelData_ = rv.asPointer(NuVTypes::ModelData, success);
-	return success;
-}
-
-// Reset variable
-void ModelVariable::reset()
-{
-	modelData_ = NULL;
-}
-
-// Return value of node
-bool ModelVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::ModelData, modelData_);
-	return TRUE;
-}
-
-// Print node contents
-void ModelVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("%s%li (model) (constant value)\n", tab, modelData_);
-	else printf("%s%li (model) (variable, name=%s)\n", tab, modelData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
- 	{ "atoms",		NuVTypes::AtomData,		TRUE, TRUE },
- 	{ "atomtypes",		NuVTypes::ForcefieldAtomData,	TRUE, TRUE },
- 	{ "bonds",		NuVTypes::BondData,		TRUE, TRUE },
- 	{ "cell",		NuVTypes::CellData,		FALSE, TRUE },
- 	{ "frame",		NuVTypes::ModelData,		FALSE, TRUE },
-//  	{ "frames",		NuVTypes::ModelData };
- 	{ "name",		NuVTypes::StringData,		FALSE, FALSE },
- 	{ "nangleterms",	NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "natoms",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "natomtypes",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "nbonds",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "nbondterms",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "npatterns",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "nselected",		NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "ntorsionterms",	NuVTypes::IntegerData,		FALSE, TRUE },
- 	{ "patterns",		NuVTypes::PatternData,		TRUE, TRUE }
+ 	{ "atoms",		VTypes::AtomData,		TRUE, TRUE },
+ 	{ "atomtypes",		VTypes::ForcefieldAtomData,	TRUE, TRUE },
+ 	{ "bonds",		VTypes::BondData,		TRUE, TRUE },
+ 	{ "cell",		VTypes::CellData,		FALSE, TRUE },
+ 	{ "frame",		VTypes::ModelData,		FALSE, TRUE },
+//  	{ "frames",		VTypes::ModelData };
+ 	{ "name",		VTypes::StringData,		FALSE, FALSE },
+ 	{ "nangleterms",	VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "natoms",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "natomtypes",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nbonds",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nbondterms",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "npatterns",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "nselected",		VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "ntorsionterms",	VTypes::IntegerData,		FALSE, TRUE },
+ 	{ "patterns",		VTypes::PatternData,		TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -132,13 +90,13 @@ StepNode *ModelVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ModelData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ModelData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ModelVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ModelVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -158,41 +116,41 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) rv.asPointer(NuVTypes::ModelData, result);
+	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Atoms):
-			if (!hasArrayIndex) rv.set(NuVTypes::AtomData, ptr->atoms());
+			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
 			{
 				msg.print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(NuVTypes::AtomData, ptr->atom(arrayIndex-1));
+			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
 			break;
 		case (ModelVariable::Atomtypes):
-			if (!hasArrayIndex) rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueTypes());
+			if (!hasArrayIndex) rv.set(VTypes::ForcefieldAtomData, ptr->uniqueTypes());
 			else if (arrayIndex > ptr->nUniqueTypes())
 			{
 				msg.print("Unique types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(NuVTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
+			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
 			break;
 		case (ModelVariable::Bonds):
-			if (!hasArrayIndex) rv.set(NuVTypes::BondData, ptr->bonds());
+			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
 				msg.print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(NuVTypes::BondData, ptr->bond(arrayIndex-1));
+			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
 			break;
 		case (ModelVariable::Cell):
-			rv.set(NuVTypes::CellData, ptr->cell());
+			rv.set(VTypes::CellData, ptr->cell());
 			break;
 		case (ModelVariable::Frame):
-			rv.set(NuVTypes::ModelData, ptr->currentFrame());
+			rv.set(VTypes::ModelData, ptr->currentFrame());
 			break;
 // 		case (ModelVariable::Frames):
 // 			if (index > ModelnTrajectoryFrames())
@@ -229,13 +187,13 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->nUniqueTorsionTerms());
 			break;
 		case (ModelVariable::Patterns):
-			if (!hasArrayIndex) rv.set(NuVTypes::PatternData, ptr->patterns());
+			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
 			{
 				msg.print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(NuVTypes::PatternData, ptr->pattern(arrayIndex-1));
+			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);
 			result = FALSE;
@@ -246,7 +204,7 @@ bool ModelVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayInde
 }
 
 // Set desired value
-bool ModelVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ModelVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -270,7 +228,7 @@ bool ModelVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &n
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Model *ptr= (Model*) sourcerv.asPointer(NuVTypes::ModelData, result);
+	Model *ptr= (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Name):
@@ -284,3 +242,26 @@ bool ModelVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &n
 	msg.exit("ModelVariable::setAccessor");
 	return result;
 }
+
+/*
+// Variable Array
+*/
+
+// Constructor
+ModelArrayVariable::ModelArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::ModelData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *ModelArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return ModelVariable::accessorSearch(s, arrayindex);
+}
+

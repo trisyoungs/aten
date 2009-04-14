@@ -26,7 +26,7 @@
 #include <string.h>
 
 // Constructor
-VariableNode::VariableNode(NuVariable *var) : variable_(var)
+VariableNode::VariableNode(Variable *var) : variable_(var)
 {
 	// Private variables
 	readOnly_ = FALSE;
@@ -40,13 +40,13 @@ VariableNode::~VariableNode()
 }
 
 // Set function
-void VariableNode::setVariable(NuVariable *variable)
+void VariableNode::setVariable(Variable *variable)
 {
 	variable_ = variable;
 }
 
 // Get function
-NuVariable *VariableNode::variable()
+Variable *VariableNode::variable()
 {
 	return variable_;
 }
@@ -80,13 +80,13 @@ void VariableNode::finalisePath()
 	msg.enter("VariableNode::finalisePath");
 	msg.print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
 	// Return type of last argument is return type of PathNode
-	if (args_.last() == NULL) returnType_ = NuVTypes::NoData;
+	if (args_.last() == NULL) returnType_ = VTypes::NoData;
 	else
 	{
 		returnType_ = args_.last()->item->returnType();
 		readOnly_ = args_.last()->item->readOnly();
 	}
-	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s' and read_only status is '%s'\n", NuVTypes::dataType(returnType_), readOnly_ ? "true" : "false");
+	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s' and read_only status is '%s'\n", VTypes::dataType(returnType_), readOnly_ ? "true" : "false");
 	msg.exit("VariableNode::finalisePath");
 }
 
@@ -95,7 +95,7 @@ void VariableNode::finalisePath()
 */
 
 // Execute command
-bool VariableNode::execute(NuReturnValue &rv)
+bool VariableNode::execute(ReturnValue &rv)
 {
 	msg.enter("VariableNode::execute");
 	if (variable_ == NULL)
@@ -109,9 +109,9 @@ bool VariableNode::execute(NuReturnValue &rv)
 	if (arrayIndex_ == NULL) result = variable_->execute(rv);
 	else
 	{
-		NuReturnValue index;
+		ReturnValue index;
 		if (!arrayIndex_->execute(index)) return FALSE;
-		result = variable_->executeAsArray(rv, index.asInteger());
+		result = variable_->executeAsArray(rv, index.asInteger()-1);
 	}
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
 	// Next, step through accessnodes, passing the returnvalue to each in turn
@@ -157,13 +157,13 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 		{
 			ri->item->nodePrint(offset);
 			if (ri->next != NULL) printf(".");
-			else printf(" [%s]\n", NuVTypes::dataType(returnType_));
+			else printf(" [%s]\n", VTypes::dataType(returnType_));
 		}
 	}
 }
 
 // Set from returnvalue node
-bool VariableNode::set(NuReturnValue &setrv)
+bool VariableNode::set(ReturnValue &setrv)
 {
 	msg.enter("VariableNode::set");
 	if (variable_ == NULL)
@@ -173,7 +173,7 @@ bool VariableNode::set(NuReturnValue &setrv)
 		return FALSE;
 	}
 	bool result = TRUE;
-	NuReturnValue executerv, lastresult;
+	ReturnValue executerv, lastresult;
 	// If there are no path nodes then just set the local variable
 	// Also, if the base variable is of vector type, set it in a special way...
 	if (args_.nItems() == 0)
@@ -182,20 +182,32 @@ bool VariableNode::set(NuReturnValue &setrv)
 		if (arrayIndex_ == NULL) result = variable_->set(setrv);
 		else
 		{
-			NuReturnValue index;
+			ReturnValue index;
 			if (!arrayIndex_->execute(index)) result = FALSE;
 			else result = variable_->setAsArray(setrv, index.asInteger() - 1);
 		}
 	}
-	else if (variable_->returnType() == NuVTypes::VectorData)
+	else if (variable_->returnType() == VTypes::VectorData)
 	{
 		// Grab accessor ID from last (only) step and use it to set the vector component
 		int component = ((StepNode*) args_.last()->item)->accessor();
-		if (!variable_->execute(executerv)) result = FALSE;
-		else
+		if (arrayIndex_ == NULL) result = variable_->execute(executerv);
+		else 
 		{
-			executerv.set(component, setrv.asReal());
-			variable_->set(executerv);
+			ReturnValue index;
+			if (!arrayIndex_->execute(index)) result = FALSE;
+			else result = variable_->executeAsArray(executerv, index.asInteger() - 1);
+		}
+		if (result)
+		{
+			executerv.set(component, setrv.asDouble());
+			if (arrayIndex_ == NULL) result = variable_->set(executerv);
+			else
+			{
+				ReturnValue index;
+				if (!arrayIndex_->execute(index)) result = FALSE;
+				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
+			}
 		}
 	}
 	else
@@ -205,9 +217,9 @@ bool VariableNode::set(NuReturnValue &setrv)
 		if (arrayIndex_ == NULL) result2 = variable_->execute(executerv);
 		else
 		{
-			NuReturnValue index;
-			if (!arrayIndex_->execute(index)) result2 =  FALSE;
-			else result2 = variable_->executeAsArray(executerv, index.asInteger());
+			ReturnValue index;
+			if (!arrayIndex_->execute(index)) result2 = FALSE;
+			else result2 = variable_->executeAsArray(executerv, index.asInteger()-1);
 		}
 		// Next, step through accessnodes up until the last one, passing the returnvalue to each in turn.
 		if (result2)
@@ -228,7 +240,7 @@ bool VariableNode::set(NuReturnValue &setrv)
 			if (ri != NULL)
 			{
 				StepNode *step = (StepNode*) ri->item;
-// 				printf("Previous step type = %s.\n", NuVTypes::dataType(step->returnType()));
+// 				printf("Previous step type = %s.\n", VTypes::dataType(step->returnType()));
 				// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
 				((StepNode*) ri->item)->set(lastresult,executerv);
 			}

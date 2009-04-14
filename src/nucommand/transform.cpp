@@ -26,7 +26,7 @@
 #include "classes/prefs.h"
 
 // Rotate selection about specified axis / origin
-bool NuCommand::function_AxisRotate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double angle;
@@ -78,7 +78,7 @@ bool NuCommand::function_AxisRotate(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Centre selection at given coordinates
-bool NuCommand::function_Centre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!c->parent()->isFilter())
@@ -96,7 +96,7 @@ bool NuCommand::function_Centre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Convert coordinates from one reference frame to another
-bool NuCommand::function_MatrixConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -184,7 +184,7 @@ bool NuCommand::function_MatrixConvert(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Transform coordinates using supplied matrix / origin
-bool NuCommand::function_MatrixTransform(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -214,7 +214,7 @@ bool NuCommand::function_MatrixTransform(NuCommandNode *c, Bundle &obj, NuReturn
 }
 
 // Mirror selection along specified axis
-bool NuCommand::function_Mirror(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -227,7 +227,7 @@ bool NuCommand::function_Mirror(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
-bool NuCommand::function_Translate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -241,7 +241,7 @@ bool NuCommand::function_Translate(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-bool NuCommand::function_TranslateAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	char s[128];
@@ -255,7 +255,7 @@ bool NuCommand::function_TranslateAtom(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
@@ -270,7 +270,7 @@ bool NuCommand::function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Translate current selection in world coordinates ('translateworld dx dy dz')
-bool NuCommand::function_TranslateWorld(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;

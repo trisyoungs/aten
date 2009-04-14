@@ -55,7 +55,7 @@ FormatChunk::FormatChunk(TreeNode *node) : arg_(node)
 	prev = NULL;
 }
 
-FormatChunk::FormatChunk(const char *format, TreeNode *node, NuVTypes::DataType retrievetype) : arg_(node), retrieveType_(retrievetype)
+FormatChunk::FormatChunk(const char *format, TreeNode *node, VTypes::DataType retrievetype) : arg_(node), retrieveType_(retrievetype)
 {
 	// Private variables
 	cFormat_ = format;
@@ -99,7 +99,7 @@ TreeNode *FormatChunk::arg()
 }
 
 // Return variable type to retrieve variable data as
-NuVTypes::DataType FormatChunk::retrieveType()
+VTypes::DataType FormatChunk::retrieveType()
 {
 	return retrieveType_;
 }
@@ -109,10 +109,10 @@ NuVTypes::DataType FormatChunk::retrieveType()
 */
 
 // Singleton
-char NuFormat::createdString_[8096];
+char Format::createdString_[8096];
 
 // Constructor
-NuFormat::NuFormat(Refitem<TreeNode,int> *firstarg)
+Format::Format(Refitem<TreeNode,int> *firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
 	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) chunks_.own( new FormatChunk(ri->item) );
@@ -121,7 +121,7 @@ NuFormat::NuFormat(Refitem<TreeNode,int> *firstarg)
 }
 
 // Constructor
-NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
+Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 {
 	// Private variables
 	isValid_ = TRUE;
@@ -131,7 +131,7 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 	const char *c = s;
 	char prevchar;
 	static char plaintext[8096];
-	NuVTypes::DataType type;
+	VTypes::DataType type;
 	bool isformatter = FALSE;
 	Refitem<TreeNode,int> *arg = firstarg;
 	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
@@ -197,14 +197,14 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 						// If a preceeding 'l' was specified, then we must have a pointer
 						if (prevchar == 'l')
 						{
-							if (type >= NuVTypes::AtenData) break;
-							msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							if (type >= VTypes::AtenData) break;
+							msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else if ((prevchar == '\0') || (prevchar == 'h'))
 						{
-							if (type == NuVTypes::IntegerData) break;
-							msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							if (type == VTypes::IntegerData) break;
+							msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
@@ -225,8 +225,8 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 						}
 						else if (prevchar == '\0')
 						{
-							if (type == NuVTypes::DoubleData) break;
-							msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+							if (type == VTypes::DoubleData) break;
+							msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
@@ -242,8 +242,8 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 							msg.print("String format 's' cannot be preceeded by the identifier '%c'.\n", prevchar);
 							isValid_ = FALSE;
 						}
-						if (type == NuVTypes::StringData) break;
-						msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, NuVTypes::aDataType(type));
+						if (type == VTypes::StringData) break;
+						msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 						isValid_ = FALSE;
 						break;
 					case ('c'):
@@ -275,12 +275,12 @@ NuFormat::NuFormat(const char *s, Refitem<TreeNode,int> *firstarg)
 }
 
 // Destructor
-NuFormat::~NuFormat()
+Format::~Format()
 {
 }
 
 // Return whether the format was created successfully
-bool NuFormat::isValid()
+bool Format::isValid()
 {
 	return isValid_;
 }
@@ -290,11 +290,11 @@ bool NuFormat::isValid()
 */
 
 // Use specified parser to perform formatted read
-int NuFormat::executeRead(LineParser *parser, int flags)
+int Format::executeRead(LineParser *parser, int flags)
 {
-	msg.enter("NuFormat::executeRead");
+	msg.enter("Format::executeRead");
 	int nparsed = 0, length;
-	NuReturnValue rv;
+	ReturnValue rv;
 	Dnchar bit;
 	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
@@ -315,7 +315,7 @@ int NuFormat::executeRead(LineParser *parser, int flags)
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
-				msg.exit("NuFormat::executeRead");
+				msg.exit("Format::executeRead");
 				return 1;
 		}
 		// Set the corresponding argument accordingly
@@ -323,17 +323,17 @@ int NuFormat::executeRead(LineParser *parser, int flags)
 		{
 			switch (chunk->arg()->returnType())
 			{
-				case (NuVTypes::IntegerData):
+				case (VTypes::IntegerData):
 					rv.set( atoi(bit.get()) );
 					break;
-				case (NuVTypes::DoubleData):
+				case (VTypes::DoubleData):
 					rv.set( atof(bit.get()) );
 					break;
-				case (NuVTypes::StringData):
+				case (VTypes::StringData):
 					rv.set( bit.get() );
 					break;
 				default:
-					printf("Internal Error: Formatted conversion to %s is not possible.\n", NuVTypes::aDataType(chunk->arg()->returnType()));
+					printf("Internal Error: Formatted conversion to %s is not possible.\n", VTypes::aDataType(chunk->arg()->returnType()));
 					nparsed = -1;
 					break;
 			}
@@ -341,23 +341,23 @@ int NuFormat::executeRead(LineParser *parser, int flags)
 			chunk->arg()->set( rv );
 		}
 	}
-	msg.exit("NuFormat::executeRead");
+	msg.exit("Format::executeRead");
 	return nparsed;
 }
 
 // Return last written string
-const char *NuFormat::string()
+const char *Format::string()
 {
 	return createdString_;
 }
 
 // Write format to internal string
-bool NuFormat::writeToString()
+bool Format::writeToString()
 {
-	msg.enter("NuFormat::writeToString");
+	msg.enter("Format::writeToString");
 	static char bit[4096];
 	createdString_[0] = '\0';
-	NuReturnValue rv;
+	ReturnValue rv;
 	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{
@@ -369,13 +369,13 @@ bool NuFormat::writeToString()
 				bit[0] = '\0';
 				switch (chunk->retrieveType())
 				{
-					case (NuVTypes::IntegerData):
+					case (VTypes::IntegerData):
 						sprintf(bit, chunk->cFormat(), rv.asInteger());
 						break;
-					case (NuVTypes::DoubleData):
-						sprintf(bit, chunk->cFormat(), rv.asReal());
+					case (VTypes::DoubleData):
+						sprintf(bit, chunk->cFormat(), rv.asDouble());
 						break;
-					case (NuVTypes::StringData):
+					case (VTypes::StringData):
 						sprintf(bit, chunk->cFormat(), rv.asString());
 						break;
 					default:
@@ -395,41 +395,41 @@ bool NuFormat::writeToString()
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
-				msg.exit("NuFormat::writeToString");
+				msg.exit("Format::writeToString");
 				return FALSE;
 		}
 	}
 	// If this was originally a delimited chunk, append a newline
 	if (delimited_) strcat(createdString_, "\n");
-	msg.exit("NuFormat::writeToString");
+	msg.exit("Format::writeToString");
 	return TRUE;
 }
 
 // Read line and parse according to format
-int NuFormat::read(const char *line, int flags)
+int Format::read(const char *line, int flags)
 {
-	msg.enter("NuFormat::read[string]");
+	msg.enter("Format::read[string]");
 	static LineParser parser;
 	parser.setLine(line);
 	int result = executeRead(&parser, flags);
-	msg.exit("NuFormat::read[string]");
+	msg.exit("Format::read[string]");
 	return result;
 }
 
 // Read line from file and parse according to format
-int NuFormat::read(LineParser *parser, int flags)
+int Format::read(LineParser *parser, int flags)
 {
-	msg.enter("NuFormat::read[file]");
+	msg.enter("Format::read[file]");
 	// Read a new line using the supplied parser
 	if (parser == NULL)
 	{
-		printf("Internal Error: No LineParser given to NuFormat::read.\n");
-		msg.exit("NuFormat::read[file]");
+		printf("Internal Error: No LineParser given to Format::read.\n");
+		msg.exit("Format::read[file]");
 		return 1;
 	}
 	// Get next line from file
 	int result = parser->readLine();
 	if (result == 0) result = executeRead(parser, flags);
-	msg.exit("NuFormat::read[file]");
+	msg.exit("Format::read[file]");
 	return result;
 }

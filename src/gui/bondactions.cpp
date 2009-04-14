@@ -27,35 +27,35 @@
 
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::ReBond, "");
+	CommandNode::run(Command::ReBond, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::ClearBonds, "");
+	CommandNode::run(Command::ClearBonds, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::ReBondSelection, "");
+	CommandNode::run(Command::ReBondSelection, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::ClearSelectedBonds, "");
+	CommandNode::run(Command::ClearSelectedBonds, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::Augment, "");
+	CommandNode::run(Command::Augment, "");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::bondTolerance_valueChanged(double value)
 {
-	NuCommandNode::run(NuCommand::BondTolerance, "d", 1.1);
+	CommandNode::run(Command::BondTolerance, "d", 1.1);
 }

@@ -31,7 +31,7 @@ class Accessor
 	// Accessor name
 	const char *name;
 	// Return value of accessor
-	NuVTypes::DataType returnType;
+	VTypes::DataType returnType;
 	// Whether data is represented by an array of some kind
 	bool isArray;
 	// Whether data represented by accessor is read-only

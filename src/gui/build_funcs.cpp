@@ -48,11 +48,11 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		NuCommandNode::run(NuCommand::NewAtomFrac, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtomFrac, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	else
 	{
-		NuCommandNode::run(NuCommand::NewAtom, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		CommandNode::run(Command::NewAtom, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
 	gui.modelChanged();
 }

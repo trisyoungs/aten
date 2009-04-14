@@ -74,7 +74,7 @@ class Forest
 	// Delete specified tree
 	void deleteTree(Tree *t);
 	// Execute all trees in forest
-	bool executeAll(NuReturnValue &rv);
+	bool executeAll(ReturnValue &rv);
 	// Print forest information
 	void print();
 };

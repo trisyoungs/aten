@@ -63,22 +63,22 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 void AtenMinimiser::doMinimisation()
 {
 	// Set convergence criteria and get maxcycles data
-	NuCommandNode::run(NuCommand::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
+	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
 	int maxcycles = ui.MinimiseCyclesSpin->value();
 	
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			NuCommandNode::run(NuCommand::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
-			NuCommandNode::run(NuCommand::SDMinimise, "i", maxcycles);
+			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::SDMinimise, "i", maxcycles);
 			break;
 		case (MM_CONJUGATE):
-			NuCommandNode::run(NuCommand::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
-			NuCommandNode::run(NuCommand::CGMinimise, "i", maxcycles);
+			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::CGMinimise, "i", maxcycles);
 			break;
 		case (MM_MONTECARLO):
-			NuCommandNode::run(NuCommand::MCMinimise, "i", maxcycles);
+			CommandNode::run(Command::MCMinimise, "i", maxcycles);
 			break;
 		case (MM_SIMPLEX):
 			msg.print("Simplex minimiser not yet written!\n");

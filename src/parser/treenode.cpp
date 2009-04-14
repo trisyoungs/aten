@@ -29,7 +29,7 @@
 TreeNode::TreeNode()
 {
 	// Private variables
-	returnType_ = NuVTypes::NoData;
+	returnType_ = VTypes::NoData;
 	readOnly_ = TRUE;
 	parent_ = NULL;
 	nextArgument = NULL;
@@ -65,13 +65,13 @@ Tree *TreeNode::parent()
 }
 
 // Sets the content type of the variable
-void TreeNode::setReturnType(NuVTypes::DataType dt)
+void TreeNode::setReturnType(VTypes::DataType dt)
 {
 	returnType_ = dt;
 }
 
 // Returns content type of the variable
-NuVTypes::DataType TreeNode::returnType()
+VTypes::DataType TreeNode::returnType()
 {
 	return returnType_;
 }
@@ -95,19 +95,19 @@ int TreeNode::nArgs()
 }
 
 // Return datatype of nth argument
-NuVTypes::DataType TreeNode::argType(int i)
+VTypes::DataType TreeNode::argType(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argType : Argument index %i is out of range (node = %li).\n", i, this);
-		return NuVTypes::NoData;
+		return VTypes::NoData;
 	}
 	return args_[i]->item->returnType();
 }
 
 
 // Set argument specified
-bool TreeNode::setArg(int i, NuReturnValue &rv)
+bool TreeNode::setArg(int i, ReturnValue &rv)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
@@ -161,7 +161,7 @@ void TreeNode::addArgument(TreeNode *arg)
 }
 
 // Return (execute) argument specified
-bool TreeNode::arg(int i, NuReturnValue &rv)
+bool TreeNode::arg(int i, ReturnValue &rv)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
@@ -179,7 +179,7 @@ bool TreeNode::argb(int i)
 		printf("TreeNode::argb : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static NuReturnValue rv;
+	static ReturnValue rv;
 	bool success;
 	bool result;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
@@ -196,7 +196,7 @@ int TreeNode::argi(int i)
 		printf("TreeNode::argi : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static NuReturnValue rv;
+	static ReturnValue rv;
 	bool success;
 	int result = 0;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
@@ -213,11 +213,11 @@ double TreeNode::argd(int i)
 		printf("TreeNode::argd : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static NuReturnValue rv;
+	static ReturnValue rv;
 	bool success;
 	double result = 0.0;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
-	result = rv.asReal(success);
+	result = rv.asDouble(success);
 	if (!success) msg.print("Couldn't cast argument %i into a real.\n", i+1);
 	return result;
 }
@@ -236,7 +236,7 @@ const char *TreeNode::argc(int i)
 		printf("TreeNode::argc : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static NuReturnValue rv;
+	static ReturnValue rv;
 	bool success;
 	const char *result = NULL;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
@@ -246,19 +246,19 @@ const char *TreeNode::argc(int i)
 }
 
 // Return (execute) argument specified as a pointer
-void *TreeNode::argp(int i, NuVTypes::DataType type)
+void *TreeNode::argp(int i, VTypes::DataType type)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argp : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static NuReturnValue rv;
+	static ReturnValue rv;
 	bool success;
 	void *result = NULL;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
 	result = rv.asPointer(type, success);
-	if (!success) msg.print("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, NuVTypes::dataType(type));
+	if (!success) msg.print("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, VTypes::dataType(type));
 	return result;
 }
 

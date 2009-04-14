@@ -39,16 +39,16 @@ void AtenForm::on_actionMinimise_triggered(bool on)
 
 void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 {
-	if (aten.current.rs == aten.current.m) NuCommandNode::run(NuCommand::ModelEnergy, "");
-	else NuCommandNode::run(NuCommand::FrameEnergy, "");
+	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelEnergy, "");
+	else CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
 	aten.currentModel()->renderSource()->energy.print();
 }
 
 void AtenForm::on_actionCalculateForces_triggered(bool on)
 {
-	if (aten.current.rs == aten.current.m) NuCommandNode::run(NuCommand::ModelForces, "");
-	else NuCommandNode::run(NuCommand::FrameForces, "");
+	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	else CommandNode::run(Command::FrameForces, "");
 }
 
 void AtenForm::refreshForcefieldCombo()

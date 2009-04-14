@@ -19,23 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUCOMMANDS_H
-#define ATEN_NUCOMMANDS_H
+#ifndef ATEN_COMMANDS_H
+#define ATEN_COMMANDS_H
 
 #include "base/bundle.h"
 #include "parser/returnvalue.h"
 
 // Forward declarations
-class NuCommandList;
-class NuCommandNode;
-class NuCommandData;
-class NuCommand;
+class CommandList;
+class CommandNode;
+class CommandData;
+class Command;
 
 // Function pointer typedef and call #define
-typedef bool (*NuCommandFunction)(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-#define CALL_NUCOMMAND(object,ptrToMember) ((object).*(ptrToMember)) 
+typedef bool (*CommandFunction)(CommandNode *c, Bundle &obj, ReturnValue &rv);
+#define CALL_COMMAND(object,ptrToMember) ((object).*(ptrToMember)) 
 
-class NuCommandData
+class CommandData
 {
 	public:
 	/*
@@ -49,7 +49,7 @@ class NuCommandData
 	// Command argument names
 	const char *argText;
 	// Return-value datatype
-	NuVTypes::DataType returnType;
+	VTypes::DataType returnType;
 	// Command syntax
 	const char *syntax;
 
@@ -58,13 +58,13 @@ class NuCommandData
 };
 
 // Command actions
-class NuCommand
+class Command
 {
 
 	public:
 	// Constructor / Destructor
-	NuCommand();
-	~NuCommand();
+	Command();
+	~Command();
 
 	// Command list
 	enum Function {
@@ -472,6 +472,7 @@ class NuCommand
 		AToF,
 		AToI,
 		BeforeChar,
+		Contains,
 		FToA,
 		IToA,
 		Normalise,
@@ -518,449 +519,450 @@ class NuCommand
 		nCommands
 	};
 	// Return enumerated command id from string
-	NuCommand::Function command(const char*);
+	Command::Function command(const char*);
 
 	/*
 	// Function declarations
 	*/
 	private:
 	// AST-specific commands
-	static bool function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Analyse commands
-	static bool function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);	
-	static bool function_ModelAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PDens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintJobs(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RDF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SaveQuantities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TrajAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Geometry(CommandNode *c, Bundle &obj, ReturnValue &rv);	
+	static bool function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintJobs(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RDF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveQuantities(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Atom Commands
-	static bool function_AtomStyle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Hide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetCoords(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetCharge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetElement(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetFX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetFY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetFZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetRX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetRY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetRZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetVelocities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetVX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetVY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetVZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Show(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ShowAll(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Bond commands
-	static bool function_Augment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_BondTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearBonds(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearSelectedBonds(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewBondId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReBondPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReBondSelection(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Build commands
-	static bool function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Bohr(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_EndChain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Move(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MoveToEnd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MoveToStart(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ResetPen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RotX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RotY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RotZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ShiftDown(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ShiftUp(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Transmute(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_EndChain(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MoveToEnd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MoveToStart(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ResetPen(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Cell commands
-	static bool function_AddGenerator(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AdjustCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Cell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CellAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Fold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FoldMolecules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FracToReal(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NoCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Pack(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Replicate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RotateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Scale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ScaleMolecules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Spacegroup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Charge commands
-	static bool function_ChargeFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ChargeFromModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ChargePAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Charge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ChargeType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearCharges(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ChargeFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargeFromModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargePAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearCharges(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Colourscale commands
-	static bool function_AddPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearPoints(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListScales(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RemovePoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ScaleName(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ScaleVisible(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetPointColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetPointValue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AddPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearPoints(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListScales(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPointColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPointValue(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Disordered build commands
-	static bool function_Disorder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListComponents(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NMols(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Region(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionCentre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionCentreFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionGeometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionGeometryFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionOverlaps(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RegionShape(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_VdwScale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Region(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionCentre(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionShape(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Edit commands
-	static bool function_Copy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Cut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Delete(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Paste(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Redo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Undo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Energy Commands
-	static bool function_FrameEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ModelEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintElec(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintEwald(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintInter(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintIntra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintSummary(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintVdw(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintElec(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintEwald(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintInter(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintIntra(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Filter Commands
-	static bool function_Exact(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Extension(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Glob(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Id(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Name(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Nickname(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Zmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Exact(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Extension(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Glob(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Id(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Name(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Nickname(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Zmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Flow control
-	static bool function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_While(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_For(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_If(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_While(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Force Commands
-	static bool function_FrameForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ModelForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Forcefield Commands
-	static bool function_AngleDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_BondDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearMap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CreateExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_DefaultFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Equivalent(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FinaliseFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FFModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GenConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Generator(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_InterDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LoadFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Map(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintSetup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Rules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TorsionDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TypeDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TypeModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TypeTest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Units(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Generator(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Units(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Glyph commands
-	static bool function_AutoEllipsoids(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AutoPolyhedra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomR(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomV(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomsF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomsR(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphAtomsV(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphData(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphSolid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GlyphText(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewGlyph(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AutoEllipsoids(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AutoPolyhedra(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphSolid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphText(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Grid Commands
-	static bool function_AddGridPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AddNextGridPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FinaliseGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridAlpha(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridColourNegative(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridColourscale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridCubic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridCutoff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridOrtho(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridLoopOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridOrigin(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridSize(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridStyle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridSymmetric(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GridUseZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LoadGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridSize(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Image Commands
-	static bool function_SaveBitmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SaveVector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Labeling commands
-	static bool function_ClearLabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Label(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RemoveLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RemoveLabels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MC Commands
-	static bool function_MCAccept(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MCAllow(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MCMaxStep(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MCNTrials(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrintMC(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Measurements
-	static bool function_Angle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Angles(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ClearMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Distance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Distances(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Measure(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Torsion(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Torsions(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Angle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Angles(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Distance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Distances(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Messaging
-	static bool function_Error(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Printf(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Verbose(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Warn(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Warn(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands
-	static bool function_CGMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Converge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LineTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MCMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SDMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SimplexMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Model Commands
-	static bool function_CreateAtoms(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CurrentModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FinaliseModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FirstModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Info(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LastModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListModels(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LoadModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LogInfo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ModelTemplate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NextModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrevModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SaveModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetName(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Pattern Commands
-	static bool function_ClearPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CreatePatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Preferences Commands
-	static bool function_AngleLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AtomDetail(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_BondDetail(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Colour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_CommonElements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_DensityUnits(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_DistanceLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ECut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Elec(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ElementAmbient(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ElementDiffuse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ElementRadius(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_EnergyUnits(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_HDistance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Intra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GL(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Key(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LabelSize(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Light(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LightAmbient(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LightDiffuse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LightPosition(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LightSpecular(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Mouse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Radius(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReplicateFold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReplicateTrim(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Scheme(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Shininess(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ShowOnScreen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ShowOnImage(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Style(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SwapBuffers(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_UseNiceText(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_VCut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Vdw(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ZoomThrottle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AngleLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AtomDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Colour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CommonElements(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DensityUnits(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DistanceLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Elec(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ElementAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ElementDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ElementRadius(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_EnergyUnits(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_HDistance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Intra(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GL(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Key(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LabelSize(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Light(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LightAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LightDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LightPosition(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LightSpecular(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Mouse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Radius(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReplicateFold(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReplicateTrim(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Scheme(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Shininess(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShowOnScreen(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShowOnImage(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Style(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SwapBuffers(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_UseNiceText(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Vdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ZoomThrottle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Read / Write Commands
-	static bool function_AddReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Eof(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Find(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_GetLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PeekChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadInteger(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadNext(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadReal(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ReadVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RemoveReadOption(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Rewind(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SkipChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SkipLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_WriteLine(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_WriteLineFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_WriteVariable(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_WriteVariableFormatted(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadReal(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadVariable(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadVariableFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteVariable(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteVariableFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Script Commands
-	static bool function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RunScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Select Commands
-	static bool function_DeSelect(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_DeSelectType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Expand(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Invert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Select(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectAll(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectFFType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectionCog(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectionCom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectNone(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectOverlaps(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SelectType(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Site Commands
-	static bool function_GetSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ListSites(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NewSite(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SiteAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
-	static bool function_Debug(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Gui(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Seed(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Help(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Quit(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Version(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Trajectory Commands
-	static bool function_FinaliseFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FirstFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LastFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_LoadTrajectory(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_NextFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_PrevFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SeekFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Transform Commands
-	static bool function_AxisRotate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Centre(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MatrixConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_MatrixTransform(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Mirror(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Translate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TranslateAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TranslateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TranslateWorld(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Manipulation
-	static bool function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AToF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_AToI(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_FToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_IToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_AfterChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BeforeChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Operators
-	static bool function_OperatorAdd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorAssignment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorAssignmentDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorAssignmentMinus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorAssignmentMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorAssignmentPlus(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorDivide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorGreaterThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorGreaterThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorLessThan(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorLessThanEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorMultiply(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorNegate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorNot(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorNotEqualTo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPower(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPostfixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPostfixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPrefixDecrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorPrefixIncrease(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_OperatorSubtract(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentMinus(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentPlus(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// View
-	static bool function_GetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Orthographic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_Perspective(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ResetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_RotateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SetView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_SpeedTest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_TranslateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ViewAlong(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ViewAlongCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ZoomView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
-	static bool function_ZRotateView(NuCommandNode *c, Bundle &obj, NuReturnValue &rv);
+	static bool function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ViewAlong(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
 
 	/*
 	// Function descriptions / syntax etc.
 	*/
 	private:
 	// Function pointers
-	NuCommandFunction pointers_[NuCommand::nCommands];
+	CommandFunction pointers_[Command::nCommands];
 
 	public:
 	// Function data
-	static NuCommandData data[NuCommand::nCommands];
+	static CommandData data[Command::nCommands];
 	// Initialise function pointers
 	void initPointers();
 	// Execute specified command
-	bool call(NuCommand::Function cf, NuCommandNode *node, NuReturnValue &rv);
+	bool call(Command::Function cf, CommandNode *node, ReturnValue &rv);
 };
 
 // External declaration
-extern NuCommand nucommands;
+extern Command nucommands;
 
 #endif

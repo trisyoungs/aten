@@ -29,7 +29,7 @@
 class TreeNode;
 
 // Aten Master Variable
-class AtenVariable : public NuVariable
+class AtenVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
@@ -41,9 +41,9 @@ class AtenVariable : public NuVariable
 	*/
 	public:
 	// Return value of node
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Reset node
 	void reset();
 
@@ -65,9 +65,9 @@ class AtenVariable : public NuVariable
 	// Static function to search accessors
 	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 };

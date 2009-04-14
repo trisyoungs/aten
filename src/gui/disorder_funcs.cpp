@@ -235,12 +235,12 @@ void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 
 void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
 {
-	NuCommandNode::run(NuCommand::Disorder, "i", ui.DisorderCyclesSpin->value());
+	CommandNode::run(Command::Disorder, "i", ui.DisorderCyclesSpin->value());
 }
 
 void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 {
-	NuCommandNode::run(NuCommand::VdwScale, "d", d);
+	CommandNode::run(Command::VdwScale, "d", d);
 }
 
 void AtenDisorder::dialogFinished(int result)

@@ -1,5 +1,5 @@
 /*
-	*** Vector Variable
+	*** Vector Variable and Array
 	*** src/parser/vector.h
 	Copyright T. Youngs 2007-2009
 
@@ -29,23 +29,24 @@
 class TreeNode;
 
 // Real 3-Vector Variable
-class NuVectorVariable : public NuVariable
+class VectorVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	NuVectorVariable(bool constant = FALSE);
-	NuVectorVariable(Vec3<double> v, bool constant = FALSE);
-	NuVectorVariable(TreeNode *x, TreeNode *y, TreeNode *z);
-	~NuVectorVariable();
+	VectorVariable(bool constant = FALSE);
+	VectorVariable(Vec3<double> v, bool constant = FALSE);
+	VectorVariable(TreeNode *x, TreeNode *y, TreeNode *z);
+	~VectorVariable();
+	friend class VectorArrayVariable;
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Reset node
 	void reset();
 
@@ -73,11 +74,57 @@ class NuVectorVariable : public NuVariable
 	// Static function to search accessors
 	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+};
+
+// Vector Array Variable
+class VectorArrayVariable : public Variable
+{
+	public:
+	// Constructor / Destructor
+	VectorArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	~VectorArrayVariable();
+
+	/*
+	// Set / Get
+	*/
+	public:
+	// Return value of node
+	bool execute(ReturnValue &rv);
+	// Return value of node as array
+	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	// Set from returnvalue node
+	bool set(ReturnValue &rv);
+	// Set from returnvalue node as array
+	bool setAsArray(ReturnValue &rv, int arrayindex);
+	// Reset variable
+	void reset();
+
+	/*
+	// Variable Data
+	*/
+	private:
+	// TreeNode determining array size on initialisation
+	TreeNode *arraySizeExpression_;
+	// Array size
+	int arraySize_;
+	// Vector data
+	Vec3<double> *vectorArrayData_;
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Initialise node (take over from Variable::initialise())
+	bool initialise();
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 };
 
 #endif

@@ -32,7 +32,7 @@
 
 
 // Add a new angle definition to the current forcefield
-bool NuCommand::function_AngleDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -55,7 +55,7 @@ bool NuCommand::function_AngleDef(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Add a new bond definition to the current forcefield
-bool NuCommand::function_BondDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -79,7 +79,7 @@ bool NuCommand::function_BondDef(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Clear manual type mapping list ('clearmap')
-bool NuCommand::function_ClearMap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	aten.typeMap.clear();
 	rv.reset();
@@ -87,7 +87,7 @@ bool NuCommand::function_ClearMap(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Create energy expression for current model ('createexpression'}
-bool NuCommand::function_CreateExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->autocreatePatterns()) return FALSE;
@@ -97,7 +97,7 @@ bool NuCommand::function_CreateExpression(NuCommandNode *c, Bundle &obj, NuRetur
 }
 
 // Set default forcefield ('defaultff <ff>')
-bool NuCommand::function_DefaultFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	aten.setDefaultForcefield(aten.findForcefield(c->argc(0)));
@@ -106,14 +106,14 @@ bool NuCommand::function_DefaultFF(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set equivalent 
-bool NuCommand::function_Equivalent(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.reset();
 	return FALSE;
 }
 
 // Associate current ff to current model ('ffmodel [name]')
-bool NuCommand::function_FFModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
@@ -124,7 +124,7 @@ bool NuCommand::function_FFModel(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Set current forcefield for named pattern ('ffpattern')
-bool NuCommand::function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
 	// If no argument was given, set the current pattern
@@ -134,14 +134,14 @@ bool NuCommand::function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue 
 		Pattern *p = NULL;
 		switch (c->argType(0))
 		{
-			case (NuVTypes::IntegerData):
+			case (VTypes::IntegerData):
 				p = obj.m->pattern(c->argi(0)-1);
 				break;
-			case (NuVTypes::StringData):
+			case (VTypes::StringData):
 				p = obj.m->findPattern(c->argc(0));
 				break;
-			case (NuVTypes::PatternData):
-				p = (Pattern*) c->argp(0, NuVTypes::ModelData);
+			case (VTypes::PatternData):
+				p = (Pattern*) c->argp(0, VTypes::ModelData);
 				break;
 		}
 		if (p == NULL)
@@ -156,7 +156,7 @@ bool NuCommand::function_FFPattern(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Finalise current forcefield
-bool NuCommand::function_FinaliseFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Print some information about the terms read in from the forcefield
@@ -171,7 +171,7 @@ bool NuCommand::function_FinaliseFF(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set energetic parameters to convert in generator data
-bool NuCommand::function_GenConvert(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	for (int n=0; n<c->nArgs(); n++) obj.ff->setEnergyGenerator(c->argi(n));
@@ -180,7 +180,7 @@ bool NuCommand::function_GenConvert(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set generator data for atom type
-bool NuCommand::function_Generator(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Generator(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	int n;
 	// Convert type name to internal index and read in generator data...
@@ -198,17 +198,17 @@ bool NuCommand::function_Generator(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Select current forcefield ('getff <name>')
-bool NuCommand::function_GetFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Forcefield *ff = (c->argType(0) == NuVTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	Forcefield *ff = (c->argType(0) == VTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
 	if (ff == NULL)	return FALSE;
 	aten.setCurrentForcefield(ff);
-	rv.set(NuVTypes::ForcefieldData, ff);
+	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
 // Load forcefield ('loadff <filename> [nickname]')
-bool NuCommand::function_LoadFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Forcefield *ff = aten.loadForcefield(c->argc(0));
 	if (ff == NULL) return FALSE;
@@ -217,12 +217,12 @@ bool NuCommand::function_LoadFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
-	rv.set(NuVTypes::ForcefieldData, ff);
+	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
 // Add manual type mappings ('map <name=element,...>')
-bool NuCommand::function_Map(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Get each argument and parse it internally
 	int el;
@@ -247,16 +247,16 @@ bool NuCommand::function_Map(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Create new, empty forcefield ('newff <name>')
-bool NuCommand::function_NewFF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.ff = aten.addForcefield();
 	obj.ff->setName(c->argc(0));
-	rv.set(NuVTypes::ForcefieldData, obj.ff);
+	rv.set(VTypes::ForcefieldData, obj.ff);
 	return TRUE;
 }
 
 // Print expression setup ('printsetup')
-bool NuCommand::function_PrintSetup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	msg.print("Current Energy Setup:\n");
 	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
@@ -268,7 +268,7 @@ bool NuCommand::function_PrintSetup(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set rules to use in parameter generation
-bool NuCommand::function_Rules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
@@ -278,7 +278,7 @@ bool NuCommand::function_Rules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Save expression ('saveexpression <format> <file>')
-bool NuCommand::function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Find filter with a nickname matching that given in argc(0)
@@ -295,7 +295,7 @@ bool NuCommand::function_SaveExpression(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Add a new torsion definition to the current forcefield
-bool NuCommand::function_TorsionDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
@@ -319,7 +319,7 @@ bool NuCommand::function_TorsionDef(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Add a new type definition to the current forcefield
-bool NuCommand::function_TypeDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Search for this ID to make sure it hasn't already been used
@@ -342,7 +342,7 @@ bool NuCommand::function_TypeDef(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Perform typing on current model
-bool NuCommand::function_TypeModel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
@@ -350,7 +350,7 @@ bool NuCommand::function_TypeModel(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Test specified type ID of current forcefield
-bool NuCommand::function_TypeTest(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
 	// Find the specified type...
@@ -380,7 +380,7 @@ bool NuCommand::function_TypeTest(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set units used in the forcefield
-bool NuCommand::function_Units(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Units(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	Prefs::EnergyUnit newunit = Prefs::energyUnit(c->argc(0));
@@ -392,7 +392,7 @@ bool NuCommand::function_Units(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Add a new intermolecular definition to the current forcefield
-bool NuCommand::function_InterDef(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Get functional form of vdw

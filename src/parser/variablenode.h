@@ -25,14 +25,14 @@
 #include "parser/treenode.h"
 
 // Forward Declarations
-class NuVariable;
+class Variable;
 
 // Variable Node
 class VariableNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	VariableNode(NuVariable *v = NULL);
+	VariableNode(Variable *v = NULL);
 	~VariableNode();
 
 	/*
@@ -40,15 +40,15 @@ class VariableNode : public TreeNode
 	*/
 	private:
 	// Variable that this node links to
-	NuVariable* variable_;
+	Variable* variable_;
 	// Array index (if any)
 	TreeNode *arrayIndex_;
 	
 	public:
 	// Set variable target
-	void setVariable(NuVariable *v);
+	void setVariable(Variable *v);
 	// Get variable target
-	NuVariable* variable();
+	Variable* variable();
 	// Set array index
 	void setArrayIndex(TreeNode *index);
 	// Return array index
@@ -63,11 +63,11 @@ class VariableNode : public TreeNode
 	*/
 	public:
 	// Execute node
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Initialise node
 	bool initialise();
 	// Search accessors (if any) available for linked variable

@@ -30,7 +30,7 @@
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 // Minimise with conjugate gradient
-bool NuCommand::function_CGMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	cg.setTolerance(linetolerance);
@@ -46,7 +46,7 @@ bool NuCommand::function_CGMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set convergence criteria
-bool NuCommand::function_Converge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
@@ -55,7 +55,7 @@ bool NuCommand::function_Converge(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set line minimiser tolerance
-bool NuCommand::function_LineTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	linetolerance = c->argd(0);
 	rv.reset();
@@ -63,7 +63,7 @@ bool NuCommand::function_LineTolerance(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-bool NuCommand::function_MCMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	mc.setNCycles(c->argi(0));
@@ -78,7 +78,7 @@ bool NuCommand::function_MCMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-bool NuCommand::function_SDMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	sd.setTolerance(linetolerance);
@@ -93,7 +93,7 @@ bool NuCommand::function_SDMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue
 	return TRUE;
 }
 
-bool NuCommand::function_SimplexMinimise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.reset();
 	return FALSE;

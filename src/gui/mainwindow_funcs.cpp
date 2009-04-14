@@ -129,7 +129,7 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		NuCommandNode::run(NuCommand::SetName, "c", qPrintable(text));
+		CommandNode::run(Command::SetName, "c", qPrintable(text));
 		ui.ModelTabs->setTabText(tabid, text);
 		gui.updateWindowTitle();
 		gui.disorderWindow->refresh();
@@ -158,7 +158,7 @@ void AtenForm::executeCommand()
 	// Grab the current text of the line edit
 	if (aten.tempScript.generate(qPrintable(commandEdit_->text())))
 	{
-		NuReturnValue result;
+		ReturnValue result;
 		aten.tempScript.executeAll(result);
 	}
 	commandEdit_->setText("");
@@ -337,7 +337,7 @@ void AtenForm::runScript()
 	{
 		// Execute the script
 		msg.print("Executing script '%s':\n",ri->data->name());
-		NuReturnValue result;
+		ReturnValue result;
 		ri->data->executeAll(result);
 	}
 }

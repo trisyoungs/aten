@@ -24,7 +24,7 @@
 #include "classes/prefs.h"
 
 // Add point to colourscale
-bool NuCommand::function_AddPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AddPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -39,7 +39,7 @@ bool NuCommand::function_AddPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Clear points in colourscale
-bool NuCommand::function_ClearPoints(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearPoints(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -54,7 +54,7 @@ bool NuCommand::function_ClearPoints(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // List current colourscale data ('listscales')
-bool NuCommand::function_ListScales(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ListScales(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	GLfloat col[4];
 	msg.print("Current colourscale setup:\n");
@@ -73,7 +73,7 @@ bool NuCommand::function_ListScales(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Remove specific point in colourscale
-bool NuCommand::function_RemovePoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -88,7 +88,7 @@ bool NuCommand::function_RemovePoint(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Print/set name of colourscale ('scalename <id> [name]')
-bool NuCommand::function_ScaleName(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -104,7 +104,7 @@ bool NuCommand::function_ScaleName(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set visibility of colourscale ('scalevisible <id> true|false')
-bool NuCommand::function_ScaleVisible(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ScaleVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -119,7 +119,7 @@ bool NuCommand::function_ScaleVisible(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Set existing point in colourscale
-bool NuCommand::function_SetPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -134,7 +134,7 @@ bool NuCommand::function_SetPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set existing point colour in colourscale
-bool NuCommand::function_SetPointColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetPointColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -149,7 +149,7 @@ bool NuCommand::function_SetPointColour(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Set existing point value in colourscale
-bool NuCommand::function_SetPointValue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetPointValue(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;

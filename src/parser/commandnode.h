@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUCOMMANDNODE_H
-#define ATEN_NUCOMMANDNODE_H
+#ifndef ATEN_COMMANDNODE_H
+#define ATEN_COMMANDNODE_H
 
 #include "templates/reflist.h"
 #include "templates/list.h"
@@ -29,49 +29,48 @@
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
 #include "parser/format.h"
-#include "base/vtypes.h"
 
 // Forward Declarations
 class Tree;
 
 // Command Node
-class NuCommandNode : public TreeNode
+class CommandNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	NuCommandNode(NuCommand::Function func = NuCommand::NoFunction);
-	~NuCommandNode();
+	CommandNode(Command::Function func = Command::NoFunction);
+	~CommandNode();
 
 	/*
 	// Command Data
 	*/
 	protected:
 	// Command that this node performs
-	NuCommand::Function function_;
+	Command::Function function_;
 	// Associated format node (if any)
-	NuFormat *format_;
+	Format *format_;
 	
 	public:
 	// Prepare the stored command function, initialising any data and running any commands
 	bool prepFunction();
 	// Get command function
-	NuCommand::Function function();
+	Command::Function function();
 	// Check validity of supplied arguments
 	bool checkArguments();
 	// Create format node (if necessary) from supplied argument id
-	NuFormat *createFormat(int fmtargid, int firstargid);
+	Format *createFormat(int fmtargid, int firstargid);
 	// Create a 'delimited' writeable format (if necessary) from supplied argument id
-	NuFormat *createFormat(const char *delimiter);
+	Format *createFormat(const char *delimiter);
 	// Execute command
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Initialise node
 	bool initialise();
 	// Create, run, and free a single command with simple arguments
-	static bool run(NuCommand::Function func, const char *arglist, ...);
+	static bool run(Command::Function func, const char *arglist, ...);
 };
 
 #endif

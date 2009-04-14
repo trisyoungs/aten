@@ -26,7 +26,7 @@
 #include "classes/prefs.h"
 
 // Augment bonds in current model ('augment')
-bool NuCommand::function_Augment(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Augment Bonds");
@@ -37,7 +37,7 @@ bool NuCommand::function_Augment(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Change bond tolerance ('bondtol <d>')
-bool NuCommand::function_BondTolerance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setBondTolerance(c->argd(0));
 	rv.reset();
@@ -45,7 +45,7 @@ bool NuCommand::function_BondTolerance(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Clear bonds in current model ('clearbonds')
-bool NuCommand::function_ClearBonds(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Clear Bonding");
@@ -56,7 +56,7 @@ bool NuCommand::function_ClearBonds(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Clear bonds in current model ('clearbonds')
-bool NuCommand::function_ClearSelectedBonds(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Clear Bonds in Selection");
@@ -67,7 +67,7 @@ bool NuCommand::function_ClearSelectedBonds(NuCommandNode *c, Bundle &obj, NuRet
 }
 
 // Add bond between atoms ('newbond <atom1> <atom2> [bondtype]')
-bool NuCommand::function_NewBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Third (optional) argument gives bond type
@@ -90,7 +90,7 @@ bool NuCommand::function_NewBond(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Add bond between atoms with specified ids ('newbondid <id1> <id2> [bondtype]')
-bool NuCommand::function_NewBondId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Third (optional) argument gives bond type
@@ -116,7 +116,7 @@ bool NuCommand::function_NewBondId(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Calculate bonds in current model ('rebond')
-bool NuCommand::function_ReBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If we're reading from a file (via a filter) check for prefs override
@@ -137,7 +137,7 @@ bool NuCommand::function_ReBond(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Calculate bonds restricted to pattern molecules ('rebondpatterns')
-bool NuCommand::function_ReBondPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Calculate Bonding (Patterns)");
@@ -148,7 +148,7 @@ bool NuCommand::function_ReBondPatterns(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Calculate bonds restricted to current selection ('rebondselection')
-bool NuCommand::function_ReBondSelection(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Calculate Bonding (Selection)");

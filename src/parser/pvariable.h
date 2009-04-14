@@ -1,6 +1,6 @@
 /*
-	*** String (Character) Variable and Array
-	*** src/parser/character.h
+	*** Pointer Variable Base
+	*** src/parser/pvariable.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,52 +19,38 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_STRINGVARIABLE_H
-#define ATEN_STRINGVARIABLE_H
+#ifndef ATEN_PVARIABLE_H
+#define ATEN_PVARIABLE_H
 
 #include "parser/variable.h"
-#include "parser/accessor.h"
-#include "base/dnchar.h"
 
-// String Variable
-class StringVariable : public Variable
+// Pointer Variable Base
+class PointerVariable : public Variable
 {
 	public:
-	// Constructor / Destructor
-	StringVariable();
-	StringVariable(const char *s, bool constant = FALSE);
-	~StringVariable();
+	// Pointer variable
+	void *pointerData_;
 
 	/*
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (character)
-	bool set(const char *s);
 	// Return value of node
 	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
 	bool set(ReturnValue &rv);
-	// Reset variable
+	// Reset node
 	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Character data
-	Dnchar stringData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char *prefix);
 };
 
-// String Array Variable
-class StringArrayVariable : public Variable
+// Pointer Array Variable
+class PointerArrayVariable : public Variable
 {
 	public:
-	// Constructor / Destructor
-	StringArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
-	~StringArrayVariable();
+	// Destructor
+	~PointerArrayVariable();
 
 	/*
 	// Set / Get
@@ -84,13 +70,13 @@ class StringArrayVariable : public Variable
 	/*
 	// Variable Data
 	*/
-	private:
+	protected:
 	// TreeNode determining array size on initialisation
 	TreeNode *arraySizeExpression_;
 	// Array size
 	int arraySize_;
-	// String data
-	Dnchar *stringArrayData_;
+	// Pointer data
+	void **pointerArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
 

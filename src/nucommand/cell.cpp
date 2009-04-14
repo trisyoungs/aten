@@ -29,7 +29,7 @@
 #include "base/spacegroup.h"
 
 // Add manual spacegroup generator
-bool NuCommand::function_AddGenerator(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
@@ -56,7 +56,7 @@ bool NuCommand::function_AddGenerator(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Adjust parameter of unit cell
-bool NuCommand::function_AdjustCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
@@ -66,7 +66,7 @@ bool NuCommand::function_AdjustCell(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Fold atoms into unit cell
-bool NuCommand::function_Fold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!c->parent()->isFilter())
@@ -81,7 +81,7 @@ bool NuCommand::function_Fold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Fold molecules
-bool NuCommand::function_FoldMolecules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Fold Molecules");
@@ -92,7 +92,7 @@ bool NuCommand::function_FoldMolecules(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Convert fractional coordinates to real coordinates
-bool NuCommand::function_FracToReal(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Convert fractional to real coordinates");
@@ -103,7 +103,7 @@ bool NuCommand::function_FracToReal(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Do crystal packing in model
-bool NuCommand::function_Pack(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!c->parent()->isFilter())
@@ -118,7 +118,7 @@ bool NuCommand::function_Pack(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Print cell information ('printcell')
-bool NuCommand::function_PrintCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	msg.print("Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
@@ -128,7 +128,7 @@ bool NuCommand::function_PrintCell(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-bool NuCommand::function_Replicate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Replicate cell");
@@ -139,7 +139,7 @@ bool NuCommand::function_Replicate(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Rotate cell and contents ('rotatecell <axis> <angle>')
-bool NuCommand::function_RotateCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine supplied axis and get angle
@@ -178,7 +178,7 @@ bool NuCommand::function_RotateCell(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Scale cell and atom positions ('scale <x y z>')
-bool NuCommand::function_Scale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Scale cell and atoms");
@@ -189,7 +189,7 @@ bool NuCommand::function_Scale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Scale cell and molecule COGs ('scalemolecules <x y z>')
-bool NuCommand::function_ScaleMolecules(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Scale cell and molecule centres");
@@ -200,7 +200,7 @@ bool NuCommand::function_ScaleMolecules(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Set/create unit cell ('cell <a b c> <alpha beta gamma>')
-bool NuCommand::function_Cell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs->cell()->type() == Cell::NoCell) obj.rs->beginUndoState("Add Cell");
@@ -213,7 +213,7 @@ bool NuCommand::function_Cell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
-bool NuCommand::function_CellAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Mat3<double> mat;
@@ -229,7 +229,7 @@ bool NuCommand::function_CellAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Remove unit cell
-bool NuCommand::function_NoCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Remove cell");
@@ -240,7 +240,7 @@ bool NuCommand::function_NoCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Set parameter of unit cell
-bool NuCommand::function_SetCell(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
@@ -250,11 +250,11 @@ bool NuCommand::function_SetCell(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Set spacegroup
-bool NuCommand::function_Spacegroup(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argType(0) == NuVTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
+	if (c->argType(0) == VTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
 	else
 	{
 		msg.print("Searching for spacegroup '%s'...",c->argc(0));

@@ -32,7 +32,7 @@ using namespace std;
 #define MAXLINELENGTH 1024
 
 // Forward Declarations
-class NuFormat;
+class Format;
 
 // Line Parser
 class LineParser

@@ -1,5 +1,5 @@
 /*
-	*** NuVariable
+	*** Variable
 	*** src/parser/variable.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -24,7 +24,7 @@
 #include <string.h>
 
 // Constructor
-NuVariable::NuVariable()
+Variable::Variable()
 {
 	// Private variables
 	name_.set("unnamed");
@@ -37,35 +37,35 @@ NuVariable::NuVariable()
 }
 
 // Destructor (virtual)
-NuVariable::~NuVariable()
+Variable::~Variable()
 {
 }
 
 // Set name of variable
-void NuVariable::setName(const char* s)
+void Variable::setName(const char* s)
 {
 	name_.set(s);
 }
 
 // Get name of variable
-const char *NuVariable::name()
+const char *Variable::name()
 {
 	return name_.get();
 }
 
 // Initialise variable
-bool NuVariable::initialise()
+bool Variable::initialise()
 {
 	if (initialValue_ == NULL) reset();
 	else
 	{
-		NuReturnValue rv;
+		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
 			if (set(rv)) return TRUE;
 			else
 			{
-				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), NuVTypes::dataType(returnType_), NuVTypes::dataType(rv.type()));
+				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
 				return FALSE;
 			}
 		}
@@ -75,19 +75,19 @@ bool NuVariable::initialise()
 }
 
 // Set initial value expression
-void NuVariable::setInitialValue(TreeNode *node)
+void Variable::setInitialValue(TreeNode *node)
 {
 	initialValue_ = node;
 }
 
 // Return TreeNode corresponding to initial value
-TreeNode *NuVariable::initialValue()
+TreeNode *Variable::initialValue()
 {
 	return initialValue_;
 }
 
 // Execute as an array
-bool NuVariable::executeAsArray(NuReturnValue &rv, int arrayindex)
+bool Variable::executeAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Secondary array 'retrieval' executor
 	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
@@ -95,7 +95,7 @@ bool NuVariable::executeAsArray(NuReturnValue &rv, int arrayindex)
 }
 
 // Set as an array
-bool NuVariable::setAsArray(NuReturnValue &rv, int arrayindex)
+bool Variable::setAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Secondary array 'set' executor
 	msg.print("Error: Variable '%s' is not an array.\n", name_.get());
@@ -103,9 +103,9 @@ bool NuVariable::setAsArray(NuReturnValue &rv, int arrayindex)
 }
 
 // Search accessors (if any) available for node
-StepNode *NuVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex)
 {
 	// Default is to return NULL since no accessors are defined
-	printf("Error: No accessors are available for a variable of type '%s'.\n", NuVTypes::dataType(returnType_));
+	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));
 	return NULL;
 }

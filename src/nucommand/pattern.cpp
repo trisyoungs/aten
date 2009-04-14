@@ -25,7 +25,7 @@
 #include "base/pattern.h"
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-bool NuCommand::function_NewPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
@@ -35,7 +35,7 @@ bool NuCommand::function_NewPattern(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Clear current pattern definition ('clearpatterns')
-bool NuCommand::function_ClearPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearPatterns();
@@ -44,7 +44,7 @@ bool NuCommand::function_ClearPatterns(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Autocreate pattern definition ('createpatterns')
-bool NuCommand::function_CreatePatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->autocreatePatterns();
@@ -53,14 +53,14 @@ bool NuCommand::function_CreatePatterns(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Select working pattern from model ('getpattern <name>')
-bool NuCommand::function_GetPattern(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Pattern *p = (c->argType(0) == NuVTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
+	Pattern *p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL)
 	{
 		obj.p = p;
-		rv.set(NuVTypes::PatternData, p);
+		rv.set(VTypes::PatternData, p);
 	}
 	else return FALSE;
 	rv.reset();
@@ -68,7 +68,7 @@ bool NuCommand::function_GetPattern(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Print pattern definition for current model ('listpatterns')
-bool NuCommand::function_ListPatterns(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printPatterns();

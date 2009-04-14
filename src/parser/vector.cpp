@@ -1,5 +1,5 @@
 /*
-	*** Vector Variable
+	*** Vector Variable and Array
 	*** src/parser/vector.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -27,30 +27,30 @@
 #include <string.h>
 
 // Constructors
-NuVectorVariable::NuVectorVariable(bool constant)
+VectorVariable::VectorVariable(bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::VectorData;
+	returnType_ = VTypes::VectorData;
 	readOnly_ = constant;
 }
-NuVectorVariable::NuVectorVariable(Vec3<double> v, bool constant) : vectorData_(v)
+VectorVariable::VectorVariable(Vec3<double> v, bool constant) : vectorData_(v)
 {
 	// Private variables
-	returnType_ = NuVTypes::VectorData;
+	returnType_ = VTypes::VectorData;
 	readOnly_ = constant;
 }
-NuVectorVariable::NuVectorVariable(TreeNode *x, TreeNode *y, TreeNode *z)
+VectorVariable::VectorVariable(TreeNode *x, TreeNode *y, TreeNode *z)
 {
 	// Private variables
 	constX_ = x;
 	constY_ = y;
 	constZ_ = z;
 	readOnly_ = TRUE;
-	returnType_ = NuVTypes::VectorData;
+	returnType_ = VTypes::VectorData;
 }
 
 // Destructor
-NuVectorVariable::~NuVectorVariable()
+VectorVariable::~VectorVariable()
 {
 }
 
@@ -59,7 +59,7 @@ NuVectorVariable::~NuVectorVariable()
 */
 
 // Set value of variable
-bool NuVectorVariable::set(NuReturnValue &rv)
+bool VectorVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
@@ -71,24 +71,24 @@ bool NuVectorVariable::set(NuReturnValue &rv)
 }
 
 // Reset variable
-bool NuVectorVariable::reCreate()
+bool VectorVariable::reCreate()
 {
-	NuReturnValue rv1,rv2,rv3;
+	ReturnValue rv1,rv2,rv3;
 	if ((!constX_->execute(rv1)) || (!constY_->execute(rv2)) || (!constZ_->execute(rv3))) return FALSE;
 	bool s1, s2, s3;
-	vectorData_.set(rv1.asReal(s1), rv2.asReal(s2), rv3.asReal(s3));
+	vectorData_.set(rv1.asDouble(s1), rv2.asDouble(s2), rv3.asDouble(s3));
 	if (s1 && s2 && s3) return TRUE;
 	else return FALSE;
 }
 
 // Reset variable
-void NuVectorVariable::reset()
+void VectorVariable::reset()
 {
 	vectorData_.set(0.0,0.0,0.0);
 }
 
 // Return value of node
-bool NuVectorVariable::execute(NuReturnValue &rv)
+bool VectorVariable::execute(ReturnValue &rv)
 {
 	// If this vector is a constant, read the three stored expressions to recreate it
 	if (readOnly_) reCreate();
@@ -97,7 +97,7 @@ bool NuVectorVariable::execute(NuReturnValue &rv)
 }
 
 // Print node contents
-void NuVectorVariable::nodePrint(int offset, const char *prefix)
+void VectorVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -121,47 +121,47 @@ void NuVectorVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Accessor data
-Accessor NuVectorVariable::accessorData[NuVectorVariable::nAccessors] = {
-	{ "x", NuVTypes::DoubleData, FALSE, FALSE },
-	{ "y", NuVTypes::DoubleData, FALSE, FALSE },
-	{ "z", NuVTypes::DoubleData, FALSE, FALSE }
+Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
+	{ "x", VTypes::DoubleData, FALSE, FALSE },
+	{ "y", VTypes::DoubleData, FALSE, FALSE },
+	{ "z", VTypes::DoubleData, FALSE, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *NuVectorVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return NuVectorVariable::accessorSearch(s, arrayindex);
+	return VectorVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *NuVectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
-	msg.enter("NuVectorVariable::accessorSearch");
+	msg.enter("VectorVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
 		msg.print("Error: Type 'vector' has no member named '%s'.\n", s);
-		msg.exit("NuVectorVariable::accessorSearch");
+		msg.exit("VectorVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
-	msg.exit("NuVectorVariable::accessorSearch");
+	result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	msg.exit("VectorVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("NuVectorVariable::retrieveAccessor");
+	msg.enter("VectorVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
-		msg.exit("NuVectorVariable::retrieveAccessor");
+		msg.exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -173,7 +173,7 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	else if (!hasArrayIndex)
 	{
 		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("NuVectorVariable::retrieveAccessor");
+		msg.exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -181,13 +181,13 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 	Vec3<double> v = rv.asVector(result);
 	if (result) switch (acc)
 	{
-		case (NuVectorVariable::X):
+		case (VectorVariable::X):
 			rv.set(v.x);
 			break;
-		case (NuVectorVariable::Y):
+		case (VectorVariable::Y):
 			rv.set(v.y);
 			break;
-		case (NuVectorVariable::Z):
+		case (VectorVariable::Z):
 			rv.set(v.z);
 			break;
 		default:
@@ -195,19 +195,19 @@ bool NuVectorVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 			result = FALSE;
 			break;
 	}
-	msg.exit("NuVectorVariable::retrieveAccessor");
+	msg.exit("VectorVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool NuVectorVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("NuVectorVariable::setAccessor");
+	msg.enter("VectorVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
-		msg.exit("NuVectorVariable::setAccessor");
+		msg.exit("VectorVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -219,7 +219,7 @@ bool NuVectorVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue
 	else if (!hasArrayIndex)
 	{
 		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("NuVectorVariable::setAccessor");
+		msg.exit("VectorVariable::setAccessor");
 		return FALSE;
 	}
 	// ReturnValue contains a copy of the vector data...
@@ -227,16 +227,171 @@ bool NuVectorVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue
 	Vec3<double> v = sourcerv.asVector(result);
 	if (result) switch (acc)
 	{
-		case (NuVectorVariable::X):
-		case (NuVectorVariable::Y):
-		case (NuVectorVariable::Z):
-			sourcerv.set(acc, newvalue.asReal(result));
+		case (VectorVariable::X):
+		case (VectorVariable::Y):
+		case (VectorVariable::Z):
+			sourcerv.set(acc, newvalue.asDouble(result));
 			break;
 		default:
-			printf("NuVectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("VectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("NuVectorVariable::setAccessor");
+	msg.exit("VectorVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+VectorArrayVariable::VectorArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+{
+	// Private variables
+	returnType_ = VTypes::VectorData;
+	vectorArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+}
+
+// Destructor
+VectorArrayVariable::~VectorArrayVariable()
+{
+	if (vectorArrayData_ != NULL) delete[] vectorArrayData_;
+}
+
+/*
+// Set / Get
+*/
+
+// Set from returnvalue node
+bool VectorArrayVariable::set(ReturnValue &rv)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case a vector array) cannot be assigned to.\n");
+		return FALSE;
+	}
+	if (vectorArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return FALSE;
+	}
+	// Loop over array elements and set them
+	for (int i=0; i<arraySize_; i++) vectorArrayData_[i] = rv.asVector();
+	return TRUE;
+}
+
+// Set array element from returnvalue node
+bool VectorArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case a vector array?) cannot be assigned to.\n");
+		return FALSE;
+	}
+	if (vectorArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return FALSE;
+	}
+	// Check index
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	{
+		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		return FALSE;
+	}
+	// Set individual element
+	vectorArrayData_[arrayindex] = rv.asVector();
+	return TRUE;
+}
+
+// Reset variable
+void VectorArrayVariable::reset()
+{
+	if (vectorArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return;
+	}
+	// Loop over array elements and set them
+	for (int i=0; i<arraySize_; i++) vectorArrayData_[i] = 0;
+}
+
+// Return value of node
+bool VectorArrayVariable::execute(ReturnValue &rv)
+{
+	msg.print("A whole vector array ('%s') cannot be passed as a value.\n", name_.get());
+	return FALSE;
+}
+
+// Return value of node as array
+bool VectorArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+{
+	// Check bounds
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	{
+		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		return FALSE;
+	}
+	rv.set( vectorArrayData_[arrayindex] );
+	return TRUE;
+}
+
+// Print node contents
+void VectorArrayVariable::nodePrint(int offset, const char *prefix)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+32];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	strcat(tab,prefix);
+	// Output node data
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab, name_.get(), arraySize_);
+	delete[] tab;
+}
+
+// Initialise array
+bool VectorArrayVariable::initialise()
+{
+	// We define our own initialise() function to take over from the inherited default from Variable
+	// If the array is already allocated, free it.
+	if (vectorArrayData_ != NULL) printf("Array exists already...\n");	
+	if (vectorArrayData_ != NULL) delete[] vectorArrayData_;
+	// Get size of array to create
+	ReturnValue newsize;
+	if (!arraySizeExpression_->execute(newsize))
+	{
+		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		return FALSE;
+	}
+	// Create new array
+	arraySize_ = newsize.asInteger();
+	if (arraySize_ > 0) vectorArrayData_ = new Vec3<double>[arraySize_];
+	if (initialValue_ == NULL) reset();
+	else
+	{
+		ReturnValue rv;
+		if (initialValue_->execute(rv))
+		{
+			if (set(rv)) return TRUE;
+			else
+			{
+				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
+				return FALSE;
+			}
+		}
+		return FALSE;
+	}
+	return TRUE;
+}
+
+// Search variable access list for provided accessor
+StepNode *VectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return VectorVariable::accessorSearch(s, arrayindex);
 }

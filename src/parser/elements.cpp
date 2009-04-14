@@ -30,7 +30,7 @@
 ElementsVariable::ElementsVariable()
 {
 	// Private variables
-	returnType_ = NuVTypes::ElementsData;
+	returnType_ = VTypes::ElementsData;
 	readOnly_ = TRUE;
 }
 
@@ -44,7 +44,7 @@ ElementsVariable::~ElementsVariable()
 */
 
 // Set value of variable
-bool ElementsVariable::set(NuReturnValue &rv)
+bool ElementsVariable::set(ReturnValue &rv)
 {
 	msg.print("A constant value (in this case the Elements table) cannot be assigned to.\n");
 	return FALSE;
@@ -56,10 +56,10 @@ void ElementsVariable::reset()
 }
 
 // Return value of node
-bool ElementsVariable::execute(NuReturnValue &rv)
+bool ElementsVariable::execute(ReturnValue &rv)
 {
 	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::ElementsData, &elements());
+	rv.set(VTypes::ElementsData, &elements());
 	return TRUE;
 }
 
@@ -84,10 +84,10 @@ void ElementsVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
-	{ "mass",	NuVTypes::DoubleData,	TRUE, TRUE },
-	{ "name",	NuVTypes::DoubleData,	TRUE, TRUE },
-	{ "nelements",	NuVTypes::IntegerData,	FALSE,	 TRUE },
-	{ "symbol",	NuVTypes::StringData,	TRUE, TRUE }
+	{ "mass",	VTypes::DoubleData,	TRUE, TRUE },
+	{ "name",	VTypes::DoubleData,	TRUE, TRUE },
+	{ "nelements",	VTypes::IntegerData,	FALSE,	 TRUE },
+	{ "symbol",	VTypes::StringData,	TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -111,13 +111,13 @@ StepNode *ElementsVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ElementsData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ElementsData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ElementsVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ElementsVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ElementsVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ElementsVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -176,7 +176,7 @@ bool ElementsVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayI
 }
 
 // Set desired value
-bool ElementsVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ElementsVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ElementsVariable::setAccessor");
 	// Cast 'i' into Accessors enum value

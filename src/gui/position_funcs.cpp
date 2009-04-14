@@ -67,7 +67,7 @@ void AtenPosition::flipSelection(int axis)
 	char s[2];
 	s[0] = 88+axis;
 	s[1] = '\0';
-	NuCommandNode::run(NuCommand::Mirror, "c", s);
+	CommandNode::run(Command::Mirror, "c", s);
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -86,7 +86,7 @@ void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 
 void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 {
-	NuCommandNode::run(NuCommand::Centre, "ddd", ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
+	CommandNode::run(Command::Centre, "ddd", ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

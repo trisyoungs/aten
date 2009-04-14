@@ -19,20 +19,20 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUVTYPES_H
-#define ATEN_NUVTYPES_H
+#ifndef ATEN_VTYPES_H
+#define ATEN_VTYPES_H
 
 // Variable description
-class NuVTypes
+class VTypes
 {
 	public:
 	// Data Types
 	enum DataType { NoData, IntegerData, DoubleData, StringData, VectorData, AtenData, AtomData, BondData, CellData, ElementsData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, PatternBoundData, nDataTypes };
-	static NuVTypes::DataType dataType(const char *s);
+	static VTypes::DataType dataType(const char *s);
 	static const char *dataType(DataType);
 	static const char *aDataType(DataType);
 	static bool isPointer(DataType);
-	static NuVTypes::DataType determineType(const char *s);
+	static VTypes::DataType determineType(const char *s);
 };
 
 #endif

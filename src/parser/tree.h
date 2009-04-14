@@ -33,7 +33,6 @@
 #include "base/dnchar.h"
 #include "base/elements.h"
 #include "base/lineparser.h"
-#include "base/vtypes.h"
 
 // Forward declarations
 class TreeNode;
@@ -87,9 +86,9 @@ class Tree
 	// Number of syntactic errors encountered
 	int nErrors_;
 	// Check unary operator type compatibility
-	NuVTypes::DataType checkUnaryOperatorTypes(NuCommand::Function func, NuVTypes::DataType type);
+	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type);
 	// Check binary operator type compatibility
-	NuVTypes::DataType checkBinaryOperatorTypes(NuCommand::Function func, NuVTypes::DataType type1, NuVTypes::DataType type2);
+	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, VTypes::DataType type2);
 
 	public:
 	// Create a new path on the stack with the specified base 'variable'
@@ -107,17 +106,17 @@ class Tree
 	// Add a node representing a whole statement to the execution list
 	virtual bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	virtual TreeNode *addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
+	virtual TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	virtual TreeNode *addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist);
+	virtual TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-	virtual TreeNode *addFunction(NuCommand::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	virtual TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together
 	virtual TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	virtual TreeNode *pushScope(NuCommand::Function func = NuCommand::NoFunction);
+	virtual TreeNode *pushScope(Command::Function func = Command::NoFunction);
 	// Pop the topmost scope node
 	virtual bool popScope();
 	// Print statement info
@@ -129,33 +128,33 @@ class Tree
 	*/
 	private:
 	// Current variable type to use for creating variables
-	NuVTypes::DataType declarationType_;
+	VTypes::DataType declarationType_;
 	// Flag to indicate that we are assigning in a declaration, and the whole variable scope should be searched
 	bool declarationAssignment_;
 
 	public:
 	// Set current type for variable declarations
-	virtual bool setDeclarationType(NuVTypes::DataType type);
+	virtual bool setDeclarationType(VTypes::DataType type);
 	// Return current type to be used for declarations
-	virtual NuVTypes::DataType declarationType();
+	virtual VTypes::DataType declarationType();
 	// Set declarations assignment flag
 	virtual bool setDeclarationAssignment(bool b);
 	// Return whether we are in an assignment within a declaration
 	virtual bool isDeclarationAssignment();
 	// Add constant value to tompost scope
-	virtual TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
+	virtual TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
-	virtual TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable to topmost ScopeNode using the most recently declared type
 	virtual TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode using the most recently declared type
 	virtual TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value
-// 	TreeNode *addVecConstant(NuVTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
+// 	TreeNode *addVecConstant(VTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
-	virtual bool isVariableInScope(const char *name, NuVariable *&result);
+	virtual bool isVariableInScope(const char *name, Variable *&result);
 	// Wrap named variable (and array index)
-	virtual TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
+	virtual TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
 
 	/*
@@ -177,7 +176,7 @@ class Tree
 	// Current input stream target, in the form of a LineParser
 	LineParser *parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
-	NuCommand::Function acceptedFail_;
+	Command::Function acceptedFail_;
 
 	public:
 	// Add read option
@@ -189,11 +188,11 @@ class Tree
 	// Return the current LineParser pointer
 	LineParser *parser();
 	// Set function for accepted fail
-	void setAcceptedFail(NuCommand::Function func);
+	void setAcceptedFail(Command::Function func);
 	// Return function for accepted fail
-	NuCommand::Function acceptedFail();
+	Command::Function acceptedFail();
 	// Execute
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)
 	bool executeRead(const char *filename);
 	// Execute, using specified parser as input source (no return value)

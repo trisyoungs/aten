@@ -25,7 +25,7 @@
 #include "gui/gui.h"
 
 // Toggle debug modes
-bool NuCommand::function_Debug(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Messenger::OutputType ot = Messenger::outputType(c->argc(0));
 	if (ot != Messenger::nOutputTypes)
@@ -38,7 +38,7 @@ bool NuCommand::function_Debug(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Start GUI
-bool NuCommand::function_Gui(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
 	if (aten.programMode() == Aten::InteractiveMode) aten.setProgramMode(Aten::GuiMode);
@@ -54,24 +54,24 @@ bool NuCommand::function_Gui(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Help function
-bool NuCommand::function_Help(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuCommand::Function cf = nucommands.command(c->argc(0));
-	if (cf == NuCommand::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
+	Command::Function cf = nucommands.command(c->argc(0));
+	if (cf == Command::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
 	else if (nucommands.data[cf].hasArguments()) msg.print("help:  %s %s\n       %s\n", nucommands.data[cf].keyword, nucommands.data[cf].argText, nucommands.data[cf].syntax);
 	else msg.print("help:  %s\n       %s\n", nucommands.data[cf].keyword, nucommands.data[cf].syntax);
 	return TRUE;
 }
 
 // Set random seed
-bool NuCommand::function_Seed(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	srand( (unsigned) c->argi(0) );
 	return TRUE;
 }
 
 // Quit main program
-bool NuCommand::function_Quit(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
 	aten.setProgramMode(Aten::NoMode);
@@ -82,7 +82,7 @@ bool NuCommand::function_Quit(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Print version information
-bool NuCommand::function_Version(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
 	// TGAY Force exit from program.

@@ -80,7 +80,7 @@ Forest *Aten::addBatchCommand()
 // Run all stored commands on all loaded models
 void Aten::processModels()
 {
-	NuReturnValue rv;
+	ReturnValue rv;
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
 		for (Forest *f = batchCommands_.first(); f != NULL; f = f->next)

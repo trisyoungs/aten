@@ -96,7 +96,7 @@ void AtenCellDefine::cellChanged()
 {
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
-	NuCommandNode::run(NuCommand::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
+	CommandNode::run(Command::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	Model *m = aten.currentModel()->renderSource();
 	char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
@@ -154,7 +154,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	else
 	{
-		NuCommandNode::run(NuCommand::NoCell, "");
+		CommandNode::run(Command::NoCell, "");
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
@@ -180,7 +180,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
 	{
-		NuCommandNode::run(NuCommand::Spacegroup, "i", sg);
+		CommandNode::run(Command::Spacegroup, "i", sg);
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
 		Model *m = aten.currentModel()->renderSource();
@@ -191,7 +191,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
-	NuCommandNode::run(NuCommand::Spacegroup, "i", 0);
+	CommandNode::run(Command::Spacegroup, "i", 0);
 	// Set spacegroup label
 	char s[128];
 	sprintf(s,"%s (0)\n", spacegroups.displayName(0));
@@ -200,7 +200,7 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
-	NuCommandNode::run(NuCommand::Pack, "");
+	CommandNode::run(Command::Pack, "");
 	gui.modelChanged();
 }
 

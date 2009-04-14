@@ -1,5 +1,5 @@
 /*
-	*** Atom Variable
+	*** Atom Variable and Array
 	*** src/parser/atom.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -26,12 +26,17 @@
 #include "model/model.h"
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-AtomVariable::AtomVariable(Atom *ptr, bool constant) : atomData_(ptr)
+AtomVariable::AtomVariable(Atom *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::AtomData;
+	returnType_ = VTypes::AtomData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -40,80 +45,33 @@ AtomVariable::~AtomVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool AtomVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a atom&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	atomData_ = rv.asPointer(NuVTypes::AtomData, success);
-	return success;
-}
-
-// Reset variable
-void AtomVariable::reset()
-{
-	atomData_ = NULL;
-}
-
-// Return value of node
-bool AtomVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::AtomData, atomData_);
-	return TRUE;
-}
-
-// Print node contents
-void AtomVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("%s%li (atom) (constant value)\n", tab, atomData_);
-	else printf("%s%li (atom) (variable, name=%s)\n", tab, atomData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
-	{ "fixed", 	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "f",		NuVTypes::VectorData,		FALSE, FALSE },
-	{ "fx",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "fy",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "fz",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "hidden",	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "id",		NuVTypes::IntegerData,		FALSE, TRUE },
-	{ "mass",	NuVTypes::DoubleData,		FALSE, TRUE },
-	{ "name",	NuVTypes::StringData,		FALSE, TRUE },
-	{ "q",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "r",		NuVTypes::VectorData,		FALSE, FALSE },
-	{ "rx",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "ry",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "rz",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "selected",	NuVTypes::IntegerData,		FALSE, FALSE },
-	{ "symbol",	NuVTypes::StringData,		FALSE, TRUE },
-	{ "type",	NuVTypes::ForcefieldAtomData,	FALSE, FALSE },
-	{ "v",		NuVTypes::VectorData,		FALSE, FALSE },
-	{ "vx",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "vy",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "vz",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "z",		NuVTypes::IntegerData, 		FALSE, TRUE }
+	{ "fixed", 	VTypes::IntegerData,		FALSE, FALSE },
+	{ "f",		VTypes::VectorData,		FALSE, FALSE },
+	{ "fx",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "fy",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "fz",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "hidden",	VTypes::IntegerData,		FALSE, FALSE },
+	{ "id",		VTypes::IntegerData,		FALSE, TRUE },
+	{ "mass",	VTypes::DoubleData,		FALSE, TRUE },
+	{ "name",	VTypes::StringData,		FALSE, TRUE },
+	{ "q",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "r",		VTypes::VectorData,		FALSE, FALSE },
+	{ "rx",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "ry",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "rz",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "selected",	VTypes::IntegerData,		FALSE, FALSE },
+	{ "symbol",	VTypes::StringData,		FALSE, TRUE },
+	{ "type",	VTypes::ForcefieldAtomData,	FALSE, FALSE },
+	{ "v",		VTypes::VectorData,		FALSE, FALSE },
+	{ "vx",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "vy",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "vz",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "z",		VTypes::IntegerData, 		FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -137,13 +95,13 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("AtomVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("AtomVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -163,7 +121,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Atom *ptr= (Atom*) rv.asPointer(NuVTypes::AtomData, result);
+	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Fixed):
@@ -207,7 +165,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 			rv.set(elements().symbol(ptr));
 			break;
 		case (AtomVariable::Type):
-			rv.set(NuVTypes::ForcefieldAtomData, ptr->type());
+			rv.set(VTypes::ForcefieldAtomData, ptr->type());
 			break;
 		case (AtomVariable::V):
 			rv.set(ptr->v());
@@ -230,7 +188,7 @@ bool AtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 }
 
 // Set specified data
-bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("AtomVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -255,7 +213,7 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Vec3<double> v;
-	Atom *ptr= (Atom*) sourcerv.asPointer(NuVTypes::AtomData, result);
+	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
@@ -268,13 +226,13 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
 		case (AtomVariable::FZ):
-			ptr->f().set(acc - AtomVariable::FX, newvalue.asReal());
+			ptr->f().set(acc - AtomVariable::FX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Hidden):
 			ptr->parent()->setHidden(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::Q):
-			ptr->parent()->chargeAtom(ptr, newvalue.asReal());
+			ptr->parent()->chargeAtom(ptr, newvalue.asDouble());
 			break;
 		case (AtomVariable::R):
 			ptr->parent()->positionAtom(ptr, newvalue.asVector());
@@ -283,14 +241,14 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 		case (AtomVariable::RY):
 		case (AtomVariable::RZ):
 			v = ptr->r();
-			v.set(acc - AtomVariable::RX, newvalue.asReal());
+			v.set(acc - AtomVariable::RX, newvalue.asDouble());
 			ptr->parent()->positionAtom(ptr, v);
 			break;
 		case (AtomVariable::Selected):
 			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
 			break;
 		case (AtomVariable::Type):
-			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(NuVTypes::ForcefieldAtomData));
+			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(VTypes::ForcefieldAtomData));
 			break;
 		case (AtomVariable::V):
 			ptr->v() = newvalue.asVector();
@@ -298,7 +256,7 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 		case (AtomVariable::VX):
 		case (AtomVariable::VY):
 		case (AtomVariable::VZ):
-			ptr->v().set(acc - AtomVariable::VX, newvalue.asReal());
+			ptr->v().set(acc - AtomVariable::VX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Z):
 			ptr->parent()->transmuteAtom(ptr, newvalue.asInteger());
@@ -310,4 +268,26 @@ bool AtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	}
 	msg.exit("AtomVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+AtomArrayVariable::AtomArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::AtomData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *AtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return AtomVariable::accessorSearch(s, arrayindex);
 }

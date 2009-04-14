@@ -30,7 +30,7 @@
 #include "parser/vector.h"
 #include "parser/character.h"
 #include "parser/integer.h"
-#include "parser/real.h"
+#include "parser/double.h"
 #include "base/sysfunc.h"
 #include "main/aten.h"
 #include <stdarg.h>
@@ -40,10 +40,10 @@ Tree::Tree()
 {
 	// Private variables
 	parent_ = NULL;
-	declarationType_ = NuVTypes::NoData;
+	declarationType_ = VTypes::NoData;
 	declarationAssignment_ = FALSE;
 	parser_ = NULL;
-	acceptedFail_ = NuCommand::NoFunction;
+	acceptedFail_ = Command::NoFunction;
 
 	// Public variables
 	prev = NULL;
@@ -120,7 +120,7 @@ void Tree::initialise()
 	msg.enter("Tree::initialise");
 	clear();
 	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
-	ScopeNode *root = new ScopeNode(NuCommand::NoFunction);
+	ScopeNode *root = new ScopeNode(Command::NoFunction);
 	root->createGlobalVariables();
 	nodes_.own(root);
 	scopeStack_.add(root);
@@ -129,25 +129,25 @@ void Tree::initialise()
 }
 
 // Set function for accepted fail
-void Tree::setAcceptedFail(NuCommand::Function func)
+void Tree::setAcceptedFail(Command::Function func)
 {
-	if ((acceptedFail_ != NuCommand::NoFunction) && (func != NuCommand::NoFunction)) printf("Warning: An acceptedFail command is already set...\n");
+	if ((acceptedFail_ != Command::NoFunction) && (func != Command::NoFunction)) printf("Warning: An acceptedFail command is already set...\n");
 	acceptedFail_ = func;
 }
 
 // Clear accepted fail bit
-NuCommand::Function Tree::acceptedFail()
+Command::Function Tree::acceptedFail()
 {
 	return acceptedFail_;
 }
 
 // Execute tree
-bool Tree::execute(NuReturnValue &rv)
+bool Tree::execute(ReturnValue &rv)
 {
 	msg.enter("Tree::execute");
 	bool result;
 	rv.reset();
-	acceptedFail_ = NuCommand::NoFunction;
+	acceptedFail_ = Command::NoFunction;
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
@@ -175,7 +175,7 @@ bool Tree::executeRead(LineParser *parser)
 		return FALSE;
 	}
 	// Execute the commands
-	NuReturnValue rv;
+	ReturnValue rv;
 	bool result = execute(rv);
 	parser_ = NULL;
 	msg.exit("Tree::executeRead[LineParser]");
@@ -195,7 +195,7 @@ bool Tree::executeRead(const char *filename)
 		return FALSE;
 	}
 	// Execute the commands
-	NuReturnValue rv;
+	ReturnValue rv;
 	bool result = execute(rv);
 	parser_->closeFile();
 	delete parser_;
@@ -216,7 +216,7 @@ bool Tree::executeWrite(const char *filename)
 		return FALSE;
 	}
 	// Execute the commands
-	NuReturnValue rv;
+	ReturnValue rv;
 	bool result = execute(rv);
 	parser_->closeFile();
 	delete parser_;
@@ -259,16 +259,16 @@ bool Tree::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *Tree::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
 {
 	msg.enter("Tree::addOperator");
 	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer.
-	NuVTypes::DataType rtype;
+	VTypes::DataType rtype;
 	if (arg2 == NULL) rtype = checkUnaryOperatorTypes(func, arg1->returnType());
 	else rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg2->returnType());
-	if (rtype == NuVTypes::NoData) return NULL;
+	if (rtype == VTypes::NoData) return NULL;
 	// Create new command node
-	NuCommandNode *leaf = new NuCommandNode(func);
+	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added operator '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
 	// Add arguments and set parent
@@ -281,18 +281,18 @@ TreeNode *Tree::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *
 }
 
 // Add function-based leaf node to topmost branch on stack
-TreeNode *Tree::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
+TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist)
 {
 	msg.enter("Tree::addFunctionWithArglist");
 	// Create new command node
-	NuCommandNode *leaf = new NuCommandNode(func);
+	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
-	leaf->setReturnType(NuCommand::data[func].returnType);
+	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments()) leaf = NULL;
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -301,11 +301,11 @@ TreeNode *Tree::addFunctionWithArglist(NuCommand::Function func, TreeNode *argli
 }
 
 // Add a function node to the list (overloaded to accept simple arguments instead of a list)
-TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
 {
 	msg.enter("Tree::addFunction");
 	// Create new command node
-	NuCommandNode *leaf = new NuCommandNode(func);
+	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
 	if (a1 != NULL) leaf->addArgument(a1);
@@ -314,7 +314,7 @@ TreeNode *Tree::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2
 	if (a4 != NULL) leaf->addArgument(a4);
 	leaf->setParent(this);
 	// Store the function's return type
-	leaf->setReturnType(NuCommand::data[func].returnType);
+	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments()) leaf = NULL;
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -335,7 +335,7 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 {
 	msg.print(Messenger::Parse, "Joining command nodes %li and %li\n", node1, node2);
-	NuCommandNode *leaf = new NuCommandNode(NuCommand::Joiner);
+	CommandNode *leaf = new CommandNode(Command::Joiner);
 	nodes_.own(leaf);
 	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
@@ -344,7 +344,7 @@ TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 }
 
 // Add on a new scope to the stack
-TreeNode *Tree::pushScope(NuCommand::Function func)
+TreeNode *Tree::pushScope(Command::Function func)
 {
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
@@ -373,40 +373,40 @@ bool Tree::popScope()
 */
 
 // Add constant value to tompost scope
-TreeNode *Tree::addConstant(NuVTypes::DataType type, Dnchar *token)
+TreeNode *Tree::addConstant(VTypes::DataType type, Dnchar *token)
 {
-	NuVariable *result = NULL;
-	if (type == NuVTypes::IntegerData)
+	Variable *result = NULL;
+	if (type == VTypes::IntegerData)
 	{
-		NuIntegerVariable *var = new NuIntegerVariable(atoi(token->get()), TRUE);
+		IntegerVariable *var = new IntegerVariable(atoi(token->get()), TRUE);
 		nodes_.own(var);
 		return var;
 	}
-	else if (type == NuVTypes::DoubleData)
+	else if (type == VTypes::DoubleData)
 	{
-		NuRealVariable *var = new NuRealVariable(atof(token->get()), TRUE);
+		DoubleVariable *var = new DoubleVariable(atof(token->get()), TRUE);
 		nodes_.own(var);
 		return var;
 	}
-	else if (type == NuVTypes::StringData)
+	else if (type == VTypes::StringData)
 	{
 		StringVariable *var = new StringVariable(token->get(), TRUE);
 		nodes_.own(var);
 		return var;
 	}
-	else printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", NuVTypes::dataType(type));
+	else printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", VTypes::dataType(type));
 	return NULL;
 }
 
 // Set current declared variable type
-bool Tree::setDeclarationType(NuVTypes::DataType type)
+bool Tree::setDeclarationType(VTypes::DataType type)
 {
 	declarationType_ = type;
 	return TRUE;
 }
 
 // Return current type to be used for declarations
-NuVTypes::DataType Tree::declarationType()
+VTypes::DataType Tree::declarationType()
 {
 	return declarationType_;
 }
@@ -425,9 +425,9 @@ bool Tree::isDeclarationAssignment()
 }
 
 // Add variable to topmost scope
-TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
-	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(type));
+	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode
 // 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -437,7 +437,7 @@ TreeNode *Tree::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *ini
 		return NULL;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	NuVariable *var = ri->item->variables.create(type, name->get(), initialValue);
+	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
@@ -456,7 +456,7 @@ TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
-	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), NuVTypes::dataType(declarationType_));
+	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(declarationType_));
 	// Get topmost scopenode
 // 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -466,7 +466,7 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 		return NULL;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	NuVariable *var = ri->item->variables.createArray(declarationType_, name->get(), sizeexpr, initialvalue);
+	Variable *var = ri->item->variables.createArray(declarationType_, name->get(), sizeexpr, initialvalue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
@@ -477,22 +477,22 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 }
 
 // // Add constant value
-// TreeNode *Tree::addVecConstant(NuVTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
+// TreeNode *Tree::addVecConstant(VTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
 // {
-// 	NuVectorVariable *leaf = new NuVectorVariable(value1, value2, value3);
+// 	VectorVariable *leaf = new VectorVariable(value1, value2, value3);
 // 	scopeStack_.last()->item->variables.take(leaf);
 // 	return leaf;
 // }
 
 // Search for variable in current scope
-bool Tree::isVariableInScope(const char *name, NuVariable *&result)
+bool Tree::isVariableInScope(const char *name, Variable *&result)
 {
 
 	// If the declaredVariableType is set then this token has been found in a declaration statement.
 	// ---> it must not exist in the local scope
 	// In addition, if this is a declaration assignment, then we search as normal
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
-	if (declarationAssignment_ || (declarationType_ == NuVTypes::NoData))
+	if (declarationAssignment_ || (declarationType_ == VTypes::NoData))
 	{
 // 		printf("kljlk\n");
 		// Search the current ScopeNode list for the variable name requested
@@ -504,7 +504,7 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 			if (result != NULL) break;
 		}
 		// If result is NULL then we must return FALSE since the variable is not in a declaration
-		// If the current declared variable type is NuVTypes::NoData then this is not a variable declaration and we must find the variable...
+		// If the current declared variable type is VTypes::NoData then this is not a variable declaration and we must find the variable...
 		if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
 // 		{
 // 			msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
@@ -531,7 +531,7 @@ bool Tree::isVariableInScope(const char *name, NuVariable *&result)
 }
 
 // Wrap named variable (and array index)
-TreeNode *Tree::wrapVariable(NuVariable *var, TreeNode *arrayindex)
+TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 {
 	// If an array index was given, check that the target variable is actually an array....
 	if (arrayindex && (var->nodeType() != TreeNode::ArrayVarNode))
@@ -598,7 +598,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
-		msg.print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", NuVTypes::dataType(result->returnType()));
+		msg.print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", VTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
 		nodes_.own(result);
 		// Finalise the path before we remove it
@@ -611,7 +611,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 		}
 		ri->item->addArgument(result);
 	}
-	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", NuVTypes::dataType(laststep->returnType()), name->get());
+	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(laststep->returnType()), name->get());
 	msg.exit("Tree::expandPath");
 	return result;
 }

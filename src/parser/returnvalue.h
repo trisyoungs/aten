@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NURETURNVALUE_H
-#define ATEN_NURETURNVALUE_H
+#ifndef ATEN_RETURNVALUE_H
+#define ATEN_RETURNVALUE_H
 
 #include "parser/returnvalue.h"
 #include "parser/vtypes.h"
@@ -28,18 +28,18 @@
 #include "templates/vector3.h"
 
 // Tree Return Value
-class NuReturnValue
+class ReturnValue
 {
 	public:
 	// Constructor
-	NuReturnValue();
-	NuReturnValue(int i);
-	NuReturnValue(double d);
-	NuReturnValue(const char *s);
-	NuReturnValue(Vec3<double> v);
-	NuReturnValue(NuVTypes::DataType ptrtype, void *ptr);
+	ReturnValue();
+	ReturnValue(int i);
+	ReturnValue(double d);
+	ReturnValue(const char *s);
+	ReturnValue(Vec3<double> v);
+	ReturnValue(VTypes::DataType ptrtype, void *ptr);
 	// Operator=
-	void operator=(NuReturnValue &rv);
+	void operator=(ReturnValue &rv);
 
 
 	/*
@@ -49,17 +49,17 @@ class NuReturnValue
 	// Temporary variable for converted string return
 	Dnchar tempString_;
 	// Data type contained in class
-	NuVTypes::DataType type_;
+	VTypes::DataType type_;
 	// Variable members for returns
 	int valueI_;
-	double valueR_;
+	double valueD_;
 	Dnchar valueS_;
 	Vec3<double> valueV_;
 	void *valueP_;
 
 	public:
 	// Return type of the stored data
-	NuVTypes::DataType type();
+	VTypes::DataType type();
 	// Reset data
 	void reset();
 	// Return string of contained data
@@ -83,7 +83,7 @@ class NuReturnValue
 	// Set from single vector data
 	void set(int id, double xyz);
 	// Set from pointer value
-	void set(NuVTypes::DataType type, void *ptr);
+	void set(VTypes::DataType type, void *ptr);
 
 
 	/*
@@ -93,13 +93,13 @@ class NuReturnValue
 	// Return integer value
 	int asInteger(bool &success);
 	// Return real value
-	double asReal(bool &success);
+	double asDouble(bool &success);
 	// Return character string
 	const char *asString(bool &success);
 	// Return vector data
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
-	void *asPointer(NuVTypes::DataType type, bool &success);
+	void *asPointer(VTypes::DataType type, bool &success);
 
 
 	/*
@@ -109,13 +109,13 @@ class NuReturnValue
 	// Return integer value
 	int asInteger();
 	// Return real value
-	double asReal();
+	double asDouble();
 	// Return character string
 	const char *asString();
 	// Return vector data
 	Vec3<double> asVector();
 	// Return pointer data
-	void *asPointer(NuVTypes::DataType type);
+	void *asPointer(VTypes::DataType type);
 	// Return as boolean (guaranteed conversion)
 	bool asBool();
 
