@@ -30,7 +30,7 @@ class StepNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	StepNode(int id, NuVTypes::DataType prevtype, TreeNode *arrayindex, NuVTypes::DataType returntype, bool readonly);
+	StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType returntype, bool readonly);
 	~StepNode();
 
 	/*
@@ -38,7 +38,7 @@ class StepNode : public TreeNode
 	*/
 	private:
 	// Expected type of preceding return value
-	NuVTypes::DataType previousType_;
+	VTypes::DataType previousType_;
 	// Accessor that this node attempts to access
 	int accessor_;
 	// Array index (if present)
@@ -50,18 +50,18 @@ class StepNode : public TreeNode
 	// Return accessor ID
 	int accessor();
 	// Set from returnvalue nodes
-	bool set(NuReturnValue &executerv, NuReturnValue &setrv);
+	bool set(ReturnValue &executerv, ReturnValue &setrv);
 
 	/*
 	// Inherited Virtuals
 	*/
 	public:
 	// Execute node
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Print node contents
 	void nodePrint(int offset, const char *prefix = "");
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Reset node
 	bool initialise();
 	// Search accessors for the type represented by this node

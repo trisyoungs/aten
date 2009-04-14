@@ -33,13 +33,13 @@
 #include <string.h>
 
 // Constructor
-StepNode::StepNode(int id, NuVTypes::DataType prevtype, TreeNode *arrayindex, NuVTypes::DataType rtntype, bool readonly) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype)
+StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype)
 {
 	// Private variables
 	readOnly_ = readonly;
 	returnType_ = rtntype;
 	nodeType_ = TreeNode::SteppedNode;
-// 	printf("Return type of StepNode is %s\n", NuVTypes::dataType(returnType_));
+// 	printf("Return type of StepNode is %s\n", VTypes::dataType(returnType_));
 }
 
 // Destructor
@@ -54,13 +54,13 @@ int StepNode::accessor()
 }
 
 // Execute command
-bool StepNode::execute(NuReturnValue &rv)
+bool StepNode::execute(ReturnValue &rv)
 {
 	msg.enter("StepNode::execute");
 	// Check that the ReturnValue contains the type that we are expecting
 	if (rv.type() != previousType_)
 	{
-		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s'\n", NuVTypes::dataType(previousType_), NuVTypes::dataType(rv.type()));
+		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s'\n", VTypes::dataType(previousType_), VTypes::dataType(rv.type()));
 		msg.exit("StepNode::execute");
 		return FALSE;
 	}
@@ -70,13 +70,13 @@ bool StepNode::execute(NuReturnValue &rv)
 	int i = -1;
 	if (arrayIndex_ != NULL)
 	{
-		NuReturnValue arrayrv;
+		ReturnValue arrayrv;
 		if (!arrayIndex_->execute(arrayrv))
 		{
 			printf("Failed to retrieve array index.\n");
 			return FALSE;
 		}
-		if ((arrayrv.type() != NuVTypes::IntegerData) && (arrayrv.type() != NuVTypes::DoubleData))
+		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
 			return FALSE;
@@ -85,41 +85,41 @@ bool StepNode::execute(NuReturnValue &rv)
 	}
 	switch (previousType_)
 	{
-		case (NuVTypes::NoData):
+		case (VTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData (execute).\n");
 			break;
-		case (NuVTypes::AtenData):
+		case (VTypes::AtenData):
 			result = AtenVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::AtomData):
+		case (VTypes::AtomData):
 			result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::BondData):
+		case (VTypes::BondData):
 			result = BondVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::CellData):
+		case (VTypes::CellData):
 			result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::ElementsData):
+		case (VTypes::ElementsData):
 			result = ElementsVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::ForcefieldData):
+		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::ForcefieldAtomData):
+		case (VTypes::ForcefieldAtomData):
 			result = ForcefieldAtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::ForcefieldBoundData):
+		case (VTypes::ForcefieldBoundData):
 			result = ForcefieldBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::ModelData):
+		case (VTypes::ModelData):
 			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (NuVTypes::VectorData):
-			result = NuVectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+		case (VTypes::VectorData):
+			result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		default:
-			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", NuVTypes::dataType(previousType_));
+			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", VTypes::dataType(previousType_));
 			break;
 	}
 	msg.exit("StepNode::execute");
@@ -132,35 +132,35 @@ void StepNode::nodePrint(int offset, const char *prefix)
 	// Stepnodes print in a slightly different way, with no newlines...
 	switch (previousType_)
 	{
-		case (NuVTypes::NoData):
+		case (VTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData (print).\n");
 			break;
-		case (NuVTypes::AtenData):
+		case (VTypes::AtenData):
 			printf("%s", AtenVariable::accessorData[accessor_].name);
 			break;
-		case (NuVTypes::AtomData):
+		case (VTypes::AtomData):
 			printf("%s", AtomVariable::accessorData[accessor_].name);
 			break;
-		case (NuVTypes::ModelData):
+		case (VTypes::ModelData):
 			printf("%s", ModelVariable::accessorData[accessor_].name);
 			break;
-		case (NuVTypes::VectorData):
-			printf("%s", NuVectorVariable::accessorData[accessor_].name);
+		case (VTypes::VectorData):
+			printf("%s", VectorVariable::accessorData[accessor_].name);
 			break;
 		default:
-			printf("Internal Error: StepNode doesn't know how to print a member from type (%s)\n", NuVTypes::dataType(previousType_));
+			printf("Internal Error: StepNode doesn't know how to print a member from type (%s)\n", VTypes::dataType(previousType_));
 			break;
 	}
 }
 
 // Set from returnvalue nodes
-bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
+bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 {
 	msg.enter("StepNode::set");
 	// Check that the ReturnValue contains the type that we are expecting
 	if (executerv.type() != previousType_)
 	{
-		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s' (in set)\n", NuVTypes::dataType(previousType_), NuVTypes::dataType(executerv.type()));
+		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s' (in set)\n", VTypes::dataType(previousType_), VTypes::dataType(executerv.type()));
 		msg.exit("StepNode::set");
 		return FALSE;
 	}
@@ -168,38 +168,42 @@ bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
 	bool result = FALSE;
 	switch (previousType_)
 	{
-		case (NuVTypes::NoData):
+		case (VTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData (set).\n");
 			break;
-		case (NuVTypes::AtenData):
+		case (VTypes::AtenData):
 			result = AtenVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::AtomData):
+		case (VTypes::AtomData):
 			result = AtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::CellData):
+		case (VTypes::BondData):
+			result = BondVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (VTypes::CellData):
 			result = CellVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::ElementsData):
+		case (VTypes::ElementsData):
 			result = ElementsVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::ForcefieldData):
+		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::ForcefieldAtomData):
+		case (VTypes::ForcefieldAtomData):
 			result = ForcefieldAtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
-		case (NuVTypes::ForcefieldBoundData):
+		case (VTypes::ForcefieldBoundData):
 			result = ForcefieldBoundVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
- 		case (NuVTypes::ModelData):
- 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
- 			break;
- 		case (NuVTypes::VectorData):
- 			result = NuVectorVariable::setAccessor(accessor_, executerv, setrv, FALSE);
- 			break;
+		case (VTypes::ModelData):
+			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
+		case (VTypes::VectorData):
+			if (arrayIndex_ != NULL) printf("An array index *IS* present.\n");
+			result = VectorVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			break;
 		default:
-			printf("Internal Error: StepNode doesn't recognise this type (%s) (set)\n", NuVTypes::dataType(previousType_));
+			printf("Internal Error: StepNode doesn't recognise this type (%s) (set)\n", VTypes::dataType(previousType_));
 			break;
 	}
 	msg.exit("StepNode::set");
@@ -207,9 +211,9 @@ bool StepNode::set(NuReturnValue &executerv, NuReturnValue &setrv)
 }
 
 // Set from returnvalue node
-bool StepNode::set(NuReturnValue &rv)
+bool StepNode::set(ReturnValue &rv)
 {
-	printf("Internal Error: Use StepNode::set(NUreturnValue,NuReturnValue) for StepNodes.\n");
+	printf("Internal Error: Use StepNode::set(NUreturnValue,ReturnValue) for StepNodes.\n");
 	return FALSE;
 }
 
@@ -228,38 +232,38 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 	StepNode *result = NULL;
 	switch (returnType_)
 	{
-		case (NuVTypes::NoData):
+		case (VTypes::NoData):
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
-		case (NuVTypes::AtomData):
+		case (VTypes::AtomData):
 			result = AtomVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::BondData):
+		case (VTypes::BondData):
 			result = BondVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::CellData):
+		case (VTypes::CellData):
 			result = CellVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::ElementsData):
+		case (VTypes::ElementsData):
 			result = ElementsVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::ForcefieldData):
+		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::ForcefieldAtomData):
+		case (VTypes::ForcefieldAtomData):
 			result = ForcefieldAtomVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::ForcefieldBoundData):
+		case (VTypes::ForcefieldBoundData):
 			result = ForcefieldBoundVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::ModelData):
+		case (VTypes::ModelData):
 			result = ModelVariable::accessorSearch(s, arrayindex);
 			break;
-		case (NuVTypes::VectorData):
-			result = NuVectorVariable::accessorSearch(s, arrayindex);
+		case (VTypes::VectorData):
+			result = VectorVariable::accessorSearch(s, arrayindex);
 			break;
 		default:
-			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", NuVTypes::dataType(returnType_));
+			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", VTypes::dataType(returnType_));
 			break;
 	}
 	msg.exit("StepNode::findAccessor");

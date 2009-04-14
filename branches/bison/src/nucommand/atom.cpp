@@ -25,7 +25,7 @@
 #include "base/elements.h"
 
 // Set atom style for current selection
-bool NuCommand::function_AtomStyle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
@@ -49,19 +49,19 @@ bool NuCommand::function_AtomStyle(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Retrieve atom info ('getatom <id> [var]')
-bool NuCommand::function_GetAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom *i = obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
 	// Set atom information
 	obj.i = i;
-	rv.set(NuVTypes::AtomData, i);
+	rv.set(VTypes::AtomData, i);
 	return TRUE;
 }
 
 // Hide current atom selection
-bool NuCommand::function_Hide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->selectionSetHidden(TRUE);
@@ -70,7 +70,7 @@ bool NuCommand::function_Hide(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom charge
-bool NuCommand::function_SetCharge(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -81,7 +81,7 @@ bool NuCommand::function_SetCharge(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set current atom coordinates
-bool NuCommand::function_SetCoords(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
@@ -92,7 +92,7 @@ bool NuCommand::function_SetCoords(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set current atom element
-bool NuCommand::function_SetElement(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -103,7 +103,7 @@ bool NuCommand::function_SetElement(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set current atom forces
-bool NuCommand::function_SetForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
@@ -114,7 +114,7 @@ bool NuCommand::function_SetForces(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set current atom x force
-bool NuCommand::function_SetFX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -125,7 +125,7 @@ bool NuCommand::function_SetFX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom y force
-bool NuCommand::function_SetFY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -136,7 +136,7 @@ bool NuCommand::function_SetFY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom z force
-bool NuCommand::function_SetFZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -147,7 +147,7 @@ bool NuCommand::function_SetFZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom ID
-bool NuCommand::function_SetId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -158,7 +158,7 @@ bool NuCommand::function_SetId(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom x coordinate
-bool NuCommand::function_SetRX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -169,7 +169,7 @@ bool NuCommand::function_SetRX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom y coordinate
-bool NuCommand::function_SetRY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -180,7 +180,7 @@ bool NuCommand::function_SetRY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom z coordinate
-bool NuCommand::function_SetRZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -191,7 +191,7 @@ bool NuCommand::function_SetRZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom velocities
-bool NuCommand::function_SetVelocities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
@@ -202,7 +202,7 @@ bool NuCommand::function_SetVelocities(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set current atom x velocity
-bool NuCommand::function_SetVX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -213,7 +213,7 @@ bool NuCommand::function_SetVX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom y velocity
-bool NuCommand::function_SetVY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -224,7 +224,7 @@ bool NuCommand::function_SetVY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set current atom z velocity
-bool NuCommand::function_SetVZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
@@ -235,7 +235,7 @@ bool NuCommand::function_SetVZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Show current atom selection
-bool NuCommand::function_Show(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->selectionSetHidden(FALSE);
@@ -244,7 +244,7 @@ bool NuCommand::function_Show(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Show all atoms
-bool NuCommand::function_ShowAll(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);

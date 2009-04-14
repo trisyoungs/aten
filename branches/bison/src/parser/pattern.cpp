@@ -31,7 +31,7 @@
 PatternVariable::PatternVariable(Pattern *ptr, bool constant) : patternData_(ptr)
 {
 	// Private variables
-	returnType_ = NuVTypes::PatternData;
+	returnType_ = VTypes::PatternData;
 	readOnly_ = constant;
 }
 
@@ -45,7 +45,7 @@ PatternVariable::~PatternVariable()
 */
 
 // Set value of variable
-bool PatternVariable::set(NuReturnValue &rv)
+bool PatternVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
@@ -53,7 +53,7 @@ bool PatternVariable::set(NuReturnValue &rv)
 		return FALSE;
 	}
 	bool success;
-	patternData_ = rv.asPointer(NuVTypes::PatternData, success);
+	patternData_ = rv.asPointer(VTypes::PatternData, success);
 	return success;
 }
 
@@ -64,10 +64,10 @@ void PatternVariable::reset()
 }
 
 // Return value of node
-bool PatternVariable::execute(NuReturnValue &rv)
+bool PatternVariable::execute(ReturnValue &rv)
 {
 	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::PatternData, patternData_);
+	rv.set(VTypes::PatternData, patternData_);
 	return TRUE;
 }
 
@@ -93,7 +93,7 @@ void PatternVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
-	{ "fixed", 	NuVTypes::IntegerData,		FALSE, FALSE },
+	{ "fixed", 	VTypes::IntegerData,		FALSE, FALSE },
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -117,13 +117,13 @@ StepNode *PatternVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::PatternData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::PatternData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("PatternVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("PatternVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -143,17 +143,17 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) rv.asPointer(NuVTypes::PatternData, result);
+	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	if (result) switch (acc)
 	{
 		case (PatternVariable::Angles):
-			rv.set(NuVTypes::PatternBoundData, ptr->angle(arrayIndex-1));
+			rv.set(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
 			break;
 		case (PatternVariable::Atoms):
-			rv.set(NuVTypes::AtomData, ptr->parent()->atom(arrayIndex-1));
+			rv.set(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1));
 			break;
 		case (PatternVariable::Bonds):
-			rv.set(NuVTypes::PatternBoundData, ptr->bond(arrayIndex-1));
+			rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
 			break;
 		case (PatternVariable::Cog):
 			rv.set(ptr->calculateCog(arrayIndex-1));
@@ -162,16 +162,16 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
 		case (PatternVariable::FirstAtom):
-			rv.set(NuVTypes::AtomData, ptr->firstAtom());
+			rv.set(VTypes::AtomData, ptr->firstAtom());
 			break;
 		case (PatternVariable::FirstAtomId):
 			rv.set(ptr->startAtom() + 1);
 			break;
 		case (PatternVariable::FField):
-			rv.set(NuVTypes::ForcefieldData, ptr->forcefield());
+			rv.set(VTypes::ForcefieldData, ptr->forcefield());
 			break;
 		case (PatternVariable::LastAtom):
-			rv.set(NuVTypes::AtomData, ptr->lastAtom());
+			rv.set(VTypes::AtomData, ptr->lastAtom());
 			break;
 		case (PatternVariable::LastAtomId):
 			rv.set(ptr->endAtom() + 1);
@@ -198,7 +198,7 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 			rv.set(ptr->nTorsions());
 			break;
 		case (PatternVariable::Torsions):
-			rv.set(NuVTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
+			rv.set(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PatternVariable.\n", accessorData[i].name);
@@ -210,7 +210,7 @@ bool PatternVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIn
 }
 
 // Set desired value
-bool PatternVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("PatternVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -234,7 +234,7 @@ bool PatternVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue 
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Pattern *ptr= (Pattern*) sourcerv.asPointer(NuVTypes::PatternData, result);
+	Pattern *ptr= (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
@@ -242,7 +242,7 @@ bool PatternVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue 
 			ptr->setName(newvalue.asString());
 			break;
 		case (PatternVariable::FField):
- 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(NuVTypes::ForcefieldData));
+ 			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData));
 			break;
 		default:
 			printf("PatternVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

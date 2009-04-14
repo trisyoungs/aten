@@ -113,7 +113,7 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::AddHydrogen, "");
+	CommandNode::run(Command::AddHydrogen, "");
 	gui.modelChanged();
 }
 

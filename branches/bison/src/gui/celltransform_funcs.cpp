@@ -80,7 +80,7 @@ void AtenCellTransform::refresh()
 
 void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 {
-	NuCommandNode::run(NuCommand::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
+	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
 	gui.modelChanged();
 }
 
@@ -100,8 +100,8 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
-	if (ui.CellScaleUseCogsCheck->isChecked()) NuCommandNode::run(NuCommand::Scale, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
-	else NuCommandNode::run(NuCommand::ScaleMolecules, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::Scale, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	else CommandNode::run(Command::ScaleMolecules, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 

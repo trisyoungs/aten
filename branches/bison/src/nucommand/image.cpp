@@ -28,7 +28,7 @@
 #include "classes/prefs.h"
 
 // Save current view as bitmap image
-bool NuCommand::function_SaveBitmap(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
@@ -53,7 +53,7 @@ bool NuCommand::function_SaveBitmap(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Save current view a vector graphic
-bool NuCommand::function_SaveVector(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 // 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 // 	vector_format vf = VIF_from_text(c->argc(0));

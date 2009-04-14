@@ -1,5 +1,5 @@
 /*
-	*** Forcefield Variable
+	*** Forcefield Variable and Array
 	*** src/parser/forcefield.h
 	Copyright T. Youngs 2007-2009
 
@@ -22,39 +22,19 @@
 #ifndef ATEN_FORCEFIELDVARIABLE_H
 #define ATEN_FORCEFIELDVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
 class Forcefield;
 
 // Forcefield Variable
-class ForcefieldVariable : public NuVariable
+class ForcefieldVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
 	ForcefieldVariable(Forcefield *ptr = NULL, bool constant = FALSE);
 	~ForcefieldVariable();
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(NuReturnValue &rv);
-	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Forcefield data
-	void *ffData_;
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
 
 	/*
 	// Access Data
@@ -67,12 +47,26 @@ class ForcefieldVariable : public NuVariable
 	// Static function to search accessors
 	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 };
 
-#endif
+// Forcefield Array Variable
+class ForcefieldArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	ForcefieldArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+};
+
+#endif

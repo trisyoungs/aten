@@ -19,22 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUVARIABLE_H
-#define ATEN_NUVARIABLE_H
+#ifndef ATEN_VARIABLE_H
+#define ATEN_VARIABLE_H
 
 #include "parser/treenode.h"
 #include "base/dnchar.h"
-#include "base/vtypes.h"
 #include "templates/vector3.h"
 #include <stdlib.h>
 
 // Variable
-class NuVariable : public TreeNode
+class Variable : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	NuVariable();
-	virtual ~NuVariable();
+	Variable();
+	virtual ~Variable();
 
 	/*
 	// Variable Character
@@ -55,9 +54,9 @@ class NuVariable : public TreeNode
 	// Return TreeNode corresponding to initial value
 	TreeNode *initialValue();
 	// Execute as an array
-	virtual bool executeAsArray(NuReturnValue &rv, int arrayindex);
+	virtual bool executeAsArray(ReturnValue &rv, int arrayindex);
 	// Set as an array
-	virtual bool setAsArray(NuReturnValue &rv, int arrayindex);
+	virtual bool setAsArray(ReturnValue &rv, int arrayindex);
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node

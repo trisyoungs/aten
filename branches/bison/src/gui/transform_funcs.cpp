@@ -109,7 +109,7 @@ void AtenTransform::rotateSelection(double direction)
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
-	NuCommandNode::run(NuCommand::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
+	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model *m = aten.currentModel();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
@@ -130,7 +130,7 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	Vec3<double> v;
 	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
 
-	NuCommandNode::run(NuCommand::MatrixTransform, "ddddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
+	CommandNode::run(Command::MatrixTransform, "ddddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
 
 	aten.currentModel()->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
@@ -341,7 +341,7 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 	Vec3<double> v;
 	v.set(ui.ConvertOriginXSpin->value(), ui.ConvertOriginYSpin->value(), ui.ConvertOriginZSpin->value());
 
-	NuCommandNode::run(NuCommand::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
+	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
 
 	aten.currentModel()->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);

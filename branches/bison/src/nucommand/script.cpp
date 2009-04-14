@@ -24,7 +24,7 @@
 #include "main/aten.h"
 
 // List available scripts
-bool NuCommand::function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
@@ -35,7 +35,7 @@ bool NuCommand::function_ListScripts(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Load script from disk
-bool NuCommand::function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Forest *f = aten.scripts.add();
 	if (!f->generateFromFile(c->argc(0)))
@@ -50,7 +50,7 @@ bool NuCommand::function_LoadScript(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Run specified script
-bool NuCommand::function_RunScript(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Find the script...
 	Forest *f;
@@ -58,7 +58,7 @@ bool NuCommand::function_RunScript(NuCommandNode *c, Bundle &obj, NuReturnValue 
 	if (f != NULL)
 	{
 		msg.print("Executing script '%s':\n",c->argc(0));
-		NuReturnValue result;
+		ReturnValue result;
 		f->executeAll(result);
 	}
 	else msg.print("Couldn't find script '%s'.\n",c->argc(0));

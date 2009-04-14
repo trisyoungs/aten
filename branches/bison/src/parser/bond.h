@@ -1,5 +1,5 @@
 /*
-	*** Bond Variable
+	*** Bond Variable and Array
 	*** src/parser/bond.h
 	Copyright T. Youngs 2007-2009
 
@@ -22,39 +22,19 @@
 #ifndef ATEN_BONDVARIABLE_H
 #define ATEN_BONDVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
 class Bond;
 
 // Bond Variable
-class BondVariable : public NuVariable
+class BondVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
 	BondVariable(Bond *i = NULL, bool constant = FALSE);
 	~BondVariable();
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(NuReturnValue &rv);
-	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Bond data
-	void *bondData_;
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
 
 	/*
 	// Access Data
@@ -67,11 +47,26 @@ class BondVariable : public NuVariable
 	// Static function to search accessors
 	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, NuReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+};
+
+// Bond Array Variable
+class BondArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	BondArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 };
 
 #endif

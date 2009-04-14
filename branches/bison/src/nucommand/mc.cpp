@@ -25,7 +25,7 @@
 #include "base/messenger.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
-bool NuCommand::function_MCAccept(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return FALSE;
@@ -35,7 +35,7 @@ bool NuCommand::function_MCAccept(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Sets allowances for moves ('mc allow <move> <on|off>')
-bool NuCommand::function_MCAllow(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return FALSE;
@@ -45,7 +45,7 @@ bool NuCommand::function_MCAllow(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-bool NuCommand::function_MCMaxStep(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return FALSE;
@@ -55,7 +55,7 @@ bool NuCommand::function_MCMaxStep(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-bool NuCommand::function_MCNTrials(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return FALSE;
@@ -65,7 +65,7 @@ bool NuCommand::function_MCNTrials(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Prints the current MC params ('printmc')
-bool NuCommand::function_PrintMC(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	msg.print("Current Monte Carlo Parameters are:\n");
 	msg.print("Move        Allowed  NTrials  MaxStep   EAccept :\n");

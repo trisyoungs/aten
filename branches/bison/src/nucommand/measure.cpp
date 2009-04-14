@@ -24,7 +24,7 @@
 #include "model/model.h"
 
 // Measure angle between supplied atoms
-bool NuCommand::function_Angle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Angle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure angle");
@@ -35,7 +35,7 @@ bool NuCommand::function_Angle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Measure all bond angles in selection
-bool NuCommand::function_Angles(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Angles(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure bond angles in selection");
@@ -46,7 +46,7 @@ bool NuCommand::function_Angles(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Clear all measurements in current model
-bool NuCommand::function_ClearMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Remove all measurements");
@@ -57,7 +57,7 @@ bool NuCommand::function_ClearMeasurements(NuCommandNode *c, Bundle &obj, NuRetu
 }
 
 // Measure distance between supplied atoms
-bool NuCommand::function_Distance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Distance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure distance");
@@ -68,7 +68,7 @@ bool NuCommand::function_Distance(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Measure all bond distances in selection
-bool NuCommand::function_Distances(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Distances(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure bond distances in selection");
@@ -79,7 +79,7 @@ bool NuCommand::function_Distances(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // List all measurements in current model
-bool NuCommand::function_ListMeasurements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->listMeasurements();
@@ -88,7 +88,7 @@ bool NuCommand::function_ListMeasurements(NuCommandNode *c, Bundle &obj, NuRetur
 }
 
 // Make a measurement within the current model
-bool NuCommand::function_Measure(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double result = 0.0;
@@ -113,7 +113,7 @@ bool NuCommand::function_Measure(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Measure torsion angle between supplied atoms
-bool NuCommand::function_Torsion(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure torsion");
@@ -124,7 +124,7 @@ bool NuCommand::function_Torsion(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Measure all torsion angles in selection
-bool NuCommand::function_Torsions(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure torsions in selection");

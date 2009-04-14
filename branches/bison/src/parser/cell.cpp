@@ -1,5 +1,5 @@
 /*
-	*** Cell Variable
+	*** Cell Variable and Array
 	*** src/parser/cell.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -27,12 +27,17 @@
 #include "model/model.h"
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-CellVariable::CellVariable(Cell *ptr, bool constant) : cellData_(ptr)
+CellVariable::CellVariable(Cell *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::CellData;
+	returnType_ = VTypes::CellData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -41,83 +46,36 @@ CellVariable::~CellVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool CellVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a cell&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	cellData_ = rv.asPointer(NuVTypes::CellData, success);
-	return success;
-}
-
-// Reset variable
-void CellVariable::reset()
-{
-	cellData_ = NULL;
-}
-
-// Return value of node
-bool CellVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::CellData, cellData_);
-	return TRUE;
-}
-
-// Print node contents
-void CellVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("%s%li (cell) (constant value)\n", tab, cellData_);
-	else printf("%s%li (cell) (variable, name=%s)\n", tab, cellData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
-	{ "a",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "b",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "c",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "alpha",	NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "beta",	NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "gamma",	NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "ax",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "ay",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "az",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "bx",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "by",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "bz",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "cx",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "cy",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "cz",		NuVTypes::DoubleData,	FALSE, FALSE },
-	{ "centrex",	NuVTypes::DoubleData,	FALSE, TRUE },
-	{ "centrey",	NuVTypes::DoubleData,	FALSE, TRUE },
-	{ "centrez",	NuVTypes::DoubleData,	FALSE, TRUE },
-	{ "density",	NuVTypes::DoubleData,	FALSE, TRUE },
-	{ "matrix", 	NuVTypes::DoubleData,	TRUE, FALSE },
-	{ "sgid",	NuVTypes::IntegerData,	FALSE, FALSE },
-	{ "sgname",	NuVTypes::StringData,	FALSE, FALSE },
-	{ "sgsetting",	NuVTypes::IntegerData,	FALSE, FALSE },
-	{ "type",	NuVTypes::StringData,	FALSE, TRUE },
-	{ "volume",	NuVTypes::DoubleData,	FALSE, TRUE },
+	{ "a",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "b",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "c",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "alpha",	VTypes::DoubleData,	FALSE, FALSE },
+	{ "beta",	VTypes::DoubleData,	FALSE, FALSE },
+	{ "gamma",	VTypes::DoubleData,	FALSE, FALSE },
+	{ "ax",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "ay",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "az",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "bx",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "by",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "bz",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "cx",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "cy",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "cz",		VTypes::DoubleData,	FALSE, FALSE },
+	{ "centrex",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "centrey",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "centrez",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "density",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "matrix", 	VTypes::DoubleData,	TRUE, FALSE },
+	{ "sgid",	VTypes::IntegerData,	FALSE, FALSE },
+	{ "sgname",	VTypes::StringData,	FALSE, FALSE },
+	{ "sgsetting",	VTypes::IntegerData,	FALSE, FALSE },
+	{ "type",	VTypes::StringData,	FALSE, TRUE },
+	{ "volume",	VTypes::DoubleData,	FALSE, TRUE },
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -141,13 +99,13 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("CellVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool CellVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("CellVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -167,7 +125,7 @@ bool CellVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr= (Cell*) rv.asPointer(NuVTypes::CellData, result);
+	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):
@@ -232,7 +190,7 @@ bool CellVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 }
 
 // Set desired value
-bool CellVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("CellVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -256,7 +214,7 @@ bool CellVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Cell *ptr = (Cell*) sourcerv.asPointer(NuVTypes::CellData, result);
+	Cell *ptr = (Cell*) sourcerv.asPointer(VTypes::CellData, result);
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):
@@ -275,11 +233,11 @@ bool CellVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) acc, newvalue.asReal());
+			ptr->parent()->setCell( (Cell::CellParameter) acc, newvalue.asDouble());
 			break;
 		case (CellVariable::Matrix):
 			// Cast accessor into a CellParameter
-			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asReal());
+			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -288,4 +246,26 @@ bool CellVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	}
 	msg.exit("CellVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+CellArrayVariable::CellArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::CellData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *CellArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return CellVariable::accessorSearch(s, arrayindex);
 }

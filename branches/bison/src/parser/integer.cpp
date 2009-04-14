@@ -1,5 +1,5 @@
 /*
-	*** Integer Variable
+	*** Integer Variable and Array
 	*** src/parser/integer.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -23,16 +23,20 @@
 #include "base/constants.h"
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-NuIntegerVariable::NuIntegerVariable(int i, bool constant) : integerData_(i)
+IntegerVariable::IntegerVariable(int i, bool constant) : integerData_(i)
 {
 	// Private variables
-	returnType_ = NuVTypes::IntegerData;
+	returnType_ = VTypes::IntegerData;
 	readOnly_ = constant;
 }
 
 // Destructor
-NuIntegerVariable::~NuIntegerVariable()
+IntegerVariable::~IntegerVariable()
 {
 }
 
@@ -41,7 +45,7 @@ NuIntegerVariable::~NuIntegerVariable()
 */
 
 // Set from returnvalue node
-bool NuIntegerVariable::set(NuReturnValue &rv)
+bool IntegerVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
@@ -54,21 +58,21 @@ bool NuIntegerVariable::set(NuReturnValue &rv)
 }
 
 // Reset variable
-void NuIntegerVariable::reset()
+void IntegerVariable::reset()
 {
 	integerData_ = 0;
 }
 
 
 // Return value of node
-bool NuIntegerVariable::execute(NuReturnValue &rv)
+bool IntegerVariable::execute(ReturnValue &rv)
 {
 	rv.set(integerData_);
 	return TRUE;
 }
 
 // Print node contents
-void NuIntegerVariable::nodePrint(int offset, const char *prefix)
+void IntegerVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -81,4 +85,153 @@ void NuIntegerVariable::nodePrint(int offset, const char *prefix)
 	if (readOnly_) printf("[C]%s%i (constant value)\n", tab, integerData_);
 	else printf("[V]%s%i (variable, name=%s)\n", tab, integerData_, name_.get());
 	delete[] tab;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+IntegerArrayVariable::IntegerArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+{
+	// Private variables
+	returnType_ = VTypes::IntegerData;
+	integerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+}
+
+// Destructor
+IntegerArrayVariable::~IntegerArrayVariable()
+{
+	if (integerArrayData_ != NULL) delete[] integerArrayData_;
+}
+
+/*
+// Set / Get
+*/
+
+// Set from returnvalue node
+bool IntegerArrayVariable::set(ReturnValue &rv)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		return FALSE;
+	}
+	if (integerArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return FALSE;
+	}
+	// Loop over array elements and set them
+	for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger();
+	return TRUE;
+}
+
+// Set array element from returnvalue node
+bool IntegerArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+{
+	if (readOnly_)
+	{
+		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		return FALSE;
+	}
+	if (integerArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return FALSE;
+	}
+	// Check index
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	{
+		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		return FALSE;
+	}
+	// Set individual element
+	integerArrayData_[arrayindex] = rv.asInteger();
+	return TRUE;
+}
+
+// Reset variable
+void IntegerArrayVariable::reset()
+{
+	if (integerArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		return;
+	}
+	// Loop over array elements and set them
+	for (int i=0; i<arraySize_; i++) integerArrayData_[i] = 0;
+}
+
+// Return value of node
+bool IntegerArrayVariable::execute(ReturnValue &rv)
+{
+	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
+	return FALSE;
+}
+
+// Return value of node as array
+bool IntegerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+{
+	// Check bounds
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	{
+		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		return FALSE;
+	}
+	rv.set( integerArrayData_[arrayindex] );
+	return TRUE;
+}
+
+// Print node contents
+void IntegerArrayVariable::nodePrint(int offset, const char *prefix)
+{
+	// Construct tabbed offset
+	char *tab;
+	tab = new char[offset+32];
+	tab[0] = '\0';
+	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
+	if (offset > 1) strcat(tab,"   |--> ");
+	strcat(tab,prefix);
+	// Output node data
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab, name_.get(), arraySize_);
+	delete[] tab;
+}
+
+// Initialise array
+bool IntegerArrayVariable::initialise()
+{
+	// We define our own initialise() function to take over from the inherited default from Variable
+	// If the array is already allocated, free it.
+	if (integerArrayData_ != NULL) printf("Array exists already...\n");	
+	if (integerArrayData_ != NULL) delete[] integerArrayData_;
+	// Get size of array to create
+	ReturnValue newsize;
+	if (!arraySizeExpression_->execute(newsize))
+	{
+		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		return FALSE;
+	}
+	// Create new array
+	arraySize_ = newsize.asInteger();
+	if (arraySize_ > 0) integerArrayData_ = new int[arraySize_];
+	if (initialValue_ == NULL) reset();
+	else
+	{
+		ReturnValue rv;
+		if (initialValue_->execute(rv))
+		{
+			if (set(rv)) return TRUE;
+			else
+			{
+				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
+				return FALSE;
+			}
+		}
+		return FALSE;
+	}
+	return TRUE;
 }

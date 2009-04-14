@@ -19,51 +19,51 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUVARIABLELIST_H
-#define ATEN_NUVARIABLELIST_H
+#ifndef ATEN_VARIABLELIST_H
+#define ATEN_VARIABLELIST_H
 
 #include "parser/variable.h"
 #include "base/constants.h"
 #include "templates/list.h"
 
 // Forward Declarations
-class NuIntegerVariable;
+class IntegerVariable;
 class NuCharacterVariable;
-class NuRealVariable;
+class DoubleVariable;
 
 // Variable list
-class NuVariableList
+class VariableList
 {
 	/*
 	// Variable List
 	*/
 	public:
 	// Constructor / Destructor
-	NuVariableList();
+	VariableList();
 
 	private:
 	// List of variables
-	List<NuVariable> variables_;
+	List<Variable> variables_;
 	// List of constants
-	List<NuVariable> constants_;
+	List<Variable> constants_;
 	// Create variable of specified type
-	static NuVariable *createVariable(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	static Variable *createVariable(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
-	void take(NuVariable *v);
+	void take(Variable *v);
 	// Retrieve a named variable from the list
-	NuVariable *find(const char *name);
+	Variable *find(const char *name);
 	// Create a new variable in the list
-	NuVariable *create(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	Variable *create(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new variable (static function, so we don't take ownership of it).
-	NuVariable *createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	Variable *createFree(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new array variable in the list
-	NuVariable *createArray(NuVTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
+	Variable *createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
 	// Return the number of variables (not constants) contained in the list
 	int nVariables();
 	// Return first variable in the list
-	NuVariable *first();
+	Variable *first();
 	// Reset all variable values
 	bool initialise();
 	// Clear all variables, expressions etc. stored in class

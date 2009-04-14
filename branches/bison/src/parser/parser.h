@@ -128,39 +128,39 @@ class CommandParser : public Tree
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode *leaf);
 	// Add an operator to the Tree
-	TreeNode *addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
+	TreeNode *addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2 = NULL);
 	// Associate a command-based leaf node to the Tree
-	TreeNode *addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist);
+	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-	TreeNode *addFunction(NuCommand::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
 	// Join two commands together
 	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
-	TreeNode *pushScope(NuCommand::Function func = NuCommand::NoFunction);
+	TreeNode *pushScope(Command::Function func = Command::NoFunction);
 	// Pop the topmost scope node
 	bool popScope();
 
 	// Variables / Constants
 	// Set current type for variable declarations
-	bool setDeclarationType(NuVTypes::DataType type);
+	bool setDeclarationType(VTypes::DataType type);
 	// Return current type to be used for declarations
-	NuVTypes::DataType declarationType();
+	VTypes::DataType declarationType();
 	// Set declarations assignment flag
 	bool setDeclarationAssignment(bool b);
 	// Return whether we are in an assignment within a declaration
 	bool isDeclarationAssignment();
 	// Add constant value to tompost scope
-	TreeNode *addConstant(NuVTypes::DataType type, Dnchar *token);
+	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
-	TreeNode *addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable to topmost ScopeNode using the most recently declared type
 	TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode using the most recently declared type
 	TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Search for variable in current scope
-	bool isVariableInScope(const char *name, NuVariable *&result);
+	bool isVariableInScope(const char *name, Variable *&result);
 	// Wrap named variable (and array index)
-	TreeNode *wrapVariable(NuVariable *var, TreeNode *arrayindex = NULL);
+	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
 	// Filters
 	// Set filter option

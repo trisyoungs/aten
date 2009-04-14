@@ -243,7 +243,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		// Find the filter that was selected
 		t = aten.findFilterByDescription(FilterData::ExpressionExport, qPrintable(selFilter));
 		if (t == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
-		else NuCommandNode::run(NuCommand::SaveExpression, "cc", t->filter.nickname(), qPrintable(filename));
+		else CommandNode::run(Command::SaveExpression, "cc", t->filter.nickname(), qPrintable(filename));
 	}
 }
 

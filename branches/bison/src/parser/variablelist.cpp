@@ -20,39 +20,29 @@
 */
 
 #include "parser/variablelist.h"
-#include "parser/array.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
 #include "parser/bond.h"
 #include "parser/cell.h"
 #include "parser/character.h"
+#include "parser/double.h"
 #include "parser/elements.h"
 #include "parser/integer.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/model.h"
-#include "parser/real.h"
 #include "parser/vector.h"
 #include <string.h>
 // #include <stdarg.h>
 
 // Constructor
-NuVariableList::NuVariableList()
+VariableList::VariableList()
 {
-	// Add accessors to model list and current model/frame in Aten
-//	Variable *v;
-//	v = addVariable("header", VTypes::CharacterData);
-//	v->set("false");
-//	v = addVariable("infile", VTypes::CharacterData);
-//	v->set("none");
-//	v = addVariable("outfile", VTypes::CharacterData);
-//	v->set("none");
-//	v = addVariable("prefs", VTypes::PrefsData);
 }
 
 // Pass a newly-created variable / constant to the list for it to take ownership of
-void NuVariableList::take(NuVariable *v)
+void VariableList::take(Variable *v)
 {
 	// Check the readonly status to determine where we put it
 	if (v->readOnly()) constants_.own(v);
@@ -60,63 +50,63 @@ void NuVariableList::take(NuVariable *v)
 }
 
 // Retrieve a named variable from the list
-NuVariable *NuVariableList::find(const char *name)
+Variable *VariableList::find(const char *name)
 {
-	NuVariable *result = NULL;
-	for (result = variables_.first(); result != NULL; result = (NuVariable*) result->next) if (strcmp(name,result->name()) == 0) break;
+	Variable *result = NULL;
+	for (result = variables_.first(); result != NULL; result = (Variable*) result->next) if (strcmp(name,result->name()) == 0) break;
 	return result;
 }
 
 // Create a new variable in the list
-NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::createVariable(VTypes::DataType type, const char *name, TreeNode *initialValue)
 {
-	NuVariable *v = NULL;
+	Variable *v = NULL;
 	switch (type)
 	{
-		case (NuVTypes::NoData):
+		case (VTypes::NoData):
 			printf("No data type passed to VariableList::create().\n");
 			break;
-		case (NuVTypes::IntegerData):
-			v = (NuVariable*) new NuIntegerVariable(0, FALSE);
+		case (VTypes::IntegerData):
+			v = (Variable*) new IntegerVariable(0, FALSE);
 			break;
-		case (NuVTypes::DoubleData):
-			v = (NuVariable*) new NuRealVariable(0.0, FALSE);
+		case (VTypes::DoubleData):
+			v = (Variable*) new DoubleVariable(0.0, FALSE);
 			break;
-		case (NuVTypes::StringData):
-			v = (NuVariable*) new StringVariable("", FALSE);
+		case (VTypes::StringData):
+			v = (Variable*) new StringVariable("", FALSE);
 			break;
-		case (NuVTypes::VectorData):
-			v = (NuVariable*) new NuVectorVariable(FALSE);
+		case (VTypes::VectorData):
+			v = (Variable*) new VectorVariable(FALSE);
 			break;
-		case (NuVTypes::AtenData):
-			v = (NuVariable*) new AtenVariable();
+		case (VTypes::AtenData):
+			v = (Variable*) new AtenVariable();
 			break;
-		case (NuVTypes::AtomData):
-			v = (NuVariable*) new AtomVariable(NULL, FALSE);
+		case (VTypes::AtomData):
+			v = (Variable*) new AtomVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::BondData):
-			v = (NuVariable*) new BondVariable(NULL, FALSE);
+		case (VTypes::BondData):
+			v = (Variable*) new BondVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::CellData):
-			v = (NuVariable*) new CellVariable(NULL, FALSE);
+		case (VTypes::CellData):
+			v = (Variable*) new CellVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::ElementsData):
-			v = (NuVariable*) new ElementsVariable();
+		case (VTypes::ElementsData):
+			v = (Variable*) new ElementsVariable();
 			break;
-		case (NuVTypes::ForcefieldData):
-			v = (NuVariable*) new ForcefieldVariable(NULL, FALSE);
+		case (VTypes::ForcefieldData):
+			v = (Variable*) new ForcefieldVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::ForcefieldAtomData):
-			v = (NuVariable*) new ForcefieldAtomVariable(NULL, FALSE);
+		case (VTypes::ForcefieldAtomData):
+			v = (Variable*) new ForcefieldAtomVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::ForcefieldBoundData):
-			v = (NuVariable*) new ForcefieldBoundVariable(NULL, FALSE);
+		case (VTypes::ForcefieldBoundData):
+			v = (Variable*) new ForcefieldBoundVariable(NULL, FALSE);
 			break;
-		case (NuVTypes::ModelData):
-			v = (NuVariable*) new ModelVariable(NULL, FALSE);
+		case (VTypes::ModelData):
+			v = (Variable*) new ModelVariable(NULL, FALSE);
 			break;
 		default:
-			printf("Don't know how to VariableList::create() of type %s.\n", NuVTypes::dataType(type));
+			printf("Don't know how to VariableList::create() of type %s.\n", VTypes::dataType(type));
 			break;
 	} 
 	if (v != NULL)
@@ -128,44 +118,84 @@ NuVariable *NuVariableList::createVariable(NuVTypes::DataType type, const char *
 }
 
 // Create variable
-NuVariable *NuVariableList::create(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::create(VTypes::DataType type, const char *name, TreeNode *initialValue)
 {
-	NuVariable *v = createVariable(type, name, initialValue);
+	Variable *v = createVariable(type, name, initialValue);
 	if (v != NULL) variables_.own(v);
 	return v;
 }
 
 // Create variable without owning it
-NuVariable *NuVariableList::createFree(NuVTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::createFree(VTypes::DataType type, const char *name, TreeNode *initialValue)
 {
 	return createVariable(type, name, initialValue);
 }
 
 // Create a new array variable in the list
-NuVariable *NuVariableList::createArray(NuVTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+Variable *VariableList::createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
 {
-	ArrayVariable *array = new ArrayVariable(type, sizeexpr);
-	variables_.own(array);
-	array->setName(name);
-	array->setInitialValue(initialValue);
-	return array;
+	Variable *var = NULL;
+	switch (type)
+	{
+		case (VTypes::AtomData):
+			var = new AtomArrayVariable(sizeexpr);
+			break;
+		case (VTypes::BondData):
+			var = new BondArrayVariable(sizeexpr);
+			break;
+		case (VTypes::CellData):
+			var = new CellArrayVariable(sizeexpr);
+			break;
+		case (VTypes::IntegerData):
+			var = new IntegerArrayVariable(sizeexpr);
+			break;
+		case (VTypes::DoubleData):
+			var = new DoubleArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ForcefieldData):
+			var = new ForcefieldArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ForcefieldAtomData):
+			var = new ForcefieldAtomArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ForcefieldBoundData):
+			var = new ForcefieldBoundArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ModelData):
+			var = new ModelArrayVariable(sizeexpr);
+			break;
+		case (VTypes::StringData):
+			var = new StringArrayVariable(sizeexpr);
+			break;
+		case (VTypes::VectorData):
+			var = new VectorArrayVariable(sizeexpr);
+			break;
+		default:
+			printf("Internal Error: Don't know how to create an array of type %s.\n", VTypes::dataType(type));
+			break;
+	}
+	if (var == NULL) return NULL;
+	variables_.own(var);
+	var->setName(name);
+	var->setInitialValue(initialValue);
+	return var;
 }
 
 // Return the number of variables (not constants) contained in the list
-int NuVariableList::nVariables()
+int VariableList::nVariables()
 {
 	return variables_.nItems();
 }
 
 // Return first variable in the list
-NuVariable *NuVariableList::first()
+Variable *VariableList::first()
 {
 	return variables_.first();
 }
 
 // Initialise/reset all variables
-bool NuVariableList::initialise()
+bool VariableList::initialise()
 {
-	for (NuVariable *v = variables_.first(); v != NULL; v = (NuVariable*) v->next) if (!v->initialise()) return FALSE;
+	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) if (!v->initialise()) return FALSE;
 	return TRUE;
 }

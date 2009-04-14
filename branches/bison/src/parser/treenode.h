@@ -77,7 +77,7 @@ class TreeNode
 	// Return number of arguments currently assigned to node
 	int nArgs();
 	// Return datatype of nth argument
-	NuVTypes::DataType argType(int i);
+	VTypes::DataType argType(int i);
 	// Add reverse-sorted list of arguments
 	void addArgumentList(TreeNode *args);
 	// Add multiple arguments to node
@@ -85,7 +85,7 @@ class TreeNode
 	// Add multiple arguments to node
 	void addArgument(TreeNode *arg);
 	// Return (execute) argument specified
-	bool arg(int i, NuReturnValue &rv);
+	bool arg(int i, ReturnValue &rv);
 	// Return (execute) argument specified as a bool
 	bool argb(int i);
 	// Return (execute) argument specified as an integer
@@ -97,7 +97,7 @@ class TreeNode
 	// Return (execute) argument specified as a character
 	const char *argc(int i);
 	// Return (execute) argument specified as a pointer
-	void *argp(int i, NuVTypes::DataType type);
+	void *argp(int i, VTypes::DataType type);
 	// Return (execute) triplet of 'double' arguments, starting from argument specified
 	Vec3<double> arg3d(int i);
 	// Return (execute) triplet of 'int' arguments, starting from argument specified
@@ -107,7 +107,7 @@ class TreeNode
 	// Return the TreeNode corresponding to the argument, rather than executing it
 	TreeNode *argNode(int i);
 	// Set argument specified from ReturnValue
-	bool setArg(int i, NuReturnValue &rv);
+	bool setArg(int i, ReturnValue &rv);
 	// Return whether argument i was given
 	bool hasArg(int i);
 
@@ -117,15 +117,15 @@ class TreeNode
 	*/
 	protected:
 	// Node return value datatype
-	NuVTypes::DataType returnType_;
+	VTypes::DataType returnType_;
 	// Whether node is read-only
 	bool readOnly_;	
 
 	public:
 	// Sets the content type of the variable
-	void setReturnType(NuVTypes::DataType dt);
+	void setReturnType(VTypes::DataType dt);
 	// Returns content type of the variable
-	NuVTypes::DataType returnType();
+	VTypes::DataType returnType();
 	// Set the readonly status of the node to TRUE
 	void setReadOnly();
 	// Return the readonly status of the node
@@ -136,9 +136,9 @@ class TreeNode
 	*/
 	public:
 	// Set from returnvalue node
-	virtual bool set(NuReturnValue &rv) = 0;
+	virtual bool set(ReturnValue &rv) = 0;
 	// Get reduced value of node
-	virtual bool execute(NuReturnValue &rv) = 0;
+	virtual bool execute(ReturnValue &rv) = 0;
 	// Print layout of current node
 	virtual void nodePrint(int offset, const char *prefix = "") = 0;
 	// Reset node

@@ -26,7 +26,7 @@
 #include "model/clipboard.h"
 
 // Copy current selection ('copy')
-bool NuCommand::function_Copy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.userClipboard->copySelection(obj.rs);
@@ -36,7 +36,7 @@ bool NuCommand::function_Copy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Cut current selection ('cut')
-bool NuCommand::function_Cut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -48,7 +48,7 @@ bool NuCommand::function_Cut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Delete current selection ('delete')
-bool NuCommand::function_Delete(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -60,7 +60,7 @@ bool NuCommand::function_Delete(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Paste copied selection ('paste')
-bool NuCommand::function_Paste(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
@@ -77,7 +77,7 @@ bool NuCommand::function_Paste(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Redo most recent change
-bool NuCommand::function_Redo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.currentModel()->redo();
@@ -85,7 +85,7 @@ bool NuCommand::function_Redo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Undo most recent change
-bool NuCommand::function_Undo(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.currentModel()->undo();

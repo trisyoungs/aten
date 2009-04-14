@@ -27,13 +27,13 @@
 #include <string.h>
 
 // Dummy Node
-bool NuCommand::function_NoFunction(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	return TRUE;
 }
 
 // Joiner
-bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Execute both commands
 	bool result = TRUE;
@@ -43,27 +43,27 @@ bool NuCommand::function_Joiner(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Break out of current for loop
-bool NuCommand::function_Break(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	c->parent()->setAcceptedFail(NuCommand::Break);
+	c->parent()->setAcceptedFail(Command::Break);
 	return FALSE;
 }
 
 // Continue for loop at next iteration
-bool NuCommand::function_Continue(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	c->parent()->setAcceptedFail(NuCommand::Continue);
+	c->parent()->setAcceptedFail(Command::Continue);
 	return FALSE;
 }
 
 // Do-While loop
-bool NuCommand::function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Argument 0 - Blockment
 	// Argument 1 - Test condition
-	NuReturnValue test;
+	ReturnValue test;
 	bool result;
-	NuCommand::Function af;
+	Command::Function af;
 	do
 	{
 		// Run blockment- catch break and continue calls which return FALSE
@@ -71,9 +71,9 @@ bool NuCommand::function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 		if (!result)
 		{
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(NuCommand::NoFunction);
-			if (af == NuCommand::Break) break;
-			else if (af != NuCommand::Continue) return FALSE;
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(1, test)) return FALSE;
@@ -82,7 +82,7 @@ bool NuCommand::function_DoWhile(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // For loop
-bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Argument 0 - Initial value expression
 	// Argument 1 - Loop condition
@@ -90,9 +90,9 @@ bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	// Argument 3 - Statementlist
 	 // Get initial variable value
 	if (!c->arg(0, rv)) return FALSE;
-	NuReturnValue ifval;
+	ReturnValue ifval;
 	bool result;
-	NuCommand::Function af;
+	Command::Function af;
 	while (TRUE)
 	{
 		// Termination condition
@@ -103,9 +103,9 @@ bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 		if (!result)
 		{
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(NuCommand::NoFunction);
-			if (af == NuCommand::Break) break;
-			else if (af != NuCommand::Continue) return FALSE;
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
 		}
 		// Loop 'increment' statement
 		if (!c->arg(2, rv)) return FALSE;
@@ -114,9 +114,9 @@ bool NuCommand::function_For(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // If test
-bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	NuReturnValue ifval;
+	ReturnValue ifval;
 	if (!c->arg(0, ifval)) return FALSE;
 	if (ifval.asBool()) return (c->arg(1, rv));
 	else if (c->hasArg(2)) return (c->arg(2, rv));
@@ -124,13 +124,13 @@ bool NuCommand::function_If(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // While loop
-bool NuCommand::function_While(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Argument 0 - Test condition
 	// Argument 1 - Blockment
-	NuReturnValue test;
+	ReturnValue test;
 	bool result;
-	NuCommand::Function af;
+	Command::Function af;
 	// Perform initial test of condition
 	if (!c->arg(0, test)) return FALSE;
 	while (test.asBool())
@@ -140,9 +140,9 @@ bool NuCommand::function_While(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 		if (!result)
 		{
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(NuCommand::NoFunction);
-			if (af == NuCommand::Break) break;
-			else if (af != NuCommand::Continue) return FALSE;
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(0, test)) return FALSE;

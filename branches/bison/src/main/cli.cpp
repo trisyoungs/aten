@@ -218,7 +218,7 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZMapType zm;
 	Namemap<int> *nm;
 	Forest *forest, *script, tempforest;
-	NuReturnValue rv;
+	ReturnValue rv;
 	Tree *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;

@@ -26,7 +26,7 @@
 #include "gui/gui.h"
 
 // Finalise current trajectory frame
-bool NuCommand::function_FinaliseFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs == obj.m)
@@ -53,7 +53,7 @@ bool NuCommand::function_FinaliseFrame(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Skip to first frame ('firstframe')
-bool NuCommand::function_FirstFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -68,7 +68,7 @@ bool NuCommand::function_FirstFrame(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Skip to last frame ('lastframe')
-bool NuCommand::function_LastFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -83,7 +83,7 @@ bool NuCommand::function_LastFrame(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-bool NuCommand::function_LoadTrajectory(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
@@ -93,7 +93,7 @@ bool NuCommand::function_LoadTrajectory(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Go to next frame ('nextframe')
-bool NuCommand::function_NextFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -108,7 +108,7 @@ bool NuCommand::function_NextFrame(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Go to previous frame ('prevframe')
-bool NuCommand::function_PrevFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -123,7 +123,7 @@ bool NuCommand::function_PrevFrame(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Seek to specified frame ('seekframe <n>')
-bool NuCommand::function_SeekFrame(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)

@@ -52,8 +52,8 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if (gui.mainView.displayModel()->nSelected() > 1) NuCommandNode::run(NuCommand::AtomStyle, "c", Atom::drawStyle(ds));
-	else NuCommandNode::run(NuCommand::AtomStyle, "ci", Atom::drawStyle(ds), target->id());
+	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
+	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id());
 	target = NULL;
 }
 
@@ -84,8 +84,8 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	if (gui.mainView.displayModel()->nSelected() > 1) NuCommandNode::run(NuCommand::Label, "c", Atom::atomLabel(al));
-	else NuCommandNode::run(NuCommand::Label, "ci", Atom::atomLabel(al), target->id());
+	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
+	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -93,9 +93,9 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 // Clear atom labels
 void AtenForm::removeAtomLabels(bool all)
 {
-	if (all) NuCommandNode::run(NuCommand::ClearLabels, "");
-	else if (gui.mainView.displayModel()->nSelected() > 1) NuCommandNode::run(NuCommand::RemoveLabels, "");
-	else NuCommandNode::run(NuCommand::RemoveLabels, "i", target->id());
+	if (all) CommandNode::run(Command::ClearLabels, "");
+	else if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::RemoveLabels, "");
+	else CommandNode::run(Command::RemoveLabels, "i", target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -140,13 +140,13 @@ void AtenForm::setAtomHidden(bool hidden)
 {
 	if (gui.mainView.displayModel()->nSelected() > 1)
 	{
-		if (hidden) NuCommandNode::run(NuCommand::Hide, "");
-		else NuCommandNode::run(NuCommand::Show, "");
+		if (hidden) CommandNode::run(Command::Hide, "");
+		else CommandNode::run(Command::Show, "");
 	}
 	else
 	{
-		if (hidden) NuCommandNode::run(NuCommand::Hide, "i", target->id());
-		else NuCommandNode::run(NuCommand::Show, "i", target->id());
+		if (hidden) CommandNode::run(Command::Hide, "i", target->id());
+		else CommandNode::run(Command::Show, "i", target->id());
 	}
 	gui.modelChanged(TRUE, FALSE, FALSE);
 }

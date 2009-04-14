@@ -1,5 +1,5 @@
 /*
-	*** ForcefieldAtom Variable
+	*** ForcefieldAtom Variable and Array
 	*** src/parser/forcefieldatom.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -25,12 +25,17 @@
 #include "base/constants.h"
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-ForcefieldAtomVariable::ForcefieldAtomVariable(ForcefieldAtom *ptr, bool constant) : ffatomData_(ptr)
+ForcefieldAtomVariable::ForcefieldAtomVariable(ForcefieldAtom *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::ForcefieldAtomData;
+	returnType_ = VTypes::ForcefieldAtomData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -39,67 +44,20 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool ForcefieldAtomVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a ffatom&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	ffatomData_ = rv.asPointer(NuVTypes::ForcefieldAtomData, success);
-	return success;
-}
-
-// Reset variable
-void ForcefieldAtomVariable::reset()
-{
-	ffatomData_ = NULL;
-}
-
-// Return value of node
-bool ForcefieldAtomVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::ForcefieldAtomData, ffatomData_);
-	return TRUE;
-}
-
-// Print node contents
-void ForcefieldAtomVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("[C]%s%li (ffatom) (constant value)\n", tab, ffatomData_);
-	else printf("[V]%s%li (ffatom) (variable, name=%s)\n", tab, ffatomData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
-	{ "atomtype",		NuVTypes::StringData,		FALSE, TRUE },
-	{ "charge",		NuVTypes::DoubleData,		FALSE, FALSE },
-	{ "data",		NuVTypes::DoubleData,		TRUE, FALSE },
-	{ "description",	NuVTypes::StringData,		FALSE, FALSE },
-	{ "equivalent",		NuVTypes::StringData,		FALSE, FALSE },
-	{ "form",		NuVTypes::StringData,		FALSE, FALSE },
-	{ "id",			NuVTypes::IntegerData,		FALSE, TRUE },
-	{ "name",		NuVTypes::StringData,		FALSE, FALSE },
-	{ "ff",			NuVTypes::ForcefieldData,	FALSE, TRUE }
+	{ "atomtype",		VTypes::StringData,		FALSE, TRUE },
+	{ "charge",		VTypes::DoubleData,		FALSE, FALSE },
+	{ "data",		VTypes::DoubleData,		TRUE, FALSE },
+	{ "description",	VTypes::StringData,		FALSE, FALSE },
+	{ "equivalent",		VTypes::StringData,		FALSE, FALSE },
+	{ "form",		VTypes::StringData,		FALSE, FALSE },
+	{ "id",			VTypes::IntegerData,		FALSE, TRUE },
+	{ "name",		VTypes::StringData,		FALSE, FALSE },
+	{ "ff",			VTypes::ForcefieldData,	FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -123,13 +81,13 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ForcefieldAtomVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -149,7 +107,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(NuVTypes::ForcefieldAtomData, result);
+	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Atomtype):
@@ -182,7 +140,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 			rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::ParentFF):
-			rv.set(NuVTypes::ForcefieldData, ptr->parent());
+			rv.set(VTypes::ForcefieldData, ptr->parent());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldAtomVariable.\n", accessorData[i].name);
@@ -194,7 +152,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, NuReturnValue &rv, bool has
 }
 
 // Set desired value
-bool ForcefieldAtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ForcefieldAtomVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -219,14 +177,14 @@ bool ForcefieldAtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuRetur
 	VdwFunctions::VdwFunction vf;
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(NuVTypes::ForcefieldAtomData, result);
+	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Charge):
-			ptr->setCharge(newvalue.asReal());
+			ptr->setCharge(newvalue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			ptr->setParameter(arrayIndex-1, newvalue.asReal());
+			ptr->setParameter(arrayIndex-1, newvalue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Description):
 			ptr->setDescription(newvalue.asString());
@@ -249,4 +207,26 @@ bool ForcefieldAtomVariable::setAccessor(int i, NuReturnValue &sourcerv, NuRetur
 	}
 	msg.exit("ForcefieldAtomVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::ForcefieldAtomData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *ForcefieldAtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return ForcefieldAtomVariable::accessorSearch(s, arrayindex);
 }

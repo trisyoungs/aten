@@ -28,7 +28,7 @@
 #include "classes/prefs.h"
 
 // Angle label postfix
-bool NuCommand::function_AngleLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AngleLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setAngleLabel(c->argc(0));
 	gui.mainView.postRedisplay();
@@ -37,7 +37,7 @@ bool NuCommand::function_AngleLabel(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Atom quadric detail
-bool NuCommand::function_AtomDetail(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AtomDetail(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setAtomDetail(c->argi(0));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
@@ -47,7 +47,7 @@ bool NuCommand::function_AtomDetail(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Bond quadric detail
-bool NuCommand::function_BondDetail(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setBondDetail(c->argi(0));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
@@ -57,7 +57,7 @@ bool NuCommand::function_BondDetail(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Colours
-bool NuCommand::function_Colour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Colour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::PenColour col = Prefs::penColour(c->argc(0));
 	if (col == Prefs::nPenColours) return FALSE;
@@ -71,7 +71,7 @@ bool NuCommand::function_Colour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Common elements list
-bool NuCommand::function_CommonElements(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_CommonElements(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setCommonElements(c->argc(0));
 	rv.reset();
@@ -79,7 +79,7 @@ bool NuCommand::function_CommonElements(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Set density unit to use in output ('densityunits <unit>')
-bool NuCommand::function_DensityUnits(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_DensityUnits(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::DensityUnit du = Prefs::densityUnit(c->argc(0));
 	if (du == Prefs::nDensityUnits) return FALSE;
@@ -89,7 +89,7 @@ bool NuCommand::function_DensityUnits(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Distance label postfix
-bool NuCommand::function_DistanceLabel(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_DistanceLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setDistanceLabel(c->argc(0));
 	gui.mainView.postRedisplay();
@@ -98,7 +98,7 @@ bool NuCommand::function_DistanceLabel(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set electrostatics cutoff ('ecut <cut>')
-bool NuCommand::function_ECut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setElecCutoff(c->argd(0));
 	rv.reset();
@@ -106,7 +106,7 @@ bool NuCommand::function_ECut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-bool NuCommand::function_Elec(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Elec(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Electrostatics::ElecMethod em = Electrostatics::elecMethod(c->argc(0));
 	if (em == Electrostatics::nElectrostatics) return FALSE;
@@ -140,7 +140,7 @@ bool NuCommand::function_Elec(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set element's ambient colour
-bool NuCommand::function_ElementAmbient(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ElementAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
@@ -154,7 +154,7 @@ bool NuCommand::function_ElementAmbient(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Set element's diffuse colour
-bool NuCommand::function_ElementDiffuse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ElementDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
@@ -168,7 +168,7 @@ bool NuCommand::function_ElementDiffuse(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Set element's radius
-bool NuCommand::function_ElementRadius(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ElementRadius(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
@@ -180,7 +180,7 @@ bool NuCommand::function_ElementRadius(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set energy unit to use in output ('energyunits <unit>')
-bool NuCommand::function_EnergyUnits(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_EnergyUnits(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0));
 	if (eu == Prefs::nEnergyUnits) return FALSE;
@@ -195,7 +195,7 @@ bool NuCommand::function_EnergyUnits(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // GL Options
-bool NuCommand::function_GL(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GL(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::GlOption go = Prefs::glOption(c->argc(0));
 	if (go == Prefs::nGlOptions) return FALSE;
@@ -209,7 +209,7 @@ bool NuCommand::function_GL(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set distance to use when adding hydrogens ('hdistance <d>')
-bool NuCommand::function_HDistance(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_HDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setHydrogenDistance(c->argd(0));
 	rv.reset();
@@ -217,7 +217,7 @@ bool NuCommand::function_HDistance(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Turn on/off calculation of intra ('intra on|off')
-bool NuCommand::function_Intra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Intra(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setCalculateIntra(c->argb(0));
 	rv.reset();
@@ -225,7 +225,7 @@ bool NuCommand::function_Intra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Key bindings
-bool NuCommand::function_Key(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Key(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::ModifierKey mk = Prefs::modifierKey(c->argc(0));
 	Prefs::KeyAction ka = Prefs::keyAction(c->argc(1));
@@ -236,7 +236,7 @@ bool NuCommand::function_Key(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Text label pointsize
-bool NuCommand::function_LabelSize(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LabelSize(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setLabelSize(c->argi(0));
 	gui.mainView.postRedisplay();
@@ -245,7 +245,7 @@ bool NuCommand::function_LabelSize(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Turn on/off spotlight
-bool NuCommand::function_Light(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Light(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setSpotlightActive(c->argb(0));
 	gui.mainView.postRedisplay();
@@ -254,7 +254,7 @@ bool NuCommand::function_Light(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set ambient component of spotlight
-bool NuCommand::function_LightAmbient(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LightAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setSpotlightColour(Prefs::AmbientComponent, c->argGLf(0), c->argGLf(1), c->argGLf(2));
 	gui.mainView.postRedisplay();
@@ -263,7 +263,7 @@ bool NuCommand::function_LightAmbient(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Set diffuse component of spotlight
-bool NuCommand::function_LightDiffuse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LightDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setSpotlightColour(Prefs::DiffuseComponent, c->argGLf(0), c->argGLf(1), c->argGLf(2));
 	gui.mainView.postRedisplay();
@@ -271,7 +271,7 @@ bool NuCommand::function_LightDiffuse(NuCommandNode *c, Bundle &obj, NuReturnVal
 	return TRUE;
 }
 
-bool NuCommand::function_LightPosition(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LightPosition(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setSpotlightPosition(c->argGLf(0), c->argGLf(1), c->argGLf(2));
 	gui.mainView.postRedisplay();
@@ -280,7 +280,7 @@ bool NuCommand::function_LightPosition(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set specular component of spotlight
-bool NuCommand::function_LightSpecular(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LightSpecular(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setSpotlightColour(Prefs::SpecularComponent, c->argGLf(0), c->argGLf(1), c->argGLf(2));
 	gui.mainView.postRedisplay();
@@ -289,7 +289,7 @@ bool NuCommand::function_LightSpecular(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Mouse bindings
-bool NuCommand::function_Mouse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Mouse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Prefs::MouseButton mb = Prefs::mouseButton(c->argc(0));
 	Prefs::MouseAction ma = Prefs::mouseAction(c->argc(1));
@@ -300,7 +300,7 @@ bool NuCommand::function_Mouse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Atom screen radii
-bool NuCommand::function_Radius(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Radius(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
 	if (ds != Atom::nDrawStyles) prefs.setAtomStyleRadius(ds, c->argd(1));
@@ -310,7 +310,7 @@ bool NuCommand::function_Radius(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Set whether replicate folds atoms beforehand
-bool NuCommand::function_ReplicateFold(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReplicateFold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setReplicateFold(c->argb(0));
 	msg.print("Folding of atoms into unit cell before replicate is %s.\n", prefs.replicateFold() ? "on" : "off");
@@ -319,7 +319,7 @@ bool NuCommand::function_ReplicateFold(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set whether replicate trims atoms afterwards
-bool NuCommand::function_ReplicateTrim(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReplicateTrim(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setReplicateTrim(c->argb(0));
 	msg.print("Trimming of atoms outside of unit cell after replicate is %s.\n", prefs.replicateTrim() ? "on" : "off");
@@ -328,7 +328,7 @@ bool NuCommand::function_ReplicateTrim(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Colouring scheme
-bool NuCommand::function_Scheme(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Scheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0))
 	{
@@ -347,7 +347,7 @@ bool NuCommand::function_Scheme(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Atom shininess
-bool NuCommand::function_Shininess(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Shininess(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setShininess(c->argi(0));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
@@ -357,7 +357,7 @@ bool NuCommand::function_Shininess(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Render Objects on screen
-bool NuCommand::function_ShowOnScreen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ShowOnScreen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0))
 	{
@@ -399,7 +399,7 @@ bool NuCommand::function_ShowOnScreen(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Render Objects on saved images
-bool NuCommand::function_ShowOnImage(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ShowOnImage(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0))
 	{
@@ -436,7 +436,7 @@ bool NuCommand::function_ShowOnImage(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // View Styles
-bool NuCommand::function_Style(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Style(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0))
 	{
@@ -456,7 +456,7 @@ bool NuCommand::function_Style(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Set whether to perform manual buffer swapping ('swapbuffers [on|off]')
-bool NuCommand::function_SwapBuffers(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SwapBuffers(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0)) prefs.setManualSwapBuffers(c->argb(0));
 	else msg.print("Manual swapping of buffers is %s.\n", prefs.manualSwapBuffers() ? "on" : "off");
@@ -465,7 +465,7 @@ bool NuCommand::function_SwapBuffers(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Set whether to use nice text rendering ('usenicetext on|off')
-bool NuCommand::function_UseNiceText(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_UseNiceText(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setUseNiceText(c->argb(0));
 	rv.reset();
@@ -473,7 +473,7 @@ bool NuCommand::function_UseNiceText(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Set VDW cutoff ('vcut <cut>')
-bool NuCommand::function_VCut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setVdwCutoff(c->argd(0));
 	rv.reset();
@@ -481,7 +481,7 @@ bool NuCommand::function_VCut(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Turn on/off calculation of vdw ('vdw on|off')
-bool NuCommand::function_Vdw(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Vdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setCalculateVdw(c->argb(0));
 	rv.reset();
@@ -489,7 +489,7 @@ bool NuCommand::function_Vdw(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Display or set zoom throttle ('zoomthrottle [ratio]')
-bool NuCommand::function_ZoomThrottle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ZoomThrottle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0)) prefs.setZoomThrottle(c->argd(0));
 	else msg.print("Zooming throttle is %f.\n", prefs.zoomThrottle());

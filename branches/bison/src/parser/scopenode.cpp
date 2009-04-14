@@ -25,7 +25,7 @@
 #include <string.h>
 
 // Constructor
-ScopeNode::ScopeNode(NuCommand::Function func) : NuCommandNode(func)
+ScopeNode::ScopeNode(Command::Function func) : CommandNode(func)
 {
 	// Private variables
 	nodeType_ = TreeNode::ScopedNode;
@@ -40,11 +40,11 @@ ScopeNode::~ScopeNode()
 void ScopeNode::createGlobalVariables()
 {
 	// Add the global Aten variable
-	NuVariable *v = variables.create(NuVTypes::AtenData, "aten");
+	Variable *v = variables.create(VTypes::AtenData, "aten");
 }
 
 // Execute command
-bool ScopeNode::execute(NuReturnValue &rv)
+bool ScopeNode::execute(ReturnValue &rv)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
@@ -55,7 +55,7 @@ bool ScopeNode::execute(NuReturnValue &rv)
 }
 
 // Set from returnvalue node
-bool ScopeNode::set(NuReturnValue &rv)
+bool ScopeNode::set(ReturnValue &rv)
 {
 	printf("Internal Error: Trying to 'set' a ScopeNode.\n");
 	return FALSE;
@@ -84,11 +84,11 @@ void ScopeNode::nodePrint(int offset, const char *prefix)
 	int n = 1;
 	for (TreeNode *tn = variables.first(); tn != NULL; tn = tn->next)
 	{
-		NuVariable *v = (NuVariable*) tn;
-		printf("%s --> %3i: %s (%s)\n", tab, n++, v->name(), NuVTypes::dataType(v->returnType()));
+		Variable *v = (Variable*) tn;
+		printf("%s --> %3i: %s (%s)\n", tab, n++, v->name(), VTypes::dataType(v->returnType()));
 		if (v->initialValue() != NULL) v->initialValue()->nodePrint(offset+1, "init: ");
 	}
-	printf("[SN]%s%s (Command) (%i arguments)\n", tab, NuCommand::data[function_].keyword, args_.nItems());
+	printf("[SN]%s%s (Command) (%i arguments)\n", tab, Command::data[function_].keyword, args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;

@@ -1,5 +1,5 @@
 /*
-	*** Forcefield Variable
+	*** Forcefield Variable and Array
 	*** src/parser/forcefield.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -28,12 +28,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-ForcefieldVariable::ForcefieldVariable(Forcefield *ptr, bool constant) : ffData_(ptr)
+ForcefieldVariable::ForcefieldVariable(Forcefield *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::ForcefieldData;
+	returnType_ = VTypes::ForcefieldData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -42,59 +47,12 @@ ForcefieldVariable::~ForcefieldVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool ForcefieldVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a forcefield&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	ffData_ = rv.asPointer(NuVTypes::ForcefieldData, success);
-	return success;
-}
-
-// Reset variable
-void ForcefieldVariable::reset()
-{
-	ffData_ = NULL;
-}
-
-// Return value of node
-bool ForcefieldVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::ForcefieldData, ffData_);
-	return TRUE;
-}
-
-// Print node contents
-void ForcefieldVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("[C]%s%li (forcefield) (constant value)\n", tab, ffData_);
-	else printf("[V]%s%li (forcefield) (variable, name=%s)\n", tab, ffData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
-// 	{ "i",		NuVTypes::AtomData,	 FALSE, TRUE },
+// 	{ "i",		VTypes::AtomData,	 FALSE, TRUE },
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -118,13 +76,13 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("ForcefieldVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ForcefieldVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ForcefieldVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -144,7 +102,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArra
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr= (Forcefield*) rv.asPointer(NuVTypes::ForcefieldData, result);
+	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	if (result) switch (acc)
 	{
 		default:
@@ -157,7 +115,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArra
 }
 
 // Set desired value
-bool ForcefieldVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("ForcefieldVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -181,7 +139,7 @@ bool ForcefieldVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnVal
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr= (Forcefield*) sourcerv.asPointer(NuVTypes::ForcefieldData, result);
+	Forcefield *ptr= (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
 	if (result) switch (acc)
 	{
 		default:
@@ -191,4 +149,26 @@ bool ForcefieldVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnVal
 	}
 	msg.exit("ForcefieldVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+ForcefieldArrayVariable::ForcefieldArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::ForcefieldData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *ForcefieldArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return ForcefieldVariable::accessorSearch(s, arrayindex);
 }

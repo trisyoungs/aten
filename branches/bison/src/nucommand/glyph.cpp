@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // Auto-add ellipsoids to current atom selection
-bool NuCommand::function_AutoEllipsoids(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AutoEllipsoids(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->addEllipsoidGlyphs();
@@ -35,7 +35,7 @@ bool NuCommand::function_AutoEllipsoids(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Auto-add polyhedra to current atom selection
-bool NuCommand::function_AutoPolyhedra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AutoPolyhedra(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	bool centresonly = TRUE, linkatoms = TRUE;
@@ -59,7 +59,7 @@ bool NuCommand::function_AutoPolyhedra(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Associate atom with current glyph
-bool NuCommand::function_GlyphAtomF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
@@ -73,7 +73,7 @@ bool NuCommand::function_GlyphAtomF(NuCommandNode *c, Bundle &obj, NuReturnValue
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argType(1) == NuVTypes::AtomData) target = (Atom*) c->argp(1, NuVTypes::AtomData);
+		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -84,7 +84,7 @@ bool NuCommand::function_GlyphAtomF(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Associate atom with current glyph
-bool NuCommand::function_GlyphAtomR(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
@@ -98,7 +98,7 @@ bool NuCommand::function_GlyphAtomR(NuCommandNode *c, Bundle &obj, NuReturnValue
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argType(1) == NuVTypes::AtomData) target = (Atom*) c->argp(1, NuVTypes::AtomData);
+		if (c->argType(1) == VTypes::AtomData) target = (Atom*) c->argp(1, VTypes::AtomData);
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -109,7 +109,7 @@ bool NuCommand::function_GlyphAtomR(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Associate atom with current glyph
-bool NuCommand::function_GlyphAtomV(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
@@ -123,7 +123,7 @@ bool NuCommand::function_GlyphAtomV(NuCommandNode *c, Bundle &obj, NuReturnValue
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argType(1) == NuVTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(1, NuVTypes::AtomData), GlyphData::VelocityData);
+		if (c->argType(1) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);
 		else obj.gl->setAtom(d, obj.rs->atom(c->argi(1)-1), GlyphData::VelocityData); 
 	}
 	rv.reset();
@@ -131,7 +131,7 @@ bool NuCommand::function_GlyphAtomV(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Associate atoms with current glyph
-bool NuCommand::function_GlyphAtomsF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomsF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -139,7 +139,7 @@ bool NuCommand::function_GlyphAtomsF(NuCommandNode *c, Bundle &obj, NuReturnValu
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == NuVTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, NuVTypes::AtomData), GlyphData::ForceData);
+			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::ForceData);
 			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::ForceData); 
 		}
 		else break;
@@ -149,7 +149,7 @@ bool NuCommand::function_GlyphAtomsF(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Associate atoms with current glyph
-bool NuCommand::function_GlyphAtomsR(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -157,7 +157,7 @@ bool NuCommand::function_GlyphAtomsR(NuCommandNode *c, Bundle &obj, NuReturnValu
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == NuVTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, NuVTypes::AtomData), GlyphData::PositionData);
+			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::PositionData);
 			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::PositionData); 
 		}
 		else break;
@@ -167,7 +167,7 @@ bool NuCommand::function_GlyphAtomsR(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Associate atoms with current glyph
-bool NuCommand::function_GlyphAtomsV(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -175,7 +175,7 @@ bool NuCommand::function_GlyphAtomsV(NuCommandNode *c, Bundle &obj, NuReturnValu
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == NuVTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, NuVTypes::AtomData), GlyphData::VelocityData);
+			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::VelocityData);
 			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::VelocityData); 
 		}
 		else break;
@@ -185,7 +185,7 @@ bool NuCommand::function_GlyphAtomsV(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Store colour data in current glyph
-bool NuCommand::function_GlyphColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
@@ -196,7 +196,7 @@ bool NuCommand::function_GlyphColour(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Store vector data in current glyph
-bool NuCommand::function_GlyphData(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
@@ -207,7 +207,7 @@ bool NuCommand::function_GlyphData(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set 'solid' property of current glyph
-bool NuCommand::function_GlyphSolid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphSolid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	obj.gl->setSolid(c->argb(0));
@@ -216,7 +216,7 @@ bool NuCommand::function_GlyphSolid(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set text property of current glyph
-bool NuCommand::function_GlyphText(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GlyphText(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	obj.gl->setText(c->argc(0));
@@ -224,7 +224,7 @@ bool NuCommand::function_GlyphText(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Add glyph to current model
-bool NuCommand::function_NewGlyph(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Get glyph style

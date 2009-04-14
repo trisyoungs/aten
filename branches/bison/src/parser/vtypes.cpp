@@ -26,27 +26,27 @@
 #include <stdio.h>
 
 // Variable Types
-const char *NuDataTypeNames[NuVTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
-const char *NuDataTypePhrases[NuVTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&" };
-const char *NuDataTypeKeywords[NuVTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
-NuVTypes::DataType NuVTypes::dataType(const char *s)
+const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&" };
+const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound" };
+VTypes::DataType VTypes::dataType(const char *s)
 {
-	return (NuVTypes::DataType) enumSearch("", NuVTypes::nDataTypes, NuDataTypeKeywords, s);
+	return (VTypes::DataType) enumSearch("", VTypes::nDataTypes, DataTypeKeywords, s);
 }
-const char *NuVTypes::dataType(NuVTypes::DataType dt)
+const char *VTypes::dataType(VTypes::DataType dt)
 {
-	return NuDataTypeNames[dt];
+	return DataTypeNames[dt];
 }
-const char *NuVTypes::aDataType(NuVTypes::DataType dt)
+const char *VTypes::aDataType(VTypes::DataType dt)
 {
-	return NuDataTypePhrases[dt];
+	return DataTypePhrases[dt];
 }
-bool NuVTypes::isPointer(NuVTypes::DataType dt)
+bool VTypes::isPointer(VTypes::DataType dt)
 {
-	if (dt > NuVTypes::VectorData) return TRUE;
+	if (dt > VTypes::VectorData) return TRUE;
 	return FALSE;
 }
-NuVTypes::DataType NuVTypes::determineType(const char *s)
+VTypes::DataType VTypes::determineType(const char *s)
 {
 	// Try to determine type_ of the argument
 	int ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
@@ -61,7 +61,7 @@ NuVTypes::DataType NuVTypes::determineType(const char *s)
 		else nch ++;
 	}
 	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return NuVTypes::StringData;
-	else if (ndp == 1) return NuVTypes::DoubleData;
-	else return NuVTypes::IntegerData;
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return VTypes::StringData;
+	else if (ndp == 1) return VTypes::DoubleData;
+	else return VTypes::IntegerData;
 }

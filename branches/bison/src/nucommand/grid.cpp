@@ -28,7 +28,7 @@
 #include "base/sysfunc.h"
 
 // Add grid point data at specified indices
-bool NuCommand::function_AddGridPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Vec3<int> veci = c->arg3i(0);
@@ -38,7 +38,7 @@ bool NuCommand::function_AddGridPoint(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Add next gridpoint in sequence
-bool NuCommand::function_AddNextGridPoint(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setNextData(c->argd(0));
@@ -47,7 +47,7 @@ bool NuCommand::function_AddNextGridPoint(NuCommandNode *c, Bundle &obj, NuRetur
 }
 
 // Finalise current surface
-bool NuCommand::function_FinaliseGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
@@ -56,17 +56,17 @@ bool NuCommand::function_FinaliseGrid(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Return nth grid of model
-bool NuCommand::function_GetGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Grid *g = obj.m->grid(c->argi(0)-1);
 	if (g == NULL) return FALSE;
-	rv.set(NuVTypes::GridData, g);
+	rv.set(VTypes::GridData, g);
 	return TRUE;
 }
 
 // Set transparency of grid
-bool NuCommand::function_GridAlpha(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setAlpha(c->argGLf(0));
@@ -75,7 +75,7 @@ bool NuCommand::function_GridAlpha(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set grid axes (nine doubles)
-bool NuCommand::function_GridAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Mat3<double> mat;
@@ -88,7 +88,7 @@ bool NuCommand::function_GridAxes(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set (positive) colour for grid
-bool NuCommand::function_GridColour(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
@@ -98,7 +98,7 @@ bool NuCommand::function_GridColour(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set negative colour for grid
-bool NuCommand::function_GridColourNegative(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
@@ -108,7 +108,7 @@ bool NuCommand::function_GridColourNegative(NuCommandNode *c, Bundle &obj, NuRet
 }
 
 // Set colour scale for grid
-bool NuCommand::function_GridColourscale(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	int cs = c->argi(0);
@@ -123,7 +123,7 @@ bool NuCommand::function_GridColourscale(NuCommandNode *c, Bundle &obj, NuReturn
 }
 
 // Set cubic grid (one double)
-bool NuCommand::function_GridCubic(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setAxes(c->argd(0));
@@ -132,7 +132,7 @@ bool NuCommand::function_GridCubic(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set grid cutoff 
-bool NuCommand::function_GridCutoff(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setCutoff(c->argd(0));
@@ -141,7 +141,7 @@ bool NuCommand::function_GridCutoff(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set loop order to use in CA_ADDNEXTPOINT
-bool NuCommand::function_GridLoopOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (strlen(c->argc(0)) != 3)
@@ -181,7 +181,7 @@ bool NuCommand::function_GridLoopOrder(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set origin (lower-left-hand corner of grid)
-bool NuCommand::function_GridOrigin(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setOrigin(c->arg3d(0));
@@ -190,7 +190,7 @@ bool NuCommand::function_GridOrigin(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Set orthorhombic grid (three doubles)
-bool NuCommand::function_GridOrtho(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setAxes(c->arg3d(0));
@@ -199,7 +199,7 @@ bool NuCommand::function_GridOrtho(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set extent of grid (number of points in each direction)
-bool NuCommand::function_GridSize(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridSize(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setNPoints(c->arg3i(0));
@@ -208,7 +208,7 @@ bool NuCommand::function_GridSize(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Set drawing style of grid
-bool NuCommand::function_GridStyle(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
@@ -219,7 +219,7 @@ bool NuCommand::function_GridStyle(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Set whether the grid has symmetric isovalues
-bool NuCommand::function_GridSymmetric(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setSymmetric(c->argb(0));
@@ -228,7 +228,7 @@ bool NuCommand::function_GridSymmetric(NuCommandNode *c, Bundle &obj, NuReturnVa
 }
 
 // Set whether 2D grid uses data value as height component
-bool NuCommand::function_GridUseZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setUseDataForZ(c->argb(0));
@@ -237,7 +237,7 @@ bool NuCommand::function_GridUseZ(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Load grid ('loadgrid <filename>')
-bool NuCommand::function_LoadGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::GridImport);
 	if (filter != NULL)
@@ -249,7 +249,7 @@ bool NuCommand::function_LoadGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Create new grid in the current model
-bool NuCommand::function_NewGrid(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.g = aten.currentModel()->addGrid();

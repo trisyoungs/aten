@@ -32,7 +32,7 @@
 
 #define ATENVERSION "1.1"
 #define ATENREVISION "861"
-#define ATENDATE "Mon 13 Apr - 10:49"
+#define ATENDATE "Tue 14 Apr - 11:54"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -309,7 +309,7 @@ class Aten
 	*/
 	public:
 	// Command Definitions
-	NuCommand commands;
+	Command commands;
 };
 
 extern Aten aten;

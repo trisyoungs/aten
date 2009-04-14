@@ -24,49 +24,64 @@
 #include "base/sysfunc.h"
 
 // Get part of string before specified character
-bool NuCommand::function_AfterChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AfterChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( afterChar(c->argc(0), c->argc(1)[0]) );
 	return TRUE;
 }
 
 // Convert string to floating point number
-bool NuCommand::function_AToF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( atof(c->argc(0)) );
 	return TRUE;
 }
 
 // Convert string to integer number
-bool NuCommand::function_AToI(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( atoi(c->argc(0)) );
 	return TRUE;
 }
 
 // Get part of string before specified character
-bool NuCommand::function_BeforeChar(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_BeforeChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( beforeChar(c->argc(0), c->argc(1)[0]) );
 	return TRUE;
 }
 
+// Return number of occurrences of string in another string
+bool Command::function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	int count = 0;
+	const char *ch, *s = c->argc(0);
+	while (*s != '\0')
+	{
+		ch = strstr(s, c->argc(1));
+		if (*ch != '\0') count++;
+		s = ch;
+	}
+	rv.set( count );
+	return TRUE;
+}
+
 // Convert string to integer number
-bool NuCommand::function_FToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( ftoa(c->argd(0)) );
 	return TRUE;
 }
 
 // Convert string to integer number
-bool NuCommand::function_IToA(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( itoa(c->argi(0)) );
 	return TRUE;
 }
 
 // Normalise vector, returning magnitude
-bool NuCommand::function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Vec3<double> v = c->arg3d(0);
 	double mag = v.magAndNormalise();
@@ -77,7 +92,7 @@ bool NuCommand::function_Normalise(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Strip characters from supplied string
-bool NuCommand::function_StripChars(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( stripChars(c->argc(0), c->argc(1)) );
 	printf("Original/Stripped strings are '%s'/'%s'\n", c->argc(0), rv.asString());

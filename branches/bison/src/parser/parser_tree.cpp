@@ -83,7 +83,7 @@ bool CommandParser::addStatement(TreeNode *leaf)
 }
 
 // Add an operator to the Tree
-TreeNode *CommandParser::addOperator(NuCommand::Function func, TreeNode *arg1, TreeNode *arg2)
+TreeNode *CommandParser::addOperator(Command::Function func, TreeNode *arg1, TreeNode *arg2)
 {
 	msg.enter("CommandParser::addOperator");
 	if (tree_ == NULL)
@@ -98,7 +98,7 @@ TreeNode *CommandParser::addOperator(NuCommand::Function func, TreeNode *arg1, T
 }
 
 // Add a function node to the list (overloaded to accept simple arguments instead of a list)
-TreeNode *CommandParser::addFunction(NuCommand::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
+TreeNode *CommandParser::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, TreeNode *a3, TreeNode *a4)
 {
 	msg.enter("CommandParser::addFunction");
 	if (tree_ == NULL)
@@ -113,7 +113,7 @@ TreeNode *CommandParser::addFunction(NuCommand::Function func, TreeNode *a1, Tre
 }
 
 // Associate a command-based leaf node to the Tree
-TreeNode *CommandParser::addFunctionWithArglist(NuCommand::Function func, TreeNode *arglist)
+TreeNode *CommandParser::addFunctionWithArglist(Command::Function func, TreeNode *arglist)
 {
 	msg.enter("CommandParser::addFunctionWithArglist");
 	if (tree_ == NULL)
@@ -143,7 +143,7 @@ TreeNode *CommandParser::joinCommands(TreeNode *node1, TreeNode *node2)
 }
 
 // Add on a new scope to the stack
-TreeNode *CommandParser::pushScope(NuCommand::Function func)
+TreeNode *CommandParser::pushScope(Command::Function func)
 {
 	msg.enter("CommandParser::pushScope");
 	if (tree_ == NULL)
@@ -173,7 +173,7 @@ bool CommandParser::popScope()
 }
 
 // Set current type for variable declarations
-bool CommandParser::setDeclarationType(NuVTypes::DataType type)
+bool CommandParser::setDeclarationType(VTypes::DataType type)
 {
 	msg.enter("CommandParser::setDeclarationType");
 	if (tree_ == NULL)
@@ -188,16 +188,16 @@ bool CommandParser::setDeclarationType(NuVTypes::DataType type)
 }
 
 // Return current type to be used for declarations
-NuVTypes::DataType CommandParser::declarationType()
+VTypes::DataType CommandParser::declarationType()
 {
 	msg.enter("CommandParser::declarationType");
 	if (tree_ == NULL)
 	{
 		printf("Internal Error: No current Tree target for Parser (declarationType).\n");
 		msg.exit("CommandParser::declarationType");	
-		return NuVTypes::NoData;
+		return VTypes::NoData;
 	}
-	NuVTypes::DataType result = tree_->declarationType();
+	VTypes::DataType result = tree_->declarationType();
 	msg.exit("CommandParser::declarationType");
 	return result;
 }
@@ -233,7 +233,7 @@ bool CommandParser::isDeclarationAssignment()
 }
 
 // Add constant value to tompost scope
-TreeNode *CommandParser::addConstant(NuVTypes::DataType type, Dnchar *token)
+TreeNode *CommandParser::addConstant(VTypes::DataType type, Dnchar *token)
 {
 	msg.enter("CommandParser::addConstant");
 	if (tree_ == NULL)
@@ -248,7 +248,7 @@ TreeNode *CommandParser::addConstant(NuVTypes::DataType type, Dnchar *token)
 }
 
 // Add variable to topmost ScopeNode
-TreeNode *CommandParser::addVariable(NuVTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
 	msg.enter("CommandParser::addVariable");
 	if (tree_ == NULL)
@@ -293,7 +293,7 @@ TreeNode *CommandParser::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, Tree
 }
 
 // Search for variable in current scope
-bool CommandParser::isVariableInScope(const char *name, NuVariable *&res)
+bool CommandParser::isVariableInScope(const char *name, Variable *&res)
 {
 	msg.enter("CommandParser::isVariableInScope");
 	if (tree_ == NULL)
@@ -308,7 +308,7 @@ bool CommandParser::isVariableInScope(const char *name, NuVariable *&res)
 }
 
 // Wrap named variable (and array index)
-TreeNode *CommandParser::wrapVariable(NuVariable *var, TreeNode *arrayindex)
+TreeNode *CommandParser::wrapVariable(Variable *var, TreeNode *arrayindex)
 {
 	msg.enter("CommandParser::wrapVariable");
 	if (tree_ == NULL)

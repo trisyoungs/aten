@@ -1,5 +1,5 @@
 /*
-	*** Bond Variable
+	*** Bond Variable and Array
 	*** src/parser/bond.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -28,12 +28,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
-BondVariable::BondVariable(Bond *ptr, bool constant) : bondData_(ptr)
+BondVariable::BondVariable(Bond *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = NuVTypes::BondData;
+	returnType_ = VTypes::BondData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
@@ -42,62 +47,15 @@ BondVariable::~BondVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool BondVariable::set(NuReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a bond&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	bondData_ = rv.asPointer(NuVTypes::BondData, success);
-	return success;
-}
-
-// Reset variable
-void BondVariable::reset()
-{
-	bondData_ = NULL;
-}
-
-// Return value of node
-bool BondVariable::execute(NuReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(NuVTypes::BondData, bondData_);
-	return TRUE;
-}
-
-// Print node contents
-void BondVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("[C]%s%li (bond) (constant value)\n", tab, bondData_);
-	else printf("[V]%s%li (bond) (variable, name=%s)\n", tab, bondData_, name_.get());
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
 // Accessor data
 Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
-	{ "i",		NuVTypes::AtomData,	FALSE, TRUE },
-	{ "j",		NuVTypes::AtomData,	FALSE, TRUE },
-	{ "order",	NuVTypes::DoubleData,	FALSE, TRUE },
-	{ "type",	NuVTypes::StringData,	FALSE, TRUE }
+	{ "i",		VTypes::AtomData,	FALSE, TRUE },
+	{ "j",		VTypes::AtomData,	FALSE, TRUE },
+	{ "order",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "type",	VTypes::StringData,	FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -121,13 +79,13 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("BondVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("BondVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -147,14 +105,14 @@ bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Bond *ptr= (Bond*) rv.asPointer(NuVTypes::BondData, result);
+	Bond *ptr= (Bond*) rv.asPointer(VTypes::BondData, result);
 	if (result) switch (acc)
 	{
 		case (BondVariable::I):
-			rv.set(NuVTypes::AtomData, ptr->atomI());
+			rv.set(VTypes::AtomData, ptr->atomI());
 			break;
 		case (BondVariable::J):
-			rv.set(NuVTypes::AtomData, ptr->atomJ());
+			rv.set(VTypes::AtomData, ptr->atomJ());
 			break;
 		case (BondVariable::Order):
 			rv.set(ptr->order());
@@ -172,7 +130,7 @@ bool BondVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 }
 
 // Set desired value
-bool BondVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("BondVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -196,7 +154,7 @@ bool BondVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Bond *ptr= (Bond*) sourcerv.asPointer(NuVTypes::BondData, result);
+	Bond *ptr= (Bond*) sourcerv.asPointer(VTypes::BondData, result);
 	switch (acc)
 	{
 		default:
@@ -207,3 +165,26 @@ bool BondVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	msg.exit("BondVariable::setAccessor");
 	return result;
 }
+
+/*
+// Variable Array
+*/
+
+// Constructor
+BondArrayVariable::BondArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::BondData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *BondArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return BondVariable::accessorSearch(s, arrayindex);
+}
+

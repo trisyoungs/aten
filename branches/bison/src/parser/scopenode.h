@@ -26,11 +26,11 @@
 #include "parser/variablelist.h"
 
 // Scoped Command Node
-class ScopeNode : public NuCommandNode
+class ScopeNode : public CommandNode
 {
 	public:
 	// Constructor / Destructor
-	ScopeNode(NuCommand::Function func = NuCommand::NoFunction);
+	ScopeNode(Command::Function func = Command::NoFunction);
 	~ScopeNode();
 
 	/*
@@ -38,7 +38,7 @@ class ScopeNode : public NuCommandNode
 	*/
 	public:
 	// List of variables (and constants) owned by this scope
-	NuVariableList variables;
+	VariableList variables;
 	// Add global variables to list
 	void createGlobalVariables();
 
@@ -47,9 +47,9 @@ class ScopeNode : public NuCommandNode
 	*/
 	public:
 	// Execute command
-	bool execute(NuReturnValue &rv);
+	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
 	// Initialise node
 	bool initialise();
 	// Print layout of current node

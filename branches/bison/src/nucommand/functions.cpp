@@ -22,7 +22,7 @@
 #include "nucommand/commands.h"
 
 // Initialise Command Pointers
-void NuCommand::initPointers()
+void Command::initPointers()
 {
 	/*
 	// Store pointers to all command functions
@@ -31,407 +31,408 @@ void NuCommand::initPointers()
 	pointers_[Joiner] = &function_Joiner;
 
 	// Analyse commands
-	pointers_[Finalise] = &NuCommand::function_Finalise;
-	pointers_[FrameAnalyse] = &NuCommand::function_FrameAnalyse;
-	pointers_[Geometry] = &NuCommand::function_Geometry;
-	pointers_[ModelAnalyse] = &NuCommand::function_ModelAnalyse;
-	pointers_[PDens] = &NuCommand::function_PDens;
-	pointers_[PrintJobs] = &NuCommand::function_PrintJobs;
-	pointers_[RDF] = &NuCommand::function_RDF;
-	pointers_[SaveQuantities] = &NuCommand::function_SaveQuantities;
-	pointers_[TrajAnalyse] = &NuCommand::function_TrajAnalyse;
+	pointers_[Finalise] = &Command::function_Finalise;
+	pointers_[FrameAnalyse] = &Command::function_FrameAnalyse;
+	pointers_[Geometry] = &Command::function_Geometry;
+	pointers_[ModelAnalyse] = &Command::function_ModelAnalyse;
+	pointers_[PDens] = &Command::function_PDens;
+	pointers_[PrintJobs] = &Command::function_PrintJobs;
+	pointers_[RDF] = &Command::function_RDF;
+	pointers_[SaveQuantities] = &Command::function_SaveQuantities;
+	pointers_[TrajAnalyse] = &Command::function_TrajAnalyse;
 
 	// Atom commands
-	pointers_[AtomStyle] = &NuCommand::function_AtomStyle;
-	pointers_[GetAtom] = &NuCommand::function_GetAtom;
-	pointers_[Hide] = &NuCommand::function_Hide;
-	pointers_[SetCoords] = &NuCommand::function_SetCoords;
-	pointers_[SetCharge] = &NuCommand::function_SetCharge;
-	pointers_[SetElement] = &NuCommand::function_SetElement;
-	pointers_[SetForces] = &NuCommand::function_SetForces;
-	pointers_[SetFX] = &NuCommand::function_SetFX;
-	pointers_[SetFY] = &NuCommand::function_SetFY;
-	pointers_[SetFZ] = &NuCommand::function_SetFZ;
-	pointers_[SetId] = &NuCommand::function_SetId;
-	pointers_[SetRX] = &NuCommand::function_SetRX;
-	pointers_[SetRY] = &NuCommand::function_SetRY;
-	pointers_[SetRZ] = &NuCommand::function_SetRZ;
-	pointers_[SetVelocities] = &NuCommand::function_SetVelocities;
-	pointers_[SetVX] = &NuCommand::function_SetVX;
-	pointers_[SetVY] = &NuCommand::function_SetVY;
-	pointers_[SetVZ] = &NuCommand::function_SetVZ;
-	pointers_[Show] = &NuCommand::function_Show;
-	pointers_[ShowAll] = &NuCommand::function_ShowAll;
+	pointers_[AtomStyle] = &Command::function_AtomStyle;
+	pointers_[GetAtom] = &Command::function_GetAtom;
+	pointers_[Hide] = &Command::function_Hide;
+	pointers_[SetCoords] = &Command::function_SetCoords;
+	pointers_[SetCharge] = &Command::function_SetCharge;
+	pointers_[SetElement] = &Command::function_SetElement;
+	pointers_[SetForces] = &Command::function_SetForces;
+	pointers_[SetFX] = &Command::function_SetFX;
+	pointers_[SetFY] = &Command::function_SetFY;
+	pointers_[SetFZ] = &Command::function_SetFZ;
+	pointers_[SetId] = &Command::function_SetId;
+	pointers_[SetRX] = &Command::function_SetRX;
+	pointers_[SetRY] = &Command::function_SetRY;
+	pointers_[SetRZ] = &Command::function_SetRZ;
+	pointers_[SetVelocities] = &Command::function_SetVelocities;
+	pointers_[SetVX] = &Command::function_SetVX;
+	pointers_[SetVY] = &Command::function_SetVY;
+	pointers_[SetVZ] = &Command::function_SetVZ;
+	pointers_[Show] = &Command::function_Show;
+	pointers_[ShowAll] = &Command::function_ShowAll;
 
 	// Bond commands
-	pointers_[Augment] = &NuCommand::function_Augment;
-	pointers_[BondTolerance] = &NuCommand::function_BondTolerance;
-	pointers_[ClearBonds] = &NuCommand::function_ClearBonds;
-	pointers_[ClearSelectedBonds] = &NuCommand::function_ClearSelectedBonds;
-	pointers_[NewBond] = &NuCommand::function_NewBond;
-	pointers_[NewBondId] = &NuCommand::function_NewBondId;
-	pointers_[ReBond] = &NuCommand::function_ReBond;
-	pointers_[ReBondPatterns] = &NuCommand::function_ReBondPatterns;
-	pointers_[ReBondSelection] = &NuCommand::function_ReBondSelection;
+	pointers_[Augment] = &Command::function_Augment;
+	pointers_[BondTolerance] = &Command::function_BondTolerance;
+	pointers_[ClearBonds] = &Command::function_ClearBonds;
+	pointers_[ClearSelectedBonds] = &Command::function_ClearSelectedBonds;
+	pointers_[NewBond] = &Command::function_NewBond;
+	pointers_[NewBondId] = &Command::function_NewBondId;
+	pointers_[ReBond] = &Command::function_ReBond;
+	pointers_[ReBondPatterns] = &Command::function_ReBondPatterns;
+	pointers_[ReBondSelection] = &Command::function_ReBondSelection;
 
 	// Build commands
-	pointers_[AddHydrogen] = &NuCommand::function_AddHydrogen;
-	pointers_[Bohr] = &NuCommand::function_Bohr;
-	pointers_[Chain] = &NuCommand::function_Chain;
-	pointers_[EndChain] = &NuCommand::function_EndChain;
-	pointers_[InsertAtom] = &NuCommand::function_InsertAtom;
-	pointers_[Locate] = &NuCommand::function_Locate;
-	pointers_[Move] = &NuCommand::function_Move;
-	pointers_[MoveToEnd] = &NuCommand::function_MoveToEnd;
-	pointers_[MoveToStart] = &NuCommand::function_MoveToStart;
-	pointers_[NewAtom] = &NuCommand::function_NewAtom;
-	pointers_[NewAtomFrac] = &NuCommand::function_NewAtomFrac;
-	pointers_[ReOrder] = &NuCommand::function_ReOrder;
-	pointers_[ResetPen] = &NuCommand::function_ResetPen;
-	pointers_[RotX] = &NuCommand::function_RotX;
-	pointers_[RotY] = &NuCommand::function_RotY;
-	pointers_[RotZ] = &NuCommand::function_RotZ;
-	pointers_[ShiftDown] = &NuCommand::function_ShiftDown;
-	pointers_[ShiftUp] = &NuCommand::function_ShiftUp;
-	pointers_[Transmute] = &NuCommand::function_Transmute;
+	pointers_[AddHydrogen] = &Command::function_AddHydrogen;
+	pointers_[Bohr] = &Command::function_Bohr;
+	pointers_[Chain] = &Command::function_Chain;
+	pointers_[EndChain] = &Command::function_EndChain;
+	pointers_[InsertAtom] = &Command::function_InsertAtom;
+	pointers_[Locate] = &Command::function_Locate;
+	pointers_[Move] = &Command::function_Move;
+	pointers_[MoveToEnd] = &Command::function_MoveToEnd;
+	pointers_[MoveToStart] = &Command::function_MoveToStart;
+	pointers_[NewAtom] = &Command::function_NewAtom;
+	pointers_[NewAtomFrac] = &Command::function_NewAtomFrac;
+	pointers_[ReOrder] = &Command::function_ReOrder;
+	pointers_[ResetPen] = &Command::function_ResetPen;
+	pointers_[RotX] = &Command::function_RotX;
+	pointers_[RotY] = &Command::function_RotY;
+	pointers_[RotZ] = &Command::function_RotZ;
+	pointers_[ShiftDown] = &Command::function_ShiftDown;
+	pointers_[ShiftUp] = &Command::function_ShiftUp;
+	pointers_[Transmute] = &Command::function_Transmute;
 
 	// Cell commands
-	pointers_[AddGenerator] = &NuCommand::function_AddGenerator;
-	pointers_[AdjustCell] = &NuCommand::function_AdjustCell;
-	pointers_[Cell] = &NuCommand::function_Cell;
-	pointers_[CellAxes] = &NuCommand::function_CellAxes;
-	pointers_[Fold] = &NuCommand::function_Fold;
-	pointers_[FoldMolecules] = &NuCommand::function_FoldMolecules;
-	pointers_[FracToReal] = &NuCommand::function_FracToReal;
-	pointers_[NoCell] = &NuCommand::function_NoCell;
-	pointers_[Pack] = &NuCommand::function_Pack;
-	pointers_[PrintCell] = &NuCommand::function_PrintCell;
-	pointers_[Replicate] = &NuCommand::function_Replicate;
-	pointers_[RotateCell] = &NuCommand::function_RotateCell;
-	pointers_[Scale] = &NuCommand::function_Scale;
-	pointers_[ScaleMolecules] = &NuCommand::function_ScaleMolecules;
-	pointers_[SetCell] = &NuCommand::function_SetCell;
-	pointers_[Spacegroup] = &NuCommand::function_Spacegroup;
+	pointers_[AddGenerator] = &Command::function_AddGenerator;
+	pointers_[AdjustCell] = &Command::function_AdjustCell;
+	pointers_[Cell] = &Command::function_Cell;
+	pointers_[CellAxes] = &Command::function_CellAxes;
+	pointers_[Fold] = &Command::function_Fold;
+	pointers_[FoldMolecules] = &Command::function_FoldMolecules;
+	pointers_[FracToReal] = &Command::function_FracToReal;
+	pointers_[NoCell] = &Command::function_NoCell;
+	pointers_[Pack] = &Command::function_Pack;
+	pointers_[PrintCell] = &Command::function_PrintCell;
+	pointers_[Replicate] = &Command::function_Replicate;
+	pointers_[RotateCell] = &Command::function_RotateCell;
+	pointers_[Scale] = &Command::function_Scale;
+	pointers_[ScaleMolecules] = &Command::function_ScaleMolecules;
+	pointers_[SetCell] = &Command::function_SetCell;
+	pointers_[Spacegroup] = &Command::function_Spacegroup;
 
 	// Charge commands
-	pointers_[ChargeFF] = &NuCommand::function_ChargeFF;
-	pointers_[ChargeFromModel] = &NuCommand::function_ChargeFromModel;
-	pointers_[ChargePAtom] = &NuCommand::function_ChargePAtom;
-	pointers_[Charge] = &NuCommand::function_Charge;
-	pointers_[ChargeType] = &NuCommand::function_ChargeType;
-	pointers_[ClearCharges] = &NuCommand::function_ClearCharges;
+	pointers_[ChargeFF] = &Command::function_ChargeFF;
+	pointers_[ChargeFromModel] = &Command::function_ChargeFromModel;
+	pointers_[ChargePAtom] = &Command::function_ChargePAtom;
+	pointers_[Charge] = &Command::function_Charge;
+	pointers_[ChargeType] = &Command::function_ChargeType;
+	pointers_[ClearCharges] = &Command::function_ClearCharges;
 
 	// Colourscale commands
-	pointers_[AddPoint] = &NuCommand::function_AddPoint;
-	pointers_[ClearPoints] = &NuCommand::function_ClearPoints;
-	pointers_[ListScales] = &NuCommand::function_ListScales;
-	pointers_[RemovePoint] = &NuCommand::function_RemovePoint;
-	pointers_[ScaleName] = &NuCommand::function_ScaleName;
-	pointers_[ScaleVisible] = &NuCommand::function_ScaleVisible;
-	pointers_[SetPoint] = &NuCommand::function_SetPoint;
-	pointers_[SetPointColour] = &NuCommand::function_SetPointColour;
-	pointers_[SetPointValue] = &NuCommand::function_SetPointValue;
+	pointers_[AddPoint] = &Command::function_AddPoint;
+	pointers_[ClearPoints] = &Command::function_ClearPoints;
+	pointers_[ListScales] = &Command::function_ListScales;
+	pointers_[RemovePoint] = &Command::function_RemovePoint;
+	pointers_[ScaleName] = &Command::function_ScaleName;
+	pointers_[ScaleVisible] = &Command::function_ScaleVisible;
+	pointers_[SetPoint] = &Command::function_SetPoint;
+	pointers_[SetPointColour] = &Command::function_SetPointColour;
+	pointers_[SetPointValue] = &Command::function_SetPointValue;
 
 	// Disordered build commands
-	pointers_[Disorder] = &NuCommand::function_Disorder;
-	pointers_[ListComponents] = &NuCommand::function_ListComponents;
-	pointers_[NMols] = &NuCommand::function_NMols;
-	pointers_[Region] = &NuCommand::function_Region;
-	pointers_[RegionCentre] = &NuCommand::function_RegionCentre;
-	pointers_[RegionCentreFrac] = &NuCommand::function_RegionCentreFrac;
-	pointers_[RegionFrac] = &NuCommand::function_RegionFrac;
-	pointers_[RegionGeometry] = &NuCommand::function_RegionGeometry;
-	pointers_[RegionGeometryFrac] = &NuCommand::function_RegionGeometryFrac;
-	pointers_[RegionOverlaps] = &NuCommand::function_RegionOverlaps;
-	pointers_[RegionShape] = &NuCommand::function_RegionShape;
-	pointers_[VdwScale] = &NuCommand::function_VdwScale;
+	pointers_[Disorder] = &Command::function_Disorder;
+	pointers_[ListComponents] = &Command::function_ListComponents;
+	pointers_[NMols] = &Command::function_NMols;
+	pointers_[Region] = &Command::function_Region;
+	pointers_[RegionCentre] = &Command::function_RegionCentre;
+	pointers_[RegionCentreFrac] = &Command::function_RegionCentreFrac;
+	pointers_[RegionFrac] = &Command::function_RegionFrac;
+	pointers_[RegionGeometry] = &Command::function_RegionGeometry;
+	pointers_[RegionGeometryFrac] = &Command::function_RegionGeometryFrac;
+	pointers_[RegionOverlaps] = &Command::function_RegionOverlaps;
+	pointers_[RegionShape] = &Command::function_RegionShape;
+	pointers_[VdwScale] = &Command::function_VdwScale;
 
 	// Edit Commands
-	pointers_[Delete] = &NuCommand::function_Delete;
-	pointers_[Copy] = &NuCommand::function_Copy;
-	pointers_[Cut] = &NuCommand::function_Cut;
-	pointers_[Paste] = &NuCommand::function_Paste;
-	pointers_[Redo] = &NuCommand::function_Redo;
-	pointers_[Undo] = &NuCommand::function_Undo;
+	pointers_[Delete] = &Command::function_Delete;
+	pointers_[Copy] = &Command::function_Copy;
+	pointers_[Cut] = &Command::function_Cut;
+	pointers_[Paste] = &Command::function_Paste;
+	pointers_[Redo] = &Command::function_Redo;
+	pointers_[Undo] = &Command::function_Undo;
 
 	// Energy Commands
-	pointers_[FrameEnergy] = &NuCommand::function_FrameEnergy;
-	pointers_[ModelEnergy] = &NuCommand::function_ModelEnergy;
-	pointers_[PrintElec] = &NuCommand::function_PrintElec;
-	pointers_[PrintEwald] = &NuCommand::function_PrintEwald;
-	pointers_[PrintInter] = &NuCommand::function_PrintInter;
-	pointers_[PrintIntra] = &NuCommand::function_PrintIntra;
-	pointers_[PrintEnergy] = &NuCommand::function_PrintEnergy;
-	pointers_[PrintSummary] = &NuCommand::function_PrintSummary;
-	pointers_[PrintVdw] = &NuCommand::function_PrintVdw;
+	pointers_[FrameEnergy] = &Command::function_FrameEnergy;
+	pointers_[ModelEnergy] = &Command::function_ModelEnergy;
+	pointers_[PrintElec] = &Command::function_PrintElec;
+	pointers_[PrintEwald] = &Command::function_PrintEwald;
+	pointers_[PrintInter] = &Command::function_PrintInter;
+	pointers_[PrintIntra] = &Command::function_PrintIntra;
+	pointers_[PrintEnergy] = &Command::function_PrintEnergy;
+	pointers_[PrintSummary] = &Command::function_PrintSummary;
+	pointers_[PrintVdw] = &Command::function_PrintVdw;
 
 	// Flow control
 	pointers_[If] = &function_If;
-	pointers_[Break] = &NuCommand::function_Break;
-	pointers_[Continue] = &NuCommand::function_Continue;
-	pointers_[DoWhile] = &NuCommand::function_DoWhile;
-	pointers_[For] = &NuCommand::function_For;
-	pointers_[If] = &NuCommand::function_If;
-	pointers_[While] = &NuCommand::function_While;
+	pointers_[Break] = &Command::function_Break;
+	pointers_[Continue] = &Command::function_Continue;
+	pointers_[DoWhile] = &Command::function_DoWhile;
+	pointers_[For] = &Command::function_For;
+	pointers_[If] = &Command::function_If;
+	pointers_[While] = &Command::function_While;
 
 	// Force Commands
-	pointers_[FrameForces] = &NuCommand::function_FrameForces;
-	pointers_[ModelForces] = &NuCommand::function_ModelForces;
-	pointers_[PrintForces] = &NuCommand::function_PrintForces;
+	pointers_[FrameForces] = &Command::function_FrameForces;
+	pointers_[ModelForces] = &Command::function_ModelForces;
+	pointers_[PrintForces] = &Command::function_PrintForces;
 
 	// Forcefield Commands
-        pointers_[AngleDef] = &NuCommand::function_AngleDef;
-	pointers_[BondDef] = &NuCommand::function_BondDef;
-	pointers_[ClearMap] = &NuCommand::function_ClearMap;
-	pointers_[CreateExpression] = &NuCommand::function_CreateExpression;
-	pointers_[DefaultFF] = &NuCommand::function_DefaultFF;
-	pointers_[Equivalent] = &NuCommand::function_Equivalent;
-	pointers_[FFModel] = &NuCommand::function_FFModel;
-	pointers_[FFPattern] = &NuCommand::function_FFPattern;
-	pointers_[FinaliseFF] = &NuCommand::function_FinaliseFF;
-	pointers_[GenConvert] = &NuCommand::function_GenConvert;
-	pointers_[Generator] = &NuCommand::function_Generator;
-	pointers_[GetFF] = &NuCommand::function_GetFF;
-	pointers_[InterDef] = &NuCommand::function_InterDef;
-	pointers_[LoadFF] = &NuCommand::function_LoadFF;
-	pointers_[Map] = &NuCommand::function_Map;
-	pointers_[NewFF] = &NuCommand::function_NewFF;
-	pointers_[PrintSetup] = &NuCommand::function_PrintSetup;
-	pointers_[Rules] = &NuCommand::function_Rules;
-	pointers_[SaveExpression] = &NuCommand::function_SaveExpression;
-	pointers_[TorsionDef] = &NuCommand::function_TorsionDef;
-	pointers_[TypeDef] = &NuCommand::function_TypeDef;
-	pointers_[TypeModel] = &NuCommand::function_TypeModel;
-	pointers_[TypeTest] = &NuCommand::function_TypeTest;
-	pointers_[Units] = &NuCommand::function_Units;
+        pointers_[AngleDef] = &Command::function_AngleDef;
+	pointers_[BondDef] = &Command::function_BondDef;
+	pointers_[ClearMap] = &Command::function_ClearMap;
+	pointers_[CreateExpression] = &Command::function_CreateExpression;
+	pointers_[DefaultFF] = &Command::function_DefaultFF;
+	pointers_[Equivalent] = &Command::function_Equivalent;
+	pointers_[FFModel] = &Command::function_FFModel;
+	pointers_[FFPattern] = &Command::function_FFPattern;
+	pointers_[FinaliseFF] = &Command::function_FinaliseFF;
+	pointers_[GenConvert] = &Command::function_GenConvert;
+	pointers_[Generator] = &Command::function_Generator;
+	pointers_[GetFF] = &Command::function_GetFF;
+	pointers_[InterDef] = &Command::function_InterDef;
+	pointers_[LoadFF] = &Command::function_LoadFF;
+	pointers_[Map] = &Command::function_Map;
+	pointers_[NewFF] = &Command::function_NewFF;
+	pointers_[PrintSetup] = &Command::function_PrintSetup;
+	pointers_[Rules] = &Command::function_Rules;
+	pointers_[SaveExpression] = &Command::function_SaveExpression;
+	pointers_[TorsionDef] = &Command::function_TorsionDef;
+	pointers_[TypeDef] = &Command::function_TypeDef;
+	pointers_[TypeModel] = &Command::function_TypeModel;
+	pointers_[TypeTest] = &Command::function_TypeTest;
+	pointers_[Units] = &Command::function_Units;
 
 	// Glyph commands
-	pointers_[AutoEllipsoids] = &NuCommand::function_AutoEllipsoids;
-	pointers_[AutoPolyhedra] = &NuCommand::function_AutoPolyhedra;
-	pointers_[GlyphAtomF] = &NuCommand::function_GlyphAtomF;
-	pointers_[GlyphAtomR] = &NuCommand::function_GlyphAtomR;
-	pointers_[GlyphAtomV] = &NuCommand::function_GlyphAtomV;
-	pointers_[GlyphAtomsF] = &NuCommand::function_GlyphAtomsF;
-	pointers_[GlyphAtomsR] = &NuCommand::function_GlyphAtomsR;
-	pointers_[GlyphAtomsV] = &NuCommand::function_GlyphAtomsV;
-	pointers_[GlyphColour] = &NuCommand::function_GlyphColour;
-	pointers_[GlyphData] = &NuCommand::function_GlyphData;
-	pointers_[GlyphSolid] = &NuCommand::function_GlyphSolid;
-	pointers_[GlyphText] = &NuCommand::function_GlyphText;
-	pointers_[NewGlyph] = &NuCommand::function_NewGlyph;
+	pointers_[AutoEllipsoids] = &Command::function_AutoEllipsoids;
+	pointers_[AutoPolyhedra] = &Command::function_AutoPolyhedra;
+	pointers_[GlyphAtomF] = &Command::function_GlyphAtomF;
+	pointers_[GlyphAtomR] = &Command::function_GlyphAtomR;
+	pointers_[GlyphAtomV] = &Command::function_GlyphAtomV;
+	pointers_[GlyphAtomsF] = &Command::function_GlyphAtomsF;
+	pointers_[GlyphAtomsR] = &Command::function_GlyphAtomsR;
+	pointers_[GlyphAtomsV] = &Command::function_GlyphAtomsV;
+	pointers_[GlyphColour] = &Command::function_GlyphColour;
+	pointers_[GlyphData] = &Command::function_GlyphData;
+	pointers_[GlyphSolid] = &Command::function_GlyphSolid;
+	pointers_[GlyphText] = &Command::function_GlyphText;
+	pointers_[NewGlyph] = &Command::function_NewGlyph;
 
 	// Grid Commands
-	pointers_[AddGridPoint] = &NuCommand::function_AddGridPoint;
-	pointers_[AddNextGridPoint] = &NuCommand::function_AddNextGridPoint;
-	pointers_[FinaliseGrid] = &NuCommand::function_FinaliseGrid;
-	pointers_[GridAlpha] = &NuCommand::function_GridAlpha;
-	pointers_[GridAxes] = &NuCommand::function_GridAxes;
-	pointers_[GridColour] = &NuCommand::function_GridColour;
-	pointers_[GridColourNegative] = &NuCommand::function_GridColourNegative;
-	pointers_[GridColourscale] = &NuCommand::function_GridColourscale;
-	pointers_[GridCubic] = &NuCommand::function_GridCubic;
-	pointers_[GridCutoff] = &NuCommand::function_GridCutoff;
-	pointers_[GridLoopOrder] = &NuCommand::function_GridLoopOrder;
-	pointers_[GridOrigin] = &NuCommand::function_GridOrigin;
-	pointers_[GridOrtho] = &NuCommand::function_GridOrtho;
-	pointers_[GridSize] = &NuCommand::function_GridSize;
-	pointers_[GridStyle] = &NuCommand::function_GridStyle;
-	pointers_[GridSymmetric] = &NuCommand::function_GridSymmetric;
-	pointers_[GridUseZ] = &NuCommand::function_GridUseZ;
-	pointers_[LoadGrid] = &NuCommand::function_LoadGrid;
-	pointers_[NewGrid] = &NuCommand::function_NewGrid;
+	pointers_[AddGridPoint] = &Command::function_AddGridPoint;
+	pointers_[AddNextGridPoint] = &Command::function_AddNextGridPoint;
+	pointers_[FinaliseGrid] = &Command::function_FinaliseGrid;
+	pointers_[GridAlpha] = &Command::function_GridAlpha;
+	pointers_[GridAxes] = &Command::function_GridAxes;
+	pointers_[GridColour] = &Command::function_GridColour;
+	pointers_[GridColourNegative] = &Command::function_GridColourNegative;
+	pointers_[GridColourscale] = &Command::function_GridColourscale;
+	pointers_[GridCubic] = &Command::function_GridCubic;
+	pointers_[GridCutoff] = &Command::function_GridCutoff;
+	pointers_[GridLoopOrder] = &Command::function_GridLoopOrder;
+	pointers_[GridOrigin] = &Command::function_GridOrigin;
+	pointers_[GridOrtho] = &Command::function_GridOrtho;
+	pointers_[GridSize] = &Command::function_GridSize;
+	pointers_[GridStyle] = &Command::function_GridStyle;
+	pointers_[GridSymmetric] = &Command::function_GridSymmetric;
+	pointers_[GridUseZ] = &Command::function_GridUseZ;
+	pointers_[LoadGrid] = &Command::function_LoadGrid;
+	pointers_[NewGrid] = &Command::function_NewGrid;
 
 	// Image Commands
-	pointers_[SaveBitmap] = &NuCommand::function_SaveBitmap;
-	pointers_[SaveVector] = &NuCommand::function_SaveVector;
+	pointers_[SaveBitmap] = &Command::function_SaveBitmap;
+	pointers_[SaveVector] = &Command::function_SaveVector;
 
 	// Labeling Commands
-	pointers_[ClearLabels] = &NuCommand::function_ClearLabels;
-	pointers_[Label] = &NuCommand::function_Label;
-	pointers_[RemoveLabel] = &NuCommand::function_RemoveLabel;
-	pointers_[RemoveLabels] = &NuCommand::function_RemoveLabels;
+	pointers_[ClearLabels] = &Command::function_ClearLabels;
+	pointers_[Label] = &Command::function_Label;
+	pointers_[RemoveLabel] = &Command::function_RemoveLabel;
+	pointers_[RemoveLabels] = &Command::function_RemoveLabels;
 
 	// MC Commands
-	pointers_[MCAccept] = &NuCommand::function_MCAccept;
-	pointers_[MCAllow] = &NuCommand::function_MCAllow;
-	pointers_[MCMaxStep] = &NuCommand::function_MCMaxStep;
-	pointers_[MCNTrials] = &NuCommand::function_MCNTrials;
-	pointers_[PrintMC] = &NuCommand::function_PrintMC;
+	pointers_[MCAccept] = &Command::function_MCAccept;
+	pointers_[MCAllow] = &Command::function_MCAllow;
+	pointers_[MCMaxStep] = &Command::function_MCMaxStep;
+	pointers_[MCNTrials] = &Command::function_MCNTrials;
+	pointers_[PrintMC] = &Command::function_PrintMC;
 
 	// Measurement Commands
-	pointers_[Angle] = &NuCommand::function_Angle;
-	pointers_[Angles] = &NuCommand::function_Angles;
-	pointers_[ClearMeasurements] = &NuCommand::function_ClearMeasurements;
-	pointers_[Distance] = &NuCommand::function_Distance;
-	pointers_[Distances] = &NuCommand::function_Distances;
-	pointers_[ListMeasurements] = &NuCommand::function_ListMeasurements;
-	pointers_[Measure] = &NuCommand::function_Measure;
-	pointers_[Torsion] = &NuCommand::function_Torsion;
-	pointers_[Torsions] = &NuCommand::function_Torsions;
+	pointers_[Angle] = &Command::function_Angle;
+	pointers_[Angles] = &Command::function_Angles;
+	pointers_[ClearMeasurements] = &Command::function_ClearMeasurements;
+	pointers_[Distance] = &Command::function_Distance;
+	pointers_[Distances] = &Command::function_Distances;
+	pointers_[ListMeasurements] = &Command::function_ListMeasurements;
+	pointers_[Measure] = &Command::function_Measure;
+	pointers_[Torsion] = &Command::function_Torsion;
+	pointers_[Torsions] = &Command::function_Torsions;
 
 	// Messaging Commands
-	pointers_[Error] = &NuCommand::function_Error;
-	pointers_[Printf] = &NuCommand::function_Printf;
-	pointers_[Verbose] = &NuCommand::function_Verbose;
-	pointers_[Warn] = &NuCommand::function_Warn;
+	pointers_[Error] = &Command::function_Error;
+	pointers_[Printf] = &Command::function_Printf;
+	pointers_[Verbose] = &Command::function_Verbose;
+	pointers_[Warn] = &Command::function_Warn;
 
 	// Minimisation Commands
-	pointers_[CGMinimise] = &NuCommand::function_CGMinimise;
-	pointers_[Converge] = &NuCommand::function_Converge;
-	pointers_[LineTolerance] = &NuCommand::function_LineTolerance;
-	pointers_[MCMinimise] = &NuCommand::function_MCMinimise;
-	pointers_[SDMinimise] = &NuCommand::function_SDMinimise;
-	pointers_[SimplexMinimise] = &NuCommand::function_SimplexMinimise;
+	pointers_[CGMinimise] = &Command::function_CGMinimise;
+	pointers_[Converge] = &Command::function_Converge;
+	pointers_[LineTolerance] = &Command::function_LineTolerance;
+	pointers_[MCMinimise] = &Command::function_MCMinimise;
+	pointers_[SDMinimise] = &Command::function_SDMinimise;
+	pointers_[SimplexMinimise] = &Command::function_SimplexMinimise;
 	
 	// Model Commands
-	pointers_[CreateAtoms] = &NuCommand::function_CreateAtoms;
-	pointers_[CurrentModel] = &NuCommand::function_CurrentModel;
-	pointers_[FinaliseModel] = &NuCommand::function_FinaliseModel;
-	pointers_[FirstModel] = &NuCommand::function_FirstModel;
-	pointers_[GetModel] = &NuCommand::function_GetModel;
-	pointers_[LastModel] = &NuCommand::function_LastModel;
-	pointers_[ListModels] = &NuCommand::function_ListModels;
-	pointers_[LoadModel] = &NuCommand::function_LoadModel;
-	pointers_[LogInfo] = &NuCommand::function_LogInfo;
-	pointers_[ModelTemplate] = &NuCommand::function_ModelTemplate;
-	pointers_[NewModel] = &NuCommand::function_NewModel;
-	pointers_[NextModel] = &NuCommand::function_NextModel;
-	pointers_[PrevModel] = &NuCommand::function_PrevModel;
-	pointers_[Info] = &NuCommand::function_Info;
-	pointers_[SaveModel] = &NuCommand::function_SaveModel;
-	pointers_[SetName] = &NuCommand::function_SetName;
+	pointers_[CreateAtoms] = &Command::function_CreateAtoms;
+	pointers_[CurrentModel] = &Command::function_CurrentModel;
+	pointers_[FinaliseModel] = &Command::function_FinaliseModel;
+	pointers_[FirstModel] = &Command::function_FirstModel;
+	pointers_[GetModel] = &Command::function_GetModel;
+	pointers_[LastModel] = &Command::function_LastModel;
+	pointers_[ListModels] = &Command::function_ListModels;
+	pointers_[LoadModel] = &Command::function_LoadModel;
+	pointers_[LogInfo] = &Command::function_LogInfo;
+	pointers_[ModelTemplate] = &Command::function_ModelTemplate;
+	pointers_[NewModel] = &Command::function_NewModel;
+	pointers_[NextModel] = &Command::function_NextModel;
+	pointers_[PrevModel] = &Command::function_PrevModel;
+	pointers_[Info] = &Command::function_Info;
+	pointers_[SaveModel] = &Command::function_SaveModel;
+	pointers_[SetName] = &Command::function_SetName;
 
 	// Pattern Commands
-	pointers_[ClearPatterns] = &NuCommand::function_ClearPatterns;
-	pointers_[CreatePatterns] = &NuCommand::function_CreatePatterns;
-	pointers_[GetPattern] = &NuCommand::function_GetPattern;
-	pointers_[ListPatterns] = &NuCommand::function_ListPatterns;
-	pointers_[NewPattern] = &NuCommand::function_NewPattern;
+	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
+	pointers_[CreatePatterns] = &Command::function_CreatePatterns;
+	pointers_[GetPattern] = &Command::function_GetPattern;
+	pointers_[ListPatterns] = &Command::function_ListPatterns;
+	pointers_[NewPattern] = &Command::function_NewPattern;
 
 	// Preferences Commands
-	pointers_[AngleLabel] = &NuCommand::function_AngleLabel;
-	pointers_[AtomDetail] = &NuCommand::function_AtomDetail;
-	pointers_[BondDetail] = &NuCommand::function_BondDetail;
-	pointers_[Colour] = &NuCommand::function_Colour;
-	pointers_[CommonElements] = &NuCommand::function_CommonElements;
-	pointers_[DensityUnits] = &NuCommand::function_DensityUnits;
-	pointers_[DistanceLabel] = &NuCommand::function_DistanceLabel;
-	pointers_[ECut] = &NuCommand::function_ECut;
-	pointers_[Elec] = &NuCommand::function_Elec;
-	pointers_[ElementAmbient] = &NuCommand::function_ElementAmbient;
-	pointers_[ElementDiffuse] = &NuCommand::function_ElementDiffuse;
-	pointers_[ElementRadius] = &NuCommand::function_ElementRadius;
-	pointers_[EnergyUnits] = &NuCommand::function_EnergyUnits;
-	pointers_[GL] = &NuCommand::function_GL;
-	pointers_[HDistance] = &NuCommand::function_HDistance;
-	pointers_[Intra] = &NuCommand::function_Intra;
-	pointers_[Key] = &NuCommand::function_Key;
-	pointers_[LabelSize] = &NuCommand::function_LabelSize;
-	pointers_[Light] = &NuCommand::function_Light;
-	pointers_[LightAmbient] = &NuCommand::function_LightAmbient;
-	pointers_[LightDiffuse] = &NuCommand::function_LightDiffuse;
-	pointers_[LightPosition] = &NuCommand::function_LightPosition;
-	pointers_[LightSpecular] = &NuCommand::function_LightSpecular;
-	pointers_[Mouse] = &NuCommand::function_Mouse;
-	pointers_[Radius] = &NuCommand::function_Radius;
-	pointers_[ReplicateFold] = &NuCommand::function_ReplicateFold;
-	pointers_[ReplicateTrim] = &NuCommand::function_ReplicateTrim;
-	pointers_[Scheme] = &NuCommand::function_Scheme;
-	pointers_[Shininess] = &NuCommand::function_Shininess;
-	pointers_[ShowOnScreen] = &NuCommand::function_ShowOnScreen;
-	pointers_[ShowOnImage] = &NuCommand::function_ShowOnImage;
-	pointers_[Style] = &NuCommand::function_Style;
-	pointers_[SwapBuffers] = &NuCommand::function_SwapBuffers;
-	pointers_[UseNiceText] = &NuCommand::function_UseNiceText;
-	pointers_[VCut] = &NuCommand::function_VCut;
-	pointers_[Vdw] = &NuCommand::function_Vdw;
-	pointers_[ZoomThrottle] = &NuCommand::function_ZoomThrottle;
+	pointers_[AngleLabel] = &Command::function_AngleLabel;
+	pointers_[AtomDetail] = &Command::function_AtomDetail;
+	pointers_[BondDetail] = &Command::function_BondDetail;
+	pointers_[Colour] = &Command::function_Colour;
+	pointers_[CommonElements] = &Command::function_CommonElements;
+	pointers_[DensityUnits] = &Command::function_DensityUnits;
+	pointers_[DistanceLabel] = &Command::function_DistanceLabel;
+	pointers_[ECut] = &Command::function_ECut;
+	pointers_[Elec] = &Command::function_Elec;
+	pointers_[ElementAmbient] = &Command::function_ElementAmbient;
+	pointers_[ElementDiffuse] = &Command::function_ElementDiffuse;
+	pointers_[ElementRadius] = &Command::function_ElementRadius;
+	pointers_[EnergyUnits] = &Command::function_EnergyUnits;
+	pointers_[GL] = &Command::function_GL;
+	pointers_[HDistance] = &Command::function_HDistance;
+	pointers_[Intra] = &Command::function_Intra;
+	pointers_[Key] = &Command::function_Key;
+	pointers_[LabelSize] = &Command::function_LabelSize;
+	pointers_[Light] = &Command::function_Light;
+	pointers_[LightAmbient] = &Command::function_LightAmbient;
+	pointers_[LightDiffuse] = &Command::function_LightDiffuse;
+	pointers_[LightPosition] = &Command::function_LightPosition;
+	pointers_[LightSpecular] = &Command::function_LightSpecular;
+	pointers_[Mouse] = &Command::function_Mouse;
+	pointers_[Radius] = &Command::function_Radius;
+	pointers_[ReplicateFold] = &Command::function_ReplicateFold;
+	pointers_[ReplicateTrim] = &Command::function_ReplicateTrim;
+	pointers_[Scheme] = &Command::function_Scheme;
+	pointers_[Shininess] = &Command::function_Shininess;
+	pointers_[ShowOnScreen] = &Command::function_ShowOnScreen;
+	pointers_[ShowOnImage] = &Command::function_ShowOnImage;
+	pointers_[Style] = &Command::function_Style;
+	pointers_[SwapBuffers] = &Command::function_SwapBuffers;
+	pointers_[UseNiceText] = &Command::function_UseNiceText;
+	pointers_[VCut] = &Command::function_VCut;
+	pointers_[Vdw] = &Command::function_Vdw;
+	pointers_[ZoomThrottle] = &Command::function_ZoomThrottle;
 
 	// Read / Write Commands
-	pointers_[AddReadOption] = &NuCommand::function_AddReadOption;
-	pointers_[Eof] = &NuCommand::function_Eof;
-	pointers_[Find] = &NuCommand::function_Find;
-	pointers_[GetLine] = &NuCommand::function_GetLine;
-	pointers_[PeekChar] = &NuCommand::function_PeekChar;
-	pointers_[ReadChars] = &NuCommand::function_ReadChars;
-	pointers_[ReadInteger] = &NuCommand::function_ReadInteger;
-	pointers_[ReadLine] = &NuCommand::function_ReadLine;
-	pointers_[ReadLineFormatted] = &NuCommand::function_ReadLineFormatted;
-	pointers_[ReadNext] = &NuCommand::function_ReadNext;
-	pointers_[ReadReal] = &NuCommand::function_ReadReal;
-	pointers_[ReadVariable] = &NuCommand::function_ReadVariable;
-	pointers_[ReadVariableFormatted] = &NuCommand::function_ReadVariableFormatted;
-	pointers_[RemoveReadOption] = &NuCommand::function_RemoveReadOption;
-	pointers_[Rewind] = &NuCommand::function_Rewind;
-	pointers_[SkipChars] = &NuCommand::function_SkipChars;
-	pointers_[SkipLine] = &NuCommand::function_SkipLine;
-	pointers_[WriteLine] = &NuCommand::function_WriteLine;
-	pointers_[WriteLineFormatted] = &NuCommand::function_WriteLineFormatted;
-	pointers_[WriteVariable] = &NuCommand::function_WriteVariable;
-	pointers_[WriteVariableFormatted] = &NuCommand::function_WriteVariableFormatted;
+	pointers_[AddReadOption] = &Command::function_AddReadOption;
+	pointers_[Eof] = &Command::function_Eof;
+	pointers_[Find] = &Command::function_Find;
+	pointers_[GetLine] = &Command::function_GetLine;
+	pointers_[PeekChar] = &Command::function_PeekChar;
+	pointers_[ReadChars] = &Command::function_ReadChars;
+	pointers_[ReadInteger] = &Command::function_ReadInteger;
+	pointers_[ReadLine] = &Command::function_ReadLine;
+	pointers_[ReadLineFormatted] = &Command::function_ReadLineFormatted;
+	pointers_[ReadNext] = &Command::function_ReadNext;
+	pointers_[ReadReal] = &Command::function_ReadReal;
+	pointers_[ReadVariable] = &Command::function_ReadVariable;
+	pointers_[ReadVariableFormatted] = &Command::function_ReadVariableFormatted;
+	pointers_[RemoveReadOption] = &Command::function_RemoveReadOption;
+	pointers_[Rewind] = &Command::function_Rewind;
+	pointers_[SkipChars] = &Command::function_SkipChars;
+	pointers_[SkipLine] = &Command::function_SkipLine;
+	pointers_[WriteLine] = &Command::function_WriteLine;
+	pointers_[WriteLineFormatted] = &Command::function_WriteLineFormatted;
+	pointers_[WriteVariable] = &Command::function_WriteVariable;
+	pointers_[WriteVariableFormatted] = &Command::function_WriteVariableFormatted;
 
 	// Script Commands
-	pointers_[ListScripts] = &NuCommand::function_ListScripts;
-	pointers_[LoadScript] = &NuCommand::function_LoadScript;
-	pointers_[RunScript] = &NuCommand::function_RunScript;
+	pointers_[ListScripts] = &Command::function_ListScripts;
+	pointers_[LoadScript] = &Command::function_LoadScript;
+	pointers_[RunScript] = &Command::function_RunScript;
 
 	// Select Commands
-	pointers_[DeSelect] = &NuCommand::function_DeSelect;
-	pointers_[DeSelectType] = &NuCommand::function_DeSelectType;
-	pointers_[Expand] = &NuCommand::function_Expand;
-	pointers_[Invert] = &NuCommand::function_Invert;
-	pointers_[Select] = &NuCommand::function_Select;
-	pointers_[SelectAll] = &NuCommand::function_SelectAll;
-	pointers_[SelectFFType] = &NuCommand::function_SelectFFType;
-	pointers_[SelectionCog] = &NuCommand::function_SelectionCog;
-	pointers_[SelectionCom] = &NuCommand::function_SelectionCom;
-	pointers_[SelectNone] = &NuCommand::function_SelectNone;
-	pointers_[SelectOverlaps] = &NuCommand::function_SelectOverlaps;
-	pointers_[SelectPattern] = &NuCommand::function_SelectPattern;
-	pointers_[SelectType] = &NuCommand::function_SelectType;
+	pointers_[DeSelect] = &Command::function_DeSelect;
+	pointers_[DeSelectType] = &Command::function_DeSelectType;
+	pointers_[Expand] = &Command::function_Expand;
+	pointers_[Invert] = &Command::function_Invert;
+	pointers_[Select] = &Command::function_Select;
+	pointers_[SelectAll] = &Command::function_SelectAll;
+	pointers_[SelectFFType] = &Command::function_SelectFFType;
+	pointers_[SelectionCog] = &Command::function_SelectionCog;
+	pointers_[SelectionCom] = &Command::function_SelectionCom;
+	pointers_[SelectNone] = &Command::function_SelectNone;
+	pointers_[SelectOverlaps] = &Command::function_SelectOverlaps;
+	pointers_[SelectPattern] = &Command::function_SelectPattern;
+	pointers_[SelectType] = &Command::function_SelectType;
 	
 	// Site Commands
-	pointers_[GetSite] = &NuCommand::function_GetSite;
-	pointers_[ListSites] = &NuCommand::function_ListSites;
-	pointers_[NewSite] = &NuCommand::function_NewSite;
-	pointers_[SiteAxes] = &NuCommand::function_SiteAxes;
+	pointers_[GetSite] = &Command::function_GetSite;
+	pointers_[ListSites] = &Command::function_ListSites;
+	pointers_[NewSite] = &Command::function_NewSite;
+	pointers_[SiteAxes] = &Command::function_SiteAxes;
 
 	// System Commands
-	pointers_[Debug] = &NuCommand::function_Debug;
-	pointers_[Gui] = &NuCommand::function_Gui;
-	pointers_[Help] = &NuCommand::function_Help;
-	pointers_[Seed] = &NuCommand::function_Seed;
-	pointers_[Quit] = &NuCommand::function_Quit;
-	pointers_[Version] = &NuCommand::function_Version;
+	pointers_[Debug] = &Command::function_Debug;
+	pointers_[Gui] = &Command::function_Gui;
+	pointers_[Help] = &Command::function_Help;
+	pointers_[Seed] = &Command::function_Seed;
+	pointers_[Quit] = &Command::function_Quit;
+	pointers_[Version] = &Command::function_Version;
 	
 	// Trajectory Commands
-	pointers_[FinaliseFrame] = &NuCommand::function_FinaliseFrame;
-	pointers_[FirstFrame] = &NuCommand::function_FirstFrame;
-	pointers_[LastFrame] = &NuCommand::function_LastFrame;
-	pointers_[LoadTrajectory] = &NuCommand::function_LoadTrajectory;
-	pointers_[NextFrame] = &NuCommand::function_NextFrame;
-	pointers_[PrevFrame] = &NuCommand::function_PrevFrame;
-	pointers_[SeekFrame] = &NuCommand::function_SeekFrame;
+	pointers_[FinaliseFrame] = &Command::function_FinaliseFrame;
+	pointers_[FirstFrame] = &Command::function_FirstFrame;
+	pointers_[LastFrame] = &Command::function_LastFrame;
+	pointers_[LoadTrajectory] = &Command::function_LoadTrajectory;
+	pointers_[NextFrame] = &Command::function_NextFrame;
+	pointers_[PrevFrame] = &Command::function_PrevFrame;
+	pointers_[SeekFrame] = &Command::function_SeekFrame;
 
 	// Transform Commands
-	pointers_[AxisRotate] = &NuCommand::function_AxisRotate;
-	pointers_[Centre] = &NuCommand::function_Centre;
-	pointers_[Translate] = &NuCommand::function_Translate;
-	pointers_[TranslateAtom] = &NuCommand::function_TranslateAtom;
-	pointers_[TranslateCell] = &NuCommand::function_TranslateCell;
-	pointers_[MatrixConvert] = &NuCommand::function_MatrixConvert;
-	pointers_[MatrixTransform] = &NuCommand::function_MatrixTransform;
-	pointers_[Mirror] = &NuCommand::function_Mirror;
+	pointers_[AxisRotate] = &Command::function_AxisRotate;
+	pointers_[Centre] = &Command::function_Centre;
+	pointers_[Translate] = &Command::function_Translate;
+	pointers_[TranslateAtom] = &Command::function_TranslateAtom;
+	pointers_[TranslateCell] = &Command::function_TranslateCell;
+	pointers_[MatrixConvert] = &Command::function_MatrixConvert;
+	pointers_[MatrixTransform] = &Command::function_MatrixTransform;
+	pointers_[Mirror] = &Command::function_Mirror;
 
 	// Variable Manipulation Commands
-	pointers_[AfterChar] = &NuCommand::function_AfterChar;
-	pointers_[AToF] = &NuCommand::function_AToF;
-	pointers_[AToI] = &NuCommand::function_AToI;
-	pointers_[BeforeChar] = &NuCommand::function_BeforeChar;
-	pointers_[FToA] = &NuCommand::function_FToA;
-	pointers_[IToA] = &NuCommand::function_IToA;
-	pointers_[Normalise] = &NuCommand::function_Normalise;	
-	pointers_[StripChars] = &NuCommand::function_StripChars;
+	pointers_[AfterChar] = &Command::function_AfterChar;
+	pointers_[AToF] = &Command::function_AToF;
+	pointers_[AToI] = &Command::function_AToI;
+	pointers_[BeforeChar] = &Command::function_BeforeChar;
+	pointers_[Contains] = &Command::function_Contains;
+	pointers_[FToA] = &Command::function_FToA;
+	pointers_[IToA] = &Command::function_IToA;
+	pointers_[Normalise] = &Command::function_Normalise;	
+	pointers_[StripChars] = &Command::function_StripChars;
 
 	// Variable Operators
 	pointers_[OperatorAdd] = &function_OperatorAdd;
@@ -459,17 +460,17 @@ void NuCommand::initPointers()
 
 /*
 	// View Commands
-	pointers_[GetView] = &NuCommand::function_GetView;
-	pointers_[Orthographic] = &NuCommand::function_Orthographic;
-	pointers_[Perspective] = &NuCommand::function_Perspective;
-	pointers_[ResetView] = &NuCommand::function_ResetView;
-	pointers_[RotateView] = &NuCommand::function_RotateView;
-	pointers_[SetView] = &NuCommand::function_SetView;
-	pointers_[SpeedTest] = &NuCommand::function_SpeedTest;
-	pointers_[TranslateView] = &NuCommand::function_TranslateView;
-	pointers_[ViewAlong] = &NuCommand::function_ViewAlong;
-	pointers_[ViewAlongCell] = &NuCommand::function_ViewAlongCell;
-	pointers_[ZoomView] = &NuCommand::function_ZoomView;
-	pointers_[ZRotateView] = &NuCommand::function_ZRotateView;
+	pointers_[GetView] = &Command::function_GetView;
+	pointers_[Orthographic] = &Command::function_Orthographic;
+	pointers_[Perspective] = &Command::function_Perspective;
+	pointers_[ResetView] = &Command::function_ResetView;
+	pointers_[RotateView] = &Command::function_RotateView;
+	pointers_[SetView] = &Command::function_SetView;
+	pointers_[SpeedTest] = &Command::function_SpeedTest;
+	pointers_[TranslateView] = &Command::function_TranslateView;
+	pointers_[ViewAlong] = &Command::function_ViewAlong;
+	pointers_[ViewAlongCell] = &Command::function_ViewAlongCell;
+	pointers_[ZoomView] = &Command::function_ZoomView;
+	pointers_[ZRotateView] = &Command::function_ZRotateView;
 */
 }

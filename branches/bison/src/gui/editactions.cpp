@@ -32,63 +32,63 @@
 
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Undo, "");
+	CommandNode::run(Command::Undo, "");
 	gui.mainView.postRedisplay();
 	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Redo, "");
+	CommandNode::run(Command::Redo, "");
 	gui.mainView.postRedisplay();
 	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Cut, "");
+	CommandNode::run(Command::Cut, "");
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Copy, "");
+	CommandNode::run(Command::Copy, "");
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Paste, "");
+	CommandNode::run(Command::Paste, "");
 	gui.mainView.postRedisplay();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Delete, "");
+	CommandNode::run(Command::Delete, "");
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::SelectAll, "");
+	CommandNode::run(Command::SelectAll, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::SelectNone, "");
+	CommandNode::run(Command::SelectNone, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Invert, "");
+	CommandNode::run(Command::Invert, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
-	NuCommandNode::run(NuCommand::Expand, "");
+	CommandNode::run(Command::Expand, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

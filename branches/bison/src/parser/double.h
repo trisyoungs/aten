@@ -1,6 +1,6 @@
 /*
-	*** Array Variable
-	*** src/parser/array.h
+	*** Double Variable and Array
+	*** src/parser/double.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,33 +19,62 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUARRAYVARIABLE_H
-#define ATEN_NUARRAYVARIABLE_H
+#ifndef ATEN_DOUBLEVARIABLE_H
+#define ATEN_DOUBLEVARIABLE_H
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
 
-// Array Variable
-class ArrayVariable : public NuVariable
+// Double Variable
+class DoubleVariable : public Variable
 {
 	public:
-	// Constructors / Destructor
-	ArrayVariable(NuVTypes::DataType arraytype, TreeNode *sizeexpr);
-	~ArrayVariable();
+	// Constructor / Destructor
+	DoubleVariable(double d = 0.0, bool constant = FALSE);
+	~DoubleVariable();
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(NuReturnValue &rv);
-	// Return value of node as array
-	bool executeAsArray(NuReturnValue &rv, int arrayindex);
+	bool execute(ReturnValue &rv);
 	// Set from returnvalue node
-	bool set(NuReturnValue &rv);
+	bool set(ReturnValue &rv);
+	// Reset node
+	void reset();
+
+	/*
+	// Variable Data
+	*/
+	private:
+	// Real data
+	double doubleData_;
+	// Print node contents
+	void nodePrint(int offset, const char *prefix = "");
+};
+
+// Double Array Variable
+class DoubleArrayVariable : public Variable
+{
+	public:
+	// Constructor / Destructor
+	DoubleArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	~DoubleArrayVariable();
+
+	/*
+	// Set / Get
+	*/
+	public:
+	// Return value of node
+	bool execute(ReturnValue &rv);
+	// Return value of node as array
+	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	// Set from returnvalue node
+	bool set(ReturnValue &rv);
 	// Set from returnvalue node as array
-	bool setAsArray(NuReturnValue &rv, int arrayindex);
-	// Reset array
+	bool setAsArray(ReturnValue &rv, int arrayindex);
+	// Reset variable
 	void reset();
 
 	/*
@@ -54,10 +83,10 @@ class ArrayVariable : public NuVariable
 	private:
 	// TreeNode determining array size on initialisation
 	TreeNode *arraySizeExpression_;
-	// Current array size
+	// Array size
 	int arraySize_;
-	// Array data
-	NuVariable **arrayData_;
+	// Real data
+	double *doubleArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
 

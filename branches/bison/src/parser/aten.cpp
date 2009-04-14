@@ -31,7 +31,7 @@
 AtenVariable::AtenVariable()
 {
 	// Private variables
-	returnType_ = NuVTypes::AtenData;
+	returnType_ = VTypes::AtenData;
 	readOnly_ = TRUE;
 }
 
@@ -45,7 +45,7 @@ AtenVariable::~AtenVariable()
 */
 
 // Set value of variable
-bool AtenVariable::set(NuReturnValue &rv)
+bool AtenVariable::set(ReturnValue &rv)
 {
 	msg.print("A constant value (in this case Aten itself) cannot be assigned to.\n");
 	return FALSE;
@@ -58,9 +58,9 @@ void AtenVariable::reset()
 }
 
 // Return value of node
-bool AtenVariable::execute(NuReturnValue &rv)
+bool AtenVariable::execute(ReturnValue &rv)
 {
-	rv.set(NuVTypes::AtenData, &aten);
+	rv.set(VTypes::AtenData, &aten);
 	return TRUE;
 }
 
@@ -85,9 +85,9 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "model",	NuVTypes::ModelData,	FALSE, TRUE },
-	{ "elements",	NuVTypes::ElementsData,	FALSE, TRUE },
-	{ "models",	NuVTypes::ModelData,	TRUE, TRUE }
+	{ "model",	VTypes::ModelData,	FALSE, TRUE },
+	{ "elements",	VTypes::ElementsData,	FALSE, TRUE },
+	{ "models",	VTypes::ModelData,	TRUE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -111,13 +111,13 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, NuVTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
 	msg.exit("AtenVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("AtenVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
@@ -141,12 +141,12 @@ bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 	if (result) switch (acc)
 	{
 		case (AtenVariable::CurrentModel):
-			rv.set(NuVTypes::ModelData, aten.currentModel());
+			rv.set(VTypes::ModelData, aten.currentModel());
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);
 			if (m == NULL) result = FALSE;
-			else rv.set(NuVTypes::ModelData, m);
+			else rv.set(VTypes::ModelData, m);
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in AtenVariable.\n", accessorData[i].name);
@@ -158,7 +158,7 @@ bool AtenVariable::retrieveAccessor(int i, NuReturnValue &rv, bool hasArrayIndex
 }
 
 // Set desired value
-bool AtenVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
 	msg.enter("AtenVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
@@ -182,7 +182,7 @@ bool AtenVariable::setAccessor(int i, NuReturnValue &sourcerv, NuReturnValue &ne
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Aten *ptr= (Aten*) sourcerv.asPointer(NuVTypes::AtenData, result);
+	Aten *ptr= (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
 	switch (acc)
 	{
 		default:

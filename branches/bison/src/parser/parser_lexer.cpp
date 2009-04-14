@@ -193,8 +193,8 @@ int CommandParser::lex()
 		if (!expectPathStep_)
 		{
 			// Is this a variable declaration statement?
-			NuVTypes::DataType dt = NuVTypes::dataType(token);
-			if (dt != NuVTypes::nDataTypes)
+			VTypes::DataType dt = VTypes::dataType(token);
+			if (dt != VTypes::nDataTypes)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->DECLARATION)\n",tree_);
 				setDeclarationType(dt);
@@ -230,14 +230,14 @@ int CommandParser::lex()
 
 			// If we get to here then its not a high-level keyword.
 			// Is it a function keyword?
-			for (n=0; n<NuCommand::nCommands; n++) if (strcmp(token,NuCommand::data[n].keyword) == 0) break;
-			if (n != NuCommand::nCommands)
+			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
+			if (n != Command::nCommands)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ... which is a function (->FUNCCALL).\n", tree_);
 				yylval.functionId = n;
 				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
-				if ((declarationType() != NuVTypes::NoData) && (!isDeclarationAssignment()))
+				if ((declarationType() != VTypes::NoData) && (!isDeclarationAssignment()))
 				{
 					msg.print("Error: '%s' cannot be declared as a variable since it is a function name.\n", token);
 					return 0;
@@ -258,7 +258,7 @@ int CommandParser::lex()
 		else
 		{
 			// Search the variable lists currently in scope...
-			NuVariable *v;
+			Variable *v;
 			if (!isVariableInScope(token, v))
 			{
 				return 0;

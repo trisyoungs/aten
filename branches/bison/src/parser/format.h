@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_NUFORMAT_H
-#define ATEN_NUFORMAT_H
+#ifndef ATEN_FORMAT_H
+#define ATEN_FORMAT_H
 
 #include "base/dnchar.h"
 #include "base/lineparser.h"
@@ -40,7 +40,7 @@ class FormatChunk
 	// Constructors
 	FormatChunk(const char *plaintext);
 	FormatChunk(TreeNode *arg);
-	FormatChunk(const char *format, TreeNode *arg, NuVTypes::DataType retrievetype);
+	FormatChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype);
 	// List pointers
 	FormatChunk *next, *prev;
 
@@ -58,7 +58,7 @@ class FormatChunk
 	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
 	TreeNode *arg_;
 	// Variable type to retrieve variable data as (related to contents of cFormat_)
-	NuVTypes::DataType retrieveType_;
+	VTypes::DataType retrieveType_;
 
 	public:
 	// Return chunktype
@@ -70,17 +70,17 @@ class FormatChunk
 	// Return associated argument
 	TreeNode *arg();
 	// Return variable type to retrieve variable data as
-	NuVTypes::DataType retrieveType();
+	VTypes::DataType retrieveType();
 };
 
 // Format
-class NuFormat
+class Format
 {
 	public:
 	// Constructors / Destructor
-	NuFormat(Refitem<TreeNode,int> *firstarg);
-	NuFormat(const char *format, Refitem<TreeNode,int> *firstarg);
-	~NuFormat();
+	Format(Refitem<TreeNode,int> *firstarg);
+	Format(const char *format, Refitem<TreeNode,int> *firstarg);
+	~Format();
 
 
 	/*

@@ -24,7 +24,7 @@
 #include "model/model.h"
 
 // Calculate energy of current trajectory frame ('frameenergy')
-bool NuCommand::function_FrameEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
@@ -35,7 +35,7 @@ bool NuCommand::function_FrameEnergy(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Calculate energy of current model contents ('modelenergy')
-bool NuCommand::function_ModelEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
@@ -46,7 +46,7 @@ bool NuCommand::function_ModelEnergy(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Print out electrostatic decomposition matrix ('printelec')
-bool NuCommand::function_PrintElec(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintElec(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printElecMatrix(obj.rs);
@@ -55,7 +55,7 @@ bool NuCommand::function_PrintElec(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Print long energy decomposition of model ('printenergy')
-bool NuCommand::function_PrintEnergy(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.print();
@@ -64,7 +64,7 @@ bool NuCommand::function_PrintEnergy(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Print out Ewald energy decomposition of model ('printewald')
-bool NuCommand::function_PrintEwald(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintEwald(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printEwald();
@@ -73,7 +73,7 @@ bool NuCommand::function_PrintEwald(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Print out interpattern decomposition matrix ('printinter')
-bool NuCommand::function_PrintInter(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintInter(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printInterMatrix(obj.rs);
@@ -82,7 +82,7 @@ bool NuCommand::function_PrintInter(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Print out intramolecular decomposition matrix ('printintra')
-bool NuCommand::function_PrintIntra(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintIntra(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printIntraMatrix(obj.rs);
@@ -91,7 +91,7 @@ bool NuCommand::function_PrintIntra(NuCommandNode *c, Bundle &obj, NuReturnValue
 }
 
 // Print short energy decomposition of model ('printsummary')
-bool NuCommand::function_PrintSummary(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printSummary();
@@ -100,7 +100,7 @@ bool NuCommand::function_PrintSummary(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Print out VDW decomposition matrix ('printvdw')
-bool NuCommand::function_PrintVdw(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printVdwMatrix(obj.rs);

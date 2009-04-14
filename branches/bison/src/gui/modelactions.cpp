@@ -61,13 +61,13 @@ void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 
 void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::Fold, "");
+	CommandNode::run(Command::Fold, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::FoldMolecules, "");
+	CommandNode::run(Command::FoldMolecules, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -93,7 +93,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
-	NuCommandNode::run(NuCommand::ShowAll, "");
+	CommandNode::run(Command::ShowAll, "");
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -104,7 +104,7 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		NuCommandNode::run(NuCommand::SetName, "c", qPrintable(text));
+		CommandNode::run(Command::SetName, "c", qPrintable(text));
 		refreshModelTabs();
 		gui.updateWindowTitle();
 	}

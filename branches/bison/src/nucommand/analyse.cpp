@@ -28,7 +28,7 @@
 #include "model/model.h"
 
 // Finalise calculated quantites ('finalise')
-bool NuCommand::function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
@@ -37,7 +37,7 @@ bool NuCommand::function_Finalise(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Accumulate data for current frame ('frameanalyse')
-bool NuCommand::function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
@@ -48,7 +48,7 @@ bool NuCommand::function_FrameAnalyse(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
-bool NuCommand::function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Geometry(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Geometry::Geometry *newgeom = new Geometry::Geometry;
@@ -67,7 +67,7 @@ bool NuCommand::function_Geometry(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Accumulate data for current model ('modelanalyse')
-bool NuCommand::function_ModelAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
@@ -76,7 +76,7 @@ bool NuCommand::function_ModelAnalyse(NuCommandNode *c, Bundle &obj, NuReturnVal
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
-bool NuCommand::function_PDens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pdens *newpdens = new Pdens;
@@ -93,13 +93,13 @@ bool NuCommand::function_PDens(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Print current job list ('printjobs')
-bool NuCommand::function_PrintJobs(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintJobs(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	return FALSE;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
-bool NuCommand::function_RDF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RDF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Rdf *newrdf = new Rdf;
@@ -116,7 +116,7 @@ bool NuCommand::function_RDF(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
-bool NuCommand::function_SaveQuantities(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_SaveQuantities(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
@@ -125,7 +125,7 @@ bool NuCommand::function_SaveQuantities(NuCommandNode *c, Bundle &obj, NuReturnV
 }
 
 // Calculate quantities over entire trajectory
-bool NuCommand::function_TrajAnalyse(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;

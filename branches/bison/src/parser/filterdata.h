@@ -32,7 +32,6 @@
 #include "base/dnchar.h"
 #include "base/elements.h"
 #include "base/lineparser.h"
-#include "base/vtypes.h"
 
 // FilterData
 class FilterData

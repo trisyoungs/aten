@@ -24,7 +24,7 @@
 #include "model/model.h"
 
 // Calculate forces at trajectory configuration ('frameforces')
-bool NuCommand::function_FrameForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
@@ -34,7 +34,7 @@ bool NuCommand::function_FrameForces(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Calculate atomic forces of model ('modelforces')
-bool NuCommand::function_ModelForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
@@ -44,7 +44,7 @@ bool NuCommand::function_ModelForces(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Print forces of model ('printforces')
-bool NuCommand::function_PrintForces(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printForces();

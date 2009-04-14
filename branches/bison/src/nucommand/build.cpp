@@ -28,7 +28,7 @@
 #include "base/elements.h"
 
 // Add hydrogens to model ('addhydrogen')
-bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument specifies an atom, either by id or pointer
@@ -36,10 +36,10 @@ bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValu
 	{
 		obj.rs->beginUndoState("Add Hydrogens to Atom");
 		Atom *i;
-		static NuReturnValue v1;
+		static ReturnValue v1;
 		if (!c->arg(0, v1)) return FALSE;
-		if (v1.type() == NuVTypes::IntegerData) i = obj.rs->atom(v1.asInteger()-1);
-		else if (v1.type() == NuVTypes::AtomData) i = (Atom*) v1.asPointer(NuVTypes::AtomData);
+		if (v1.type() == VTypes::IntegerData) i = obj.rs->atom(v1.asInteger()-1);
+		else if (v1.type() == VTypes::AtomData) i = (Atom*) v1.asPointer(VTypes::AtomData);
 		else
 		{
 			msg.print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
@@ -58,19 +58,19 @@ bool NuCommand::function_AddHydrogen(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
-bool NuCommand::function_Bohr(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
-bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
 	obj.rs->beginUndoState("Draw Chain");
 	Atom *i;
-	NuReturnValue v1;
+	ReturnValue v1;
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
@@ -81,7 +81,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 			if (c->hasArg(4))
 			{
 				if (!c->arg(4, v1)) return FALSE;
-				if (v1.type() == NuVTypes::StringData) bt = Bond::bondType(rv.asString());
+				if (v1.type() == VTypes::StringData) bt = Bond::bondType(rv.asString());
 				else bt = Bond::bondType(rv.asInteger());
 			}
 			else bt = Bond::Single;
@@ -97,7 +97,7 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 			if (c->hasArg(1))
 			{
 				if (!c->arg(1, v1)) return FALSE;
-				if (v1.type() == NuVTypes::StringData) bt = Bond::bondType(rv.asString());
+				if (v1.type() == VTypes::StringData) bt = Bond::bondType(rv.asString());
 				else bt = Bond::bondType(rv.asInteger());
 			}
 			else bt = Bond::Single;
@@ -106,12 +106,12 @@ bool NuCommand::function_Chain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 	}
 	obj.rs->endUndoState();
 	aten.current.i = i;
-	rv.set(NuVTypes::AtomData, i);
+	rv.set(VTypes::AtomData, i);
 	return TRUE;
 }
 
 // Terminate chain ('endchain')
-bool NuCommand::function_EndChain(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_EndChain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
@@ -120,7 +120,7 @@ bool NuCommand::function_EndChain(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Draw unbound atom with ID specified ('insertatom <el> <id> [x y z]')
-bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
@@ -129,29 +129,29 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
 	ForcefieldAtom *ffa;
 	Namemap<int> *nm;
 	int el;
-	NuReturnValue v1;
+	ReturnValue v1;
 	if (!c->arg(0, v1)) return FALSE;
 	switch (v1.type())
 	{
-		case (NuVTypes::IntegerData):
+		case (VTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::DoubleData):
-			el = (int) floor(v1.asReal() + 0.15);
+		case (VTypes::DoubleData):
+			el = (int) floor(v1.asDouble() + 0.15);
 			break;
-		case (NuVTypes::StringData):
+		case (VTypes::StringData):
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),v1.asString()) == 0) break;
 			if (nm == NULL) el = elements().find(v1.asString());
 			else el = nm->data();
 			break;
-		case (NuVTypes::AtomData):
-			i = (Atom*) v1.asPointer(NuVTypes::AtomData);
+		case (VTypes::AtomData):
+			i = (Atom*) v1.asPointer(VTypes::AtomData);
 			i == NULL ? el = 0 : i->element();
 			break;
 		default:
-			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", NuVTypes::dataType(v1.type()));
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(v1.type()));
 			el = 0;
 			break;
 	}
@@ -181,12 +181,12 @@ bool NuCommand::function_InsertAtom(NuCommandNode *c, Bundle &obj, NuReturnValue
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	rv.set(NuVTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
-bool NuCommand::function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.rs->setPenPosition(c->arg3d(0));
 	rv.reset();
@@ -194,7 +194,7 @@ bool NuCommand::function_Locate(NuCommandNode *c, Bundle &obj, NuReturnValue &rv
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
-bool NuCommand::function_Move(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.rs->movePenPosition(c->arg3d(0));
 	rv.reset();
@@ -202,7 +202,7 @@ bool NuCommand::function_Move(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Move current selection to end of list ('toend')
-bool NuCommand::function_MoveToEnd(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MoveToEnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Move selection to end");
@@ -213,7 +213,7 @@ bool NuCommand::function_MoveToEnd(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Move current selection to start of list ('tostart')
-bool NuCommand::function_MoveToStart(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_MoveToStart(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Move selection to start");
@@ -224,7 +224,7 @@ bool NuCommand::function_MoveToStart(NuCommandNode *c, Bundle &obj, NuReturnValu
 }
 
 // Draw unbound atom ('newatom <el> [x y z]')
-bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
@@ -233,29 +233,29 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 	ForcefieldAtom *ffa;
 	Namemap<int> *nm;
 	int el;
-	NuReturnValue v1;
+	ReturnValue v1;
 	if (!c->arg(0, v1)) return FALSE;
 	switch (v1.type())
 	{
-		case (NuVTypes::IntegerData):
+		case (VTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::DoubleData):
-			el = (int) floor(v1.asReal() + 0.15);
+		case (VTypes::DoubleData):
+			el = (int) floor(v1.asDouble() + 0.15);
 			break;
-		case (NuVTypes::StringData):
+		case (VTypes::StringData):
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),v1.asString()) == 0) break;
 			if (nm == NULL) el = elements().find(v1.asString());
 			else el = nm->data();
 			break;
-		case (NuVTypes::AtomData):
-			i = (Atom*) v1.asPointer(NuVTypes::AtomData);
+		case (VTypes::AtomData):
+			i = (Atom*) v1.asPointer(VTypes::AtomData);
 			i == NULL ? el = 0 : i->element();
 			break;
 		default:
-			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", NuVTypes::dataType(v1.type()));
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(v1.type()));
 			el = 0;
 			break;
 	}
@@ -278,36 +278,36 @@ bool NuCommand::function_NewAtom(NuCommandNode *c, Bundle &obj, NuReturnValue &r
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	rv.set(NuVTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
 // Draw unbound atom ('newatom <el> [fracx fracy fracz]')
-bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	int el;
 	Atom *i;
-	NuReturnValue v1;
+	ReturnValue v1;
 	if (!c->arg(0, v1)) return FALSE;
 	switch (v1.type())
 	{
-		case (NuVTypes::IntegerData):
+		case (VTypes::IntegerData):
 			el = v1.asInteger();
 			break;
-		case (NuVTypes::DoubleData):
-			el = (int) floor(v1.asReal() + 0.15);
+		case (VTypes::DoubleData):
+			el = (int) floor(v1.asDouble() + 0.15);
 			break;
-		case (NuVTypes::StringData):
+		case (VTypes::StringData):
 			el = elements().find(v1.asString());
 			break;
-		case (NuVTypes::AtomData):
-			i = (Atom*) v1.asPointer(NuVTypes::AtomData);
+		case (VTypes::AtomData):
+			i = (Atom*) v1.asPointer(VTypes::AtomData);
 			i == NULL ? el = 0 : i->element();
 			break;
 		default:
-			msg.print("Type '%s' is not a valid one to pass to Addatom.\n", NuVTypes::dataType(v1.type()));
+			msg.print("Type '%s' is not a valid one to pass to Addatom.\n", VTypes::dataType(v1.type()));
 			el = 0;
 			break;
 	}
@@ -324,12 +324,12 @@ bool NuCommand::function_NewAtomFrac(NuCommandNode *c, Bundle &obj, NuReturnValu
 	obj.rs->beginUndoState("Draw atom (fractional)");
 	aten.current.i = obj.rs->addAtom(el, r);
 	obj.rs->endUndoState();
-	rv.set(NuVTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
 // Reorder current atom selection ('reorder')
-bool NuCommand::function_ReOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ReOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Reorder selected atoms");
@@ -340,7 +340,7 @@ bool NuCommand::function_ReOrder(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Reset pen orientation
-bool NuCommand::function_ResetPen(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ResetPen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->resetPenOrientation();
@@ -349,7 +349,7 @@ bool NuCommand::function_ResetPen(NuCommandNode *c, Bundle &obj, NuReturnValue &
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
-bool NuCommand::function_RotX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(0, c->argd(0));
@@ -358,7 +358,7 @@ bool NuCommand::function_RotX(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
-bool NuCommand::function_RotY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(1, c->argd(0));
@@ -367,7 +367,7 @@ bool NuCommand::function_RotY(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
-bool NuCommand::function_RotZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->rotatePenAxis(2, c->argd(0));
@@ -376,7 +376,7 @@ bool NuCommand::function_RotZ(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
 }
 
 // Shift the current selection down ('shiftdown [n]')
-bool NuCommand::function_ShiftDown(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Shift selection down");
@@ -387,7 +387,7 @@ bool NuCommand::function_ShiftDown(NuCommandNode *c, Bundle &obj, NuReturnValue 
 }
 
 // Shift the current selection up ('shiftup [n]')
-bool NuCommand::function_ShiftUp(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Shift selection up");
@@ -398,7 +398,7 @@ bool NuCommand::function_ShiftUp(NuCommandNode *c, Bundle &obj, NuReturnValue &r
 }
 
 // Transmute the current selection ('transmute <el>')
-bool NuCommand::function_Transmute(NuCommandNode *c, Bundle &obj, NuReturnValue &rv)
+bool Command::function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int el = elements().findAlpha(c->argc(0));
