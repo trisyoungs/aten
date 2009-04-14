@@ -448,6 +448,8 @@ class Command
 		Version,
 
 		// Trajectory Commands
+		AddFrame,
+		ClearTrajectory,
 		FinaliseFrame,
 		FirstFrame,
 		LastFrame,
@@ -480,6 +482,7 @@ class Command
 
 		// Variable Operators
 		OperatorAdd,
+		OperatorAnd,
 		OperatorAssignment,
 		OperatorAssignmentDivide,
 		OperatorAssignmentMinus,
@@ -495,9 +498,10 @@ class Command
 		OperatorNegate,
 		OperatorNot,
 		OperatorNotEqualTo,
-		OperatorPower,
+		OperatorOr,
 		OperatorPostfixDecrease,
 		OperatorPostfixIncrease,
+		OperatorPower,
 		OperatorPrefixDecrease,
 		OperatorPrefixIncrease,
 		OperatorSubtract,
@@ -882,6 +886,8 @@ class Command
 	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Trajectory Commands
+	static bool function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -911,6 +917,7 @@ class Command
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Operators
 	static bool function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignmentDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignmentMinus(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -926,9 +933,10 @@ class Command
 	static bool function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorOr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);

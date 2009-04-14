@@ -25,6 +25,30 @@
 #include "model/model.h"
 #include "gui/gui.h"
 
+// Add new frame to the current model's trajectory
+bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs = obj.m->addFrame();
+	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
+	rv.set(VTypes::ModelData, obj.rs);
+	return TRUE;
+}
+
+// Clear any trajectory data in the current model
+bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.rs != obj.m)
+	{
+		msg.print("Current model is a trajectory frame - resetting to the parent model...\n");
+		obj.rs = obj.m->trajectoryParent();
+	}
+	obj.m->clearTrajectory();
+	gui.modelChanged(FALSE, FALSE, FALSE);
+	return TRUE;
+}
+
 // Finalise current trajectory frame
 bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

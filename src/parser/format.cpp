@@ -92,6 +92,12 @@ int FormatChunk::formatLength()
 	return formatLength_;
 }
 
+// Return length of plaintext (cFormat)
+int FormatChunk::textLength()
+{
+	return cFormat_.length();
+}
+
 // Return argument id
 TreeNode *FormatChunk::arg()
 {
@@ -132,7 +138,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	char prevchar;
 	static char plaintext[8096];
 	VTypes::DataType type;
-	bool isformatter = FALSE;
+	bool isformatter = FALSE, isdiscarder = FALSE;
 	Refitem<TreeNode,int> *arg = firstarg;
 	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
 	int length = 0, n;
@@ -167,8 +173,8 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 		c++;
 		length++;
 
-		// If we're currently in the middle of a formatter, it's terminated by an alpha character
-		if (isformatter && isalpha(prevchar))
+		// If we're currently in the middle of a formatter, it's terminated by an alpha character or '*'
+		if (isformatter && (isalpha(prevchar) || (prevchar == '*')))
 		{
 			// If the current character is 'l', 'h', or 'L' don't terminate yet
 			if ((prevchar == 'l') || (prevchar == 'h') || (prevchar == 'L')) continue;
@@ -176,7 +182,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			plaintext[length] = '\0';
 			msg.print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
 			// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
-			if (arg == NULL)
+			if ((arg == NULL) && (prevchar != '*'))
 			{
 				msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
 				isValid_ = FALSE;
@@ -184,7 +190,8 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			}
 			else
 			{
-				type = arg->item->returnType();
+				isdiscarder = FALSE;
+				type = arg == NULL ? VTypes::NoData : arg->item->returnType();
 				prevchar = plaintext[length-2];
 				if (!isalpha(prevchar)) prevchar = '\0';
 				switch (tolower(plaintext[length-1]))
@@ -250,15 +257,21 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 						msg.print("Character format 'c'is not supported.\n");
 						isValid_ = FALSE;
 						break;
+					// Discard identifier
+					case ('*'):
+						isdiscarder = TRUE;
+						type = VTypes::NoData;
+						break;
 					default:
 						msg.print("Unsupported format '%s'.\n", plaintext);
 						isValid_ = FALSE;
 						break;
 				}
 			}
+			// Don't use up a variable argument if the specifier was '*'
 			TreeNode *node = (arg == NULL ? NULL : arg->item);
 			chunks_.own( new FormatChunk(plaintext, node, type) );
-			arg = arg->next;
+			if (!isdiscarder) arg = arg->next;
 			length = 0;
 			isformatter = FALSE;
 // 			c++;
@@ -302,13 +315,18 @@ int Format::executeRead(LineParser *parser, int flags)
 		// Retrieve the required characters from the input stream
 		switch (chunk->type())
 		{
+			case (FormatChunk::PlainTextChunk):
+				// Skip as many characters as there are in the string
+				length = chunk->textLength();
+				parser->getNextN(length, &bit);
+				break;
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
 				parser->getNextArg(&bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):
-				// Get rgument from LineParser
+				// Get argument from LineParser
 				length = chunk->formatLength();
 				if (length > 0) parser->getNextN(length, &bit);
 				else parser->getNextArg(&bit);

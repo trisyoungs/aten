@@ -287,133 +287,15 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return operate(Command::OperatorAdd, &v1, &v2, rv);
 }
 
-// Subtract one quantity from another
-bool Command::function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Logical AND check on two operators
+bool Command::function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue v1, v2;
 	if (!c->arg(0,v1)) return FALSE;
 	if (!c->arg(1,v2)) return FALSE;
-	return operate(Command::OperatorSubtract, &v1, &v2, rv);
-}
-
-// Multiply one quantity by another
-bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0,v1)) return FALSE;
-	if (!c->arg(1,v2)) return FALSE;
-	return operate(Command::OperatorMultiply, &v1, &v2, rv);
-}
-
-// Negate value
-bool Command::function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (!c->arg(0, rv)) return FALSE;
-	switch (c->argType(0))
-	{
-		case (VTypes::IntegerData):
-			rv.set(-rv.asInteger());
-			break;
-		case (VTypes::DoubleData):
-			rv.set(-rv.asDouble());
-			break;
-		case (VTypes::VectorData):
-			rv.set(-rv.asVector());
-			break;
-	}
-	return c->setArg(0, rv);
-}
-
-// Divide one quantity by another
-bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return operate(Command::OperatorDivide, &v1, &v2, rv);
-}
-
-// Raise one quantity to the power of another
-bool Command::function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return operate(Command::OperatorPower, &v1, &v2, rv);
-}
-
-// Equal To
-bool Command::function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorEqualTo, &v1, &v2, rv);
-}
-
-// Not (Reverse Logic)
-bool Command::function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab argument and 'negate' it
-	ReturnValue v1;
-	if (!c->arg(0, v1)) return FALSE;
-	rv.set( !v1.asBool() );
+	rv.set(v1.asBool() && v2.asBool());
 	return TRUE;
-}
-
-// Not Equal To
-bool Command::function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorNotEqualTo, &v1, &v2, rv);
-}
-
-// Greater Than
-bool Command::function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorGreaterThan, &v1, &v2, rv);
-}
-
-// Greater Than Equal To
-bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorGreaterThanEqualTo, &v1, &v2, rv);
-}
-
-// Less Than
-bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorLessThan, &v1, &v2, rv);
-}
-
-// Less Than Equal To
-bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Grab both argument (return) values and send them to be operated on
-	ReturnValue v1, v2;
-	if (!c->arg(0, v1)) return FALSE;
-	if (!c->arg(1, v2)) return FALSE;
-	return test(Command::OperatorLessThanEqualTo, &v1, &v2, rv);
 }
 
 // Assignment
@@ -477,15 +359,127 @@ bool Command::function_OperatorAssignmentPlus(CommandNode *c, Bundle &obj, Retur
 	return (c->arg(0, rv));
 }
 
-// Postfix Increase
-bool Command::function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Divide one quantity by another
+bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Get current value of argument
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return operate(Command::OperatorDivide, &v1, &v2, rv);
+}
+
+// Equal To
+bool Command::function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorEqualTo, &v1, &v2, rv);
+}
+
+// Greater Than
+bool Command::function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorGreaterThan, &v1, &v2, rv);
+}
+
+// Greater Than Equal To
+bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorGreaterThanEqualTo, &v1, &v2, rv);
+}
+
+// Less Than
+bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorLessThan, &v1, &v2, rv);
+}
+
+// Less Than Equal To
+bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorLessThanEqualTo, &v1, &v2, rv);
+}
+
+// Multiply one quantity by another
+bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
+	return operate(Command::OperatorMultiply, &v1, &v2, rv);
+}
+
+// Negate value
+bool Command::function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
 	if (!c->arg(0, rv)) return FALSE;
-	ReturnValue newvalue;
-	newvalue = rv;
-	newvalue.increase();
-	return c->setArg(0, newvalue);
+	switch (c->argType(0))
+	{
+		case (VTypes::IntegerData):
+			rv.set(-rv.asInteger());
+			break;
+		case (VTypes::DoubleData):
+			rv.set(-rv.asDouble());
+			break;
+		case (VTypes::VectorData):
+			rv.set(-rv.asVector());
+			break;
+		default:
+			msg.print("Can't negate %s.\n", VTypes::aDataType(c->argType(0)));
+			return FALSE;
+	}
+	return TRUE;
+}
+
+// Not (Reverse Logic)
+bool Command::function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab argument and 'negate' it
+	ReturnValue v1;
+	if (!c->arg(0, v1)) return FALSE;
+	rv.set( !v1.asBool() );
+	return TRUE;
+}
+
+// Not Equal To
+bool Command::function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return test(Command::OperatorNotEqualTo, &v1, &v2, rv);
+}
+
+// Logical OR check on two operators
+bool Command::function_OperatorOr(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
+	rv.set(v1.asBool() || v2.asBool());
+	return TRUE;
 }
 
 // Postfix Decrease
@@ -499,13 +493,15 @@ bool Command::function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, Retu
 	return c->setArg(0, newvalue);
 }
 
-// Prefix Increase
-bool Command::function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Postfix Increase
+bool Command::function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
-	rv.increase();
-	return c->setArg(0, rv);
+	ReturnValue newvalue;
+	newvalue = rv;
+	newvalue.increase();
+	return c->setArg(0, newvalue);
 }
 
 // Prefix Decrease
@@ -515,4 +511,33 @@ bool Command::function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, Retur
 	if (!c->arg(0, rv)) return FALSE;
 	rv.decrease();
 	return c->setArg(0, rv);
+}
+
+// Prefix Increase
+bool Command::function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Get current value of argument
+	if (!c->arg(0, rv)) return FALSE;
+	rv.increase();
+	return c->setArg(0, rv);
+}
+
+// Raise one quantity to the power of another
+bool Command::function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(1, v2)) return FALSE;
+	return operate(Command::OperatorPower, &v1, &v2, rv);
+}
+
+// Subtract one quantity from another
+bool Command::function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Grab both argument (return) values and send them to be operated on
+	ReturnValue v1, v2;
+	if (!c->arg(0,v1)) return FALSE;
+	if (!c->arg(1,v2)) return FALSE;
+	return operate(Command::OperatorSubtract, &v1, &v2, rv);
 }

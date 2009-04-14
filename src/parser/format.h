@@ -67,6 +67,8 @@ class FormatChunk
 	const char *cFormat();
 	// Return length of formatted chunk
 	int formatLength();
+	// Return length of plaintext (cFormat)
+	int textLength();
 	// Return associated argument
 	TreeNode *arg();
 	// Return variable type to retrieve variable data as

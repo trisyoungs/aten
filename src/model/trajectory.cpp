@@ -64,7 +64,6 @@ int Model::trajectoryPosition()
 // Clear trajectory
 void Model::clearTrajectory()
 {
-	// Clear frames - can simply delete the master config pointed to by 'frames_head'
 	msg.enter("Model::clearTrajectory");
 	frames_.clear();
 	// Close file in parser
