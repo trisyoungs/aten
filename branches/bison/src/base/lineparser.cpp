@@ -268,44 +268,6 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 		c = line_[linePos_];
 		switch (c)
 		{
-			// Backslash - escape next character (read new line if its an EOL marker)
-			// If we're inside quotes, keep backslash *and* next character
-			case (92):
-				d = line_[linePos_ + 1];
-				if ((optionMask_&LineParser::NoEscapes) || (quotechar != '\0'))
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-					tempArg_[arglen] = d;
-					arglen ++;
-					linePos_ ++;
-				}
-				else if ((d == 10) || (d == 13))
-				{
-					// Next char is newline, so read another line from file if we have one
-					if (file_ == NULL)
-					{
-						done = TRUE;
-						endOfLine_ = TRUE;
-					}
-					else
-					{
-						// Read a new line
-						readresult = readLine();
-						if (readresult != 0)
-						{
-							failed = TRUE;
-							done = TRUE;
-						}
-					}
-				}
-				else
-				{
-					tempArg_[arglen] = d;
-					arglen ++;
-					linePos_ ++;
-				}
-				break;
 			// End of line markers
 			case (10):	// Line feed (\n)
 			case (13):	// Carriage Return

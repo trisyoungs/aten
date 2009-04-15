@@ -154,13 +154,7 @@ int CommandParser::lex()
 						token[length++] = c2; break;
 				}
 			}
-			else if (c == '"')
-			{
-				// Check for null string...
-				if (length == 0) done = TRUE;
-				else if (token[length-1] == '\\') token[length++] = '"';
-				else done = TRUE;
-			}
+			else if (c == '"') done = TRUE;
 			else if (c == '\0')
 			{
 				msg.print("Runaway character constant in input.\n");
@@ -218,7 +212,7 @@ int CommandParser::lex()
 			if (strcmp(token,"filter") == 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
-				tree_ = forest_->pushTree();
+				tree_ = forest_->pushTree(TRUE);
 				return FILTERBLOCK;
 			}
 			else if (strcmp(token,"function") == 0)

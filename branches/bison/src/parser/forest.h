@@ -48,7 +48,7 @@ class Forest
 	// List of trees belonging to this forest
 	List<Tree> trees_;
 	// Stack of created trees
-	Reflist<Tree,int> stack_;
+	Reflist<Tree,bool> stack_;
 
 	public:
 	// Clear contents of forest
@@ -68,7 +68,7 @@ class Forest
 	// Return number of trees in forest
 	int nTrees();
 	// Create a new, generic (script or command) tree
-	Tree *pushTree();
+	Tree *pushTree(bool isfilter = FALSE);
 	// Finish the last created tree
 	void popTree();
 	// Delete specified tree
