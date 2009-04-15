@@ -68,10 +68,8 @@ const char *Forest::filename()
 void Forest::finalise()
 {
 	// Register any filters with the master
-	for (Tree *t = trees_.first(); t != NULL; t = t->next)
-	{
-		if (t->isFilter()) aten.registerFilter(t, t->filter.type());
-	}
+	for (Tree *t = trees_.first(); t != NULL; t = t->next) if (t->isFilter())
+		aten.registerFilter(t, t->filter.type());
 }
 
 // Return number of trees in forest
@@ -81,12 +79,12 @@ int Forest::nTrees()
 }
 
 // Create a new tree
-Tree *Forest::pushTree()
+Tree *Forest::pushTree(bool isfilter)
 {
 	msg.enter("Forest::pushTree");
 	Tree *tree = trees_.add();
 	tree->setParent(this);
-	stack_.add(tree);
+	stack_.add(tree,isfilter);
 	msg.exit("Forest::pushTree");
 	return tree;
 }
@@ -94,9 +92,16 @@ Tree *Forest::pushTree()
 // Finish the last tree
 void Forest::popTree()
 {
-	msg.enter("Forest::pushTree");
+	msg.enter("Forest::popTree");
+	// If the tree to be popped is a Filter, check that a filter type has been defined
+	Refitem<Tree,bool> *ri = stack_.last();
+	if (ri->data)
+	{
+		// Can use the 'isFilter' member function to check for the lack of a proper type
+		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
+	}
 	stack_.remove( stack_.last() );
-	msg.exit("Forest::pushTree");
+	msg.exit("Forest::popTree");
 }
 
 // Generate forest from string 

@@ -53,7 +53,7 @@ void CommandParser::printErrorInfo()
 	char *temp = new char[stringLength_+32];
 	int i;
 	for (int i=0; i<tokenStart_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
-	if (functionStart_ > -1) for (i=functionStart_; i<stringPos_; i++) temp[i] = '-';
+	if (functionStart_ > -1) for (i=functionStart_; i<stringPos_; i++) if (temp[i] != '\t') temp[i] = '-';
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
@@ -219,6 +219,7 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 // Finish current tree (i.e. nullify tree_)
 void CommandParser::finishTree()
 {
+	forest_->popTree();
 	tree_ = NULL;
 }
 

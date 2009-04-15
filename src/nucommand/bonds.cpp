@@ -107,6 +107,11 @@ bool Command::function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Find the atoms specified
 	Atom *i = obj.rs->findAtom(c->argi(0));
 	Atom *j = obj.rs->findAtom(c->argi(1));
+	if ((i == NULL) || (j == NULL))
+	{
+		msg.print("Can't bond atoms - one or both atoms not found.\n");
+		return FALSE;
+	}
 	// Add the bond
 	obj.rs->beginUndoState("Bond Atoms");
 	obj.rs->bondAtoms(i, j, bt);

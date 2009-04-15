@@ -322,14 +322,14 @@ int Format::executeRead(LineParser *parser, int flags)
 				break;
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
-				parser->getNextArg(&bit);
+				parser->getNextArg(&bit, flags);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):
 				// Get argument from LineParser
 				length = chunk->formatLength();
 				if (length > 0) parser->getNextN(length, &bit);
-				else parser->getNextArg(&bit);
+				else parser->getNextArg(&bit, flags);
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
@@ -423,7 +423,7 @@ bool Format::writeToString()
 	return TRUE;
 }
 
-// Read line and parse according to format
+// Parse supplied line according to format
 int Format::read(const char *line, int flags)
 {
 	msg.enter("Format::read[string]");
