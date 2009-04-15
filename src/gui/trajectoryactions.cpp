@@ -99,10 +99,10 @@ void AtenForm::updateTrajectoryToolbar()
 {
 	trajectoryToolbarRefreshing_ = TRUE;
 	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
-	trajectorySlider_->setValue(aten.currentModel()->trajectoryPosition());
-	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
-	trajectorySpin_->setValue(aten.currentModel()->trajectoryPosition());
+	trajectorySlider_->setMaximum(aten.currentModel()->nFrames());
+	trajectorySlider_->setValue(aten.currentModel()->frameIndex()+1);
+	trajectorySpin_->setRange(1,aten.currentModel()->nFrames());
+	trajectorySpin_->setValue(aten.currentModel()->frameIndex()+1);
 	trajectoryToolbarRefreshing_ = FALSE;
 }
 

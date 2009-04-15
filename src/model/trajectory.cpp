@@ -43,6 +43,13 @@ void Model::setTrajectoryFilter(Tree *f)
 	trajectoryFilter_ = f;
 }
 
+// Return whether a trajectory for this model exists
+bool Model::hasTrajectory()
+{
+	if (framesAreCached_) return (frames_.nItems() != 0);
+	else return (nFileFrames_ != 0);
+}
+
 // Return the current frame pointer
 Model *Model::currentFrame()
 {
@@ -50,15 +57,15 @@ Model *Model::currentFrame()
 }
 
 // Return the total number of frames in the trajectory (file or cached)
-int Model::nTrajectoryFrames()
+int Model::nFrames()
 {
-	return nTrajectoryFrames_;
+	return (framesAreCached_ ? frames_.nItems() : nFileFrames_);
 }
 
 // Return the current integer frame position
-int Model::trajectoryPosition()
+int Model::frameIndex()
 {
-	return trajectoryPosition_;
+	return frameIndex_;
 }
 
 // Clear trajectory
@@ -72,10 +79,9 @@ void Model::clearTrajectory()
 	trajectoryOffsets_ = NULL;
 	highestFrameOffset_ = -1;
 	trajectoryFilename_ = "Unnamed";
-	nCachedFrames_ = 0;
-	nTrajectoryFrames_ = 0;
-	trajectoryPosition_ = 0;
-	trajectoryCached_ = FALSE;
+	nFileFrames_ = 0;
+	frameIndex_ = -1;
+	framesAreCached_ = FALSE;
 	trajectoryFilter_ = NULL;
 	msg.exit("Model::clearTrajectory");
 }
@@ -129,31 +135,26 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	else msg.print("Single frame is (approximately) %i kb.\n", frameSize_/1024);
 	trajectoryParser_.seekg(0,ios::end);
 	streampos endoffile = trajectoryParser_.tellg();
-	nTrajectoryFrames_ = (endoffile - firstframe) / frameSize_;
+	nFileFrames_ = (endoffile - firstframe) / frameSize_;
 	// Skip back to end of first frame ready to read in next frame...
 	trajectoryParser_.seekg(secondframe);
 	// Pre-Cache frame(s)
 	msg.print("Successfully associated trajectory.\n"); 
-	msg.print("Number of frames in file : %i\n", nTrajectoryFrames_);
-	trajectoryPosition_ = 1;
+	msg.print("Number of frames in file : %i\n", nFileFrames_);
+	frameIndex_ = 0;
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	msg.print("Estimated trajectory size is %li kb, cache limit = %i kb\n", nTrajectoryFrames_ * frameSize_/1024, prefs.cacheLimit());
-	if ((nTrajectoryFrames_ * frameSize_)/1024 < prefs.cacheLimit())
+	msg.print("Estimated trajectory size is %li kb, cache limit = %i kb\n", nFileFrames_ * frameSize_/1024, prefs.cacheLimit());
+	if ((nFileFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
-		gui.progressCreate("Caching Frames", nTrajectoryFrames_);
+		gui.progressCreate("Caching Frames", nFileFrames_);
 		// Read all frames from trajectory file
-		for (int n=1; n<nTrajectoryFrames_; n++)
+		for (int n=1; n<nFileFrames_; n++)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
 			success = trajectoryFilter_->executeRead(&trajectoryParser_);	// TGAY Read frame
-			if (success)
-			{
-				//msg.print("Read frame %i from file.\n", n+1);
-				trajectoryPosition_ ++;
-			}
-			else
+			if (!success)
 			{
 				frames_.remove(newframe);
 				msg.print("Error during read of frame %i.\n", n);
@@ -161,14 +162,15 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 			}
 		}
 		gui.progressTerminate();
-		msg.print("Cached %i frames from file.\n", trajectoryPosition_);
-		trajectoryCached_ = TRUE;
+		nFileFrames_ = 0;
+		framesAreCached_ = TRUE;
 		trajectoryParser_.closeFile();
+		msg.print("Cached %i frames from file.\n", nFrames());
 	}
 	else
 	{
 		msg.print( "Trajectory will not be cached in memory.\n");
-		trajectoryOffsets_ = new streampos[nTrajectoryFrames_+1];
+		trajectoryOffsets_ = new streampos[nFileFrames_+1];
 		trajectoryOffsets_[0] = firstframe;
 		trajectoryOffsets_[1] = secondframe;
 		highestFrameOffset_ = 2;
@@ -182,11 +184,11 @@ Model *Model::addFrame()
 {
 	msg.enter("Model::addFrame");	
 	Model *newframe = frames_.add();
-	nCachedFrames_ ++;
 	// Set currentFrame_ here (always points to the last added frame)
 	currentFrame_ = newframe;
 	newframe->setTrajectoryParent(this);
-	//trajectoryPosition_ = nCachedFrames_;
+	if (frames_.nItems() > 1) framesAreCached_ = TRUE;
+	frameIndex_ = frames_.nItems()-1;
 	msg.exit("Model::addFrame");	
 	return newframe;
 }
@@ -198,7 +200,6 @@ void Model::removeFrame(Model *xframe)
 	msg.enter("Model::removeFrame");
 	if (xframe == currentFrame_) currentFrame_ = (xframe->next == NULL ? xframe->prev : xframe->next);
 	frames_.remove(xframe);
-	nCachedFrames_ --;
 	msg.exit("Model::removeFrame");
 }
 
@@ -208,21 +209,21 @@ void Model::seekFirstFrame()
 	// Seek to the first frame in the trajectory
 	msg.enter("Model::seekFirstFrame");
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames_ == 0)
+	if (nFrames() == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekFirstFrame");
 		return;
 	}
-	if (trajectoryPosition_ == 1)
+	if (frameIndex_ == 0)
 	{
 		msg.print("Already at start of trajectory.\n");
 		msg.exit("Model::seekFirstFrame");
 		return;
 	}
 	currentFrame_ = frames_.first();
-	if (!trajectoryCached_) seekFrame(1);
-	else trajectoryPosition_ = 1;
+	if (!framesAreCached_) seekFrame(0);
+	else frameIndex_ = 0;
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -235,25 +236,22 @@ void Model::seekNextFrame()
 	// Seek to the next frame in the trajectory
 	msg.enter("Model::seekNextFrame");
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames_ == 0)
+	if (nFrames() == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
 	bool success;
-	if (trajectoryPosition_ == nTrajectoryFrames_)
+	if (frameIndex_ == nFrames()-1)
 	{
-		msg.print("Already at end of trajectory (frame %i).\n",trajectoryPosition_);
+		msg.print("Already at end of trajectory (frame %i).\n", frameIndex_+1);
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
-	if (trajectoryCached_)
-	{
-		currentFrame_ = currentFrame_->next;
-		trajectoryPosition_ ++;
-	}
-	else seekFrame(trajectoryPosition_ + 1);
+	frameIndex_++;
+	if (framesAreCached_) currentFrame_ = currentFrame_->next;
+	else seekFrame(frameIndex_);
 	changeLog.add(Log::Visual);
 	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
@@ -267,24 +265,21 @@ void Model::seekPreviousFrame()
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekPreviousFrame");
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames_ == 0)
+	if (nFrames() == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekPreviousFrame");
 		return;
 	}
-	if (trajectoryPosition_ == 1)
+	if (frameIndex_ == 0)
 	{
 		msg.print("Already at start of trajectory.\n");
 		msg.exit("Model::seekPreviousFrame");
 		return;
 	}
-	if (trajectoryCached_)
-	{
-		currentFrame_ = currentFrame_->prev;
-		trajectoryPosition_ --;
-	}
-	else seekFrame(trajectoryPosition_ - 1);
+	frameIndex_--;
+	if (framesAreCached_) currentFrame_ = currentFrame_->prev;
+	else seekFrame(frameIndex_);
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -297,24 +292,21 @@ void Model::seekLastFrame()
 	// Seek to the last frame in the trajectory
 	msg.enter("Model::seekLastFrame");
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames_ == 0)
+	if (nFrames() == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekLastFrame");
 		return;
 	}
-	if (trajectoryPosition_ == nTrajectoryFrames_)
+	if (frameIndex_ == nFrames()-1)
 	{
-		msg.print("Already at end of trajectory (frame %i).\n", trajectoryPosition_);
+		msg.print("Already at end of trajectory (frame %i).\n", frameIndex_+1);
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
-	if (trajectoryCached_)
-	{
-		currentFrame_ = frames_.last();
-		trajectoryPosition_ = nTrajectoryFrames_;
-	}
-	else seekFrame(nTrajectoryFrames_);
+	frameIndex_ = nFrames()-1;
+	if (framesAreCached_) currentFrame_ = frames_.last();
+	else seekFrame(frameIndex_);
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -327,25 +319,25 @@ void Model::seekFrame(int frameno)
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekFrame");
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames_ == 0)
+	if (nFrames() == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekFrame");
 		return;
 	}
-	if ((frameno < 1) || (frameno > nTrajectoryFrames_))
+	if ((frameno < 0) || (frameno > nFrames()-1))
 	{
-		msg.print("Frame %i is out of range for current trajectory (which has %i frames).\n", frameno, nTrajectoryFrames_);
+		msg.print("Frame %i is out of range for current trajectory (which has %i frames).\n", frameno+1, nFrames());
 		msg.exit("Model::seekFrame");
 		return;
 	}
-	if (trajectoryPosition_ == frameno)
+	if (frameIndex_ == frameno)
 	{
-		msg.print("Already at specified frame (%i).\n",frameno);
+		msg.print("Already at specified frame (%i).\n", frameno+1);
 		msg.exit("Model::seekFrame");
 		return;
 	}
-	if (trajectoryCached_) currentFrame_ = frames_[frameno - 1];
+	if (framesAreCached_) currentFrame_ = frames_[frameno];
 	else
 	{
 		// Seek to specified frame in file
@@ -354,10 +346,10 @@ void Model::seekFrame(int frameno)
 		if (frameno <= highestFrameOffset_)
 		{
 			currentFrame_->clear();
-			trajectoryParser_.seekg(trajectoryOffsets_[frameno-1]);
+			trajectoryParser_.seekg(trajectoryOffsets_[frameno]);
 // 			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
 			// If this was the highest offset stored, the file position now corresponds to the next frame
-			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nTrajectoryFrames_))
+			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nFileFrames_))
 			{
 				trajectoryOffsets_[frameno] = trajectoryParser_.tellg();
 				highestFrameOffset_ ++;
@@ -386,10 +378,10 @@ void Model::seekFrame(int frameno)
 		}
 		currentFrame_->changeLog.add(Log::Visual);
 	}
-	trajectoryPosition_ = frameno;
+	frameIndex_ = frameno;
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n",trajectoryPosition_);
+	msg.print("Seek to frame %i\n", frameIndex_+1);
 	msg.exit("Model::seekFrame");
 }

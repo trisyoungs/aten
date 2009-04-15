@@ -349,6 +349,7 @@ void Command::initPointers()
 
 	// Read / Write Commands
 	pointers_[AddReadOption] = &Command::function_AddReadOption;
+	pointers_[FilterFileName] = &Command::function_FilterFileName;
 	pointers_[Eof] = &Command::function_Eof;
 	pointers_[Find] = &Command::function_Find;
 	pointers_[GetLine] = &Command::function_GetLine;

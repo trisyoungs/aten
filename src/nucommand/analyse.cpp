@@ -133,7 +133,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Model *frame;
 	Calculable *calc;
 	// Check that the model has a trajectory associated to it
-	totalframes = obj.m->nTrajectoryFrames();
+	totalframes = obj.m->nFrames();
 	if (totalframes == 0)
 	{
 		msg.print("No trajectory associated to model.\n");

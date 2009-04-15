@@ -67,9 +67,9 @@ void Canvas::renderScene(Model *source)
 	// If this is a trajectory frame, check its ID against the last one rendered
 	if (source->trajectoryParent() != NULL)
 	{
-		if (source->trajectoryParent()->trajectoryPosition() != displayFrame_) renderPoint_ = -1;
-		displayFrame_ = source->trajectoryParent()->trajectoryPosition();
-		msg.print(Messenger::GL, " --> Source model is a trajectory frame - pointer = %li\n", displayFrame_);
+		if (source->trajectoryParent()->frameIndex() != displayFrameId_) renderPoint_ = -1;
+		displayFrameId_ = source->trajectoryParent()->frameIndex();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 
 	// Set clear colour

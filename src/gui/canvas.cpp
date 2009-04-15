@@ -43,7 +43,7 @@ Canvas::Canvas()
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
 	displayModel_ = NULL;
-	displayFrame_ = -1;
+	displayFrameId_ = -1;
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;

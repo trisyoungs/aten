@@ -647,6 +647,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Add a read option: usequotes, skipblanks, stripbrackets" },
 	{ "eof",		"",		"", VTypes::IntegerData,
 				"Return whether the end of the file has been reached (or only whitespace remains)" },
+	{ "filterfilename",	"",		"", VTypes::StringData,
+				"Returns the name of the file that the current filter is reading from / writing to" },
 	{ "find",		"C^c",		"<string> [linevar]", VTypes::IntegerData,
 				"Search for a string in the input file (placing matching line in optional variable)" },
 	{ "getline",		"^C",		"", VTypes::IntegerData,

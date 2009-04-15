@@ -27,6 +27,7 @@
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
+#include "gui/gui.h"
 
 // Create 'n' new atoms at once in model
 bool Command::function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -124,11 +125,22 @@ bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argType(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
+	Model *m = NULL;
+	switch (c->argType(0))
+	{
+		case (VTypes::ModelData): m = (Model*) c->argp(0, VTypes::ModelData); break;
+		case (VTypes::IntegerData): m = aten.model(c->argi(0) - 1); break;
+		case (VTypes::StringData): m = aten.findModel(c->argc(0)); break;
+		default:
+			printf("Can't convert %s in to a Model.\n", VTypes::aDataType(c->argType(0)));
+			break;
+	}
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
+		m->setRenderFromSelf();
+		gui.modelChanged(FALSE, FALSE, FALSE);
 		obj.p = NULL;
 		obj.i = m->atoms();
 		return TRUE;

@@ -706,14 +706,12 @@ class Model
 	List<Model> frames_;
 	// Remove frame from trajectory
 	void removeFrame(Model*);
-	// Number of frames cached
-	int nCachedFrames_;
-	// Total number of frames available in file or cache
-	int nTrajectoryFrames_;
+	// Total number of frames available in file (if an uncached trajectory)
+	int nFileFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
-	bool trajectoryCached_;
+	bool framesAreCached_;
 	// Current frame position counter
-	int trajectoryPosition_;
+	int frameIndex_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
 	// Pointer to config to be drawn
@@ -722,6 +720,8 @@ class Model
 	public:
 	// Add frame to trajectory
 	Model *addFrame();
+	// Return whether a trajectory for this model exists
+	bool hasTrajectory();
 	// Set parent model of trajectory
 	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory
@@ -737,9 +737,9 @@ class Model
 	// Return the current frame pointer
 	Model *currentFrame();
 	// Return the total number of frames in the trajectory (file or cached)
-	int nTrajectoryFrames();
+	int nFrames();
 	// Return the current integer frame position
-	int trajectoryPosition();
+	int frameIndex();
 	// Seek to first frame
 	void seekFirstFrame();
 	// Seek to last frame
