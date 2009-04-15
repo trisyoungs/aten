@@ -393,6 +393,7 @@ class Command
 		// Read / Write Commands
 		AddReadOption,
 		Eof,
+		FilterFileName,
 		Find,
 		GetLine,
 		PeekChar,
@@ -835,6 +836,7 @@ class Command
 	static bool function_ZoomThrottle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Read / Write Commands
 	static bool function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);

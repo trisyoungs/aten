@@ -45,6 +45,19 @@ bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Return source/destination filename for filter
+bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The filterfilename' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	rv.set(c->parent()->parser()->filename());
+	return TRUE;
+}
+
 // Search for line containing specified string
 bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

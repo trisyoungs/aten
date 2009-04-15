@@ -30,7 +30,9 @@ bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs = obj.m->addFrame();
+	obj.m->setRenderFromFrames();
 	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	rv.set(VTypes::ModelData, obj.rs);
 	return TRUE;
 }
@@ -80,7 +82,7 @@ bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
@@ -95,7 +97,7 @@ bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
@@ -120,7 +122,7 @@ bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
@@ -135,7 +137,7 @@ bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
@@ -150,7 +152,7 @@ bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;

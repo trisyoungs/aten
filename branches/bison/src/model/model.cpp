@@ -58,11 +58,10 @@ Model::Model()
 	trajectoryOffsets_ = NULL;
 	highestFrameOffset_ = 0;
 	frameSize_ = 0;
-	nCachedFrames_ = 0;
-	nTrajectoryFrames_ = 0;
+	nFileFrames_ = 0;
 	renderFromSelf_ = TRUE;
-	trajectoryCached_ = FALSE;
-	trajectoryPosition_ = 0;
+	framesAreCached_ = FALSE;
+	frameIndex_ = -1;
 	trajectoryPlaying_ = FALSE;
 	currentFrame_ = NULL;
 	componentPattern_ = NULL;

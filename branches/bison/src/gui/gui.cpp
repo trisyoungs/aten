@@ -261,12 +261,12 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	QString s;
 	Model *m = aten.currentModel();
 	// First label - atom and trajectory frame information
-	if (m->nTrajectoryFrames() != 0)
+	if (m->hasTrajectory())
 	{
 		s = "(Frame ";
-		s += (m->renderSource() == m ? "Main" : itoa(m->trajectoryPosition()));
+		s += (m->renderSource() == m ? "Main" : itoa(m->frameIndex()+1));
 		s += " of ";
-		s += itoa(m->nTrajectoryFrames());
+		s += itoa(m->nFrames());
 		s += ") ";
 		// Toolbar
 		mainWindow->updateTrajectoryToolbar();
@@ -346,7 +346,7 @@ void GuiQt::updateTrajControls()
 	if (!doesExist_) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->nTrajectoryFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
+	if (m->nFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
 	else
 	{
 		// Make sure the trajectory toolbar is visible
