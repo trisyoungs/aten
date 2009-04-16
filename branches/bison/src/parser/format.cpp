@@ -28,46 +28,26 @@
 // Format Chunks
 */
 
-// Constructors
-FormatChunk::FormatChunk(const char *plaintext)
+// Constructor
+FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes::DataType retrieveType)
 {
 	// Private variables
-	type_ = PlainTextChunk;
-	cFormat_ = plaintext;
-	arg_ = NULL;
+	type_ = type;
+	cFormat_ = fmt;
+	arg_ = arg;
+	retrieveType_ = retrieveType;
 	formatLength_ = 0;
-	msg.print(Messenger::Parse, "...created PlainTextChunk for string '%s'\n", plaintext);
+	msg.print(Messenger::Parse, "...created FormatChunk for string '%s'\n", fmt);
 
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
-FormatChunk::FormatChunk(TreeNode *node) : arg_(node)
-{
-	// Private variables
-	type_ = DelimitedChunk;
-	formatLength_ = 0;
-	msg.print(Messenger::Parse, "...created DelimitedChunk for argument %li\n", node);
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
-FormatChunk::FormatChunk(const char *format, TreeNode *node, VTypes::DataType retrievetype) : arg_(node), retrieveType_(retrievetype)
-{
-	// Private variables
-	cFormat_ = format;
-	type_ = FormattedChunk;
-
-	// Determine length of format
-	msg.print(Messenger::Parse, "...created FormattedChunk ('%s', length is %i) for argument %li\n", format, formatLength_, node);
-	char text[32];
-	int n = 0;
-	for (const char *c = &format[1]; isdigit(*c); c++) text[n++] = *c;
-	text[n] = '\0';
-	formatLength_ = atoi(text);
+	// Determine length of format if one was provided
+	if (fmt != NULL)
+	{
+		char text[32];
+		int n = 0;
+		for (const char *c = &fmt[1]; isdigit(*c); c++) text[n++] = *c;
+		text[n] = '\0';
+		formatLength_ = atoi(text);
+	}
 
 	// Public variables
 	next = NULL;
@@ -121,7 +101,7 @@ char Format::createdString_[8096];
 Format::Format(Refitem<TreeNode,int> *firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
-	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) chunks_.own( new FormatChunk(ri->item) );
+	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
 	delimited_ = TRUE;
 	isValid_ = TRUE;
 }
@@ -138,7 +118,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	char prevchar;
 	static char plaintext[8096];
 	VTypes::DataType type;
-	bool isformatter = FALSE, isdiscarder = FALSE;
+	bool isformatter = FALSE, isdiscarder, restofline;
 	Refitem<TreeNode,int> *arg = firstarg;
 	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
 	int length = 0, n;
@@ -158,7 +138,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			if (length > 0)
 			{
 				plaintext[length] = '\0';
-				chunks_.own( new FormatChunk(plaintext) );
+				addPlainTextChunk(plaintext);
 				length = 0;
 			}
 			isformatter = TRUE;
@@ -191,6 +171,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			else
 			{
 				isdiscarder = FALSE;
+				restofline = FALSE;
 				type = arg == NULL ? VTypes::NoData : arg->item->returnType();
 				prevchar = plaintext[length-2];
 				if (!isalpha(prevchar)) prevchar = '\0';
@@ -243,10 +224,12 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 						}
 						break;
 					// Character types
+					case ('r'):
+						restofline = TRUE;
 					case ('s'):
 						if (prevchar != '\0')
 						{
-							msg.print("String format 's' cannot be preceeded by the identifier '%c'.\n", prevchar);
+							msg.print("String format '%c' cannot be preceeded by the identifier '%c'.\n", tolower(plaintext[length-1]), prevchar);
 							isValid_ = FALSE;
 						}
 						if (type == VTypes::StringData) break;
@@ -270,7 +253,8 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			}
 			// Don't use up a variable argument if the specifier was '*'
 			TreeNode *node = (arg == NULL ? NULL : arg->item);
-			chunks_.own( new FormatChunk(plaintext, node, type) );
+			if (restofline) addGreedyDelimitedChunk(node);
+			else addFormattedChunk(plaintext, node, type);
 			if (!isdiscarder) arg = arg->next;
 			length = 0;
 			isformatter = FALSE;
@@ -281,7 +265,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	if (length > 0)
 	{
 		plaintext[length] = '\0'; 
-		chunks_.own( new FormatChunk(plaintext) );
+		addPlainTextChunk(plaintext);
 	}
 	// Are there any supplied arguments remaining?
 	if (arg != NULL) msg.print("Warning: Extra data arguments given to format '%s'...\n", s);
@@ -296,6 +280,34 @@ Format::~Format()
 bool Format::isValid()
 {
 	return isValid_;
+}
+
+// Add new plaintext chunk to format
+void Format::addPlainTextChunk(const char *s)
+{
+	FormatChunk *chunk = new FormatChunk(FormatChunk::PlainTextChunk, s);
+	chunks_.own(chunk);
+}
+
+// Add new formatted chunk to format
+void Format::addFormattedChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype)
+{
+	FormatChunk *chunk = new FormatChunk(FormatChunk::FormattedChunk, format, arg, retrievetype);
+	chunks_.own(chunk);
+}
+
+// Add new delimited chunk to format
+void Format::addDelimitedChunk(TreeNode *arg)
+{
+	FormatChunk *chunk = new FormatChunk(FormatChunk::DelimitedChunk, NULL, arg);
+	chunks_.own(chunk);
+}
+
+// Add new greedy delimited chunk to format
+void Format::addGreedyDelimitedChunk(TreeNode *arg)
+{
+	FormatChunk *chunk = new FormatChunk(FormatChunk::GreedyDelimitedChunk, NULL, arg);
+	chunks_.own(chunk);
 }
 
 /*
@@ -323,6 +335,11 @@ int Format::executeRead(LineParser *parser, int flags)
 			case (FormatChunk::DelimitedChunk):
 				// Get next delimited argument from LineParser
 				parser->getNextArg(&bit, flags);
+				if (!bit.isEmpty()) nparsed ++;
+				break;
+			case (FormatChunk::GreedyDelimitedChunk):
+				// Get rest of line, starting from next delimited argument
+				parser->getRestDelim(&bit);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
 			case (FormatChunk::FormattedChunk):

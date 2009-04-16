@@ -195,6 +195,20 @@ int CommandParser::lex()
 				return DECLARATION;
 			}
 
+			// TRUE or FALSE token?
+			if (strcmp(token,"TRUE") == 0)
+			{
+				name = "1";
+				yylval.name = &name;
+				return INTCONST;
+			}
+			else if (strcmp(token,"FALSE") == 0)
+			{
+				name = "0";
+				yylval.name = &name;
+				return INTCONST;
+			}
+
 			// Is this a recognised high-level keyword?
 			n = 0;
 			if (strcmp(token,"if") == 0) n = IF;

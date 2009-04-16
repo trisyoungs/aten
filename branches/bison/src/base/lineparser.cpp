@@ -440,6 +440,47 @@ int LineParser::getArgsDelim(int flags)
 	return 0;
 }
 
+// Get rest of current line starting at next delimited part
+bool LineParser::getRestDelim(Dnchar *destarg)
+{
+	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
+	msg.enter("LineParser::getRestDelim");
+	int arglen = 0, n, length;
+	char c;
+	if (lineLength_ == 0)
+	{
+		msg.exit("LineParser::getRestDelim");
+		return FALSE;
+	}
+	length = lineLength_ - linePos_;
+	for (n=0; n<length; n++)
+	{
+		c = line_[linePos_];
+		switch (c)
+		{
+			// Ignore whitespace occuring before first proper character
+			case (' '):
+			case ('\0'):
+				if (arglen != 0) tempArg_[arglen++] = c;
+				break;
+			default:
+				tempArg_[arglen++] = c;
+				break;
+		}
+		linePos_ ++;
+	}
+	// Add terminating character to temparg - strip whitespace at end if there is any...
+	tempArg_[arglen] = '\0';
+	for (n=arglen-1; n>0; --n)
+	{
+		if ((tempArg_[n] != ' ') && (tempArg_[n] != '\t')) break;
+		tempArg_[n] = '\0';
+	}
+	if (destarg != NULL) destarg->set(tempArg_);
+	msg.exit("LineParser::getRestDelim");
+	return TRUE;
+}
+
 // Get next argument (delimited) from file stream
 int LineParser::getArgDelim(Dnchar *destarg, int flags)
 {

@@ -143,6 +143,9 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtenVariable::CurrentModel):
 			rv.set(VTypes::ModelData, aten.currentModel());
 			break;
+		case (AtenVariable::Elements):
+			rv.set(VTypes::ElementsData, &elements());
+			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);
 			if (m == NULL) result = FALSE;
