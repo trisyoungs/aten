@@ -109,6 +109,8 @@ class LineParser
 	bool getNextN(int length, Dnchar *destarg = NULL);
 	// Read line from file and do delimited parse
 	int getArgsDelim(int flags = LineParser::Defaults);
+	// Get rest of line starting at next delimited part
+	bool getRestDelim(Dnchar *destarg = NULL);
 	// Set line and parse using delimiters
 	void getArgsDelim(const char *string, int flags = LineParser::Defaults);
 	// Read next line from internal source file, setting as parsing source

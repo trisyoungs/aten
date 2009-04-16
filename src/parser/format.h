@@ -36,11 +36,9 @@ class FormatChunk
 {
 	public:
 	// Node types
-	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, nChunkTypes };
+	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, GreedyDelimitedChunk, nChunkTypes };
 	// Constructors
-	FormatChunk(const char *plaintext);
-	FormatChunk(TreeNode *arg);
-	FormatChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype);
+	FormatChunk(ChunkType type, const char *fmt, TreeNode *arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
 	// List pointers
 	FormatChunk *next, *prev;
 
@@ -97,6 +95,14 @@ class Format
 	List<FormatChunk> chunks_;
 	// Created string
 	static char createdString_[8096];
+	// Add new plaintext chunk to format
+	void addPlainTextChunk(const char *s);
+	// Add new formatted chunk to format
+	void addFormattedChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype);
+	// Add new delimited chunk to format
+	void addDelimitedChunk(TreeNode *arg);
+	// Add new greedy delimited chunk to format
+	void addGreedyDelimitedChunk(TreeNode *arg);
 
 	public:
 	// Return whether the format was created successfully

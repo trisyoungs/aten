@@ -1,0 +1,144 @@
+# Siesta Flexible Data Format (fdf) (for v1.1+)
+# Created:	 16/04/2009
+# Last modified: 16/04/2009
+# ChangeLog:
+# Notes:
+#	GGA (PBE) exchange assumed, with pseudos named 'H-PBE', 'C-PBE', etc.
+
+filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
+{
+	# Variable declaration
+	int natoms,nspecies,n,elmap[aten.elements.nelements],i,el;
+	string keywd,data,line,unit;
+	double x,y,z,a,b,c,d;
+	vector axes[3];
+	int coordsinbohr = FALSE;
+
+	elmap = 0;
+
+	model m = newmodel("Siesta FDF");
+
+	# Search for keywords and '%block's in the file...
+	while (!eof())
+	{
+		getline(line);
+		readvarf(line, "%s%r", keywd,data);
+		if (keywd == "SystemLabel") setname(data);
+		else if (keywd == "NumberOfAtoms") natoms = atoi(data);
+		else if (keywd == "NumberOfSpecies") nspecies = atoi(data);
+		else if (keywd == "LatticeConstant")
+		{
+			readvar(data,d,unit);
+			cell(d,d,d,90,90,90);
+			if (unit == "Bohr") bohr(m.cell);
+		}
+		else if (keywd == "AtomCoordinatesFormat")
+		{
+			if (data == "Bohr") coordsinbohr = TRUE;
+			else coordsinbohr = FALSE;
+		}
+		else if (keywd == "%block")
+		{
+			if (data == "ChemicalSpeciesLabel")
+			{
+				for (n=0; n<nspecies; ++n)
+				{
+					readline(i,el,data);
+					elmap[i] = el;
+				}
+			}
+			else if (data == "AtomicCoordinatesAndAtomicSpecies")
+			{
+				for (n=0; n<natoms; ++n)
+				{
+					readline(x,y,z,i);
+					newatom(aten.elements.symbol[elmap[i]], x, y, z);
+				}
+			}
+			else if (data == "LatticeParameters")
+			{
+				readline(x,y,z,a,b,c);
+				cell(x,y,z,a,b,c);
+			}
+			else if (data == "LatticeVectors")
+			{
+				readline(axes[1].x,axes[1].y,axes[1].z);
+				readline(axes[2].x,axes[2].y,axes[2].z);
+				readline(axes[3].x,axes[3].y,axes[3].z);
+				cell(axes[1].x,axes[1].y,axes[1].z,axes[2].x,axes[2].y,axes[2].z,axes[3].x,axes[3].y,axes[3].z);
+			}
+		}
+	}
+
+	if (coordsinbohr) bohr(m);
+	rebond();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
+{
+	# Variable declaration
+	int n, el[aten.elements.nelements], nspecies;
+	string e;
+	double rx,ry,rz;
+	atom i;
+
+	# Grab current model
+	model m = aten.model;
+
+	# Determine number of species (elements) used in model, and create element->species map
+	el = 0;
+	nspecies = 0;
+	for (i = m.atoms; i; ++i) if (el[i.z] == 0) el[i.z] = ++nspecies;
+	
+	# Write title information
+	writeline("SystemName",m.name);
+	writeline("SystemLabel", m.name);
+	writeline("NumberOfAtoms", m.natoms);
+	writeline("NumberOfSpecies", nspecies);
+	writeline("");
+
+	# Write 'standard' keyword data
+	writeline("PAO.EnergyShift      25 meV");
+	writeline("MeshCutoff          400 Ry");
+	writeline("DM.MixingWeight      0.4");
+	writeline("NetCharge            1.0");
+	writeline("");
+	writeline("PAO.BasisSize       DZP");
+	writeline("XC.functional       GGA");
+	writeline("XC.authors          PBE");
+	writeline("DM.NumberPulay      4");
+	writeline("DM.Tolerance        1.d-6");
+	writeline("SolutionMethod      diagon");
+	writeline("MaxSCFIterations    100");
+	writeline("ParallelOverK       true");
+	writeline("MD.TypeOfRun        Verlet");
+	writeline("MD.InitialTemperature  0.0  K");
+	writeline("MD.InitialTimeStep    1");
+	writeline("MD.FinalTimeStep    1");
+	writeline("WriteCoorXmol       true");
+	writeline("WriteForces         true");
+	writeline("");
+
+	# Write chemical species data, and label species in ascending order
+	writeline("%block ChemicalSpeciesLabel");
+	for (n=1; n<=aten.elements.nelements; n++) if (el[n] != 0) writelinef("%3i  %3i  %s-PBE\n",el[n],n,aten.elements.symbol[n]);
+	writeline("%endblock ChemicalSpeciesLabel");
+	writeline("");
+
+	# Write unit cell (if present)
+	if (m.cell.type == "cubic") writeline("LatticeConstant", m.cell.a);
+	else if ((m.cell.type == "orthorhombic") || (m.cell.type == "parallelepiped"))
+	{
+		writeline("%block LatticeParameters");
+		writeline(m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
+		writeline("%endblock LatticeParameters");
+	}
+
+	# Write atomic coordinates
+	writeline("AtomicCoordinatesFormat  Ang");
+	writeline("%block AtomicCoordinatesAndAtomicSpecies");
+	for (i = m.atoms; i; ++i) writelinef("%14.8f %14.8f %14.8f %3i\n",i.rx,i.ry,i.rz,el[i.z]);
+	writeline("%endblock AtomicCoordinatesAndAtomicSpecies");
+	writeline("");
+}
