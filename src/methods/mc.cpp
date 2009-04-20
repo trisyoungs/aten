@@ -137,6 +137,12 @@ void MonteCarlo::setVdwScale(double d)
 	vdwScale_ = d;
 }
 
+// Return the VDW radius scale
+double MonteCarlo::vdwScale()
+{
+	return vdwScale_;
+}
+
 // Create ratio acceptance array
 void MonteCarlo::createRatioArray(int newsize) {
 	int n, m;
