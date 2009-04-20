@@ -195,14 +195,14 @@ int CommandParser::lex()
 				return DECLARATION;
 			}
 
-			// TRUE or FALSE token?
+			// TRUE, FALSE, or NULL token?
 			if (strcmp(token,"TRUE") == 0)
 			{
 				name = "1";
 				yylval.name = &name;
 				return INTCONST;
 			}
-			else if (strcmp(token,"FALSE") == 0)
+			else if ((strcmp(token,"FALSE") == 0) || (strcmp(token,"NULL") == 0))
 			{
 				name = "0";
 				yylval.name = &name;
