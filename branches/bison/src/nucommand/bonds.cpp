@@ -36,11 +36,11 @@ bool Command::function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Change bond tolerance ('bondtol <d>')
+// Change bond tolerance ('bondtol [tol]')
 bool Command::function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setBondTolerance(c->argd(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setBondTolerance(c->argd(0));
+	rv.set(prefs.bondTolerance());
 	return TRUE;
 }
 
@@ -82,8 +82,16 @@ bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	if ((i == NULL) || (j == NULL))
+	{
+		msg.print("Can't bond atoms - one or both atoms not found.\n");
+		return FALSE;
+	}
+	// Add the bond
 	obj.rs->beginUndoState("Bond Atoms");
-	obj.rs->bondAtoms(c->argi(0)-1, c->argi(1)-1, bt);
+	obj.rs->bondAtoms(i, j, bt);
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;

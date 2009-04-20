@@ -161,7 +161,7 @@ bool Command::function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set vdw radius scaling for method ('vdwscale <scale>')
 bool Command::function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	mc.setVdwScale(c->argd(0));
-	rv.reset();
+	if (c->hasArg(0)) mc.setVdwScale(c->argd(0));
+	rv.set(mc.vdwScale());
 	return TRUE;
 }

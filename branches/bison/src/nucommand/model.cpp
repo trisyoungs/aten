@@ -190,19 +190,19 @@ bool Command::function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
+	rv.set(0);
 	if (filter != NULL)
 	{
+		int oldnmodels = aten.nModels();
 		if (filter->executeRead(c->argc(0)))
 		{
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
-			rv.set(VTypes::ModelData, m);
-			return TRUE;
+			rv.set(aten.nModels() - oldnmodels);
 		}
-		else return FALSE;
 	}
-	else return FALSE;
+	return TRUE;
 }
 
 // Print log information for model ('loginfo')

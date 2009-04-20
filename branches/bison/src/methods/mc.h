@@ -102,6 +102,8 @@ class MonteCarlo
 	int nCycles();
 	// Sets the vDW radius scale
 	void setVdwScale(double d);
+	// Return current vdw radius scale
+	double vdwScale();
 
 	/*
 	// Component list (for disorder builder)
