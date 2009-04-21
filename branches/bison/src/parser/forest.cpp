@@ -78,7 +78,24 @@ void Forest::finalise()
 			if (t->filter.type() == FilterData::TrajectoryImport)
 			{
 				// Search for 'int readheader()' function
-				Tree *func = 
+				Tree *func = t->findLocalFunction("readheader");
+				if (func != NULL)
+				{
+					// Does the function have the correct return type?
+					if (t->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int.\n", VTypes::aDataType(t->returnType()));
+				}
+				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", t->name());
+				t->filter.setTrajectoryHeaderFunction(func);
+
+				// Search for 'int readframe()' function
+				func = t->findLocalFunction("readframe");
+				if (func != NULL)
+				{
+					// Does the function have the correct return type?
+					if (t->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int.\n", VTypes::aDataType(t->returnType()));
+				}
+				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", t->name());
+				t->filter.setTrajectoryFrameFunction(func);
 			}
 		}
 	}

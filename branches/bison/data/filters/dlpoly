@@ -102,12 +102,12 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 	{
 		int recsize;
 		string title;
-#
-#		# First line is 80-character header.
-#		readint(recsize);
-#		readchars(title,80);
-#		readint(recsize);
-#		printf("Record size is %i, title = '%s'\n", recsize, title);
+
+		# First line is 80-character header.
+		readint(recsize);
+		readchars(title,80);
+		readint(recsize);
+		printf("Record size is %i, title = '%s'\n", recsize, title);
 	}
 }
 

@@ -58,6 +58,8 @@ FilterData::FilterData()
 	nLinesToSearch_ = 10;
 	id_ = -1;
 	partner_ = NULL;
+	headerFunction_ = NULL;
+	frameFunction_ = NULL;
 }
 
 // Destructor
@@ -250,4 +252,28 @@ const char *FilterData::description()
 		delete[] longname;
 	}
 	return description_.get();
+}
+
+// Set trajectory header function
+void FilterData::setTrajectoryHeaderFunction(Tree *func)
+{
+	headerFunction_ = func;
+}
+
+// Set trajectory frame function
+void FilterData::setTrajectoryFrameFunction(Tree *func)
+{
+	frameFunction_ = func;
+}
+
+// Set trajectory header function
+Tree *FilterData::trajectoryHeaderFunction()
+{
+	return headerFunction_;
+}
+
+// Set trajectory frame function
+Tree *FilterData::trajectoryFrameFunction()
+{
+	return frameFunction_;
 }
