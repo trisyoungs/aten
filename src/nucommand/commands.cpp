@@ -55,6 +55,8 @@ CommandData Command::data[Command::nCommands] = {
 				"" },
 	{ "_joiner",		"",		"", VTypes::NoData,
 				"" },
+	{ "_declaration",	"^Z*",		"", VTypes::NoData,
+				"" },
 
 	// Analysis commands
 	{ "finalise",		"",		"", VTypes::NoData,
@@ -317,6 +319,8 @@ CommandData Command::data[Command::nCommands] = {
 				"" },
 	{ "if",			"_",		"(<expression> <condition> <expression>) { ... } [else { ... }]", VTypes::NoData,
 				"Perform a conditional test between the supplied expressions (or variables or constants)" },
+	{ "return",		"z",		"[value]", VTypes::NoData,
+				"Terminate execution of the current program/filter/function, optionally returning the value provided." },
 	{ "while",		"_",		"(<expression>) { ... }", VTypes::NoData,
 				"Run the enclosed block or statement as many times as <expression> evaluates to TRUE" },
 	

@@ -105,8 +105,9 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Associate the file with the trajectory
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
+	ReturnValue rv;
 	// Read header      XXX TGAY
-	if (!trajectoryFilter_->executeRead(&trajectoryParser_))
+	if (!trajectoryFilter_->execute(&trajectoryParser_, rv))
 	{
 		msg.print("Error reading header of trajectory file.\n");
 		clearTrajectory();
@@ -121,7 +122,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	Model *newframe = addFrame();
 	setRenderFromFrames();
 	// XXXXX TGAY   Read header
-	if (!trajectoryFilter_->executeRead(&trajectoryParser_))
+	if (!trajectoryFilter_->execute(&trajectoryParser_, rv))
 	{
 		msg.print("Error testing frame read from trajectory.\n");
 		clearTrajectory();
@@ -153,7 +154,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
-			success = trajectoryFilter_->executeRead(&trajectoryParser_);	// TGAY Read frame
+			success = trajectoryFilter_->execute(&trajectoryParser_, rv);	// TGAY Read frame
 			if (!success)
 			{
 				frames_.remove(newframe);
@@ -364,7 +365,8 @@ void Model::seekFrame(int frameno)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
-				bool success = trajectoryFilter_->executeRead(&trajectoryParser_);	// TGAY Read header
+				ReturnValue rv;
+				bool success = trajectoryFilter_->execute(&trajectoryParser_, rv);	// TGAY Read header
 				if (!success)
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);

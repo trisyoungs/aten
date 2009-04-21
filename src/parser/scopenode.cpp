@@ -48,8 +48,6 @@ bool ScopeNode::execute(ReturnValue &rv)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
-	// Reset/initialise all variables in the list
-	if (!variables.initialise()) return FALSE;
 	// Execute the command
 	return aten.commands.call(function_, this, rv);
 }

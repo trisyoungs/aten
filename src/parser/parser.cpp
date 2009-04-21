@@ -49,6 +49,7 @@ CommandParser::~CommandParser()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
+	if (isFileSource_) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLine(), parser_.filename());
 	// QUICK'n'DIRTY!
 	char *temp = new char[stringLength_+32];
 	int i;
@@ -57,16 +58,8 @@ void CommandParser::printErrorInfo()
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	if (isFileSource_)
-	{
-		printf("(Line %4i) : %s\n", parser_.lastLine(), stringSource_.get());
-		printf("            : %s\n", temp);
-	}
-	else
-	{
-		printf(" %s\n", stringSource_.get());
-		printf(" %s^\n", temp);
-	}
+	msg.print(" %s\n", stringSource_.get());
+	msg.print(" %s^\n", temp);
 	delete[] temp;
 }
 
@@ -150,7 +143,7 @@ bool CommandParser::generate(Forest *f, const char *s)
 	}
 	forest_ = f;
 	forest_->clear();
-	tree_ = f->pushTree();
+	pushTree();
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -162,7 +155,6 @@ bool CommandParser::generate(Forest *f, const char *s)
 	int result = yyparse();
 	if (result != 0)
 	{
-		msg.print("Error occurred here:\n");
 		printErrorInfo();
 		forest_->clear();
 		forest_ = NULL;
@@ -204,7 +196,6 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	// Perform the parsing
 	if (yyparse() != 0)
 	{
-		msg.print("Error occurred here:\n");
 		printErrorInfo();
 		forest_->clear();
 		result = FALSE;
@@ -216,11 +207,42 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	return result;
 }
 
-// Finish current tree (i.e. nullify tree_)
-void CommandParser::finishTree()
+// Push tree
+void CommandParser::pushTree(bool isfilter)
 {
-	forest_->popTree();
-	tree_ = NULL;
+	tree_ = forest_->addTree();
+	stack_.add(tree_, isfilter);
+	msg.print(Messenger::Parse, "New tree stacked - %li\n", tree_);
+}
+
+// Push function (into topmost tree)
+void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
+{
+	// If there is no current tree target then we add a Forest-global function...
+	if (tree_ == NULL) tree_ = forest_->addGlobalFunction(name);
+	else tree_ = tree_->addLocalFunction(name);
+	tree_->setReturnType(returntype);
+	stack_.add(tree_, FALSE);
+	msg.print(Messenger::Parse, "New function stacked - %li\n", tree_);
+}
+
+// Pop tree
+void CommandParser::popTree()
+{
+	msg.enter("CommandParser::popTree");
+	// If the tree to be popped is a Filter, check that a filter type has been defined
+	Refitem<Tree,bool> *ri = stack_.last();
+	if (ri->data)
+	{
+		// Can use the 'isFilter' member function to check for the lack of a proper type
+		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
+	}
+	msg.print(Messenger::Parse, "Removing tree %li from stack.\n", ri->item);
+	stack_.remove( stack_.last() );
+	// Set current tree target to the top tree now on the stack
+	ri = stack_.last();
+	tree_ = ri == NULL ? NULL : ri->item;
+	msg.exit("CommandParser::popTree");
 }
 
 // Discard current tree and its contents
@@ -228,5 +250,5 @@ void CommandParser::deleteCurrentTree()
 {
 	// Delete the current tree from its parent forest
 	forest_->deleteTree(tree_);
-	tree_ = NULL;
+	popTree();
 }

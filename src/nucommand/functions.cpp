@@ -29,6 +29,7 @@ void Command::initPointers()
 	*/
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
+	pointers_[Declarations] = &function_Declarations;
 
 	// Analyse commands
 	pointers_[Finalise] = &Command::function_Finalise;
@@ -172,6 +173,7 @@ void Command::initPointers()
 	pointers_[DoWhile] = &Command::function_DoWhile;
 	pointers_[For] = &Command::function_For;
 	pointers_[If] = &Command::function_If;
+	pointers_[Return] = &Command::function_Return;
 	pointers_[While] = &Command::function_While;
 
 	// Force Commands

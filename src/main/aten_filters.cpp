@@ -161,7 +161,7 @@ int Aten::parseFilterDir(const char *path)
 	{
 		// Construct Forest...
 		Forest *f = filterForests_.add();
-		if (!f->generateFromFile(qPrintable(QString(path)+"/"+filterlist.at(i)), qPrintable(filterlist.at(i))))
+		if (!f->generateFromFile(qPrintable(QString(path)+"/"+filterlist.at(i)), qPrintable(filterlist.at(i)), TRUE))
 		{
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
 			failedFilters_.add()->set( qPrintable(QString(path)+"/"+filterlist.at(i)) );

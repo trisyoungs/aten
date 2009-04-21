@@ -201,7 +201,8 @@ void AtenForm::loadRecent()
 	filter = aten.probeFile(filename.get(), FilterData::ModelImport);
 	if (filter != NULL)
 	{
-		filter->executeRead(filename.get());
+		ReturnValue rv;
+		filter->executeRead(filename.get(), rv);
 		aten.currentModel()->changeLog.add(Log::Visual);
 		gui.mainView.postRedisplay();
 	}

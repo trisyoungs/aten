@@ -22,6 +22,7 @@
 #include "parser/treenode.h"
 #include "parser/scopenode.h"
 #include "parser/commandnode.h"
+#include "parser/usercommandnode.h"
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
 #include "parser/grammar.h"
@@ -40,10 +41,9 @@ Tree::Tree()
 {
 	// Private variables
 	parent_ = NULL;
-	declarationType_ = VTypes::NoData;
-	declarationAssignment_ = FALSE;
 	parser_ = NULL;
 	acceptedFail_ = Command::NoFunction;
+	name_ = "unnamed";
 
 	// Public variables
 	prev = NULL;
@@ -69,6 +69,30 @@ void Tree::setParent(Forest *f)
 Forest *Tree::parent()
 {
 	return parent_;
+}
+
+// Set name of tree
+void Tree::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return name of tree
+const char *Tree::name()
+{
+	return name_.get();
+}
+
+// Set return type of tree
+void Tree::setReturnType(VTypes::DataType dt)
+{
+	returnType_ = dt;
+}
+
+// Return return-type of tree
+VTypes::DataType Tree::returnType()
+{
+	return returnType_;
 }
 
 // Return whether this tree is a filter
@@ -153,37 +177,43 @@ bool Tree::execute(ReturnValue &rv)
 		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
 // 		ri->item->nodePrint(1);
 		result = ri->item->execute(rv);
+		// Catch failures arising from 'return' statements
+		if (acceptedFail_ == Command::Return)
+		{
+			msg.print(Messenger::Parse, "Execution of tree ended early because we returned.\n");
+			result = TRUE;
+			break;
+		}
 		if (!result) break;
 	}
 	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
-	else msg.print(Messenger::Parse, "Final result from execution of tree (in forest '%s') is %s\n", parent_->name(), rv.info());
+	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());
 	if (!result) msg.print(Messenger::Parse, "Execution FAILED.\n");
 	msg.exit("Tree::execute");
 	return result;
 }
 
-// Execute tree after opening corresponding input stream
-bool Tree::executeRead(LineParser *parser)
+// Execute tree using provided parsing source
+bool Tree::execute(LineParser *parser, ReturnValue &rv)
 {
-	msg.enter("Tree::executeRead[LineParser]");
+	msg.enter("Tree::execute[LineParser]");
 	// Check LineParser
 	parser_ = parser;
 	if (parser_ == NULL)
 	{
 		msg.print("Error: NULL parsing source passed.\n");
-		msg.exit("Tree::executeRead[LineParser]");
+		msg.exit("Tree::execute[LineParser]");
 		return FALSE;
 	}
 	// Execute the commands
-	ReturnValue rv;
 	bool result = execute(rv);
 	parser_ = NULL;
-	msg.exit("Tree::executeRead[LineParser]");
+	msg.exit("Tree::execute[LineParser]");
 	return result;
 }
 
 // Execute, opening specified file as input source (no return value)
-bool Tree::executeRead(const char *filename)
+bool Tree::executeRead(const char *filename, ReturnValue &rv)
 {
 	msg.enter("Tree::executeRead[filename]");
 	// Check for a previous parser pointer
@@ -195,7 +225,6 @@ bool Tree::executeRead(const char *filename)
 		return FALSE;
 	}
 	// Execute the commands
-	ReturnValue rv;
 	bool result = execute(rv);
 	parser_->closeFile();
 	delete parser_;
@@ -204,7 +233,7 @@ bool Tree::executeRead(const char *filename)
 }
 
 // Execute, with specified filename as data target
-bool Tree::executeWrite(const char *filename)
+bool Tree::executeWrite(const char *filename, ReturnValue &rv)
 {
 	msg.enter("Tree::executeWrite[filename]");
 	// Check for a previous parser pointer
@@ -216,12 +245,25 @@ bool Tree::executeWrite(const char *filename)
 		return FALSE;
 	}
 	// Execute the commands
-	ReturnValue rv;
 	bool result = execute(rv);
 	parser_->closeFile();
 	delete parser_;
 	parser_ = NULL;
 	msg.exit("Tree::executeWrite[filename]");
+}
+
+// Execute, opening specified file as input source (no return value)
+bool Tree::executeRead(const char *filename)
+{
+	ReturnValue rv;
+	return executeRead(filename, rv);
+}
+
+// Execute, with specified filename as data target (no return value)
+bool Tree::executeWrite(const char *filename)
+{
+	ReturnValue rv;
+	return executeWrite(filename, rv);
 }
 
 // Print tree
@@ -322,6 +364,59 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 	return leaf;
 }
 
+// Add user-defined function-based leaf node to topmost branch on stack
+TreeNode *Tree::addUserFunction(Tree *func, TreeNode *arglist)
+{
+	msg.enter("Tree::addUserFunction");
+	// Create new command node
+	UserCommandNode *leaf = new UserCommandNode(func);
+	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added user function '%s' (%li)...\n", func->name(), leaf);
+	// Add argument list to node and set parent
+	leaf->addArgumentList(arglist);
+	leaf->setParent(this);
+	// Store the function's return type
+	leaf->setReturnType(func->returnType());
+	// Check that the correct arguments were given to the command and run any prep functions
+	if (!leaf->checkArguments()) leaf = NULL;
+	msg.exit("Tree::addUserFunction");
+	return leaf;
+}
+
+// Add a declaration list
+TreeNode *Tree::addDeclarations(TreeNode *declist)
+{
+	msg.enter("Tree::addDeclarations");
+	// Create new command node
+	CommandNode *leaf = new CommandNode(Command::Declarations);
+	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added declarations node (%li)...\n", leaf);
+	// Add argument list to node and set parent
+	leaf->addArgumentList(declist);
+	leaf->setParent(this);
+	// Check that the correct arguments were given to the command and run any prep functions
+	if (!leaf->checkArguments()) leaf = NULL;
+	msg.exit("Tree::addDeclarations");
+	return leaf;
+}
+
+// Add an argument list
+bool Tree::addArguments(TreeNode *arglist)
+{
+	msg.enter("Tree::addDeclarations");
+	// Create new command node
+	CommandNode *leaf = new CommandNode(Command::Declarations);
+	nodes_.own(leaf);
+	msg.print(Messenger::Parse, "Added arguments to tree %li...\n", this);
+	// Add argument list to node and set parent
+	leaf->addArgumentList(arglist);
+	leaf->setParent(this);
+	// Check that the correct arguments were given to the command and run any prep functions
+	if (!leaf->checkArguments()) leaf = NULL;
+	msg.exit("Tree::addDeclarations");
+	return leaf;
+}
+
 // Link two arguments together with their member pointers
 TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 {
@@ -334,12 +429,12 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 // Join two commands together
 TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 {
-	msg.print(Messenger::Parse, "Joining command nodes %li and %li\n", node1, node2);
 	CommandNode *leaf = new CommandNode(Command::Joiner);
 	nodes_.own(leaf);
 	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
+	msg.print(Messenger::Parse, "Joined command nodes %li and %li (joiner node is %li)\n", node1, node2, leaf);
 	return leaf;
 }
 
@@ -398,32 +493,6 @@ TreeNode *Tree::addConstant(VTypes::DataType type, Dnchar *token)
 	return NULL;
 }
 
-// Set current declared variable type
-bool Tree::setDeclarationType(VTypes::DataType type)
-{
-	declarationType_ = type;
-	return TRUE;
-}
-
-// Return current type to be used for declarations
-VTypes::DataType Tree::declarationType()
-{
-	return declarationType_;
-}
-
-// Set declarations assignment flag
-bool Tree::setDeclarationAssignment(bool b)
-{
-	declarationAssignment_ = b;
-	return TRUE;
-}
-
-// Return whether we are in an assignment within a declaration
-bool Tree::isDeclarationAssignment()
-{
-	return declarationAssignment_;
-}
-
 // Add variable to topmost scope
 TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
@@ -447,16 +516,10 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 	return var;
 }
 
-// Add variable to topmost scope using most recently set declared variable type
-TreeNode *Tree::addVariable(Dnchar *name, TreeNode *initialValue)
-{
-	return addVariable(declarationType_, name, initialValue);
-}
-
 // Add array variable to topmost ScopeNode using the most recently declared type
-TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
+TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
-	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(declarationType_));
+	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode
 // 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
@@ -466,7 +529,7 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 		return NULL;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	Variable *var = ri->item->variables.createArray(declarationType_, name->get(), sizeexpr, initialvalue);
+	Variable *var = ri->item->variables.createArray(type, name->get(), sizeexpr, initialvalue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
@@ -485,49 +548,25 @@ TreeNode *Tree::addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *ini
 // }
 
 // Search for variable in current scope
-bool Tree::isVariableInScope(const char *name, Variable *&result)
+Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 {
-
 	// If the declaredVariableType is set then this token has been found in a declaration statement.
 	// ---> it must not exist in the local scope
 	// In addition, if this is a declaration assignment, then we search as normal
+	Variable *result = NULL;
+	scopelevel = 0;
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
-	if (declarationAssignment_ || (declarationType_ == VTypes::NoData))
+	// Search the current ScopeNode list for the variable name requested
+	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
 	{
-// 		printf("kljlk\n");
-		// Search the current ScopeNode list for the variable name requested
-		result = NULL;
-		for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
-		{
-			msg.print(Messenger::Parse," ... scopenode %li...\n", ri->item);
-			result = ri->item->variables.find(name);
-			if (result != NULL) break;
-		}
-		// If result is NULL then we must return FALSE since the variable is not in a declaration
-		// If the current declared variable type is VTypes::NoData then this is not a variable declaration and we must find the variable...
-		if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
-// 		{
-// 			msg.print("Error: Variable '%s' has not been declared in the current scope.\n", name);
-// 			return FALSE;
-// 		}
-		return TRUE;
+		msg.print(Messenger::Parse," ... scopenode %li...\n", ri->item);
+		result = ri->item->variables.find(name);
+		if (result != NULL) break;
+		scopelevel --;
 	}
-	else
-	{
-// 	printf("kljlk23423432\n");
-		// So, we are declaring a variable in the local scope, which may shadow another in the global scope.
-		// We are only concerned with whether this variable currently exists in the local scope...
-// 	printf("searching scopenode %li...\n", scopeStack_.last());
-		msg.print(Messenger::Parse, "Searching topmost scope %li for existence of new variable '%s'...\n", scopeStack_.last()->item, name);
-		result = scopeStack_.last()->item->variables.find(name);
-		if (result)
-		{
-			msg.print("Error: Repeat declaration of variable '%s' in the local scope.\n", name);
-			return FALSE;
-		}
-		return TRUE;
-	}
-	return FALSE;
+	if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
+	else msg.print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
+	return result;
 }
 
 // Wrap named variable (and array index)
@@ -613,5 +652,26 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	}
 	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(laststep->returnType()), name->get());
 	msg.exit("Tree::expandPath");
+	return result;
+}
+
+/*
+// Local Functions
+*/
+
+// Add new local function
+Tree *Tree::addLocalFunction(const char *funcname)
+{
+	Tree* result = functions_.add();
+	result->setName(funcname);
+	result->setParent(parent_);
+	return result;
+}
+
+// Search for existing local function
+Tree *Tree::findLocalFunction(const char *funcname)
+{
+	Tree *result;
+	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;
 	return result;
 }

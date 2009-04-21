@@ -49,6 +49,7 @@ class FilterData
 	static FilterOption filterOption(const char *s);
 	static const char *filterOption(FilterOption fo);
 
+
 	/*
 	// Properties
 	*/
@@ -81,10 +82,32 @@ class FilterData
 	bool hasZmapping_;
 	// Type of element mapping to use
 	ElementMap::ZMapType zMapType_;
+	// Pointer to trajectory header read/write routine (for trajectory filters)
+	Tree *headerFunction_;
+	// Pointer to trajectory frame read/write routine (for trajectory filters)
+	Tree *frameFunction_;
 
+
+	/*
+	// Set
+	*/
 	public:
 	// Set option by name
 	bool setOption(Dnchar *name, TreeNode *value);
+	// Set the type of filter
+	void setType(FilterType ft);
+	// Set the partner filter
+	void setPartner(Tree *partner);
+	// Set trajectory header function
+	void setTrajectoryHeaderFunction(Tree *func);
+	// Set trajectory frame function
+	void setTrajectoryFrameFunction(Tree *func);
+
+
+	/*
+	// Get
+	*/
+	public:
 	// Return the ID of the filter
 	int id();
 	// Return the descriptive name of the filter
@@ -103,18 +126,18 @@ class FilterData
 	Dnchar *searchStrings();
 	// Return whether filter has an extension
 	bool hasExtension();
-	// Set the partner filter
-	void setPartner(Tree *partner);
 	// Return the partner filter
 	Tree *partner();
 	// Return the file filter
 	const char *glob();
-	// Set the type of filter
-	void setType(FilterType ft);
 	// Return the type of filter
 	FilterType type();
 	// Return the long description of the filter (including glob)
 	const char *description();
+	// Return trajectory header function
+	Tree *trajectoryHeaderFunction();
+	// Return trajectory frame function
+	Tree *trajectoryFrameFunction();
 };
 
 #endif

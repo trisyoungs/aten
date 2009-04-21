@@ -76,6 +76,8 @@ class LineParser
 	void setLine(const char *s);
 	// Return integer line number of last read line
 	int lastLine();
+	// Return read-only status of file
+	bool isFileReadOnly();
 	// Open new file for parsing or writing
 	bool openFile(const char *filename, bool outputstream = FALSE);
 	// Close file(s)
