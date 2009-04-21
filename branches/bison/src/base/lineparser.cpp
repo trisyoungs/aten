@@ -86,6 +86,12 @@ int LineParser::lastLine()
 	return lastLine_;
 }
 
+// Return read-only status of file
+bool LineParser::isFileReadOnly()
+{
+	return readOnly_;
+}
+
 // Open file for parsing
 bool LineParser::openFile(const char *filename, bool outputstream)
 {

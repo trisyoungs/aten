@@ -50,22 +50,33 @@ class Tree
 	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
-	// Friend class (to allow access to node generation calls
-	friend class CommandParser;
 
 
 	/*
-	// Forest parent
+	// Tree Character
 	*/
-	private:
-	// Parent
+	private :
+	// Forest parent
 	Forest *parent_;
+	// Tree name (if any)
+	Dnchar name_;
+	// Return type (used if defined as a function)
+	VTypes::DataType returnType_;
 
 	public:
 	// Set parent
 	void setParent(Forest *f);
 	// Return parent
 	Forest *parent();
+	// Set name of tree
+	void setName(const char *s);
+	// Return name of tree
+	const char *name();
+	// Set return type of tree
+	void setReturnType(VTypes::DataType dt);
+	// Return return-type of tree
+	VTypes::DataType returnType();
+
 
 	/*
 	// Node Data
@@ -77,6 +88,8 @@ class Tree
 	void initialise();
 	// Node list - a disordered list of all nodes owned by the Tree
 	List<TreeNode> nodes_;
+	// Argument list - if the tree is a function, this is the expected argument list
+	List<TreeNode> arguments_;
 	// Reflist of all statements in the Tree, to be executed sequentially
 	Reflist<TreeNode,int> statements_;
 	// Stack of ScopeNodes
@@ -111,6 +124,12 @@ class Tree
 	virtual TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
 	virtual TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	// Associate a user-defined command-based leaf node to the Tree
+	virtual TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
+	// Add a declaration list
+	virtual TreeNode *addDeclarations(TreeNode *declist);
+	// Add an argument list
+	virtual bool addArguments(TreeNode *arglist);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together
@@ -126,36 +145,33 @@ class Tree
 	/*
 	// Variables / Constants
 	*/
-	private:
-	// Current variable type to use for creating variables
-	VTypes::DataType declarationType_;
-	// Flag to indicate that we are assigning in a declaration, and the whole variable scope should be searched
-	bool declarationAssignment_;
-
 	public:
-	// Set current type for variable declarations
-	virtual bool setDeclarationType(VTypes::DataType type);
-	// Return current type to be used for declarations
-	virtual VTypes::DataType declarationType();
-	// Set declarations assignment flag
-	virtual bool setDeclarationAssignment(bool b);
-	// Return whether we are in an assignment within a declaration
-	virtual bool isDeclarationAssignment();
 	// Add constant value to tompost scope
 	virtual TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
-	// Add variable to topmost ScopeNode using the most recently declared type
-	virtual TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
-	// Add array variable to topmost ScopeNode using the most recently declared type
-	virtual TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	// Add array variable to topmost ScopeNode
+	virtual TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value
 // 	TreeNode *addVecConstant(VTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
-	virtual bool isVariableInScope(const char *name, Variable *&result);
+	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)
 	virtual TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
+
+	/*
+	// Local Functions
+	*/
+	private:
+	// User-defined local functions
+	List<Tree> functions_;
+
+	public:
+	// Search for existing local function
+	Tree *findLocalFunction(const char *name);
+	// Add new local function
+	Tree *addLocalFunction(const char *name);
 
 	/*
 	// Filter Properties
@@ -193,11 +209,15 @@ class Tree
 	Command::Function acceptedFail();
 	// Execute
 	bool execute(ReturnValue &rv);
+	// Execute, using specified parser as input/output source
+	bool execute(LineParser *parser, ReturnValue &rv);
+	// Execute, opening specified file as input source
+	bool executeRead(const char *filename, ReturnValue &rv);
+	// Execute, with specified filename as data target
+	bool executeWrite(const char *filename, ReturnValue &rv);
 	// Execute, opening specified file as input source (no return value)
 	bool executeRead(const char *filename);
-	// Execute, using specified parser as input source (no return value)
-	bool executeRead(LineParser *parser);
-	// Execute, with specified filename as data target
+	// Execute, with specified filename as data target (no return value)
 	bool executeWrite(const char *filename);
 };
 

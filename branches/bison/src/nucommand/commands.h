@@ -72,6 +72,7 @@ class Command
 		// AST-Specific nodes
 		NoFunction,
 		Joiner,
+		Declarations,
 	
 		// Analysis commands
 		Finalise,
@@ -214,6 +215,7 @@ class Command
 		DoWhile,
 		For,
 		If,
+		Return,
 		While,
 	
 		// Force Commands
@@ -533,6 +535,7 @@ class Command
 	// AST-specific commands
 	static bool function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Analyse commands
 	static bool function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -672,6 +675,7 @@ class Command
 	static bool function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_For(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_If(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_While(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Force Commands
 	static bool function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv);

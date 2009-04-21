@@ -1,6 +1,6 @@
 /*
-	*** Command Node
-	*** src/parser/commandnode.cpp
+	*** User Command Node
+	*** src/parser/usercommandnode.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,93 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/commandnode.h"
-#include "parser/integer.h"
-#include "parser/double.h"
-#include "parser/character.h"
-#include "main/aten.h"
-#include "model/model.h"
+#include "parser/usercommandnode.h"
+#include "parser/tree.h"
 #include "base/sysfunc.h"
 #include <string.h>
 
 // Constructor
-CommandNode::CommandNode(Command::Function func) : function_(func)
+UserCommandNode::UserCommandNode(Tree *func) : function_(func)
 {
 	// Private variables
-	nodeType_ = TreeNode::CmdNode;
-	format_ = NULL;
+	nodeType_ = TreeNode::UserCmdNode;
 }
 
 // Destructor
-CommandNode::~CommandNode()
+UserCommandNode::~UserCommandNode()
 {
-	if (format_ != NULL) delete format_;
-}
-
-// Prepare function (if possible)
-bool CommandNode::prepFunction()
-{
-	bool result = TRUE;
-	switch (function_)
-	{
-		// For functions that use formats, attempt to create the format *if* the format string is a character constant
-		case (Command::Error):
-		case (Command::Warn):
-		case (Command::Printf):
-		case (Command::Verbose):
-		case (Command::ReadLineFormatted):
-		case (Command::WriteLineFormatted):
-			if (!args_.first()->item->readOnly()) break;
-			result = createFormat(0,1);
-			break;
-		case (Command::WriteVariable):
-		case (Command::ReadVariable):
-			result = createFormat(-1,1);
-			break;
-		case (Command::WriteVariableFormatted):
-		case (Command::ReadVariableFormatted):
-			if (!args_[1]->item->readOnly()) break;
-			result = createFormat(1,2);
-			break;
-		// For the 'return' function, the return type must match the return type of the parent tree...
-		case (Command::Return):
-			if (parent_->returnType() == VTypes::NoData)
-			{
-				if (!hasArg(0)) break;
-				msg.print("Error: Return value provided when none is required.\n");
-				result = FALSE;
-			}
-			else
-			{
-				if (!hasArg(0))
-				{
-					msg.print("Error: No return value provided.\n");
-					result = FALSE;
-				}
-				else if (argType(0) != parent_->returnType())
-				{
-					msg.print("Error: Return value of type '%s' provided for function that returns %s.\n", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
-					result = FALSE;
-				}
-			}
-			break;
-	}
-	return result;
-}
-
-// Get function
-Command::Function CommandNode::function()
-{
-	return function_;
 }
 
 // Check validity of supplied arguments
-bool CommandNode::checkArguments()
+bool UserCommandNode::checkArguments()
 {
-	msg.enter("CommandNode::checkArguments");
-	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), Command::data[function_].keyword);
-	const char *c = Command::data[function_].arguments;
-	msg.print(Messenger::Parse, "...argument list is [%s]\n", c);
+	msg.enter("UserCommandNode::checkArguments");
+	msg.print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
+
+/*
 	char upc, *altargs;
 	int count = 0, ngroup = -1;
 	bool optional, requirevar, result, cluster = FALSE;
@@ -283,64 +220,24 @@ bool CommandNode::checkArguments()
 		if (upc != '*') c++;
 		if (cluster) ngroup++;
 		count++;
-	} while (*c != '\0');
-	msg.exit("CommandNode::checkArguments");
-	return result;
-}
-
-// Create format node (if necessary) from supplied argument id
-Format *CommandNode::createFormat(int fmtargid, int firstargid)
-{
-	msg.enter("CommandNode::createFormat");
-	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
-	// firstargid = id of first data argument
-	// If we do not currently have a format associated to the node, create it regardless
-	bool result;
-	Refitem<TreeNode,int> *firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
-	if (format_ == NULL)
-	{
-		result = TRUE;
-		format_ = fmtargid == -1 ? new Format(firstarg) : new Format(argc(fmtargid), firstarg);
-		if (!format_->isValid())
-		{
-			result = FALSE;
-			delete format_;
-			format_ = NULL;
-		}
-	}
-	else
-	{
-		// So a format already exists. If the source argument is a constant (or there is no source argument) don't recreate it
-		if ((fmtargid == -1) || (argNode(fmtargid)->readOnly())) result = TRUE;
-		else
-		{
-			// Delete old format
-			delete format_;
-			// Create new format
-			format_ = fmtargid == -1 ? new Format(firstarg) : new Format(argc(fmtargid), firstarg);
-			if (!format_->isValid())
-			{
-				result = FALSE;
-				delete format_;
-				format_ = NULL;
-			}
-		}
-	}
-	msg.exit("CommandNode::createFormat");
-	return (result == FALSE ? NULL : format_);
+	} while (*c != '\0');*/
+	msg.exit("UserCommandNode::checkArguments");
+	return TRUE;
 }
 
 // Execute command
-bool CommandNode::execute(ReturnValue &rv)
+bool UserCommandNode::execute(ReturnValue &rv)
 {
-	// Make sure the current rendersource is up-to-date
-	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
-	// Execute the command
-	return aten.commands.call(function_, this, rv);
+	// Execute the tree.
+	// We must pass the current input 'state' of this node's parent tree - give it the LineParser pointer...
+	LineParser *parser = parent_->parser();
+	bool result;
+	result = parser == NULL ? function_->execute(rv) : function_->execute(parser, rv);
+	return result;
 }
 
 // Print node contents
-void CommandNode::nodePrint(int offset, const char *prefix)
+void UserCommandNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -352,70 +249,23 @@ void CommandNode::nodePrint(int offset, const char *prefix)
 	strcat(tab,prefix);
 	// Output node data
 // 	printf("Function id = %li\n", function_);
-	printf("[CN]%s%s (Command) (%i arguments)\n", tab, Command::data[function_].keyword, args_.nItems());
+	printf("[UC]%s%s (UserCommand) (%i arguments)\n", tab, function_->name(), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
 }
 
 // Set from returnvalue node
-bool CommandNode::set(ReturnValue &rv)
+bool UserCommandNode::set(ReturnValue &rv)
 {
-	printf("Internal Error: Trying to 'set' a CommandNode.\n");
+	printf("Internal Error: Trying to 'set' a UserCommandNode.\n");
 	return FALSE;
 }
 
 // Initialise node
-bool CommandNode::initialise()
+bool UserCommandNode::initialise()
 {
-	printf("Internal Error: A CommandNode cannot be initialised.\n");
+	printf("Internal Error: A UserCommandNode cannot be initialised.\n");
 	return FALSE;
 }
 
-// Create, run, and free a single command with simple arguments
-bool CommandNode::run(Command::Function func, const char *arglist, ...)
-{
-	msg.enter("CommandNode::run");
-	// Local constants given as arguments
-	List<TreeNode> constantArgs_;
-
-	// Create our temporary node
-	CommandNode node(func);
-	node.parent_ = NULL;
-
-	// Set arguments from supplied list
-	const char *c;
-	va_list vars;
-	va_start(vars, arglist);
-	Variable *var = NULL;
-	for (c = arglist; *c != '\0'; c++)
-	{
-		switch (*c)
-		{
-			case ('i'):
-				var = new IntegerVariable(va_arg(vars, int), TRUE);
-				constantArgs_.own(var);
-				break;
-			case ('d'):
-				var = new DoubleVariable(va_arg(vars, double), TRUE);
-				constantArgs_.own(var);
-				break;
-			case ('c'):
-			case ('s'):
-				var = new StringVariable(va_arg(vars, const char*), TRUE);
-				constantArgs_.own(var);
-				break;
-			default:
-				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
-				var = NULL;
-				break;
-		}
-		node.addArgument(var);
-	}
-	va_end(vars);
-	// Now, run the command...
-	ReturnValue rv;
-	bool result = node.execute(rv);
-	msg.exit("CommandNode::run");
-	return result;
-}

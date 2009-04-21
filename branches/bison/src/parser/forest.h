@@ -43,12 +43,12 @@ class Forest
 	Dnchar name_;
 	// Original source filename, if any
 	Dnchar filename_;
-	// User-defined functions (local to this structure)
+	// User-defined global functions (but local to this forest)
 	List<Tree> functions_;
 	// List of trees belonging to this forest
 	List<Tree> trees_;
-	// Stack of created trees
-	Reflist<Tree,bool> stack_;
+	// Whether this forest is being generated from a filter file...
+	bool fromFilterFile_;
 
 	public:
 	// Clear contents of forest
@@ -62,17 +62,21 @@ class Forest
 	// Generate forest from string 
 	bool generate(const char *, const char *name = NULL);
 	// Generate forest from input file
-	bool generateFromFile(const char *filename, const char *name = NULL);
+	bool generateFromFile(const char *filename, const char *name = NULL, bool isFilterFile = FALSE);
 	// Finalise forest
 	void finalise();
 	// Return number of trees in forest
 	int nTrees();
-	// Create a new, generic (script or command) tree
-	Tree *pushTree(bool isfilter = FALSE);
-	// Finish the last created tree
-	void popTree();
+	// Add a new, generic (filter, script or command) tree
+	Tree *addTree();
+	// Add a new Forest-global function tree
+	Tree *addGlobalFunction(const char *name);
+	// Search for existing global function
+	Tree *findGlobalFunction(const char *s);
 	// Delete specified tree
 	void deleteTree(Tree *t);
+	// Return whether the Forest is being generated from a filterfile
+	bool isFromFilterFile();
 	// Execute all trees in forest
 	bool executeAll(ReturnValue &rv);
 	// Print forest information

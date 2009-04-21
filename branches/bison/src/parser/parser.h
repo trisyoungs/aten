@@ -88,21 +88,22 @@ class CommandParser : public Tree
 	Forest *forest_;
 	// Current tree (target of node creation)
 	Tree *tree_;
-
-	public:
-	// Finish current tree (i.e. nullify tree_)
-	void finishTree();
-	// Discard current tree and its contents
-	void deleteCurrentTree();
-
-	/*
-	// Tree Generation - Private functions
-	*/
-	private:
+	// Stack of created trees
+	Reflist<Tree,bool> stack_;
 	// Populate target forest from specified character string
 	bool generate(Forest *f, const char *s);
 	// Populate target forest from specified file
 	bool generateFromFile(Forest *f, const char *filename);
+
+	public:
+	// Push tree
+	void pushTree(bool filter = FALSE);
+	// Push function
+	void pushFunction(const char *name, VTypes::DataType returntype);
+	// Pop tree (or function) from stack
+	void popTree();
+	// Discard current tree and its contents
+	void deleteCurrentTree();
 
 
 	/*
@@ -133,6 +134,12 @@ class CommandParser : public Tree
 	TreeNode *addFunctionWithArglist(Command::Function func, TreeNode *arglist);
 	// Add a function node to the list (overloaded to accept simple arguments instead of a list)
 	TreeNode *addFunction(Command::Function func, TreeNode *a1 = NULL, TreeNode *a2 = NULL, TreeNode *a3 = NULL, TreeNode *a4 = NULL);
+	// Associate a user-defined command-based leaf node to the Tree
+	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
+	// Add a declaration list
+	TreeNode *addDeclarations(TreeNode *declist);
+	// Add an argument list
+	bool addArguments(TreeNode *arglist);
 	// Join two commands together
 	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack
@@ -141,24 +148,12 @@ class CommandParser : public Tree
 	bool popScope();
 
 	// Variables / Constants
-	// Set current type for variable declarations
-	bool setDeclarationType(VTypes::DataType type);
-	// Return current type to be used for declarations
-	VTypes::DataType declarationType();
-	// Set declarations assignment flag
-	bool setDeclarationAssignment(bool b);
-	// Return whether we are in an assignment within a declaration
-	bool isDeclarationAssignment();
 	// Add constant value to tompost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
-	// Add variable to topmost ScopeNode using the most recently declared type
-	TreeNode *addVariable(Dnchar *name, TreeNode *initialValue = NULL);
-	// Add array variable to topmost ScopeNode using the most recently declared type
-	TreeNode *addArrayVariable(Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
-	// Search for variable in current scope
-	bool isVariableInScope(const char *name, Variable *&result);
+	// Add array variable to topmost ScopeNode
+	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 

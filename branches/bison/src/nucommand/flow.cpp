@@ -42,6 +42,14 @@ bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return result;
 }
 
+// Declarations
+bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Reset each variable argument
+	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return FALSE;
+	return TRUE;
+}
+
 // Break out of current for loop
 bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -121,6 +129,14 @@ bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (ifval.asBool()) return (c->arg(1, rv));
 	else if (c->hasArg(2)) return (c->arg(2, rv));
 	return TRUE;
+}
+
+// Return from function/filter/program
+bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	c->parent()->setAcceptedFail(Command::Return);
+	if (c->hasArg(0)) c->arg(0, rv);
+	return FALSE;
 }
 
 // While loop

@@ -65,7 +65,7 @@ int CommandParser::lex()
 	/*
 	// A '.' followed by a character indicates a variable path - generate a step
 	*/
-	msg.print(Messenger::Parse, "LEXER: begins at [%c], peek = [%c]\n",c, peekChar());
+	msg.print(Messenger::Parse, "LEXER (%li): begins at [%c], peek = [%c]\n", tree_, c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
 		msg.print(Messenger::Parse, "LEXER (%li): found a '.' before an alpha character - expecting a path step next...\n",tree_);
@@ -190,9 +190,10 @@ int CommandParser::lex()
 			VTypes::DataType dt = VTypes::dataType(token);
 			if (dt != VTypes::nDataTypes)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->DECLARATION)\n",tree_);
-				setDeclarationType(dt);
-				return DECLARATION;
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->VARTYPE)\n",tree_);
+// 				setDeclarationType(dt);
+				yylval.vtype = dt;
+				return VARTYPE;
 			}
 
 			// TRUE, FALSE, or NULL token?
@@ -216,6 +217,7 @@ int CommandParser::lex()
 			else if (strcmp(token,"for") == 0) n = FOR;
 			else if (strcmp(token,"do") == 0) n = DO;
 			else if (strcmp(token,"while") == 0) n = WHILE;
+			else if (strcmp(token,"return") == 0) n = RETURN;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a high-level keyword (%i)\n",tree_,n);
@@ -225,19 +227,17 @@ int CommandParser::lex()
 			// Is this the start of a filter or a function?
 			if (strcmp(token,"filter") == 0)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
-				tree_ = forest_->pushTree(TRUE);
+				msg.print(Messenger::Parse, "LEXER (%li): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
 				return FILTERBLOCK;
 			}
-			else if (strcmp(token,"function") == 0)
+			else if (strcmp(token,"funktion") == 0)
 			{
-// 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a filter block (->FILTERBLOCK)\n",tree_,n);
-// 				tree_ = forest_->pushTree();
-// 				return FILTERBLOCK;
+ 				msg.print(Messenger::Parse, "LEXER (%li): ...which marks the start of a function (->FUNCTIONBLOCK)\n",tree_);
+ 				return FUNCTIONBLOCK;
 			}
 
 			// If we get to here then its not a high-level keyword.
-			// Is it a function keyword?
+			// Is it one of Aten's function keywords?
 			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
 			if (n != Command::nCommands)
 			{
@@ -245,13 +245,27 @@ int CommandParser::lex()
 				yylval.functionId = n;
 				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
-				if ((declarationType() != VTypes::NoData) && (!isDeclarationAssignment()))
-				{
-					msg.print("Error: '%s' cannot be declared as a variable since it is a function name.\n", token);
-					return 0;
-				}
 				return FUNCCALL;
 			}
+
+			// Is it a user-defined function keyword in the local scope?
+			Tree *func = tree_->findLocalFunction(token);
+			if (func != NULL)
+			{
+				msg.print(Messenger::Parse, "LEXER (%li): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
+				yylval.functree = func;
+				return USERFUNCCALL;
+			}
+
+			// Is it a user-defined function keyword in the global (Forest-wide) scope?
+			func = forest_->findGlobalFunction(token);
+			if (func != NULL)
+			{
+				msg.print(Messenger::Parse, "LEXER (%li): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
+				yylval.functree = func;
+				return USERFUNCCALL;
+			}
+
 		}
 
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
@@ -266,21 +280,27 @@ int CommandParser::lex()
 		else
 		{
 			// Search the variable lists currently in scope...
-			Variable *v;
-			if (!isVariableInScope(token, v))
+			int scopelevel;
+			Variable *v = tree_->findVariableInScope(token, scopelevel);
+			if (v != NULL)
 			{
-				return 0;
-			}
-			else if (v != NULL)
-			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing variable (->VARNAME)\n", tree_);
-				yylval.variable = v;
-				return VARNAME;
+				if (scopelevel == 0)
+				{
+					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing local variable (->VARNAME)\n", tree_);
+					yylval.variable = v;
+					return LOCALVAR;
+				}
+				else
+				{
+					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing variable (->VARNAME)\n", tree_);
+					yylval.variable = v;
+					return VAR;
+				}
 			}
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		msg.print(Messenger::Parse, "LEXER (%li): ...which is is unrecognised (->NEWTOKEN)\n", tree_);
+		msg.print(Messenger::Parse, "LEXER (%li): ...which is unrecognised (->NEWTOKEN)\n", tree_);
 		name = token;
 		yylval.name = &name;
 		return NEWTOKEN;

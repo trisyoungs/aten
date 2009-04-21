@@ -28,6 +28,7 @@ Forest::Forest()
 {
 	// Private variables
 	name_ = "NewForest";
+	fromFilterFile_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -68,8 +69,19 @@ const char *Forest::filename()
 void Forest::finalise()
 {
 	// Register any filters with the master
-	for (Tree *t = trees_.first(); t != NULL; t = t->next) if (t->isFilter())
-		aten.registerFilter(t, t->filter.type());
+	for (Tree *t = trees_.first(); t != NULL; t = t->next)
+	{
+		if (t->isFilter())
+		{
+			aten.registerFilter(t, t->filter.type());
+			// For trajectory import filters, we expect to find the two functions readheader and readframe, both returning integers
+			if (t->filter.type() == FilterData::TrajectoryImport)
+			{
+				// Search for 'int readheader()' function
+				Tree *func = 
+			}
+		}
+	}
 }
 
 // Return number of trees in forest
@@ -79,29 +91,28 @@ int Forest::nTrees()
 }
 
 // Create a new tree
-Tree *Forest::pushTree(bool isfilter)
+Tree *Forest::addTree()
 {
-	msg.enter("Forest::pushTree");
 	Tree *tree = trees_.add();
 	tree->setParent(this);
-	stack_.add(tree,isfilter);
-	msg.exit("Forest::pushTree");
 	return tree;
 }
 
-// Finish the last tree
-void Forest::popTree()
+// Add a Forest-global function
+Tree *Forest::addGlobalFunction(const char *name)
 {
-	msg.enter("Forest::popTree");
-	// If the tree to be popped is a Filter, check that a filter type has been defined
-	Refitem<Tree,bool> *ri = stack_.last();
-	if (ri->data)
-	{
-		// Can use the 'isFilter' member function to check for the lack of a proper type
-		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
-	}
-	stack_.remove( stack_.last() );
-	msg.exit("Forest::popTree");
+	Tree *tree = functions_.add();
+	tree->setName(name);
+	tree->setParent(this);
+	return tree;
+}
+
+// Search for existing global function
+Tree *Forest::findGlobalFunction(const char *name)
+{
+	Tree *result;
+	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),name) == 0) break;
+	return result;
 }
 
 // Generate forest from string 
@@ -109,6 +120,7 @@ bool Forest::generate(const char *s, const char *name)
 {
 	msg.enter("Forest::generate[string]");
 	name_ = name;
+	fromFilterFile_ = FALSE;
 	bool result = cmdparser.generate(this, s);
 	finalise();
 	msg.exit("Forest::generate[string]");
@@ -116,11 +128,12 @@ bool Forest::generate(const char *s, const char *name)
 }
 
 // Generate forest from input file
-bool Forest::generateFromFile(const char *filename, const char *name)
+bool Forest::generateFromFile(const char *filename, const char *name, bool isFilterFile)
 {
 	msg.enter("Forest::generateFromFile");
 	filename_ = filename;
 	name_ = name;
+	fromFilterFile_ = isFilterFile;
 	bool result = cmdparser.generateFromFile(this, filename);
 // 	print();
 	finalise();
@@ -131,10 +144,17 @@ bool Forest::generateFromFile(const char *filename, const char *name)
 // Delete specified tree
 void Forest::deleteTree(Tree *t)
 {
+	if (t == NULL) return;
 	// Search for the specified tree...
 	if (trees_.ownsItem(t)) trees_.remove(t);
 	else if (functions_.ownsItem(t)) functions_.remove(t);
 	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
+}
+
+// Return whether the Forest is being generated from a filterfile
+bool Forest::isFromFilterFile()
+{
+	return fromFilterFile_;
 }
 
 // Execute all trees in forest
