@@ -30,9 +30,11 @@ Command nucommands;
 
 /* Argument Specification Tokens:
        Char	Meaning		Acceptable Types in VTypes
-	N	Number		IntegerData, RealData
+	N	Number		IntegerData, DoubleData
+	I	Integer		IntegerData
+	R	Real		DoubleData
 	C	Character	StringData
-	S	Any Simple	IntegerData, RealData, StringData
+	S	Any Simple	IntegerData, DoubleData, StringData
 	U	Vector		VectorData
 	B	Boolean		Any
 	A	Atom/Id		IntegerData, AtomData
@@ -45,6 +47,7 @@ Command nucommands;
 	^	<Require Var>	Next token must be a modifiable variable and not a constant
 	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
 	|	<Or>		Separates alternative lists of arguments for the command
+	&	<Array>		Next token must be an array
 */
 
 // Command action
@@ -501,13 +504,13 @@ CommandData Command::data[Command::nCommands] = {
 				"Measure torsion angles between atoms in current selection" },
 
 	// Messaging
-	{ "error",		"C",		"<message>", VTypes::NoData,
+	{ "error",		"Cz*",		"<message>", VTypes::NoData,
 				"Raise an error message (causes exit of current command list)" },
-	{ "printf",		"C",		"<message>", VTypes::NoData,
+	{ "printf",		"Cz*",		"<message>", VTypes::NoData,
 				"Print a message" },
-	{ "verbose",		"C",		"<message>", VTypes::NoData,
+	{ "verbose",		"Cz*",		"<message>", VTypes::NoData,
 				"Print a message when verbose output is enabled" },
-	{ "warn",		"C",		"<message>", VTypes::NoData,
+	{ "warn",		"Cz*",		"<message>", VTypes::NoData,
 				"Raise a warning message (command list will continue)" },
 	
 	// Minimisation commands
@@ -661,16 +664,20 @@ CommandData Command::data[Command::nCommands] = {
 				"Peek the next character from the current input file" },
 	{ "readchars",		"N",		"<nchars>", VTypes::StringData,
 				"Read a number of characters from the input file" },
-	{ "readint",		"n",		"[nbytes=4]", VTypes::IntegerData,
+	{ "readdouble",		"n",		"[nbytes]", VTypes::DoubleData,
+				"Read a floating point value from the (binary) input file" },
+	{ "readdoublearray",	"&DN",		"<array> <nvalues>", VTypes::IntegerData,
+				"Read floating point values from the (binary) input file, placing in the array provided" },
+	{ "readint",		"n",		"[nbytes]", VTypes::IntegerData,
 				"Read an integer value from the (binary) input file" },
+	{ "readintarray",	"&IN",		"<array> <nvalues>", VTypes::IntegerData,
+				"Read integer values from the (binary) input file, placing in the array provided" },
 	{ "readline",		"^Z*",		"<variable>  [variable...]", VTypes::IntegerData,
 				"Read a line from the input file, and split into supplied variables using whitespace delimiters" },
 	{ "readlinef",		"C^z*",		"<formatting string> [data1, data2...]", VTypes::IntegerData,
 				"Read a line from the input file, and parse into supplied variables using format string" },
 	{ "readnext",		"^Z",		"<variable>", VTypes::IntegerData,
 				"Read the next delimited item from the file and place in the variable supplied" },
-	{ "readreal",		"n",		"[nbytes=8]", VTypes::DoubleData,
-				"Read a floating point value from the (binary) input file" },
 	{ "readvar",		"C^z*",	"<string> [data1, data2...]", VTypes::IntegerData,
 				"Parse delimited arguments from a character variable" },
 	{ "readvarf",		"CC^z*",	"<string> <formatting string> [data1, data2...]", VTypes::IntegerData,
@@ -803,10 +810,12 @@ CommandData Command::data[Command::nCommands] = {
 				"Return part of the <string> before the first occurrence of the character <char>" },
 	{ "contains",		"CC",		"<source string> <search string>", VTypes::IntegerData,
 				"Return the number of times <search string> occurs in <source string>" },
-	{ "ftoa",		"C",		"<number>", VTypes::StringData,
+	{ "ftoa",		"N",		"<number>", VTypes::StringData,
 				"Convert supplied real value to a string" },
-	{ "itoa",		"C",		"<number>", VTypes::StringData,
+	{ "itoa",		"N",		"<number>", VTypes::StringData,
 				"Convert supplied integer to a string" },
+	{ "nint",		"N",		"<number>", VTypes::IntegerData,
+				"Return nearest integer to supplied real value" },
 	{ "normalise",		"U",		"<vector>", VTypes::DoubleData,
 				"Normalise the values of the 3-vector supplied" },
 	{ "stripchars",		"^CC",		"<variable> <chars>", VTypes::StringData,

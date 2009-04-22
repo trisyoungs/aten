@@ -191,11 +191,11 @@ int CommandParser::lex()
 			if (dt != VTypes::nDataTypes)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->VARTYPE)\n",tree_);
-// 				setDeclarationType(dt);
 				yylval.vtype = dt;
 				return VARTYPE;
 			}
 
+			// BUilt-in numeric constants
 			// TRUE, FALSE, or NULL token?
 			if (strcmp(token,"TRUE") == 0)
 			{
@@ -209,7 +209,13 @@ int CommandParser::lex()
 				yylval.name = &name;
 				return INTCONST;
 			}
-
+			else if (strcmp(token,"PI") == 0)
+			{
+				name = "3.14159265358979323846";
+				yylval.name = &name;
+				return REALCONST;
+			}
+	
 			// Is this a recognised high-level keyword?
 			n = 0;
 			if (strcmp(token,"if") == 0) n = IF;
@@ -229,11 +235,6 @@ int CommandParser::lex()
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
 				return FILTERBLOCK;
-			}
-			else if (strcmp(token,"funktion") == 0)
-			{
- 				msg.print(Messenger::Parse, "LEXER (%li): ...which marks the start of a function (->FUNCTIONBLOCK)\n",tree_);
- 				return FUNCTIONBLOCK;
 			}
 
 			// If we get to here then its not a high-level keyword.

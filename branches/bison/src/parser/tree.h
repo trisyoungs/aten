@@ -148,6 +148,12 @@ class Tree
 	public:
 	// Add constant value to tompost scope
 	virtual TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
+	// Add integer constant (non-virtual)
+	TreeNode *addConstant(int i);
+	// Add double constant (non-virtual)
+	TreeNode *addConstant(double d);
+	// Add string constant (non-virtual)
+	TreeNode *addConstant(const char *s);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode

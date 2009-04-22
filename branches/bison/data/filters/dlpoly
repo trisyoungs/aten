@@ -100,139 +100,128 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 
 	int readheader()
 	{
-		int recsize;
-		string title;
+		int intsize=4, realsize=8, recsize;
 
 		# First line is 80-character header.
-		readint(recsize);
-		readchars(title,80);
-		readint(recsize);
-		printf("Record size is %i, title = '%s'\n", recsize, title);
-	}
-}
-
-
-
+		recsize = readint(intsize);
+		if (recsize == 40)
+		{
+			printf("No header found in unformatted DL_POLY trajectory file. Assuming a restarted trajectory...\n");
+			rewind();
+			return TRUE;
+		}
+		else if (recsize != 80)
+		{
+			printf("File '%s' doesn't appear to be a DL_POLY Unformatted trajectory.\n", filterfilename());
+			return FALSE;
+		}
+		string title = readchars(recsize);
+		recsize = readint(intsize);
 
 		# Next, number of atoms in the system (as a double)
-#		readint $recsize
-#		readfloat $dnatoms
-#		$newnatoms = $dnatoms
-#		readint $recsize
-#		# Atom names
-#		readint $recsize
-#		for $n,1,$model.natoms
-#			readchars $name 8
-#		end
-#		readint $recsize
-#		# Atomic masses
-#		readint $recsize
-#		skipchars $recsize
-#		#repeat $n $natoms
-#		#for $n,1,$natoms
-#		#	readfloat $mass
-#		#end
-#		readint $recsize
-#		# Atom charges
-#		readint $recsize
-#		skipchars $recsize
-#		#for $n,1,$natoms
-#		#	readfloat $q
-#		#end
-#		readint $recsize
-#	else
-#		# Grab frame pointer
-#		$frame = $model.frame
-#		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
-#		readint $recsize
-#		readfloat $dnstep
-#		readfloat $dnatoms
-#		readfloat $dkeytrj
-#		readfloat $dimcon
-#		readfloat $tstep
-#		readint $recsize
-#		# Unit cell
-#		$newcelltype = $dimcon+0.1
-#		if $newcelltype <> 0
-#			readint $recsize
-#			readfloat $ax
-#			readfloat $ay
-#			readfloat $az
-#			readfloat $bx
-#			readfloat $by
-#			readfloat $bz
-#			readfloat $cx
-#			readfloat $cy
-#			readfloat $cz
-#			readint $recsize
-#			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
-#		end
-#		# Create atoms in model all at once, since we need to reference them all at different points
-#		modeltemplate
-#		# X-Coordinates
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $rx
-#			setrx $rx $n
-#		end
-#		readint $recsize
-#		# Y-Coordinates
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $ry
-#			setry $ry $n
-#		end
-#		readint $recsize
-#		# Z-Coordinates
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $rz
-#			setrz $rz $n
-#		end
-#		readint $recsize
-#		# X-Velocities
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $vx
-#			setvx $vx $n
-#		end
-#		readint $recsize
-#		# Y-Velocities
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $vy
-#			setvy $vy $n
-#		end
-#		readint $recsize
-#		# Z-Velocities
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $vz
-#			setvz $vz $n
-#		end
-#		readint $recsize
-#		# X-Forces
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $fx
-#			setfx $fx $n
-#		end
-#		readint $recsize
-#		# Y-Forces
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $fy
-#			setfy $fy $n
-#		end
-#		readint $recsize
-#		# Z-Forces
-#		readint $recsize
-#		for $n,1,$frame.natoms
-#			readfloat $fz
-#			setfz $fz $n
-#		end
-#		readint $recsize
-#		fold
-#		rebond
-#	end
-#end
+		recsize = readint(intsize);
+		int natoms = nint(readdouble());
+		recsize = readint(intsize);
+
+		# Atom names
+		recsize = readint(intsize);
+		skipchars(recsize);
+		recsize = readint(intsize);
+
+		# Atomic masses
+		recsize = readint(intsize);
+		skipchars(recsize);
+		recsize = readint(intsize);
+
+		# Atom charges
+		recsize = readint(intsize);
+		skipchars(recsize);
+		recsize = readint(intsize);
+		
+		return TRUE;
+	}
+
+	int readframe()
+	{
+		int intsize=4, realsize=8, recsize;
+
+		# Variables
+		double mass,q,tstep;
+		double axes[9];
+		int natoms, nstep, keytrj, imcon, n;
+
+		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
+		recsize = readint(intsize);
+		if (recsize != 5*realsize) { printf("Error reading start of trajectory frame.\n"); return FALSE; }
+		nstep = nint(readdouble(realsize));
+		natoms = nint(readdouble(realsize));
+		keytrj = nint(readdouble(realsize));
+		imcon = nint(readdouble(realsize));
+		tstep = readdouble(realsize);
+		recsize = readint(intsize);
+
+		# Create temporary data arrays for reading
+		double x[natoms], y[natoms], z[natoms];
+
+		# Unit cell
+		if (imcon != 0)
+		{
+			recsize = readint(intsize);
+			if (recsize != 9*realsize) { printf("Error reading cell info from trajectory frame.\n"); return FALSE; }
+			readdoublearray(axes,9);
+			recsize = readint(intsize);
+			cellaxes(axes[1],axes[2],axes[3],axes[4],axes[5],axes[6],axes[7],axes[8],axes[9]);
+		}
+
+		# Template atoms in parent model
+		modeltemplate();
+		if (aten.model.frame.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+
+		# Coordinates
+		recsize = readint(intsize);
+		if (recsize != natoms*realsize) { printf("Error reading coordinate info from trajectory frame.\n"); return FALSE; }
+		if (!readdoublearray(x,natoms))  { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readint(intsize);
+		recsize = readint(intsize);
+		if (!readdoublearray(y,natoms))  { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readint(intsize);
+		recsize = readint(intsize);
+		if (!readdoublearray(z,natoms))  { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
+		recsize = readint(intsize);
+		for (n = 1; n<= natoms; ++n) setcoords(x[n], y[n], z[n], n);
+
+		# Forces
+		if (keytrj > 0)
+		{
+			recsize = readint(intsize);
+			if (recsize != natoms*realsize) { printf("Error reading force info from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(x,natoms))  { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			recsize = readint(intsize);
+			if (!readdoublearray(y,natoms))  { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			recsize = readint(intsize);
+			if (!readdoublearray(z,natoms))  { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			for (n = 1; n<= natoms; ++n) setforces(x[n], y[n], z[n], n);
+		}
+
+		# Velocities
+		if (keytrj > 1)
+		{
+			recsize = readint(intsize);
+			if (recsize != natoms*realsize) { printf("Error reading velocity info from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(x,natoms))  { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			recsize = readint(intsize);
+			if (!readdoublearray(y,natoms))  { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			recsize = readint(intsize);
+			if (!readdoublearray(z,natoms))  { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
+			recsize = readint(intsize);
+			for (n = 1; n<= natoms; ++n) setvelocities(x[n], y[n], z[n], n);
+		}
+		rebond();
+		return TRUE;
+	}
+}

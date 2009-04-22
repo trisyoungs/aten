@@ -287,17 +287,16 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	Cell::CellType ct = m->cell()->type();
 	if (ct != Cell::NoCell)
 	{
-		s = "(";
-		s += Cell::cellType(ct);
+		s = Cell::cellType(ct);
 		s += ", ";
 		s += ftoa(m->density());
 		switch (prefs.densityUnit())
 		{
 			case (Prefs::GramsPerCm):
-				s += " g cm<sup>-3</sup>)";
+				s += " g cm<sup>-3</sup>";
 				break;
 			case (Prefs::AtomsPerAngstrom):
-				s += " atoms &#8491;<sup>-3</sup>)";
+				s += " atoms &#8491;<sup>-3</sup>";
 				break;
 		}
 	}

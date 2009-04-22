@@ -692,8 +692,10 @@ class Model
 	Dnchar trajectoryName_;
 	// Filename of file
 	Dnchar trajectoryFilename_;
-	// Format of trajectory file
+	// Filter for trajectory file
 	Tree *trajectoryFilter_;
+	// Header and frame read functions from filter
+	Tree *trajectoryHeaderFunction_, *trajectoryFrameFunction_;
 	// Trajectory file parser
 	LineParser trajectoryParser_;
 	// File offsets for frames

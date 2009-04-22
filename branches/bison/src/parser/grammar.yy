@@ -38,7 +38,7 @@ VTypes::DataType declaredType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VARTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK FUNCTIONBLOCK
+%token DO WHILE FOR IF RETURN FILTERBLOCK
 %nonassoc ELSE
 
 %nonassoc AND OR
@@ -51,7 +51,7 @@ VTypes::DataType declaredType;
 %right '!'
 %right '^'
 
-%type <node> constant expr rawexpr func var
+%type <node> constant expr rawexpr func var rawvar
 %type <node> flowstatement stexpr statement block blockment statementlist exprlist VECCONST
 %type <node> namelist newname
 %type <node> filter pushscope declaration userfunc userfuncdef
@@ -72,6 +72,7 @@ program:
 
 block:
 	'{' pushscope statementlist '}' popscope	{ $$ = cmdparser.joinCommands($2,$3); }
+	| '{' '}'					{ $$ = cmdparser.addFunction(Command::NoFunction); }
         ;
 
 pushscope:
@@ -157,7 +158,6 @@ pushfunc:
 	/* empty */					{ cmdparser.pushFunction(yylval.name->get(), declaredType); }
 	;
 
-
 /* Variable declaration and name / assignment list */
 
 namelist:
@@ -200,12 +200,17 @@ steplist:
 	;
 
 var:
-	VAR '[' expr ']'				{ $$ = cmdparser.wrapVariable($1,$3); if ($$ == NULL) YYABORT; }
-	| VAR						{ $$ = cmdparser.wrapVariable($1); if ($$ == NULL) YYABORT; }
-	| LOCALVAR '[' expr ']'				{ $$ = cmdparser.wrapVariable($1,$3); if ($$ == NULL) YYABORT; }
-	| LOCALVAR					{ $$ = cmdparser.wrapVariable($1); if ($$ == NULL) YYABORT; }
-	| var '.' 					{ $$ = cmdparser.createPath($1); }
+	rawvar						{ $$ = $1; if ($$ == NULL) YYABORT; }
+	;
+
+rawvar:
+	VAR '[' expr ']'				{ $$ = cmdparser.wrapVariable($1,$3); }
+	| VAR						{ $$ = cmdparser.wrapVariable($1); }
+	| LOCALVAR '[' expr ']'				{ $$ = cmdparser.wrapVariable($1,$3); }
+	| LOCALVAR					{ $$ = cmdparser.wrapVariable($1); }
+	| rawvar '.' 					{ $$ = cmdparser.createPath($1); }
 		steplist				{ $$ = cmdparser.finalisePath(); }
+	| rawvar '('					{ msg.print("Can't use a variable as a function. Did you mean '[' instead?\n"); $$ = NULL; }
 	;
 
 /* Expressions */

@@ -357,11 +357,13 @@ void Command::initPointers()
 	pointers_[GetLine] = &Command::function_GetLine;
 	pointers_[PeekChar] = &Command::function_PeekChar;
 	pointers_[ReadChars] = &Command::function_ReadChars;
+	pointers_[ReadDouble] = &Command::function_ReadDouble;
+	pointers_[ReadDoubleArray] = &Command::function_ReadDoubleArray;
 	pointers_[ReadInteger] = &Command::function_ReadInteger;
+	pointers_[ReadIntegerArray] = &Command::function_ReadIntegerArray;
 	pointers_[ReadLine] = &Command::function_ReadLine;
 	pointers_[ReadLineFormatted] = &Command::function_ReadLineFormatted;
 	pointers_[ReadNext] = &Command::function_ReadNext;
-	pointers_[ReadReal] = &Command::function_ReadReal;
 	pointers_[ReadVariable] = &Command::function_ReadVariable;
 	pointers_[ReadVariableFormatted] = &Command::function_ReadVariableFormatted;
 	pointers_[RemoveReadOption] = &Command::function_RemoveReadOption;
@@ -436,6 +438,7 @@ void Command::initPointers()
 	pointers_[Contains] = &Command::function_Contains;
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
+	pointers_[Nint] = &Command::function_Nint;
 	pointers_[Normalise] = &Command::function_Normalise;	
 	pointers_[StripChars] = &Command::function_StripChars;
 

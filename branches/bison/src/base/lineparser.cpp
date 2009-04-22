@@ -520,23 +520,29 @@ const char *LineParser::getChars(int nchars)
 	}
 	else if (nchars < 0)
 	{
-		tempArg_[0]   = '\0';
+		tempArg_[0] = '\0';
 		for (int i=nchars; i<0; i++) file_.unget();
 	}
-	else file_.getline(tempArg_, nchars);
+	else file_.get(tempArg_, nchars+1);
 	if (file_.eof())
 	{
 		closeFile();
-		msg.exit("LineParser::readLine");
 		return NULL;
 	}
 	if (file_.fail())
 	{
 		closeFile();
-		msg.exit("LineParser::readLine");
 		return NULL;
 	}
 	return tempArg_;
+}
+
+// Skip a number of characters from the input stream
+void LineParser::skipChars(int nchars)
+{
+	if (nchars == 0) return;
+	file_.ignore(nchars);
+	if (file_.eof() || file_.fail()) closeFile();
 }
 
 // Return an integer value from reading 'n' chars of an (unformatted) input file
@@ -572,8 +578,20 @@ int LineParser::getInteger(int nbytes)
 	return 0;
 }
 
+// Read an array of integer values from an (unformatted) input file
+bool LineParser::getIntegerArray(double *array, int count)
+{
+	file_.read((char*) array, count*sizeof(int));
+	if (file_.eof() || file_.fail())
+	{
+		closeFile();
+		return FALSE;
+	}
+	return TRUE;
+}
+
 // Return a double value from reading 'n' chars of an (unformatted) input file
-double LineParser::getReal(int nbytes)
+double LineParser::getDouble(int nbytes)
 {
 	// Use default size if none specified
 	if (nbytes == 0)
@@ -595,8 +613,20 @@ double LineParser::getReal(int nbytes)
 		file_.read((char*) &readd, nbytes);
 		return (double) readd;
 	}
-	else msg.print("Error: Real of size %i bytes does not correspond to any internal type.\n", nbytes);
+	else msg.print("Error: Double of size %i bytes does not correspond to any internal type.\n", nbytes);
 	return 0.0;
+}
+
+// Read an array of double values from an (unformatted) input file
+bool LineParser::getDoubleArray(double *array, int count)
+{
+	file_.read((char*) array, count*sizeof(double));
+	if (file_.eof() || file_.fail())
+	{
+		closeFile();
+		return FALSE;
+	}
+	return TRUE;
 }
 
 // Write line to file

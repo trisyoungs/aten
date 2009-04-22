@@ -55,6 +55,8 @@ Model::Model()
 	name_ = "NewModel";
 	trajectoryParent_ = NULL;
 	trajectoryFilter_ = NULL;
+	trajectoryHeaderFunction_ = NULL;
+	trajectoryFrameFunction_ = NULL;
 	trajectoryOffsets_ = NULL;
 	highestFrameOffset_ = 0;
 	frameSize_ = 0;

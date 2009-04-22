@@ -359,19 +359,18 @@ void VectorArrayVariable::nodePrint(int offset, const char *prefix)
 bool VectorArrayVariable::initialise()
 {
 	// We define our own initialise() function to take over from the inherited default from Variable
-	// If the array is already allocated, free it.
-	if (vectorArrayData_ != NULL) printf("Array exists already...\n");	
-	if (vectorArrayData_ != NULL) delete[] vectorArrayData_;
 	// Get size of array to create
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		msg.print("Failed to find size for vector array '%s'.\n", name_.get());
 		return FALSE;
 	}
-	// Create new array
+	// If the array is already allocated, free it only if the size is different
+	if ((arraySize_ != newsize.asInteger()) && (vectorArrayData_ != NULL)) { delete[] vectorArrayData_; vectorArrayData_ = NULL; }
+	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if (arraySize_ > 0) vectorArrayData_ = new Vec3<double>[arraySize_];
+	if ((arraySize_ > 0) && (vectorArrayData_ == NULL)) vectorArrayData_ = new Vec3<double>[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{
