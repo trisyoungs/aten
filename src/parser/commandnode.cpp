@@ -105,31 +105,45 @@ bool CommandNode::checkArguments()
 {
 	msg.enter("CommandNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), Command::data[function_].keyword);
-	const char *c = Command::data[function_].arguments;
-	msg.print(Messenger::Parse, "...argument list is [%s]\n", c);
-	char upc, *altargs;
-	int count = 0, ngroup = -1;
-	bool optional, requirevar, result, cluster = FALSE, array;
+	const char *c, *altargs = Command::data[function_].arguments;
+	msg.print(Messenger::Parse, "...argument list is [%s]\n", altargs);
+	char upc;
+	int count = 0, ngroup = -1, repeat = 0;
+	bool optional, requirevar, result, cluster = FALSE, array, reset = TRUE;
 	VTypes::DataType rtype;
 	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
-	if (*c == '_')
+	if (*altargs == '_')
 	{
 		msg.exit("CommandNode::checkArguments");
 		return TRUE;
 	}
 	// Search for an alternative set of arguments
-	altargs = strchr(c, '|');
 	result = TRUE;
 	do
 	{
+		if (reset)
+		{
+	printf("kjlkjssssssssskl\n");
+			c = altargs;
+	printf("kjlkjssssssssskl\n");
+			altargs = strchr(c, '|');
+	printf("kjlkjssssssssskl\n");
+			repeat = 0;
+	printf("kjlkjssssssssskl\n");
+			reset = FALSE;
+	printf("kjlkjssssssssskl\n");
+		}
+		if (*c == '\0') break;
 		upc = *c;
+	printf("kjlkjkl\n");
 		// Retain previous information if this is a repeat, but make it an optional argument
 		if (*c == '*') optional = TRUE;
-		else
+		else if (repeat == 0)
 		{
 			// Reset modifier values
 			requirevar = FALSE;
 			array = FALSE;
+			repeat = 1;
 			// Find next alpha character (and accompanying modifiers)
 			while (!isalpha(*c) && (*c != '|') && (*c != '\0') )
 			{
@@ -142,6 +156,14 @@ bool CommandNode::checkArguments()
 					case (']'):	cluster = FALSE; ngroup = -1; break;
 					// Require array
 					case ('&'):	array = TRUE; break;
+					case ('2'):
+					case ('3'):
+					case ('4'):
+					case ('5'):
+					case ('6'):
+					case ('7'):
+					case ('8'):
+					case ('9'):	repeat = *c - '0'; break;
 					default:
 						printf("BAD CHARACTER (%c) IN COMMAND ARGUMENTS\n", *c);
 						break;
@@ -151,8 +173,12 @@ bool CommandNode::checkArguments()
 			if (*c == '|')
 			{
 				// This is the start of a new set of argument specifiers - does the current set of arguments 'fit'?
-				if (args_.nItems() != count) printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
-				return FALSE;    // TGAY
+				if (args_.nItems() != count)
+				{
+					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
+// 					if (altargs == NULL)
+				}
+				return TRUE;    // TGAY
 			}
 			// Convert character to upper case if necessary
 			if ((*c > 96) && (*c < 123))
@@ -167,14 +193,14 @@ bool CommandNode::checkArguments()
 			}
 		}
 		if (*c == '\0') break;
-		msg.print(Messenger::Parse,"...next argument token is '%c', opt=%s, reqvar=%s, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", ngroup);
+		msg.print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
 		// If we have gone over the number of arguments provided, is this an optional argument?
 		if (count >= args_.nItems())
 		{
 			if (!optional)
 			{
 				// If an alternative argument list is present, check this before we fail...
-				if (altargs != '\0')
+				if (altargs != NULL) { reset = TRUE; continue; }
 				msg.print("Error: The function '%s' requires argument %i.\n", Command::data[function_].keyword, count+1);
 				msg.print("       Command syntax is '%s(%s)'.\n", Command::data[function_].keyword, Command::data[function_].argText);
 				msg.exit("Tree::checkArguments");
@@ -325,6 +351,7 @@ bool CommandNode::checkArguments()
 		if (!result) break;
 		if (upc != '*') c++;
 		if (cluster) ngroup++;
+		repeat--;
 		count++;
 	} while (*c != '\0');
 	// End of the argument specification - do we still have arguments left over in the command?
