@@ -83,6 +83,8 @@ void Model::clearTrajectory()
 	frameIndex_ = -1;
 	framesAreCached_ = FALSE;
 	trajectoryFilter_ = NULL;
+	trajectoryHeaderFunction_ = NULL;
+	trajectoryFrameFunction_ = NULL;
 	msg.exit("Model::clearTrajectory");
 }
 
@@ -102,12 +104,28 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
-	// Associate the file with the trajectory
+	// Associate the file with the trajectory, and grab header and frame read functions
 	trajectoryFilename_ = fname;
 	trajectoryFilter_ = f;
+	trajectoryHeaderFunction_ = f->filter.trajectoryHeaderFunction();
+	trajectoryFrameFunction_ = f->filter.trajectoryFrameFunction();
+	if (trajectoryHeaderFunction_ == NULL)
+	{
+		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readheader()' function.\n", trajectoryFilter_->filter.name());
+		clearTrajectory();
+		msg.exit("Model::initialiseTrajectory");
+		return FALSE;
+	}
+	if (trajectoryFrameFunction_ == NULL)
+	{
+		msg.print("Error initialising trajectory: Filter '%s' contains no 'int readframe()' function.\n", trajectoryFilter_->filter.name());
+		clearTrajectory();
+		msg.exit("Model::initialiseTrajectory");
+		return FALSE;
+	}
 	ReturnValue rv;
-	// Read header      XXX TGAY
-	if (!trajectoryFilter_->execute(&trajectoryParser_, rv))
+	// Read header
+	if (!trajectoryHeaderFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
 		msg.print("Error reading header of trajectory file.\n");
 		clearTrajectory();
@@ -121,8 +139,8 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	//printf("Initialised config\n");
 	Model *newframe = addFrame();
 	setRenderFromFrames();
-	// XXXXX TGAY   Read header
-	if (!trajectoryFilter_->execute(&trajectoryParser_, rv))
+	// Read first frame
+	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
 		msg.print("Error testing frame read from trajectory.\n");
 		clearTrajectory();
@@ -154,8 +172,8 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
-			success = trajectoryFilter_->execute(&trajectoryParser_, rv);	// TGAY Read frame
-			if (!success)
+			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+			if ((!success) || (rv.asInteger() != 1))
 			{
 				frames_.remove(newframe);
 				msg.print("Error during read of frame %i.\n", n);
@@ -174,7 +192,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		trajectoryOffsets_ = new streampos[nFileFrames_+1];
 		trajectoryOffsets_[0] = firstframe;
 		trajectoryOffsets_[1] = secondframe;
-		highestFrameOffset_ = 2;
+		highestFrameOffset_ = 1;
 	}
 	msg.exit("Model::initialiseTrajectory");
 	return TRUE;
@@ -222,9 +240,12 @@ void Model::seekFirstFrame()
 		msg.exit("Model::seekFirstFrame");
 		return;
 	}
-	currentFrame_ = frames_.first();
-	if (!framesAreCached_) seekFrame(0);
-	else frameIndex_ = 0;
+	if (framesAreCached_)
+	{
+		currentFrame_ = frames_.first();
+		frameIndex_ = 0;
+	}
+	else seekFrame(0);
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -250,9 +271,12 @@ void Model::seekNextFrame()
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
-	frameIndex_++;
-	if (framesAreCached_) currentFrame_ = currentFrame_->next;
-	else seekFrame(frameIndex_);
+	if (framesAreCached_)
+	{
+		frameIndex_++;
+		currentFrame_ = currentFrame_->next;
+	}
+	else seekFrame(frameIndex_+1);
 	changeLog.add(Log::Visual);
 	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
@@ -278,9 +302,12 @@ void Model::seekPreviousFrame()
 		msg.exit("Model::seekPreviousFrame");
 		return;
 	}
-	frameIndex_--;
-	if (framesAreCached_) currentFrame_ = currentFrame_->prev;
-	else seekFrame(frameIndex_);
+	if (framesAreCached_)
+	{
+		frameIndex_--;
+		currentFrame_ = currentFrame_->prev;
+	}
+	else seekFrame(frameIndex_-1);
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -305,9 +332,12 @@ void Model::seekLastFrame()
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
-	frameIndex_ = nFrames()-1;
-	if (framesAreCached_) currentFrame_ = frames_.last();
-	else seekFrame(frameIndex_);
+	if (framesAreCached_)
+	{
+		currentFrame_ = frames_.last();
+		frameIndex_ = nFrames()-1;
+	}
+	else seekFrame(nFrames()-1);
 	changeLog.add(Log::Visual);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
@@ -344,15 +374,23 @@ void Model::seekFrame(int frameno)
 		// Seek to specified frame in file
 		// If the desired frame is less than (or equal to) the highest stored offset, just seek to and read it.
 		// Otherwise we need to read up to the specified frame number, storing offsets as we go.
+		bool success;
+		ReturnValue rv;
 		if (frameno <= highestFrameOffset_)
 		{
 			currentFrame_->clear();
 			trajectoryParser_.seekg(trajectoryOffsets_[frameno]);
-// 			bool success = trajectoryFilter_->executeRead(trajectoryFile_);	// TGAY read frame
+			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+			if ((!success) || (rv.asInteger() != 1))
+			{
+				msg.print("Failed to seek to frame %i.\n", frameno+1);
+				msg.exit("Model::seekFrame");
+				return;
+			}
 			// If this was the highest offset stored, the file position now corresponds to the next frame
 			if ((frameno == highestFrameOffset_) && (highestFrameOffset_ < nFileFrames_))
 			{
-				trajectoryOffsets_[frameno] = trajectoryParser_.tellg();
+				trajectoryOffsets_[frameno+1] = trajectoryParser_.tellg();
 				highestFrameOffset_ ++;
 			}
 		}
@@ -361,13 +399,13 @@ void Model::seekFrame(int frameno)
 			// Seek to last frame position stored
 			trajectoryParser_.seekg(trajectoryOffsets_[highestFrameOffset_]);
 			// Read in consecutive frames until we get to the desired point, storing pointers as we go.
-			for (int i = highestFrameOffset_; i < frameno; i++)
+			for (int i = highestFrameOffset_+1; i <= frameno; i++)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
 				ReturnValue rv;
-				bool success = trajectoryFilter_->execute(&trajectoryParser_, rv);	// TGAY Read header
-				if (!success)
+				success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+				if ((!success) || (rv.asInteger() != 1))
 				{
 					msg.print("Failed to read frame %i in trajectory.\n",i+1);
 					msg.exit("Model::seekFrame");

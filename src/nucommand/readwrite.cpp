@@ -21,6 +21,7 @@
 
 #include "parser/commandnode.h"
 #include "parser/tree.h"
+#include "parser/variablenode.h"
 #include <cstring>
 
 // Add file read option
@@ -36,9 +37,9 @@ bool Command::function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'eof' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'eof' command.\n");
 		return FALSE;
 	}
 	rv.set(c->parent()->parser()->eofOrBlank());
@@ -49,7 +50,7 @@ bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
 		msg.print("The filterfilename' command can only be used from within a Filter.\n");
 		return FALSE;
@@ -62,9 +63,9 @@ bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'find' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'find' command.\n");
 		return FALSE;
 	}
 	int result;
@@ -94,9 +95,9 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'getline' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'getline' command.\n");
 		return FALSE;
 	}
 	int result = c->parent()->parser()->readLine();
@@ -112,9 +113,9 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'peekchar' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'peekchar' command.\n");
 		return FALSE;
 	}
 	char s[2];
@@ -129,13 +130,50 @@ bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser()->getChars(c->argi(0)) );
+	rv.set( c->parent()->parser()->getChars( c->argi(0)) );
 	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asString());
+	return TRUE;
+}
+
+// Read real value from unformatted file
+bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->parser()->isFileGood())
+	{
+		msg.print("No valid filesource available for the 'readdouble' command.\n");
+		return FALSE;
+	}
+	rv.set( c->parent()->parser()->getDouble(c->hasArg(0) ? c->argi(0) : 0) );
+	msg.print(Messenger::Commands,"Unformatted double read got '%f'\n", rv.asDouble());
+	return TRUE;
+}
+
+// Read real array from unformatted file
+bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->parser()->isFileGood())
+	{
+		msg.print("No valid filesource available for the 'readdoublearray' command.\n");
+		return FALSE;
+	}
+	// Get the array pointer from the supplied argument, and check size against number of items requested
+	int count = c->argi(1);
+	ReturnValue array;
+	if (!c->arg(0, array)) return FALSE;
+	if (count > array.arraySize())
+	{
+		msg.print("Error: Requested number of data for 'readdoublearray' (%i) exceeds size of supplied array (%i).\n", count, array.arraySize());
+		return FALSE;
+	}
+	rv.set( c->parent()->parser()->getDoubleArray( (double*) array.asPointer(VTypes::DoubleData), count) );
+	msg.print(Messenger::Commands,"Unformatted double read %s.\n", rv.asInteger() ? "succeeded" : "failed");
 	return TRUE;
 }
 
@@ -143,13 +181,36 @@ bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readinteger' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readinteger' command.\n");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getInteger( c->hasArg(0) ? c->argi(0) : 0 ) );
-	msg.print(Messenger::Commands,"Unformatted integer read got '%s'\n", rv.asInteger());
+	msg.print(Messenger::Commands,"Unformatted integer read got '%i'\n", rv.asInteger());
+	return TRUE;
+}
+
+// Read integer array from unformatted file
+bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that we are in a filter.
+	if (!c->parent()->parser()->isFileGood())
+	{
+		msg.print("No valid filesource available for the 'readintegerarray' command.\n");
+		return FALSE;
+	}
+	// Get the array pointer from the supplied argument, and check size against number of items requested
+	int count = c->argi(1);
+	ReturnValue array;
+	if (!c->arg(0, array)) return FALSE;
+	if (count > array.arraySize())
+	{
+		msg.print("Error: Requested number of data for 'readintegerarray' (%i) exceeds size of supplied array (%i).\n", count, array.arraySize());
+		return FALSE;
+	}
+	rv.set( c->parent()->parser()->getIntegerArray( (double*) array.asPointer(VTypes::IntegerData), count) );
+	msg.print(Messenger::Commands,"Unformatted integer read %s.\n", rv.asInteger() ? "succeeded" : "failed");
 	return TRUE;
 }
 
@@ -157,9 +218,9 @@ bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readline' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readline' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(-1,0);
@@ -176,9 +237,9 @@ bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readlinef' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readlinef' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(0,1);
@@ -195,9 +256,9 @@ bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValu
 bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readnext' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readnext' command.\n");
 		return FALSE;
 	}
 	Dnchar arg;
@@ -205,20 +266,6 @@ bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(0, argrv);
-	return TRUE;
-}
-
-// Read real value from unformatted file
-bool Command::function_ReadReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
-	{
-		msg.print("The 'readreal' command can only be used from within a Filter.\n");
-		return FALSE;
-	}
-	rv.set( c->parent()->parser()->getReal(c->hasArg(0) ? c->argi(0) : 0) );
-	msg.print(Messenger::Commands,"Unformatted real read got '%s'\n", rv.asDouble());
 	return TRUE;
 }
 
@@ -261,9 +308,9 @@ bool Command::function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
 	}
 	c->parent()->parser()->rewind();
@@ -274,12 +321,12 @@ bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'readchars' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
 	}
-	c->parent()->parser()->getChars(c->argi(0));
+	c->parent()->parser()->skipChars(c->argi(0));
 	return TRUE;
 }
 
@@ -287,9 +334,9 @@ bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'skipline' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'skipline' command.\n");
 		return FALSE;
 	}
 	c->parent()->parser()->skipLines( c->hasArg(0) ? c->argi(0) : 1 );
@@ -300,9 +347,9 @@ bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'writeline' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'writeline' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(-1,0);
@@ -325,9 +372,9 @@ bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that we are in a filter.
-	if (!c->parent()->isFilter())
+	if (!c->parent()->parser()->isFileGood())
 	{
-		msg.print("The 'writelinef' command can only be used from within a Filter.\n");
+		msg.print("No valid filesource available for the 'writelinef' command.\n");
 		return FALSE;
 	}
 	Format *format = c->createFormat(0,1);

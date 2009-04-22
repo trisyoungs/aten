@@ -125,10 +125,16 @@ class LineParser
 	int getArgDelim(Dnchar *destarg, int flags);
 	// Return a number of characters from the input stream
 	const char *getChars(int nchars);
+	// Skip a number of characters from the input stream
+	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
 	int getInteger(int nbytes = 0);
+	// Fill an array of integer values from reading of an (unformatted) input file
+	bool getIntegerArray(double *array, int count);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
-	double getReal(int nbytes = 0);
+	double getDouble(int nbytes = 0);
+	// Fill an array of double values from reading of an (unformatted) input file
+	bool getDoubleArray(double *array, int count);
 	// Write line to file
 	bool writeLine(const char *s);
 

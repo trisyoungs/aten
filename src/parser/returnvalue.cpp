@@ -35,20 +35,21 @@ ReturnValue::ReturnValue()
 {
 	// Private variables
 	type_ = VTypes::NoData;
+	arraySize_ = -1;
 }
-ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), valueI_(i)
+ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), valueI_(i), arraySize_(-1)
 {
 }
-ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), valueD_(d)
+ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), valueD_(d), arraySize_(-1)
 {
 }
-ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), valueS_(s)
+ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), valueS_(s), arraySize_(-1)
 {
 }
-ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), valueV_(v)
+ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), valueV_(v), arraySize_(-1)
 {
 }
-ReturnValue::ReturnValue(VTypes::DataType ptrtype, void *ptr) : type_(ptrtype), valueP_(ptr)
+ReturnValue::ReturnValue(VTypes::DataType ptrtype, void *ptr, int arraysize) : type_(ptrtype), valueP_(ptr), arraySize_(arraysize)
 {
 }
 
@@ -78,6 +79,7 @@ void ReturnValue::operator=(ReturnValue &source)
 			valueP_ = source.valueP_;
 			break;
 	}
+	arraySize_ = source.arraySize_;
 }
 
 // Return type of the stored data
@@ -90,6 +92,7 @@ VTypes::DataType ReturnValue::type()
 void ReturnValue::reset()
 {
 	type_ = VTypes::NoData;
+	arraySize_ = -1;
 }
 
 // Return string of contained data
@@ -115,7 +118,8 @@ const char *ReturnValue::info()
 			sprintf(result,"{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, VTypes::dataType(type_));
 			break;
 		default:
-			sprintf(result,"%li (%s)", valueP_, VTypes::dataType(type_));
+			if (arraySize_ == -1) sprintf(result,"%li (%s)", valueP_, VTypes::dataType(type_));
+			else sprintf(result,"%li (%s, array of %i items)", valueP_, VTypes::dataType(type_), arraySize_);
 			break;
 	}
 	return result;
@@ -130,6 +134,7 @@ void ReturnValue::set(int i)
 {
 	type_ = VTypes::IntegerData;
 	valueI_ = i;
+	arraySize_ = -1;
 }
 
 // Set from double value
@@ -137,6 +142,7 @@ void ReturnValue::set(double d)
 {
 	type_ = VTypes::DoubleData;
 	valueD_ = d;
+	arraySize_ = -1;
 }
 
 // Set from character value
@@ -144,6 +150,7 @@ void ReturnValue::set(const char *s)
 {
 	type_ = VTypes::StringData;
 	valueS_ = s;
+	arraySize_ = -1;
 }
 
 // Set from vector value
@@ -151,6 +158,7 @@ void ReturnValue::set(Vec3<double> v)
 {
 	type_ = VTypes::VectorData;
 	valueV_ = v;
+	arraySize_ = -1;
 }
 
 // Set from individual vector data
@@ -158,6 +166,7 @@ void ReturnValue::set(double x, double y, double z)
 {
 	type_ = VTypes::VectorData;
 	valueV_.set(x,y,z);
+	arraySize_ = -1;
 }
 
 // Set from single vector data
@@ -165,13 +174,15 @@ void ReturnValue::set(int id, double xyz)
 {
 	type_ = VTypes::VectorData;
 	valueV_.set(id, xyz);
+	arraySize_ = -1;
 }
 
 // Set from pointer value
-void ReturnValue::set(VTypes::DataType ptrtype, void *ptr)
+void ReturnValue::set(VTypes::DataType ptrtype, void *ptr, int arraysize)
 {
 	type_ = ptrtype;
 	valueP_ = ptr;
+	arraySize_ = arraysize;
 }
 
 /*
@@ -215,7 +226,7 @@ double ReturnValue::asDouble(bool &success)
 		case (VTypes::NoData):
 			printf("Internal error: No data in ReturnValue to return as a real!\n");
 			success = FALSE;
-			return 0;
+			return 0.0;
 			break;
 		case (VTypes::IntegerData):
 			return (double)valueI_;
@@ -315,9 +326,19 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 		case (VTypes::DoubleData):
 		case (VTypes::StringData):
 		case (VTypes::VectorData):
-			msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
-			success = FALSE;
-			return NULL;
+			if (arraySize_ == -1)
+			{
+				msg.print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				success = FALSE;
+				return NULL;
+			}
+			else if (ptrtype != type_)
+			{
+				msg.print("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				success = FALSE;
+				return NULL;
+			}
+			else return valueP_;
 			break;
 		default:
 			// Check that internal pointer type matches requested pointer type
@@ -331,7 +352,13 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 			break;
 	}
 	success = FALSE;
-	return 0;
+	return NULL;
+}
+
+// Return array size of data
+int ReturnValue::arraySize()
+{
+	return arraySize_;
 }
 
 /*

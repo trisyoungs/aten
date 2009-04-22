@@ -159,7 +159,6 @@ bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
-// 	obj.rs->adjustOrthoSize(-c->argd(0));   TGAY
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;

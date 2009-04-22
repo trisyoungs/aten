@@ -223,7 +223,7 @@ void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
-	msg.print(Messenger::Parse, "New function stacked - %li\n", tree_);
+	msg.print(Messenger::Parse, "New function stacked (return type is %s) - %li\n", VTypes::dataType(tree_->returnType()), tree_);
 }
 
 // Pop tree

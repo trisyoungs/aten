@@ -170,20 +170,26 @@ void DoubleArrayVariable::reset()
 // Return value of node
 bool DoubleArrayVariable::execute(ReturnValue &rv)
 {
-	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
-	return FALSE;
+// 	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
+	if (doubleArrayData_ == NULL)
+	{
+		printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+		return FALSE;
+	}
+	rv.set(VTypes::DoubleData, doubleArrayData_, arraySize_);
+	return TRUE;
 }
 
 // Return value of node as array
 bool DoubleArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 {
 	// Check bounds
-	if ((arrayindex < 1) || (arrayindex > arraySize_))
+	if ((arrayindex < 0) || (arrayindex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex, name_.get());
+		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( doubleArrayData_[arrayindex-1] );
+	rv.set( doubleArrayData_[arrayindex] );
 	return TRUE;
 }
 
@@ -202,23 +208,23 @@ void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
 	delete[] tab;
 }
 
+
 // Initialise array
 bool DoubleArrayVariable::initialise()
 {
 	// We define our own initialise() function to take over from the inherited default from Variable
-	// If the array is already allocated, free it.
-	if (doubleArrayData_ != NULL) printf("Array exists already...\n");	
-	if (doubleArrayData_ != NULL) delete[] doubleArrayData_;
 	// Get size of array to create
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		msg.print("Failed to find size for double array '%s'.\n", name_.get());
 		return FALSE;
 	}
-	// Create new array
+	// If the array is already allocated, free it only if the size is different
+	if ((arraySize_ != newsize.asInteger()) && (doubleArrayData_ != NULL)) { delete[] doubleArrayData_; doubleArrayData_ = NULL; }
+	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if (arraySize_ > 0) doubleArrayData_ = new double[arraySize_];
+	if ((arraySize_ > 0) && (doubleArrayData_ == NULL)) doubleArrayData_ = new double[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{

@@ -205,19 +205,18 @@ void IntegerArrayVariable::nodePrint(int offset, const char *prefix)
 bool IntegerArrayVariable::initialise()
 {
 	// We define our own initialise() function to take over from the inherited default from Variable
-	// If the array is already allocated, free it.
-	if (integerArrayData_ != NULL) printf("Array exists already...\n");	
-	if (integerArrayData_ != NULL) delete[] integerArrayData_;
 	// Get size of array to create
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		msg.print("Failed to find size for int array '%s'.\n", name_.get());
 		return FALSE;
 	}
-	// Create new array
+	// If the array is already allocated, free it only if the size is different
+	if ((arraySize_ != newsize.asInteger()) && (integerArrayData_ != NULL)) { delete[] integerArrayData_; integerArrayData_ = NULL; }
+	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if (arraySize_ > 0) integerArrayData_ = new int[arraySize_];
+	if ((arraySize_ > 0) && (integerArrayData_ == NULL)) integerArrayData_ = new int[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{

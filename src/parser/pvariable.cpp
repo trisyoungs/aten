@@ -179,19 +179,18 @@ void PointerArrayVariable::nodePrint(int offset, const char *prefix)
 bool PointerArrayVariable::initialise()
 {
 	// We define our own initialise() function to take over from the inherited default from Variable
-	// If the array is already allocated, free it.
-	if (pointerArrayData_ != NULL) printf("Array exists already...\n");	
-	if (pointerArrayData_ != NULL) delete[] pointerArrayData_;
 	// Get size of array to create
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find array size for '%s'.\n", name_.get());
+		msg.print("Failed to find size for %s array '%s'.\n", VTypes::aDataType(returnType_), name_.get());
 		return FALSE;
 	}
-	// Create new array
+	// If the array is already allocated, free it only if the size is different
+	if ((arraySize_ != newsize.asInteger()) && (pointerArrayData_ != NULL)) { delete[] pointerArrayData_; pointerArrayData_ = NULL; }
+	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if (arraySize_ > 0) pointerArrayData_ = new void*[arraySize_];
+	if ((arraySize_ > 0) && (pointerArrayData_ == NULL)) pointerArrayData_ = new void*[arraySize_];
 	if (initialValue_ == NULL) reset();
 	else
 	{

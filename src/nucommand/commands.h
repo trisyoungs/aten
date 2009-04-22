@@ -400,11 +400,13 @@ class Command
 		GetLine,
 		PeekChar,
 		ReadChars,
+		ReadDouble,
+		ReadDoubleArray,
 		ReadInteger,
+		ReadIntegerArray,
 		ReadLine,
 		ReadLineFormatted,
 		ReadNext,
-		ReadReal,
 		ReadVariable,
 		ReadVariableFormatted,
 		RemoveReadOption,
@@ -480,6 +482,7 @@ class Command
 		Contains,
 		FToA,
 		IToA,
+		Nint,
 		Normalise,
 		StripChars,
 
@@ -846,11 +849,13 @@ class Command
 	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ReadReal(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadVariable(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadVariableFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -919,6 +924,7 @@ class Command
 	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Operators

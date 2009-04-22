@@ -23,6 +23,7 @@
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "parser/character.h"
+#include "parser/variablenode.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
@@ -108,33 +109,52 @@ bool CommandNode::checkArguments()
 	msg.print(Messenger::Parse, "...argument list is [%s]\n", c);
 	char upc, *altargs;
 	int count = 0, ngroup = -1;
-	bool optional, requirevar, result, cluster = FALSE;
+	bool optional, requirevar, result, cluster = FALSE, array;
 	VTypes::DataType rtype;
+	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
+	if (*c == '_')
+	{
+		msg.exit("CommandNode::checkArguments");
+		return TRUE;
+	}
 	// Search for an alternative set of arguments
 	altargs = strchr(c, '|');
 	result = TRUE;
 	do
 	{
 		upc = *c;
-		// Retain last character if this is a repeat
-		if (*c != '*')
+		// Retain previous information if this is a repeat, but make it an optional argument
+		if (*c == '*') optional = TRUE;
+		else
 		{
-			// If the character is '^', then we get the next char and set the requirevar flag
-			// If it is '[' or ']' then set the cluster flag and get the next char
-			// If it is '<' or '>' then set the vector flag and get the next char
+			// Reset modifier values
 			requirevar = FALSE;
-			if (*c == '^')
+			array = FALSE;
+			// Find next alpha character (and accompanying modifiers)
+			while (!isalpha(*c) && (*c != '|') && (*c != '\0') )
 			{
-				requirevar = TRUE;
+				switch (*c)
+				{
+					// Require variable
+					case ('^'):	requirevar = TRUE; break;
+					// Clustering
+					case ('['):	cluster = TRUE; ngroup = 0; break;
+					case (']'):	cluster = FALSE; ngroup = -1; break;
+					// Require array
+					case ('&'):	array = TRUE; break;
+					default:
+						printf("BAD CHARACTER (%c) IN COMMAND ARGUMENTS\n", *c);
+						break;
+				}
 				c++;
 			}
-			else if ((*c == '[') || (*c == ']'))
+			if (*c == '|')
 			{
-				cluster = (*c == '[');
-				ngroup = 0;
-				c++;
+				// This is the start of a new set of argument specifiers - does the current set of arguments 'fit'?
+				if (args_.nItems() != count) printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
+				return FALSE;    // TGAY
 			}
-			// Get character and convert to upper case if necessary
+			// Convert character to upper case if necessary
 			if ((*c > 96) && (*c < 123))
 			{
 				upc = *c - 32;
@@ -146,28 +166,15 @@ bool CommandNode::checkArguments()
 				optional = FALSE;
 			}
 		}
-		else optional = TRUE;
-		// If we have reached the end of the argument specification, do we still have arguments left in the command?
-		if (upc == '\0')
-		{
-			if (args_.nItems() > count)
-			{
-				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, Command::data[function_].keyword, Command::data[function_].keyword, Command::data[function_].argText);
-				msg.exit("Tree::checkArguments");
-				return FALSE;
-			}
-			else
-			{
-				msg.exit("Tree::checkArguments");
-				return TRUE;
-			}
-		}
+		if (*c == '\0') break;
 		msg.print(Messenger::Parse,"...next argument token is '%c', opt=%s, reqvar=%s, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", ngroup);
 		// If we have gone over the number of arguments provided, is this an optional argument?
 		if (count >= args_.nItems())
 		{
 			if (!optional)
 			{
+				// If an alternative argument list is present, check this before we fail...
+				if (altargs != '\0')
 				msg.print("Error: The function '%s' requires argument %i.\n", Command::data[function_].keyword, count+1);
 				msg.print("       Command syntax is '%s %s'.\n", Command::data[function_].keyword, Command::data[function_].argText);
 				msg.exit("Tree::checkArguments");
@@ -191,11 +198,27 @@ bool CommandNode::checkArguments()
 		result = TRUE;
 		switch (upc)
 		{
-			// Number		(IntegerData, RealData)
+			// Number		(IntegerData, DoubleData)
 			case ('N'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
 				{
 					msg.print("Argument %i to command '%s' must be a number.\n", count+1, Command::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Integer		(IntegerData)
+			case ('I'):
+				if (rtype != VTypes::IntegerData)
+				{
+					msg.print("Argument %i to command '%s' must be an int.\n", count+1, Command::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Double		(DoubleData)
+			case ('D'):
+				if (rtype != VTypes::DoubleData)
+				{
+					msg.print("Argument %i to command '%s' must be a double.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
 				break;
@@ -265,7 +288,7 @@ bool CommandNode::checkArguments()
 				break;
 			// Variable of any type (but not a path)
 			case ('V'):
-				if ((argNode(count)->nodeType() != TreeNode::VarNode) && (argNode(count)->nodeType() != TreeNode::ArrayVarNode))
+				if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 				{
 					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
@@ -278,12 +301,44 @@ bool CommandNode::checkArguments()
 			msg.print("Argument %i to command '%s' must be a variable and not a constant.\n", count+1, Command::data[function_].keyword);
 			result = FALSE;
 		}
+		// Was this argument requested to be an array (*not* an array element)?
+		if (array)
+		{
+			if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
+			{
+				msg.print("Argument %i to command '%s' must be an array.\n", count+1, Command::data[function_].keyword);
+				result = FALSE;
+			}
+			Variable *v = ((VariableNode*) argNode(count))->variable();
+			if (v->nodeType() != TreeNode::ArrayVarNode)
+			{
+				msg.print("Argument %i to command '%s' must be an array.\n", count+1, Command::data[function_].keyword);
+				result = FALSE;
+			}
+			else if (((VariableNode*) argNode(count))->arrayIndex() != NULL)
+			{
+				msg.print("Argument %i to command '%s' must be an array and not an array element.\n", count+1, Command::data[function_].keyword);
+				result = FALSE;
+			}
+		}
 		// Check for failure
 		if (!result) break;
 		if (upc != '*') c++;
 		if (cluster) ngroup++;
 		count++;
 	} while (*c != '\0');
+	// End of the argument specification - do we still have arguments left over in the command?
+	if (args_.nItems() > count)
+	{
+		msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, Command::data[function_].keyword, Command::data[function_].keyword, Command::data[function_].argText);
+		msg.exit("Tree::checkArguments");
+		return FALSE;
+	}
+	else
+	{
+		msg.exit("Tree::checkArguments");
+		return TRUE;
+	}
 	msg.exit("CommandNode::checkArguments");
 	return result;
 }
@@ -376,34 +431,31 @@ bool CommandNode::initialise()
 bool CommandNode::run(Command::Function func, const char *arglist, ...)
 {
 	msg.enter("CommandNode::run");
-	// Local constants given as arguments
-	List<TreeNode> constantArgs_;
+	// Local tree to contain commandnode and its arguments
+	Tree tree;
 
 	// Create our temporary node
 	CommandNode node(func);
-	node.parent_ = NULL;
+	node.parent_ = &tree;
 
 	// Set arguments from supplied list
 	const char *c;
 	va_list vars;
 	va_start(vars, arglist);
-	Variable *var = NULL;
-	for (c = arglist; *c != '\0'; c++)
+	TreeNode *var = NULL;
+	for (c = &arglist[0]; *c != '\0'; c++)
 	{
 		switch (*c)
 		{
 			case ('i'):
-				var = new IntegerVariable(va_arg(vars, int), TRUE);
-				constantArgs_.own(var);
+				var = tree.addConstant(va_arg(vars, int));
 				break;
 			case ('d'):
-				var = new DoubleVariable(va_arg(vars, double), TRUE);
-				constantArgs_.own(var);
+				var = tree.addConstant(va_arg(vars, double));
 				break;
 			case ('c'):
 			case ('s'):
-				var = new StringVariable(va_arg(vars, const char*), TRUE);
-				constantArgs_.own(var);
+				var = tree.addConstant(va_arg(vars, const char *));
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);

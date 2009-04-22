@@ -82,9 +82,9 @@ void Forest::finalise()
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (t->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int.\n", VTypes::aDataType(t->returnType()));
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readheader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), t->filter.name());
 				}
-				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", t->name());
+				else msg.print("Warning: 'readheader' function has not been defined in the importtrajectory filter '%s'.\n", t->filter.name());
 				t->filter.setTrajectoryHeaderFunction(func);
 
 				// Search for 'int readframe()' function
@@ -92,9 +92,9 @@ void Forest::finalise()
 				if (func != NULL)
 				{
 					// Does the function have the correct return type?
-					if (t->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int.\n", VTypes::aDataType(t->returnType()));
+					if (func->returnType() != VTypes::IntegerData) msg.print("Warning: 'readframe' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), t->filter.name());
 				}
-				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", t->name());
+				else msg.print("Warning: 'readframe' function has not been defined in the importtrajectory filter '%s'.\n", t->filter.name());
 				t->filter.setTrajectoryFrameFunction(func);
 			}
 		}

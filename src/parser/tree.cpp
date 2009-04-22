@@ -493,6 +493,30 @@ TreeNode *Tree::addConstant(VTypes::DataType type, Dnchar *token)
 	return NULL;
 }
 
+// Add integer constant (non-virtual)
+TreeNode *Tree::addConstant(int i)
+{
+	IntegerVariable *var = new IntegerVariable(i, TRUE);
+	nodes_.own(var);
+	return var;
+}
+
+// Add double constant (non-virtual)
+TreeNode *Tree::addConstant(double d)
+{
+	DoubleVariable *var = new DoubleVariable(d, TRUE);
+	nodes_.own(var);
+	return var;
+}
+
+// Add string constant (non-virtual)
+TreeNode *Tree::addConstant(const char *s)
+{
+	StringVariable *var = new StringVariable(s, TRUE);
+	nodes_.own(var);
+	return var;
+}
+
 // Add variable to topmost scope
 TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {

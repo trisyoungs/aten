@@ -80,6 +80,13 @@ bool Command::function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Round real value to nearest integer
+bool Command::function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( floor(c->argd(0) + 0.5) );
+	return TRUE;
+}
+
 // Normalise vector, returning magnitude
 bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
