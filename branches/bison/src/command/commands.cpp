@@ -48,6 +48,7 @@ Command commands;
 	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
 	|	<Or>		Separates alternative lists of arguments for the command
 	&	<Array>		Next token must be an array
+	2-9	<NRepeat>	Next argument should occur N times
 */
 
 // Command action
@@ -148,7 +149,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Hydrogen satisfy all (or specified) atom in model" },
 	{ "bohr",		"X*",		"<object> [object...]", VTypes::NoData,
 				"Convert coordinates in the specified object(s) from Angstroms to Bohr" },
-	{ "chain",		"Neeee",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]", VTypes::AtomData,
+	{ "chain",		"Ss|S3Ns",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]", VTypes::AtomData,
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"", VTypes::AtomData,
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },
