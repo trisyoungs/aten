@@ -20,7 +20,7 @@
 */
 
 #include "parser/parser.h"
-#include "nucommand/commands.h"
+#include "command/commands.h"
 #include "parser/forest.h"
 
 // Create a new path on the stack with the specified base 'variable'
