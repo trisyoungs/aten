@@ -180,13 +180,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		# Coordinates
 		recsize = readint(intsize);
 		if (recsize != natoms*realsize) { printf("Error reading coordinate info from trajectory frame.\n"); return FALSE; }
-		if (!readdoublearray(x,natoms))  { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
+		if (!readdoublearray(x,natoms)) { printf("Error reading x-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readint(intsize);
 		recsize = readint(intsize);
-		if (!readdoublearray(y,natoms))  { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
+		if (!readdoublearray(y,natoms)) { printf("Error reading y-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readint(intsize);
 		recsize = readint(intsize);
-		if (!readdoublearray(z,natoms))  { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
+		if (!readdoublearray(z,natoms)) { printf("Error reading z-coordinates from trajectory frame.\n"); return FALSE; }
 		recsize = readint(intsize);
 		for (n = 1; n<= natoms; ++n) setcoords(x[n], y[n], z[n], n);
 
@@ -195,13 +195,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		{
 			recsize = readint(intsize);
 			if (recsize != natoms*realsize) { printf("Error reading force info from trajectory frame.\n"); return FALSE; }
-			if (!readdoublearray(x,natoms))  { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(x,natoms)) { printf("Error reading x-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			recsize = readint(intsize);
-			if (!readdoublearray(y,natoms))  { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(y,natoms)) { printf("Error reading y-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			recsize = readint(intsize);
-			if (!readdoublearray(z,natoms))  { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(z,natoms)) { printf("Error reading z-forces from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			for (n = 1; n<= natoms; ++n) setforces(x[n], y[n], z[n], n);
 		}
@@ -211,13 +211,13 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		{
 			recsize = readint(intsize);
 			if (recsize != natoms*realsize) { printf("Error reading velocity info from trajectory frame.\n"); return FALSE; }
-			if (!readdoublearray(x,natoms))  { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(x,natoms)) { printf("Error reading x-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			recsize = readint(intsize);
-			if (!readdoublearray(y,natoms))  { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(y,natoms)) { printf("Error reading y-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			recsize = readint(intsize);
-			if (!readdoublearray(z,natoms))  { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
+			if (!readdoublearray(z,natoms)) { printf("Error reading z-velocities from trajectory frame.\n"); return FALSE; }
 			recsize = readint(intsize);
 			for (n = 1; n<= natoms; ++n) setvelocities(x[n], y[n], z[n], n);
 		}
