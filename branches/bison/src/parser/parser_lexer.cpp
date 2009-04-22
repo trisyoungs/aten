@@ -25,7 +25,7 @@
 #include "parser/parser.h"
 #include "parser/tree.h"
 #include "parser/forest.h"
-#include "nucommand/commands.h"
+#include "command/commands.h"
 #include "base/sysfunc.h"
 
 // Symbols

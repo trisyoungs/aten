@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "nucommand/commands.h"
+#include "command/commands.h"
 #include "parser/parser.h"
 #include "parser/tree.h"
 

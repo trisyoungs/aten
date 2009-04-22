@@ -26,13 +26,13 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/namemap.h"
-#include "nucommand/commands.h"
+#include "command/commands.h"
 #include "parser/forest.h"
 #include "parser/tree.h"
 
 #define ATENVERSION "1.2"
-#define ATENREVISION "879"
-#define ATENDATE "Wed 22 Apr - 16:57"
+#define ATENREVISION "880"
+#define ATENDATE "Wed 22 Apr - 17:15"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations

@@ -26,7 +26,7 @@
 #include "parser/filterdata.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
-#include "nucommand/commands.h"
+#include "command/commands.h"
 #include "templates/namemap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
