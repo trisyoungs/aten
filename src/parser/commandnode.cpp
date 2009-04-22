@@ -176,7 +176,7 @@ bool CommandNode::checkArguments()
 				// If an alternative argument list is present, check this before we fail...
 				if (altargs != '\0')
 				msg.print("Error: The function '%s' requires argument %i.\n", Command::data[function_].keyword, count+1);
-				msg.print("       Command syntax is '%s %s'.\n", Command::data[function_].keyword, Command::data[function_].argText);
+				msg.print("       Command syntax is '%s(%s)'.\n", Command::data[function_].keyword, Command::data[function_].argText);
 				msg.exit("Tree::checkArguments");
 				return FALSE;
 			}

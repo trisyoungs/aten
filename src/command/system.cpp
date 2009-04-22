@@ -58,7 +58,7 @@ bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Command::Function cf = commands.command(c->argc(0));
 	if (cf == Command::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
-	else if (commands.data[cf].hasArguments()) msg.print("help:  %s %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
+	else if (commands.data[cf].hasArguments()) msg.print("help:  %s(%s)\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
 	else msg.print("help:  %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
 	return TRUE;
 }
@@ -85,6 +85,5 @@ bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
-	// TGAY Force exit from program.
 	return TRUE;
 }
