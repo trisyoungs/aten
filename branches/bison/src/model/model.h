@@ -62,10 +62,6 @@ class Model
 	// Model
 	*/
 	private:
-	// Total mass of model
-	double mass_;
-	// Density of model (if periodic)
-	double density_;
 	// Name of model
 	Dnchar name_;
 	// Format of model when loaded / last saved
@@ -86,16 +82,8 @@ class Model
 	void setName(const char *s);
 	// Return the name of the model
 	const char *name() const;
-	// Return the mass of the molecule
-	double mass() const;
-	// Return the density of the model
-	double density() const;
 	// Clear all data in model
 	void clear();
-	// Calculate the total mass of the model
-	void calculateMass();
-	// Calculate the density of the model
-	void calculateDensity();
 	// Print information about the model (inc atoms)
 	void print();
 	// Print log information for the current model
@@ -127,6 +115,14 @@ class Model
 	void shiftAtomUp(Atom *i);
 	// Move specified atom one place 'down' in the list (to higher ID)
 	void shiftAtomDown(Atom *i);
+	// Total mass of atoms in the model
+	double mass_;
+	// Number of atoms with unidentified element ('XX') in model
+	int nUnknownAtoms_;
+	// Reduce the mass (and unknown element count) of the model
+	void reduceMass(int element);
+	// Increase the mass (and unknown element count) of the model
+	void increaseMass(int element);
 	
 	public:
 	// Create a new atom
@@ -187,6 +183,12 @@ class Model
 	void styleAtom(Atom *i, Atom::DrawStyle);
 	// Set the drawing style of the current atom selection
 	void styleSelection(Atom::DrawStyle);
+	// Calculate the total mass of the model
+	void calculateMass();
+	// Return the mass of the molecule
+	double mass() const;
+	// Return number of unknown atoms in the model
+	int nUnknownAtoms();
 
 
 	/*
@@ -195,6 +197,10 @@ class Model
 	private:
 	// Cell definition (also contains reciprocal cell definition)
 	Cell cell_;
+	// Density of model (if periodic)
+	double density_;
+	// Calculate the density of the model
+	void calculateDensity();
 
 	public:
 	// Return pointer to unit cell structure
@@ -221,6 +227,8 @@ class Model
 	bool scaleCell(const Vec3<double> &scale, bool usecogs);
 	// Rotate cell and contents
 	void rotateCell(int axis, double angle);
+	// Return the density of the model
+	double density() const;
 
 
 	/*

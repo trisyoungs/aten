@@ -123,19 +123,14 @@ bool CommandNode::checkArguments()
 	{
 		if (reset)
 		{
-	printf("kjlkjssssssssskl\n");
 			c = altargs;
-	printf("kjlkjssssssssskl\n");
+			if (*c == '|') ++c;
 			altargs = strchr(c, '|');
-	printf("kjlkjssssssssskl\n");
 			repeat = 0;
-	printf("kjlkjssssssssskl\n");
 			reset = FALSE;
-	printf("kjlkjssssssssskl\n");
 		}
 		if (*c == '\0') break;
 		upc = *c;
-	printf("kjlkjkl\n");
 		// Retain previous information if this is a repeat, but make it an optional argument
 		if (*c == '*') optional = TRUE;
 		else if (repeat == 0)
@@ -175,10 +170,12 @@ bool CommandNode::checkArguments()
 				// This is the start of a new set of argument specifiers - does the current set of arguments 'fit'?
 				if (args_.nItems() != count)
 				{
-					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
-// 					if (altargs == NULL)
+// 					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
+					reset = TRUE;
+					continue;
 				}
-				return TRUE;    // TGAY
+				msg.exit("CommandNode::checkArguments");
+				return TRUE;
 			}
 			// Convert character to upper case if necessary
 			if ((*c > 96) && (*c < 123))

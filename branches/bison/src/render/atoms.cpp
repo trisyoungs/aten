@@ -127,7 +127,8 @@ void Canvas::renderModelAtoms()
 			if (style_i != Atom::StickStyle)
 			{
 				// Draw cylinder bonds.
-				bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
+// 				bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
+				bondradius = prefs.bondStyleRadius(style_i);
 				switch (bref->item->type())
 				{
 					case (Bond::Single):	// Single bond
@@ -135,7 +136,7 @@ void Canvas::renderModelAtoms()
 						break;
 					case (Bond::Double):	// Double bond
 						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.1;
+						ijk *= 0.2 * bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						glCylinder(rj,rij,0,bondradius);
@@ -145,7 +146,7 @@ void Canvas::renderModelAtoms()
 						break;
 					case (Bond::Triple):	// Triple bond
 						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.1;
+						ijk *= bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glCylinder(rj,rij,0,bondradius);
 						glTranslated(ijk.x,ijk.y,ijk.z);
@@ -159,35 +160,41 @@ void Canvas::renderModelAtoms()
 			else
 			{
 				// Draw stick bond(s)
-				glBegin(GL_LINES);
-				  switch (bref->item->type())
-				  {
+				bondradius = prefs.bondStyleRadius(style_i);
+				switch (bref->item->type())
+				{
+					
 					case (Bond::Single):	// Single bond
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
+						glBegin(GL_LINES);
+						  glVertex3d(0.0,0.0,0.0);
+						  glVertex3d(rj.x,rj.y,rj.z);
+						glEnd();
 						break;
 					case (Bond::Double):	// Double bond
 						// Must define a plane in which the bond will lay
 						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.05;
+						ijk *= bondradius; // 0.05;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						glVertex3d(ijk.x,ijk.y,ijk.z);
-						glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
-						glVertex3d(-ijk.x,-ijk.y,-ijk.z);
-						glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
+						glBegin(GL_LINES);
+						  glVertex3d(ijk.x,ijk.y,ijk.z);
+						  glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
+						  glVertex3d(-ijk.x,-ijk.y,-ijk.z);
+						  glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
+						glEnd();
 						break;
 					case (Bond::Triple):	// Triple bond
 						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.1;
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
-						glVertex3d(ijk.x,ijk.y,ijk.z);
-						glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
-						glVertex3d(-ijk.x,-ijk.y,-ijk.z);
-						glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
+						ijk *= bondradius; // 0.1;
+						glBegin(GL_LINES);
+						  glVertex3d(0.0,0.0,0.0);
+						  glVertex3d(rj.x,rj.y,rj.z);
+						  glVertex3d(ijk.x,ijk.y,ijk.z);
+						  glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
+						  glVertex3d(-ijk.x,-ijk.y,-ijk.z);
+						  glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
+						glEnd();
 						break;
-				  }
-				glEnd();
+				}
 			}
 		  }
 		glPopMatrix();
@@ -251,7 +258,8 @@ void Canvas::renderModelAtoms()
 			rij = rj.magnitude() * 0.5;
 			rj *= 0.5;
 			// Draw cylinder bonds.
-			bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
+// 			bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
+			bondradius = prefs.bondStyleRadius(style_i);
 			switch (bref->item->type())
 			{
 				case (Bond::Single):	// Single bond

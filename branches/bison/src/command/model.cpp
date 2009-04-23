@@ -92,7 +92,6 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->calculateViewMatrix();
 	obj.m->resetView();
 	obj.m->calculateMass();
-	obj.m->calculateDensity();
 	obj.m->selectNone();
 	// Print out some useful info on the model that we've just read in
 	msg.print("Atoms  : %i\n",obj.m->nAtoms());

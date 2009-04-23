@@ -490,11 +490,11 @@ Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
 	static Vec3<double> rk, xp1, xp2;
 	Refitem<Bond,int> *brefi = bonds_.first();
 	Refitem<Bond,int> *brefj = j->bonds_.first();
-	if (bonds_.nItems() != 1)	// Can define from another bond on 'this'
+	if (bonds_.nItems() > 1)	// Can define from another bond on 'this'
 		b == brefi->item ? rk = brefi->next->item->partner(this)->r_ : rk = brefi->item->partner(this)->r_;
-	else if (j->bonds_.nItems() != 1)// Can define from another bond on j
+	else if (j->bonds_.nItems() > 1)// Can define from another bond on j
 		this == brefj->item->partner(j) ? rk = brefj->next->item->partner(j)->r_ : rk = brefj->item->partner(j)->r_;
-	else rk.zero();		// Default, just in case
+	else rk = rij.orthogonal();		// Default, just in case
 	// Now, take cross product of rij and (repositioned) rk -> perpendicular vector
 	rk -= r_;
 	xp1 = rij * rk;

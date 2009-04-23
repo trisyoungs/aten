@@ -42,7 +42,7 @@ class LineParser
 	LineParser();
 	LineParser(const char *ifilename, bool outputstream = FALSE);
 	// Parse Options
-	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, nParseOptions=5};
 	static ParseOption parseOption(const char*);
 
 
@@ -164,6 +164,8 @@ class LineParser
 	float argf(int i);
 	// Returns whether the specified argument is empty
 	bool isBlank(int i);
+	// Returns whether the specified argument exists
+	bool hasArg(int i);
 
 
 	/*

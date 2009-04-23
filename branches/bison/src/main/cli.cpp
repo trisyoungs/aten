@@ -32,8 +32,6 @@
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
-	{ Cli::ASTSwitch,		'a',"ast",		1,
-		"<string>",	"Test the new tree parser-generator code with the supplied string" },
 	{ Cli::AtenDataSwitch,		'\0',"atendata",		1,
 		"<dir>",	"Set the data location to the supplied directory (and don't read $ATENDATA)" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
@@ -283,13 +281,6 @@ int Aten::parseCli(int argc, char *argv[])
 			// Ready to perform switch action!
 			switch (opt)
 			{
-				// Test new AST code
-				case (Cli::ASTSwitch):
-					forest = new Forest;
-					if (forest->generate(argv[++argn], "cli")) return -1;
-					printf("Resulting forest contains %i trees.\n", forest->nTrees());
-					n = forest->executeAll(rv);
-					break;
 				// All of the following switches were dealt with in parseCliEarly(), so ignore them
 				case (Cli::AtenDataSwitch):
 					argn++;

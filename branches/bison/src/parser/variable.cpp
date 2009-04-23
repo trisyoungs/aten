@@ -27,7 +27,7 @@
 Variable::Variable()
 {
 	// Private variables
-	name_.set("unnamed");
+	name_.set("unnamedvariable");
 	initialValue_ = NULL;
 	nodeType_ = TreeNode::VarNode;
 

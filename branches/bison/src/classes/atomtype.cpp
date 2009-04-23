@@ -35,7 +35,7 @@ int printlevel = 0;
 LineParser elparser;
 
 // Atom typing commands
-const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
+const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 Atomtype::AtomtypeCommand Atomtype::atomtypeCommand(const char *s)
 {
 	return (Atomtype::AtomtypeCommand) enumSearch("",Atomtype::nAtomtypeCommands,AtomtypeCommandKeywords,s);
@@ -480,6 +480,21 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					}
 					nHydrogen_ = atoi(optlist.get());
 					break;
+				// Atom geometries
+				case (UnboundCommand):
+				case (OneBondCommand):
+				case (LinearCommand):
+				case (TShapeCommand):
+				case (TrigPlanarCommand):
+				case (TetrahedralCommand):
+				case (SquarePlanarCommand):
+				case (TrigBipyramidCommand):
+				case (OctahedralCommand):
+					// Convert atomtype geometry keyword to Atom::Geometry enum
+					ag = Atom::atomGeometry(keywd.get());
+					if (ag != Atom::nAtomGeometries) geometry_ = ag;
+					else printf("Internal Error: Failed to reconvert atom geometry in atomtype description.\n");
+					break;
 				default:
 					found = FALSE;
 					break;
@@ -488,19 +503,14 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for geometry specifications (if it wasn't a bound specifier or type command)
 		if (!found)
 		{
-			ag = Atom::atomGeometry(keywd.get());
-			if (ag != Atom::nAtomGeometries) geometry_ = ag;
+			if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
 			else
 			{
-				if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
-				else
-				{
-					msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
-					msg.exit("Atomtype::expand");
-					return FALSE;
-				}
-				break;
+				msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
+				msg.exit("Atomtype::expand");
+				return FALSE;
 			}
+			break;
 		}
 	} while (!def.isEmpty());
 	level --;

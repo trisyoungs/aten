@@ -207,7 +207,6 @@ bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	else obj.rs->beginUndoState("Edit Cell");
 	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
 	obj.rs->endUndoState();
-	obj.rs->calculateDensity();
 	rv.reset();
 	return TRUE;
 }
@@ -223,7 +222,6 @@ bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs->beginUndoState("Set cell");
 	obj.rs->setCell(mat);
 	obj.rs->endUndoState();
-	obj.rs->calculateDensity();
 	rv.reset();
 	return TRUE;
 }

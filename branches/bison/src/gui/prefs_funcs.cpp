@@ -69,7 +69,7 @@ void AtenPrefs::setControls()
 	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Atom::TubeStyle));
 	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Atom::SphereStyle));
 	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Atom::ScaledStyle));
-	ui.BondRadiusSpin->setValue(prefs.bondRadius());
+// 	ui.BondRadiusSpin->setValue(prefs.bondRadius());       TGAY
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AtomQualitySpin->setValue(prefs.atomDetail());
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
@@ -241,7 +241,9 @@ void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 
 void AtenPrefs::on_BondRadiusSpin_valueChanged(double value)
 {
-	prefs.setBondRadius(value);
+	// TGAY
+// 	prefs.setBondRadius(value);
+	printf("Bond radius setting from GUI needs to be expanded.\n");
 	updateAfterViewPrefs();
 }
 

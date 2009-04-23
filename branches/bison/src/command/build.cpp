@@ -83,8 +83,6 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				if (!c->arg(4, v1)) return FALSE;
 				if (v1.type() == VTypes::StringData) bt = Bond::bondType(v1.asString());
 				else bt = Bond::bondType(v1.asDouble());
-	printf("BONDTYPE = %i %s\n", bt, Bond::bondType(bt));
-			XXX
 			}
 			else bt = Bond::Single;
 			obj.rs->bondAtoms(obj.i, i, bt);

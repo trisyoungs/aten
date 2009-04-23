@@ -145,6 +145,7 @@ void Tree::initialise()
 	clear();
 	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
 	ScopeNode *root = new ScopeNode(Command::NoFunction);
+	root->setParent(this);
 	root->createGlobalVariables();
 	nodes_.own(root);
 	scopeStack_.add(root);

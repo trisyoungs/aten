@@ -34,7 +34,6 @@
 #include "parser/model.h"
 #include "parser/vector.h"
 #include <string.h>
-// #include <stdarg.h>
 
 // Constructor
 VariableList::VariableList()

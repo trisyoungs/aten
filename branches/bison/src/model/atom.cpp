@@ -49,8 +49,7 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos, int targetid)
 	newatom->setId(targetid == -1 ? atoms_.nItems() - 1 : targetid);
 	if (targetid != -1) renumberAtoms(newatom);
 	newatom->r() = pos;
-	mass_ += elements().atomicMass(newel);
-	calculateDensity();
+	increaseMass(newel);
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -78,8 +77,7 @@ Atom *Model::addCopy(Atom *source)
 	newatom->setParent(this);
 	newatom->setId(atoms_.nItems() - 1);
 	changeLog.add(Log::Structure);
-	mass_ += elements().atomicMass(newatom->element());
-	calculateDensity();
+	increaseMass(newatom->element());
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -100,8 +98,7 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 	newatom->copy(source);
 	renumberAtoms(afterthis);
 	changeLog.add(Log::Structure);
-	mass_ += elements().atomicMass(newatom->element());
-	calculateDensity();
+	increaseMass(newatom->element());
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -118,9 +115,8 @@ void Model::removeAtom(Atom *xatom, bool noupdate)
 {
 	msg.enter("Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
-	mass_ -= elements().atomicMass(xatom->element());
-	if (mass_ < 0.0) mass_ = 0.0;
-	if (!noupdate) calculateDensity();
+	reduceMass(xatom->element());
+// 	if (!noupdate) calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
 	if (!noupdate) for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	if (xatom->isSelected()) deselectAtom(xatom);
@@ -173,10 +169,9 @@ void Model::transmuteAtom(Atom *i, short int el)
 		short int oldel = i->element();
 		if (oldel != el)
 		{
-			mass_ -= elements().atomicMass(i);
+			reduceMass(i->element());
 			i->setElement(el);
-			mass_ += elements().atomicMass(i);
-			calculateDensity();
+			increaseMass(i->element());
 			changeLog.add(Log::Structure);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
@@ -404,4 +399,51 @@ void Model::styleSelection(Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) styleAtom(i, ds);
+}
+
+// Return the total mass of atoms
+double Model::mass() const
+{
+	return mass_;
+}
+
+// Reduce the mass (and unknown element count) of the model
+void Model::reduceMass(int element)
+{
+	mass_ -= elements().atomicMass(element);
+	if (mass_ < 0.0) mass_ = 0.0;
+	if (element == 0) --nUnknownAtoms_;
+	// Recalculate density since mass has changed
+	calculateDensity();
+}
+
+// Increasethe mass (and unknown element count) of the model
+void Model::increaseMass(int element)
+{
+	mass_ += elements().atomicMass(element);
+	if (element == 0) ++nUnknownAtoms_;
+	// Recalculate density since mass has changed
+	calculateDensity();
+}
+
+// Calculate mass
+void Model::calculateMass()
+{
+	// Recalculate the mass of the atoms in the model.
+	msg.enter("Model::calculateMass");
+	mass_ = 0.0;
+	nUnknownAtoms_ = 0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	{
+		mass_ += elements().atomicMass(i);
+		if (i->element() == 0) ++nUnknownAtoms_;
+	}
+	calculateDensity();
+	msg.exit("Model::calculateMass");
+}
+
+// Return number of unknown atoms in the model
+int Model::nUnknownAtoms()
+{
+	return nUnknownAtoms_;
 }
