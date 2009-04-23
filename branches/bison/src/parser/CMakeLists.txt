@@ -45,6 +45,7 @@ forcefieldbound.cpp
 forcefield.cpp
 forest.cpp
 format.cpp
+grammar.cc
 integer.cpp
 model.cpp
 parser.cpp

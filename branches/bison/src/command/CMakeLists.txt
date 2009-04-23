@@ -1,4 +1,4 @@
-add_library(base
+add_library(command
 analyse.cpp
 atom.cpp
 bonds.cpp
