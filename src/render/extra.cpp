@@ -82,7 +82,8 @@ void Canvas::renderExtra3d()
 			  }
 			  else
 			  {
-				radius = prefs.renderStyle() == Atom::TubeStyle ? prefs.atomStyleRadius(Atom::TubeStyle) : prefs.bondRadius();
+// 				radius = prefs.renderStyle() == Atom::TubeStyle ? prefs.atomStyleRadius(Atom::TubeStyle) : prefs.bondRadius();
+				radius = prefs.bondStyleRadius(prefs.renderStyle());
 				glCylinder(mouse, mouse.magnitude(), 3, radius);
 				glTranslated(mouse.x, mouse.y, mouse.z);
 				switch (prefs.renderStyle())

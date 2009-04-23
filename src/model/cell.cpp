@@ -458,3 +458,30 @@ void Model::fracToReal()
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
 	msg.exit("Model::fracToReal");
 }
+
+// Calculate the density of the system (if periodic)
+void Model::calculateDensity()
+{
+	msg.enter("Model::calculateDensity");
+	if (cell_.type() != Cell::NoCell)
+	{
+		// Calculate density in the units specified by prefs.density_internal
+		switch (prefs.densityUnit())
+		{
+			case (Prefs::GramsPerCm):
+				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
+				break;
+			case (Prefs::AtomsPerAngstrom):
+				density_ = atoms_.nItems() / cell_.volume();
+				break;
+		}
+	}
+	else density_ = -1.0;
+	msg.exit("Model::calculateDensity");
+}
+
+// Return the density of the model
+double Model::density() const
+{
+	return density_;
+}

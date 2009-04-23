@@ -133,7 +133,10 @@ Prefs::Prefs()
 	atomStyleRadius_[Atom::TubeStyle] = 0.15;
 	atomStyleRadius_[Atom::SphereStyle] = 0.35;
 	atomStyleRadius_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
-	bondRadius_ = 0.15;
+	bondStyleRadius_[Atom::StickStyle] = 0.1;	// Unused
+	bondStyleRadius_[Atom::TubeStyle] = 0.04;
+	bondStyleRadius_[Atom::SphereStyle] = 0.15;
+	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
 	atomDetail_ = 10;
@@ -428,15 +431,15 @@ GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds)
 }
 
 // Sets the tube size in DS_TUBE
-void Prefs::setBondRadius(double f)
+void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 {
-	bondRadius_ = f;
+	bondStyleRadius_[ds] = f;
 }
 
-// Return the tube size used in DS_TUBE
-GLdouble Prefs::bondRadius()
+// Return bond radius for the specified style
+GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds)
 {
-	return bondRadius_;
+	return bondStyleRadius_[ds];
 }
 
 // Sets the detail for atom quadrics

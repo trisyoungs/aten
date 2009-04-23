@@ -49,7 +49,8 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 {
         // Create a new bond each atom and add them to the atom's own lists.
 	msg.enter("Model::bondAtoms");
-	if (i == j) msg.print("Cannot bond an atom to itself!\n");
+	if ((i == NULL) || (j == NULL)) printf("One or both atom pointers passed to Mode::bondAtoms are NULL (%li / %li)\n", i, j);
+	else if (i == j) msg.print("Cannot bond an atom to itself!\n");
 	else
 	{
 		// Search for old bond between atoms

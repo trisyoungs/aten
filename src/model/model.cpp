@@ -43,6 +43,7 @@ Model::Model()
 	cameraRotation_ = 0.0;
 	mass_ = 0.0;
 	density_ = 0.0;
+	nUnknownAtoms_ = 0;
 	translateScale_ = 1.0;
 	forcefield_ = NULL;
 	namesForcefield_ = NULL;
@@ -138,18 +139,6 @@ const char *Model::name() const
 	return name_.get();
 }
 
-// Return the mass of the molecule
-double Model::mass() const
-{
-	return mass_;
-}
-
-// Return the density of the model
-double Model::density() const
-{
-	return density_;
-}
-
 // Clear
 void Model::clear()
 {
@@ -164,15 +153,6 @@ void Model::clear()
 	projectionPoint_ = -1;
 }
 
-// Calculate mass
-void Model::calculateMass()
-{
-	// Calculate the mass of the atoms in the model.
-	msg.enter("Model::calculateMass");
-	mass_ = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements().atomicMass(i);
-	msg.exit("Model::calculateMass");
-}
 
 /*
 // Labelling
@@ -258,27 +238,6 @@ void Model::printCoords() const
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
 	msg.exit("Model::printCoords");
-}
-
-// Calculate the density of the system (if periodic)
-void Model::calculateDensity()
-{
-	msg.enter("Model::calculateDensity");
-	if (cell_.type() != Cell::NoCell)
-	{
-		// Calculate density in the units specified by prefs.density_internal
-		switch (prefs.densityUnit())
-		{
-			case (Prefs::GramsPerCm):
-				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
-				break;
-			case (Prefs::AtomsPerAngstrom):
-				density_ = atoms_.nItems() / cell_.volume();
-				break;
-		}
-	}
-	else density_ = -1.0;
-	msg.exit("Model::calculateDensity");
 }
 
 // Bohr to Angstrom

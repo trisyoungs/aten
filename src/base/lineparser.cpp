@@ -27,7 +27,7 @@
 #include <string.h>
 
 // Parse options
-const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
+const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes" };
 LineParser::ParseOption LineParser::parseOption(const char *s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
@@ -259,13 +259,12 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("LineParser::getNextArg");
 	int arglen, readresult;
-	bool done, hadquotes, expression, failed;
+	bool done, hadquotes, failed;
 	char c, quotechar, d;
 	failed = FALSE;
 	done = FALSE;
 	hadquotes = FALSE;
 	quotechar = '\0';
-	expression = FALSE;
 	endOfLine_ = FALSE;
 	arglen = 0;
 	optionMask_ = flags;
@@ -285,7 +284,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
 			case (','):	// Comma
-				if ((quotechar != '\0') || expression)
+				if (quotechar != '\0')
 				{
 					tempArg_[arglen] = c;
 					arglen ++;
@@ -296,7 +295,6 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (expression) break;
 				if (!(optionMask_&LineParser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
@@ -314,7 +312,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if ((optionMask_&LineParser::StripBrackets) && (!expression)) break;
+				if (optionMask_&LineParser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -400,7 +398,8 @@ void LineParser::getAllArgsDelim()
 	{
 		// Create new, empty dnchar
 		arg = new Dnchar;
-		if (getNextArg(arg))
+		// We must pass on the current optionMask_, else it will be reset by the default value in getNextArg()
+		if (getNextArg(arg, optionMask_))
 		{
 			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
 			// Add this char to the list
@@ -738,6 +737,13 @@ bool LineParser::isBlank(int i)
 	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);
 }
 
+// Returns whether the specified argument exists
+bool LineParser::hasArg(int i)
+{
+	if ((i < 0) || (i >= nArgs())) return FALSE;
+	return TRUE;
+}
+
 /*
 // Atom type definition functions
 */
@@ -750,13 +756,13 @@ const char *LineParser::parseAtomtypeString(Dnchar &source)
 	msg.enter("LineParser::parseAtomtypeString");
 	int n, nchars, bracketlevel;
 	bool done, el_list;
-	Dnchar typecmd;
+	static Dnchar typecmd;
 	nchars = 0;
 	bracketlevel = 0;
 	el_list = FALSE;
 	done = FALSE;
 	typecmd.createEmpty(source);
-	//source.print();
+// 	source.print();
 	for (n=0; n<source.length(); n++)
 	{
 		switch (source[n])
@@ -800,11 +806,9 @@ const char *LineParser::parseAtomtypeString(Dnchar &source)
 		if (done) break;
 	}
 	// Strip off the keyword characters from the string.
-	//printf("Erasing in parseAtomtypeString...\n");
-	// ERASE now takes 'start' and 'end' (not 'count') as parameters.
 	source.eraseStart(n+1);
-	//printf("Result = ");
-	//typecmd.print();
+// 	printf("Result = ");
+// 	typecmd.print();
 	msg.exit("LineParser::parseAtomtypeString");
 	return typecmd.get();
 }
@@ -815,10 +819,10 @@ const char *LineParser::trimAtomtypeKeyword(Dnchar &source)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
 	msg.enter("LineParser::trimAtomtypeKeyword");
 	bool done, equals;
-	Dnchar keywd;
+	static Dnchar keywd;
 	done = FALSE;
 	equals = FALSE;
-	//printf("String given to trimAtomKeyword = '%s'\n",source.get());
+// 	printf("String given to trimAtomKeyword = '%s'\n",source.get());
 	keywd.createEmpty(source);
 	int n;
 	for (n=0; n<source.length(); n++)

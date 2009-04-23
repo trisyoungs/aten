@@ -185,7 +185,7 @@ bool Forcefield::readTypes()
 			msg.exit("Forcefield::readTypes");
 			return FALSE;
 		}
-		ffa->setDescription(ffparser.argc(4));
+		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
 	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.line());
 	else msg.print("\t: Read in %i type descriptions\n", nadded);
@@ -322,7 +322,7 @@ bool Forcefield::readInter()
 			}
 			ffa->setCharge(ffparser.argd(2));
 			ffa->setVdwForm(vdwstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+3)) ffa->setParameter(n, ffparser.argd(n+3));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) ffa->setParameter(n, ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
 			count ++;
 		}
@@ -375,7 +375,7 @@ bool Forcefield::readBonds()
 			newffbond->setTypeName(0,ffparser.argc(0));
 			newffbond->setTypeName(1,ffparser.argc(1));
 			newffbond->setBondStyle(bondstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
 			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
 		}
@@ -429,7 +429,7 @@ bool Forcefield::readAngles()
 			newffangle->setTypeName(1, ffparser.argc(1));
 			newffangle->setTypeName(2, ffparser.argc(2));
 			newffangle->setAngleStyle(anglestyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!ffparser.isBlank(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
 		}
@@ -486,7 +486,7 @@ bool Forcefield::readTorsions()
 			newfftorsion->setTorsionStyle(torsionstyle);
 			newfftorsion->setParameter(TF_ESCALE, escale14);
 			newfftorsion->setParameter(TF_VSCALE, vscale14);
-			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!ffparser.isBlank(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
+			for (n=0; n<MAXFFPARAMDATA-2; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}

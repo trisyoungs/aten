@@ -274,6 +274,13 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	m = m->renderSource();
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
+	// Add on unknown atom information
+	if (m->nUnknownAtoms() != 0)
+	{
+		s += " (<b>";
+		s += itoa(m->nUnknownAtoms());
+		s += " unknown</b>) ";
+	}
 	if (m->nSelected() != 0)
 	{
 		s += "(<b>";

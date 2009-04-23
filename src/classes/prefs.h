@@ -145,8 +145,8 @@ class Prefs
 	Prefs::ColouringScheme colourScheme_;
 	// Atom sizes / radii
 	GLdouble atomStyleRadius_[Atom::nDrawStyles];
-	// Bond radius for Scaled and Sphere drawing styles
-	GLdouble bondRadius_;
+	// Bond radii
+	GLdouble bondStyleRadius_[Atom::nDrawStyles];
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
 	// Detail of atom quadric (slices/stacks)
@@ -170,9 +170,9 @@ class Prefs
 	// Return the specified atom radius
 	GLdouble atomStyleRadius(Atom::DrawStyle ds);
 	// Sets the bond radius used in Scaled and Sphere styles
-	void setBondRadius(double f);
+	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
-	GLdouble bondRadius();
+	GLdouble bondStyleRadius(Atom::DrawStyle ds);
 	// Sets the detail for atom quadrics
 	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics

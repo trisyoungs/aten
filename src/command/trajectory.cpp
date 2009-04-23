@@ -66,7 +66,6 @@ bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.rs->calculateViewMatrix();
 	obj.rs->resetView();
 	obj.rs->calculateMass();
-	obj.rs->calculateDensity();
 	obj.rs->selectNone();
 	obj.rs->changeLog.reset();
 	obj.rs->changeLog.updateSavePoint();

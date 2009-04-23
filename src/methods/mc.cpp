@@ -690,7 +690,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 	}
 	destmodel->foldAllAtoms();
 	destmodel->calculateMass();
-	destmodel->calculateDensity();
 	//if (destmodel->arePatternsValid()) printf("Patterns are valid...\n");
 	//else printf("Patterns are NOT valid.\n");
 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");

@@ -39,7 +39,7 @@ class TreeNode
 	public:
 	// Constructor / Destructor
 	TreeNode();
-	~TreeNode();
+	virtual ~TreeNode();
 	// List pointers
 	TreeNode *prev, *next;
 	// List pointers (for argument list)
