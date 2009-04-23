@@ -54,6 +54,7 @@ VTypes::DataType declaredType;
 %type <node> constant expr rawexpr func var rawvar
 %type <node> flowstatement stexpr statement block blockment statementlist exprlist VECCONST
 %type <node> namelist newname
+%type <name> newvar
 %type <node> filter pushscope declaration userfunc userfuncdef
 
 %%
@@ -120,7 +121,7 @@ statement:
 	;
 
 stexpr:
-	declaration					{ $$ = $1; }
+	declaration					{ $$ = $1;  }
 	| expr						{ $$ = $1; }
 	;
 
@@ -151,7 +152,7 @@ constant:
 /* User-defined function */
 
 userfuncdef:
-	VARTYPE savetype NEWTOKEN '(' pushfunc ')' block { if (!cmdparser.addStatement($7)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); }
+	VARTYPE savetype NEWTOKEN '(' pushfunc ')' block { if (!cmdparser.addStatement($7)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
 	;
 
 pushfunc:
@@ -169,10 +170,10 @@ namelist:
 	;
 
 newname:
-	NEWTOKEN savetokenname '[' expr ']' 		{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$4); }
-	| NEWTOKEN savetokenname '=' expr 		{ $$ = cmdparser.addVariable(declaredType, &tokenName,$4); }
-	| NEWTOKEN savetokenname '[' expr ']' '=' expr  { $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$4,$7); }
-	| NEWTOKEN					{ $$ = cmdparser.addVariable(declaredType, $1); }
+	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3); }
+	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName,$3); }
+	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
+	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
 	| VAR savevarname 				{ $$ = cmdparser.addVariable(declaredType, &varName); }
 	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
 	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
@@ -180,8 +181,13 @@ newname:
 	| VARTYPE					{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	;
 
+newvar:
+	NEWTOKEN savetokenname				{ if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } $$ = $1; }
+	;
+
+
 declaration:
-	VARTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); }
+	VARTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
 	| VARTYPE savetype error			{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
 	;
 
@@ -194,8 +200,8 @@ step:
 	;
 
 steplist:
-	step 						{  }
-	| steplist '.' step				{  }
+	step 						{ }
+	| steplist '.' step				{ }
 	| steplist error				{ msg.print("Error formulating path.\n"); YYABORT; }
 	;
 
