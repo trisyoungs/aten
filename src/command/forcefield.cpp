@@ -99,8 +99,12 @@ bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue
 // Set default forcefield ('defaultff <ff>')
 bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// If an argument was supplied, select forcefield by name. Otherwise use current
-	aten.setDefaultForcefield(aten.findForcefield(c->argc(0)));
+	Forcefield *ff = NULL;
+	if (c->argType(0) == VTypes::ForcefieldData) ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
+	else if (c->argType(0) == VTypes::StringData) ff = aten.findForcefield(c->argc(0));
+	else msg.print("Invalid type (%s) given to 'defaultff'.\n", VTypes::dataType(c->argType(0)));
+	if (ff == NULL) return FALSE;
+	aten.setDefaultForcefield(ff);
 	rv.reset();
 	return TRUE;
 }
@@ -108,6 +112,7 @@ bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set equivalent 
 bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
+	XXX
 	rv.reset();
 	return FALSE;
 }
@@ -289,8 +294,7 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
 		return FALSE;
 	}
-	filter->executeWrite(c->argc(1));
-	rv.reset();
+	rv.set( filter->executeWrite(c->argc(1)) );
 	return TRUE;
 }
 
@@ -353,6 +357,7 @@ bool Command::function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return FALSE;
+	rv.reset();
 	// Find the specified type...
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
@@ -367,15 +372,17 @@ bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			// Prepare for typing
 			obj.m->describeAtoms();
 			// Get atom, element, and the atom's pattern
-			Atom *i = obj.m->atomArray()[c->argi(1)-1];
+			Atom *i = NULL;
+			if (c->argType(1) == VTypes::AtomData) i = (Atom*) c->argp(1, VTypes::AtomData);
+			else if (c->argType(1) == VTypes::IntegerData) i = obj.m->atomArray()[c->argi(1)-1];
 			Pattern *p = obj.m->pattern(i);
 			int score = ffa->atomtype()->matchAtom(i,p->ringList(),obj.m,i);
 			if (score > 0) msg.print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
 			else msg.print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
+			rv.set(score);
 		}
 		else return FALSE;
 	}
-	rv.reset();
 	return TRUE;
 }
 

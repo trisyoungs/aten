@@ -28,18 +28,28 @@
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
-void selectAtoms(Model *m, TreeNode *node, bool deselect)
+bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
 	static char from[32], to[32], text[256], s[512];
 	int i, j, n, plus;
 	bool range;
 	// Execute argument to get result
 	ReturnValue value;
-	if (!node->execute(value)) return;
-	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
+	if (!node->execute(value)) return FALSE;
+	// If the argument is an atom variable, (de)select the corresponding atom. Otherwise, perform ranged selections
 	if (value.type() == VTypes::AtomData)
 	{
 		Atom *ii = (Atom*) value.asPointer(VTypes::AtomData);
+		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
+		m->beginUndoState(s);
+		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
+		m->endUndoState();
+	}
+	// If the argument is an integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
+	if (value.type() == VTypes::IntegerData)
+	{
+		Atom *ii = m->atom(value.asInteger()-1);
+		if (ii == NULL) return FALSE;
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
@@ -53,7 +63,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 		m->selectPattern(pp, FALSE, deselect);
 		m->endUndoState();
 	}
-	else
+	else if (value.type() == VTypes::StringData)
 	{
 		// Copy variable contents into local character array
 		strcpy(text, value.asString());
@@ -67,7 +77,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 			if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
 			{
 				msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
-				return;
+				return FALSE;
 			}
 		}
 		else
@@ -80,7 +90,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 			else
 			{
 				msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
-				return;
+				return FALSE;
 			}
 		}
 		// Do the selection
@@ -102,7 +112,7 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) in select.\n", from);
-					return;
+					return FALSE;
 				}
 				if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
 				else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
@@ -124,19 +134,25 @@ void selectAtoms(Model *m, TreeNode *node, bool deselect)
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
-					return;
+					return FALSE;
 				}
 				j = elements().findAlpha(to);
 				if (j == 0)
 				{
 					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
-					return;
+					return FALSE;
 				}
 				for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
 		}
 		m->endUndoState();
 	}
+	else
+	{
+		msg.print("Cannot (de)select atoms based on supplied %s.\n", VTypes::dataType(value.type()));
+		return FALSE;
+	}
+	return TRUE;
 }
 
 // Deselect atom, range of atoms, or elements ('select <n>')
@@ -145,10 +161,11 @@ bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
 	int nselected = obj.rs->nSelected();
+	bool result = TRUE;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->argNode(i), TRUE);
+	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs, c->argNode(i), TRUE)) { result = FALSE; break; }
 	rv.set(nselected - obj.rs->nSelected());
-	return TRUE;
+	return result;
 }
 
 // Deselect by supplied atom type description ('deselecttype <el> <typedesc>')
@@ -178,9 +195,10 @@ bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Expand current selection");
+	int nselected = obj.rs->nSelected();
 	obj.rs->selectionExpand();
 	obj.rs->endUndoState();
-	rv.reset();
+	rv.set( obj.rs->nSelected() - nselected );
 	return TRUE;
 }
 
@@ -191,7 +209,7 @@ bool Command::function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs->beginUndoState("Select all atoms");
 	obj.rs->selectAll();
 	obj.rs->endUndoState();
-	rv.reset();
+	rv.set( obj.rs->nSelected() );
 	return TRUE;
 }
 
@@ -201,10 +219,11 @@ bool Command::function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Store current number of selected atoms
 	int nselected = obj.rs->nSelected();
+	bool result = TRUE;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->argNode(i), FALSE);	
+	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs, c->argNode(i), FALSE)) { result = FALSE; break; }
 	rv.set(obj.rs->nSelected() - nselected);
-	return TRUE;
+	return result;
 }
 
 // Select by forcefield type ('selecffttype <fftype>')
@@ -261,7 +280,7 @@ bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs->beginUndoState("Invert selection");
 	obj.rs->selectionInvert();
 	obj.rs->endUndoState();
-	rv.reset();
+	rv.set( obj.rs->nSelected() );
 	return TRUE;
 }
 
@@ -281,9 +300,10 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
-	sprintf(s,"Select overlapping atoms (within %f)", c->argd(0));
+	double tol = c->hasArg(0) ? c->argd(0) : 0.2;
+	sprintf(s,"Select overlapping atoms (within %f)", tol);
 	obj.rs->beginUndoState(s);
-	obj.rs->selectOverlaps(c->argd(0));
+	obj.rs->selectOverlaps(tol);
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected());
 	return TRUE;
@@ -300,6 +320,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 		else p = obj.rs->findPattern(c->argc(0));
 	}
 	else p = obj.p;
+	int nselected = obj.rs->nSelected();
 	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else
 	{
@@ -314,7 +335,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 		}
 		obj.rs->endUndoState();
 	}
-	rv.reset();
+	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
 }
 
