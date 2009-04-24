@@ -39,6 +39,7 @@ Command commands;
 	B	Boolean		Any
 	A	Atom/Id		IntegerData, AtomData
 	M	Model/ID/Name	ModelData, StringData, IntegerData
+	F	Forcefield|Name	ForcefieldData, StringData
 	P	Pattern/ID/Name	PatternData, StringData, IntegerData
 	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
@@ -48,6 +49,7 @@ Command commands;
 	[]	<Cluster>	Surrounds groups of optional arguments that must be specified together
 	|	<Or>		Separates alternative lists of arguments for the command
 	&	<Array>		Next token must be an array
+	/	<type Or>	Specifies an argument may be one of two types
 	2-9	<NRepeat>	Next argument should occur N times
 */
 
@@ -324,7 +326,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "if",			"_",		"(<expression> <condition> <expression>) { ... } [else { ... }]", VTypes::NoData,
 				"Perform a conditional test between the supplied expressions (or variables or constants)" },
 	{ "return",		"z",		"[value]", VTypes::NoData,
-				"Terminate execution of the current program/filter/function, optionally returning the value provided." },
+				"Terminate execution of the current program/filter/function, optionally returning the value provided" },
 	{ "while",		"_",		"(<expression>) { ... }", VTypes::NoData,
 				"Run the enclosed block or statement as many times as <expression> evaluates to TRUE" },
 	
@@ -338,15 +340,15 @@ CommandData Command::data[Command::nCommands] = {
 	
 	// Forcefield commands
 	{ "angledef",		"CCCCNnnnnn", "<form> <name1> <name2> <name3> <data1> [data2 ... data6]", VTypes::NoData,
-				"Add an angle definition to the current forcefield." },
+				"Add an angle definition to the current forcefield" },
 	{ "bonddef",		"CCCNnnnnn", "<form> <name1> <name2> <data1> [data2 ... data6]", VTypes::NoData,
-				"Add a bond definition to the current forcefield." },
+				"Add a bond definition to the current forcefield" },
 	{ "clearmap",		"",		"", VTypes::NoData,
-				"Clear manual type mapping list." },
+				"Clear manual type mapping list" },
 	{ "createexpression",	"",		"", VTypes::NoData,
 				"Create and fill a forcefield expression for the current model" },
-	{ "defaultff",		"C",		"<ff>", VTypes::NoData,
-				"Make named forcefield the default for occasions where no other is specified." },
+	{ "defaultff",		"F",		"<ff>", VTypes::NoData,
+				"Make named forcefield the default for occasions where no other is specified" },
 	{ "equivalents",	"CC",		"<name> <'names...'>", VTypes::NoData,
 				"Define forcefield equivalents" },
 	{ "ffmodel",		"c",		"[name]", VTypes::NoData,
@@ -354,7 +356,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "ffpattern",		"p",		"[pattern|id|name]", VTypes::NoData,
 				"Associate current forcefield to current pattern" },
 	{ "finaliseff",		"",		"", VTypes::NoData,
-				"Finalise current forcefield." },
+				"Finalise current forcefield" },
 	{ "genconvert",		"N*",		"<data1> [data2..data10]", VTypes::NoData,
 				"Set energetic generator data to convert" },
 	{ "generator",		"NNnnnnnnnnn",	"<typeId> <data1> [data2...data10]", VTypes::NoData,
@@ -364,24 +366,24 @@ CommandData Command::data[Command::nCommands] = {
 	{ "interdef",		"CNNNnnnnn", "<form> <typeid> <charge> <data1> [data2...data6]", VTypes::NoData,
 				"Add a new interatomic definition to the current forcefield" },
 	{ "loadff",		"Cc",		"<filename> [name]", VTypes::ForcefieldData,
-				"Load forcefield" },
+				"Load forcefield from file, renaming to new name if one was supplied" },
 	{ "map",		"C*",		"<name=element,...>", VTypes::NoData,
 				"Add typename mappings" },
-	{ "newff",		"C",		"<name>", VTypes::NoData,
-				"Create a new, empty forcefield." },
+	{ "newff",		"C",		"<name>", VTypes::ForcefieldData,
+				"Create a new, empty forcefield" },
 	{ "printsetup",		"",		"", VTypes::NoData,
 				"Print the current energy/force calculation setup" },
 	{ "rules",		"C",		"<rules set>", VTypes::NoData,
 				"Set rules set to use for parameter generation" },
-	{ "saveexpression",	"CC",		"<format> <filename>", VTypes::NoData,
+	{ "saveexpression",	"CC",		"<format> <filename>", VTypes::IntegerData,
 				"Save the expression for the current model" },
 	{ "torsiondef",		"CCCCCNnnnnn", "<form> <name1> <name2> <name3> <name4> <data1> [data2 ... data6]", VTypes::NoData,
-				"Add a torsion definition to the current forcefield." },
+				"Add a torsion definition to the current forcefield" },
 	{ "typedef",		"NCSCc", "<typeid> <name> <element> <type> [description]", VTypes::NoData,
-				"Add an atom type to the current forcefield." },
+				"Add an atom type to the current forcefield" },
 	{ "typemodel",		"",		"", VTypes::NoData,
 				"Perform atom typing on the current model" },
-	{ "typetest",		"NN",		"<id> <id>", VTypes::NoData,
+	{ "typetest",		"NA",		"<id> <atom|id>", VTypes::IntegerData,
 				"Test atomtype score on atom id provided" },
 	{ "units",		"C",		"<energy unit>", VTypes::NoData,
 				"Set energy unit of forcefield" },
@@ -709,7 +711,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Execute the named script" },
 
 	// Selection commands
-	{ "deselect",		"S*",		"<id|el|id~id|el~el|+id|+el|id+|el+,...>", VTypes::IntegerData,
+	{ "deselect",		"Z*",		"<id|el|id~id|el~el|+id|+el|id+|el+,...>", VTypes::IntegerData,
 				"Deselect specific atoms / ranges in the current model" },
 	{ "deselecttype",	"SC",		"<element> <typedesc>", VTypes::IntegerData,
 				"Deselect all atoms that match the provided atomtype description" },
@@ -717,7 +719,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Expands the current atom selection" },
 	{ "invert",		"",		"", VTypes::IntegerData,
 				"Invert the current selection" },
-	{ "select",		"S*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", VTypes::IntegerData,
+	{ "select",		"Z*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>", VTypes::IntegerData,
 				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"", VTypes::NoData,
 				"Select all atoms in the current model" },
@@ -726,12 +728,12 @@ CommandData Command::data[Command::nCommands] = {
 	{ "selectioncog",	"",		"", VTypes::VectorData,
 				"Return centre of geometry of current selection" },
 	{ "selectioncom",	"",		"", VTypes::VectorData,
-				"Return centre of mass of current selection (and place in variables if supplied" },
+				"Return centre of mass of current selection" },
 	{ "selectnone",		"",		"", VTypes::NoData,
 				"Deselect all atoms in the current model" },
 	{ "selectoverlaps",	"n",		"[tolerance = 0.2]", VTypes::IntegerData,
 				"Select all atoms which are within a given distance of each other" },
-	{ "selectpattern",	"p",		"[name]", VTypes::NoData,
+	{ "selectpattern",	"p",		"[name]", VTypes::IntegerData,
 				"Select all atoms in the current (or named) pattern" },
 	{ "selecttype",		"SC",		"<element> <typedesc>", VTypes::IntegerData,
 				"Select all atoms that match the provided atomtype description (returning the number matched)" },
@@ -886,7 +888,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "setview",		"NNNNNNNNNNNNn","<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz> <camx> <camyu> <camz> [zrot]", VTypes::NoData,
 				"Set the rotation matrix, camera position, and camera z-rotation for the current model" },
 	{ "speedtest",		"n",		"[nrender]", VTypes::NoData,
-				"Time 100 (or 'nrender') updates of the model display." },
+				"Time 100 (or 'nrender') updates of the model display" },
 	{ "translateview",	"NNN",		"<dx> <dy> <dz>", VTypes::NoData,
 				"Translate the camera for the current model" },
 	{ "viewalong",		"NNN",		"<x> <y> <z>", VTypes::NoData,
