@@ -513,8 +513,6 @@ CommandData Command::data[Command::nCommands] = {
 				"Print a message" },
 	{ "verbose",		"Cz*",		"<message>", VTypes::NoData,
 				"Print a message when verbose output is enabled" },
-	{ "warn",		"Cz*",		"<message>", VTypes::NoData,
-				"Raise a warning message (command list will continue)" },
 	
 	// Minimisation commands
 	{ "cgminimise",		"",		"", VTypes::NoData,
@@ -664,7 +662,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "getline",		"^C",		"", VTypes::IntegerData,
 				"Read the next line from the file, placing in variable supplied, and returning read success" },
 	{ "peekchar",		"",		"", VTypes::StringData, 
-				"Peek the next character from the current input file" },
+				"Peek the next character from the current input file, and return it as a string" },
+	{ "peekchari",		"",		"", VTypes::IntegerData, 
+				"Peek the next character from the current input file, and return its ASCII code" },
 	{ "readchars",		"N",		"<nchars>", VTypes::StringData,
 				"Read a number of characters from the input file" },
 	{ "readdouble",		"n",		"[nbytes]", VTypes::DoubleData,
@@ -693,13 +693,13 @@ CommandData Command::data[Command::nCommands] = {
 				"Skip a number of characters in the input file" },
 	{ "skipline",		"n",		"[nlines]", VTypes::NoData,
 				"Skip a number of lines in the input file" },
-	{ "writeline",		"Z*",		"<data1> [data2...]", VTypes::IntegerData,
+	{ "writeline",		"Z*",		"<data1> [data2...]", VTypes::NoData,
 				"Write an formatted line to the output file, with data items separated by spaces" },
-	{ "writelinef",		"Cz*",		"<formatting string> [data1, data2...]", VTypes::IntegerData,
+	{ "writelinef",		"Cz*",		"<formatting string> [data1, data2...]", VTypes::NoData,
 				"Write a formatted line to the output file" },
-	{ "writevar",		"^Cz*",		"<variable> [data1, data2...]", VTypes::IntegerData,
+	{ "writevar",		"^Cz*",		"<variable> [data1, data2...]", VTypes::NoData,
 				"Write a delimited series of arguments to the supplied character variable" },
-	{ "writevarf",		"^CCz*",	"<variable> <formatting string> [data1, data2...]", VTypes::IntegerData,
+	{ "writevarf",		"^CCz*",	"<variable> <formatting string> [data1, data2...]", VTypes::NoData,
 				"Write a formatted line to the supplied character variable" },
 
 	// Script commands

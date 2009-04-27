@@ -136,6 +136,20 @@ bool LineParser::isFileGood()
 	return file_.good();
 }
 
+// Return whether current file source is good for reading
+bool LineParser::isFileGoodForReading()
+{
+	if (!file_.good()) return FALSE;
+	return readOnly_;
+}
+
+// Return whether current file source is good for writing
+bool LineParser::isFileGoodForWriting()
+{
+	if (!file_.good()) return FALSE;
+	return (!readOnly_);
+}
+
 // Peek next character in file
 char LineParser::peek()
 {
@@ -581,12 +595,17 @@ int LineParser::getInteger(int nbytes)
 bool LineParser::getIntegerArray(double *array, int count)
 {
 	file_.read((char*) array, count*sizeof(int));
-	if (file_.eof() || file_.fail())
+	if (file_.eof())
 	{
 		closeFile();
-		return FALSE;
+		return -1;
 	}
-	return TRUE;
+	if (file_.fail())
+	{
+		closeFile();
+		return 1;
+	}
+	return 0;
 }
 
 // Return a double value from reading 'n' chars of an (unformatted) input file
@@ -620,12 +639,17 @@ double LineParser::getDouble(int nbytes)
 bool LineParser::getDoubleArray(double *array, int count)
 {
 	file_.read((char*) array, count*sizeof(double));
-	if (file_.eof() || file_.fail())
+	if (file_.eof())
 	{
 		closeFile();
-		return FALSE;
+		return -1;
 	}
-	return TRUE;
+	if (file_.fail())
+	{
+		closeFile();
+		return 1;
+	}
+	return 0;
 }
 
 // Write line to file

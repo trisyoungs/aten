@@ -318,7 +318,6 @@ class Command
 		Error,
 		Printf,
 		Verbose,
-		Warn,
 	
 		// Minimisation Commands
 		CGMinimise,
@@ -399,6 +398,7 @@ class Command
 		Find,
 		GetLine,
 		PeekChar,
+		PeekCharI,
 		ReadChars,
 		ReadDouble,
 		ReadDoubleArray,
@@ -772,7 +772,6 @@ class Command
 	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Warn(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands
 	static bool function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -848,6 +847,7 @@ class Command
 	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv);

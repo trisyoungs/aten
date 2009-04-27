@@ -84,6 +84,10 @@ class LineParser
 	void closeFile();
 	// Return whether current file source is good for reading/writing
 	bool isFileGood();
+	// Return whether current file source is good for reading
+	bool isFileGoodForReading();
+	// Return whether current file source is good for writing
+	bool isFileGoodForWriting();
 	// Tell current position of file stream
 	streampos tellg();
 	// Peek next character in file

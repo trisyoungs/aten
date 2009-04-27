@@ -51,7 +51,6 @@ bool CommandNode::prepFunction()
 	{
 		// For functions that use formats, attempt to create the format *if* the format string is a character constant
 		case (Command::Error):
-		case (Command::Warn):
 		case (Command::Printf):
 		case (Command::Verbose):
 		case (Command::ReadLineFormatted):

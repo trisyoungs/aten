@@ -61,16 +61,3 @@ bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (fmt->writeToString()) msg.print(Messenger::Verbose, "%s\n",fmt->string());
 	return TRUE;
 }
-
-// Write line to msg output
-bool Command::function_Warn(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	Format *fmt = c->createFormat(0,1);
-	if (fmt == NULL)
-	{
-		printf("Warning - No format defined in 'warn' command.\n");
-		return FALSE;
-	}
-	if (fmt->writeToString()) msg.print("Warning: %s\n",fmt->string());
-	return TRUE;
-}

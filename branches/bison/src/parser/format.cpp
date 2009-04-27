@@ -299,7 +299,12 @@ void Format::addFormattedChunk(const char *format, TreeNode *arg, VTypes::DataTy
 // Add new delimited chunk to format
 void Format::addDelimitedChunk(TreeNode *arg)
 {
-	FormatChunk *chunk = new FormatChunk(FormatChunk::DelimitedChunk, NULL, arg);
+	if (arg == NULL)
+	{
+		printf("Internal Error: Tried to create a DelimitedChunk from a NULL argument.\n");
+		return;
+	}
+	FormatChunk *chunk = new FormatChunk(FormatChunk::DelimitedChunk, NULL, arg, arg->returnType());
 	chunks_.own(chunk);
 }
 
@@ -347,6 +352,7 @@ int Format::executeRead(LineParser *parser, int flags)
 				length = chunk->formatLength();
 				if (length > 0) parser->getNextN(length, &bit);
 				else parser->getNextArg(&bit, flags);
+				if (!bit.isEmpty()) nparsed ++;
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
@@ -356,8 +362,10 @@ int Format::executeRead(LineParser *parser, int flags)
 		// Set the corresponding argument accordingly
 		if (chunk->type() != FormatChunk::PlainTextChunk)
 		{
-			switch (chunk->arg()->returnType())
+			switch (chunk->retrieveType())
 			{
+				case (VTypes::NoData):
+					break;
 				case (VTypes::IntegerData):
 					rv.set( atoi(bit.get()) );
 					break;
@@ -373,7 +381,7 @@ int Format::executeRead(LineParser *parser, int flags)
 					break;
 			}
 			if (nparsed == -1) break;
-			chunk->arg()->set( rv );
+			if (chunk->retrieveType() != VTypes::NoData) chunk->arg()->set( rv );
 		}
 	}
 	msg.exit("Format::executeRead");
