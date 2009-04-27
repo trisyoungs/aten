@@ -349,7 +349,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Create and fill a forcefield expression for the current model" },
 	{ "defaultff",		"F",		"<ff>", VTypes::NoData,
 				"Make named forcefield the default for occasions where no other is specified" },
-	{ "equivalents",	"CC",		"<name> <'names...'>", VTypes::NoData,
+	{ "equivalents",	"CC*",		"<name> <'names...'>", VTypes::NoData,
 				"Define forcefield equivalents" },
 	{ "ffmodel",		"c",		"[name]", VTypes::NoData,
 				"Associate current (or named) forcefield to current model" },
