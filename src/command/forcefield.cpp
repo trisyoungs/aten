@@ -112,9 +112,22 @@ bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set equivalent 
 bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	XXX
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
+	ForcefieldAtom *ffa;
+	LineParser parser;
+	// Loop over command arguments
+	for (int n=1; n<c->nArgs(); ++n)
+	{
+		// Split command into comma-delimited sections
+		parser.getArgsDelim(c->argc(n));
+		for (int i=0; i<parser.nArgs(); ++i)
+		{
+			for (ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next)
+				if (obj.ff->matchType(ffa->name(),parser.argc(i)) < 10) ffa->setEquivalent(c->argc(0));
+		}
+	}
 	rv.reset();
-	return FALSE;
+	return TRUE;
 }
 
 // Associate current ff to current model ('ffmodel [name]')
