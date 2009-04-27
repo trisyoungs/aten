@@ -275,7 +275,6 @@ void Command::initPointers()
 	pointers_[Error] = &Command::function_Error;
 	pointers_[Printf] = &Command::function_Printf;
 	pointers_[Verbose] = &Command::function_Verbose;
-	pointers_[Warn] = &Command::function_Warn;
 
 	// Minimisation Commands
 	pointers_[CGMinimise] = &Command::function_CGMinimise;
@@ -356,6 +355,7 @@ void Command::initPointers()
 	pointers_[Find] = &Command::function_Find;
 	pointers_[GetLine] = &Command::function_GetLine;
 	pointers_[PeekChar] = &Command::function_PeekChar;
+	pointers_[PeekCharI] = &Command::function_PeekCharI;
 	pointers_[ReadChars] = &Command::function_ReadChars;
 	pointers_[ReadDouble] = &Command::function_ReadDouble;
 	pointers_[ReadDoubleArray] = &Command::function_ReadDoubleArray;

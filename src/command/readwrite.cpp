@@ -36,7 +36,7 @@ bool Command::function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &r
 // Check for end of file (or nothing remaining but whitespace)
 bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
+	// Check that a valid file source/destination exists.
 	if (!c->parent()->parser()->isFileGood())
 	{
 		msg.print("No valid filesource available for the 'eof' command.\n");
@@ -49,7 +49,7 @@ bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Return source/destination filename for filter
 bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
+	// Check that a valid file source/destination exists.
 	if (!c->parent()->parser()->isFileGood())
 	{
 		msg.print("The filterfilename' command can only be used from within a Filter.\n");
@@ -62,8 +62,8 @@ bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &
 // Search for line containing specified string
 bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'find' command.\n");
 		return FALSE;
@@ -94,8 +94,8 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read line from file and return it as result
 bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'getline' command.\n");
 		return FALSE;
@@ -112,10 +112,27 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Peek next character from file
 bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'peekchar' command.\n");
+		return FALSE;
+	}
+	char s[2];
+	s[0] = c->parent()->parser()->peek();
+	s[1] = '\0';
+	rv.set(s);
+	msg.print(Messenger::Commands,"Peek got character '%c'\n", s[0]);
+	return TRUE;
+}
+
+// Peek next character from file, returning it as an integer
+bool Command::function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
+	{
+		msg.print("No valid filesource available for the 'peekchari' command.\n");
 		return FALSE;
 	}
 	char s[2];
@@ -129,8 +146,8 @@ bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read N characters from unformatted file
 bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
@@ -143,8 +160,8 @@ bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read real value from unformatted file
 bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readdouble' command.\n");
 		return FALSE;
@@ -157,8 +174,8 @@ bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read real array from unformatted file
 bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readdoublearray' command.\n");
 		return FALSE;
@@ -180,8 +197,8 @@ bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue 
 // Read integer from unformatted file
 bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readinteger' command.\n");
 		return FALSE;
@@ -194,8 +211,8 @@ bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read integer array from unformatted file
 bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readintegerarray' command.\n");
 		return FALSE;
@@ -217,8 +234,8 @@ bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue
 // Read line and parse with format
 bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readline' command.\n");
 		return FALSE;
@@ -236,8 +253,8 @@ bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Read line and parse with format
 bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readlinef' command.\n");
 		return FALSE;
@@ -255,8 +272,8 @@ bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValu
 // Get next whitespace-delimited argument from file
 bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readnext' command.\n");
 		return FALSE;
@@ -307,7 +324,7 @@ bool Command::function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue
 // Go to start of current file
 bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
+	// Check that a valid file source/destination exists.
 	if (!c->parent()->parser()->isFileGood())
 	{
 		msg.print("No valid filesource available for the 'readchars' command.\n");
@@ -320,8 +337,8 @@ bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Discard N characters from unformatted file
 bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
@@ -333,8 +350,8 @@ bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Skip line(s) of file
 bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'skipline' command.\n");
 		return FALSE;
@@ -346,8 +363,8 @@ bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Write line without format, delimiting arguments with spaces
 bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForWriting())
 	{
 		msg.print("No valid filesource available for the 'writeline' command.\n");
 		return FALSE;
@@ -371,8 +388,8 @@ bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Write line with C-style format
 bool Command::function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Check that we are in a filter.
-	if (!c->parent()->parser()->isFileGood())
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->parser()->isFileGoodForWriting())
 	{
 		msg.print("No valid filesource available for the 'writelinef' command.\n");
 		return FALSE;
