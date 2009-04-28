@@ -38,7 +38,7 @@ VTypes::DataType declaredType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VARTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK
+%token DO WHILE FOR IF RETURN FILTERBLOCK HELP
 %nonassoc ELSE
 
 %nonassoc AND OR
@@ -118,6 +118,7 @@ statement:
 	| stexpr ';'					{ $$ = $1; }
 	| flowstatement					{ $$ = $1; if ($$ == NULL) YYABORT; }
 	| userfuncdef					{ $$ = $1; }
+	| HELP FUNCCALL					{ $$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2)); }
 	;
 
 stexpr:
@@ -170,8 +171,9 @@ namelist:
 	;
 
 newname:
-	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3); }
-	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName,$3); }
+	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3); }
+	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
+	| newvar '=' VECCONST				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
 	| VAR savevarname 				{ $$ = cmdparser.addVariable(declaredType, &varName); }
@@ -272,7 +274,7 @@ rawexpr:
 
 /* 3-Vector Constant / Assignment Group */
 VECCONST:
-	'#' expr ',' expr ',' expr '#'			{ $$ = cmdparser.addVecConstant(VTypes::VectorData, $2, $4, $6); }
+	'{' expr ',' expr ',' expr '}'			{ $$ = cmdparser.addVecConstant($2, $4, $6); }
 	;
 
 /* Functions */

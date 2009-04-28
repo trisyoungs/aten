@@ -122,6 +122,7 @@ void VectorVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
+	{ "mag", VTypes::DoubleData, FALSE, FALSE },
 	{ "x", VTypes::DoubleData, FALSE, FALSE },
 	{ "y", VTypes::DoubleData, FALSE, FALSE },
 	{ "z", VTypes::DoubleData, FALSE, FALSE }
@@ -181,6 +182,9 @@ bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	Vec3<double> v = rv.asVector(result);
 	if (result) switch (acc)
 	{
+		case (VectorVariable::Magnitude):
+			rv.set(v.magnitude());
+			break;
 		case (VectorVariable::X):
 			rv.set(v.x);
 			break;
@@ -227,10 +231,15 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	Vec3<double> v = sourcerv.asVector(result);
 	if (result) switch (acc)
 	{
+		case (VectorVariable::Magnitude):
+			// Normalise existing vector, then multiply by new magnitude
+			v.normalise();
+			sourcerv.set( v * newvalue.asDouble(result) );
+			break;
 		case (VectorVariable::X):
 		case (VectorVariable::Y):
 		case (VectorVariable::Z):
-			sourcerv.set(acc, newvalue.asDouble(result));
+			sourcerv.set(acc - VectorVariable::X, newvalue.asDouble(result));
 			break;
 		default:
 			printf("VectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

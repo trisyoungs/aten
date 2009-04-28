@@ -23,6 +23,7 @@
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "parser/stepnode.h"
+#include "parser/vector.h"
 #include <string.h>
 
 // Constructor
@@ -200,7 +201,7 @@ bool VariableNode::set(ReturnValue &setrv)
 		}
 		if (result)
 		{
-			executerv.set(component, setrv.asDouble());
+			VectorVariable::setAccessor(component, executerv, setrv, FALSE);
 			if (arrayIndex_ == NULL) result = variable_->set(executerv);
 			else
 			{
@@ -208,6 +209,15 @@ bool VariableNode::set(ReturnValue &setrv)
 				if (!arrayIndex_->execute(index)) result = FALSE;
 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
 			}
+
+// 	OLD CODE:	executerv.set(component, setrv.asDouble());
+// 			if (arrayIndex_ == NULL) result = variable_->set(executerv);
+// 			else
+// 			{
+// 				ReturnValue index;
+// 				if (!arrayIndex_->execute(index)) result = FALSE;
+// 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
+// 			}
 		}
 	}
 	else

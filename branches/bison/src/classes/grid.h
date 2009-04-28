@@ -128,11 +128,11 @@ class Grid
 	double **data2d();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
-	// Get cell axes in suitaqble GL format
+	// Get cell axes in suitable GL format
 	void axesForGl(double *glmat);
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
-	// Whether to use data2d_ value sfor z-component of 2D surface
+	// Whether to use data2d_ values for z-component of 2D surface
 	bool useDataForZ();
 
 	/*
@@ -213,7 +213,7 @@ class Grid
 	// Set whether to use both signs of a symmetric isovalue distribution
 	void setSymmetric(bool b);
 	// Returns whether to use both signs of a symmetric isovalue distribution
-	bool symmetric();
+	bool isSymmetric();
 
 	/*
 	// Transformations

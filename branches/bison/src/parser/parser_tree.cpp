@@ -247,6 +247,54 @@ TreeNode *CommandParser::addConstant(VTypes::DataType type, Dnchar *token)
 	return result;
 }
 
+// Add integer constant
+TreeNode *CommandParser::addConstant(int i)
+{
+	msg.enter("CommandParser::addConstant(int)");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(int)).\n");
+		else printf("Internal Error: No current Tree target for Parser (addConstant(int)).\n");
+		msg.exit("CommandParser::addConstant(int)");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addConstant(i);
+	msg.exit("CommandParser::addConstant(int)");
+	return result;
+}
+
+// Add double constant
+TreeNode *CommandParser::addConstant(double d)
+{
+	msg.enter("CommandParser::addConstant(double)");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(double)).\n");
+		else printf("Internal Error: No current Tree target for Parser (addConstant(double)).\n");
+		msg.exit("CommandParser::addConstant(double)");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addConstant(d);
+	msg.exit("CommandParser::addConstant(double)");
+	return result;
+}
+
+// Add string constant
+TreeNode *CommandParser::addConstant(const char *s)
+{
+	msg.enter("CommandParser::addConstant(const char)");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addConstant(const char)).\n");
+		else printf("Internal Error: No current Tree target for Parser (addConstant(const char)).\n");
+		msg.exit("CommandParser::addConstant(const char)");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addConstant(s);
+	msg.exit("CommandParser::addConstant(const char)");
+	return result;
+}
+
 // Add variable to topmost ScopeNode
 TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {
@@ -276,6 +324,22 @@ TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, T
 	}
 	TreeNode *result = tree_->addArrayVariable(type, name, sizeexpr, initialvalue);
 	msg.exit("CommandParser::addArrayVariable");
+	return result;
+}
+
+// Add constant vector
+TreeNode *CommandParser::addVecConstant(TreeNode *value1, TreeNode *value2, TreeNode *value3)
+{
+	msg.enter("CommandParser::addVecConstant");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVecConstant).\n");
+		else printf("Internal Error: No current Tree target for Parser (addVecConstant).\n");
+		msg.exit("CommandParser::addVecConstant");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addVecConstant(value1, value2, value3);
+	msg.exit("CommandParser::addVecConstant");
 	return result;
 }
 

@@ -286,10 +286,10 @@ void AtenGrids::refreshGridInfo()
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridPositiveColourFrame->setColour(g->positiveColour());
 	ui.GridPositiveColourFrame->update();
-	ui.GridSymmetricCheck->setChecked( g->symmetric() );
+	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
-	if (!g->usesColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
+	if (!g->usesColourScale()) ui.GridPositiveColourButton->setEnabled( !g->isSymmetric() );
 	ui.GridTransparencySpin->setValue( g->alpha() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
 	ui.GridColourscaleSpin->setEnabled( g->usesColourScale() );

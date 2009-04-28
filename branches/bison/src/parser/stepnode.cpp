@@ -199,7 +199,6 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
 		case (VTypes::VectorData):
-			if (arrayIndex_ != NULL) printf("An array index *IS* present.\n");
 			result = VectorVariable::setAccessor(accessor_, executerv, setrv, FALSE);
 			break;
 		default:

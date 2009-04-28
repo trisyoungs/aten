@@ -264,7 +264,7 @@ bool CommandNode::checkArguments()
 			case ('S'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
 				{
-					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, Command::data[function_].keyword);
+					msg.print("Argument %i to command '%s' must be a number or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
 				break;
@@ -280,7 +280,7 @@ bool CommandNode::checkArguments()
 			case ('A'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
 				{
-					msg.print("Argument %i to command '%s' must be an integer or an atom&.\n", count+1, Command::data[function_].keyword);
+					msg.print("Argument %i to command '%s' must be an int or an atom&.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
 				break;
@@ -288,7 +288,15 @@ bool CommandNode::checkArguments()
 			case ('M'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
 				{
-					msg.print("Argument %i to command '%s' must be an integer, a model& or a character string.\n", count+1, Command::data[function_].keyword);
+					msg.print("Argument %i to command '%s' must be an int, a model& or a string.\n", count+1, Command::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Forcefield/ID/Name	(ForcefieldData, StringData, IntegerData)
+			case ('F'):
+				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
+				{
+					msg.print("Argument %i to command '%s' must be an int, a forcefield& or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
 				break;
@@ -296,7 +304,15 @@ bool CommandNode::checkArguments()
 			case ('P'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
 				{
-					msg.print("Argument %i to command '%s' must be an integer, a pattern& or a character string.\n", count+1, Command::data[function_].keyword);
+					msg.print("Argument %i to command '%s' must be an int, a pattern& or a string.\n", count+1, Command::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
+			// Grid/ID/Name	(GridData, StringData, IntegerData)
+			case ('G'):
+				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
+				{
+					msg.print("Argument %i to command '%s' must be an int or a grid&.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
 				break;

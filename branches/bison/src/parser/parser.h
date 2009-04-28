@@ -150,10 +150,18 @@ class CommandParser : public Tree
 	// Variables / Constants
 	// Add constant value to tompost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
+	// Add integer constant
+	TreeNode *addConstant(int i);
+	// Add double constant
+	TreeNode *addConstant(double d);
+	// Add string constant
+	TreeNode *addConstant(const char *s);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
 	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
+	// Add 'constant' vector value
+	TreeNode *addVecConstant(TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 

@@ -15,10 +15,12 @@ forcefield.h
 forest.h
 format.h
 grammar.h
+grid.h
 integer.h
 model.h
 parser.h
 pattern.h
+prefs.h
 pvariable.h
 returnvalue.h
 scopenode.h
@@ -46,12 +48,14 @@ forcefield.cpp
 forest.cpp
 format.cpp
 grammar.cc
+grid.cpp
 integer.cpp
 model.cpp
 parser.cpp
 parser_lexer.cpp
 parser_tree.cpp
 pattern.cpp
+prefs.cpp
 pvariable.cpp
 returnvalue.cpp
 scopenode.cpp

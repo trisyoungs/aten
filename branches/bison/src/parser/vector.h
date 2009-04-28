@@ -68,7 +68,7 @@ class VectorVariable : public Variable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { X, Y, Z, nAccessors };
+	enum Accessors { Magnitude, X, Y, Z, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors

@@ -112,7 +112,7 @@ const char *ReturnValue::info()
 			sprintf(result,"%f (%s)", valueD_, VTypes::dataType(type_));
 			break;
 		case (VTypes::StringData):
-			sprintf(result,"'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
+			sprintf(result,"'%s' (%s)", valueS_, VTypes::dataType(type_));
 			break;
 		case (VTypes::VectorData):
 			sprintf(result,"{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, VTypes::dataType(type_));
@@ -207,7 +207,7 @@ int ReturnValue::asInteger(bool &success)
 			return (int)valueD_;
 			break;
 		case (VTypes::StringData):
-			return atoi(valueS_.get());
+			return atoi(valueS_);
 			break;
 		default:
 			printf("ReturnValue::asInteger() doesn't recognise this type.\n");
@@ -235,7 +235,7 @@ double ReturnValue::asDouble(bool &success)
 			return valueD_;
 			break;
 		case (VTypes::StringData):
-			return atof(valueS_.get());
+			return atof(valueS_);
 			break;
 		default:
 			printf("ReturnValue::asDouble() doesn't recognise this type.\n");
@@ -264,7 +264,7 @@ const char *ReturnValue::asString(bool &success)
 			return ftoa(valueD_);
 			break;
 		case (VTypes::StringData):
-			return valueS_.get();
+			return valueS_;
 			break;
 		case (VTypes::VectorData):
 			converted[0] = '\0';
@@ -402,6 +402,7 @@ Vec3<double> ReturnValue::asVector()
 // Return as boolean value
 bool ReturnValue::asBool()
 {
+	static Dnchar booltest;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -414,7 +415,8 @@ bool ReturnValue::asBool()
 			return (valueD_ > 0.0);
 			break;
 		case (VTypes::StringData):
-			return valueS_.asBool();
+			booltest = valueS_;
+			return booltest.asBool();
 			break;
 		case (VTypes::VectorData):
 			msg.print("Can't convert an object of type 'vector' into a bool.\n");

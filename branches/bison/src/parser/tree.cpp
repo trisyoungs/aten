@@ -494,7 +494,7 @@ TreeNode *Tree::addConstant(VTypes::DataType type, Dnchar *token)
 	return NULL;
 }
 
-// Add integer constant (non-virtual)
+// Add integer constant
 TreeNode *Tree::addConstant(int i)
 {
 	IntegerVariable *var = new IntegerVariable(i, TRUE);
@@ -502,7 +502,7 @@ TreeNode *Tree::addConstant(int i)
 	return var;
 }
 
-// Add double constant (non-virtual)
+// Add double constant
 TreeNode *Tree::addConstant(double d)
 {
 	DoubleVariable *var = new DoubleVariable(d, TRUE);
@@ -510,7 +510,7 @@ TreeNode *Tree::addConstant(double d)
 	return var;
 }
 
-// Add string constant (non-virtual)
+// Add string constant
 TreeNode *Tree::addConstant(const char *s)
 {
 	StringVariable *var = new StringVariable(s, TRUE);
@@ -564,13 +564,13 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 	return var;
 }
 
-// // Add constant value
-// TreeNode *Tree::addVecConstant(VTypes::DataType type, TreeNode *value1, TreeNode *value2, TreeNode *value3)
-// {
-// 	VectorVariable *leaf = new VectorVariable(value1, value2, value3);
-// 	scopeStack_.last()->item->variables.take(leaf);
-// 	return leaf;
-// }
+// Add constant vector
+TreeNode *Tree::addVecConstant(TreeNode *value1, TreeNode *value2, TreeNode *value3)
+{
+	VectorVariable *var = new VectorVariable(value1, value2, value3);
+	nodes_.own(var);
+	return var;
+}
 
 // Search for variable in current scope
 Variable *Tree::findVariableInScope(const char *name, int &scopelevel)

@@ -22,6 +22,7 @@
 #include "parser/aten.h"
 #include "parser/stepnode.h"
 #include "base/constants.h"
+#include "classes/prefs.h"
 #include "main/aten.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,6 +146,9 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (AtenVariable::Elements):
 			rv.set(VTypes::ElementsData, &elements());
+			break;
+		case (AtenVariable::Preferences):
+			rv.set(VTypes::PreferencesData, &prefs);
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);

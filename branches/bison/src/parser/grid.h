@@ -1,6 +1,6 @@
 /*
-	*** Aten Variable
-	*** src/parser/aten.h
+	*** Grid Variable and Array
+	*** src/parser/grid.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,47 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATENVARIABLE_H
-#define ATEN_ATENVARIABLE_H
+#ifndef ATEN_GRIDVARIABLE_H
+#define ATEN_GRIDVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class TreeNode;
+class Grid;
 
-// Aten Master Variable
-class AtenVariable : public Variable
+// Grid Variable
+class GridVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	AtenVariable();
-	~AtenVariable();
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(ReturnValue &rv);
-	// Set from returnvalue node
-	bool set(ReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	GridVariable(Grid *g = NULL, bool constant = FALSE);
+	~GridVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { CurrentModel, Elements, Models, Preferences, nAccessors };
+        enum Accessors { Axes, Name, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
@@ -72,4 +54,20 @@ class AtenVariable : public Variable
 	static Accessor accessorData[nAccessors];
 };
 
+// Grid Array Variable
+class GridArrayVariable : public PointerArrayVariable
+{
+	public:
+	// Constructor / Destructor
+	GridArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+
+	/*
+	// Inherited Virtuals
+	*/
+	public:
+	// Search variable access list for provided accessor
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+};
+
 #endif
+

@@ -245,6 +245,20 @@ const char *TreeNode::argc(int i)
 	return result;
 }
 
+// Return (execute) argument specified as a vector
+Vec3<double> TreeNode::argv(int i)
+{
+	if ((i < 0) || (i >= args_.nItems()))
+	{
+		printf("TreeNode::argv : Argument index %i is out of range (node = %li).\n", i, this);
+		return FALSE;
+	}
+	static ReturnValue rv;
+	bool success;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	return rv.asVector(success);
+}
+
 // Return (execute) argument specified as a pointer
 void *TreeNode::argp(int i, VTypes::DataType type)
 {

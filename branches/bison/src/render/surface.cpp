@@ -367,7 +367,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
 	cutoff = g->cutoff();
-	symm = g->symmetric();
+	symm = g->isSymmetric();
 	mult = 1.0;
 	// Get distances between grid points
 	r = g->lengths();

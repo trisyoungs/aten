@@ -168,7 +168,7 @@ Mat3<double> Grid::axes()
 	return cell_.axes();
 }
 
-// Return lengths of cell axiss
+// Return lengths of cell axes
 Vec3<double> Grid::lengths()
 {
 	return cell_.lengths();
@@ -612,7 +612,7 @@ void Grid::setSymmetric(bool b)
 }
 
 // Returns whether to use both signs of a symmetric isovalue distribution
-bool Grid::symmetric()
+bool Grid::isSymmetric()
 {
 	return symmetric_;
 }
