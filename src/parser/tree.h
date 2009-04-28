@@ -148,18 +148,18 @@ class Tree
 	public:
 	// Add constant value to tompost scope
 	virtual TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
-	// Add integer constant (non-virtual)
-	TreeNode *addConstant(int i);
-	// Add double constant (non-virtual)
-	TreeNode *addConstant(double d);
-	// Add string constant (non-virtual)
-	TreeNode *addConstant(const char *s);
+	// Add integer constant
+	virtual TreeNode *addConstant(int i);
+	// Add double constant
+	virtual TreeNode *addConstant(double d);
+	// Add string constant
+	virtual TreeNode *addConstant(const char *s);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
 	virtual TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value
-// 	TreeNode *addVecConstant(VTypes::DataType type, TreeNode *value, TreeNode *value2, TreeNode *value3);
+	virtual TreeNode *addVecConstant(TreeNode *value, TreeNode *value2, TreeNode *value3);
 	// Search for variable in current scope
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)

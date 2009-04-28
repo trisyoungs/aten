@@ -431,10 +431,10 @@ void Command::initPointers()
 	pointers_[Mirror] = &Command::function_Mirror;
 
 	// Variable Manipulation Commands
-	pointers_[AfterChar] = &Command::function_AfterChar;
+	pointers_[AfterStr] = &Command::function_AfterStr;
 	pointers_[AToF] = &Command::function_AToF;
 	pointers_[AToI] = &Command::function_AToI;
-	pointers_[BeforeChar] = &Command::function_BeforeChar;
+	pointers_[BeforeStr] = &Command::function_BeforeStr;
 	pointers_[Contains] = &Command::function_Contains;
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
@@ -468,7 +468,6 @@ void Command::initPointers()
 	pointers_[OperatorPrefixDecrease] = &function_OperatorPrefixDecrease;
 	pointers_[OperatorSubtract] = &function_OperatorSubtract;
 
-/*
 	// View Commands
 	pointers_[GetView] = &Command::function_GetView;
 	pointers_[Orthographic] = &Command::function_Orthographic;
@@ -482,5 +481,4 @@ void Command::initPointers()
 	pointers_[ViewAlongCell] = &Command::function_ViewAlongCell;
 	pointers_[ZoomView] = &Command::function_ZoomView;
 	pointers_[ZRotateView] = &Command::function_ZRotateView;
-*/
 }

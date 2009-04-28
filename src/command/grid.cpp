@@ -59,8 +59,18 @@ bool Command::function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Grid *g = obj.m->grid(c->argi(0)-1);
+	Grid *g = NULL;
+	switch (c->argType(0))
+	{
+		case (VTypes::IntegerData):
+			g = obj.rs->grid(c->argi(0)-1);
+			break;
+		case (VTypes::GridData):
+			g = (Grid*) c->argp(0, VTypes::GridData);
+			break;
+	}
 	if (g == NULL) return FALSE;
+	obj.g = g;
 	rv.set(VTypes::GridData, g);
 	return TRUE;
 }
@@ -222,8 +232,8 @@ bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	obj.g->setSymmetric(c->argb(0));
-	rv.reset();
+	if (c->hasArg(0)) obj.g->setSymmetric(c->argb(0));
+	rv.set(obj.g->isSymmetric());
 	return TRUE;
 }
 
@@ -231,21 +241,20 @@ bool Command::function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	obj.g->setUseDataForZ(c->argb(0));
-	rv.reset();
+	if (c->hasArg(0)) obj.g->setUseDataForZ(c->argb(0));
+	rv.set(obj.g->useDataForZ());
 	return TRUE;
 }
 
 // Load grid ('loadgrid <filename>')
 bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Grid *g = NULL;
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::GridImport);
-	if (filter != NULL)
-	{
-		if (filter->executeRead(c->argc(0))) return TRUE;
-		else return FALSE;
-	}
-	else return FALSE;
+	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
+	rv.set(VTypes::GridData, g);
+	return TRUE;
 }
 
 // Create new grid in the current model
@@ -254,5 +263,6 @@ bool Command::function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.g = aten.currentModel()->addGrid();
 	obj.g->setName(stripTrailing(c->argc(0)));
+	rv.set(VTypes::GridData, obj.g);
 	return TRUE;
 }

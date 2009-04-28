@@ -475,10 +475,10 @@ class Command
 		TranslateWorld,
 
 		// Variable Manipulation
-		AfterChar,
+		AfterStr,
 		AToF,
 		AToI,
-		BeforeChar,
+		BeforeStr,
 		Contains,
 		FToA,
 		IToA,
@@ -917,10 +917,10 @@ class Command
 	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Manipulation
-	static bool function_AfterChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_BeforeChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -218,7 +218,19 @@ bool Command::function_Generator(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Select current forcefield ('getff <name>')
 bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Forcefield *ff = (c->argType(0) == VTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	Forcefield *ff = NULL;
+	switch (c->argType(0))
+	{
+		case (VTypes::IntegerData):
+			ff = aten.forcefield(c->argi(0)-1);
+			break;
+		case (VTypes::StringData):
+			ff = aten.findForcefield(c->argc(0));
+			break;
+		case (VTypes::ForcefieldData):
+			ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
+			break;
+	}
 	if (ff == NULL)	return FALSE;
 	aten.setCurrentForcefield(ff);
 	rv.set(VTypes::ForcefieldData, ff);

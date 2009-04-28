@@ -55,7 +55,8 @@ class ReturnValue
 	// Variable members for returns
 	int valueI_;
 	double valueD_;
-	Dnchar valueS_;
+// 	Dnchar valueS_;
+	const char *valueS_;
 	Vec3<double> valueV_;
 	void *valueP_;
 

@@ -48,6 +48,7 @@ bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue 
 	}
 	obj.m->clearTrajectory();
 	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
 	return TRUE;
 }
 
@@ -113,8 +114,9 @@ bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
 	if (filter == NULL) return FALSE;
-	rv.reset();
-	return (obj.m->initialiseTrajectory(c->argc(0),filter) ? TRUE : FALSE);
+	bool result = obj.m->initialiseTrajectory(c->argc(0),filter);
+	rv.set(result);
+	return TRUE;
 }
 
 // Go to next frame ('nextframe')

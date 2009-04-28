@@ -39,8 +39,9 @@ Command commands;
 	B	Boolean		Any
 	A	Atom/Id		IntegerData, AtomData
 	M	Model/ID/Name	ModelData, StringData, IntegerData
-	F	Forcefield|Name	ForcefieldData, StringData
+	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
 	P	Pattern/ID/Name	PatternData, StringData, IntegerData
+	G	Grid/ID		GridData, StringData, IntegerData
 	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
 	Z	Any		Any
@@ -425,7 +426,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Finalise grid import" },
 	{ "getgrid",		"N",		"<id>", VTypes::GridData,
 				"Retrieve data for grid with id specified, and return a reference to it" },
-	{ "gridalpha",		"N",		"<alpha>", VTypes::NoData,
+	{ "gridalpha",		"N",		"<alpha>", VTypes::DoubleData,
 				"Set the alpha value of the surface (when not using a colourscale)" },
 	{ "gridaxes",		"NNNNNNNNN",	"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>", VTypes::NoData,
 				"Set axis system for the current grid" },
@@ -449,9 +450,9 @@ CommandData Command::data[Command::nCommands] = {
 				"Set the number of points along each axis for the current grid" },
 	{ "gridstyle",		"C",		"<style>", VTypes::NoData,
 				"Set the drawing style of the current grid" },
-	{ "gridsymmetric",	"B",		"<symm?>", VTypes::NoData,
+	{ "gridsymmetric",	"B",		"<symm?>", VTypes::IntegerData,
 				"Set whether the isodata is symmetric about zero (i.e. whether to draw both halves)" },
-	{ "gridusez",		"B",		"<usez?>", VTypes::NoData,
+	{ "gridusez",		"B",		"<usez?>", VTypes::IntegerData,
 				"Whether a 2D surface uses the vertex data value as its z (height) data" },
 	{ "loadgrid",		"C",		"<gridfile>", VTypes::GridData,
 				"Load grid data" },
@@ -571,7 +572,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Select the named pattern (or pattern id) and make it current" },
 	{ "listpatterns",	"",		"", VTypes::NoData,
 				"Print the pattern definition for the current model" },
-	{ "newpattern",		"CNN",		"<name> <nmolecules> <atoms per molecule>", VTypes::PatternData,
+	{ "newpattern",		"CNN",		"<name> <nmolecules> <natoms>", VTypes::PatternData,
 				"Add a pattern definition 'node' to the current model" },
 
 	// Preferences commands
@@ -773,7 +774,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Go to the first frame in the current trajectory" },
 	{ "lastframe",		"",		"", VTypes::NoData,
 				"Go to the last frame in the current trajectory" },
-	{ "loadtrajectory",	"C",		"<filename>", VTypes::NoData,
+	{ "loadtrajectory",	"C",		"<filename>", VTypes::IntegerData,
 				"Load the specified trajectory and associate it to the current model" },
 	{ "nextframe",		"",		"", VTypes::NoData,
 				"Go to the next frame in the current trajectory" },
@@ -803,13 +804,13 @@ CommandData Command::data[Command::nCommands] = {
 				"Translate the current selection in world (view) coordinates" },
 
 	// Variable Manipulation
-	{ "afterchar",		"CC",		"<string> <char>", VTypes::StringData,
-				"Return part of the <string> after the first occurrence of the character <char>" },
+	{ "afterstr",		"CC",		"<string> <search>", VTypes::StringData,
+				"Return part of the <string> after the first occurrence of <search>" },
 	{ "atof",		"C",		"<string>", VTypes::DoubleData,
 				"Convert supplied string to floating point number" },
 	{ "atoi",		"C",		"<string>", VTypes::IntegerData,
 				"Convert supplied string to integer number" },
-	{ "beforechar",		"CC",		"<string> <char>", VTypes::StringData,
+	{ "beforestr",		"CC",		"<string> <search>", VTypes::StringData,
 				"Return part of the <string> before the first occurrence of the character <char>" },
 	{ "contains",		"CC",		"<source string> <search string>", VTypes::IntegerData,
 				"Return the number of times <search string> occurs in <source string>" },

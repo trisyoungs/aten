@@ -23,10 +23,10 @@
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
 
-// Get part of string before specified character
-bool Command::function_AfterChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Get part of string before specified character/string
+bool Command::function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	rv.set( afterChar(c->argc(0), c->argc(1)[0]) );
+	rv.set( afterStr(c->argc(0), c->argc(1)) );
 	return TRUE;
 }
 
@@ -45,21 +45,27 @@ bool Command::function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Get part of string before specified character
-bool Command::function_BeforeChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	rv.set( beforeChar(c->argc(0), c->argc(1)[0]) );
+	rv.set( beforeStr(c->argc(0), c->argc(1)) );
 	return TRUE;
 }
 
 // Return number of occurrences of string in another string
 bool Command::function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	int count = 0;
+	int count = 0, n;
+	int length = strlen(c->argc(1));
 	const char *ch, *s = c->argc(0);
 	while (*s != '\0')
 	{
 		ch = strstr(s, c->argc(1));
-		if (*ch != '\0') count++;
+		if (ch == NULL) break;
+		if (*ch != '\0')
+		{
+			count++;
+			for (n=0; n<length; ++n) ++ch;
+		}
 		s = ch;
 	}
 	rv.set( count );
@@ -90,7 +96,7 @@ bool Command::function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Normalise vector, returning magnitude
 bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Vec3<double> v = c->arg3d(0);
+	Vec3<double> v = c->argv(0);
 	double mag = v.magAndNormalise();
 	rv.set(v);
 	c->setArg(0, rv);
@@ -102,6 +108,5 @@ bool Command::function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( stripChars(c->argc(0), c->argc(1)) );
-	printf("Original/Stripped strings are '%s'/'%s'\n", c->argc(0), rv.asString());
 	return TRUE;
 }

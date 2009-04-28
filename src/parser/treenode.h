@@ -96,6 +96,8 @@ class TreeNode
 	GLfloat argGLf(int i);
 	// Return (execute) argument specified as a character
 	const char *argc(int i);
+	// Return (execute) argument specified as a vector
+	Vec3<double> argv(int i);
 	// Return (execute) argument specified as a pointer
 	void *argp(int i, VTypes::DataType type);
 	// Return (execute) triplet of 'double' arguments, starting from argument specified
