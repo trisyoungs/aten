@@ -44,6 +44,7 @@ Tree::Tree()
 	parser_ = NULL;
 	acceptedFail_ = Command::NoFunction;
 	name_ = "unnamed";
+	type_ = Tree::UnknownTree;
 
 	// Public variables
 	prev = NULL;
@@ -69,6 +70,18 @@ void Tree::setParent(Forest *f)
 Forest *Tree::parent()
 {
 	return parent_;
+}
+
+// Set type
+void Tree::setType(Tree::TreeType type)
+{
+	type_ = type;
+}
+
+// Return type
+Tree::TreeType Tree::type()
+{
+	return type_;
 }
 
 // Set name of tree
@@ -541,6 +554,38 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 	return var;
 }
 
+// Add variable as function argument to topmost scope
+TreeNode *Tree::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+{
+	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	if (type_ != Tree::FunctionTree)
+	{
+		printf("Internal Error: Target tree is not a function.\n");
+		return NULL;
+	}
+	// Get topmost scopenode
+// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+	Refitem<ScopeNode,int> *ri = scopeStack_.last();
+	if (ri == NULL)
+	{
+		printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
+		return NULL;
+	}
+	// Create the supplied variable in the list of the topmost scope
+	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
+	if (!var)
+	{
+		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
+		return NULL;
+	}
+	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
+	// Wrap the variable and add it to the arguments_ list
+	VariableNode *vnode = new VariableNode(var);
+	arguments_.own(vnode);
+	vnode->setParent(this);
+	return vnode;
+}
+
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {
@@ -680,6 +725,18 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	return result;
 }
 
+// Return number of arguments defined (for function)
+int Tree::nArgs()
+{
+	return arguments_.nItems();
+}
+
+// Return first argument defined (for function)
+TreeNode *Tree::args()
+{
+	return arguments_.first();
+}
+
 /*
 // Local Functions
 */
@@ -689,6 +746,7 @@ Tree *Tree::addLocalFunction(const char *funcname)
 {
 	Tree* result = functions_.add();
 	result->setName(funcname);
+	result->setType(Tree::FunctionTree);
 	result->setParent(parent_);
 	return result;
 }

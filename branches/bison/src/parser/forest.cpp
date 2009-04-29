@@ -108,9 +108,10 @@ int Forest::nTrees()
 }
 
 // Create a new tree
-Tree *Forest::addTree()
+Tree *Forest::addTree(Tree::TreeType type)
 {
 	Tree *tree = trees_.add();
+	tree->setType(type);
 	tree->setParent(this);
 	return tree;
 }
@@ -120,6 +121,7 @@ Tree *Forest::addGlobalFunction(const char *name)
 {
 	Tree *tree = functions_.add();
 	tree->setName(name);
+	tree->setType(Tree::FunctionTree);
 	tree->setParent(this);
 	return tree;
 }

@@ -239,7 +239,7 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
-	msg.print("Created model '%s'\n", obj.m->name());
+	msg.print(Messenger::Verbose, "Created model '%s'\n", obj.m->name());
 	if (prefs.keepNames())
 	{
 		Forcefield *f = aten.addForcefield();

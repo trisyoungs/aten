@@ -215,6 +215,7 @@ int Aten::parseCli(int argc, char *argv[])
 	LineParser parser;
 	ElementMap::ZMapType zm;
 	Namemap<int> *nm;
+	Model *m;
 	Forest *forest, *script, tempforest;
 	ReturnValue rv;
 	Tree *f, *modelfilter = NULL;
@@ -399,7 +400,8 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Create a new model
 				case (Cli::NewModelSwitch):
-					aten.addModel();
+					m = aten.addModel();
+					m->enableUndoRedo();
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):

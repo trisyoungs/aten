@@ -158,6 +158,8 @@ class CommandParser : public Tree
 	TreeNode *addConstant(const char *s);
 	// Add variable to topmost ScopeNode
 	TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add variable (as a function argument) to topmost ScopeNode
+	TreeNode *addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
 	TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value

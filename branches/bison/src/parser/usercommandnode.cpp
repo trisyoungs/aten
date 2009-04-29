@@ -21,6 +21,7 @@
 
 #include "parser/usercommandnode.h"
 #include "parser/tree.h"
+#include "parser/variablenode.h"
 #include "base/sysfunc.h"
 #include <string.h>
 
@@ -41,186 +42,56 @@ bool UserCommandNode::checkArguments()
 {
 	msg.enter("UserCommandNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
-
-/*
-	char upc, *altargs;
-	int count = 0, ngroup = -1;
-	bool optional, requirevar, result, cluster = FALSE;
-	VTypes::DataType rtype;
-	// Search for an alternative set of arguments
-	altargs = strchr(c, '|');
-	result = TRUE;
-	do
+	bool required;
+	int count = 0;
+	Variable *v;
+	for (TreeNode *arg = function_->args(); arg != NULL; arg = arg->next)
 	{
-		upc = *c;
-		// Retain last character if this is a repeat
-		if (*c != '*')
+		v = ((VariableNode*) arg)->variable();
+		// Is this a required argument?
+		required = v->initialValue() == NULL;
+		if (required && (args_.nItems() <= count))
 		{
-			// If the character is '^', then we get the next char and set the requirevar flag
-			// If it is '[' or ']' then set the cluster flag and get the next char
-			// If it is '<' or '>' then set the vector flag and get the next char
-			requirevar = FALSE;
-			if (*c == '^')
+			msg.print("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
+			msg.exit("UserCommandNode::checkArguments");
+			return FALSE;
+		}
+		else if ((!required) && ((args_.nItems() <= count))) break;
+		// Check type of argument against type provided.
+		// Allow doubles/ints to be interchangeable ('N' in normal command args). Otherwise, exact type match is required
+		if ((v->returnType() == VTypes::IntegerData) || (v->returnType() == VTypes::DoubleData))
+		{
+			if ((args_[count]->item->returnType() == VTypes::IntegerData) || (args_[count]->item->returnType() == VTypes::DoubleData))
 			{
-				requirevar = TRUE;
-				c++;
-			}
-			else if ((*c == '[') || (*c == ']'))
-			{
-				cluster = (*c == '[');
-				ngroup = 0;
-				c++;
-			}
-			// Get character and convert to upper case if necessary
-			if ((*c > 96) && (*c < 123))
-			{
-				upc = *c - 32;
-				optional = TRUE;
+				count++;
+				continue;
 			}
 			else
 			{
-				upc = *c;
-				optional = FALSE;
-			}
-		}
-		else optional = TRUE;
-		// If we have reached the end of the argument specification, do we still have arguments left in the command?
-		if (upc == '\0')
-		{
-			if (args_.nItems() > count)
-			{
-				msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, Command::data[function_].keyword, Command::data[function_].keyword, Command::data[function_].argText);
-				msg.exit("Tree::checkArguments");
+				msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+				msg.exit("UserCommandNode::checkArguments");
 				return FALSE;
 			}
-			else
-			{
-				msg.exit("Tree::checkArguments");
-				return TRUE;
-			}
 		}
-		msg.print(Messenger::Parse,"...next argument token is '%c', opt=%s, reqvar=%s, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", ngroup);
-		// If we have gone over the number of arguments provided, is this an optional argument?
-		if (count >= args_.nItems())
+		else if (v->returnType() == args_[count]->item->returnType())
 		{
-			if (!optional)
-			{
-				msg.print("Error: The function '%s' requires argument %i.\n", Command::data[function_].keyword, count+1);
-				msg.print("       Command syntax is '%s %s'.\n", Command::data[function_].keyword, Command::data[function_].argText);
-				msg.exit("Tree::checkArguments");
-				return FALSE;
-			}
-			else if (cluster && (ngroup != 0))
-			{
-				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, Command::data[function_].keyword);
-				msg.print("       Command syntax is '%s %s'.\n", Command::data[function_].keyword, Command::data[function_].argText);
-				msg.exit("Tree::checkArguments");
-				return FALSE;
-			}
-			else
-			{
-				msg.exit("Tree::checkArguments");
-				return TRUE;
-			}
+			count++;
+			continue;
 		}
-		// Check argument type
-		rtype = argType(count);
-		result = TRUE;
-		switch (upc)
+		else
 		{
-			// Number		(IntegerData, RealData)
-			case ('N'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
-				{
-					msg.print("Argument %i to command '%s' must be a number.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Character		(StringData)
-			case ('C'):
-				if (rtype != VTypes::StringData)
-				{
-					msg.print("Argument %i to command '%s' must be a character string.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;	
-			// Vector		(VectorData)
-			case ('U'):
-				if (rtype != VTypes::VectorData)
-				{
-					msg.print("Argument %i to command '%s' must be a vector.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;	
-			// Any Simple		(IntegerData, RealData, StringData)
-			case ('S'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
-				{
-					msg.print("Argument %i to command '%s' must be a number or a character string.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Boolean		(Any Except NoData)
-			case ('B'):
-				if (rtype == VTypes::NoData)
-				{
-					msg.print("Argument %i to command '%s' must return something!\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Atom/Id		(IntegerData, AtomData)
-			case ('A'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer or an atom&.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Model/ID/Name	(ModelData, StringData, IntegerData)
-			case ('M'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer, a model& or a character string.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Pattern/ID/Name	(PatternData, StringData, IntegerData)
-			case ('P'):
-				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
-				{
-					msg.print("Argument %i to command '%s' must be an integer, a pattern& or a character string.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Pointer		(Any pointer (void*) object)
-			case ('X'):
-				if (rtype < VTypes::AtomData)
-				{
-					msg.print("Argument %i to command '%s' must be a reference of some kind.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
-			// Variable of any type (but not a path)
-			case ('V'):
-				if ((argNode(count)->nodeType() != TreeNode::VarNode) && (argNode(count)->nodeType() != TreeNode::ArrayVarNode))
-				{
-					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, Command::data[function_].keyword);
-					result = FALSE;
-				}
-				break;
+			msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+			msg.exit("UserCommandNode::checkArguments");
+			return FALSE;
 		}
-		// Was this argument requested to be a modifiable variable value?
-		if (requirevar && argNode(count)->readOnly())
-		{
-			msg.print("Argument %i to command '%s' must be a variable and not a constant.\n", count+1, Command::data[function_].keyword);
-			result = FALSE;
-		}
-		// Check for failure
-		if (!result) break;
-		if (upc != '*') c++;
-		if (cluster) ngroup++;
-		count++;
-	} while (*c != '\0');*/
+	}
+	// Extra arguments provided?
+	if (args_.nItems() > count)
+	{
+		msg.print("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
+		msg.exit("UserCommandNode::checkArguments");
+		return FALSE;
+	}
 	msg.exit("UserCommandNode::checkArguments");
 	return TRUE;
 }
@@ -228,7 +99,27 @@ bool UserCommandNode::checkArguments()
 // Execute command
 bool UserCommandNode::execute(ReturnValue &rv)
 {
-	// Execute the tree.
+	// Poke arguments into the functions argument variables
+	Refitem<TreeNode,int> *value = args_.first();
+	ReturnValue varval;
+	Variable *v;
+	for (TreeNode *arg = function_->args(); arg != NULL; arg = arg->next)
+	{
+		// If 'value' is not NULL, execute it and get the value to pass to the argument
+		if (value != NULL)
+		{
+			if (!value->item->execute(varval)) return FALSE;
+			if (!arg->set(varval)) return FALSE;
+			value = value->next;
+		}
+		else
+		{
+			// Presumably a required argument?
+			v = ((VariableNode*) arg)->variable();
+			if (v->initialValue() == NULL) printf("Required argument not fulfilled?\n");
+			else if (!v->initialise()) return FALSE;
+		}
+	}
 	// We must pass the current input 'state' of this node's parent tree - give it the LineParser pointer...
 	LineParser *parser = parent_->parser();
 	bool result;

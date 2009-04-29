@@ -194,7 +194,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Adjust a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
 	{ "cell",		"NNNNNN",	"<a> <b> <c> <alpha> <beta> <gamma>", VTypes::NoData,
 				"Set or create a unit cell for the current model from lengths/angles provided" },
-	{ "cellaxes",		"NNNNNNNNN",	"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>", VTypes::NoData,
+	{ "cellaxes",		"9N|C",		"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>", VTypes::NoData,
 				"Set or create a unit cell for the current model from the cell axes provided" },
 	{ "fold",		"",		"", VTypes::NoData,
 				"Fold atoms into model's unit cell" },

@@ -210,7 +210,7 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 // Push tree
 void CommandParser::pushTree(bool isfilter)
 {
-	tree_ = forest_->addTree();
+	tree_ = forest_->addTree(isfilter ? Tree::FilterTree : Tree::CommandTree);
 	stack_.add(tree_, isfilter);
 	msg.print(Messenger::Parse, "New tree stacked - %li\n", tree_);
 }

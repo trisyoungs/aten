@@ -311,6 +311,23 @@ TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNo
 	return result;
 }
 
+// Add variable as function argument to topmost ScopeNode
+TreeNode *CommandParser::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
+{
+	msg.enter("CommandParser::addVariableAsArgument");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addVariableAsArgument).\n");
+		else printf("Internal Error: No current Tree target for Parser (addVariableAsArgument).\n");
+		msg.exit("CommandParser::addVariableAsArgument");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addVariableAsArgument(type, name, initialValue);
+	msg.exit("CommandParser::addVariableAsArgument");
+	return result;
+}
+
+
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode *CommandParser::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue)
 {

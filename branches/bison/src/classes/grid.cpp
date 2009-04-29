@@ -444,6 +444,12 @@ void Grid::clear()
 	msg.exit("Grid::clear");
 }
 
+// Return pointer to the underlying cell structure
+Cell *Grid::cell()
+{
+	return &cell_;
+}
+
 // Set spacing for a cubic grid
 void Grid::setAxes(double r)
 {
