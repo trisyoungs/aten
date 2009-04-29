@@ -77,7 +77,7 @@ bool CommandNode::prepFunction()
 			}
 			else
 			{
-				if (!hasArg(0))
+				if ((!hasArg(0)) && (parent_->returnType() != VTypes::NoData))
 				{
 					msg.print("Error: No return value provided.\n");
 					result = FALSE;
@@ -126,10 +126,25 @@ bool CommandNode::checkArguments()
 			if (*c == '|') ++c;
 			altargs = strchr(c, '|');
 			repeat = 0;
+			cluster = FALSE;
+			array = FALSE;
+			count = 0;
 			reset = FALSE;
 		}
 		if (*c == '\0') break;
 		upc = *c;
+			if (*c == '|')
+			{
+				// This is the start of a new set of argument specifiers - does the current set of arguments 'fit'?
+				if (args_.nItems() != count)
+				{
+					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
+					reset = TRUE;
+					continue;
+				}
+				msg.exit("CommandNode::checkArguments");
+				return TRUE;
+			}
 		// Retain previous information if this is a repeat, but make it an optional argument
 		if (*c == '*') optional = TRUE;
 		else if (repeat == 0)
@@ -169,7 +184,7 @@ bool CommandNode::checkArguments()
 				// This is the start of a new set of argument specifiers - does the current set of arguments 'fit'?
 				if (args_.nItems() != count)
 				{
-// 					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
+					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
 					reset = TRUE;
 					continue;
 				}
@@ -224,6 +239,7 @@ bool CommandNode::checkArguments()
 			case ('N'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a number.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -232,6 +248,7 @@ bool CommandNode::checkArguments()
 			case ('I'):
 				if (rtype != VTypes::IntegerData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -240,6 +257,7 @@ bool CommandNode::checkArguments()
 			case ('D'):
 				if (rtype != VTypes::DoubleData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a double.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -248,6 +266,7 @@ bool CommandNode::checkArguments()
 			case ('C'):
 				if (rtype != VTypes::StringData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a character string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -256,6 +275,7 @@ bool CommandNode::checkArguments()
 			case ('U'):
 				if (rtype != VTypes::VectorData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a vector.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -264,6 +284,7 @@ bool CommandNode::checkArguments()
 			case ('S'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a number or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -272,6 +293,7 @@ bool CommandNode::checkArguments()
 			case ('B'):
 				if (rtype == VTypes::NoData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must return something!\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -280,6 +302,7 @@ bool CommandNode::checkArguments()
 			case ('A'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int or an atom&.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -288,6 +311,7 @@ bool CommandNode::checkArguments()
 			case ('M'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int, a model& or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -296,6 +320,7 @@ bool CommandNode::checkArguments()
 			case ('F'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int, a forcefield& or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -304,6 +329,7 @@ bool CommandNode::checkArguments()
 			case ('P'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int, a pattern& or a string.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -312,6 +338,7 @@ bool CommandNode::checkArguments()
 			case ('G'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be an int or a grid&.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -320,6 +347,7 @@ bool CommandNode::checkArguments()
 			case ('X'):
 				if (rtype < VTypes::AtomData)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a reference of some kind.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -328,6 +356,7 @@ bool CommandNode::checkArguments()
 			case ('V'):
 				if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 				{
+					if (altargs != NULL) { reset = TRUE; continue; }
 					msg.print("Argument %i to command '%s' must be a variable of some kind.\n", count+1, Command::data[function_].keyword);
 					result = FALSE;
 				}
@@ -361,7 +390,7 @@ bool CommandNode::checkArguments()
 		}
 		// Check for failure
 		if (!result) break;
-		if (upc != '*') c++;
+		if ((upc != '*') && (repeat == 1)) c++;
 		if (cluster) ngroup++;
 		repeat--;
 		count++;

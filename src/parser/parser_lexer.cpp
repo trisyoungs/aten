@@ -215,6 +215,7 @@ int CommandParser::lex()
 				yylval.name = &name;
 				return REALCONST;
 			}
+			
 	
 			// Is this a recognised high-level keyword?
 			n = 0;
@@ -224,6 +225,7 @@ int CommandParser::lex()
 			else if (strcmp(token,"do") == 0) n = DO;
 			else if (strcmp(token,"while") == 0) n = WHILE;
 			else if (strcmp(token,"return") == 0) n = RETURN;
+			else if (strcmp(token,"void") == 0) n = VOID;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a high-level keyword (%i)\n",tree_,n);

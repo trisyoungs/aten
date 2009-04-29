@@ -96,6 +96,8 @@ class Grid
 	bool useDataForZ_;
 
 	public:
+	// Return pointer to the underlying cell structure
+	Cell *cell();
 	// Set spacing for a cubic Grid
 	void setAxes(double r);
 	// Set spacing for an orthorhombic Grid
@@ -104,7 +106,7 @@ class Grid
 	void setAxes(const Mat3<double> axes);
 	// Return the Grid axes
 	Mat3<double> axes();
-	// Return lengths of cell axiss
+	// Return lengths of cell axes
 	Vec3<double> lengths();
 	// Set data origin
 	void setOrigin(const Vec3<double> v);

@@ -50,6 +50,8 @@ class Tree
 	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
+	// Tree Types
+	enum TreeType { UnknownTree, CommandTree, FilterTree, FunctionTree, nTreeTypes };
 
 
 	/*
@@ -62,12 +64,18 @@ class Tree
 	Dnchar name_;
 	// Return type (used if defined as a function)
 	VTypes::DataType returnType_;
+	// Type of tree
+	Tree::TreeType type_;
 
 	public:
 	// Set parent
 	void setParent(Forest *f);
 	// Return parent
 	Forest *parent();
+	// Set type
+	void setType(Tree::TreeType type);
+	// Return type
+	Tree::TreeType type();
 	// Set name of tree
 	void setName(const char *s);
 	// Return name of tree
@@ -110,6 +118,10 @@ class Tree
 	virtual bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
 	// Finalise and remove the topmost path on the stack
 	virtual TreeNode *finalisePath();
+	// Return number of arguments defined (for function)
+	int nArgs();
+	// Return first argument defined (for function)
+	TreeNode *args();
 
 
 	/*
@@ -156,6 +168,8 @@ class Tree
 	virtual TreeNode *addConstant(const char *s);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
+	// Add variable (as a function argument) to topmost ScopeNode
+	virtual TreeNode *addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
 	virtual TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
 	// Add 'constant' vector value

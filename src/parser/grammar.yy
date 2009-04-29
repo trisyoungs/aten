@@ -38,7 +38,7 @@ VTypes::DataType declaredType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VARTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK HELP
+%token DO WHILE FOR IF RETURN FILTERBLOCK HELP VOID
 %nonassoc ELSE
 
 %nonassoc AND OR
@@ -51,11 +51,11 @@ VTypes::DataType declaredType;
 %right '!'
 %right '^'
 
-%type <node> constant expr rawexpr func var rawvar
+%type <node> constant expr rawexpr func var rawvar arg args
 %type <node> flowstatement stexpr statement block blockment statementlist exprlist VECCONST
 %type <node> namelist newname
 %type <name> newvar
-%type <node> filter pushscope declaration userfunc userfuncdef
+%type <node> filter pushscope declaration userfunc userfuncdef userstatementdef
 
 %%
 
@@ -118,6 +118,7 @@ statement:
 	| stexpr ';'					{ $$ = $1; }
 	| flowstatement					{ $$ = $1; if ($$ == NULL) YYABORT; }
 	| userfuncdef					{ $$ = $1; }
+	| userstatementdef				{ $$ = $1; }
 	| HELP FUNCCALL					{ $$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2)); }
 	;
 
@@ -133,6 +134,7 @@ flowstatement:
 	| WHILE pushscope '(' expr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
 	| DO pushscope blockment WHILE '(' expr ')'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
 	| RETURN expr ';'				{ $$ = cmdparser.addFunction(Command::Return,$2); }
+	| RETURN ';'					{ $$ = cmdparser.addFunction(Command::Return); }
 	;
 
 /* Range (X~Y) */
@@ -153,7 +155,22 @@ constant:
 /* User-defined function */
 
 userfuncdef:
-	VARTYPE savetype NEWTOKEN '(' pushfunc ')' block { if (!cmdparser.addStatement($7)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	VARTYPE savetype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	;
+
+userstatementdef:
+	VOID cleartype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	;
+
+args:
+	/* empty */					{ }
+	| arg						{ }
+	| args ',' arg					{ }
+	;
+
+arg:
+	VARTYPE savetype NEWTOKEN savetokenname		{ $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName); }
+	| VARTYPE savetype NEWTOKEN savetokenname '=' expr { $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName, $6); }
 	;
 
 pushfunc:
@@ -299,6 +316,10 @@ savetokenname:
 
 savetype:
 	/* empty */					{ declaredType = yylval.vtype; }
+	;
+
+cleartype:
+	/* empty */					{ declaredType = VTypes::NoData; }
 	;
 
 savevarname:

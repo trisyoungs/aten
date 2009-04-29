@@ -68,7 +68,7 @@ class Forest
 	// Return number of trees in forest
 	int nTrees();
 	// Add a new, generic (filter, script or command) tree
-	Tree *addTree();
+	Tree *addTree(Tree::TreeType type);
 	// Add a new Forest-global function tree
 	Tree *addGlobalFunction(const char *name);
 	// Search for existing global function

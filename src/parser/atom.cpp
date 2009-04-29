@@ -71,7 +71,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "vx",		VTypes::DoubleData,		FALSE, FALSE },
 	{ "vy",		VTypes::DoubleData,		FALSE, FALSE },
 	{ "vz",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "z",		VTypes::IntegerData, 		FALSE, TRUE }
+	{ "z",		VTypes::IntegerData, 		FALSE, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -232,20 +232,28 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->parent()->setHidden(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::Q):
+			ptr->parent()->beginUndoState("Charge atom");
 			ptr->parent()->chargeAtom(ptr, newvalue.asDouble());
+			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::R):
+			ptr->parent()->beginUndoState("Position atom");
 			ptr->parent()->positionAtom(ptr, newvalue.asVector());
+			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::RX):
 		case (AtomVariable::RY):
 		case (AtomVariable::RZ):
 			v = ptr->r();
 			v.set(acc - AtomVariable::RX, newvalue.asDouble());
+			ptr->parent()->beginUndoState("Position atom");
 			ptr->parent()->positionAtom(ptr, v);
+			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::Selected):
+			ptr->parent()->beginUndoState("(De)select atom");
 			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
+			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::Type):
 			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(VTypes::ForcefieldAtomData));
@@ -259,7 +267,9 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->v().set(acc - AtomVariable::VX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Z):
+			ptr->parent()->beginUndoState("Transmute atom");
 			ptr->parent()->transmuteAtom(ptr, newvalue.asInteger());
+			ptr->parent()->endUndoState();
 			break;
 		default:
 			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

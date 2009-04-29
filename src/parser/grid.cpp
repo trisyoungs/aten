@@ -53,7 +53,12 @@ GridVariable::~GridVariable()
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "axes",	VTypes::CellData,	FALSE, TRUE },
-	{ "name",	VTypes::StringData,	FALSE, FALSE }
+	{ "name",	VTypes::StringData,	FALSE, FALSE },
+	{ "nx",		VTypes::IntegerData,	FALSE, TRUE },
+	{ "ny",		VTypes::IntegerData,	FALSE, TRUE },
+	{ "nz",		VTypes::IntegerData,	FALSE, TRUE },
+	{ "origin", 	VTypes::VectorData,	FALSE, FALSE },
+	{ "visible",	VTypes::IntegerData,	FALSE, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -106,8 +111,22 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	Grid *ptr= (Grid*) rv.asPointer(VTypes::GridData, result);
 	if (result) switch (acc)
 	{
+		case (GridVariable::Axes):
+			rv.set(VTypes::CellData, ptr->cell());
+			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());
+			break;
+		case (GridVariable::NX):
+		case (GridVariable::NY):
+		case (GridVariable::NZ):
+			rv.set(ptr->nPoints().get(acc-GridVariable::NX));
+			break;
+		case (GridVariable::Origin):
+			rv.set(ptr->origin());
+			break;
+		case (GridVariable::Visible):
+			rv.set(ptr->isVisible());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in GridVariable.\n", accessorData[i].name);
@@ -148,6 +167,12 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	{
 		case (GridVariable::Name):
 			ptr->setName( newvalue.asString() );
+			break;
+		case (GridVariable::Origin):
+			ptr->setOrigin( newvalue.asVector() );
+			break;
+		case (GridVariable::Visible):
+			ptr->setVisible( newvalue.asBool() );
 			break;
 		default:
 			printf("GridVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
