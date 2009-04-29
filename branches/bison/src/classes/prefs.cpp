@@ -72,12 +72,20 @@ Prefs::ModifierKey Prefs::modifierKey(const char *s)
 {
 	return (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
 }
+const char *Prefs::modifierKey(Prefs::ModifierKey i)
+{
+	return ModifierKeyKeywords[i];
+}
 
 // Key actions
 const char *KeyActionKeywords[Prefs::nKeyActions] = { "None", "Transform", "ZRotate" };
 Prefs::KeyAction Prefs::keyAction(const char *s)
 {
 	return (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
+}
+const char *Prefs::keyAction(Prefs::KeyAction i)
+{
+	return KeyActionKeywords[i];
 }
 
 // Colours
@@ -307,7 +315,7 @@ void Prefs::load(const char *filename)
 		return;
 	}
 	prefcmds.execute();*/
-	msg.exit("prefs::load");
+	msg.exit("Prefs::load");
 }
 
 /*
@@ -421,7 +429,7 @@ double Prefs::screenRadius(Atom *i)
 // Sets the specified atom size to the given value
 void Prefs::setAtomStyleRadius(Atom::DrawStyle ds, double f)
 {
-	atomStyleRadius_[(int)ds] = f;
+	atomStyleRadius_[ds] = f;
 }
 
 // Return the specified atom size

@@ -30,29 +30,38 @@
 // Angle label postfix
 bool Command::function_AngleLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setAngleLabel(c->argc(0));
-	gui.mainView.postRedisplay();
-	rv.reset();
+	if (c->hasArg(0))
+	{
+		prefs.setAngleLabel(c->argc(0));
+		gui.mainView.postRedisplay();
+	}
+	rv.set(prefs.angleLabel());
 	return TRUE;
 }
 
 // Atom quadric detail
 bool Command::function_AtomDetail(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setAtomDetail(c->argi(0));
-	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
-	rv.reset();
+	if (c->hasArg(0))
+	{
+		prefs.setAtomDetail(c->argi(0));
+		if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
+		gui.mainView.postRedisplay();
+	}
+	rv.set(prefs.atomDetail());
 	return TRUE;
 }
 
 // Bond quadric detail
 bool Command::function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setBondDetail(c->argi(0));
-	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
-	rv.reset();
+	if (c->hasArg(0))
+	{
+		prefs.setBondDetail(c->argi(0));
+		if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
+		gui.mainView.postRedisplay();
+	}
+	rv.set(prefs.bondDetail());
 	return TRUE;
 }
 
@@ -81,27 +90,30 @@ bool Command::function_CommonElements(CommandNode *c, Bundle &obj, ReturnValue &
 // Set density unit to use in output ('densityunits <unit>')
 bool Command::function_DensityUnits(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Prefs::DensityUnit du = Prefs::densityUnit(c->argc(0));
-	if (du == Prefs::nDensityUnits) return FALSE;
-	else prefs.setDensityUnits(du);
-	rv.reset();
+	if (c->hasArg(0))
+	{
+		Prefs::DensityUnit du = Prefs::densityUnit(c->argc(0));
+		if (du == Prefs::nDensityUnits) return FALSE;
+		else prefs.setDensityUnits(du);
+	}
+	rv.set(Prefs::densityUnit(prefs.densityUnit()));
 	return TRUE;
 }
 
 // Distance label postfix
 bool Command::function_DistanceLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setDistanceLabel(c->argc(0));
+	if (c->hasArg(0)) prefs.setDistanceLabel(c->argc(0));
 	gui.mainView.postRedisplay();
-	rv.reset();
+	rv.set(prefs.distanceLabel());
 	return TRUE;
 }
 
 // Set electrostatics cutoff ('ecut <cut>')
 bool Command::function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setElecCutoff(c->argd(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setElecCutoff(c->argd(0));
+	rv.set(prefs.elecCutoff());
 	return TRUE;
 }
 
@@ -172,25 +184,31 @@ bool Command::function_ElementRadius(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
-	elements().setAtomicRadius(el, c->argd(1));
-	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
-	rv.reset();
+	if (c->hasArg(1))
+	{
+		elements().setAtomicRadius(el, c->argd(1));
+		if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
+		gui.mainView.postRedisplay();
+	}
+	rv.set(elements().atomicRadius(el));
 	return TRUE;
 }
 
 // Set energy unit to use in output ('energyunits <unit>')
 bool Command::function_EnergyUnits(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0));
-	if (eu == Prefs::nEnergyUnits) return FALSE;
-	else
+	if (c->hasArg(0)) 
 	{
-		prefs.setEnergyUnit(eu);
-		// Convert loaded forcefields
-		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0));
+		if (eu == Prefs::nEnergyUnits) return FALSE;
+		else
+		{
+			prefs.setEnergyUnit(eu);
+			// Convert loaded forcefields
+			for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+		}
 	}
-	rv.reset();
+	rv.set(Prefs::energyUnit(prefs.energyUnit()));
 	return TRUE;
 }
 
@@ -211,16 +229,16 @@ bool Command::function_GL(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Set distance to use when adding hydrogens ('hdistance <d>')
 bool Command::function_HDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setHydrogenDistance(c->argd(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setHydrogenDistance(c->argd(0));
+	rv.set(prefs.hydrogenDistance());
 	return TRUE;
 }
 
 // Turn on/off calculation of intra ('intra on|off')
 bool Command::function_Intra(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setCalculateIntra(c->argb(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setCalculateIntra(c->argb(0));
+	rv.set(prefs.calculateIntra());
 	return TRUE;
 }
 
@@ -231,25 +249,25 @@ bool Command::function_Key(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Prefs::KeyAction ka = Prefs::keyAction(c->argc(1));
 	if ((mk != Prefs::nModifierKeys) && (ka != Prefs::nKeyActions)) prefs.setKeyAction(mk,ka);
 	else return FALSE;
-	rv.reset();
+	rv.set(Prefs::keyAction(prefs.keyAction(mk)));
 	return TRUE;
 }
 
 // Text label pointsize
 bool Command::function_LabelSize(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setLabelSize(c->argi(0));
+	if (c->hasArg(0)) prefs.setLabelSize(c->argi(0));
 	gui.mainView.postRedisplay();
-	rv.reset();
+	rv.set(prefs.labelSize());
 	return TRUE;
 }
 
 // Turn on/off spotlight
 bool Command::function_Light(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setSpotlightActive(c->argb(0));
+	if (c->hasArg(0)) prefs.setSpotlightActive(c->argb(0));
 	gui.mainView.postRedisplay();
-	rv.reset();
+	rv.set( prefs.spotlightActive() );
 	return TRUE;
 }
 
@@ -295,7 +313,7 @@ bool Command::function_Mouse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Prefs::MouseAction ma = Prefs::mouseAction(c->argc(1));
 	if ((ma != Prefs::nMouseActions) && (mb != Prefs::nMouseButtons)) prefs.setMouseAction(mb,ma);
 	else return FALSE;
-	rv.reset();
+	rv.set(Prefs::mouseAction(prefs.mouseAction(mb)));
 	return TRUE;
 }
 
@@ -305,7 +323,7 @@ bool Command::function_Radius(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
 	if (ds != Atom::nDrawStyles) prefs.setAtomStyleRadius(ds, c->argd(1));
 	else return FALSE;
-	rv.reset();
+	rv.set(prefs.atomStyleRadius(ds));
 	return TRUE;
 }
 
@@ -313,8 +331,8 @@ bool Command::function_Radius(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReplicateFold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setReplicateFold(c->argb(0));
-	msg.print("Folding of atoms into unit cell before replicate is %s.\n", prefs.replicateFold() ? "on" : "off");
-	rv.reset();
+	msg.print("Messenger::Verbose, Folding of atoms into unit cell before replicate is %s.\n", prefs.replicateFold() ? "on" : "off");
+	rv.set(prefs.replicateFold());
 	return TRUE;
 }
 
@@ -322,8 +340,8 @@ bool Command::function_ReplicateFold(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_ReplicateTrim(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	prefs.setReplicateTrim(c->argb(0));
-	msg.print("Trimming of atoms outside of unit cell after replicate is %s.\n", prefs.replicateTrim() ? "on" : "off");
-	rv.reset();
+	msg.print(Messenger::Verbose, "Trimming of atoms outside of unit cell after replicate is %s.\n", prefs.replicateTrim() ? "on" : "off");
+	rv.set(prefs.replicateTrim());
 	return TRUE;
 }
 
@@ -341,18 +359,20 @@ bool Command::function_Scheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 		else return FALSE;
 	}
-	else msg.print( "Current atom colouring scheme is '%s'\n", Prefs::colouringScheme( prefs.colourScheme() ));
-	rv.reset();
+	rv.set(Prefs::colouringScheme( prefs.colourScheme() ));
 	return TRUE;
 }
 
 // Atom shininess
 bool Command::function_Shininess(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setShininess(c->argi(0));
-	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
-	gui.mainView.postRedisplay();
-	rv.reset();
+	if (c->hasArg(0))
+	{
+		prefs.setShininess(c->argi(0));
+		if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
+		gui.mainView.postRedisplay();
+	}
+	rv.set(prefs.shininess());
 	return TRUE;
 }
 
@@ -450,8 +470,7 @@ bool Command::function_Style(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		}
 		else return FALSE;
 	}
-	else msg.print( "Current model drawing style is '%s'\n", Atom::drawStyle(prefs.renderStyle()));
-	rv.reset();
+	rv.set(Atom::drawStyle(prefs.renderStyle()));
 	return TRUE;
 }
 
@@ -459,32 +478,31 @@ bool Command::function_Style(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SwapBuffers(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0)) prefs.setManualSwapBuffers(c->argb(0));
-	else msg.print("Manual swapping of buffers is %s.\n", prefs.manualSwapBuffers() ? "on" : "off");
-	rv.reset();
+	rv.set(prefs.manualSwapBuffers());
 	return TRUE;
 }
 
 // Set whether to use nice text rendering ('usenicetext on|off')
 bool Command::function_UseNiceText(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setUseNiceText(c->argb(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setUseNiceText(c->argb(0));
+	rv.set( prefs.useNiceText() );
 	return TRUE;
 }
 
 // Set VDW cutoff ('vcut <cut>')
 bool Command::function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setVdwCutoff(c->argd(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setVdwCutoff(c->argd(0));
+	rv.set(prefs.vdwCutoff());
 	return TRUE;
 }
 
 // Turn on/off calculation of vdw ('vdw on|off')
 bool Command::function_Vdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	prefs.setCalculateVdw(c->argb(0));
-	rv.reset();
+	if (c->hasArg(0)) prefs.setCalculateVdw(c->argb(0));
+	rv.set(prefs.calculateVdw());
 	return TRUE;
 }
 
@@ -492,7 +510,7 @@ bool Command::function_Vdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ZoomThrottle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (c->hasArg(0)) prefs.setZoomThrottle(c->argd(0));
-	else msg.print("Zooming throttle is %f.\n", prefs.zoomThrottle());
-	rv.reset();
+	msg.print(Messenger::Verbose, "Zooming throttle is %f.\n", prefs.zoomThrottle());
+	rv.set(prefs.zoomThrottle());
 	return TRUE;
 }

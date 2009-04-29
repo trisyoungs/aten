@@ -49,9 +49,11 @@ class Prefs
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
 	static ModifierKey modifierKey(const char*);
+	static const char *modifierKey(ModifierKey);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char*);
+	static const char *keyAction(KeyAction);
 	// Standard 'Pen' Colours
 	enum PenColour { ForegroundColour, BackgroundColour, SpecularColour, GlyphColour, nPenColours };
 	static const char *penColour(PenColour);
