@@ -115,10 +115,10 @@ void Command::initPointers()
 	pointers_[Spacegroup] = &Command::function_Spacegroup;
 
 	// Charge commands
+	pointers_[Charge] = &Command::function_Charge;
 	pointers_[ChargeFF] = &Command::function_ChargeFF;
 	pointers_[ChargeFromModel] = &Command::function_ChargeFromModel;
 	pointers_[ChargePAtom] = &Command::function_ChargePAtom;
-	pointers_[Charge] = &Command::function_Charge;
 	pointers_[ChargeType] = &Command::function_ChargeType;
 	pointers_[ClearCharges] = &Command::function_ClearCharges;
 
@@ -313,6 +313,7 @@ void Command::initPointers()
 	pointers_[AngleLabel] = &Command::function_AngleLabel;
 	pointers_[AtomDetail] = &Command::function_AtomDetail;
 	pointers_[BondDetail] = &Command::function_BondDetail;
+	pointers_[CacheLimit] = &Command::function_CacheLimit;
 	pointers_[Colour] = &Command::function_Colour;
 	pointers_[CommonElements] = &Command::function_CommonElements;
 	pointers_[DensityUnits] = &Command::function_DensityUnits;

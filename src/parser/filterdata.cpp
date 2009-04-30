@@ -23,7 +23,7 @@
 #include "base/sysfunc.h"
 
 // Filter types
-const char *FilterTypeKeywords[FilterData::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
+const char *FilterTypeKeywords[FilterData::nFilterTypes] = { "importmodel", "importtrajectory", "importexpression", "importgrid", "exportmodel", "exporttrajectory", "exportexpression", "exportgrid" };
 const char *FilterData::filterType(FilterData::FilterType ft)
 {
         return FilterTypeKeywords[ft];

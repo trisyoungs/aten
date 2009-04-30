@@ -105,7 +105,7 @@ void StringVariable::nodePrint(int offset, const char *prefix)
 StringArrayVariable::StringArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
 {
 	// Private variables
-	returnType_ = VTypes::IntegerData;
+	returnType_ = VTypes::StringData;
 	stringArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;

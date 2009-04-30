@@ -24,6 +24,26 @@
 #include "model/model.h"
 #include "base/pattern.h"
 
+// Assign charge to selected atoms in model ('charge <q>'), or get charge of current selection
+bool Command::function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	double q = 0.0;
+	if (c->hasArg(0))
+	{
+		obj.rs->beginUndoState("Charge selected atoms");
+		for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
+		obj.rs->endUndoState();
+	}
+	else
+	{
+		q = 0.0;
+		for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) q += i->charge();
+	}
+	rv.set(q);
+	return TRUE;
+}
+
 // Assign charges from forcefield atom types ('chargeff')
 bool Command::function_ChargeFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -53,16 +73,6 @@ bool Command::function_ChargePAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Charge single pattern atom");
 	obj.rs->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
-	obj.rs->endUndoState();
-	return TRUE;
-}
-
-// Assign charge to selected atoms in model ('charge <q>')
-bool Command::function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Charge selected atoms");
-	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
 	obj.rs->endUndoState();
 	return TRUE;
 }

@@ -44,6 +44,6 @@ filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extensio
 			for (n=1; n<=4; ++n) if (bondatoms[n] > 0) newbond(i,bondatoms[n]);
 		}	
 	}
-	if (found == 0) warn("No HEADER record found in file.");
+	if (found == 0) printf("Warning: No HEADER record found in file.");
 	finalisemodel();
 }

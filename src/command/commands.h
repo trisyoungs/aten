@@ -158,10 +158,10 @@ class Command
 		Spacegroup,
 	
 		// Charge commands
+		Charge,
 		ChargeFF,
 		ChargeFromModel,
 		ChargePAtom,
-		Charge,
 		ChargeType,
 		ClearCharges,
 	
@@ -356,6 +356,7 @@ class Command
 		AngleLabel,
 		AtomDetail,
 		BondDetail,
+		CacheLimit,
 		Colour,
 		CommonElements,
 		DensityUnits,
@@ -618,10 +619,10 @@ class Command
 	static bool function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Charge commands
+	static bool function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ChargeFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ChargeFromModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ChargePAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ChargeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearCharges(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Colourscale commands
@@ -806,6 +807,7 @@ class Command
 	static bool function_AngleLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AtomDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CacheLimit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Colour(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CommonElements(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DensityUnits(CommandNode *c, Bundle &obj, ReturnValue &rv);
