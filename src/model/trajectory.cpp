@@ -189,7 +189,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	else
 	{
 		msg.print( "Trajectory will not be cached in memory.\n");
-		trajectoryOffsets_ = new streampos[nFileFrames_+1];
+		trajectoryOffsets_ = new streampos[nFileFrames_+10];
 		trajectoryOffsets_[0] = firstframe;
 		trajectoryOffsets_[1] = secondframe;
 		highestFrameOffset_ = 1;
@@ -398,8 +398,8 @@ void Model::seekFrame(int frameno)
 		{
 			// Seek to last frame position stored
 			trajectoryParser_.seekg(trajectoryOffsets_[highestFrameOffset_]);
-			// Read in consecutive frames until we get to the desired point, storing pointers as we go.
-			for (int i = highestFrameOffset_+1; i <= frameno; i++)
+			// Skip consecutive frames until we get to the desired point, storing pointers as we go.
+			for (frameIndex_ = highestFrameOffset_; frameIndex_ <= frameno; frameIndex_++)
 			{
 				currentFrame_->clear();
 				// Read a frame, and store its stream position
@@ -407,14 +407,14 @@ void Model::seekFrame(int frameno)
 				success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 				if ((!success) || (rv.asInteger() != 1))
 				{
-					msg.print("Failed to read frame %i in trajectory.\n",i+1);
+					msg.print("Failed to read frame %i in trajectory.\n",frameIndex_+1);
 					msg.exit("Model::seekFrame");
 					return;
 				}
-				// Store the next file offset (remember, array is 0 - N)
-				trajectoryOffsets_[i] = trajectoryParser_.tellg();
+				// Store new frame offset
+				highestFrameOffset_++;
+				trajectoryOffsets_[highestFrameOffset_] = trajectoryParser_.tellg();
 			}
-			highestFrameOffset_ = frameno;
 		}
 		currentFrame_->changeLog.add(Log::Visual);
 	}

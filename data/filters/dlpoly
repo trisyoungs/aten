@@ -152,6 +152,7 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		imcon = nint(readdouble(realsize));
 		tstep = readdouble(realsize);
 		recsize = readint(intsize);
+		verbose("nstep = %i, natoms = %i, keytrj = %i, imcon = %i, tstep = %f\n", nstep, natoms, keytrj, imcon, tstep);
 
 		# Create temporary data arrays for reading
 		double x[natoms], y[natoms], z[natoms];
@@ -168,7 +169,7 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 
 		# Template atoms in parent model
 		modeltemplate();
-		if (aten.model.frame.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+		if (aten.model.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
 
 		# Coordinates
 		recsize = readint(intsize);
@@ -253,7 +254,7 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 
 		# Check number of atoms in trajectory frame
 		modeltemplate();
-		if (aten.model.frame.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+		if (aten.model.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
 
 		# Read cell if its present
 		if (imcon > 0)

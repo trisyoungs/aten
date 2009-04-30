@@ -158,7 +158,7 @@ bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekFrame(c->argi(0));
+	obj.m->seekFrame(c->argi(0)-1);
 	gui.modelChanged(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;

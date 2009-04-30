@@ -613,9 +613,9 @@ bool LineParser::getIntegerArray(double *array, int count)
 	if (file_.fail())
 	{
 		closeFile();
-		return 1;
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 // Return a double value from reading 'n' chars of an (unformatted) input file
@@ -657,9 +657,9 @@ bool LineParser::getDoubleArray(double *array, int count)
 	if (file_.fail())
 	{
 		closeFile();
-		return 1;
+		return 0;
 	}
-	return 0;
+	return 1;
 }
 
 // Write line to file
