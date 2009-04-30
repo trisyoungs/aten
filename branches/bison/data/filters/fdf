@@ -65,7 +65,7 @@ filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", g
 				readline(axes[1].x,axes[1].y,axes[1].z);
 				readline(axes[2].x,axes[2].y,axes[2].z);
 				readline(axes[3].x,axes[3].y,axes[3].z);
-				cell(axes[1].x,axes[1].y,axes[1].z,axes[2].x,axes[2].y,axes[2].z,axes[3].x,axes[3].y,axes[3].z);
+				cellaxes(axes[1].x,axes[1].y,axes[1].z,axes[2].x,axes[2].y,axes[2].z,axes[3].x,axes[3].y,axes[3].z);
 			}
 		}
 	}

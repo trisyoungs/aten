@@ -14,6 +14,7 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 
 	# Request that parentheses are removed as we read lines
 	addreadoption("stripbrackets");
+	removereadoption("usequotes");
 
 	# Read in each line as six arguments.
 	# If the first is not 'A' then it is the start of some data block.
@@ -81,7 +82,7 @@ filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="
 		cellaxes(axes[1].x, axes[1].y, axes[1].z, axes[2].x, axes[2].y, axes[2].z, axes[3].x, axes[3].y, axes[3].z);
 		fold();
 	}
-	else if (cellvar != 0) warn("Incomplete / mangled cell definition in file.");
+	else if (cellvar != 0) printf("Warning: Incomplete / mangled cell definition in file.");
 
 	# Finalise model
 	finalisemodel();

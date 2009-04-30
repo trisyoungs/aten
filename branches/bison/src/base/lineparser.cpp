@@ -243,7 +243,7 @@ int LineParser::getLine()
 	{
 		result = readLine();
 		if (result != 0) return result;
-		// Search for a '#' in the file to remove comment
+		// Search for '#' or '//' in the file to remove comments
 		char *c;
 		for (c = line_; *c != '\0'; c++)
 		{
@@ -251,6 +251,16 @@ int LineParser::getLine()
 			{
 				*c = '\0';
 				break;
+			}
+			if (*c == '/')
+			{
+				char *c2 = c;
+				c2++;
+				if (*c2 == '/')
+				{
+					*c = '\0';
+					break;
+				}
 			}
 		}
 		// Now, see if our line contains only blanks

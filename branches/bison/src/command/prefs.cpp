@@ -65,6 +65,14 @@ bool Command::function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Cache Limit
+bool Command::function_CacheLimit(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (c->hasArg(0)) prefs.setCacheLimit(c->argi(0));
+	rv.set(prefs.cacheLimit());
+	return TRUE;
+}
+
 // Colours
 bool Command::function_Colour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
