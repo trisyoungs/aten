@@ -23,6 +23,7 @@
 #include "parser/stepnode.h"
 #include "base/constants.h"
 #include "classes/prefs.h"
+#include "model/model.h"
 #include "main/aten.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,7 +89,8 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "model",	VTypes::ModelData,	FALSE, TRUE },
 	{ "elements",	VTypes::ElementsData,	FALSE, TRUE },
-	{ "models",	VTypes::ModelData,	TRUE, TRUE }
+	{ "models",	VTypes::ModelData,	TRUE, TRUE },
+	{ "prefs",	VTypes::PreferencesData,FALSE, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -142,7 +144,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (AtenVariable::CurrentModel):
-			rv.set(VTypes::ModelData, aten.currentModel());
+			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
 			break;
 		case (AtenVariable::Elements):
 			rv.set(VTypes::ElementsData, &elements());
