@@ -253,6 +253,16 @@ void Command::initPointers()
 	pointers_[RemoveLabel] = &Command::function_RemoveLabel;
 	pointers_[RemoveLabels] = &Command::function_RemoveLabels;
 
+	// Math Commands
+	pointers_[Abs] = &Command::function_Abs;
+	pointers_[Cos] = &Command::function_Cos;
+	pointers_[Exp] = &Command::function_Exp;
+	pointers_[Ln] = &Command::function_Ln;
+	pointers_[Log] = &Command::function_Log;
+	pointers_[Nint] = &Command::function_Nint;
+	pointers_[Sin] = &Command::function_Sin;
+	pointers_[Sqrt] = &Command::function_Sqrt;
+
 	// MC Commands
 	pointers_[MCAccept] = &Command::function_MCAccept;
 	pointers_[MCAllow] = &Command::function_MCAllow;
@@ -439,7 +449,6 @@ void Command::initPointers()
 	pointers_[Contains] = &Command::function_Contains;
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
-	pointers_[Nint] = &Command::function_Nint;
 	pointers_[Normalise] = &Command::function_Normalise;	
 	pointers_[StripChars] = &Command::function_StripChars;
 

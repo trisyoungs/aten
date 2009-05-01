@@ -118,7 +118,7 @@ bool DoubleArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		msg.print("A constant value (in this case a double array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (doubleArrayData_ == NULL)
@@ -126,8 +126,19 @@ bool DoubleArrayVariable::set(ReturnValue &rv)
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
-	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble();
+	// Is the supplied ReturnValue an array?
+	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble();
+	else
+	{
+		if (rv.arraySize() != arraySize_)
+		{
+			msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			return FALSE;
+		}
+		bool success;
+		for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.elementAsDouble(i, success);
+		if (!success) return FALSE;
+	}
 	return TRUE;
 }
 
@@ -163,19 +174,39 @@ void DoubleArrayVariable::reset()
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return;
 	}
-	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = 0;
+	// Loop over array elements and set them - for constant arrays only change non-constant subvalues
+	if (readOnly_)
+	{
+		int count = 0;
+		ReturnValue value;
+		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		{
+			count++;
+			if (ri->item->readOnly()) continue;
+			if (!ri->item->execute(value)) doubleArrayData_[count] = 0;
+			else doubleArrayData_[count] = value.asDouble();
+		}
+	}
+	else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = 0;
 }
 
 // Return value of node
 bool DoubleArrayVariable::execute(ReturnValue &rv)
 {
-// 	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
 	if (doubleArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
-		return FALSE;
+		if (!readOnly_)
+		{
+			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+			return FALSE;
+		}
+		if (!initialise())
+		{
+			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", name_.get());
+			return FALSE;
+		}
 	}
+	else if (readOnly_) reset();
 	rv.set(VTypes::DoubleData, doubleArrayData_, arraySize_);
 	return TRUE;
 }
@@ -225,20 +256,26 @@ bool DoubleArrayVariable::initialise()
 	// Store new array size
 	arraySize_ = newsize.asInteger();
 	if ((arraySize_ > 0) && (doubleArrayData_ == NULL)) doubleArrayData_ = new double[arraySize_];
-	if (initialValue_ == NULL) reset();
+	// In the case of constant arrays, use the argument list of the TreeNode to set the array elements
+	if (readOnly_)
+	{
+		int count = 0;
+		ReturnValue value;
+		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		{
+			if (!ri->item->execute(value)) return FALSE;
+			doubleArrayData_[count++] = value.asDouble();
+		}
+	}
+	else if (initialValue_ == NULL) reset();
 	else
 	{
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (set(rv)) return TRUE;
-			else
-			{
-				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
-				return FALSE;
-			}
+			if (!set(rv)) return FALSE;
 		}
-		return FALSE;
+		else return FALSE;
 	}
 	return TRUE;
 }

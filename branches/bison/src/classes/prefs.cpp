@@ -142,7 +142,7 @@ Prefs::Prefs()
 	atomStyleRadius_[Atom::SphereStyle] = 0.35;
 	atomStyleRadius_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
 	bondStyleRadius_[Atom::StickStyle] = 0.1;	// Unused
-	bondStyleRadius_[Atom::TubeStyle] = 0.04;
+	bondStyleRadius_[Atom::TubeStyle] = 0.15;
 	bondStyleRadius_[Atom::SphereStyle] = 0.15;
 	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
 	selectionScale_ = 1.5;

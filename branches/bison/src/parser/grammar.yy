@@ -38,7 +38,7 @@ VTypes::DataType declaredType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VARTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK HELP VOID
+%token DO WHILE FOR IF RETURN FILTERBLOCK HELP VOID DUMMY
 %nonassoc ELSE
 
 %nonassoc AND OR
@@ -52,7 +52,7 @@ VTypes::DataType declaredType;
 %right '^'
 
 %type <node> constant expr rawexpr func var rawvar arg args
-%type <node> flowstatement stexpr statement block blockment statementlist exprlist VECCONST
+%type <node> fstatement decexpr statement block blockment statementlist exprlist ARRAYCONST
 %type <node> namelist newname
 %type <name> newvar
 %type <node> filter pushscope declaration userfunc userfuncdef userstatementdef
@@ -85,14 +85,14 @@ popscope:
 	;
 
 statementlist:
-	statement					{ $$ = $1; }
-        | statementlist statement 			{ $$ = cmdparser.joinCommands($1, $2); }
-        | statementlist block	 			{ $$ = cmdparser.joinCommands($1, $2); }
-        ;
+	blockment					{ $$ = $1; }
+	| statementlist blockment 			{ $$ = cmdparser.joinCommands($1, $2); }
+	;
 
 blockment:
-	statement					{ $$ = $1; }
+	statement ';'					{ $$ = $1; }
 	| block						{ $$ = $1; }
+	| fstatement					{ $$ = $1; if ($$ == NULL) YYABORT; }
 	;
 
 /* Filter Definitions */
@@ -114,27 +114,25 @@ pushfilter:
 /* Single Statement / Flow Control */
 
 statement:
-	';'						{ $$ = cmdparser.addFunction(Command::NoFunction); }
-	| stexpr ';'					{ $$ = $1; }
-	| flowstatement					{ $$ = $1; if ($$ == NULL) YYABORT; }
-	| userfuncdef					{ $$ = $1; }
-	| userstatementdef				{ $$ = $1; }
+	decexpr						{ $$ = $1; }
 	| HELP FUNCCALL					{ $$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2)); }
+	| RETURN expr					{ $$ = cmdparser.addFunction(Command::Return,$2); }
+	| RETURN 					{ $$ = cmdparser.addFunction(Command::Return); }
 	;
 
-stexpr:
-	declaration					{ $$ = $1;  }
+decexpr:
+	declaration					{ $$ = $1; }
 	| expr						{ $$ = $1; }
 	;
 
-flowstatement:
+fstatement:
 	IF '(' expr ')' blockment ELSE blockment	{ $$ = cmdparser.addFunction(Command::If,$3,$5,$7); }
 	| IF '(' expr ')' blockment			{ $$ = cmdparser.addFunction(Command::If,$3,$5); }
-	| FOR pushscope '(' stexpr ';' stexpr ';' stexpr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
+	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment { $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
 	| WHILE pushscope '(' expr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
 	| DO pushscope blockment WHILE '(' expr ')'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
-	| RETURN expr ';'				{ $$ = cmdparser.addFunction(Command::Return,$2); }
-	| RETURN ';'					{ $$ = cmdparser.addFunction(Command::Return); }
+	| userfuncdef					{ if (!cmdparser.addStatement($1)) YYABORT; }
+	| userstatementdef				{ if (!cmdparser.addStatement($1)) YYABORT; }
 	;
 
 /* Range (X~Y) */
@@ -180,24 +178,25 @@ pushfunc:
 /* Variable declaration and name / assignment list */
 
 namelist:
-	newname						{ $$ = $1; }
-	| namelist ',' newname				{ $$ = Tree::joinArguments($3,$1); }
+	newname						{ $$ = $1; if ($1 == NULL) YYABORT; }
+	| namelist ',' newname				{ if ($3 == NULL) YYABORT; $$ = Tree::joinArguments($3,$1); }
 	| namelist ',' constant				{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
 	| namelist newname				{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
 	| namelist error				{ YYABORT; }
+	| namelist ',' FUNCCALL				{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
+	| namelist ',' LOCALVAR				{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
+	| namelist ',' USERFUNCCALL			{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
+	| namelist ',' VARTYPE				{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	;
 
 newname:
 	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3); }
 	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
-	| newvar '=' VECCONST				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
+	| newvar '=' ARRAYCONST				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
+	| newvar '[' expr ']' '=' ARRAYCONST		{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
 	| VAR savevarname 				{ $$ = cmdparser.addVariable(declaredType, &varName); }
-	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
-	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
-	| USERFUNCCALL					{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
-	| VARTYPE					{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	;
 
 newvar:
@@ -266,10 +265,6 @@ rawexpr:
 	| var MM					{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); }
 	| PP var					{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); }
 	| MM var					{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); }
-	| PP error					{ msg.print("Prefix increment can only act on a variable value.\n"); YYABORT; }
-	| MM error					{ msg.print("Prefix decrement can only act on a variable value.\n"); YYABORT; }
-	| error PP					{ msg.print("Postfix increment can only act on a variable value.\n"); YYABORT; }
-	| error MM					{ msg.print("Postfix decrement can only act on a variable value.\n"); YYABORT; }
 	| expr '+' expr					{ $$ = cmdparser.addOperator(Command::OperatorAdd, $1, $3); }
 	| expr '-' expr					{ $$ = cmdparser.addOperator(Command::OperatorSubtract, $1, $3); }
 	| expr '*' expr					{ $$ = cmdparser.addOperator(Command::OperatorMultiply, $1, $3); }
@@ -289,9 +284,9 @@ rawexpr:
 	;
 
 
-/* 3-Vector Constant / Assignment Group */
-VECCONST:
-	'{' expr ',' expr ',' expr '}'			{ $$ = cmdparser.addVecConstant($2, $4, $6); }
+/* Array Vector Constant / Assignment Group */
+ARRAYCONST:
+	'{' exprlist '}'				{ $$ = cmdparser.addArrayConstant($2); }
 	;
 
 /* Functions */

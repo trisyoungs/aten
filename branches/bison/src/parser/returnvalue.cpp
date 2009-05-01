@@ -355,6 +355,213 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 	return NULL;
 }
 
+// Return integer element value
+int ReturnValue::elementAsInteger(int index, bool &success)
+{
+	if (arraySize_ == -1)
+	{
+		printf("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		return FALSE;
+	}
+	else if ((index < 0) || (index >= arraySize_))
+	{
+		printf("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		return FALSE;
+	}
+	success = TRUE;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as an integer!\n");
+			success = FALSE;
+			return 0;
+			break;
+		case (VTypes::IntegerData):
+			return ((int*)valueP_)[index];
+			break;
+		case (VTypes::DoubleData):
+			return (int) ((double*)valueP_)[index];
+			break;
+		case (VTypes::StringData):
+			return atoi( ((Dnchar*)valueP_)[index].get() );
+			break;
+		default:
+			printf("ReturnValue::elementAsInteger() doesn't recognise this type.\n");
+			break;
+	}
+	success = FALSE;
+	return 0;
+}
+
+// Return double element value
+double ReturnValue::elementAsDouble(int index, bool &success)
+{
+	if (arraySize_ == -1)
+	{
+		printf("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		return FALSE;
+	}
+	else if ((index < 0) || (index >= arraySize_))
+	{
+		printf("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		return FALSE;
+	}
+	success = TRUE;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a double!\n");
+			success = FALSE;
+			return 0;
+			break;
+		case (VTypes::IntegerData):
+			return (double) ((int*)valueP_)[index];
+			break;
+		case (VTypes::DoubleData):
+			return ((double*)valueP_)[index];
+			break;
+		case (VTypes::StringData):
+			return atof( ((Dnchar*)valueP_)[index].get() );
+			break;
+		default:
+			printf("ReturnValue::elementAsDouble() doesn't recognise this type.\n");
+			break;
+	}
+	success = FALSE;
+	return 0;
+}
+
+// Return as character string
+const char *ReturnValue::elementAsString(int index, bool &success)
+{
+	static char converted[128];
+	if (arraySize_ == -1)
+	{
+		printf("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		return FALSE;
+	}
+	else if ((index < 0) || (index >= arraySize_))
+	{
+		printf("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		return FALSE;
+	}
+	success = TRUE;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			success = FALSE;
+			return "_NULL_";
+			break;
+		case (VTypes::IntegerData):
+			return itoa( ((int*)valueP_)[index] );
+			break;
+		case (VTypes::DoubleData):
+			return ftoa( ((double*)valueP_)[index] );
+			break;
+		case (VTypes::StringData):
+			return ((Dnchar*)valueP_)[index].get();
+			break;
+		case (VTypes::VectorData):
+			printf("Cannot convert return value of type 'vector' into a string.\n");
+			break;
+		default:
+			// All pointer types
+			converted[0] = '\0';
+			sprintf(converted, "%li", valueP_);
+			tempString_ = converted;
+			return tempString_.get();
+			break;
+	}
+	success = FALSE;
+	return "NULL";
+}
+
+// Return as vector value
+Vec3<double> ReturnValue::elementAsVector(int index, bool &success)
+{
+	if (arraySize_ == -1)
+	{
+		printf("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		return FALSE;
+	}
+	else if ((index < 0) || (index >= arraySize_))
+	{
+		printf("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		return FALSE;
+	}
+	success = TRUE;
+	double d;
+	int i;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			success = FALSE;
+			return Vec3<double>();
+			break;
+		case (VTypes::IntegerData):
+			i = ((int*)valueP_)[index];
+			return Vec3<double>(i, i, i);
+			break;
+		case (VTypes::DoubleData):
+			d = ((double*)valueP_)[index];
+			return Vec3<double>(d, d, d);
+			break;
+		case (VTypes::VectorData):
+			return ((Vec3<double>*)valueP_)[index];
+			break;
+		default:
+			printf("Cannot convert return value of type '%s' into a vector.\n", VTypes::dataType(type_));
+			break;
+	}
+	success = FALSE;
+	return Vec3<double>();
+}
+
+void *ReturnValue::elementAsPointer(int index, VTypes::DataType ptrtype, bool &success)
+{
+	if (arraySize_ == -1)
+	{
+		printf("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		return FALSE;
+	}
+	else if ((index < 0) || (index >= arraySize_))
+	{
+		printf("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		return FALSE;
+	}
+	success = TRUE;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			printf("Error: No data in ReturnValue to return as a pointer!\n");
+			success = FALSE;
+			return NULL;
+			break;
+		case (VTypes::IntegerData):
+		case (VTypes::DoubleData):
+		case (VTypes::StringData):
+		case (VTypes::VectorData):
+			msg.print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+			success = FALSE;
+			return NULL;
+			break;
+		default:
+			// Check that internal pointer type matches requested pointer type
+			if (ptrtype != type_)
+			{
+				msg.print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				success = FALSE;
+				return NULL;
+			}
+			else return ((void**)valueP_)[index];
+			break;
+	}
+	success = FALSE;
+	return NULL;
+}
+
 // Return array size of data
 int ReturnValue::arraySize()
 {
@@ -445,7 +652,7 @@ bool ReturnValue::increase()
 		case (VTypes::VectorData):
 		case (VTypes::AtenData):
 		case (VTypes::CellData):
-		case (VTypes::ElementsData):
+		case (VTypes::ElementData):
 			result = FALSE;
 			break;
 		case (VTypes::IntegerData):
@@ -497,7 +704,7 @@ bool ReturnValue::decrease()
 		case (VTypes::VectorData):
 		case (VTypes::AtenData):
 		case (VTypes::CellData):
-		case (VTypes::ElementsData):
+		case (VTypes::ElementData):
 			result = FALSE;
 			break;
 		case (VTypes::IntegerData):

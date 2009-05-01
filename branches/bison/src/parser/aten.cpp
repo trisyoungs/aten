@@ -87,10 +87,11 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "model",	VTypes::ModelData,	FALSE, TRUE },
-	{ "elements",	VTypes::ElementsData,	FALSE, TRUE },
-	{ "models",	VTypes::ModelData,	TRUE, TRUE },
-	{ "prefs",	VTypes::PreferencesData,FALSE, TRUE }
+	{ "model",	VTypes::ModelData,		0, TRUE },
+	{ "elements",	VTypes::ElementData,		elements().nElements(), TRUE },
+	{ "models",	VTypes::ModelData,		-1, TRUE },
+	{ "nelements",	VTypes::IntegerData,		0, TRUE },
+	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -132,7 +133,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("AtenVariable::retrieveAccessor");
@@ -147,15 +148,23 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
 			break;
 		case (AtenVariable::Elements):
-			rv.set(VTypes::ElementsData, &elements());
-			break;
-		case (AtenVariable::Preferences):
-			rv.set(VTypes::PreferencesData, &prefs);
+			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
+			{
+				msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
+				result = FALSE;
+			}
+			else rv.set(VTypes::ElementData, &elements().el[arrayIndex] );
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);
 			if (m == NULL) result = FALSE;
 			else rv.set(VTypes::ModelData, m);
+			break;
+		case (AtenVariable::NElements):
+			rv.set(elements().nElements());
+			break;
+		case (AtenVariable::Preferences):
+			rv.set(VTypes::PreferencesData, &prefs);
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in AtenVariable.\n", accessorData[i].name);
@@ -179,7 +188,7 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

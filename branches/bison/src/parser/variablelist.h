@@ -47,7 +47,9 @@ class VariableList
 	// List of constants
 	List<Variable> constants_;
 	// Create variable of specified type
-	static Variable *createVariable(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	static Variable *makeVariable(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
+	// Create a new array variable in the list
+	Variable *makeArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
@@ -60,6 +62,8 @@ class VariableList
 	Variable *createFree(VTypes::DataType type, const char *name, TreeNode *initialValue = NULL);
 	// Create a new array variable in the list
 	Variable *createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue = NULL);
+	// Create a new array constant in the list
+	Variable *createArrayConstant(VTypes::DataType type, int size);
 	// Return the number of variables (not constants) contained in the list
 	int nVariables();
 	// Return first variable in the list

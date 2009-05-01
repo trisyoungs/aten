@@ -53,6 +53,21 @@ class Element
 	int bondOrderPenalty[9];
 	// Formal charges for bond orders 0 - 8
 	int formalCharges[9];
+
+	/*
+	// Data by Z
+	*/
+	public:
+	// Copy the ambient colour of the element into the array provided
+	void copyAmbientColour(GLfloat *v);
+	// Set ambient colour component of element
+	void setAmbientColour(int rgb, GLfloat value);
+	void setAmbientColour(GLfloat r, GLfloat g, GLfloat b);
+	// Copy the diffuse colour of the element into the array provided
+	void copyDiffuseColour(GLfloat *v);
+	// Set diffuse colour component of element
+	void setDiffuseColour(int rgb, GLfloat value);
+	void setDiffuseColour(GLfloat r, GLfloat g, GLfloat b);
 };
 
 // Element map
@@ -66,8 +81,6 @@ class ElementMap
 	static ElementMap::ZMapType zMapType(const char *s);
 
 	private:
-	// Element data array
-	static Element el_[];
 	// Convert string from Z to element number
 	int numberToZ(const char*);
 	// Convert string from alpha to element number
@@ -84,6 +97,8 @@ class ElementMap
 	int nElements_;
 
 	public:
+	// Element data array
+	static Element el[];
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm

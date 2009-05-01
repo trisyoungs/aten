@@ -103,6 +103,16 @@ class ReturnValue
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
+	// Return integer element value
+	int elementAsInteger(int index, bool &success);
+	// Return real element value
+	double elementAsDouble(int index, bool &success);
+	// Return character string element
+	const char *elementAsString(int index, bool &success);
+	// Return vector element data
+	Vec3<double> elementAsVector(int index, bool &success);
+	// Return pointer element data
+	void *elementAsPointer(int index, VTypes::DataType type, bool &success);
 	// Return array size of data
 	int arraySize();
 

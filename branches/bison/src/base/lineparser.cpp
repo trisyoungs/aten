@@ -242,7 +242,11 @@ int LineParser::getLine()
 	do
 	{
 		result = readLine();
-		if (result != 0) return result;
+		if (result != 0)
+		{
+			msg.exit("LineParser::getLine");
+			return result;
+		}
 		// Search for '#' or '//' in the file to remove comments
 		char *c;
 		for (c = line_; *c != '\0'; c++)

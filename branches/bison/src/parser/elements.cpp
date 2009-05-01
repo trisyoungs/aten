@@ -27,15 +27,15 @@
 #include <string.h>
 
 // Constructor
-ElementsVariable::ElementsVariable()
+ElementVariable::ElementVariable()
 {
 	// Private variables
-	returnType_ = VTypes::ElementsData;
+	returnType_ = VTypes::ElementData;
 	readOnly_ = TRUE;
 }
 
 // Destructor
-ElementsVariable::~ElementsVariable()
+ElementVariable::~ElementVariable()
 {
 }
 
@@ -44,27 +44,27 @@ ElementsVariable::~ElementsVariable()
 */
 
 // Set value of variable
-bool ElementsVariable::set(ReturnValue &rv)
+bool ElementVariable::set(ReturnValue &rv)
 {
 	msg.print("A constant value (in this case the Elements table) cannot be assigned to.\n");
 	return FALSE;
 }
 
 // Reset variable
-void ElementsVariable::reset()
+void ElementVariable::reset()
 {
 }
 
 // Return value of node
-bool ElementsVariable::execute(ReturnValue &rv)
+bool ElementVariable::execute(ReturnValue &rv)
 {
 	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(VTypes::ElementsData, &elements());
+	rv.set(VTypes::ElementData, &elements());
 	return TRUE;
 }
 
 // Print node contents
-void ElementsVariable::nodePrint(int offset, const char *prefix)
+void ElementVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -83,129 +83,119 @@ void ElementsVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Accessor data
-Accessor ElementsVariable::accessorData[ElementsVariable::nAccessors] = {
-	{ "mass",	VTypes::DoubleData,	TRUE, TRUE },
-	{ "name",	VTypes::DoubleData,	TRUE, TRUE },
-	{ "nelements",	VTypes::IntegerData,	FALSE,	 TRUE },
-	{ "symbol",	VTypes::StringData,	TRUE, TRUE }
+Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
+	{ "ambient",	VTypes::DoubleData,	4, FALSE },
+	{ "colour",	VTypes::DoubleData,	4, FALSE },
+	{ "diffuse",	VTypes::DoubleData,	4, FALSE },
+	{ "mass",	VTypes::DoubleData,	0, TRUE },
+	{ "name",	VTypes::DoubleData,	0, TRUE },
+	{ "symbol",	VTypes::StringData,	0, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ElementsVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ElementVariable::findAccessor(const char *s, TreeNode *arrayindex)
 {
-	return ElementsVariable::accessorSearch(s, arrayindex);
+	return ElementVariable::accessorSearch(s, arrayindex);
 }
 
 // Private static function to search accessors
-StepNode *ElementsVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 {
-	msg.enter("ElementsVariable::accessorSearch");
+	msg.enter("ElementVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
 		msg.print("Error: Type 'elements&' has no member named '%s'.\n", s);
-		msg.exit("ElementsVariable::accessorSearch");
+		msg.exit("ElementVariable::accessorSearch");
 		return NULL;
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::ElementsData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
-	msg.exit("ElementsVariable::accessorSearch");
+	result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	msg.exit("ElementVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ElementsVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ElementsVariable::retrieveAccessor");
+	msg.enter("ElementVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Elements type.\n");
-		msg.exit("ElementsVariable::retrieveAccessor");
+		msg.exit("ElementVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ElementsVariable::retrieveAccessor");
+		msg.exit("ElementVariable::retrieveAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
+	Element *ptr = (Element*) rv.asPointer(VTypes::ElementData, result);
 	if (result) switch (acc)
 	{
-		case (ElementsVariable::Mass):
-			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
-			{
-				msg.print("Array index [%i] is out of range for 'mass' member.\n", arrayIndex);
-				result = FALSE;
-			}
-			else rv.set(elements().atomicMass(arrayIndex));
+		case (ElementVariable::Mass):
+			rv.set(elements().atomicMass(arrayIndex));
 			break;
-		case (ElementsVariable::Name):
-			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
-			{
-				msg.print("Array index [%i] is out of range for 'name' member.\n", arrayIndex);
-				result = FALSE;
-			}
-			else rv.set(elements().name(arrayIndex));
+		case (ElementVariable::Name):
+			rv.set(elements().name(arrayIndex));
 			break;
-		case (ElementsVariable::NElements):
-			rv.set(elements().nElements());
-			break;
-		case (ElementsVariable::Symbol):
-			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
-			{
-				msg.print("Array index [%i] is out of range for 'symbol' member.\n", arrayIndex);
-				result = FALSE;
-			}
-			else rv.set(elements().symbol(arrayIndex));
+		case (ElementVariable::Symbol):
+			rv.set(elements().symbol(arrayIndex));
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in ElementsVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in ElementVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ElementsVariable::retrieveAccessor");
+	msg.exit("ElementVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ElementsVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ElementsVariable::setAccessor");
+	msg.enter("ElementVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Elements type.\n");
-		msg.exit("ElementsVariable::retrieveAccessor");
+		msg.exit("ElementVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
 	else if (!hasArrayIndex)
 	{
+		printf("size = %i\n", accessorData[i].arraySize);
 		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ElementsVariable::retrieveAccessor");
+		msg.exit("ElementVariable::setAccessor");
 		return FALSE;
 	}
 	bool result = TRUE;
 	switch (acc)
 	{
+		case (ElementVariable::Diffuse):
+			printf("ARSE\n");
+// 			else rv.set(elements().atomicMass(arrayIndex));
+			break;
 		default:
-			printf("ElementsVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ElementVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ElementsVariable::setAccessor");
+	msg.exit("ElementVariable::setAccessor");
 	return result;
 }

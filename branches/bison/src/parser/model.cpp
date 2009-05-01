@@ -51,22 +51,22 @@ ModelVariable::~ModelVariable()
 
 // Accessor data
 Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
- 	{ "atoms",		VTypes::AtomData,		TRUE, TRUE },
- 	{ "atomtypes",		VTypes::ForcefieldAtomData,	TRUE, TRUE },
- 	{ "bonds",		VTypes::BondData,		TRUE, TRUE },
- 	{ "cell",		VTypes::CellData,		FALSE, TRUE },
- 	{ "frame",		VTypes::ModelData,		FALSE, TRUE },
+ 	{ "atoms",		VTypes::AtomData,		-1, TRUE },
+ 	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
+ 	{ "bonds",		VTypes::BondData,		-1, TRUE },
+ 	{ "cell",		VTypes::CellData,		0, TRUE },
+ 	{ "frame",		VTypes::ModelData,		0, TRUE },
 //  	{ "frames",		VTypes::ModelData };
- 	{ "name",		VTypes::StringData,		FALSE, FALSE },
- 	{ "nangleterms",	VTypes::IntegerData,		FALSE, TRUE },
- 	{ "natoms",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "natomtypes",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "nbonds",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "nbondterms",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "npatterns",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "nselected",		VTypes::IntegerData,		FALSE, TRUE },
- 	{ "ntorsionterms",	VTypes::IntegerData,		FALSE, TRUE },
- 	{ "patterns",		VTypes::PatternData,		TRUE, TRUE }
+ 	{ "name",		VTypes::StringData,		0, FALSE },
+ 	{ "nangleterms",	VTypes::IntegerData,		0, TRUE },
+ 	{ "natoms",		VTypes::IntegerData,		0, TRUE },
+ 	{ "natomtypes",		VTypes::IntegerData,		0, TRUE },
+ 	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
+ 	{ "nbondterms",		VTypes::IntegerData,		0, TRUE },
+ 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
+ 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
+ 	{ "ntorsionterms",	VTypes::IntegerData,		0, TRUE },
+ 	{ "patterns",		VTypes::PatternData,		-1, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -108,7 +108,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ModelVariable::retrieveAccessor");
@@ -216,7 +216,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

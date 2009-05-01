@@ -44,7 +44,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 			switch (type)
 			{
 				case (VTypes::AtenData):
-				case (VTypes::ElementsData):
+				case (VTypes::ElementData):
 				case (VTypes::CellData):
 				case (VTypes::ForcefieldAtomData):
 				case (VTypes::ForcefieldBoundData):

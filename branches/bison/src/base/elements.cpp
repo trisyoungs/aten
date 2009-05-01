@@ -59,7 +59,7 @@ ElementMap::ZMapType ElementMap::zMapType(const char *s)
 */
 
 //	  Mass  	Name         		Symbol			Group	Radius  Vlncy	AmbientRGBA		DiffuseRGBA
-Element ElementMap::el_[] = {
+Element ElementMap::el[] = {
 	{ 0.000,	"Dummy","DUMMY",	"XX","XX",		0,	0.00,	0.5f,0.5f,0.5f,1.0f,		0.375f,0.375f,0.375f,1.0f,
 		0,0,0,0,0,0,0,0,0,	0,0,0,0,0,0,0,0,0 },
 	{ 1.008,	"Hydrogen","HYDROGEN",	"H","H",		1,	0.31,	0.87f,0.87f,0.87f,1.0f,		0.78f,0.78f,0.78f,1.0f,
@@ -300,11 +300,60 @@ Element ElementMap::el_[] = {
 		32,32,32,32,32,32,32,32,32,	0,0,0,0,0,0,0,0,0 }
 };
 
+// Set ambient colour component of element
+void Element::setAmbientColour( int rgb, GLfloat value)
+{
+	ambientColour[rgb] = value;
+}
+
+// Set ambient colour component
+void Element::setAmbientColour(GLfloat r, GLfloat g, GLfloat b)
+{
+	ambientColour[0] = r;
+	ambientColour[1] = g;
+	ambientColour[2] = b;
+}
+
+// Set diffuse colour component of element
+void Element::setDiffuseColour(int rgb, GLfloat value)
+{
+	diffuseColour[rgb] = value;
+}
+
+void Element::setDiffuseColour(GLfloat r, GLfloat g, GLfloat b)
+{
+	diffuseColour[0] = r;
+	diffuseColour[1] = g;
+	diffuseColour[2] = b;
+}
+
+// Return ambient colour in supplied vector
+void Element::copyAmbientColour(GLfloat *v)
+{
+	v[0] = ambientColour[0];
+	v[1] = ambientColour[1];
+	v[2] = ambientColour[2];
+	v[3] = ambientColour[3];
+}
+
+// Return diffuse colour in supplied vector
+void Element::copyDiffuseColour(GLfloat *v)
+{
+	v[0] = diffuseColour[0];
+	v[1] = diffuseColour[1];
+	v[2] = diffuseColour[2];
+	v[3] = diffuseColour[3];
+}
+
+/*
+// Element Map
+*/
+
 // Constructor
 ElementMap::ElementMap()
 {
 	// Determine number of defined elements
-	nElements_ = sizeof(el_) / sizeof(el_[0]);
+	nElements_ = sizeof(el) / sizeof(el[0]);
 }
 
 // Return group number of atomic number 'i'
@@ -364,100 +413,90 @@ int ElementMap::nElements()
 // Return group number of atomic number 'i'
 int ElementMap::group(int i)
 {
-	return el_[i].group;
+	return el[i].group;
 }
 
 // Return atomic mass of atomic number 'i'
 double ElementMap::atomicMass(int i)
 {
-	return el_[i].atomicMass;
+	return el[i].atomicMass;
 }
 
 // Return name of atomic number 'i'
 const char *ElementMap::name(int i)
 {
-	return el_[i].name;
+	return el[i].name;
 }
 
 // Return symbol of atomic number 'i'
 const char *ElementMap::symbol(int i)
 {
-	return el_[i].symbol;
+	return el[i].symbol;
 }
 
 // Set radius of atomic number 'i'
 void ElementMap::setAtomicRadius(int i, double r)
 {
-	el_[i].atomicRadius = r;
+	el[i].atomicRadius = r;
 }
 
 // Return effective radius of atomic number 'i'
 double ElementMap::atomicRadius(int i)
 {
-	return el_[i].atomicRadius;
+	return el[i].atomicRadius;
 }
 
 // Return bond order penalty for TBO 'bo' of atomic number 'i'
 int ElementMap::bondOrderPenalty(int i, int bo)
 {
-	return el_[i].bondOrderPenalty[bo];
+	return el[i].bondOrderPenalty[bo];
 }
 
 // Return the ambient colour of the element
 GLfloat *ElementMap::ambientColour(int i)
 {
-	return el_[i].ambientColour;
+	return el[i].ambientColour;
 }
 
 // Set ambient colour component of element
 void ElementMap::setAmbientColour(int i, int rgb, GLfloat value)
 {
-	el_[i].ambientColour[rgb] = value;
+	el[i].ambientColour[rgb] = value;
 }
 
 // Set ambient colour component
 void ElementMap::setAmbientColour(int i, GLfloat r, GLfloat g, GLfloat b)
 {
-	el_[i].ambientColour[0] = r;
-	el_[i].ambientColour[1] = g;
-	el_[i].ambientColour[2] = b;
+	el[i].setAmbientColour(r, g, b);
 }
 
 // Return the diffuse colour of the element
 GLfloat *ElementMap::diffuseColour(int i)
 {
-	return el_[i].diffuseColour;
+	return el[i].diffuseColour;
 }
 
 // Set diffuse colour component of element
 void ElementMap::setDiffuseColour(int i, int rgb, GLfloat value)
 {
-	el_[i].diffuseColour[rgb] = value;
+	el[i].diffuseColour[rgb] = value;
 }
 
 void ElementMap::setDiffuseColour(int i, GLfloat r, GLfloat g, GLfloat b)
 {
-	el_[i].diffuseColour[0] = r;
-	el_[i].diffuseColour[1] = g;
-	el_[i].diffuseColour[2] = b;
+	el[i].setDiffuseColour(r, g, b);
 }
 
 // Return ambient colour in supplied vector
 void ElementMap::copyAmbientColour(int i, GLfloat *v)
 {
-	v[0] = el_[i].ambientColour[0];
-	v[1] = el_[i].ambientColour[1];
-	v[2] = el_[i].ambientColour[2];
-	v[3] = el_[i].ambientColour[3];
+	el[i].copyAmbientColour(v);
 }
 
 // Return diffuse colour in supplied vector
 void ElementMap::copyDiffuseColour(int i, GLfloat *v)
 {
-	v[0] = el_[i].diffuseColour[0];
-	v[1] = el_[i].diffuseColour[1];
-	v[2] = el_[i].diffuseColour[2];
-	v[3] = el_[i].diffuseColour[3];
+	el[i].copyDiffuseColour(v);
 }
 
 // Convert string from Z to element number
@@ -496,7 +535,7 @@ int ElementMap::alphaToZ(const char *s)
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)
-		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
+		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -525,7 +564,7 @@ int ElementMap::firstAlphaToZ(const char *s)
 		else break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)
-		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
+		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -550,7 +589,7 @@ int ElementMap::singleAlphaToZ(const char *s)
 	}
 	cleaned[1] = '\0';
 	for (n=0; n<nElements_; n++)
-		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
+		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -578,7 +617,7 @@ int ElementMap::nameToZ(const char *s)
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)
-		if (strcmp(el_[n].ucName,cleaned) == 0) 
+		if (strcmp(el[n].ucName,cleaned) == 0) 
 		{
 			result = n;
 			break;

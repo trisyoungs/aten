@@ -167,7 +167,7 @@ bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
@@ -216,7 +216,7 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}
@@ -386,14 +386,9 @@ bool VectorArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (set(rv)) return TRUE;
-			else
-			{
-				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
-				return FALSE;
-			}
+			if (!set(rv)) return FALSE;
 		}
-		return FALSE;
+		else return FALSE;
 	}
 	return TRUE;
 }

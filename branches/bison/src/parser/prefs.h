@@ -29,12 +29,12 @@
 class TreeNode;
 
 // Prefs Master Variable
-class PrefsVariable : public Variable
+class PreferencesVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	PrefsVariable();
-	~PrefsVariable();
+	PreferencesVariable();
+	~PreferencesVariable();
 
 	/*
 	// Set / Get

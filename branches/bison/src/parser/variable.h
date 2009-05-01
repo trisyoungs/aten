@@ -50,7 +50,7 @@ class Variable : public TreeNode
 	// Get name of variable
 	const char *name();
 	// Set initial value expression
-	void setInitialValue(TreeNode *node);
+	bool setInitialValue(TreeNode *node);
 	// Return TreeNode corresponding to initial value
 	TreeNode *initialValue();
 	// Execute as an array

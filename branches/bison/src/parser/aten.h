@@ -59,7 +59,7 @@ class AtenVariable : public Variable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { CurrentModel, Elements, Models, Preferences, nAccessors };
+	enum Accessors { CurrentModel, Elements, Models, NElements, Preferences, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
