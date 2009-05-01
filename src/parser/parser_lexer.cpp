@@ -251,13 +251,17 @@ int CommandParser::lex()
 				return FUNCCALL;
 			}
 
-			// Is it a user-defined function keyword in the local scope?
-			Tree *func = tree_->findLocalFunction(token);
-			if (func != NULL)
+			// Is it a user-defined function keyword in the local scope? (Requires valid tree)
+			Tree *func;
+			if (tree_ != NULL)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
-				yylval.functree = func;
-				return USERFUNCCALL;
+				func = tree_->findLocalFunction(token);
+				if (func != NULL)
+				{
+					msg.print(Messenger::Parse, "LEXER (%li): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
+					yylval.functree = func;
+					return USERFUNCCALL;
+				}
 			}
 
 			// Is it a user-defined function keyword in the global (Forest-wide) scope?
@@ -280,7 +284,7 @@ int CommandParser::lex()
 			yylval.name = &name;
 			return STEPTOKEN;
 		}
-		else
+		else if (tree_ != NULL)
 		{
 			// Search the variable lists currently in scope...
 			int scopelevel;
@@ -310,8 +314,8 @@ int CommandParser::lex()
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
-	// Return immediately in the case of brackets and the semicolon
-	if ((c == '(') || (c == ')') || (c == ';') || (c == '{') || (c == '}') || (c == '[') || (c == ']'))
+	// Return immediately in the case of brackets, comma, and semicolon
+	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']'))
 	{
 		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%c]\n",tree_,c);
 		return c;

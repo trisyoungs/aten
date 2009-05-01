@@ -49,15 +49,15 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 
 // Accessor data
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
-	{ "atomtype",		VTypes::StringData,		FALSE, TRUE },
-	{ "charge",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "data",		VTypes::DoubleData,		TRUE, FALSE },
-	{ "description",	VTypes::StringData,		FALSE, FALSE },
-	{ "equivalent",		VTypes::StringData,		FALSE, FALSE },
-	{ "form",		VTypes::StringData,		FALSE, FALSE },
-	{ "id",			VTypes::IntegerData,		FALSE, TRUE },
-	{ "name",		VTypes::StringData,		FALSE, FALSE },
-	{ "ff",			VTypes::ForcefieldData,	FALSE, TRUE }
+	{ "atomtype",		VTypes::StringData,		0, TRUE },
+	{ "charge",		VTypes::DoubleData,		0, FALSE },
+	{ "data",		VTypes::DoubleData,		MAXFFPARAMDATA, FALSE },
+	{ "description",	VTypes::StringData,		0, FALSE },
+	{ "equivalent",		VTypes::StringData,		0, FALSE },
+	{ "form",		VTypes::StringData,		0, FALSE },
+	{ "id",			VTypes::IntegerData,		0, TRUE },
+	{ "name",		VTypes::StringData,		0, FALSE },
+	{ "ff",			VTypes::ForcefieldData,		0, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -99,7 +99,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
@@ -164,7 +164,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

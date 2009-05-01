@@ -29,6 +29,8 @@
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/model.h"
+#include "parser/pattern.h"
+#include "parser/prefs.h"
 #include "parser/vector.h"
 #include <string.h>
 
@@ -100,8 +102,8 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::CellData):
 			result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
-		case (VTypes::ElementsData):
-			result = ElementsVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+		case (VTypes::ElementData):
+			result = ElementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -141,8 +143,29 @@ void StepNode::nodePrint(int offset, const char *prefix)
 		case (VTypes::AtomData):
 			printf("%s", AtomVariable::accessorData[accessor_].name);
 			break;
+		case (VTypes::BondData):
+			printf("%s", BondVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ElementData):
+			printf("%s", ElementVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ForcefieldData):
+			printf("%s", ForcefieldVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ForcefieldAtomData):
+			printf("%s", ForcefieldAtomVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ForcefieldBoundData):
+			printf("%s", ForcefieldBoundVariable::accessorData[accessor_].name);
+			break;
 		case (VTypes::ModelData):
 			printf("%s", ModelVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::PatternData):
+			printf("%s", PatternVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::PreferencesData):
+			printf("%s", PreferencesVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::VectorData):
 			printf("%s", VectorVariable::accessorData[accessor_].name);
@@ -165,6 +188,22 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		return FALSE;
 	}
 	// Retrieve a value from the relevant class
+	int i = -1;
+	if (arrayIndex_ != NULL)
+	{
+		ReturnValue arrayrv;
+		if (!arrayIndex_->execute(arrayrv))
+		{
+			printf("Failed to retrieve array index.\n");
+			return FALSE;
+		}
+		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData))
+		{
+			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
+			return FALSE;
+		}
+		i = arrayrv.asInteger();
+	}
 	bool result = FALSE;
 	switch (previousType_)
 	{
@@ -172,34 +211,34 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			printf("Internal Error: StepNode was expecting NoData (set).\n");
 			break;
 		case (VTypes::AtenData):
-			result = AtenVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = AtenVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::AtomData):
-			result = AtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = AtomVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::BondData):
-			result = BondVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = BondVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::CellData):
-			result = CellVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = CellVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
-		case (VTypes::ElementsData):
-			result = ElementsVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+		case (VTypes::ElementData):
+			result = ElementVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldData):
-			result = ForcefieldVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = ForcefieldVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			result = ForcefieldAtomVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = ForcefieldAtomVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			result = ForcefieldBoundVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = ForcefieldBoundVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ModelData):
-			result = ModelVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = ModelVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::VectorData):
-			result = VectorVariable::setAccessor(accessor_, executerv, setrv, FALSE);
+			result = VectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't recognise this type (%s) (set)\n", VTypes::dataType(previousType_));
@@ -243,8 +282,8 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 		case (VTypes::CellData):
 			result = CellVariable::accessorSearch(s, arrayindex);
 			break;
-		case (VTypes::ElementsData):
-			result = ElementsVariable::accessorSearch(s, arrayindex);
+		case (VTypes::ElementData):
+			result = ElementVariable::accessorSearch(s, arrayindex);
 			break;
 		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::accessorSearch(s, arrayindex);

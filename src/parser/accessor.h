@@ -32,8 +32,8 @@ class Accessor
 	const char *name;
 	// Return value of accessor
 	VTypes::DataType returnType;
-	// Whether data is represented by an array of some kind
-	bool isArray;
+	// Array data size (-1 = dynamic list, 0 = no array, N = size)
+	int arraySize;
 	// Whether data represented by accessor is read-only
 	bool isReadOnly;
 };

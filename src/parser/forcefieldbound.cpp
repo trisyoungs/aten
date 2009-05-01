@@ -52,11 +52,11 @@ ForcefieldBoundVariable::~ForcefieldBoundVariable()
 
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
-	{ "data",	VTypes::DoubleData,	TRUE, FALSE },
-        { "form",	VTypes::StringData,	FALSE, FALSE },
-        { "natoms",	VTypes::IntegerData,	FALSE, TRUE },
-        { "type",	VTypes::StringData,	FALSE, FALSE },
-        { "typenames",	VTypes::StringData,	TRUE, FALSE }
+	{ "data",	VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
+        { "form",	VTypes::StringData,	0, FALSE },
+        { "natoms",	VTypes::IntegerData,	0, TRUE },
+        { "type",	VTypes::StringData,	0, FALSE },
+        { "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -98,7 +98,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ForcefieldBoundVariable::retrieveAccessor");
@@ -131,7 +131,7 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

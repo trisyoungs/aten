@@ -26,12 +26,12 @@
 #include "parser/accessor.h"
 
 // Elements Variable
-class ElementsVariable : public Variable
+class ElementVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	ElementsVariable();
-	~ElementsVariable();
+	ElementVariable();
+	~ElementVariable();
 
 	/*
 	// Set / Get
@@ -56,7 +56,7 @@ class ElementsVariable : public Variable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Mass, Name, NElements, Symbol, nAccessors };
+        enum Accessors { Ambient, Colour, Diffuse, Mass, Name, Symbol, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors

@@ -57,7 +57,7 @@ Variable *VariableList::find(const char *name)
 }
 
 // Create a new variable in the list
-Variable *VariableList::createVariable(VTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, TreeNode *initialValue)
 {
 	Variable *v = NULL;
 	switch (type)
@@ -89,8 +89,8 @@ Variable *VariableList::createVariable(VTypes::DataType type, const char *name, 
 		case (VTypes::CellData):
 			v = (Variable*) new CellVariable(NULL, FALSE);
 			break;
-		case (VTypes::ElementsData):
-			v = (Variable*) new ElementsVariable();
+		case (VTypes::ElementData):
+			v = (Variable*) new ElementVariable();
 			break;
 		case (VTypes::ForcefieldData):
 			v = (Variable*) new ForcefieldVariable(NULL, FALSE);
@@ -111,27 +111,17 @@ Variable *VariableList::createVariable(VTypes::DataType type, const char *name, 
 	if (v != NULL)
 	{
 		v->setName(name);
-		v->setInitialValue(initialValue);
+		if (!v->setInitialValue(initialValue))
+		{
+			delete v;
+			v = NULL;
+		}
 	}
 	return v;
 }
 
-// Create variable
-Variable *VariableList::create(VTypes::DataType type, const char *name, TreeNode *initialValue)
-{
-	Variable *v = createVariable(type, name, initialValue);
-	if (v != NULL) variables_.own(v);
-	return v;
-}
-
-// Create variable without owning it
-Variable *VariableList::createFree(VTypes::DataType type, const char *name, TreeNode *initialValue)
-{
-	return createVariable(type, name, initialValue);
-}
-
 // Create a new array variable in the list
-Variable *VariableList::createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
 {
 	Variable *var = NULL;
 	switch (type)
@@ -173,10 +163,52 @@ Variable *VariableList::createArray(VTypes::DataType type, const char *name, Tre
 			printf("Internal Error: Don't know how to create an array of type %s.\n", VTypes::dataType(type));
 			break;
 	}
+	if (var != NULL)
+	{
+		var->setName(name);
+		if (!var->setInitialValue(initialValue))
+		{
+			delete var;
+			var = NULL;
+		}
+	}
+	return var;
+}
+
+// Create variable
+Variable *VariableList::create(VTypes::DataType type, const char *name, TreeNode *initialValue)
+{
+	Variable *v = makeVariable(type, name, initialValue);
+	if (v != NULL) variables_.own(v);
+	return v;
+}
+
+// Create variable without owning it
+Variable *VariableList::createFree(VTypes::DataType type, const char *name, TreeNode *initialValue)
+{
+	return makeVariable(type, name, initialValue);
+}
+
+// Create a new array variable in the list
+Variable *VariableList::createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+{
+	Variable *var = makeArray(type, name, sizeexpr, initialValue);
 	if (var == NULL) return NULL;
 	variables_.own(var);
 	var->setName(name);
-	var->setInitialValue(initialValue);
+	return var;
+}
+
+// Create a new array constant in the list
+Variable *VariableList::createArrayConstant(VTypes::DataType type, int size)
+{
+	// Create a new constant integer to store the size of the array
+	Variable *sizeconst = new IntegerVariable(size, TRUE);
+	constants_.own(sizeconst);
+	Variable *var = makeArray(type, "constarray", sizeconst);
+	if (var == NULL) return NULL;
+	var->setReadOnly();
+// 	constants_.own(var);
 	return var;
 }
 

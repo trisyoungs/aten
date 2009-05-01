@@ -172,8 +172,8 @@ class Tree
 	virtual TreeNode *addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add array variable to topmost ScopeNode
 	virtual TreeNode *addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *sizeexpr, TreeNode *initialvalue = NULL);
-	// Add 'constant' vector value
-	virtual TreeNode *addVecConstant(TreeNode *value, TreeNode *value2, TreeNode *value3);
+	// Add array 'constant'
+	virtual TreeNode *addArrayConstant(TreeNode *values);
 	// Search for variable in current scope
 	Variable *findVariableInScope(const char *name, int &scopelevel);
 	// Wrap named variable (and array index)

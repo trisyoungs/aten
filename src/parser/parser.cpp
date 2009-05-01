@@ -180,6 +180,7 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	}
 	forest_ = f;
 	forest_->clear();
+	pushTree();
 	// Open the file
 	parser_.openFile(filename);
 	if (!parser_.isFileGood())

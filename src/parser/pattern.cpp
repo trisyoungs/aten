@@ -93,7 +93,24 @@ void PatternVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
-	{ "fixed", 	VTypes::IntegerData,		FALSE, FALSE },
+	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
+	{ "atoms", 	VTypes::ForcefieldAtomData,	-1, TRUE },
+	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
+	{ "cog", 	VTypes::VectorData,		-1, TRUE },
+	{ "com", 	VTypes::VectorData,		-1, TRUE },
+	{ "firstatom",	VTypes::AtomData,		0, TRUE },
+	{ "firstatomid",VTypes::IntegerData,		0, TRUE },
+	{ "forcefield",	VTypes::ForcefieldData,		0, FALSE },
+	{ "lastatom",	VTypes::AtomData,		0, TRUE },
+	{ "lastatomid",	VTypes::IntegerData,		0, TRUE },
+	{ "name",	VTypes::StringData,		0, FALSE },
+	{ "nangles",	VTypes::IntegerData,		0, TRUE },
+	{ "natoms",	VTypes::IntegerData,		0, TRUE },
+	{ "nbonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nmolatoms",	VTypes::IntegerData,		0, TRUE },
+	{ "nmols",	VTypes::IntegerData,		0, TRUE },
+	{ "ntorsions",	VTypes::IntegerData,		0, TRUE },
+	{ "torsions",	VTypes::PatternBoundData,	-1, TRUE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -135,7 +152,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("PatternVariable::retrieveAccessor");
@@ -222,7 +239,7 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

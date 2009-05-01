@@ -8,7 +8,7 @@
 filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
 {
 	# Variable declaration
-	int natoms,nspecies,n,elmap[aten.elements.nelements],i,el;
+	int natoms,nspecies,n,elmap[aten.nelements],i,el;
 	string keywd,data,line,unit;
 	double x,y,z,a,b,c,d;
 	vector axes[3];
@@ -78,7 +78,7 @@ filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", g
 filter(type="exportmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
 {
 	# Variable declaration
-	int n, el[aten.elements.nelements], nspecies;
+	int n, el[aten.nelements], nspecies;
 	string e;
 	double rx,ry,rz;
 	atom i;
@@ -122,7 +122,7 @@ filter(type="exportmodel", name="Siesta FDF", nickname="fdf", extension="fdf", g
 
 	# Write chemical species data, and label species in ascending order
 	writeline("%block ChemicalSpeciesLabel");
-	for (n=1; n<=aten.elements.nelements; n++) if (el[n] != 0) writelinef("%3i  %3i  %s-PBE\n",el[n],n,aten.elements.symbol[n]);
+	for (n=1; n<=aten.nelements; n++) if (el[n] != 0) writelinef("%3i  %3i  %s-PBE\n",el[n],n,aten.elements.symbol[n]);
 	writeline("%endblock ChemicalSpeciesLabel");
 	writeline("");
 

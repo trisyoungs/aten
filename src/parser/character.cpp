@@ -135,8 +135,19 @@ bool StringArrayVariable::set(ReturnValue &rv)
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
-	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asInteger();
+	// Is the supplied ReturnValue an array?
+	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asString();
+	else
+	{
+		if (rv.arraySize() != arraySize_)
+		{
+			msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			return FALSE;
+		}
+		bool success;
+		for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.elementAsString(i, success);
+		if (!success) return FALSE;
+	}
 	return TRUE;
 }
 
@@ -172,8 +183,20 @@ void StringArrayVariable::reset()
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return;
 	}
-	// Loop over array elements and set them
-	for (int i=0; i<arraySize_; i++) stringArrayData_[i].clear();
+	// Loop over array elements and set them - for constant arrays only change non-constant subvalues
+	if (readOnly_)
+	{
+		int count = 0;
+		ReturnValue value;
+		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		{
+			count++;
+			if (ri->item->readOnly()) continue;
+			if (!ri->item->execute(value)) stringArrayData_[count].clear();
+			else stringArrayData_[count] = value.asString();
+		}
+	}
+	else for (int i=0; i<arraySize_; i++) stringArrayData_[i].clear();
 }
 
 // Return value of node
@@ -227,20 +250,26 @@ bool StringArrayVariable::initialise()
 	// Store new array size
 	arraySize_ = newsize.asInteger();
 	if ((arraySize_ > 0) && (stringArrayData_ == NULL)) stringArrayData_ = new Dnchar[arraySize_];
-	if (initialValue_ == NULL) reset();
+	// In the case of constant arrays, use the argument list of the TreeNode to set the array elements
+	if (readOnly_)
+	{
+		int count = 0;
+		ReturnValue value;
+		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		{
+			if (!ri->item->execute(value)) return FALSE;
+			stringArrayData_[count++] = value.asString();
+		}
+	}
+	else if (initialValue_ == NULL) reset();
 	else
 	{
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (set(rv)) return TRUE;
-			else
-			{
-				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
-				return FALSE;
-			}
+			if (!set(rv)) return FALSE;
 		}
-		return FALSE;
+		else return FALSE;
 	}
 	return TRUE;
 }

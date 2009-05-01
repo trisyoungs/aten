@@ -1,5 +1,6 @@
 add_library(parser
 accessor.h
+array.h
 aten.h
 atom.h
 bond.h
@@ -33,6 +34,7 @@ variablelist.h
 variablenode.h
 vector.h
 vtypes.h
+array.cpp
 aten.cpp
 atom.cpp
 bond.cpp

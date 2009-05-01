@@ -51,31 +51,31 @@ CellVariable::~CellVariable()
 
 // Accessor data
 Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
-	{ "a",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "b",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "c",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "alpha",	VTypes::DoubleData,	FALSE, FALSE },
-	{ "beta",	VTypes::DoubleData,	FALSE, FALSE },
-	{ "gamma",	VTypes::DoubleData,	FALSE, FALSE },
-	{ "ax",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "ay",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "az",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "bx",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "by",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "bz",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "cx",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "cy",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "cz",		VTypes::DoubleData,	FALSE, FALSE },
-	{ "centrex",	VTypes::DoubleData,	FALSE, TRUE },
-	{ "centrey",	VTypes::DoubleData,	FALSE, TRUE },
-	{ "centrez",	VTypes::DoubleData,	FALSE, TRUE },
-	{ "density",	VTypes::DoubleData,	FALSE, TRUE },
-	{ "matrix", 	VTypes::DoubleData,	TRUE, FALSE },
-	{ "sgid",	VTypes::IntegerData,	FALSE, FALSE },
-	{ "sgname",	VTypes::StringData,	FALSE, FALSE },
-	{ "sgsetting",	VTypes::IntegerData,	FALSE, FALSE },
-	{ "type",	VTypes::StringData,	FALSE, TRUE },
-	{ "volume",	VTypes::DoubleData,	FALSE, TRUE },
+	{ "a",		VTypes::DoubleData,	0, FALSE },
+	{ "b",		VTypes::DoubleData,	0, FALSE },
+	{ "c",		VTypes::DoubleData,	0, FALSE },
+	{ "alpha",	VTypes::DoubleData,	0, FALSE },
+	{ "beta",	VTypes::DoubleData,	0, FALSE },
+	{ "gamma",	VTypes::DoubleData,	0, FALSE },
+	{ "ax",		VTypes::DoubleData,	0, FALSE },
+	{ "ay",		VTypes::DoubleData,	0, FALSE },
+	{ "az",		VTypes::DoubleData,	0, FALSE },
+	{ "bx",		VTypes::DoubleData,	0, FALSE },
+	{ "by",		VTypes::DoubleData,	0, FALSE },
+	{ "bz",		VTypes::DoubleData,	0, FALSE },
+	{ "cx",		VTypes::DoubleData,	0, FALSE },
+	{ "cy",		VTypes::DoubleData,	0, FALSE },
+	{ "cz",		VTypes::DoubleData,	0, FALSE },
+	{ "centrex",	VTypes::DoubleData,	0, TRUE },
+	{ "centrey",	VTypes::DoubleData,	0, TRUE },
+	{ "centrez",	VTypes::DoubleData,	0, TRUE },
+	{ "density",	VTypes::DoubleData,	0, TRUE },
+	{ "matrix", 	VTypes::DoubleData,	9, FALSE },
+	{ "sgid",	VTypes::IntegerData,	0, FALSE },
+	{ "sgname",	VTypes::StringData,	0, FALSE },
+	{ "sgsetting",	VTypes::IntegerData,	0, FALSE },
+	{ "type",	VTypes::StringData,	0, TRUE },
+	{ "volume",	VTypes::DoubleData,	0, TRUE },
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -117,7 +117,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("CellVariable::retrieveAccessor");
@@ -202,7 +202,7 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

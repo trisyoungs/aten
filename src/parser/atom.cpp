@@ -50,28 +50,28 @@ AtomVariable::~AtomVariable()
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
-	{ "fixed", 	VTypes::IntegerData,		FALSE, FALSE },
-	{ "f",		VTypes::VectorData,		FALSE, FALSE },
-	{ "fx",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "fy",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "fz",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "hidden",	VTypes::IntegerData,		FALSE, FALSE },
-	{ "id",		VTypes::IntegerData,		FALSE, TRUE },
-	{ "mass",	VTypes::DoubleData,		FALSE, TRUE },
-	{ "name",	VTypes::StringData,		FALSE, TRUE },
-	{ "q",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "r",		VTypes::VectorData,		FALSE, FALSE },
-	{ "rx",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "ry",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "rz",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "selected",	VTypes::IntegerData,		FALSE, FALSE },
-	{ "symbol",	VTypes::StringData,		FALSE, TRUE },
-	{ "type",	VTypes::ForcefieldAtomData,	FALSE, FALSE },
-	{ "v",		VTypes::VectorData,		FALSE, FALSE },
-	{ "vx",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "vy",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "vz",		VTypes::DoubleData,		FALSE, FALSE },
-	{ "z",		VTypes::IntegerData, 		FALSE, FALSE }
+	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
+	{ "f",		VTypes::VectorData,		0, FALSE },
+	{ "fx",		VTypes::DoubleData,		0, FALSE },
+	{ "fy",		VTypes::DoubleData,		0, FALSE },
+	{ "fz",		VTypes::DoubleData,		0, FALSE },
+	{ "hidden",	VTypes::IntegerData,		0, FALSE },
+	{ "id",		VTypes::IntegerData,		0, TRUE },
+	{ "mass",	VTypes::DoubleData,		0, TRUE },
+	{ "name",	VTypes::StringData,		0, TRUE },
+	{ "q",		VTypes::DoubleData,		0, FALSE },
+	{ "r",		VTypes::VectorData,		0, FALSE },
+	{ "rx",		VTypes::DoubleData,		0, FALSE },
+	{ "ry",		VTypes::DoubleData,		0, FALSE },
+	{ "rz",		VTypes::DoubleData,		0, FALSE },
+	{ "selected",	VTypes::IntegerData,		0, FALSE },
+	{ "symbol",	VTypes::StringData,		0, TRUE },
+	{ "type",	VTypes::ForcefieldAtomData,	0, FALSE },
+	{ "v",		VTypes::VectorData,		0, FALSE },
+	{ "vx",		VTypes::DoubleData,		0, FALSE },
+	{ "vy",		VTypes::DoubleData,		0, FALSE },
+	{ "vz",		VTypes::DoubleData,		0, FALSE },
+	{ "z",		VTypes::IntegerData, 		0, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -113,7 +113,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if ((!accessorData[i].isArray) && hasArrayIndex)
+	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("AtomVariable::retrieveAccessor");
@@ -200,7 +200,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
-	if (!accessorData[i].isArray)
+	if (accessorData[i].arraySize == 0)
 	{
 		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 	}

@@ -27,7 +27,7 @@ class VTypes
 {
 	public:
 	// Data Types
-	enum DataType { NoData, IntegerData, DoubleData, StringData, VectorData, AtenData, AtomData, BondData, CellData, ElementsData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, PatternBoundData, PreferencesData, nDataTypes };
+	enum DataType { NoData, IntegerData, DoubleData, StringData, VectorData, AtenData, AtomData, BondData, CellData, ElementData, ForcefieldData, ForcefieldAtomData, ForcefieldBoundData, GridData, ModelData, PatternData, PatternBoundData, PreferencesData, nDataTypes };
 	static VTypes::DataType dataType(const char *s);
 	static const char *dataType(DataType);
 	static const char *aDataType(DataType);

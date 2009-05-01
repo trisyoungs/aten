@@ -75,9 +75,39 @@ bool Variable::initialise()
 }
 
 // Set initial value expression
-void Variable::setInitialValue(TreeNode *node)
+bool Variable::setInitialValue(TreeNode *node)
 {
 	initialValue_ = node;
+	if (initialValue_ == NULL) return TRUE;
+	// Check return types (again, int and double are interchangeable)
+	VTypes::DataType dt = node->returnType();
+	switch (returnType_)
+	{
+		case (VTypes::IntegerData):
+		case (VTypes::DoubleData):
+			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
+			{
+				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				return FALSE;
+			}
+			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) msg.print("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
+			break;
+		case (VTypes::VectorData):
+			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
+			{
+				msg.print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				return FALSE;
+			}
+			break;
+		// Exact match required for everything else (or pointer and integer is ok)
+		default:
+			if (returnType_ == dt) break;
+			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
+			msg.print("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+			return FALSE;
+			break;
+	}
+	return TRUE;
 }
 
 // Return TreeNode corresponding to initial value

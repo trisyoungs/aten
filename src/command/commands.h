@@ -295,7 +295,18 @@ class Command
 		Label,
 		RemoveLabel,
 		RemoveLabels,
-	
+
+		// Math Commands
+		Abs,
+		Cos,
+		Exp,
+		Ln,
+		Log,
+		Nint,
+		Normalise,
+		Sin,
+		Sqrt,
+
 		// MC Commands
 		MCAccept,
 		MCAllow,
@@ -445,6 +456,16 @@ class Command
 		NewSite,
 		SiteAxes,
 
+		// String Commands
+		AfterStr,
+		AToF,
+		AToI,
+		BeforeStr,
+		Contains,
+		FToA,
+		IToA,
+		StripChars,
+
 		// System commands
 		Debug,
 		Gui,
@@ -474,18 +495,6 @@ class Command
 		TranslateAtom,
 		TranslateCell,
 		TranslateWorld,
-
-		// Variable Manipulation
-		AfterStr,
-		AToF,
-		AToI,
-		BeforeStr,
-		Contains,
-		FToA,
-		IToA,
-		Nint,
-		Normalise,
-		StripChars,
 
 		// Variable Operators
 		OperatorAdd,
@@ -753,6 +762,16 @@ class Command
 	static bool function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Math Commands
+	static bool function_Abs(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Ln(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Log(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MC Commands
 	static bool function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -891,6 +910,15 @@ class Command
 	static bool function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// String Commands
+	static bool function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
 	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -918,17 +946,6 @@ class Command
 	static bool function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// Variable Manipulation
-	static bool function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Variable Operators
 	static bool function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv);

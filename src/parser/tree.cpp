@@ -28,8 +28,9 @@
 #include "parser/grammar.h"
 #include "parser/parser.h"
 #include "parser/tree.h"
-#include "parser/vector.h"
 #include "parser/character.h"
+#include "parser/vector.h"
+#include "parser/array.h"
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "base/sysfunc.h"
@@ -547,7 +548,7 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
-		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
+// 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
 	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
@@ -575,7 +576,7 @@ TreeNode *Tree::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeN
 	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
-		printf("Internal Error: Failed to create variable '%s' in local scope.\n", name->get());
+// 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
 	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
@@ -610,9 +611,20 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 }
 
 // Add constant vector
-TreeNode *Tree::addVecConstant(TreeNode *value1, TreeNode *value2, TreeNode *value3)
+TreeNode *Tree::addArrayConstant(TreeNode *values)
 {
-	VectorVariable *var = new VectorVariable(value1, value2, value3);
+	Refitem<ScopeNode,int> *ri = scopeStack_.last();
+	// From the type of the first argument we determine the type of array to create
+	TreeNode *first;
+	int nvalues = 0;
+	for (first = values; first != NULL; first = first->prevArgument)
+	{
+		++nvalues;
+		if (first->prevArgument == NULL) break;
+	}
+	Variable *var = ri->item->variables.createArrayConstant(first->returnType(), nvalues);
+	var->setParent(this);
+	var->addArgumentList(values);
 	nodes_.own(var);
 	return var;
 }

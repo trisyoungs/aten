@@ -19,6 +19,7 @@ glyph.cpp
 grid.cpp
 image.cpp
 labels.cpp
+math.cpp
 mc.cpp
 measure.cpp
 messaging.cpp
@@ -31,10 +32,10 @@ readwrite.cpp
 script.cpp
 select.cpp
 site.cpp
+string.cpp
 system.cpp
 trajectory.cpp
 transform.cpp
-variables.cpp
 view.cpp
 )
 
