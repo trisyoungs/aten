@@ -50,6 +50,8 @@ Cli cliSwitches[] = {
 		"[output]",	"Print out call debug information, or specific information if output type is supplied" },
 	{ Cli::ExportSwitch,		'e',"export",		1,
 		"<nickname>",	"Export all loaded models in the nicknamed format" },
+	{ Cli::FilterSwitch,		'\0',"filter",		1,
+		"<filename>",	"Load additional filter data from specified filename" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",	"Load the specified forcefield file" },
 	{ Cli::FoldSwitch,		'\0',"fold",		0,
@@ -336,6 +338,10 @@ int Aten::parseCli(int argc, char *argv[])
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
 					else aten.setProgramMode(Aten::BatchExportMode);
+					break;
+				// Load additional filter data from specified filename
+				case (Cli::FilterSwitch):
+					if (aten.openFilter(argv[++argn])) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):

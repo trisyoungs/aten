@@ -54,15 +54,16 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
  	{ "atoms",		VTypes::AtomData,		-1, TRUE },
  	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
  	{ "bonds",		VTypes::BondData,		-1, TRUE },
- 	{ "cell",		VTypes::CellData,		0, TRUE },
+ 	{ "cell",		VTypes::CellData,		0, FALSE },
  	{ "frame",		VTypes::ModelData,		0, TRUE },
-//  	{ "frames",		VTypes::ModelData };
+ 	{ "frames",		VTypes::ModelData,		-1, TRUE },
  	{ "name",		VTypes::StringData,		0, FALSE },
  	{ "nangleterms",	VTypes::IntegerData,		0, TRUE },
  	{ "natoms",		VTypes::IntegerData,		0, TRUE },
  	{ "natomtypes",		VTypes::IntegerData,		0, TRUE },
  	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
  	{ "nbondterms",		VTypes::IntegerData,		0, TRUE },
+ 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
  	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
  	{ "nselected",		VTypes::IntegerData,		0, TRUE },
  	{ "ntorsionterms",	VTypes::IntegerData,		0, TRUE },
@@ -146,19 +147,26 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
 			break;
-		case (ModelVariable::Cell):
+		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
 		case (ModelVariable::Frame):
 			rv.set(VTypes::ModelData, ptr->currentFrame());
 			break;
-// 		case (ModelVariable::Frames):
-// 			if (index > ModelnTrajectoryFrames())
-// 			{
-// 				msg.print("Frame array index is out of bounds for model '%s'\n", Modelname());
-// 				result = FALSE;
-// 			}
-// 			else rv.set(ptr->atom(index-1), VTypes::AtomData);
+		case (ModelVariable::Frames):
+			// Only works for a cached trajectory
+			if (!ptr->trajectoryIsCached())
+			{
+				msg.print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
+				result = FALSE;
+			}
+			else if ((arrayIndex < 1) || (arrayIndex > ptr->nFrames()))
+			{
+				msg.print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nFrames());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
+			break;
 		case (ModelVariable::Name):
 			rv.set(ptr->name());
 			break;
@@ -176,6 +184,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::NBondTerms):
 			rv.set(ptr->nUniqueBondTerms());
+			break;
+		case (ModelVariable::NFrames):
+			rv.set(ptr->nFrames());
 			break;
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());
@@ -231,6 +242,9 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	Model *ptr= (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if (result) switch (acc)
 	{
+		case (ModelVariable::Celldata):
+			ptr->setCell( ((Cell*) newvalue.asPointer(VTypes::CellData)) );
+			break;
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
 			break;

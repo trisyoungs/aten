@@ -23,6 +23,8 @@
 #include "parser/tree.h"
 #include "base/sysfunc.h"
 #include "templates/reflist.h"
+#include "main/aten.h"
+#include "base/atom.h"
 #include <stdarg.h>
 
 // Constructors
@@ -202,6 +204,47 @@ int TreeNode::argi(int i)
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
 	result = rv.asInteger(success);
 	if (!success) msg.print("Couldn't cast argument %i into an integer.\n", i+1);
+	return result;
+}
+
+// Return (execute) argument specified as an atomic number
+short int TreeNode::argz(int i)
+{
+	if ((i < 0) || (i >= args_.nItems()))
+	{
+		printf("TreeNode::argz : Argument index %i is out of range (node = %li).\n", i, this);
+		return FALSE;
+	}
+	static ReturnValue rv;
+	bool success;
+	Namemap<int> *nm;
+	Atom *atm;
+	short int result = 0;
+	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	switch (rv.type())
+	{
+		case (VTypes::IntegerData):
+			result = rv.asInteger();
+			break;
+		case (VTypes::DoubleData):
+			result = (short int) floor(rv.asDouble() + 0.15);
+			break;
+		case (VTypes::StringData):
+			// Attempt conversion of the string first from the users type list
+			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
+				if (strcmp(nm->name(),rv.asString()) == 0) break;
+			if (nm == NULL) result = elements().find(rv.asString());
+			else result = nm->data();
+			break;
+		case (VTypes::AtomData):
+			atm = (Atom*) rv.asPointer(VTypes::AtomData);
+			atm == NULL ? result = 0 : atm->element();
+			break;
+		default:
+			msg.print("Couldn't cast argument %i into an atomic number.\n", i+1);
+			result = 0;
+			break;
+	}
 	return result;
 }
 

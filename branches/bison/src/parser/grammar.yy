@@ -31,9 +31,13 @@ VTypes::DataType declaredType;
 	Variable *variable;		/* variable pointer */
 	Tree *functree;			/* user-defined function (tree) pointer */
 	VTypes::DataType vtype;		/* variable type for next declarations */
+	int intconst;			/* integer constant value */
+	double doubleconst;		/* double constant value */
 };
 
-%token <name> NEWTOKEN INTCONST REALCONST CHARCONST STEPTOKEN
+%token <intconst> INTCONST
+%token <doubleconst> DOUBLECONST
+%token <name> NEWTOKEN CHARCONST STEPTOKEN
 %token <variable> VAR LOCALVAR
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
@@ -144,9 +148,9 @@ range:
 /* Constants */
 
 constant:
-	INTCONST					{ $$ = cmdparser.addConstant(VTypes::IntegerData, $1); }
-	| REALCONST					{ $$ = cmdparser.addConstant(VTypes::DoubleData, $1); }
-	| CHARCONST					{ $$ = cmdparser.addConstant(VTypes::StringData, $1); }
+	INTCONST					{ $$ = cmdparser.addConstant($1); }
+	| DOUBLECONST					{ $$ = cmdparser.addConstant($1); }
+	| CHARCONST					{ $$ = cmdparser.addConstant($1->get()); }
 	;
 
 

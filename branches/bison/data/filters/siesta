@@ -1,11 +1,11 @@
-# Siesta Flexible Data Format (fdf) (for v1.1+)
+# Siesta Flexible Data Format (for v1.1+)
 # Created:	 16/04/2009
 # Last modified: 16/04/2009
 # ChangeLog:
 # Notes:
 #	GGA (PBE) exchange assumed, with pseudos named 'H-PBE', 'C-PBE', etc.
 
-filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
+filter(type="importmodel", name="Siesta FDF", nickname="siesta", extension="fdf", glob="*.fdf", id=9)
 {
 	# Variable declaration
 	int natoms,nspecies,n,elmap[aten.nelements],i,el;
@@ -75,7 +75,7 @@ filter(type="importmodel", name="Siesta FDF", nickname="fdf", extension="fdf", g
 	finalisemodel();
 }
 
-filter(type="exportmodel", name="Siesta FDF", nickname="fdf", extension="fdf", glob="*.fdf", id=9)
+filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf", glob="*.fdf", id=9)
 {
 	# Variable declaration
 	int n, el[aten.nelements], nspecies;

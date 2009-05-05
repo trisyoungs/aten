@@ -37,6 +37,7 @@ Command commands;
 	S	Any Simple	IntegerData, DoubleData, StringData
 	U	Vector		VectorData
 	B	Boolean		Any
+	E	Element		StringData,IntegerData,DoubleData,AtomData
 	A	Atom/Id		IntegerData, AtomData
 	M	Model/ID/Name	ModelData, StringData, IntegerData
 	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
@@ -96,7 +97,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Set the charge of the current (or specified) atom" },
 	{ "setcoords",		"NNNa",		"<x> <y> <z> [atom/id]", VTypes::NoData,
 				"Set the coordinates of the current (or specified) atom" },
-	{ "setelement",		"Ga",		"<element> [atom/id]", VTypes::NoData,
+	{ "setelement",		"Ea",		"<element> [atom/id]", VTypes::NoData,
 				"Set the element of the current (or specified) atom" },
 	{ "setforces",		"NNNa",		"<fx> <fy> <fz> [atom/id]", VTypes::NoData,
 				"Set the forces of the current (or specified) atom" },
@@ -152,11 +153,11 @@ CommandData Command::data[Command::nCommands] = {
 				"Hydrogen satisfy all (or specified) atom in model" },
 	{ "bohr",		"X*",		"<object> [object...]", VTypes::NoData,
 				"Convert coordinates in the specified object(s) from Angstroms to Bohr" },
-	{ "chain",		"Ss|S3Ns",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]", VTypes::AtomData,
+	{ "chain",		"Es|E3Ns",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]", VTypes::AtomData,
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"", VTypes::AtomData,
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },
-	{ "insertatom",		"SN[nnn]",	"<element> <id> [x y z]", VTypes::AtomData,
+	{ "insertatom",		"EN[nnn]",	"<element> <id> [x y z]", VTypes::AtomData,
 				"Insert a new atom into the model such that it has the ID specified" },
 	{ "locate",		"NNN",		"<x> <y> <z>", VTypes::NoData,
 				"Position pen at specified coordinates" },
@@ -166,9 +167,9 @@ CommandData Command::data[Command::nCommands] = {
 				"Move current atom selection to end of list" },
 	{ "movetostart",	"",		"", VTypes::NoData,
 				"Move current atom selection to start of list" },
-	{ "newatom",		"S[nnn]",	"<element> [x y z]", VTypes::AtomData,
+	{ "newatom",		"E[nnn]",	"<element> [x y z]", VTypes::AtomData,
 				"Create a new atom in the current model" },
-	{ "newatomfrac",	"SNNN",		"<element> <fracx> <fracy> <fracz>", VTypes::AtomData,
+	{ "newatomfrac",	"ENNN",		"<element> <fracx> <fracy> <fracz>", VTypes::AtomData,
 				"Create a new atom in the current model, converting fractional coordinates to real coordinates" },
 	{ "reorder",		"",		"", VTypes::NoData,
 				"Reorder atoms in the current selection such that bond partners have adjacent atom IDs" },
@@ -184,7 +185,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Shift current atom selection down 1 (or 'n') places" },
 	{ "shiftup",		"n",		"[n]", VTypes::NoData,
 				"Shift current atom selection up 1 (or 'n') places" },
-	{ "transmute",		"S",		"<element>", VTypes::NoData,
+	{ "transmute",		"E",		"<element>", VTypes::NoData,
 				"Transmute selection to element given" },
 	
 	// Cell commands
@@ -380,7 +381,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Save the expression for the current model" },
 	{ "torsiondef",		"CCCCCNnnnnn", "<form> <name1> <name2> <name3> <name4> <data1> [data2 ... data6]", VTypes::NoData,
 				"Add a torsion definition to the current forcefield" },
-	{ "typedef",		"NCSCc", "<typeid> <name> <element> <type> [description]", VTypes::NoData,
+	{ "typedef",		"NCECc", "<typeid> <name> <element> <type> [description]", VTypes::NoData,
 				"Add an atom type to the current forcefield" },
 	{ "typemodel",		"",		"", VTypes::NoData,
 				"Perform atom typing on the current model" },
@@ -606,7 +607,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Set or get the current trajectory cache limit" },
 	{ "colour",		"CNNNN",	"<colour> <r> <g> <b> [a]", VTypes::NoData,
 				"Set the specified colour" },
-	{ "commonelements",	"C",		"<elements...>", VTypes::NoData,
+	{ "commonelements",	"C",		"<'elements...'>", VTypes::NoData,
 				"Set the common elements that appear in the Select Element dialog" },
 	{ "densityunits",	"c",		"[atomsperang|gpercm]", VTypes::StringData,
 				"Set the unit of density to use" },
@@ -616,11 +617,11 @@ CommandData Command::data[Command::nCommands] = {
 				"Set the electrostatic cutoff distance" },
 	{ "elec",		"Cnnnn",	"<none|coulomb|ewald|ewaldauto> [ <precision> | <alpha> <kx> <ky> <kz> ]", VTypes::NoData,
 				"Set the style of electrostatic energy calculation" },
-	{ "elementambient",	"S3N",		"<element> <r> <g> <b>", VTypes::NoData,
+	{ "elementambient",	"E3N",		"<element> <r> <g> <b>", VTypes::NoData,
 				"Set ambient colour of element" },
-	{ "elementdiffuse",	"S3N",		"<element> <r> <g> <b>", VTypes::NoData,
+	{ "elementdiffuse",	"E3N",		"<element> <r> <g> <b>", VTypes::NoData,
 				"Set diffuse colour of element" },
-	{ "elementradius",	"Sn",		"<element> [radius]", VTypes::DoubleData,
+	{ "elementradius",	"En",		"<element> [radius]", VTypes::DoubleData,
 				"Set (or get) effective radius of element specified" },
 	{ "energyunits",	"c",		"j|kj|cal|kcal|ha", VTypes::StringData,
 				"Set the unit of energy to use" },

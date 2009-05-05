@@ -69,13 +69,10 @@ void Aten::openFilters()
 	}
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
-	if (found)
-	{
-		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-		msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
-		nfailed = parseFilterDir(path);
-		if (nfailed > 0) nFiltersFailed_ += nfailed;
-	}
+	sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
+	msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
+	nfailed = parseFilterDir(path);
+	if (nfailed > 0) nFiltersFailed_ += nfailed;
 
 	// Print out info and partner filters if all was successful
 	if (found)
@@ -89,10 +86,28 @@ void Aten::openFilters()
 	msg.exit("Aten::openFilters");
 }
 
-// Register a filter of a gien type
+// Load filter from specified filename
+bool Aten::openFilter(const char *filename)
+{
+	msg.enter("Aten::openFilter");
+	// Construct Forest...
+	Forest *f = filterForests_.add();
+	if (!f->generateFromFile(filename, filename, TRUE))
+	{
+		msg.print("Failed to load filters from '%s'...\n", filename);
+		failedFilters_.add()->set( filename );
+		filterForests_.remove(f);
+		msg.exit("Aten::openFilter");
+		return FALSE;
+	}
+	msg.exit("Aten::openFilter");
+	return TRUE;
+}
+
+// Register a filter of a given type at start of list
 void Aten::registerFilter(Tree *filter, FilterData::FilterType ft)
 {
-	filters_[ft].add(filter);
+	filters_[ft].addStart(filter);
 }
 
 // Reload filters

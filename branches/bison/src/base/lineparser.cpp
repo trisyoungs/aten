@@ -373,6 +373,7 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 bool LineParser::getNextN(int length, Dnchar *destarg)
 {
 	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
+	// A negative length may be supplied, which we interpret as 'strip trailing spaces'
 	msg.enter("LineParser::getNextN");
 	int arglen = 0;
 	char c;
@@ -381,10 +382,12 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 		msg.exit("LineParser::getNextN");
 		return FALSE;
 	}
-	int charsleft = lineLength_ - linePos_;
+	int n, charsleft = lineLength_ - linePos_;
+	bool striptrailing = (length < 0);
+	length = abs(length);
 	if (length > charsleft) length = charsleft;
 	//if (length > lineLength_) length = lineLength_;
-	for (int n=0; n<length; n++)
+	for (n=0; n<length; n++)
 	{
 		c = line_[linePos_];
 		switch (c)
@@ -396,8 +399,6 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
-		//	case (32):      // Space - ignore to get left-justified data
-		//		break;
 			default:
 				tempArg_[arglen] = c;
 				arglen ++;
@@ -407,6 +408,7 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 	}
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
+	if (striptrailing) for (n = arglen-1; isblank(tempArg_[n]); --n) tempArg_[n] = '\0'; 
 	if (destarg != NULL) destarg->set(tempArg_);
 	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);

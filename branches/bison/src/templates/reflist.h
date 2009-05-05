@@ -70,6 +70,10 @@ template <class T, class D> class Reflist
 	void add(T *item);
 	// Add reference to the list with extra data
 	void add(T* item, D extradata);
+	// Add reference to the beginning of the list
+	void addStart(T *item);
+	// Add reference to the beginning of the list with extra data
+	void addStart(T *item, D extradata);
 	// Add reference to list, unless already there
 	void addUnique(T *item);
 	// Add reference to list, unless already there
@@ -169,6 +173,31 @@ template <class T, class D> void Reflist<T,D>::add(T* target, D extradata)
 	itemsHead_ == NULL ? itemsHead_ = newitem : itemsTail_->next = newitem;
 	newitem->prev = itemsTail_;
 	itemsTail_ = newitem;
+	newitem->item = target;
+	newitem->data = extradata;
+	nItems_ ++;
+}
+
+// Add item to start of list
+template <class T, class D> void Reflist<T,D>::addStart(T* target)
+{
+	Refitem<T,D> *newitem = new Refitem<T,D>;
+	// Add the pointer to the beginning of the list
+	newitem->next = itemsHead_;
+	itemsHead_ == NULL ? itemsHead_ = newitem : itemsHead_->prev = newitem;
+	itemsHead_ = newitem;
+	newitem->item = target;
+	nItems_ ++;
+}
+
+// Add item to start of list with extra data
+template <class T, class D> void Reflist<T,D>::addStart(T* target, D extradata)
+{
+	Refitem<T,D> *newitem = new Refitem<T,D>;
+	// Add the pointer to the beginning of the list
+	newitem->next = itemsHead_;
+	itemsHead_ == NULL ? itemsHead_ = newitem : itemsHead_->prev = newitem;
+	itemsHead_ = newitem;
 	newitem->item = target;
 	newitem->data = extradata;
 	nItems_ ++;

@@ -50,10 +50,29 @@ bool Model::hasTrajectory()
 	else return (nFileFrames_ != 0);
 }
 
+// Return whether the trajectory is cached (if there is one)
+bool Model::trajectoryIsCached()
+{
+	return framesAreCached_;
+}
+
 // Return the current frame pointer
 Model *Model::currentFrame()
 {
 	return currentFrame_;
+}
+
+// Return pointer to specified frame number
+Model *Model::frame(int n)
+{
+	Model *frame = NULL;
+	if (framesAreCached_)
+	{
+		if ((n < 0) || (n >= nFrames())) msg.print("Frame %i is out of range for trajectory associated to model '%s'.\n", n, name_.get());
+		else frame = frames_[n];
+	}
+	else msg.print("Trajectory for model '%s' is not cached: individual frames not available.\n", name_.get());
+	return frame;
 }
 
 // Return the total number of frames in the trajectory (file or cached)

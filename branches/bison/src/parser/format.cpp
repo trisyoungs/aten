@@ -44,7 +44,7 @@ FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes:
 	{
 		char text[32];
 		int n = 0;
-		for (const char *c = &fmt[1]; isdigit(*c); c++) text[n++] = *c;
+		for (const char *c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text[n++] = *c;
 		text[n] = '\0';
 		formatLength_ = atoi(text);
 	}
@@ -350,7 +350,7 @@ int Format::executeRead(LineParser *parser, int flags)
 			case (FormatChunk::FormattedChunk):
 				// Get argument from LineParser
 				length = chunk->formatLength();
-				if (length > 0) parser->getNextN(length, &bit);
+				if (length != 0) parser->getNextN(length, &bit);
 				else parser->getNextArg(&bit, flags);
 				if (!bit.isEmpty()) nparsed ++;
 				break;
