@@ -211,6 +211,8 @@ class Model
 	void setCell(Mat3<double> axes);
 	// Set cell (parameter)
 	void setCell(Cell::CellParameter cp, double value);
+	// Set cell (other Cell pointer)
+	void setCell(Cell *newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
@@ -732,6 +734,8 @@ class Model
 	Model *addFrame();
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory();
+	// Return whether the trajectory is cached (if there is one)
+	bool trajectoryIsCached();
 	// Set parent model of trajectory
 	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory
@@ -746,6 +750,8 @@ class Model
 	ifstream *trajectoryFile();
 	// Return the current frame pointer
 	Model *currentFrame();
+	// Return pointer to specified frame number
+	Model *frame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
 	int nFrames();
 	// Return the current integer frame position

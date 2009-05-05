@@ -90,6 +90,8 @@ class TreeNode
 	bool argb(int i);
 	// Return (execute) argument specified as an integer
 	int argi(int i);
+	// Return (execute) argument specified as an atomic number
+	short int argz(int i);
 	// Return (execute) argument specified as a double
 	double argd(int i);
 	// Return (execute) argument specified as a GLFloat

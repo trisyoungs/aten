@@ -122,9 +122,8 @@ int CommandParser::lex()
 		} while (!done);
 		// We now have the number as a text token...
 		msg.print(Messenger::Parse, "LEXER (%li): found a number [%s]\n", tree_,token);
-		name = token;
-		yylval.name = &name;
-		return (integer ? INTCONST : REALCONST);
+		integer ? yylval.intconst = atoi(token) : yylval.doubleconst = atof(token);
+		return (integer ? INTCONST : DOUBLECONST);
 	}
 
 	/*
@@ -195,28 +194,33 @@ int CommandParser::lex()
 				return VARTYPE;
 			}
 
-			// BUilt-in numeric constants
+			// Built-in numeric constants
 			// TRUE, FALSE, or NULL token?
 			if (strcmp(token,"TRUE") == 0)
 			{
-				name = "1";
-				yylval.name = &name;
+				yylval.intconst = 1;
 				return INTCONST;
 			}
 			else if ((strcmp(token,"FALSE") == 0) || (strcmp(token,"NULL") == 0))
 			{
-				name = "0";
-				yylval.name = &name;
+				yylval.intconst = 0;
 				return INTCONST;
 			}
 			else if (strcmp(token,"PI") == 0)
 			{
-				name = "3.14159265358979323846";
-				yylval.name = &name;
-				return REALCONST;
+				yylval.doubleconst = 3.14159265358979323846;
+				return DOUBLECONST;
 			}
-			
-	
+
+			// Element symbol?
+			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
+			if (n < elements().nElements())
+			{
+				yylval.intconst = n;
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a an element symbol (%i)\n",tree_,n);
+				return INTCONST;
+			}
+
 			// Is this a recognised high-level keyword?
 			n = 0;
 			if (strcmp(token,"if") == 0) n = IF;

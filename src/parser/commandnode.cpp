@@ -298,6 +298,15 @@ bool CommandNode::checkArguments()
 					result = FALSE;
 				}
 				break;
+			// Element		(StringData, DoubleData, IntegerData, AtomData)
+			case ('E'):
+				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to command '%s' must be an int, double, string or an atom&.\n", count+1, Command::data[function_].keyword);
+					result = FALSE;
+				}
+				break;
 			// Atom/Id		(IntegerData, AtomData)
 			case ('A'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))

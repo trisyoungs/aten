@@ -31,8 +31,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.2"
-#define ATENREVISION "890"
-#define ATENDATE "Fri 01 May - 15:17"
+#define ATENREVISION "895"
+#define ATENDATE "Tue 05 May - 16:01"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -116,7 +116,9 @@ class Aten
 	public:
 	// Load filters
 	void openFilters();
-	// Register a filter of a gien type
+	// Load filter from specified filename
+	bool openFilter(const char *filename);
+	// Register a filter of a given type
 	void registerFilter(Tree *filter, FilterData::FilterType ft);
 	// Whether filters loaded succesfully on startup
 	int nFiltersFailed();

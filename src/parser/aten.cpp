@@ -87,8 +87,8 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "elements",	VTypes::ElementData,		elements().nElements(), TRUE },
+	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "models",	VTypes::ModelData,		-1, TRUE },
 	{ "nelements",	VTypes::IntegerData,		0, TRUE },
 	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
@@ -144,9 +144,6 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	bool result = TRUE;
 	if (result) switch (acc)
 	{
-		case (AtenVariable::CurrentModel):
-			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
-			break;
 		case (AtenVariable::Elements):
 			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
 			{
@@ -154,6 +151,9 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 				result = FALSE;
 			}
 			else rv.set(VTypes::ElementData, &elements().el[arrayIndex] );
+			break;
+		case (AtenVariable::Modeldata):
+			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);

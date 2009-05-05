@@ -19,7 +19,7 @@ filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extensio
 	found = 0;
 	while (!eof())
 	{
-		readlinef("%6s%100s",keyword,line);
+		readlinef("%-6s%100s",keyword,line);
 		if (keyword == "HEADER")
 		{
 			found = 1;

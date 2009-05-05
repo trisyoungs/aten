@@ -71,10 +71,11 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs->beginUndoState("Draw Chain");
 	Atom *i;
 	ReturnValue v1;
+	short int el = c->argz(0);
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
-		i = obj.rs->addAtom(elements().find(c->argc(0)), pos);
+		i = obj.rs->addAtom(el, pos);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -90,7 +91,7 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	else
 	{
-		i = obj.rs->addAtomAtPen(elements().find(c->argc(0)));
+		i = obj.rs->addAtomAtPen(el);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -125,36 +126,8 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
-	Atom *i;
 	ForcefieldAtom *ffa;
-	Namemap<int> *nm;
-	int el;
-	ReturnValue v1;
-	if (!c->arg(0, v1)) return FALSE;
-	switch (v1.type())
-	{
-		case (VTypes::IntegerData):
-			el = v1.asInteger();
-			break;
-		case (VTypes::DoubleData):
-			el = (int) floor(v1.asDouble() + 0.15);
-			break;
-		case (VTypes::StringData):
-			// Attempt conversion of the string first from the users type list
-			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
-				if (strcmp(nm->name(),v1.asString()) == 0) break;
-			if (nm == NULL) el = elements().find(v1.asString());
-			else el = nm->data();
-			break;
-		case (VTypes::AtomData):
-			i = (Atom*) v1.asPointer(VTypes::AtomData);
-			i == NULL ? el = 0 : i->element();
-			break;
-		default:
-			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(v1.type()));
-			el = 0;
-			break;
-	}
+	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
 	// Get and check requested ID
 	int id = c->argi(1);
@@ -229,36 +202,8 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
-	Atom *i;
 	ForcefieldAtom *ffa;
-	Namemap<int> *nm;
-	int el;
-	ReturnValue v1;
-	if (!c->arg(0, v1)) return FALSE;
-	switch (v1.type())
-	{
-		case (VTypes::IntegerData):
-			el = v1.asInteger();
-			break;
-		case (VTypes::DoubleData):
-			el = (int) floor(v1.asDouble() + 0.15);
-			break;
-		case (VTypes::StringData):
-			// Attempt conversion of the string first from the users type list
-			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
-				if (strcmp(nm->name(),v1.asString()) == 0) break;
-			if (nm == NULL) el = elements().find(v1.asString());
-			else el = nm->data();
-			break;
-		case (VTypes::AtomData):
-			i = (Atom*) v1.asPointer(VTypes::AtomData);
-			i == NULL ? el = 0 : i->element();
-			break;
-		default:
-			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(v1.type()));
-			el = 0;
-			break;
-	}
+	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
 	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
 	else aten.current.i = obj.rs->addAtomAtPen(el);
@@ -286,31 +231,7 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Determine element (based on type of variable provided)
-	int el;
-	Atom *i;
-	ReturnValue v1;
-	if (!c->arg(0, v1)) return FALSE;
-	switch (v1.type())
-	{
-		case (VTypes::IntegerData):
-			el = v1.asInteger();
-			break;
-		case (VTypes::DoubleData):
-			el = (int) floor(v1.asDouble() + 0.15);
-			break;
-		case (VTypes::StringData):
-			el = elements().find(v1.asString());
-			break;
-		case (VTypes::AtomData):
-			i = (Atom*) v1.asPointer(VTypes::AtomData);
-			i == NULL ? el = 0 : i->element();
-			break;
-		default:
-			msg.print("Type '%s' is not a valid one to pass to Addatom.\n", VTypes::dataType(v1.type()));
-			el = 0;
-			break;
-	}
+	short int el = c->argz(0);
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
 	if (r.x < 0.0) r.x += 1.0;
@@ -401,7 +322,7 @@ bool Command::function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	int el = elements().findAlpha(c->argc(0));
+	short int el = c->argz(0);
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	obj.rs->endUndoState();

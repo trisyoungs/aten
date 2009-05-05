@@ -915,9 +915,6 @@ void Pattern::markRingAtoms(Atom *i)
 // Find rings
 void Pattern::findRings()
 {
-	// Locate rings in the molecule of the current pattern.
-	// Maintain a local array corresponding to whether specific atoms are 'done' or not - i.e., whether
-	// they have been check as as much as they need to be checked.
 	msg.enter("Pattern::findRings");
 	int n, rsize, ringpotential;
 	Atom *i;
@@ -976,6 +973,7 @@ void Pattern::findRings()
 		}
 		i = i->next;
 	}
+	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
 

@@ -98,6 +98,28 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	msg.exit("Model::setCell[parameter]");
 }
 
+// Set cell (other Cell pointer)
+void Model::setCell(Cell *newcell)
+{
+	if (newcell == NULL) printf("Warning: NULL Cell pointer passed to Model::setCell().\n");
+	else
+	{
+		Vec3<double> oldlengths = cell_.lengths();
+		Vec3<double> oldangles = cell_.angles();
+		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+		cell_ = *newcell;
+		calculateDensity();
+		changeLog.add(Log::Structure);
+		// Add the change to the undo state (if there is one)
+		if (recordingState_ != NULL)
+		{
+			CellEvent *newchange = new CellEvent;
+			newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
+			recordingState_->addEvent(newchange);
+		}
+	}
+}
+
 // Remove cell
 void Model::removeCell()
 {
