@@ -66,8 +66,20 @@ bool VectorVariable::set(ReturnValue &rv)
 		msg.print("A constant value (in this case a vector) cannot be assigned to.\n");
 		return FALSE;
 	}
-	vectorData_ = rv.asVector();
-	return TRUE;
+	bool success = FALSE;
+	if (rv.arraySize() == -1) vectorData_ = rv.asVector(success);
+	else if (rv.arraySize() == 3)
+	{
+		vectorData_.x = rv.elementAsDouble(0, success);
+		if (success) vectorData_.y = rv.elementAsDouble(1, success);
+		if (success) vectorData_.z = rv.elementAsDouble(2, success);
+	}
+	else
+	{
+		msg.print("Error: Array assigned to vector variable must contain three elements.\n");
+		success = FALSE;
+	}
+	return success;
 }
 
 // Reset variable

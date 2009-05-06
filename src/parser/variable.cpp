@@ -65,7 +65,7 @@ bool Variable::initialise()
 			if (set(rv)) return TRUE;
 			else
 			{
-				msg.print("Error: Variable %s is of type '%s', and cannot be initialised from a value of type '%s'.\n", name_.get(), VTypes::dataType(returnType_), VTypes::dataType(rv.type()));
+				msg.print("Error: Failed to initialise variable '%s'.\n", name_.get());
 				return FALSE;
 			}
 		}
