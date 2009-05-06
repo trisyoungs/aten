@@ -27,7 +27,7 @@ ColourScalePoint::ColourScalePoint()
 {
 	// Private variables
 	value_ = 0.0;
-	setColour(1.0f, 1.0f, 1.0f, 1.0f);
+	setColour(1.0, 1.0, 1.0, 1.0);
 
 	// Public variables
 	prev = NULL;
@@ -47,7 +47,7 @@ void ColourScalePoint::setValue(double d)
 }
 
 // Set colour
-void ColourScalePoint::setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void ColourScalePoint::setColour(double r, double g, double b, double a)
 {
 	colour_[0] = r;
 	colour_[1] = g;
@@ -58,14 +58,14 @@ void ColourScalePoint::setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 // Copy colour
 void ColourScalePoint::copyColour(GLfloat *target)
 {
-	target[0] = colour_[0];
-	target[1] = colour_[1];
-	target[2] = colour_[2];
-	target[3] = colour_[3];
+	target[0] = (GLfloat) colour_[0];
+	target[1] = (GLfloat) colour_[1];
+	target[2] = (GLfloat) colour_[2];
+	target[3] = (GLfloat) colour_[3];
 }
 
 // Return pointer to colour array
-GLfloat *ColourScalePoint::colour()
+double *ColourScalePoint::colour()
 {
 	return colour_;
 }

@@ -32,7 +32,7 @@
 
 #define ATENVERSION "1.2"
 #define ATENREVISION "897"
-#define ATENDATE "Wed 06 May - 15:11"
+#define ATENDATE "Wed 06 May - 17:43"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations
@@ -312,6 +312,8 @@ class Aten
 	public:
 	// Command Definitions
 	Command commands;
+	// Preferences file commands
+	Forest prefsCommands;
 };
 
 extern Aten aten;

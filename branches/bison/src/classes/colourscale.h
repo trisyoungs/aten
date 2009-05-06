@@ -85,15 +85,15 @@ class ColourScale
 	// Clear all points in colourscale
 	void clear();
 	// Add new point to colourscale
-	void addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	void addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
 	// Add new point to end of colourscale
-	void addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	void addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
 	// Set colour and value data for point
-	void setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
+	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
 	// Set only value for point
 	void setPointValue(int position, double value);
 	// Set only colour for point
-	void setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	void setPointColour(int position, double r, double g, double b, double a = 1.0f);
 	// Remove old point from colourscale
 	void removePoint(int position);
 	// Get colour associated with value supplied

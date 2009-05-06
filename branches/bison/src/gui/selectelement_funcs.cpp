@@ -41,7 +41,7 @@ void AtenSelectElement::finaliseUi()
 	QGridLayout *gl = new QGridLayout;
 	QLabel *label;
 	int n, m, z;
-	GLfloat *colour;
+	double *colour;
 
 	// Create element button array (and buttons)
 	elementButtons_ = new QPushButton*[elements().nElements()];
@@ -154,7 +154,7 @@ QPushButton *AtenSelectElement::addCommonButton(int el)
 	button->setText(elements().symbol(el));
 	button->setMinimumSize(24,24);
 	button->setMaximumSize(24,24);
-	GLfloat *colour = elements().ambientColour(el);
+	double *colour = elements().ambientColour(el);
 	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
 	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
 	return button;

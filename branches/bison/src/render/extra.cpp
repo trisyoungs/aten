@@ -201,7 +201,7 @@ void Canvas::renderRegions()
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		elements().copyAmbientColour(i, colour);
-		colour[3] = 0.4f;
+		colour[3] = 0.4;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
 		  centre = m->area.centre();

@@ -88,7 +88,9 @@ class Prefs
 	// Constructor
 	Prefs();
 	// Load preferences from file
-	void load(const char*);
+	bool load(const char *filename);
+	// Save preferences to file
+	bool save(const char *filename);
 
 	/*
 	// Rendering - View Objects
@@ -162,9 +164,9 @@ class Prefs
 	// Whether the spotlight is on
 	bool spotlightActive_;
 	// Spotlight components
-	GLfloat spotlightColour_[Prefs::nColourComponents][4];
+	double spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
-	GLfloat spotlightPosition_[4];
+	double spotlightPosition_[4];
 
 	public:
 	// Sets the specified atom size to the given value
@@ -200,15 +202,19 @@ class Prefs
 	// Return status of spotlight
 	bool spotlightActive();
 	// Set spotlight colour component
-	void setSpotlightColour(ColourComponent sc, int i, GLfloat value);
-	void setSpotlightColour(ColourComponent sc, GLfloat r, GLfloat g, GLfloat b);
+	void setSpotlightColour(ColourComponent sc, int i, double value);
+	void setSpotlightColour(ColourComponent sc, double r, double g, double b);
 	// Return spotlight colour component
-	GLfloat *spotlightColour(ColourComponent sc);
+	double *spotlightColour(ColourComponent sc);
+	// Return spotlight colour component in provided array
+	void copySpotlightColour(ColourComponent sc, GLfloat *col);
 	// Set spotlight position
-	void setSpotlightPosition(GLfloat r, GLfloat g, GLfloat b);
-	void setSpotlightPosition(int component, GLfloat f);
+	void setSpotlightPosition(double r, double g, double b);
+	void setSpotlightPosition(int component, double f);
 	// Return spotlight position
-	GLfloat *spotlightPosition();
+	double *spotlightPosition();
+	// Return spotlight position in provided array
+	void copySpotlightPosition(GLfloat *col);
 	// Set atom colour scheme
 	void setColourScheme(Prefs::ColouringScheme sc);
 	// Return atom colour scheme
@@ -300,15 +306,15 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	GLfloat colours_[Prefs::nPenColours][4];
+	double colours_[Prefs::nPenColours][4];
 
 	public:
-	// Set the specified colour to the integer RGB values supplied
-	void setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	// Set the specified colour to the integer RGBA values supplied
+	void setColour(PenColour c, double r, double g, double b, double a);
 	// Copy the specified colour
 	void copyColour(PenColour c, GLfloat*);
 	// Return a pointer to the specified colour
-	GLfloat *colour(PenColour c);
+	double *colour(PenColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
 

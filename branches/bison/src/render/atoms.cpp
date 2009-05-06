@@ -28,7 +28,7 @@ void Canvas::renderModelAtoms()
 {
 	msg.enter("Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;
-	static GLfloat ambient[4], diffuse[4];
+	static GLfloat ambient[4], diffuse[4], specular[4];
 	static Prefs::ColouringScheme scheme;
 	static double radius, rij, cval, bondradius;
 	static Vec3<double> ri, rj, rk, ijk;
@@ -41,7 +41,8 @@ void Canvas::renderModelAtoms()
 	cell = displayModel_->cell();
 	
 	// Set polygon fill mode and specular reflection
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	prefs.copyColour(Prefs::SpecularColour, specular);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)

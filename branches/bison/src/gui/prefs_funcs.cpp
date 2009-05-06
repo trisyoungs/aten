@@ -83,7 +83,7 @@ void AtenPrefs::setControls()
 	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
 	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
 	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(Prefs::SpecularComponent));
-	GLfloat *pos = prefs.spotlightPosition();
+	double *pos = prefs.spotlightPosition();
 	ui.SpotlightPositionXSpin->setValue(pos[0]);
 	ui.SpotlightPositionYSpin->setValue(pos[1]);
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
@@ -118,11 +118,15 @@ void AtenPrefs::setControls()
 	prefsBackup_ = prefs;
 	// If this is the first time, create the elements backup array
 	if (elementsBackup_ == NULL) elementsBackup_ = new Element[elements().nElements()];
-	for (int i=0; i<elements().nElements(); i++)
+	int n,i;
+	for (i=0; i<elements().nElements(); i++)
 	{
 		elementsBackup_[i].atomicRadius = elements().atomicRadius(i);
-		elements().copyAmbientColour(i, elementsBackup_[i].ambientColour);
-		elements().copyDiffuseColour(i, elementsBackup_[i].diffuseColour);
+		for (n=0; n<4; ++n)
+		{
+			elementsBackup_[i].ambientColour[n] = elements().el[i].ambientColour[n];
+			elementsBackup_[i].diffuseColour[n] = elements().el[i].diffuseColour[n];
+		}
 	}
 	refreshing_ = FALSE;
 	msg.exit("AtenPrefs::setControls");
@@ -133,11 +137,15 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
 	prefs = prefsBackup_;
-	for (int i=0; i<elements().nElements(); i++)
+	int i,n;
+	for (i=0; i<elements().nElements(); i++)
 	{
 		elements().setAtomicRadius(i,elementsBackup_[i].atomicRadius);
-		elements().setAmbientColour(i, elementsBackup_[i].ambientColour[0], elementsBackup_[i].ambientColour[1], elementsBackup_[i].ambientColour[2]);
-		elements().setDiffuseColour(i, elementsBackup_[i].diffuseColour[0], elementsBackup_[i].diffuseColour[1], elementsBackup_[i].diffuseColour[2]);
+		for (n=0; n<4; ++n)
+		{
+			elements().el[i].ambientColour[n] = elementsBackup_[i].ambientColour[n];
+			elements().el[i].diffuseColour[n] = elementsBackup_[i].ambientColour[n];
+		}
 	}
 	aten.currentModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
@@ -165,7 +173,7 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	// Get element's current ambient colour and convert into a QColor
-	GLfloat *col = elements().ambientColour(el);
+	double *col = elements().ambientColour(el);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -185,7 +193,7 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	// Get element's current diffuse colour and convert into a QColor
-	GLfloat *col = elements().diffuseColour(el);
+	double *col = elements().diffuseColour(el);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -328,7 +336,7 @@ void AtenPrefs::on_SpotlightPositionZSpin_valueChanged(double value)
 void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 {
 	// Get current component colour and convert it to a QColor
-	GLfloat *col = prefs.spotlightColour(sc);
+	double *col = prefs.spotlightColour(sc);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -413,7 +421,7 @@ void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 
 void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.colour(Prefs::ForegroundColour);
+	double *col = prefs.colour(Prefs::ForegroundColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -428,7 +436,7 @@ void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 
 void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.colour(Prefs::BackgroundColour);
+	double *col = prefs.colour(Prefs::BackgroundColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -443,7 +451,7 @@ void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 
 void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.colour(Prefs::SpecularColour);
+	double *col = prefs.colour(Prefs::SpecularColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -530,7 +538,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	if (id == -1) return;
 	// Get new colour
 	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
-	GLfloat *col = csp->colour();
+	double *col = csp->colour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -539,7 +547,6 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.PointColourFrame->setColour(newcol);
 	ui.PointColourFrame->update();
-	csp->copyColour(col);
 	ui.ScalePointsList->item(id)->setBackgroundColor(newcol);
 	// Update display
 	gui.mainView.postRedisplay();

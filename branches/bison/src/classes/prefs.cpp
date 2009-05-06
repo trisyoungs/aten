@@ -22,6 +22,7 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"
+#include "main/aten.h"
 #include <iostream>
 
 Prefs prefs;
@@ -152,22 +153,22 @@ Prefs::Prefs()
 	perspective_ = TRUE;
 	perspectiveFov_ = 20.0;
 	spotlightActive_ = TRUE;
-	spotlightColour_[Prefs::AmbientComponent][0] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][1] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][2] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][3] = 1.0f;
-	spotlightColour_[Prefs::DiffuseComponent][0] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][1] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][2] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][3] = 1.0f;
-	spotlightColour_[Prefs::SpecularComponent][0] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][1] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][2] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][3] = 1.0f;
-	spotlightPosition_[0] = 1.0f;
-	spotlightPosition_[1] = 1.0f;
-	spotlightPosition_[2] = 1.0f;
-	spotlightPosition_[3] = 0.0f;
+	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][2] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][3] = 1.0;
+	spotlightColour_[Prefs::DiffuseComponent][0] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][1] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][2] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][3] = 1.0;
+	spotlightColour_[Prefs::SpecularComponent][0] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][1] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][2] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][3] = 1.0;
+	spotlightPosition_[0] = 1.0;
+	spotlightPosition_[1] = 1.0;
+	spotlightPosition_[2] = 1.0;
+	spotlightPosition_[3] = 0.0;
 
 	// GL Options
 	glOptions_ = 8;
@@ -276,45 +277,21 @@ Prefs::Prefs()
 }
 
 // Load user preferences file
-void Prefs::load(const char *filename)
+bool Prefs::load(const char *filename)
 {
 	msg.enter("Prefs::load");
-	int success;
-	// Open the file
-/*	ifstream prefsfile(filename,ios::in);
-	if (!prefsfile.good())
+	msg.print("Looking for user preferences file '%s'...\n", filename);
+	if (!fileExists(filename))
 	{
-		printf("Couldn't open preferences file in '%s'\n",filename);
-		prefsfile.close();
+		msg.print("User preferences file not found. Inappropriate / boring defaults will be used.\n");
 		msg.exit("Prefs::load");
-		return;
-	}*/
-	// Create script structure and initialise
-	// TGAY - Simplify prefs file somehow - options available through prefs/elements accessors is easy what about loadff etc?
-/*	CommandList prefcmds;
-	prefcmds.clear();
-	while (!prefsfile.eof())
-	{
-		success = parser.getArgsDelim(&prefsfile,Parser::UseQuotes+Parser::SkipBlanks);
-		if (success == 1)
-		{
-			msg.print("Error reading prefs file.\n");
-			break;
-		}
-		else if (success == -1) break;
-		// Add script command
-		if (!prefcmds.cacheCommand()) break;
+		return TRUE;
 	}
-	parser.close();
-	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefcmds.nBranches() != 1)
-	{
-		printf("%i unterminated blocks in prefs file.\n",prefcmds.nBranches());
-		msg.exit("prefs::load");
-		return;
-	}
-	prefcmds.execute();*/
+	ReturnValue rv;
+	bool result = aten.prefsCommands.generateFromFile(filename, "User Preferences", FALSE);
+	if (result) result = aten.prefsCommands.executeAll(rv);
 	msg.exit("Prefs::load");
+	return result;
 }
 
 /*
@@ -522,13 +499,13 @@ bool Prefs::spotlightActive()
 }
 
 // Set element of spotlight colour component
-void Prefs::setSpotlightColour(Prefs::ColourComponent sc, int i, GLfloat value)
+void Prefs::setSpotlightColour(Prefs::ColourComponent sc, int i, double value)
 {
 	spotlightColour_[sc][i] = value;
 }
 
 // Set spotlight colour component
-void Prefs::setSpotlightColour(Prefs::ColourComponent sc, GLfloat r, GLfloat g, GLfloat b)
+void Prefs::setSpotlightColour(Prefs::ColourComponent sc, double r, double g, double b)
 {
 	spotlightColour_[sc][0] = r;
 	spotlightColour_[sc][1] = g;
@@ -536,13 +513,22 @@ void Prefs::setSpotlightColour(Prefs::ColourComponent sc, GLfloat r, GLfloat g, 
 }
 
 // Return spotlight colour component
-GLfloat *Prefs::spotlightColour(Prefs::ColourComponent sc)
+double *Prefs::spotlightColour(Prefs::ColourComponent sc)
 {
 	return spotlightColour_[sc];
 }
 
+// Return spotlight colour component in provided array
+void Prefs::copySpotlightColour(ColourComponent sc, GLfloat *col)
+{
+	col[0] = (GLfloat) spotlightColour_[sc][0];
+	col[1] = (GLfloat) spotlightColour_[sc][1];
+	col[2] = (GLfloat) spotlightColour_[sc][2];
+	col[3] = (GLfloat) spotlightColour_[sc][3];
+}
+
 // Set spotlight position
-void Prefs::setSpotlightPosition(GLfloat x, GLfloat y, GLfloat z)
+void Prefs::setSpotlightPosition(double x, double y, double z)
 {
 	spotlightPosition_[0] = x;
 	spotlightPosition_[1] = y;
@@ -550,15 +536,24 @@ void Prefs::setSpotlightPosition(GLfloat x, GLfloat y, GLfloat z)
 }
 
 // Set individual element of spotlight position
-void Prefs::setSpotlightPosition(int component, GLfloat f)
+void Prefs::setSpotlightPosition(int component, double f)
 {
 	spotlightPosition_[component] = f;
 }
 
 // Return spotlight position
-GLfloat *Prefs::spotlightPosition()
+double *Prefs::spotlightPosition()
 {
 	return spotlightPosition_;
+}
+
+// Return spotlight position in provided array
+void Prefs::copySpotlightPosition(GLfloat *col)
+{
+	col[0] = (GLfloat) spotlightPosition_[0];
+	col[1] = (GLfloat) spotlightPosition_[1];
+	col[2] = (GLfloat) spotlightPosition_[2];
+	col[3] = (GLfloat) spotlightPosition_[3];
 }
 
 // Set atom colour scheme
@@ -648,7 +643,7 @@ GLint Prefs::shininess()
 */
 
 // Return the specified colour
-GLfloat *Prefs::colour(PenColour c)
+double *Prefs::colour(PenColour c)
 {
 	return colours_[c];
 }
@@ -656,14 +651,14 @@ GLfloat *Prefs::colour(PenColour c)
 // Copy the specified colour
 void Prefs::copyColour(PenColour c, GLfloat *target)
 {
-	target[0] = colours_[c][0];
-	target[1] = colours_[c][1];
-	target[2] = colours_[c][2];
-	target[3] = colours_[c][3];
+	target[0] = (GLfloat) colours_[c][0];
+	target[1] = (GLfloat) colours_[c][1];
+	target[2] = (GLfloat) colours_[c][2];
+	target[3] = (GLfloat) colours_[c][3];
 }
 
 // Set the specified colour
-void Prefs::setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void Prefs::setColour(PenColour c, double r, double g, double b, double a)
 {
 	colours_[c][0] = r;
 	colours_[c][1] = g;

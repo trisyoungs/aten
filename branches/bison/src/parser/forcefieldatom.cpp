@@ -79,9 +79,14 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		msg.exit("ForcefieldAtomVariable::accessorSearch");
 		return NULL;
 	}
-	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	// Were we given an array index when we didn't want one?
+	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	{
+		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+		result = NULL;
+	}
+	else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }
@@ -104,6 +109,15 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
 		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
+	}
+	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
+	{
+		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
+		{
+			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			msg.exit("ElementVariable::retrieveAccessor");
+			return FALSE;
+		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
@@ -163,20 +177,56 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
-	// Check for correct lack/presence of array index given
-	if (accessorData[i].arraySize == 0)
+	// Check for correct lack/presence of array index given to original accessor, and nature of new value
+	bool result = TRUE;
+	if (accessorData[i].arraySize != 0)
 	{
-		if (hasArrayIndex) msg.print("Warning: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+		if (hasArrayIndex)
+		{
+			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
+			{
+				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				result = FALSE;
+			}
+			if (newvalue.arraySize() > 0)
+			{
+				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				result = FALSE;
+			}
+		}
+		else
+		{
+			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			{
+				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				result = FALSE;
+			}
+		}
 	}
-	else if (!hasArrayIndex)
+	else
 	{
-		msg.print("Error: No array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
+		// This is not an array member, so cannot be assigned an array unless its a Vector
+		if (newvalue.arraySize() != -1)
+		{
+			if (accessorData[i].returnType != VTypes::VectorData)
+			{
+				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				result = FALSE;
+			}
+			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			{
+				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				result = FALSE;
+			}
+		}
+	}
+	if (!result)
+	{
+		msg.exit("ForcefieldAtomVariable::setAccessor");
 		return FALSE;
 	}
-	VdwFunctions::VdwFunction vf;
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	VdwFunctions::VdwFunction vf;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result) switch (acc)
 	{

@@ -380,7 +380,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->positiveColour();
+	double *col = g->positiveColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -401,7 +401,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->positiveColour();
+	double *col = g->positiveColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
