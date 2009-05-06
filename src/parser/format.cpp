@@ -401,6 +401,7 @@ bool Format::writeToString()
 	static char bit[4096];
 	createdString_[0] = '\0';
 	ReturnValue rv;
+	bool result;
 	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{
@@ -408,7 +409,15 @@ bool Format::writeToString()
 		switch (chunk->type())
 		{
 			case (FormatChunk::FormattedChunk):
-				chunk->arg()->execute(rv);
+				result = chunk->arg()->execute(rv);
+				if (!result) break;
+				// Check for arrays - bad!
+				if (rv.arraySize() != -1)
+				{
+					msg.print("Error: Array passed to format.\n");
+					result = FALSE;
+					break;
+				}
 				bit[0] = '\0';
 				switch (chunk->retrieveType())
 				{
@@ -432,7 +441,15 @@ bool Format::writeToString()
 				strcat(createdString_, chunk->cFormat());
 				break;
 			case (FormatChunk::DelimitedChunk):
-				chunk->arg()->execute(rv);
+				result = chunk->arg()->execute(rv);
+				if (!result) break;
+				// Check for arrays - bad!
+				if (rv.arraySize() != -1)
+				{
+					msg.print("Error: Array passed to format.\n");
+					result = FALSE;
+					break;
+				}
 				strcat(createdString_, rv.asString());
 				if (chunk->next != NULL) strcat(createdString_, " ");
 				break;
@@ -445,7 +462,7 @@ bool Format::writeToString()
 	// If this was originally a delimited chunk, append a newline
 	if (delimited_) strcat(createdString_, "\n");
 	msg.exit("Format::writeToString");
-	return TRUE;
+	return result;
 }
 
 // Parse supplied line according to format

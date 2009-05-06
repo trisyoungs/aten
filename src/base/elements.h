@@ -46,9 +46,9 @@ class Element
 	// Rough elemental radius (for bond calculation etc.)
 	double atomicRadius;
 	// Ambient colour
-	GLfloat ambientColour[4];
+	double ambientColour[4];
 	// Diffuse colour
-	GLfloat diffuseColour[4];
+	double diffuseColour[4];
 	// Numeric measure of 'penalties' for total bond orders 0 - 8
 	int bondOrderPenalty[9];
 	// Formal charges for bond orders 0 - 8
@@ -61,13 +61,13 @@ class Element
 	// Copy the ambient colour of the element into the array provided
 	void copyAmbientColour(GLfloat *v);
 	// Set ambient colour component of element
-	void setAmbientColour(int rgb, GLfloat value);
-	void setAmbientColour(GLfloat r, GLfloat g, GLfloat b);
+	void setAmbientColour(int rgb, double value);
+	void setAmbientColour(double r, double g, double b);
 	// Copy the diffuse colour of the element into the array provided
 	void copyDiffuseColour(GLfloat *v);
 	// Set diffuse colour component of element
-	void setDiffuseColour(int rgb, GLfloat value);
-	void setDiffuseColour(GLfloat r, GLfloat g, GLfloat b);
+	void setDiffuseColour(int rgb, double value);
+	void setDiffuseColour(double r, double g, double b);
 };
 
 // Element map
@@ -127,19 +127,19 @@ class ElementMap
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
 	int bondOrderPenalty(int i, int bo);
 	// Return the ambient colour of the element
-	GLfloat *ambientColour(int i);
+	double *ambientColour(int i);
 	// Copy the ambient colour of the element into the array provided
 	void copyAmbientColour(int i, GLfloat *v);
 	// Set ambient colour component of element
-	void setAmbientColour(int i, int rgb, GLfloat value);
-	void setAmbientColour(int i, GLfloat r, GLfloat g, GLfloat b);
+	void setAmbientColour(int i, int rgb, double value);
+	void setAmbientColour(int i, double r, double g, double b);
 	// Return the diffuse colour of the element
-	GLfloat *diffuseColour(int i);
+	double *diffuseColour(int i);
 	// Copy the diffuse colour of the element into the array provided
 	void copyDiffuseColour(int i, GLfloat *v);
 	// Set diffuse colour component of element
-	void setDiffuseColour(int i, int rgb, GLfloat value);
-	void setDiffuseColour(int i, GLfloat r, GLfloat g, GLfloat b);
+	void setDiffuseColour(int i, int rgb, double value);
+	void setDiffuseColour(int i, double r, double g, double b);
 
 	/*
 	// Data by atom*
@@ -158,9 +158,9 @@ class ElementMap
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
 	int bondOrderPenalty(Atom *i, int bo);
 	// Return the ambient colour of the element
-	GLfloat *ambientColour(Atom *i);
+	double *ambientColour(Atom *i);
 	// Return the diffuse colour of the element
-	GLfloat *diffuseColour(Atom *i);
+	double *diffuseColour(Atom *i);
 };
 
 extern ElementMap &elements();

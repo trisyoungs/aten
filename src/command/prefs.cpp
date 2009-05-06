@@ -164,9 +164,9 @@ bool Command::function_ElementAmbient(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
-	elements().setAmbientColour(el,0,c->argi(1));
-	elements().setAmbientColour(el,1,c->argi(2));
-	elements().setAmbientColour(el,2,c->argi(3));
+	elements().setAmbientColour(el,0,c->argd(1));
+	elements().setAmbientColour(el,1,c->argd(2));
+	elements().setAmbientColour(el,2,c->argd(3));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	rv.reset();
@@ -178,9 +178,9 @@ bool Command::function_ElementDiffuse(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	int el = elements().findAlpha(c->argc(0));
 	if (el == 0) return FALSE;
-	elements().setDiffuseColour(el,0,c->argi(1));
-	elements().setDiffuseColour(el,1,c->argi(2));
-	elements().setDiffuseColour(el,2,c->argi(3));
+	elements().setDiffuseColour(el,0,c->argd(1));
+	elements().setDiffuseColour(el,1,c->argd(2));
+	elements().setDiffuseColour(el,2,c->argd(3));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	rv.reset();

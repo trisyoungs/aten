@@ -167,7 +167,7 @@ class Grid
 	// How to render this surface
 	SurfaceStyle style_;
 	// Local colours (including alpha component)
-	GLfloat positiveColour_[4], negativeColour_[4];
+	double positiveColour_[4], negativeColour_[4];
 	// Colour scale to take colouring from (zero for internal colours)
 	int colourScale_;
 	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
@@ -195,17 +195,21 @@ class Grid
 	// Return the rendering style of the surface
 	SurfaceStyle style();
 	// Set the positive colour of the surface
-	void setPositiveColour(GLfloat r, GLfloat g, GLfloat b);
+	void setPositiveColour(double r, double g, double b);
 	// Set the negative colour of the surface
-	void setNegativeColour(GLfloat r, GLfloat g, GLfloat b);
+	void setNegativeColour(double r, double g, double b);
 	// Set alpha value of the surface
-	void setAlpha(GLfloat a);
+	void setAlpha(double a);
 	// Return the alpha value of the surface
-	GLfloat alpha();
+	double alpha();
 	// Return the positive colour of the surface
-	GLfloat *positiveColour();
+	double *positiveColour();
+	// Copy the positive colour of the surface
+	void copyPositiveColour(GLfloat *col);
 	// Return the negative colour of the surface
-	GLfloat *negativeColour();
+	double *negativeColour();
+	// Copy the negative colour of the surface
+	void copyNegativeColour(GLfloat *col);
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data

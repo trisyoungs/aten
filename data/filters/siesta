@@ -127,9 +127,10 @@ filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 	writeline("");
 
 	# Write unit cell (if present)
-	if (m.cell.type == "cubic") writeline("LatticeConstant", m.cell.a);
+	if (m.cell.type == "cubic") writeline("LatticeConstant", m.cell.a, "Ang");
 	else if ((m.cell.type == "orthorhombic") || (m.cell.type == "parallelepiped"))
 	{
+		writeline("LatticeConstant 1.0 Ang");
 		writeline("%block LatticeParameters");
 		writeline(m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
 		writeline("%endblock LatticeParameters");

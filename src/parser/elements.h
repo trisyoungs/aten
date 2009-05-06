@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ELEMENTSVARIABLE_H
-#define ATEN_ELEMENTSVARIABLE_H
+#ifndef ATEN_ELEMENTVARIABLE_H
+#define ATEN_ELEMENTVARIABLE_H
 
-#include "parser/variable.h"
+#include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Elements Variable
-class ElementVariable : public Variable
+class ElementVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
@@ -34,29 +34,11 @@ class ElementVariable : public Variable
 	~ElementVariable();
 
 	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(ReturnValue &rv);
-	// Set from returnvalue node
-	bool set(ReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
-
-	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Ambient, Colour, Diffuse, Mass, Name, Symbol, nAccessors };
+        enum Accessors { Ambient, Colour, Diffuse, Mass, Name, Radius, Symbol, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors

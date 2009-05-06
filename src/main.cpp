@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	// Load in user preferences
 	char filename[256];
 	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
-	prefs.load(filename);
+	if (!prefs.load(filename)) return -1;
 
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;

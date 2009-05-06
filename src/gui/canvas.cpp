@@ -223,8 +223,9 @@ void Canvas::initGl()
 		createLists();
 
 		// Clear colour
-		GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
-		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
+		GLfloat col[4];
+		prefs.copyColour(Prefs::BackgroundColour, col);
+		glClearColor(col[0],col[1],col[2],col[3]);
 		//glClearDepth(1.0);
 		// Perspective hint
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
@@ -239,10 +240,14 @@ void Canvas::initGl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, prefs.spotlightColour(Prefs::AmbientComponent));
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, prefs.spotlightColour(Prefs::DiffuseComponent));
-		glLightfv(GL_LIGHT0, GL_SPECULAR, prefs.spotlightColour(Prefs::SpecularComponent));
-		glLightfv(GL_LIGHT0, GL_POSITION, prefs.spotlightPosition());
+		prefs.copySpotlightColour(Prefs::AmbientComponent, col);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, col);
+		prefs.copySpotlightColour(Prefs::DiffuseComponent, col);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+		prefs.copySpotlightColour(Prefs::SpecularComponent, col);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, col);
+		prefs.copySpotlightPosition(col);
+		glLightfv(GL_LIGHT0, GL_POSITION, col);
 		prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
@@ -264,11 +269,12 @@ void Canvas::initGl()
 		if (prefs.hasGlOption(Prefs::FogOption))
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			glFogfv(GL_FOG_COLOR, prefs.colour(Prefs::BackgroundColour));
+			prefs.copyColour(Prefs::BackgroundColour, col);
+			glFogfv(GL_FOG_COLOR, col);
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
-			glFogi(GL_FOG_START,prefs.fogNear());
-			glFogi(GL_FOG_END,prefs.fogFar());
+			glFogi(GL_FOG_START, prefs.fogNear());
+			glFogi(GL_FOG_END, prefs.fogFar());
 			glEnable(GL_FOG);
 		}
 		else glDisable(GL_FOG);
