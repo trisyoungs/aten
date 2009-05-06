@@ -88,6 +88,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "elements",	VTypes::ElementData,		elements().nElements(), TRUE },
+	{ "frame",	VTypes::ModelData,		0, TRUE },
 	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "models",	VTypes::ModelData,		-1, TRUE },
 	{ "nelements",	VTypes::IntegerData,		0, TRUE },
@@ -115,7 +116,7 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("AtenVariable::accessorSearch");
 	return result;
 }
@@ -152,8 +153,11 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			}
 			else rv.set(VTypes::ElementData, &elements().el[arrayIndex] );
 			break;
-		case (AtenVariable::Modeldata):
+		case (AtenVariable::Frame):
 			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
+			break;
+		case (AtenVariable::Modeldata):
+			rv.set(VTypes::ModelData, aten.currentModel());
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);

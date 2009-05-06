@@ -86,172 +86,68 @@ void PreferencesVariable::nodePrint(int offset, const char *prefix)
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
-	{ "energyunit",	VTypes::StringData,	FALSE, FALSE }
-/*
+	{ "anglelabel",		VTypes::StringData,	0, FALSE },
+	{ "atomdetail"	,	VTypes::DoubleData,	0, FALSE },
+	{ "atomstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
+	{ "bonddetail"	,	VTypes::DoubleData,	0, FALSE },
+	{ "bondstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
+	{ "bondtolerance",	VTypes::DoubleData,	0, FALSE },
+	{ "cachelimit",		VTypes::IntegerData,	0, FALSE },
+	{ "calculateelec",	VTypes::IntegerData,	0, FALSE },
+	{ "calculateintra",	VTypes::IntegerData,	0, FALSE },
+	{ "calculatevdw",	VTypes::IntegerData,	0, FALSE },
+	{ "clipfar",		VTypes::DoubleData,	0, FALSE },
+	{ "clipnear",		VTypes::DoubleData,	0, FALSE },
+	{ "colourscheme",	VTypes::StringData,	0, FALSE },
+	{ "commonelements",	VTypes::StringData,	0, FALSE },
+	{ "densityunit",	VTypes::StringData,	0, FALSE },
+	{ "distancelabel",	VTypes::StringData,	0, FALSE },
+	{ "eleccutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "elecmethod",		VTypes::StringData,	0, FALSE },
+	{ "energyunit",		VTypes::StringData,	0, FALSE },
+	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
+	{ "fogfar",		VTypes::IntegerData,	0, FALSE },
+	{ "fognear",		VTypes::IntegerData,	0, FALSE },
+	{ "globesize",		VTypes::IntegerData,	0, FALSE },
+	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
+	{ "keyaction",		VTypes::StringData,	Prefs::nModifierKeys, FALSE },
+	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
+	{ "manualswapbuffers",	VTypes::IntegerData,	0, FALSE },
+	{ "maxringsize",	VTypes::IntegerData,	0, FALSE },
+	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
+	{ "modelupdate",	VTypes::IntegerData,	0, FALSE },
+	{ "mouseaction",	VTypes::StringData,	Prefs::nMouseButtons, FALSE },
+	{ "offscreenobjects",	VTypes::IntegerData,	0, FALSE },
+	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
+	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
+	{ "renderstyle",	VTypes::StringData,	0, FALSE },
+	{ "replicatefold",	VTypes::IntegerData,	0, FALSE },
+	{ "replicatetrim",	VTypes::IntegerData,	0, FALSE },
+	{ "screenobjects",	VTypes::IntegerData,	0, FALSE },
+	{ "selectionscale",	VTypes::DoubleData,	0, FALSE },
+	{ "shininess",		VTypes::IntegerData,	0, FALSE },
+	{ "spotlight",		VTypes::IntegerData,	0, FALSE },
+	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
+	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
+	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
 
+
+	/*
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
 	Vec3<int> repeatCellsNeg_;
-
-	{ "colourscheme",	VTypes::StringData,	FALSE, FALSE },
-	{ "energyunit",		VTypes::StringData,	FALSE, FALSE },
-	{ "globesize",		VTypes::IntegerData,	FALSE, FALSE },
-	{ "imageobjects",	VTypes::IntegerData,	FALSE, FALSE },
-	{ "renderstyle",	VTypes::StringData,	FALSE, FALSE },
-	{ "screenobjects",	VTypes::IntegerData,	FALSE, FALSE },
-
-	private:
-	// Atom sizes / radii
-	GLdouble atomStyleRadius_[Atom::nDrawStyles];
-	// Bond radii
-	GLdouble bondStyleRadius_[Atom::nDrawStyles];
-	// Size scaling for atom selection transparency
-	GLdouble selectionScale_;
-	// Detail of atom quadric (slices/stacks)
-	GLint atomDetail_;
-	// Detail of bond quadric (slices/stacks)
-	GLint bondDetail_;
-	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
-	bool perspective_;
-	// Viewing angle for perspective projection
-	GLdouble perspectiveFov_;
-	// Whether the spotlight is on
-	bool spotlightActive_;
 	// Spotlight components
 	GLfloat spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
 	GLfloat spotlightPosition_[4];
-
-	private:
-	// Postfix (units) label for distances
-	Dnchar distanceLabel_;
-	// Postfix (units) label for angles
-	Dnchar angleLabel_;
-	// Pointsize for labels
-	int labelSize_;
-	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
-	bool useNiceText_;
-	// Flag to manually perform swapBuffers
-	bool manualSwapBuffers_;
-
-
 	private:
 	// Bitvector for GL options
 	int glOptions_;
-	// Shininess of 3D objects
-	GLint shininess_;
-	// Fog start and finish depths
-	GLint fogNear_, fogFar_;
-	// Near and far clipping planes for glPerspective() and glFrustum();
-	GLdouble clipNear_, clipFar_;
-
-
 	private:
 	// RGB colour values
 	GLfloat colours_[Prefs::nPenColours][4];
-
-	private:
-	// Recalculate bonding when model has loaded
-	FilterSwitch bondOnLoad_;
-	// Centre non-periodic models on load
-	FilterSwitch centreOnLoad_;
-	// Fold atomic positions after model load
-	FilterSwitch foldOnLoad_;
-	// Whether to apply symmetry operators to get crystal packing on load
-	FilterSwitch packOnLoad_;
-	// Whether to load in all coordinate sets from a file
-	bool loadAllCoords_;
-	// Convert coordinates from Bohr to Angstrom on load
-	bool coordsInBohr_;
-	// Size limit (kbytes) for caching trajectory frames
-	int cacheLimit_;
-	// Type of name->Z mapping to use
-	ElementMap::ZMapType zMapType_;
-	// Whether to retain file atom type names on load (in a new forcefield)
-	bool keepNames_;
-	// Whether to retain view when GUI starts (i.e. don't reset it)
-	bool keepView_;
-
-
-	private:
-	// Bonding tolerance for automatic calculation
-	double bondTolerance_;
-	// Depth for drawing guide
-	double drawDepth_;
-	// Spacing of grid on drawing guide
-	double guideSpacing_;
-	// Extent (+- guide_spacing in xy plane) of drawing guide 
-	int guideExtent_;
-	// Number of ticks between gridpoints of guide
-	int guideTicks_;
-	// Whether to show the drawing guide
-	bool showGuide_;
-	// Geometry of the grid in the drawing guide
-	Prefs::GuideGeometry guideShape_;
-	// Hydrogen add distance
-	double hydrogenDistance_;
-
-
-	private:
-	// User-definable mouse button actions
-	MouseAction mouseAction_[Prefs::nMouseButtons];
-	// User-definable key modifier actions
-	KeyAction keyAction_[Prefs::nModifierKeys];
-	// Zoom 'throttle'
-	double zoomThrottle_;
-
-	private:
-	// Main modelview update and energy output frequencies
-	int modelUpdate_, energyUpdate_;
-	// Maximum ring size in ring search algorithm
-	int maxRingSize_;
-	// Whether to fold atoms before replication
-	bool replicateFold_;
-	// Whether to trim atoms after replication
-	bool replicateTrim_;
-
-
-	private:
-	DensityUnit densityUnit_;
-	// Internal energy units to use for forcefield storage, energy calculation etc.
-	EnergyUnit energyUnit_;
-	// Conversion factors for energy units
-	double energyConversions_[Prefs::nEnergyUnits];
-	// Factor to convert from atomic units to internal units
-	double elecConvert_;
-
-	private:
-	// Method of electrostatic calculation
-	Electrostatics::ElecMethod electrostaticsMethod_;
-	// Whether to calculate VDW interactions
-	bool calculateVdw_;
-	// Whether to calculate electrostatic interactions
-	bool calculateElec_;
-	// Whether to calculate intramolecular interactions
-	bool calculateIntra_;
-	// Ewald sum extent
-	Vec3<int> ewaldKvec_;
-	// Ewald sum gaussian width and (for auto option) precision
-	double ewaldAlpha_;
-	// Ewald sum precision for automatic parameter estimation
-	double ewaldPrecision_;
-	// Cutoff distances for VDW and electrostatics
-	double vdwCutoff_, elecCutoff_;
-	// Scale factor for VDW radii (used in disorder build)
-	double vdwScale_;
-	// Whether the automatic Ewald setup is valid
-	bool validEwaldAuto_;
-
-
-	private:
-	// Maximum number of undo levels (-1 for unlimited)
-	int maxUndoLevels_;
-
-	private:
-	// List of common drawing elements to put in SelectElement dialog
-	Dnchar commonElements_;
-
 	*/
 
 
@@ -278,7 +174,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("PreferencesVariable::accessorSearch");
 	return result;
 }
@@ -307,8 +203,140 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	bool result = TRUE;
 	if (result) switch (acc)
 	{
+		case (PreferencesVariable::AngleLabel):
+			rv.set( prefs.angleLabel() );
+			break;
+		case (PreferencesVariable::AtomDetail):
+			rv.set( prefs.atomDetail() );
+			break;
+		case (PreferencesVariable::AtomStyleRadius):
+			rv.set(prefs.atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			break;
+		case (PreferencesVariable::BondDetail):
+			rv.set( prefs.bondDetail() );
+			break;
+		case (PreferencesVariable::BondStyleRadius):
+			rv.set(prefs.bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			break;
+		case (PreferencesVariable::BondTolerance):
+			rv.set(prefs.bondTolerance());
+			break;
+		case (PreferencesVariable::CacheLimit):
+			rv.set(prefs.cacheLimit());
+			break;
+		case (PreferencesVariable::CalculateElec):
+			rv.set(prefs.calculateElec());
+			break;
+		case (PreferencesVariable::CalculateIntra):
+			rv.set(prefs.calculateIntra());
+			break;
+		case (PreferencesVariable::CalculateVdw):
+			rv.set(prefs.calculateVdw());
+			break;
+		case (PreferencesVariable::ClipFar):
+			rv.set(prefs.clipFar());
+			break;
+		case (PreferencesVariable::ClipNear):
+			rv.set(prefs.clipNear());
+			break;
+		case (PreferencesVariable::ColourScheme):
+			rv.set(Prefs::colouringScheme(prefs.colourScheme()));
+			break;
+		case (PreferencesVariable::CommonElements):
+			rv.set(prefs.commonElements());
+			break;
+		case (PreferencesVariable::DensityUnit):
+			rv.set(Prefs::densityUnit(prefs.densityUnit()));
+			break;
+		case (PreferencesVariable::DistanceLabel):
+			rv.set( prefs.distanceLabel() );
+			break;
+		case (PreferencesVariable::ElecCutoff):
+			rv.set( prefs.elecCutoff() );
+			break;
+		case (PreferencesVariable::ElecMethod):
+			rv.set(Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+			break;
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(prefs.energyUnit()));
+			break;
+		case (PreferencesVariable::EnergyUpdate):
+			rv.set( prefs.energyUpdate() );
+			break;
+		case (PreferencesVariable::FogFar):
+			rv.set(prefs.fogFar());
+			break;
+		case (PreferencesVariable::FogNear):
+			rv.set(prefs.fogNear());
+			break;
+		case (PreferencesVariable::GlobeSize):
+			rv.set(prefs.globeSize() );
+			break;
+		case (PreferencesVariable::HDistance):
+			rv.set( prefs.hydrogenDistance() );
+			break;
+		case (PreferencesVariable::KeyAction):
+			rv.set(prefs.keyAction( (Prefs::ModifierKey) (arrayIndex-1)) );
+			break;
+		case (PreferencesVariable::LabelSize):
+			rv.set( prefs.labelSize() );
+			break;
+		case (PreferencesVariable::ManualSwapBuffers):
+			rv.set( prefs.manualSwapBuffers() );
+			break;
+		case (PreferencesVariable::MaxRingSize):
+			rv.set( prefs.maxRingSize() );
+			break;
+		case (PreferencesVariable::MaxUndo):
+			rv.set( prefs.maxUndoLevels() );
+			break;
+		case (PreferencesVariable::ModelUpdate):
+			rv.set( prefs.modelUpdate() );
+			break;
+		case (PreferencesVariable::MouseAction):
+			rv.set(prefs.mouseAction( (Prefs::MouseButton) (arrayIndex-1)) );
+			break;
+		case (PreferencesVariable::OffScreenObjects):
+			rv.set( prefs.offScreenObjects() );
+			break;
+		case (PreferencesVariable::Perspective):
+			rv.set( prefs.hasPerspective() );
+			break;
+		case (PreferencesVariable::PerspectiveFov):
+			rv.set( prefs.perspectiveFov() );
+			break;
+		case (PreferencesVariable::RenderStyle):
+			rv.set( Atom::drawStyle(prefs.renderStyle()) );
+			break;
+		case (PreferencesVariable::ReplicateFold):
+			rv.set( prefs.replicateFold() );
+			break;
+		case (PreferencesVariable::ReplicateTrim):
+			rv.set( prefs.replicateTrim() );
+			break;
+		case (PreferencesVariable::ScreenObjects):
+			rv.set( prefs.screenObjects() );
+			break;
+		case (PreferencesVariable::SelectionScale):
+			rv.set( prefs.selectionScale() );
+			break;
+		case (PreferencesVariable::Shininess):
+			rv.set( prefs.shininess() );
+			break;
+		case (PreferencesVariable::Spotlight):
+			rv.set( prefs.spotlightActive() );
+			break;
+		case (PreferencesVariable::UseNiceText):
+			rv.set( prefs.useNiceText() );
+			break;
+		case (PreferencesVariable::VdwCutoff):
+			rv.set( prefs.vdwCutoff() );
+			break;
+		case (PreferencesVariable::VdwScale):
+			rv.set( prefs.vdwScale() );
+			break;
+		case (PreferencesVariable::ZoomThrottle):
+			rv.set( prefs.zoomThrottle() );
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PreferencesVariable.\n", accessorData[i].name);

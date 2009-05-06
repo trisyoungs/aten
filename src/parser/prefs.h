@@ -59,7 +59,7 @@ class PreferencesVariable : public Variable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { EnergyUnit, nAccessors };
+	enum Accessors { AngleLabel, AtomDetail, AtomStyleRadius, BondDetail, BondStyleRadius, BondTolerance, CacheLimit, CalculateElec, CalculateIntra, CalculateVdw, ClipFar, ClipNear, ColourScheme, CommonElements, DensityUnit, DistanceLabel, ElecCutoff, ElecMethod, EnergyUnit, EnergyUpdate, FogFar, FogNear, GlobeSize, HDistance, KeyAction, LabelSize, ManualSwapBuffers, MaxRingSize, MaxUndo, ModelUpdate, MouseAction, OffScreenObjects, Perspective, PerspectiveFov, RenderStyle, ReplicateFold, ReplicateTrim, ScreenObjects, SelectionScale, Shininess, Spotlight, UseNiceText, VdwCutoff, VdwScale, ZoomThrottle, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors

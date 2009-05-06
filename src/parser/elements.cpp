@@ -113,7 +113,7 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("ElementVariable::accessorSearch");
 	return result;
 }
@@ -143,13 +143,13 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Mass):
-			rv.set(elements().atomicMass(arrayIndex));
+			rv.set( ptr->atomicMass );
 			break;
 		case (ElementVariable::Name):
-			rv.set(elements().name(arrayIndex));
+			rv.set( ptr->name );
 			break;
 		case (ElementVariable::Symbol):
-			rv.set(elements().symbol(arrayIndex));
+			rv.set( ptr->symbol );
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ElementVariable.\n", accessorData[i].name);

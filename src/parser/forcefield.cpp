@@ -76,7 +76,7 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("ForcefieldVariable::accessorSearch");
 	return result;
 }

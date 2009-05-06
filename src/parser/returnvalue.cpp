@@ -58,28 +58,32 @@ void ReturnValue::operator=(ReturnValue &source)
 {
 	// Copy datatype of source
 	type_ = source.type_;
-	// To reduce unnecessary object creation/destruction, only copy the contents that corresponds to the type_
-	switch (type_)
-	{
-		case (VTypes::NoData):
-			break;
-		case (VTypes::IntegerData):
-			valueI_ = source.valueI_;
-			break;
-		case (VTypes::DoubleData):
-			valueD_ = source.valueD_;
-			break;
-		case (VTypes::StringData):
-			valueS_ = source.valueS_;
-			break;
-		case (VTypes::VectorData):
-			valueV_ = source.valueV_;
-			break;
-		default:
-			valueP_ = source.valueP_;
-			break;
-	}
 	arraySize_ = source.arraySize_;
+	// To reduce unnecessary object creation/destruction, only copy the contents that corresponds to the type_
+	if (arraySize_ == -1)
+	{
+		switch (type_)
+		{
+			case (VTypes::NoData):
+				break;
+			case (VTypes::IntegerData):
+				valueI_ = source.valueI_;
+				break;
+			case (VTypes::DoubleData):
+				valueD_ = source.valueD_;
+				break;
+			case (VTypes::StringData):
+				valueS_ = source.valueS_;
+				break;
+			case (VTypes::VectorData):
+				valueV_ = source.valueV_;
+				break;
+			default:
+				valueP_ = source.valueP_;
+				break;
+		}
+	}
+	else valueP_ = source.valueP_;
 }
 
 // Return type of the stored data

@@ -234,7 +234,6 @@ Prefs::Prefs()
 	foldOnLoad_ = Prefs::SwitchAsFilter;
 	centreOnLoad_ = Prefs::SwitchAsFilter;
 	packOnLoad_ = Prefs::SwitchAsFilter;
-	loadAllCoords_ = TRUE;
 	cacheLimit_ = 1024;
 	zMapType_ = ElementMap::AutoZMap;
 	coordsInBohr_ = FALSE;
@@ -857,18 +856,6 @@ void Prefs::setPackOnLoad(Prefs::FilterSwitch s)
 Prefs::FilterSwitch Prefs::packOnLoad()
 {
 	return packOnLoad_;
-}
-
-// Sets whether to load all coordinate sets on model load
-void Prefs::setLoadAllCoords(bool b)
-{
-	loadAllCoords_ = b;
-}
-
-// Whether all geometries in a non-trajectory file should be loaded
-bool Prefs::loadAllCoords()
-{
-	return loadAllCoords_;
 }
 
 // Set the cache limit (in kb) for trajectory files

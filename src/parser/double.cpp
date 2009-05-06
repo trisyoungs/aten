@@ -126,20 +126,26 @@ bool DoubleArrayVariable::set(ReturnValue &rv)
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
+	bool success = FALSE;
 	// Is the supplied ReturnValue an array?
-	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble();
+	if (rv.type() == VTypes::VectorData)
+	{
+		if (arraySize_ == 3)
+		{
+			Vec3<double>v = rv.asVector(success);
+			doubleArrayData_[0] = v.x;
+			doubleArrayData_[1] = v.y;
+			doubleArrayData_[2] = v.z;
+		}
+		else msg.print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+	}
+	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_)
-		{
-			msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
-			return FALSE;
-		}
-		bool success;
-		for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.elementAsDouble(i, success);
-		if (!success) return FALSE;
+		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.elementAsDouble(i, success);
 	}
-	return TRUE;
+	return success;
 }
 
 // Set array element from returnvalue node

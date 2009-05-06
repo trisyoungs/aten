@@ -99,7 +99,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	}
 	// Create a suitable AccessNode to return...
 	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	result = new StepNode(i, VTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly);
+	result = new StepNode(i, VTypes::CellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
 	msg.exit("CellVariable::accessorSearch");
 	return result;
 }

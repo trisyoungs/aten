@@ -142,6 +142,17 @@ LineParser *Tree::parser()
 	return parser_;
 }
 
+// Return whether the LineParser is ready for file reading
+bool Tree::isFileGoodForReading()
+{
+	return (parser_ == NULL ? FALSE : parser_->isFileGoodForReading());
+}
+
+// Return whether the LineParser is ready for file writing
+bool Tree::isFileGoodForWriting()
+{
+	return (parser_ == NULL ? FALSE : parser_->isFileGoodForWriting());
+}
 
 // Clear contents of tree
 void Tree::clear()
@@ -543,6 +554,15 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 		printf("Internal Error: No current scope in which to define variable '%s'.\n", name->get());
 		return NULL;
 	}
+	// Check initialvalue....
+	if ((initialValue != NULL) && (type != VTypes::VectorData))
+	{
+		if ((initialValue->nodeType() == TreeNode::ArrayVarNode) || (initialValue->nodeType() == TreeNode::ArrayConstantNode))
+		{
+			msg.print("Error: A non-array variable cannot be initialised from an array.\n");
+			return NULL;
+		}
+	}
 	// Create the supplied variable in the list of the topmost scope
 	Variable *var = ri->item->variables.create(type, name->get(), initialValue);
 	if (!var)
@@ -711,10 +731,20 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", name->get());
 		return NULL;
 	}
-	TreeNode *laststep = ri->data;
 	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
+	// If the last step was an array and an array index was not give, we complain!
+	if (ri->item != ri->data)
+	{
+		StepNode *laststep = (StepNode*) ri->data;
+		if (laststep->requiresArrayIndex() && (laststep->arrayIndex() == NULL))
+		{
+			msg.print("Previous step in path requires an array index to be specified.\n");
+			msg.exit("Tree::expandPath");
+			return FALSE;
+		}
+	}
 	// Find next step accessor
-	StepNode *result = laststep->findAccessor(name->get(), arrayindex);
+	StepNode *result = ri->data->findAccessor(name->get(), arrayindex);
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
@@ -731,7 +761,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 		}
 		ri->item->addArgument(result);
 	}
-	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(laststep->returnType()), name->get());
+	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(ri->data->returnType()), name->get());
 	msg.exit("Tree::expandPath");
 	return result;
 }

@@ -355,10 +355,6 @@ class Prefs
 	void setPackOnLoad(FilterSwitch s);
 	// Whether atoms should be packed (with symmetry operations) after model load
 	FilterSwitch packOnLoad();
-	// Sets whether to load all coordinate sets on model load
-	void setLoadAllCoords(bool b);
-	// Whether all geometries in a non-trajectory file should be loaded
-	bool loadAllCoords();
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files

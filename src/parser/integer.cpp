@@ -117,7 +117,7 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		msg.print("A constant value (in this case an int array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -125,20 +125,26 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
 		return FALSE;
 	}
-	// Is the supplied ReturnValue an array?
-	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger();
+	bool success = FALSE;
+	// Is the supplied ReturnValue an array or a vector?
+	if (rv.type() == VTypes::VectorData)
+	{
+		if (arraySize_ == 3)
+		{
+			Vec3<double>v = rv.asVector(success);
+			integerArrayData_[0] = v.x;
+			integerArrayData_[1] = v.y;
+			integerArrayData_[2] = v.z;
+		}
+		else msg.print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+	}
+	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_)
-		{
-			msg.print("Error setting variable '%s': Array sizes do not conform (%i vs %i).\n", name_.get(), rv.arraySize(), arraySize_);
-			return FALSE;
-		}
-		bool success;
-		for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.elementAsInteger(i, success);
-		if (!success) return FALSE;
+		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.elementAsInteger(i, success);
 	}
-	return TRUE;
+	return success;
 }
 
 // Set array element from returnvalue node
