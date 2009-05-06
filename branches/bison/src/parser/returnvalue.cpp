@@ -296,10 +296,12 @@ Vec3<double> ReturnValue::asVector(bool &success)
 			return Vec3<double>();
 			break;
 		case (VTypes::IntegerData):
-			return Vec3<double>(valueI_, valueI_, valueI_);
+			if (arraySize_ == -1) return Vec3<double>(valueI_, valueI_, valueI_);
+			else if (arraySize_ == 3) return Vec3<double>( ((int*)valueP_)[0], ((int*)valueP_)[1], ((int*)valueP_)[2] ); 
 			break;
 		case (VTypes::DoubleData):
-			return Vec3<double>(valueD_, valueD_, valueD_);
+			if (arraySize_ == -1) return Vec3<double>(valueD_, valueD_, valueD_);
+			else if (arraySize_ == 3) return Vec3<double>( ((double*)valueP_)[0], ((double*)valueP_)[1], ((double*)valueP_)[2] ); 
 			break;
 		case (VTypes::VectorData):
 			return valueV_;

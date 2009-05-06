@@ -30,7 +30,6 @@
 #include "parser/tree.h"
 #include "parser/character.h"
 #include "parser/vector.h"
-#include "parser/array.h"
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "base/sysfunc.h"

@@ -210,6 +210,26 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		msg.exit("AtomVariable::setAccessor");
 		return FALSE;
 	}
+	// Check the value that we're attempting to assign
+	if ((accessorData[i].arraySize == 0) && (newvalue.arraySize() != -1) && (accessorData[i].returnType != VTypes::VectorData))
+	{
+		msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+		msg.exit("AtomVariable::setAccessor");
+		return FALSE;
+	}
+	printf("Crap.\n");
+	if ((accessorData[i].arraySize > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+	{
+		msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+		msg.exit("AtomVariable::setAccessor");
+		return FALSE;
+	}
+	if ((accessorData[i].returnType == VTypes::VectorData) && (newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+	{
+		msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+		msg.exit("AtomVariable::setAccessor");
+		return FALSE;
+	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Vec3<double> v;

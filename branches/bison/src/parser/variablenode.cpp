@@ -242,13 +242,13 @@ bool VariableNode::set(ReturnValue &setrv)
 				if (!result) break;
 			}
 			// For the last accessnode in the list, cast into a StepNode and use the set function
-// 			printf("Node type of args_>last() is %i\n", args_.last()->nodeType());
+// 			printf("Node type of args_>last() is %i\n", args_.last()->item->nodeType());
 // 			printf("Penultimate result is %s\n", lastresult.info());
 			((StepNode*) args_.last()->item)->set(executerv, setrv);
 // 			printf("Path set result execute = %s\n", executerv.info());
 			// If the node prior to the last is a vector, we must do something special!
 			Refitem<TreeNode,int> *ri = args_.last()->prev;
-			if (ri != NULL)
+			if ((ri != NULL) && (ri->item->returnType() == VTypes::VectorData))
 			{
 				StepNode *step = (StepNode*) ri->item;
 // 				printf("Previous step type = %s.\n", VTypes::dataType(step->returnType()));
