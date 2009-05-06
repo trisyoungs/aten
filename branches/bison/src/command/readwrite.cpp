@@ -63,7 +63,7 @@ bool Command::function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'find' command.\n");
 		return FALSE;
@@ -95,7 +95,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'getline' command.\n");
 		return FALSE;
@@ -113,7 +113,7 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'peekchar' command.\n");
 		return FALSE;
@@ -130,7 +130,7 @@ bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'peekchari' command.\n");
 		return FALSE;
@@ -147,7 +147,7 @@ bool Command::function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
@@ -161,7 +161,7 @@ bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readdouble' command.\n");
 		return FALSE;
@@ -175,7 +175,7 @@ bool Command::function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readdoublearray' command.\n");
 		return FALSE;
@@ -198,7 +198,7 @@ bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue 
 bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readinteger' command.\n");
 		return FALSE;
@@ -212,7 +212,7 @@ bool Command::function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readintegerarray' command.\n");
 		return FALSE;
@@ -235,7 +235,7 @@ bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readline' command.\n");
 		return FALSE;
@@ -254,7 +254,7 @@ bool Command::function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readlinef' command.\n");
 		return FALSE;
@@ -273,7 +273,7 @@ bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValu
 bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readnext' command.\n");
 		return FALSE;
@@ -338,7 +338,7 @@ bool Command::function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
@@ -351,7 +351,7 @@ bool Command::function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForReading())
+	if (!c->parent()->isFileGoodForReading())
 	{
 		msg.print("No valid filesource available for the 'skipline' command.\n");
 		return FALSE;
@@ -364,7 +364,7 @@ bool Command::function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForWriting())
+	if (!c->parent()->isFileGoodForWriting())
 	{
 		msg.print("No valid filesource available for the 'writeline' command.\n");
 		return FALSE;
@@ -389,7 +389,7 @@ bool Command::function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGoodForWriting())
+	if (!c->parent()->isFileGoodForWriting())
 	{
 		msg.print("No valid filesource available for the 'writelinef' command.\n");
 		return FALSE;

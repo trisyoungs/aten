@@ -1,4 +1,4 @@
-# GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.1+)
+# GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.2+)
 # Created:	 14/04/2009
 # Last modified: 15/04/2009
 # ChangeLog:
@@ -104,8 +104,8 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 	# Now for the DATA section
 	writeline(" $DATA");
-	writeline(aten.model.name);
+	writeline(aten.frame.name);
 	writeline("C1");
-	for (atom i = aten.model.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+	for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
 	writeline(" $END");
 }

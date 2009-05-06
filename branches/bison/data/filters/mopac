@@ -1,4 +1,4 @@
-# Mopac input file (for v1.1+)
+# Mopac input file (for v1.2+)
 # Created:	 13/04/2009
 # Last modified: 13/04/2009
 # ChangeLog:
@@ -57,7 +57,7 @@ filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extensio
 	string e;
 	double rx,ry,rz;
 	atom i;
-	model m = aten.model;
+	model m = aten.frame;
 
 	writeline("PM6 BFGS");
 	writeline(m.name);

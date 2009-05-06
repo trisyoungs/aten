@@ -67,46 +67,198 @@ bool operate(Command::Function func, ReturnValue *rv1, ReturnValue *rv2, ReturnV
 		return FALSE;
 	}
 	// We will decide what to do based on data types of integer, real, character, or vector
-	rv[0]->info();
-	rv[1]->info();
-	if (t[0] == t[1])
+	if (rv1->type() == rv2->type())
 	{
-		switch (func)
+		// Array-array operators (Fortran style)
+		if ((rv1->arraySize() == rv2->arraySize()) && (rv1->arraySize() > 0))
+		{
+			if (rv1->type() == VTypes::IntegerData)
+			{
+				int *array1 = ((int*) rv1->asPointer(VTypes::IntegerData));
+				int *array2 = ((int*) rv2->asPointer(VTypes::IntegerData)), n;
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += array2[n];
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= array2[n];
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= array2[n];
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= array2[n];
+						break;
+				}
+				result.set(VTypes::IntegerData, array1, rv1->arraySize());
+			}
+			else if (rv1->type() == VTypes::DoubleData)
+			{
+				double *array1 = ((double*) rv1->asPointer(VTypes::DoubleData));
+				double *array2 = ((double*) rv2->asPointer(VTypes::DoubleData));
+				int n;
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += array2[n];
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= array2[n];
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= array2[n];
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= array2[n];
+						break;
+				}
+				result.set(VTypes::DoubleData, array1, rv1->arraySize());
+			}
+			else failed = TRUE;
+		}
+		else if ((rv1->arraySize() > 0) && (rv2->arraySize() == -1))
+		{
+			if (rv1->type() == VTypes::IntegerData)
+			{
+				int *array1 = ((int*) rv1->asPointer(VTypes::IntegerData));
+				int n;
+				double d = rv2->asDouble();
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += d;
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= d;
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= d;
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= d;
+						break;
+				}
+				result.set(VTypes::IntegerData, array1, rv1->arraySize());
+			}
+			else if (rv1->type() == VTypes::DoubleData)
+			{
+				double *array1 = ((double*) rv1->asPointer(VTypes::DoubleData)), d = rv2->asDouble();
+				int n;
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += d;
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= d;
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= d;
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= d;
+						break;
+				}
+				result.set(VTypes::DoubleData, array1, rv1->arraySize());
+			}
+			else failed = TRUE;
+		}
+		else if ((rv1->arraySize() > 0) && (rv2->arraySize() > 0))
+		{
+			msg.print("Array sizes do not conform.\n");
+			failed = TRUE;
+		}
+		else switch (func)
 		{
 			case (Command::OperatorAdd):
-				if (t[0] == VTypes::IntegerData) result.set(rv1->asInteger(b) + rv2->asInteger(b));
-				else if (t[0] == VTypes::DoubleData) result.set(rv1->asDouble(b) + rv2->asDouble(b));
-				else if (t[0] == VTypes::StringData)
+				if (rv1->type() == VTypes::IntegerData) result.set(rv1->asInteger(b) + rv2->asInteger(b));
+				else if (rv1->type() == VTypes::DoubleData) result.set(rv1->asDouble(b) + rv2->asDouble(b));
+				else if (rv1->type() == VTypes::StringData)
 				{
 					strcpy(s, rv1->asString(b));
 					strcat(s, rv2->asString(b));
 					result.set(s);
 				}
+				else if (rv1->type() == VTypes::VectorData) result.set(rv1->asVector(b) + rv2->asVector(b));
 				else failed = TRUE;
 				break;
 			case (Command::OperatorSubtract):
-				if (t[0] == VTypes::IntegerData) result.set(rv1->asInteger(b) - rv2->asInteger(b));
-				else if (t[0] == VTypes::DoubleData) result.set(rv1->asDouble(b) - rv2->asDouble(b));
+				if (rv1->type() == VTypes::IntegerData) result.set(rv1->asInteger(b) - rv2->asInteger(b));
+				else if (rv1->type() == VTypes::DoubleData) result.set(rv1->asDouble(b) - rv2->asDouble(b));
+				else if (rv1->type() == VTypes::VectorData) result.set(rv1->asVector(b) - rv2->asVector(b));
 				else failed = TRUE;
 				break;
 			case (Command::OperatorMultiply):
-				if (t[0] == VTypes::IntegerData) result.set(rv1->asInteger(b) * rv2->asInteger(b));
-				else if (t[0] == VTypes::DoubleData) result.set(rv1->asDouble(b) * rv2->asDouble(b));
+				if (rv1->type() == VTypes::IntegerData) result.set(rv1->asInteger(b) * rv2->asInteger(b));
+				else if (rv1->type() == VTypes::DoubleData) result.set(rv1->asDouble(b) * rv2->asDouble(b));
+				else if (rv1->type() == VTypes::VectorData) result.set(rv1->asVector(b) * rv2->asVector(b));
 				else failed = TRUE;
 				break;
 			case (Command::OperatorDivide):
-				if (t[0] == VTypes::IntegerData) result.set(rv1->asInteger(b) / rv2->asInteger(b));
-				else if (t[0] == VTypes::DoubleData) result.set(rv1->asDouble(b) / rv2->asDouble(b));
+				if (rv1->type() == VTypes::IntegerData) result.set(rv1->asInteger(b) / rv2->asInteger(b));
+				else if (rv1->type() == VTypes::DoubleData) result.set(rv1->asDouble(b) / rv2->asDouble(b));
+				else if (rv1->type() == VTypes::VectorData) result.set(rv1->asVector(b) / rv2->asVector(b));
 				else failed = TRUE;
 				break;
 			case (Command::OperatorPower):
-				if (t[0] == VTypes::IntegerData) result.set(power(rv1->asInteger(b), rv2->asInteger(b)));
-				else if (t[0] == VTypes::DoubleData) result.set(pow(rv1->asDouble(b), rv2->asDouble(b)));
+				if (rv1->type() == VTypes::IntegerData) result.set(power(rv1->asInteger(b), rv2->asInteger(b)));
+				else if (rv1->type() == VTypes::DoubleData) result.set(pow(rv1->asDouble(b), rv2->asDouble(b)));
 				else failed = TRUE;
 				break;
 			default:
 				failed = TRUE;
 				break;
+		}
+	}
+	else if (t[0] == VTypes::VectorData)
+	{
+		if (t[1] == VTypes::StringData) failed = TRUE;
+		else if (rv[1]->arraySize() == -1) switch (func)
+		{
+			case (Command::OperatorAdd):
+				result.set( rv[0]->asVector(b) + rv[1]->asDouble(b));
+				break;
+			case (Command::OperatorSubtract):
+				result.set( rv[0]->asVector(b) - rv[1]->asDouble(b));
+				break;
+			case (Command::OperatorMultiply):
+				result.set( rv[0]->asVector(b) * rv[1]->asDouble(b));
+				break;
+			case (Command::OperatorDivide):
+				if (rv1->type() == VTypes::VectorData) result.set( rv[0]->asVector(b) / rv[1]->asDouble(b));
+				else failed = TRUE;
+				break;
+			case (Command::OperatorPower):
+				failed = TRUE;
+				break;
+		}
+		else if (rv[1]->arraySize() == 3)
+		{
+			Vec3<double> v1 = rv1->asVector(), v2 = rv2->asVector();
+			switch (func)
+			{
+				case (Command::OperatorAdd):
+					result.set(v1 + v2);
+					break;
+				case (Command::OperatorSubtract):
+					result.set(v1 - v2);
+					break;
+				case (Command::OperatorMultiply):
+					result.set(v1 * v2);
+					break;
+				case (Command::OperatorDivide):
+					result.set(v1 / v2);
+					break;
+				case (Command::OperatorPower):
+					failed = TRUE;
+					break;
+			}
+		}
+		else
+		{
+			msg.print("RHS of expression '%s %s %s' must be either a single value or an array of size 3.\n", VTypes::dataType(rv1->type()), Command::data[func].keyword, VTypes::dataType(rv2->type()));
+			failed = TRUE;
 		}
 	}
 	else if (t[0] == VTypes::StringData)
@@ -131,8 +283,107 @@ bool operate(Command::Function func, ReturnValue *rv1, ReturnValue *rv2, ReturnV
 	}
 	else
 	{
-		// Both values are numbers - one is an integer, and one is a real, so return a real result
-		switch (func)
+		// Both values are numbers - one is an integer, and one is a double
+		// Array-array operators (Fortran style)
+		if ((rv1->arraySize() == rv2->arraySize()) && (rv1->arraySize() > 0))
+		{
+			if (rv1->type() == VTypes::IntegerData)
+			{
+				int *array1 = ((int*) rv1->asPointer(VTypes::IntegerData)), n;
+				double *array2 = ((double*) rv2->asPointer(VTypes::DoubleData));
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += array2[n];
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= array2[n];
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= array2[n];
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= array2[n];
+						break;
+				}
+				result.set(VTypes::IntegerData, array1, rv1->arraySize());
+			}
+			else
+			{
+				double *array1 = ((double*) rv1->asPointer(VTypes::DoubleData));
+				int *array2 = ((int*) rv2->asPointer(VTypes::IntegerData));
+				int n;
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += array2[n];
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= array2[n];
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= array2[n];
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= array2[n];
+						break;
+				}
+				result.set(VTypes::DoubleData, array1, rv1->arraySize());
+			}
+		}
+		else if ((rv1->arraySize() > 0) && (rv2->arraySize() == -1))
+		{
+			if (rv1->type() == VTypes::IntegerData)
+			{
+				int *array1 = ((int*) rv1->asPointer(VTypes::IntegerData));
+				int n;
+				double d = rv2->asDouble();
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += d;
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= d;
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= d;
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= d;
+						break;
+				}
+				result.set(VTypes::IntegerData, array1, rv1->arraySize());
+			}
+			else if (rv1->type() == VTypes::DoubleData)
+			{
+				double *array1 = ((double*) rv1->asPointer(VTypes::DoubleData)), d = rv2->asDouble();
+				int n;
+				switch (func)
+				{
+					case (Command::OperatorAdd):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] += d;
+						break;
+					case (Command::OperatorSubtract):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] -= d;
+						break;
+					case (Command::OperatorMultiply):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] *= d;
+						break;
+					case (Command::OperatorDivide):
+						for (n = 0; n<rv1->arraySize(); ++n) array1[n] /= d;
+						break;
+				}
+				result.set(VTypes::DoubleData, array1, rv1->arraySize());
+			}
+			else failed = TRUE;
+		}
+		else if ((rv1->arraySize() > 0) && (rv2->arraySize() > 0))
+		{
+			msg.print("Array sizes do not conform.\n");
+			failed = TRUE;
+		}
+		else switch (func)
 		{
 			case (Command::OperatorAdd):
 				result.set(rv1->asDouble(b) + rv2->asDouble(b));

@@ -1,4 +1,4 @@
-# Siesta Flexible Data Format (for v1.1+)
+# Siesta Flexible Data Format (for v1.2+)
 # Created:	 16/04/2009
 # Last modified: 16/04/2009
 # ChangeLog:
@@ -52,7 +52,7 @@ filter(type="importmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 				for (n=0; n<natoms; ++n)
 				{
 					readline(x,y,z,i);
-					newatom(aten.elements.symbol[elmap[i]], x, y, z);
+					newatom(aten.elements[elmap[i]].symbol, x, y, z);
 				}
 			}
 			else if (data == "LatticeParameters")
@@ -83,8 +83,8 @@ filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 	double rx,ry,rz;
 	atom i;
 
-	# Grab current model
-	model m = aten.model;
+	# Grab current model (or frame)
+	model m = aten.frame;
 
 	# Determine number of species (elements) used in model, and create element->species map
 	el = 0;
@@ -122,7 +122,7 @@ filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 
 	# Write chemical species data, and label species in ascending order
 	writeline("%block ChemicalSpeciesLabel");
-	for (n=1; n<=aten.nelements; n++) if (el[n] != 0) writelinef("%3i  %3i  %s-PBE\n",el[n],n,aten.elements.symbol[n]);
+	for (n=1; n<=aten.nelements; n++) if (el[n] != 0) writelinef("%3i  %3i  %s-PBE\n",el[n],n,aten.elements[n].symbol);
 	writeline("%endblock ChemicalSpeciesLabel");
 	writeline("");
 

@@ -1,4 +1,4 @@
-# XMol-style XYZ coordinates files (for v1.1+)
+# XMol-style XYZ coordinates files (for v1.2+)
 # Created:	 25/03/2009
 # Last modified: 10/04/2009
 # ChangeLog:
@@ -35,10 +35,11 @@ filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.
 	string e;
 	double rx,ry,rz;
 	atom i;
+	model m = aten.frame;
 
-	writeline(aten.model.natoms);
-	writeline(aten.model.name);
-	for (i=aten.model.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
+	writeline(m.natoms);
+	writeline(m.name);
+	for (i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory

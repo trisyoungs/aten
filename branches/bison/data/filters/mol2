@@ -1,4 +1,4 @@
-# Tripos (Sybyl) Mol2 filter (for v1.1+)
+# Tripos (Sybyl) Mol2 filter (for v1.2+)
 # Created:	 12/04/2009
 # Last modified: 12/04/2009
 # ChangeLog:
@@ -63,7 +63,7 @@ filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	atom i;
 	bond b;
 	int n;
-	model m = aten.model;
+	model m = aten.frame;
 
 	# Write title section
 	writeline("@<TRIPOS>MOLECULE");

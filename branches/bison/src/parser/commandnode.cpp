@@ -220,7 +220,7 @@ bool CommandNode::checkArguments()
 			else if (cluster && (ngroup != 0))
 			{
 				msg.print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, Command::data[function_].keyword);
-				msg.print("       Command syntax is '%s %s'.\n", Command::data[function_].keyword, Command::data[function_].argText);
+				msg.print("       Command syntax is '%s(%s)'.\n", Command::data[function_].keyword, Command::data[function_].argText);
 				msg.exit("Tree::checkArguments");
 				return FALSE;
 			}
@@ -405,16 +405,11 @@ bool CommandNode::checkArguments()
 		count++;
 	} while (*c != '\0');
 	// End of the argument specification - do we still have arguments left over in the command?
-	if (args_.nItems() > count)
+	if (result && (args_.nItems() > count))
 	{
-		msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s %s').\n", args_.nItems()-count, Command::data[function_].keyword, Command::data[function_].keyword, Command::data[function_].argText);
+		msg.print("Error: %i extra arguments given to function '%s' (syntax is '%s(%s)').\n", args_.nItems()-count, Command::data[function_].keyword, Command::data[function_].keyword, Command::data[function_].argText);
 		msg.exit("Tree::checkArguments");
 		return FALSE;
-	}
-	else
-	{
-		msg.exit("Tree::checkArguments");
-		return TRUE;
 	}
 	msg.exit("CommandNode::checkArguments");
 	return result;

@@ -1,4 +1,4 @@
-# DL_POLY Configuration Import / Export (for v1.1+)
+# DL_POLY Configuration Import / Export (for v1.2+)
 # Created:	 25/03/2009
 # Last modified: 10/04/2009
 # ChangeLog:
@@ -54,7 +54,7 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	atom i;
 
 	# Get current model
-	model m = aten.model;
+	model m = aten.frame;
 
 	# Title section
 	writeline(m.name);

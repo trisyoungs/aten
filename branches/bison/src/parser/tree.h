@@ -223,6 +223,10 @@ class Tree
 	int readOptions();
 	// Return the current LineParser pointer
 	LineParser *parser();
+	// Return whether the LineParser is ready for file reading
+	bool isFileGoodForReading();
+	// Return whether the LineParser is ready for file writing
+	bool isFileGoodForWriting();
 	// Set function for accepted fail
 	void setAcceptedFail(Command::Function func);
 	// Return function for accepted fail

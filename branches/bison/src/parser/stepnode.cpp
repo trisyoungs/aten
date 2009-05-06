@@ -35,7 +35,7 @@
 #include <string.h>
 
 // Constructor
-StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype)
+StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, bool needsindex) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype), requiresArrayIndex_(needsindex)
 {
 	// Private variables
 	readOnly_ = readonly;
@@ -49,10 +49,22 @@ StepNode::~StepNode()
 {
 }
 
+// Return associated array index
+TreeNode *StepNode::arrayIndex()
+{
+	return arrayIndex_;
+}
+
 // Return accessor id
 int StepNode::accessor()
 {
 	return accessor_;
+}
+
+// Return whether the accessor should have an associated array index
+bool StepNode::requiresArrayIndex()
+{
+	return requiresArrayIndex_;
 }
 
 // Execute command
