@@ -21,8 +21,8 @@
 
 #include "parser/tree.h"
 
-// Check binary operator type compatibility
-VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type)
+// Check unary operator type compatibility
+VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, TreeNode::NodeType ntype)
 {
 	msg.enter("Tree::checkUnaryOperatorTypes");
 	// Check for no data type
@@ -41,6 +41,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 		case (Command::OperatorPrefixIncrease):
 		case (Command::OperatorPrefixDecrease):
 			// Easier to list those types that we *can't* do...
+			if ((ntype == TreeNode::ArrayVarNode) || (ntype == TreeNode::ArrayConstantNode)) break;
 			switch (type)
 			{
 				case (VTypes::AtenData):
@@ -69,7 +70,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 }
 
 // Check binary operator type compatibility
-VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, VTypes::DataType type2)
+VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, VTypes::DataType type2, TreeNode::NodeType ntype1, TreeNode::NodeType ntype2)
 {
 	msg.enter("Tree::checkBinaryOperatorTypes");
 	// Check for no data type
@@ -92,6 +93,9 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 		type1 = type2;
 		type2 = temp;
 	}
+	// Get array flags
+	bool array1 = ((ntype1 == TreeNode::ArrayVarNode) || (ntype1 == TreeNode::ArrayConstantNode));
+	bool array2 = ((ntype2 == TreeNode::ArrayVarNode) || (ntype2 == TreeNode::ArrayConstantNode));
 	// Like types first... (make int equivalent to real if both types are numeric)
 	if ((type1 <= VTypes::DoubleData) && (type2 <= VTypes::DoubleData) && (type1 != type2)) type1 = type2 = VTypes::DoubleData;
 	VTypes::DataType result = VTypes::NoData;
@@ -111,17 +115,19 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				else result = type1;
 				break;
 			case (Command::OperatorPower):
-				// Only numerical types
-				if (type1 > VTypes::DoubleData) result = VTypes::NoData;
+				// Only numerical types, and no arrays
+				if (array1 || array2) result = VTypes::NoData;
+				else if (type1 > VTypes::DoubleData) result = VTypes::NoData;
 				else result = type1;
 				break;
 			// Tests
-			case (Command::OperatorEqualTo):
-			case (Command::OperatorNotEqualTo):
 			case (Command::OperatorGreaterThan):
 			case (Command::OperatorGreaterThanEqualTo):
 			case (Command::OperatorLessThan):
 			case (Command::OperatorLessThanEqualTo):
+				if (array1 || array2) { result = VTypes::NoData; break; }
+			case (Command::OperatorEqualTo):
+			case (Command::OperatorNotEqualTo):
 				// All other test operators are fine, unless its a vector
 				if (type1 != VTypes::VectorData) result = VTypes::IntegerData;
 				break;
@@ -131,7 +137,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				result = type1;
 				break;
 			case (Command::OperatorAssignmentDivide):
-			case (Command::OperatorAssignmentMinus):
+			case (Command::OperatorAssignmentSubtract):
 			case (Command::OperatorAssignmentMultiply):
 			case (Command::OperatorAssignmentPlus):
 				// Nonsensical for character types and pointer types
@@ -165,7 +171,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (Command::OperatorDivide):
 				case (Command::OperatorAssignment):
 				case (Command::OperatorAssignmentDivide):
-				case (Command::OperatorAssignmentMinus):
+				case (Command::OperatorAssignmentSubtract):
 				case (Command::OperatorAssignmentMultiply):
 				case (Command::OperatorAssignmentPlus):
 					if ((type2 == VTypes::DoubleData) || (type2 == VTypes::IntegerData)) result = VTypes::VectorData;

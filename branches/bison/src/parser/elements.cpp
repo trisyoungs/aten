@@ -214,14 +214,20 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Ambient):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->ambientColour[n] = newvalue.elementAsDouble(n, result);
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->ambientColour[n] = newvalue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->ambientColour[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->ambientColour[n] = newvalue.asDouble(result);
 			break;
 		case (ElementVariable::Colour):
 			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n)
 			{
-				ptr->ambientColour[n] = newvalue.elementAsDouble(n, result);
-				ptr->diffuseColour[n] = newvalue.elementAsDouble(n, result) * 0.75;
+				ptr->ambientColour[n] = newvalue.asDouble(n, result);
+				ptr->diffuseColour[n] = newvalue.asDouble(n, result) * 0.75;
+			}
+			else if (hasArrayIndex)
+			{
+				ptr->ambientColour[arrayIndex-1] = newvalue.asDouble(result);
+				ptr->diffuseColour[arrayIndex-1] = newvalue.asDouble(result) * 0.75;
 			}
 			else for (n=0; n<4; ++n)
 			{
@@ -230,7 +236,8 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 			}
 			break;
 		case (ElementVariable::Diffuse):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->diffuseColour[n] = newvalue.elementAsDouble(n, result);
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->diffuseColour[n] = newvalue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->diffuseColour[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->diffuseColour[n] = newvalue.asDouble(result);
 			break;
 		case (ElementVariable::Radius):

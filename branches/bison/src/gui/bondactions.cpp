@@ -57,5 +57,5 @@ void AtenForm::on_actionAugmentBonding_triggered(bool on)
 
 void AtenForm::bondTolerance_valueChanged(double value)
 {
-	CommandNode::run(Command::BondTolerance, "d", 1.1);
+	CommandNode::run(Command::BondTolerance, "d", value);
 }

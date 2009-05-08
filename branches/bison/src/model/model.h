@@ -347,6 +347,10 @@ class Model
 	Atom *firstSelected(bool markonly = FALSE);
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
+	// Select atoms (or molecule COGs) inside of the current unit cell
+	void selectInsideCell(bool moleculecogs, bool markonly = FALSE);
+	// Select atoms (or molecule COGs) outside of the current unit cell
+	void selectOutsideCell(bool moleculecogs, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()

@@ -108,7 +108,7 @@ bool PointerArrayVariable::set(ReturnValue &rv)
 			return FALSE;
 		}
 		bool success;
-		for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = rv.elementAsPointer(i, returnType_, success);
+		for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = rv.asPointer(i, returnType_, success);
 		if (!success) return FALSE;
 	}
 	return TRUE;

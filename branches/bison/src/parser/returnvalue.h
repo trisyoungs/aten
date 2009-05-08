@@ -55,10 +55,17 @@ class ReturnValue
 	// Variable members for returns
 	int valueI_;
 	double valueD_;
-// 	Dnchar valueS_;
 	const char *valueS_;
 	Vec3<double> valueV_;
 	void *valueP_;
+	// Array members for returns
+	int *arrayI_;
+	double *arrayD_;
+	Dnchar *arrayS_;
+	Vec3<double> *arrayV_;
+	void **arrayP_;
+	// Clear any current array data
+	void clearArrayData();
 
 	public:
 	// Return type of the stored data
@@ -67,6 +74,8 @@ class ReturnValue
 	void reset();
 	// Return string of contained data
 	const char *info();
+	// Return unique 'pair' code based on return types
+	int dataPair(ReturnValue &source);
 
 
 	/*
@@ -87,6 +96,16 @@ class ReturnValue
 	void set(int id, double xyz);
 	// Set from pointer value
 	void set(VTypes::DataType type, void *ptr, int arraysize = -1);
+	// Set array element from integer value
+	void setElement(int id, int i);
+	// Set array element from real value
+	void setElement(int id, double d);
+	// Set array element from character value
+	void setElement(int id, const char *s);
+	// Set array element from vector value
+	void setElement(int id, Vec3<double> v);
+	// Set array element from pointer value
+	void setElement(int id, VTypes::DataType type, void *ptr);
 
 
 	/*
@@ -104,15 +123,15 @@ class ReturnValue
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
 	// Return integer element value
-	int elementAsInteger(int index, bool &success);
+	int asInteger(int index, bool &success);
 	// Return real element value
-	double elementAsDouble(int index, bool &success);
+	double asDouble(int index, bool &success);
 	// Return character string element
-	const char *elementAsString(int index, bool &success);
+	const char *asString(int index, bool &success);
 	// Return vector element data
-	Vec3<double> elementAsVector(int index, bool &success);
+	Vec3<double> asVector(int index, bool &success);
 	// Return pointer element data
-	void *elementAsPointer(int index, VTypes::DataType type, bool &success);
+	void *asPointer(int index, VTypes::DataType type, bool &success);
 	// Return array size of data
 	int arraySize();
 

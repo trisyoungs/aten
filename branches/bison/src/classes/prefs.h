@@ -70,11 +70,8 @@ class Prefs
 	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
 	static ViewObject viewObject(const char*);
 	static const char *viewObject(ViewObject);
-	// GL Options
-	enum GlOption { FogOption, LineAliasOption, PolyAliasOption, BackCullOption, DummyOption, nGlOptions };
-	static GlOption glOption(const char*);
 	// Atom colouring scheme
-	enum ColouringScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char*);
 	static const char *colouringScheme(ColouringScheme cs);
 	// Filter override switches
@@ -91,6 +88,9 @@ class Prefs
 	bool load(const char *filename);
 	// Save preferences to file
 	bool save(const char *filename);
+	// Friend class
+	friend class PreferencesVariable;
+
 
 	/*
 	// Rendering - View Objects
@@ -132,6 +132,8 @@ class Prefs
 	Atom::DrawStyle renderStyle();
 	// Return the current rotation globe size in pixels
 	int globeSize();
+	// Set the current rotation globe size in pixels
+	void setGlobeSize(int i);
 	// Set positive repeat cell value
 	void setRepeatCellsPos(int i, int r);
 	// Get positive repeat cell value
@@ -140,6 +142,7 @@ class Prefs
 	void setRepeatCellsNeg(int i, int r);
 	// Get negative repeat cell value
 	int repeatCellsNeg(int i);
+
 
 	/*
 	// Rendering - Style
@@ -267,34 +270,54 @@ class Prefs
 	// GL Options
 	*/
 	private:
-	// Bitvector for GL options
-	int glOptions_;
+	// Depth cue flag
+	bool depthCue_;
+	// Line aliasing flag
+	bool lineAliasing_;
+	// Polygon aliasing flag
+	bool polygonAliasing_;
+	// Backface culling flag
+	bool backfaceCulling_;
 	// Shininess of 3D objects
 	GLint shininess_;
 	// Fog start and finish depths
-	GLint fogNear_, fogFar_;
+	GLint depthNear_, depthFar_;
 	// Near and far clipping planes for glPerspective() and glFrustum();
 	GLdouble clipNear_, clipFar_;
 
 	public:
-	// Set the bit for the specified option (if it is not set already)
-	void addGlOption(GlOption go);
-	// Unsets the bit for the specified option (if it is not unset already)
-	void removeGlOption(GlOption go);
-	// Return whether a given option is set
-	bool hasGlOption(GlOption go);
+	// Set status of fog (depth cueing)
+	void setDepthCue(bool status);
+	// Return status of depth cueing
+	bool depthCue();
 	// Sets the start depth of depth cueing
-	void setFogNnear(int i);
+	void setDepthNear(int i);
 	// Return depth cue start depth
-	GLint fogNear();
+	GLint depthNear();
 	// Sets the end depth of depth cueing
-	void setFogFar(int i);
+	void setDepthFar(int i);
 	// Return depth cue end depth
-	GLint fogFar();
+	GLint depthFar();
+	// Set status of line aliasing
+	void setLineAliasing(bool status);
+	// Return status of line aliasing
+	bool lineAliasing();
+	// Set status of polygon aliasing
+	void setPolygonAliasing(bool status);
+	// Return status of polygon aliasing
+	bool polygonAliasing();
+	// Set status of backface culling
+	void setBackfaceCulling(bool status);
+	// Return status of depth cueing
+	bool backfaceCulling();
 	// Return the Z depth of the near clipping plane
 	GLdouble clipNear();
+	// Set the Z-depth of the near clipping plane
+	void setClipNear(double d);
 	// Return the Z depth of the far clipping plane
 	GLdouble clipFar();
+	// Set the Z-depth of the far clipping plane
+	void setClipFar(double d);
 	// Sets the shininess of GL objects
 	void setShininess(int n);
 	// Return the current shininess of GL objects
@@ -311,6 +334,8 @@ class Prefs
 	public:
 	// Set the specified colour to the integer RGBA values supplied
 	void setColour(PenColour c, double r, double g, double b, double a);
+	// Set the supplied element of the specified colour
+	void setColour(PenColour c, int i, double value);
 	// Copy the specified colour
 	void copyColour(PenColour c, GLfloat*);
 	// Return a pointer to the specified colour
@@ -445,8 +470,10 @@ class Prefs
 	private:
 	// User-definable mouse button actions
 	MouseAction mouseAction_[Prefs::nMouseButtons];
+	Dnchar mouseActionTexts_[Prefs::nMouseButtons];
 	// User-definable key modifier actions
 	KeyAction keyAction_[Prefs::nModifierKeys];
+	Dnchar keyActionTexts_[Prefs::nModifierKeys];
 	// Zoom 'throttle'
 	double zoomThrottle_;
 
@@ -491,6 +518,8 @@ class Prefs
 	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
 	int maxRingSize();
+	// Set the maximum ring size allowed
+	void setMaxRingSize(int i);
 	// Set whether to fold atoms before replication
 	void setReplicateFold(bool b);
 	// Return whether to fold atoms before replication
@@ -519,7 +548,7 @@ class Prefs
 	// Return the working energy units
 	EnergyUnit energyUnit();
 	// Set the density unit to use
-	void setDensityUnits(DensityUnit du);
+	void setDensityUnit(DensityUnit du);
 	// Return the current density units to use
 	DensityUnit densityUnit();
 	// Convert the units of the given quantity

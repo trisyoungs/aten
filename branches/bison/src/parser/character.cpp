@@ -145,7 +145,7 @@ bool StringArrayVariable::set(ReturnValue &rv)
 			return FALSE;
 		}
 		bool success;
-		for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.elementAsString(i, success);
+		for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asString(i, success);
 		if (!success) return FALSE;
 	}
 	return TRUE;

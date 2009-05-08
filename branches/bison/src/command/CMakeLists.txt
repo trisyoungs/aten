@@ -27,7 +27,6 @@ minimise.cpp
 model.cpp
 operators.cpp
 pattern.cpp
-prefs.cpp
 readwrite.cpp
 script.cpp
 select.cpp

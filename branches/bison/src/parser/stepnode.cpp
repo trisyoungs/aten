@@ -129,6 +129,9 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::ModelData):
 			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::PreferencesData):
+			result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
@@ -249,6 +252,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ModelData):
 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::PreferencesData):
+			result = PreferencesVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -308,6 +314,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 			break;
 		case (VTypes::ModelData):
 			result = ModelVariable::accessorSearch(s, arrayindex);
+			break;
+		case (VTypes::PreferencesData):
+			result = PreferencesVariable::accessorSearch(s, arrayindex);
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::accessorSearch(s, arrayindex);

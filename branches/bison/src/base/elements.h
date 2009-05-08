@@ -74,8 +74,9 @@ class Element
 class ElementMap
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	ElementMap();
+	~ElementMap();
 	// Name->Z mapping methods
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
 	static ElementMap::ZMapType zMapType(const char *s);
@@ -95,10 +96,19 @@ class ElementMap
 	int ffToZ(const char*);
 	// Number of defined elements
 	int nElements_;
-
+	// Storage for copy of element data
+	Element *backupEl_;
+	
 	public:
 	// Element data array
 	static Element el[];
+	// Default element data
+	Element *defaultEl;
+	// Backup current data
+	void backupData();
+	// Restore default element values
+	void restoreData();
+	
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm

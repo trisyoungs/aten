@@ -230,7 +230,7 @@ void Canvas::renderRegions()
 		i ++;
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
+	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 	msg.exit("Canvas::renderRegions");
 }

@@ -40,6 +40,7 @@ class AtenPrefs : public QDialog
 	*/
 	private slots:
 	void on_PrefsCancelButton_clicked(bool checked);
+	void on_PrefsSetDefaultButton_clicked(bool checked);
 
 	/*
 	// Element Page
@@ -48,43 +49,6 @@ class AtenPrefs : public QDialog
 	void on_ElementList_currentRowChanged(int row);
 	void on_ElementAmbientColourButton_clicked(bool checked);
 	void on_ElementDiffuseColourButton_clicked(bool checked);
-
-	/*
-	// View Page
-	*/
-	private:
-	void updateAfterViewPrefs();
-	void setRadiusChanged(Atom::DrawStyle ds, double value);
-	void setVisibleObject(Prefs::ViewObject vo, int state);
-	private slots:
-	void on_StickRadiusSpin_valueChanged(double value);
-	void on_TubeRadiusSpin_valueChanged(double value);
-	void on_SphereRadiusSpin_valueChanged(double value);
-	void on_ScaledRadiusSpin_valueChanged(double value);
-	void on_BondRadiusSpin_valueChanged(double value);
-	void on_SelectionScaleSpin_valueChanged(double value);
-	void on_AtomQualitySpin_valueChanged(int value);
-	void on_BondQualitySpin_valueChanged(int value);
-	void on_AtomsVisibleCheck_stateChanged(int state);
-	void on_CellVisibleCheck_stateChanged(int state);
-	void on_AxesVisibleCheck_stateChanged(int state);
-	void on_GlobeVisibleCheck_stateChanged(int state);
-
-	/*
-	// Lighting Page
-	*/
-	private:
-	void spotlightPosChanged(int i, double value);
-	void spotlightColourChanged(Prefs::ColourComponent);
-	private slots:
-	void on_SpotlightGroup_clicked(bool checked);
-	void on_SpotlightAmbientColourButton_clicked(bool checked);
-	void on_SpotlightDiffuseColourButton_clicked(bool checked);
-	void on_SpotlightSpecularColourButton_clicked(bool checked);
-	void on_SpotlightPositionXSpin_valueChanged(double value);
-	void on_SpotlightPositionYSpin_valueChanged(double value);
-	void on_SpotlightPositionZSpin_valueChanged(double value);
-	void on_ShininessSpin_valueChanged(int value);
 
 	/*
 	// Interaction page
@@ -97,6 +61,63 @@ class AtenPrefs : public QDialog
 	void on_ShiftButtonCombo_currentIndexChanged(int ka);
 	void on_CtrlButtonCombo_currentIndexChanged(int ka);
 	void on_AltButtonCombo_currentIndexChanged(int ka);
+	void on_ZoomThrottleSpin_valueChanged(double value);
+
+	/*
+	// View Page
+	*/
+	private:
+	void updateAfterViewPrefs();
+	void setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom);
+	void setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen);
+	void spotlightPosChanged(int i, double value);
+	void spotlightColourChanged(Prefs::ColourComponent);
+	private slots:
+	// Radii
+	void on_StickRadiusSpin_valueChanged(double value);
+	void on_TubeRadiusSpin_valueChanged(double value);
+	void on_SphereRadiusSpin_valueChanged(double value);
+	void on_ScaledRadiusSpin_valueChanged(double value);
+	void on_StickBondRadiusSpin_valueChanged(double value);
+	void on_TubeBondRadiusSpin_valueChanged(double value);
+	void on_SphereBondRadiusSpin_valueChanged(double value);
+	void on_ScaledBondRadiusSpin_valueChanged(double value);
+	void on_SelectionScaleSpin_valueChanged(double value);
+	// Lighting
+	void on_SpotlightGroup_clicked(bool checked);
+	void on_SpotlightAmbientColourButton_clicked(bool checked);
+	void on_SpotlightDiffuseColourButton_clicked(bool checked);
+	void on_SpotlightSpecularColourButton_clicked(bool checked);
+	void on_SpotlightPositionXSpin_valueChanged(double value);
+	void on_SpotlightPositionYSpin_valueChanged(double value);
+	void on_SpotlightPositionZSpin_valueChanged(double value);
+	void on_ShininessSpin_valueChanged(int value);
+	// Scene
+	void on_AtomsVisibleCheck_stateChanged(int state);
+	void on_CellVisibleCheck_stateChanged(int state);
+	void on_AxesVisibleCheck_stateChanged(int state);
+	void on_GlobeVisibleCheck_stateChanged(int state);
+	void on_LabelsVisibleCheck_stateChanged(int state);
+	void on_MeasurementsVisibleCheck_stateChanged(int state);
+	void on_SurfacesVisibleCheck_stateChanged(int state);
+	void on_RegionsVisibleCheck_stateChanged(int state);
+	void on_AtomsVisibleImageCheck_stateChanged(int state);
+	void on_CellVisibleImageCheck_stateChanged(int state);
+	void on_AxesVisibleImageCheck_stateChanged(int state);
+	void on_GlobeVisibleImageCheck_stateChanged(int state);
+	void on_LabelsVisibleImageCheck_stateChanged(int state);
+	void on_MeasurementsVisibleImageCheck_stateChanged(int state);
+	void on_SurfacesVisibleImageCheck_stateChanged(int state);
+	void on_RegionsVisibleImageCheck_stateChanged(int state);
+	// GL
+	void on_AtomQualitySpin_valueChanged(int value);
+	void on_BondQualitySpin_valueChanged(int value);
+	void on_FarClipSpin_valueChanged(double value);
+	void on_FarDepthSpin_valueChanged(int value);
+	void on_NearClipSpin_valueChanged(double value);
+	void on_NearDepthSpin_valueChanged(int value);
+	void on_LineAliasingCheck_stateChanged(int state);
+	void on_PolygonAliasingCheck_stateChanged(int state);
 
 	/*
 	// Colours page
@@ -122,10 +143,8 @@ class AtenPrefs : public QDialog
 	private:
 	// Whether the window is currently refreshing
 	bool refreshing_;
-	// Local copy of prefs data
+	// Local copy of prefs/elements data
 	Prefs prefsBackup_;
-	// Local copy of elements data
-	Element *elementsBackup_;
 
 	/*
 	// Widgets

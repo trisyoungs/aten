@@ -70,9 +70,9 @@ bool VectorVariable::set(ReturnValue &rv)
 	if (rv.arraySize() == -1) vectorData_ = rv.asVector(success);
 	else if (rv.arraySize() == 3)
 	{
-		vectorData_.x = rv.elementAsDouble(0, success);
-		if (success) vectorData_.y = rv.elementAsDouble(1, success);
-		if (success) vectorData_.z = rv.elementAsDouble(2, success);
+		vectorData_.x = rv.asDouble(0, success);
+		if (success) vectorData_.y = rv.asDouble(1, success);
+		if (success) vectorData_.z = rv.asDouble(2, success);
 	}
 	else
 	{

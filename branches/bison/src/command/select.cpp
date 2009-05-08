@@ -255,6 +255,20 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Select atoms (or molecule COGs) inside the current unit cell
+bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	char s[128];
+	sprintf(s,"Select %s inside cell", c->hasArg(0) ? "molecules" : "atoms");
+	int nselected = obj.rs->nSelected();
+	obj.rs->beginUndoState(s);
+	obj.rs->selectInsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
+	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected() - nselected);
+	return TRUE;
+}
+
 // Get selection centre of geometry ('selectioncog')
 bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -306,6 +320,20 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 	obj.rs->selectOverlaps(tol);
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected());
+	return TRUE;
+}
+
+// Select atoms (or molecule COGs) outside of the current unit cell
+bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	char s[128];
+	sprintf(s,"Select %s outside cell", c->hasArg(0) ? "molecules" : "atoms");
+	int nselected = obj.rs->nSelected();
+	obj.rs->beginUndoState(s);
+	obj.rs->selectOutsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
+	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
 }
 

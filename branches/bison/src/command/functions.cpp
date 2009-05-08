@@ -319,46 +319,6 @@ void Command::initPointers()
 	pointers_[ListPatterns] = &Command::function_ListPatterns;
 	pointers_[NewPattern] = &Command::function_NewPattern;
 
-	// Preferences Commands
-	pointers_[AngleLabel] = &Command::function_AngleLabel;
-	pointers_[AtomDetail] = &Command::function_AtomDetail;
-	pointers_[BondDetail] = &Command::function_BondDetail;
-	pointers_[CacheLimit] = &Command::function_CacheLimit;
-	pointers_[Colour] = &Command::function_Colour;
-	pointers_[CommonElements] = &Command::function_CommonElements;
-	pointers_[DensityUnits] = &Command::function_DensityUnits;
-	pointers_[DistanceLabel] = &Command::function_DistanceLabel;
-	pointers_[ECut] = &Command::function_ECut;
-	pointers_[Elec] = &Command::function_Elec;
-	pointers_[ElementAmbient] = &Command::function_ElementAmbient;
-	pointers_[ElementDiffuse] = &Command::function_ElementDiffuse;
-	pointers_[ElementRadius] = &Command::function_ElementRadius;
-	pointers_[EnergyUnits] = &Command::function_EnergyUnits;
-	pointers_[GL] = &Command::function_GL;
-	pointers_[HDistance] = &Command::function_HDistance;
-	pointers_[Intra] = &Command::function_Intra;
-	pointers_[Key] = &Command::function_Key;
-	pointers_[LabelSize] = &Command::function_LabelSize;
-	pointers_[Light] = &Command::function_Light;
-	pointers_[LightAmbient] = &Command::function_LightAmbient;
-	pointers_[LightDiffuse] = &Command::function_LightDiffuse;
-	pointers_[LightPosition] = &Command::function_LightPosition;
-	pointers_[LightSpecular] = &Command::function_LightSpecular;
-	pointers_[Mouse] = &Command::function_Mouse;
-	pointers_[Radius] = &Command::function_Radius;
-	pointers_[ReplicateFold] = &Command::function_ReplicateFold;
-	pointers_[ReplicateTrim] = &Command::function_ReplicateTrim;
-	pointers_[Scheme] = &Command::function_Scheme;
-	pointers_[Shininess] = &Command::function_Shininess;
-	pointers_[ShowOnScreen] = &Command::function_ShowOnScreen;
-	pointers_[ShowOnImage] = &Command::function_ShowOnImage;
-	pointers_[Style] = &Command::function_Style;
-	pointers_[SwapBuffers] = &Command::function_SwapBuffers;
-	pointers_[UseNiceText] = &Command::function_UseNiceText;
-	pointers_[VCut] = &Command::function_VCut;
-	pointers_[Vdw] = &Command::function_Vdw;
-	pointers_[ZoomThrottle] = &Command::function_ZoomThrottle;
-
 	// Read / Write Commands
 	pointers_[AddReadOption] = &Command::function_AddReadOption;
 	pointers_[FilterFileName] = &Command::function_FilterFileName;
@@ -399,10 +359,12 @@ void Command::initPointers()
 	pointers_[Select] = &Command::function_Select;
 	pointers_[SelectAll] = &Command::function_SelectAll;
 	pointers_[SelectFFType] = &Command::function_SelectFFType;
+	pointers_[SelectInsideCell] = &Command::function_SelectInsideCell;
 	pointers_[SelectionCog] = &Command::function_SelectionCog;
 	pointers_[SelectionCom] = &Command::function_SelectionCom;
 	pointers_[SelectNone] = &Command::function_SelectNone;
 	pointers_[SelectOverlaps] = &Command::function_SelectOverlaps;
+	pointers_[SelectOutsideCell] = &Command::function_SelectOutsideCell;
 	pointers_[SelectPattern] = &Command::function_SelectPattern;
 	pointers_[SelectType] = &Command::function_SelectType;
 	
@@ -457,9 +419,9 @@ void Command::initPointers()
 	pointers_[OperatorAnd] = &function_OperatorAnd;
 	pointers_[OperatorAssignment] = &function_OperatorAssignment;
 	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
-	pointers_[OperatorAssignmentMinus] = &function_OperatorAssignmentMinus;
 	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
 	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
+	pointers_[OperatorAssignmentSubtract] = &function_OperatorAssignmentSubtract;
 	pointers_[OperatorDivide] = &function_OperatorDivide;
 	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
 	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;

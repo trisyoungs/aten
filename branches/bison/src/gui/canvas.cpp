@@ -253,34 +253,34 @@ void Canvas::initGl()
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 		// Configure antialiasing
-		if (prefs.hasGlOption(Prefs::LineAliasOption))
+		if (prefs.lineAliasing())
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_LINE_SMOOTH);
 		}
-		if (prefs.hasGlOption(Prefs::PolyAliasOption))
+		if (prefs.polygonAliasing())
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_POLYGON_SMOOTH);
 		}
 		// Configure fog effects
-		if (prefs.hasGlOption(Prefs::FogOption))
+		if (prefs.depthCue())
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
 			prefs.copyColour(Prefs::BackgroundColour, col);
 			glFogfv(GL_FOG_COLOR, col);
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
-			glFogi(GL_FOG_START, prefs.fogNear());
-			glFogi(GL_FOG_END, prefs.fogFar());
+			glFogi(GL_FOG_START, prefs.depthNear());
+			glFogi(GL_FOG_END, prefs.depthFar());
 			glEnable(GL_FOG);
 		}
 		else glDisable(GL_FOG);
 		// Configure face culling
 		glCullFace(GL_FRONT);
-		prefs.hasGlOption(Prefs::BackCullOption) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
+		prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 		// Test
 		glDisable(GL_DITHER);
 		glDisable(GL_LOGIC_OP);
