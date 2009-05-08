@@ -495,7 +495,6 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 			{
 				// Get COG of molecule
 				pos = cell_.realToFrac(p->calculateCog(m));
-				pos.print();
 				if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
 				id += p->nAtoms();
 			}

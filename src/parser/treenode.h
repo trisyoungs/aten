@@ -123,7 +123,9 @@ class TreeNode
 	// Node return value datatype
 	VTypes::DataType returnType_;
 	// Whether node is read-only
-	bool readOnly_;	
+	bool readOnly_;
+	// Whether the node returns an array of values
+	bool returnsArray_;
 
 	public:
 	// Sets the content type of the variable
@@ -134,6 +136,11 @@ class TreeNode
 	void setReadOnly();
 	// Return the readonly status of the node
 	bool readOnly();
+	// Set whether an array of values is returned
+	void setReturnsArray(bool b);
+	// Return whether an array of values is returned
+	bool returnsArray();
+
 
 	/*
 	// Node Data Set / Get / Execute

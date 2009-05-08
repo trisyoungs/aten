@@ -182,7 +182,7 @@ Prefs::Prefs()
 
 	// Build
 	showGuide_ = FALSE;
-	bondTolerance_ = 1.1;
+	bondTolerance_ = 1.15;
 	drawDepth_ = 10.0;
 	guideSpacing_ = 1.0;
 	guideTicks_ = 5;

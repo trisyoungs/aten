@@ -84,3 +84,13 @@ int VTypes::dataPair(DataType type1, int arraysize1, DataType type2, int arraysi
 	int bit2 = (1 << (type2 < AtenData ? type2-1 : AtenData-1)) << (arraysize2 != -1 ? AtenData : 0);
 	return (bit1 + (bit2 << (AtenData*2)));
 }
+
+int VTypes::dataSinglet(DataType type1, int arraysize1)
+{
+	if (type1 == VTypes::NoData)
+	{
+		msg.print("Argument has no data type.\n");
+		return UntypedData;
+	}
+	return ((1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0));
+}

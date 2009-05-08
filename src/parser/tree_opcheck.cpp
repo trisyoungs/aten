@@ -22,17 +22,18 @@
 #include "parser/tree.h"
 
 // Check unary operator type compatibility
-VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, TreeNode::NodeType ntype)
+VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray)
 {
 	msg.enter("Tree::checkUnaryOperatorTypes");
+	int id = VTypes::dataSinglet(type, array ? 1 : -1);
 	// Check for no data type
-	if (type == VTypes::NoData)
+	if (id == VTypes::UntypedData)
 	{
-		printf("Internal Error: One or both operands have no defined type.\n");
 		msg.exit("Tree::checkUnaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
+	returnsarray = FALSE;
 	switch (func)
 	{
 		// Postfix and prefix operators (must have integer or real types)
@@ -40,23 +41,45 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 		case (Command::OperatorPostfixDecrease):
 		case (Command::OperatorPrefixIncrease):
 		case (Command::OperatorPrefixDecrease):
-			// Easier to list those types that we *can't* do...
-			if ((ntype == TreeNode::ArrayVarNode) || (ntype == TreeNode::ArrayConstantNode)) break;
-			switch (type)
+			switch (id)
 			{
-				case (VTypes::AtenData):
-				case (VTypes::ElementData):
-				case (VTypes::CellData):
-				case (VTypes::ForcefieldAtomData):
-				case (VTypes::ForcefieldBoundData):
-					break;
-				default:
+				case (VTypes::Int):
+				case (VTypes::Dbl):
+				case (VTypes::Vec):
 					result = type;
+					break;
+				case (VTypes::Ptr):
+					// Only some pointer types are supported....
+					switch (type)
+					{
+						case (VTypes::AtenData):
+						case (VTypes::ElementData):
+						case (VTypes::CellData):
+						case (VTypes::ForcefieldAtomData):
+						case (VTypes::ForcefieldBoundData):
+							break;
+						default:
+							result = type;
+							break;
+					}
 					break;
 			}
 			break;
 		case (Command::OperatorNegate):
-			if ((type <= VTypes::VectorData) && (type != VTypes::StringData)) result = type;
+			switch (id)
+			{
+				case (VTypes::Int):
+				case (VTypes::Dbl):
+				case (VTypes::Vec):
+					result = type;
+					break;
+				case (VTypes::IntA):
+				case (VTypes::DblA):
+				case (VTypes::VecA):
+					result = type;
+					returnsarray = TRUE;
+					break;
+			}
 			break;
 		case (Command::OperatorNot):
 			// Always works, and always returns an integer
@@ -70,13 +93,13 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 }
 
 // Check binary operator type compatibility
-VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, VTypes::DataType type2, TreeNode::NodeType ntype1, TreeNode::NodeType ntype2)
+VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray)
 {
 	msg.enter("Tree::checkBinaryOperatorTypes");
+	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
 	// Check for no data type
-	if ((type1 == VTypes::NoData) || (type2 == VTypes::NoData))
+	if (id == VTypes::UntypedData)
 	{
-		printf("Internal Error: One or both operands have no defined type (%s,%s).\n", VTypes::dataType(type1), VTypes::dataType(type2));
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
@@ -86,6 +109,109 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::IntegerData;
 	}
+	returnsarray = FALSE;
+	switch (func)
+	{
+		case (Command::OperatorAdd):
+			switch (id)
+			{
+				case (VTypes::IntInt):
+				case (VTypes::VecVec):
+				case (VTypes::StrStr):
+					result = type1;
+					break;
+				case (VTypes::IntDbl):
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+					result = VTypes::DoubleData;
+					break;
+				case (VTypes::VecInt):
+				case (VTypes::VecDbl):
+				case (VTypes::IntVec):
+				case (VTypes::DblVec):
+					result = VTypes::VectorData;
+					break;
+				case (VTypes::IntAIntA):
+				case (VTypes::DblADblA):
+				case (VTypes::StrAStrA):
+					result = type1;
+					returnsarray = TRUE;
+					break;
+				case (VTypes::IntADblA):
+				case (VTypes::DblAIntA):
+				case (VTypes::IntAInt):
+				case (VTypes::IntADbl):
+				case (VTypes::DblAInt):
+				case (VTypes::DblADbl):
+				case (VTypes::IntIntA):
+				case (VTypes::IntDblA):
+				case (VTypes::DblIntA):
+				case (VTypes::DblDblA):
+				case (VTypes::IntAVec):
+				case (VTypes::DblAVec):
+				case (VTypes::VecIntA):
+				case (VTypes::VecDblA):
+					result = type;
+					returnsarray = TRUE;
+					break;
+			}
+			break;
+		case (Command::OperatorAnd):
+			result = VTypes::IntegerData;
+			returnsarray = FALSE;
+			break;
+		case (Command::OperatorAssignment):
+		case (Command::OperatorAssignmentDivide):
+		case (Command::OperatorAssignmentMultiply):
+		case (Command::OperatorAssignmentPlus):
+		case (Command::OperatorAssignmentSubtract):
+		case (Command::OperatorDivide):
+			switch (id)
+			{
+				case (VTypes::IntAIntA):
+				case (VTypes::IntADblA):
+				case (VTypes::DblAIntA):
+				case (VTypes::DblADblA):
+				case (VTypes::IntAInt):
+				case (VTypes::IntADbl):
+				case (VTypes::DblAInt):
+				case (VTypes::DblADbl):
+				case (VTypes::IntAVec):
+				case (VTypes::DblAVec):
+					result = 
+				case (VTypes::IntInt):
+				case (VTypes::IntDbl):
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+				case (VTypes::VecInt):
+				case (VTypes::VecDbl):
+				case (VTypes::VecVec):
+				case (VTypes::VecIntA):
+				case (VTypes::VecDblA):
+			}
+			break;
+		case (Command::OperatorEqualTo):
+		case (Command::OperatorGreaterThan):
+		case (Command::OperatorGreaterThanEqualTo):
+		case (Command::OperatorLessThan):
+		case (Command::OperatorLessThanEqualTo):
+		case (Command::OperatorMultiply):
+		case (Command::OperatorNotEqualTo):
+		case (Command::OperatorOr):
+			result = VTypes::IntegerData;
+			returnsarray = FALSE;
+			break;
+		case (Command::OperatorPower):
+		case (Command::OperatorSubtract):
+	}
+
+
+
+
+
+
+
+
 	// Put types in 'precedence' order
 	if (type2 > type1)
 	{
