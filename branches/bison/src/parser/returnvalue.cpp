@@ -741,6 +741,7 @@ Vec3<double> ReturnValue::asVector()
 bool ReturnValue::asBool()
 {
 	static Dnchar booltest;
+	if (arraySize_ > 0) return TRUE;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -776,6 +777,8 @@ bool ReturnValue::asBool()
 bool ReturnValue::increase()
 {
 	bool result = TRUE;
+	// No arrays....
+	if (arraySize_ != -1) return FALSE;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -828,6 +831,7 @@ bool ReturnValue::increase()
 bool ReturnValue::decrease()
 {
 	bool result = TRUE;
+	if (arraySize_ != -1) return FALSE;
 	switch (type_)
 	{
 		case (VTypes::NoData):

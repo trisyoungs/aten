@@ -68,6 +68,32 @@ class Command
 
 	// Command list
 	enum Function {
+
+		// Operators
+		OperatorAdd,
+		OperatorAnd,
+		OperatorAssignment,
+		OperatorAssignmentDivide,
+		OperatorAssignmentMultiply,
+		OperatorAssignmentPlus,
+		OperatorAssignmentSubtract,
+		OperatorDivide,
+		OperatorEqualTo,
+		OperatorGreaterThan,
+		OperatorGreaterThanEqualTo,
+		OperatorLessThan,
+		OperatorLessThanEqualTo,
+		OperatorMultiply,
+		OperatorNegate,
+		OperatorNot,
+		OperatorNotEqualTo,
+		OperatorOr,
+		OperatorPostfixDecrease,
+		OperatorPostfixIncrease,
+		OperatorPower,
+		OperatorPrefixDecrease,
+		OperatorPrefixIncrease,
+		OperatorSubtract,
 		
 		// AST-Specific nodes
 		NoFunction,
@@ -457,32 +483,6 @@ class Command
 		TranslateAtom,
 		TranslateCell,
 		TranslateWorld,
-
-		// Variable Operators
-		OperatorAdd,
-		OperatorAnd,
-		OperatorAssignment,
-		OperatorAssignmentDivide,
-		OperatorAssignmentMultiply,
-		OperatorAssignmentPlus,
-		OperatorAssignmentSubtract,
-		OperatorDivide,
-		OperatorEqualTo,
-		OperatorGreaterThan,
-		OperatorGreaterThanEqualTo,
-		OperatorLessThan,
-		OperatorLessThanEqualTo,
-		OperatorMultiply,
-		OperatorNegate,
-		OperatorNot,
-		OperatorNotEqualTo,
-		OperatorOr,
-		OperatorPostfixDecrease,
-		OperatorPostfixIncrease,
-		OperatorPower,
-		OperatorPrefixDecrease,
-		OperatorPrefixIncrease,
-		OperatorSubtract,
 
 		// View
 		GetView,

@@ -331,8 +331,9 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	msg.enter("Tree::addOperator");
 	// Check compatibility between supplied nodes and the operator, since we didn't check the types in the lexer.
 	VTypes::DataType rtype;
-	if (arg2 == NULL) rtype = checkUnaryOperatorTypes(func, arg1->returnType(), arg1->nodeType());
-	else rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg2->returnType(), arg1->nodeType(), arg2->nodeType());
+	bool returnsarray;
+	if (arg2 == NULL) rtype = checkUnaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), returnsarray);
+	else rtype = checkBinaryOperatorTypes(func, arg1->returnType(), arg1->returnsArray(), arg2->returnType(), arg2->returnsArray(), returnsarray);
 	if (rtype == VTypes::NoData) return NULL;
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
@@ -343,6 +344,7 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	leaf->setParent(this);
 	if (arg2 != NULL) leaf->addArguments(1,arg2);
 	leaf->setReturnType(rtype);
+	leaf->setReturnsArray(returnsarray);
 	msg.exit("Tree::addOperator");
 	return leaf;
 }

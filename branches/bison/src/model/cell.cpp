@@ -45,7 +45,6 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	// Set new axes 
 	cell_.set(lengths, angles);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -66,7 +65,6 @@ void Model::setCell(Mat3<double> axes)
 	// Set new axes 
 	cell_.set(axes);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -87,7 +85,6 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -109,7 +106,6 @@ void Model::setCell(Cell *newcell)
 		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 		cell_ = *newcell;
 		calculateDensity();
-		changeLog.add(Log::Structure);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{

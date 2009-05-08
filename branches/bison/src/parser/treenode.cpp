@@ -32,6 +32,7 @@ TreeNode::TreeNode()
 {
 	// Private variables
 	returnType_ = VTypes::NoData;
+	returnsArray_ = FALSE;
 	readOnly_ = TRUE;
 	parent_ = NULL;
 	nextArgument = NULL;
@@ -88,6 +89,18 @@ bool TreeNode::readOnly()
 void TreeNode::setReadOnly()
 {
 	readOnly_ = TRUE;
+}
+
+// Set whether an array of values is returned
+void TreeNode::setReturnsArray(bool b)
+{
+	returnsArray_ = b;
+}
+
+// Return whether an array of values is returned
+bool TreeNode::returnsArray()
+{
+	return returnsArray_;
 }
 
 // Return number of arguments currently assigned to node

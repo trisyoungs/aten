@@ -27,6 +27,32 @@ void Command::initPointers()
 	/*
 	// Store pointers to all command functions
 	*/
+	// Operators
+	pointers_[OperatorAdd] = &function_OperatorAdd;
+	pointers_[OperatorAnd] = &function_OperatorAnd;
+	pointers_[OperatorAssignment] = &function_OperatorAssignment;
+	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
+	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
+	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
+	pointers_[OperatorAssignmentSubtract] = &function_OperatorAssignmentSubtract;
+	pointers_[OperatorDivide] = &function_OperatorDivide;
+	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
+	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
+	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
+	pointers_[OperatorLessThan] = &function_OperatorLessThan;
+	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
+	pointers_[OperatorMultiply] = &function_OperatorMultiply;
+	pointers_[OperatorNegate] = &function_OperatorNegate;
+	pointers_[OperatorNot] = &function_OperatorNot;
+	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
+	pointers_[OperatorOr] = &function_OperatorOr;
+	pointers_[OperatorPower] = &function_OperatorPower;
+	pointers_[OperatorPostfixIncrease] = &function_OperatorPostfixIncrease;
+	pointers_[OperatorPostfixDecrease] = &function_OperatorPostfixDecrease;
+	pointers_[OperatorPrefixIncrease] = &function_OperatorPrefixIncrease;
+	pointers_[OperatorPrefixDecrease] = &function_OperatorPrefixDecrease;
+	pointers_[OperatorSubtract] = &function_OperatorSubtract;
+
 	pointers_[NoFunction] = &function_NoFunction;
 	pointers_[Joiner] = &function_Joiner;
 	pointers_[Declarations] = &function_Declarations;
@@ -413,32 +439,6 @@ void Command::initPointers()
 	pointers_[IToA] = &Command::function_IToA;
 	pointers_[Normalise] = &Command::function_Normalise;	
 	pointers_[StripChars] = &Command::function_StripChars;
-
-	// Variable Operators
-	pointers_[OperatorAdd] = &function_OperatorAdd;
-	pointers_[OperatorAnd] = &function_OperatorAnd;
-	pointers_[OperatorAssignment] = &function_OperatorAssignment;
-	pointers_[OperatorAssignmentDivide] = &function_OperatorAssignmentDivide;
-	pointers_[OperatorAssignmentMultiply] = &function_OperatorAssignmentMultiply;
-	pointers_[OperatorAssignmentPlus] = &function_OperatorAssignmentPlus;
-	pointers_[OperatorAssignmentSubtract] = &function_OperatorAssignmentSubtract;
-	pointers_[OperatorDivide] = &function_OperatorDivide;
-	pointers_[OperatorEqualTo] = &function_OperatorEqualTo;
-	pointers_[OperatorGreaterThan] = &function_OperatorGreaterThan;
-	pointers_[OperatorGreaterThanEqualTo] = &function_OperatorGreaterThanEqualTo;
-	pointers_[OperatorLessThan] = &function_OperatorLessThan;
-	pointers_[OperatorLessThanEqualTo] = &function_OperatorLessThanEqualTo;
-	pointers_[OperatorMultiply] = &function_OperatorMultiply;
-	pointers_[OperatorNegate] = &function_OperatorNegate;
-	pointers_[OperatorNot] = &function_OperatorNot;
-	pointers_[OperatorNotEqualTo] = &function_OperatorNotEqualTo;
-	pointers_[OperatorOr] = &function_OperatorOr;
-	pointers_[OperatorPower] = &function_OperatorPower;
-	pointers_[OperatorPostfixIncrease] = &function_OperatorPostfixIncrease;
-	pointers_[OperatorPostfixDecrease] = &function_OperatorPostfixDecrease;
-	pointers_[OperatorPrefixIncrease] = &function_OperatorPrefixIncrease;
-	pointers_[OperatorPrefixDecrease] = &function_OperatorPrefixDecrease;
-	pointers_[OperatorSubtract] = &function_OperatorSubtract;
 
 	// View Commands
 	pointers_[GetView] = &Command::function_GetView;

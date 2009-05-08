@@ -107,9 +107,9 @@ class Tree
 	// Number of syntactic errors encountered
 	int nErrors_;
 	// Check unary operator type compatibility
-	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, TreeNode::NodeType ntype);
+	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray);
 	// Check binary operator type compatibility
-	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, VTypes::DataType type2, TreeNode::NodeType ntype1, TreeNode::NodeType ntype2);
+	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
 
 	public:
 	// Create a new path on the stack with the specified base 'variable'

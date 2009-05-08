@@ -302,7 +302,7 @@ void Model::print()
 	msg.exit("Model::print");
 }
 
-// Print log information
+// Print points information
 void Model::printLogs()
 {
 	msg.print("Logs for model '%s':\n",name_.get());
