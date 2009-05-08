@@ -143,7 +143,7 @@ bool DoubleArrayVariable::set(ReturnValue &rv)
 	else
 	{
 		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
-		else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.elementAsDouble(i, success);
+		else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble(i, success);
 	}
 	return success;
 }

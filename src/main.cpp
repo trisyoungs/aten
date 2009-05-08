@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	aten.openFilters();
 
 	// Load in user preferences
-	char filename[256];
+	char filename[512];
 	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
 	if (!prefs.load(filename)) return -1;
 

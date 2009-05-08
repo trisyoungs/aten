@@ -142,7 +142,7 @@ bool IntegerArrayVariable::set(ReturnValue &rv)
 	else
 	{
 		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
-		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.elementAsInteger(i, success);
+		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger(i, success);
 	}
 	return success;
 }

@@ -98,11 +98,16 @@ filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 	writeline("NumberOfSpecies", nspecies);
 	writeline("");
 
-	# Write 'standard' keyword data
-	writeline("PAO.EnergyShift      25 meV");
-	writeline("MeshCutoff          400 Ry");
-	writeline("DM.MixingWeight      0.4");
-	writeline("NetCharge            1.0");
+        # Determine total charge of system
+        selectall();
+        double q = charge();
+        selectnone();
+
+        # Write 'standard' keyword data
+        writeline("PAO.EnergyShift      25 meV");
+        writeline("MeshCutoff          600 Ry");
+        writeline("DM.MixingWeight      0.3");
+        writelinef("NetCharge            %5.3f\n",q);
 	writeline("");
 	writeline("PAO.BasisSize       DZP");
 	writeline("XC.functional       GGA");

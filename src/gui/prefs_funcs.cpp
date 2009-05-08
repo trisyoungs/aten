@@ -28,15 +28,12 @@
 AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	elementsBackup_ = NULL;
 	refreshing_ = FALSE;
 }
 
 // Destructor
 AtenPrefs::~AtenPrefs()
 {
-	// Free element backup
-	if (elementsBackup_ != NULL) delete[] elementsBackup_;
 }
 
 // Finalise GUI
@@ -64,22 +61,34 @@ void AtenPrefs::setControls()
 	// Select the first element in the elements list
 	ui.ElementList->setCurrentRow(0);
 
-	// Set controls in view page
+	// Set controls in view page - Radii
 	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Atom::StickStyle));
 	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Atom::TubeStyle));
 	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Atom::SphereStyle));
 	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Atom::ScaledStyle));
-// 	ui.BondRadiusSpin->setValue(prefs.bondRadius());       TGAY
+	ui.StickBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::StickStyle));
+	ui.TubeBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::TubeStyle));
+	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::SphereStyle));
+	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::ScaledStyle));
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
-	ui.AtomQualitySpin->setValue(prefs.atomDetail());
-	ui.BondQualitySpin->setValue(prefs.bondDetail());
+	// ... scene
 	ui.GlobeVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewGlobe));
 	ui.CellVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCell));
 	ui.AxesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCellAxes));
 	ui.AtomsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewAtoms));
-	ui.ShininessSpin->setValue(prefs.shininess());
-
-	// Set controls in Lighting page
+	ui.LabelsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewLabels));
+	ui.MeasurementsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewMeasurements));
+	ui.RegionsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewRegions));
+	ui.SurfacesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewSurfaces));
+	ui.GlobeVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewGlobe));
+	ui.CellVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCell));
+	ui.AxesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewCellAxes));
+	ui.AtomsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewAtoms));
+	ui.LabelsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewLabels));
+	ui.MeasurementsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewMeasurements));
+	ui.RegionsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewRegions));
+	ui.SurfacesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewSurfaces));
+	// ... lighting
 	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
 	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
 	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(Prefs::SpecularComponent));
@@ -87,6 +96,14 @@ void AtenPrefs::setControls()
 	ui.SpotlightPositionXSpin->setValue(pos[0]);
 	ui.SpotlightPositionYSpin->setValue(pos[1]);
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
+	ui.ShininessSpin->setValue(prefs.shininess());
+	// ... GL
+	ui.AtomQualitySpin->setValue(prefs.atomDetail());
+	ui.BondQualitySpin->setValue(prefs.bondDetail());
+	ui.NearClipSpin->setValue(prefs.clipNear());
+	ui.FarClipSpin->setValue(prefs.clipFar());
+	ui.NearDepthSpin->setValue(prefs.depthNear());
+	ui.FarDepthSpin->setValue(prefs.depthFar());
 
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
@@ -96,6 +113,7 @@ void AtenPrefs::setControls()
 	ui.ShiftButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::ShiftKey));
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
+	ui.ZoomThrottleSpin->setValue(prefs.zoomThrottle());
 
 	// Set pen colours and colourscale names and checks
         ui.ForegroundColourFrame->setColour(prefs.colour(Prefs::ForegroundColour));
@@ -116,18 +134,8 @@ void AtenPrefs::setControls()
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
-	// If this is the first time, create the elements backup array
-	if (elementsBackup_ == NULL) elementsBackup_ = new Element[elements().nElements()];
-	int n,i;
-	for (i=0; i<elements().nElements(); i++)
-	{
-		elementsBackup_[i].atomicRadius = elements().atomicRadius(i);
-		for (n=0; n<4; ++n)
-		{
-			elementsBackup_[i].ambientColour[n] = elements().el[i].ambientColour[n];
-			elementsBackup_[i].diffuseColour[n] = elements().el[i].diffuseColour[n];
-		}
-	}
+	elements().backupData();
+
 	refreshing_ = FALSE;
 	msg.exit("AtenPrefs::setControls");
 }
@@ -137,19 +145,23 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
 	prefs = prefsBackup_;
-	int i,n;
-	for (i=0; i<elements().nElements(); i++)
-	{
-		elements().setAtomicRadius(i,elementsBackup_[i].atomicRadius);
-		for (n=0; n<4; ++n)
-		{
-			elements().el[i].ambientColour[n] = elementsBackup_[i].ambientColour[n];
-			elements().el[i].diffuseColour[n] = elementsBackup_[i].ambientColour[n];
-		}
-	}
+	elements().restoreData();
+
 	aten.currentModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	reject();
+}
+
+// Store current prefs values as defaults
+void AtenPrefs::on_PrefsSetDefaultButton_clicked(bool checked)
+{
+	char filename[512];
+	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
+	// Temporarily disable prefs window
+	gui.prefsDialog->setEnabled(FALSE);
+	bool result = prefs.save(filename);
+	gui.prefsDialog->setEnabled(TRUE);
+	if (!result) QMessageBox::warning(NULL, "Aten", "User preferences file could not be saved.\n", QMessageBox::Ok, QMessageBox::Ok);
 }
 
 /*
@@ -220,39 +232,52 @@ void AtenPrefs::updateAfterViewPrefs()
 	gui.mainView.postRedisplay();
 }
 
-void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value)
+void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom)
 {
 	if (refreshing_) return;
-	prefs.setAtomStyleRadius(ds, value);
+	if (foratom) prefs.setAtomStyleRadius(ds, value);
+	else prefs.setBondStyleRadius(ds, value);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::StickStyle, value);
+	setRadiusChanged(Atom::StickStyle, value, TRUE);
 }
 
 void AtenPrefs::on_TubeRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::TubeStyle, value);
+	setRadiusChanged(Atom::TubeStyle, value, TRUE);
 }
 
 void AtenPrefs::on_SphereRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::SphereStyle, value);
+	setRadiusChanged(Atom::SphereStyle, value, TRUE);
 }
 
 void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::ScaledStyle, value);
+	setRadiusChanged(Atom::ScaledStyle, value, TRUE);
 }
 
-void AtenPrefs::on_BondRadiusSpin_valueChanged(double value)
+void AtenPrefs::on_StickBondRadiusSpin_valueChanged(double value)
 {
-	// TGAY
-// 	prefs.setBondRadius(value);
-	printf("Bond radius setting from GUI needs to be expanded.\n");
-	updateAfterViewPrefs();
+	setRadiusChanged(Atom::StickStyle, value, FALSE);
+}
+
+void AtenPrefs::on_TubeBondRadiusSpin_valueChanged(double value)
+{
+	setRadiusChanged(Atom::TubeStyle, value, FALSE);
+}
+
+void AtenPrefs::on_SphereBondRadiusSpin_valueChanged(double value)
+{
+	setRadiusChanged(Atom::SphereStyle, value, FALSE);
+}
+
+void AtenPrefs::on_ScaledBondRadiusSpin_valueChanged(double value)
+{
+	setRadiusChanged(Atom::ScaledStyle, value, FALSE);
 }
 
 void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
@@ -260,6 +285,10 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 	prefs.setSelectionScale(value);
 	updateAfterViewPrefs();
 }
+
+/*
+// View [GL] page
+*/
 
 void AtenPrefs::on_AtomQualitySpin_valueChanged(int value)
 {
@@ -273,35 +302,139 @@ void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
 	updateAfterViewPrefs();
 }
 
-void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
+void AtenPrefs::on_FarClipSpin_valueChanged(double value)
 {
-	prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
-	aten.currentModel()->changeLog.add(Log::Visual);
+	prefs.setClipFar(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_FarDepthSpin_valueChanged(int value)
+{
+	prefs.setDepthFar(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_NearClipSpin_valueChanged(double value)
+{
+	prefs.setClipNear(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_NearDepthSpin_valueChanged(int value)
+{
+	prefs.setDepthNear(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
+{
+	prefs.setLineAliasing(state == Qt::Checked);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
+{
+	prefs.setPolygonAliasing(state == Qt::Checked);
+	updateAfterViewPrefs();
+}
+
+/*
+// View [Scene] page
+*/
+
+void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state, bool onscreen)
+{
+	if (onscreen)
+	{
+		prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
+		aten.currentModel()->changeLog.add(Log::Visual);
+	}
+	else prefs.setVisibleOffScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
 	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(Prefs::ViewAtoms, state);
+	setVisibleObject(Prefs::ViewAtoms, state, TRUE);
 }
 
 void AtenPrefs::on_CellVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(Prefs::ViewCell, state);
+	setVisibleObject(Prefs::ViewCell, state, TRUE);
 }
 
 void AtenPrefs::on_AxesVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(Prefs::ViewCellAxes, state);
+	setVisibleObject(Prefs::ViewCellAxes, state, TRUE);
 }
 
 void AtenPrefs::on_GlobeVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(Prefs::ViewGlobe, state);
+	setVisibleObject(Prefs::ViewGlobe, state, TRUE);
+}
+
+void AtenPrefs::on_LabelsVisibleCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewLabels, state, TRUE);
+}
+
+void AtenPrefs::on_MeasurementsVisibleCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewMeasurements, state, TRUE);
+}
+
+void AtenPrefs::on_RegionsVisibleCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewRegions, state, TRUE);
+}
+
+void AtenPrefs::on_SurfacesVisibleCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewSurfaces, state, TRUE);
+}
+
+void AtenPrefs::on_AtomsVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewAtoms, state, FALSE);
+}
+
+void AtenPrefs::on_CellVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewCell, state, FALSE);
+}
+
+void AtenPrefs::on_AxesVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewCellAxes, state, FALSE);
+}
+
+void AtenPrefs::on_GlobeVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewGlobe, state, FALSE);
+}
+
+void AtenPrefs::on_LabelsVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewLabels, state, FALSE);
+}
+
+void AtenPrefs::on_MeasurementsVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewMeasurements, state, FALSE);
+}
+
+void AtenPrefs::on_RegionsVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewRegions, state, FALSE);
+}
+
+void AtenPrefs::on_SurfacesVisibleImageCheck_stateChanged(int state)
+{
+	setVisibleObject(Prefs::ViewSurfaces, state, FALSE);
 }
 
 /*
-// Lighting Page
+// View [Lighting] Page
 */
 
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
@@ -377,7 +510,7 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 }
 
 /*
-// Interact Page
+// Interaction Page
 */
 
 void AtenPrefs::on_LeftMouseCombo_currentIndexChanged(int ma)
@@ -413,6 +546,11 @@ void AtenPrefs::on_CtrlButtonCombo_currentIndexChanged(int ka)
 void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 {
 	prefs.setKeyAction(Prefs::AltKey, (Prefs::KeyAction) ka);
+}
+
+void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
+{
+	prefs.setZoomThrottle(value);
 }
 
 /*

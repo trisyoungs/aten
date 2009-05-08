@@ -354,6 +354,57 @@ ElementMap::ElementMap()
 {
 	// Determine number of defined elements
 	nElements_ = sizeof(el) / sizeof(el[0]);
+	// Copy default element data to backup storage
+	defaultEl = new Element[nElements_];
+	int n,i;
+	for (i=0; i<nElements_; i++)
+	{
+		defaultEl[i].atomicRadius = el[i].atomicRadius;
+		for (n=0; n<4; ++n)
+		{
+			defaultEl[i].ambientColour[n] = el[i].ambientColour[n];
+			defaultEl[i].diffuseColour[n] = el[i].diffuseColour[n];
+		}
+	}
+	// Create backup array while we're here as well
+	backupEl_ = new Element[nElements_];
+}
+
+// Destructor
+ElementMap::~ElementMap()
+{
+	delete[] backupEl_;
+	delete[] defaultEl;
+}
+
+// Copy current element data to backup structure
+void ElementMap::backupData()
+{
+	int i,n;
+	for (i=0; i<nElements_; i++)
+	{
+		backupEl_[i].atomicRadius = el[i].atomicRadius;
+		for (n=0; n<4; ++n)
+		{
+			backupEl_[i].ambientColour[n] = el[i].ambientColour[n];
+			backupEl_[i].ambientColour[n] = el[i].diffuseColour[n];
+		}
+	}
+}
+
+// Copy backed up element data to actual element data
+void ElementMap::restoreData()
+{
+	int i,n;
+	for (i=0; i<nElements_; i++)
+	{
+		el[i].atomicRadius = backupEl_[i].atomicRadius;
+		for (n=0; n<4; ++n)
+		{
+			el[i].ambientColour[n] = backupEl_[i].ambientColour[n];
+			el[i].diffuseColour[n] = backupEl_[i].ambientColour[n];
+		}
+	}
 }
 
 // Return group number of atomic number 'i'

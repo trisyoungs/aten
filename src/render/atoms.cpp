@@ -202,7 +202,7 @@ void Canvas::renderModelAtoms()
 	}
 	// Second pass to render selected sphere atoms (transparency)
 	// Enable alpha component (if we weren't aliasing anyway)
-	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glEnable(GL_BLEND);
+	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glEnable(GL_BLEND);
 	// Make sure lighting is on
 	glEnable(GL_LIGHTING);
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)
@@ -292,7 +292,7 @@ void Canvas::renderModelAtoms()
 		glPopMatrix();
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
+	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glDisable(GL_BLEND);
 	// Reset line width to 1.0
 	glLineWidth(1.0);
 	msg.exit("Canvas::renderModelAtoms");

@@ -22,12 +22,14 @@
 #include "parser/vtypes.h"
 #include "base/constants.h"
 #include "base/sysfunc.h"
+#include "base/messenger.h"
 #include <string.h>
 #include <stdio.h>
 
 // Variable Types
 const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "grid&", "model&", "pattern&", "patternbound&", "prefs&"};
-const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "the elements&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&", "the prefs&" };
+const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "an element&", "a forcefield&", "a ffatom&", "a ffbound&", "a grid&", "a model&", "a pattern&", "a patternbound&", "the prefs&" };
+const char *DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array", "an aten& array", "an atom& array", "a bond& array", "a unitcell& array", "an element& array", "a forcefield& array", "a ffatom& array", "a ffbound& array", "a grid& array", "a model& array", "a pattern& array", "a patternbound& array", "a prefs& array" };
 const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "grid", "model", "pattern", "patternbound", "_PREFS"};
 VTypes::DataType VTypes::dataType(const char *s)
 {
@@ -37,9 +39,9 @@ const char *VTypes::dataType(VTypes::DataType dt)
 {
 	return DataTypeNames[dt];
 }
-const char *VTypes::aDataType(VTypes::DataType dt)
+const char *VTypes::aDataType(VTypes::DataType dt, int arraysize)
 {
-	return DataTypePhrases[dt];
+	return arraysize == -1 ? DataTypePhrases[dt] : DataTypeArrayPhrases[dt];
 }
 bool VTypes::isPointer(VTypes::DataType dt)
 {
@@ -64,4 +66,21 @@ VTypes::DataType VTypes::determineType(const char *s)
 	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return VTypes::StringData;
 	else if (ndp == 1) return VTypes::DoubleData;
 	else return VTypes::IntegerData;
+}
+
+int VTypes::dataPair(DataType type1, int arraysize1, DataType type2, int arraysize2)
+{
+	if ((type1 == VTypes::NoData) || (type2 == VTypes::NoData))
+	{
+		msg.print("One or both arguments have no data type.\n");
+		return UntypedData;
+	}
+	if ((arraysize1 != -1) && (arraysize2 != -1) && (arraysize1 != arraysize2))
+	{
+		msg.print("Array sizes do not conform.\n");
+		return ArrayMisMatch;
+	}
+	int bit1 = (1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0);
+	int bit2 = (1 << (type2 < AtenData ? type2-1 : AtenData-1)) << (arraysize2 != -1 ? AtenData : 0);
+	return (bit1 + (bit2 << (AtenData*2)));
 }

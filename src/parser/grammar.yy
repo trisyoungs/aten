@@ -64,7 +64,8 @@ VTypes::DataType declaredType;
 %%
 
 programlist:
-	program						{ }
+	/* empty */					{ }
+	| program						{ }
 	| programlist program				{ }
 	;
 
@@ -261,7 +262,7 @@ rawexpr:
 	| var '=' ARRAYCONST				{ $$ = cmdparser.addOperator(Command::OperatorAssignment,$1,$3); }
 	| var '=' error					{ msg.print("Mangled expression used in assignment.\n"); YYABORT; }
 	| var PEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentPlus,$1,$3); }
-	| var MEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMinus,$1,$3); }
+	| var MEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentSubtract,$1,$3); }
 	| var TEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMultiply,$1,$3); }
 	| var DEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentDivide,$1,$3); }
 	| '-' expr %prec UMINUS				{ $$ = cmdparser.addOperator(Command::OperatorNegate, $2); }

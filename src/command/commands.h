@@ -362,46 +362,6 @@ class Command
 		GetPattern,
 		ListPatterns,
 		NewPattern,
-	
-		// Preferences Commands
-		AngleLabel,
-		AtomDetail,
-		BondDetail,
-		CacheLimit,
-		Colour,
-		CommonElements,
-		DensityUnits,
-		DistanceLabel,
-		ECut,
-		Elec,
-		ElementAmbient,
-		ElementDiffuse,
-		ElementRadius,
-		EnergyUnits,
-		GL,
-		HDistance,
-		Intra,
-		Key,
-		LabelSize,
-		Light,
-		LightAmbient,
-		LightDiffuse,
-		LightPosition,
-		LightSpecular,
-		Mouse,
-		Radius,
-		ReplicateFold,
-		ReplicateTrim,
-		Scheme,
-		Shininess,
-		ShowOnScreen,
-		ShowOnImage,
-		Style,
-		SwapBuffers,
-		UseNiceText,
-		VCut,
-		Vdw,
-		ZoomThrottle,
 
 		// Read / Write Commands
 		AddReadOption,
@@ -443,10 +403,12 @@ class Command
 		Select,
 		SelectAll,
 		SelectFFType,
+		SelectInsideCell,
 		SelectionCog,
 		SelectionCom,
 		SelectNone,
 		SelectOverlaps,
+		SelectOutsideCell,
 		SelectPattern,
 		SelectType,
 
@@ -501,9 +463,9 @@ class Command
 		OperatorAnd,
 		OperatorAssignment,
 		OperatorAssignmentDivide,
-		OperatorAssignmentMinus,
 		OperatorAssignmentMultiply,
 		OperatorAssignmentPlus,
+		OperatorAssignmentSubtract,
 		OperatorDivide,
 		OperatorEqualTo,
 		OperatorGreaterThan,
@@ -822,45 +784,6 @@ class Command
 	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// Preferences Commands
-	static bool function_AngleLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_AtomDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_BondDetail(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_CacheLimit(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Colour(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_CommonElements(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_DensityUnits(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_DistanceLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Elec(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ElementAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ElementDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ElementRadius(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_EnergyUnits(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_HDistance(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Intra(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GL(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Key(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_LabelSize(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Light(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_LightAmbient(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_LightDiffuse(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_LightPosition(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_LightSpecular(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Mouse(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Radius(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ReplicateFold(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ReplicateTrim(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Scheme(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Shininess(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ShowOnScreen(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ShowOnImage(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Style(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SwapBuffers(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_UseNiceText(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Vdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_ZoomThrottle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Read / Write Commands
 	static bool function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -899,9 +822,11 @@ class Command
 	static bool function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -951,9 +876,9 @@ class Command
 	static bool function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignmentDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_OperatorAssignmentMinus(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignmentMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorAssignmentPlus(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv);

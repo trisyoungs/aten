@@ -445,3 +445,69 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	}
 	msg.exit("Model::selectOverlaps");
 }
+
+
+// Select atoms (or molecule COGs) inside of the current unit cell
+void Model::selectInsideCell(bool moleculecogs, bool markonly)
+{
+	msg.enter("Model::selectInsideCell");
+	Vec3<double> pos;
+	// If using molecule COGs, need a valid pattern definition
+	if (moleculecogs)
+	{
+		autocreatePatterns();
+		int m,n,id = 0;
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		{
+			for (m=0; m<p->nMolecules(); ++m)
+			{
+				// Get COG of molecule
+				pos = cell_.realToFrac(p->calculateCog(m));
+				if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				id += p->nAtoms();
+			}
+		}
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			pos = cell_.realToFrac(i->r());
+			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
+		}
+	}
+	msg.exit("Model::selectInsideCell");
+}
+
+// Select atoms (or molecule COGs) outside of the current unit cell
+void Model::selectOutsideCell(bool moleculecogs, bool markonly)
+{
+	msg.enter("Model::selectOutsideCell");
+	Vec3<double> pos;
+	// If using molecule COGs, need a valid pattern definition
+	if (moleculecogs)
+	{
+		autocreatePatterns();
+		int m,n,id = 0;
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		{
+			for (m=0; m<p->nMolecules(); ++m)
+			{
+				// Get COG of molecule
+				pos = cell_.realToFrac(p->calculateCog(m));
+				pos.print();
+				if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				id += p->nAtoms();
+			}
+		}
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			pos = cell_.realToFrac(i->r());
+			if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) selectAtom(i, markonly);
+		}
+	}
+	msg.exit("Model::selectOutsideCell");
+}

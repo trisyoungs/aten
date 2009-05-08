@@ -22,20 +22,14 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"
+#include "base/lineparser.h"
 #include "main/aten.h"
 #include <iostream>
 
 Prefs prefs;
 
-// GL Options
-const char *GlOptionKeywords[Prefs::nGlOptions] = { "fog", "linealias", "polyalias", "backcull", "__DUMMY__" };
-Prefs::GlOption Prefs::glOption(const char *s)
-{
-	return (Prefs::GlOption) enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s);
-}
-
 // Colour Schemes
-const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "element", "charge", "velocity", "force" };
+const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "charge", "element", "force", "velocity" };
 Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
 {
 	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
@@ -46,7 +40,7 @@ const char *Prefs::colouringScheme(ColouringScheme cs)
 }
 
 // Mouse buttons
-const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "left", "middle", "right", "wheel" };
+const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "Left", "Middle", "Right", "Wheel" };
 Prefs::MouseButton Prefs::mouseButton(const char *s)
 {
 	return (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
@@ -171,12 +165,15 @@ Prefs::Prefs()
 	spotlightPosition_[3] = 0.0;
 
 	// GL Options
-	glOptions_ = 8;
+	depthCue_ = FALSE;
+	lineAliasing_ = TRUE;
+	polygonAliasing_ = FALSE;
+	backfaceCulling_ = TRUE;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
-	fogNear_ = 1;
-	fogFar_ = 200;
+	depthNear_ = 1;
+	depthFar_ = 200;
 
 	// Rendering - Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
@@ -198,9 +195,11 @@ Prefs::Prefs()
 	mouseAction_[Prefs::MiddleButton] = Prefs::TranslateAction;
 	mouseAction_[Prefs::RightButton] = Prefs::RotateAction;
 	mouseAction_[Prefs::WheelButton] = Prefs::ZoomAction;
+	for (int i=0; i<Prefs::nMouseButtons; ++i) mouseActionTexts_[i] = MouseActionKeywords[i];
 	keyAction_[Prefs::ShiftKey] = Prefs::ZrotateKeyAction;
 	keyAction_[Prefs::CtrlKey] = Prefs::ManipulateKeyAction;
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
+	for (int i=0; i<Prefs::nModifierKeys; ++i) keyActionTexts_[i] = KeyActionKeywords[i];
 	zoomThrottle_ = 0.15;
 
 	// Colours
@@ -294,6 +293,54 @@ bool Prefs::load(const char *filename)
 	return result;
 }
 
+
+// Save user preferences file
+bool Prefs::save(const char *filename)
+{
+	msg.enter("Prefs::save");
+	bool result = TRUE;
+	char line[512];
+	LineParser prefsfile(filename, TRUE);
+	if (prefsfile.isFileGoodForWriting())
+	{
+		// First - loop over all element data, comparing it to the stored default values
+		prefsfile.writeLine("// Element Data\n");
+		int n, i, score;
+		for (n=0; n<elements().nElements(); ++n)
+		{
+			// Ambient Colour
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].ambientColour[i] != elements().el[n].ambientColour[i]) break;
+			if (i != 4)
+			{
+				sprintf(line,"aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
+				prefsfile.writeLine(line);
+			}
+			// Diffuse Colour
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].diffuseColour[i] != elements().el[n].diffuseColour[i]) break;
+			if (i != 4)
+			{
+				sprintf(line,"aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
+				prefsfile.writeLine(line);
+			}
+			// Atomic radius
+			if (elements().defaultEl[n].atomicRadius != elements().el[n].atomicRadius)
+			{
+				sprintf(line,"aten.elements[%s].radius = %f;\n", elements().el[n].symbol, elements().el[n].atomicRadius);
+				prefsfile.writeLine(line);
+			}
+		}
+		// Next - for each accessor in PreferencesVariable compare the results to our local Prefs copy
+		prefsfile.writeLine("// Program Preferences\n");
+		Prefs defaults;
+		
+	}
+	else result = FALSE;
+	prefsfile.closeFile();
+// 				double atomicRadius;
+	msg.exit("Prefs::save");
+	return result;
+}
+
 /*
 // Rendering - View Objects
 */
@@ -364,6 +411,12 @@ Atom::DrawStyle Prefs::renderStyle()
 int Prefs::globeSize()
 {
 	return globeSize_;
+}
+
+// Set the current rotation globe size in pixels
+void Prefs::setGlobeSize(int i)
+{
+	globeSize_ = i;
 }
 
 // Set positive repeat cell value
@@ -572,46 +625,76 @@ Prefs::ColouringScheme Prefs::colourScheme()
 // GL Options
 */
 
-// Set the bit for the specified option (if it is not set already)
-void Prefs::addGlOption(Prefs::GlOption go)
+// Set status of fog (depth cueing)
+void Prefs::setDepthCue(bool status)
 {
-	if (!(glOptions_&(1 << go))) glOptions_ += (1 << go);
+	depthCue_ = status;
 }
 
-// Unsets the bit for the specified option (if it is not unset already)
-void Prefs::removeGlOption(Prefs::GlOption go)
+// Return status of depth cueing
+bool Prefs::depthCue()
 {
-	if (glOptions_&(1 << go)) glOptions_ -= (1 << go);
-}
-
-// Return whether a given option is set
-bool Prefs::hasGlOption(Prefs::GlOption go)
-{
-	return (glOptions_&(1 << go) ? TRUE : FALSE);
+	return depthCue_;
 }
 
 // Sets the start depth of depth cueing
-void Prefs::setFogNnear(int i)
+void Prefs::setDepthNear(int i)
 {
-	fogNear_ = i;
+	depthNear_ = i;
 }
 
 // Return depth cue start depth
-GLint Prefs::fogNear()
+GLint Prefs::depthNear()
 {
-	return fogNear_;
+	return depthNear_;
 }
 
 // Sets the end depth of depth cueing
-void Prefs::setFogFar(int i)
+void Prefs::setDepthFar(int i)
 {
-	fogFar_ = i;
+	depthFar_ = i;
 }
 
 // Return depth cue end depth
-GLint Prefs::fogFar()
+GLint Prefs::depthFar()
 {
-	return fogFar_;
+	return depthFar_;
+}
+
+// Set status of line aliasing
+void Prefs::setLineAliasing(bool status)
+{
+	lineAliasing_ = status;
+}
+
+// Return status of line aliasing
+bool Prefs::lineAliasing()
+{
+	return lineAliasing_;
+}
+
+// Set status of polygon aliasing
+void Prefs::setPolygonAliasing(bool status)
+{
+	polygonAliasing_ = status;
+}
+
+// Return status of polygon aliasing
+bool Prefs::polygonAliasing()
+{
+	return polygonAliasing_;
+}
+
+// Set status of backface culling
+void Prefs::setBackfaceCulling(bool status)
+{
+	backfaceCulling_ = status;
+}
+
+// Return status of depth cueing
+bool Prefs::backfaceCulling()
+{
+	return backfaceCulling_;
 }
 
 // Return the Z depth of the near clipping plane
@@ -620,16 +703,29 @@ GLdouble Prefs::clipNear()
 	return clipNear_;
 }
 
+// Set the Z-depth of the near clipping plane
+void Prefs::setClipNear(double d)
+{
+	clipNear_ = d;
+}
+
 // Return the Z depth of the far clipping plane
 GLdouble Prefs::clipFar()
 {
 	return clipFar_;
 }
 
+// Set the Z-depth of the far clipping plane
+void Prefs::setClipFar(double d)
+{
+	clipFar_ = d;
+}
+
 // Sets the shininess of GL objects
 void Prefs::setShininess(int n)
 {
-	shininess_ = n;
+	if ((n < 0) || (n > 127)) msg.print("The option 'shininess' must be an integer between 0 and 127.\n");
+	else shininess_ = n;
 }
 
 // Return the current shininess of GL objects
@@ -664,6 +760,13 @@ void Prefs::setColour(PenColour c, double r, double g, double b, double a)
 	colours_[c][1] = g;
 	colours_[c][2] = b;
 	colours_[c][3] = a;
+}
+
+// Set the supplied element of the specified colour
+void Prefs::setColour(PenColour c, int i, double value)
+{
+	if ((i < 0) || (i > 3)) printf("Colour element index out of range (%i)\n", i);
+	else colours_[c][i] = value;
 }
 
 /*
@@ -769,6 +872,7 @@ double Prefs::hydrogenDistance()
 void Prefs::setMouseAction(Prefs::MouseButton mb, Prefs::MouseAction ma)
 {
 	mouseAction_[mb] = ma;
+	mouseActionTexts_[mb] = MouseActionKeywords[ma];
 }
 
 // Return the action associated with the specified mouse button
@@ -781,6 +885,7 @@ Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb)
 void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 {
 	keyAction_[mk] = ka;
+	keyActionTexts_[mk] = KeyActionKeywords[ka];
 }
 
 // Return the action associated with the specified keymod button
@@ -924,7 +1029,7 @@ Prefs::EnergyUnit Prefs::energyUnit()
 }
 
 // Set the density unit to use
-void Prefs::setDensityUnits(Prefs::DensityUnit du)
+void Prefs::setDensityUnit(Prefs::DensityUnit du)
 {
 	densityUnit_ = du;
 }
@@ -999,6 +1104,13 @@ bool Prefs::shouldUpdateEnergy(int n)
 int Prefs::maxRingSize()
 {
 	return maxRingSize_;
+}
+
+// Set the maximum ring size allowed
+void Prefs::setMaxRingSize(int i)
+{
+	if (i < 3) msg.print("The option 'maxringsize' cannot be set to less than 3.\n");
+	else maxRingSize_ = i;
 }
 
 // Set whether to fold atoms before replication

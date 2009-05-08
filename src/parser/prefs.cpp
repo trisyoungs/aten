@@ -24,6 +24,9 @@
 #include "base/constants.h"
 #include "classes/prefs.h"
 #include "parser/commandnode.h"
+#include "main/aten.h"
+#include "model/model.h"
+#include "gui/gui.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -89,6 +92,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "anglelabel",		VTypes::StringData,	0, FALSE },
 	{ "atomdetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "atomstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
+	{ "backgroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "bonddetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "bondstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
 	{ "bondtolerance",	VTypes::DoubleData,	0, FALSE },
@@ -106,12 +110,15 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "elecmethod",		VTypes::StringData,	0, FALSE },
 	{ "energyunit",		VTypes::StringData,	0, FALSE },
 	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
-	{ "fogfar",		VTypes::IntegerData,	0, FALSE },
-	{ "fognear",		VTypes::IntegerData,	0, FALSE },
+	{ "depthcue",		VTypes::IntegerData,	0, FALSE },
+	{ "depthfar",		VTypes::IntegerData,	0, FALSE },
+	{ "depthnear",		VTypes::IntegerData,	0, FALSE },
+	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "globesize",		VTypes::IntegerData,	0, FALSE },
 	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
 	{ "keyaction",		VTypes::StringData,	Prefs::nModifierKeys, FALSE },
 	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
+	{ "linealiasing",	VTypes::IntegerData,	0, FALSE },
 	{ "manualswapbuffers",	VTypes::IntegerData,	0, FALSE },
 	{ "maxringsize",	VTypes::IntegerData,	0, FALSE },
 	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
@@ -120,37 +127,23 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "offscreenobjects",	VTypes::IntegerData,	0, FALSE },
 	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
 	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
+	{ "polygonaliasing",	VTypes::IntegerData,	0, FALSE },
 	{ "renderstyle",	VTypes::StringData,	0, FALSE },
 	{ "replicatefold",	VTypes::IntegerData,	0, FALSE },
 	{ "replicatetrim",	VTypes::IntegerData,	0, FALSE },
 	{ "screenobjects",	VTypes::IntegerData,	0, FALSE },
 	{ "selectionscale",	VTypes::DoubleData,	0, FALSE },
 	{ "shininess",		VTypes::IntegerData,	0, FALSE },
+	{ "specularcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "spotlight",		VTypes::IntegerData,	0, FALSE },
+	{ "spotlightambient",	VTypes::DoubleData,	4, FALSE },
+	{ "spotlightdiffuse",	VTypes::DoubleData,	4, FALSE },
+	{ "spotlightposition",	VTypes::DoubleData,	4, FALSE },
+	{ "spotlightspecular",	VTypes::DoubleData,	4, FALSE },
 	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
 	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
 	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
-
-
-	/*
-	// Repeat units in positive xyz directions
-	Vec3<int> repeatCellsPos_;
-	// Repeat units in negative xyz directions
-	Vec3<int> repeatCellsNeg_;
-	// Spotlight components
-	GLfloat spotlightColour_[Prefs::nColourComponents][4];
-	// Spotlight position
-	GLfloat spotlightPosition_[4];
-	private:
-	// Bitvector for GL options
-	int glOptions_;
-	private:
-	// RGB colour values
-	GLfloat colours_[Prefs::nPenColours][4];
-	*/
-
-
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -224,13 +217,19 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.atomDetail() );
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
-			rv.set(prefs.atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set( VTypes::DoubleData, &prefs.atomStyleRadius_, Atom::nDrawStyles);
+			else rv.set(prefs.atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			break;
+		case (PreferencesVariable::BackgroundColour):
+			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::BackgroundColour), 4);
+			else rv.set( prefs.colour(Prefs::BackgroundColour)[arrayIndex-1] );
 			break;
 		case (PreferencesVariable::BondDetail):
 			rv.set( prefs.bondDetail() );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
-			rv.set(prefs.bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set( VTypes::DoubleData, &prefs.bondStyleRadius_, Atom::nDrawStyles);
+			else rv.set(prefs.bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
 			break;
 		case (PreferencesVariable::BondTolerance):
 			rv.set(prefs.bondTolerance());
@@ -262,6 +261,15 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::DensityUnit):
 			rv.set(Prefs::densityUnit(prefs.densityUnit()));
 			break;
+		case (PreferencesVariable::DepthCue):
+			rv.set( prefs.depthCue() );
+			break;
+		case (PreferencesVariable::DepthFar):
+			rv.set(prefs.depthFar());
+			break;
+		case (PreferencesVariable::DepthNear):
+			rv.set(prefs.depthNear());
+			break;
 		case (PreferencesVariable::DistanceLabel):
 			rv.set( prefs.distanceLabel() );
 			break;
@@ -277,11 +285,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::EnergyUpdate):
 			rv.set( prefs.energyUpdate() );
 			break;
-		case (PreferencesVariable::FogFar):
-			rv.set(prefs.fogFar());
-			break;
-		case (PreferencesVariable::FogNear):
-			rv.set(prefs.fogNear());
+		case (PreferencesVariable::ForegroundColour):
+			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::ForegroundColour), 4);
+			else rv.set( prefs.colour(Prefs::ForegroundColour)[arrayIndex-1] );
 			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(prefs.globeSize() );
@@ -290,10 +296,14 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.hydrogenDistance() );
 			break;
 		case (PreferencesVariable::KeyAction):
-			rv.set(prefs.keyAction( (Prefs::ModifierKey) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set(Prefs::keyAction( prefs.keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
+			else rv.set( VTypes::StringData, &prefs.keyActionTexts_, Prefs::nModifierKeys);
 			break;
 		case (PreferencesVariable::LabelSize):
 			rv.set( prefs.labelSize() );
+			break;
+		case (PreferencesVariable::LineAliasing):
+			rv.set( prefs.lineAliasing() );
 			break;
 		case (PreferencesVariable::ManualSwapBuffers):
 			rv.set( prefs.manualSwapBuffers() );
@@ -308,7 +318,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.modelUpdate() );
 			break;
 		case (PreferencesVariable::MouseAction):
-			rv.set(prefs.mouseAction( (Prefs::MouseButton) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set(Prefs::mouseAction( prefs.mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
+			else rv.set( VTypes::StringData, &prefs.mouseActionTexts_, Prefs::nMouseButtons);
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			rv.set( prefs.offScreenObjects() );
@@ -318,6 +329,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::PerspectiveFov):
 			rv.set( prefs.perspectiveFov() );
+			break;
+		case (PreferencesVariable::PolygonAliasing):
+			rv.set( prefs.polygonAliasing() );
 			break;
 		case (PreferencesVariable::RenderStyle):
 			rv.set( Atom::drawStyle(prefs.renderStyle()) );
@@ -336,6 +350,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::Shininess):
 			rv.set( prefs.shininess() );
+			break;
+		case (PreferencesVariable::SpecularColour):
+			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::SpecularColour), 4);
+			else rv.set( prefs.colour(Prefs::SpecularColour)[arrayIndex-1] );
 			break;
 		case (PreferencesVariable::Spotlight):
 			rv.set( prefs.spotlightActive() );
@@ -423,17 +441,235 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	Prefs *ptr= (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
+	int n;
+	Prefs::ColouringScheme cs;
+	Prefs::DensityUnit du;
+	Prefs::EnergyUnit eu;
+	Electrostatics::ElecMethod em;
+	Prefs::ModifierKey mk;
+	Prefs::KeyAction ka;
+	Prefs::MouseButton mb;
+	Prefs::MouseAction ma;
+	Atom::DrawStyle ds;
 	switch (acc)
 	{
+		case (PreferencesVariable::AngleLabel):
+			prefs.setAngleLabel( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::AtomDetail):
+			prefs.setAtomDetail( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::AtomStyleRadius):
+			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
+			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::BackgroundColour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::BondDetail):
+			prefs.setBondDetail( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::BondStyleRadius):
+			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setBondStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
+			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::BondTolerance):
+			ptr->setBondTolerance( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::CacheLimit):
+			ptr->setCacheLimit( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::CalculateElec):
+			ptr->setCalculateElec( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::CalculateIntra):
+			ptr->setCalculateIntra( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::CalculateVdw):
+			ptr->setCalculateVdw( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::ClipFar):
+			ptr->setClipFar( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ClipNear):
+			ptr->setClipNear( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ColourScheme):
+			cs = Prefs::colouringScheme( newvalue.asString(result) );
+			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
+			else result = FALSE;
+			break;
+		case (PreferencesVariable::CommonElements):
+			ptr->setCommonElements( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::DensityUnit):
+			du = Prefs::densityUnit( newvalue.asString(result) );
+			if (du != Prefs::nDensityUnits) ptr->setDensityUnit(du);
+			else result = FALSE;
+			break;
+		case (PreferencesVariable::DepthCue):
+			ptr->setDepthCue( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::DepthFar):
+			ptr->setDepthFar( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::DepthNear):
+			ptr->setDepthNear( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::DistanceLabel):
+			ptr->setDistanceLabel( newvalue.asString(result) );
+			break;
+		case (PreferencesVariable::ElecCutoff):
+			ptr->setElecCutoff( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ElecMethod):
+			em = Electrostatics::elecMethod( newvalue.asString(result) );
+			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
+			else result = FALSE;
+			break;
 		case (PreferencesVariable::EnergyUnit):
-			// Call the
-			if (!CommandNode::run(Command::EnergyUnits, "s", newvalue.asString())) result = FALSE;
-			sourcerv.set(Prefs::energyUnit(prefs.energyUnit()));
+			eu = Prefs::energyUnit( newvalue.asString(result) );
+			if (eu != Prefs::nEnergyUnits) ptr->setEnergyUnit(eu);
+			else result = FALSE;
+			break;
+		case (PreferencesVariable::EnergyUpdate):
+			ptr->setEnergyUpdate( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::ForegroundColour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::ForegroundColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::GlobeSize):
+			ptr->setGlobeSize( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::HDistance):
+			ptr->setHydrogenDistance( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::KeyAction):
+			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
+			{
+				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
+				else { result = FALSE; break; }
+			}
+			else if (hasArrayIndex)
+			{
+				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) (arrayIndex-1), ka);
+				else result = FALSE;
+			}
+			else
+			{
+				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				if ((ka != Prefs::nKeyActions) && result) for (n=0; n<Prefs::nKeyActions; ++n) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
+				else { result = FALSE; break; }
+			}
+			break;
+		case (PreferencesVariable::LabelSize):
+			ptr->setLabelSize( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::LineAliasing):
+			ptr->setLineAliasing( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::ManualSwapBuffers):
+			ptr->setManualSwapBuffers( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::MaxRingSize):
+			ptr->setMaxRingSize( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::MaxUndo):
+			ptr->setMaxUndoLevels( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::ModelUpdate):
+			ptr->setModelUpdate( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::MouseAction):
+			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nMouseActions; ++n)
+			{
+				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
+				else { result = FALSE; break; }
+			}
+			else if (hasArrayIndex)
+			{
+				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) (arrayIndex-1), ma);
+				else result = FALSE;
+			}
+			else
+			{
+				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
+				else { result = FALSE; break; }
+			}
+			break;
+		case (PreferencesVariable::OffScreenObjects):
+			ptr->setOffScreenObjects( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::Perspective):
+			ptr->setPerspective( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::PerspectiveFov):
+			ptr->setPerspectiveFov( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::PolygonAliasing):
+			ptr->setPolygonAliasing( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::RenderStyle):
+			ds = Atom::drawStyle( newvalue.asString(result) );
+			if ((ds != Atom::nDrawStyles) && result) ptr->setRenderStyle(ds);
+			else result = FALSE;
+			break;
+		case (PreferencesVariable::ReplicateFold):
+			ptr->setReplicateFold( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::ReplicateTrim):
+			ptr->setReplicateTrim( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::ScreenObjects):
+			ptr->setScreenObjects( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::SelectionScale):
+			ptr->setSelectionScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::Shininess):
+			ptr->setShininess( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::SpecularColour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::SpecularColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::Spotlight):
+			ptr->setSpotlightActive( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::UseNiceText):
+			ptr->setUseNiceText( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::VdwCutoff):
+			ptr->setVdwCutoff( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::VdwScale):
+			ptr->setVdwScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ZoomThrottle):
+			ptr->setZoomThrottle( newvalue.asDouble(result) );
 			break;
 		default:
 			printf("PreferencesVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
+	}
+	// Update model and main view
+	if (result)
+	{
+		if (aten.current.rs != NULL) aten.current.rs->changeLog.add(Log::Visual);
+		gui.mainView.postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");
 	return result;
