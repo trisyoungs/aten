@@ -684,6 +684,7 @@ TreeNode *Tree::wrapVariable(Variable *var, TreeNode *arrayindex)
 	VariableNode *vnode = new VariableNode(var);
 	nodes_.own(vnode);
 	vnode->setArrayIndex(arrayindex);
+	if ((arrayindex == NULL) && (var->nodeType() == TreeNode::ArrayVarNode)) vnode->setReturnsArray(TRUE);
 	vnode->setParent(this);
 	return vnode;
 }

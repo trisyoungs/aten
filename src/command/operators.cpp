@@ -47,10 +47,10 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(b)); rv = lhs; break;
 		case (VTypes::DblAInt):
 		case (VTypes::DblADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(b)); rv = lhs; break;
-		case (VTypes::IntIntA):
-		case (VTypes::IntDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asInteger(i,b) + lhs.asInteger(b)); rv = rhs; break;
-		case (VTypes::DblIntA):
-		case (VTypes::DblDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asDouble(i,b) + lhs.asDouble(b)); rv = rhs; break;
+// 		case (VTypes::IntIntA):
+// 		case (VTypes::IntDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asInteger(i,b) + lhs.asInteger(b)); rv = rhs; break;
+// 		case (VTypes::DblIntA):
+// 		case (VTypes::DblDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asDouble(i,b) + lhs.asDouble(b)); rv = rhs; break;
 		case (VTypes::IntInt): rv.set(lhs.asInteger(b) + rhs.asInteger(b)); break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
@@ -80,7 +80,6 @@ bool Command::function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->arg(0,v1)) return FALSE;
 	if (!c->arg(1,v2)) return FALSE;
 	rv.set(v1.asBool() && v2.asBool());
-	// TGAY
 	return TRUE;
 }
 
@@ -222,11 +221,13 @@ bool Command::function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnVa
 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) <= 0) { result = 0; break; } break;
 		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) <= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) <= rhs.asInteger(b)) result = 0; break;
+		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) <= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) <= rhs.asDouble(b)) result = 0; break;
 		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) <= 0) result = 0; break;
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) <= rhs.asPointer(rhs.type(),b)) result = 0; break;
+		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) <= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
 			msg.print("The operator '>' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -254,11 +255,13 @@ bool Command::function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, R
 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) < 0) { result = 0; break; } break;
 		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) < rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) < rhs.asInteger(b)) result = 0; break;
+		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) < ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) < rhs.asDouble(b)) result = 0; break;
 		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) < 0) result = 0; break;
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) < rhs.asPointer(rhs.type(),b)) result = 0; break;
+		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) < ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
 			msg.print("The operator '>=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -286,11 +289,13 @@ bool Command::function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) >= 0) { result = 0; break; } break;
 		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) >= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) >= rhs.asInteger(b)) result = 0; break;
+		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) >= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) >= rhs.asDouble(b)) result = 0; break;
 		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) >= 0) result = 0; break;
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) >= rhs.asPointer(rhs.type(),b)) result = 0; break;
+		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) >= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
 			msg.print("The operator '<' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -318,11 +323,13 @@ bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, Retu
 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) > 0) { result = 0; break; } break;
 		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) > rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) > rhs.asInteger(b)) result = 0; break;
+		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) > ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) > rhs.asDouble(b)) result = 0; break;
 		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) > 0) result = 0; break;
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) > rhs.asPointer(rhs.type(),b)) result = 0; break;
+		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) > ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
 			msg.print("The operator '<=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -346,7 +353,6 @@ bool Command::function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) * rhs.asDouble(i,b)); rv = lhs; break;
-// 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) { strcpy(s,lhs.asString(i,b)); strcat(s,rhs.asString(i,b)); lhs.setElement(i,s); } rv = lhs; breakkkkkk; TGAY
 		case (VTypes::IntAInt):
 		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) * rhs.asInteger(b)); rv = lhs; break;
 		case (VTypes::DblAInt):
@@ -471,7 +477,7 @@ bool Command::function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, Retu
 	ReturnValue newvalue;
 	newvalue = rv;
 	newvalue.decrease();
-	return c->setArg(0, newvalue);   // TGAY
+	return c->setArg(0, newvalue);
 }
 
 // Postfix Increase
@@ -482,7 +488,7 @@ bool Command::function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, Retu
 	ReturnValue newvalue;
 	newvalue = rv;
 	newvalue.increase();
-	return c->setArg(0, newvalue);   // TGAY
+	return c->setArg(0, newvalue);
 }
 
 // Prefix Decrease
@@ -491,7 +497,7 @@ bool Command::function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, Retur
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
 	rv.decrease();
-	return c->setArg(0, rv);   // TGAY
+	return c->setArg(0, rv);
 }
 
 // Prefix Increase
@@ -500,7 +506,7 @@ bool Command::function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, Retur
 	// Get current value of argument
 	if (!c->arg(0, rv)) return FALSE;
 	rv.increase();
-	return c->setArg(0, rv);   // TGAY
+	return c->setArg(0, rv);
 }
 
 // Raise one quantity to the power of another
@@ -545,10 +551,10 @@ bool Command::function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue
 		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) - rhs.asInteger(b)); rv = lhs; break;
 		case (VTypes::DblAInt):
 		case (VTypes::DblADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) - rhs.asDouble(b)); rv = lhs; break;
-		case (VTypes::IntIntA):
-		case (VTypes::IntDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asInteger(i,b) - lhs.asInteger(b)); rv = rhs; break;
-		case (VTypes::DblIntA):
-		case (VTypes::DblDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asDouble(i,b) - lhs.asDouble(b)); rv = rhs; break;
+// 		case (VTypes::IntIntA):
+// 		case (VTypes::IntDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asInteger(i,b) - lhs.asInteger(b)); rv = rhs; break;
+// 		case (VTypes::DblIntA):
+// 		case (VTypes::DblDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asDouble(i,b) - lhs.asDouble(b)); rv = rhs; break;
 		case (VTypes::IntInt): rv.set(lhs.asInteger(b) - rhs.asInteger(b)); break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):

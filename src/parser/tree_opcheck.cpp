@@ -109,10 +109,14 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::IntegerData;
 	}
+	VTypes::DataType result = VTypes::NoData;
 	returnsarray = FALSE;
 	switch (func)
 	{
 		case (Command::OperatorAdd):
+		case (Command::OperatorSubtract):
+		case (Command::OperatorAssignmentPlus):
+		case (Command::OperatorAssignmentSubtract):
 			switch (id)
 			{
 				case (VTypes::IntInt):
@@ -129,43 +133,33 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (VTypes::VecDbl):
 				case (VTypes::IntVec):
 				case (VTypes::DblVec):
+				case (VTypes::VecIntA):
+				case (VTypes::VecDblA):
 					result = VTypes::VectorData;
 					break;
 				case (VTypes::IntAIntA):
 				case (VTypes::DblADblA):
 				case (VTypes::StrAStrA):
-					result = type1;
-					returnsarray = TRUE;
-					break;
-				case (VTypes::IntADblA):
 				case (VTypes::DblAIntA):
+				case (VTypes::IntADblA):
 				case (VTypes::IntAInt):
-				case (VTypes::IntADbl):
 				case (VTypes::DblAInt):
 				case (VTypes::DblADbl):
-				case (VTypes::IntIntA):
-				case (VTypes::IntDblA):
-				case (VTypes::DblIntA):
-				case (VTypes::DblDblA):
 				case (VTypes::IntAVec):
 				case (VTypes::DblAVec):
-				case (VTypes::VecIntA):
-				case (VTypes::VecDblA):
-					result = type;
+				case (VTypes::IntADbl):
+					result = type1;
 					returnsarray = TRUE;
 					break;
 			}
 			break;
 		case (Command::OperatorAnd):
+		case (Command::OperatorOr):
 			result = VTypes::IntegerData;
 			returnsarray = FALSE;
 			break;
-		case (Command::OperatorAssignment):
-		case (Command::OperatorAssignmentDivide):
-		case (Command::OperatorAssignmentMultiply):
-		case (Command::OperatorAssignmentPlus):
-		case (Command::OperatorAssignmentSubtract):
 		case (Command::OperatorDivide):
+		case (Command::OperatorAssignmentDivide):
 			switch (id)
 			{
 				case (VTypes::IntAIntA):
@@ -173,14 +167,11 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (VTypes::DblAIntA):
 				case (VTypes::DblADblA):
 				case (VTypes::IntAInt):
-				case (VTypes::IntADbl):
 				case (VTypes::DblAInt):
 				case (VTypes::DblADbl):
 				case (VTypes::IntAVec):
 				case (VTypes::DblAVec):
-					result = 
 				case (VTypes::IntInt):
-				case (VTypes::IntDbl):
 				case (VTypes::DblInt):
 				case (VTypes::DblDbl):
 				case (VTypes::VecInt):
@@ -188,6 +179,50 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (VTypes::VecVec):
 				case (VTypes::VecIntA):
 				case (VTypes::VecDblA):
+					result = type1;
+					break;
+				case (VTypes::IntADbl):
+					returnsarray = TRUE;
+				case (VTypes::IntDbl):
+					result = type2;
+					break;
+			}
+			break;
+		case (Command::OperatorAssignmentMultiply):
+		case (Command::OperatorMultiply):
+			switch (id)
+			{
+				case (VTypes::IntAIntA):
+				case (VTypes::IntAInt):
+				case (VTypes::DblAIntA):
+				case (VTypes::DblADblA):
+				case (VTypes::DblAInt):
+				case (VTypes::DblADbl):
+				case (VTypes::DblDblA):
+				case (VTypes::DblIntA):
+				case (VTypes::IntAVec):
+				case (VTypes::DblAVec):
+					returnsarray = TRUE;
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+				case (VTypes::IntInt):
+				case (VTypes::VecInt):
+				case (VTypes::VecDbl):
+				case (VTypes::VecVec):
+				case (VTypes::VecIntA):
+				case (VTypes::VecDblA):
+					result = type1;
+					break;
+				case (VTypes::IntADblA):
+				case (VTypes::IntADbl):
+				case (VTypes::IntIntA):
+				case (VTypes::IntDblA):
+					returnsarray = TRUE;
+				case (VTypes::IntDbl):
+				case (VTypes::IntVec):
+				case (VTypes::DblVec):
+					result = type2;
+					break;
 			}
 			break;
 		case (Command::OperatorEqualTo):
@@ -195,138 +230,74 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 		case (Command::OperatorGreaterThanEqualTo):
 		case (Command::OperatorLessThan):
 		case (Command::OperatorLessThanEqualTo):
-		case (Command::OperatorMultiply):
 		case (Command::OperatorNotEqualTo):
-		case (Command::OperatorOr):
-			result = VTypes::IntegerData;
-			returnsarray = FALSE;
+			switch (id)
+			{
+				case (VTypes::IntAIntA):
+				case (VTypes::IntADblA):
+				case (VTypes::DblAIntA):
+				case (VTypes::DblADblA):
+				case (VTypes::StrAStrA):
+				case (VTypes::PtrAPtrA):
+				case (VTypes::IntInt):
+				case (VTypes::IntPtr):
+				case (VTypes::IntDbl):
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+				case (VTypes::StrStr):
+				case (VTypes::PtrPtr):
+				case (VTypes::PtrInt):
+					result = VTypes::IntegerData;
+					break;
+			}
 			break;
 		case (Command::OperatorPower):
-		case (Command::OperatorSubtract):
-	}
-
-
-
-
-
-
-
-
-	// Put types in 'precedence' order
-	if (type2 > type1)
-	{
-		VTypes::DataType temp = type1;
-		type1 = type2;
-		type2 = temp;
-	}
-	// Get array flags
-	bool array1 = ((ntype1 == TreeNode::ArrayVarNode) || (ntype1 == TreeNode::ArrayConstantNode));
-	bool array2 = ((ntype2 == TreeNode::ArrayVarNode) || (ntype2 == TreeNode::ArrayConstantNode));
-	// Like types first... (make int equivalent to real if both types are numeric)
-	if ((type1 <= VTypes::DoubleData) && (type2 <= VTypes::DoubleData) && (type1 != type2)) type1 = type2 = VTypes::DoubleData;
-	VTypes::DataType result = VTypes::NoData;
-	if (type1 == type2)
-	{
-		switch (func)
-		{
-			// Arithmetic
-			case (Command::OperatorAdd):
-				// Any pair of the same type except pointers can be added together
-				if (type1 < VTypes::AtenData) result = type1;
-				break;
-			case (Command::OperatorSubtract):
-			case (Command::OperatorMultiply):
-			case (Command::OperatorDivide):
-				if ((type1 == VTypes::StringData) || (type1 >= VTypes::AtenData)) result = VTypes::NoData;
-				else result = type1;
-				break;
-			case (Command::OperatorPower):
-				// Only numerical types, and no arrays
-				if (array1 || array2) result = VTypes::NoData;
-				else if (type1 > VTypes::DoubleData) result = VTypes::NoData;
-				else result = type1;
-				break;
-			// Tests
-			case (Command::OperatorGreaterThan):
-			case (Command::OperatorGreaterThanEqualTo):
-			case (Command::OperatorLessThan):
-			case (Command::OperatorLessThanEqualTo):
-				if (array1 || array2) { result = VTypes::NoData; break; }
-			case (Command::OperatorEqualTo):
-			case (Command::OperatorNotEqualTo):
-				// All other test operators are fine, unless its a vector
-				if (type1 != VTypes::VectorData) result = VTypes::IntegerData;
-				break;
-			// Assignment
-			case (Command::OperatorAssignment):
-				// Any value of the same type can be assigned
-				result = type1;
-				break;
-			case (Command::OperatorAssignmentDivide):
-			case (Command::OperatorAssignmentSubtract):
-			case (Command::OperatorAssignmentMultiply):
-			case (Command::OperatorAssignmentPlus):
-				// Nonsensical for character types and pointer types
-				if ((type1 == VTypes::StringData) || (type1 >= VTypes::AtenData)) result = VTypes::NoData;
-				else result = type1;
-				break;
-			default:
-				printf("Operator '%s' not in table for checkOperatorTypes.\n", Command::data[func].keyword);
-				result = VTypes::NoData;
-				break;
-		}
-	}
-	else
-	{
-		// Dissimilar types
-		// First, there are no operations that we allow involving a pointer*except* for and also (in)equality with an integer
-		if (type1 >= VTypes::AtenData)
-		{
-			if (type2 != VTypes::IntegerData) result = VTypes::NoData;
-			else if ((func == Command::OperatorEqualTo) || (func == Command::OperatorNotEqualTo)) result = VTypes::IntegerData;
-			else result = VTypes::NoData;
-		}
-		else if (type1 == VTypes::VectorData)
-		{
-			// We can do arithmetic and in-place assignments with simple numbers, but no test comparisons
-			switch (func)
+			switch (id)
 			{
-				case (Command::OperatorAdd):
-				case (Command::OperatorSubtract):
-				case (Command::OperatorMultiply):
-				case (Command::OperatorDivide):
-				case (Command::OperatorAssignment):
-				case (Command::OperatorAssignmentDivide):
-				case (Command::OperatorAssignmentSubtract):
-				case (Command::OperatorAssignmentMultiply):
-				case (Command::OperatorAssignmentPlus):
-					if ((type2 == VTypes::DoubleData) || (type2 == VTypes::IntegerData)) result = VTypes::VectorData;
-					else result = VTypes::NoData;
+				case (VTypes::IntInt):
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+					result = type1;
 					break;
-				default:
-					result = VTypes::NoData;
+				case (VTypes::IntDbl):
+					result = type1;
 					break;
 			}
-		}
-		else if (type1 == VTypes::StringData)
-		{
-			// We allow multiplication of a string by a number...
-			if ((type2 == VTypes::DoubleData) || (type2 == VTypes::IntegerData))
+			break;
+		case (Command::OperatorAssignment):
+			switch (id)
 			{
-				switch (func)
-				{
-					case (Command::OperatorMultiply):
-					case (Command::OperatorAssignment):
-					case (Command::OperatorAssignmentMultiply):
-						result = VTypes::StringData;
-						break;
-					default:
-						result = VTypes::NoData;
-						break;
-				}
+				case (VTypes::IntInt):
+				case (VTypes::PtrPtr):
+				case (VTypes::VecVec):
+				case (VTypes::StrStr):
+				case (VTypes::IntDbl):
+				case (VTypes::DblInt):
+				case (VTypes::DblDbl):
+				case (VTypes::VecInt):
+				case (VTypes::VecDbl):
+				case (VTypes::VecIntA):
+				case (VTypes::VecDblA):
+					result = type1;
+					break;
+				case (VTypes::IntAIntA):
+				case (VTypes::DblADblA):
+				case (VTypes::StrAStrA):
+				case (VTypes::DblAIntA):
+				case (VTypes::IntADblA):
+				case (VTypes::PtrAPtrA):
+				case (VTypes::IntAInt):
+				case (VTypes::DblAInt):
+				case (VTypes::DblADbl):
+				case (VTypes::IntAVec):
+				case (VTypes::DblAVec):
+				case (VTypes::IntADbl):
+				case (VTypes::PtrAPtr):
+					result = type1;
+					returnsarray = TRUE;
+					break;
 			}
-			else result = VTypes::NoData;
-		}
+			break;
 	}
 	// Print error message
 	if (result == VTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", Command::data[func].keyword, VTypes::dataType(type1), VTypes::dataType(type2));
