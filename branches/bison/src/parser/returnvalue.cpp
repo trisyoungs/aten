@@ -415,8 +415,7 @@ const char *ReturnValue::asString(bool &success)
 Vec3<double> ReturnValue::asVector(bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) msg.print("Cannot return a whole array as a single vector.\n");
-	else switch (type_)
+	switch (type_)
 	{
 		case (VTypes::NoData):
 			printf("Internal error: No data in ReturnValue to return as a character!\n");
@@ -425,11 +424,13 @@ Vec3<double> ReturnValue::asVector(bool &success)
 			break;
 		case (VTypes::IntegerData):
 			if (arraySize_ == -1) return Vec3<double>(valueI_, valueI_, valueI_);
-			else if (arraySize_ == 3) return Vec3<double>( ((int*)valueP_)[0], ((int*)valueP_)[1], ((int*)valueP_)[2] ); 
+			else if (arraySize_ == 3) return Vec3<double>( arrayI_[0], arrayI_[1], arrayI_[2] );
+			else msg.print("Cannot return a whole array as a single vector.\n");
 			break;
 		case (VTypes::DoubleData):
 			if (arraySize_ == -1) return Vec3<double>(valueD_, valueD_, valueD_);
-			else if (arraySize_ == 3) return Vec3<double>( ((double*)valueP_)[0], ((double*)valueP_)[1], ((double*)valueP_)[2] ); 
+			else if (arraySize_ == 3) return Vec3<double>( arrayD_[0], arrayD_[1], arrayD_[2] );
+			else msg.print("Cannot return a whole array as a single vector.\n");
 			break;
 		case (VTypes::VectorData):
 			return valueV_;
