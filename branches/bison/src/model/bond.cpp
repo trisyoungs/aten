@@ -267,8 +267,8 @@ void Model::addAtomToCuboid(Atom *i)
 	bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// We also add atoms that are on the very edges of the overlays to the ones on the other side (to account for MIM)
 // 	printf("If x == 0, overlay is %i\n",(cuboidBoxes_.x-1)*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+z);
-	if (cell_.type() != Cell::NoCell)
-	{
+/*	if (cell_.type() != Cell::NoCell) //TGAY Oddness in non-periodic systems - This appears to break bonding on one 'edge'
+	{*/
 		if (x == 0)
 		{
 			bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// Xyz
@@ -285,7 +285,7 @@ void Model::addAtomToCuboid(Atom *i)
 			if (z == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // xYZ
 		}
 		if (z == 0) bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius);	// xyZ
-	}
+// 	}
 // 	bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// xyz
 // 	printf("If x == y, overlay is %i\n",x*cuboidBoxes_.y*cuboidBoxes_.z+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z);
 // 	if (y == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	// xYz
