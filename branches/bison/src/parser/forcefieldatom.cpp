@@ -86,7 +86,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }
@@ -154,7 +154,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::ParentFF):
-			rv.set(VTypes::ForcefieldData, ptr->parent());
+			rv.setPtr(VTypes::ForcefieldData, ptr->parent());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldAtomVariable.\n", accessorData[i].name);

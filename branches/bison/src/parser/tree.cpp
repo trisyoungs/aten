@@ -32,6 +32,7 @@
 #include "parser/vector.h"
 #include "parser/integer.h"
 #include "parser/double.h"
+#include "model/model.h"
 #include "base/sysfunc.h"
 #include "main/aten.h"
 #include <stdarg.h>
@@ -197,6 +198,13 @@ bool Tree::execute(ReturnValue &rv)
 	bool result;
 	rv.reset();
 	acceptedFail_ = Command::NoFunction;
+	// Perform any preparatory commands related to filter trees
+	if (isFilter()) switch (filter.type())
+	{
+		case (FilterData::ExpressionExport):
+			aten.current.m->createUniqueLists();
+			break;
+	}
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
@@ -732,14 +740,14 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 	if (ri == NULL)
 	{
 		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", name->get());
-		return NULL;
+		return FALSE;
 	}
 	msg.print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
 	// If the last step was an array and an array index was not give, we complain!
 	if (ri->item != ri->data)
 	{
 		StepNode *laststep = (StepNode*) ri->data;
-		if (laststep->requiresArrayIndex() && (laststep->arrayIndex() == NULL))
+		if ((laststep->arraySize() != 0) && (laststep->arrayIndex() == NULL))
 		{
 			msg.print("Previous step in path requires an array index to be specified.\n");
 			msg.exit("Tree::expandPath");

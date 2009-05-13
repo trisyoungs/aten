@@ -85,7 +85,7 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ForcefieldBoundVariable::accessorSearch");
 	return result;
 }

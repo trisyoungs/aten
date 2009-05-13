@@ -55,7 +55,7 @@ class IntegerVariable : public Variable
 };
 
 // Integer Array Variable
-class IntegerArrayVariable : public Variable
+class IntegerArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
@@ -81,14 +81,14 @@ class IntegerArrayVariable : public Variable
 	// Variable Data
 	*/
 	private:
-	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
-	// Array size
-	int arraySize_;
 	// Integer data
 	int *integerArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
+
+	public:
+	// Return array pointer
+	int *arrayData();
 
 	/*
 	// Inherited Virtuals

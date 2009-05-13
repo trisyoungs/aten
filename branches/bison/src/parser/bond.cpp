@@ -84,7 +84,7 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("BondVariable::accessorSearch");
 	return result;
 }
@@ -123,10 +123,10 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (BondVariable::I):
-			rv.set(VTypes::AtomData, ptr->atomI());
+			rv.setPtr(VTypes::AtomData, ptr->atomI());
 			break;
 		case (BondVariable::J):
-			rv.set(VTypes::AtomData, ptr->atomJ());
+			rv.setPtr(VTypes::AtomData, ptr->atomJ());
 			break;
 		case (BondVariable::Order):
 			rv.set(ptr->order());

@@ -637,7 +637,9 @@ void GuiQt::textProgressUpdate(int currentstep)
 // Terminate the text progress dialog
 void GuiQt::textProgressTerminate()
 {
+	if (textProgressPercent_ == -1) return;
 	printf("\n");
+	textProgressPercent_ = -1;
 }
 
 /*

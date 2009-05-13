@@ -31,15 +31,11 @@ filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension
 filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
 {
 	# Variable declaration
-	int n;
-	string e;
-	double rx,ry,rz;
-	atom i;
 	model m = aten.frame;
 
 	writeline(m.natoms);
 	writeline(m.name);
-	for (i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
+	for (atom i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
 }
 
 #importtrajectory

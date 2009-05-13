@@ -39,8 +39,6 @@ class StringVariable : public Variable
 	// Set / Get
 	*/
 	public:
-	// Set value of variable (character)
-	bool set(const char *s);
 	// Return value of node
 	bool execute(ReturnValue &rv);
 	// Set from returnvalue node

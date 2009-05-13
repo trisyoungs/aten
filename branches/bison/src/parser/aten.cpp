@@ -62,7 +62,7 @@ void AtenVariable::reset()
 // Return value of node
 bool AtenVariable::execute(ReturnValue &rv)
 {
-	rv.set(VTypes::AtenData, &aten);
+	rv.setPtr(VTypes::AtenData, &aten);
 	return TRUE;
 }
 
@@ -121,7 +121,7 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("AtenVariable::accessorSearch");
 	return result;
 }
@@ -165,24 +165,24 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 				msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
 				result = FALSE;
 			}
-			else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
+			else rv.setPtr(VTypes::ElementData, &elements().el[arrayIndex]);
 			break;
 		case (AtenVariable::Frame):
-			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
+			rv.setPtr(VTypes::ModelData, aten.currentModel()->renderSource());
 			break;
 		case (AtenVariable::Modeldata):
-			rv.set(VTypes::ModelData, aten.currentModel());
+			rv.setPtr(VTypes::ModelData, aten.currentModel());
 			break;
 		case (AtenVariable::Models):
 			m = aten.model(arrayIndex-1);
 			if (m == NULL) result = FALSE;
-			else rv.set(VTypes::ModelData, m);
+			else rv.setPtr(VTypes::ModelData, m);
 			break;
 		case (AtenVariable::NElements):
 			rv.set(elements().nElements());
 			break;
 		case (AtenVariable::Preferences):
-			rv.set(VTypes::PreferencesData, &prefs);
+			rv.setPtr(VTypes::PreferencesData, &prefs);
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in AtenVariable.\n", accessorData[i].name);

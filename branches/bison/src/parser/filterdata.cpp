@@ -176,15 +176,11 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
 			parser.getArgsDelim(rv.asString());
 			for (n = 0; n < parser.nArgs(); ++n) exactNames_.add()->set(parser.argc(n));
-// 			d = exactNames_.add();
-// 			d->set(rv.asString());
 			break;
 		case (FilterData::ExtensionOption):
 			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
 			parser.getArgsDelim(rv.asString());
 			for (n = 0; n < parser.nArgs(); ++n) extensions_.add()->set(parser.argc(n));
-// 			d = extensions_.add();
-// 			d->set(rv.asString());
 			break;
 		case (FilterData::GlobOption):
 			if (!value->execute(rv)) printf("Error retrieving 'glob' filter option value.\n");
@@ -213,7 +209,7 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 			if (ft == FilterData::nFilterTypes)
 			{
 				msg.exit("FilterData::setOption");
-				return TRUE;
+				return FALSE;
 			}
 			type_ = ft;
 			break;
@@ -227,7 +223,7 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 			if (zm == ElementMap::nZMapTypes)
 			{
 				msg.exit("FilterData::setOption");
-				return TRUE;
+				return FALSE;
 			}
 			zMapType_ = zm;
 			break;

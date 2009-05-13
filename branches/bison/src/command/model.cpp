@@ -70,7 +70,7 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 		}
 	}
 	else msg.print("Current model is '%s'.\n", aten.current.m->name());
-	rv.set(VTypes::ModelData, aten.current.m);
+	rv.setPtr(VTypes::ModelData, aten.current.m);
 	return TRUE;
 }
 
@@ -109,7 +109,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Model *m = aten.model(0);
-	rv.set(VTypes::ModelData, m);
+	rv.setPtr(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -134,7 +134,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			printf("Can't convert %s in to a Model.\n", VTypes::aDataType(c->argType(0)));
 			break;
 	}
-	rv.set(VTypes::ModelData, m);
+	rv.setPtr(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -164,7 +164,7 @@ bool Command::function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Model *m = aten.model(aten.nModels()-1);
-	rv.set(VTypes::ModelData, m);
+	rv.setPtr(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
@@ -250,7 +250,7 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
-	rv.set(VTypes::ModelData, obj.m);
+	rv.setPtr(VTypes::ModelData, obj.m);
 	return TRUE;
 }
 
@@ -264,7 +264,7 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
 	}
-	rv.set(VTypes::ModelData, obj.m);
+	rv.setPtr(VTypes::ModelData, obj.m);
 	return TRUE;
 }
 
@@ -278,7 +278,7 @@ bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
 	}
-	rv.set(VTypes::ModelData, obj.m);
+	rv.setPtr(VTypes::ModelData, obj.m);
 	return TRUE;
 }
 

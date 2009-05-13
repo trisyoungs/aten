@@ -37,7 +37,6 @@ class ReturnValue
 	ReturnValue(double d);
 	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
-	ReturnValue(VTypes::DataType ptrtype, void *ptr, int arraysize = -1);
 	// Operator=
 	void operator=(ReturnValue &rv);
 
@@ -55,7 +54,7 @@ class ReturnValue
 	// Variable members for returns
 	int valueI_;
 	double valueD_;
-	const char *valueS_;
+	Dnchar valueS_;
 	Vec3<double> valueV_;
 	void *valueP_;
 	// Array members for returns
@@ -95,7 +94,9 @@ class ReturnValue
 	// Set from single vector data
 	void set(int id, double xyz);
 	// Set from pointer value
-	void set(VTypes::DataType type, void *ptr, int arraysize = -1);
+	void setPtr(VTypes::DataType type, void *ptr);
+	// Set from standard array
+	void setArray(VTypes::DataType type, void *source, int arraysize);
 	// Set array element from integer value
 	void setElement(int id, int i);
 	// Set array element from real value

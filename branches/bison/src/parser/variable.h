@@ -70,4 +70,24 @@ class Variable : public TreeNode
 	bool initialise();
 };
 
+// Array Variable
+class ArrayVariable : public Variable
+{
+	public:
+	// Constructor / Destructor
+	ArrayVariable();
+	virtual ~ArrayVariable();
+
+	protected:
+	// TreeNode determining array size on initialisation
+	TreeNode *arraySizeExpression_;
+	// Array size
+	int arraySize_;
+
+	public:
+	// Return current array size
+	int arraySize();
+};
+
+
 #endif

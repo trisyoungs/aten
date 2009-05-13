@@ -30,12 +30,13 @@
 #include "parser/forcefieldbound.h"
 #include "parser/model.h"
 #include "parser/pattern.h"
+#include "parser/patternbound.h"
 #include "parser/prefs.h"
 #include "parser/vector.h"
 #include <string.h>
 
 // Constructor
-StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, bool needsindex) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype), requiresArrayIndex_(needsindex)
+StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype), arraySize_(arraysize)
 {
 	// Private variables
 	readOnly_ = readonly;
@@ -61,10 +62,10 @@ int StepNode::accessor()
 	return accessor_;
 }
 
-// Return whether the accessor should have an associated array index
-bool StepNode::requiresArrayIndex()
+// Return array size of the associated accessor
+int StepNode::arraySize()
 {
-	return requiresArrayIndex_;
+	return arraySize_;
 }
 
 // Execute command
@@ -129,6 +130,12 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::ModelData):
 			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::PatternData):
+			result = PatternVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::PatternBoundData):
+			result = PatternBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
@@ -178,6 +185,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::PatternData):
 			printf("%s", PatternVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::PatternBoundData):
+			printf("%s", PatternBoundVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::PreferencesData):
 			printf("%s", PreferencesVariable::accessorData[accessor_].name);
@@ -252,6 +262,12 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ModelData):
 			result = ModelVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::PatternData):
+			result = PatternVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::PatternBoundData):
+			result = PatternBoundVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -314,6 +330,12 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 			break;
 		case (VTypes::ModelData):
 			result = ModelVariable::accessorSearch(s, arrayindex);
+			break;
+		case (VTypes::PatternData):
+			result = PatternVariable::accessorSearch(s, arrayindex);
+			break;
+		case (VTypes::PatternBoundData):
+			result = PatternBoundVariable::accessorSearch(s, arrayindex);
 			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::accessorSearch(s, arrayindex);

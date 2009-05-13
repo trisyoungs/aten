@@ -94,9 +94,6 @@ VTypes::DataType FormatChunk::retrieveType()
 // Format
 */
 
-// Singleton
-char Format::createdString_[8096];
-
 // Constructor
 Format::Format(Refitem<TreeNode,int> *firstarg)
 {
@@ -116,7 +113,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
 	const char *c = s;
 	char prevchar;
-	static char plaintext[8096];
+	char plaintext[4098];
 	VTypes::DataType type;
 	bool isformatter = FALSE, isdiscarder, restofline;
 	Refitem<TreeNode,int> *arg = firstarg;
@@ -398,7 +395,7 @@ const char *Format::string()
 bool Format::writeToString()
 {
 	msg.enter("Format::writeToString");
-	static char bit[4096];
+	char bit[4096];
 	createdString_[0] = '\0';
 	ReturnValue rv;
 	bool result;

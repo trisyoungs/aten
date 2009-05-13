@@ -49,9 +49,6 @@ ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), valueS_(s),
 ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), valueV_(v), arraySize_(-1)
 {
 }
-ReturnValue::ReturnValue(VTypes::DataType ptrtype, void *ptr, int arraysize) : type_(ptrtype), valueP_(ptr), arraySize_(arraysize)
-{
-}
 
 // Operator =
 void ReturnValue::operator=(ReturnValue &source)
@@ -116,7 +113,7 @@ void ReturnValue::clearArrayData()
 	else if (type_ == VTypes::DoubleData) { delete[] arrayD_; arrayD_ = NULL; }
 	else if (type_ == VTypes::StringData) { delete[] arrayS_; arrayS_ = NULL; }
 	else if (type_ == VTypes::VectorData) { delete[] arrayV_; arrayV_ = NULL; }
-	else { delete[] arrayP_; arrayP_ = NULL; }
+	else { if (arrayP_ != NULL) delete[] arrayP_; arrayP_ = NULL; }
 	arraySize_ == -1;
 }
 
@@ -152,7 +149,7 @@ const char *ReturnValue::info()
 			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::StringData):
-			if (arraySize_ == -1) sprintf(result,"'%s' (%s)", valueS_, VTypes::dataType(type_));
+			if (arraySize_ == -1) sprintf(result,"'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
 			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::VectorData):
@@ -232,45 +229,51 @@ void ReturnValue::set(int id, double xyz)
 }
 
 // Set from pointer value
-void ReturnValue::set(VTypes::DataType ptrtype, void *ptr, int arraysize)
+void ReturnValue::setPtr(VTypes::DataType ptrtype, void *ptr)
 {
 	clearArrayData();
 	type_ = ptrtype;
+	valueP_ = ptr;
+	arraySize_ = -1;
+}
+
+// Set from standard array
+void ReturnValue::setArray(VTypes::DataType type, void *source, int arraysize)
+{
+	clearArrayData();
+	type_ = type;
 	arraySize_ = arraysize;
-	if (arraySize_ == -1) valueP_ = ptr;
+	int i;
+	if (type_ == VTypes::IntegerData)
+	{
+		arrayI_ = new int[arraySize_];
+		int *source = (int*) source;
+		for (i = 0; i < arraySize_; ++i) arrayI_[i] = source[i];
+	}
+	else if (type_ == VTypes::DoubleData)
+	{
+		arrayD_ = new double[arraySize_];
+		double *source = (double*) source;
+		for (i = 0; i < arraySize_; ++i) arrayD_[i] = source[i];
+	}
+	else if (type_ == VTypes::StringData)
+	{
+		arrayS_ = new Dnchar[arraySize_];
+		Dnchar *source = (Dnchar*) source;
+		for (i = 0; i < arraySize_; ++i) arrayS_[i] = source[i];
+	}
+	else if (type_ == VTypes::VectorData)
+	{
+		arrayV_ = new Vec3<double>[arraySize_];
+		Vec3<double> *source = (Vec3<double>*) source;
+		for (i = 0; i < arraySize_; ++i) arrayV_[i] = source[i];
+	}
 	else
 	{
-		int i;
-		if (type_ == VTypes::IntegerData)
-		{
-			arrayI_ = new int[arraySize_];
-			int *source = (int*) ptr;
-			for (i = 0; i < arraySize_; ++i) arrayI_[i] = source[i];
-		}
-		else if (type_ == VTypes::DoubleData)
-		{
-			arrayD_ = new double[arraySize_];
-			double *source = (double*) ptr;
-			for (i = 0; i < arraySize_; ++i) arrayD_[i] = source[i];
-		}
-		else if (type_ == VTypes::StringData)
-		{
-			arrayS_ = new Dnchar[arraySize_];
-			Dnchar *source = (Dnchar*) ptr;
-			for (i = 0; i < arraySize_; ++i) arrayS_[i] = source[i];
-		}
-		else if (type_ == VTypes::VectorData)
-		{
-			arrayV_ = new Vec3<double>[arraySize_];
-			Vec3<double> *source = (Vec3<double>*) ptr;
-			for (i = 0; i < arraySize_; ++i) arrayV_[i] = source[i];
-		}
-		else
-		{
-			arrayP_ = new void*[arraySize_];
-			void **source = (void**) ptr;
-			for (i = 0; i < arraySize_; ++i) arrayP_[i] = source[i];
-		}
+		// Pointer-type arrays are a little different
+		arrayP_ = new void*[arraySize_];
+		void **source = (void**) source;
+		for (i = 0; i < arraySize_; ++i) arrayP_[i] = source[i];
 	}
 }
 
@@ -332,7 +335,7 @@ int ReturnValue::asInteger(bool &success)
 			return (int)valueD_;
 			break;
 		case (VTypes::StringData):
-			return atoi(valueS_);
+			return valueS_.asInteger();
 			break;
 		default:
 			printf("ReturnValue::asInteger() doesn't recognise this type.\n");
@@ -361,7 +364,7 @@ double ReturnValue::asDouble(bool &success)
 			return valueD_;
 			break;
 		case (VTypes::StringData):
-			return atof(valueS_);
+			return valueS_.asDouble();
 			break;
 		default:
 			printf("ReturnValue::asDouble() doesn't recognise this type.\n");
@@ -391,7 +394,7 @@ const char *ReturnValue::asString(bool &success)
 			return ftoa(valueD_);
 			break;
 		case (VTypes::StringData):
-			return valueS_;
+			return valueS_.get();
 			break;
 		case (VTypes::VectorData):
 			converted[0] = '\0';
@@ -755,8 +758,7 @@ bool ReturnValue::asBool()
 			return (valueD_ > 0.0);
 			break;
 		case (VTypes::StringData):
-			booltest = valueS_;
-			return booltest.asBool();
+			return valueS_.asBool();
 			break;
 		case (VTypes::VectorData):
 			msg.print("Can't convert an object of type 'vector' into a bool.\n");

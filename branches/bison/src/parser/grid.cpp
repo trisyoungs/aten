@@ -87,7 +87,7 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::GridData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::GridData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("GridVariable::accessorSearch");
 	return result;
 }
@@ -126,7 +126,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (GridVariable::Axes):
-			rv.set(VTypes::CellData, ptr->cell());
+			rv.setPtr(VTypes::CellData, ptr->cell());
 			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());

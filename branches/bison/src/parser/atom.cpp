@@ -100,7 +100,7 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("AtomVariable::accessorSearch");
 	return result;
 }
@@ -179,7 +179,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(elements().symbol(ptr));
 			break;
 		case (AtomVariable::Type):
-			rv.set(VTypes::ForcefieldAtomData, ptr->type());
+			rv.setPtr(VTypes::ForcefieldAtomData, ptr->type());
 			break;
 		case (AtomVariable::V):
 			rv.set(ptr->v());

@@ -55,7 +55,7 @@ class DoubleVariable : public Variable
 };
 
 // Double Array Variable
-class DoubleArrayVariable : public Variable
+class DoubleArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
@@ -81,14 +81,14 @@ class DoubleArrayVariable : public Variable
 	// Variable Data
 	*/
 	private:
-	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
-	// Array size
-	int arraySize_;
 	// Real data
 	double *doubleArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char *prefix);
+
+	public:
+	// Return array pointer
+	double *arrayData();
 
 	/*
 	// Inherited Virtuals

@@ -70,7 +70,7 @@ PatternAtom::PatternAtom()
 PatternBound::PatternBound()
 {
 	// Private variables
-	for (int i=0; i<MAXFFBOUNDTYPES; i++) id_[i] = -1;
+	for (int i=0; i<MAXFFBOUNDTYPES; i++) atomIds_[i] = -1;
 	data_ = NULL;
 
 	// Public variables
@@ -119,13 +119,13 @@ Atom *PatternAtom::atom()
 // Set atom id
 void PatternBound::setAtomId(int n, int i)
 {
-	(n < MAXFFBOUNDTYPES ? id_[n] = i : printf("OUTOFRANGE:PatternBound"));
+	(n < MAXFFBOUNDTYPES ? atomIds_[n] = i : printf("OUTOFRANGE:PatternBound"));
 }
 
 // Return atom id
 int PatternBound::atomId(int n)
 {
-	return id_[n];
+	return atomIds_[n];
 }
 
 // Set function data

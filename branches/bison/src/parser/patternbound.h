@@ -1,6 +1,6 @@
 /*
-	*** Pattern Variable and Array
-	*** src/parser/pattern.h
+	*** PatternBound Variable and Array
+	*** src/parser/patternbound.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,29 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PATTERNVARIABLE_H
-#define ATEN_PATTERNVARIABLE_H
+#ifndef ATEN_PATTERNBOUNDVARIABLE_H
+#define ATEN_PATTERNBOUNDVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Pattern;
+class PatternBound;
 
-// Pattern Variable
-class PatternVariable : public PointerVariable
+// PatternBound Variable
+class PatternBoundVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	PatternVariable(Pattern *ptr = NULL, bool constant = FALSE);
-	~PatternVariable();
+	PatternBoundVariable(PatternBound *ptr = NULL, bool constant = FALSE);
+	~PatternBoundVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	enum Accessors { Data, EScale, Form, Id, TypeNames, VScale, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
@@ -54,12 +54,12 @@ class PatternVariable : public PointerVariable
 	static Accessor accessorData[nAccessors];
 };
 
-// Pattern Array Variable
-class PatternArrayVariable : public PointerArrayVariable
+// PatternBound Array Variable
+class PatternBoundArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	PatternArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	PatternBoundArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

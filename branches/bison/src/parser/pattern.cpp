@@ -28,63 +28,17 @@
 #include <string.h>
 
 // Constructor
-PatternVariable::PatternVariable(Pattern *ptr, bool constant) : patternData_(ptr)
+PatternVariable::PatternVariable(Pattern *ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::PatternData;
 	readOnly_ = constant;
+	pointerData_ = ptr;
 }
 
 // Destructor
 PatternVariable::~PatternVariable()
 {
-}
-
-/*
-// Set / Get
-*/
-
-// Set value of variable
-bool PatternVariable::set(ReturnValue &rv)
-{
-	if (readOnly_)
-	{
-		msg.print("A constant value (in this case a pattern&) cannot be assigned to.\n");
-		return FALSE;
-	}
-	bool success;
-	patternData_ = rv.asPointer(VTypes::PatternData, success);
-	return success;
-}
-
-// Reset variable
-void PatternVariable::reset()
-{
-	patternData_ = NULL;
-}
-
-// Return value of node
-bool PatternVariable::execute(ReturnValue &rv)
-{
-	// If this vector is a constant, read the three stored expressions to recreate it
-	rv.set(VTypes::PatternData, patternData_);
-	return TRUE;
-}
-
-// Print node contents
-void PatternVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	if (readOnly_) printf("%s%li (pattern) (constant value)\n", tab, patternData_);
-	else printf("%s%li (pattern) (variable, name=%s)\n", tab, patternData_, name_.get());
-	delete[] tab;
 }
 
 /*
@@ -139,7 +93,7 @@ StepNode *PatternVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::PatternData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::PatternData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("PatternVariable::accessorSearch");
 	return result;
 }
@@ -178,13 +132,31 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	if (result) switch (acc)
 	{
 		case (PatternVariable::Angles):
-			rv.set(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
+			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->angles());
+			else if (arrayIndex > ptr->nAngles())
+			{
+				msg.print("Angle array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.setPtr(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
 			break;
 		case (PatternVariable::Atoms):
-			rv.set(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1));
+			if (!hasArrayIndex) rv.setPtr(VTypes::AtomData, ptr->parent()->atom(ptr->startAtom()));
+			else if (arrayIndex > ptr->totalAtoms())
+			{
+				msg.print("Atom array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.setPtr(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1+ptr->startAtom()));
 			break;
 		case (PatternVariable::Bonds):
-			rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
+			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->bonds());
+			else if (arrayIndex > ptr->nBonds())
+			{
+				msg.print("Bond array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.setPtr(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
 			break;
 		case (PatternVariable::Cog):
 			rv.set(ptr->calculateCog(arrayIndex-1));
@@ -193,16 +165,16 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
 		case (PatternVariable::FirstAtom):
-			rv.set(VTypes::AtomData, ptr->firstAtom());
+			rv.setPtr(VTypes::AtomData, ptr->firstAtom());
 			break;
 		case (PatternVariable::FirstAtomId):
 			rv.set(ptr->startAtom() + 1);
 			break;
 		case (PatternVariable::FField):
-			rv.set(VTypes::ForcefieldData, ptr->forcefield());
+			rv.setPtr(VTypes::ForcefieldData, ptr->forcefield());
 			break;
 		case (PatternVariable::LastAtom):
-			rv.set(VTypes::AtomData, ptr->lastAtom());
+			rv.setPtr(VTypes::AtomData, ptr->lastAtom());
 			break;
 		case (PatternVariable::LastAtomId):
 			rv.set(ptr->endAtom() + 1);
@@ -229,7 +201,13 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->nTorsions());
 			break;
 		case (PatternVariable::Torsions):
-			rv.set(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
+			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->torsions());
+			else if (arrayIndex > ptr->nTorsions())
+			{
+				msg.print("Torsion array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.setPtr(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PatternVariable.\n", accessorData[i].name);
@@ -318,4 +296,26 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	}
 	msg.exit("PatternVariable::setAccessor");
 	return result;
+}
+
+/*
+// Variable Array
+*/
+
+// Constructor
+PatternArrayVariable::PatternArrayVariable(TreeNode *sizeexpr, bool constant)
+{
+	// Private variables
+	returnType_ = VTypes::PatternData;
+	pointerArrayData_ = NULL;
+	arraySize_ = 0;
+	nodeType_ = TreeNode::ArrayVarNode;
+	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
+}
+
+// Search variable access list for provided accessor
+StepNode *PatternArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+{
+	return PatternVariable::accessorSearch(s, arrayindex);
 }
