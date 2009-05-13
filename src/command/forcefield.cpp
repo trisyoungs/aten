@@ -233,7 +233,7 @@ bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (ff == NULL)	return FALSE;
 	aten.setCurrentForcefield(ff);
-	rv.set(VTypes::ForcefieldData, ff);
+	rv.setPtr(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
@@ -247,7 +247,7 @@ bool Command::function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
-	rv.set(VTypes::ForcefieldData, ff);
+	rv.setPtr(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
@@ -281,7 +281,7 @@ bool Command::function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.ff = aten.addForcefield();
 	obj.ff->setName(c->argc(0));
-	rv.set(VTypes::ForcefieldData, obj.ff);
+	rv.setPtr(VTypes::ForcefieldData, obj.ff);
 	return TRUE;
 }
 
@@ -363,7 +363,7 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ffa->setTypeId(newffid);
 	ffa->setName(c->argc(1));
 	ffa->setEquivalent(c->argc(1));
-	ffa->atomtype()->setCharacterElement(elements().findAlpha(c->argc(2)));
+	ffa->atomtype()->setCharacterElement(c->argz(2));
 	ffa->setAtomtype(c->argc(3), obj.ff, ffa);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
 	rv.reset();
@@ -374,8 +374,8 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	rv.reset();
-	return (obj.m->typeAll() ? TRUE : FALSE);
+	rv.set(obj.m->typeAll());
+	return TRUE;
 }
 
 // Test specified type ID of current forcefield

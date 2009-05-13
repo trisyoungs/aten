@@ -93,7 +93,7 @@ void DoubleVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Constructor
-DoubleArrayVariable::DoubleArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+DoubleArrayVariable::DoubleArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::DoubleData;
@@ -101,6 +101,7 @@ DoubleArrayVariable::DoubleArrayVariable(TreeNode *sizeexpr, bool constant) : ar
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
 	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
 }
 
 // Destructor
@@ -213,7 +214,7 @@ bool DoubleArrayVariable::execute(ReturnValue &rv)
 		}
 	}
 	else if (readOnly_) reset();
-	rv.set(VTypes::DoubleData, doubleArrayData_, arraySize_);
+	rv.setArray(VTypes::DoubleData, doubleArrayData_, arraySize_);
 	return TRUE;
 }
 
@@ -245,6 +246,11 @@ void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
 	delete[] tab;
 }
 
+// Return array pointer
+double *DoubleArrayVariable::arrayData()
+{
+	return doubleArrayData_;
+}
 
 // Initialise array
 bool DoubleArrayVariable::initialise()

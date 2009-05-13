@@ -56,14 +56,14 @@ bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
 	Pattern *p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL)
 	{
 		obj.p = p;
-		rv.set(VTypes::PatternData, p);
+		rv.setPtr(VTypes::PatternData, p);
 	}
 	else return FALSE;
-	rv.reset();
 	return TRUE;
 }
 

@@ -92,7 +92,7 @@ void IntegerVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Constructor
-IntegerArrayVariable::IntegerArrayVariable(TreeNode *sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)
+IntegerArrayVariable::IntegerArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::IntegerData;
@@ -100,6 +100,7 @@ IntegerArrayVariable::IntegerArrayVariable(TreeNode *sizeexpr, bool constant) : 
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
 	readOnly_ = constant;
+	arraySizeExpression_ = sizeexpr;
 }
 
 // Destructor
@@ -212,7 +213,7 @@ bool IntegerArrayVariable::execute(ReturnValue &rv)
 		}
 	}
 	else if (readOnly_) reset();
-	rv.set(VTypes::IntegerData, integerArrayData_, arraySize_);
+	rv.setArray(VTypes::IntegerData, integerArrayData_, arraySize_);
 	return TRUE;
 }
 
@@ -242,6 +243,12 @@ void IntegerArrayVariable::nodePrint(int offset, const char *prefix)
 	// Output node data
 	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab, name_.get(), arraySize_);
 	delete[] tab;
+}
+
+// Return array pointer
+int *IntegerArrayVariable::arrayData()
+{
+	return integerArrayData_;
 }
 
 // Initialise array

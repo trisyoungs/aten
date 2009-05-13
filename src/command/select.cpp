@@ -25,12 +25,13 @@
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
+#include "parser/character.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
 bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
-	static char from[32], to[32], text[256], s[512];
+	static char from[32], to[32], text[512], s[512];
 	int i, j, n, plus;
 	bool range;
 	// Execute argument to get result
@@ -126,7 +127,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 			{
 				i = atoi(from);
 				j = atoi(to);
-				for (n=i-1; n<j; n++) m->selectAtom(n);
+				for (n=i-1; n<j; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
 			}
 			else
 			{
@@ -155,7 +156,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	return TRUE;
 }
 
-// Deselect atom, range of atoms, or elements ('select <n>')
+// Deselect atom, range of atoms, or elements ('deselect <n>')
 bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -164,6 +165,31 @@ bool Command::function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	bool result = TRUE;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
 	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs, c->argNode(i), TRUE)) { result = FALSE; break; }
+	rv.set(nselected - obj.rs->nSelected());
+	return result;
+}
+
+// Deselect atom, range of atoms, or elements ('deselectf("")')
+bool Command::function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Store current number of selected atoms
+	int nselected = obj.rs->nSelected();
+	bool result = TRUE;
+	// Write formatted string, then pass this to select()
+	Format *format = c->createFormat(0,1);
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	LineParser parser;
+	parser.getArgsDelim(format->string());
+	for (int i=0; i<parser.nArgs(); i++)
+	{
+		StringVariable stringvar(parser.argc(i));
+		if (!selectAtoms(obj.rs, &stringvar, TRUE)) { result = FALSE; break; }
+	}
 	rv.set(nselected - obj.rs->nSelected());
 	return result;
 }
@@ -253,6 +279,31 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
+}
+
+// Deselect atom, range of atoms, or elements ('deselectf("")')
+bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Store current number of selected atoms
+	int nselected = obj.rs->nSelected();
+	bool result = TRUE;
+	// Write formatted string, then pass this to select()
+	Format *format = c->createFormat(0,1);
+	if (!format->writeToString())
+	{
+		msg.print("Failed to format string for output.\n");
+		return FALSE;
+	}
+	LineParser parser;
+	parser.getArgsDelim(format->string());
+	for (int i=0; i<parser.nArgs(); i++)
+	{
+		StringVariable stringvar(parser.argc(i));
+		if (!selectAtoms(obj.rs, &stringvar, FALSE)) { result = FALSE; break; }
+	}
+	rv.set(obj.rs->nSelected() - nselected);
+	return result;
 }
 
 // Select atoms (or molecule COGs) inside the current unit cell

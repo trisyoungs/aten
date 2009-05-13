@@ -134,7 +134,7 @@ class LineParser
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
 	int getInteger(int nbytes = 0);
 	// Fill an array of integer values from reading of an (unformatted) input file
-	bool getIntegerArray(double *array, int count);
+	bool getIntegerArray(int *array, int count);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getDouble(int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file

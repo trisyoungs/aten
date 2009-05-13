@@ -51,7 +51,7 @@ void PointerVariable::reset()
 // Return value of node
 bool PointerVariable::execute(ReturnValue &rv)
 {
-	rv.set(returnType_, pointerData_);
+	rv.setPtr(returnType_, pointerData_);
 	return TRUE;
 }
 
@@ -179,7 +179,7 @@ bool PointerArrayVariable::execute(ReturnValue &rv)
 		}
 	}
 	else if (readOnly_) reset();
-	rv.set(returnType_, pointerArrayData_, arraySize_);
+	rv.setArray(returnType_, pointerArrayData_, arraySize_);
 	return TRUE;
 }
 
@@ -192,7 +192,7 @@ bool PointerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( returnType_, pointerArrayData_[arrayindex] );
+	rv.setPtr( returnType_, pointerArrayData_[arrayindex] );
 	printf("Executed :: '%s'\n", rv.info());
 	return TRUE;
 }

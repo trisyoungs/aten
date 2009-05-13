@@ -23,6 +23,10 @@
 #include "parser/returnvalue.h"
 #include <string.h>
 
+/*
+// Variable
+*/
+
 // Constructor
 Variable::Variable()
 {
@@ -138,4 +142,26 @@ StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex)
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));
 	return NULL;
+}
+
+/*
+// Array Variable
+*/
+
+// Constructor
+ArrayVariable::ArrayVariable()
+{
+	arraySizeExpression_ = NULL;
+	arraySize_ = -1;
+}
+
+// Destructor (virtual)
+ArrayVariable::~ArrayVariable()
+{
+}
+
+// Return current array size
+int ArrayVariable::arraySize()
+{
+	return arraySize_;
 }

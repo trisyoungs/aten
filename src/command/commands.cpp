@@ -109,11 +109,11 @@ CommandData Command::data[Command::nCommands] = {
 				"Internal Operator (-)" },
 
 	// AST Nodes
-	{ "0nofunction",	"",		"", VTypes::NoData,
+	{ "*nofunction*",	"",		"", VTypes::NoData,
 				"" },
-	{ "0joiner",		"",		"", VTypes::NoData,
+	{ "*joiner*",		"",		"", VTypes::NoData,
 				"" },
-	{ "0declaration",	"^Z*",		"", VTypes::NoData,
+	{ "*declaration*",	"^Z*",		"", VTypes::NoData,
 				"" },
 
 	// Analysis commands
@@ -433,7 +433,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Add a torsion definition to the current forcefield" },
 	{ "typedef",		"NCECc", "<typeid> <name> <element> <type> [description]", VTypes::NoData,
 				"Add an atom type to the current forcefield" },
-	{ "typemodel",		"",		"", VTypes::NoData,
+	{ "typemodel",		"",		"", VTypes::IntegerData,
 				"Perform atom typing on the current model" },
 	{ "typetest",		"NA",		"<id> <atom|id>", VTypes::IntegerData,
 				"Test atomtype score on atom id provided" },
@@ -709,6 +709,8 @@ CommandData Command::data[Command::nCommands] = {
 	// Selection commands
 	{ "deselect",		"Z*",		"<id|el|id~id|el~el|+id|+el|id+|el+,...>", VTypes::IntegerData,
 				"Deselect specific atoms / ranges in the current model" },
+	{ "deselectf",		"Cz*",		"<'id|el|id~id|el-el|+id|+el|id+|el+,...'>", VTypes::IntegerData,
+				"Deselect specific atoms / ranges in the current model using a formatted string" },
 	{ "deselecttype",	"SC",		"<element> <typedesc>", VTypes::IntegerData,
 				"Deselect all atoms that match the provided atomtype description" },
 	{ "expand",		"",		"", VTypes::IntegerData,
@@ -721,6 +723,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Select all atoms in the current model" },
 	{ "selectfftype",	"C",		"<typename>", VTypes::IntegerData,
 				"Select all atoms of a specific forcefield type" },
+	{ "selectf",		"Cz*",		"<'id|el|id~id|el-el|+id|+el|id+|el+,...'>", VTypes::IntegerData,
+				"Select specific atoms / ranges in the current model using a formatted string" },
 	{ "selectinsidecell",	"b",		"[molecule COG?]", VTypes::IntegerData,
 				"Select all atoms (or molecule centres) which are inside the current unit cell" },
 	{ "selectioncog",	"",		"", VTypes::VectorData,

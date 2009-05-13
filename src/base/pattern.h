@@ -75,13 +75,15 @@ class PatternBound
 	PatternBound();
 	// List pointers
 	PatternBound *prev, *next;
+	// Friend Variable class
+	friend class PatternBoundVariable;
 
 	/*
 	// FF term data
 	*/
 	private:
 	// Atoms involved in bond (referring to local molecule atom ids)
-	int id_[MAXFFBOUNDTYPES];
+	int atomIds_[MAXFFBOUNDTYPES];
 	// Pointer to function data / form
 	ForcefieldBound *data_;
 

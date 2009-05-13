@@ -168,6 +168,9 @@ void AtenForm::finaliseUi()
 	elementGroup->addAction(ui.actionElementN);
 	elementGroup->addAction(ui.actionElementCustom);
 
+	/*
+	// Statusbar
+	*/
 	// Fix up the statusbar with a single big frame and no size grip
 	ui.MainWindowStatusBar->setSizeGripEnabled(FALSE);
 	QFrame *frame = new QFrame(this);
@@ -186,6 +189,7 @@ void AtenForm::finaliseUi()
 	lablayout->addWidget(sep,0);
 	// Info labels
 	QVBoxLayout *infolayout = new QVBoxLayout;
+	infolayout->setSizeConstraint(QLayout::SetMaximumSize);
 	infoLabel1 = new QLabel(this);
 	infoLabel1->setFont(font);
 	infolayout->addWidget(infoLabel1);
@@ -196,18 +200,19 @@ void AtenForm::finaliseUi()
 	// Progress indicator
 	progressIndicator = new QFrame(this);
 	progressIndicator->setContentsMargins(0,0,0,0);
-	QHBoxLayout *layout = new QHBoxLayout(progressIndicator);
+	QGridLayout *layout = new QGridLayout(progressIndicator);
 	layout->setMargin(0);
 	progressBar = new QProgressBar(this);
+	progressBar->setMaximumWidth(100);
 	progressLabel = new QLabel(this,0);
 	progressButton = new QPushButton(this);
 	progressButton->setText("Cancel");
 	QObject::connect(progressButton, SIGNAL(clicked()), this, SLOT(progressCancel()));
-	layout->addWidget(progressBar,255);
-	layout->addWidget(progressLabel,0);
-	layout->addWidget(progressButton,0);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
+	layout->addWidget(progressLabel, 0,0,1,2, Qt::AlignHCenter);
+	layout->addWidget(progressBar, 1,0,1,1);
+	layout->addWidget(progressButton, 1,1,1,1);
 	progressIndicator->setVisible(FALSE);
+	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,0);
 
 	// Populate scripts menu
 	refreshScriptsMenu();

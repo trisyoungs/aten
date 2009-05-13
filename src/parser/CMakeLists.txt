@@ -20,6 +20,7 @@ integer.h
 model.h
 parser.h
 pattern.h
+patternbound.h
 prefs.h
 pvariable.h
 returnvalue.h
@@ -55,6 +56,7 @@ parser.cpp
 parser_lexer.cpp
 parser_tree.cpp
 pattern.cpp
+patternbound.cpp
 prefs.cpp
 pvariable.cpp
 returnvalue.cpp

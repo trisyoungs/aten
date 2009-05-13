@@ -30,7 +30,7 @@ class StepNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType returntype, bool readonly, bool needsindex);
+	StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType returntype, bool readonly, int arraySize);
 	~StepNode();
 
 	/*
@@ -43,16 +43,16 @@ class StepNode : public TreeNode
 	int accessor_;
 	// Array index (if present)
 	TreeNode *arrayIndex_;
-	// Whether the accessor should have an array index
-	bool requiresArrayIndex_;
+	// Array size of accessor (-1 = list, 0 = none, 1+ = array size)
+	int arraySize_;
 
 	public:
 	// Return associated array index
 	TreeNode *arrayIndex();
 	// Return accessor ID
 	int accessor();
-	// Return whether the accessor should have an associated array index
-	bool requiresArrayIndex();
+	// Return array size of the associated accessor
+	int arraySize();
 	// Set from returnvalue nodes
 	bool set(ReturnValue &executerv, ReturnValue &setrv);
 

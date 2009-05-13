@@ -85,10 +85,12 @@ void VariableNode::finalisePath()
 	if (args_.last() == NULL) returnType_ = VTypes::NoData;
 	else
 	{
-		returnType_ = args_.last()->item->returnType();
-		readOnly_ = args_.last()->item->readOnly();
+		StepNode *step = (StepNode*) args_.last()->item;
+		returnType_ = step->returnType();
+		readOnly_ = step->readOnly();
+		returnsArray_ = ((step->arraySize() > 0) && (step->arrayIndex() == NULL));
 	}
-	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s' and read_only status is '%s'\n", VTypes::dataType(returnType_), readOnly_ ? "true" : "false");
+	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.\n", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
 	msg.exit("VariableNode::finalisePath");
 }
 

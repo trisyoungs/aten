@@ -80,7 +80,7 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ElementVariable::accessorSearch");
 	return result;
 }
@@ -121,11 +121,11 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (ElementVariable::Colour):
 		case (ElementVariable::Ambient):
 			if (hasArrayIndex) rv.set( ptr->ambientColour[arrayIndex-1] );
-			else rv.set( VTypes::DoubleData, &ptr->ambientColour, 4);
+			else rv.setArray( VTypes::DoubleData, &ptr->ambientColour, 4);
 			break;
 		case (ElementVariable::Diffuse):
 			if (hasArrayIndex) rv.set( ptr->diffuseColour[arrayIndex-1] );
-			else rv.set( VTypes::DoubleData, &ptr->diffuseColour, 4);
+			else rv.setArray( VTypes::DoubleData, &ptr->diffuseColour, 4);
 			break;
 		case (ElementVariable::Mass):
 			rv.set( ptr->atomicMass );

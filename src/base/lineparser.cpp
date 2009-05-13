@@ -608,7 +608,7 @@ int LineParser::getInteger(int nbytes)
 }
 
 // Read an array of integer values from an (unformatted) input file
-bool LineParser::getIntegerArray(double *array, int count)
+bool LineParser::getIntegerArray(int *array, int count)
 {
 	file_.read((char*) array, count*sizeof(int));
 	if (file_.eof())

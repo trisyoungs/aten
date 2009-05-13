@@ -22,6 +22,8 @@
 #include "parser/commandnode.h"
 #include "parser/tree.h"
 #include "parser/variablenode.h"
+#include "parser/double.h"
+#include "parser/integer.h"
 #include <cstring>
 
 // Add file read option
@@ -182,14 +184,24 @@ bool Command::function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue 
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
-	ReturnValue array;
-	if (!c->arg(0, array)) return FALSE;
-	if (count > array.arraySize())
+	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		msg.print("Error: Requested number of data for 'readdoublearray' (%i) exceeds size of supplied array (%i).\n", count, array.arraySize());
+		msg.print("Error: First argument to 'readdoublearray' is not a variable.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser()->getDoubleArray( (double*) array.asPointer(VTypes::DoubleData), count) );
+	Variable *v = ((VariableNode*) c->argNode(0))->variable();
+	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::DoubleData))
+	{
+		msg.print("Error: Variable argument to 'readdoublearray' is not an array of doubles.\n");
+		return FALSE;
+	}
+	DoubleArrayVariable *av = (DoubleArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
+	if (count > av->arraySize())
+	{
+		msg.print("Error: Requested number of data for 'readdoublearray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		return FALSE;
+	}
+	rv.set( c->parent()->parser()->getDoubleArray( av->arrayData(), count) );
 	msg.print(Messenger::Commands,"Unformatted double read %s.\n", rv.asInteger() ? "succeeded" : "failed");
 	return TRUE;
 }
@@ -219,14 +231,24 @@ bool Command::function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
-	ReturnValue array;
-	if (!c->arg(0, array)) return FALSE;
-	if (count > array.arraySize())
+	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		msg.print("Error: Requested number of data for 'readintegerarray' (%i) exceeds size of supplied array (%i).\n", count, array.arraySize());
+		msg.print("Error: First argument to 'readintegerarray' is not a variable.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser()->getIntegerArray( (double*) array.asPointer(VTypes::IntegerData), count) );
+	Variable *v = ((VariableNode*) c->argNode(0))->variable();
+	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::IntegerData))
+	{
+		msg.print("Error: Variable argument to 'readintegerarray' is not an array of integers.\n");
+		return FALSE;
+	}
+	IntegerArrayVariable *av = (IntegerArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
+	if (count > av->arraySize())
+	{
+		msg.print("Error: Requested number of data for 'readintegerarray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		return FALSE;
+	}
+	rv.set( c->parent()->parser()->getIntegerArray( av->arrayData(), count) );
 	msg.print(Messenger::Commands,"Unformatted integer read %s.\n", rv.asInteger() ? "succeeded" : "failed");
 	return TRUE;
 }

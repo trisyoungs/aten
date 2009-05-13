@@ -45,45 +45,6 @@ PreferencesVariable::~PreferencesVariable()
 }
 
 /*
-// Set / Get
-*/
-
-// Set value of variable
-bool PreferencesVariable::set(ReturnValue &rv)
-{
-	msg.print("A constant value (in this case the Prefs) cannot be assigned to.\n");
-	return FALSE;
-}
-
-// Reset variable
-void PreferencesVariable::reset()
-{
-	// No action
-}
-
-// Return value of node
-bool PreferencesVariable::execute(ReturnValue &rv)
-{
-	rv.set(VTypes::PreferencesData, &prefs);
-	return TRUE;
-}
-
-// Print node contents
-void PreferencesVariable::nodePrint(int offset, const char *prefix)
-{
-	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
-	// Output node data
-	printf("[V]%s&%li (Prefs) (constant value)\n", tab, &prefs);
-	delete[] tab;
-}
-
-/*
 // Accessors
 */
 
@@ -105,14 +66,14 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "colourscheme",	VTypes::StringData,	0, FALSE },
 	{ "commonelements",	VTypes::StringData,	0, FALSE },
 	{ "densityunit",	VTypes::StringData,	0, FALSE },
+	{ "depthcue",		VTypes::IntegerData,	0, FALSE },
+	{ "depthfar",		VTypes::IntegerData,	0, FALSE },
+	{ "depthnear",		VTypes::IntegerData,	0, FALSE },
 	{ "distancelabel",	VTypes::StringData,	0, FALSE },
 	{ "eleccutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "elecmethod",		VTypes::StringData,	0, FALSE },
 	{ "energyunit",		VTypes::StringData,	0, FALSE },
 	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
-	{ "depthcue",		VTypes::IntegerData,	0, FALSE },
-	{ "depthfar",		VTypes::IntegerData,	0, FALSE },
-	{ "depthnear",		VTypes::IntegerData,	0, FALSE },
 	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "globesize",		VTypes::IntegerData,	0, FALSE },
 	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
@@ -161,7 +122,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'aten&' has no member named '%s'.\n", s);
+		msg.print("Error: Type 'prefs&' has no member named '%s'.\n", s);
 		msg.exit("PreferencesVariable::accessorSearch");
 		return NULL;
 	}
@@ -172,7 +133,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("PreferencesVariable::accessorSearch");
 	return result;
 }
@@ -217,19 +178,19 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.atomDetail() );
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
-			if (hasArrayIndex) rv.set( VTypes::DoubleData, &prefs.atomStyleRadius_, Atom::nDrawStyles);
-			else rv.set(prefs.atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set(prefs.atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			else rv.setArray( VTypes::DoubleData, &prefs.atomStyleRadius_, Atom::nDrawStyles);
 			break;
 		case (PreferencesVariable::BackgroundColour):
-			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::BackgroundColour), 4);
-			else rv.set( prefs.colour(Prefs::BackgroundColour)[arrayIndex-1] );
+			if (hasArrayIndex) rv.set( prefs.colour(Prefs::BackgroundColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, prefs.colour(Prefs::BackgroundColour), 4);
 			break;
 		case (PreferencesVariable::BondDetail):
 			rv.set( prefs.bondDetail() );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
-			if (hasArrayIndex) rv.set( VTypes::DoubleData, &prefs.bondStyleRadius_, Atom::nDrawStyles);
-			else rv.set(prefs.bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			if (hasArrayIndex) rv.set(prefs.bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
+			else rv.setArray( VTypes::DoubleData, &prefs.bondStyleRadius_, Atom::nDrawStyles);
 			break;
 		case (PreferencesVariable::BondTolerance):
 			rv.set(prefs.bondTolerance());
@@ -286,8 +247,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.energyUpdate() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
-			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::ForegroundColour), 4);
-			else rv.set( prefs.colour(Prefs::ForegroundColour)[arrayIndex-1] );
+			if (hasArrayIndex) rv.set( prefs.colour(Prefs::ForegroundColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, prefs.colour(Prefs::ForegroundColour), 4);
 			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(prefs.globeSize() );
@@ -297,7 +258,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::KeyAction):
 			if (hasArrayIndex) rv.set(Prefs::keyAction( prefs.keyAction((Prefs::ModifierKey) (arrayIndex-1))) );
-			else rv.set( VTypes::StringData, &prefs.keyActionTexts_, Prefs::nModifierKeys);
+			else rv.setArray( VTypes::StringData, &prefs.keyActionTexts_, Prefs::nModifierKeys);
 			break;
 		case (PreferencesVariable::LabelSize):
 			rv.set( prefs.labelSize() );
@@ -319,7 +280,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::MouseAction):
 			if (hasArrayIndex) rv.set(Prefs::mouseAction( prefs.mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
-			else rv.set( VTypes::StringData, &prefs.mouseActionTexts_, Prefs::nMouseButtons);
+			else rv.setArray( VTypes::StringData, &prefs.mouseActionTexts_, Prefs::nMouseButtons);
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			rv.set( prefs.offScreenObjects() );
@@ -352,8 +313,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( prefs.shininess() );
 			break;
 		case (PreferencesVariable::SpecularColour):
-			if (hasArrayIndex) rv.set( VTypes::DoubleData, prefs.colour(Prefs::SpecularColour), 4);
-			else rv.set( prefs.colour(Prefs::SpecularColour)[arrayIndex-1] );
+			if (hasArrayIndex) rv.set( prefs.colour(Prefs::SpecularColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, prefs.colour(Prefs::SpecularColour), 4);
 			break;
 		case (PreferencesVariable::Spotlight):
 			rv.set( prefs.spotlightActive() );

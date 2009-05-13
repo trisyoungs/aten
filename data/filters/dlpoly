@@ -287,3 +287,132 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 	}
 }
 
+filter(type="exportexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
+{
+	# Variable declaration
+	double epsilon, sigma;
+	pattern p;
+	atom i;
+	bound b;
+	ffatom at1, at2;
+	int nvdw, n,n2, nconstraints;
+	model m = aten.model;
+
+	# First, write header consisting of title, energy units, and number of molecule types
+	writeline(m.name);
+	if (aten.prefs.energyunit == "kj") writeline("units kj");
+	else if (aten.prefs.energyunit == "kcal") writeline("units kcal");
+	else if (aten.prefs.energyunit == "ev") writeline("units ev");
+	else error("Current energy unit (%s) is not compatible with DL_POLY FIELD output.\n", aten.prefs.energyunit);
+
+	writeline("molecules",m.npatterns);
+
+	# Loop over patterns (molecule types)
+	for (p = m.patterns; p; ++p)
+	{
+		nconstraints = 0;
+
+		# Write pattern name and number of molecules
+		writeline(p.name);
+		writeline("nummols",p.nmols);
+
+		# Write atoms - just loop over those in the first molecule of the pattern
+		writeline("atoms",p.nmolatoms);
+		i = p.firstatom;
+		for (n=0; n<p.nmolatoms; ++n)
+		{
+			writelinef("%-8s   %10.5f  %9.6f   1   0   1\n",i.type.name,i.mass,i.q);
+			++i;
+		}
+
+		# Bonds in pattern
+		writeline("bonds",p.nbonds);
+		for (n=1; n<=p.nbonds; ++n)
+		{
+			# Grab bound pointer
+			b = p.bonds[n];
+			# Convert functional form to be recognised by DL_POLY
+			# Note: DL_POLY constraint terms are written in their own section
+			if (b.form == "harmonic") writelinef("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.data[1],b.data[2]);
+			else if (b.form == "morse") writelinef("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.data[3],b.data[2],b.data[1]);
+			else if (b.form == "constraint") nconstraints++;
+			else
+			{
+				printf("Functional form of bond term (%s) not accounted for in export filter.\n",b.form);
+				writelinef("X%s  %5i %5i %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.data[1],b.data[2],b.data[3],b.data[4]);
+			}
+		}
+
+		# Angles in pattern
+		writeline("angles",p.nangles);
+		for (n=1; n<=p.nangles; ++n)
+		{
+			# Grab bound pointer
+			b = p.angles[n];
+			# Convert functional form to be recognised by DL_POLY
+			if (b.form == "harmonic") writelinef("harm     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[2]);
+			else if (b.form == "cos") writelinef("cos      %5i %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[3],b.data[2]);
+			else if (b.form == "harmcos") writelinef("hcos     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[2]);
+			else if (b.form == "bondconstraint") nconstraints++;
+			else
+			{
+				printf("Functional form of angle term (%s) not accounted for in export filter.\n",b.form);
+				writelinef("X%s  %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.id[3],b.data[1],b.data[2],b.data[3],b.data[4],b.data[5],b.data[6]);
+			}
+		}
+
+		# Torsions in pattern
+		writeline("dihedrals",p.ntorsions);
+		for (n=1; n<=p.ntorsions; ++n)
+		{
+			# Grab bound pointer
+			b = p.torsions[n];
+			# Convert functional form to be recognised by DL_POLY
+			if (b.form == "cos") writelinef("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
+			else if (b.form == "cos3") writelinef("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
+			else
+			{
+				printf("Functional form of torsion term (%s) not accounted for in export filter.\n",b.form);
+				writelinef("X%s     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.form,b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
+			}
+		}
+		# Constraint terms
+		writeline("constraints",nconstraints);
+		# ...proper bond constraints first
+		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+		# ...and now angles that are of type 'bondconstraint'
+		for (n=1; n<=p.nangles; ++n) if (p.angles[n].form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
+		# Terminating line
+		writeline("finish");
+	}
+
+	# VDW Specification
+	# Get total number of pair terms to write
+	nvdw = 0;
+	for (n=1; n<=m.natomtypes; ++n) nvdw += n;
+	writeline("nvdw",nvdw);
+	for (n=1; n<=m.natomtypes; ++n)
+	{
+		at1 = m.atomtypes[n];
+		for (n2=1; n2<=n; ++n2)
+		{
+			at2 = m.atomtypes[n2];
+			# Check functional forms of each atomtype
+			if (at1.form != at2.form)
+			{
+				printf("Functional forms of atomtypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
+				writelinef("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f %12.6f\n",at1.name,at2.name,at1.data[1],at1.data[2],at1.data[3],at1.data[4],at1.data[5],at1.data[6]);
+			}
+			else if (at1.form == "lj")
+			{
+				# LJ: use Lorentz-Berthelot combination rules
+				sigma = (at1.data[2] + at2.data[2]) * 0.5;
+				epsilon = sqrt(at1.data[1] * at2.data[1]);
+				writelinef("%-8s %-8s  lj  %12.6f  %12.6f\n",at1.name,at2.name,epsilon,sigma);
+			}
+			else if (at1.form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
+			else printf("Functional form of VDW term (%s) not accounted for in export filter.\n",at1.form);
+		}
+	}
+	writeline("close");
+}

@@ -166,7 +166,7 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 		result = NULL;
 	}
-	else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize != 0);
+	else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("VectorVariable::accessorSearch");
 	return result;
 }

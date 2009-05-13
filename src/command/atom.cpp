@@ -56,7 +56,7 @@ bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (i == NULL) return FALSE;
 	// Set atom information
 	obj.i = i;
-	rv.set(VTypes::AtomData, i);
+	rv.setPtr(VTypes::AtomData, i);
 	return TRUE;
 }
 

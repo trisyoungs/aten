@@ -67,6 +67,11 @@ bool CommandNode::prepFunction()
 			if (!args_[1]->item->readOnly()) break;
 			result = createFormat(1,2);
 			break;
+		case (Command::DeSelectFormatted):
+		case (Command::SelectFormatted):
+			if (!args_.first()->item->readOnly()) break;
+			result = createFormat(0,1);
+			break;
 		// For the 'return' function, the return type must match the return type of the parent tree...
 		case (Command::Return):
 			if (parent_->returnType() == VTypes::NoData)

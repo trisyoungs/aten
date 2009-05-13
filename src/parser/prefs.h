@@ -37,24 +37,6 @@ class PreferencesVariable : public Variable
 	~PreferencesVariable();
 
 	/*
-	// Set / Get
-	*/
-	public:
-	// Return value of node
-	bool execute(ReturnValue &rv);
-	// Set from returnvalue node
-	bool set(ReturnValue &rv);
-	// Reset node
-	void reset();
-
-	/*
-	// Variable Data
-	*/
-	private:
-	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
-
-	/*
 	// Access Data
 	*/
 	public:

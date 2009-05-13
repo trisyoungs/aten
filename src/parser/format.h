@@ -94,7 +94,7 @@ class Format
 	// Chunk list
 	List<FormatChunk> chunks_;
 	// Created string
-	static char createdString_[8096];
+	char createdString_[4098];
 	// Add new plaintext chunk to format
 	void addPlainTextChunk(const char *s);
 	// Add new formatted chunk to format

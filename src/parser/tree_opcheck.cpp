@@ -278,6 +278,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (VTypes::VecDbl):
 				case (VTypes::VecIntA):
 				case (VTypes::VecDblA):
+				case (VTypes::PtrPtrA):
 					result = type1;
 					break;
 				case (VTypes::IntAIntA):

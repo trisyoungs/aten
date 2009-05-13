@@ -32,6 +32,8 @@
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/model.h"
+#include "parser/pattern.h"
+#include "parser/patternbound.h"
 #include "parser/vector.h"
 #include <string.h>
 
@@ -104,8 +106,14 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::ModelData):
 			v = (Variable*) new ModelVariable(NULL, FALSE);
 			break;
+		case (VTypes::PatternData):
+			v = (Variable*) new PatternVariable(NULL, FALSE);
+			break;
+		case (VTypes::PatternBoundData):
+			v = (Variable*) new PatternBoundVariable(NULL, FALSE);
+			break;
 		default:
-			printf("Don't know how to VariableList::create() of type %s.\n", VTypes::dataType(type));
+			printf("Don't know how to create a variable of type %s.\n", VTypes::dataType(type));
 			break;
 	} 
 	if (v != NULL)
@@ -152,6 +160,12 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::ModelData):
 			var = new ModelArrayVariable(sizeexpr);
+			break;
+		case (VTypes::PatternData):
+			var = new PatternArrayVariable(sizeexpr);
+			break;
+		case (VTypes::PatternBoundData):
+			var = new PatternBoundArrayVariable(sizeexpr);
 			break;
 		case (VTypes::StringData):
 			var = new StringArrayVariable(sizeexpr);

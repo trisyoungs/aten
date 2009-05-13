@@ -71,7 +71,7 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (g == NULL) return FALSE;
 	obj.g = g;
-	rv.set(VTypes::GridData, g);
+	rv.setPtr(VTypes::GridData, g);
 	return TRUE;
 }
 
@@ -253,7 +253,7 @@ bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Grid *g = NULL;
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::GridImport);
 	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
-	rv.set(VTypes::GridData, g);
+	rv.setPtr(VTypes::GridData, g);
 	return TRUE;
 }
 
@@ -263,6 +263,6 @@ bool Command::function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.g = aten.currentModel()->addGrid();
 	obj.g->setName(stripTrailing(c->argc(0)));
-	rv.set(VTypes::GridData, obj.g);
+	rv.setPtr(VTypes::GridData, obj.g);
 	return TRUE;
 }
