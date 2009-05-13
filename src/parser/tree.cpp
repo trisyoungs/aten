@@ -30,6 +30,7 @@
 #include "parser/tree.h"
 #include "parser/character.h"
 #include "parser/vector.h"
+#include "parser/element.h"
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "model/model.h"
@@ -549,6 +550,15 @@ TreeNode *Tree::addConstant(const char *s)
 {
 	StringVariable *var = new StringVariable(s, TRUE);
 	nodes_.own(var);
+	return var;
+}
+
+// Add Element constant
+TreeNode *Tree::addElementConstant(int el)
+{
+	ElementVariable *var;
+	if ((el < 1) || (el > elements().nElements())) var = new ElementVariable(NULL,TRUE);
+	else var = new ElementVariable(&elements().el[el], TRUE);
 	return var;
 }
 

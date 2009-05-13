@@ -37,23 +37,22 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	// Execute argument to get result
 	ReturnValue value;
 	if (!node->execute(value)) return FALSE;
-	// If the argument is an atom variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (value.type() == VTypes::AtomData)
+	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
+	if ((value.type() == VTypes::AtomData) || (value.type() == VTypes::IntegerData))
 	{
-		Atom *ii = (Atom*) value.asPointer(VTypes::AtomData);
+		Atom *ii = value.type() == VTypes::IntegerData ? m->atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 		m->endUndoState();
 	}
-	// If the argument is an integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (value.type() == VTypes::IntegerData)
+	else if (value.type() == VTypes::ElementData)
 	{
-		Atom *ii = m->atom(value.asInteger()-1);
-		if (ii == NULL) return FALSE;
-		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
+		Element *elem = (Element*) value.asPointer(VTypes::ElementData);
+		if (elem == NULL) return FALSE;
+		sprintf(s,"%select element (%s)", deselect ? "Des" : "S", elem->symbol);
 		m->beginUndoState(s);
-		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
+		deselect ? m->deselectElement(elem->z) : m->selectAtom(elem->z);
 		m->endUndoState();
 	}
 	else if (value.type() == VTypes::PatternData)

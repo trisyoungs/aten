@@ -404,10 +404,7 @@ const char *ReturnValue::asString(bool &success)
 			break;
 		default:
 			// All pointer types
-			converted[0] = '\0';
-			sprintf(converted, "%li", valueP_);
-			tempString_ = converted;
-			return tempString_.get();
+			msg.print("Cannot return a pointer as a string.\n");
 			break;
 	}
 	success = FALSE;

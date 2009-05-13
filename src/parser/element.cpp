@@ -1,6 +1,6 @@
 /*
 	*** Elements Variable
-	*** src/parser/elements.cpp
+	*** src/parser/element.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,19 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/elements.h"
+#include "parser/element.h"
 #include "parser/stepnode.h"
 #include "base/elements.h"
-// #include <stdio.h>
-// #include <stdlib.h>
 #include <string.h>
 
 // Constructor
-ElementVariable::ElementVariable()
+ElementVariable::ElementVariable(Element *el, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ElementData;
-	readOnly_ = TRUE;
+	readOnly_ = constant;
+	pointerData_ = el;
 }
 
 // Destructor

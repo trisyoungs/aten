@@ -166,6 +166,8 @@ class Tree
 	virtual TreeNode *addConstant(double d);
 	// Add string constant
 	virtual TreeNode *addConstant(const char *s);
+	// Add Element constant
+	virtual TreeNode *addElementConstant(int el);
 	// Add variable to topmost ScopeNode
 	virtual TreeNode *addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue = NULL);
 	// Add variable (as a function argument) to topmost ScopeNode

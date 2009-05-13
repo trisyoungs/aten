@@ -24,7 +24,7 @@
 #include "parser/atom.h"
 #include "parser/bond.h"
 #include "parser/cell.h"
-#include "parser/elements.h"
+#include "parser/element.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"

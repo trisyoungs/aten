@@ -711,7 +711,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Deselect specific atoms / ranges in the current model" },
 	{ "deselectf",		"Cz*",		"<'id|el|id~id|el-el|+id|+el|id+|el+,...'>", VTypes::IntegerData,
 				"Deselect specific atoms / ranges in the current model using a formatted string" },
-	{ "deselecttype",	"SC",		"<element> <typedesc>", VTypes::IntegerData,
+	{ "deselecttype",	"EC",		"<element> <typedesc>", VTypes::IntegerData,
 				"Deselect all atoms that match the provided atomtype description" },
 	{ "expand",		"",		"", VTypes::IntegerData,
 				"Expands the current atom selection" },
@@ -739,7 +739,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Select all atoms (or molecule centres) which are outside the current unit cell" },
 	{ "selectpattern",	"p",		"[name]", VTypes::IntegerData,
 				"Select all atoms in the current (or named) pattern" },
-	{ "selecttype",		"SC",		"<element> <typedesc>", VTypes::IntegerData,
+	{ "selecttype",		"EC",		"<element> <typedesc>", VTypes::IntegerData,
 				"Select all atoms that match the provided atomtype description (returning the number matched)" },
 	
 	// Site commands

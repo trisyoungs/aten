@@ -26,7 +26,7 @@
 #include "parser/cell.h"
 #include "parser/character.h"
 #include "parser/double.h"
-#include "parser/elements.h"
+#include "parser/element.h"
 #include "parser/integer.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"

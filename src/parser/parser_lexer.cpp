@@ -218,7 +218,7 @@ int CommandParser::lex()
 			{
 				yylval.intconst = n;
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a an element symbol (%i)\n",tree_,n);
-				return INTCONST;
+				return ELEMENTCONST;
 			}
 
 			// Is this a recognised high-level keyword?
