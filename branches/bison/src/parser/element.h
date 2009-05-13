@@ -1,6 +1,6 @@
 /*
 	*** Elements Variable
-	*** src/parser/elements.h
+	*** src/parser/element.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -25,12 +25,15 @@
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
+// Forward Declarations
+class Element;
+
 // Elements Variable
 class ElementVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ElementVariable();
+	ElementVariable(Element *el = NULL, bool constant = FALSE);
 	~ElementVariable();
 
 	/*

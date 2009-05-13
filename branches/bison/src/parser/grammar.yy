@@ -35,7 +35,7 @@ VTypes::DataType declaredType;
 	double doubleconst;		/* double constant value */
 };
 
-%token <intconst> INTCONST
+%token <intconst> INTCONST ELEMENTCONST
 %token <doubleconst> DOUBLECONST
 %token <name> NEWTOKEN CHARCONST STEPTOKEN
 %token <variable> VAR LOCALVAR
@@ -152,6 +152,7 @@ constant:
 	INTCONST					{ $$ = cmdparser.addConstant($1); }
 	| DOUBLECONST					{ $$ = cmdparser.addConstant($1); }
 	| CHARCONST					{ $$ = cmdparser.addConstant($1->get()); }
+	| ELEMENTCONST					{ $$ = cmdparser.addElementConstant($1); }
 	;
 
 
@@ -207,7 +208,6 @@ newname:
 newvar:
 	NEWTOKEN savetokenname				{ if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } $$ = $1; }
 	;
-
 
 declaration:
 	VARTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
@@ -335,7 +335,4 @@ savestepname:
 
 void yyerror(char *s)
 {
-	printf("Deleting current tree.\n");
-//	cmdparser.deleteCurrentTree();
-//    fprintf(stdout, "%s\n", s);
 }

@@ -233,6 +233,7 @@ short int TreeNode::argz(int i)
 	Namemap<int> *nm;
 	Atom *atm;
 	short int result = 0;
+	Element *elem;
 	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
 	switch (rv.type())
 	{
@@ -251,11 +252,15 @@ short int TreeNode::argz(int i)
 			break;
 		case (VTypes::AtomData):
 			atm = (Atom*) rv.asPointer(VTypes::AtomData);
-			atm == NULL ? result = 0 : atm->element();
+			result = atm == NULL ? 0 : atm->element();
+			break;
+		case (VTypes::ElementData):
+			// Check pointer data first....
+			elem = (Element*) rv.asPointer(VTypes::ElementData);
+			result = elem == 0 ? 0 : elem->z;
 			break;
 		default:
-			msg.print("Couldn't cast argument %i into an atomic number.\n", i+1);
-			result = 0;
+			msg.print("Couldn't cast argument %i (%s) into an atomic number.\n", i+1, VTypes::aDataType(rv.type()));
 			break;
 	}
 	return result;

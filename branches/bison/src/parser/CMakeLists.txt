@@ -7,7 +7,7 @@ cell.h
 character.h
 commandnode.h
 double.h
-elements.h
+element.h
 filterdata.h
 forcefieldatom.h
 forcefieldbound.h
@@ -41,7 +41,7 @@ cell.cpp
 character.cpp
 commandnode.cpp
 double.cpp
-elements.cpp
+element.cpp
 filterdata.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp

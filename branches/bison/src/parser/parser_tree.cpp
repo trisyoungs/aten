@@ -295,6 +295,22 @@ TreeNode *CommandParser::addConstant(const char *s)
 	return result;
 }
 
+// Add Element constant
+TreeNode *CommandParser::addElementConstant(int el)
+{
+	msg.enter("CommandParser::addElementConstant");
+	if (tree_ == NULL)
+	{
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addElementConstant).\n");
+		else printf("Internal Error: No current Tree target for Parser (addElementConstant).\n");
+		msg.exit("CommandParser::addElementConstant");	
+		return FALSE;
+	}
+	TreeNode *result = tree_->addElementConstant(el);
+	msg.exit("CommandParser::addElementConstant");
+	return result;
+}
+
 // Add variable to topmost ScopeNode
 TreeNode *CommandParser::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initialValue)
 {

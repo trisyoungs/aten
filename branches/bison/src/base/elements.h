@@ -31,6 +31,8 @@ class Atom;
 class Element
 {
 	public:
+	// Z
+	int z;
 	// Mass of element
 	double atomicMass;
 	// Element name
