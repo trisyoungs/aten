@@ -97,7 +97,7 @@ bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
-	obj.i->setElement(elements().findAlpha(c->argc(0)));
+	obj.i->setElement(c->argz(0));
 	rv.reset();
 	return TRUE;
 }

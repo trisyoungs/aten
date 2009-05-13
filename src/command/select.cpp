@@ -202,10 +202,10 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
-		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
-		sprintf(s,"Deselect %s by type (%s)", c->argc(0), c->argc(1));
+		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 33];
+		sprintf(s,"Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
 		obj.rs->beginUndoState(s);
-		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1), FALSE, TRUE);
+		obj.rs->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
 		obj.rs->endUndoState();
 		delete[] s;
 		rv.set(nselected - obj.rs->nSelected());
@@ -425,10 +425,10 @@ bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
-		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 30];
-		sprintf(s,"Select %s by type (%s)", c->argc(0), c->argc(1));
+		char *s = new char[strlen(c->argc(1)) + 33];
+		sprintf(s,"Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
 		obj.rs->beginUndoState(s);
-		obj.rs->selectType(elements().findAlpha(c->argc(0)), c->argc(1));
+		obj.rs->selectType(c->argz(0), c->argc(1));
 		obj.rs->endUndoState();
 		delete[] s;
 		rv.set(obj.rs->nSelected() - nselected);
