@@ -250,7 +250,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			}
 			// Don't use up a variable argument if the specifier was '*'
 			TreeNode *node = (arg == NULL ? NULL : arg->item);
-			if (restofline) addGreedyDelimitedChunk(node);
+			if (restofline) addGreedyDelimitedChunk(node, type);
 			else addFormattedChunk(plaintext, node, type);
 			if (!isdiscarder) arg = arg->next;
 			length = 0;
@@ -306,9 +306,9 @@ void Format::addDelimitedChunk(TreeNode *arg)
 }
 
 // Add new greedy delimited chunk to format
-void Format::addGreedyDelimitedChunk(TreeNode *arg)
+void Format::addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetype)
 {
-	FormatChunk *chunk = new FormatChunk(FormatChunk::GreedyDelimitedChunk, NULL, arg);
+	FormatChunk *chunk = new FormatChunk(FormatChunk::GreedyDelimitedChunk, NULL, arg, retrievetype);
 	chunks_.own(chunk);
 }
 

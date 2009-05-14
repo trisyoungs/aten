@@ -76,6 +76,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
 	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "globesize",		VTypes::IntegerData,	0, FALSE },
+	{ "glyphcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
 	{ "keyaction",		VTypes::StringData,	Prefs::nModifierKeys, FALSE },
 	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
@@ -252,6 +253,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(prefs.globeSize() );
+			break;
+		case (PreferencesVariable::GlyphColour):
+			if (hasArrayIndex) rv.set( prefs.colour(Prefs::GlyphColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, prefs.colour(Prefs::GlyphColour), 4);
 			break;
 		case (PreferencesVariable::HDistance):
 			rv.set( prefs.hydrogenDistance() );
@@ -507,6 +512,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::GlobeSize):
 			ptr->setGlobeSize( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::GlyphColour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphColour, arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::HDistance):
 			ptr->setHydrogenDistance( newvalue.asDouble(result) );

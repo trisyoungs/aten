@@ -1,24 +1,18 @@
-# Create a buckytube of some length and 'radius' along the z-axis
+# Create a buckytube of some length and 'radius' along the z-axis (Example 4 in published paper)
 
 # Variables
 int nbenz, nstacks, stack, benz;
-double rcc, deltaz;
+double rcc, dz;
 
-# Setup
-# The number of benzene laying on the same stack circumference is nbenz
-nbenz = 10;
-# C-C bond length is given by rcc
-rcc = 1.39;
-# Number of stacks of molecules to generate (length of tube, will be doubled later on)
-nstacks = 5;
-# Rotation increment around circumference is deltaz
-deltaz = 360.0/(nbenz*2.0);
+nbenz = 10;		// Number of benzene molecules around tube circumference
+rcc = 1.39;		// C-C bond length to use
+nstacks = 8;		// Length of tube will be 2*nstacks-1 benzene units
+dz = 360.0/(nbenz*2.0);	// Rotation increment around circumference
 
 # Create target model
 newmodel("buckytube");
 
-nstacks *= 2;
-nstacks -= 1;
+nstacks = nstacks*2 - 1;
 
 # Outer loop - loop over stacks
 for (stack=1; stack <= nstacks; ++stack)
@@ -28,28 +22,28 @@ for (stack=1; stack <= nstacks; ++stack)
 	{
 		if (stack == 1)
 		{
-			move(0.0, 0.0, -1.0);
-			newatom("H");
-			move(0, 0, 1.0);
+			move(0, 0, -1);
+			newatom(H);
+			move(0, 0, 1);
 		}
-		newatom("C");
-		move(rcc*cos(30.0), 0.0, rcc*sin(30.0));
-		rotz(deltaz);
+		newatom(C);
+		move(rcc*cos(30), 0.0, rcc*sin(30));
+		rotz(dz);
 		if (stack == nstacks)
 		{
-			move(0.0, 0.0, 1.0);
-			newatom("H");
-			move(0, 0, -1.0);
+			move(0, 0, 1);
+			newatom(H);
+			move(0, 0, -1);
 		}
-		newatom("C");
-		move(rcc*cos(30.0), 0.0, -rcc*sin(30.0));
-		rotz(deltaz);
+		newatom(C);
+		move(rcc*cos(30), 0, -rcc*sin(30));
+		rotz(dz);
 	}
 	
 	# Move pen along tube length, and one step around circumference to offset next layer
-	move(0.0, 0.0, rcc*1.5);
-	move(rcc*cos(30.0), 0, 0);
-	rotz(deltaz);
+	move(0, 0, rcc*1.5);
+	move(rcc*cos(30), 0, 0);
+	rotz(dz);
 }
 
 # Rebond and augment

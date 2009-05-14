@@ -260,6 +260,14 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					result = type1;
 					break;
 				case (VTypes::IntDbl):
+					result = type2;
+					break;
+			}
+			break;
+		case (Command::OperatorModulus):
+			switch (id)
+			{
+				case (VTypes::IntInt):
 					result = type1;
 					break;
 			}

@@ -238,7 +238,7 @@ void ReturnValue::setPtr(VTypes::DataType ptrtype, void *ptr)
 }
 
 // Set from standard array
-void ReturnValue::setArray(VTypes::DataType type, void *source, int arraysize)
+void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 {
 	clearArrayData();
 	type_ = type;
@@ -247,32 +247,32 @@ void ReturnValue::setArray(VTypes::DataType type, void *source, int arraysize)
 	if (type_ == VTypes::IntegerData)
 	{
 		arrayI_ = new int[arraySize_];
-		int *source = (int*) source;
+		int *source = (int*) array;
 		for (i = 0; i < arraySize_; ++i) arrayI_[i] = source[i];
 	}
 	else if (type_ == VTypes::DoubleData)
 	{
 		arrayD_ = new double[arraySize_];
-		double *source = (double*) source;
+		double *source = (double*) array;
 		for (i = 0; i < arraySize_; ++i) arrayD_[i] = source[i];
 	}
 	else if (type_ == VTypes::StringData)
 	{
 		arrayS_ = new Dnchar[arraySize_];
-		Dnchar *source = (Dnchar*) source;
+		Dnchar *source = (Dnchar*) array;
 		for (i = 0; i < arraySize_; ++i) arrayS_[i] = source[i];
 	}
 	else if (type_ == VTypes::VectorData)
 	{
 		arrayV_ = new Vec3<double>[arraySize_];
-		Vec3<double> *source = (Vec3<double>*) source;
+		Vec3<double> *source = (Vec3<double>*) array;
 		for (i = 0; i < arraySize_; ++i) arrayV_[i] = source[i];
 	}
 	else
 	{
 		// Pointer-type arrays are a little different
 		arrayP_ = new void*[arraySize_];
-		void **source = (void**) source;
+		void **source = (void**) array;
 		for (i = 0; i < arraySize_; ++i) arrayP_[i] = source[i];
 	}
 }
