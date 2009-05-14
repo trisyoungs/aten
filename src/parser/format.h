@@ -102,7 +102,7 @@ class Format
 	// Add new delimited chunk to format
 	void addDelimitedChunk(TreeNode *arg);
 	// Add new greedy delimited chunk to format
-	void addGreedyDelimitedChunk(TreeNode *arg);
+	void addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetype);
 
 	public:
 	// Return whether the format was created successfully

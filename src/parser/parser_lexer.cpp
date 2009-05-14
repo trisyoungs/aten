@@ -319,7 +319,7 @@ int CommandParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets, comma, and semicolon
-	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']'))
+	if ((c == '(') || (c == ')') || (c == ';') || (c == ',') || (c == '{') || (c == '}') || (c == '[') || (c == ']') || (c == '%'))
 	{
 		msg.print(Messenger::Parse, "LEXER (%li): found symbol [%c]\n",tree_,c);
 		return c;

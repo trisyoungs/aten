@@ -49,7 +49,7 @@ VTypes::DataType declaredType;
 %left '=' PEQ MEQ TEQ DEQ 
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %right UMINUS
 %left PP MM
 %right '!'
@@ -276,6 +276,7 @@ rawexpr:
 	| expr '*' expr					{ $$ = cmdparser.addOperator(Command::OperatorMultiply, $1, $3); }
 	| expr '/' expr					{ $$ = cmdparser.addOperator(Command::OperatorDivide, $1, $3); }
 	| expr '^' expr					{ $$ = cmdparser.addOperator(Command::OperatorPower, $1, $3); }
+	| expr '%' expr					{ $$ = cmdparser.addOperator(Command::OperatorModulus, $1, $3); }
 	| expr EQ expr					{ $$ = cmdparser.addOperator(Command::OperatorEqualTo, $1, $3); }
 	| expr NEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorNotEqualTo, $1, $3); }
 	| expr '>' expr					{ $$ = cmdparser.addOperator(Command::OperatorGreaterThan, $1, $3); }

@@ -105,7 +105,11 @@ void GuiQt::run()
 	msg.enter("GuiQt::run");
 
 	// If no model loaded, add one
-	if (aten.nModels() == 0) Model *m = aten.addModel();
+	if (aten.nModels() == 0)
+	{
+		Model *m = aten.addModel();
+		m->enableUndoRedo();
+	}
 
 	// Initialise Qt's icons resource
 	Q_INIT_RESOURCE(icons);
@@ -624,7 +628,6 @@ void GuiQt::textProgressUpdate(int currentstep)
 	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{
-
 		for (n=0; n<ndots; n++) printf(".");
 		for (n=ndots; n<30; n++) printf(" ");
 		// Lastly, print percentage

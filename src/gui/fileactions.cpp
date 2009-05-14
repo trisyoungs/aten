@@ -86,7 +86,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	Model *m;
 	if (runSaveModelDialog())
 	{
-		m = aten.currentModel();
+		m = aten.currentModel()->renderSource();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
 		saveModelFilter->executeWrite(saveModelFilename.get());
@@ -101,7 +101,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModel()->renderSource();
 	Tree *t = m->filter();
 	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
 	Dnchar filename;
@@ -110,14 +110,18 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	{
 		if (runSaveModelDialog())
 		{
-			m = aten.currentModel();
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
 			saveModelFilter->executeWrite(saveModelFilename.get());
+			m->changeLog.updateSavePoint();
 			//refreshModelTabs();
 		}
 	}
-	else t->executeWrite(filename.get());
+	else
+	{
+		t->executeWrite(filename.get());
+		m->changeLog.updateSavePoint();
+	}	
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
