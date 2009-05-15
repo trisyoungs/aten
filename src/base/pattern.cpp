@@ -865,112 +865,28 @@ void Pattern::resetTempI(int value)
 // Ring Routines
 */
 
-// Mark atoms
-void Pattern::markRingAtoms(Atom *i)
-{
-	// Recursive routine to knock-out atoms that have a lower ring forming potential than
-	// their bond number suggests. If called with an atom whose potential is zero, we stop
-	// since we've reached an already 'excluded' atom. Otherwise, check the bound neighbours
-	// and reassess the potential of the atom. If its marked as zero potential, re-call the
-	// routine on any neighbours that aren't already zero-marked.
-	msg.enter("Pattern::markRingAtoms");
-	if (i->tempi == 0)
-	{
-		msg.exit("Pattern::markRingAtoms");
-		return;
-	}
-	else
-	{
-		// Check the listed neighbours to set the potential of this atom
-		int count = 0;
-		Refitem<Bond,int> *bref = i->bonds();
-		while (bref != NULL)
-		{
-			if (bref->item->partner(i)->tempi != 0) count++;
-			bref = bref->next;
-		}
-		// 'count' now contains the number of neighbours that have a non-zero potential.
-		// If its a dead-end, re-call the routine. If not, just re-set the atom's potential
-		switch (count)
-		{
-			case (1):
-				// No potential for this atom to be in a ring, so mark it as zero'd...
-				i->tempi = 0;
-				// ...and call the routine on any bound neighbours since they now need to be checked.
-				bref = i->bonds();
-				while (bref != NULL)
-				{
-					if (bref->item->partner(i)->tempi != 0) markRingAtoms(bref->item->partner(i));
-					bref = bref->next;
-				}
-				break;
-			case (2): i->tempi = 1; break;
-			case (3): i->tempi = 3; break;
-			default : i->tempi = 6; break;
-		}
-	}
-	msg.exit("Pattern::markRingAtoms");
-}
-
 // Find rings
 void Pattern::findRings()
 {
 	msg.enter("Pattern::findRings");
-	int n, rsize, ringpotential;
+	int n, rsize;
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	Ring path;
-	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that each atom can form based on the number of bonds it has.
+	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		switch (i->nBonds())
+		if (i->nBonds() > 1)
 		{
-			case (0) : i->tempi = 0; break;
-			case (1) : i->tempi = 0; break;
-			default  : i->tempi = 99; break;
-/*			case (2) : i->tempi = 1; break;
-			case (3) : i->tempi = 3; break;
-			default  : i->tempi = 6; break;*/
-		}
-		i = i->next; 
-	}
-	// Since the number of bonds does not necessarily correlate to the maximum number of rings (e.g.
-	// when an atom is part of an alkyl chain, nbonds=2 but it is not part of any rings) find any atom
-	// with nbonds=1 and mark off any bound neighbours with nbonds
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->nBonds() == 1)
-		{
-			bref = i->bonds();
-			markRingAtoms(bref->item->partner(i));
-		}
-		i = i->next;
-	}
-
-	// Calculate the *total* potential for ring formation, i.e. the sum of all tempi values.
-	ringpotential = 0;
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		msg.print(Messenger::Verbose,"Atom %i : potential = %i\n",n,i->tempi);
-		ringpotential += i->tempi;
-		i = i->next;
-	}
-
-	// Now, go through the atoms and find cyclic routes.
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->tempi == 0) { i = i->next; continue; }
-		// Loop over searches for different ring sizes
-		for (rsize=3; rsize<=prefs.maxRingSize(); rsize++)
-		{
-			path.clear();
-			path.setRequestedSize(rsize);
-			// Call the recursive search to extend the path by this atom
-			if (ringpotential >= rsize) ringSearch(i,&path,ringpotential);
+			// Loop over searches for different ring sizes
+			for (rsize=3; rsize<=prefs.maxRingSize(); rsize++)
+			{
+				path.clear();
+				path.setRequestedSize(rsize);
+				// Call the recursive search to extend the path by this atom
+				ringSearch(i,&path);
+			}
 		}
 		i = i->next;
 	}
@@ -979,7 +895,7 @@ void Pattern::findRings()
 }
 
 // Ring search
-void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
+void Pattern::ringSearch(Atom *i, Ring *currentpath)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	msg.enter("Pattern::ringSearch");
@@ -987,13 +903,6 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 	Ring *r;
 	Refitem<Atom,int> *lastra;
 	bool done;
-	// First off, if this atom has no more available bonds for inclusion in rings, just return
-	if (i->tempi == 0)
-	{
-		//printf(" --- No vacant 'bonds' on atom - skipping...\n");
-		msg.exit("Pattern::ringSearch");
-		return;
-	}
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
@@ -1023,13 +932,6 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 						msg.print(Messenger::Verbose," --- Storing current ring.\n");
 						r = rings_.add();
 						r->copy(currentpath);
-						// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
-						// another ring, and also the total ringpotential variable
-	// 					for (Refitem<Atom,int> *ra = r->atoms(); ra != NULL; ra = ra->next)
-	// 					{
-	// 						ra->item->tempi -= 1;
-	// 						ringpotential -= 1;
-	// 					}
 						r->finalise();
 						r->print();
 						done = TRUE;
@@ -1039,7 +941,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 			else
 			{
 				// Current path is not long enough, so extend it
-				ringSearch(bref->item->partner(i),currentpath,ringpotential);
+				ringSearch(bref->item->partner(i),currentpath);
 			}
 			bref = bref->next;
 			if (done) break;
@@ -1048,10 +950,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
-	else
-	{
-		//printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
-	}
+// 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
 	msg.exit("Pattern::ringSearch");
 }
 
