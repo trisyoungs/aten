@@ -96,7 +96,7 @@ class Ring
 	// Prepare the structure ready for use after atoms have been added
 	void finalise();
 	// Print out the data contained in the structure
-	void print();
+	void print() const;
 	// Add atoms in ring to supplied reflist
 	void addAtomsToReflist(Reflist<Atom,int>*, Atom*);
 	// Clear atoms in reflist

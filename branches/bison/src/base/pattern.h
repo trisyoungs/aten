@@ -310,10 +310,8 @@ class Pattern
 	private:
 	// List of rings in one molecule of the pattern
 	List<Ring> rings_;
-	// Recursive prep - locates and marks atoms on their 'ring potential'
-	void markRingAtoms(Atom*);
 	// Recursive ring-search routine
-	void ringSearch(Atom*, Ring*, int&);
+	void ringSearch(Atom *i, Ring *currentpath);
 	// Search existing ring list for existence of supplied ring
 	bool isRingInList(Ring *source);
 

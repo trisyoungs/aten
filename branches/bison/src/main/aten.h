@@ -31,8 +31,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.2"
-#define ATENREVISION "905"
-#define ATENDATE "Fri 15 May - 18:45"
+#define ATENREVISION "907"
+#define ATENDATE "Fri 15 May - 20:40"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations

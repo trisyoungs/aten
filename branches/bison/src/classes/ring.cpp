@@ -51,18 +51,15 @@ Ring::~Ring()
 bool Ring::operator==(Ring &r) const
 {
 	// Check ring sizes first
-	printf("Equality checking...\n");
 	if (atoms_.nItems() != r.atoms_.nItems()) return FALSE;
-	printf("rings arrre same size...\n");
 	// Search for first atom of ring 'r' in this ring's atom list
 	Refitem<Atom,int> *commonatom, *ri, *rj;
 	for (commonatom = atoms_.first(); commonatom != NULL; commonatom = commonatom->next) if (commonatom->item == r.atoms_.first()->item) break;
 	if (commonatom == NULL) return FALSE;
-	printf("Ring has an atom in common...\n");
 	// The atom exists in both rings, so check all atoms....
 	ri = r.atoms_.first();
 	rj = ri;
-	for (int i=0; i<requestedSize_; ++i)
+	for (int i=0; i<atoms_.nItems(); ++i)
 	{
 		// Clockwise list traversal of supplied ring
 		if (ri != NULL)
@@ -80,7 +77,7 @@ bool Ring::operator==(Ring &r) const
 		commonatom = getNext(commonatom);
 	}
 	if ((ri == NULL) && (rj == NULL)) return FALSE;
-	else return TRUE;
+	return TRUE;
 }
 
 /*
@@ -315,18 +312,13 @@ void Ring::copy(Ring *source)
 }
 
 // Print
-void Ring::print()
+void Ring::print() const
 {
 	// Print out the data of the ring.
-	// Beware, since if it has been 'finished' it will be a circular list
 	msg.print(Messenger::Verbose,"Ring has %i atoms: ",atoms_.nItems());
-	Refitem<Atom,int> *ra = atoms_.first();
-	while (ra != NULL)
-	{
+	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		msg.print(Messenger::Verbose,"%s(%i),", elements().symbol(ra->item),ra->data);
 		//printf("%s(%i),",elements.el[ra->i->el].symbol.c_str(),ra->i->tempi);
-		ra = ra->next;
-	}
 	msg.print(Messenger::Verbose,"\n");
 }
 
