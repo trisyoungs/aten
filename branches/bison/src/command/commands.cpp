@@ -349,6 +349,10 @@ CommandData Command::data[Command::nCommands] = {
 				"Undo last change" },
 
 	// Energy commands
+	{ "ecut",		"n",		"", VTypes::DoubleData,
+				"Return (or set) the electrostatic curoff distance" },
+        { "elec",               "Cnnnn",        "<'none|coulomb|ewald|ewaldauto'> [ <precision> | <alpha> <kx> <ky> <kz> ]", VTypes::NoData,
+                                "Set the style of electrostatic energy calculation" },
 	{ "frameenergy",	"",		"", VTypes::DoubleData,
 				"Calculate the energy of the current trajectory frame" },
 	{ "modelenergy",	"",		"", VTypes::DoubleData,
@@ -367,6 +371,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Print a one-line summary of the last calculated energy" },
 	{ "printvdw",		"",		"", VTypes::NoData,
 				"Print the VDW pattern matrix of the last calculated energy" },
+	{ "vcut",		"n",		"", VTypes::DoubleData,
+				"Return (or set) the VDW curoff distance" },
 
 	// Flow control
 	{ "break",		"",		"", VTypes::NoData,
@@ -545,8 +551,10 @@ CommandData Command::data[Command::nCommands] = {
 				"Normalise the values of the 3-vector supplied" },
 	{ "sin",		"N",		"<degrees>", VTypes::DoubleData,
 				"Return sine of specified angle (supplied in degrees)" },
-	{ "sqrt",		"N",		"<degrees>", VTypes::DoubleData,
+	{ "sqrt",		"N",		"<number>", VTypes::DoubleData,
 				"Return square root of number" },
+	{ "tan",		"N",		"<degrees>", VTypes::DoubleData,
+				"Return tangent of specified angle (supplied in degrees)" },
 
 	// MC commands
 	{ "mcaccept",		"CN",		"<movetype> <energy>", VTypes::NoData,

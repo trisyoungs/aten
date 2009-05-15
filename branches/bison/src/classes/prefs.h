@@ -555,6 +555,8 @@ class Prefs
 	double convertEnergy(double energy, EnergyUnit);
 	// Return the electrostastic energy conversion factor
 	double elecConvert();
+	// Return the gas constant in the current unit of energy
+	double gasConstant();
 
 
 	/*

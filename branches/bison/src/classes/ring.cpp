@@ -47,41 +47,77 @@ Ring::~Ring()
 	atoms_.clear();
 }
 
+// Ring equality
+bool Ring::operator==(Ring &r) const
+{
+	// Check ring sizes first
+	printf("Equality checking...\n");
+	if (atoms_.nItems() != r.atoms_.nItems()) return FALSE;
+	printf("rings arrre same size...\n");
+	// Search for first atom of ring 'r' in this ring's atom list
+	Refitem<Atom,int> *commonatom, *ri, *rj;
+	for (commonatom = atoms_.first(); commonatom != NULL; commonatom = commonatom->next) if (commonatom->item == r.atoms_.first()->item) break;
+	if (commonatom == NULL) return FALSE;
+	printf("Ring has an atom in common...\n");
+	// The atom exists in both rings, so check all atoms....
+	ri = r.atoms_.first();
+	rj = ri;
+	for (int i=0; i<requestedSize_; ++i)
+	{
+		// Clockwise list traversal of supplied ring
+		if (ri != NULL)
+		{
+			if (ri->item == commonatom->item) ri = r.getNext(ri);
+			else ri = NULL;
+		}
+		// Clockwise list traversal of supplied ring
+		if (rj != NULL)
+		{
+			if (rj->item == commonatom->item) rj = r.getPrev(rj);
+			else rj = NULL;
+		}
+		// Step our local ring pointer on one...
+		commonatom = getNext(commonatom);
+	}
+	if ((ri == NULL) && (rj == NULL)) return FALSE;
+	else return TRUE;
+}
+
 /*
 // Referenced atoms / bonds
 */
 
 // Circular list browsing
-Refitem<Atom,int> *Ring::getNext(Refitem<Atom,int> *ri)
+Refitem<Atom,int> *Ring::getNext(Refitem<Atom,int> *ri) const
 {
 	return (ri->next == NULL ? atoms_.first() : ri->next);
 }
 
-Refitem<Atom,int> *Ring::getPrev(Refitem<Atom,int> *ri)
+Refitem<Atom,int> *Ring::getPrev(Refitem<Atom,int> *ri) const
 {
 	return (ri->prev == NULL ? atoms_.last() : ri->prev);
 }
 
 // Return first referenced atom
-Refitem<Atom,int> *Ring::atoms()
+Refitem<Atom,int> *Ring::atoms() const
 {
 	return atoms_.first();
 }
 
 // Return last referenced atom
-Refitem<Atom,int> *Ring::lastAtom()
+Refitem<Atom,int> *Ring::lastAtom() const
 {
 	return atoms_.last();
 }
 
 // Return number of referenced atoms
-int Ring::nAtoms()
+int Ring::nAtoms() const
 {
 	return atoms_.nItems();
 }
 
 // Return first referenced bond
-Refitem<Bond,Bond::BondType> *Ring::bonds()
+Refitem<Bond,Bond::BondType> *Ring::bonds() const
 {
 	return bonds_.first();
 }
@@ -93,7 +129,7 @@ void Ring::setRequestedSize(int size)
 }
 
 // Return requested size
-int Ring::requestedSize()
+int Ring::requestedSize() const
 {
 	return requestedSize_;
 }

@@ -105,6 +105,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
 	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
+	{ "zmap",		VTypes::StringData,	0, FALSE },
 	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
 };
 
@@ -333,6 +334,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::VdwScale):
 			rv.set( prefs.vdwScale() );
 			break;
+		case (PreferencesVariable::ZMapping):
+			rv.set( ElementMap::zMapType( prefs.zMapType()) );
+			break;
 		case (PreferencesVariable::ZoomThrottle):
 			rv.set( prefs.zoomThrottle() );
 			break;
@@ -417,6 +421,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	Prefs::MouseButton mb;
 	Prefs::MouseAction ma;
 	Atom::DrawStyle ds;
+	ElementMap::ZMapType zm;
 	switch (acc)
 	{
 		case (PreferencesVariable::AngleLabel):
@@ -627,6 +632,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::VdwScale):
 			ptr->setVdwScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::ZMapping):
+			zm = ElementMap::zMapType( newvalue.asString(result) );
+			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
+			else result = FALSE;
 			break;
 		case (PreferencesVariable::ZoomThrottle):
 			ptr->setZoomThrottle( newvalue.asDouble(result) );

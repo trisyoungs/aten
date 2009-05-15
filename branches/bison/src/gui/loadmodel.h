@@ -47,6 +47,7 @@ class AtenLoadModel : public QDialog
 	void on_LoadModelFoldCombo_activated(int index);
 	void on_LoadModelPackCombo_activated(int index);
 	void on_LoadModelCentreCombo_activated(int index);
+	void on_LoadModelZMappingCombo_activated(int index);
 
 	/*
 	// Data

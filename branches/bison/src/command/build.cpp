@@ -57,10 +57,12 @@ bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
+// Convert coordinates/data of object(s) to Bohr
 bool Command::function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	msg.print("'bohr' command is not fully implemented yet.\n");
+	return FALSE;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')

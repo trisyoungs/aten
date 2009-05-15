@@ -41,10 +41,14 @@ ElementMap &elements()
 #define ACTINIDES 99
 
 // ZMapping types
-const char *ZMapTypeKeywords[ElementMap::nZMapTypes] = { "alpha", "firstalpha", "singlealpha", "name", "numeric", "ff", "auto" };
+const char *ZMapTypeKeywords[ElementMap::nZMapTypes] = { "Alpha", "FirstAlpha", "SingleAlpha", "Name", "Numeric", "FF", "Auto" };
 ElementMap::ZMapType ElementMap::zMapType(const char *s)
 {
 	return (ElementMap::ZMapType) enumSearch("element mapping style", ElementMap::nZMapTypes, ZMapTypeKeywords, s);
+}
+const char *ElementMap::zMapType(ElementMap::ZMapType zm)
+{
+	return ZMapTypeKeywords[zm];
 }
 
 /*
