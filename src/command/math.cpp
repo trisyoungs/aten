@@ -84,9 +84,17 @@ bool Command::function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+
 // Return square root of argument
 bool Command::function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( sqrt(c->argd(0)) );
+	return TRUE;
+}
+
+// Return tangent of argument (supplied in degrees)
+bool Command::function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( tan(c->argd(0) / DEGRAD) );
 	return TRUE;
 }

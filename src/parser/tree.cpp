@@ -218,6 +218,11 @@ bool Tree::execute(ReturnValue &rv)
 			result = TRUE;
 			break;
 		}
+		else if (acceptedFail_ == Command::Quit)
+		{
+			result = TRUE;
+			break;
+		}
 		if (!result) break;
 	}
 	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());

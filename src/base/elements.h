@@ -82,6 +82,7 @@ class ElementMap
 	// Name->Z mapping methods
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
 	static ElementMap::ZMapType zMapType(const char *s);
+	static const char *zMapType(ElementMap::ZMapType zm);
 
 	private:
 	// Convert string from Z to element number

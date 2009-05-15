@@ -539,10 +539,10 @@ bool Command::function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &r
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntInt): rv.set(lhs.asInteger(b) + rhs.asInteger(b)); break;
+		case (VTypes::IntInt): rv.set(power(lhs.asInteger(b),rhs.asInteger(b))); break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): rv.set(lhs.asDouble(b) + rhs.asDouble(b)); break;
+		case (VTypes::DblDbl): rv.set(pow(lhs.asDouble(b),rhs.asDouble(b))); break;
 		default:
 			msg.print("The operator '^' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}

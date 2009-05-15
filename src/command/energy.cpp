@@ -21,7 +21,50 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "classes/prefs.h"
 #include "model/model.h"
+
+// Set electrostatic cutoff radius
+bool Command::function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (c->hasArg(0)) prefs.setElecCutoff(c->argd(0));
+	rv.set(prefs.elecCutoff());
+	return TRUE;
+}
+
+// Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
+bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.reset();
+	Electrostatics::ElecMethod em = Electrostatics::elecMethod(c->argc(0));
+	if (em == Electrostatics::nElectrostatics) return FALSE;
+	switch (em)
+	{
+		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
+		case (Electrostatics::Ewald):
+			if (!c->hasArg(4))
+			{
+				msg.print("Must supply the alpha parameter and kmax vectors to used this electrostatics option.\n");
+				return FALSE;
+			}
+			prefs.setEwaldAlpha(c->argd(1));
+			prefs.setEwaldKvec(c->arg3i(2));
+			break;
+		// Set ewald precision
+		case (Electrostatics::EwaldAuto):
+			if (!c->hasArg(1))
+			{
+				msg.print("Must supply the Ewald precision parameter to used this electrostatics option.\n");
+				return FALSE;
+			}
+			prefs.setEwaldPrecision(c->argd(1));
+			break;
+	}
+	// Set method
+	prefs.setElectrostaticsMethod(em);
+	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
+	return TRUE;
+}
 
 // Calculate energy of current trajectory frame ('frameenergy')
 bool Command::function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -105,5 +148,13 @@ bool Command::function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->energy.printVdwMatrix(obj.rs);
 	rv.reset();
+	return TRUE;
+}
+
+// Set VDW cutoff radius
+bool Command::function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (c->hasArg(0)) prefs.setVdwCutoff(c->argd(0));
+	rv.set(prefs.vdwCutoff());
 	return TRUE;
 }

@@ -5,9 +5,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>210</height>
+    <width>322</width>
+    <height>198</height>
    </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>5</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle" >
    <string>Load Model</string>
@@ -24,6 +32,14 @@
    </property>
    <item>
     <widget class="QGroupBox" name="FilenameGroupx" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>1</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title" >
       <string>Filename</string>
      </property>
@@ -60,6 +76,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QGroupBox" name="LoadModelOptionGroup" >
@@ -197,11 +226,60 @@
           </item>
          </widget>
         </item>
-        <item row="2" column="0" colspan="3" >
+        <item row="2" column="0" colspan="2" >
          <widget class="QCheckBox" name="LoadModelBohrCheck" >
           <property name="text" >
            <string>Coordinates in Bohr</string>
           </property>
+         </widget>
+        </item>
+        <item row="2" column="2" >
+         <widget class="QLabel" name="label" >
+          <property name="text" >
+           <string>ZMapping</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3" >
+         <widget class="QComboBox" name="LoadModelZMappingCombo" >
+          <item>
+           <property name="text" >
+            <string>Alpha</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>FirstAlpha</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>SingleAlpha</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Numeric</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>FF</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>Auto</string>
+           </property>
+          </item>
          </widget>
         </item>
        </layout>

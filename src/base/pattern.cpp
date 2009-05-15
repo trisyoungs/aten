@@ -928,9 +928,10 @@ void Pattern::findRings()
 		{
 			case (0) : i->tempi = 0; break;
 			case (1) : i->tempi = 0; break;
-			case (2) : i->tempi = 1; break;
+			default  : i->tempi = 99; break;
+/*			case (2) : i->tempi = 1; break;
 			case (3) : i->tempi = 3; break;
-			default  : i->tempi = 6; break;
+			default  : i->tempi = 6; break;*/
 		}
 		i = i->next; 
 	}
@@ -1016,21 +1017,23 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 				// The correct number of atoms is in the current path. Does it form a cycle?
 				if (i->findBond(currentpath->atoms()->item) != NULL)
 				{
-					msg.print(Messenger::Verbose," --- Storing current ring.\n");
-					r = rings_.add();
-					r->copy(currentpath);
-					// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
-					// another ring, and also the total ringpotential variable
-					Refitem<Atom,int> *ra = r->atoms();
-					while (ra != NULL)
+					// Check to see if this ring already exists in the rings_ list...
+					if (!isRingInList(currentpath))
 					{
-						ra->item->tempi -= 1;
-						ringpotential -= 1;
-						ra = ra->next;
+						msg.print(Messenger::Verbose," --- Storing current ring.\n");
+						r = rings_.add();
+						r->copy(currentpath);
+						// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
+						// another ring, and also the total ringpotential variable
+	// 					for (Refitem<Atom,int> *ra = r->atoms(); ra != NULL; ra = ra->next)
+	// 					{
+	// 						ra->item->tempi -= 1;
+	// 						ringpotential -= 1;
+	// 					}
+						r->finalise();
+						r->print();
+						done = TRUE;
 					}
-					r->finalise();
-					r->print();
-					done = TRUE;
 				}
 			}
 			else
@@ -1050,6 +1053,13 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 		//printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
 	}
 	msg.exit("Pattern::ringSearch");
+}
+
+// Search existing ring list for existence of supplied ring
+bool Pattern::isRingInList(Ring *source)
+{
+	for (Ring *r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return TRUE;
+	return FALSE;
 }
 
 void Pattern::augmentOLD()

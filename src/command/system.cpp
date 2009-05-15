@@ -77,8 +77,8 @@ bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	aten.setProgramMode(Aten::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();
-	// TGAY Force exit from program
-	return TRUE;
+	c->parent()->setAcceptedFail(Command::Quit);
+	return FALSE;
 }
 
 // Print version information

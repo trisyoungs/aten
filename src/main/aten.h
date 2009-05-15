@@ -32,7 +32,7 @@
 
 #define ATENVERSION "1.2"
 #define ATENREVISION "905"
-#define ATENDATE "Thu 14 May - 18:14"
+#define ATENDATE "Fri 15 May - 18:45"
 #define ATENURL "http://aten.googlecode.com/svn/branches/bison"
 
 // Forward Declarations

@@ -1,43 +1,40 @@
-#
 # Creates a condensed water system
-#
 
 # Draw molecule, then load and associate forcefield
-newmodel water
-newatom H
-move 1.0 0.0 0.0
-chain O
-roty 70.5
-move 1.0 0.0 0.0 
-chain H
-nmols 267
+newmodel("water");
+newatom(H);
+move(1.0, 0.0, 0.0);
+chain(O);
+roty(70.5);
+move(1.0, 0.0, 0.0);
+chain(H);
 
-loadff spc.ff
-ffmodel
+# Set box size and determine number of molecules
+double boxlength = 20.0;
+nmols(boxlength^3 / 29.9);
 
-createexpression
-modelenergy
-printenergy
-chargeff
+loadff("spc.ff");
+ffmodel();
 
-info
+createexpression();
+modelenergy();
+printenergy();
+chargeff();
+
+info();
 
 # Create the empty cell for our water to go in to.
-# For cubic cells, nwater should be approximately :     10 A  = 33
-#							20 A = 267
-newmodel box
-cell 10.0 10.0 10.0 90.0 90.0 90.0
-ffmodel
-#elec ewaldauto 5.0e-6
-#elec coulomb
+newmodel("box");
+cell(boxlength,boxlength,boxlength, 90.0, 90.0, 90.0);
+ffmodel();
+elec("ewaldauto", 5.0e-6);
 
-# Request the addition of water molecules. If we wish to cram in more (to get a higher density) decrease vdwscale.
-listcomponents
-vdwscale 1.0
+# VDW scaling is often necessary in order to accept more insertion moves and get the correct density
+vdwscale(1.0);
 
-disorder 10
+disorder(100);
 
-mcminimise 100
+mcminimise(100);
 
 #saveexpression dlpoly test.FIELD
 #savemodel dlpoly test.CONFIG

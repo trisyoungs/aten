@@ -1046,6 +1046,12 @@ double Prefs::elecConvert()
 	return elecConvert_;
 }
 
+// Return the gas constant in the current unit of energy
+double Prefs::gasConstant()
+{
+	return 8.314472 / energyConversions_[energyUnit_];
+}
+
 // Set the internal energy units to use
 void Prefs::setEnergyUnit(EnergyUnit eu)
 {

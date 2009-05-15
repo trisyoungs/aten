@@ -68,6 +68,7 @@ MonteCarlo::MonteCarlo()
 	acceptanceRatio_ = NULL;
 	acceptanceRatioSize_ = 0;
 	vdwScale_ = 1.0;
+	temperature_ = 300.0;
 	nCycles_ = 100;
 }
 
@@ -169,6 +170,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
+	double beta = 1.0 / (prefs.gasConstant() * temperature_);
 
 	/*
 	// Prepare the calculation
@@ -265,13 +267,8 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				deltaVdwEnergy = srcmodel->energy.vdw() - referenceVdwEnergy;
 				deltaElecEnergy = srcmodel->energy.elec() - referenceElecEnergy;
 
-				// If the energy has gone up, undo the move.
-				if (deltaMoleculeEnergy > acceptanceEnergy_[move])
-				{
-					// Put the molecules back to where it was before
-					srcmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
-				}
-				else
+				// Do we accept the move?
+				if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
 				{
 					// Update energy and move counters
 					//ecurrent = enew;
@@ -281,6 +278,11 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 					currentVdwEnergy += deltaVdwEnergy;
 					currentElecEnergy += deltaElecEnergy;
 					acceptanceRatio_[0][move] ++;
+				}
+				else
+				{
+					// Put the molecules back to where it was before
+					srcmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 				}
 			}
 			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
@@ -336,6 +338,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	Vec3<double> v, cog;
 	Clipboard clip;
 	Reflist<Model,int> components;
+	double beta = 1.0 / (prefs.gasConstant() * temperature_);
 
 	// Model must have a cell to continue
 	if (destmodel->cell()->type() == Cell::NoCell)
@@ -576,7 +579,22 @@ bool MonteCarlo::disorder(Model *destmodel)
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
 					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
-					if (deltaMoleculeEnergy > acceptanceEnergy_[move])
+					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
+					{
+						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
+						// Fold the molecule's atoms and recalculate its centre of geometry 
+						//cfg->fold_molecule(p,mol);
+						//destmodel->set_Prefs::ColourScheme(NULL);
+						// Update energy and move counters
+						//ecurrent = enew;
+						//currentVdwEnergy = destmodel->energy.get_vdw();
+						//currentElecEnergy = destmodel->energy.get_elec();
+						ecurrent += deltaMoleculeEnergy;
+						currentVdwEnergy += deltaVdwEnergy;
+						currentElecEnergy += deltaElecEnergy;
+						acceptanceRatio_[p->id()][move] ++;
+					}
+					else
 					{
 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
 						// Revert to the previous state.
@@ -592,21 +610,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 								break;
 						}
-					}
-					else
-					{
-						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
-						// Fold the molecule's atoms and recalculate its centre of geometry 
-						//cfg->fold_molecule(p,mol);
-						//destmodel->set_Prefs::ColourScheme(NULL);
-						// Update energy and move counters
-						//ecurrent = enew;
-						//currentVdwEnergy = destmodel->energy.get_vdw();
-						//currentElecEnergy = destmodel->energy.get_elec();
-						ecurrent += deltaMoleculeEnergy;
-						currentVdwEnergy += deltaVdwEnergy;
-						currentElecEnergy += deltaElecEnergy;
-						acceptanceRatio_[p->id()][move] ++;
 					}
 				}
 				// Get acceptance ratio percentages

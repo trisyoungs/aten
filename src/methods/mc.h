@@ -78,6 +78,8 @@ class MonteCarlo
 	double acceptanceEnergy_[nMoveTypes];
 	// Scaling factor for VDW radius in disorder method
 	double vdwScale_;
+	// Temperature for Boltzmann probabilities
+	double temperature_;
 
 	public:
 	// Set maximum stepsize for MC move
@@ -104,15 +106,10 @@ class MonteCarlo
 	void setVdwScale(double d);
 	// Return current vdw radius scale
 	double vdwScale();
-
-	/*
-	// Component list (for disorder builder)
-	*/
-	public:
-	// List of Component models to use in MC insertion
-	//List<Component> components;
-	// Return the Component with name specified
-	//Component *componentByName(const char*);
+	// Set MC temperature for Boltzmann probabilities
+	void setTemperature(double t);
+	// Return current MC temperature
+	double temperature();
 };
 
 // Static Singleton

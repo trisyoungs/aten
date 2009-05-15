@@ -65,7 +65,7 @@ template <class T, class D> class Reflist
 	// Returns the last item in the list
 	Refitem<T,D> *last() const;
 	// Returns the number of atoms in the list
-	int nItems();
+	int nItems() const;
 	// Add reference to the list
 	void add(T *item);
 	// Add reference to the list with extra data
@@ -148,7 +148,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::last() const
 }
 
 // Returns the number of atoms in the list
-template <class T, class D> int Reflist<T,D>::nItems()
+template <class T, class D> int Reflist<T,D>::nItems() const
 {
 	return nItems_;
 }

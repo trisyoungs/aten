@@ -314,6 +314,8 @@ class Pattern
 	void markRingAtoms(Atom*);
 	// Recursive ring-search routine
 	void ringSearch(Atom*, Ring*, int&);
+	// Search existing ring list for existence of supplied ring
+	bool isRingInList(Ring *source);
 
 	public:
 	// Returns a pointer to the ring list structure

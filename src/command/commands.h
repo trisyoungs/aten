@@ -226,6 +226,8 @@ class Command
 		Undo,
 	
 		// Energy Commands
+		ECut,
+		Electrostatics,
 		FrameEnergy,
 		ModelEnergy,
 		PrintElec,
@@ -235,6 +237,7 @@ class Command
 		PrintEnergy,
 		PrintSummary,
 		PrintVdw,
+		VCut,
 	
 		// Flow control
 		Break,
@@ -333,6 +336,7 @@ class Command
 		Normalise,
 		Sin,
 		Sqrt,
+		Tan,
 
 		// MC Commands
 		MCAccept,
@@ -630,6 +634,8 @@ class Command
 	static bool function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Energy Commands
+	static bool function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintElec(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -639,6 +645,7 @@ class Command
 	static bool function_PrintEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Filter Commands
 	static bool function_Exact(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Extension(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -737,6 +744,7 @@ class Command
 	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MC Commands
 	static bool function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv);

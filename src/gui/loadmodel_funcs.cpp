@@ -38,6 +38,7 @@ void AtenLoadModel::setControls()
 	ui.LoadModelCentreCombo->setCurrentIndex( prefs.centreOnLoad() );
 	ui.LoadModelFoldCombo->setCurrentIndex( prefs.foldOnLoad() );
 	ui.LoadModelPackCombo->setCurrentIndex( prefs.packOnLoad() );
+	ui.LoadModelZMappingCombo->setCurrentIndex( prefs.zMapType() );
 }
 
 // Finalise GUI
@@ -107,4 +108,9 @@ void AtenLoadModel::on_LoadModelPackCombo_activated(int index)
 void AtenLoadModel::on_LoadModelCentreCombo_activated(int index)
 {
 	prefs.setCentreOnLoad( (Prefs::FilterSwitch) index );
+}
+
+void AtenLoadModel::on_LoadModelZMappingCombo_activated(int index)
+{
+	prefs.setZMapType( (ElementMap::ZMapType) index );
 }
