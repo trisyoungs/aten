@@ -49,7 +49,7 @@ class PatternAtom
 	PatternAtom *prev, *next;
 
 	/*
-	// FF and atom data
+	// Forcefield and atom data
 	*/
 	private:
 	// Original FF type of atom
@@ -79,7 +79,7 @@ class PatternBound
 	friend class PatternBoundVariable;
 
 	/*
-	// FF term data
+	// Forcefield term data
 	*/
 	private:
 	// Atoms involved in bond (referring to local molecule atom ids)
@@ -146,8 +146,6 @@ class Pattern
 	void deleteAtom(Atom*);
 
 	public:
-	// Basic model containing a representative molecule of the pattern
-	//Model *molecule;
 	// Sets up variables in pattern
 	void initialise(int, int, int, int);
 	// Takes the supplied atom and places a copy in the local list 
@@ -223,6 +221,7 @@ class Pattern
 	// Postfix increment
 	Pattern *operator++();
 
+
 	/*
 	// Expression
 	*/
@@ -276,33 +275,58 @@ class Pattern
 	// Return selected torsion of the pattern
 	PatternBound *torsion(int i);
 
+
 	/*
 	// Energy / Force Calculation
 	*/
 	public:
+	// Calculate bond energy of pattern (or specific molecule)
 	void bondEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate angle energy of pattern (or specific molecule)
 	void angleEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate torsion energy of pattern (or specific molecule)
 	void torsionEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate intrapattern Vdw energy (or for specific molecule)
 	void vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate interpattern Vdw energy (or for specific molecule)
 	void vdwInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	// Calculate Vdw correction energy for pattern
 	void vdwCorrectEnergy(Cell*, Energy*);
+	// Calculate intrapattern coulomb energy (or for specific molecule)
 	void coulombIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate interpattern coulomb energy (or for specific molecule)
 	void coulombInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	// Calculate intrapattern real-space Ewald energy (or for specific molecule)
 	void ewaldRealIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate interpattern real-space Ewald energy (or for specific molecule)
 	void ewaldRealInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	// Calculate reciprocal-space Ewald energy (or for specific molecule)
 	void ewaldReciprocalEnergy(Model*, Pattern*, int, Energy*, int molecule = -1);
+	// Calculate Ewald correction energy (or for specific molecule)
 	void ewaldCorrectEnergy(Model*, Energy*, int molecule = -1);
+	// Calculate bond forces in pattern
 	void bondForces(Model*);
+	// Calculate angle forces in pattern
 	void angleForces(Model*);
+	// Calculate torsion forces in pattern
 	void torsionForces(Model*);
+	// Calculate Vdw intrapattern forces
 	void vdwIntraPatternForces(Model*);
+	// Calculate Vdw interpattern forces
 	void vdwInterPatternForces(Model*, Pattern*);
+	// Calculate Coulomb intrapattern forces
 	void coulombIntraPatternForces(Model*);
+	// Calculate Coulomb interpattern forces
 	void coulombInterPatternForces(Model*, Pattern*);
+	// Calculate Ewald real-space intrapattern forces
 	void ewaldRealIntraPatternForces(Model*);
+	// Calculate Ewald real-space interpattern forces
 	void ewaldRealInterPatternForces(Model*, Pattern*);
+	// Calculate Ewald reciprocal-space forces
 	void ewaldReciprocalForces(Model*);
+	// Calculate Ewald force corrections
 	void ewaldCorrectForces(Model*);
+
 
 	/*
 	// Typing
@@ -330,8 +354,6 @@ class Pattern
 	void findRings();
 	// Augment atoms in pattern
 	void augment();
-	// Augment atoms in pattern
-	void augmentOLD();
 	// Return total bond order penalty of atoms in one molecule of the pattern
 	int totalBondOrderPenalty();
 	// Describe atoms in pattern, detect rings etc.
@@ -348,6 +370,7 @@ class Pattern
 	void propagateBondTypes();
 	// Select atom 'i' in all molecules
 	void selectAtom(int id, bool markonly = FALSE, bool deselect = FALSE);
+
 
 	/*
 	// Properties
