@@ -203,10 +203,13 @@ void Model::initialiseBondingCuboids()
 		extentMin_ = 0.0;
 		extentMax_ = 1.0;
 		extentRange_ = 1.0;
+		// Work out the box sizes necessary in each direction to get a suitable box length and no remainder of 'overlap'
 		Vec3<double> lengths = cell_.lengths();
 		lengths /= cuboidSize_;
-		cuboidSize_.set(1.0 / lengths.x, 1.0 / lengths.y, 1.0 / lengths.z);
-		cuboidBoxes_.set(lengths.x+1, lengths.y+1, lengths.z+1);
+		Vec3<int> ilengths;
+		ilengths.set(lengths.x, lengths.y, lengths.z);
+		cuboidSize_.set(1.0 / ilengths.x, 1.0 / ilengths.y, 1.0 / ilengths.z);
+		cuboidBoxes_.set(ilengths.x, ilengths.y, ilengths.z);
 	}
 	// Create reference arrays
 	nCuboids_ = cuboidBoxes_.x * cuboidBoxes_.y * cuboidBoxes_.z;
@@ -215,6 +218,7 @@ void Model::initialiseBondingCuboids()
 	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
 	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
 // 	printf("Box counts: x = %i, y = %i, z = %i, cube = %i\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, nCuboids_);
+// 	printf("CuboidSize = "); cuboidSize_.print();
 // 	printf("ExtentMin = "); extentMin_.print(); 
 // 	printf("ExtentMax = "); extentMax_.print();
 // 	printf("ExtentRange = "); extentRange_.print();
@@ -239,7 +243,10 @@ void Model::addAtomToCuboid(Atom *i)
 	x = int(r.x / cuboidSize_.x);
 	y = int(r.y / cuboidSize_.y);
 	z = int(r.z / cuboidSize_.z);
-// 	printf("Atom %i is in box %i-%i-%i\n ", i->id(), x,y,z);
+	if (x == cuboidBoxes_.x) x = 0;
+	if (y == cuboidBoxes_.y) y = 0;
+	if (z == cuboidBoxes_.z) z = 0;
+// 	printf("Atom %i is in box %i-%i-%i=%i\n ", i->id(), x,y,z,x*cuboidYZ_+y*cuboidBoxes_.z+z);
 	bondingCuboids_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// Add to overlay box
 // 	printf("--> Original position"); r.print();
@@ -251,6 +258,9 @@ void Model::addAtomToCuboid(Atom *i)
 	x = int(r.x / cuboidSize_.x);
 	y = int(r.y / cuboidSize_.y);
 	z = int(r.z / cuboidSize_.z);
+	if (x == cuboidBoxes_.x) x = 0;
+	if (y == cuboidBoxes_.y) y = 0;
+	if (z == cuboidBoxes_.z) z = 0;
 // 	printf("and overlay %i-%i-%i (%i)\n",x,y,z,x*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+z);
 	bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// We also add atoms that are on the very edges of the overlays to the ones on the other side (to account for MIM)
@@ -324,7 +334,7 @@ void Model::rebond()
 						if (j->element() == 0) continue;
 						dist = cell_.distance(i,j);
 						radsum = ri->data + rj->data;
-						if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);	
+						if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 					}
 				}
 			}
