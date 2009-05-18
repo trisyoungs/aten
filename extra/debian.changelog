@@ -1,3 +1,9 @@
+aten (1.1) stable; urgency=low
+
+  * Bugfix release. Last version before scripting language syntax change.
+
+ -- Tris Youngs <tris@projectaten.net>  Wed, 22 Oct 2008 15:59:38 +0000
+
 aten (1.0) stable; urgency=low
 
   * Another release
