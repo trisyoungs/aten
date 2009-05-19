@@ -44,7 +44,7 @@ then
 fi
 
 # Determine current svn version number and increase it by one.
-OLDREV=`svn info | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
+OLDREV=`svn info -r HEAD | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
 let NEWREV=OLDREV+1
 echo "Current version is revision $OLDREV - committed version will be revision $NEWREV..."
 

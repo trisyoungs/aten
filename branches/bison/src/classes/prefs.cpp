@@ -24,12 +24,13 @@
 #include "base/elements.h"
 #include "base/lineparser.h"
 #include "main/aten.h"
+#include "parser/prefs.h"
 #include <iostream>
 
 Prefs prefs;
 
 // Colour Schemes
-const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "charge", "element", "force", "velocity" };
+const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
 Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
 {
 	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
@@ -195,11 +196,11 @@ Prefs::Prefs()
 	mouseAction_[Prefs::MiddleButton] = Prefs::TranslateAction;
 	mouseAction_[Prefs::RightButton] = Prefs::RotateAction;
 	mouseAction_[Prefs::WheelButton] = Prefs::ZoomAction;
-	for (int i=0; i<Prefs::nMouseButtons; ++i) mouseActionTexts_[i] = MouseActionKeywords[i];
+	for (int i=0; i<Prefs::nMouseButtons; ++i) mouseActionTexts_[i] = MouseActionKeywords[mouseAction_[i]];
 	keyAction_[Prefs::ShiftKey] = Prefs::ZrotateKeyAction;
 	keyAction_[Prefs::CtrlKey] = Prefs::ManipulateKeyAction;
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
-	for (int i=0; i<Prefs::nModifierKeys; ++i) keyActionTexts_[i] = KeyActionKeywords[i];
+	for (int i=0; i<Prefs::nModifierKeys; ++i) keyActionTexts_[i] = KeyActionKeywords[keyAction_[i]];
 	zoomThrottle_ = 0.15;
 
 	// Colours
@@ -247,6 +248,7 @@ Prefs::Prefs()
 	energyConversions_[Prefs::KiloCalories] = 4184.0;
 	energyConversions_[Prefs::ElectronVolts] = 96485.14925;
 	energyConversions_[Prefs::Hartree] = 2625494.616;
+	energyUnit_ = Prefs::KiloJoules;
 	if (this == &prefs) setEnergyUnit(Prefs::KiloJoules);
 	densityUnit_ = Prefs::GramsPerCm;
 
@@ -300,12 +302,12 @@ bool Prefs::save(const char *filename)
 	msg.enter("Prefs::save");
 	bool result = TRUE;
 	char line[512];
+	int n, i;
 	LineParser prefsfile(filename, TRUE);
 	if (prefsfile.isFileGoodForWriting())
 	{
 		// First - loop over all element data, comparing it to the stored default values
 		prefsfile.writeLine("// Element Data\n");
-		int n, i, score;
 		for (n=0; n<elements().nElements(); ++n)
 		{
 			// Ambient Colour
@@ -332,11 +334,26 @@ bool Prefs::save(const char *filename)
 		// Next - for each accessor in PreferencesVariable compare the results to our local Prefs copy
 		prefsfile.writeLine("// Program Preferences\n");
 		Prefs defaults;
-		
+		ReturnValue rv;
+		Dnchar newvalue, defaultvalue;		
+		for (i = 0; i < PreferencesVariable::nAccessors; ++i)
+		{
+			rv.set(VTypes::PreferencesData, this);
+			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			newvalue = rv.asString();
+			rv.set(VTypes::PreferencesData, &defaults);
+			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			defaultvalue = rv.asString();
+			// Compare the two strings - if different, write the prefs value to the file....
+			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
+			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) sprintf(line,"aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			else sprintf(line,"aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			prefsfile.writeLine(line);
+		}
 	}
 	else result = FALSE;
 	prefsfile.closeFile();
-// 				double atomicRadius;
 	msg.exit("Prefs::save");
 	return result;
 }

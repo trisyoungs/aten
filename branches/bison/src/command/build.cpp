@@ -109,7 +109,7 @@ bool Command::function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	obj.rs->endUndoState();
 	aten.current.i = i;
-	rv.setPtr(VTypes::AtomData, i);
+	rv.set(VTypes::AtomData, i);
 	return TRUE;
 }
 
@@ -156,7 +156,7 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	rv.setPtr(VTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -225,7 +225,7 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
-	rv.setPtr(VTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 
@@ -247,7 +247,7 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs->beginUndoState("Draw atom (fractional)");
 	aten.current.i = obj.rs->addAtom(el, r);
 	obj.rs->endUndoState();
-	rv.setPtr(VTypes::AtomData, aten.current.i);
+	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
 }
 

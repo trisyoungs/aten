@@ -123,10 +123,10 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (BondVariable::I):
-			rv.setPtr(VTypes::AtomData, ptr->atomI());
+			rv.set(VTypes::AtomData, ptr->atomI());
 			break;
 		case (BondVariable::J):
-			rv.setPtr(VTypes::AtomData, ptr->atomJ());
+			rv.set(VTypes::AtomData, ptr->atomJ());
 			break;
 		case (BondVariable::Order):
 			rv.set(ptr->order());

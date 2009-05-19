@@ -33,7 +33,7 @@ bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.m->setRenderFromFrames();
 	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	rv.setPtr(VTypes::ModelData, obj.rs);
+	rv.set(VTypes::ModelData, obj.rs);
 	return TRUE;
 }
 

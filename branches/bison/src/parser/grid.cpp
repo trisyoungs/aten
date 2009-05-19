@@ -126,7 +126,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (GridVariable::Axes):
-			rv.setPtr(VTypes::CellData, ptr->cell());
+			rv.set(VTypes::CellData, ptr->cell());
 			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());

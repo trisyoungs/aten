@@ -538,8 +538,10 @@ void LineParser::getArgsDelim(const char *s, int options)
 }
 
 // Return a number of characters from the input stream
-const char *LineParser::getChars(int nchars)
+const char *LineParser::getChars(int nchars, bool skipeol)
 {
+	char c;
+	int i;
 	// Check number of characters requested
 	if (nchars == 0) return NULL;
 	else if (nchars > MAXLINELENGTH)
@@ -552,7 +554,14 @@ const char *LineParser::getChars(int nchars)
 		tempArg_[0] = '\0';
 		for (int i=nchars; i<0; i++) file_.unget();
 	}
-	else file_.get(tempArg_, nchars+1);
+	else for (i=0; i < nchars; ++i)
+	{
+		file_.get(c);
+		if (skipeol) while ((c == '\n') || (c == '\r')) { if (file_.eof()) break; file_.get(c); }
+		tempArg_[i] = c;
+		if (file_.eof()) break;
+	}
+	tempArg_[i] = '\0';
 	if (file_.eof())
 	{
 		closeFile();

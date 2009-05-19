@@ -94,7 +94,7 @@ class ReturnValue
 	// Set from single vector data
 	void set(int id, double xyz);
 	// Set from pointer value
-	void setPtr(VTypes::DataType type, void *ptr);
+	void set(VTypes::DataType type, void *ptr);
 	// Set from standard array
 	void setArray(VTypes::DataType type, void *source, int arraysize);
 	// Set array element from integer value

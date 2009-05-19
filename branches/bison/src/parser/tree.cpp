@@ -35,6 +35,7 @@
 #include "parser/double.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "classes/prefs.h"
 #include "main/aten.h"
 #include <stdarg.h>
 
@@ -198,13 +199,19 @@ bool Tree::execute(ReturnValue &rv)
 	msg.enter("Tree::execute");
 	bool result;
 	rv.reset();
+	ElementMap::ZMapType zm;
 	acceptedFail_ = Command::NoFunction;
 	// Perform any preparatory commands related to filter trees
-	if (isFilter()) switch (filter.type())
+	if (isFilter())
 	{
-		case (FilterData::ExpressionExport):
-			aten.current.m->createUniqueLists();
-			break;
+		// For all filters, store the current zmapping style in Prefs so wa can revert to it later
+		zm = prefs.zMapType();
+		switch (filter.type())
+		{
+			case (FilterData::ExpressionExport):
+				aten.current.m->createUniqueLists();
+				break;
+		}
 	}
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
@@ -224,6 +231,12 @@ bool Tree::execute(ReturnValue &rv)
 			break;
 		}
 		if (!result) break;
+	}
+	// Perform any finalisation commands related to filter trees
+	if (isFilter())
+	{
+		// For all filters, restore the previous zmapping style
+		prefs.setZMapType(zm);
 	}
 	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
 	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());

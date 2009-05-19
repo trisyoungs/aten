@@ -671,7 +671,7 @@ CommandData Command::data[Command::nCommands] = {
 				"Peek the next character from the current input file, and return it as a string" },
 	{ "peekchari",		"",		"", VTypes::IntegerData, 
 				"Peek the next character from the current input file, and return its ASCII code" },
-	{ "readchars",		"N",		"<nchars>", VTypes::StringData,
+	{ "readchars",		"Nb",		"<nchars> [skipeol]", VTypes::StringData,
 				"Read a number of characters from the input file" },
 	{ "readdouble",		"n",		"[nbytes]", VTypes::DoubleData,
 				"Read a floating point value from the (binary) input file" },

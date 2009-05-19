@@ -132,31 +132,31 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	if (result) switch (acc)
 	{
 		case (PatternVariable::Angles):
-			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->angles());
+			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->angles());
 			else if (arrayIndex > ptr->nAngles())
 			{
 				msg.print("Angle array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
+			else rv.set(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
 			break;
 		case (PatternVariable::Atoms):
-			if (!hasArrayIndex) rv.setPtr(VTypes::AtomData, ptr->parent()->atom(ptr->startAtom()));
+			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->parent()->atom(ptr->startAtom()));
 			else if (arrayIndex > ptr->totalAtoms())
 			{
 				msg.print("Atom array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1+ptr->startAtom()));
+			else rv.set(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1+ptr->startAtom()));
 			break;
 		case (PatternVariable::Bonds):
-			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->bonds());
+			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
 				msg.print("Bond array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
+			else rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
 			break;
 		case (PatternVariable::Cog):
 			rv.set(ptr->calculateCog(arrayIndex-1));
@@ -165,16 +165,16 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
 		case (PatternVariable::FirstAtom):
-			rv.setPtr(VTypes::AtomData, ptr->firstAtom());
+			rv.set(VTypes::AtomData, ptr->firstAtom());
 			break;
 		case (PatternVariable::FirstAtomId):
 			rv.set(ptr->startAtom() + 1);
 			break;
 		case (PatternVariable::FField):
-			rv.setPtr(VTypes::ForcefieldData, ptr->forcefield());
+			rv.set(VTypes::ForcefieldData, ptr->forcefield());
 			break;
 		case (PatternVariable::LastAtom):
-			rv.setPtr(VTypes::AtomData, ptr->lastAtom());
+			rv.set(VTypes::AtomData, ptr->lastAtom());
 			break;
 		case (PatternVariable::LastAtomId):
 			rv.set(ptr->endAtom() + 1);
@@ -201,13 +201,13 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->nTorsions());
 			break;
 		case (PatternVariable::Torsions):
-			if (!hasArrayIndex) rv.setPtr(VTypes::PatternBoundData, ptr->torsions());
+			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->torsions());
 			else if (arrayIndex > ptr->nTorsions())
 			{
 				msg.print("Torsion array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
+			else rv.set(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PatternVariable.\n", accessorData[i].name);

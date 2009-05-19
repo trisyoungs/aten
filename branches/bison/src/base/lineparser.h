@@ -128,7 +128,7 @@ class LineParser
 	// Get next delimited argument from internal file
 	int getArgDelim(Dnchar *destarg, int flags);
 	// Return a number of characters from the input stream
-	const char *getChars(int nchars);
+	const char *getChars(int nchars, bool skipeol = TRUE);
 	// Skip a number of characters from the input stream
 	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file

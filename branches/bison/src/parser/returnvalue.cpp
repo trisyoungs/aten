@@ -229,7 +229,7 @@ void ReturnValue::set(int id, double xyz)
 }
 
 // Set from pointer value
-void ReturnValue::setPtr(VTypes::DataType ptrtype, void *ptr)
+void ReturnValue::set(VTypes::DataType ptrtype, void *ptr)
 {
 	clearArrayData();
 	type_ = ptrtype;
@@ -379,11 +379,43 @@ const char *ReturnValue::asString(bool &success)
 {
 	static char converted[128];
 	success = TRUE;
-	if (arraySize_ != -1) msg.print("Cannot return a whole array as a single string.\n");
+	if (arraySize_ != -1)
+	{
+		// Use valueS_ to store the result....
+// 		msg.print("Cannot return a whole array as a single string.\n");
+		valueS_.createEmpty(1024);
+		valueS_.clear();
+		valueS_.cat("{ ");
+		for (int i=0; i<arraySize_; ++i)
+		{
+			if (i != 0) valueS_.cat(", ");
+			switch (type_)
+			{
+				case (VTypes::NoData):
+					printf("Internal error: No data in ReturnValue to return as a string!\n");
+					success = FALSE;
+					return "_NULL_";
+					break;
+				case (VTypes::IntegerData):
+					valueS_.cat(itoa(arrayI_[i]));
+					break;
+				case (VTypes::DoubleData):
+					valueS_.cat(ftoa(arrayD_[i]));
+					break;
+				case (VTypes::StringData):
+					valueS_ += '"';
+					valueS_.cat(arrayS_[i].get());
+					valueS_ += '"';
+					break;
+			}
+		}
+		valueS_.cat(" }");
+		return valueS_.get();
+	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			printf("Internal error: No data in ReturnValue to return as a character!\n");
+			printf("Internal error: No data in ReturnValue to return as a string!\n");
 			success = FALSE;
 			return "_NULL_";
 			break;
