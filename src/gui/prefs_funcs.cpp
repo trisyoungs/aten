@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/prefs.h"
+#include "gui/selectelement.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
 
@@ -88,6 +89,8 @@ void AtenPrefs::setControls()
 	ui.MeasurementsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewMeasurements));
 	ui.RegionsVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewRegions));
 	ui.SurfacesVisibleImageCheck->setChecked(prefs.isVisibleOffScreen(Prefs::ViewSurfaces));
+	ui.AngleLabelEdit->setText(prefs.angleLabel());
+	ui.DistanceLabelEdit->setText(prefs.distanceLabel());
 	// ... lighting
 	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
 	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
@@ -114,6 +117,16 @@ void AtenPrefs::setControls()
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 	ui.ZoomThrottleSpin->setValue(prefs.zoomThrottle());
+
+	// Set controls in Program page
+	ui.CommonElementsEdit->setText(prefs.commonElements());
+	ui.DensityUnitCombo->setCurrentIndex(prefs.densityUnit());
+	ui.EnergyUnitCombo->setCurrentIndex(prefs.energyUnit());
+	ui.EnergyUpdateSpin->setValue(prefs.energyUpdate());
+	ui.HAddDistanceSpin->setValue(prefs.hydrogenDistance());
+	ui.MaxRingSizeSpin->setValue(prefs.maxRingSize());
+	ui.MaxUndoLevelsSpin->setValue(prefs.maxUndoLevels());
+	ui.ModelUpdateSpin->setValue(prefs.modelUpdate());
 
 	// Set pen colours and colourscale names and checks
         ui.ForegroundColourFrame->setColour(prefs.colour(Prefs::ForegroundColour));
@@ -433,6 +446,16 @@ void AtenPrefs::on_SurfacesVisibleImageCheck_stateChanged(int state)
 	setVisibleObject(Prefs::ViewSurfaces, state, FALSE);
 }
 
+void AtenPrefs::on_AngleLabelEdit_textEdited(const QString &text)
+{
+	prefs.setAngleLabel( qPrintable(text) );
+}
+
+void AtenPrefs::on_DistanceLabelEdit_textEdited(const QString &text)
+{
+	prefs.setDistanceLabel( qPrintable(text) );
+}
+
 /*
 // View [Lighting] Page
 */
@@ -721,4 +744,49 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
 	// Look at checked state
 	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
 	gui.mainView.postRedisplay();
+}
+
+/*
+// Program Page
+*/
+
+void AtenPrefs::on_CommonElementsEdit_textEdited(const QString &text)
+{
+	prefs.setCommonElements( qPrintable(text) );
+	gui.selectElementDialog->addCommonButtons(prefs.commonElements());
+}
+
+void AtenPrefs::on_DensityUnitCombo_currentIndexChanged(int index)
+{
+	prefs.setDensityUnit( (Prefs::DensityUnit) index );
+}
+
+void AtenPrefs::on_EnergyUnitCombo_currentIndexChanged(int index)
+{
+	prefs.setEnergyUnit( (Prefs::EnergyUnit) index );
+}
+
+void AtenPrefs::on_EnergyUpdateSpin_valueChanged(int value)
+{
+	prefs.setEnergyUpdate(value);
+}
+
+void AtenPrefs::on_HAddDistanceSpin_valueChanged(double value)
+{
+	prefs.setHydrogenDistance(value);
+}
+
+void AtenPrefs::on_MaxRingSizeSpin_valueChanged(int value)
+{
+	prefs.setMaxRingSize(value);
+}
+
+void AtenPrefs::on_MaxUndoLevelsSpin_valueChanged(int value)
+{
+	prefs.setMaxUndoLevels(value);
+}
+
+void AtenPrefs::on_ModelUpdateSpin_valueChanged(int value)
+{
+	prefs.setModelUpdate(value);
 }

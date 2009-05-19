@@ -179,7 +179,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(elements().symbol(ptr));
 			break;
 		case (AtomVariable::Type):
-			rv.setPtr(VTypes::ForcefieldAtomData, ptr->type());
+			rv.set(VTypes::ForcefieldAtomData, ptr->type());
 			break;
 		case (AtomVariable::V):
 			rv.set(ptr->v());

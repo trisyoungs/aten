@@ -135,37 +135,37 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Atoms):
-			if (!hasArrayIndex) rv.setPtr(VTypes::AtomData, ptr->atoms());
+			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
 			{
 				msg.print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::AtomData, ptr->atom(arrayIndex-1));
+			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
 			break;
 		case (ModelVariable::Atomtypes):
-			if (!hasArrayIndex) rv.setPtr(VTypes::ForcefieldAtomData, ptr->uniqueTypes());
+			if (!hasArrayIndex) rv.set(VTypes::ForcefieldAtomData, ptr->uniqueTypes());
 			else if (arrayIndex > ptr->nUniqueTypes())
 			{
 				msg.print("Unique types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
+			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
 			break;
 		case (ModelVariable::Bonds):
-			if (!hasArrayIndex) rv.setPtr(VTypes::BondData, ptr->bonds());
+			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
 				msg.print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::BondData, ptr->bond(arrayIndex-1));
+			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
 			break;
 		case (ModelVariable::Celldata):
-			rv.setPtr(VTypes::CellData, ptr->cell());
+			rv.set(VTypes::CellData, ptr->cell());
 			break;
 		case (ModelVariable::Frame):
-			rv.setPtr(VTypes::ModelData, ptr->currentFrame());
+			rv.set(VTypes::ModelData, ptr->currentFrame());
 			break;
 		case (ModelVariable::Frames):
 			// Only works for a cached trajectory
@@ -174,13 +174,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				msg.print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
 				result = FALSE;
 			}
-			else if (!hasArrayIndex) rv.setPtr(VTypes::ModelData, ptr->frame(0));
+			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->frame(0));
 			else if ((arrayIndex < 1) || (arrayIndex > ptr->nFrames()))
 			{
 				msg.print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nFrames());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::ModelData, ptr->frame(arrayIndex-1));
+			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
 			break;
 		case (ModelVariable::Name):
 			rv.set(ptr->name());
@@ -213,13 +213,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->nUniqueTorsionTerms());
 			break;
 		case (ModelVariable::Patterns):
-			if (!hasArrayIndex) rv.setPtr(VTypes::PatternData, ptr->patterns());
+			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
 			{
 				msg.print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.setPtr(VTypes::PatternData, ptr->pattern(arrayIndex-1));
+			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);

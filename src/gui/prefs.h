@@ -109,6 +109,8 @@ class AtenPrefs : public QDialog
 	void on_MeasurementsVisibleImageCheck_stateChanged(int state);
 	void on_SurfacesVisibleImageCheck_stateChanged(int state);
 	void on_RegionsVisibleImageCheck_stateChanged(int state);
+	void on_AngleLabelEdit_textEdited(const QString &text);
+	void on_DistanceLabelEdit_textEdited(const QString &text);
 	// GL
 	void on_AtomQualitySpin_valueChanged(int value);
 	void on_BondQualitySpin_valueChanged(int value);
@@ -118,6 +120,15 @@ class AtenPrefs : public QDialog
 	void on_NearDepthSpin_valueChanged(int value);
 	void on_LineAliasingCheck_stateChanged(int state);
 	void on_PolygonAliasingCheck_stateChanged(int state);
+	// Program
+	void on_CommonElementsEdit_textEdited(const QString &text);
+	void on_DensityUnitCombo_currentIndexChanged(int index);
+	void on_EnergyUnitCombo_currentIndexChanged(int index);
+	void on_EnergyUpdateSpin_valueChanged(int value);
+	void on_HAddDistanceSpin_valueChanged(double value);
+	void on_MaxRingSizeSpin_valueChanged(int value);
+	void on_MaxUndoLevelsSpin_valueChanged(int value);
+	void on_ModelUpdateSpin_valueChanged(int value);
 
 	/*
 	// Colours page

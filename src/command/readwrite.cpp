@@ -154,7 +154,8 @@ bool Command::function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No valid filesource available for the 'readchars' command.\n");
 		return FALSE;
 	}
-	rv.set( c->parent()->parser()->getChars( c->argi(0)) );
+	if (c->hasArg(1)) rv.set( c->parent()->parser()->getChars(c->argi(0), c->argb(1)) );
+	else rv.set( c->parent()->parser()->getChars(c->argi(0)) );
 	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asString());
 	return TRUE;
 }

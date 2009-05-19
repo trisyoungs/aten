@@ -233,7 +233,7 @@ bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	if (ff == NULL)	return FALSE;
 	aten.setCurrentForcefield(ff);
-	rv.setPtr(VTypes::ForcefieldData, ff);
+	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
@@ -247,7 +247,7 @@ bool Command::function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
-	rv.setPtr(VTypes::ForcefieldData, ff);
+	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
 
@@ -281,7 +281,7 @@ bool Command::function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	obj.ff = aten.addForcefield();
 	obj.ff->setName(c->argc(0));
-	rv.setPtr(VTypes::ForcefieldData, obj.ff);
+	rv.set(VTypes::ForcefieldData, obj.ff);
 	return TRUE;
 }
 

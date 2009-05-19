@@ -271,12 +271,19 @@ void Dnchar::operator+=(char c)
 // String addition
 void Dnchar::cat(const char *s)
 {
-	// Create concatenated string
-	static char tempstr[8096];
-	tempstr[0] = '\0';
-	strcpy(tempstr, data_);
-	strcpy(&tempstr[endPosition_], s);
-	set(tempstr);
+	for (const char *c = s; *c != '\0'; ++c)
+	{
+		// If we're passed \0, ignore it (since we already have one)
+		// Check size_ of array
+		if (endPosition_ == (size_ - 1))
+		{
+			printf("Dnchar::cat <<<< No space left to add character >>>>\n");
+			return;
+		}
+		data_[endPosition_] = *c;
+		endPosition_ ++;
+	}
+	data_[endPosition_] = '\0';
 }
 
 // Find character

@@ -51,7 +51,7 @@ void PointerVariable::reset()
 // Return value of node
 bool PointerVariable::execute(ReturnValue &rv)
 {
-	rv.setPtr(returnType_, pointerData_);
+	rv.set(returnType_, pointerData_);
 	return TRUE;
 }
 
@@ -192,7 +192,7 @@ bool PointerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
 		return FALSE;
 	}
-	rv.setPtr( returnType_, pointerArrayData_[arrayindex] );
+	rv.set( returnType_, pointerArrayData_[arrayindex] );
 	printf("Executed :: '%s'\n", rv.info());
 	return TRUE;
 }

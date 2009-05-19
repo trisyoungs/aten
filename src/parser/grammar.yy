@@ -65,7 +65,7 @@ VTypes::DataType declaredType;
 
 programlist:
 	/* empty */					{ }
-	| program						{ }
+	| program					{ }
 	| programlist program				{ }
 	;
 
@@ -109,7 +109,6 @@ optlist:
 
 filter:
 	FILTERBLOCK pushfilter '(' optlist ')' block 	{ if (!cmdparser.addStatement($6)) YYABORT; cmdparser.popTree(); }
-	| FILTERBLOCK error				{ msg.print("Error reading filter block definition.\n"); YYABORT; }
 	;
 
 pushfilter:
@@ -123,6 +122,7 @@ statement:
 	| HELP FUNCCALL					{ $$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2)); }
 	| RETURN expr					{ $$ = cmdparser.addFunction(Command::Return,$2); }
 	| RETURN 					{ $$ = cmdparser.addFunction(Command::Return); }
+	| statement decexpr				{ msg.print("Error: Expected ';' before current expression.\n"); YYABORT; }
 	;
 
 decexpr:
@@ -138,12 +138,6 @@ fstatement:
 	| DO pushscope blockment WHILE '(' expr ')'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
 	| userfuncdef					{ if (!cmdparser.addStatement($1)) YYABORT; }
 	| userstatementdef				{ if (!cmdparser.addStatement($1)) YYABORT; }
-	;
-
-/* Range (X~Y) */
-
-range:
-	expr '~' expr					{ printf("GENERATE RANGE. TGAY\n"); }
 	;
 
 /* Constants */
@@ -247,7 +241,7 @@ rawvar:
 exprlist:
 	expr						{ $$ = $1; if ($$ == NULL) YYABORT; }
 	| exprlist ',' expr				{ $$ = Tree::joinArguments($3,$1); }
-	| exprlist expr					{ msg.print("Error: Missing comma between items?\n"); YYABORT; }
+	| exprlist expr					{ msg.print("Error: Missing comma between items.\n"); YYABORT; }
 	;
 
 expr:

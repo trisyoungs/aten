@@ -84,15 +84,14 @@ bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Add the bond
 	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
-	if ((i == NULL) || (j == NULL))
+	if ((i != NULL) && (j != NULL))
 	{
-		msg.print("Can't bond atoms - one or both atoms not found.\n");
-		return FALSE;
+		// Add the bond
+		obj.rs->beginUndoState("Bond Atoms");
+		obj.rs->bondAtoms(i, j, bt);
+		obj.rs->endUndoState();
 	}
-	// Add the bond
-	obj.rs->beginUndoState("Bond Atoms");
-	obj.rs->bondAtoms(i, j, bt);
-	obj.rs->endUndoState();
+	else msg.print("Can't bond atoms - one or both atoms not found.\n");
 	rv.reset();
 	return TRUE;
 }
@@ -115,15 +114,14 @@ bool Command::function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Find the atoms specified
 	Atom *i = obj.rs->findAtom(c->argi(0));
 	Atom *j = obj.rs->findAtom(c->argi(1));
-	if ((i == NULL) || (j == NULL))
+	if ((i != NULL) && (j != NULL))
 	{
-		msg.print("Can't bond atoms - one or both atoms not found.\n");
-		return FALSE;
+		// Add the bond
+		obj.rs->beginUndoState("Bond Atoms");
+		obj.rs->bondAtoms(i, j, bt);
+		obj.rs->endUndoState();
 	}
-	// Add the bond
-	obj.rs->beginUndoState("Bond Atoms");
-	obj.rs->bondAtoms(i, j, bt);
-	obj.rs->endUndoState();
+	else msg.print("Can't bond atoms - one or both atoms not found.\n");
 	rv.reset();
 	return TRUE;
 }

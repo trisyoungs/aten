@@ -154,7 +154,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::ParentFF):
-			rv.setPtr(VTypes::ForcefieldData, ptr->parent());
+			rv.set(VTypes::ForcefieldData, ptr->parent());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldAtomVariable.\n", accessorData[i].name);
