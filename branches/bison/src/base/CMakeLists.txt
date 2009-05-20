@@ -44,7 +44,13 @@ mathfunc.cpp
 add_library(sg
 generator.h
 spacegroup.h
+sginfo.h
 generator.cpp 
+sgclib.cpp
+sgfind.cpp
+sghkl.cpp
+sgio.cpp
+sgsi.cpp
 spacegroup.cpp
 )
 

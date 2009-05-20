@@ -428,6 +428,8 @@ class Prefs
 	Prefs::GuideGeometry guideShape_;
 	// Hydrogen add distance
 	double hydrogenDistance_;
+	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
+	bool forceRhombohedral_;
 
 	public:
 	// Sets the bonding tolerance
@@ -462,6 +464,10 @@ class Prefs
 	void setHydrogenDistance(double d);
 	// Return hydrogen add distance
 	double hydrogenDistance();
+	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	void setForceRhombohedral(bool b);
+	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	bool forceRhombohedral();
 
 
 	/*

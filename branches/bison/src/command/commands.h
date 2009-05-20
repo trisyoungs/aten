@@ -182,6 +182,7 @@ class Command
 		Scale,
 		ScaleMolecules,
 		SetCell,
+		SGInfo,
 		Spacegroup,
 	
 		// Charge commands
@@ -595,6 +596,7 @@ class Command
 	static bool function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Charge commands
 	static bool function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv);

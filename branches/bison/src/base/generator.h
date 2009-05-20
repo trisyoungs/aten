@@ -1,5 +1,5 @@
 /*
-	*** Spacegroup generators
+	*** Symmetry generator
 	*** src/base/generator.h
 	Copyright T. Youngs 2007-2009
 
@@ -22,54 +22,41 @@
 #ifndef ATEN_GENERATOR_H
 #define ATEN_GENERATOR_H
 
+#include "base/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
 
 // Symmetry generator
 class Generator
 {
-	/*
-	// Rotation Matrix and Translation Vector
-	*/
 	public:
-	// Integer id
-	int id;
-	// Short text 'description'
-	const char *name;
-	// Rotation matrix
-	Mat3<double> rotation;
-	// Translation vector
-	Vec3<double> translation;
+	// Constructor
+	Generator();
 	// List pointers
 	Generator *prev, *next;
 
+	/*
+	// Rotation Matrix and Translation Vector
+	*/
 	private:
-	// Set partial element of matrix or translation vector
-	bool set(int row, const char *s);
+	// Generator text (if any)
+	Dnchar name_;
+	// Generator matrix
+	Mat4<double> matrix_;
+	// Set partial element of matrix
+	bool setMatrixPart(int row, const char *s);
 
 	public:
-	// Set from plain text string
-	bool set(const char *s);
+	// Set from XYZ-style name
+	bool set(const char *xyz);
+	// Set from integer list from sginfo
+	bool set(int *elements);
+	// Return text 'name' of generator
+	const char *name();
+	// Negate elements in matrix
+	void negateMatrix();
+	// Return operator matrix of generator
+	Mat4<double> &matrix();
 };
-
-// Symmetry generator map
-class GeneratorMap
-{
-	private:
-	// Spacegroup generator data
-	static Generator generators_[];
-	// Extra, manually-defined generators
-	List<Generator> extra_;
-
-	public:
-	// Return generator with ID specified
-	Generator &generator(int gen) const;
-	// Find generator from supplied string
-	Generator *generator(const char *s);
-	// Add new generator to list of extra definitions
-	Generator *addGenerator(const char *s);
-};
-
-extern GeneratorMap generators;
 
 #endif

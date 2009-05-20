@@ -58,7 +58,6 @@ Cell::Cell()
 	volume_ = 0.0;
 	reciprocalVolume_ = 0.0;
 	spacegroup_ = 0;
-	spacegroupSetting_ = 1;
 	parent_ = NULL;
 }
 
@@ -305,35 +304,35 @@ double Cell::density() const
 	return density_;
 }
 
-// Sets the spacegroup
-void Cell::setSpacegroup(int i)
+// Sets the spacegroup Id
+void Cell::setSpacegroupId(int i)
 {
 	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroup_ = i;
+	else spacegroupId_ = i; // TGAY
 }
 
-// Sets the spacegroup setting
-void Cell::setSpacegroupSetting(int i)
+// Return the spacegroup Id
+int Cell::spacegroupId()
 {
-	spacegroupSetting_ = i;
+	return spacegroupId_;
 }
 
-// Return the spacegroup
-int Cell::spacegroup()
+// Sets the spacegroup by text name
+void Cell::setSpacegroup(const char *s)
 {
-	return spacegroup_;
+	// TGAY
 }
 
-// Return the spacegroup setting
-int Cell::spacegroupSetting()
+// Return the spacegroup name
+const char *Cell::spacegroup()
 {
-	return spacegroupSetting_;
+	return spacegroup_.get();
 }
 
 // Add manual generator
-void Cell::addGenerator(Generator *g)
+Generator *Cell::addGenerator()
 {
-	generators_.add(g);
+	Generator *g = generators_.add();
 }
 
 // Return number of manual generators defined
@@ -343,7 +342,7 @@ int Cell::nGenerators()
 }
 
 // Return first manually-defined generator
-Refitem<Generator,int> *Cell::generators()
+Generator *Cell::generators()
 {
 	return generators_.first();
 }

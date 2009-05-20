@@ -87,7 +87,7 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()),  m->cell()->spacegroup());
+	sprintf(s,"%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name,  m->cell()->spacegroupId());
 	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
@@ -172,30 +172,19 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	int sg;
 	static char s[64];
 	// Grab the current text of the line edit and determine spacegroup
-	// Try a direct number conversion first...
-	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
-	sg = atoi(s);
-	if (sg == 0) sg = spacegroups.spacegroup(s);
-	// Check for null spacegroup
-	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
-	else
-	{
-		CommandNode::run(Command::Spacegroup, "i", sg);
-		ui.CellSpacegroupEdit->setText("");
-		// Set spacegroup label
-		Model *m = aten.currentModel()->renderSource();
-		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), sg);
-		ui.SpacegroupLabel->setText(s);
-	}
+	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
+	ui.CellSpacegroupEdit->setText("");
+	// Set spacegroup label
+	Model *m = aten.currentModel()->renderSource();
+	sprintf(s,"%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
+	ui.SpacegroupLabel->setText(s);
 }
 
 void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Spacegroup, "i", 0);
 	// Set spacegroup label
-	char s[128];
-	sprintf(s,"%s (0)\n", spacegroups.displayName(0));
-	ui.SpacegroupLabel->setText(s);
+	ui.SpacegroupLabel->setText("None (0)");
 }
 
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)

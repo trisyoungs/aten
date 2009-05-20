@@ -94,29 +94,7 @@ void Dnchar::clear()
 	data_[0] = '\0';
 }
 
-// Set
-/* void Dnchar::set(const char *s)
-{
-	// Check if array has already been initialised
-	if (data_ != NULL) delete[] data_;
-	// Get length of string to copy
-	// Must check if passed string is empty
-	if (s == NULL)
-	{
-		size_ = 1;
-		endPosition_ = 0;
-		data_ = new char[1];
-		data_[0] = '\0';
-	}
-	else
-	{
-		size_ = strlen(s) + 1;
-		endPosition_ = size_-1;
-		data_ = new char[size_];
-		strcpy(data_,s);
-	}
-} */
-
+// Set from C-style string
 void Dnchar::set(const char *s)
 {
 	// If new size is less than or equal to old size, don't reallocate
@@ -271,13 +249,23 @@ void Dnchar::operator+=(char c)
 // String addition
 void Dnchar::cat(const char *s)
 {
+	// Check whether we need to reallocate
+	int slen = strlen(s);
+	if ((slen+endPosition_) > (size_-1))
+	{
+		size_ = slen+endPosition_+1;
+		char *newdata = new char[size_];
+		strcpy(newdata, data_);
+		delete[] data_;
+		data_ = newdata;
+	}
 	for (const char *c = s; *c != '\0'; ++c)
 	{
 		// If we're passed \0, ignore it (since we already have one)
 		// Check size_ of array
 		if (endPosition_ == (size_ - 1))
 		{
-			printf("Dnchar::cat <<<< No space left to add character >>>>\n");
+			printf("Dnchar::cat <<<< Buffer overflow - blame shoddy programming >>>>\n");
 			return;
 		}
 		data_[endPosition_] = *c;

@@ -33,23 +33,11 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
-	Generator::Generator *gen = generators.generator(c->argc(0));
-	if (gen != NULL)
+	Generator::Generator *gen = obj.rs->cell()->addGenerator();
+	if (!gen->set(c->argc(0)))
 	{
-		obj.rs->cell()->addGenerator(gen);
-		return TRUE;
-	}
-	else
-	{
-		msg.print("Generator '%s' not found in standard list. Creating new definition...\n", c->argc(0));
-		// Create a new generator...
-		gen = generators.addGenerator(c->argc(0));
-		if (gen != NULL) obj.rs->cell()->addGenerator(gen);
-		else
-		{
-			msg.print("Failed to create new generator definition.\n");
-			return FALSE;
-		}
+		msg.print("Failed to create new generator definition.\n");
+		return FALSE;
 	}
 	rv.reset();
 	return TRUE;
@@ -247,20 +235,51 @@ bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Run SGInfo on supplied string
+bool Command::function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	T_SgInfo sg;
+	sg.MaxList = 192;
+	sg.ListSeitzMx = new T_RTMx[192];
+	sg.ListRotMxInfo = new T_RotMxInfo[192];
+	rv.set(0);
+	// Do a table lookup of the sg text (assume volume is 'A')
+	const T_TabSgName *tsgn = FindTabSgNameEntry(c->argc(0), 'A');
+	if (tsgn == NULL)
+	{
+		msg.print("Unable to find spacegroup '%s'.\n", c->argc(0));
+		return FALSE;
+	}
+// 	SgName = tsgn->HallSymbol;
+	
+	// Initialize the SgInfo structure
+	InitSgInfo(&sg);
+	sg.TabSgName = tsgn;
+	
+	// Translate the Hall symbol and generate the whole group
+	ParseHallSymbol(tsgn->HallSymbol, &sg);
+	if (SgError != NULL) return TRUE;
+	
+	/* Do some book-keeping and derive crystal system, point group,
+	and - if not already set - find the entry in the internal
+	table of space group symbols
+	*/
+	int i = CompleteSgInfo(&sg);
+
+	ListSgInfo(&sg, 1, 0, stdout);
+	
+	rv.set(tsgn->SgNumber);
+	delete[] sg.ListSeitzMx;
+	delete[] sg.ListRotMxInfo;
+	return TRUE;
+}
+
 // Set spacegroup
 bool Command::function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argType(0) == VTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
-	else
-	{
-		msg.print("Searching for spacegroup '%s'...",c->argc(0));
-		int sg = spacegroups.spacegroup(c->argc(0));
-		if (sg == 0) msg.print(" not found - no spacegroup set.\n");
-		else msg.print(" found, id = %i.\n",sg);
-		obj.rs->cell()->setSpacegroup(sg);
-	}
+	obj.rs->setSpacegroup(c->argc(0));
 	rv.reset();
 	return TRUE;
 }

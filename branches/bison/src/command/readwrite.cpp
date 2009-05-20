@@ -124,7 +124,7 @@ bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	s[0] = c->parent()->parser()->peek();
 	s[1] = '\0';
 	rv.set(s);
-	msg.print(Messenger::Commands,"Peek got character '%c'\n", s[0]);
+	msg.print(Messenger::Commands,"Peek got character '%i'\n", s[0]);
 	return TRUE;
 }
 
@@ -141,7 +141,7 @@ bool Command::function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	s[0] = c->parent()->parser()->peek();
 	s[1] = '\0';
 	rv.set(s);
-	msg.print(Messenger::Commands,"Peek got character '%c'\n", s[0]);
+	msg.print(Messenger::Commands,"Peek got character '%i'\n", s[0]);
 	return TRUE;
 }
 

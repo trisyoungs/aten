@@ -79,6 +79,10 @@ Model::Model()
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
 	nCuboids_ = 0;
+	// Allocate SGInfo Seitz matrix arrays
+	spacegroup_.MaxList = 192;
+	spacegroup_.ListSeitzMx = new T_RTMx[192];
+	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
 
 	// Public variables
 	next = NULL;
@@ -93,6 +97,9 @@ Model::~Model()
 	atoms_.clear();
 	patterns_.clear();
 	measurements_.clear();
+	// Delete sginfo arrays
+	delete[] spacegroup_.ListSeitzMx;
+	delete[] spacegroup_.ListRotMxInfo;
 }
 
 // Sets the filename of the model

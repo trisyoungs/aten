@@ -90,7 +90,7 @@ filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extensio
 	if (m.cell.type <> "none")
 	{
 		writeline("@<TRIPOS>CRYSIN");
-		writeline(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgid,m.cell.sgsetting);
+		writeline(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgid,0);
 	}
 }
 

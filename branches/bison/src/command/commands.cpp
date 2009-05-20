@@ -271,6 +271,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Scale the unit cell and molecular positions of the current model" },
 	{ "setcell",		"CN",		"<quantity> <value>", VTypes::NoData,
 				"Set a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
+	{ "sginfo",		"C",		"<spacegroup>", VTypes::IntegerData,
+				"Invoke SGInfo, search for the spacegroup name provided, and print out its details" },
 	{ "spacegroup",		"S",		"<spgrp>", VTypes::NoData,
 				"Set the spacegroup for the current model" },
 	
