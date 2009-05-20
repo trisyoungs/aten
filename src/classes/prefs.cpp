@@ -190,6 +190,7 @@ Prefs::Prefs()
 	guideExtent_ = 10;
 	guideShape_ = Prefs::SquareGuide;
 	hydrogenDistance_ = 1.08;
+	forceRhombohedral_ = FALSE;
 
 	// Input
 	mouseAction_[Prefs::LeftButton] = Prefs::InteractAction;
@@ -879,6 +880,18 @@ void Prefs::setHydrogenDistance(double d)
 double Prefs::hydrogenDistance()
 {
 	return hydrogenDistance_;
+}
+
+// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+void Prefs::setForceRhombohedral(bool b)
+{
+	forceRhombohedral_ = b;
+}
+
+// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+bool Prefs::forceRhombohedral()
+{
+	return forceRhombohedral_;
 }
 
 /*

@@ -139,6 +139,7 @@ void Command::initPointers()
 	pointers_[Scale] = &Command::function_Scale;
 	pointers_[ScaleMolecules] = &Command::function_ScaleMolecules;
 	pointers_[SetCell] = &Command::function_SetCell;
+	pointers_[SGInfo] = &Command::function_SGInfo;
 	pointers_[Spacegroup] = &Command::function_Spacegroup;
 
 	// Charge commands

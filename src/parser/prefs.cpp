@@ -74,6 +74,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "elecmethod",		VTypes::StringData,	0, FALSE },
 	{ "energyunit",		VTypes::StringData,	0, FALSE },
 	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
+	{ "forcerhombohedral",	VTypes::IntegerData,	0, FALSE },
 	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "globesize",		VTypes::IntegerData,	0, FALSE },
 	{ "glyphcolour",	VTypes::DoubleData,	4, FALSE },
@@ -248,6 +249,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::EnergyUpdate):
 			rv.set( ptr->energyUpdate() );
+			break;
+		case (PreferencesVariable::ForceRhombohedral):
+			rv.set( ptr->forceRhombohedral() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
@@ -526,6 +530,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::EnergyUpdate):
 			ptr->setEnergyUpdate( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::ForceRhombohedral):
+			ptr->setForceRhombohedral( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));

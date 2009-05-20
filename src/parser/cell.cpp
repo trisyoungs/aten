@@ -73,7 +73,6 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "matrix", 	VTypes::DoubleData,	9, FALSE },
 	{ "sgid",	VTypes::IntegerData,	0, FALSE },
 	{ "sgname",	VTypes::StringData,	0, FALSE },
-	{ "sgsetting",	VTypes::IntegerData,	0, FALSE },
 	{ "type",	VTypes::StringData,	0, TRUE },
 	{ "volume",	VTypes::DoubleData,	0, TRUE },
 };
@@ -180,13 +179,10 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			else rv.set(ptr->axes().element(arrayIndex-1));
 			break;
 		case (CellVariable::SpacegroupId):
-			rv.set(ptr->spacegroup());
+			rv.set(ptr->spacegroupId());
 			break;
 		case (CellVariable::SpacegroupName):
-			rv.set(spacegroups.name(ptr->spacegroup()));
-			break;
-		case (CellVariable::SpacegroupSetting):
-			rv.set(ptr->spacegroupSetting());
+			rv.set(ptr->spacegroup());
 			break;
 		case (CellVariable::Type):
 			rv.set(lowerCase(Cell::cellType(ptr->type())));
@@ -288,6 +284,12 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (CellVariable::Matrix):
 			// Cast accessor into a CellParameter
 			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
+			break;
+		case (CellVariable::SpacegroupName):
+			ptr->setSpacegroup( newvalue.asString() );
+			break;
+		case (CellVariable::SpacegroupId):
+			ptr->setSpacegroupId( newvalue.asInteger() );
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

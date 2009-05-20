@@ -23,6 +23,7 @@
 #define ATEN_CELL_H
 
 #include "base/generator.h"
+#include "base/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 
@@ -133,28 +134,28 @@ class Cell
 	// Spacegroup
 	*/
 	private:
-	// Spacegroup (if any)
-	int spacegroup_;
-	// Setting for spacegroup (if any)
-	int spacegroupSetting_;
+	// Spacegroup name (if any)
+	Dnchar spacegroup_;
+	// Spacegroup ID (if any)
+	int spacegroupId_;
 	// Manual list of generators, if no spacegroup is set
-	Reflist<Generator,int> generators_;
+	List<Generator> generators_;
 
 	public:
 	// Sets the spacegroup of the model
-	void setSpacegroup(int i);
-	// Sets the spacegroup setting
-	void setSpacegroupSetting(int i);
+	void setSpacegroup(const char *name);
+	// Return spacegroup name of the model
+	const char *spacegroup();
+	// Set the spacegroup to the spacegroup Id supplied
+	void setSpacegroupId(int i);
 	// Return the spacegroup of the model
-	int spacegroup();
-	// Return the spacegroup setting of the model
-	int spacegroupSetting();
+	int spacegroupId();
 	// Add manual generator
-	void addGenerator(Generator *gen);
+	Generator *addGenerator();
 	// Return number of manual generators defined
 	int nGenerators();
 	// Return first in reflist of manually-defined generators
-	Refitem<Generator,int> *generators();
+	Generator *generators();
 
 
 	/*

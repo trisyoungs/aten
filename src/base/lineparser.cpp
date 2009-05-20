@@ -239,6 +239,7 @@ int LineParser::getLine()
 	msg.enter("LineParser::getLine");
 	// Returns : 0=ok, 1=error, -1=eof
 	int result;
+	bool escaped = FALSE;
 	do
 	{
 		result = readLine();
@@ -251,12 +252,12 @@ int LineParser::getLine()
 		char *c;
 		for (c = line_; *c != '\0'; c++)
 		{
-			if (*c == '#')
+			if ((*c == '#') && (!escaped))
 			{
 				*c = '\0';
 				break;
 			}
-			if (*c == '/')
+			else if ((*c == '/') && (!escaped))
 			{
 				char *c2 = c;
 				c2++;
@@ -266,6 +267,7 @@ int LineParser::getLine()
 					break;
 				}
 			}
+			escaped = *c == '\\';
 		}
 		// Now, see if our line contains only blanks
 		int nchars = 0, nspaces = 0;

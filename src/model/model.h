@@ -30,6 +30,8 @@
 #include "base/bond.h"
 #include "base/atom.h"
 #include "base/lineparser.h"
+#define SGCOREDEF__
+#include "base/sginfo.h"
 #include "methods/mc.h"
 
 // Forward Declarations
@@ -201,6 +203,8 @@ class Model
 	double density_;
 	// Calculate the density of the model
 	void calculateDensity();
+	// SGInfo structure
+	T_SgInfo spacegroup_;
 
 	public:
 	// Return pointer to unit cell structure
@@ -217,6 +221,8 @@ class Model
 	void removeCell();
 	// Fold all atoms into the cell
 	void foldAllAtoms();
+	// Set up spacegroup data for model (with sginfo)
+	void setSpacegroup(const char *s);
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(Generator *gen);
 	// Apply the symmetry operators listed in the model's spacegroup

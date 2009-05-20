@@ -429,6 +429,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	msg.enter("Model::selectOverlaps");
 	Atom *i, *j;
 	double deltar;
+	int count = 0;
 	selectNone(markonly);
 	for (i = atoms_.first(); i != atoms_.last(); i = i->next)
 	{
@@ -438,11 +439,13 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 			deltar = cell_.distance(i, j);
 			if (deltar < tolerance)
 			{
-				msg.print("Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
+				msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
+				++count;
 				selectAtom(j, markonly);
 			}
 		}
 	}
+	msg.print("%i overlapping atoms selected.\n", count);
 	msg.exit("Model::selectOverlaps");
 }
 

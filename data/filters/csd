@@ -1,13 +1,14 @@
 # Cambridge Structural Database Filter (for v1.2+)
 # Created:	 18/04/2009
-# Last modified: 18/04/2009
+# Last modified: 20/05/2009
 # ChangeLog:
+#	* Fixed bonding, and made filter output a little better.
 
 filter(type="importmodel", name="Cambridge Structural Database", nickname="csd", extension="dat,fdat", glob="*.*dat", id=7)
 {
 	# Variables
 	string spgrp,discard,ea,eb,ec,e,title;
-	int nf,nr,nd,ne,nsymm,natm,nsatm,ncon,hascell,atfor,pa,pb,pc,pal,pbe,pga;
+	int nf,nr,nd,ne,nsymm,natm,nsatm,nrad,ncon,hascell,atfor,pa,pb,pc,pal,pbe,pga;
 	int n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total;
 	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz;
 	double a,b,c,al,be,ga,cella,cellb,cellc,alpha,beta,gamma;
@@ -25,8 +26,9 @@ filter(type="importmodel", name="Cambridge Structural Database", nickname="csd",
 		# 44-46 (natoms), 47-49 (nsatoms), 50-52 (unused), 53-55 (ncon), 56 (cell), 57 (intf), 58 (atom 'r' format),
 		# 59 (centre of symmetry), 60 (err), 61 (rpa), 62 (td), 63 (pd), 64 (unused), 65 (cbl), 66 (esd of C-C),
 		# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
-		readlinef(" %8s                 %3i%3i%3i%3i%3i   %3i%3i   %3i%1i%1i",title,nf,nr,nd,ne,nsymm,natm,nsatm,ncon,hascell,atfor);
+		readlinef(" %8s                 %3i%3i%3i%3i%3i%3i%3i%3i   %3i%1i%1i",title,nf,nr,nd,ne,nsymm,nrad,natm,nsatm,ncon,hascell,atfor);
 		model m = newmodel(title);
+		printf("Found entry '%s'\n", title);
 		printf("Number of symmetry-unique atoms = %i, symmetry-related atoms = %i\n",natm,nsatm);
 		# Record 2: Unit cell definition (if %cell == 1)
 		# Contained information (first col = 0):
@@ -44,13 +46,15 @@ filter(type="importmodel", name="Cambridge Structural Database", nickname="csd",
 		# Since the format rigidly defined 80 chars per line, skip by number of lines...
 		nlines = (nf+nr+nd+ne+79)/80;
 		skipline(nlines);
-		printf("Skipping %i line(s) of text information...\n", nlines);
+		if (nlines > 0) printf("Skipping %i line(s) of text information...\n", nlines);
 		# Record 4: Equivalent positions of spacegroup (ignored) - there would be 5 per line...
 		nlines = (nsymm+4)/5;
 		skipline(nlines);
-		printf("Skipping %i line(s) of spacegroup generator definitions...\n", nlines);
-		# Record 5: Atomic radii (ignored)
-		if (natm > 1) skipline();
+		if (nlines > 0) printf("Skipping %i line(s) of spacegroup generator definitions...\n", nlines);
+		# Record 5: Atomic radii (ignored) - normally, there are up to 16 per line
+		nlines = (nrad+15)/16;
+		skipline(nlines);
+		if (nlines > 0) printf("Skipping %i line(s) of atomic radii...\n", nlines);
 		# Record 6: Atomic coordinates
 		# Coordinates are given 3 per line, so determine number of lines to read in.
 		natoms = natm+nsatm;
@@ -71,34 +75,38 @@ filter(type="importmodel", name="Cambridge Structural Database", nickname="csd",
 		# First (natm+nsatm) integers are paired to the atoms 1-(natm+nsatm) in that order. Any other integers
 		# are pairs of atoms involved in additional bonds.
 		nextra = (ncon-natoms)/2;
-		printf("Expecting %i connectivity integers and %i extra bonding pairs...\n", ncon, nextra);
-		for (n=1; n<=(natoms+nextra); ++n)
+		printf("Expecting %i connectivity integers (which includes %i extra bonding pairs)...\n", ncon, nextra);
+		for (n=1; n<=ncon; ++n)
 		{
-			jj = n;
+			jj = 0;
 			if (natoms < 100)
 			{
-				ii = atoi(readchars(2));
-				if (n > natoms) jj = atoi(readchars(2));
+				if (n <= natoms) { ii = atoi(readchars(2)); jj = n; }
+				else
+				{
+					if ((n-natoms)%2 == 1) ii = atoi(readchars(2));
+					else jj = atoi(readchars(2));
+				}
 			}
 			else
 			{
-				ii = atoi(readchars(3));
-				if (n%26 == 0) ii = atoi(readchars(1));
-				if (n > natoms)
+				if (n <= natoms) { ii = atoi(readchars(3)); jj = n; }
+				else
 				{
-					if (((n-natoms)*2)%26 == 0) ii = atoi(readchars(1));
-					jj = atoi(readchars(3));
+					if ((n-natoms)%2 == 1) ii = atoi(readchars(3));
+					else jj = atoi(readchars(3));
 				}
+				if (n%26 == 0) getline(discard);
 			}
 			# Check for dummy bond (if ii = 0 don't create a bond)
-			if (ii > 0)
+			if ((ii > 0) && (jj > 0))
 			{
 				verbose("Bonding atoms %i and %i (model atom indices)",ii,jj);
 				newbond(ii,jj);
 			}
 		}
-		# Read an extra 'line' to get to the proper end of the connectivity data
-		getline(discard);
+		# Read an extra 'line' to get to the proper end of the connectivity data if necessary
+		if (peekchar() != "\#") getline(discard);
 		# Convert the stored fractional coordinates into real coordinates
 		fractoreal();
 		# Finalise the packing in the model
