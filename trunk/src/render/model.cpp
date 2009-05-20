@@ -223,8 +223,10 @@ void Canvas::renderModelForceArrows()
 void Canvas::renderModelCell()
 {
 	// Draw the unit cell of the model
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::ForegroundColour));
-	glColor3fv(prefs.colour(Prefs::ForegroundColour));
+	GLfloat fgcol[4];
+	prefs.copyColour(Prefs::ForegroundColour, fgcol);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fgcol);
+	glColor4fv(fgcol);
 	glLineWidth(1.0f);
 	static Vec3<double> cellCentre, lengths;
 	static Mat4<double> matrix;

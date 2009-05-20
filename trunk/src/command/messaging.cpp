@@ -1,5 +1,5 @@
 /*
-	*** Messaging command functions
+	*** Messaging Commands
 	*** src/command/messaging.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,61 +19,46 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
-#include "command/format.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 
 // Write line to msg output and stop
-int Command::function_CA_ERROR(CommandNode *&c, Bundle &obj)
+bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Format *fmt = c->format();
-	if (fmt == NULL)
-	{
-		msg.print("Warning - No format defined in 'error' command.\n");
-		return Command::Fail;
-	}
-	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
-	else return Command::Fail;
-	return Command::ExitWithError;
-}
-
-// Print formatted string
-int Command::function_CA_PRINT(CommandNode *&c, Bundle &obj)
-{
-	Format *fmt = c->format();
-	if (fmt == NULL)
-	{
-		printf("Warning - No format defined in 'print' command.\n");
-		return Command::Fail;
-	}
-	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
-	else return Command::Fail;
-	return Command::Success;
-}
-
-// Print formatted string (in verbose output only)
-int Command::function_CA_VERBOSE(CommandNode *&c, Bundle &obj)
-{
-	Format *fmt = c->format();
-	if (fmt == NULL)
-	{
-		printf("Warning - No format defined in 'verbose' command.\n");
-		return Command::Fail;
-	}
-	else if (fmt->createString()) msg.print(Messenger::Verbose,"%s\n", fmt->createdString());
-	else return Command::Fail;
-	return Command::Success;
-}
-
-// Write line to msg output
-int Command::function_CA_WARN(CommandNode *&c, Bundle &obj)
-{
-	Format *fmt = c->format();
+	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
 		printf("Warning - No format defined in 'error' command.\n");
-		return Command::Fail;
+		return FALSE;
 	}
-	else if (fmt->createString()) msg.print("Warning: %s\n",fmt->createdString());
-	else return Command::Fail;
-	return Command::Success;
+	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
+	return FALSE;
 }
+
+// Print formatted string
+bool Command::function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Format *fmt = c->createFormat(0,1);
+	if (fmt == NULL)
+	{
+		printf("Warning - No format defined in 'printf' command.\n");
+		return FALSE;
+	}
+	if (fmt->writeToString()) msg.print("%s",fmt->string());
+	return TRUE;
+}
+
+// Print formatted string (in verbose output only)
+bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Format *fmt = c->createFormat(0,1);
+	if (fmt == NULL)
+	{
+		printf("Warning - No format defined in 'verbose' command.\n");
+		return FALSE;
+	}
+	if (!msg.isOutputActive(Messenger::Verbose)) return TRUE;
+	if (fmt->writeToString()) msg.print(Messenger::Verbose, "%s\n",fmt->string());
+	return TRUE;
+}
+

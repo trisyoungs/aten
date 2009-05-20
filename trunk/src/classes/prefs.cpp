@@ -19,23 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"
+#include "base/lineparser.h"
+#include "main/aten.h"
+#include "parser/prefs.h"
 #include <iostream>
 
 Prefs prefs;
 
-// GL Options
-const char *GlOptionKeywords[Prefs::nGlOptions] = { "fog", "linealias", "polyalias", "backcull", "__DUMMY__" };
-Prefs::GlOption Prefs::glOption(const char *s)
-{
-	return (Prefs::GlOption) enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s);
-}
-
 // Colour Schemes
-const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "element", "charge", "velocity", "force" };
+const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
 Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
 {
 	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
@@ -46,7 +41,7 @@ const char *Prefs::colouringScheme(ColouringScheme cs)
 }
 
 // Mouse buttons
-const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "left", "middle", "right", "wheel" };
+const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "Left", "Middle", "Right", "Wheel" };
 Prefs::MouseButton Prefs::mouseButton(const char *s)
 {
 	return (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
@@ -73,12 +68,20 @@ Prefs::ModifierKey Prefs::modifierKey(const char *s)
 {
 	return (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
 }
+const char *Prefs::modifierKey(Prefs::ModifierKey i)
+{
+	return ModifierKeyKeywords[i];
+}
 
 // Key actions
 const char *KeyActionKeywords[Prefs::nKeyActions] = { "None", "Transform", "ZRotate" };
 Prefs::KeyAction Prefs::keyAction(const char *s)
 {
 	return (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
+}
+const char *Prefs::keyAction(Prefs::KeyAction i)
+{
+	return KeyActionKeywords[i];
 }
 
 // Colours
@@ -134,7 +137,10 @@ Prefs::Prefs()
 	atomStyleRadius_[Atom::TubeStyle] = 0.15;
 	atomStyleRadius_[Atom::SphereStyle] = 0.35;
 	atomStyleRadius_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
-	bondRadius_ = 0.15;
+	bondStyleRadius_[Atom::StickStyle] = 0.1;	// Unused
+	bondStyleRadius_[Atom::TubeStyle] = 0.15;
+	bondStyleRadius_[Atom::SphereStyle] = 0.15;
+	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
 	atomDetail_ = 10;
@@ -142,30 +148,33 @@ Prefs::Prefs()
 	perspective_ = TRUE;
 	perspectiveFov_ = 20.0;
 	spotlightActive_ = TRUE;
-	spotlightColour_[Prefs::AmbientComponent][0] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][1] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][2] = 0.0f;
-	spotlightColour_[Prefs::AmbientComponent][3] = 1.0f;
-	spotlightColour_[Prefs::DiffuseComponent][0] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][1] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][2] = 0.8f;
-	spotlightColour_[Prefs::DiffuseComponent][3] = 1.0f;
-	spotlightColour_[Prefs::SpecularComponent][0] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][1] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][2] = 0.7f;
-	spotlightColour_[Prefs::SpecularComponent][3] = 1.0f;
-	spotlightPosition_[0] = 1.0f;
-	spotlightPosition_[1] = 1.0f;
-	spotlightPosition_[2] = 1.0f;
-	spotlightPosition_[3] = 0.0f;
+	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][2] = 0.0;
+	spotlightColour_[Prefs::AmbientComponent][3] = 1.0;
+	spotlightColour_[Prefs::DiffuseComponent][0] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][1] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][2] = 0.8;
+	spotlightColour_[Prefs::DiffuseComponent][3] = 1.0;
+	spotlightColour_[Prefs::SpecularComponent][0] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][1] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][2] = 0.7;
+	spotlightColour_[Prefs::SpecularComponent][3] = 1.0;
+	spotlightPosition_[0] = 1.0;
+	spotlightPosition_[1] = 1.0;
+	spotlightPosition_[2] = 1.0;
+	spotlightPosition_[3] = 0.0;
 
 	// GL Options
-	glOptions_ = 8;
+	depthCue_ = FALSE;
+	lineAliasing_ = TRUE;
+	polygonAliasing_ = FALSE;
+	backfaceCulling_ = TRUE;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
-	fogNear_ = 1;
-	fogFar_ = 200;
+	depthNear_ = 1;
+	depthFar_ = 200;
 
 	// Rendering - Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
@@ -174,22 +183,25 @@ Prefs::Prefs()
 
 	// Build
 	showGuide_ = FALSE;
-	bondTolerance_ = 1.1;
+	bondTolerance_ = 1.15;
 	drawDepth_ = 10.0;
 	guideSpacing_ = 1.0;
 	guideTicks_ = 5;
 	guideExtent_ = 10;
 	guideShape_ = Prefs::SquareGuide;
 	hydrogenDistance_ = 1.08;
+	forceRhombohedral_ = FALSE;
 
 	// Input
 	mouseAction_[Prefs::LeftButton] = Prefs::InteractAction;
 	mouseAction_[Prefs::MiddleButton] = Prefs::TranslateAction;
 	mouseAction_[Prefs::RightButton] = Prefs::RotateAction;
 	mouseAction_[Prefs::WheelButton] = Prefs::ZoomAction;
+	for (int i=0; i<Prefs::nMouseButtons; ++i) mouseActionTexts_[i] = MouseActionKeywords[mouseAction_[i]];
 	keyAction_[Prefs::ShiftKey] = Prefs::ZrotateKeyAction;
 	keyAction_[Prefs::CtrlKey] = Prefs::ManipulateKeyAction;
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
+	for (int i=0; i<Prefs::nModifierKeys; ++i) keyActionTexts_[i] = KeyActionKeywords[keyAction_[i]];
 	zoomThrottle_ = 0.15;
 
 	// Colours
@@ -224,9 +236,8 @@ Prefs::Prefs()
 	foldOnLoad_ = Prefs::SwitchAsFilter;
 	centreOnLoad_ = Prefs::SwitchAsFilter;
 	packOnLoad_ = Prefs::SwitchAsFilter;
-	loadAllCoords_ = TRUE;
 	cacheLimit_ = 1024;
-	zmapType_ = ElementMap::AutoZmap;
+	zMapType_ = ElementMap::AutoZMap;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
 	keepView_ = FALSE;
@@ -238,6 +249,7 @@ Prefs::Prefs()
 	energyConversions_[Prefs::KiloCalories] = 4184.0;
 	energyConversions_[Prefs::ElectronVolts] = 96485.14925;
 	energyConversions_[Prefs::Hartree] = 2625494.616;
+	energyUnit_ = Prefs::KiloJoules;
 	if (this == &prefs) setEnergyUnit(Prefs::KiloJoules);
 	densityUnit_ = Prefs::GramsPerCm;
 
@@ -267,44 +279,84 @@ Prefs::Prefs()
 }
 
 // Load user preferences file
-void Prefs::load(const char *filename)
+bool Prefs::load(const char *filename)
 {
 	msg.enter("Prefs::load");
-	int success;
-	// Open the file
-	ifstream prefsfile(filename,ios::in);
-	if (!prefsfile.good())
+	msg.print("Looking for user preferences file '%s'...\n", filename);
+	if (!fileExists(filename))
 	{
-		printf("Couldn't open preferences file in '%s'\n",filename);
-		prefsfile.close();
+		msg.print("User preferences file not found. Inappropriate / boring defaults will be used.\n");
 		msg.exit("Prefs::load");
-		return;
+		return TRUE;
 	}
-	// Create script structure and initialise
-	CommandList prefcmds;
-	prefcmds.clear();
-	while (!prefsfile.eof())
+	ReturnValue rv;
+	bool result = aten.prefsCommands.generateFromFile(filename, "User Preferences", FALSE);
+	if (result) result = aten.prefsCommands.executeAll(rv);
+	msg.exit("Prefs::load");
+	return result;
+}
+
+
+// Save user preferences file
+bool Prefs::save(const char *filename)
+{
+	msg.enter("Prefs::save");
+	bool result = TRUE;
+	char line[512];
+	int n, i;
+	LineParser prefsfile(filename, TRUE);
+	if (prefsfile.isFileGoodForWriting())
 	{
-		success = parser.getArgsDelim(&prefsfile,Parser::UseQuotes+Parser::SkipBlanks);
-		if (success == 1)
+		// First - loop over all element data, comparing it to the stored default values
+		prefsfile.writeLine("// Element Data\n");
+		for (n=0; n<elements().nElements(); ++n)
 		{
-			msg.print("Error reading prefs file.\n");
-			break;
+			// Ambient Colour
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].ambientColour[i] != elements().el[n].ambientColour[i]) break;
+			if (i != 4)
+			{
+				sprintf(line,"aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
+				prefsfile.writeLine(line);
+			}
+			// Diffuse Colour
+			for (i = 0; i<4; ++i) if (elements().defaultEl[n].diffuseColour[i] != elements().el[n].diffuseColour[i]) break;
+			if (i != 4)
+			{
+				sprintf(line,"aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
+				prefsfile.writeLine(line);
+			}
+			// Atomic radius
+			if (elements().defaultEl[n].atomicRadius != elements().el[n].atomicRadius)
+			{
+				sprintf(line,"aten.elements[%s].radius = %f;\n", elements().el[n].symbol, elements().el[n].atomicRadius);
+				prefsfile.writeLine(line);
+			}
 		}
-		else if (success == -1) break;
-		// Add script command
-		if (!prefcmds.cacheCommand()) break;
+		// Next - for each accessor in PreferencesVariable compare the results to our local Prefs copy
+		prefsfile.writeLine("// Program Preferences\n");
+		Prefs defaults;
+		ReturnValue rv;
+		Dnchar newvalue, defaultvalue;		
+		for (i = 0; i < PreferencesVariable::nAccessors; ++i)
+		{
+			rv.set(VTypes::PreferencesData, this);
+			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			newvalue = rv.asString();
+			rv.set(VTypes::PreferencesData, &defaults);
+			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			defaultvalue = rv.asString();
+			// Compare the two strings - if different, write the prefs value to the file....
+			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
+			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) sprintf(line,"aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			else sprintf(line,"aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			prefsfile.writeLine(line);
+		}
 	}
-	parser.close();
-	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefcmds.nBranches() != 1)
-	{
-		printf("%i unterminated blocks in prefs file.\n",prefcmds.nBranches());
-		msg.exit("prefs::load");
-		return;
-	}
-	prefcmds.execute();
-	msg.exit("prefs::load");
+	else result = FALSE;
+	prefsfile.closeFile();
+	msg.exit("Prefs::save");
+	return result;
 }
 
 /*
@@ -379,6 +431,12 @@ int Prefs::globeSize()
 	return globeSize_;
 }
 
+// Set the current rotation globe size in pixels
+void Prefs::setGlobeSize(int i)
+{
+	globeSize_ = i;
+}
+
 // Set positive repeat cell value
 void Prefs::setRepeatCellsPos(int i, int r)
 {
@@ -418,7 +476,7 @@ double Prefs::screenRadius(Atom *i)
 // Sets the specified atom size to the given value
 void Prefs::setAtomStyleRadius(Atom::DrawStyle ds, double f)
 {
-	atomStyleRadius_[(int)ds] = f;
+	atomStyleRadius_[ds] = f;
 }
 
 // Return the specified atom size
@@ -428,15 +486,15 @@ GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds)
 }
 
 // Sets the tube size in DS_TUBE
-void Prefs::setBondRadius(double f)
+void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 {
-	bondRadius_ = f;
+	bondStyleRadius_[ds] = f;
 }
 
-// Return the tube size used in DS_TUBE
-GLdouble Prefs::bondRadius()
+// Return bond radius for the specified style
+GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds)
 {
-	return bondRadius_;
+	return bondStyleRadius_[ds];
 }
 
 // Sets the detail for atom quadrics
@@ -512,13 +570,13 @@ bool Prefs::spotlightActive()
 }
 
 // Set element of spotlight colour component
-void Prefs::setSpotlightColour(Prefs::ColourComponent sc, int i, GLfloat value)
+void Prefs::setSpotlightColour(Prefs::ColourComponent sc, int i, double value)
 {
 	spotlightColour_[sc][i] = value;
 }
 
 // Set spotlight colour component
-void Prefs::setSpotlightColour(Prefs::ColourComponent sc, GLfloat r, GLfloat g, GLfloat b)
+void Prefs::setSpotlightColour(Prefs::ColourComponent sc, double r, double g, double b)
 {
 	spotlightColour_[sc][0] = r;
 	spotlightColour_[sc][1] = g;
@@ -526,13 +584,22 @@ void Prefs::setSpotlightColour(Prefs::ColourComponent sc, GLfloat r, GLfloat g, 
 }
 
 // Return spotlight colour component
-GLfloat *Prefs::spotlightColour(Prefs::ColourComponent sc)
+double *Prefs::spotlightColour(Prefs::ColourComponent sc)
 {
 	return spotlightColour_[sc];
 }
 
+// Return spotlight colour component in provided array
+void Prefs::copySpotlightColour(ColourComponent sc, GLfloat *col)
+{
+	col[0] = (GLfloat) spotlightColour_[sc][0];
+	col[1] = (GLfloat) spotlightColour_[sc][1];
+	col[2] = (GLfloat) spotlightColour_[sc][2];
+	col[3] = (GLfloat) spotlightColour_[sc][3];
+}
+
 // Set spotlight position
-void Prefs::setSpotlightPosition(GLfloat x, GLfloat y, GLfloat z)
+void Prefs::setSpotlightPosition(double x, double y, double z)
 {
 	spotlightPosition_[0] = x;
 	spotlightPosition_[1] = y;
@@ -540,15 +607,24 @@ void Prefs::setSpotlightPosition(GLfloat x, GLfloat y, GLfloat z)
 }
 
 // Set individual element of spotlight position
-void Prefs::setSpotlightPosition(int component, GLfloat f)
+void Prefs::setSpotlightPosition(int component, double f)
 {
 	spotlightPosition_[component] = f;
 }
 
 // Return spotlight position
-GLfloat *Prefs::spotlightPosition()
+double *Prefs::spotlightPosition()
 {
 	return spotlightPosition_;
+}
+
+// Return spotlight position in provided array
+void Prefs::copySpotlightPosition(GLfloat *col)
+{
+	col[0] = (GLfloat) spotlightPosition_[0];
+	col[1] = (GLfloat) spotlightPosition_[1];
+	col[2] = (GLfloat) spotlightPosition_[2];
+	col[3] = (GLfloat) spotlightPosition_[3];
 }
 
 // Set atom colour scheme
@@ -567,46 +643,76 @@ Prefs::ColouringScheme Prefs::colourScheme()
 // GL Options
 */
 
-// Set the bit for the specified option (if it is not set already)
-void Prefs::addGlOption(Prefs::GlOption go)
+// Set status of fog (depth cueing)
+void Prefs::setDepthCue(bool status)
 {
-	if (!(glOptions_&(1 << go))) glOptions_ += (1 << go);
+	depthCue_ = status;
 }
 
-// Unsets the bit for the specified option (if it is not unset already)
-void Prefs::removeGlOption(Prefs::GlOption go)
+// Return status of depth cueing
+bool Prefs::depthCue()
 {
-	if (glOptions_&(1 << go)) glOptions_ -= (1 << go);
-}
-
-// Return whether a given option is set
-bool Prefs::hasGlOption(Prefs::GlOption go)
-{
-	return (glOptions_&(1 << go) ? TRUE : FALSE);
+	return depthCue_;
 }
 
 // Sets the start depth of depth cueing
-void Prefs::setFogNnear(int i)
+void Prefs::setDepthNear(int i)
 {
-	fogNear_ = i;
+	depthNear_ = i;
 }
 
 // Return depth cue start depth
-GLint Prefs::fogNear()
+GLint Prefs::depthNear()
 {
-	return fogNear_;
+	return depthNear_;
 }
 
 // Sets the end depth of depth cueing
-void Prefs::setFogFar(int i)
+void Prefs::setDepthFar(int i)
 {
-	fogFar_ = i;
+	depthFar_ = i;
 }
 
 // Return depth cue end depth
-GLint Prefs::fogFar()
+GLint Prefs::depthFar()
 {
-	return fogFar_;
+	return depthFar_;
+}
+
+// Set status of line aliasing
+void Prefs::setLineAliasing(bool status)
+{
+	lineAliasing_ = status;
+}
+
+// Return status of line aliasing
+bool Prefs::lineAliasing()
+{
+	return lineAliasing_;
+}
+
+// Set status of polygon aliasing
+void Prefs::setPolygonAliasing(bool status)
+{
+	polygonAliasing_ = status;
+}
+
+// Return status of polygon aliasing
+bool Prefs::polygonAliasing()
+{
+	return polygonAliasing_;
+}
+
+// Set status of backface culling
+void Prefs::setBackfaceCulling(bool status)
+{
+	backfaceCulling_ = status;
+}
+
+// Return status of depth cueing
+bool Prefs::backfaceCulling()
+{
+	return backfaceCulling_;
 }
 
 // Return the Z depth of the near clipping plane
@@ -615,16 +721,29 @@ GLdouble Prefs::clipNear()
 	return clipNear_;
 }
 
+// Set the Z-depth of the near clipping plane
+void Prefs::setClipNear(double d)
+{
+	clipNear_ = d;
+}
+
 // Return the Z depth of the far clipping plane
 GLdouble Prefs::clipFar()
 {
 	return clipFar_;
 }
 
+// Set the Z-depth of the far clipping plane
+void Prefs::setClipFar(double d)
+{
+	clipFar_ = d;
+}
+
 // Sets the shininess of GL objects
 void Prefs::setShininess(int n)
 {
-	shininess_ = n;
+	if ((n < 0) || (n > 127)) msg.print("The option 'shininess' must be an integer between 0 and 127.\n");
+	else shininess_ = n;
 }
 
 // Return the current shininess of GL objects
@@ -638,7 +757,7 @@ GLint Prefs::shininess()
 */
 
 // Return the specified colour
-GLfloat *Prefs::colour(PenColour c)
+double *Prefs::colour(PenColour c)
 {
 	return colours_[c];
 }
@@ -646,19 +765,26 @@ GLfloat *Prefs::colour(PenColour c)
 // Copy the specified colour
 void Prefs::copyColour(PenColour c, GLfloat *target)
 {
-	target[0] = colours_[c][0];
-	target[1] = colours_[c][1];
-	target[2] = colours_[c][2];
-	target[3] = colours_[c][3];
+	target[0] = (GLfloat) colours_[c][0];
+	target[1] = (GLfloat) colours_[c][1];
+	target[2] = (GLfloat) colours_[c][2];
+	target[3] = (GLfloat) colours_[c][3];
 }
 
 // Set the specified colour
-void Prefs::setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void Prefs::setColour(PenColour c, double r, double g, double b, double a)
 {
 	colours_[c][0] = r;
 	colours_[c][1] = g;
 	colours_[c][2] = b;
 	colours_[c][3] = a;
+}
+
+// Set the supplied element of the specified colour
+void Prefs::setColour(PenColour c, int i, double value)
+{
+	if ((i < 0) || (i > 3)) printf("Colour element index out of range (%i)\n", i);
+	else colours_[c][i] = value;
 }
 
 /*
@@ -756,6 +882,18 @@ double Prefs::hydrogenDistance()
 	return hydrogenDistance_;
 }
 
+// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+void Prefs::setForceRhombohedral(bool b)
+{
+	forceRhombohedral_ = b;
+}
+
+// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+bool Prefs::forceRhombohedral()
+{
+	return forceRhombohedral_;
+}
+
 /*
 // Interaction Preferences
 */
@@ -764,6 +902,7 @@ double Prefs::hydrogenDistance()
 void Prefs::setMouseAction(Prefs::MouseButton mb, Prefs::MouseAction ma)
 {
 	mouseAction_[mb] = ma;
+	mouseActionTexts_[mb] = MouseActionKeywords[ma];
 }
 
 // Return the action associated with the specified mouse button
@@ -776,6 +915,7 @@ Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb)
 void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 {
 	keyAction_[mk] = ka;
+	keyActionTexts_[mk] = KeyActionKeywords[ka];
 }
 
 // Return the action associated with the specified keymod button
@@ -848,18 +988,6 @@ Prefs::FilterSwitch Prefs::packOnLoad()
 	return packOnLoad_;
 }
 
-// Sets whether to load all coordinate sets on model load
-void Prefs::setLoadAllCoords(bool b)
-{
-	loadAllCoords_ = b;
-}
-
-// Whether all geometries in a non-trajectory file should be loaded
-bool Prefs::loadAllCoords()
-{
-	return loadAllCoords_;
-}
-
 // Set the cache limit (in kb) for trajectory files
 void Prefs::setCacheLimit(int i)
 {
@@ -873,15 +1001,15 @@ int Prefs::cacheLimit()
 }
 
 // Sets the style of element conversion to use
-void Prefs::setZmapType(ElementMap::ZmapType i)
+void Prefs::setZMapType(ElementMap::ZMapType i)
 {
-	zmapType_ = i;
+	zMapType_ = i;
 }
 
 // Return the style of element conversion in use
-ElementMap::ZmapType Prefs::zmapType()
+ElementMap::ZMapType Prefs::zMapType()
 {
-	return zmapType_;
+	return zMapType_;
 }
 
 // Sets whether to convert coords from Bohr to Angstrom on load
@@ -931,7 +1059,7 @@ Prefs::EnergyUnit Prefs::energyUnit()
 }
 
 // Set the density unit to use
-void Prefs::setDensityUnits(Prefs::DensityUnit du)
+void Prefs::setDensityUnit(Prefs::DensityUnit du)
 {
 	densityUnit_ = du;
 }
@@ -946,6 +1074,12 @@ Prefs::DensityUnit Prefs::densityUnit()
 double Prefs::elecConvert()
 {
 	return elecConvert_;
+}
+
+// Return the gas constant in the current unit of energy
+double Prefs::gasConstant()
+{
+	return 8.314472 / energyConversions_[energyUnit_];
 }
 
 // Set the internal energy units to use
@@ -1006,6 +1140,13 @@ bool Prefs::shouldUpdateEnergy(int n)
 int Prefs::maxRingSize()
 {
 	return maxRingSize_;
+}
+
+// Set the maximum ring size allowed
+void Prefs::setMaxRingSize(int i)
+{
+	if (i < 3) msg.print("The option 'maxringsize' cannot be set to less than 3.\n");
+	else maxRingSize_ = i;
 }
 
 // Set whether to fold atoms before replication

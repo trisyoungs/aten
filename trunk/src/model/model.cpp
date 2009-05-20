@@ -43,6 +43,7 @@ Model::Model()
 	cameraRotation_ = 0.0;
 	mass_ = 0.0;
 	density_ = 0.0;
+	nUnknownAtoms_ = 0;
 	translateScale_ = 1.0;
 	forcefield_ = NULL;
 	namesForcefield_ = NULL;
@@ -55,15 +56,15 @@ Model::Model()
 	name_ = "NewModel";
 	trajectoryParent_ = NULL;
 	trajectoryFilter_ = NULL;
-	trajectoryFile_ = NULL;
+	trajectoryHeaderFunction_ = NULL;
+	trajectoryFrameFunction_ = NULL;
 	trajectoryOffsets_ = NULL;
 	highestFrameOffset_ = 0;
 	frameSize_ = 0;
-	nCachedFrames_ = 0;
-	nTrajectoryFrames_ = 0;
+	nFileFrames_ = 0;
 	renderFromSelf_ = TRUE;
-	trajectoryCached_ = FALSE;
-	trajectoryPosition_ = 0;
+	framesAreCached_ = FALSE;
+	frameIndex_ = -1;
 	trajectoryPlaying_ = FALSE;
 	currentFrame_ = NULL;
 	componentPattern_ = NULL;
@@ -78,6 +79,10 @@ Model::Model()
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
 	nCuboids_ = 0;
+	// Allocate SGInfo Seitz matrix arrays
+	spacegroup_.MaxList = 192;
+	spacegroup_.ListSeitzMx = new T_RTMx[192];
+	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
 
 	// Public variables
 	next = NULL;
@@ -92,6 +97,9 @@ Model::~Model()
 	atoms_.clear();
 	patterns_.clear();
 	measurements_.clear();
+	// Delete sginfo arrays
+	delete[] spacegroup_.ListSeitzMx;
+	delete[] spacegroup_.ListRotMxInfo;
 }
 
 // Sets the filename of the model
@@ -107,13 +115,13 @@ const char *Model::filename() const
 }
 
 // Sets the file filter of the model
-void Model::setFilter(Filter *f)
+void Model::setFilter(Tree *f)
 {
 	filter_ = f;
 }
 
 // Return the stored file filter of the model
-Filter *Model::filter() const
+Tree *Model::filter() const
 {
 	return filter_;
 }
@@ -138,18 +146,6 @@ const char *Model::name() const
 	return name_.get();
 }
 
-// Return the mass of the molecule
-double Model::mass() const
-{
-	return mass_;
-}
-
-// Return the density of the model
-double Model::density() const
-{
-	return density_;
-}
-
 // Clear
 void Model::clear()
 {
@@ -164,15 +160,6 @@ void Model::clear()
 	projectionPoint_ = -1;
 }
 
-// Calculate mass
-void Model::calculateMass()
-{
-	// Calculate the mass of the atoms in the model.
-	msg.enter("Model::calculateMass");
-	mass_ = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements().atomicMass(i);
-	msg.exit("Model::calculateMass");
-}
 
 /*
 // Labelling
@@ -260,27 +247,6 @@ void Model::printCoords() const
 	msg.exit("Model::printCoords");
 }
 
-// Calculate the density of the system (if periodic)
-void Model::calculateDensity()
-{
-	msg.enter("Model::calculateDensity");
-	if (cell_.type() != Cell::NoCell)
-	{
-		// Calculate density in the units specified by prefs.density_internal
-		switch (prefs.densityUnit())
-		{
-			case (Prefs::GramsPerCm):
-				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
-				break;
-			case (Prefs::AtomsPerAngstrom):
-				density_ = atoms_.nItems() / cell_.volume();
-				break;
-		}
-	}
-	else density_ = -1.0;
-	msg.exit("Model::calculateDensity");
-}
-
 // Bohr to Angstrom
 void Model::bohrToAngstrom()
 {
@@ -343,7 +309,7 @@ void Model::print()
 	msg.exit("Model::print");
 }
 
-// Print log information
+// Print points information
 void Model::printLogs()
 {
 	msg.print("Logs for model '%s':\n",name_.get());

@@ -72,14 +72,5 @@ then
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9\.]\+\)/\1/g'
 
-# ./extra/aten.dsc
-echo -n "         aten.dsc (tar.gz Version) : "
-if [ "$#" -eq "2" ]
-then
-  cp ./extra/aten.dsc ./extra/aten.dsc.orig
-  sed -e "s/aten-\([0-9\.]\+\)/aten-$1.$2/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
-fi
-grep 'aten-' ./extra/aten.dsc | sed -e 's/.*aten-\([0-9\.]\+\).*/\1/g'
-
 exit 0
 

@@ -27,9 +27,9 @@
 */
 
 // Set format to use in export
-void Aten::setExportFilter(Filter *f)
+void Aten::setExportFilter(Tree *filter)
 {
-	exportFilter_ = f;
+	exportFilter_ = filter;
 }
 
 // Export all currently loaded models in the referenced format
@@ -53,7 +53,7 @@ void Aten::exportModels()
 		if (n != -1) filename[n] = '\0';
 		// Append new suffix
 		strcat(filename,".");
-		strcat(filename,exportFilter_->extensions()->get());
+		strcat(filename,exportFilter_->filter.extensions()->get());
 		// Make sure that the new filename is not the same as the old filename
 		if (strcmp(filename, m->filename()) == 0)
 		{
@@ -62,7 +62,7 @@ void Aten::exportModels()
 		}
 		m->setFilter(exportFilter_);
 		m->setFilename(filename);
-		exportFilter_->execute(filename);
+		exportFilter_->executeWrite(filename);
 	}
 	msg.exit("Aten::exportModels");
 }
@@ -72,7 +72,7 @@ void Aten::exportModels()
 */
 
 // Add set of batch commands
-CommandList *Aten::addBatchCommand()
+Forest *Aten::addBatchCommand()
 {
 	return batchCommands_.add();
 }
@@ -80,14 +80,15 @@ CommandList *Aten::addBatchCommand()
 // Run all stored commands on all loaded models
 void Aten::processModels()
 {
+	ReturnValue rv;
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
-		for (CommandList *cl = batchCommands_.first(); cl != NULL; cl = cl->next)
+		for (Forest *f = batchCommands_.first(); f != NULL; f = f->next)
 		{
 			// Set the current model
 			aten.setCurrentModel(m);
 			// Run the command list
-			if (!cl->execute()) return;
+			if (!f->executeAll(rv)) return;
 		}
 	}
 }
@@ -99,19 +100,19 @@ void Aten::saveModels()
 	{
 		setCurrentModel(m);
 		// Check model's filter - it will be the import filter, so try to get the partner
-		Filter *f = m->filter();
-		if (f == NULL)
+		Tree *t = m->filter();
+		if (t == NULL)
 		{
 			msg.print("No export filter available for model '%s'. Not saved.\n", m->name());
 			continue;
 		}
-		if (f->type() != Filter::ModelExport)
+		if (t->filter.type() != FilterData::ModelExport)
 		{
-			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), f->nickname());
+			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
 			continue;
 		}
 		Dnchar filename;
 		filename = m->filename();
-		if (!filename.isEmpty()) f->execute("DUMMY");
+		if (!filename.isEmpty()) t->executeWrite(m->filename());
 	}
 }

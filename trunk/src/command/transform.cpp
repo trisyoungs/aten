@@ -1,5 +1,5 @@
 /*
-	*** Transformation command functions
+	*** Transformation Commands
 	*** src/command/transform.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,14 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
+#include "parser/tree.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 
 // Rotate selection about specified axis / origin
-int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
+bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double angle;
 	Atom *i, *j;
 	Vec3<double> v, o;
@@ -37,7 +39,7 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 		case (3):
 			i = obj.rs->atom(c->argi(0)-1);
 			j = obj.rs->atom(c->argi(1)-1);
-			if ((i == NULL) || (j == NULL)) return Command::Fail;
+			if ((i == NULL) || (j == NULL)) return FALSE;
 			v = obj.rs->cell()->mimd(j,i);
 			angle = c->argd(2);
 			break;
@@ -50,7 +52,7 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 		case (6):
 			i = obj.rs->atom(c->argi(0)-1);
 			j = obj.rs->atom(c->argi(1)-1);
-			if ((i == NULL) || (j == NULL)) return Command::Fail;
+			if ((i == NULL) || (j == NULL)) return FALSE;
 			v = obj.rs->cell()->mimd(j,i);
 			angle = c->argd(2);
 			o.set(c->argd(3), c->argd(4), c->argd(5));
@@ -63,7 +65,7 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 			break;
 		default:
 			msg.print("Odd number of arguments given to 'axisrotate'.\n");
-			return Command::Fail;
+			return FALSE;
 			break;
 	}
 	char s[128];
@@ -71,14 +73,15 @@ int Command::function_CA_AXISROTATE(CommandNode *&c, Bundle &obj)
 	obj.rs->beginUndoState(s);
 	obj.rs->rotateSelectionVector(o, v, angle);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Centre selection at given coordinates
-int Command::function_CA_CENTRE(CommandNode *&c, Bundle &obj)
+bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (c->parent()->inputFile() == NULL)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (!c->parent()->isFilter())
 	{
 		char s[128];
 		Vec3<double> centre = c->arg3d(0);
@@ -88,13 +91,14 @@ int Command::function_CA_CENTRE(CommandNode *&c, Bundle &obj)
 		obj.rs->endUndoState();
 	}
 	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.rs->centre(c->arg3d(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Convert coordinates from one reference frame to another
-int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
+bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
 	Mat3<double> source, target;
 	Vec3<double> o, v;
@@ -115,7 +119,7 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 				{
 					i = obj.rs->atom(c->argi(n*2)-1);
 					j = obj.rs->atom(c->argi(n*2+1)-1);
-					if ((i == NULL) || (j == NULL)) return Command::Fail;
+					if ((i == NULL) || (j == NULL)) return FALSE;
 					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
 					source.set(n, v);
@@ -126,7 +130,7 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 				{
 					i = obj.rs->atom(c->argi(n*2+6)-1);
 					j = obj.rs->atom(c->argi(n*2+7)-1);
-					if ((i == NULL) || (j == NULL)) return Command::Fail;
+					if ((i == NULL) || (j == NULL)) return FALSE;
 					v = obj.rs->cell()->mimd(j,i);
 					v.normalise();
 					target.set(n, v);
@@ -156,7 +160,7 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 			if (c->nArgs() == 21) o.set(c->argd(12), c->argd(13), c->argd(14));
 			break;
 		default:
-			return Command::Fail;
+			return FALSE;
 			break;
 	}
 	if (msg.isOutputActive(Messenger::Verbose))
@@ -175,13 +179,14 @@ int Command::function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj)
 	obj.rs->beginUndoState(s);
 	obj.rs->matrixTransformSelection(o, rotmat);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Transform coordinates using supplied matrix / origin
-int Command::function_CA_MATRIXTRANSFORM(CommandNode *&c, Bundle &obj)
+bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
 	Mat3<double> mat;
 	Vec3<double> o;
@@ -196,7 +201,7 @@ int Command::function_CA_MATRIXTRANSFORM(CommandNode *&c, Bundle &obj)
 			if (c->nArgs() == 12) o.set(c->argd(9), c->argd(10), c->argd(11));
 			break;
 		default:
-			return Command::Fail;
+			return FALSE;
 	}
 	// Perform transformation
 	char s[128];
@@ -204,51 +209,55 @@ int Command::function_CA_MATRIXTRANSFORM(CommandNode *&c, Bundle &obj)
 	obj.rs->beginUndoState(s);
 	obj.rs->matrixTransformSelection(o, mat);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Mirror selection along specified axis
-int Command::function_CA_MIRROR(CommandNode *&c, Bundle &obj)
+bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
 	sprintf(s,"Mirror %i atoms along %c\n", obj.rs->nSelected(), 88+c->argi(0));
 	obj.rs->beginUndoState(s);
 	obj.rs->mirrorSelectionLocal(c->argi(0));
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
-int Command::function_CA_TRANSLATE(CommandNode *&c, Bundle &obj)
+bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
 	Vec3<double> tvec = c->arg3d(0);
 	sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-int Command::function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj)
+bool Command::function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	char s[128];
 	Vec3<double> tvec = c->arg3d(0);
 	sprintf(s,"Translate Cartesian (atom %i, %f %f %f)\n", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
 	obj.rs->beginUndoState(s);
 	obj.rs->translateAtom(obj.i, tvec);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
+bool Command::function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
 	tvec = obj.rs->cell()->axes() * c->arg3d(0);
 	char s[128];
@@ -256,5 +265,22 @@ int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+
+// Translate current selection in world coordinates ('translateworld dx dy dz')
+bool Command::function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Vec3<double> tvec;
+	tvec = c->arg3d(0);
+	char s[128];
+	sprintf(s,"Translate World (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState(s);
+	obj.rs->translateSelectionWorld(tvec);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+

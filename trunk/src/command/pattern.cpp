@@ -1,5 +1,5 @@
 /*
-	*** Pattern command functions
+	*** Pattern Commands
 	*** src/command/pattern.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,53 +19,55 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 #include "base/pattern.h"
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-int Command::function_CA_NEWPATTERN(CommandNode *&c, Bundle &obj)
+bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
 	// TODO Add 'check_pattern(pattern*) method to model*
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Clear current pattern definition ('clearpatterns')
-int Command::function_CA_CLEARPATTERNS(CommandNode *&c, Bundle &obj)
+bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearPatterns();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Autocreate pattern definition ('createpatterns')
-int Command::function_CA_CREATEPATTERNS(CommandNode *&c, Bundle &obj)
+bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->autocreatePatterns();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Select working pattern from model ('getpattern <name>')
-int Command::function_CA_GETPATTERN(CommandNode *&c, Bundle &obj)
+bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
-	if (p != NULL)
-	{
- 		obj.p = p;
- 		c->arg(1)->set(p, VTypes::PatternData);
-	}
-	else return Command::Fail;
-	return Command::Success;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Pattern *p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
+	if (p != NULL) obj.p = p;
+	rv.set(VTypes::PatternData, p);
+	return TRUE;
 }
 
 // Print pattern definition for current model ('listpatterns')
-int Command::function_CA_LISTPATTERNS(CommandNode *&c, Bundle &obj)
+bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printPatterns();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

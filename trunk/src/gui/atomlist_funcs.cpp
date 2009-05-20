@@ -25,7 +25,7 @@
 #include "gui/atomlist.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 #include "gui/tcanvas.uih"
 
 /*
@@ -210,19 +210,16 @@ void AtenAtomlist::on_ViewByPatternButton_clicked(bool checked)
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SHIFTUP, "i", 1);
 	peekScrollBar();
-	cmd.execute();
-	refresh();
+	CommandNode::run(Command::ShiftUp, "i", 1);
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SHIFTDOWN, "i", 1);
 	peekScrollBar();
-	cmd.execute();
+	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -230,16 +227,14 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_MOVETOSTART, "");
-	cmd.execute();
+	CommandNode::run(Command::MoveToStart, "");
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_MOVETOEND, "");
-	cmd.execute();
+	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }

@@ -20,12 +20,13 @@
 */
 
 #include "base/pattern.h"
+#include "base/elements.h"
 #include "classes/ring.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldbound.h"
 #include "classes/forcefieldatom.h"
-#include "base/elements.h"
+#include "main/aten.h"
 
 // Constructors
 Pattern::Pattern()
@@ -70,7 +71,7 @@ PatternAtom::PatternAtom()
 PatternBound::PatternBound()
 {
 	// Private variables
-	for (int i=0; i<MAXFFBOUNDTYPES; i++) id_[i] = -1;
+	for (int i=0; i<MAXFFBOUNDTYPES; i++) atomIds_[i] = -1;
 	data_ = NULL;
 
 	// Public variables
@@ -119,13 +120,13 @@ Atom *PatternAtom::atom()
 // Set atom id
 void PatternBound::setAtomId(int n, int i)
 {
-	(n < MAXFFBOUNDTYPES ? id_[n] = i : printf("OUTOFRANGE:PatternBound"));
+	(n < MAXFFBOUNDTYPES ? atomIds_[n] = i : printf("OUTOFRANGE:PatternBound"));
 }
 
 // Return atom id
 int PatternBound::atomId(int n)
 {
-	return id_[n];
+	return atomIds_[n];
 }
 
 // Set function data
@@ -865,122 +866,37 @@ void Pattern::resetTempI(int value)
 // Ring Routines
 */
 
-// Mark atoms
-void Pattern::markRingAtoms(Atom *i)
-{
-	// Recursive routine to knock-out atoms that have a lower ring forming potential than
-	// their bond number suggests. If called with an atom whose potential is zero, we stop
-	// since we've reached an already 'excluded' atom. Otherwise, check the bound neighbours
-	// and reassess the potential of the atom. If its marked as zero potential, re-call the
-	// routine on any neighbours that aren't already zero-marked.
-	msg.enter("Pattern::markRingAtoms");
-	if (i->tempi == 0)
-	{
-		msg.exit("Pattern::markRingAtoms");
-		return;
-	}
-	else
-	{
-		// Check the listed neighbours to set the potential of this atom
-		int count = 0;
-		Refitem<Bond,int> *bref = i->bonds();
-		while (bref != NULL)
-		{
-			if (bref->item->partner(i)->tempi != 0) count++;
-			bref = bref->next;
-		}
-		// 'count' now contains the number of neighbours that have a non-zero potential.
-		// If its a dead-end, re-call the routine. If not, just re-set the atom's potential
-		switch (count)
-		{
-			case (1):
-				// No potential for this atom to be in a ring, so mark it as zero'd...
-				i->tempi = 0;
-				// ...and call the routine on any bound neighbours since they now need to be checked.
-				bref = i->bonds();
-				while (bref != NULL)
-				{
-					if (bref->item->partner(i)->tempi != 0) markRingAtoms(bref->item->partner(i));
-					bref = bref->next;
-				}
-				break;
-			case (2): i->tempi = 1; break;
-			case (3): i->tempi = 3; break;
-			default : i->tempi = 6; break;
-		}
-	}
-	msg.exit("Pattern::markRingAtoms");
-}
-
 // Find rings
 void Pattern::findRings()
 {
-	// Locate rings in the molecule of the current pattern.
-	// Maintain a local array corresponding to whether specific atoms are 'done' or not - i.e., whether
-	// they have been check as as much as they need to be checked.
 	msg.enter("Pattern::findRings");
-	int n, rsize, ringpotential;
+	int n, rsize;
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	Ring path;
-	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that each atom can form based on the number of bonds it has.
+	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		switch (i->nBonds())
+		if (i->nBonds() > 1)
 		{
-			case (0) : i->tempi = 0; break;
-			case (1) : i->tempi = 0; break;
-			case (2) : i->tempi = 1; break;
-			case (3) : i->tempi = 3; break;
-			default  : i->tempi = 6; break;
-		}
-		i = i->next; 
-	}
-	// Since the number of bonds does not necessarily correlate to the maximum number of rings (e.g.
-	// when an atom is part of an alkyl chain, nbonds=2 but it is not part of any rings) find any atom
-	// with nbonds=1 and mark off any bound neighbours with nbonds
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->nBonds() == 1)
-		{
-			bref = i->bonds();
-			markRingAtoms(bref->item->partner(i));
+			// Loop over searches for different ring sizes
+			for (rsize=3; rsize<=prefs.maxRingSize(); rsize++)
+			{
+				path.clear();
+				path.setRequestedSize(rsize);
+				// Call the recursive search to extend the path by this atom
+				ringSearch(i,&path);
+			}
 		}
 		i = i->next;
 	}
-
-	// Calculate the *total* potential for ring formation, i.e. the sum of all tempi values.
-	ringpotential = 0;
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		msg.print(Messenger::Verbose,"Atom %i : potential = %i\n",n,i->tempi);
-		ringpotential += i->tempi;
-		i = i->next;
-	}
-
-	// Now, go through the atoms and find cyclic routes.
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->tempi == 0) { i = i->next; continue; }
-		// Loop over searches for different ring sizes
-		for (rsize=3; rsize<=prefs.maxRingSize(); rsize++)
-		{
-			path.clear();
-			path.setRequestedSize(rsize);
-			// Call the recursive search to extend the path by this atom
-			if (ringpotential >= rsize) ringSearch(i,&path,ringpotential);
-		}
-		i = i->next;
-	}
+	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
 
 // Ring search
-void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
+void Pattern::ringSearch(Atom *i, Ring *currentpath)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	msg.enter("Pattern::ringSearch");
@@ -988,13 +904,6 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 	Ring *r;
 	Refitem<Atom,int> *lastra;
 	bool done;
-	// First off, if this atom has no more available bonds for inclusion in rings, just return
-	if (i->tempi == 0)
-	{
-		//printf(" --- No vacant 'bonds' on atom - skipping...\n");
-		msg.exit("Pattern::ringSearch");
-		return;
-	}
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
@@ -1018,27 +927,22 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 				// The correct number of atoms is in the current path. Does it form a cycle?
 				if (i->findBond(currentpath->atoms()->item) != NULL)
 				{
-					msg.print(Messenger::Verbose," --- Storing current ring.\n");
-					r = rings_.add();
-					r->copy(currentpath);
-					// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
-					// another ring, and also the total ringpotential variable
-					Refitem<Atom,int> *ra = r->atoms();
-					while (ra != NULL)
+					// Check to see if this ring already exists in the rings_ list...
+					if (!isRingInList(currentpath))
 					{
-						ra->item->tempi -= 1;
-						ringpotential -= 1;
-						ra = ra->next;
+						msg.print(Messenger::Verbose," --- Storing current ring.\n");
+						r = rings_.add();
+						r->copy(currentpath);
+						r->finalise();
+						r->print();
+						done = TRUE;
 					}
-					r->finalise();
-					r->print();
-					done = TRUE;
 				}
 			}
 			else
 			{
 				// Current path is not long enough, so extend it
-				ringSearch(bref->item->partner(i),currentpath,ringpotential);
+				ringSearch(bref->item->partner(i),currentpath);
 			}
 			bref = bref->next;
 			if (done) break;
@@ -1047,122 +951,15 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
-	else
-	{
-		//printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
-	}
+// 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
 	msg.exit("Pattern::ringSearch");
 }
 
-void Pattern::augmentOLD()
+// Search existing ring list for existence of supplied ring
+bool Pattern::isRingInList(Ring *source)
 {
-	msg.enter("Pattern::augment");
-	Atom *i;
-	Refitem<Bond,int> *bref, *heavybond;
-	Refitem<Bond,Bond::BondType> *rb;
-	Refitem<Atom,int> *aref;
-	int n, nHeavy, pielec, remainder;
-	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
-	/*
-	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements().
-	If hydrogens are missing then the results will be unpredictable.
-	Based on methods suggested in:
-	'Automatic atom type and bond type perception in molecular mechanical calculations'
-	J. Wang, W. Wang, P. A. Kollman, and D. A. Case
-	Journal of Molecular Graphics and Modelling, 25 (2), 247-260 (2006)
-	*/
-	// Stage 1 - Augment heavy atoms with only one heavy atom bond
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->element() == 1)
-		{
-			i->tempi = 1;
-			i = i->next;
-			continue;
-		}
-		// Calculate number of heavy atoms attached
-		nHeavy = 0;
-		for (bref = i->bonds(); bref != NULL ; bref = bref->next)
-		{
-			if (bref->item->partner(i)->element() != 1)
-			{
-				nHeavy ++;
-				heavybond = bref;
-			}
-		}
-		if (nHeavy == 1)
-		{
-			i->tempi = 1;
-			parent_->changeBond(heavybond->item, heavybond->item->augmented());
-		}
-		else i->tempi = 0;
-		i = i->next;
-	}
-	// Stage 2 - Augment within cycles
-	for (Ring *r = rings_.first(); r != NULL; r = r->next)
-	{
-		// Get current total bond-order penalty of atoms in ring
-		
-		// Loop over bonds in ring
-		for (rb = r->bonds(); rb != NULL; rb = rb->next)
-			parent_->changeBond(rb->item, rb->item->augmented());
-// 		// Determine if the ring is aromatic
-// 		pielec = 0;
-// 		for (bref = r->bonds(); bref != NULL; bref = bref->next)
-// 			if (bref->item->type() == Bond::Double) pielec += 2;
-// 		for (aref = r->atoms(); aref != NULL; aref = aref->next)
-// 		{
-// 			switch (aref->item->element())
-// 			{
-// 				case (7):
-// 					if (aref->item->nBonds() == 3) pielec += 2;
-// 					break;
-// 				case (8):
-// 					if (aref->item->nBonds() == 2) pielec += 2;
-// 					break;
-// 			}
-// 		}
-// 		// From the total pi electron count, use Huckel's rule
-// 		printf("pi electrons %i\n",pielec);
-// 		n = 1;
-// 		do
-// 		{
-// 			remainder = pielec - (4*n + 2);
-// 			printf("remainder for n = %i is %i\n", n, remainder);
-// 			// If remainder == 0, we have an aromatic ring
-// 			if (remainder == 0) r->setAromatic();
-// 			n++;
-// 		} while (remainder >= 0);
-	}
-	// Stage 3 - Second pass, augmenting all atoms
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		if (i->tempi == 1)
-		{
-			i = i->next;
-			continue;
-		}
-		//printf("%li  i->tempi = %i\n",i,i->tempi);
-		if (i->tempi == 0)
-		{
-			for (bref = i->bonds(); bref != NULL; bref = bref->next)
-			{
-				//printf("%li    bond   i->tempi = %i\n",i,i->tempi);
-				if (i->tempi == 0) break;
-/*				if (i->tempi < 0) parent_->augmentBond(bref->item,+1);
-				else if (i->tempi > 0) parent_->augmentBond(bref->item,-1);*/
-			}
-		}
-		i = i->next;
-	}
-	// Set aromatic environment flags if this ring is aromatic
-// 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
-// 		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
-	propagateBondTypes();
-	msg.exit("Pattern::augment");
+	for (Ring *r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return TRUE;
+	return FALSE;
 }
 
 // Return total bond order penalty of atoms in one molecule of the pattern
@@ -1203,12 +1000,7 @@ void Pattern::augment()
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		if (i->element() == 1)
-		{
-			i->tempi = 1;
-			i = i->next;
-			continue;
-		}
+		if (i->element() == 1) { i = i->next; continue; }
 		// Calculate number of heavy atoms attached
 		nHeavy = 0;
 		for (bref = i->bonds(); bref != NULL ; bref = bref->next)
@@ -1219,32 +1011,18 @@ void Pattern::augment()
 				heavybond = bref;
 			}
 		}
-		if (nHeavy == 1)
-		{
-			i->tempi = 1;
-			parent_->changeBond(heavybond->item, heavybond->item->augmented());
-		}
-		else i->tempi = 0;
+		if (nHeavy == 1) parent_->changeBond(heavybond->item, heavybond->item->augmented());
 		i = i->next;
 	}
-	// Stage 2 - Augment within cycles
-// 	for (Ring *r = rings_.first(); r != NULL; r = r->next)
-// 		for (rb = r->bonds(); rb != NULL; rb = rb->next)
-// 			parent_->changeBond(rb->item, rb->item->augmented());
-	// Stage 3 - Augmenting all remaining atoms
+	// Stage 2 - Augmenting all remaining atoms
  	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-/*		if (i->tempi == 1)
-		{
-			i = i->next;
-			continue;
-		}*/
 		for (bref = i->bonds(); bref != NULL; bref = bref->next)
 			parent_->changeBond(bref->item, bref->item->augmented());
 		i = i->next;
 	}
-	// Stage 4 - Attempt to fix any problems, mostly with (poly)cyclic systems
+	// Stage 3 - Attempt to fix any problems, mostly with (poly)cyclic systems
 	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
 	totalpenalty = totalBondOrderPenalty();
 	msg.print(Messenger::Verbose, "Bond order penalty after first pass is %i.\n", totalpenalty);
@@ -1342,6 +1120,10 @@ void printstuff(Pattern *p)
 	}
 }
 
+/*
+// Atom typing
+*/
+
 // Describe atom / ring types
 void Pattern::describeAtoms()
 {
@@ -1355,4 +1137,140 @@ void Pattern::describeAtoms()
 	printstuff(this);
 	// 4) Go through the ring list and see if any are aromatic
 	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
+}
+
+// Clear hybridisation data
+void Pattern::clearHybrids()
+{
+	// Set all environment flags of the atoms in pattern to Atomtype::NoEnvironment
+	msg.enter("Pattern::clearHybrids");
+	Atom *i = firstAtom_;
+	for (int n=0; n<nAtoms_; n++)
+	{
+		i->setEnvironment(Atom::NoEnvironment);
+		i = i->next;
+	}
+	msg.exit("Pattern::clearHybrids");
+}
+
+// Assign hybridisation data
+void Pattern::assignHybrids()
+{
+	// Assign hybridisation types to the atoms in this pattern.
+	msg.enter("Pattern::assignHybrids");
+	Atom *i = firstAtom_;
+	for (int n=0; n<nAtoms_; n++)
+	{
+		// Set to no environment to begin with
+		i->setEnvironment(Atom::NoEnvironment);
+		// Work out the hybridisation based on the bond types connected to the atom.
+		// We can increase the hybridisation at any point, but never decrease it.
+		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+		{
+			switch (bref->item->type())
+			{
+				case (Bond::Single):
+					if (i->environment() < Atom::Sp3Environment) i->setEnvironment(Atom::Sp3Environment);
+					break;
+				case (Bond::Double):
+					if (i->environment() < Atom::Sp2Environment) i->setEnvironment(Atom::Sp2Environment);
+					break;
+				case (Bond::Triple):
+					if (i->environment() < Atom::SpEnvironment) i->setEnvironment(Atom::SpEnvironment);
+					break;
+			}
+		}
+		i = i->next;
+	}
+	msg.exit("Pattern::assignHybrids");
+}
+
+// Type atoms in pattern
+bool Pattern::typeAtoms()
+{
+	// Assign atom types from the forcefield based on the typing rules supplied.
+	// Since there may be more than one match for a given atom (when relaxed rules are used, e.g.
+	// UFF) we find the best of the types available. If any one criterion doesn't match in the atom 
+	// type description, we reject it. Otherwise, store the number of criteria that matched and only
+	// accept a different atom type if we manage to match a complete set containing more rules.
+	// Return FALSE if one or more atoms could not be typed
+	msg.enter("Pattern::typeAtoms");
+	int a, newmatch, bestmatch, nfailed;
+	Atomtype *at;
+	Atom *i;
+	Forcefield *ff;
+	ForcefieldAtom *ffa;
+	bool result = TRUE;
+	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
+	ff = forcefield_;
+	if (ff == NULL)
+	{
+		// No forcefield associated to pattern - grab parent Model's
+		ff = parent_->forcefield();
+		if (ff == NULL)
+		{
+			msg.print("Typing pattern %s (using default forcefield)...", name());
+			ff = aten.defaultForcefield();
+		}
+		else msg.print("Typing pattern %s (inheriting Model's forcefield '%s')...", name(), ff->name());
+	}
+	else msg.print("Typing pattern %s (using associated forcefield '%s')...", name(), ff->name());	
+	if (ff == NULL)
+	{	
+		msg.print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
+		msg.exit("Pattern::typeAtoms");
+		return FALSE;
+	}
+	// Loop over atoms in the pattern's molecule
+	i = firstAtom_;
+	nfailed = 0;
+	for (a=0; a<nAtoms_; a++)
+	{
+		// Check to see if this atom type has been manually set
+		if (i->hasFixedType())
+		{
+			i = i->next;
+			continue;
+		}
+		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, elements().symbol(i->element()));
+		bestmatch = 0;
+		parent_->setAtomtype(i, NULL, FALSE);
+		// Check for element 'XX' first
+		if (i->element() == 0)
+		{
+			msg.print("Failed to type atom %i since it has no element type.\n",i->id()+1);
+			nfailed ++;
+			result = FALSE;
+		}
+		// Loop over forcefield atom types
+		for (ffa = ff->types(); ffa != NULL; ffa = ffa->next)
+		{
+			// Grab next atomtype and reset tempi variables
+			at = ffa->atomtype();
+			// First, check element is the same, otherwise skip
+			if (i->element() != at->characterElement()) continue;
+			// See how well this ff description matches the environment of our atom 'i'
+			msg.print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
+			newmatch = at->matchAtom(i,&rings_,parent_,i);
+			msg.print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n", ffa->typeId(), newmatch);
+			if (newmatch > bestmatch)
+			{
+				// Better match found...
+				bestmatch = newmatch;
+				i->setType(ffa);
+			}
+		}
+		if (i->type() == NULL)
+		{
+			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n", elements().name(i), i->id()+1, i->nBonds());
+			nfailed ++;
+			result = FALSE;
+		}
+		else msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type(), i->type()->name());
+		i = i->next;
+	}
+	// Print warning if we failed...
+	if (nfailed != 0) msg.print("Failed to type %i atoms in pattern '%s'.\n", nfailed, name_.get());
+	msg.exit("Pattern::typeAtoms");
+	return result;
 }

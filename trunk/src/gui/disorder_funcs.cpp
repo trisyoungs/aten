@@ -26,7 +26,7 @@
 #include "gui/ttablewidgetitem.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Constructor
 AtenDisorder::AtenDisorder(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -235,16 +235,12 @@ void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 
 void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_DISORDER, "i", 10);
-	cmd.pokeArguments("i", ui.DisorderCyclesSpin->value());
-	cmd.execute();
+	CommandNode::run(Command::Disorder, "i", ui.DisorderCyclesSpin->value());
 }
 
 void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 {
-	static StaticCommandNode cmd(Command::CA_VDWSCALE, "d", 1.0);
-	cmd.pokeArguments("d", d);
-	cmd.execute();
+	CommandNode::run(Command::VdwScale, "d", d);
 }
 
 void AtenDisorder::dialogFinished(int result)

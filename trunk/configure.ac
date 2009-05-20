@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.1])
+m4_define([ATEN_VERSION],[1.2])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.org)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -25,6 +25,7 @@ AM_INIT_AUTOMAKE(aten,ATEN_VERSION)
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LIBTOOL
+AC_PROG_YACC
 
 
 #
@@ -136,11 +137,11 @@ src/Makefile
 src/base/Makefile
 src/classes/Makefile
 src/command/Makefile
-src/variables/Makefile
 src/ff/Makefile
 src/gui/Makefile
 src/main/Makefile
 src/methods/Makefile
+src/parser/Makefile
 src/model/Makefile
 src/render/Makefile
 src/templates/Makefile

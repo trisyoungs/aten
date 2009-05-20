@@ -77,7 +77,8 @@ void AtenForm::trajectorySlider_sliderMoved(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
 	trajectoryToolbarRefreshing_ = TRUE;
-	aten.current.m->seekFrame(i);
+	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
+	aten.current.m->seekFrame(i-1);
 	// Set corresponding value in Spin control
 	trajectorySpin_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
@@ -88,7 +89,8 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
 	trajectoryToolbarRefreshing_ = TRUE;
-	aten.current.m->seekFrame(i);
+	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
+	aten.current.m->seekFrame(i-1);
 	// Set corresponding value in Spin control
 	trajectorySlider_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
@@ -99,10 +101,10 @@ void AtenForm::updateTrajectoryToolbar()
 {
 	trajectoryToolbarRefreshing_ = TRUE;
 	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
-	trajectorySlider_->setValue(aten.currentModel()->trajectoryPosition());
-	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
-	trajectorySpin_->setValue(aten.currentModel()->trajectoryPosition());
+	trajectorySlider_->setMaximum(aten.currentModel()->nFrames());
+	trajectorySlider_->setValue(aten.currentModel()->frameIndex()+1);
+	trajectorySpin_->setRange(1,aten.currentModel()->nFrames());
+	trajectorySpin_->setValue(aten.currentModel()->frameIndex()+1);
 	trajectoryToolbarRefreshing_ = FALSE;
 }
 

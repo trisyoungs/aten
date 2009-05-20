@@ -24,6 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/forms.h"
+#include "base/lineparser.h"
 #include "classes/prefs.h"
 
 // Forward declarations
@@ -43,6 +44,8 @@ class Forcefield
         // Forcefield Commands
 	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, InterCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
+	// Local parser
+	LineParser ffparser;
 
 	/*
 	// Specification
@@ -184,19 +187,19 @@ class Forcefield
 	*/
 	private:
 	// Reads in the atom type definitions
-	bool readTypes(ifstream&);
+	bool readTypes();
 	// Reads in generator data for atoms (rule-based ff)
-	bool readGenerator(ifstream&);
+	bool readGenerator();
 	// Reads in and applies equivalent atomtype names
-	bool readEquivalents(ifstream&);
+	bool readEquivalents();
 	// Reads in intermolecular parameters for atom types
-	bool readInter(ifstream&);
+	bool readInter();
 	// Reads in bond data
-	bool readBonds(ifstream&);
+	bool readBonds();
 	// Reads in angle data
-	bool readAngles(ifstream&);
+	bool readAngles();
 	// Reads in torsion data
-	bool readTorsions(ifstream&);
+	bool readTorsions();
 
 	public:
 	// Load Forcefield from the filename supplied

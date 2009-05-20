@@ -78,7 +78,7 @@ class Atomtype
 	// List pointers, used in bound atom list and list of atoms in rings
 	Atomtype *prev, *next;
 	// Atom typing commands
-	enum AtomtypeCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, nAtomtypeCommands };
+	enum AtomtypeCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, UnboundCommand, OneBondCommand, LinearCommand, TShapeCommand, TrigPlanarCommand, TetrahedralCommand, SquarePlanarCommand, TrigBipyramidCommand, OctahedralCommand, nAtomtypeCommands };
 	static AtomtypeCommand atomtypeCommand(const char*);
 
 	/*

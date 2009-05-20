@@ -1,5 +1,5 @@
 /*
-	*** Monte Carlo command functions
+	*** Monte Carlo Commands
 	*** src/command/mc.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,48 +19,53 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "methods/mc.h"
 #include "base/messenger.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
-int Command::function_CA_MCACCEPT(CommandNode *&c, Bundle &obj)
+bool Command::function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
+	if (mt == MonteCarlo::nMoveTypes) return FALSE;
 	mc.setAcceptanceEnergy(mt, c->argd(1));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Sets allowances for moves ('mc allow <move> <on|off>')
-int Command::function_CA_MCALLOW(CommandNode *&c, Bundle &obj)
+bool Command::function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
+	if (mt == MonteCarlo::nMoveTypes) return FALSE;
 	mc.setMoveAllowed(mt, c->argb(1));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-int Command::function_CA_MCMAXSTEP(CommandNode *&c, Bundle &obj)
+bool Command::function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
+	if (mt == MonteCarlo::nMoveTypes) return FALSE;
 	mc.setMaxStep(mt, c->argd(1));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-int Command::function_CA_MCNTRIALS(CommandNode *&c, Bundle &obj)
+bool Command::function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
+	if (mt == MonteCarlo::nMoveTypes) return FALSE;
 	mc.setNTrials(mt, c->argi(1));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Prints the current MC params ('printmc')
-int Command::function_CA_PRINTMC(CommandNode *&c, Bundle &obj)
+bool Command::function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	msg.print("Current Monte Carlo Parameters are:\n");
 	msg.print("Move        Allowed  NTrials  MaxStep   EAccept :\n");
@@ -70,5 +75,7 @@ int Command::function_CA_PRINTMC(CommandNode *&c, Bundle &obj)
 		mt = (MonteCarlo::MoveType) n;
 		msg.print("%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

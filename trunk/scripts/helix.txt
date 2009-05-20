@@ -1,27 +1,26 @@
 # Create an ethylene helix of some length and twist
 
-# Variables
-integer n, nunits, nperloop
-real rcc, deltaz
-
 # Setup
 # Number of ethylene fragments per loop (circumference)
-$nperloop = 10
+int nperloop = 10;
 # C-C bond length is given by rcc
-$rcc = 1.39
+double rcc = 1.39;
 # Number of ethylene units to draw in total
-$nunits = 50
+int nunits = 50;
 # Rotation increment around circumference is deltaz
-$deltaz = 360.0/($nperloop*2.0)
+double deltaz = 360.0/(nperloop*2.0);
 
 # Create model
-newmodel helix
-for $n,1,$nunits
-	chain C 
-	move $rcc*cos(30.0) 0.0 $rcc*sin(30.0)
-	rotz $deltaz
-	chain C double
-	move $rcc*cos(30.0) 0.0 -$rcc*sin(30.0)
-	rotz $deltaz
-	rotx 5.0
-end
+newmodel("helix");
+for (int n=1; n<=nunits; ++n)
+{
+	chain(C);
+	move(rcc*cos(30.0), 0.0, rcc*sin(30.0));
+	rotz(deltaz);
+	chain(C,"double");
+	move(rcc*cos(30.0), 0.0, -rcc*sin(30.0));
+	rotz(deltaz);
+	rotx(5.0);
+}
+
+addhydrogen();

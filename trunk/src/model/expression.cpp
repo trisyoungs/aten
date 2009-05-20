@@ -177,7 +177,7 @@ void Model::createUniqueLists()
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
-	// TODO Unique bond, angle, torsion lists...
+	// TODO Unique bond, angle, torsion lists... TGAY
 
 	msg.exit("Model::createUniqueLists");
 }

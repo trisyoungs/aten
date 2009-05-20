@@ -20,7 +20,7 @@
 */
 
 #include "gui/selectelement.h"
-#include "base/parser.h"
+#include "base/lineparser.h"
 #include "base/sysfunc.h"
 
 // Constructor
@@ -41,7 +41,7 @@ void AtenSelectElement::finaliseUi()
 	QGridLayout *gl = new QGridLayout;
 	QLabel *label;
 	int n, m, z;
-	GLfloat *colour;
+	double *colour;
 
 	// Create element button array (and buttons)
 	elementButtons_ = new QPushButton*[elements().nElements()];
@@ -127,10 +127,33 @@ void AtenSelectElement::finaliseUi()
 	ui.PeriodicTableGroup->setLayout(gl);
 
 	// Create common element buttons....
-	QHBoxLayout *hbox = new QHBoxLayout(ui.CommonGroup);
+	commonGroupLayout_ = new QHBoxLayout(ui.CommonGroup);
 	//ui.CommonGroup->setLayout()
-	// Parse prefs value 
-	parser.getArgsDelim(prefs.commonElements(), Parser::Defaults);
+	addCommonButtons(prefs.commonElements());
+}
+
+QPushButton *AtenSelectElement::addCommonButton(int el)
+{
+	QPushButton *button = new QPushButton(this);
+	button->setText(elements().symbol(el));
+	button->setMinimumSize(24,24);
+	button->setMaximumSize(24,24);
+	double *colour = elements().ambientColour(el);
+	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
+	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
+	return button;
+}
+
+// Add all common element buttons
+void AtenSelectElement::addCommonButtons(const char *buttonlist)
+{
+	// Clear old button list
+	for (Refitem<QPushButton,int> *ri = commonButtons_.first(); ri != NULL; ri = ri->next) ri->item->deleteLater();
+	commonButtons_.clear();
+	// Parse element list
+	LineParser parser;
+	parser.getArgsDelim(buttonlist, LineParser::Defaults);
+	int n,z;
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		z = elements().find(parser.argc(n));
@@ -140,23 +163,10 @@ void AtenSelectElement::finaliseUi()
 			QPushButton *button = addCommonButton(z);
 			commonButtons_.add(button, z);
 			// Add it to the layout
-			hbox->addWidget(button);
+			commonGroupLayout_->addWidget(button);
 		}
 		else msg.print( "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
 	}
-
-}
-
-QPushButton *AtenSelectElement::addCommonButton(int el)
-{
-	QPushButton *button = new QPushButton(this);
-	button->setText(elements().symbol(el));
-	button->setMinimumSize(24,24);
-	button->setMaximumSize(24,24);
-	GLfloat *colour = elements().ambientColour(el);
-	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
-	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
-	return button;
 }
 
 // Cancel dialog

@@ -1,5 +1,5 @@
 /*
-	*** Measurement command functions
+	*** Measurement Commands
 	*** src/command/measure.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,110 +19,123 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Measure angle between supplied atoms
-int Command::function_CA_ANGLE(CommandNode *&c, Bundle &obj)
+bool Command::function_Angle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure angle");
-	double a = obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
+	Atom *atoms[3];
+	for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+	rv.set(obj.rs->measureAngle(atoms[0], atoms[1], atoms[2]));
 	obj.rs->endUndoState();
-	if (c->hasArg(3)) c->arg(3)->set(a);
-	return Command::Success;
+	return TRUE;
 }
 
 // Measure all bond angles in selection
-int Command::function_CA_ANGLES(CommandNode *&c, Bundle &obj)
+bool Command::function_Angles(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure bond angles in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Angle);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Clear all measurements in current model
-int Command::function_CA_CLEARMEASUREMENTS(CommandNode *&c, Bundle &obj)
+bool Command::function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Remove all measurements");
 	obj.rs->clearMeasurements();
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Measure distance between supplied atoms
-int Command::function_CA_DISTANCE(CommandNode *&c, Bundle &obj)
+bool Command::function_Distance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure distance");
-	double d = obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
+	Atom *atoms[2];
+	for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+	rv.set(obj.rs->measureDistance(atoms[0], atoms[1]));
 	obj.rs->endUndoState();
-	if (c->hasArg(2)) c->arg(2)->set(d);
-	return Command::Success;
+	return TRUE;
 }
 
 // Measure all bond distances in selection
-int Command::function_CA_DISTANCES(CommandNode *&c, Bundle &obj)
+bool Command::function_Distances(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure bond distances in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Distance);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // List all measurements in current model
-int Command::function_CA_LISTMEASUREMENTS(CommandNode *&c, Bundle &obj)
+bool Command::function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->listMeasurements();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Make a measurement within the current model
-int Command::function_CA_MEASURE(CommandNode *&c, Bundle &obj)
+bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Atom *atoms[4];
 	if (c->hasArg(3))
 	{
-		
 		obj.rs->beginUndoState("Measure torsion");
-		obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
+		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		rv.set(obj.rs->measureTorsion(atoms[0], atoms[1], atoms[2], atoms[3]));
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs->beginUndoState("Measure angle");
-		obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
+		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		rv.set(obj.rs->measureAngle(atoms[0], atoms[1], atoms[2]));
 	}
 	else
 	{
 		obj.rs->beginUndoState("Measure distance");
-		obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
+		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+		rv.set(obj.rs->measureDistance(atoms[0], atoms[1]));
 	}
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Measure torsion angle between supplied atoms
-int Command::function_CA_TORSION(CommandNode *&c, Bundle &obj)
+bool Command::function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure torsion");
-	double t = obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
+	Atom *atoms[4];
+	for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
+	rv.set(obj.rs->measureTorsion(atoms[0], atoms[1], atoms[2], atoms[3]));
 	obj.rs->endUndoState();
-	if (c->hasArg(4)) c->arg(4)->set(t);
-	return Command::Success;
+	return TRUE;
 }
 
 // Measure all torsion angles in selection
-int Command::function_CA_TORSIONS(CommandNode *&c, Bundle &obj)
+bool Command::function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Measure torsions in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Torsion);
 	obj.rs->endUndoState();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

@@ -46,7 +46,7 @@ class ColourScalePoint
 	// Value at which this point occurs
 	double value_;
 	// Colour of this point
-	GLfloat colour_[4];
+	double colour_[4];
 
 	public:
 	// Set value for scalepoint
@@ -54,11 +54,11 @@ class ColourScalePoint
 	// Return value for scalepoint
 	double value();
 	// Set colour
-	void setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	void setColour(double r, double g, double b, double a = 1.0);
 	// Copy colour
 	void copyColour(GLfloat *target);
 	// Return pointer to colour array
-	GLfloat *colour();
+	double *colour();
 };
 
 // Colour scale delta

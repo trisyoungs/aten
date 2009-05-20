@@ -28,7 +28,7 @@
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 #include "base/sysfunc.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)
@@ -40,15 +40,15 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 // Open existing file
 void AtenForm::on_actionFileOpen_triggered(bool checked)
 {
-	Filter *f;
+	Tree *filter;
 	if (gui.loadModelDialog->exec() == 1)
 	{
-		f = gui.loadModelDialog->selectedFilter();
-		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (f == NULL) f = aten.probeFile(gui.loadModelDialog->selectedFilename(), Filter::ModelImport);
-		if (f != NULL)
+		filter = gui.loadModelDialog->selectedFilter();
+		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
+		if (filter != NULL)
 		{
-			f->execute(gui.loadModelDialog->selectedFilename());
+			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
 			refreshModelTabs();
 			aten.currentModel()->changeLog.add(Log::Visual);
@@ -62,7 +62,7 @@ bool AtenForm::runSaveModelDialog()
 {
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
-	Filter *f;
+	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters, &selFilter);
@@ -71,9 +71,9 @@ bool AtenForm::runSaveModelDialog()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next) if (selFilter == f->description()) break;
-		if (f == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
-		saveModelFilter = f;
+		filter = aten.findFilterByDescription(FilterData::ModelExport, qPrintable(selFilter));
+		if (filter == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
+		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
 		return (saveModelFilter == NULL ? FALSE : TRUE);
 	}
@@ -86,10 +86,10 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	Model *m;
 	if (runSaveModelDialog())
 	{
-		m = aten.currentModel();
+		m = aten.currentModel()->renderSource();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
-		saveModelFilter->execute(saveModelFilename.get());
+		saveModelFilter->executeWrite(saveModelFilename.get());
 		m->changeLog.updateSavePoint();
 		gui.modelChanged(FALSE,FALSE,FALSE);
 	}
@@ -101,24 +101,27 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
-	Model *m = aten.currentModel();
-	Filter *f = m->filter();
-	if ((f != NULL) && (f->type() != Filter::ModelExport)) f = NULL;
+	Model *m = aten.currentModel()->renderSource();
+	Tree *t = m->filter();
+	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
 	Dnchar filename;
 	filename = m->filename();
-	if (filename.isEmpty() || (f == NULL))
+	if (filename.isEmpty() || (t == NULL))
 	{
 		if (runSaveModelDialog())
 		{
-			m = aten.currentModel();
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
-			// Model Export filters take the filename from the model itself, so pass dummy filename
-			saveModelFilter->execute("DUMMY");
+			saveModelFilter->executeWrite(saveModelFilename.get());
+			m->changeLog.updateSavePoint();
 			//refreshModelTabs();
 		}
 	}
-	else f->execute("DUMMY");
+	else
+	{
+		t->executeWrite(filename.get());
+		m->changeLog.updateSavePoint();
+	}	
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -127,7 +130,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 {
 	// If the current model has been modified, ask for confirmation before we close it
 	char text[512];
-	Filter *f;
+	Tree *filter;
 	Model *m = aten.currentModel();
 	if (m->changeLog.isModified())
 	{
@@ -146,13 +149,13 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 			// Save model before quit
 			case (QMessageBox::Save):
 				// If model has a filter set, just save it
-				f = m->filter();
-				if (f != NULL) f->execute(m->filename());
+				filter = m->filter();
+				if (filter != NULL) filter->executeWrite(m->filename());
 				else if (runSaveModelDialog())
 				{
 					m->setFilter(saveModelFilter);
 					m->setFilename(saveModelFilename.get());
-					saveModelFilter->execute(saveModelFilename.get());
+					saveModelFilter->executeWrite(saveModelFilename.get());
 				}
 				else return;
 				aten.removeModel(m);
@@ -204,7 +207,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 // Add trajectory to model
 void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
-	Filter *f;
+	Tree *filter;
 	Model *m = aten.currentModel();
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
@@ -214,12 +217,12 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next) if (selFilter == f->description()) break;
-		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (f == NULL) f = aten.probeFile(qPrintable(filename), Filter::TrajectoryImport);
-		if (f != NULL)
+		filter = aten.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+		if (filter == NULL) filter = aten.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
+		if (filter != NULL)
 		{
-			m->initialiseTrajectory(qPrintable(filename), f);
+			m->initialiseTrajectory(qPrintable(filename), filter);
 			// Ensure trajectory toolbar is visible and View->Trajectory is selected
 			ui.TrajectoryToolbar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
@@ -233,8 +236,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SAVEEXPRESSION, "cc", "none", "none");
-	Filter *f;
+	Tree *t;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters, &selFilter);
@@ -243,13 +245,9 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next) if (selFilter == f->description()) break;
-		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
-		else
-		{
-			cmd.pokeArguments("cc", f->nickname(), qPrintable(filename));
-			cmd.execute();
-		}
+		t = aten.findFilterByDescription(FilterData::ExpressionExport, qPrintable(selFilter));
+		if (t == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
+		else CommandNode::run(Command::SaveExpression, "cc", t->filter.nickname(), qPrintable(filename));
 	}
 }
 

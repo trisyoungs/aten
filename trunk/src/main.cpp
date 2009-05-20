@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
 	// Get environment variables
 	aten.setHomeDir( getenv("HOME") == '\0' ? getenv("HOMEPATH") : getenv("HOME") );
 	aten.setWorkDir(getenv("PWD"));
-	aten.setDataDir(getenv("ATENDATA"));
-	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s.\n", aten.homeDir(), aten.workDir());
+	if (!aten.dataDirSet()) aten.setDataDir(getenv("ATENDATA"));
+	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", aten.homeDir(), aten.workDir(), aten.dataDir());
 
 	// Initialise QApplication
 	gui.initialise(argc, argv);
@@ -54,9 +54,9 @@ int main(int argc, char *argv[])
 	aten.openFilters();
 
 	// Load in user preferences
-	char filename[256];
+	char filename[512];
 	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
-	prefs.load(filename);
+	if (!prefs.load(filename)) return -1;
 
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;

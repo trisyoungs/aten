@@ -40,12 +40,13 @@
 #include "gui/about.h"
 #include "model/model.h"
 #include "model/undostate.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
-
 #include "base/sysfunc.h"
+#include <iostream>
+#include <fstream>
 
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
@@ -121,7 +122,6 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 {
 	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
-	static StaticCommandNode cmd(Command::CA_SETNAME, "c", "none");
 	// Different model tab has been selected, so set aten.currentmodel to reflect it.
 	Model *m = aten.model(tabid);
 	if (m == NULL) return;
@@ -129,8 +129,7 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		cmd.pokeArguments("c", qPrintable(text));
-		cmd.execute();
+		CommandNode::run(Command::SetName, "c", qPrintable(text));
 		ui.ModelTabs->setTabText(tabid, text);
 		gui.updateWindowTitle();
 		gui.disorderWindow->refresh();
@@ -157,7 +156,11 @@ void AtenForm::executeCommand()
 	// Clear old script commands and set current model variables
 	aten.tempScript.clear();
 	// Grab the current text of the line edit
-	if (aten.tempScript.cacheLine(qPrintable(commandEdit_->text()))) aten.tempScript.execute();
+	if (aten.tempScript.generate(qPrintable(commandEdit_->text())))
+	{
+		ReturnValue result;
+		aten.tempScript.executeAll(result);
+	}
 	commandEdit_->setText("");
 	gui.modelChanged();
 }
@@ -173,7 +176,7 @@ void AtenForm::loadRecent()
 {
 	Dnchar filename;
 	Model *m;
-	Filter *f;
+	Tree *filter;
 	// Cast sending QAction and grab filename
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
@@ -195,10 +198,11 @@ void AtenForm::loadRecent()
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	f = aten.probeFile(filename.get(), Filter::ModelImport);
-	if (f != NULL)
+	filter = aten.probeFile(filename.get(), FilterData::ModelImport);
+	if (filter != NULL)
 	{
-		f->execute(filename.get());
+		ReturnValue rv;
+		filter->executeRead(filename.get(), rv);
 		aten.currentModel()->changeLog.add(Log::Visual);
 		gui.mainView.postRedisplay();
 	}
@@ -281,7 +285,7 @@ void AtenForm::updateUndoRedo()
 void AtenForm::refreshScriptsMenu()
 {
 	// Remove old actions from menu (i.e. current items in Reflist)
-	for (Refitem<QAction, CommandList*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+	for (Refitem<QAction, Forest*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 	{
 		ui.ScriptsMenu->removeAction(sa->item);
 		// Free Reflist QActions
@@ -289,15 +293,15 @@ void AtenForm::refreshScriptsMenu()
 	}
 	// Clear Reflist and repopulate, along with scriptsmenu
 	scriptActions_.clear();
-	for (CommandList *cl = aten.scripts.first(); cl != NULL; cl = cl->next)
+	for (Forest *f = aten.scripts.first(); f != NULL; f = f->next)
 	{
 		// Create new QAction and add to Reflist
 		QAction *qa = new QAction(this);
 		// Set action data
 		qa->setVisible(TRUE);
-		qa->setText(cl->name());
+		qa->setText(f->name());
 		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
-		scriptActions_.add(qa, cl);
+		scriptActions_.add(qa, f);
 		ui.ScriptsMenu->addAction(qa);
 	}
 }
@@ -312,8 +316,8 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Create script and model variables within it
-		CommandList *ca = aten.scripts.add();
-		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
+		Forest *ca = aten.scripts.add();
+		if (ca->generateFromFile(qPrintable(filename))) refreshScriptsMenu();
 		else aten.scripts.remove(ca);
 	}
 }
@@ -328,13 +332,14 @@ void AtenForm::runScript()
 		return;
 	}
 	// Find the CommandList from the loadedscripts() Reflist
-	Refitem<QAction, CommandList*> *ri = scriptActions_.search(action);
+	Refitem<QAction, Forest*> *ri = scriptActions_.search(action);
 	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
 	else
 	{
 		// Execute the script
 		msg.print("Executing script '%s':\n",ri->data->name());
-		ri->data->execute();
+		ReturnValue result;
+		ri->data->executeAll(result);
 	}
 }
 

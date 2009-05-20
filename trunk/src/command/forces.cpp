@@ -1,5 +1,5 @@
 /*
-	*** Forces command functions
+	*** Forces Commands
 	*** src/command/forces.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,31 +19,36 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Calculate forces at trajectory configuration ('frameforces')
-int Command::function_CA_FRAMEFORCES(CommandNode *&c, Bundle &obj)
+bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->createExpression()) obj.m->calculateForces(obj.rs);
-	else return Command::Fail;
-	return Command::Success;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (!obj.m->createExpression()) return FALSE;
+	obj.m->calculateForces(obj.rs);
+	rv.reset();
+	return TRUE;
 }
 
 // Calculate atomic forces of model ('modelforces')
-int Command::function_CA_MODELFORCES(CommandNode *&c, Bundle &obj)
+bool Command::function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->createExpression()) obj.m->calculateForces(obj.m);
-	else return Command::Fail;
-	return Command::Success;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (!obj.m->createExpression()) return FALSE;
+	obj.m->calculateForces(obj.m);
+	rv.reset();
+	return TRUE;
 }
 
 // Print forces of model ('printforces')
-int Command::function_CA_PRINTFORCES(CommandNode *&c, Bundle &obj)
+bool Command::function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printForces();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

@@ -1,5 +1,5 @@
 /*
-	*** Labelling command functions
+	*** Labelling Commands
 	*** src/command/labels.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,29 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 
 // Clear labels in selection
-int Command::function_CA_CLEARLABELS(CommandNode *&c, Bundle &obj)
+bool Command::function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Clear all labels in selection");
 	obj.rs->selectionClearLabels();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Add label to current selection or specified atom
-int Command::function_CA_LABEL(CommandNode *&c, Bundle &obj)
+bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al == Atom::nLabelTypes) return Command::Fail;
+	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
 		Atom *i = obj.rs->atom(c->argi(1));
-		if (i == NULL) return Command::Fail;
+		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Label atom");
 		obj.rs->addLabel(i, al);
 		obj.rs->endUndoState();
@@ -52,19 +53,20 @@ int Command::function_CA_LABEL(CommandNode *&c, Bundle &obj)
 		obj.rs->selectionAddLabels(al);
 		obj.rs->endUndoState();
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Remove label from current selection or specified atom
-int Command::function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj)
+bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al == Atom::nLabelTypes) return Command::Fail;
+	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
 		Atom *i = obj.rs->atom(c->argi(1));
-		if (i == NULL) return Command::Fail;
+		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Remove label from atom");
 		obj.rs->removeLabel(i, al);
 		obj.rs->endUndoState();
@@ -75,17 +77,18 @@ int Command::function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj)
 		obj.rs->selectionRemoveLabels(al);
 		obj.rs->endUndoState();
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Remove all labels from current selection or specified atom
-int Command::function_CA_REMOVELABELS(CommandNode *&c, Bundle &obj)
+bool Command::function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))
 	{
 		Atom *i = obj.rs->atom(c->argi(0));
-		if (i == NULL) return Command::Fail;
+		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Remove all labels from atom");
 		obj.rs->clearLabels(i);
 		obj.rs->endUndoState();
@@ -96,5 +99,7 @@ int Command::function_CA_REMOVELABELS(CommandNode *&c, Bundle &obj)
 		obj.rs->selectionClearLabels();
 		obj.rs->endUndoState();
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

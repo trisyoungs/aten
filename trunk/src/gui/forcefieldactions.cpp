@@ -26,7 +26,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Local variables
 bool updating_ = FALSE;
@@ -39,20 +39,16 @@ void AtenForm::on_actionMinimise_triggered(bool on)
 
 void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 {
-	static StaticCommandNode cmdmodel(Command::CA_MODELENERGY, "");
-	static StaticCommandNode cmdframe(Command::CA_FRAMEENERGY, "");
-	if (aten.current.rs == aten.current.m) cmdmodel.execute();
-	else cmdframe.execute();
+	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelEnergy, "");
+	else CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
 	aten.currentModel()->renderSource()->energy.print();
 }
 
 void AtenForm::on_actionCalculateForces_triggered(bool on)
 {
-	static StaticCommandNode cmdmodel(Command::CA_MODELFORCES, "");
-	static StaticCommandNode cmdframe(Command::CA_FRAMEFORCES, "");
-	if (aten.current.rs == aten.current.m) cmdmodel.execute();
-	else cmdframe.execute();
+	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelForces, "");
+	else CommandNode::run(Command::FrameForces, "");
 }
 
 void AtenForm::refreshForcefieldCombo()

@@ -25,7 +25,7 @@
 #include <iostream>
 
 // Probe model
-Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
+Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
 	msg.enter("Aten::probeFile");
@@ -45,38 +45,41 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		return NULL;
 	}
 	probefile.close();
-	Parser localp;
+	LineParser parser;
 	int n, m;
 	const char *dotpos;
 	Dnchar nameonly;
-	Filter *f, *result = NULL;
+	Refitem<Tree,int> *ri;
+	Tree *t, *result = NULL;
 	dotpos = strrchr(filename,'.');
 	if (dotpos != NULL) dotpos++;
 	nameonly = removePath(filename);
 	// Go through list of filters and do checks...
-	for (f = filters_[probetype].first(); f != NULL; f = f->next)
+	for (ri = filters_[probetype].first(); ri != NULL; ri = ri->next)
 	{
+		t = ri->item;
 		// Try to match text within files
-		if (f->nIdStrings() != 0)
+		if (t->filter.searchStrings() != NULL)
 		{
 			bool done = FALSE;
-			probefile.open(filename,ios::in);
-			for (Namemap<int> *ids = f->idStrings(); ids != NULL; ids = ids->next)
+			parser.openFile(filename);
+			for (Dnchar *ss = t->filter.searchStrings(); ss != NULL; ss = ss->next)
 			{
 				// Make sure file is completely rewound
-				probefile.seekg(0, ios::beg);
-				for (n = 0; n<ids->data(); n++)
+				parser.rewind();
+				for (n = 0; n<t->filter.nLinesToSearch(); n++)
 				{
-					m = localp.readLine(&probefile);
-					if (m != 0)
+					m = parser.readLine();
+					if (m == -1) break;
+					if (m == 1)
 					{
 						msg.print("File error encountered while searching for identifying string.\n");
 						done = TRUE;
 						break;
 					}
-					if (strstr(localp.line(), ids->name()) != NULL)
+					if (strstr(parser.line(), ss->get()) != NULL)
 					{
-						result = f;
+						result = t;
 						done = TRUE;
 						break;
 					}
@@ -89,28 +92,28 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		// Try to match file extension
 		if (dotpos != NULL)
 		{
-			for (Dnchar *d = f->extensions(); d != NULL; d = d->next)
+			for (Dnchar *d = t->filter.extensions(); d != NULL; d = d->next)
 				if (*d == dotpos)
 				{
-					result = f;
+					result = t;
 					break;
 				}
 		}
 		if (result != NULL) break;
 		// Try to match exact filename
-		for (Dnchar *d = f->exactNames(); d != NULL; d = d->next)
+		for (Dnchar *d = t->filter.exactNames(); d != NULL; d = d->next)
 		{
 			//printf("Comparing '%s' with '%s'\n",nameonly.get(),parser.argc(n));
 			if (*d == nameonly)
 			{
-				result = f;
+				result = t;
 				break;
 			}
 		}
 
 	}
 	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
-	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->name());
+	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->filter.name());
 	msg.exit("Aten::probeFile");
 	return result;
 }

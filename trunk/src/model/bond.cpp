@@ -178,6 +178,8 @@ void Model::initialiseBondingCuboids()
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;
 	cuboidSize_.set(5.0,5.0,5.0);
+	nCuboids_ = 0;
+	if (atoms_.nItems() == 0) return;
 	// Determine the number of cuboids to partition our space into
 	if (cell_.type() == Cell::NoCell)
 	{
@@ -185,11 +187,11 @@ void Model::initialiseBondingCuboids()
 		{
 			r = i->r();
 			if (r.x < extentMin_.x) extentMin_.x = r.x;
-			else if (r.x > extentMax_.x) extentMax_.x = r.x;
+			if (r.x > extentMax_.x) extentMax_.x = r.x;
 			if (r.y < extentMin_.y) extentMin_.y = r.y;
-			else if (r.y > extentMax_.y) extentMax_.y = r.y;
+			if (r.y > extentMax_.y) extentMax_.y = r.y;
 			if (r.z < extentMin_.z) extentMin_.z = r.z;
-			else if (r.z > extentMax_.z) extentMax_.z = r.z;
+			if (r.z > extentMax_.z) extentMax_.z = r.z;
 		}
 		extentRange_ = extentMax_ - extentMin_;
 		cuboidBoxes_.x = (extentRange_.x / cuboidSize_.x) + 1;
@@ -215,13 +217,13 @@ void Model::initialiseBondingCuboids()
 	nCuboids_ = cuboidBoxes_.x * cuboidBoxes_.y * cuboidBoxes_.z;
 	cuboidYZ_ = cuboidBoxes_.y * cuboidBoxes_.z;
 	freeBondingCuboids();
-	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
-	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
 // 	printf("Box counts: x = %i, y = %i, z = %i, cube = %i\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, nCuboids_);
 // 	printf("CuboidSize = "); cuboidSize_.print();
 // 	printf("ExtentMin = "); extentMin_.print(); 
 // 	printf("ExtentMax = "); extentMax_.print();
 // 	printf("ExtentRange = "); extentRange_.print();
+	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
+	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
 }
 
 // Free any created reflists
@@ -265,23 +267,25 @@ void Model::addAtomToCuboid(Atom *i)
 	bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);
 	// We also add atoms that are on the very edges of the overlays to the ones on the other side (to account for MIM)
 // 	printf("If x == 0, overlay is %i\n",(cuboidBoxes_.x-1)*cuboidBoxes_.y*cuboidBoxes_.z+y*cuboidBoxes_.z+z);
-	if (x == 0)
-	{
-		bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// Xyz
+/*	if (cell_.type() != Cell::NoCell) //TGAY Oddness in non-periodic systems - This appears to break bonding on one 'edge'
+	{*/
+		if (x == 0)
+		{
+			bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// Xyz
+			if (y == 0)
+			{
+				bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	//XYz
+				if (z == 0) bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // XYZ
+			}
+			else if (z == 0) bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // XyZ
+		}
 		if (y == 0)
 		{
-			bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	//XYz
-			if (z == 0) bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // XYZ
+			bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	// xYz
+			if (z == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // xYZ
 		}
-		else if (z == 0) bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // XyZ
-	}
-	if (y == 0)
-	{
-		bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	// xYz
-		if (z == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius); // xYZ
-	}
-	if (z == 0) bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius);	// xyZ
-
+		if (z == 0) bondingOverlays_[x*cuboidYZ_+y*cuboidBoxes_.z+cuboidBoxes_.z-1].add(i, radius);	// xyZ
+// 	}
 // 	bondingOverlays_[(cuboidBoxes_.x-1)*cuboidYZ_+y*cuboidBoxes_.z+z].add(i, radius);	// xyz
 // 	printf("If x == y, overlay is %i\n",x*cuboidBoxes_.y*cuboidBoxes_.z+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z);
 // 	if (y == 0) bondingOverlays_[x*cuboidYZ_+(cuboidBoxes_.y-1)*cuboidBoxes_.z+z].add(i, radius);	// xYz
@@ -374,6 +378,31 @@ void Model::calculateBonding()
 	msg.print(Messenger::Verbose, "Done.\n");
 	msg.exit("Model::calculateBonding");
 }
+
+// void Model::calculateBonding()
+// {
+// 	msg.enter("Model::calculateBonding");
+// 	Atom *i, *j;
+// 	double dist, radsum;
+// 	double tolerance = prefs.bondTolerance();
+// 	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
+// 	clearBonding();
+// 	// Create cuboid lists
+// // 	initialiseBondingCuboids();
+// 	// Add all atoms to cuboid list
+// 	for (i = atoms_.first(); i != NULL; i = i->next)
+// 		for (j = i; j != NULL; j = j->next)
+// 		{
+// 			if (i == j) continue;
+// 			if (j->element() == 0) continue;
+// 			dist = cell_.distance(i,j);
+// 			radsum = elements().atomicRadius(i) + elements().atomicRadius(j);
+// 	printf("radsum*tol = %f, dist = %f\n",radsum*tolerance,dist);
+// 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
+// 		}
+// 	msg.print(Messenger::Verbose, "Done.\n");
+// 	msg.exit("Model::calculateBonding");
+// }
 
 // Calculate Bonding within Patterns
 void Model::patternCalculateBonding()

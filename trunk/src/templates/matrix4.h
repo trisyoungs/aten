@@ -80,12 +80,17 @@ template <class T> class Mat4
 	void print() const;
 	// TODO 
 	void matrix4Invert(int, double*);
+	// Set individual element of matrix
+	void set(int row, int col, T value);
+	// Set whole row of matrix
+	void set(int row, T x, T y, T z, T w);
 
 	/*
 	// Operators
 	*/
 	Mat4 operator*(const Mat4&) const;
 	Mat4& operator*=(const Mat4&);
+	Mat4& operator*=(const double);
 	Vec4<T> operator*(const Vec4<T>&) const;
 	Vec3<T> operator*(const Vec3<T>&) const;
 };
@@ -233,6 +238,16 @@ template <class T> Mat4<T> &Mat4<T>::operator*=(const Mat4<T> &B)
 	return *this;
 }
 
+// Multiply all elements by constant value
+template <class T> Mat4<T> &Mat4<T>::operator*=(const double d)
+{
+	rows[0] *= d;
+	rows[1] *= d;
+	rows[2] *= d;
+	rows[4] *= d;
+	return *this;
+}
+
 // Operator * (vec4)
 template <class T> Vec4<T> Mat4<T>::operator*(const Vec4<T> &v) const
 {
@@ -267,6 +282,18 @@ template <class T> void Mat4<T>::invert()
 	rows[1].set(m[4],m[5],m[6],m[7]);
 	rows[2].set(m[8],m[9],m[10],m[11]);
 	rows[3].set(m[12],m[13],m[14],m[15]);
+}
+
+// Set individual element of matrix (by row/column)
+template <class T> void Mat4<T>::set(int row, int col, T d)
+{
+	rows[row].set(col,d);
+}
+
+// Set individual row of matrix
+template <class T> void Mat4<T>::set(int row, T x, T y, T z, T w)
+{
+	rows[row].set(x, y, z, w);
 }
 
 template <class T> void Mat4<T>::print() const

@@ -1,41 +1,35 @@
-# MDL Mol File
-# Last modified: 10/10/2008
+# MDL Mol File (for v1.2+)
+# Created:	 12/04/2009
+# Last modified: 12/04/2009
 # ChangeLog:
-#	10/10/2008 - Adjusted to use new variable access methods.
-#	05/08/2008 - Changed to use implicit $title variable
-#	30/06/2008 - First version (thanks to D. Tackley)
 
-importmodel
-	name "MDL Mol File"
-	nickname mol
-	extension mol
-	glob *.mol
-	
+filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", glob="*.mol")
+{
 	# Variable declaration
-	character line,e,title
-	integer n,natoms,nbonds,ii,jj,bondtype
-	real rx,ry,rz
+	string line,e,title;
+	int n,natoms,nbonds,ii,jj,bondtype;
+	double rx,ry,rz;
 	
 	# Create default model
-	getline $title
-	newmodel $title
+	getline(title);
+	newmodel(title);
 	
-	skipline 2
+	skipline(2);
 	
-	readline "$natoms $nbonds"
+	readline(natoms,nbonds);
 	
-	for $n,1,$natoms
-		readline "$rx $ry $rz $e"
-		newatom $e
-		setcoords $rx $ry $rz
-	end
+	for (n=0; n<natoms; ++n)
+	{
+		readline(rx,ry,rz,e);
+		newatom(e,rx,ry,rz);
+	}
 	
-	for $n,1,$nbonds
-		readline "$ii $jj $bondtype"
-		newbond $ii $jj $bondtype
-	end
+	for (n=0; n<nbonds; ++n)
+	{
+		readline(ii,jj,bondtype);
+		newbond(ii,jj,bondtype);
+	}
 	
-	finalisemodel
-end
-	
-	
+	finalisemodel();
+}
+

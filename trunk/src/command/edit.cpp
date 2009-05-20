@@ -1,5 +1,5 @@
 /*
-	*** Edit command functions
+	*** Edit Commands
 	*** src/command/edit.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,49 +19,50 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 
 // Copy current selection ('copy')
-int Command::function_CA_COPY(CommandNode *&c, Bundle &obj)
+bool Command::function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.userClipboard->copySelection(obj.rs);
 	msg.print("%i atoms copied to clipboard.\n", aten.userClipboard->nAtoms());
 	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n", aten.userClipboard->nAtoms(), obj.rs->name());
-	return Command::Success;
+	return TRUE;
 }
 
 // Cut current selection ('cut')
-int Command::function_CA_CUT(CommandNode *&c, Bundle &obj)
+bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
 	sprintf(s,"Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
 	aten.userClipboard->cutSelection(obj.rs);
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Delete current selection ('delete')
-int Command::function_CA_DELETE(CommandNode *&c, Bundle &obj)
+bool Command::function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
 	sprintf(s,"Delete %i atom%s\n", obj.rs->nSelected(), (obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
 	obj.rs->selectionDelete();
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Paste copied selection ('paste')
-int Command::function_CA_PASTE(CommandNode *&c, Bundle &obj)
+bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	char s[128];
 	sprintf(s,"Paste %i atom%s\n", aten.userClipboard->nAtoms(), (aten.userClipboard->nAtoms() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
@@ -72,21 +73,22 @@ int Command::function_CA_PASTE(CommandNode *&c, Bundle &obj)
 		aten.userClipboard->pasteToModel(obj.rs, shift);
 	}
 	obj.rs->endUndoState();
-	return Command::Success;
+	return TRUE;
 }
 
 // Redo most recent change
-int Command::function_CA_REDO(CommandNode *&c, Bundle &obj)
+bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.currentModel()->redo();
-	return Command::Success;
+	return TRUE;
 }
 
 // Undo most recent change
-int Command::function_CA_UNDO(CommandNode *&c, Bundle &obj)
+bool Command::function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten.currentModel()->undo();
-	return Command::Success;
+	return TRUE;
 }
+

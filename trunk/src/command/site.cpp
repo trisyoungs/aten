@@ -1,5 +1,5 @@
 /*
-	*** Site command functions
+	*** Site Commands
 	*** src/command/site.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,25 +19,27 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "base/pattern.h"
 #include "classes/site.h"
 #include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-int Command::function_CA_NEWSITE(CommandNode *&c, Bundle &obj)
+bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// First, check that the pattern name provided refers to a pattern of the current model
 	Pattern *p = obj.m->findPattern(c->argc(1));
-	if (p == NULL) return Command::Fail;
+	if (p == NULL) return FALSE;
 	obj.s = obj.m->sites.add();
 	obj.s->setName(c->argc(0));
 	obj.s->setPattern(p);
 	// Parse the atom list which should have been given as: "1,2,3,4,5......"
 	if (c->hasArg(2))
 	{
-		parser.getArgsDelim(c->argc(2), Parser::Defaults);
+		LineParser parser;
+		parser.getArgsDelim(c->argc(2), LineParser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			ListItem<int> *li = obj.s->atoms.add();
@@ -46,13 +48,14 @@ int Command::function_CA_NEWSITE(CommandNode *&c, Bundle &obj)
 		}
 	}
 	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Print site definitions for model ('listsites')
-int Command::function_CA_LISTSITES(CommandNode *&c, Bundle &obj)
+bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s = obj.m->sites.first();
 	if (s == NULL) msg.print("No sites defined for model '%s'.\n",obj.m->name());
 	else
@@ -66,28 +69,31 @@ int Command::function_CA_LISTSITES(CommandNode *&c, Bundle &obj)
 			msg.print("\n");
 		}
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-int Command::function_CA_GETSITE(CommandNode *&c, Bundle &obj)
+bool Command::function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
 	if (s == NULL) msg.print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else obj.s = s;
-	return Command::Fail;
+	rv.reset();
+	return FALSE;
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
-int Command::function_CA_SITEAXES(CommandNode *&c, Bundle &obj)
+bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::SitePointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
 	int n;
 	ListItem<int> *li;
+	LineParser parser;
 	// Parse atom list for x-axis
-	parser.getArgsDelim(c->argc(0), Parser::Defaults);
+	parser.getArgsDelim(c->argc(0), LineParser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->xAxisAtoms.add();
@@ -95,12 +101,14 @@ int Command::function_CA_SITEAXES(CommandNode *&c, Bundle &obj)
 		li->data = parser.argi(n) - 1;
 	}
 	// Parse atom list for y-axis
-	parser.getArgsDelim(c->argc(1), Parser::Defaults);
+	parser.getArgsDelim(c->argc(1), LineParser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->yAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
 		li->data = parser.argi(n) - 1;
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+
