@@ -43,7 +43,7 @@ Canvas::Canvas()
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;
 	displayModel_ = NULL;
-	displayFrame_ = -1;
+	displayFrameId_ = -1;
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;
@@ -223,8 +223,9 @@ void Canvas::initGl()
 		createLists();
 
 		// Clear colour
-		GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
-		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
+		GLfloat col[4];
+		prefs.copyColour(Prefs::BackgroundColour, col);
+		glClearColor(col[0],col[1],col[2],col[3]);
 		//glClearDepth(1.0);
 		// Perspective hint
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
@@ -239,42 +240,47 @@ void Canvas::initGl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0, GL_AMBIENT, prefs.spotlightColour(Prefs::AmbientComponent));
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, prefs.spotlightColour(Prefs::DiffuseComponent));
-		glLightfv(GL_LIGHT0, GL_SPECULAR, prefs.spotlightColour(Prefs::SpecularComponent));
-		glLightfv(GL_LIGHT0, GL_POSITION, prefs.spotlightPosition());
+		prefs.copySpotlightColour(Prefs::AmbientComponent, col);
+		glLightfv(GL_LIGHT0, GL_AMBIENT, col);
+		prefs.copySpotlightColour(Prefs::DiffuseComponent, col);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
+		prefs.copySpotlightColour(Prefs::SpecularComponent, col);
+		glLightfv(GL_LIGHT0, GL_SPECULAR, col);
+		prefs.copySpotlightPosition(col);
+		glLightfv(GL_LIGHT0, GL_POSITION, col);
 		prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 		// Configure antialiasing
-		if (prefs.hasGlOption(Prefs::LineAliasOption))
+		if (prefs.lineAliasing())
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_LINE_SMOOTH);
 		}
-		if (prefs.hasGlOption(Prefs::PolyAliasOption))
+		if (prefs.polygonAliasing())
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_POLYGON_SMOOTH);
 		}
 		// Configure fog effects
-		if (prefs.hasGlOption(Prefs::FogOption))
+		if (prefs.depthCue())
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			glFogfv(GL_FOG_COLOR, prefs.colour(Prefs::BackgroundColour));
+			prefs.copyColour(Prefs::BackgroundColour, col);
+			glFogfv(GL_FOG_COLOR, col);
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
-			glFogi(GL_FOG_START,prefs.fogNear());
-			glFogi(GL_FOG_END,prefs.fogFar());
+			glFogi(GL_FOG_START, prefs.depthNear());
+			glFogi(GL_FOG_END, prefs.depthFar());
 			glEnable(GL_FOG);
 		}
 		else glDisable(GL_FOG);
 		// Configure face culling
 		glCullFace(GL_FRONT);
-		prefs.hasGlOption(Prefs::BackCullOption) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
+		prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 		// Test
 		glDisable(GL_DITHER);
 		glDisable(GL_LOGIC_OP);
@@ -327,7 +333,7 @@ void Canvas::createLists()
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_TUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle)*0.98, TRUE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle), TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_SPHEREATOM],GL_COMPILE);
@@ -339,11 +345,11 @@ void Canvas::createLists()
 	glEndList();
 	// Wire Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_WIRETUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.bondRadius()*1.1, FALSE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle), FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_WIRESPHEREATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle)*1.1, FALSE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle), FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);

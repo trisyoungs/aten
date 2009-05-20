@@ -96,6 +96,8 @@ class Grid
 	bool useDataForZ_;
 
 	public:
+	// Return pointer to the underlying cell structure
+	Cell *cell();
 	// Set spacing for a cubic Grid
 	void setAxes(double r);
 	// Set spacing for an orthorhombic Grid
@@ -104,7 +106,7 @@ class Grid
 	void setAxes(const Mat3<double> axes);
 	// Return the Grid axes
 	Mat3<double> axes();
-	// Return lengths of cell axiss
+	// Return lengths of cell axes
 	Vec3<double> lengths();
 	// Set data origin
 	void setOrigin(const Vec3<double> v);
@@ -130,7 +132,7 @@ class Grid
 	double **data2d();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
-	// Get cell axes in suitaqble GL format
+	// Get cell axes in suitable GL format
 	void axesForGl(double *glmat);
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
@@ -167,8 +169,8 @@ class Grid
 	// How to render this surface
 	SurfaceStyle style_;
 	// Local colours (including alpha component)
-	GLfloat positiveColour_[4], negativeColour_[4];
-	// Colour scale to take colouring from (if used)
+	double positiveColour_[4], negativeColour_[4];
+	// Colour scale to take colouring from (zero for internal colours)
 	int colourScale_;
 	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
 	bool useColourScale_;
@@ -195,29 +197,33 @@ class Grid
 	// Return the rendering style of the surface
 	SurfaceStyle style();
 	// Set the positive colour of the surface
-	void setPositiveColour(GLfloat r, GLfloat g, GLfloat b);
+	void setPositiveColour(double r, double g, double b);
 	// Set the negative colour of the surface
-	void setNegativeColour(GLfloat r, GLfloat g, GLfloat b);
+	void setNegativeColour(double r, double g, double b);
 	// Set alpha value of the surface
-	void setAlpha(GLfloat a);
+	void setAlpha(double a);
 	// Return the alpha value of the surface
-	GLfloat alpha();
+	double alpha();
 	// Return the positive colour of the surface
-	GLfloat *positiveColour();
+	double *positiveColour();
+	// Copy the positive colour of the surface
+	void copyPositiveColour(GLfloat *col);
 	// Return the negative colour of the surface
-	GLfloat *negativeColour();
+	double *negativeColour();
+	// Copy the negative colour of the surface
+	void copyNegativeColour(GLfloat *col);
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
 	int colourScale();
-	// Set whether the surfce should be rendered with an associated colourscale
-	void setUseColourScale(bool b);
 	// Whether the surface uses the defined colour scale or not
 	bool useColourScale();
+	// Set whether the surface should be rendered with an associated colourscale
+	void setUseColourScale(bool b);
 	// Set whether to use both signs of a symmetric isovalue distribution
 	void setSymmetric(bool b);
 	// Returns whether to use both signs of a symmetric isovalue distribution
-	bool symmetric();
+	bool isSymmetric();
 
 	/*
 	// Transformations

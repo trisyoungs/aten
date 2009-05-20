@@ -24,12 +24,15 @@
 
 #include "base/bundle.h"
 #include "templates/list.h"
-#include "command/filter.h"
+#include "templates/reflist.h"
 #include "templates/namemap.h"
+#include "command/commands.h"
+#include "parser/forest.h"
+#include "parser/tree.h"
 
-#define ATENVERSION "1.1"
-#define ATENREVISION "911"
-#define ATENDATE "Mon 18 May - 15:30"
+#define ATENVERSION "1.2"
+#define ATENREVISION "914"
+#define ATENDATE "Wed 20 May - 18:58"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -94,33 +97,43 @@ class Aten
 
 
 	/*
-	// Import / Export
+	// Filters
 	*/
 	private:
-	// Whether or not filters were loaded without error on startup
-	bool filterLoadSuccessful_;
-	// Parse filter index and load filters
-	bool parseFilterIndex(const char *path, ifstream *indexfile);
-	// Load filter(s) from specified file
-	bool loadFilter(const char *filename);
+	// How many filters had errors on startup
+	int nFiltersFailed_;
+	// Filenames (including paths) of filters that failed to load
+	List<Dnchar> failedFilters_;
+	// Parse directory index and load filters
+	int parseFilterDir(const char *path);
 	// Set export partners for import filters
 	void partnerFilters();
-	// List of file filters 
-	List<Filter> filters_[Filter::nFilterTypes];
+	// List of Filter Forests
+	List<Forest> filterForests_;
+	// Reflists of file filters of different types
+	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
 
 	public:
 	// Load filters
 	void openFilters();
+	// Load filter from specified filename
+	bool openFilter(const char *filename);
+	// Register a filter of a given type
+	void registerFilter(Tree *filter, FilterData::FilterType ft);
 	// Whether filters loaded succesfully on startup
-	bool filterLoadSuccessful();
+	int nFiltersFailed();
+	// Return first item in failed filter list
+	Dnchar *failedFilters();
 	// Reload filters
 	bool reloadFilters();
 	// Probe file for its format
-	Filter *probeFile(const char *filename, Filter::FilterType);
+	Tree *probeFile(const char *filename, FilterData::FilterType);
 	// Find filter of specified type with nickname provided
-	Filter *findFilter(Filter::FilterType ft, const char *nickname) const;
+	Tree *findFilter(FilterData::FilterType ft, const char *nickname) const;
+	// Find filter by description
+	Tree *findFilterByDescription(FilterData::FilterType ft, const char *description) const;
 	// Return first filter in list (of a given type)
-	Filter *filters(Filter::FilterType ft) const;
+	Refitem<Tree,int> *filters(FilterData::FilterType ft) const;
 
 
 	/*
@@ -189,6 +202,8 @@ class Aten
 	Dnchar workDir_;
 	// Data directory
 	Dnchar dataDir_;
+	// Whether data dir has been set
+	bool dataDirSet_;
 
 	public:
 	// Set location of users's home directory
@@ -203,6 +218,8 @@ class Aten
 	void setDataDir(const char *path);
 	// Return the data directory path
 	const char *dataDir();
+	// Return whether the data dir has already been set
+	bool dataDirSet();
 
 
 	/*
@@ -218,11 +235,11 @@ class Aten
 	// Return the current program mode
 	ProgramMode programMode();
 	// Cached scripts
-	List<CommandList> scripts;
+	List<Forest> scripts;
 	// Script to store temporary typed commands
-	CommandList tempScript;
+	Forest tempScript;
 	// Interactive mode command list
-	CommandList interactiveScript;
+	Forest interactiveScript;
 
 
 	/*
@@ -272,21 +289,31 @@ class Aten
 	*/
 	private:
 	// Model format in which to export models
-	Filter *exportFilter_;
+	Tree *exportFilter_;
 	// Cached commands to use in batch processing mode
-	List<CommandList> batchCommands_;
+	List<Forest> batchCommands_;
 
 	public:
 	// Set format to use in export
-	void setExportFilter(Filter *f);
+	void setExportFilter(Tree *f);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
-	CommandList *addBatchCommand();
+	Forest *addBatchCommand();
 	// Run all stored commands on all loaded models
 	void processModels();
 	// Save all models under their original names
 	void saveModels();
+
+
+	/*
+	// Commands
+	*/
+	public:
+	// Command Definitions
+	Command commands;
+	// Preferences file commands
+	Forest prefsCommands;
 };
 
 extern Aten aten;

@@ -23,7 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Local variables
 Atom *target = NULL;
@@ -52,18 +52,8 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	static StaticCommandNode cmd(Command::CA_ATOMSTYLE, "c", "none");
-	static StaticCommandNode cmdatom(Command::CA_ATOMSTYLE, "ci", "none", 0);
-	if (gui.mainView.displayModel()->nSelected() > 1)
-	{
-		cmd.pokeArguments("c", Atom::drawStyle(ds));
-		cmd.execute();
-	}
-	else
-	{
-		cmdatom.pokeArguments("ci", Atom::drawStyle(ds), target->id());
-		cmdatom.execute();
-	}
+	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
+	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id());
 	target = NULL;
 }
 
@@ -94,18 +84,8 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	static StaticCommandNode cmd(Command::CA_LABEL, "c", "none");
-	static StaticCommandNode cmdatom(Command::CA_LABEL, "ci", "none", 0);
-	if (gui.mainView.displayModel()->nSelected() > 1)
-	{
-		cmd.pokeArguments("c", Atom::atomLabel(al));
-		cmd.execute();
-	}
-	else
-	{
-		cmdatom.pokeArguments("ci", Atom::atomLabel(al), target->id());
-		cmdatom.execute();
-	}
+	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
+	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -113,16 +93,9 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 // Clear atom labels
 void AtenForm::removeAtomLabels(bool all)
 {
-	static StaticCommandNode cmd(Command::CA_REMOVELABELS, "");
-	static StaticCommandNode cmdatom(Command::CA_REMOVELABELS, "i", 0);
-	static StaticCommandNode cmdall(Command::CA_CLEARLABELS, "");
-	if (all) cmdall.execute();
-	else if (gui.mainView.displayModel()->nSelected() > 1) cmd.execute();
-	else
-	{
-		cmdatom.pokeArguments("i", target->id());
-		cmdatom.execute();
-	}
+	if (all) CommandNode::run(Command::ClearLabels, "");
+	else if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::RemoveLabels, "");
+	else CommandNode::run(Command::RemoveLabels, "i", target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -165,23 +138,15 @@ void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	static StaticCommandNode cmdh(Command::CA_HIDE, "");
-	static StaticCommandNode cmdhatom(Command::CA_HIDE, "i", 0);
-	static StaticCommandNode cmds(Command::CA_SHOW, "");
-	static StaticCommandNode cmdsatom(Command::CA_SHOW, "i", 0);
-	if (gui.mainView.displayModel()->nSelected() > 1) hidden ? cmdh.execute() : cmds.execute();
+	if (gui.mainView.displayModel()->nSelected() > 1)
+	{
+		if (hidden) CommandNode::run(Command::Hide, "");
+		else CommandNode::run(Command::Show, "");
+	}
 	else
 	{
-		if (hidden)
-		{
-			cmdhatom.pokeArguments("i", target->id());
-			cmdhatom.execute();
-		}
-		else
-		{
-			cmdsatom.pokeArguments("i", target->id());
-			cmdsatom.execute();
-		}
+		if (hidden) CommandNode::run(Command::Hide, "i", target->id());
+		else CommandNode::run(Command::Show, "i", target->id());
 	}
 	gui.modelChanged(TRUE, FALSE, FALSE);
 }

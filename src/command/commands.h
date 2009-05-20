@@ -1,6 +1,6 @@
 /*
-	*** Program commands
-	*** src/command/commands.h
+	*** Command Functions
+	*** src/parser/commands.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -23,6 +23,7 @@
 #define ATEN_COMMANDS_H
 
 #include "base/bundle.h"
+#include "parser/returnvalue.h"
 
 // Forward declarations
 class CommandList;
@@ -31,7 +32,7 @@ class CommandData;
 class Command;
 
 // Function pointer typedef and call #define
-typedef int (*CommandFunction)(CommandNode *&c, Bundle &obj);
+typedef bool (*CommandFunction)(CommandNode *c, Bundle &obj, ReturnValue &rv);
 #define CALL_COMMAND(object,ptrToMember) ((object).*(ptrToMember)) 
 
 class CommandData
@@ -47,467 +48,465 @@ class CommandData
 	const char *arguments;
 	// Command argument names
 	const char *argText;
+	// Return-value datatype
+	VTypes::DataType returnType;
 	// Command syntax
 	const char *syntax;
+
 	// Return whether command accepts any arguments
 	bool hasArguments();
 };
 
 // Command actions
-class Command {
+class Command
+{
 
 	public:
 	// Constructor / Destructor
 	Command();
 	~Command();
 
-	// Command return values
-	enum ReturnValue { Success, SuccessNoMove, Fail, FailContinue, Exit, ExitWithError };
 	// Command list
 	enum Function {
-	
-		// Variable declaration
-		CA_CHARACTER,
-		CA_INTEGER,
-		CA_REAL,
-		CA_CONSTVECTOR,
-		CA_ATOM,
-		CA_BOND,
-		CA_PATTERN,
-		CA_PATTERNBOUND,
-		CA_MODEL,
-		CA_GRID,
-		CA_FFATOM,
-		CA_FFBOUND,
-		CA_CELLVAR,
-		CA_FORCEFIELD,
-		CA_PREFSVAR,
-		CA_ELEMENTSVAR,
-		CA_VECTOR,
-	
-		// Root node
-		CA_ROOTNODE,
+
+		// Operators
+		OperatorAdd,
+		OperatorAnd,
+		OperatorAssignment,
+		OperatorAssignmentDivide,
+		OperatorAssignmentMultiply,
+		OperatorAssignmentPlus,
+		OperatorAssignmentSubtract,
+		OperatorDivide,
+		OperatorEqualTo,
+		OperatorGreaterThan,
+		OperatorGreaterThanEqualTo,
+		OperatorLessThan,
+		OperatorLessThanEqualTo,
+		OperatorModulus,
+		OperatorMultiply,
+		OperatorNegate,
+		OperatorNot,
+		OperatorNotEqualTo,
+		OperatorOr,
+		OperatorPostfixDecrease,
+		OperatorPostfixIncrease,
+		OperatorPower,
+		OperatorPrefixDecrease,
+		OperatorPrefixIncrease,
+		OperatorSubtract,
+		
+		// AST-Specific nodes
+		NoFunction,
+		Joiner,
+		Declarations,
 	
 		// Analysis commands
-		CA_FINALISE,
-		CA_FRAMEANALYSE,
-		CA_GEOMETRY,
-		CA_MODELANALYSE,
-		CA_PDENS,
-		CA_PRINTJOBS,
-		CA_RDF,
-		CA_SAVEQUANTITIES,
-		CA_TRAJANALYSE,
+		Finalise,
+		FrameAnalyse,
+		Geometry,
+		ModelAnalyse,
+		PDens,
+		PrintJobs,
+		RDF,
+		SaveQuantities,
+		TrajAnalyse,
 	
 		// Atom Commands
-		CA_ATOMSTYLE,
-		CA_GETATOM,
-		CA_HIDE,
-		CA_SETCHARGE,
-		CA_SETCOORDS,
-		CA_SETELEMENT,
-		CA_SETFORCES,
-		CA_SETFX,
-		CA_SETFY,
-		CA_SETFZ,
-		CA_SETID,
-		CA_SETRX,
-		CA_SETRY,
-		CA_SETRZ,
-		CA_SETVELOCITIES,
-		CA_SETVX,
-		CA_SETVY,
-		CA_SETVZ,
-		CA_SHOW,
-		CA_SHOWALL,
+		AtomStyle,
+		GetAtom,
+		Hide,
+		SetCharge,
+		SetCoords,
+		SetElement,
+		SetForces,
+		SetFX,
+		SetFY,
+		SetFZ,
+		SetId,
+		SetRX,
+		SetRY,
+		SetRZ,
+		SetVelocities,
+		SetVX,
+		SetVY,
+		SetVZ,
+		Show,
+		ShowAll,
 	
 		// Bond commands
-		CA_AUGMENT,
-		CA_BONDTOLERANCE,
-		CA_CLEARBONDS,
-		CA_CLEARSELECTEDBONDS,
-		CA_NEWBOND,
-		CA_NEWBONDID,
-		CA_REBOND,
-		CA_REBONDPATTERNS,
-		CA_REBONDSELECTION,
+		Augment,
+		BondTolerance,
+		ClearBonds,
+		ClearSelectedBonds,
+		NewBond,
+		NewBondId,
+		ReBond,
+		ReBondPatterns,
+		ReBondSelection,
 	
 		// Build commands
-		CA_ADDHYDROGEN,
-		CA_BOHR,
-		CA_CHAIN,
-		CA_ENDCHAIN,
-		CA_INSERTATOM,
-		CA_LOCATE,
-		CA_MOVE,
-		CA_MOVETOEND,
-		CA_MOVETOSTART,
-		CA_NEWATOM,
-		CA_NEWATOMFRAC,
-		CA_REORDER,
-		CA_RESETPEN,
-		CA_ROTX,
-		CA_ROTY,
-		CA_ROTZ,
-		CA_SHIFTDOWN,
-		CA_SHIFTUP,
-		CA_TRANSMUTE,
+		AddHydrogen,
+		Bohr,
+		Chain,
+		EndChain,
+		InsertAtom,
+		Locate,
+		Move,
+		MoveToEnd,
+		MoveToStart,
+		NewAtom,
+		NewAtomFrac,
+		ReOrder,
+		ResetPen,
+		RotX,
+		RotY,
+		RotZ,
+		ShiftDown,
+		ShiftUp,
+		Transmute,
 	
 		// Cell commands
-		CA_ADDGENERATOR,
-		CA_ADJUSTCELL,
-		CA_CELL,
-		CA_CELLAXES,
-		CA_FOLD,
-		CA_FOLDMOLECULES,
-		CA_FRACTOREAL,
-		CA_NOCELL,
-		CA_PACK,
-		CA_PRINTCELL,
-		CA_REPLICATE,
-		CA_ROTATECELL,
-		CA_SCALE,
-		CA_SCALEMOLECULES,
-		CA_SETCELL,
-		CA_SPACEGROUP,
+		AddGenerator,
+		AdjustCell,
+		Cell,
+		CellAxes,
+		Fold,
+		FoldMolecules,
+		FracToReal,
+		NoCell,
+		Pack,
+		PrintCell,
+		Replicate,
+		RotateCell,
+		Scale,
+		ScaleMolecules,
+		SetCell,
+		SGInfo,
+		Spacegroup,
 	
 		// Charge commands
-		CA_CHARGEFF,
-		CA_CHARGEFROMMODEL,
-		CA_CHARGEPATOM,
-		CA_CHARGE,
-		CA_CHARGETYPE,
-		CA_CLEARCHARGES,
+		Charge,
+		ChargeFF,
+		ChargeFromModel,
+		ChargePAtom,
+		ChargeType,
+		ClearCharges,
 	
 		// Colourscale commands
-		CA_ADDPOINT,
-		CA_CLEARPOINTS,
-		CA_LISTSCALES,
-		CA_REMOVEPOINT,
-		CA_SCALENAME,
-		CA_SCALEVISIBLE,
-		CA_SETPOINT,
-		CA_SETPOINTCOLOUR,
-		CA_SETPOINTVALUE,
+		AddPoint,
+		ClearPoints,
+		ListScales,
+		RemovePoint,
+		ScaleName,
+		ScaleVisible,
+		SetPoint,
+		SetPointColour,
+		SetPointValue,
 	
 		// Disordered build commands
-		CA_DISORDER,
-		CA_LISTCOMPONENTS,
-		CA_NMOLS,
-		CA_REGION,
-		CA_REGIONCENTRE,
-		CA_REGIONCENTREF,
-		CA_REGIONF,
-		CA_REGIONGEOMETRY,
-		CA_REGIONGEOMETRYF,
-		CA_REGIONOVERLAPS,
-		CA_REGIONSHAPE,
-		CA_VDWSCALE,
+		Disorder,
+		ListComponents,
+		NMols,
+		Region,
+		RegionCentre,
+		RegionCentreFrac,
+		RegionFrac,
+		RegionGeometry,
+		RegionGeometryFrac,
+		RegionOverlaps,
+		RegionShape,
+		VdwScale,
 	
 		// Edit commands
-		CA_COPY,
-		CA_CUT,
-		CA_DELETE,
-		CA_PASTE,
-		CA_REDO,
-		CA_UNDO,
+		Copy,
+		Cut,
+		Delete,
+		Paste,
+		Redo,
+		Undo,
 	
 		// Energy Commands
-		CA_FRAMEENERGY,
-		CA_MODELENERGY,
-		CA_PRINTELEC,
-		CA_PRINTEWALD,
-		CA_PRINTINTER,
-		CA_PRINTINTRA,
-		CA_PRINTENERGY,
-		CA_PRINTSUMMARY,
-		CA_PRINTVDW,
+		ECut,
+		Electrostatics,
+		FrameEnergy,
+		ModelEnergy,
+		PrintElec,
+		PrintEwald,
+		PrintInter,
+		PrintIntra,
+		PrintEnergy,
+		PrintSummary,
+		PrintVdw,
+		VCut,
 	
 		// Flow control
-		CA_BREAK,
-		CA_CONTINUE,
-		CA_ELSE,
-		CA_ELSEIF,
-		CA_END,
-		CA_FOR,
-		CA_GOTO,
-		CA_GOTONONIF,
-		CA_IF,
-		CA_TERMINATE,
+		Break,
+		Continue,
+		DoWhile,
+		For,
+		If,
+		Return,
+		While,
 	
 		// Force Commands
-		CA_FRAMEFORCES,
-		CA_MODELFORCES,
-		CA_PRINTFORCES,
+		FrameForces,
+		ModelForces,
+		PrintForces,
 	
 		// Forcefield/Expression Commands
-		CA_ANGLEDEF,
-		CA_BONDDEF,
-		CA_CLEARMAP,
-		CA_CREATEEXPRESSION,
-		CA_DEFAULTFF,
-		CA_EQUIVALENT,
-		CA_FFMODEL,
-		CA_FFPATTERN,
-		CA_FFPATTERNID,
-		CA_FINALISEFF,
-		CA_GENCONVERT,
-		CA_GENERATOR,
-		CA_GETFF,
-		CA_INTERDEF,
-		CA_LOADFF,
-		CA_MAP,
-		CA_NEWFF,
-		CA_PRINTSETUP,
-		CA_RULES,
-		CA_SAVEEXPRESSION,
-		CA_TORSIONDEF,
-		CA_TYPEDEF,
-		CA_TYPEMODEL,
-		CA_TYPETEST,
-		CA_UNITS,
+		AngleDef,
+		BondDef,
+		ClearMap,
+		CreateExpression,
+		DefaultFF,
+		Equivalent,
+		FFModel,
+		FFPattern,
+		FinaliseFF,
+		GenConvert,
+		Generator,
+		GetFF,
+		InterDef,
+		LoadFF,
+		Map,
+		NewFF,
+		PrintSetup,
+		Rules,
+		SaveExpression,
+		TorsionDef,
+		TypeDef,
+		TypeModel,
+		TypeTest,
+		Units,
 	
 		// Glyph commands
-		CA_AUTOELLIPSOIDS,
-		CA_AUTOPOLYHEDRA,
-		CA_GLYPHATOMF,
-		CA_GLYPHATOMR,
-		CA_GLYPHATOMV,
-		CA_GLYPHATOMSF,
-		CA_GLYPHATOMSR,
-		CA_GLYPHATOMSV,
-		CA_GLYPHCOLOUR,
-		CA_GLYPHDATA,
-		CA_GLYPHSOLID,
-		CA_GLYPHTEXT,
-		CA_NEWGLYPH,
+		AutoEllipsoids,
+		AutoPolyhedra,
+		GlyphAtomF,
+		GlyphAtomR,
+		GlyphAtomV,
+		GlyphAtomsF,
+		GlyphAtomsR,
+		GlyphAtomsV,
+		GlyphColour,
+		GlyphData,
+		GlyphSolid,
+		GlyphText,
+		NewGlyph,
 	
 		// Grid Commands
-		CA_ADDGRIDPOINT,
-		CA_ADDNEXTGRIDPOINT,
-		CA_FINALISEGRID,
-		CA_GETGRID,
-		CA_GRIDALPHA,
-		CA_GRIDAXES,
-		CA_GRIDCOLOUR,
-		CA_GRIDCOLOURNEGATIVE,
-		CA_GRIDCOLOURSCALE,
-		CA_GRIDCUBIC,
-		CA_GRIDCUTOFF,
-		CA_GRIDLOOPORDER,
-		CA_GRIDORIGIN,
-		CA_GRIDORTHO,
-		CA_GRIDSIZE,
-		CA_GRIDSTYLE,
-		CA_GRIDSYMMETRIC,
-		CA_GRIDUSEZ,
-		CA_GRIDVISIBLE,
-		CA_LOADGRID,
-		CA_NEWGRID,
+		AddGridPoint,
+		AddNextGridPoint,
+		FinaliseGrid,
+		GetGrid,
+		GridAlpha,
+		GridAxes,
+		GridColour,
+		GridColourNegative,
+		GridColourscale,
+		GridCubic,
+		GridCutoff,
+		GridLoopOrder,
+		GridOrigin,
+		GridOrtho,
+		GridSize,
+		GridStyle,
+		GridSymmetric,
+		GridUseZ,
+		LoadGrid,
+		NewGrid,
 	
 		// Image Commands
-		CA_SAVEBITMAP,
-		CA_SAVEVECTOR,
+		SaveBitmap,
+		SaveVector,
 	
 		// Labeling commands
-		CA_CLEARLABELS,
-		CA_LABEL,
-		CA_REMOVELABEL,
-		CA_REMOVELABELS,
-	
+		ClearLabels,
+		Label,
+		RemoveLabel,
+		RemoveLabels,
+
+		// Math Commands
+		Abs,
+		Cos,
+		Exp,
+		Ln,
+		Log,
+		Nint,
+		Normalise,
+		Sin,
+		Sqrt,
+		Tan,
+
 		// MC Commands
-		CA_MCACCEPT,
-		CA_MCALLOW,
-		CA_MCMAXSTEP,
-		CA_MCNTRIALS,
-		CA_PRINTMC,
+		MCAccept,
+		MCAllow,
+		MCMaxStep,
+		MCNTrials,
+		PrintMC,
 	
 		// Measurements
-		CA_ANGLE,
-		CA_ANGLES,
-		CA_CLEARMEASUREMENTS,
-		CA_DISTANCE,
-		CA_DISTANCES,
-		CA_LISTMEASUREMENTS,
-		CA_MEASURE,
-		CA_TORSION,
-		CA_TORSIONS,
+		Angle,
+		Angles,
+		ClearMeasurements,
+		Distance,
+		Distances,
+		ListMeasurements,
+		Measure,
+		Torsion,
+		Torsions,
 	
 		// Messaging
-		CA_ERROR,
-		CA_PRINT,
-		CA_VERBOSE,
-		CA_WARN,
+		Error,
+		Printf,
+		Verbose,
 	
 		// Minimisation Commands
-		CA_CGMINIMISE,
-		CA_CONVERGE,
-		CA_LINETOL,
-		CA_MCMINIMISE,
-		CA_SDMINIMISE,
-		CA_SIMPLEXMINIMISE,
+		CGMinimise,
+		Converge,
+		LineTolerance,
+		MCMinimise,
+		SDMinimise,
+		SimplexMinimise,
 		
 		// Model Commands
-		CA_CREATEATOMS,
-		CA_CURRENTMODEL,
-		CA_FINALISEMODEL,
-		CA_FIRSTMODEL,
-		CA_GETMODEL,
-		CA_INFO,
-		CA_LASTMODEL,
-		CA_LISTMODELS,
-		CA_LOADMODEL,
-		CA_LOGINFO,
-		CA_MODELTEMPLATE,
-		CA_NEWMODEL,
-		CA_NEXTMODEL,
-		CA_PREVMODEL,
-		CA_SAVEMODEL,
-		CA_SETNAME,
+		CreateAtoms,
+		CurrentModel,
+		FinaliseModel,
+		FirstModel,
+		GetModel,
+		Info,
+		LastModel,
+		ListModels,
+		LoadModel,
+		LogInfo,
+		ModelTemplate,
+		NewModel,
+		NextModel,
+		PrevModel,
+		SaveModel,
+		SetName,
 	
 		// Pattern Commands
-		CA_CLEARPATTERNS,
-		CA_CREATEPATTERNS,
-		CA_GETPATTERN,
-		CA_LISTPATTERNS,
-		CA_NEWPATTERN,
-	
-		// Preferences Commands
-		CA_ANGLELABEL,
-		CA_ATOMDETAIL,
-		CA_BONDDETAIL,
-		CA_COLOUR,
-		CA_COMMONELEMENTS,
-		CA_DENSITYUNITS,
-		CA_DISTANCELABEL,
-		CA_ECUT,
-		CA_ELEC,
-		CA_ELEMENTAMBIENT,
-		CA_ELEMENTDIFFUSE,
-		CA_ELEMENTRADIUS,
-		CA_ENERGYUNITS,
-		CA_GL,
-		CA_HDISTANCE,
-		CA_INTRA,
-		CA_KEY,
-		CA_LABELSIZE,
-		CA_LIGHT,
-		CA_LIGHTAMBIENT,
-		CA_LIGHTDIFFUSE,
-		CA_LIGHTPOSITION,
-		CA_LIGHTSPECULAR,
-		CA_MOUSE,
-		CA_RADIUS,
-		CA_REPLICATEFOLD,
-		CA_REPLICATETRIM,
-		CA_SCHEME,
-		CA_SHININESS,
-		CA_SHOWONSCREEN,
-		CA_SHOWONIMAGE,
-		CA_STYLE,
-		CA_SWAPBUFFERS,
-		CA_USENICETEXT,
-		CA_VCUT,
-		CA_VDW,
-		CA_ZOOMTHROTTLE,
+		ClearPatterns,
+		CreatePatterns,
+		GetPattern,
+		ListPatterns,
+		NewPattern,
 
 		// Read / Write Commands
-		CA_ADDREADOPTION,
-		CA_FIND,
-		CA_GETLINE,
-		CA_READCHARS,
-		CA_READFLOAT,
-		CA_READINTEGER,
-		CA_READLINE,
-		CA_READNEXT,
-		CA_READVAR,
-		CA_REMOVEREADOPTION,
-		CA_REWIND,
-		CA_SKIPCHARS,
-		CA_SKIPLINE,
-		CA_WRITELINE,
-		CA_WRITEVAR,
+		AddReadOption,
+		Eof,
+		FilterFileName,
+		Find,
+		GetLine,
+		PeekChar,
+		PeekCharI,
+		ReadChars,
+		ReadDouble,
+		ReadDoubleArray,
+		ReadInteger,
+		ReadIntegerArray,
+		ReadLine,
+		ReadLineFormatted,
+		ReadNext,
+		ReadVariable,
+		ReadVariableFormatted,
+		RemoveReadOption,
+		Rewind,
+		SkipChars,
+		SkipLine,
+		WriteLine,
+		WriteLineFormatted,
+		WriteVariable,
+		WriteVariableFormatted,
 
 		// Script Commands
-		CA_LISTSCRIPTS,
-		CA_LOADSCRIPT,
-		CA_RUNSCRIPT,
+		ListScripts,
+		LoadScript,
+		RunScript,
 
 		// Select Commands
-		CA_DESELECT,
-		CA_DESELECTTYPE,
-		CA_EXPAND,
-		CA_INVERT,
-		CA_SELECT,
-		CA_SELECTALL,
-		CA_SELECTFFTYPE,
-		CA_SELECTIONCOG,
-		CA_SELECTIONCOM,
-		CA_SELECTNONE,
-		CA_SELECTOVERLAPS,
-		CA_SELECTPATTERN,
-		CA_SELECTTYPE,
+		DeSelect,
+		DeSelectFormatted,
+		DeSelectType,
+		Expand,
+		Invert,
+		Select,
+		SelectAll,
+		SelectFFType,
+		SelectFormatted,
+		SelectInsideCell,
+		SelectionCog,
+		SelectionCom,
+		SelectNone,
+		SelectOverlaps,
+		SelectOutsideCell,
+		SelectPattern,
+		SelectType,
 
 		// Site Commands
-		CA_GETSITE,
-		CA_LISTSITES,
-		CA_NEWSITE,
-		CA_SITEAXES,
+		GetSite,
+		ListSites,
+		NewSite,
+		SiteAxes,
+
+		// String Commands
+		AfterStr,
+		AToF,
+		AToI,
+		BeforeStr,
+		Contains,
+		FToA,
+		IToA,
+		StripChars,
 
 		// System commands
-		CA_DEBUG,
-		CA_GUI,
-		CA_HELP,
-		CA_SEED,
-		CA_QUIT,
-		CA_VERSION,
+		Debug,
+		Gui,
+		Help,
+		Seed,
+		Quit,
+		Version,
 
 		// Trajectory Commands
-		CA_FINALISEFRAME,
-		CA_FIRSTFRAME,
-		CA_LASTFRAME,
-		CA_LOADTRAJECTORY,
-		CA_NEXTFRAME,
-		CA_PREVFRAME,
-		CA_SEEKFRAME,
+		AddFrame,
+		ClearTrajectory,
+		FinaliseFrame,
+		FirstFrame,
+		LastFrame,
+		LoadTrajectory,
+		NextFrame,
+		PrevFrame,
+		SeekFrame,
 
 		// Transformation Commands
-		CA_AXISROTATE,
-		CA_CENTRE,
-		CA_MATRIXCONVERT,
-		CA_MATRIXTRANSFORM,
-		CA_MIRROR,
-		CA_TRANSLATE,
-		CA_TRANSLATEATOM,
-		CA_TRANSLATECELL,
-
-		// Variables
-		CA_AFTERCHAR,
-		CA_BEFORECHAR,
-		CA_DECREASE,
-		CA_INCREASE,
-		CA_LET,
-		CA_LETCHAR,
-		CA_LETPTR,
-		CA_LETVECTOR,
-		CA_NORMALISE,
-		CA_STRIPCHARS,
+		AxisRotate,
+		Centre,
+		MatrixConvert,
+		MatrixTransform,
+		Mirror,
+		Translate,
+		TranslateAtom,
+		TranslateCell,
+		TranslateWorld,
 
 		// View
-		CA_GETVIEW,
-		CA_ORTHOGRAPHIC,
-		CA_PERSPECTIVE,
-		CA_RESETVIEW,
-		CA_ROTATEVIEW,
-		CA_SETVIEW,
-		CA_SPEEDTEST,
-		CA_TRANSLATEVIEW,
-		CA_VIEWALONG,
-		CA_VIEWALONGCELL,
-		CA_ZOOMVIEW,
-		CA_ZROTATEVIEW,
+		GetView,
+		Orthographic,
+		Perspective,
+		ResetView,
+		RotateView,
+		SetView,
+		SpeedTest,
+		TranslateView,
+		ViewAlong,
+		ViewAlongCell,
+		ZoomView,
+		ZRotateView,
 
-		CA_NITEMS
+		nCommands
 	};
 	// Return enumerated command id from string
 	Command::Function command(const char*);
@@ -516,425 +515,435 @@ class Command {
 	// Function declarations
 	*/
 	private:
-	// All command functions
-	static int function_CA_ROOTNODE(CommandNode *&c, Bundle &obj);
+	// AST-specific commands
+	static bool function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Analyse commands
-	static int function_CA_FINALISE(CommandNode *&c, Bundle &obj);
-	static int function_CA_FRAMEANALYSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GEOMETRY(CommandNode *&c, Bundle &obj);	
-	static int function_CA_MODELANALYSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_PDENS(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTJOBS(CommandNode *&c, Bundle &obj);
-	static int function_CA_RDF(CommandNode *&c, Bundle &obj);
-	static int function_CA_SAVEQUANTITIES(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRAJANALYSE(CommandNode *&c, Bundle &obj);
+	static bool function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Geometry(CommandNode *c, Bundle &obj, ReturnValue &rv);	
+	static bool function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintJobs(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RDF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveQuantities(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Atom Commands
-	static int function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETATOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_HIDE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETCOORDS(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETCHARGE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETELEMENT(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETFORCES(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETFX(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETFY(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETFZ(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETID(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETRX(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETRY(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETRZ(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETVELOCITIES(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETVX(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETVY(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETVZ(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHOW(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHOWALL(CommandNode *&c, Bundle &obj);
+	static bool function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Bond commands
-	static int function_CA_AUGMENT(CommandNode *&c, Bundle &obj);
-	static int function_CA_BONDTOLERANCE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARSELECTEDBONDS(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWBOND(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWBONDID(CommandNode *&c, Bundle &obj);
-	static int function_CA_REBOND(CommandNode *&c, Bundle &obj);
-	static int function_CA_REBONDPATTERNS(CommandNode *&c, Bundle &obj);
-	static int function_CA_REBONDSELECTION(CommandNode *&c, Bundle &obj);
+	static bool function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewBondId(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Build commands
-	static int function_CA_ADDHYDROGEN(CommandNode *&c, Bundle &obj);
-	static int function_CA_BOHR(CommandNode *&c, Bundle &obj);
-	static int function_CA_CHAIN(CommandNode *&c, Bundle &obj);
-	static int function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj);
-	static int function_CA_INSERTATOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOCATE(CommandNode *&c, Bundle &obj);
-	static int function_CA_MOVE(CommandNode *&c, Bundle &obj);
-	static int function_CA_MOVETOEND(CommandNode *&c, Bundle &obj);
-	static int function_CA_MOVETOSTART(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWATOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj);
-	static int function_CA_REORDER(CommandNode *&c, Bundle &obj);
-	static int function_CA_RESETPEN(CommandNode *&c, Bundle &obj);
-	static int function_CA_ROTX(CommandNode *&c, Bundle &obj);
-	static int function_CA_ROTY(CommandNode *&c, Bundle &obj);
-	static int function_CA_ROTZ(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHIFTDOWN(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHIFTUP(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj);
+	static bool function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Chain(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_EndChain(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Locate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Move(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MoveToEnd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MoveToStart(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ResetPen(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Cell commands
-	static int function_CA_ADDGENERATOR(CommandNode *&c, Bundle &obj);
-	static int function_CA_ADJUSTCELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_CELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_CELLAXES(CommandNode *&c, Bundle &obj);
-	static int function_CA_FOLD(CommandNode *&c, Bundle &obj);
-	static int function_CA_FOLDMOLECULES(CommandNode *&c, Bundle &obj);
-	static int function_CA_FRACTOREAL(CommandNode *&c, Bundle &obj);
-	static int function_CA_NOCELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_PACK(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTCELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_REPLICATE(CommandNode *&c, Bundle &obj);
-	static int function_CA_ROTATECELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_SCALE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SCALEMOLECULES(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETCELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_SPACEGROUP(CommandNode *&c, Bundle &obj);
+	static bool function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Charge commands
-	static int function_CA_CHARGEFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_CHARGEFROMMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_CHARGEPATOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_CHARGE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CHARGETYPE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARCHARGES(CommandNode *&c, Bundle &obj);
+	static bool function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargeFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargeFromModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargePAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ChargeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearCharges(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Colourscale commands
-	static int function_CA_ADDPOINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARPOINTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTSCALES(CommandNode *&c, Bundle &obj);
-	static int function_CA_REMOVEPOINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_SCALENAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_SCALEVISIBLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETPOINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETPOINTCOLOUR(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETPOINTVALUE(CommandNode *&c, Bundle &obj);
+	static bool function_AddPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearPoints(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListScales(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPointColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetPointValue(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Disordered build commands
-	static int function_CA_DISORDER(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTCOMPONENTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_NMOLS(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGION(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONCENTRE(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONCENTREF(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONF(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONGEOMETRY(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONGEOMETRYF(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONOVERLAPS(CommandNode *&c, Bundle &obj);
-	static int function_CA_REGIONSHAPE(CommandNode *&c, Bundle &obj);
-	static int function_CA_VDWSCALE(CommandNode *&c, Bundle &obj);
+	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Region(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionCentre(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionShape(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Edit commands
-	static int function_CA_COPY(CommandNode *&c, Bundle &obj);
-	static int function_CA_CUT(CommandNode *&c, Bundle &obj);
-	static int function_CA_DELETE(CommandNode *&c, Bundle &obj);
-	static int function_CA_PASTE(CommandNode *&c, Bundle &obj);
-	static int function_CA_REDO(CommandNode *&c, Bundle &obj);
-	static int function_CA_UNDO(CommandNode *&c, Bundle &obj);
+	static bool function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Energy Commands
-	static int function_CA_FRAMEENERGY(CommandNode *&c, Bundle &obj);
-	static int function_CA_MODELENERGY(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTELEC(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTEWALD(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTINTER(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTINTRA(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTENERGY(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTSUMMARY(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTVDW(CommandNode *&c, Bundle &obj);
+	static bool function_ECut(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintElec(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintEwald(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintInter(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintIntra(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Filter Commands
-	static int function_CA_EXACT(CommandNode *&c, Bundle &obj);
-	static int function_CA_EXTENSION(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLOB(CommandNode *&c, Bundle &obj);
-	static int function_CA_ID(CommandNode *&c, Bundle &obj);
-	static int function_CA_NAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_NICKNAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_ZMAP(CommandNode *&c, Bundle &obj);
+	static bool function_Exact(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Extension(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Glob(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Id(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Name(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Nickname(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Zmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Flow control
-	static int function_CA_BREAK(CommandNode *&c, Bundle &obj);
-	static int function_CA_CONTINUE(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELSEIF(CommandNode *&c, Bundle &obj);
-	static int function_CA_END(CommandNode *&c, Bundle &obj);
-	static int function_CA_FOR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GOTO(CommandNode *&c, Bundle &obj);
-	static int function_CA_GOTONONIF(CommandNode *&c, Bundle &obj);
-	static int function_CA_IF(CommandNode *&c, Bundle &obj);
-	static int function_CA_TERMINATE(CommandNode *&c, Bundle &obj);
+	static bool function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_For(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_If(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_While(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Force Commands
-	static int function_CA_FRAMEFORCES(CommandNode *&c, Bundle &obj);
-	static int function_CA_MODELFORCES(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTFORCES(CommandNode *&c, Bundle &obj);
+	static bool function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Forcefield Commands
-	static int function_CA_ANGLEDEF(CommandNode *&c, Bundle &obj);
-	static int function_CA_BONDDEF(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARMAP(CommandNode *&c, Bundle &obj);
-	static int function_CA_CREATEEXPRESSION(CommandNode *&c, Bundle &obj);
-	static int function_CA_DEFAULTFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_EQUIVALENT(CommandNode *&c, Bundle &obj);
-	static int function_CA_FINALISEFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_FFMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_FFPATTERN(CommandNode *&c, Bundle &obj);
-	static int function_CA_FFPATTERNID(CommandNode *&c, Bundle &obj);
-	static int function_CA_GENCONVERT(CommandNode *&c, Bundle &obj);
-	static int function_CA_GENERATOR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_INTERDEF(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOADFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_MAP(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTSETUP(CommandNode *&c, Bundle &obj);
-	static int function_CA_RULES(CommandNode *&c, Bundle &obj);
-	static int function_CA_SAVEEXPRESSION(CommandNode *&c, Bundle &obj);
-	static int function_CA_TORSIONDEF(CommandNode *&c, Bundle &obj);
-	static int function_CA_TYPEDEF(CommandNode *&c, Bundle &obj);
-	static int function_CA_TYPEMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_TYPETEST(CommandNode *&c, Bundle &obj);
-	static int function_CA_UNITS(CommandNode *&c, Bundle &obj);
+	static bool function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Generator(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Units(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Glyph commands
-	static int function_CA_AUTOELLIPSOIDS(CommandNode *&c, Bundle &obj);
-	static int function_CA_AUTOPOLYHEDRA(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMF(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMV(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMSF(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMSR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHATOMSV(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHCOLOUR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHDATA(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHSOLID(CommandNode *&c, Bundle &obj);
-	static int function_CA_GLYPHTEXT(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWGLYPH(CommandNode *&c, Bundle &obj);
+	static bool function_AutoEllipsoids(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AutoPolyhedra(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphSolid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphText(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Grid Commands
-	static int function_CA_ADDGRIDPOINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_ADDNEXTGRIDPOINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETGRID(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDALPHA(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDAXES(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDCOLOUR(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDCOLOURNEGATIVE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDCOLOURSCALE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDCUBIC(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDCUTOFF(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDORTHO(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDLOOPORDER(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDORIGIN(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDSIZE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDSTYLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj);
-	static int function_CA_GRIDVISIBLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOADGRID(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWGRID(CommandNode *&c, Bundle &obj);
+	static bool function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridSize(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Image Commands
-	static int function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj);
-	static int function_CA_SAVEVECTOR(CommandNode *&c, Bundle &obj);
+	static bool function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Labeling commands
-	static int function_CA_CLEARLABELS(CommandNode *&c, Bundle &obj);
-	static int function_CA_LABEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_REMOVELABELS(CommandNode *&c, Bundle &obj);
+	static bool function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Math Commands
+	static bool function_Abs(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Ln(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Log(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Nint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Normalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Sin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Sqrt(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Tan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MC Commands
-	static int function_CA_MCACCEPT(CommandNode *&c, Bundle &obj);
-	static int function_CA_MCALLOW(CommandNode *&c, Bundle &obj);
-	static int function_CA_MCMAXSTEP(CommandNode *&c, Bundle &obj);
-	static int function_CA_MCNTRIALS(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINTMC(CommandNode *&c, Bundle &obj);
+	static bool function_MCAccept(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCAllow(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Measurements
-	static int function_CA_ANGLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_ANGLES(CommandNode *&c, Bundle &obj);
-	static int function_CA_CLEARMEASUREMENTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_DISTANCE(CommandNode *&c, Bundle &obj);
-	static int function_CA_DISTANCES(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTMEASUREMENTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_MEASURE(CommandNode *&c, Bundle &obj);
-	static int function_CA_TORSION(CommandNode *&c, Bundle &obj);
-	static int function_CA_TORSIONS(CommandNode *&c, Bundle &obj);
+	static bool function_Angle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Angles(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Distance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Distances(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Messaging
-	static int function_CA_ERROR(CommandNode *&c, Bundle &obj);
-	static int function_CA_PRINT(CommandNode *&c, Bundle &obj);
-	static int function_CA_VERBOSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_WARN(CommandNode *&c, Bundle &obj);
+	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands
-	static int function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CONVERGE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LINETOL(CommandNode *&c, Bundle &obj);
-	static int function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SIMPLEXMINIMISE(CommandNode *&c, Bundle &obj);
+	static bool function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Model Commands
-	static int function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj);
-	static int function_CA_CURRENTMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_FIRSTMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_INFO(CommandNode *&c, Bundle &obj);
-	static int function_CA_LASTMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTMODELS(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOADMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOGINFO(CommandNode *&c, Bundle &obj);
-	static int function_CA_MODELTEMPLATE(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEXTMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_PREVMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_SAVEMODEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETNAME(CommandNode *&c, Bundle &obj);
+	static bool function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LastModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListModels(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Pattern Commands
-	static int function_CA_CLEARPATTERNS(CommandNode *&c, Bundle &obj);
-	static int function_CA_CREATEPATTERNS(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETPATTERN(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTPATTERNS(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWPATTERN(CommandNode *&c, Bundle &obj);
-	// Preferences Commands
-	static int function_CA_ANGLELABEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_ATOMDETAIL(CommandNode *&c, Bundle &obj);
-	static int function_CA_BONDDETAIL(CommandNode *&c, Bundle &obj);
-	static int function_CA_COLOUR(CommandNode *&c, Bundle &obj);
-	static int function_CA_COMMONELEMENTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_DENSITYUNITS(CommandNode *&c, Bundle &obj);
-	static int function_CA_DISTANCELABEL(CommandNode *&c, Bundle &obj);
-	static int function_CA_ECUT(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELEC(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELEMENTAMBIENT(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELEMENTDIFFUSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_ELEMENTRADIUS(CommandNode *&c, Bundle &obj);
-	static int function_CA_ENERGYUNITS(CommandNode *&c, Bundle &obj);
-	static int function_CA_HDISTANCE(CommandNode *&c, Bundle &obj);
-	static int function_CA_INTRA(CommandNode *&c, Bundle &obj);
-	static int function_CA_GL(CommandNode *&c, Bundle &obj);
-	static int function_CA_KEY(CommandNode *&c, Bundle &obj);
-	static int function_CA_MOUSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LABELSIZE(CommandNode *&c, Bundle &obj);
-	static int function_CA_RADIUS(CommandNode *&c, Bundle &obj);
-	static int function_CA_REPLICATEFOLD(CommandNode *&c, Bundle &obj);
-	static int function_CA_REPLICATETRIM(CommandNode *&c, Bundle &obj);
-	static int function_CA_SCHEME(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHININESS(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHOWONSCREEN(CommandNode *&c, Bundle &obj);
-	static int function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj);
-	static int function_CA_STYLE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SWAPBUFFERS(CommandNode *&c, Bundle &obj);
-	static int function_CA_USENICETEXT(CommandNode *&c, Bundle &obj);
-	static int function_CA_VCUT(CommandNode *&c, Bundle &obj);
-	static int function_CA_VDW(CommandNode *&c, Bundle &obj);
-	static int function_CA_ZOOMTHROTTLE(CommandNode *&c, Bundle &obj);
+	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Read / Write Commands
-	static int function_CA_ADDREADOPTION(CommandNode *&c, Bundle &obj);
-	static int function_CA_FIND(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETLINE(CommandNode *&c, Bundle &obj);
-	static int function_CA_READCHARS(CommandNode *&c, Bundle &obj);
-	static int function_CA_READFLOAT(CommandNode *&c, Bundle &obj);
-	static int function_CA_READINTEGER(CommandNode *&c, Bundle &obj);
-	static int function_CA_READLINE(CommandNode *&c, Bundle &obj);
-	static int function_CA_READNEXT(CommandNode *&c, Bundle &obj);
-	static int function_CA_READVAR(CommandNode *&c, Bundle &obj);
-	static int function_CA_REMOVEREADOPTION(CommandNode *&c, Bundle &obj);
-	static int function_CA_REWIND(CommandNode *&c, Bundle &obj);
-	static int function_CA_SKIPCHARS(CommandNode *&c, Bundle &obj);
-	static int function_CA_SKIPLINE(CommandNode *&c, Bundle &obj);
-	static int function_CA_WRITELINE(CommandNode *&c, Bundle &obj);
-	static int function_CA_WRITEVAR(CommandNode *&c, Bundle &obj);
+	static bool function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FilterFileName(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadDouble(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadDoubleArray(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadInteger(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadIntegerArray(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadVariable(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReadVariableFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveReadOption(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Rewind(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SkipChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SkipLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteLineFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteVariable(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_WriteVariableFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Script Commands
-	static int function_CA_LISTSCRIPTS(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOADSCRIPT(CommandNode *&c, Bundle &obj);
-	static int function_CA_RUNSCRIPT(CommandNode *&c, Bundle &obj);
+	static bool function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Select Commands
-	static int function_CA_DESELECT(CommandNode *&c, Bundle &obj);
-	static int function_CA_DESELECTTYPE(CommandNode *&c, Bundle &obj);
-	static int function_CA_EXPAND(CommandNode *&c, Bundle &obj);
-	static int function_CA_INVERT(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECT(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTALL(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTFFTYPE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTIONCOG(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTIONCOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTNONE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTOVERLAPS(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTPATTERN(CommandNode *&c, Bundle &obj);
-	static int function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj);
+	static bool function_DeSelect(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeSelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Select(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Site Commands
-	static int function_CA_GETSITE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LISTSITES(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEWSITE(CommandNode *&c, Bundle &obj);
-	static int function_CA_SITEAXES(CommandNode *&c, Bundle &obj);
+	static bool function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// String Commands
+	static bool function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
-	static int function_CA_DEBUG(CommandNode *&c, Bundle &obj);
-	static int function_CA_GUI(CommandNode *&c, Bundle &obj);
-	static int function_CA_SEED(CommandNode *&c, Bundle &obj);
-	static int function_CA_HELP(CommandNode *&c, Bundle &obj);
-	static int function_CA_QUIT(CommandNode *&c, Bundle &obj);
-	static int function_CA_VERSION(CommandNode *&c, Bundle &obj);
+	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Trajectory Commands
-	static int function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_LASTFRAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_LOADTRAJECTORY(CommandNode *&c, Bundle &obj);
-	static int function_CA_NEXTFRAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_PREVFRAME(CommandNode *&c, Bundle &obj);
-	static int function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj);
+	static bool function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Transform Commands
-	static int function_CA_AXISROTATE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CENTRE(CommandNode *&c, Bundle &obj);
-	static int function_CA_MATRIXCONVERT(CommandNode *&c, Bundle &obj);
-	static int function_CA_MATRIXTRANSFORM(CommandNode *&c, Bundle &obj);
-	static int function_CA_MIRROR(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRANSLATE(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj);
-	// Variables
-	static int function_CA_AFTERCHAR(CommandNode *&c, Bundle &obj);
-	static int function_CA_BEFORECHAR(CommandNode *&c, Bundle &obj);
-	static int function_CA_DECREASE(CommandNode *&c, Bundle &obj);
-	static int function_CA_INCREASE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LET(CommandNode *&c, Bundle &obj);
-	static int function_CA_LETCHAR(CommandNode *&c, Bundle &obj);
-	static int function_CA_LETPTR(CommandNode *&c, Bundle &obj);
-	static int function_CA_LETVECTOR(CommandNode *&c, Bundle &obj);
-	static int function_CA_NORMALISE(CommandNode *&c, Bundle &obj);
-	static int function_CA_STRIPCHARS(CommandNode *&c, Bundle &obj);
+	static bool function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Variable Operators
+	static bool function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAnd(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignment(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentPlus(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorAssignmentSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorGreaterThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorGreaterThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorLessThan(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorMultiply(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNegate(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNot(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorNotEqualTo(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorOr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPostfixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPostfixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPower(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPrefixDecrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// View
-	static int function_CA_GETVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_LIGHT(CommandNode *&c, Bundle &obj);
-	static int function_CA_LIGHTAMBIENT(CommandNode *&c, Bundle &obj);
-	static int function_CA_LIGHTDIFFUSE(CommandNode *&c, Bundle &obj);
-	static int function_CA_LIGHTPOSITION(CommandNode *&c, Bundle &obj);
-	static int function_CA_LIGHTSPECULAR(CommandNode *&c, Bundle &obj);
-	static int function_CA_ORTHOGRAPHIC(CommandNode *&c, Bundle &obj);
-	static int function_CA_PERSPECTIVE(CommandNode *&c, Bundle &obj);
-	static int function_CA_RESETVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_ROTATEVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_SETVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_SPEEDTEST(CommandNode *&c, Bundle &obj);
-	static int function_CA_TRANSLATEVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_VIEWALONG(CommandNode *&c, Bundle &obj);
-	static int function_CA_VIEWALONGCELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_ZOOMVIEW(CommandNode *&c, Bundle &obj);
-	static int function_CA_ZROTATEVIEW(CommandNode *&c, Bundle &obj);
+	static bool function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ViewAlong(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
 
 	/*
 	// Function descriptions / syntax etc.
 	*/
 	private:
 	// Function pointers
-	CommandFunction pointers_[CA_NITEMS];
-	// Dummy CommandList for use with non-flow call() function
-	CommandList *dummyCommandList_;
-	// Dummy CommandNode (owned by dummyCommandList_)
-	CommandNode *dummyCommandNode_;
+	CommandFunction pointers_[Command::nCommands];
 
 	public:
 	// Function data
-	static CommandData data[CA_NITEMS];
+	static CommandData data[Command::nCommands];
 	// Initialise function pointers
 	void initPointers();
 	// Execute specified command
-	int call(Command::Function cf, CommandNode *&c);
-	int call(Command::Function cf);
+	bool call(Command::Function cf, CommandNode *node, ReturnValue &rv);
 };
 
 // External declaration
 extern Command commands;
 
 #endif
+

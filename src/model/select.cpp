@@ -324,7 +324,7 @@ void Model::deselectElement(int el, bool markonly)
 }
 
 // Select all atoms which match the provided type
-void Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
+int Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
 {
 	msg.enter("Model::selectType");
 	Atomtype testat;
@@ -333,7 +333,7 @@ void Model::selectType(int element, const char *typedesc, bool markonly, bool de
 	{
 		msg.print("Failed to create type description.\n");
 		msg.exit("Model::selectType");
-		return;
+		return 0;
 	}
 	int count = 0, matchscore = 0, atomscore, n;
 	// Prepare for typing
@@ -362,6 +362,7 @@ void Model::selectType(int element, const char *typedesc, bool markonly, bool de
 	// Write results
 	msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
 	msg.exit("Model::selectType");
+	return count;
 }
 
 // Select with bounding Sphere
@@ -428,6 +429,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	msg.enter("Model::selectOverlaps");
 	Atom *i, *j;
 	double deltar;
+	int count = 0;
 	selectNone(markonly);
 	for (i = atoms_.first(); i != atoms_.last(); i = i->next)
 	{
@@ -437,10 +439,77 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 			deltar = cell_.distance(i, j);
 			if (deltar < tolerance)
 			{
-				msg.print("Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
+				msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
+				++count;
 				selectAtom(j, markonly);
 			}
 		}
 	}
+	msg.print("%i overlapping atoms selected.\n", count);
 	msg.exit("Model::selectOverlaps");
+}
+
+
+// Select atoms (or molecule COGs) inside of the current unit cell
+void Model::selectInsideCell(bool moleculecogs, bool markonly)
+{
+	msg.enter("Model::selectInsideCell");
+	Vec3<double> pos;
+	// If using molecule COGs, need a valid pattern definition
+	if (moleculecogs)
+	{
+		autocreatePatterns();
+		int m,n,id = 0;
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		{
+			for (m=0; m<p->nMolecules(); ++m)
+			{
+				// Get COG of molecule
+				pos = cell_.realToFrac(p->calculateCog(m));
+				if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				id += p->nAtoms();
+			}
+		}
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			pos = cell_.realToFrac(i->r());
+			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
+		}
+	}
+	msg.exit("Model::selectInsideCell");
+}
+
+// Select atoms (or molecule COGs) outside of the current unit cell
+void Model::selectOutsideCell(bool moleculecogs, bool markonly)
+{
+	msg.enter("Model::selectOutsideCell");
+	Vec3<double> pos;
+	// If using molecule COGs, need a valid pattern definition
+	if (moleculecogs)
+	{
+		autocreatePatterns();
+		int m,n,id = 0;
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+		{
+			for (m=0; m<p->nMolecules(); ++m)
+			{
+				// Get COG of molecule
+				pos = cell_.realToFrac(p->calculateCog(m));
+				if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				id += p->nAtoms();
+			}
+		}
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			pos = cell_.realToFrac(i->r());
+			if ((pos.x > 1) || (pos.y > 1) || (pos.z > 1)) selectAtom(i, markonly);
+		}
+	}
+	msg.exit("Model::selectOutsideCell");
 }

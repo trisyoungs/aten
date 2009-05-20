@@ -38,6 +38,7 @@ void AtenLoadModel::setControls()
 	ui.LoadModelCentreCombo->setCurrentIndex( prefs.centreOnLoad() );
 	ui.LoadModelFoldCombo->setCurrentIndex( prefs.foldOnLoad() );
 	ui.LoadModelPackCombo->setCurrentIndex( prefs.packOnLoad() );
+	ui.LoadModelZMappingCombo->setCurrentIndex( prefs.zMapType() );
 }
 
 // Finalise GUI
@@ -63,7 +64,7 @@ void AtenLoadModel::on_LoadModelEdit_returnPressed()
 void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten.workDir());
-	Filter *f;
+	Refitem<Tree,int> *ri;
 	static char s[512], *c;
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), gui.mainWindow->loadModelFilters, &selFilter));
@@ -74,13 +75,11 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	currentDirectory_ = s;
 	ui.LoadModelEdit->setText(selectedFilename_.get());
 	// Find the corresponding Aten filter that was selected
-	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
-		if (strcmp(f->description(),qPrintable(selFilter)) == 0) break;
-	selectedFilter_ = f;
+	selectedFilter_ = aten.findFilterByDescription(FilterData::ModelImport, qPrintable(selFilter));
 }
 
 // Return the selected filter
-Filter *AtenLoadModel::selectedFilter()
+Tree *AtenLoadModel::selectedFilter()
 {
 	return selectedFilter_;
 }
@@ -109,4 +108,9 @@ void AtenLoadModel::on_LoadModelPackCombo_activated(int index)
 void AtenLoadModel::on_LoadModelCentreCombo_activated(int index)
 {
 	prefs.setCentreOnLoad( (Prefs::FilterSwitch) index );
+}
+
+void AtenLoadModel::on_LoadModelZMappingCombo_activated(int index)
+{
+	prefs.setZMapType( (ElementMap::ZMapType) index );
 }

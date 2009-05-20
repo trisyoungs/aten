@@ -45,7 +45,6 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	// Set new axes 
 	cell_.set(lengths, angles);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -66,7 +65,6 @@ void Model::setCell(Mat3<double> axes)
 	// Set new axes 
 	cell_.set(axes);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -87,7 +85,6 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	calculateDensity();
-	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -96,6 +93,27 @@ void Model::setCell(Cell::CellParameter cp, double value)
 		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[parameter]");
+}
+
+// Set cell (other Cell pointer)
+void Model::setCell(Cell *newcell)
+{
+	if (newcell == NULL) printf("Warning: NULL Cell pointer passed to Model::setCell().\n");
+	else
+	{
+		Vec3<double> oldlengths = cell_.lengths();
+		Vec3<double> oldangles = cell_.angles();
+		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
+		cell_ = *newcell;
+		calculateDensity();
+		// Add the change to the undo state (if there is one)
+		if (recordingState_ != NULL)
+		{
+			CellEvent *newchange = new CellEvent;
+			newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
+			recordingState_->addEvent(newchange);
+		}
+	}
 }
 
 // Remove cell
@@ -160,6 +178,61 @@ void Model::foldAllMolecules()
 	msg.exit("Model::foldAllMolecules");
 }
 
+// Set spacegroup info
+void Model::setSpacegroup(const char *sg)
+{
+	msg.enter("Model::setSpacegroup");
+	// This is basically a chunk of verbatim code from 'sgquick.c'
+
+	// Do a table lookup of the sg text (assume volume is 'A')
+	const T_TabSgName *tsgn = FindTabSgNameEntry(sg, 'A');
+	if (tsgn == NULL)
+	{
+		msg.print("Unable to find spacegroup '%s'.\n", sg);
+		msg.exit("Model::setSpacegroup");
+		return;
+	}
+	// Check for hexagonal basis, and whether to force rhombohedral basis
+	if (strcmp(tsgn->Extension, "H") == 0)
+	{
+		if (!prefs.forceRhombohedral()) msg.print("Warning: Spacegroup has hexagonal basis.\n");
+		else
+		{
+			Dnchar newname(128);
+			newname = tsgn->SgLabels;
+			newname.cat(":R");
+			tsgn = FindTabSgNameEntry(newname.get(), 'A');
+			if (tsgn == NULL)
+			{
+				msg.print("Unable to find spacegroup '%s'.\n", sg);
+				msg.exit("Model::setSpacegroup");
+				return;
+			}
+			msg.print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
+		}
+	}
+	cell_.setSpacegroupId(tsgn->SgNumber);
+	cell_.setSpacegroup(tsgn->HallSymbol);	
+
+	// Initialize the SgInfo structure
+	InitSgInfo(&spacegroup_);
+	spacegroup_.TabSgName = tsgn;
+	
+	// Translate the Hall symbol and generate the whole group
+	ParseHallSymbol(tsgn->HallSymbol, &spacegroup_);
+	if (SgError != NULL) return;
+	
+	/* Do some book-keeping and derive crystal system, point group,
+	and - if not already set - find the entry in the internal
+	table of space group symbols
+	*/
+	int i = CompleteSgInfo(&spacegroup_);
+
+	msg.print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
+
+	msg.exit("Model::setSpacegroup");
+}
+
 // Apply individual symmetry generator to current atom selection
 void Model::pack(Generator *gen)
 {
@@ -173,7 +246,7 @@ void Model::pack(Generator *gen)
 		msg.enter("Model::pack[generator]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", gen->name, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s'\n", gen->name());
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -182,11 +255,11 @@ void Model::pack(Generator *gen)
 	for (Atom *i = atoms_[oldnatoms]; i != NULL; i = i->next)
 	{
 		// Get the position of the newly-pasted atom
-		newr = i->r();
+		newr = cell_.realToFrac(i->r());
 		// Apply the rotation and translation
-		newr *= gen->rotation;
-		newr +=  cell_.transpose() * gen->translation;
-		i->r() = newr;
+		newr *= gen->matrix();
+// 		newr +=  cell_.transpose() * gen->translation;
+		i->r() = cell_.fracToReal(newr);
 		cell_.fold(i, this);
 	}
 	msg.exit("Model::pack[generator]");
@@ -196,25 +269,37 @@ void Model::pack(Generator *gen)
 void Model::pack()
 {
 	msg.enter("Model::pack");
-	int sg = cell_.spacegroup();
-	int ngen = cell_.nGenerators();
-	if ((sg == 0) && (ngen == 0))
+	// Spacegroup should already have been set by a successful call to Model::setSpacegroup()
+	if ((cell_.spacegroupId() == 0) && (cell_.nGenerators() == 0))
 	{
-		msg.print("No spacegroup defined in model - no packing will be performed.\n");
+		msg.print("Crystal packing cannot be performed - no spacegroup set in model and no custom generators defined.\n");
 		msg.exit("Model::pack");
 		return;
 	}
-	// Mark all atoms in model
+	// Generators work on the current selection, so select all atoms currently in the cell
 	selectAll(TRUE);
-	if (sg != 0)
+	if (cell_.spacegroupId() != 0)
 	{
-		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(sg));
-		for (int n=0; n<spacegroups.nGenerators(sg); n++) pack(&generators.generator(spacegroups.generator(sg, n)));
+		msg.print("Packing cell from previous spacegroup definition.\n");
+		Generator gen;
+		// Loop over the Seitz matrix definitions in the SGInfo structure
+		for (int n=0; n<spacegroup_.nList; ++n)
+		{
+			// Create a generator from the Seitz matrix data
+			gen.set(spacegroup_.ListSeitzMx[n].a);
+			pack(&gen);
+			// Perform inversion 
+			if (spacegroup_.Centric == -1)
+			{
+				gen.negateMatrix();
+				pack(&gen);
+			}
+		}
 	}
 	else
 	{
-		msg.print("Packing cell from manually-defined generator list...\n");
-		for (Refitem<Generator,int> *ri = cell_.generators(); ri != NULL; ri = ri->next) pack(ri->item);
+	 	msg.print("Packing cell from manually-defined generator list...\n");
+		for (Generator *g = cell_.generators(); g != NULL; g = g->next) pack(g);
 	}
 	// Select overlapping atoms and delete
 	selectOverlaps(0.1, TRUE);
@@ -457,4 +542,31 @@ void Model::fracToReal()
 	msg.enter("Model::fracToReal");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
 	msg.exit("Model::fracToReal");
+}
+
+// Calculate the density of the system (if periodic)
+void Model::calculateDensity()
+{
+	msg.enter("Model::calculateDensity");
+	if (cell_.type() != Cell::NoCell)
+	{
+		// Calculate density in the units specified by prefs.density_internal
+		switch (prefs.densityUnit())
+		{
+			case (Prefs::GramsPerCm):
+				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
+				break;
+			case (Prefs::AtomsPerAngstrom):
+				density_ = atoms_.nItems() / cell_.volume();
+				break;
+		}
+	}
+	else density_ = -1.0;
+	msg.exit("Model::calculateDensity");
+}
+
+// Return the density of the model
+double Model::density() const
+{
+	return density_;
 }

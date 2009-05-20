@@ -1,136 +1,125 @@
-# Crystallographic Information File (cif)
-# Last modified: 10/11/2008
+# Crystallographic Information File (cif) (for v1.2+)
+# Created:	 10/04/2009
+# Last modified: 10/04/2009
 # ChangeLog:
-#	10/11/2008 - Added id.
-#	04/10/2008 - Format delimiter reverted from '%' to '@'.
-#	21/09/2008 - Adjusted to use new data access rules.
-#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
 
-importmodel
-	name "Crystallographic Information File"
-	nickname cif
-	extension cif
-	glob *.cif
-	id 8
-
+filter(type="importmodel", name="Crystallographic Information File", nickname="cif", extension="cif", glob="*.cif", id=8)
+{
 	# CIF files are dictionary-based, so we can recognise keywords as we find them.
 	# Loops are a little more complicated. For these we will build up a custom format string
 	# and then use it to read in the data once the loop definitions are finished.
 
 	# Variables
-	character discard,format,e,data,keywd,line,char,looptype,gen
-	integer n,m,cellspec
-	real rx,ry,rz
-	real a,b,c,alpha,beta,gamma
+	string discard,data,keywd,line,char,looptype,args[50];
+	int n,arg,cellspec,id_r[3],id_e,id_gen,nread;
+	double length[3],cellangle[3];
 
 	# Blank lines are significant, so don't skip them, and recognise quoting
-	removereadoption skipblanks
-	addreadoption usequotes
+	removereadoption("skipblanks");
+	addreadoption("usequotes");
 
-	newmodel CifModel
-	$cellspec = 0
+	model m = newmodel("CifModel");
+	cellspec = 0;
 
 	# Main loop - read lines and check for important keywords
-	for $n
-		readline "$keywd $data"
-		#print "Keyword = $keywd"
-		if $keywd = "_chemical_name_common"
-			setname $data
-		elseif $keywd = "_cell_length_a"
-			$a = $data
-			inc $cellspec
-		elseif $keywd = "_cell_length_b"
-			$b = $data
-			inc $cellspec
-		elseif $keywd = "_cell_length_c"
-			$c = $data
-			inc $cellspec
-		elseif $keywd = "_cell_angle_alpha"
-			$alpha = $data
-			inc $cellspec
-		elseif $keywd = "_cell_angle_beta"
-			$beta = $data
-			inc $cellspec
-		elseif $keywd = "_cell_angle_gamma"
-			$gamma = $data
-			inc $cellspec
-		elseif $keywd = "_symmetry_space_group_name_H-M"
-			# Strip spaces from name (which can sometimes be inserted by other programs)
-			stripchars $data " "
-			spacegroup $data
-		elseif $keywd = "loop_"
+	while (!eof())
+	{
+		readline(keywd,data);
+		#printf("Main keyword = %s\n", keywd);
+		if (keywd == "_chemical_name_common") setname(data);
+		else if (keywd == "_cell_length_a") { length[1] = atof(data); cellspec++; }
+		else if (keywd == "_cell_length_b") { length[2] = atof(data); cellspec++; }
+		else if (keywd == "_cell_length_c") { length[3] = atof(data); cellspec++; }
+		else if (keywd == "_cell_angle_alpha") { cellangle[1] = atof(data); cellspec++; }
+		else if (keywd == "_cell_angle_beta") { cellangle[2] = atof(data); cellspec++; }
+		else if (keywd == "_cell_angle_gamma") { cellangle[3] = atof(data); cellspec++; }
+		# Spacegroup name - strip spaces which are sometimes be inserted by other programs
+		else if (keywd == "_symmetry_space_group_name_H-M") spacegroup(stripchars(data," "));
+		# Loops
+		else if (keywd == "loop_")
+		{
 			# Deal with loops here
-			# Clear any previous format and looptype
-			$format = ""
-			$looptype = "none"
-			# Loop over next lines to determine the data to expect
-			for $m
+			n = 0;
+			looptype = "none";
+			# Loop over next lines to determine the data to expect. When we discover a data item we're interested in,
+			# store the number of the column.
+			while (1)
+			{
 				# Read and store whole line (we may need it later)
-				getline $line
+				getline(line);
+				#printf("Current line is '%s'\n", line);
 				# Get keyword from line
-				readvar $line "$keywd"
+				readvar(line,keywd);
+				#printf("Keyword is now '%s'\n", keywd);
 				# Get first character and next 9 characters
-				readvar $keywd "$char@1 $data@9"
+				readvarf(keywd,"%1s%9s",char,data);
+				if (char == "_") ++n;
+				#printf("In the loop - line is %i\n", n);
 				# If first character is not '_' then we have entered the actual data defined by the loop.
 				# If this was an empty line, we're done with the loop
-				#print "Char=[${char}]"
-				if $char = ""
-					# Just break out of loop
-					break
-				elseif $char <> "_"
+				#printf("Keyword = [%s], firstchar=%s\n",keywd,char);
+				if (char == "") break;
+				else if (char <> "_")
+				{
+					#printf("Data begins at line %i\n", n);
 					# Already have first line of data stored in $line.
-					#print "LINE BEFORE ATOM is $line"
-					readvar $line $format
+					#printf("LINE BEFORE ATOM is %s\n", line);
+					# Take arguments from current stored line - attempt to read ten...
+					nread = readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
+					# If we didn't get enough bits of data, read more lines and parse until we do
+					#printf("Nargs read = %i\n", nread);
+					if (nread < (n-1))
+					{
+						getline(line);
+						for (arg = nread+1; arg <= n-1; arg++) readnext(args[arg]);
+					}
+					# for (arg=1; arg < n; ++arg) printf("   Now argument %i = %s\n", arg, args[arg]);
+					#readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
 					# Our next action depends on the loop type
-					if $looptype = "atom"
-						# Create new atom
-						newatom $e $rx $ry $rz
-					elseif $looptype = "gen"
-						# Add generator definition manually
-						addgenerator $gen
-					end
-				elseif $data = "atom_site"
+					if (looptype == "atom") {
+						newatom(args[id_e], atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+						printf("Created atom with coords %f %f %f\n", atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+					}
+					else if (looptype == "gen") addgenerator(line);
+				}
+				else if (data == "atom_site")
+				{
 					# Atom data loop
-					$looptype = "atom"
-					if $keywd = "_atom_site_type_symbol"
-						writevar $format "$format \$e"
-					elseif $keywd = "_atom_site_fract_x"
-						writevar $format "$format \$rx"
-					elseif $keywd = "_atom_site_fract_y"
-						writevar $format "$format \$ry"
-					elseif $keywd = "_atom_site_fract_z"
-						writevar $format "$format \$rz"
-					else
-						writevar $format "$format \*"
-					end
-				elseif $data = "symmetry_"
+					looptype = "atom";
+					if (keywd == "_atom_site_type_symbol") id_e = n;
+					else if (keywd == "_atom_site_fract_x") id_r[1] = n;
+					else if (keywd == "_atom_site_fract_y") id_r[2] = n;
+					else if (keywd == "_atom_site_fract_z") id_r[3] = n;
+				}
+				else if (data == "symmetry_")
+				{
 					# Symmetry generator definitions - only use if spacegroup not already specified
-					if $model.cell.sgid <> 0
-						print "Generator data ignored - spacegroup is already set."
+					if (m.cell.sgid <> 0) printf("Generator data ignored - spacegroup is already set.");
 					else
-						$looptype = "gen"
-						if $keywd = "_symmetry_equiv_pos_as_xyz"
-							writevar $format "$format \$gen"
-						elseif $keywd = "_symmetry_equiv_pos_site_id"
-							writevar $format "$format \*"
-						end
-					end
-				end
-			end
-		end
-	end
+					{
+						looptype = "gen";
+						if (keywd == "_symmetry_equiv_pos_as_xyz") id_gen = n;
+					}
+				}
+			}
+		} # Loop loop
+	} # Main loop
 
 	# Were we given a full cell spec?
-	if $cellspec = 6
-		cell $a $b $c $alpha $beta $gamma
-		fractoreal
+	printf("Cellspec = %i\n", cellspec);
+	if (cellspec == 6)
+	{
+		cell(length[1],length[2],length[3],cellangle[1],cellangle[2],cellangle[3]);
+		fractoreal();
 		# Pack according to spacegroup
-		pack
+		pack();
+	}
 	else
-		print "Full cell specification was not found in file."
-		print "Atom coordinates are still fractional."
-	end
+	{
+		printf("Full cell specification was not found in file.\n");
+		printf("Atom coordinates are still fractional.\n");
+	}
 
-	rebond
-	finalisemodel
-end
+	rebond();
+	finalisemodel();
+}

@@ -30,6 +30,7 @@
 #include "classes/grid.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
+#include "parser/parser.h"
 
 // Singleton definition
 Aten aten;
@@ -47,7 +48,8 @@ Aten::Aten()
 	sketchElement_ = 6;
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
-	filterLoadSuccessful_ = TRUE;
+	nFiltersFailed_ = 0;
+	dataDirSet_ = FALSE;
 
 	// Clipboards
 	userClipboard = new Clipboard;
@@ -72,7 +74,7 @@ void Aten::clear()
 	forcefields_.clear();
 	userClipboard->clear();
 	scripts.clear();
-	for (int i=0; i<Filter::nFilterTypes; i++) filters_[i].clear();
+	for (int i=0; i<FilterData::nFilterTypes; i++) filters_[i].clear();
 }
 
 // Sets the current program mode
@@ -228,6 +230,7 @@ Model *Aten::findModel(const char *s) const
 Forcefield *Aten::addForcefield()
 {
 	current.ff = forcefields_.add();
+	if (forcefields_.nItems() == 1) setDefaultForcefield(current.ff);
 	return current.ff;
 }
 
@@ -426,6 +429,7 @@ const char *Aten::workDir()
 void Aten::setDataDir(const char *path)
 {
 	dataDir_ = path;
+	dataDirSet_ = TRUE;
 }
 
 // Return the data directory path
@@ -434,341 +438,10 @@ const char *Aten::dataDir()
 	return dataDir_.get();
 }
 
-/*
-// Filters
-*/
-
-// Load filters
-void Aten::openFilters()
+// Return whether the data dir has already been set
+bool Aten::dataDirSet()
 {
-	msg.enter("Aten::openFilters");
-	char filename[512], path[512];
-	bool found = FALSE, failed = FALSE;
-	ifstream *listfile;
-
-	// If ATENDATA is set, take data from there
-	if (!aten.dataDir_.isEmpty())
-	{
-		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
-		sprintf(path,"%s%s", dataDir_.get(), "/filters/");
-		sprintf(filename,"%s%s", dataDir_.get(), "/filters/index");
-		listfile = new ifstream(filename,ios::in);
-		if (listfile->is_open())
-		{
-			if (parseFilterIndex(path, listfile)) found = TRUE;
-			else failed = TRUE;
-		}
-		listfile->close();
-		delete listfile;
-	}
-	else msg.print(Messenger::Verbose, "$ATENDATA has not been set. Searching default locations...\n");
-	if ((!found) && (!failed))
-	{
-		// Try a list of known locations. Set dataDir again if we find a valid one
-		sprintf(path,"%s%s", "/usr/share/aten", "/filters/");
-		msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
-		sprintf(filename,"%s%s", path, "index");
-		listfile = new ifstream(filename, ios::in);
-		if (listfile->is_open())
-		{
-			if (parseFilterIndex(path, listfile))
-			{
-				found = TRUE;
-				dataDir_ = "/usr/share/aten/";
-			}
-			else failed = TRUE;
-		}
-		listfile->close();
-		delete listfile;
-
-		if ((!found) && (!failed))
-		{
-			sprintf(path,"%s%s", "/usr/local/share/aten", "/filters/");
-			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
-			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
-			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = "/usr/local/share/aten/";
-				}
-				else failed = TRUE;
-			}
-			listfile->close();
-			delete listfile;
-		}
-
-		if ((!found) && (!failed))
-		{
-			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/");
-			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
-			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
-			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../share/aten/");
-				}
-				else failed = TRUE;
-			}
-			listfile->close();
-			delete listfile;
-		}
-
-		if ((!found) && (!failed))
-		{
-			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/");
-			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
-			sprintf(filename,"%s%s", path, "index");
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
-			{
-				if (parseFilterIndex(path, listfile))
-				{
-					found = TRUE;
-					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../SharedSupport/");
-				}
-				else failed = TRUE;
-			}
-			listfile->close();
-			delete listfile;
-		}
-
-		if (!found)
-		{
-			msg.print(Messenger::Error, "No filter index found in any of these locations.\n");
-			msg.print(Messenger::Error, "Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory.\n");
-			msg.print(Messenger::Error, "e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
-			filterLoadSuccessful_ = FALSE;
-		}
-	}
-
-	// Try to load user filters
-	if (found && (!failed))
-	{
-		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-		msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
-		sprintf(filename, "%s%s", path, "index");
-		listfile = new ifstream(filename, ios::in);
-		if (listfile->is_open())
-		{
-			if (parseFilterIndex(path, listfile)) found = TRUE;
-			else failed = TRUE;
-		}
-		listfile->close();
-		delete listfile;
-	}
-
-	// Print out info and partner filters if all was successful
-	if ((!failed) && found)
-	{
-		partnerFilters();
-		msg.print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
-		msg.print(Messenger::Verbose, "Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
-		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
-		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
-	}
-	msg.exit("Aten::openFilters");
-}
-
-// Reload filters
-bool Aten::reloadFilters()
-{
-	msg.enter("Aten::reloadFilters");
-	char indexfile[512], path[512], filterfile[128], message[512], shortname[128];
-	ifstream *file;
-	msg.print("Clearing current filters....\n");
-	filters_[Filter::ModelImport].clear();
-	filters_[Filter::ModelExport].clear();
-	filters_[Filter::TrajectoryImport].clear();
-	filters_[Filter::TrajectoryExport].clear();
-	filters_[Filter::ExpressionImport].clear();
-	filters_[Filter::ExpressionExport].clear();
-	filters_[Filter::GridImport].clear();
-	filters_[Filter::GridExport].clear();
-	sprintf(path,"%s%s", dataDir_.get(), "/filters");
-	msg.print("Reading filters from '%s'...\n", path);
-	sprintf(indexfile, "%s/%s", path, "index");
-	file = new ifstream(indexfile, ios::in);
-	if (file->is_open())
-	{
-		while (!file->eof())
-		{
-			if (parser.getArgsDelim(file, Parser::SkipBlanks) != 0) break;
-			strcpy(shortname, parser.argc(0));
-			sprintf(filterfile, "%s/%s", path, shortname);
-			if (!loadFilter(filterfile))
-			{
-				sprintf(message, "Error(s) encountered while reading filter file '%s' (see message box for details).\nOne or more filters contained within will be unavailable.\n", shortname);
-				QMessageBox::warning(gui.mainWindow, "Aten", message, QMessageBox::Ok);
-			}
-		}
-		// Print out info and partner filters 
-		partnerFilters();
-		msg.print("Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
-		msg.print("Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
-		msg.print("Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
-		msg.print("Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
-	}
-	parser.close();
-	delete file;
-	msg.exit("Aten::reloadFilters");
-	return TRUE;
-}
-
-// Return status of filter load on startup
-bool Aten::filterLoadSuccessful()
-{
-	return filterLoadSuccessful_;
-}
-
-// Parse filter index file
-bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
-{
-	msg.enter("Aten::parseFilterIndex");
-	// Read filter names from file and open them
-	char filterfile[512], s[512], bit[64];
-	strcpy(s, "--> ");
-	while (!indexfile->eof())
-	{
-		strcpy(filterfile,path);
-		if (parser.getArgsDelim(indexfile, Parser::SkipBlanks) != 0) break;
-		strcat(filterfile, parser.argc(0));
-		sprintf(bit, "%s  ",parser.argc(0));
-		strcat(s, bit);
-		if (!loadFilter(filterfile))
-		{
-			msg.exit("Aten::parseFilterIndex");
-			return FALSE;
-		}
-	}
-	strcat(s, "\n");
-	msg.print(Messenger::Verbose, s);
-	msg.exit("Aten::parseFilterIndex");
-	return TRUE;
-}
-
-// Read commands from filter file
-bool Aten::loadFilter(const char *filename)
-{
-	msg.enter("Aten::loadFilter");
-	Filter::FilterType ft;
-	Filter *newfilter;
-	bool error;
-	int success;
-	ifstream filterfile(filename,ios::in);
-
-	// Pre-read first line to check
-	success = parser.getArgsDelim(&filterfile,Parser::UseQuotes+Parser::SkipBlanks);
-	error = FALSE;
-	while (!filterfile.eof())
-	{
-		// Get filter type from first argument
-		ft = Filter::filterType(parser.argc(0));
-		// Unrecognised filter section?
-		if (ft == Filter::nFilterTypes)
-		{
-			msg.print(Messenger::Error, "Unrecognised section '%s' in filter.\n",parser.argc(0));
-			error = TRUE;
-			break;
-		}
-		// Add main filter section
-		newfilter = filters_[ft].add();
-		newfilter->setType(ft);
-		// Call the filter to load its commands.
-		// If the load is not successful, remove the filter we just created
-		if (!newfilter->load(filterfile))
-		{
-			msg.print(Messenger::Error, "Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
-			filters_[ft].remove(newfilter);
-			error = TRUE;
-			break;
-		}
-	}
-	parser.close();
-	//variables.print();
-	msg.exit("Aten::loadFilter");
-	return (!error);
-}
-
-// Set filter partners
-void Aten::partnerFilters()
-{
-	msg.enter("Aten::partnerFilters");
-	// Loop through import filters and search / set export partners
-	char s[512], bit[32];
-	Filter *imp, *exp;
-	int importid;
-	strcpy(s,"Model Formats:");
-	for (imp = filters_[Filter::ModelImport].first(); imp != NULL; imp = imp->next)
-	{
-		importid = imp->id();
-		exp = NULL;
-		if (importid != -1)
-		{
-			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[Filter::ModelExport].first(); exp != NULL; exp = exp->next)
-			{
-				if (importid == exp->id())
-				{
-					msg.print(Messenger::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->nickname(), imp->id());
-					imp->setPartner(exp);
-					break;
-				}
-			}
-		}
-		sprintf(bit, " %s[r%c]", imp->nickname(), exp == NULL ? 'o' : 'w');
-		strcat(s,bit);
-	}
-	strcat(s, "\n");
-	msg.print(Messenger::Verbose, s);
-	strcpy(s,"Grid Formats:");
-	for (imp = filters_[Filter::GridImport].first(); imp != NULL; imp = imp->next)
-	{
-		importid = imp->id();
-		exp = NULL;
-		if (importid != -1)
-		{
-			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[Filter::GridExport].first(); exp != NULL; exp = exp->next)
-			{
-				if (importid == exp->id())
-				{
-					msg.print(Messenger::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->nickname(), imp->id());
-					imp->setPartner(exp);
-					printf("w]");
-					break;
-				}
-			}
-		}
-		sprintf(bit, " %s[r%c]", imp->nickname(), exp == NULL ? 'o' : 'w');
-		strcat(s,bit);
-	}
-	strcat(s, "\n");
-	msg.print(Messenger::Verbose, s);
-	msg.exit("Aten::partnerFilters");
-}
-
-// Find filter with specified type and nickname
-Filter *Aten::findFilter(Filter::FilterType ft, const char *nickname) const
-{
-	msg.enter("Aten::findFilter");
-	Filter *result;
-	for (result = filters_[ft].first(); result != NULL; result = result->next)
-		if (strcmp(result->nickname(), nickname) == 0) break;
-	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
-	msg.exit("Aten::findFilter");
-	return result;
-}
-
-// Return first filter in list (of a given type)
-Filter *Aten::filters(Filter::FilterType ft) const
-{
-	return filters_[ft].first();
+	return dataDirSet_;
 }
 
 /*

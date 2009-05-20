@@ -1,108 +1,90 @@
-# MSI Datafile version 3.8
-# Last modified: 21/11/08
+# MSI Datafile version 3.8 (for v1.2+)
+# Created:	 15/04/2009
+# Last modified: 15/04/2009
 # ChangeLog:
-#	21/11/08 - Adjustment - some text arguments were not double-quoted.
-#	05/08/08 - Quoting adjusted to follow new Parser rules.
+# Notes:
 
-importmodel
-	name "MSI Datafile v3.8"
-	nickname msi
-	extension msi
-	glob *.msi
-
+filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi")
+{
 	# Variable declarations
-	integer n,cellvar,id,bondi,bondj
-	character block,newblock,type,line,ident,data,a,b,c,e
-	real rx,ry,rz,fx,fy,fz,cax,cay,caz,cbx,cby,cbz,ccx,ccy,ccz,q
+	int n,cellvar,id,bondi,bondj;
+	string block,newblock,type,line,ident,data,a,b,c,el,name;
+	vector r, f, axes[3];
+	double q;
 
 	# Request that parentheses are removed as we read lines
-	addreadoption stripbrackets
+	addreadoption("stripbrackets");
+	removereadoption("usequotes");
 
 	# Read in each line as six arguments.
 	# If the first is not 'A' then it is the start of some data block.
-	# We will use a variable $block to store the current block we're in (N=none, M=model, A=atom, B=bond)
-	$block = "N"
-	$cellvar = 0
-	for $n
+	# We will use a variable 'block' to store the current block we're in (N=none, M=model, A=atom, B=bond)
+	block = "N";
+	cellvar = 0;
+	while (!eof())
+	{
 		# Read in whole lines and work with them instead of always using readline
-		getline $line
+		getline(line);
 		# Parse the stored $line
-		readvar $line "$ident $type $data $a $b $c"
-		# Assume that lines are long enough to not force more than one data argument onto the next line
-		# If the $c variable is '\' then we must read in the next line to get the real $c
-		#if $c = \
-	#		readline $c
-	#	end
+		readvar(line,ident,type,data,a,b,c);
+		# If the 'c' variable is '\' then we must read in the next line to get the real 'c'
+		if (c == "\\") { getline(line); readvar(line,c); }
 		# Check for block specifiers
-		if $ident <> "A"
-			if $type = "Model"
-				$newblock = "M"
-			elseif $type = "Atom"
-				$newblock = "A"
-				newatom 0
-				# We must also set the atom id here (since bonds refer to item number, not Id)
-				setid $ident
-			elseif $type = "Bond"
-				$newblock = "B"
-			else
-				#print "Didn't recognise MSI block $type "
-				$newblock = "N"
-			end
-			# If $newblock is not 0, check the old $block value and perform end tasks
-			if $block = "A"
-			elseif $block = "B"
-				newbondid $bondi $bondj
-			end
-			$block = $newblock
+		if (ident <> "A")
+		{
+			if (type == "Model") newblock = "M";
+			else if (type == "Atom") { newblock = "A"; id = atoi(ident); }
+			else if (type == "Bond") newblock = "B";
+			else newblock = "N";
+			# Check the old 'block' value and perform end tasks
+			if (block == "A")
+			{
+				newatom(el, r.x, r.y, r.z);
+				setid(id);
+				setforces(f.x, f.y, f.z);
+				setcharge(q);
+			}
+			else if (block == "B") newbondid(bondi,bondj);
+			else if (block == "M") newmodel(name);
+			block = newblock;
+		}
 		else
+		{
 			# Not a block specifier, so must be data for a block we're already in...
-			if $block = "M"
+			if (block == "M")
+			{
 				# Model block
-				if $data = "Label"
-					newmodel $a
-				elseif $data = "A3"
-					$cax = $a
-					$cay = $b
-					$caz = $c
-					inc $cellvar
-				elseif $data = "B3"
-					$cbx = $a
-					$cby = $b
-					$cbz = $c
-					inc $cellvar
-				elseif $data = "C3"
-					$ccx = $a
-					$ccy = $b
-					$ccz = $c
-					inc $cellvar
-				end
-			elseif $block = "A"
+				if (data == "Label") name = a;
+				else if (data == "A3") { axes[1].x = atof(a); axes[1].y = atof(b); axes[1].z = atof(c); ++cellvar; }
+				else if (data == "B3") { axes[2].x = atof(a); axes[2].y = atof(b); axes[2].z = atof(c); ++cellvar; }
+				else if (data == "C3") { axes[3].x = atof(a); axes[3].y = atof(b); axes[3].z = atof(c); ++cellvar; }
+			}
+			else if (block == "A")
+			{
 				# Atom block
-				if $data = Charge
-					setcharge $a
-				elseif $data = "XYZ"
-					setcoords $a $b $c
-				elseif $data = "Force"
-					setforces $a $b $c
-				elseif $data = "ACL"
-					setelement $b
-				end
-			elseif $block = "B"
+				if (data == "Charge") q = atof(a);
+				else if (data == "XYZ") { r.x = atof(a); r.y = atof(b); r.z = atof(c); }
+				else if (data == "Force") { f.x = atof(a); f.y = atof(b); f.z = atof(c); }
+				else if (data == "ACL") el = b;
+			}
+			else if (block == "B")
+			{
 				# Bond block
-				if $data = "Atom1"
-					let $bondi = $a
-				elseif $data = "Atom2"
-					let $bondj = $a
-				end
-			end
-		end
-	end
-	# Add on unit cell if one was specified
-	if $cellvar > 2
-		cellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
-		fold
-	end
+				if (data == "Atom1") bondi = atoi(a);
+				else if (data == "Atom2") bondj = atoi(a);
+			}
+		}
+	}
+
+	# Apply unit cell if one was specified
+	if (cellvar == 3)
+	{
+		cellaxes(axes[1].x, axes[1].y, axes[1].z, axes[2].x, axes[2].y, axes[2].z, axes[3].x, axes[3].y, axes[3].z);
+		fold();
+	}
+	else if (cellvar != 0) printf("Warning: Incomplete / mangled cell definition in file.");
 
 	# Finalise model
-	finalisemodel
-end
+	finalisemodel();
+}
+

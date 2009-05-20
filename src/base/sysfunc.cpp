@@ -87,6 +87,28 @@ const char *afterChar(const char *s, char delim)
 	return result;
 }
 
+// Get characters before first occurrence of designated string
+const char *beforeStr(const char *s, const char *search)
+{
+	// Search for first occurrence of string
+	static char result[8096];
+	strcpy(result, s);
+	char *c = strstr(result, search);
+	if (c == NULL) return "";
+	*c = '\0';
+	return result;
+}
+
+// Get characters after first occurrence of designated character
+const char *afterStr(const char *s, const char *search)
+{
+	char *c = strstr(s, search);
+	if (c == NULL) return "";
+	for (const char *d = &search[0]; *d != '\0'; ++d) c++;
+	return c;
+}
+
+
 // Search enum list for text
 int enumSearch(const char *name, int maxn, const char **itemlist, const char *query)
 {

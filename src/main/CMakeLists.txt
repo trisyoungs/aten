@@ -2,6 +2,7 @@ add_library(main
 aten.h
 cli.h 
 aten.cpp
+aten_filters.cpp
 cli.cpp 
 modes.cpp
 probe.cpp

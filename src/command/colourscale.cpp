@@ -1,5 +1,5 @@
 /*
-	*** ColourScale command functions
+	*** ColourScale Commands
 	*** src/command/colourscale.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,39 +19,42 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "classes/prefs.h"
 
 // Add point to colourscale
-int Command::function_CA_ADDPOINT(CommandNode *&c, Bundle &obj)
+bool Command::function_AddPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
-	prefs.colourScale[id].addPointAtEnd(c->argd(1), c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(5) : 1.0f);
-	return Command::Success;
+	prefs.colourScale[id].addPointAtEnd(c->argd(1), c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
+	rv.reset();
+	return TRUE;
 }
 
 // Clear points in colourscale
-int Command::function_CA_CLEARPOINTS(CommandNode *&c, Bundle &obj)
+bool Command::function_ClearPoints(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
 	prefs.colourScale[id].clear();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // List current colourscale data ('listscales')
-int Command::function_CA_LISTSCALES(CommandNode *&c, Bundle &obj)
+bool Command::function_ListScales(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	GLfloat col[4];
 	msg.print("Current colourscale setup:\n");
@@ -65,90 +68,98 @@ int Command::function_CA_LISTSCALES(CommandNode *&c, Bundle &obj)
 			msg.print( "  (%2i)  %12.5e  %8.4f  %8.4f  %8.4f  %8.4f\n", n+1, csp->value(), col[0], col[1], col[2], col[3]);
 		}
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Remove specific point in colourscale
-int Command::function_CA_REMOVEPOINT(CommandNode *&c, Bundle &obj)
+bool Command::function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
 	prefs.colourScale[id].removePoint(c->argi(1)-1);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Print/set name of colourscale ('scalename <id> [name]')
-int Command::function_CA_SCALENAME(CommandNode *&c, Bundle &obj)
+bool Command::function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
 	if (c->hasArg(1)) prefs.colourScale[id].setName(c->argc(1));
 	else msg.print( "Name of colourscale %i is '%s'.\n",id+1,prefs.colourScale[id].name());
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set visibility of colourscale ('scalevisible <id> true|false')
-int Command::function_CA_SCALEVISIBLE(CommandNode *&c, Bundle &obj)
+bool Command::function_ScaleVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
 	prefs.colourScale[id].setVisible(c->argb(1));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set existing point in colourscale
-int Command::function_CA_SETPOINT(CommandNode *&c, Bundle &obj)
+bool Command::function_SetPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
-	prefs.colourScale[id].setPoint(c->argi(1)-1, c->argd(2), c->argf(3), c->argf(4), c->argf(5), c->hasArg(6) ? c->argf(6) : 1.0f);
-	return Command::Success;
+	prefs.colourScale[id].setPoint(c->argi(1)-1, c->argd(2), c->argGLf(3), c->argGLf(4), c->argGLf(5), c->hasArg(6) ? c->argGLf(6) : 1.0f);
+	rv.reset();
+	return TRUE;
 }
 
 // Set existing point colour in colourscale
-int Command::function_CA_SETPOINTCOLOUR(CommandNode *&c, Bundle &obj)
+bool Command::function_SetPointColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
-	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(5) : 1.0f);
-	return Command::Success;
+	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
+	rv.reset();
+	return TRUE;
 }
 
 // Set existing point value in colourscale
-int Command::function_CA_SETPOINTVALUE(CommandNode *&c, Bundle &obj)
+bool Command::function_SetPointValue(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
 		msg.print( "Colour scale %i is out of range.\n",id+1);
-		return Command::Fail;
+		return FALSE;
 	}
 	prefs.colourScale[id].setPointValue(c->argi(1)-1, c->argd(2));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

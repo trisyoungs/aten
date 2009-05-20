@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "parser/commandnode.h"
 
 // Constructor
 AtenPosition::AtenPosition(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -63,12 +64,10 @@ void AtenPosition::on_FlipZButton_clicked(bool checked)
 
 void AtenPosition::flipSelection(int axis)
 {
-	Model *m = aten.currentModel();
-	char s[128];
-	sprintf(s,"Mirror %i atoms along %c\n", m->nSelected(), 88+axis);
-	m->beginUndoState(s);
-	m->mirrorSelectionLocal(axis);
-	m->endUndoState();
+	char s[2];
+	s[0] = 88+axis;
+	s[1] = '\0';
+	CommandNode::run(Command::Mirror, "c", s);
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -87,16 +86,7 @@ void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 
 void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 {
-	Vec3<double> centre;
-	centre.x = ui.CentreXSpin->value();
-	centre.y = ui.CentreYSpin->value();
-	centre.z = ui.CentreZSpin->value();
-	Model *m = aten.currentModel();
-	char s[128];
-	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->nSelected(),centre.x,centre.y,centre.z);
-	m->beginUndoState(s);
-	m->centre(centre);
-	m->endUndoState();
+	CommandNode::run(Command::Centre, "ddd", ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

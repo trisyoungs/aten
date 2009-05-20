@@ -1,95 +1,78 @@
-# Mopac input file
-# Last modified: 12/10/2008
-# Notes:
-#   Import filter does not account for the presence of '+' or '&' in the keyword section
-#   Cartesian coordinate format is assumed
+# Mopac input file (for v1.2+)
+# Created:	 13/04/2009
+# Last modified: 13/04/2009
 # ChangeLog:
-#	12/10/2008 - Adjusted to use new variable access methods.
-#	04/10/2008 - Format delimiter reverted from '%' to '@'.
-#	05/08/2008 - Initial version.
+# Notes:
+#   Cartesian coordinate format is assumed
 
-importmodel
-	name "Mopac Control File"
-	nickname mopac
-	extension mop
-	glob *.mop
-	id 4
-
+filter(type="importmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
 	# Variable declaration
-	integer natoms,n,cellcount,fx,fy,fz
-	character e,line,title
-	real rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
+	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2;
+	string e,line,title;
+	double rx,ry,rz;
+	vector v[3];
 
-	# Initialise variables
-	$cellcount = 0
+	# Discard keyword lines.
+	# A '+' in a line indicates that another line of keywords will follow.
+	# A '&' in a line indicates that a title/description line is replaced by keywords.
+	while (getline(line))
+	{
+		if (contains(line,"+") == 0) break;
+		if (contains(line,"&") == 0) ntitle--;
+	}
 
-	# Discard first line (keywords)
-	skipline
-
-	# Next two lines are description
-	getline $title
-	newmodel $title
-	getline $line
-	print "$title"
-	print "$line"
+	# Description lines follow, unless replaced by keyword lines with '&' in previous lines
+	title = "Mopac Input";
+	if (ntitle > 0) getline(title);
+	if (ntitle > 1)	getline(line);
+	newmodel(title);
 
 	# All remaining lines make up the geometry
-	for $n
-		readline "$e $rx $fx $ry $fy $rz $fy"
+	while (!eof())
+	{
+		readline(e,rx,fx,ry,fy,rz,fy);
 		# If the element is 'Tv' its part of the cell specification
-		if $e = "Tv"
-			$cellcount += 1
-			if $cellcount = 1
-				$ax = $rx
-				$ay = $ry
-				$az = $rz
-			elseif $cellcount = 2
-				$bx = $rx
-				$by = $ry
-				$bz = $rz
-			elseif $cellcount = 3
-				$cx = $rx
-				$cy = $ry
-				$cz = $rz
-			else
-				print "Extra translation vector data found - ignored..."
-			end
-		else
-			newatom $e $rx $ry $rz
-		end
-	end
-	rebond
-	finalisemodel
-end
+		if (e == "Tv")
+		{
+			++cellcount;
+			if (cellcount < 4)
+			{
+				v[cellcount].x = rx;
+				v[cellcount].y = ry;
+				v[cellcount].z = rz;
+			}
+			else printf("Extra translation vector data found - ignored...\n");
+		}
+	#	else newatom(e,rx,ry,rz);
+	}
+	rebond();
+	finalisemodel();
+}
 
-exportmodel
-	name "Mopac Control File"
-	extension mop
-	glob *.mop
-	nickname mopac
-	id 4
-
+filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
+{
 	# Variable declaration
-	integer n
-	character e
-	real rx,ry,rz
-	atom i
+	int n,f;
+	string e;
+	double rx,ry,rz;
+	atom i;
+	model m = aten.frame;
 
-	writeline "PM6 BFGS"
-	writeline "$model.name"
-	writeline "Coordinates churned out by Aten."
-	for $i
-		if $i.fixed = 0
-			writeline "$i.symbol@3 $i.rx@12.6 1 $i.ry@12.6 1 $i.rz@12.6 1"
-		else
-			writeline "$i.symbol@3 $i.rx@12.6 0 $i.ry@12.6 0 $i.rz@12.6 0"
-		end if
-	end
+	writeline("PM6 BFGS");
+	writeline(m.name);
+	writeline("Coordinates churned out by Aten.");
+	for (i = m.atoms; i != 0; ++i)
+	{
+		f = 1 - i.fixed;
+		writelinef("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", i.symbol, i.rx, f, i.ry, f, i.rz, f);
+	}
 
 	# Write translation vector for cell
-	if $model.cell.type <> "none"
-		writeline "Tv  $model.cell.ax@12.6 0 $model.cell.ay@12.6 0 $model.cell.az@12.6 0"
-		writeline "Tv  $model.cell.bx@12.6 0 $model.cell.by@12.6 0 $model.cell.bz@12.6 0"
-		writeline "Tv  $model.cell.cx@12.6 0 $model.cell.cy@12.6 0 $model.cell.cz@12.6 0"
-	end
-end
+	if (m.cell.type <> "none")
+	{
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.ax,m.cell.ay,m.cell.az);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.bx,m.cell.by,m.cell.bz);
+		writelinef("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",m.cell.cx,m.cell.cy,m.cell.cz);
+	}
+}

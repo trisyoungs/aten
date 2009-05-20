@@ -24,7 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
-#include "command/staticcommand.h"
+#include "parser/commandnode.h"
 
 // Constructor
 AtenCellTransform::AtenCellTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -80,11 +80,7 @@ void AtenCellTransform::refresh()
 
 void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_REPLICATE, "dddddd", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-	// Get values from spin boxes...
-	cmd.pokeArguments("dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
-	Model *m = aten.currentModel();
-	cmd.execute();
+	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
 	gui.modelChanged();
 }
 
@@ -104,10 +100,8 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
-	static StaticCommandNode cmd(Command::CA_SCALE, "ddd", 0.0, 0.0, 0.0);
-	cmd.pokeArguments("ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
-	cmd.setFunction(ui.CellScaleUseCogsCheck->isChecked() ? Command::CA_SCALEMOLECULES : Command::CA_SCALE);
-	cmd.execute();
+	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::Scale, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	else CommandNode::run(Command::ScaleMolecules, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 

@@ -1,41 +1,39 @@
-# Simple surface data definition
-# Last modified: 12/10/2008
+# Simple 2D height map data definition (for v1.2+)
+# Created:	 15/04/2009
+# Last modified: 15/04/2009
 # ChangeLog:
-#	12/10/2008 - Adjusted to use new variable access rules.
-#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
+# Notes:
 
-importgrid
-	name "2D Surface Data"
-	nickname surf
-	extension surf
-	glob *.surf
-
+filter(type="importgrid", name="2D Surface Data", nickname="surf", extension="surf", glob="*.surf")
+{
 	# Variable declarations
-	integer n,nx,ny,nz,npoints
-	real ox,oy,oz,data,xx,xy,xz,yx,yy,yz
-	character order
+	int n,nx,ny,nz,npoints;
+	vector origin, vx, vy;
+	double data;
+	string order;
 
 	# Create new grid
-	newgrid $infile
+	newgrid(filterfilename());
 
 	# First line contains number of gridpoints in each direction x,y
-	readline "$nx $ny"
-	gridsize $nx $ny 0
+	readline(nx,ny);
+	gridsize(nx,ny,0);
 	# Second line contains vectors between gridpoints
-	readline "$xx $xy $xz $yx $yy $yz"
-	gridaxes $xx $xy $xz $yx $yy $yz 0.0 0.0 1.0
+	readline(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z);
+	gridaxes(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z, 0, 0, 1);
 	# Third line contains grid origin (lower left-hand corner)
-	readline "$ox $oy $oz"
-	gridorigin $ox $oy $oz
+	readline(origin.x, origin.y, origin.z);
+	gridorigin(origin.x, origin.y, origin.z);
 	# Fourth line contains loop order
-	readline "$order"
-	gridlooporder $order
+	readline(order);
+	gridlooporder(order);
 
 	# Read in grid data
-	$npoints = $nx*$ny
-	for $n,1,$npoints
-		readline "$data"
-		addnextgridpoint $data
-	end
-	finalisegrid
-end
+	npoints = nx*ny;
+	for (n=0; n<npoints; ++n)
+	{
+		readline(data);
+		addnextgridpoint(data);
+	}
+	finalisegrid();
+}

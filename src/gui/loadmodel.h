@@ -28,7 +28,7 @@
 
 // Forward Declarations
 class Forcefield;
-class Filter;
+class Tree;
 
 // Model Load Dialog
 class AtenLoadModel : public QDialog
@@ -47,19 +47,20 @@ class AtenLoadModel : public QDialog
 	void on_LoadModelFoldCombo_activated(int index);
 	void on_LoadModelPackCombo_activated(int index);
 	void on_LoadModelCentreCombo_activated(int index);
+	void on_LoadModelZMappingCombo_activated(int index);
 
 	/*
 	// Data
 	*/
 	private:
 	// Selected filter
-	Filter *selectedFilter_;
+	Tree *selectedFilter_;
 	// Filename in edit box
 	Dnchar selectedFilename_;
 
 	public:
 	// Return the selected filter
-	Filter *selectedFilter();
+	Tree *selectedFilter();
 	// Return filename
 	const char *selectedFilename();
 

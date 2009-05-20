@@ -65,6 +65,9 @@ template <class T> class Vec4
 	Vec4<T>& operator-=(Vec3<T>);
 	Vec4<T> operator-(Vec4<T>);
 	Vec4<T> operator-(Vec3<T>);
+	// Operators * and *=
+	Vec4<T> operator*(T) const;
+	void operator*=(T);
 
 	/*
 	// Methods
@@ -202,6 +205,15 @@ template <class T> Vec4<T> Vec4<T>::operator-(Vec3<T> v)
 	result.z = z-v.z;
 	result.w = w-v.w;
 	return result;
+}
+
+// Operator *= (T)
+template <class T> void Vec4<T>::operator*=(T v)
+{
+	x *= v;
+	y *= v;
+	z *= v;
+	w *= v;
 }
 
 /*

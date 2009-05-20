@@ -1,5 +1,5 @@
 /*
-	*** Minimiser command functions
+	*** Minimiser Commands
 	*** src/command/minimise.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,7 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "methods/sd.h"
 #include "methods/mc.h"
 #include "methods/cg.h"
@@ -29,9 +30,9 @@
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 // Minimise with conjugate gradient
-int Command::function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj)
+bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	cg.setTolerance(linetolerance);
 	cg.setNCycles(c->argi(0));
 	// Store current positions of atoms so we can undo the minimisation
@@ -40,28 +41,31 @@ int Command::function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj)
 	cg.minimise(obj.rs, econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)");
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set convergence criteria
-int Command::function_CA_CONVERGE(CommandNode *&c, Bundle &obj)
+bool Command::function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set line minimiser tolerance
-int Command::function_CA_LINETOL(CommandNode *&c, Bundle &obj)
+bool Command::function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	linetolerance = c->argd(0);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-int Command::function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj)
+bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	mc.setNCycles(c->argi(0));
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
@@ -69,13 +73,14 @@ int Command::function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj)
 	mc.minimise(obj.rs, econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)");
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-int Command::function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj)
+bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	sd.setTolerance(linetolerance);
 	sd.setNCycles(c->argi(0));
 	// Store current positions of atoms so we can undo the minimisation
@@ -84,10 +89,13 @@ int Command::function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj)
 	sd.minimise(obj.rs, econverge, fconverge);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)");
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
-int Command::function_CA_SIMPLEXMINIMISE(CommandNode *&c, Bundle &obj)
+bool Command::function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	return Command::Fail;
+	rv.reset();
+	return FALSE;
 }
+

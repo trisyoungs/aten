@@ -368,7 +368,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
 	cutoff = g->cutoff();
-	symm = g->symmetric();
+	symm = g->isSymmetric();
 	mult = 1.0;
 	// Get distances between grid points
 	r = g->lengths();
@@ -394,11 +394,13 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	}
 
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	GLfloat col[4], poscol[4], negcol[4];
+	prefs.copyColour(Prefs::SpecularColour, col);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, col);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	if (g->useColourScale()) cscale = g->colourScale();
-	else cscale = -1;
-	if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+	g->copyPositiveColour(poscol);
+	g->copyNegativeColour(negcol);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, poscol);
 
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
@@ -476,7 +478,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] <= -cutoff) cubetype += 32;
 						if (vertex[6] <= -cutoff) cubetype += 64;
 						if (vertex[7] <= -cutoff) cubetype += 128;
-						if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, negcol);
 						mult = -1.0;
 					}
 					else
@@ -489,7 +491,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] >= cutoff) cubetype += 32;
 						if (vertex[6] >= cutoff) cubetype += 64;
 						if (vertex[7] >= cutoff) cubetype += 128;
-						if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, poscol);
 						mult = 1.0;
 					}
 				}
@@ -533,7 +535,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	Vec3<double> r, gradientx, gradienty, normal;
 	int cscale;
 	Vec3<int> npoints = g->nPoints();
-	GLfloat colour[4];
+	GLfloat colour[4], poscol[4];
 	double **data;
 	// Grab the data pointer and surface cutoff
 	data = g->data2d();
@@ -553,11 +555,16 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	prefs.copyColour(Prefs::SpecularColour, colour);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	if (g->useColourScale()) cscale = g->colourScale();
-	else cscale = -1;
-	if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+	cscale = g->colourScale();
+	if (!g->useColourScale()) cscale = -1;
+	if (cscale == -1)
+	{
+		g->copyPositiveColour(poscol);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, poscol);
+	}
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{

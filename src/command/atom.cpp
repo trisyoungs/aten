@@ -1,5 +1,5 @@
 /*
-	*** Atom command functions
+	*** Atom Commands
 	*** src/command/atom.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,20 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "model/model.h"
 #include "base/elements.h"
 
 // Set atom style for current selection
-int Command::function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj)
+bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
-	if (ds == Atom::nDrawStyles) return Command::Fail;
+	if (ds == Atom::nDrawStyles) return FALSE;
 	if (c->hasArg(1))
 	{
 		Atom *i = obj.rs->atom(c->argi(1)-1);
-		if (i == NULL) return Command::Fail;
+		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Style individual atom");
 		obj.rs->styleAtom(i, ds);
 		obj.rs->endUndoState();
@@ -43,190 +44,211 @@ int Command::function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj)
 		obj.rs->styleSelection(ds);
 		obj.rs->endUndoState();
 	}
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Retrieve atom info ('getatom <id> [var]')
-int Command::function_CA_GETATOM(CommandNode *&c, Bundle &obj)
+bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom *i = obj.rs->atom(c->argi(0)-1);
-	if (i == NULL) return Command::Fail;
+	if (i == NULL) return FALSE;
 	// Set atom information
 	obj.i = i;
-	return Command::Success;
+	rv.set(VTypes::AtomData, i);
+	return TRUE;
 }
 
 // Hide current atom selection
-int Command::function_CA_HIDE(CommandNode *&c, Bundle &obj)
+bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->selectionSetHidden(TRUE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom charge
-int Command::function_CA_SETCHARGE(CommandNode *&c, Bundle &obj)
+bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->setCharge(c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom coordinates
-int Command::function_CA_SETCOORDS(CommandNode *&c, Bundle &obj)
+bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.rs->positionAtom(obj.i, c->arg3d(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom element
-int Command::function_CA_SETELEMENT(CommandNode *&c, Bundle &obj)
+bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
-	obj.i->setElement(elements().findAlpha(c->argc(0)));
-	return Command::Success;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
+	obj.i->setElement(c->argz(0));
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom forces
-int Command::function_CA_SETFORCES(CommandNode *&c, Bundle &obj)
+bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f() = c->arg3d(0);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom x force
-int Command::function_CA_SETFX(CommandNode *&c, Bundle &obj)
+bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(0,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom y force
-int Command::function_CA_SETFY(CommandNode *&c, Bundle &obj)
+bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(1,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom z force
-int Command::function_CA_SETFZ(CommandNode *&c, Bundle &obj)
+bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(2,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom ID
-int Command::function_CA_SETID(CommandNode *&c, Bundle &obj)
+bool Command::function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->setId(c->argi(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom x coordinate
-int Command::function_CA_SETRX(CommandNode *&c, Bundle &obj)
+bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(0,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom y coordinate
-int Command::function_CA_SETRY(CommandNode *&c, Bundle &obj)
+bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(1,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom z coordinate
-int Command::function_CA_SETRZ(CommandNode *&c, Bundle &obj)
+bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(2,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom velocities
-int Command::function_CA_SETVELOCITIES(CommandNode *&c, Bundle &obj)
+bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v() = c->arg3d(0);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom x velocity
-int Command::function_CA_SETVX(CommandNode *&c, Bundle &obj)
+bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(0,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom y velocity
-int Command::function_CA_SETVY(CommandNode *&c, Bundle &obj)
+bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(1,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Set current atom z velocity
-int Command::function_CA_SETVZ(CommandNode *&c, Bundle &obj)
+bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(2,c->argd(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Show current atom selection
-int Command::function_CA_SHOW(CommandNode *&c, Bundle &obj)
+bool Command::function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->selectionSetHidden(FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Show all atoms
-int Command::function_CA_SHOWALL(CommandNode *&c, Bundle &obj)
+bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

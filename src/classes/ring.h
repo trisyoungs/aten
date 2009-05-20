@@ -35,11 +35,13 @@ class Ring
 	// List pointers
 	Ring *prev, *next;
 	// Circular list browsing
-	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri);
-	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri);
+	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri) const;
+	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri) const;
 	// Ring type
 	enum RingType { AnyRing, AliphaticRing, NonAromaticRing, AromaticRing, nRingTypes };
 	static const char *ringType(Ring::RingType);
+	// Ring equality
+	bool operator==(Ring &r) const;
 
 	/*
 	// Constituent Atoms / Bonds
@@ -56,19 +58,19 @@ class Ring
 
 	public:
 	// Return first referenced atom
-	Refitem<Atom,int> *atoms();
+	Refitem<Atom,int> *atoms() const;
 	// Return last referenced atom
-	Refitem<Atom,int> *lastAtom();
+	Refitem<Atom,int> *lastAtom() const;
 	// Return first referenced bond
-	Refitem<Bond,Bond::BondType> *bonds();
+	Refitem<Bond,Bond::BondType> *bonds() const;
 	// Return size of atom reflist
-	int nAtoms();
+	int nAtoms() const;
 	// Search ring list for specified atom
 	bool containsAtom(Atom *i);
 	// Set requested size
 	void setRequestedSize(int size);
 	// Return requested size
-	int requestedSize();
+	int requestedSize() const;
 	// Append the atom 'i' to the end of the list. Returns FALSE is this exceeds MAXRINGSIZE
 	bool addAtom(Atom*);
 	// Remove the specified refitem from the find
@@ -94,7 +96,7 @@ class Ring
 	// Prepare the structure ready for use after atoms have been added
 	void finalise();
 	// Print out the data contained in the structure
-	void print();
+	void print() const;
 	// Add atoms in ring to supplied reflist
 	void addAtomsToReflist(Reflist<Atom,int>*, Atom*);
 	// Clear atoms in reflist

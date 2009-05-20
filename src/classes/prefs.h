@@ -49,9 +49,11 @@ class Prefs
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
 	static ModifierKey modifierKey(const char*);
+	static const char *modifierKey(ModifierKey);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char*);
+	static const char *keyAction(KeyAction);
 	// Standard 'Pen' Colours
 	enum PenColour { ForegroundColour, BackgroundColour, SpecularColour, GlyphColour, nPenColours };
 	static const char *penColour(PenColour);
@@ -68,11 +70,8 @@ class Prefs
 	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
 	static ViewObject viewObject(const char*);
 	static const char *viewObject(ViewObject);
-	// GL Options
-	enum GlOption { FogOption, LineAliasOption, PolyAliasOption, BackCullOption, DummyOption, nGlOptions };
-	static GlOption glOption(const char*);
 	// Atom colouring scheme
-	enum ColouringScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char*);
 	static const char *colouringScheme(ColouringScheme cs);
 	// Filter override switches
@@ -86,7 +85,12 @@ class Prefs
 	// Constructor
 	Prefs();
 	// Load preferences from file
-	void load(const char*);
+	bool load(const char *filename);
+	// Save preferences to file
+	bool save(const char *filename);
+	// Friend class
+	friend class PreferencesVariable;
+
 
 	/*
 	// Rendering - View Objects
@@ -128,6 +132,8 @@ class Prefs
 	Atom::DrawStyle renderStyle();
 	// Return the current rotation globe size in pixels
 	int globeSize();
+	// Set the current rotation globe size in pixels
+	void setGlobeSize(int i);
 	// Set positive repeat cell value
 	void setRepeatCellsPos(int i, int r);
 	// Get positive repeat cell value
@@ -137,6 +143,7 @@ class Prefs
 	// Get negative repeat cell value
 	int repeatCellsNeg(int i);
 
+
 	/*
 	// Rendering - Style
 	*/
@@ -145,8 +152,8 @@ class Prefs
 	Prefs::ColouringScheme colourScheme_;
 	// Atom sizes / radii
 	GLdouble atomStyleRadius_[Atom::nDrawStyles];
-	// Bond radius for Scaled and Sphere drawing styles
-	GLdouble bondRadius_;
+	// Bond radii
+	GLdouble bondStyleRadius_[Atom::nDrawStyles];
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
 	// Detail of atom quadric (slices/stacks)
@@ -160,9 +167,9 @@ class Prefs
 	// Whether the spotlight is on
 	bool spotlightActive_;
 	// Spotlight components
-	GLfloat spotlightColour_[Prefs::nColourComponents][4];
+	double spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
-	GLfloat spotlightPosition_[4];
+	double spotlightPosition_[4];
 
 	public:
 	// Sets the specified atom size to the given value
@@ -170,9 +177,9 @@ class Prefs
 	// Return the specified atom radius
 	GLdouble atomStyleRadius(Atom::DrawStyle ds);
 	// Sets the bond radius used in Scaled and Sphere styles
-	void setBondRadius(double f);
+	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
-	GLdouble bondRadius();
+	GLdouble bondStyleRadius(Atom::DrawStyle ds);
 	// Sets the detail for atom quadrics
 	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics
@@ -198,15 +205,19 @@ class Prefs
 	// Return status of spotlight
 	bool spotlightActive();
 	// Set spotlight colour component
-	void setSpotlightColour(ColourComponent sc, int i, GLfloat value);
-	void setSpotlightColour(ColourComponent sc, GLfloat r, GLfloat g, GLfloat b);
+	void setSpotlightColour(ColourComponent sc, int i, double value);
+	void setSpotlightColour(ColourComponent sc, double r, double g, double b);
 	// Return spotlight colour component
-	GLfloat *spotlightColour(ColourComponent sc);
+	double *spotlightColour(ColourComponent sc);
+	// Return spotlight colour component in provided array
+	void copySpotlightColour(ColourComponent sc, GLfloat *col);
 	// Set spotlight position
-	void setSpotlightPosition(GLfloat r, GLfloat g, GLfloat b);
-	void setSpotlightPosition(int component, GLfloat f);
+	void setSpotlightPosition(double r, double g, double b);
+	void setSpotlightPosition(int component, double f);
 	// Return spotlight position
-	GLfloat *spotlightPosition();
+	double *spotlightPosition();
+	// Return spotlight position in provided array
+	void copySpotlightPosition(GLfloat *col);
 	// Set atom colour scheme
 	void setColourScheme(Prefs::ColouringScheme sc);
 	// Return atom colour scheme
@@ -259,34 +270,54 @@ class Prefs
 	// GL Options
 	*/
 	private:
-	// Bitvector for GL options
-	int glOptions_;
+	// Depth cue flag
+	bool depthCue_;
+	// Line aliasing flag
+	bool lineAliasing_;
+	// Polygon aliasing flag
+	bool polygonAliasing_;
+	// Backface culling flag
+	bool backfaceCulling_;
 	// Shininess of 3D objects
 	GLint shininess_;
 	// Fog start and finish depths
-	GLint fogNear_, fogFar_;
+	GLint depthNear_, depthFar_;
 	// Near and far clipping planes for glPerspective() and glFrustum();
 	GLdouble clipNear_, clipFar_;
 
 	public:
-	// Set the bit for the specified option (if it is not set already)
-	void addGlOption(GlOption go);
-	// Unsets the bit for the specified option (if it is not unset already)
-	void removeGlOption(GlOption go);
-	// Return whether a given option is set
-	bool hasGlOption(GlOption go);
+	// Set status of fog (depth cueing)
+	void setDepthCue(bool status);
+	// Return status of depth cueing
+	bool depthCue();
 	// Sets the start depth of depth cueing
-	void setFogNnear(int i);
+	void setDepthNear(int i);
 	// Return depth cue start depth
-	GLint fogNear();
+	GLint depthNear();
 	// Sets the end depth of depth cueing
-	void setFogFar(int i);
+	void setDepthFar(int i);
 	// Return depth cue end depth
-	GLint fogFar();
+	GLint depthFar();
+	// Set status of line aliasing
+	void setLineAliasing(bool status);
+	// Return status of line aliasing
+	bool lineAliasing();
+	// Set status of polygon aliasing
+	void setPolygonAliasing(bool status);
+	// Return status of polygon aliasing
+	bool polygonAliasing();
+	// Set status of backface culling
+	void setBackfaceCulling(bool status);
+	// Return status of depth cueing
+	bool backfaceCulling();
 	// Return the Z depth of the near clipping plane
 	GLdouble clipNear();
+	// Set the Z-depth of the near clipping plane
+	void setClipNear(double d);
 	// Return the Z depth of the far clipping plane
 	GLdouble clipFar();
+	// Set the Z-depth of the far clipping plane
+	void setClipFar(double d);
 	// Sets the shininess of GL objects
 	void setShininess(int n);
 	// Return the current shininess of GL objects
@@ -298,15 +329,17 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	GLfloat colours_[Prefs::nPenColours][4];
+	double colours_[Prefs::nPenColours][4];
 
 	public:
-	// Set the specified colour to the integer RGB values supplied
-	void setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	// Set the specified colour to the integer RGBA values supplied
+	void setColour(PenColour c, double r, double g, double b, double a);
+	// Set the supplied element of the specified colour
+	void setColour(PenColour c, int i, double value);
 	// Copy the specified colour
 	void copyColour(PenColour c, GLfloat*);
 	// Return a pointer to the specified colour
-	GLfloat *colour(PenColour c);
+	double *colour(PenColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
 
@@ -330,7 +363,7 @@ class Prefs
 	// Size limit (kbytes) for caching trajectory frames
 	int cacheLimit_;
 	// Type of name->Z mapping to use
-	ElementMap::ZmapType zmapType_;
+	ElementMap::ZMapType zMapType_;
 	// Whether to retain file atom type names on load (in a new forcefield)
 	bool keepNames_;
 	// Whether to retain view when GUI starts (i.e. don't reset it)
@@ -353,18 +386,14 @@ class Prefs
 	void setPackOnLoad(FilterSwitch s);
 	// Whether atoms should be packed (with symmetry operations) after model load
 	FilterSwitch packOnLoad();
-	// Sets whether to load all coordinate sets on model load
-	void setLoadAllCoords(bool b);
-	// Whether all geometries in a non-trajectory file should be loaded
-	bool loadAllCoords();
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files
 	int cacheLimit();
 	// Sets the style of element conversion to use
-	void setZmapType(ElementMap::ZmapType i);
+	void setZMapType(ElementMap::ZMapType i);
 	// Return the style of element conversion in use
-	ElementMap::ZmapType zmapType();
+	ElementMap::ZMapType zMapType();
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
@@ -399,6 +428,8 @@ class Prefs
 	Prefs::GuideGeometry guideShape_;
 	// Hydrogen add distance
 	double hydrogenDistance_;
+	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
+	bool forceRhombohedral_;
 
 	public:
 	// Sets the bonding tolerance
@@ -433,6 +464,10 @@ class Prefs
 	void setHydrogenDistance(double d);
 	// Return hydrogen add distance
 	double hydrogenDistance();
+	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	void setForceRhombohedral(bool b);
+	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	bool forceRhombohedral();
 
 
 	/*
@@ -441,8 +476,10 @@ class Prefs
 	private:
 	// User-definable mouse button actions
 	MouseAction mouseAction_[Prefs::nMouseButtons];
+	Dnchar mouseActionTexts_[Prefs::nMouseButtons];
 	// User-definable key modifier actions
 	KeyAction keyAction_[Prefs::nModifierKeys];
+	Dnchar keyActionTexts_[Prefs::nModifierKeys];
 	// Zoom 'throttle'
 	double zoomThrottle_;
 
@@ -487,6 +524,8 @@ class Prefs
 	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
 	int maxRingSize();
+	// Set the maximum ring size allowed
+	void setMaxRingSize(int i);
 	// Set whether to fold atoms before replication
 	void setReplicateFold(bool b);
 	// Return whether to fold atoms before replication
@@ -515,13 +554,15 @@ class Prefs
 	// Return the working energy units
 	EnergyUnit energyUnit();
 	// Set the density unit to use
-	void setDensityUnits(DensityUnit du);
+	void setDensityUnit(DensityUnit du);
 	// Return the current density units to use
 	DensityUnit densityUnit();
 	// Convert the units of the given quantity
 	double convertEnergy(double energy, EnergyUnit);
 	// Return the electrostastic energy conversion factor
 	double elecConvert();
+	// Return the gas constant in the current unit of energy
+	double gasConstant();
 
 
 	/*

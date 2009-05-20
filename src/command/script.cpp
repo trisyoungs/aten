@@ -1,5 +1,5 @@
 /*
-	*** Script command functions
+	*** Script Commands
 	*** src/command/script.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,45 +19,50 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 
 // List available scripts
-int Command::function_CA_LISTSCRIPTS(CommandNode *&c, Bundle &obj)
+bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
-	for (CommandList *cl = aten.scripts.first(); cl != NULL; cl = cl->next)
-		msg.print("  %s (%s)\n", cl->scriptFilename(), cl->name());
-	return Command::Success;
+	for (Forest *f = aten.scripts.first(); f != NULL; f = f->next)
+		msg.print("  %s (%s)\n", f->filename(), f->name());
+	rv.reset();
+	return TRUE;
 }
 
 // Load script from disk
-int Command::function_CA_LOADSCRIPT(CommandNode *&c, Bundle &obj)
+bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	CommandList *cl = aten.scripts.add();
-	if (!cl->load(c->argc(0)))
+	Forest *f = aten.scripts.add();
+	if (!f->generateFromFile(c->argc(0)))
 	{
-		aten.scripts.remove(cl);
-		return Command::Fail;
+		aten.scripts.remove(f);
+		return FALSE;
 	}
-	if (c->hasArg(1)) cl->setName(c->argc(1));
-	else cl->setName(c->argc(0));
-	return Command::Success;
+	if (c->hasArg(1)) f->setName(c->argc(1));
+	else f->setName(c->argc(0));
+	rv.reset();
+	return TRUE;
 }
 
 // Run specified script
-int Command::function_CA_RUNSCRIPT(CommandNode *&c, Bundle &obj)
+bool Command::function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Find the script...
-	CommandList *cl;
-	for (cl = aten.scripts.first(); cl != NULL; cl = cl->next)
-		if (strcmp(c->argc(0), cl->name()) == 0) break;
-	if (cl != NULL)
+	Forest *f;
+	for (f = aten.scripts.first(); f != NULL; f = f->next) if (strcmp(c->argc(0), f->name()) == 0) break;
+	if (f != NULL)
 	{
 		msg.print("Executing script '%s':\n",c->argc(0));
-		cl->execute();
+		ReturnValue result;
+		f->executeAll(result);
 	}
 	else msg.print("Couldn't find script '%s'.\n",c->argc(0));
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

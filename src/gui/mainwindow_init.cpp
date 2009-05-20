@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "command/filter.h"
+#include "parser/tree.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
@@ -168,6 +168,9 @@ void AtenForm::finaliseUi()
 	elementGroup->addAction(ui.actionElementN);
 	elementGroup->addAction(ui.actionElementCustom);
 
+	/*
+	// Statusbar
+	*/
 	// Fix up the statusbar with a single big frame and no size grip
 	ui.MainWindowStatusBar->setSizeGripEnabled(FALSE);
 	QFrame *frame = new QFrame(this);
@@ -186,6 +189,7 @@ void AtenForm::finaliseUi()
 	lablayout->addWidget(sep,0);
 	// Info labels
 	QVBoxLayout *infolayout = new QVBoxLayout;
+	infolayout->setSizeConstraint(QLayout::SetMaximumSize);
 	infoLabel1 = new QLabel(this);
 	infoLabel1->setFont(font);
 	infolayout->addWidget(infoLabel1);
@@ -196,18 +200,19 @@ void AtenForm::finaliseUi()
 	// Progress indicator
 	progressIndicator = new QFrame(this);
 	progressIndicator->setContentsMargins(0,0,0,0);
-	QHBoxLayout *layout = new QHBoxLayout(progressIndicator);
+	QGridLayout *layout = new QGridLayout(progressIndicator);
 	layout->setMargin(0);
 	progressBar = new QProgressBar(this);
+	progressBar->setMaximumWidth(100);
 	progressLabel = new QLabel(this,0);
 	progressButton = new QPushButton(this);
 	progressButton->setText("Cancel");
 	QObject::connect(progressButton, SIGNAL(clicked()), this, SLOT(progressCancel()));
-	layout->addWidget(progressBar,255);
-	layout->addWidget(progressLabel,0);
-	layout->addWidget(progressButton,0);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
+	layout->addWidget(progressLabel, 0,0,1,2, Qt::AlignHCenter);
+	layout->addWidget(progressBar, 1,0,1,1);
+	layout->addWidget(progressButton, 1,1,1,1);
 	progressIndicator->setVisible(FALSE);
+	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,0);
 
 	// Populate scripts menu
 	refreshScriptsMenu();
@@ -225,16 +230,16 @@ void AtenForm::finaliseUi()
 void AtenForm::createDialogFilters()
 {
 	msg.enter("AtenForm::createDialogFilters");
-	Filter *f;
+	Refitem<Tree,int> *ri;
 	int n;
 
 	// Model Import
 	loadModelFilters.clear();
 	loadModelFilters += "All files (*)";
-	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
+	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next)
 	{
 		loadModelFilters += ";;";
-		loadModelFilters += f->description();
+		loadModelFilters += ri->item->filter.description();
 	}
 	ui.actionFileOpen->setEnabled(!loadModelFilters.isEmpty());
 	ui.RecentMenu->setEnabled(!loadModelFilters.isEmpty());
@@ -242,19 +247,19 @@ void AtenForm::createDialogFilters()
 	// Trajectory Import
 	loadTrajectoryFilters.clear();
 	loadTrajectoryFilters += "All files (*)";
-	for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
+	for (ri= aten.filters(FilterData::TrajectoryImport); ri != NULL; ri = ri->next)
 	{
 		loadTrajectoryFilters += ";;";
-		loadTrajectoryFilters += f->description();
+		loadTrajectoryFilters += ri->item->filter.description();
 	}
 	ui.actionFileAddTrajectory->setEnabled(!loadTrajectoryFilters.isEmpty());
 
 	// Model Export
 	saveModelFilters.clear();
-	for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next)
+	for (ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 	{
 		if (!saveModelFilters.isEmpty()) saveModelFilters += ";;";
-		saveModelFilters += f->description();
+		saveModelFilters += ri->item->filter.description();
 	}
 	// Check for empty filters list
 	ui.actionFileSave->setEnabled(!saveModelFilters.isEmpty());
@@ -276,10 +281,10 @@ void AtenForm::createDialogFilters()
 
 	// Expression Export
 	saveExpressionFilters.clear();
-	for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next)
+	for (ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 	{
 		if (!saveExpressionFilters.isEmpty()) saveExpressionFilters += ";;";
-		saveExpressionFilters += f->description();
+		saveExpressionFilters += ri->item->filter.description();
 	}
 	// Check for empty filters list
 	ui.actionFileSaveExpression->setEnabled(!saveExpressionFilters.isEmpty());
@@ -287,10 +292,10 @@ void AtenForm::createDialogFilters()
 	// Grid import
 	loadGridFilters.clear();
 	loadGridFilters += "All files (*)";
-	for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next)
+	for (ri = aten.filters(FilterData::GridImport); ri != NULL; ri = ri->next)
 	{
 		loadGridFilters += ";;";
-		loadGridFilters += f->description();
+		loadGridFilters += ri->item->filter.description();
 	}
 	gui.gridsWindow->ui.actionGridLoad->setEnabled(!loadGridFilters.isEmpty());
 

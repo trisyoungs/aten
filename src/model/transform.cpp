@@ -164,7 +164,6 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		//i->r() = tempv;
 		i = i->nextSelected();
 	}
-	changeLog.add(Log::Structure);
 	msg.exit("Model::rotateSelectionVector");
 }
 

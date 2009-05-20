@@ -69,7 +69,7 @@ void ColourScale::calculateDeltas()
 }
 
 // Add point to scale
-void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void ColourScale::addPoint(int position, double value, double r, double g, double b, double a)
 {
 	msg.enter("ColourScale::addPoint");
 	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
@@ -94,13 +94,13 @@ void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLf
 }
 
 // Add new point to end of colourscale
-void ColourScale::addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void ColourScale::addPointAtEnd(double value, double r, double g, double b, double a)
 {
 	addPoint(points_.nItems(), value, r, g, b, a);
 }
 
 // Set colour and value data for point
-void ColourScale::setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool setval, bool setcol)
+void ColourScale::setPoint(int position, double value, double r, double g, double b, double a, bool setval, bool setcol)
 {
 	msg.enter("ColourScale::setPoint");
 	// Check position supplied
@@ -126,7 +126,7 @@ void ColourScale::setPointValue(int position, double value)
 }
 
 // Set only colour for point
-void ColourScale::setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void ColourScale::setPointColour(int position, double r, double g, double b, double a)
 {
 	setPoint(position, 0.0f, r, g, b, a, FALSE, TRUE);
 }

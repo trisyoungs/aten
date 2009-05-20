@@ -82,7 +82,8 @@ void Canvas::renderExtra3d()
 			  }
 			  else
 			  {
-				radius = prefs.renderStyle() == Atom::TubeStyle ? prefs.atomStyleRadius(Atom::TubeStyle) : prefs.bondRadius();
+// 				radius = prefs.renderStyle() == Atom::TubeStyle ? prefs.atomStyleRadius(Atom::TubeStyle) : prefs.bondRadius();
+				radius = prefs.bondStyleRadius(prefs.renderStyle());
 				glCylinder(mouse, mouse.magnitude(), 3, radius);
 				glTranslated(mouse.x, mouse.y, mouse.z);
 				switch (prefs.renderStyle())
@@ -200,7 +201,7 @@ void Canvas::renderRegions()
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		elements().copyAmbientColour(i, colour);
-		colour[3] = 0.4f;
+		colour[3] = 0.4;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
 		  centre = m->area.centre();
@@ -229,7 +230,7 @@ void Canvas::renderRegions()
 		i ++;
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
+	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 	msg.exit("Canvas::renderRegions");
 }

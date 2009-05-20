@@ -41,6 +41,8 @@ class AtenSelectElement : public QDialog
 	void on_CancelButton_clicked(bool checked);
 	void ElementButton_clicked(bool checked);
 	void CommonElementButton_clicked(bool checked);
+	public:
+	void addCommonButtons(const char *buttonlist);
 
 	/*
 	// Local variables
@@ -52,6 +54,8 @@ class AtenSelectElement : public QDialog
 	Reflist<QPushButton,int> commonButtons_;	
 	// Array of element buttons
 	QPushButton **elementButtons_;
+	// Layout for common elements group
+	QHBoxLayout *commonGroupLayout_;
 
 	/*
 	// Methods

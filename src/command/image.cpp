@@ -1,5 +1,5 @@
 /*
-	*** Image command functions
+	*** Image Commands
 	*** src/command/image.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,7 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
@@ -27,16 +28,16 @@
 #include "classes/prefs.h"
 
 // Save current view as bitmap image
-int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
+bool Command::function_SaveBitmap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
 	// Convert format to bitmap_format
 	GuiQt::BitmapFormat bf = GuiQt::bitmapFormat(c->argc(0));
 	if (bf == GuiQt::nBitmapFormats)
 	{
 		msg.print("Unrecognised bitmap format.\n");
-		return Command::Fail;
+		return FALSE;
 	}
 
 	int width = 0, height = 0, quality = -1;
@@ -47,21 +48,24 @@ int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 	}
 	if (c->hasArg(4)) quality = c->argi(4);
 
-	return (gui.saveImage(c->argc(1), bf, width, height, quality) ? Command::Success : Command::Fail);
+	rv.reset();
+	return (gui.saveImage(c->argc(1), bf, width, height, quality) ? TRUE : FALSE);
 }
 
 // Save current view a vector graphic
-int Command::function_CA_SAVEVECTOR(CommandNode *&c, Bundle &obj)
+bool Command::function_SaveVector(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-// 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+// 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 // 	vector_format vf = VIF_from_text(c->argc(0));
 // 	if (vf == VIF_NITEMS)
 // 	{
 // 		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
-// 		return Command::Fail;
+// 		return FALSE;
 // 	}
 // 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
 // 	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
+	rv.reset();
 	msg.print("Saving images in vector format is not yet available.\n");
-	return Command::Fail;
+	return FALSE;
 }
+

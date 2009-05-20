@@ -27,12 +27,15 @@
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
-#include "base/parser.h"
+#include "base/lineparser.h"
 
 int printlevel = 0;
 
+// Local parser
+LineParser elparser;
+
 // Atom typing commands
-const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
+const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 Atomtype::AtomtypeCommand Atomtype::atomtypeCommand(const char *s)
 {
 	return (Atomtype::AtomtypeCommand) enumSearch("",Atomtype::nAtomtypeCommands,AtomtypeCommandKeywords,s);
@@ -133,20 +136,20 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 	ForcefieldAtom *ffa;
 	Dnchar temp;
 	// Find number of elements given in list...
-	parser.getArgsDelim(ellist,Parser::Defaults);
+	elparser.getArgsDelim(ellist, LineParser::Defaults);
 	// Use 'nargs' to allocate element list
-	nAllowedElements_ = parser.nArgs();
+	nAllowedElements_ = elparser.nArgs();
 	allowedElements_ = new int[nAllowedElements_];
 	count = 0;
 	// Go through items in 'element' list...
 	msg.print(Messenger::Typing,"  %i atom types/elements given for Atomtype : ",nAllowedElements_);
-	for (n=0; n<parser.nArgs(); n++)
+	for (n=0; n<elparser.nArgs(); n++)
 	{
 		// If name begins with a '&' then we expect an Atomtype id/name and not an element
-		if (parser.argc(n)[0] == '&')
+		if (elparser.argc(n)[0] == '&')
 		{
 			// Copy string and remove leading '$'
-			temp = parser.argc(n);
+			temp = elparser.argc(n);
 			temp.eraseStart(1);
 			// Search for the Atomtype pointer with ffid in 'temp' in the forcefield supplied
 			if (ff != NULL)
@@ -162,15 +165,15 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 				msg.exit("Atomtype::setElements");
 				return FALSE;
 			}
-			msg.print(Messenger::Typing,"%s ",parser.argc(n));
+			msg.print(Messenger::Typing,"%s ", elparser.argc(n));
 		}
 		else
 		{
 			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
-			el = elements().findAlpha(parser.argc(n));
+			el = elements().findAlpha(elparser.argc(n));
 			if (el == 0)
 			{
-				msg.print("Unrecognised element in list of bound atoms: '%s'\n",parser.argc(n));
+				msg.print("Unrecognised element in list of bound atoms: '%s'\n", elparser.argc(n));
 				msg.exit("Atomtype::setElements");
 				return FALSE;
 			}
@@ -178,7 +181,7 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 			{
 				allowedElements_[count] = el;
 				count ++;
-				msg.print(Messenger::Typing,"%s ",parser.argc(n));
+				msg.print(Messenger::Typing,"%s ", elparser.argc(n));
 			}
 		}
 	}
@@ -233,8 +236,8 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	{
 		// Get next command and repeat
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
-		optlist = parser.parseAtomtypeString(def);
-		keywd = parser.trimAtomtypeKeyword(optlist);
+		optlist = elparser.parseAtomtypeString(def);
+		keywd = elparser.trimAtomtypeKeyword(optlist);
 		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
@@ -360,8 +363,8 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	do
 	{
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
-		optlist = parser.parseAtomtypeString(def);
-		keywd = parser.trimAtomtypeKeyword(optlist);
+		optlist = elparser.parseAtomtypeString(def);
+		keywd = elparser.trimAtomtypeKeyword(optlist);
 		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
@@ -477,6 +480,21 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					}
 					nHydrogen_ = atoi(optlist.get());
 					break;
+				// Atom geometries
+				case (UnboundCommand):
+				case (OneBondCommand):
+				case (LinearCommand):
+				case (TShapeCommand):
+				case (TrigPlanarCommand):
+				case (TetrahedralCommand):
+				case (SquarePlanarCommand):
+				case (TrigBipyramidCommand):
+				case (OctahedralCommand):
+					// Convert atomtype geometry keyword to Atom::Geometry enum
+					ag = Atom::atomGeometry(keywd.get());
+					if (ag != Atom::nAtomGeometries) geometry_ = ag;
+					else printf("Internal Error: Failed to reconvert atom geometry in atomtype description.\n");
+					break;
 				default:
 					found = FALSE;
 					break;
@@ -485,19 +503,14 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for geometry specifications (if it wasn't a bound specifier or type command)
 		if (!found)
 		{
-			ag = Atom::atomGeometry(keywd.get());
-			if (ag != Atom::nAtomGeometries) geometry_ = ag;
+			if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
 			else
 			{
-				if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
-				else
-				{
-					msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
-					msg.exit("Atomtype::expand");
-					return FALSE;
-				}
-				break;
+				msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
+				msg.exit("Atomtype::expand");
+				return FALSE;
 			}
+			break;
 		}
 	} while (!def.isEmpty());
 	level --;

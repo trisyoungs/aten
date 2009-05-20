@@ -89,9 +89,7 @@ void AtenGrids::refresh()
 void AtenGrids::loadGrid()
 {
 	msg.enter("AtenGrids::loadGrid");
-
-
-	Filter *f;
+	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
 	QString selFilter;
 	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), gui.mainWindow->loadGridFilters, &selFilter);
@@ -100,12 +98,12 @@ void AtenGrids::loadGrid()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Find the filter that was selected
-		for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next) if (selFilter == f->description()) break;
-		if (f != NULL) f->execute(qPrintable(filename));
+		filter = aten.findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
+		if (filter != NULL) filter->executeRead(qPrintable(filename));
 		else
 		{
-			f = aten.probeFile(qPrintable(filename), Filter::GridImport);
-			if (f != NULL) f->execute(qPrintable(filename));
+			filter = aten.probeFile(qPrintable(filename), FilterData::GridImport);
+			if (filter != NULL) filter->executeRead(qPrintable(filename));
 		}
 	}
 	gui.gridsWindow->refresh();
@@ -288,10 +286,10 @@ void AtenGrids::refreshGridInfo()
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridPositiveColourFrame->setColour(g->positiveColour());
 	ui.GridPositiveColourFrame->update();
-	ui.GridSymmetricCheck->setChecked( g->symmetric() );
+	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
-	if (!g->useColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
+	if (!g->useColourScale()) ui.GridPositiveColourButton->setEnabled( !g->isSymmetric() );
 	ui.GridTransparencySpin->setValue( g->alpha() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
 	ui.GridColourscaleSpin->setEnabled( g->useColourScale() );
@@ -382,7 +380,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->positiveColour();
+	double *col = g->positiveColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -403,7 +401,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->positiveColour();
+	double *col = g->positiveColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog

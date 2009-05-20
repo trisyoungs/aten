@@ -1,5 +1,5 @@
 /*
-	*** Trajectory command functions
+	*** Trajectory Commands
 	*** src/command/trajectory.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -20,18 +20,46 @@
 */
 
 #include "command/commands.h"
+#include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/gui.h"
 
-// Finalise current trajectory frame
-int Command::function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj)
+// Add new frame to the current model's trajectory
+bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs = obj.m->addFrame();
+	obj.m->setRenderFromFrames();
+	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
+	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.set(VTypes::ModelData, obj.rs);
+	return TRUE;
+}
+
+// Clear any trajectory data in the current model
+bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.rs != obj.m)
+	{
+		msg.print("Current model is a trajectory frame - resetting to the parent model...\n");
+		obj.rs = obj.m->trajectoryParent();
+	}
+	obj.m->clearTrajectory();
+	gui.modelChanged(FALSE, FALSE, FALSE);
+	rv.reset();
+	return TRUE;
+}
+
+// Finalise current trajectory frame
+bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs == obj.m)
 	{
 		msg.print( "Current model does not appear to be a trajectory frame.\n");
-		return Command::Fail;
+		return FALSE;
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.rs->bohrToAngstrom();
@@ -39,7 +67,6 @@ int Command::function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj)
 	obj.rs->calculateViewMatrix();
 	obj.rs->resetView();
 	obj.rs->calculateMass();
-	obj.rs->calculateDensity();
 	obj.rs->selectNone();
 	obj.rs->changeLog.reset();
 	obj.rs->changeLog.updateSavePoint();
@@ -47,84 +74,93 @@ int Command::function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj)
 	obj.rs->setFilename("frame");
 	obj.rs->enableUndoRedo();
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Skip to first frame ('firstframe')
-int Command::function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj)
+bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return Command::Fail;
+		return FALSE;
 	}
 	obj.m->seekFirstFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Skip to last frame ('lastframe')
-int Command::function_CA_LASTFRAME(CommandNode *&c, Bundle &obj)
+bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return Command::Fail;
+		return FALSE;
 	}
 	obj.m->seekLastFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-int Command::function_CA_LOADTRAJECTORY(CommandNode *&c, Bundle &obj)
+bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
-	if (f == NULL) return Command::Fail;
-	return (obj.m->initialiseTrajectory(c->argc(0),f) ? Command::Success : Command::Fail);
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Tree *filter = aten.probeFile(c->argc(0), FilterData::TrajectoryImport);
+	if (filter == NULL) return FALSE;
+	bool result = obj.m->initialiseTrajectory(c->argc(0),filter);
+	rv.set(result);
+	return TRUE;
 }
 
 // Go to next frame ('nextframe')
-int Command::function_CA_NEXTFRAME(CommandNode *&c, Bundle &obj)
+bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return Command::Fail;
+		return FALSE;
 	}
 	obj.m->seekNextFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Go to previous frame ('prevframe')
-int Command::function_CA_PREVFRAME(CommandNode *&c, Bundle &obj)
+bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return Command::Fail;
+		return FALSE;
 	}
 	obj.m->seekPreviousFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
 
 // Seek to specified frame ('seekframe <n>')
-int Command::function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj)
+bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	if (obj.m->nTrajectoryFrames() == 0)
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.m->nFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return Command::Fail;
+		return FALSE;
 	}
-	obj.m->seekFrame(c->argi(0));
+	obj.m->seekFrame(c->argi(0)-1);
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	return Command::Success;
+	rv.reset();
+	return TRUE;
 }
+

@@ -1,5 +1,5 @@
 /*
-	*** Flow control functions
+	*** Flow Commands
 	*** src/command/flow.cpp
 	Copyright T. Youngs 2007-2009
 
@@ -19,295 +19,150 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "variables/accesspath.h"
-#include "command/commandlist.h"
-#include "model/model.h"
-#include "base/pattern.h"
-#include "main/aten.h"
+#include "command/commands.h"
+#include "parser/commandnode.h"
+#include "parser/tree.h"
+#include "base/mathfunc.h"
+#include <stdio.h>
+#include <string.h>
 
-// Root node (no action)
-int Command::function_CA_ROOTNODE(CommandNode *&c, Bundle &obj)
+// Dummy Node
+bool Command::function_NoFunction(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	return Command::Success;
+	return TRUE;
 }
 
-// Break out of current loop
-int Command::function_CA_BREAK(CommandNode *&c, Bundle &obj)
+// Joiner
+bool Command::function_Joiner(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Set next command to be the node after the root FOR command
-	c = c->pointer();
-	c->setLoopActive(FALSE);
-	c = c->next;
-	return Command::SuccessNoMove;
+	// Execute both commands
+	bool result = TRUE;
+	if (c->hasArg(0)) result = c->arg(0, rv);
+	if (result && c->hasArg(1)) result = c->arg(1, rv);
+	return result;
 }
 
-// Cycle current loop
-int Command::function_CA_CONTINUE(CommandNode *&c, Bundle &obj)
+// Declarations
+bool Command::function_Declarations(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// Set next command to be the root loop node
-	c = c->pointer();
-	return Command::SuccessNoMove;
+	// Reset each variable argument
+	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return FALSE;
+	return TRUE;
 }
 
-// Else statement
-int Command::function_CA_ELSE(CommandNode *&c, Bundle &obj)
+// Break out of current for loop
+bool Command::function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	c = c->branchCommands();
-	return Command::SuccessNoMove;
+	c->parent()->setAcceptedFail(Command::Break);
+	return FALSE;
 }
 
-// Elseif statement
-int Command::function_CA_ELSEIF(CommandNode *&c, Bundle &obj)
+// Continue for loop at next iteration
+bool Command::function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (c->ifEvaluate()) c = c->branchCommands();
-	else c = c->next;
-	return Command::SuccessNoMove;
+	c->parent()->setAcceptedFail(Command::Continue);
+	return FALSE;
 }
 
-int Command::function_CA_END(CommandNode *&c, Bundle &obj)
+// Do-While loop
+bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	// This should never be called....
-	return Command::Success;
-}
-
-// Loop over atoms
-int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
-{
-	// Grab variable list from command's parent list
-	bool status = TRUE;
-	int n;
-	if (c->isLoopActive())
+	// Argument 0 - Blockment
+	// Argument 1 - Test condition
+	ReturnValue test;
+	bool result;
+	Command::Function af;
+	do
 	{
-		// Do loop iteration.
-		// Increase count and iteration variables
-		c->arg(0)->step(1);
-		c->increaseIterations();
-		// Set new variables from loop variable and check for termination
-		switch (c->argt(0))
+		// Run blockment- catch break and continue calls which return FALSE
+		result = c->arg(0, rv);
+		if (!result)
 		{
-			case (VTypes::IntegerData):
-				// If third argument (loop limit) was provided, check against it. Otherwise. continue loop forever unless we're reading from a file where we check for end of file.
-				if (c->hasArg(2))
-				{
-					if (c->argi(0) > c->argi(2)) status = FALSE;
-				}
-				else if (c->parent()->inputFile() != NULL)
-				{
-					// Check for end of file...
-					if (c->parent()->inputFile()->peek() == -1)
-					{
-						msg.print(Messenger::Verbose,"Infinite 'for' reached end of file.\n");
-						status = FALSE;
-					}
-				}
-				break;
-			case (VTypes::AtomData):
-				// If only one argument, check for NULL. If two, check for last atom in pattern.
-				// If three, check for last atom in molecule specified
-				if (c->hasArg(2))
-				{
-					n = c->argi(2) * ((Pattern*) c->argp(1, VTypes::PatternData))->nAtoms();
-					if (c->loopIterations() > n) status = FALSE;
-				}
-				else if (c->hasArg(1))
-				{
-					n = ((Pattern*) c->argp(1, VTypes::PatternData))->totalAtoms();
-					if (c->loopIterations() > n) status = FALSE;
-				}
-				else if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;
-				break;
-			case (VTypes::PatternData):
-				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
-				break;
-			case (VTypes::ForcefieldAtomData):
-				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
-				break;
-			case (VTypes::ModelData):
-				if (c->argp(0, VTypes::ModelData) == NULL) status = FALSE;
-				break;
-			default:
-				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));
-				return Command::Fail;
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
 		}
-		if (status == TRUE) c = c->branchCommands();
-		else
-		{
-			c->setLoopActive(FALSE);
-			c = c->next;
-		}
-	}
-	else
+		// Perform test of condition
+		if (!c->arg(1, test)) return FALSE;
+	} while (test.asBool());
+	return TRUE;
+}
+
+// For loop
+bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Argument 0 - Initial value expression
+	// Argument 1 - Loop condition
+	// Argument 2 - Action on loop cycle
+	// Argument 3 - Statementlist
+	 // Get initial variable value
+	if (!c->arg(0, rv)) return FALSE;
+	ReturnValue ifval;
+	bool result;
+	Command::Function af;
+	while (TRUE)
 	{
-		// Initialise loop variable in arg(0), depending on its type
-		//msg.print(Messenger::Verbose,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->name(), text_from_VT(counttype));
-		switch (c->argt(0))
+		// Termination condition
+		if (!c->arg(1, ifval)) return FALSE;
+		if (!ifval.asBool()) break;
+		// Loop body - catch break and continue calls which return FALSE
+		result = c->arg(3, rv);
+		if (!result)
 		{
-			// Integer loop: 1 arg  - loop from 1 until end of file or termination
-			//		 3 args - loop from arg 2 (int) to arg 3 (int)
-			case (VTypes::IntegerData):
-				if (!c->hasArg(2))
-				{
-					c->arg(0)->set(1);
-					// Check for end of file...
-					if (c->parent()->inputFile() != NULL)
-						if (c->parent()->inputFile()->peek() == -1)
-						{
-							msg.print(Messenger::Verbose,"Command 'for' reached end of file.\n");
-							status = FALSE;
-						}
-				}
-				else
-				{
-					c->arg(0)->set(c->argi(1));
-					if (c->argi(1) > c->argi(2)) status = FALSE;
-				}
-				break;
-			// Atom loop:	1 arg  - loop over all atoms in model
-			//		2 args - loop over all atoms in arg 2 (pattern)
-			//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
-			case (VTypes::AtomData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				// If no second variable is given, loop over all atoms
-				if (c->hasArg(1))
-				{
-					// Second argument determines pattern
-					Pattern *p;
-					if (c->argt(1) == VTypes::PatternData) p = (Pattern*) c->argp(1, VTypes::PatternData);
-					else if (c->argt(1) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(1));
-					else
-					{
-						msg.print( "Atom loop argument 2 must be of Pattern or Integer type.\n");
-						return Command::Fail;
-					}
-					// Must have a valid pattern pointer here
-					if (p == NULL)
-					{
-						msg.print( "Atom loop was not given a valid pattern.\n");
-						return Command::Fail;
-					}
-					// Check on third argument - if provided, must be an int
-					if (c->hasArg(2))
-					{
-						if (c->argt(2) == VTypes::IntegerData)
-						{
-							int i = c->argi(2);
-							// Check molecule range
-							if ((i < 1) || (i > p->nMolecules()))
-							{
-								msg.print( "Atom loop pattern molecule is out of range.\n");
-								return Command::Fail;
-							}
-							int m = p->startAtom();
-							m += (i-1) * p->nAtoms();
-							c->arg(0)->set(obj.rs->atom(m), VTypes::AtomData);
-						}
-						else
-						{
-							msg.print( "Atom loop argument 3 must be of Integer type.\n.");
-							return Command::Fail;
-						}
-					}
-					else c->arg(0)->set(p->firstAtom(), VTypes::AtomData);
-				}
-				else c->arg(0)->set(obj.rs->atoms(), VTypes::AtomData);
-				if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;
-				break;
-			// Pattern loop	 1 arg  - loop over patterns in model
-			case (VTypes::PatternData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				if (c->argt(0) == VTypes::PatternData) c->arg(0)->set(obj.rs->patterns(), VTypes::PatternData);
-				else
-				{
-					msg.print( "Pattern loop variable must be of Pattern type.\n");
-					return Command::Fail;
-				}
-				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
-				break;
-			// Loop over unique ForcefieldAtoms in model
-			case (VTypes::ForcefieldAtomData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				if (c->hasArg(1))
-				{
-					if (c->argt(1) != VTypes::ForcefieldAtomData)
-					{
-						msg.print( "Second argument to atomtype loop must be a variable of Atomtype type.\n");
-						return Command::Fail;
-					}
-					// Start atomtype loop at type given instead of first
-					c->arg(0)->set(c->arg(1)->asPointer(VTypes::ForcefieldAtomData), VTypes::ForcefieldAtomData);
-				}
-				else c->arg(0)->set(obj.rs->uniqueTypes(), VTypes::ForcefieldAtomData);
-				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
-				break;
-			// Model loop
-			case (VTypes::ModelData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				if (c->argt(0) == VTypes::ModelData) c->arg(0)->set(aten.models(), VTypes::ModelData);
-				else
-				{
-					msg.print( "Modeltern loop variable must be of Model type.\n");
-					return Command::Fail;
-				}
-				if (c->argp(0, VTypes::ModelData) == NULL) status = FALSE;
-				break;
-			default:
-				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));
-				return Command::Fail;
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
 		}
-		// Check loop's starting status
-		if (status)
-		{
-			c->setLoopActive(TRUE);
-			c->setLoopIterations(1);
-			msg.print(Messenger::Commands,"Loop is initialised and running.\n");
-			c = c->branchCommands();
-		}
-		else
-		{
-			c->setLoopActive(FALSE);
-			c->setLoopIterations(0);
-			msg.print(Messenger::Commands,"Loop terminated on initialisation.\n");
-			c = c->next;
-		}
+		// Loop 'increment' statement
+		if (!c->arg(2, rv)) return FALSE;
 	}
-	return Command::SuccessNoMove;
+	return TRUE;
 }
 
-// Jump to specified node
-int Command::function_CA_GOTO(CommandNode *&c, Bundle &obj)
+// If test
+bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	c = c->pointer();
-	return Command::SuccessNoMove;
+	ReturnValue ifval;
+	if (!c->arg(0, ifval)) return FALSE;
+	if (ifval.asBool()) return (c->arg(1, rv));
+	else if (c->hasArg(2)) return (c->arg(2, rv));
+	return TRUE;
 }
 
-// Jump to next node in current list that is *not* an ELSE(IF)
-int Command::function_CA_GOTONONIF(CommandNode *&c, Bundle &obj)
+// Return from function/filter/program
+bool Command::function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	//printf("Searching for next non-if node...\n");
-	c = c->pointer();
-	// Skip to node after the source node and begin search.
-	c = c->next;
-	// If we find an BC_IF node we stop and continue on from there.
-	//printf("Skipped back to node %li (%s)\n",fn,text_from_FC(fn->command()));
-	Command::Function cf = c->function();
-	while ((cf == CA_ELSEIF) || (cf == CA_ELSE))
+	c->parent()->setAcceptedFail(Command::Return);
+	if (c->hasArg(0)) c->arg(0, rv);
+	return FALSE;
+}
+
+// While loop
+bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Argument 0 - Test condition
+	// Argument 1 - Blockment
+	ReturnValue test;
+	bool result;
+	Command::Function af;
+	// Perform initial test of condition
+	if (!c->arg(0, test)) return FALSE;
+	while (test.asBool())
 	{
-		c = c->next;
-		cf = c->function();
+		// Run blockment- catch break and continue calls which return FALSE
+		result = c->arg(1, rv);
+		if (!result)
+		{
+			af = c->parent()->acceptedFail();
+			c->parent()->setAcceptedFail(Command::NoFunction);
+			if (af == Command::Break) break;
+			else if (af != Command::Continue) return FALSE;
+		}
+		// Perform test of condition
+		if (!c->arg(0, test)) return FALSE;
 	}
-	return Command::SuccessNoMove;
+	return TRUE;
 }
 
-// If statement
-int Command::function_CA_IF(CommandNode *&c, Bundle &obj)
-{
-	if (c->ifEvaluate()) c = c->branchCommands();
-	else c = c->next;
-	return Command::SuccessNoMove;
-}
-
-// Internal TERMINATE command for flow control
-int Command::function_CA_TERMINATE(CommandNode *&c, Bundle &obj)
-{
-	return Command::Exit;
-}

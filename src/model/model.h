@@ -29,6 +29,9 @@
 #include "base/glyph.h"
 #include "base/bond.h"
 #include "base/atom.h"
+#include "base/lineparser.h"
+#define SGCOREDEF__
+#include "base/sginfo.h"
 #include "methods/mc.h"
 
 // Forward Declarations
@@ -36,7 +39,7 @@ class Forcefield;
 class ForcefieldBound;
 class Constraint;
 class Pattern;
-class Filter;
+class Tree;
 class Site;
 class UndoState;
 class Atomaddress;
@@ -61,14 +64,10 @@ class Model
 	// Model
 	*/
 	private:
-	// Total mass of model
-	double mass_;
-	// Density of model (if periodic)
-	double density_;
 	// Name of model
 	Dnchar name_;
 	// Format of model when loaded / last saved
-	Filter *filter_;
+	Tree *filter_;
 	// Filename of model when loaded / last saved
 	Dnchar filename_;
 
@@ -78,23 +77,15 @@ class Model
 	// Return the stored filename of the model
 	const char *filename() const;
 	// Sets the file filter of the model
-	void setFilter(Filter *f);
+	void setFilter(Tree *f);
 	// Return the stored file filter of the model
-	Filter *filter() const;
+	Tree *filter() const;
 	// Sets the name of the model
 	void setName(const char *s);
 	// Return the name of the model
 	const char *name() const;
-	// Return the mass of the molecule
-	double mass() const;
-	// Return the density of the model
-	double density() const;
 	// Clear all data in model
 	void clear();
-	// Calculate the total mass of the model
-	void calculateMass();
-	// Calculate the density of the model
-	void calculateDensity();
 	// Print information about the model (inc atoms)
 	void print();
 	// Print log information for the current model
@@ -126,6 +117,14 @@ class Model
 	void shiftAtomUp(Atom *i);
 	// Move specified atom one place 'down' in the list (to higher ID)
 	void shiftAtomDown(Atom *i);
+	// Total mass of atoms in the model
+	double mass_;
+	// Number of atoms with unidentified element ('XX') in model
+	int nUnknownAtoms_;
+	// Reduce the mass (and unknown element count) of the model
+	void reduceMass(int element);
+	// Increase the mass (and unknown element count) of the model
+	void increaseMass(int element);
 	
 	public:
 	// Create a new atom
@@ -186,6 +185,12 @@ class Model
 	void styleAtom(Atom *i, Atom::DrawStyle);
 	// Set the drawing style of the current atom selection
 	void styleSelection(Atom::DrawStyle);
+	// Calculate the total mass of the model
+	void calculateMass();
+	// Return the mass of the molecule
+	double mass() const;
+	// Return number of unknown atoms in the model
+	int nUnknownAtoms();
 
 
 	/*
@@ -194,6 +199,12 @@ class Model
 	private:
 	// Cell definition (also contains reciprocal cell definition)
 	Cell cell_;
+	// Density of model (if periodic)
+	double density_;
+	// Calculate the density of the model
+	void calculateDensity();
+	// SGInfo structure
+	T_SgInfo spacegroup_;
 
 	public:
 	// Return pointer to unit cell structure
@@ -204,10 +215,14 @@ class Model
 	void setCell(Mat3<double> axes);
 	// Set cell (parameter)
 	void setCell(Cell::CellParameter cp, double value);
+	// Set cell (other Cell pointer)
+	void setCell(Cell *newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
 	void foldAllAtoms();
+	// Set up spacegroup data for model (with sginfo)
+	void setSpacegroup(const char *s);
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(Generator *gen);
 	// Apply the symmetry operators listed in the model's spacegroup
@@ -220,6 +235,8 @@ class Model
 	bool scaleCell(const Vec3<double> &scale, bool usecogs);
 	// Rotate cell and contents
 	void rotateCell(int axis, double angle);
+	// Return the density of the model
+	double density() const;
 
 
 	/*
@@ -329,13 +346,17 @@ class Model
 	// DeSelect all atoms of the same element as the atom with the specified id
 	void deselectElement(int el, bool markonly = FALSE);
 	// Select all atoms which match the provided type
-	void selectType(int element, const char *typedesc, bool markonly = FALSE, bool deselect = FALSE);
+	int selectType(int element, const char *typedesc, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
 	Atom *firstSelected(bool markonly = FALSE);
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
+	// Select atoms (or molecule COGs) inside of the current unit cell
+	void selectInsideCell(bool moleculecogs, bool markonly = FALSE);
+	// Select atoms (or molecule COGs) outside of the current unit cell
+	void selectOutsideCell(bool moleculecogs, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()
@@ -691,10 +712,12 @@ class Model
 	Dnchar trajectoryName_;
 	// Filename of file
 	Dnchar trajectoryFilename_;
-	// Format of trajectory file
-	Filter *trajectoryFilter_;
-	// File structure
-	ifstream *trajectoryFile_;
+	// Filter for trajectory file
+	Tree *trajectoryFilter_;
+	// Header and frame read functions from filter
+	Tree *trajectoryHeaderFunction_, *trajectoryFrameFunction_;
+	// Trajectory file parser
+	LineParser trajectoryParser_;
 	// File offsets for frames
 	streampos *trajectoryOffsets_;
 	// Number of highest frame file offset stored
@@ -703,42 +726,46 @@ class Model
 	long int frameSize_;
 	// Frame list
 	List<Model> frames_;
-	// Add frame to trajectory
-	Model *addFrame();
 	// Remove frame from trajectory
 	void removeFrame(Model*);
-	// Number of frames cached
-	int nCachedFrames_;
-	// Total number of frames available in file or cache
-	int nTrajectoryFrames_;
+	// Total number of frames available in file (if an uncached trajectory)
+	int nFileFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
-	bool trajectoryCached_;
+	bool framesAreCached_;
 	// Current frame position counter
-	int trajectoryPosition_;
+	int frameIndex_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
 	// Pointer to config to be drawn
 	Model *currentFrame_;
 
 	public:
+	// Add frame to trajectory
+	Model *addFrame();
+	// Return whether a trajectory for this model exists
+	bool hasTrajectory();
+	// Return whether the trajectory is cached (if there is one)
+	bool trajectoryIsCached();
 	// Set parent model of trajectory
 	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory
 	Model *trajectoryParent();
 	// Initialise trajectory from file specified
-	bool initialiseTrajectory(const char*, Filter*);
+	bool initialiseTrajectory(const char*, Tree*);
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
 	// Set the format of the trajectory
-	void setTrajectoryFilter(Filter *f);
+	void setTrajectoryFilter(Tree *f);
 	// Return the trajectory file pointer
 	ifstream *trajectoryFile();
 	// Return the current frame pointer
 	Model *currentFrame();
+	// Return pointer to specified frame number
+	Model *frame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
-	int nTrajectoryFrames();
+	int nFrames();
 	// Return the current integer frame position
-	int trajectoryPosition();
+	int frameIndex();
 	// Seek to first frame
 	void seekFirstFrame();
 	// Seek to last frame

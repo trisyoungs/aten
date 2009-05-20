@@ -50,18 +50,18 @@ Grid::Grid()
 	offScreenDisplayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
-	positiveColour_[0] = 0.0f;
-	positiveColour_[1] = 0.0f;
-	positiveColour_[2] = 1.0f;
-	positiveColour_[3] = 0.5f;
-	negativeColour_[0] = 1.0f;
-	negativeColour_[1] = 1.0f;
-	negativeColour_[2] = 1.0f;
-	negativeColour_[3] = 0.5f;
+	positiveColour_[0] = 0.0;
+	positiveColour_[1] = 0.0;
+	positiveColour_[2] = 1.0;
+	positiveColour_[3] = 0.5;
+	negativeColour_[0] = 1.0;
+	negativeColour_[1] = 1.0;
+	negativeColour_[2] = 1.0;
+	negativeColour_[3] = 0.5;
 	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
-	colourScale_ = 0;
-	prefs.colourScale[0].addLink(this);
+	colourScale_ = -1;
+	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
 
@@ -168,7 +168,7 @@ Mat3<double> Grid::axes()
 	return cell_.axes();
 }
 
-// Return lengths of cell axiss
+// Return lengths of cell axes
 Vec3<double> Grid::lengths()
 {
 	return cell_.lengths();
@@ -177,8 +177,7 @@ Vec3<double> Grid::lengths()
 // Set data origin
 void Grid::setOrigin(const Vec3<double> v)
 {
-	origin_ = v;
-	log_++;
+	origin_ = v; log_++;
 }
 
 // Return the origin of the Grid data
@@ -288,7 +287,7 @@ Grid::SurfaceStyle Grid::style()
 }
 
 // Set alpha value of the surface
-void Grid::setAlpha(GLfloat a)
+void Grid::setAlpha(double a)
 {
 	positiveColour_[3] = a;
 	negativeColour_[3] = a;
@@ -296,21 +295,39 @@ void Grid::setAlpha(GLfloat a)
 }
 
 // Return alpha value of the grid's surface
-GLfloat Grid::alpha()
+double Grid::alpha()
 {
 	return positiveColour_[3];
 }
 
 // Return the (positive) colour of the grid's surface
-GLfloat *Grid::positiveColour()
+double *Grid::positiveColour()
 {
 	return positiveColour_;
 }
 
+// Copy the positive colour of the surface
+void Grid::copyPositiveColour(GLfloat *col)
+{
+	col[0] = (GLfloat) positiveColour_[0];
+	col[1] = (GLfloat) positiveColour_[1];
+	col[2] = (GLfloat) positiveColour_[2];
+	col[3] = (GLfloat) positiveColour_[3];
+}
+
 // Return the (negative) colour of the grid's surface
-GLfloat *Grid::negativeColour()
+double *Grid::negativeColour()
 {
 	return negativeColour_;
+}
+
+// Copy the negative colour of the surface
+void Grid::copyNegativeColour(GLfloat *col)
+{
+	col[0] = (GLfloat) negativeColour_[0];
+	col[1] = (GLfloat) negativeColour_[1];
+	col[2] = (GLfloat) negativeColour_[2];
+	col[3] = (GLfloat) negativeColour_[3];
 }
 
 // Log changes
@@ -322,11 +339,22 @@ void Grid::logChange()
 // Set the colourscale associated with the data
 void Grid::setColourScale(int id)
 {
-	// Remove old colourscale link from current colourscale value
-	prefs.colourScale[colourScale_].breakLink(this);
+	// Check range of supplied id
+	if ((id < 0) || (id > 9))
+	{
+		// Remove link in old colourscale if necessary
+		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
+		useColourScale_ = FALSE;
+		//colourScale_ = -1;
+		log_ ++;
+		return;
+	}
+	// Remove old colourscale link (if one existed)
+	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 	colourScale_ = id;
 	log_ ++;
 	prefs.colourScale[colourScale_].addLink(this);
+	useColourScale_ = TRUE;
 	int i, j, k;
 	double **data2, *data1;
 	// Adjust the colour scale to encompass all grid values...
@@ -358,11 +386,10 @@ int Grid::colourScale()
 	return colourScale_;
 }
 
-// Set whether the surfce should be rendered with an associated colourscale
+// Set whether the surface uses the defined colour scale or not
 void Grid::setUseColourScale(bool b)
 {
 	useColourScale_ = b;
-	log_ ++;
 }
 
 // Whether the surface uses the defined colour scale or not
@@ -447,6 +474,12 @@ void Grid::clear()
 	visible_ = TRUE;
 	deleteArrays();
 	msg.exit("Grid::clear");
+}
+
+// Return pointer to the underlying cell structure
+Cell *Grid::cell()
+{
+	return &cell_;
 }
 
 // Set spacing for a cubic grid
@@ -564,7 +597,7 @@ void Grid::setNextData(double d)
 	setLimits(d);
 }
 
-void Grid::setPositiveColour(GLfloat r, GLfloat g, GLfloat b)
+void Grid::setPositiveColour(double r, double g, double b)
 {
 	positiveColour_[0] = r;
 	positiveColour_[1] = g;
@@ -572,7 +605,7 @@ void Grid::setPositiveColour(GLfloat r, GLfloat g, GLfloat b)
 	log_ ++;
 }
 
-void Grid::setNegativeColour(GLfloat r, GLfloat g, GLfloat b)
+void Grid::setNegativeColour(double r, double g, double b)
 {
 	negativeColour_[0] = r;
 	negativeColour_[1] = g;
@@ -617,7 +650,7 @@ void Grid::setSymmetric(bool b)
 }
 
 // Returns whether to use both signs of a symmetric isovalue distribution
-bool Grid::symmetric()
+bool Grid::isSymmetric()
 {
 	return symmetric_;
 }

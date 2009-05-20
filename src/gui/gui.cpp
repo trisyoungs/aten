@@ -105,7 +105,11 @@ void GuiQt::run()
 	msg.enter("GuiQt::run");
 
 	// If no model loaded, add one
-	if (aten.nModels() == 0) Model *m = aten.addModel();
+	if (aten.nModels() == 0)
+	{
+		Model *m = aten.addModel();
+		m->enableUndoRedo();
+	}
 
 	// Initialise Qt's icons resource
 	Q_INIT_RESOURCE(icons);
@@ -201,11 +205,21 @@ void GuiQt::run()
 	gui.mainView.postRedisplay();
 
 	// Display message box warning if there was a filter load error
-	if (!aten.filterLoadSuccessful())
+	if (aten.nFiltersFailed() == -1)
 	{
-		int ret = QMessageBox::warning(NULL, "Aten",
-		"Filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.",
-		QMessageBox::Cancel, QMessageBox::Cancel);
+		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's /data directory, or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+	}
+	else if (aten.nFiltersFailed() > 0)
+	{
+		// Construct the messagebox text
+		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
+		for (Dnchar *d = aten.failedFilters(); d != NULL; d = d->next)
+		{
+			text += "\t";
+			text += d->get();
+			if (d->next != NULL) text += "\n";
+		}
+		int ret = QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
 	// Enter main message processing loop
@@ -251,12 +265,12 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	QString s;
 	Model *m = aten.currentModel();
 	// First label - atom and trajectory frame information
-	if (m->nTrajectoryFrames() != 0)
+	if (m->hasTrajectory())
 	{
 		s = "(Frame ";
-		s += (m->renderSource() == m ? "Main" : itoa(m->trajectoryPosition()));
+		s += (m->renderSource() == m ? "Main" : itoa(m->frameIndex()+1));
 		s += " of ";
-		s += itoa(m->nTrajectoryFrames());
+		s += itoa(m->nFrames());
 		s += ") ";
 		// Toolbar
 		mainWindow->updateTrajectoryToolbar();
@@ -264,6 +278,13 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	m = m->renderSource();
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
+	// Add on unknown atom information
+	if (m->nUnknownAtoms() != 0)
+	{
+		s += " (<b>";
+		s += itoa(m->nUnknownAtoms());
+		s += " unknown</b>) ";
+	}
 	if (m->nSelected() != 0)
 	{
 		s += "(<b>";
@@ -277,17 +298,16 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	Cell::CellType ct = m->cell()->type();
 	if (ct != Cell::NoCell)
 	{
-		s = "(";
-		s += Cell::cellType(ct);
+		s = Cell::cellType(ct);
 		s += ", ";
 		s += ftoa(m->density());
 		switch (prefs.densityUnit())
 		{
 			case (Prefs::GramsPerCm):
-				s += " g cm<sup>-3</sup>)";
+				s += " g cm<sup>-3</sup>";
 				break;
 			case (Prefs::AtomsPerAngstrom):
-				s += " atoms &#8491;<sup>-3</sup>)";
+				s += " atoms &#8491;<sup>-3</sup>";
 				break;
 		}
 	}
@@ -336,7 +356,7 @@ void GuiQt::updateTrajControls()
 	if (!doesExist_) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->nTrajectoryFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
+	if (m->nFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
 	else
 	{
 		// Make sure the trajectory toolbar is visible
@@ -424,7 +444,8 @@ bool GuiQt::saveBeforeClose()
 	// Check the status of all models, asking to save before close if necessary
 	char text[512];
 	int returnvalue;
-	Filter *f;
+	ReturnValue rv;
+	Tree *f;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->changeLog.isModified())
@@ -444,12 +465,12 @@ bool GuiQt::saveBeforeClose()
 				case (QMessageBox::Save):
 					// If model has a filter set, just save it
 					f = m->filter();
-					if (f != NULL) f->execute(m->filename());
+					if (f != NULL) f->executeWrite(m->filename(), rv);
 					else if (mainWindow->runSaveModelDialog())
 					{
 						m->setFilter(mainWindow->saveModelFilter);
 						m->setFilename(mainWindow->saveModelFilename.get());
-						mainWindow->saveModelFilter->execute(m->filename());
+						mainWindow->saveModelFilter->executeWrite(m->filename(), rv);
 					}
 					else return FALSE;
 					break;
@@ -607,7 +628,6 @@ void GuiQt::textProgressUpdate(int currentstep)
 	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{
-
 		for (n=0; n<ndots; n++) printf(".");
 		for (n=ndots; n<30; n++) printf(" ");
 		// Lastly, print percentage
@@ -620,7 +640,9 @@ void GuiQt::textProgressUpdate(int currentstep)
 // Terminate the text progress dialog
 void GuiQt::textProgressTerminate()
 {
+	if (textProgressPercent_ == -1) return;
 	printf("\n");
+	textProgressPercent_ = -1;
 }
 
 /*
