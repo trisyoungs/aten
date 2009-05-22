@@ -24,6 +24,7 @@
 #include "base/atom.h"
 #include "base/constants.h"
 #include "base/elements.h"
+#include "ff/forcefield.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -52,7 +53,9 @@ ForcefieldVariable::~ForcefieldVariable()
 
 // Accessor data
 Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
-// 	{ "i",		VTypes::AtomData,	 FALSE, TRUE }, TGAY
+	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
+	{ "filename",		VTypes::StringData,		0, TRUE },
+	{ "name",		VTypes::StringData,		0, FALSE }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -119,6 +122,15 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	if (result) switch (acc)
 	{
+		case (ForcefieldVariable::AtomTypes):
+			rv.set(VTypes::ForcefieldAtomData, ptr->types());
+			break;
+		case (FileName):
+			rv.set( ptr->filename() );
+			break;
+		case (Name):
+			rv.set( ptr->name() );
+			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldVariable.\n", accessorData[i].name);
 			result = FALSE;
@@ -192,6 +204,9 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	Forcefield *ptr= (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
 	if (result) switch (acc)
 	{
+		case (Name):
+			ptr->setName( newvalue.asString() );
+			break;
 		default:
 			printf("ForcefieldVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;

@@ -46,6 +46,8 @@ template <class T> class Vec4
 	void zero();
 	// Set all four components simultaneously
 	void set(T, T, T, T);
+	// Set single component
+	void set(int el, T value);
 	// Adjust all four components simultaneously
 	void add(T, T, T, T);
 	// Set all four components simultaneously
@@ -101,6 +103,15 @@ template <class T> void Vec4<T>::set(T a, T b, T c, T d)
 	y = b;
 	z = c;
 	w = d;
+}
+
+// Set single component
+template <class T> void Vec4<T>::set(int el, T value)
+{
+	if (el == 0) x = value;
+	else if (el == 1) y = value;
+	else if (el == 2) z = value;
+	else if (el == 3) w = value;
 }
 
 // Add

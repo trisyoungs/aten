@@ -286,10 +286,8 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
 			break;
 		case (CellVariable::SpacegroupName):
-			ptr->setSpacegroup( newvalue.asString() );
-			break;
 		case (CellVariable::SpacegroupId):
-			ptr->setSpacegroupId( newvalue.asInteger() );
+			ptr->parent()->setSpacegroup( newvalue.asString() );
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

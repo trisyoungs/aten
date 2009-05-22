@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/atomtype.h"
+#include "classes/neta.h"
 #include "base/sysfunc.h"
 #include "base/atom.h"
 #include "base/dnchar.h"
@@ -35,10 +35,10 @@ int printlevel = 0;
 LineParser elparser;
 
 // Atom typing commands
-const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-Atomtype::AtomtypeCommand Atomtype::atomtypeCommand(const char *s)
+const char *NetaCommandKeywords[Neta::nNetaCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+Neta::NetaCommand Neta::netaCommand(const char *s)
 {
-	return (Atomtype::AtomtypeCommand) enumSearch("",Atomtype::nAtomtypeCommands,AtomtypeCommandKeywords,s);
+	return (Neta::NetaCommand) enumSearch("",Neta::nNetaCommands,NetaCommandKeywords,s);
 }
 
 // Ring typing commands
@@ -49,7 +49,7 @@ Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 }
 
 // Constructors
-Atomtype::Atomtype()
+Neta::Neta()
 {
 	// Private variables
 	environment_ = Atom::NoEnvironment;
@@ -83,26 +83,26 @@ Ringtype::Ringtype()
 }
 
 // Destructors
-Atomtype::~Atomtype()
+Neta::~Neta()
 {
 	// Need to destroy all ring structures and bound atom list
 	if (allowedElements_ != NULL) delete[] allowedElements_;
 }
 
 // Set character element
-void Atomtype::setCharacterElement(int el)
+void Neta::setCharacterElement(int el)
 {
 	characterElement_ = el;
 }
 
 // Return character element
-int Atomtype::characterElement()
+int Neta::characterElement()
 {
 	return characterElement_;
 }
 
 // Print Atom Type data
-void Atomtype::print()
+void Neta::print()
 {
 	printlevel ++;
 	printf("(%3i) Element :", printlevel);
@@ -113,7 +113,7 @@ void Atomtype::print()
 	if (boundList_.nItems() != 0)
 	{
 		printf("(%3i)   Atoms : \n", printlevel);
-		for (Atomtype *xat = boundList_.first(); xat != NULL; xat = xat->next) xat->print();
+		for (Neta *xat = boundList_.first(); xat != NULL; xat = xat->next) xat->print();
 	}
 	if (ringList_.nItems() != 0)
 	{
@@ -127,11 +127,11 @@ void Atomtype::print()
 // Set routines
 */
 
-// Set element list in Atomtype
-bool Atomtype::setElements(const char *ellist, Forcefield *ff)
+// Set element list in Neta
+bool Neta::setElements(const char *ellist, Forcefield *ff)
 {
-	// Add elements from the comma-separated ellist string as possible matches for this Atomtype
-	msg.enter("Atomtype::setElements");
+	// Add elements from the comma-separated ellist string as possible matches for this Neta
+	msg.enter("Neta::setElements");
 	int n, count, el;
 	ForcefieldAtom *ffa;
 	Dnchar temp;
@@ -142,16 +142,16 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 	allowedElements_ = new int[nAllowedElements_];
 	count = 0;
 	// Go through items in 'element' list...
-	msg.print(Messenger::Typing,"  %i atom types/elements given for Atomtype : ",nAllowedElements_);
+	msg.print(Messenger::Typing,"  %i atom types/elements given for Neta : ",nAllowedElements_);
 	for (n=0; n<elparser.nArgs(); n++)
 	{
-		// If name begins with a '&' then we expect an Atomtype id/name and not an element
+		// If name begins with a '&' then we expect an Neta id/name and not an element
 		if (elparser.argc(n)[0] == '&')
 		{
 			// Copy string and remove leading '$'
 			temp = elparser.argc(n);
 			temp.eraseStart(1);
-			// Search for the Atomtype pointer with ffid in 'temp' in the forcefield supplied
+			// Search for the Neta pointer with ffid in 'temp' in the forcefield supplied
 			if (ff != NULL)
 			{
 				ffa = ff->findType(temp.asInteger());
@@ -161,20 +161,20 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 			}
 			else
 			{
-				printf("Atomtype::setElements <<<< Type ID/Name found in list, but no forcefield passed >>>>\n");
-				msg.exit("Atomtype::setElements");
+				printf("Neta::setElements <<<< Type ID/Name found in list, but no forcefield passed >>>>\n");
+				msg.exit("Neta::setElements");
 				return FALSE;
 			}
 			msg.print(Messenger::Typing,"%s ", elparser.argc(n));
 		}
 		else
 		{
-			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
+			// WATCH Since Neta::el became Neta::characterElement_, this does not get set. Should it have been set before? WATCH
 			el = elements().findAlpha(elparser.argc(n));
 			if (el == 0)
 			{
 				msg.print("Unrecognised element in list of bound atoms: '%s'\n", elparser.argc(n));
-				msg.exit("Atomtype::setElements");
+				msg.exit("Neta::setElements");
 				return FALSE;
 			}
 			else
@@ -186,12 +186,12 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 		}
 	}
 	msg.print(Messenger::Typing,"\n");
-	msg.exit("Atomtype::setElements");
+	msg.exit("Neta::setElements");
 	return TRUE;
 }
 
 // Set the bound bond type
-void Atomtype::setBoundBond(Bond::BondType bt)
+void Neta::setBoundBond(Bond::BondType bt)
 {
 	boundBond_ = bt;
 }
@@ -208,7 +208,7 @@ void Ringtype::print()
 	if (ringAtoms_.nItems() != 0)
 	{
 		printf("(%3i) Contains :\n", printlevel);
-		for (Atomtype *xat = ringAtoms_.first(); xat != NULL; xat = xat->next) xat->print();
+		for (Neta *xat = ringAtoms_.first(); xat != NULL; xat = xat->next) xat->print();
 	}
 	printlevel --;
 }
@@ -227,7 +227,7 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	int level = 0;
 	bool found, hasopts;
 	RingtypeCommand rtc;
-	Atomtype *newat;
+	Neta *newat;
 	level ++;
 	msg.print(Messenger::Typing,"expand[ring] : Received string [%s]\n",data);
 	// Grab the next command, trip the keyword and option list (if there is one).
@@ -236,13 +236,13 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	{
 		// Get next command and repeat
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
-		optlist = elparser.parseAtomtypeString(def);
-		keywd = elparser.trimAtomtypeKeyword(optlist);
+		optlist = elparser.parseNetaString(def);
+		keywd = elparser.trimNetaKeyword(optlist);
 		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
 		found = FALSE;
-		// Check for Atomtype specifier ('-' or '='). Both mean the same here...
+		// Check for Neta specifier ('-' or '='). Both mean the same here...
 		c = keywd[0];
 		if ((c == '-') || (c == '='))
 		{
@@ -329,8 +329,8 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	return TRUE;
 }
 
-// Master creation routine, returning the head node of an Atomtype structure.
-bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
+// Master creation routine, returning the head node of an Neta structure.
+bool Neta::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 {
 	// Expands the structure with the commands contained in the supplied string.
 	// Format is : X(options,...) where X is the element symbol and 'options' is zero or more of:
@@ -342,20 +342,20 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	// The supplied string should contain a keyword followed by (optional) bracketed list of specs.
 	// Parent ring structure must be supplied when descending into a ring options structure.
 	// Parent pointer is used for error reporting
-	msg.enter("Atomtype::expand");
+	msg.enter("Neta::expand");
 	Dnchar keywd, optlist, def;
 	Ringtype *newring;
 	bool found, hasopts;
 	char c;
 	int n, level = 0;
 	Atom::AtomGeometry ag;
-	AtomtypeCommand atc;
+	NetaCommand atc;
 	level ++;
-	msg.print(Messenger::Typing,"Atomtype::expand - Received string [%s]\n",data);
+	msg.print(Messenger::Typing,"Neta::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
 	{
 		level --;
-		msg.exit("Atomtype::expand");
+		msg.exit("Neta::expand");
 		return TRUE;
 	}
 	// Grab the next command, strip the keyword and option list (if there is one).
@@ -363,8 +363,8 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	do
 	{
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
-		optlist = elparser.parseAtomtypeString(def);
-		keywd = elparser.trimAtomtypeKeyword(optlist);
+		optlist = elparser.parseNetaString(def);
+		keywd = elparser.trimNetaKeyword(optlist);
 		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
@@ -379,17 +379,17 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			if (keywd[1] == '\0')
 			{
 				msg.print("Bound specifiers ('-' or '=') must be given an element, type, or list.\n");
-				msg.exit("Atomtype::expand");
+				msg.exit("Neta::expand");
 				return FALSE;
 			}
 			// Remove leading character, add bound atom and set its element list
 			keywd.eraseStart(1);
-			Atomtype *newat = boundList_.add();
+			Neta *newat = boundList_.add();
 			newat->setElements(keywd.get(),ff);
 			if (c == '=') newat->setBoundBond(Bond::Double);
 			if (!newat->expand(optlist.get(),ff,parent))
 			{
-				msg.exit("Atomtype::expand");
+				msg.exit("Neta::expand");
 				return FALSE;
 			}
 			found = TRUE;
@@ -397,85 +397,85 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for keywords (if it wasn't a bound specifier)
 		if (!found)
 		{
-			atc = Atomtype::atomtypeCommand(keywd.get());
+			atc = Neta::netaCommand(keywd.get());
 			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
 			found = TRUE;
 			switch (atc)
 			{
 				// Hybridisation / environment settings (no options)
-				case (Atomtype::SpCommand):
+				case (Neta::SpCommand):
 					environment_ = Atom::SpEnvironment;
 					break;
-				case (Atomtype::Sp2Command):
+				case (Neta::Sp2Command):
 					environment_ = Atom::Sp2Environment;
 					break;
-				case (Atomtype::Sp3Command):
+				case (Neta::Sp3Command):
 					environment_ = Atom::Sp3Environment;
 					break;
 				// Ring specification (possible options)
-				case (Atomtype::RingCommand):
+				case (Neta::RingCommand):
 					newring = ringList_.add();
 					if ((hasopts) && (!newring->expand(optlist.get(),ff,parent)))
 					{
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}	
 					break;
 				// Disallow rings
-				case (Atomtype::NoRingCommand):
+				case (Neta::NoRingCommand):
 					acyclic_ = TRUE;
 					break;
 				// Request exact bond number
-				case (Atomtype::NBondsCommand):
+				case (Neta::NBondsCommand):
 					// Must have optlist...
 					if (!hasopts)
 					{
 						msg.print("Number of bonds must be provided in atomtype description (e.g. nbonds=2).\n");
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}
 					nBonds_ = atoi(optlist.get());
 					break;
 				// Request exact bond type (bond=BondType)
-				case (Atomtype::BondCommand):
+				case (Neta::BondCommand):
 					// Must have optlist...
 					if (!hasopts)
 					{
 						msg.print("Bond type must be provided in atomtype description (e.g. bond=single).\n");
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}
 					boundBond_ = Bond::bondType(optlist.get());
 					break;
 				// Number of times to match (n=int)
-				case (Atomtype::RepeatCommand):
+				case (Neta::RepeatCommand):
 					// Must have optlist...
 					if (!hasopts)
 					{
 						msg.print("Repeat number must be provided in atomtype description (e.g. n=5).\n");
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}
 					nRepeat_ = atoi(optlist.get());
 					break;
 				// Oxidation state of element (os=int)
-				case (Atomtype::OxidationStateCommand):
+				case (Neta::OxidationStateCommand):
 					// Must have optlist...
 					if (!hasopts)
 					{
 						msg.print("Oxidation state must be provided in atomtype description (e.g. os=1).\n");
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}
 					os_ = atoi(optlist.get());
 					break;
 				// Request no attached hydrogens
-				case (Atomtype::NHydrogensCommand):
+				case (Neta::NHydrogensCommand):
 					// Must have optlist...
 					if (!hasopts)
 					{
 						msg.print("Number of hydrogens must be provided in atomtype description (e.g. nh=3).\n");
-						msg.exit("Atomtype::expand");
+						msg.exit("Neta::expand");
 						return FALSE;
 					}
 					nHydrogen_ = atoi(optlist.get());
@@ -507,14 +507,14 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			else
 			{
 				msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
-				msg.exit("Atomtype::expand");
+				msg.exit("Neta::expand");
 				return FALSE;
 			}
 			break;
 		}
 	} while (!def.isEmpty());
 	level --;
-	msg.exit("Atomtype::expand");
+	msg.exit("Neta::expand");
 	return TRUE;
 }
 
@@ -522,10 +522,10 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 // Match Functions
 */
 
-int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model *parent, Atom *topatom)
+int Neta::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model *parent, Atom *topatom)
 {
-	msg.enter("Atomtype::matchInList");
-	// Search the atomlist supplied for a match to this Atomtype.
+	msg.enter("Neta::matchInList");
+	// Search the atomlist supplied for a match to this Neta.
 	// If we find one, remove the corresponding atom from the atomlist.
 	int score, bondscore;
 	Refitem<Atom,int> *boundi;
@@ -539,27 +539,27 @@ int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model 
 		score = matchAtom(boundi->item, ringdata, parent, topatom);
 		if (score > -1) break;
 	}
-	// If boundi is NULL then we finished the loop without finding a match to this Atomtype.
+	// If boundi is NULL then we finished the loop without finding a match to this Neta.
 	if (boundi != NULL)
 	{
 		alist->remove(boundi);
-		msg.exit("Atomtype::matchInList");
+		msg.exit("Neta::matchInList");
 		return bondscore+score;
 	}
-	msg.exit("Atomtype::matchInList");
+	msg.exit("Neta::matchInList");
 	return -1;
 }
 
-int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
+int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 {
 	// Given the supplied atom pointer and ring data pointer (passed from pattern)
 	// see how well the description matches the actual atom, returning as an int. Cycle data is 
 	// available in (pattern->)rings. Exit and return -1 as soon as a test fails.
-	msg.enter("Atomtype::matchAtom");
+	msg.enter("Neta::matchAtom");
 	static int level = 0;
 	int typescore, atomscore, ringscore, n;
 	bool found;
-	Atomtype *bat;
+	Neta *bat;
 	Ringtype *atr;
 	Ring *r;
 	ForcefieldAtom *ffa;
@@ -573,7 +573,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	{
 		if (i->element() != characterElement_)
 		{
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 		else typescore = 1;
@@ -603,9 +603,9 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			ffa = rd->item;
 			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->get_ffid(),ffa->name());
 			// Check element of type first....
-			if (i->element() != ffa->atomtype()->characterElement()) continue;
+			if (i->element() != ffa->neta()->characterElement()) continue;
 			// Does this atom match the type descriptions asked for?
-			n = rd->item->atomtype()->matchAtom(i,ringdata,parent,topatom);
+			n = rd->item->neta()->matchAtom(i,ringdata,parent,topatom);
 			if (n > -1)
 			{
 				found = TRUE;
@@ -618,7 +618,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -636,7 +636,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is '%s', but type needs %s]\n", Atom::atomEnvironment(i->environment()), Atom::atomEnvironment(environment_));
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -654,7 +654,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n", i->os(), os_);
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -672,7 +672,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n",i->nBonds(),nBonds_);
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -690,7 +690,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is '%s', but type needs '%s']\n", Atom::atomGeometry(i->geometry(parent)), Atom::atomGeometry(geometry_));
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -713,7 +713,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n", n, nHydrogen_);
 			level --;
-			msg.exit("Atomtype::matchAtom");
+			msg.exit("Neta::matchAtom");
 			return -1;
 		}
 	}
@@ -726,7 +726,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			for (n=0; n<bat->nRepeat_; n++)
 			{
 				msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (n=%i/%i): ",this,level,bat,n+1,bat->nRepeat_);
-				// Check the atomlist for a match to the bound Atomtype
+				// Check the atomlist for a match to the bound Neta
 				atomscore = bat->matchInList(&atomchecklist,ringdata,parent,topatom);
 				if (atomscore != -1)
 				{
@@ -737,7 +737,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 				{
 					msg.print(Messenger::Typing,"[failed]\n");
 					level --;
-					msg.exit("Atomtype::matchAtom");
+					msg.exit("Neta::matchAtom");
 					return -1;
 				}
 			}
@@ -756,7 +756,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			{
 				msg.print(Messenger::Typing,"(%li %2i) [failed - acyclic specified but is in %i rings]\n",this,level,ringchecklist.nItems());
 				level --;
-				msg.exit("Atomtype::matchAtom");
+				msg.exit("Neta::matchAtom");
 				return -1;
 			}
 		}
@@ -812,7 +812,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 					msg.print(Messenger::Typing,"(%li %2i) ... ... Atoms:\n", this, level);
 					atomchecklist.clear();
 					refring->item->addAtomsToReflist(&atomchecklist,NULL);
-					// Now go through list of specified Atomtypes in this Ringtype
+					// Now go through list of specified Netas in this Ringtype
 					for (bat = atr->ringAtoms_.first(); bat != NULL; bat = bat->next)
 					{
 						for (n=0; n<bat->nRepeat_; n++)
@@ -850,7 +850,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 				{
 					msg.print(Messenger::Typing,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
 					level --;
-					msg.exit("Atomtype::matchAtom");
+					msg.exit("Neta::matchAtom");
 					return -1;
 				}
 			} //End of loop over repeats
@@ -858,7 +858,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// All checks completed, so return the final typing score
 	level --;
-	msg.exit("Atomtype::matchAtom");
+	msg.exit("Neta::matchAtom");
 	return typescore;
 }
 

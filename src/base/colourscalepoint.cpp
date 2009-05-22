@@ -117,10 +117,10 @@ void ColourScaleDelta::colour(double v, GLfloat *target)
 	double clampv = (v - start_) / delta_;
 	if (clampv < 0.0) clampv = 0.0;
 	else if (clampv > 1.0) clampv = 1.0;
-	target[0] = startColour_[0] + deltaColour_[0] * clampv;
-	target[1] = startColour_[1] + deltaColour_[1] * clampv;
-	target[2] = startColour_[2] + deltaColour_[2] * clampv;
-	target[3] = startColour_[3] + deltaColour_[3] * clampv;
+	target[0] = (GLfloat) startColour_[0] + deltaColour_[0] * clampv;
+	target[1] = (GLfloat) startColour_[1] + deltaColour_[1] * clampv;
+	target[2] = (GLfloat) startColour_[2] + deltaColour_[2] * clampv;
+	target[3] = (GLfloat) startColour_[3] + deltaColour_[3] * clampv;
 }
 
 // Return the starting value of the range

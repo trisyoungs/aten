@@ -9,5 +9,3 @@ add_subdirectory(model)
 add_subdirectory(main)
 add_subdirectory(render)
 
-
-

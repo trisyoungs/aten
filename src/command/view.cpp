@@ -70,7 +70,7 @@ bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotate(c->argd(0), c->argd(1));
+	obj.rs->rotate(c->argd(1), c->argd(0));
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;

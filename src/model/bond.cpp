@@ -173,7 +173,7 @@ void Model::clearBonding()
 // Initialise reflists based on current extent of model
 void Model::initialiseBondingCuboids()
 {
-	int x,y,z,box,x2,y2,z2,n,m;
+// 	int x,y,z,box,x2,y2,z2,n,m;
 	Vec3<double> r;
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;

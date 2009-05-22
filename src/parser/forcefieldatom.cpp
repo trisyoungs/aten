@@ -49,7 +49,6 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 
 // Accessor data
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
-	{ "atomtype",		VTypes::StringData,		0, TRUE },
 	{ "charge",		VTypes::DoubleData,		0, FALSE },
 	{ "data",		VTypes::DoubleData,		MAXFFPARAMDATA, FALSE },
 	{ "description",	VTypes::StringData,		0, FALSE },
@@ -57,6 +56,7 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 	{ "form",		VTypes::StringData,		0, FALSE },
 	{ "id",			VTypes::IntegerData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
+	{ "neta",		VTypes::StringData,		0, FALSE },
 	{ "ff",			VTypes::ForcefieldData,		0, TRUE }
 };
 
@@ -124,9 +124,6 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result) switch (acc)
 	{
-		case (ForcefieldAtomVariable::Atomtype):
-			rv.set(ptr->atomtypeString());
-			break;
 		case (ForcefieldAtomVariable::Charge):
 			rv.set(ptr->charge());
 			break;
@@ -152,6 +149,9 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			break;
 		case (ForcefieldAtomVariable::Name):
 			rv.set(ptr->name());
+			break;
+		case (ForcefieldAtomVariable::Neta):
+			rv.set(ptr->netaString());
 			break;
 		case (ForcefieldAtomVariable::ParentFF):
 			rv.set(VTypes::ForcefieldData, ptr->parent());
@@ -249,6 +249,9 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 			break;
 		case (ForcefieldAtomVariable::Name):
 			ptr->setName(newvalue.asString());
+			break;
+		case (ForcefieldAtomVariable::Neta):
+			ptr->setNeta(newvalue.asString(), NULL, ptr);
 			break;
 		default:
 			printf("ForcefieldAtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

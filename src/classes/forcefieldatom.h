@@ -22,7 +22,7 @@
 #ifndef ATEN_FORCEFIELDATOM_H
 #define ATEN_FORCEFIELDATOM_H
 
-#include "classes/atomtype.h"
+#include "classes/neta.h"
 #include "base/dnchar.h"
 #include "base/forms.h"
 
@@ -56,9 +56,9 @@ class ForcefieldAtom
 	// Description of atom type
 	Dnchar description_;
 	// Original atomtype string used to create the atomtype
-	Dnchar atomtypeString_;
+	Dnchar netaString_;
 	// Atomtype description
-	Atomtype atomtype_;
+	Neta neta_;
 	// Parameter data
 	double params_[MAXFFPARAMDATA];
 	// Generator data (if present in a rule-based Forcefield)
@@ -102,11 +102,11 @@ class ForcefieldAtom
 	// Returns the description of the type
 	const char *description();
 	// Returns the atomtype description
-	Atomtype *atomtype();
-	// Set the atomtype string (and calculate new atomtype)
-	bool setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
+	Neta *neta();
+	// Set the NETA string (and calculate new atomtype)
+	bool setNeta(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
 	// Returns the original atomtype string
-	const char *atomtypeString();
+	const char *netaString();
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified

@@ -61,7 +61,7 @@ void Command::initPointers()
 	// Analyse commands
 	pointers_[Finalise] = &Command::function_Finalise;
 	pointers_[FrameAnalyse] = &Command::function_FrameAnalyse;
-	pointers_[Geometry] = &Command::function_Geometry;
+	pointers_[Geometric] = &Command::function_Geometric;
 	pointers_[ModelAnalyse] = &Command::function_ModelAnalyse;
 	pointers_[PDens] = &Command::function_PDens;
 	pointers_[PrintJobs] = &Command::function_PrintJobs;
@@ -223,7 +223,7 @@ void Command::initPointers()
 	pointers_[FFPattern] = &Command::function_FFPattern;
 	pointers_[FinaliseFF] = &Command::function_FinaliseFF;
 	pointers_[GenConvert] = &Command::function_GenConvert;
-	pointers_[Generator] = &Command::function_Generator;
+	pointers_[GeneratorData] = &Command::function_GeneratorData;
 	pointers_[GetFF] = &Command::function_GetFF;
 	pointers_[InterDef] = &Command::function_InterDef;
 	pointers_[LoadFF] = &Command::function_LoadFF;
@@ -357,6 +357,7 @@ void Command::initPointers()
 	pointers_[Eof] = &Command::function_Eof;
 	pointers_[Find] = &Command::function_Find;
 	pointers_[GetLine] = &Command::function_GetLine;
+	pointers_[NextArg] = &Command::function_NextArg;
 	pointers_[PeekChar] = &Command::function_PeekChar;
 	pointers_[PeekCharI] = &Command::function_PeekCharI;
 	pointers_[ReadChars] = &Command::function_ReadChars;

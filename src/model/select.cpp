@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "classes/atomtype.h"
+#include "classes/neta.h"
 #include "base/pattern.h"
 #include "gui/gui.h"
 
@@ -327,7 +327,7 @@ void Model::deselectElement(int el, bool markonly)
 int Model::selectType(int element, const char *typedesc, bool markonly, bool deselect)
 {
 	msg.enter("Model::selectType");
-	Atomtype testat;
+	Neta testat;
 	testat.setCharacterElement(element);
 	if (!testat.expand(typedesc,NULL,NULL))
 	{

@@ -189,9 +189,9 @@ int CommandParser::lex()
 			VTypes::DataType dt = VTypes::dataType(token);
 			if (dt != VTypes::nDataTypes)
 			{
-				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->VARTYPE)\n",tree_);
+				msg.print(Messenger::Parse, "LEXER (%li): ...which is a variable type name (->VTYPE)\n",tree_);
 				yylval.vtype = dt;
-				return VARTYPE;
+				return VTYPE;
 			}
 
 			// Built-in numeric constants
@@ -229,7 +229,7 @@ int CommandParser::lex()
 			else if (strcmp(token,"do") == 0) n = DO;
 			else if (strcmp(token,"while") == 0) n = WHILE;
 			else if (strcmp(token,"return") == 0) n = RETURN;
-			else if (strcmp(token,"void") == 0) n = VOID;
+			else if (strcmp(token,"void") == 0) n = DIOV;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a high-level keyword (%i)\n",tree_,n);

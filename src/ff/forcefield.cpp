@@ -91,6 +91,12 @@ void Forcefield::setEnergyGenerator(int n)
 	else energyGenerators_[n] = TRUE;
 }
 
+// Return energy generator array
+bool *Forcefield::energyGenerators()
+{
+	return energyGenerators_;
+}
+
 // Set internal energy unit of forcefield
 void Forcefield::setEnergyUnit(Prefs::EnergyUnit eu)
 {

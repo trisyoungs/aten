@@ -48,10 +48,10 @@ bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
-bool Command::function_Geometry(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_Geometric(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Geometry::Geometry *newgeom = new Geometry::Geometry;
+	Geometry *newgeom = new Geometry;
 	obj.m->pendingQuantities.own(newgeom);
 	// Set quantity name and destination filename
 	newgeom->setName(c->argc(0));

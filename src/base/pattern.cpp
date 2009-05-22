@@ -872,7 +872,6 @@ void Pattern::findRings()
 	msg.enter("Pattern::findRings");
 	int n, rsize;
 	Atom *i;
-	Refitem<Bond,int> *bref;
 	Ring path;
 	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
@@ -979,17 +978,15 @@ int Pattern::totalBondOrderPenalty()
 void Pattern::augment()
 {
 	msg.enter("Pattern::augment");
-	Atom *i, *iprev, *inext;
+	Atom *i;
 	Refitem<Bond,Bond::BondType> *rb;
 	Refitem<Bond,int> *bref, *heavybond;
 	Refitem<Atom,int> *aref;
 	Bond *b1, *b2, *b3;
-	Bond::BondType bt;
-	int n, nHeavy, pielec, remainder, totalpenalty, ringpenalty, newpenalty, tboi, tboj;
+	int n, nHeavy, totalpenalty, ringpenalty, newpenalty;
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
-	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements().
+	Assume the structure is chemically 'correct' - i.e. each atom is bound to a likely number of other atoms.
 	If hydrogens are missing then the results will be unpredictable.
 	Based on methods suggested in:
 	'Automatic atom type and bond type perception in molecular mechanical calculations'
@@ -1196,7 +1193,7 @@ bool Pattern::typeAtoms()
 	// Return FALSE if one or more atoms could not be typed
 	msg.enter("Pattern::typeAtoms");
 	int a, newmatch, bestmatch, nfailed;
-	Atomtype *at;
+	Neta *at;
 	Atom *i;
 	Forcefield *ff;
 	ForcefieldAtom *ffa;
@@ -1246,7 +1243,7 @@ bool Pattern::typeAtoms()
 		for (ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 		{
 			// Grab next atomtype and reset tempi variables
-			at = ffa->atomtype();
+			at = ffa->neta();
 			// First, check element is the same, otherwise skip
 			if (i->element() != at->characterElement()) continue;
 			// See how well this ff description matches the environment of our atom 'i'

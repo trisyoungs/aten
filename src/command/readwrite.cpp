@@ -111,6 +111,23 @@ bool Command::function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Get next whitespace-delimited argument from current file
+bool Command::function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->isFileGoodForReading())
+	{
+		msg.print("No valid filesource available for the 'readnext' command.\n");
+		return FALSE;
+	}
+	Dnchar arg;
+	rv.set( c->parent()->parser()->getCharsDelim(&arg) );
+	ReturnValue argrv;
+	argrv.set(arg.get());
+	c->setArg(0, argrv);
+	return TRUE;
+}
+
 // Peek next character from file
 bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -292,7 +309,7 @@ bool Command::function_ReadLineFormatted(CommandNode *c, Bundle &obj, ReturnValu
 	return TRUE;
 }
 
-// Get next whitespace-delimited argument from file
+// Get next whitespace-delimited argument from current line
 bool Command::function_ReadNext(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.

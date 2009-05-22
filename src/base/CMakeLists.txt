@@ -46,11 +46,11 @@ generator.h
 spacegroup.h
 sginfo.h
 generator.cpp 
-sgclib.cpp
-sgfind.cpp
-sghkl.cpp
-sgio.cpp
-sgsi.cpp
+sgclib.c
+sgfind.c
+sghkl.c
+sgio.c
+sgsi.c
 spacegroup.cpp
 )
 

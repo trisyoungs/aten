@@ -104,7 +104,7 @@ class Command
 		// Analysis commands
 		Finalise,
 		FrameAnalyse,
-		Geometry,
+		Geometric,
 		ModelAnalyse,
 		PDens,
 		PrintJobs,
@@ -265,7 +265,7 @@ class Command
 		FFPattern,
 		FinaliseFF,
 		GenConvert,
-		Generator,
+		GeneratorData,
 		GetFF,
 		InterDef,
 		LoadFF,
@@ -401,6 +401,7 @@ class Command
 		FilterFileName,
 		Find,
 		GetLine,
+		NextArg,
 		PeekChar,
 		PeekCharI,
 		ReadChars,
@@ -522,7 +523,7 @@ class Command
 	// Analyse commands
 	static bool function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Geometry(CommandNode *c, Bundle &obj, ReturnValue &rv);	
+	static bool function_Geometric(CommandNode *c, Bundle &obj, ReturnValue &rv);	
 	static bool function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintJobs(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -679,7 +680,7 @@ class Command
 	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Generator(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -803,6 +804,7 @@ class Command
 	static bool function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -410,7 +410,7 @@ bool LineParser::getNextN(int length, Dnchar *destarg)
 	}
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
-	if (striptrailing) for (n = arglen-1; isblank(tempArg_[n]); --n) tempArg_[n] = '\0'; 
+	if (striptrailing) for (n = arglen-1; (tempArg_[n] == ' ') || (tempArg_[n] == '\t'); --n) tempArg_[n] = '\0'; 
 	if (destarg != NULL) destarg->set(tempArg_);
 	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);
@@ -539,6 +539,32 @@ void LineParser::getArgsDelim(const char *s, int options)
 	getAllArgsDelim();
 }
 
+// Get next delimited chunk from file (not line)
+bool LineParser::getCharsDelim(Dnchar *destarg)
+{
+	int length = 0;
+	bool result = TRUE;
+	char c;
+	while (!file_.eof())
+	{
+		file_.get(c);
+		if ((c == '\n') || (c == '\t') || (c == '\r') || (c == ' '))
+		{
+			if (length != 0) break;
+		}
+		if (c == '\0')
+		{
+			if (length == 0) result = FALSE;
+			break;
+		}
+		tempArg_[length] = c;
+		++length;
+	}
+	tempArg_[length] = '\0';
+	if (destarg != NULL) destarg->set(tempArg_);
+	return result;
+}
+
 // Return a number of characters from the input stream
 const char *LineParser::getChars(int nchars, bool skipeol)
 {
@@ -619,7 +645,7 @@ int LineParser::getInteger(int nbytes)
 }
 
 // Read an array of integer values from an (unformatted) input file
-bool LineParser::getIntegerArray(int *array, int count)
+int LineParser::getIntegerArray(int *array, int count)
 {
 	file_.read((char*) array, count*sizeof(int));
 	if (file_.eof())
@@ -663,7 +689,7 @@ double LineParser::getDouble(int nbytes)
 }
 
 // Read an array of double values from an (unformatted) input file
-bool LineParser::getDoubleArray(double *array, int count)
+int LineParser::getDoubleArray(double *array, int count)
 {
 	file_.read((char*) array, count*sizeof(double));
 	if (file_.eof())
@@ -799,12 +825,12 @@ bool LineParser::hasArg(int i)
 // Atom type definition functions
 */
 
-const char *LineParser::parseAtomtypeString(Dnchar &source)
+const char *LineParser::parseNetaString(Dnchar &source)
 {
 	// Cut the next atomtype command from the supplied string. Put in 'dest', along with any bracketed
 	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
 	// Ignore spaces and horizontal tabs. Commas separate commands.
-	msg.enter("LineParser::parseAtomtypeString");
+	msg.enter("LineParser::parseNetaString");
 	int n, nchars, bracketlevel;
 	bool done, el_list;
 	static Dnchar typecmd;
@@ -860,15 +886,15 @@ const char *LineParser::parseAtomtypeString(Dnchar &source)
 	source.eraseStart(n+1);
 // 	printf("Result = ");
 // 	typecmd.print();
-	msg.exit("LineParser::parseAtomtypeString");
+	msg.exit("LineParser::parseNetaString");
 	return typecmd.get();
 }
 
-const char *LineParser::trimAtomtypeKeyword(Dnchar &source)
+const char *LineParser::trimNetaKeyword(Dnchar &source)
 {
 	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
-	msg.enter("LineParser::trimAtomtypeKeyword");
+	msg.enter("LineParser::trimNetaKeyword");
 	bool done, equals;
 	static Dnchar keywd;
 	done = FALSE;
@@ -917,6 +943,6 @@ const char *LineParser::trimAtomtypeKeyword(Dnchar &source)
 			source.eraseStart(1);
 			source.eraseEnd(1);
 		}
-	msg.exit("LineParser::trimAtomtypeKeyword");
+	msg.exit("LineParser::trimNetaKeyword");
 	return keywd.get();
 }

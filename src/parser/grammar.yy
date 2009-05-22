@@ -41,8 +41,8 @@ VTypes::DataType declaredType;
 %token <variable> VAR LOCALVAR
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
-%token <vtype> VARTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK HELP VOID DUMMY
+%token <vtype> VTYPE
+%token DO WHILE FOR IF RETURN FILTERBLOCK HELP DIOV DUMMY
 %nonassoc ELSE
 
 %nonassoc AND OR
@@ -153,11 +153,11 @@ constant:
 /* User-defined function */
 
 userfuncdef:
-	VARTYPE savetype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	VTYPE savetype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
 	;
 
 userstatementdef:
-	VOID cleartype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	DIOV cleartype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
 	;
 
 args:
@@ -167,8 +167,8 @@ args:
 	;
 
 arg:
-	VARTYPE savetype NEWTOKEN savetokenname		{ $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName); }
-	| VARTYPE savetype NEWTOKEN savetokenname '=' expr { $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName, $6); }
+	VTYPE savetype NEWTOKEN savetokenname		{ $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName); }
+	| VTYPE savetype NEWTOKEN savetokenname '=' expr { $$ = cmdparser.addVariableAsArgument(declaredType, &tokenName, $6); }
 	;
 
 pushfunc:
@@ -186,7 +186,7 @@ namelist:
 	| namelist ',' FUNCCALL				{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
 	| namelist ',' LOCALVAR				{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
 	| namelist ',' USERFUNCCALL			{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
-	| namelist ',' VARTYPE				{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
+	| namelist ',' VTYPE				{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	;
 
 newname:
@@ -204,8 +204,8 @@ newvar:
 	;
 
 declaration:
-	VARTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
-	| VARTYPE savetype error			{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
+	VTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
+	| VTYPE savetype error			{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
 	;
 
 /* Variables / Paths */
@@ -231,7 +231,7 @@ rawvar:
 	| VAR						{ $$ = cmdparser.wrapVariable($1); }
 	| LOCALVAR '[' expr ']'				{ $$ = cmdparser.wrapVariable($1,$3); }
 	| LOCALVAR					{ $$ = cmdparser.wrapVariable($1); }
-	| rawvar '.' 					{ $$ = cmdparser.createPath($1); }
+	| rawvar '.' 					{ cmdparser.createPath($1); }
 		steplist				{ $$ = cmdparser.finalisePath(); }
 	| rawvar '('					{ msg.print("Can't use a variable as a function. Did you mean '[' instead?\n"); $$ = NULL; }
 	;

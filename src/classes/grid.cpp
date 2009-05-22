@@ -390,6 +390,7 @@ int Grid::colourScale()
 void Grid::setUseColourScale(bool b)
 {
 	useColourScale_ = b;
+	log_ ++;
 }
 
 // Whether the surface uses the defined colour scale or not

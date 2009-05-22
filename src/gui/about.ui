@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>412</width>
+    <width>432</width>
     <height>360</height>
    </rect>
   </property>
@@ -299,81 +299,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="StuffGroup" >
-     <property name="title" >
-      <string>Mostly Useless Information</string>
+    <widget class="QTextBrowser" name="textBrowser" >
+     <property name="html" >
+      <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Aten&lt;/span> was written in its entirety by T. Youngs, with the aid of helpful advice from (chiefly) S. Cromie and M. Montgomery.&lt;br />The name and logo are courtesy of &lt;a href="http://fiftydesign.com">&lt;span style=" text-decoration: underline; color:#0000ff;">FiftyDesign&lt;/span>&lt;/a>.&lt;br />&lt;br />Thanks to A.Elena, A. Croft (and group), and S. Cromie, who were excellent at finding imaginative ways to break things. Immense gratitude to D. Pashov and A. Elena for sorting out the intricacies of Mac and Windows packaging.&lt;br />&lt;br />Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.&lt;/p>&lt;/body>&lt;/html></string>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>2</number>
-      </property>
-      <property name="spacing" >
-       <number>4</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_6" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="autoFillBackground" >
-         <bool>false</bool>
-        </property>
-        <property name="text" >
-         <string>&lt;b>Aten&lt;/b> was written in its entirety by T. Youngs, with the aid of helpful advice from (chiefly) S. Cromie and M. Montgomery.&lt;br>The name and logo are courtesy of &lt;a href="http://fiftydesign.com">FiftyDesign&lt;/a>.</string>
-        </property>
-        <property name="scaledContents" >
-         <bool>false</bool>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-        <property name="openExternalLinks" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_10" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Thanks to A. Elena, A. Croft, and S Cromie, who continue to find imaginative ways to break things.</string>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_14" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>7</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text" >
-         <string>Immense gratitude to D. Pashov and A. Elena for sorting out Mac and Windows packaging.</string>
-        </property>
-        <property name="wordWrap" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item>

@@ -1,6 +1,6 @@
 /*
-	*** Forcefield atom type
-	*** src/classes/atomtype.h
+	*** NETA Description
+	*** src/classes/neta.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATOMTYPE_H
-#define ATEN_ATOMTYPE_H
+#ifndef ATEN_NETA_H
+#define ATEN_NETA_H
 
 #include "base/atom.h"
 #include "base/bond.h"
@@ -29,7 +29,7 @@
 #include "templates/reflist.h"
 
 // Forward declarations
-class Atomtype;
+class Neta;
 class ForcefieldAtom;
 class Atom;
 class Model;
@@ -53,7 +53,7 @@ class Ringtype
 	// Number of atoms in ring
 	int nAtoms_;
 	// Optional specification of atoms in ring
-	List<Atomtype> ringAtoms_;
+	List<Neta> ringAtoms_;
 	// Add data to the structure from the supplied string
 	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// Number of times this match is required
@@ -65,21 +65,21 @@ class Ringtype
 	// Requested style of the ring
 	Ring::RingType type_;
 	// Friend classes
-	friend class Atomtype;
+	friend class Neta;
 };
 
-// Atom type
-class Atomtype
+// NETA description
+class Neta
 {
 	public:
 	// Constructor / Destructor
-	Atomtype();
-	~Atomtype();
+	Neta();
+	~Neta();
 	// List pointers, used in bound atom list and list of atoms in rings
-	Atomtype *prev, *next;
+	Neta *prev, *next;
 	// Atom typing commands
-	enum AtomtypeCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, UnboundCommand, OneBondCommand, LinearCommand, TShapeCommand, TrigPlanarCommand, TetrahedralCommand, SquarePlanarCommand, TrigBipyramidCommand, OctahedralCommand, nAtomtypeCommands };
-	static AtomtypeCommand atomtypeCommand(const char*);
+	enum NetaCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, UnboundCommand, OneBondCommand, LinearCommand, TShapeCommand, TrigPlanarCommand, TetrahedralCommand, SquarePlanarCommand, TrigBipyramidCommand, OctahedralCommand, nNetaCommands };
+	static NetaCommand netaCommand(const char*);
 
 	/*
 	// Character
@@ -113,7 +113,7 @@ class Atomtype
 	// Required oxidation state (99 for don't mind)
 	short int os_;
 	// List of atoms to which this atom must be bound
-	List<Atomtype> boundList_;
+	List<Neta> boundList_;
 	// List of rings that this atom must be a member of
 	List<Ringtype> ringList_;
 	// Number of bond connections the atom should have

@@ -190,7 +190,7 @@ void Canvas::setOffScreenRendering(bool b)
 	renderOffScreen_ = b;
 }
 
-// Return whether offscreen renderinf is being performed
+// Return whether offscreen rendering is being performed
 bool Canvas::offScreenRendering()
 {
 	return renderOffScreen_;

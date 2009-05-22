@@ -179,8 +179,8 @@ bool Forcefield::readTypes()
 		ffa->setTypeId(newffid);
 		ffa->setName(ffparser.argc(1));
 		ffa->setEquivalent(ffparser.argc(1));
-		ffa->atomtype()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
-		if (!ffa->setAtomtype(ffparser.argc(3), this, ffa))
+		ffa->neta()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
+		if (!ffa->setNeta(ffparser.argc(3), this, ffa))
 		{
 			msg.exit("Forcefield::readTypes");
 			return FALSE;

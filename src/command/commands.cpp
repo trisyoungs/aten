@@ -669,6 +669,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Search for a string in the input file (placing matching line in optional variable)" },
 	{ "getline",		"^C",		"", VTypes::IntegerData,
 				"Read the next line from the file, placing in variable supplied, and returning read success" },
+	{ "nextarg",		"^Z",		"", VTypes::IntegerData,
+				"Read the next whitespace-delimited argument from the current file" },
 	{ "peekchar",		"",		"", VTypes::StringData, 
 				"Peek the next character from the current input file, and return it as a string" },
 	{ "peekchari",		"",		"", VTypes::IntegerData, 
