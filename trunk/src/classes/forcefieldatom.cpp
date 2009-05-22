@@ -130,22 +130,28 @@ const char *ForcefieldAtom::description()
 }
 
 // Set atomtype string and generate new type description
-bool ForcefieldAtom::setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *root)
+bool ForcefieldAtom::setNeta(const char *s, Forcefield *parent, ForcefieldAtom *root)
 {
-	atomtypeString_ = s;
-	return atomtype_.expand(s, parent, root);
+	netaString_ = s;
+	// If supplied parent is NULL, use current parent (if not also NULL)
+	if (parent == NULL)
+	{
+		parent = parent_;
+		if (parent == NULL) printf("ForcefieldAtom::setNeta has no valid parent.\n");
+	}
+	return neta_.expand(s, parent, root);
 }
 
 // Return original typestring
-const char *ForcefieldAtom::atomtypeString()
+const char *ForcefieldAtom::netaString()
 {
-	return atomtypeString_.get();
+	return netaString_.get();
 }
 
 // Returns the atomtype description
-Atomtype *ForcefieldAtom::atomtype()
+Neta *ForcefieldAtom::neta()
 {
-	return &atomtype_;
+	return &neta_;
 }
 
 // Set the parameter data specified

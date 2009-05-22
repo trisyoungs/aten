@@ -1,7 +1,8 @@
 # Crystallographic Information File (cif) (for v1.2+)
 # Created:	 10/04/2009
-# Last modified: 10/04/2009
+# Last modified: 21/05/2009
 # ChangeLog:
+#	21/05/2009 - Major fixes - data in loops was not read correctly.
 
 filter(type="importmodel", name="Crystallographic Information File", nickname="cif", extension="cif", glob="*.cif", id=8)
 {
@@ -34,7 +35,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 		else if (keywd == "_cell_angle_beta") { cellangle[2] = atof(data); cellspec++; }
 		else if (keywd == "_cell_angle_gamma") { cellangle[3] = atof(data); cellspec++; }
 		# Spacegroup name - strip spaces which are sometimes be inserted by other programs
-		else if (keywd == "_symmetry_space_group_name_H-M") spacegroup(stripchars(data," "));
+		else if (keywd == "_symmetry_space_group_name_H-M") spacegroup(data);
 		# Loops
 		else if (keywd == "loop_")
 		{
@@ -48,37 +49,34 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 				# Read and store whole line (we may need it later)
 				getline(line);
 				#printf("Current line is '%s'\n", line);
-				# Get keyword from line
+
+				# Get keyword from line (delimited read)
 				readvar(line,keywd);
 				#printf("Keyword is now '%s'\n", keywd);
+
 				# Get first character and next 9 characters
 				readvarf(keywd,"%1s%9s",char,data);
 				if (char == "_") ++n;
 				#printf("In the loop - line is %i\n", n);
-				# If first character is not '_' then we have entered the actual data defined by the loop.
+
+				# If first character of 'keywd' is not '_' then we have entered the actual data defined by the loop.
 				# If this was an empty line, we're done with the loop
 				#printf("Keyword = [%s], firstchar=%s\n",keywd,char);
 				if (char == "") break;
 				else if (char <> "_")
 				{
-					#printf("Data begins at line %i\n", n);
-					# Already have first line of data stored in $line.
-					#printf("LINE BEFORE ATOM is %s\n", line);
-					# Take arguments from current stored line - attempt to read ten...
-					nread = readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
-					# If we didn't get enough bits of data, read more lines and parse until we do
-					#printf("Nargs read = %i\n", nread);
-					if (nread < (n-1))
+					# Already have first line of data stored in 'line'.
+					# Read individual delimited arguments until we have 'n' of them, the number of loop data defined by _* records
+					for (nread = 0; nread < n; nread++)
 					{
-						getline(line);
-						for (arg = nread+1; arg <= n-1; arg++) readnext(args[arg]);
+						while (readnext(args[nread+1]) == FALSE) getline(line);
+						#printf("Arg/data %i = '%s'\n", nread, args[nread+1] );
 					}
-					# for (arg=1; arg < n; ++arg) printf("   Now argument %i = %s\n", arg, args[arg]);
-					#readvar(line,args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
 					# Our next action depends on the loop type
-					if (looptype == "atom") {
+					if (looptype == "atom")
+					{
 						newatom(args[id_e], atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
-						printf("Created atom with coords %f %f %f\n", atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+						#printf("Created atom with coords %f %f %f\n", atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
 					}
 					else if (looptype == "gen") addgenerator(line);
 				}
@@ -94,7 +92,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 				else if (data == "symmetry_")
 				{
 					# Symmetry generator definitions - only use if spacegroup not already specified
-					if (m.cell.sgid <> 0) printf("Generator data ignored - spacegroup is already set.");
+					if (m.cell.sgid <> 0) printf("Generator data ignored - spacegroup is already set.\n");
 					else
 					{
 						looptype = "gen";
@@ -106,7 +104,6 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	} # Main loop
 
 	# Were we given a full cell spec?
-	printf("Cellspec = %i\n", cellspec);
 	if (cellspec == 6)
 	{
 		cell(length[1],length[2],length[3],cellangle[1],cellangle[2],cellangle[3]);
@@ -116,8 +113,8 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	}
 	else
 	{
-		printf("Full cell specification was not found in file.\n");
-		printf("Atom coordinates are still fractional.\n");
+		printf("Warning: Full cell specification was not found in file.\n");
+		printf("Warning: Atom coordinates are still fractional.\n");
 	}
 
 	rebond();

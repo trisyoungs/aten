@@ -308,7 +308,7 @@ class Prefs
 	bool polygonAliasing();
 	// Set status of backface culling
 	void setBackfaceCulling(bool status);
-	// Return status of depth cueing
+	// Return status of backface culling
 	bool backfaceCulling();
 	// Return the Z depth of the near clipping plane
 	GLdouble clipNear();

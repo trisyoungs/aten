@@ -102,7 +102,7 @@ const char *beforeStr(const char *s, const char *search)
 // Get characters after first occurrence of designated character
 const char *afterStr(const char *s, const char *search)
 {
-	char *c = strstr(s, search);
+	const char *c = strstr(s, search);
 	if (c == NULL) return "";
 	for (const char *d = &search[0]; *d != '\0'; ++d) c++;
 	return c;
@@ -164,7 +164,7 @@ const char *removePath(const char *s)
 // Strip trailing whitespace from string
 const char *stripTrailing(const char *s)
 {
-	int len, n;
+	int n;
 	static char result[512];
 	// Go backwards through string and find first non-whitespace character
 	for (n=strlen(s)-1; n>=0; n--) if (s[n] != ' ') break;
@@ -177,7 +177,7 @@ const char *stripTrailing(const char *s)
 const char *stripChars(const char *s, const char *charstostrip)
 {
 	static char result[512];
-	int count = 0, n,m;
+	int count = 0;
 	bool found;
 	char const *c1, *c2;
 	for (c1 = &s[0]; *c1 != '\0'; c1++)

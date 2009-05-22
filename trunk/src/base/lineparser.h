@@ -119,6 +119,8 @@ class LineParser
 	bool getRestDelim(Dnchar *destarg = NULL);
 	// Set line and parse using delimiters
 	void getArgsDelim(const char *string, int flags = LineParser::Defaults);
+	// Get next delimited chunk from file (not line)
+	bool getCharsDelim(Dnchar *destarg = NULL);
 	// Read next line from internal source file, setting as parsing source
 	int readLine();
 	// Read next line from source file, skipping blank lines and removing comments
@@ -134,11 +136,11 @@ class LineParser
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
 	int getInteger(int nbytes = 0);
 	// Fill an array of integer values from reading of an (unformatted) input file
-	bool getIntegerArray(int *array, int count);
+	int getIntegerArray(int *array, int count);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getDouble(int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file
-	bool getDoubleArray(double *array, int count);
+	int getDoubleArray(double *array, int count);
 	// Write line to file
 	bool writeLine(const char *s);
 
@@ -177,9 +179,9 @@ class LineParser
 	*/
 	public:
 	// Remove atomtype description from string and return it
-	const char *parseAtomtypeString(Dnchar&);
+	const char *parseNetaString(Dnchar&);
 	// Remove keyword from string and return it
-	const char *trimAtomtypeKeyword(Dnchar&);
+	const char *trimNetaKeyword(Dnchar&);
 };
 
 #endif

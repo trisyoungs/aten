@@ -53,6 +53,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "anglelabel",		VTypes::StringData,	0, FALSE },
 	{ "atomdetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "atomstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
+	{ "backcull",		VTypes::IntegerData,	0, FALSE },
 	{ "backgroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "bonddetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "bondstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
@@ -184,6 +185,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
 			else rv.setArray( VTypes::DoubleData, &ptr->atomStyleRadius_, Atom::nDrawStyles);
+			break;
+		case (PreferencesVariable::BackCull):
+			rv.set( ptr->backfaceCulling() );
 			break;
 		case (PreferencesVariable::BackgroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::BackgroundColour)[arrayIndex-1] );
@@ -455,6 +459,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
 			else for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::BackCull):
+			ptr->setBackfaceCulling(newvalue.asBool());
 			break;
 		case (PreferencesVariable::BackgroundColour):
 			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));

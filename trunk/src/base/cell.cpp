@@ -332,7 +332,7 @@ const char *Cell::spacegroup()
 // Add manual generator
 Generator *Cell::addGenerator()
 {
-	Generator *g = generators_.add();
+	return generators_.add();
 }
 
 // Return number of manual generators defined

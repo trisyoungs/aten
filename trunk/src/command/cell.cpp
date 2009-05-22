@@ -33,7 +33,7 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
-	Generator::Generator *gen = obj.rs->cell()->addGenerator();
+	Generator *gen = obj.rs->cell()->addGenerator();
 	if (!gen->set(c->argc(0)))
 	{
 		msg.print("Failed to create new generator definition.\n");

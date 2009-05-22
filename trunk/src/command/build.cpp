@@ -150,7 +150,7 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		{
  			ffa = f->addType();
  			ffa->setName(c->argc(0));
-			ffa->atomtype()->setCharacterElement(el);
+			ffa->neta()->setCharacterElement(el);
  		}
  		aten.current.i->setType(ffa);
  		aten.current.i->setTypeFixed(TRUE);
@@ -219,7 +219,7 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		{
  			ffa = f->addType();
  			ffa->setName(c->argc(0));
-			ffa->atomtype()->setCharacterElement(el);
+			ffa->neta()->setCharacterElement(el);
  		}
  		aten.current.i->setType(ffa);
  		aten.current.i->setTypeFixed(TRUE);

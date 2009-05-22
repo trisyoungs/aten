@@ -41,7 +41,7 @@ bool Generator::set(const char *s)
 	static LineParser lp;
 	char part[32], sub[16];
 	int n, count;
-	char *c;
+	const char *c;
 	// Split line into three arguments
 	lp.getArgsDelim(s, LineParser::Defaults);
 	if (lp.nArgs() != 3)
@@ -90,13 +90,14 @@ bool Generator::set(int *a)
 	matrix_.set(1, a[3], a[4], a[5], a[10] / (1.0*STBF));
 	matrix_.set(2, a[6], a[7], a[8], a[11] / (1.0*STBF));
 	matrix_.set(3, 0.0, 0.0, 0.0, 1.0);
+	return TRUE;
 }
 
 // Set partial element of matrix or translation vector
 bool Generator::setMatrixPart(int row, const char *s)
 {
 	// The string provided either contains (-)xyz, or a translation amount
-	char const *c;
+	const char *c;
 	int multiplier = 0;
 	// Check for plus/minus signs
 	c = &s[0];
@@ -106,13 +107,14 @@ bool Generator::setMatrixPart(int row, const char *s)
 	if (multiplier == 0) multiplier = 1;
 	else c = &s[1];
 	// Now, check if this character is x, y, or z.
-	if ( (*c >= 88) && (*c <= 90) ) matrix_.set(row, *c-88, 1.0*multiplier);
-	else if ( (*c >= 120) && (*c <= 122) ) matrix_.set(row, *c-120, 1.0*multiplier);
+	if ( (*c >= 88) && (*c <= 90) ) matrix_.set(row, *c-88, multiplier);
+	else if ( (*c >= 120) && (*c <= 122) ) matrix_.set(row, *c-120, multiplier);
 	else
 	{
 		// Must be a number....
 		int num = atoi(s);
  		printf("Translation integer is %i.\n", num);
+		matrix_.set(row, 3, num / (1.0*STBF));
 // 		translation.set(row, value);
 	}
 	return TRUE;

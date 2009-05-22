@@ -558,6 +558,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	prefs.copyColour(Prefs::SpecularColour, colour);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
+// 	glShadeModel(GL_FLAT);
 	cscale = g->colourScale();
 	if (!g->useColourScale()) cscale = -1;
 	if (cscale == -1)

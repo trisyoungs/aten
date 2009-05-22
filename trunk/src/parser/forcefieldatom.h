@@ -41,7 +41,7 @@ class ForcefieldAtomVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Form, Id, Name, ParentFF, nAccessors };
+	enum Accessors { Charge, Data, Description, Equivalent, Form, Id, Name, Neta, ParentFF, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors

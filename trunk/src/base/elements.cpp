@@ -689,7 +689,7 @@ int ElementMap::ffToZ(const char *s)
 	{
 		ffa = ff->findType(s);
 		// Found a match, so find out what element it is...
-		if (ffa != NULL) result = ffa->atomtype()->characterElement();
+		if (ffa != NULL) result = ffa->neta()->characterElement();
 		if (result != -1) break;
 	}
 	return result;

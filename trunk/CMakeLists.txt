@@ -22,7 +22,7 @@ endif(COMMAND cmake_policy)
 
 set (target_name Aten)
 
-set(Bison_DIR "${CMAKE_SOURCE_DIR}/data")
+#set(Bison_DIR "${CMAKE_SOURCE_DIR}/data")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(Qt4 REQUIRED) # find and setup Qt4 for this project
 find_package(READLINE REQUIRED)
@@ -33,12 +33,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(SRCS src/)
 #ADD_DEFINITIONS(-DQT_SHARED)
-
-# locate and setup Bison
-find_package(Bison REQUIRED)
-BISON_TARGET(Parser ${SRCS}/parser/grammar.yy ${SRCS}/parser/grammar.cc)
-#ADD_EXECUTABLE(Foo main.cpp ${BISON_MyParser_OUTPUTS})
-
 
 # tell cmake to process CMakeLists.txt in that subdirectory
 add_subdirectory(${SRCS})
@@ -62,10 +56,10 @@ ${SRCS}/
 ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
 )
-add_executable(${target_name}  MACOSX_BUNDLE
-${SRCS}/main.cpp
-)
 
+add_executable(${target_name}  MACOSX_BUNDLE
+${SRCS}/main.cpp 
+)
 
 link_directories (${LIBRARY_OUTPUT_PATH})
 IF(WIN32 OR APPLE)

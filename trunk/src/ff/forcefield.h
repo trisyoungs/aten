@@ -75,6 +75,8 @@ class Forcefield
 	Rules::ForcefieldRules rules();
 	// Set conversion flag for energetic generator data
 	void setEnergyGenerator(int n);
+	// Return energy generator array
+	bool *energyGenerators();
 	// Set internal energy unit of forcefield
 	void setEnergyUnit(Prefs::EnergyUnit eu);
 
