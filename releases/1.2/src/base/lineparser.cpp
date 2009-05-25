@@ -43,6 +43,7 @@ LineParser::LineParser()
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
+	file_ = NULL;
 }
 LineParser::LineParser(const char *filename, bool outputstream)
 {
@@ -52,6 +53,7 @@ LineParser::LineParser(const char *filename, bool outputstream)
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
+	file_ = NULL;
 	// Open new file for reading or writing
 	openFile(filename, outputstream);
 }
@@ -97,16 +99,18 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 {
 	msg.enter("LineParser::openFile");
 	// Check existing input file
-	if (file_.is_open())
+	if (file_ != NULL)
 	{
 		printf("Warning - LineParser already appears to have an open file...\n");
-		file_.close();
+		file_->close();
+		delete file_;
+		file_ = NULL;
 	}
 	// Open new file
-	file_.open(filename, outputstream ? ios::out : ios::in);
-	if (!file_.good())
+	file_ = new fstream(filename, outputstream ? ios::out : ios::in);
+	if (!file_->is_open())
 	{
-		file_.close();
+		closeFile();
 		msg.print("Failed to open file '%s' for %s.\n", filename, outputstream ? "writing" : "reading");
 		msg.exit("LineParser::openFile");
 		return FALSE;
@@ -122,45 +126,50 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 // Close file 
 void LineParser::closeFile()
 {
-	if (file_.is_open())
+	if (file_ != NULL)
 	{
-		file_.close();
-		lastLine_ = 0;
+		file_->close();
+		delete file_;
 	}
-// 	else printf("Warning: LineParser tried to close file again.\n");
+	file_ = NULL;
+	lastLine_ = 0;
 }
 
 // Return whether current file source is good for reading/writing
 bool LineParser::isFileGood()
 {
-	return file_.good();
+	if (file_ == NULL) return FALSE;
+	return file_->is_open();
 }
 
 // Return whether current file source is good for reading
 bool LineParser::isFileGoodForReading()
 {
-	if (!file_.good()) return FALSE;
+	if (file_ == NULL) return FALSE;
+	if (!file_->is_open()) return FALSE;
 	return readOnly_;
 }
 
 // Return whether current file source is good for writing
 bool LineParser::isFileGoodForWriting()
 {
-	if (!file_.good()) return FALSE;
+	if (file_ == NULL) return FALSE;
+	if (!file_->is_open()) return FALSE;
 	return (!readOnly_);
 }
 
 // Peek next character in file
 char LineParser::peek()
 {
-	return file_.peek();
+	if (file_ == NULL) return '\0';
+	return file_->peek();
 }
 
 // Tell current position of file stream
 streampos LineParser::tellg()
 {
 	streampos result = 0;
-	if (file_.is_open()) result = file_.tellg();
+	if (file_ != NULL) result = file_->tellg();
 	else printf("Warning: LineParser tried to tellg() on a non-existent file.\n");
 	return result;
 }
@@ -168,37 +177,38 @@ streampos LineParser::tellg()
 // Seek position in file
 void LineParser::seekg(streampos pos)
 {
-	if (file_.is_open()) file_.seekg(pos);
+	if (file_ != NULL) file_->seekg(pos);
 	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
 }
 
 // Seek n bytes in specified direction
 void LineParser::seekg(streamoff off, ios_base::seekdir dir)
 {
-	if (file_.is_open()) file_.seekg(off, dir);
+	if (file_ != NULL) file_->seekg(off, dir);
 	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
 }
 
 // Rewind file to start
 void LineParser::rewind()
 {
-	if (file_.is_open()) file_.seekg(0, ios::beg);
+	if (file_ != NULL) file_->seekg(0, ios::beg);
 	else msg.print("No file currently open to rewind.\n");
 }
 
 // Return whether the end of the file has been reached (or only whitespace remains)
 bool LineParser::eofOrBlank()
 {
+	if (file_ == NULL) return TRUE;
 	// Simple check first - is this the end of the file?
-	if (file_.eof()) return TRUE;
+	if (file_->eof()) return TRUE;
 	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
-	streampos pos = file_.tellg();
+	streampos pos = file_->tellg();
 	// Attempt to read a character.
 	// Since 'skipws' is on by default, if we find one without setting eofbit, then we are *NOT* at the end of the file
 	char c;
-	file_ >> c;
-	bool result = file_.eof();
-	file_.seekg(pos);
+	*file_ >> c;
+	bool result = file_->eof();
+	file_->seekg(pos);
 	return result;
 }
 
@@ -211,15 +221,16 @@ int LineParser::readLine()
 {
 	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
-	file_.getline(line_, MAXLINELENGTH-1);
+	if (file_ == NULL) return 1;
+	file_->getline(line_, MAXLINELENGTH-1);
 	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
-	if (file_.eof())
+	if (file_->eof())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
 		return -1;
 	}
-	if (file_.fail())
+	if (file_->fail())
 	{
 		closeFile();
 		msg.exit("LineParser::readLine");
@@ -545,9 +556,9 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 	int length = 0;
 	bool result = TRUE;
 	char c;
-	while (!file_.eof())
+	while (!file_->eof())
 	{
-		file_.get(c);
+		file_->get(c);
 		if ((c == '\n') || (c == '\t') || (c == '\r') || (c == ' '))
 		{
 			if (length != 0) break;
@@ -580,22 +591,22 @@ const char *LineParser::getChars(int nchars, bool skipeol)
 	else if (nchars < 0)
 	{
 		tempArg_[0] = '\0';
-		for (int i=nchars; i<0; i++) file_.unget();
+		for (int i=nchars; i<0; i++) file_->unget();
 	}
 	else for (i=0; i < nchars; ++i)
 	{
-		file_.get(c);
-		if (skipeol) while ((c == '\n') || (c == '\r')) { if (file_.eof()) break; file_.get(c); }
+		file_->get(c);
+		if (skipeol) while ((c == '\n') || (c == '\r')) { if (file_->eof()) break; file_->get(c); }
 		tempArg_[i] = c;
-		if (file_.eof()) break;
+		if (file_->eof()) break;
 	}
 	tempArg_[i] = '\0';
-	if (file_.eof())
+	if (file_->eof())
 	{
 		closeFile();
 		return NULL;
 	}
-	if (file_.fail())
+	if (file_->fail())
 	{
 		closeFile();
 		return NULL;
@@ -607,8 +618,8 @@ const char *LineParser::getChars(int nchars, bool skipeol)
 void LineParser::skipChars(int nchars)
 {
 	if (nchars == 0) return;
-	file_.ignore(nchars);
-	if (file_.eof() || file_.fail()) closeFile();
+	file_->ignore(nchars);
+	if (file_->eof() || file_->fail()) closeFile();
 }
 
 // Return an integer value from reading 'n' chars of an (unformatted) input file
@@ -618,26 +629,26 @@ int LineParser::getInteger(int nbytes)
 	if (nbytes == 0)
 	{
 		int readi;
-		file_.read((char*) &readi, sizeof(int));
+		file_->read((char*) &readi, sizeof(int));
 		return readi;
 	}
 	// Try and select a suitable type for the read, based on nbytes
 	if (sizeof(short int) == nbytes)
 	{
 		short int readi;
-		file_.read((char*) &readi, nbytes);
+		file_->read((char*) &readi, nbytes);
 		return (int) readi;
 	}
 	else if (sizeof(int) == nbytes)
 	{
 		int readi;
-		file_.read((char*) &readi, nbytes);
+		file_->read((char*) &readi, nbytes);
 		return readi;
 	}
 	else if (sizeof(long int) == nbytes)
 	{
 		long int readi;
-		file_.read((char*) &readi, nbytes);
+		file_->read((char*) &readi, nbytes);
 		return (int) readi;
 	}
 	else msg.print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
@@ -647,13 +658,13 @@ int LineParser::getInteger(int nbytes)
 // Read an array of integer values from an (unformatted) input file
 int LineParser::getIntegerArray(int *array, int count)
 {
-	file_.read((char*) array, count*sizeof(int));
-	if (file_.eof())
+	file_->read((char*) array, count*sizeof(int));
+	if (file_->eof())
 	{
 		closeFile();
 		return -1;
 	}
-	if (file_.fail())
+	if (file_->fail())
 	{
 		closeFile();
 		return 0;
@@ -668,20 +679,20 @@ double LineParser::getDouble(int nbytes)
 	if (nbytes == 0)
 	{
 		double readd;
-		file_.read((char*) &readd, sizeof(double));
+		file_->read((char*) &readd, sizeof(double));
 		return readd;
 	}
 	// Try and select a suitable type for the read, based on nbytes
 	if (sizeof(double) == nbytes)
 	{
 		double readd;
-		file_.read((char*) &readd, nbytes);
+		file_->read((char*) &readd, nbytes);
 		return readd;
 	}
 	else if (sizeof(long double) == nbytes)
 	{
 		long double readd;
-		file_.read((char*) &readd, nbytes);
+		file_->read((char*) &readd, nbytes);
 		return (double) readd;
 	}
 	else msg.print("Error: Double of size %i bytes does not correspond to any internal type.\n", nbytes);
@@ -691,13 +702,13 @@ double LineParser::getDouble(int nbytes)
 // Read an array of double values from an (unformatted) input file
 int LineParser::getDoubleArray(double *array, int count)
 {
-	file_.read((char*) array, count*sizeof(double));
-	if (file_.eof())
+	file_->read((char*) array, count*sizeof(double));
+	if (file_->eof())
 	{
 		closeFile();
 		return -1;
 	}
-	if (file_.fail())
+	if (file_->fail())
 	{
 		closeFile();
 		return 0;
@@ -715,7 +726,7 @@ bool LineParser::writeLine(const char *s)
 		msg.exit("LineParser::writeLine");
 		return FALSE;
 	}
-	file_ << s;
+	*file_ << s;
 	msg.exit("LineParser::writeLine");
 	return TRUE;
 }

@@ -60,8 +60,8 @@ class LineParser
 	int linePos_;
 	// Integer line number of last read line
 	int lastLine_;
-	// Source file (for reading) 
-	std::fstream file_;
+	// Source file (for reading or writing)
+	std::fstream *file_;
 	// Whether the file is for reading or writing
 	bool readOnly_;
 	// Option bitmask (set by get*() calls)
