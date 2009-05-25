@@ -44,18 +44,18 @@ void Aten::openFilters()
 	// Default locations
 	paths << "/usr/share/aten";
 	paths << "/usr/local/share/aten";
-	paths << gui.app->applicationDirPath() + "\\..\\share\\aten";
+	paths << gui.app->applicationDirPath() + "/../share/aten";
 	paths << gui.app->applicationDirPath() + "/../SharedSupport";
 
 	for (int i=0; i < paths.size(); i++)
 	{
 		sprintf(path,"%s/filters", qPrintable(paths.at(i)));
-		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", path);
-		nfailed = parseFilterDir(path);
+		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", qPrintable(QDir::toNativeSeparators(path)));
+		nfailed = parseFilterDir( qPrintable(QDir::toNativeSeparators(path)) );
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
 		nFiltersFailed_ += nfailed;
-		dataDir_ = qPrintable(paths.at(i));
+		dataDir_ = qPrintable(QDir::toNativeSeparators(paths.at(i)));
 		break;
 	}
 
@@ -176,10 +176,13 @@ int Aten::parseFilterDir(const char *path)
 	{
 		// Construct Forest...
 		Forest *f = filterForests_.add();
-		if (!f->generateFromFile(qPrintable(QString(path)+"/"+filterlist.at(i)), qPrintable(filterlist.at(i)), TRUE))
+		QString filename(path);
+		filename += "/";
+		filename += filterlist.at(i);
+		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE))
 		{
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
-			failedFilters_.add()->set( qPrintable(QString(path)+"/"+filterlist.at(i)) );
+			failedFilters_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
 			filterForests_.remove(f);
 		}

@@ -222,7 +222,7 @@ int countChars(const char *s, const char *chars, int offset)
 bool fileExists(const char *filename)
 {
 	fstream f(filename,ios::in);
-	if (f.good())
+	if (f.is_open())
 	{
 		f.close();
 		return TRUE;
