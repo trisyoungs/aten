@@ -1,0 +1,111 @@
+# GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.2+)
+# Created:	 14/04/2009
+# Last modified: 15/04/2009
+# ChangeLog:
+# Notes:
+#	Output model filter sets symmetry to C1, regardless of the actual symmetry.
+
+filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", extension="log", glob="*.log", zmap="name", search="GAMESS VERSION")
+{
+	# Variable declaration
+	int result,nstructures,natoms,n;
+	string line,e,name,discard;
+	double rx,ry,rz;
+
+	# Determine number of atoms - search for line containing 'TOTAL NUMBER OF ATOMS'
+	if (!find("TOTAL NUMBER OF ATOMS",line)) error("Couldn't determine number of atoms from GAMESS-US output.");
+
+	# Get number of atoms from line
+	readvarf(line, "%48*%i",natoms);
+
+	# Create a new model, and store its pointer for use later
+	model m = newmodel("GAMESS-US Output");
+
+	# Now search for sets of coordinate
+	nstructures = 0;
+	while (!eof())
+	{
+		# Lines containing 'COORDINATES OF ALL ATOMS ARE' are the beginning of coordinate sections
+		if (find("COORDINATES OF ALL ATOMS ARE"))
+		{
+			# Found a set of coordinates. Skip 2 lines and then read coordinates
+			nstructures++;
+			skipline(2);
+			writevarf(name, "Frame %i", nstructures);
+			addframe(name);
+			for (n=1; n<=natoms; ++n)
+			{
+				readline(e,discard,rx,ry,rz);
+				newatom(e,rx,ry,rz);
+			}
+			# Recalculate bonding
+			rebond();
+			finaliseframe();
+		}
+	}
+
+	# Now, copy the contents of the current (i.e. last) frame, and paste it into the parent model
+	selectall();
+	copy();
+	getmodel(m);
+	paste();
+	finalisemodel();
+}
+
+filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", zmap="name", id=5)
+{
+	# Variables
+	string symm,symbol,title;
+	int n,z;
+	double rx,ry,rz;
+
+	# Search for $DATA section
+	if (!find("DATA")) error("Couldn't find 'DATA' section in input file.");
+
+	# Read in title card
+	getline(title);
+	newmodel(title);
+
+	# Skip over symmetry specification
+	readline(symm);
+	if (symm <> "C1")
+	{
+		# Single blank line means the master frame is in use, and only this line to skip
+		readline(symm);
+		if (symm != "") skipline();
+	}
+	
+	# Coordinates follow, terminated by $END
+	readline(symbol,z,rx,ry,rz);
+	while (symbol != "$END")
+	{
+		newatom(symbol,rx,ry,rz);
+		readline(symbol,z,rx,ry,rz);
+	}
+
+	# Done
+	rebond();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
+{
+	# Variable declarations
+	#atom i;
+
+	# Write a standard control header
+	writeline(" $SYSTEM MEMDDI=16 $END");
+	writeline(" $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE COORD=CART ICHARG=0 MULT=1 $END");
+	writeline(" $STATPT NSTEP=100 $END");
+	writeline(" $SYSTEM TIMLIM=1200 MWORDS=96 $END");
+	writeline(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END");
+	writeline(" $GUESS GUESS=HUCKEL $END");
+	writeline(" $SCF DIRSCF=.TRUE. $END");
+
+	# Now for the DATA section
+	writeline(" $DATA");
+	writeline(aten.frame.name);
+	writeline("C1");
+	for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+	writeline(" $END");
+}
