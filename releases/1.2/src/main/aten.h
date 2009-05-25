@@ -31,9 +31,9 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.2"
-#define ATENREVISION "918"
-#define ATENDATE "Sat 23 May - 15:59"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENREVISION "922"
+#define ATENDATE "Mon 25 May - 11:17"
+#define ATENURL "http://aten.googlecode.com/svn/releases/1.2"
 
 // Forward Declarations
 class Model;

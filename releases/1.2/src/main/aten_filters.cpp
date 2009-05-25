@@ -50,12 +50,13 @@ void Aten::openFilters()
 	for (int i=0; i < paths.size(); i++)
 	{
 		sprintf(path,"%s/filters", qPrintable(paths.at(i)));
-		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", path);
-		nfailed = parseFilterDir(path);
+		QDir pathname(path);
+		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", qPrintable(pathname.path()));
+		nfailed = parseFilterDir( qPrintable(pathname.path()) );
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
 		nFiltersFailed_ += nfailed;
-		dataDir_ = qPrintable(paths.at(i));
+		dataDir_ = qPrintable(qPrintable(pathname.path()));
 		break;
 	}
 
