@@ -282,6 +282,7 @@ bool Tree::executeRead(const char *filename, ReturnValue &rv)
 	delete parser_;
 	parser_ = NULL;
 	msg.exit("Tree::executeRead[filename]");
+	return result;
 }
 
 // Execute, with specified filename as data target
@@ -302,6 +303,7 @@ bool Tree::executeWrite(const char *filename, ReturnValue &rv)
 	delete parser_;
 	parser_ = NULL;
 	msg.exit("Tree::executeWrite[filename]");
+	return result;
 }
 
 // Execute, opening specified file as input source (no return value)
