@@ -44,6 +44,7 @@ void Aten::openFilters()
 	// Default locations
 	paths << "/usr/share/aten";
 	paths << "/usr/local/share/aten";
+	paths << "../share/aten";
 	paths << gui.app->applicationDirPath() + "/../share/aten";
 	paths << gui.app->applicationDirPath() + "/../SharedSupport";
 
