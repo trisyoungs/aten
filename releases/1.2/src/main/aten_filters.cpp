@@ -56,7 +56,7 @@ void Aten::openFilters()
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
 		nFiltersFailed_ += nfailed;
-		dataDir_ = qPrintable(qPrintable(pathname.path()));
+		dataDir_ = qPrintable(pathname.path());
 		break;
 	}
 
