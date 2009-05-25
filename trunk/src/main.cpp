@@ -43,7 +43,8 @@ int main(int argc, char *argv[])
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
 	// Get environment variables
-	aten.setHomeDir( getenv("HOME") == '\0' ? getenv("HOMEPATH") : getenv("HOME") );
+	if (getenv("HOME") != '\0') aten.setHomeDir(getenv("HOME"));
+	else aten.setHomeDir( getenv("USERPROFILE") );
 	aten.setWorkDir(getenv("PWD"));
 	if (!aten.dataDirSet()) aten.setDataDir(getenv("ATENDATA"));
 	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", aten.homeDir(), aten.workDir(), aten.dataDir());
