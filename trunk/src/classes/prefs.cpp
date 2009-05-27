@@ -224,7 +224,7 @@ Prefs::Prefs()
 	colourScale[2].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
 	colourScale[2].addPoint(2, 1000.0, 1.0f, 0.0f, 0.0f);
 
-	// Methods
+	// General Prefs / Methods
 	modelUpdate_ = 5;
 	energyUpdate_ = 1;
 	maxRingSize_ = 6;
@@ -295,7 +295,6 @@ bool Prefs::load(const char *filename)
 	msg.exit("Prefs::load");
 	return result;
 }
-
 
 // Save user preferences file
 bool Prefs::save(const char *filename)
@@ -869,7 +868,6 @@ void Prefs::setGuideShape(Prefs::GuideGeometry g)
 	guideShape_ = g;
 }
 
-
 // Set hydrogen add distance
 void Prefs::setHydrogenDistance(double d)
 {
@@ -1315,7 +1313,7 @@ double Prefs::vdwScale()
 }
 
 /*
-// Undo levels
+// General prefs
 */
 
 // Set the maximum number of undo levels allowed
@@ -1328,6 +1326,19 @@ void Prefs::setMaxUndoLevels(int n)
 int Prefs::maxUndoLevels()
 {
 	return maxUndoLevels_;
+}
+
+// Return maximum number of entries to remember in command toolbar autocomplete
+void Prefs::setCommandHistoryLimit(int i)
+{
+	if (i < 0) i = 0;
+	commandHistoryLimit_ = i;
+}
+
+// Return maximum number of entries to remember in command toolbar autocomplete
+int Prefs::commandHistoryLimit()
+{
+	return commandHistoryLimit_;
 }
 
 /*

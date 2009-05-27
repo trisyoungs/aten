@@ -31,8 +31,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.3"
-#define ATENREVISION "926"
-#define ATENDATE "Mon 25 May - 15:04"
+#define ATENREVISION "928"
+#define ATENDATE "Wed 27 May - 19:10"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -147,7 +147,7 @@ class Aten
 
 	public:
 	// Add a new forcefield
-	Forcefield *addForcefield();
+	Forcefield *addForcefield(const char *name = NULL);
 	// Load the specified forcefield
 	Forcefield *loadForcefield(const char *filename);
 	// Find forcefield by name

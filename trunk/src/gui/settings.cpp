@@ -27,33 +27,50 @@
 // Load Qt Settings
 void AtenForm::loadSettings()
 {
-	char temp[128];
+	QString key;
+	int n;
 	// Recent file entries
-	for (int n=0; n<MAXRECENTFILES; n++)
+	for (n=0; n<MAXRECENTFILES; n++)
 	{
 		// Construct settings value to search for
-		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(n));
-		if (settings_.contains(temp)) addRecent(qPrintable(settings_.value(temp).toString()));
+		key = "RecentFile";
+		key += itoa(n);
+		if (settings_.contains(key)) addRecent(qPrintable(settings_.value(key).toString()));
 	}
 	// Toolbar visibility / position
 	if (settings_.contains("MainWinPositions")) gui.mainWindow->restoreState( settings_.value("MainWinPositions").toByteArray());
+	// Command toolbar history
+	QStringList history;
+	for (n=0; n < prefs.commandHistoryLimit(); ++n)
+	{
+		key = "CommandHistory";
+		key += itoa(n);
+		if (settings_.contains(key)) history << settings_.value(key).toString();
+	}
 }
 
 // Save Qt settings
 void AtenForm::saveSettings()
 {
-	char temp[128];
+	QString key;
+	int n;
 	// Save the recent file entries
-	for (int i=0; i<MAXRECENTFILES; i++)
+	for (n=0; n<MAXRECENTFILES; n++)
 	{
 		// Create name tag
-		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(i));
-		//if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
-		if (actionRecentFile[i]->isVisible()) settings_.setValue(temp,actionRecentFile[i]->data().toString());
-		else settings_.remove(temp);
+		key = "RecentFile";
+		key += itoa(n);
+		if (actionRecentFile[n]->isVisible()) settings_.setValue(key,actionRecentFile[n]->data().toString());
+		else settings_.remove(key);
 	}
 	// Toolbar visibility / position
 	settings_.setValue("MainWinPositions", gui.mainWindow->saveState() );
+	// Command toolbar history
+	QStringList history = commandEditModel_->stringList();
+	for (n=0; n < prefs.commandHistoryLimit(); ++n)
+	{
+		key = "CommandHistory";
+		key += itoa(n);
+		if (n < history.count()) settings_.setValue(key, history[n]);
+	}
 }
