@@ -3,10 +3,9 @@ SUBDIRS = src
 SUFFIXES: .dt
 
 .dt.desktop:
-	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@;
-desktopdir = @BUILDDIR@/usr/share/applications
+	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
-EXTRA_DIST = scripts/*.txt src/gui/icons/*.* data/filters/* data/test/* data/BisonConfig.cmake TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/* src/parser/grammar.h src/parser/grammar.cc
+EXTRA_DIST = scripts/*.txt src/gui/icons/*.* data/filters/* data/test/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/*
 
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
@@ -17,5 +16,6 @@ filter_DATA = data/filters/*
 testdir = $(atendir)/test
 test_DATA = data/test/*
 
+desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = Aten.desktop
 
