@@ -80,6 +80,9 @@ void AtenForm::finaliseUi()
 
 	// Add text edit to CommandToolBar
 	commandEdit_ = new QLineEdit(this);
+	commandEditModel_ = new QStringListModel();
+	commandEditCompleter_ = new QCompleter(commandEditModel_, this);
+	commandEdit_->setCompleter(commandEditCompleter_);
 	ui.CommandToolbar->addWidget(commandEdit_);
 	ui.CommandToolbar->setMinimumSize(128,16);
 	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));

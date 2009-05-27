@@ -43,6 +43,7 @@ class QFrame;
 class QSettings;
 class QActionGroup;
 class QButtonGroup;
+class QStringListModel;
 class Forest;
 class Tree;
 
@@ -123,6 +124,8 @@ class AtenForm : public QMainWindow
 	*/
 	private:
 	QLineEdit *commandEdit_;
+	QCompleter *commandEditCompleter_;
+	QStringListModel *commandEditModel_;
 	private slots:
 	void executeCommand();
 

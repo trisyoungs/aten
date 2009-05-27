@@ -53,6 +53,7 @@ LineParser::LineParser(const char *filename, bool outputstream)
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
 	lastLine_ = 0;
+	file_ = NULL;
 	// Open new file for reading or writing
 	openFile(filename, outputstream);
 }

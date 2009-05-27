@@ -227,9 +227,10 @@ Model *Aten::findModel(const char *s) const
 */
 
 // Add Forcefield
-Forcefield *Aten::addForcefield()
+Forcefield *Aten::addForcefield(const char *name)
 {
 	current.ff = forcefields_.add();
+	if (name != NULL) current.ff->setName(name);
 	if (forcefields_.nItems() == 1) setDefaultForcefield(current.ff);
 	return current.ff;
 }

@@ -242,10 +242,9 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print(Messenger::Verbose, "Created model '%s'\n", obj.m->name());
 	if (prefs.keepNames())
 	{
-		Forcefield *f = aten.addForcefield();
 		char s[512];
 		sprintf(s,"Names kept from Model %s",obj.m->name());
-		f->setName(s);
+		Forcefield *f = aten.addForcefield(s);
 		obj.m->setNamesForcefield(f);
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not

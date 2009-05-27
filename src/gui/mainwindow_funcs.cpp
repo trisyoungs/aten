@@ -161,6 +161,14 @@ void AtenForm::executeCommand()
 		ReturnValue result;
 		aten.tempScript.executeAll(result);
 	}
+	// Remember this command...
+// 	// Insert new row in the stringlistmodel (*AWFUL* way to do this - isn't there a better solution?) TODO
+	QStringList sl = commandEditModel_->stringList();
+	if (!sl.contains(commandEdit_->text()))
+	{
+		sl.prepend(commandEdit_->text());
+		commandEditModel_->setStringList(sl);
+	}
 	commandEdit_->setText("");
 	gui.modelChanged();
 }

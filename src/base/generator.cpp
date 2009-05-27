@@ -46,7 +46,7 @@ bool Generator::set(const char *s)
 	lp.getArgsDelim(s, LineParser::Defaults);
 	if (lp.nArgs() != 3)
 	{
-		msg.print("Tried to set a symmetry Generator from text that didn't split into three arguments.\n");
+		msg.print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);
 		msg.exit("Generator::set");
 		return FALSE;	
 	}

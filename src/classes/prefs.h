@@ -499,7 +499,7 @@ class Prefs
 
 
 	/*
-	// Method Preferences
+	// General Program / Method Preferences
 	*/
 	private:
 	// Main modelview update and energy output frequencies
@@ -510,6 +510,12 @@ class Prefs
 	bool replicateFold_;
 	// Whether to trim atoms after replication
 	bool replicateTrim_;
+	// Maximum number of undo levels (-1 for unlimited)
+	int maxUndoLevels_;
+	// List of common drawing elements to put in SelectElement dialog
+	Dnchar commonElements_;
+	// Maximum number of entries to remember in command toolbar autocomplete
+	int commandHistoryLimit_;
 
 	public:
 	// Set the model update frequency
@@ -534,6 +540,18 @@ class Prefs
 	void setReplicateTrim(bool b);
 	// Return whether to trim atoms after replication
 	bool replicateTrim();
+	// Set the maximum number of undo levels allowed
+	void setMaxUndoLevels(int n);
+	// Return the maximum number of undo levels allowed
+	int maxUndoLevels();
+	// Set list of common elements in SelectElement dialog
+	void setCommonElements(const char *s);
+	// Return list of common elements to use in SelectElement dialog
+	const char *commonElements();
+	// Return maximum number of entries to remember in command toolbar autocomplete
+	void setCommandHistoryLimit(int i);
+	// Return maximum number of entries to remember in command toolbar autocomplete
+	int commandHistoryLimit();
 
 
 	/*
@@ -640,34 +658,6 @@ class Prefs
 	void setVdwScale(double d);
 	// Return the VDW radius scaling factor
 	double vdwScale();
-
-
-	/*
-	// Undo levels
-	*/
-	private:
-	// Maximum number of undo levels (-1 for unlimited)
-	int maxUndoLevels_;
-
-	public:
-	// Set the maximum number of undo levels allowed
-	void setMaxUndoLevels(int n);
-	// Return the maximum number of undo levels allowed
-	int maxUndoLevels();
-
-
-	/*
-	// GUI
-	*/
-	private:
-	// List of common drawing elements to put in SelectElement dialog
-	Dnchar commonElements_;
-
-	public:
-	// Set list of common elements in SelectElement dialog
-	void setCommonElements(const char *s);
-	// Return list of common elements to use in SelectElement dialog
-	const char *commonElements();
 };
 
 extern Prefs prefs;
