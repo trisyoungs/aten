@@ -63,9 +63,13 @@ void Aten::openFilters()
 	if (!found)
 	{
 		msg.print(Messenger::Error, "No filters found in any known locations.\n");
-		msg.print(Messenger::Error, "Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory:\n");
-		msg.print(Messenger::Error, "      e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
-		msg.print(Messenger::Error, "Alternatively, use the command-line switch --atendata <dir> to specify a location.\n");
+		msg.print(Messenger::Error, "Probable solutions:\n");
+		msg.print(Messenger::Error, "  1) Set the environment variable ATENDATA to point to the installed location of the filters\n");
+		msg.print(Messenger::Error, "         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'\n");
+		msg.print(Messenger::Error, "  2) Set the environment variable ATENDATA to point to the location of the 'data' directory in the source tree\n");
+		msg.print(Messenger::Error, "         e.g. (in Linux) 'export ATENDATA=/home/bob/src/aten-1.2/data)\n");
+		msg.print(Messenger::Error, "  3) Use the command-line switch --atendata <dir> to specify either of the above locations\n");
+		msg.print(Messenger::Error, "         e.g. (in Linux) 'aten --atendata /home/bob/src/aten-1.2/data\n");
 		nFiltersFailed_ = -1;
 	}
 

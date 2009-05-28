@@ -98,13 +98,41 @@ Cli cliSwitches[] = {
 		"<mapstyle>",	"Override filter element mapping style" }
 };
 
+/*
+// Member functions
+*/
+// Search for short option
+Cli::CliSwitch Cli::cliSwitch(char c)
+{
+	int n;
+	for (n=0; n<Cli::nSwitchItems; ++n)
+	{
+		if (cliSwitches[n].shortOpt == '\0') continue;
+		if (c == cliSwitches[n].shortOpt) break;
+	}
+	return (Cli::CliSwitch) n;
+}
+
+// Search for long option
+Cli::CliSwitch Cli::cliSwitch(const char *s)
+{
+	int n;
+	for (n=0; n<Cli::nSwitchItems; ++n)
+	{
+		if (cliSwitches[n].longOpt[0] == '\0') continue;
+		if (strcmp(s, cliSwitches[n].longOpt) == 0) break;
+	}
+	return (Cli::CliSwitch) n;
+}
+
 // Parse CLI options *before* filters / prefs have been loaded
 bool Aten::parseCliEarly(int argc, char *argv[])
 {
 	int argn, opt;
-	bool isShort, match, nextArgIsSwitch, hasNextArg;
+	bool isShort, hasArg;
 	Messenger::OutputType ot;
-	char *arg;
+	Dnchar arg;
+	Dnchar argtext;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -112,41 +140,44 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 		argn++;
 		// Check for null argument
 		if (argv[argn][0] == '\0') continue;
-		match = FALSE;
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
 		{
-			// Is this a long or short option?
-			isShort = (argv[argn][1] != '-');
-			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
-			// Check what the next CLI argument is
-			if (argn == (argc-1)) hasNextArg = FALSE;
-			else
-			{
-				hasNextArg = TRUE;
-				nextArgIsSwitch = (argv[argn+1][0] == '-');
-			}
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
 				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
 				continue;
-			} 
-			// Cycle over defined CLI options and search for this one
-			for (opt=0; opt<Cli::nSwitchItems; opt++)
-			{
-				// Check short option character or long option text
-				if (isShort) match = (*arg == cliSwitches[opt].shortOpt);
-				else match = (strcmp(arg,cliSwitches[opt].longOpt) == 0 ? TRUE : FALSE);
-				if (match) break;
 			}
-			// Check to see if we matched any of the known CLI switches
-			if (!match)
+			// Is this a long or short option?
+			isShort = (argv[argn][1] != '-');
+			if (isShort)
 			{
-				printf("Unrecognised command-line option '%s'.\n",argv[argn]);
+				arg = &argv[argn][1];
+				argtext.clear();
+			}
+			else
+			{
+				arg = beforeChar(&argv[argn][2], '=');
+				argtext = afterChar(&argv[argn][2], '=');
+			}
+			// Search for option...
+			opt = (isShort ? Cli::cliSwitch(arg[0]) : Cli::cliSwitch(arg.get()));
+			// Check to see if we matched any of the known CLI switches
+			if (opt == Cli::nSwitchItems)
+			{
+				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", arg.get());
 				return FALSE;
 			}
-			// If this option needs an argument, check that we have one
+			// Check if an argument to the switch has been supplied...
+			if (argtext != "") hasArg = TRUE;
+			else if (argv[argn+1][0] != '-')
+			{
+				hasArg = TRUE;
+				argtext = argv[++argn];
+			}
+			else hasArg = FALSE;
+			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
 			{
 				// No argument required
@@ -154,7 +185,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Required argument
 				case (1):
-					if ((!hasNextArg) || nextArgIsSwitch)
+					if (!hasArg)
 					{
 						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
 						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
@@ -170,17 +201,17 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			switch (opt)
 			{
 				case (Cli::AtenDataSwitch):
-					aten.setDataDir(argv[++argn]);
+					aten.setDataDir(argtext.get());
+					printf("Will search for filters in '%s'.\n", argtext.get());
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
-					if ((!hasNextArg) || nextArgIsSwitch) msg.addOutputType(Messenger::Calls);
+					if (!hasArg) msg.addOutputType(Messenger::Calls);
 					else
 					{
-						ot = Messenger::outputType(argv[++argn]);
+						ot = Messenger::outputType(argtext.get());
 						if (ot != Messenger::nOutputTypes) msg.addOutputType(ot);
 						else return FALSE;
-						argv[argn][0] = '\0';
 					}
 					break;
 				// Display help
@@ -194,6 +225,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
+					printf("Verbosity enabled.\n");
 					msg.addOutputType(Messenger::Verbose);
 					break;
 				// Print version and exit
@@ -211,8 +243,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 int Aten::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
-	bool isShort, match, nextArgIsSwitch, hasNextArg;
-	char *arg, *line, prompt[32];
+	bool isShort, hasArg;
+	char *line, prompt[32];
+	Dnchar arg, argtext;
 	Forcefield *ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
@@ -228,41 +261,44 @@ int Aten::parseCli(int argc, char *argv[])
 		argn++;
 		// Check for null argument
 		if (argv[argn][0] == '\0') continue;
-		match = FALSE;
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
 		{
-			// Is this a long or short option?
-			isShort = (argv[argn][1] != '-');
-			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
-			// Check what the next CLI argument is
-			if (argn == (argc-1)) hasNextArg = FALSE;
-			else
-			{
-				hasNextArg = TRUE;
-				nextArgIsSwitch = (argv[argn+1][0] == '-');
-			}
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
 				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
 				continue;
-			} 
-			// Cycle over defined CLI options and search for this one
-			for (opt=0; opt<Cli::nSwitchItems; opt++)
-			{
-				// Check short option character or long option text
-				if (isShort) match = (*arg == cliSwitches[opt].shortOpt);
-				else match = (strcmp(arg,cliSwitches[opt].longOpt) == 0 ? TRUE : FALSE);
-				if (match) break;
 			}
+			// Is this a long or short option?
+			isShort = (argv[argn][1] != '-');
+			if (isShort)
+			{
+				arg = &argv[argn][1];
+				argtext.clear();
+			}
+			else
+			{
+				arg = beforeChar(&argv[argn][2], '=');
+				argtext = afterChar(&argv[argn][2], '=');
+			}
+			// Search for option...
+			opt = (isShort ? Cli::cliSwitch(arg[0]) : Cli::cliSwitch(arg.get()));
 			// Check to see if we matched any of the known CLI switches
-			if (!match)
+			if (opt == Cli::nSwitchItems)
 			{
-				printf("Unrecognised command-line option '%s'.\n",argv[argn]);
-				return -1;
+				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", arg.get());
+				return FALSE;
 			}
-			// If this option needs an argument, check that we have one
+			// Check if an argument to the switch has been supplied...
+			if (argtext != "") hasArg = TRUE;
+			else if (argv[argn+1][0] != '-')
+			{
+				hasArg = TRUE;
+				argtext = argv[++argn];
+			}
+			else hasArg = FALSE;
+			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
 			{
 				// No argument required
@@ -270,11 +306,11 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Required argument
 				case (1):
-					if ((!hasNextArg) || nextArgIsSwitch)
+					if (!hasArg)
 					{
 						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
 						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
-						return -1;
+						return FALSE;
 					}
 					break;
 				// Optional argument
@@ -286,7 +322,6 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				// All of the following switches were dealt with in parseCliEarly(), so ignore them
 				case (Cli::AtenDataSwitch):
-					argn++;
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::QuietSwitch):
@@ -308,7 +343,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
-					prefs.setCacheLimit(atoi(argv[++argn]));
+					prefs.setCacheLimit(argtext.asInteger());
 					break;
 				// Force model centering on load (for non-periodic systems)
 				case (Cli::CentreSwitch):
@@ -319,12 +354,12 @@ int Aten::parseCli(int argc, char *argv[])
 					if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
 					{
 						script = aten.addBatchCommand();
-						if (!script->generate(argv[++argn], "batchcommand")) return -1;
+						if (!script->generate(argtext.get(), "batchcommand")) return -1;
 					}
 					else
 					{
 						tempforest.clear();
-						if (tempforest.generate(argv[++argn], "CLI command"))
+						if (tempforest.generate(argtext.get(), "CLI command"))
 						{
 							if (!tempforest.executeAll(rv)) return -1;
 						}
@@ -333,7 +368,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
-					f = aten.findFilter(FilterData::ModelExport, argv[++argn]);
+					f = aten.findFilter(FilterData::ModelExport, argtext.get());
 					if (f == NULL) return -1;
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
@@ -341,7 +376,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):
-					if (!aten.openFilter(argv[++argn])) return -1;
+					if (!aten.openFilter(argtext.get())) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
@@ -349,20 +384,19 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
-					ff = aten.loadForcefield(argv[++argn]);
+					ff = aten.loadForcefield(argtext.get());
 					if (ff == NULL) return -1;
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = aten.findFilter(FilterData::ModelImport, argv[++argn]);
+					modelfilter = aten.findFilter(FilterData::ModelImport, argtext.get());
 					if (modelfilter == NULL) return -1;
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					argn++;
-					f = aten.probeFile(argv[argn], FilterData::GridImport);
+					f = aten.probeFile(argtext.get(), FilterData::GridImport);
 					if (f == NULL) return -1;
-					else if (!f->executeRead(argv[argn])) return -1;
+					else if (!f->executeRead(argtext.get())) return -1;
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
@@ -392,7 +426,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(argv[++argn]);
+					parser.getArgsDelim(argtext.get());
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						el = elements().findAlpha(afterChar(parser.argc(n), '='));
@@ -432,7 +466,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-					if (script->generateFromFile(argv[++argn]))
+					if (script->generateFromFile(argtext.get()))
 					{
 						aten.setProgramMode(Aten::CommandMode);
 						if (!script->executeAll(rv)) aten.setProgramMode(Aten::NoMode);
@@ -451,18 +485,18 @@ int Aten::parseCli(int argc, char *argv[])
 					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
 					else
 					{
-						Tree *f = probeFile(argv[++argn], FilterData::TrajectoryImport);
+						Tree *f = probeFile(argtext.get(), FilterData::TrajectoryImport);
 						if (f == NULL) return -1;
-						if (!current.m->initialiseTrajectory(argv[argn],f)) return -1;
+						if (!current.m->initialiseTrajectory(argtext.get(),f)) return -1;
 					}
 					break;
 				// Set maximum number of undolevels per model
 				case (Cli::UndoLevelSwitch):
-					prefs.setMaxUndoLevels(atoi(argv[++argn]));
+					prefs.setMaxUndoLevels(argtext.asInteger());
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zMapType(argv[++argn]);
+					zm = ElementMap::zMapType(argtext.get());
 					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
 					break;
 			}
