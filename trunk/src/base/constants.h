@@ -62,6 +62,9 @@
 #define FORT_INT 4
 #define FORT_REAL 8
 
+// Maximum number of arguments allowable per node
+#define MAXNODEARGS 20
+
 // Data maxima for forcefields
 #define MAXFFGENDATA 10
 #define MAXFFPARAMDATA 6

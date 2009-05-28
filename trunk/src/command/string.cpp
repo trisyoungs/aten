@@ -86,6 +86,13 @@ bool Command::function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Replace characters in supplied string
+bool Command::function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( replaceChars(c->argc(0), c->argc(1), c->argc(2)[0]) );
+	return TRUE;
+}
+
 // Strip characters from supplied string
 bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

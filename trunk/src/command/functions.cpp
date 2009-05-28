@@ -446,7 +446,8 @@ void Command::initPointers()
 	pointers_[Contains] = &Command::function_Contains;
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
-	pointers_[Normalise] = &Command::function_Normalise;	
+	pointers_[Normalise] = &Command::function_Normalise;
+	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
 	pointers_[StripChars] = &Command::function_StripChars;
 
 	// View Commands

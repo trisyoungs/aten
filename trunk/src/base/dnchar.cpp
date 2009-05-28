@@ -199,22 +199,39 @@ void Dnchar::operator=(const Dnchar &source)
 // Equality Operator (const char*)
 bool Dnchar::operator==(const char *s) const
 {
-	if (data_ == NULL) return FALSE;
-	return (strcmp(data_,s) == 0 ? TRUE : FALSE);
+	if (data_ == NULL) return (s[0] == '\0');
+	return (strcmp(data_,s) == 0);
+}
+
+// Inequality Operator (const char*)
+bool Dnchar::operator!=(const char *s) const
+{
+	if (data_ == NULL) return (s[0] != '\0');
+	return (strcmp(data_,s) != 0);
 }
 
 // Equality Operator
 bool Dnchar::operator==(const Dnchar &s) const
 {
-	if ((data_ == NULL) || (s.data_ == NULL)) return FALSE;
-	return (strcmp(data_,s.data_) == 0 ? TRUE : FALSE);
+	if (data_ == NULL)
+	{
+		if ((s.data_ == NULL) || (s.data_[0] == '\0')) return TRUE;
+		else return FALSE;
+	}
+	else if (s.data_ == NULL) return (data_[0] == '\0');
+	return (strcmp(data_,s.data_) == 0);
 }
 
 // Inequality Operator
 bool Dnchar::operator!=(const Dnchar &s) const
 {
-	if ((data_ == NULL) || (s.data_ == NULL)) return TRUE;
-	return (strcmp(data_,s.data_) == 0 ? FALSE : TRUE);
+	if (data_ == NULL)
+	{
+		if ((s.data_ == NULL) || (s.data_[0] == '\0')) return FALSE;
+		else return TRUE;
+	}
+	else if (s.data_ == NULL) return (data_[0] != '\0');
+	return (strcmp(data_,s.data_) != 0);
 }
 
 // Subscript operator
