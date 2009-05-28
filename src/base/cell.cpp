@@ -599,12 +599,18 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 		case (Cell::CubicCell):
 		case (Cell::OrthorhombicCell):
 			newr = r;
-			if (newr.x < 0.0) newr.x += lengths_.x;
+			if (newr.x < 0.0) newr.x -= int((newr.x-lengths_.x)/lengths_.x) * lengths_.x;
+			else if (newr.x > lengths_.x) newr.x -= int(newr.x/lengths_.x)* lengths_.x;
+			if (newr.y < 0.0) newr.y -= int((newr.y-lengths_.y)/lengths_.y)* lengths_.y;
+			else if (newr.y > lengths_.y) newr.y -= int(newr.y/lengths_.y)* lengths_.y;
+			if (newr.z < 0.0) newr.z -= int((newr.z-lengths_.z)/lengths_.z)* lengths_.z;
+			else if (newr.z > lengths_.z) newr.z -= int(newr.z/lengths_.z)* lengths_.z;
+/*			if (newr.x < 0.0) newr.x += lengths_.x;
 			else if (newr.x > lengths_.x) newr.x -= lengths_.x;
 			if (newr.y < 0.0) newr.y += lengths_.y;
 			else if (newr.y > lengths_.y) newr.y -= lengths_.y;
 			if (newr.z < 0.0) newr.z += lengths_.z;
-			else if (newr.z > lengths_.z) newr.z -= lengths_.z;
+			else if (newr.z > lengths_.z) newr.z -= lengths_.z;*/
 			// Use model functions to store new position if we were given one
 			if (parent != NULL) parent->positionAtom(i, newr);
 			else r = newr;
@@ -614,15 +620,18 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 			newr = r;
 			// Convert these coordinates into fractional cell coordinates...
 			newr *= itranspose_;
-			if (newr.x < 0.0) newr.x += 1.0;
-			else if (newr.x >= 1.0) newr.x -= 1.0;
-			if (newr.y < 0.0) newr.y += 1.0;
-			else if (newr.y >= 1.0) newr.y -= 1.0;
-			if (newr.z < 0.0) newr.z += 1.0;
-			else if (newr.z >= 1.0) newr.z -= 1.0;
-			//newr.x -= floor(newr.x);
-			//newr.y -= floor(newr.y);
-			//newr.z -= floor(newr.z);
+			if (newr.x < 0.0) newr.x -= int(newr.x+1.0);
+			else if (newr.x > 1.0) newr.x -= int(newr.x);
+			if (newr.y < 0.0) newr.y -= int(newr.y+1.0);
+			else if (newr.y > 1.0) newr.y -= int(newr.y);
+			if (newr.z < 0.0) newr.z -= int(newr.z+1.0);
+			else if (newr.z > 1.0) newr.z -= int(newr.z);
+// 			if (newr.x < 0.0) newr.x += 1.0;
+// 			else if (newr.x >= 1.0) newr.x -= 1.0;
+// 			if (newr.y < 0.0) newr.y += 1.0;
+// 			else if (newr.y >= 1.0) newr.y -= 1.0;
+// 			if (newr.z < 0.0) newr.z += 1.0;
+// 			else if (newr.z >= 1.0) newr.z -= 1.0;
 			// Convert back into world coordinates
 			newr *= transpose_;
 			// Use model functions to store new position if we were given one

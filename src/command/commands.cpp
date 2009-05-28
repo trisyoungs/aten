@@ -781,6 +781,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Convert supplied real value to a string" },
 	{ "itoa",		"N",		"<number>", VTypes::StringData,
 				"Convert supplied integer to a string" },
+	{ "replacechars",	"^CCC",		"<variable> <chars> <replacechar>", VTypes::StringData,
+				"Replace all occurrences of the supplied characters in the supplied variable with the supplied character" },
 	{ "stripchars",		"^CC",		"<variable> <chars>", VTypes::StringData,
 				"Strip all occurrences of the supplied characters from the supplied variable" },
 

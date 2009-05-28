@@ -79,6 +79,8 @@ class Dnchar
 	void operator=(const Dnchar&);
 	// Equality operator (const char*)
 	bool operator==(const char*) const;
+	// Inequality operator (const char*)
+	bool operator!=(const char*) const;
 	// Equality operator
 	bool operator==(const Dnchar&) const;
 	// Inequality operator

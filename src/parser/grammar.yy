@@ -45,7 +45,7 @@ VTypes::DataType declaredType;
 %token DO WHILE FOR IF RETURN FILTERBLOCK HELP DIOV DUMMY
 %nonassoc ELSE
 
-%nonassoc AND OR
+%left AND OR
 %left '=' PEQ MEQ TEQ DEQ 
 %left GEQ LEQ EQ NEQ '>' '<'
 %left '+' '-'

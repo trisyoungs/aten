@@ -37,6 +37,7 @@ const char *afterChar(const char*, char);
 const char *beforeStr(const char*, const char*);
 const char *afterStr(const char*, const char*);
 const char *stripTrailing(const char*);
+const char *replaceChars(const char *s, const char *charstoreplace, char r);
 const char *stripChars(const char *s, const char *charstostrip);
 int countChars(const char *string, const char *searchchars, int offset = 0);
 

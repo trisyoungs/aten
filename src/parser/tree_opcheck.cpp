@@ -103,12 +103,6 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
-	// Some operators will act on just about anything
-	if ((func == Command::OperatorAnd) || (func == Command::OperatorOr))
-	{
-		msg.exit("Tree::checkBinaryOperatorTypes");
-		return VTypes::IntegerData;
-	}
 	VTypes::DataType result = VTypes::NoData;
 	returnsarray = FALSE;
 	switch (func)

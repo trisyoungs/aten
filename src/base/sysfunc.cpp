@@ -173,13 +173,37 @@ const char *stripTrailing(const char *s)
 	return result;
 }
 
+// Replace all of the supplied characters in the source string
+const char *replaceChars(const char *s, const char *charstoreplace, char r)
+{
+	static Dnchar result(1024);
+	bool found;
+	char const *c1, *c2;
+	result.clear();
+	for (c1 = &s[0]; *c1 != '\0'; c1++)
+	{
+		found = FALSE;
+		for (c2 = charstoreplace; *c2 != '\0'; c2++)
+		{
+			if (*c1 == *c2)
+			{
+				found = TRUE;
+				break;
+			}
+		}
+		if (found) result += r;
+		else result += *c1;
+	}
+	return result.get();
+}
+
 // Strip all of the supplied characters from the source string
 const char *stripChars(const char *s, const char *charstostrip)
 {
-	static char result[512];
-	int count = 0;
-	bool found;
+	static Dnchar result(1024);
 	char const *c1, *c2;
+	bool found;
+	result.clear();
 	for (c1 = &s[0]; *c1 != '\0'; c1++)
 	{
 		found = FALSE;
@@ -191,14 +215,9 @@ const char *stripChars(const char *s, const char *charstostrip)
 				break;
 			}
 		}
-		if (!found)
-		{
-			result[count] = *c1;
-			count++;
-		}
+		if (!found) result += *c1;
 	}
-	result[count] = '\0';
-	return result;
+	return result.get();
 }
 
 // Count number of times that supplied characters occur in supplied string

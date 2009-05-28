@@ -297,11 +297,11 @@ const char *TreeNode::argc(int i)
 		printf("TreeNode::argc : Argument index %i is out of range (node = %li).\n", i, this);
 		return FALSE;
 	}
-	static ReturnValue rv;
+	static ReturnValue rv[MAXNODEARGS];
 	bool success;
 	const char *result = NULL;
-	if (!args_[i]->item->execute(rv)) msg.print("Couldn't retrieve argument %i.\n", i+1);
-	result = rv.asString(success);
+	if (!args_[i]->item->execute(rv[i])) msg.print("Couldn't retrieve argument %i.\n", i+1);
+	result = rv[i].asString(success);
 	if (!success) msg.print("Couldn't cast argument %i into a character.\n", i+1);
 	return result;
 }
