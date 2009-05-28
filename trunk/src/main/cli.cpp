@@ -171,7 +171,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			}
 			// Check if an argument to the switch has been supplied...
 			if (argtext != "") hasArg = TRUE;
-			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-'))
+			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
 				hasArg = TRUE;
 				argtext = argv[++argn];
@@ -292,7 +292,7 @@ int Aten::parseCli(int argc, char *argv[])
 			}
 			// Check if an argument to the switch has been supplied...
 			if (argtext != "") hasArg = TRUE;
-			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-'))
+			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
 				hasArg = TRUE;
 				argtext = argv[++argn];

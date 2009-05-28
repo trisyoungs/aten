@@ -246,6 +246,15 @@ bool Command::function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Set visibility of grid data
+bool Command::function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	if (c->hasArg(0)) obj.g->setVisible(c->argb(0));
+	rv.set(obj.g->isVisible());
+	return TRUE;
+}
+
 // Load grid ('loadgrid <filename>')
 bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

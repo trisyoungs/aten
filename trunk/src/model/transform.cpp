@@ -217,23 +217,15 @@ void Model::mirrorSelectionLocal(int axis)
 {
 	msg.enter("Model::mirrorSelectionLocal");
 	// Get selection's local COG in the desired coordinate
-	Vec3<double> cog = selectionCog();
-	for (int n=0; n<3; n++) if (n != axis) cog.set(n, 0.0);
-	Vec3<double> newr;
+	Vec3<double> newr, vec, cog = selectionCog();
+	for (int n=0; n<3; n++) vec.set(n, n == axis ? -1.0 : 1.0);
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected())
 	{
 		// Calculate newr
-		newr = i->r() - cog;
-		newr.set(axis, -newr.get(axis));
+		newr = (i->r() - cog);
+		newr.multiply(vec);
 		newr += cog;
 		positionAtom(i, newr);
-
-		// Get coordinates relative to COG
-		//mimd = cell_.mimd(i->r(), cog);
-		// Flip specified coordinate
-		//mimd.set(axis, -mimd.get(axis));
-		// Store new coordinate
-		//positionAtom(i, mimd + cog);
 	}
 	changeLog.add(Log::Visual);
 	projectSelection();

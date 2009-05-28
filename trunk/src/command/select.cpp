@@ -31,7 +31,7 @@
 
 bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
-	static char from[32], to[32], text[512], s[512];
+	static char from[32], to[32], text[512];
 	int i, j, n, plus;
 	bool range;
 	// Execute argument to get result
@@ -41,8 +41,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	if ((value.type() == VTypes::AtomData) || (value.type() == VTypes::IntegerData))
 	{
 		Atom *ii = value.type() == VTypes::IntegerData ? m->atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
-		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
-		m->beginUndoState(s);
+		m->beginUndoState("%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 		m->endUndoState();
 	}
@@ -50,16 +49,14 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	{
 		Element *elem = (Element*) value.asPointer(VTypes::ElementData);
 		if (elem == NULL) return FALSE;
-		sprintf(s,"%select element (%s)", deselect ? "Des" : "S", elem->symbol);
-		m->beginUndoState(s);
+		m->beginUndoState("%select element (%s)", deselect ? "Des" : "S", elem->symbol);
 		deselect ? m->deselectElement(elem->z) : m->selectAtom(elem->z);
 		m->endUndoState();
 	}
 	else if (value.type() == VTypes::PatternData)
 	{
 		Pattern *pp = (Pattern*) value.asPointer(VTypes::PatternData);
-		sprintf(s,"%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", pp->name(), pp->totalAtoms());
-		m->beginUndoState(s);
+		m->beginUndoState("%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", pp->name(), pp->totalAtoms());
 		m->selectPattern(pp, FALSE, deselect);
 		m->endUndoState();
 	}
@@ -94,8 +91,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 			}
 		}
 		// Do the selection
-		sprintf(s,"%select (%s)", deselect ? "Des" : "S", value.asString());
-		m->beginUndoState(s);
+		m->beginUndoState("%select (%s)", deselect ? "Des" : "S", value.asString());
 		if (!range)
 		{
 			if (VTypes::determineType(from) == VTypes::IntegerData)
@@ -202,12 +198,9 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
-		char *s = new char[strlen(c->argc(1)) + strlen(c->argc(0)) + 33];
-		sprintf(s,"Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		obj.rs->beginUndoState(s);
+		obj.rs->beginUndoState("Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
 		obj.rs->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
 		obj.rs->endUndoState();
-		delete[] s;
 		rv.set(nselected - obj.rs->nSelected());
 		return TRUE;
 	}
@@ -264,9 +257,7 @@ bool Command::function_SelectFFType(CommandNode *c, Bundle &obj, ReturnValue &rv
 	// Store current number of selected atoms
 	int nselected = obj.rs->nSelected();
 	ForcefieldAtom *ffa;
-	char s[128];
-	sprintf(s,"Select by forcefield type (%s)", c->argc(0));
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Select by forcefield type (%s)", c->argc(0));
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next)
 	{
 		ffa = i->type();
@@ -309,10 +300,8 @@ bool Command::function_SelectFormatted(CommandNode *c, Bundle &obj, ReturnValue 
 bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
-	sprintf(s,"Select %s inside cell", c->hasArg(0) ? "molecules" : "atoms");
 	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Select %s inside cell", c->hasArg(0) ? "molecules" : "atoms");
 	obj.rs->selectInsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected() - nselected);
@@ -363,10 +352,8 @@ bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
 	double tol = c->hasArg(0) ? c->argd(0) : 0.2;
-	sprintf(s,"Select overlapping atoms (within %f)", tol);
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Select overlapping atoms (within %f)", tol);
 	obj.rs->selectOverlaps(tol);
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected());
@@ -377,10 +364,8 @@ bool Command::function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
-	sprintf(s,"Select %s outside cell", c->hasArg(0) ? "molecules" : "atoms");
 	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Select %s outside cell", c->hasArg(0) ? "molecules" : "atoms");
 	obj.rs->selectOutsideCell(c->hasArg(0) ? c->argb(0) : FALSE);
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected() - nselected);
@@ -402,9 +387,7 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else
 	{
-		char s[256];
-		sprintf(s,"Select pattern '%s'", p->name());
-		obj.rs->beginUndoState(s);
+		obj.rs->beginUndoState("Select pattern '%s'", p->name());
 		Atom *i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); n++)
 		{
@@ -425,12 +408,9 @@ bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
-		char *s = new char[strlen(c->argc(1)) + 33];
-		sprintf(s,"Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		obj.rs->beginUndoState(s);
+		obj.rs->beginUndoState("Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
 		obj.rs->selectType(c->argz(0), c->argc(1));
 		obj.rs->endUndoState();
-		delete[] s;
 		rv.set(obj.rs->nSelected() - nselected);
 		return TRUE;
 	}

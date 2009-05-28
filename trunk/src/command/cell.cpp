@@ -156,9 +156,7 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 	}
 	double angle = c->argd(1);
-	char s[128];
-	sprintf(s, "Rotate cell %fdeg about %c-axis", angle, 88+axis);
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Rotate cell %fdeg about %c-axis", angle, 88+axis);
 	obj.rs->rotateCell(axis, angle);
 	obj.rs->endUndoState();
 	rv.reset();

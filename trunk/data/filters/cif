@@ -1,7 +1,8 @@
 # Crystallographic Information File (cif) (for v1.2+)
 # Created:	 10/04/2009
-# Last modified: 21/05/2009
+# Last modified: 28/05/2009
 # ChangeLog:
+#	28/05/2009 - Near total rewrite.
 #	21/05/2009 - Major fixes - data in loops was not read correctly.
 
 filter(type="importmodel", name="Crystallographic Information File", nickname="cif", extension="cif", glob="*.cif", id=8)

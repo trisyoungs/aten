@@ -97,7 +97,7 @@ template <class T> class Vec3
 	void orthogonalise(const Vec3<T>&);
 	// Orthogonalise (two vectors)
 	void orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2);
-	// Returns the largest compone&nt of the vector
+	// Returns the largest component of the vector
 	T max() const;
 	// Returns the smallest component of the vector
 	T min() const;
@@ -111,6 +111,8 @@ template <class T> class Vec3
 	double magAndNormalise();
 	// Dot product between this and supplied vector
 	double dp(const Vec3<T> &v) const;
+	// Multiply elements of this vector with those of supplied vector
+	void multiply(const Vec3<T> &v);
 	// Returns the minimum absolute-valued element in the vector
 	int absMinElement() const;
 	// Returns the maximum absolute-valued element in the vector
@@ -506,6 +508,14 @@ template <class T> double Vec3<T>::magAndNormalise()
 template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
 {
 	return (x*v.x + y*v.y + z*v.z);
+}
+
+// Multiply elements of this vector with those of the supplied vector
+template <class T> void Vec3<T>::multiply(const Vec3<T> &v)
+{
+	x *= v.x;
+	y *= v.y;
+	z *= v.z;
 }
 
 // Get element
