@@ -515,6 +515,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Set whether the isodata is symmetric about zero (i.e. whether to draw both halves)" },
 	{ "gridusez",		"B",		"<usez?>", VTypes::IntegerData,
 				"Whether a 2D surface uses the vertex data value as its z (height) data" },
+	{ "gridvisible",	"B",		"<visible?>", VTypes::IntegerData,
+				"Set (or return) whether the current grid is visible" },
 	{ "loadgrid",		"C",		"<gridfile>", VTypes::GridData,
 				"Load grid data" },
 	{ "newgrid",		"C",		"<title>", VTypes::GridData,

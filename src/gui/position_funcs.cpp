@@ -64,10 +64,7 @@ void AtenPosition::on_FlipZButton_clicked(bool checked)
 
 void AtenPosition::flipSelection(int axis)
 {
-	char s[2];
-	s[0] = 88+axis;
-	s[1] = '\0';
-	CommandNode::run(Command::Mirror, "c", s);
+	CommandNode::run(Command::Mirror, "i", axis);
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

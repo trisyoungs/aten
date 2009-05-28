@@ -1796,4 +1796,4 @@ void Set_uvw(const T_SgInfo *SgInfo, int h, int k, int l, int *uvw);
 // Added TY May 2009
 #ifdef __cplusplus
 }
-#endif 
+#endif

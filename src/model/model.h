@@ -930,7 +930,7 @@ class Model
 	// Return the current redo level pointer
 	UndoState *currentRedoState();
 	// Signal to begin recording new changes
-	void beginUndoState(const char *text);
+	void beginUndoState(const char *fmt ...);
 	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
 	void endUndoState();
 	// Perform the undo action pointed to by 'currentundostate'

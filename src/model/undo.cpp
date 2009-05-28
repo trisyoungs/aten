@@ -44,7 +44,7 @@ UndoState *Model::currentRedoState()
 }
 
 // Start recording a new undo state
-void Model::beginUndoState(const char *text)
+void Model::beginUndoState(const char *fmt ...)
 {
 	if (!undoRedoEnabled_) return;
 	msg.enter("Model::beginUndoState");
@@ -57,7 +57,15 @@ void Model::beginUndoState(const char *text)
 	}
 	// Create a new state for us to add to
 	recordingState_ = new UndoState;
-	recordingState_->setDescription(text);
+	// Generate description text
+	va_list arguments;
+	static char msgs[8096];
+	msgs[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(msgs,fmt,arguments);
+	va_end(arguments);
+	recordingState_->setDescription(msgs);
 	recordingState_->setStartLogs(changeLog);
 	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
 	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));

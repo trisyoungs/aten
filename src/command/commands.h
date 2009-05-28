@@ -314,6 +314,7 @@ class Command
 		GridStyle,
 		GridSymmetric,
 		GridUseZ,
+		GridVisible,
 		LoadGrid,
 		NewGrid,
 	
@@ -728,6 +729,7 @@ class Command
 	static bool function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Image Commands

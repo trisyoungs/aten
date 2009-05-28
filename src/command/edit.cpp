@@ -39,9 +39,7 @@ bool Command::function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
-	sprintf(s,"Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
 	aten.userClipboard->cutSelection(obj.rs);
 	obj.rs->endUndoState();
 	return TRUE;
@@ -51,9 +49,7 @@ bool Command::function_Cut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
-	sprintf(s,"Delete %i atom%s\n", obj.rs->nSelected(), (obj.rs->nSelected() == 1 ? "" : "s"));
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Delete %i atom%s\n", obj.rs->nSelected(), (obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->selectionDelete();
 	obj.rs->endUndoState();
 	return TRUE;
@@ -63,9 +59,7 @@ bool Command::function_Delete(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	char s[128];
-	sprintf(s,"Paste %i atom%s\n", aten.userClipboard->nAtoms(), (aten.userClipboard->nAtoms() == 1 ? "" : "s"));
-	obj.rs->beginUndoState(s);
+	obj.rs->beginUndoState("Paste %i atom%s\n", aten.userClipboard->nAtoms(), (aten.userClipboard->nAtoms() == 1 ? "" : "s"));
 	if (!c->hasArg(2)) aten.userClipboard->pasteToModel(obj.rs);
 	else
 	{
