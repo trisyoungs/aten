@@ -45,6 +45,15 @@ class Cli
 	const char *argText;
 	// Description of option
 	const char *description;
+
+	/*
+	// Member functions
+	*/
+	public:
+	// Search for short option
+	static Cli::CliSwitch cliSwitch(char c);
+	// Search for long option
+	static Cli::CliSwitch cliSwitch(const char *s);
 };
 
 #endif
