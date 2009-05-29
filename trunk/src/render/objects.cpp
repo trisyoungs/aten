@@ -364,20 +364,67 @@ void Canvas::millerPlane(int h, int k, int l, int dir)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	GLdouble glmat[16];
 	displayModel_->cell()->axesForGl(glmat);
-	// Plane Eq : hx + ky + lz - 1 = 0
-	// Get coordinates for plane corners (within cell)
-	Vec3<double> coords[4];
-	if (h != 0) coords[0].set(1.0 / h,0.0,0.0);
-// 	else coords[0].set( 
-	coords[1].set(0.0,k == 0 ? 0.0 : 1.0 / k,0.0);
-	coords[2].set(0.0,0.0,l == 0 ? 0.0 : 1.0 / l);
+	// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
+	Vec3<int> hkl(h,k,l);
+	int n, i, j, anindex = -1, notanindex = -1, ncoords = 0;
+	Vec3<double> coords[4], origin;
+	for (n=0; n<3; ++n)
+	{
+		if (hkl[n] != 0)
+		{
+			coords[ncoords++].set(n, 1.0 / hkl[n]);
+			anindex = n;
+		}
+		else notanindex = n;
+	}
+	// Generate other coordinates if necessary
+	if (ncoords == 1)
+	{
+		// {100}
+		i = (anindex+1)%3;
+		j = (i+1)%3;
+		for (n=1; n<4; ++n) coords[n] = coords[0];
+		coords[1].set(i, 1.0);
+		coords[2].set(i, 1.0);
+		coords[2].set(j, 1.0);
+		coords[3].set(j, 1.0);
+		ncoords = 4;
+	}
+	else if (ncoords == 2)
+	{
+		// {110}
+		coords[2] = coords[1];
+		coords[2].set(notanindex, 1.0);
+		coords[3] = coords[0];
+		coords[3].set(notanindex, 1.0);
+		ncoords = 4;
+	}
 	glPushMatrix();
 	  glMultMatrixd(glmat);
-	  glBegin(GL_TRIANGLES);
-	    glVertex3d(coords[0].x, coords[0].y, coords[0].z);
-	    glVertex3d(coords[1].x, coords[1].y, coords[1].z);
-	    glVertex3d(coords[2].x, coords[2].y, coords[2].z);
-	  glEnd();
+	  if (ncoords == 3)
+	  {
+		glBegin(GL_TRIANGLES);
+		  glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+		  glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+		  glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+		  glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+		  glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+		  glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+		glEnd();
+	  }
+	  else
+	  {
+		glBegin(GL_QUADS);
+		  glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+		  glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+		  glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+		  glVertex3d(coords[3].x, coords[3].y, coords[3].z);
+		  glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+		  glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+		  glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+		  glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
+		glEnd();
+	  }
 	glPopMatrix();
 	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 }

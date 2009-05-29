@@ -337,6 +337,18 @@ bool Command::function_Invert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Select atoms based on Miller plane definition
+bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Select atoms from Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));	
+	obj.rs->selectNone();
+	obj.rs->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
 // Select no atoms ('selectnone')
 bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

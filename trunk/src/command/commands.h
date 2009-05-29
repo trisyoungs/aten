@@ -443,6 +443,7 @@ class Command
 		SelectInsideCell,
 		SelectionCog,
 		SelectionCom,
+		SelectMiller,
 		SelectNone,
 		SelectOverlaps,
 		SelectOutsideCell,
@@ -848,6 +849,7 @@ class Command
 	static bool function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -173,6 +173,7 @@ void Model::clearBonding()
 // Initialise reflists based on current extent of model
 void Model::initialiseBondingCuboids()
 {
+	msg.enter("Model::initialiseBondingCuboids");
 	Vec3<double> r;
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;
@@ -223,15 +224,18 @@ void Model::initialiseBondingCuboids()
 // 	printf("ExtentRange = "); extentRange_.print();
 	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
 	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
+	msg.exit("Model::initialiseBondingCuboids");
 }
 
 // Free any created reflists
 void Model::freeBondingCuboids()
 {
+	msg.enter("Model::freeBondingCuboids");
 	if (bondingCuboids_ != NULL) delete[] bondingCuboids_;
 	if (bondingOverlays_ != NULL) delete[] bondingOverlays_;
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
+	msg.exit("Model::freeBondingCuboids");
 }
 
 // Add atom to cuboid reflists

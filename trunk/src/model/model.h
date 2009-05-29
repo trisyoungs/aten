@@ -237,8 +237,6 @@ class Model
 	void rotateCell(int axis, double angle);
 	// Return the density of the model
 	double density() const;
-	// Perform a Miller cut on the cell contents
-	void millerCut(int h, int k, int l, int face);
 
 
 	/*
@@ -359,6 +357,8 @@ class Model
 	void selectInsideCell(bool moleculecogs, bool markonly = FALSE);
 	// Select atoms (or molecule COGs) outside of the current unit cell
 	void selectOutsideCell(bool moleculecogs, bool markonly = FALSE);
+	// Perform a Miller 'selection' on the model contents
+	void selectMiller(int h, int k, int l, bool inside, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()

@@ -452,7 +452,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 			x2 = (x == (cuboidBoxes_.x-1) ? 0 : x+1);
 			y2 = (y == (cuboidBoxes_.y-1) ? 0 : y+1);
 			z2 = (z == (cuboidBoxes_.z-1) ? 0 : z+1);
-	// 		if (cuboids[n].nItems() > 0) printf("....xyz = %i,%i,%i, xyz2 = %i,%i,%i\n", x, y, z, x2, y2, z2);
+// 			if (cuboids[n].nItems() > 0) printf("....xyz = %i,%i,%i, xyz2 = %i,%i,%i\n", x, y, z, x2, y2, z2);
 			checklist[1] = x2*cuboidYZ_+y*cuboidBoxes_.z+z;
 			checklist[2] = x2*cuboidYZ_+y2*cuboidBoxes_.z+z;
 			checklist[3] = x2*cuboidYZ_+y*cuboidBoxes_.z+z2;
@@ -469,13 +469,13 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 					for (rj = bondingOverlays_[checklist[m]].first(); rj != NULL; rj = rj->next)
 					{
 						j = rj->item;
-						if (i == j) continue;
+						if ((j->isSelected(markonly)) || (i == j)) continue;
 						dist = cell_.distance(i,j);
 						if (dist < tolerance)
 						{
 							msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), dist, i->id()+1, elements().symbol(i));
-							++count;
 							selectAtom(j, markonly);
+							++count;
 						}
 					}
 				}
@@ -561,4 +561,28 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 		}
 	}
 	msg.exit("Model::selectOutsideCell");
+}
+
+// Perform a Miller 'selection' on the cell contents
+void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
+{
+	msg.enter("Model::selectMiller");
+	if (cell_.type() == Cell::NoCell)
+	{
+		msg.print("Can't use Miller planes on a non-periodic model.\n");
+		msg.exit("Model::selectMiller");
+		return;
+	}
+	double c, d;
+	Vec3<double> hkl(h == 0 ? 0 : 1.0/h, k == 0 ? 0 : 1.0/k, l == 0 ? 0 : 1.0/l), r;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	{
+		r = cell_.realToFrac(i->r());
+		c = r.dp(hkl);
+		r.set(1-r.x,1-r.y,1-r.z);
+		d = r.dp(hkl);
+		if (inside) { if ((c > 1.0) && (d > 1.0)) selectAtom(i, markonly); }
+		else if ((c < 1.0) || (d < 1.0)) selectAtom(i, markonly);
+	}
+	msg.exit("Model::selectMiller");
 }

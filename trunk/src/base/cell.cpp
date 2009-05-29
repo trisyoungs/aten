@@ -620,11 +620,11 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 			newr = r;
 			// Convert these coordinates into fractional cell coordinates...
 			newr *= itranspose_;
-			if (newr.x < 0.0) newr.x -= int(newr.x+1.0);
+			if (newr.x < 0.0) newr.x -= int(newr.x-1.0);
 			else if (newr.x > 1.0) newr.x -= int(newr.x);
-			if (newr.y < 0.0) newr.y -= int(newr.y+1.0);
+			if (newr.y < 0.0) newr.y -= int(newr.y-1.0);
 			else if (newr.y > 1.0) newr.y -= int(newr.y);
-			if (newr.z < 0.0) newr.z -= int(newr.z+1.0);
+			if (newr.z < 0.0) newr.z -= int(newr.z-1.0);
 			else if (newr.z > 1.0) newr.z -= int(newr.z);
 // 			if (newr.x < 0.0) newr.x += 1.0;
 // 			else if (newr.x >= 1.0) newr.x -= 1.0;

@@ -55,11 +55,12 @@ class AtenCellTransform : public QDialog
 	void on_CellRotateZAnticlockwise_clicked(bool checked);
 	// Miller
 	void on_MillerCutButton_clicked(bool checked);
+	void on_MillerSelectButton_clicked(bool checked);
 	void on_MillerHSpin_valueChanged(int value);
 	void on_MillerKSpin_valueChanged(int value);
 	void on_MillerLSpin_valueChanged(int value);
-	void on_MillerCutDownRadio_clicked(bool checked);
-	void on_MillerCutUpRadio_clicked(bool checked);
+	void on_MillerInRadio_clicked(bool checked);
+	void on_MillerOutRadio_clicked(bool checked);
 
 
 	/*
