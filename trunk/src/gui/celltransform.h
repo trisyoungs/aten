@@ -39,17 +39,28 @@ class AtenCellTransform : public QDialog
 	void showWindow();
 	void refresh();
 	private slots:
+	void dialogFinished(int result);
+	// Replicate
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellReplicateFoldCheck_clicked(bool checked);
 	void on_CellReplicateTrimCheck_clicked(bool checked);
+	// Scale
 	void on_CellScaleButton_clicked(bool checked);
+	// Rotate
 	void on_CellRotateXClockwise_clicked(bool checked);
 	void on_CellRotateXAnticlockwise_clicked(bool checked);
 	void on_CellRotateYClockwise_clicked(bool checked);
 	void on_CellRotateYAnticlockwise_clicked(bool checked);
 	void on_CellRotateZClockwise_clicked(bool checked);
 	void on_CellRotateZAnticlockwise_clicked(bool checked);
-	void dialogFinished(int result);
+	// Miller
+	void on_MillerCutButton_clicked(bool checked);
+	void on_MillerHSpin_valueChanged(int value);
+	void on_MillerKSpin_valueChanged(int value);
+	void on_MillerLSpin_valueChanged(int value);
+	void on_MillerCutDownRadio_clicked(bool checked);
+	void on_MillerCutUpRadio_clicked(bool checked);
+
 
 	/*
 	// Local variables

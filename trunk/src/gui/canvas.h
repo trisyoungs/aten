@@ -169,7 +169,7 @@ class Canvas
 	void cylinderPrimitive(double startradius, double endradius, bool filled);
 
 	/*
-	// General Rendering Objects / Calls
+	// Rendering Objects
 	*/
 	private:
 	// Render text string at specific coordinates
@@ -190,7 +190,12 @@ class Canvas
 	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
 	// Draw a cylinder arrow
 	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
+	// Draw the specified Miller plane (and directional arrow)
+	void millerPlane(int h, int k, int l, int dir);
 
+	/*
+	// General Rendering Calle
+	*/
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)
 	Model *displayModel_;

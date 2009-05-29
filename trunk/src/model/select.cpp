@@ -427,21 +427,70 @@ Atom *Model::firstSelected(bool markonly)
 void Model::selectOverlaps(double tolerance, bool markonly)
 {
 	msg.enter("Model::selectOverlaps");
+	int n, m, x, y, z, x2, y2, z2, checklist[8], count;
+	double dist;
 	Atom *i, *j;
-	double deltar;
-	int count = 0;
 	selectNone(markonly);
-	for (i = atoms_.first(); i != atoms_.last(); i = i->next)
+	// Create cuboid lists
+	initialiseBondingCuboids();
+	// Add all atoms to cuboid list
+	for (i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
+	// Loop over cuboids, checking distances with atoms in adjacent boxes
+	Refitem<Atom,double> *ri, *rj;
+	x = 0;
+	y = 0;
+	z = 0;
+	count = 0;
+	for (n = 0; n<nCuboids_; n++)
 	{
-		if (i->isSelected(markonly)) continue;
-		for (j = i->next; j != NULL; j = j->next)
+		if (bondingCuboids_[n].nItems() != 0)
 		{
-			deltar = cell_.distance(i, j);
-			if (deltar < tolerance)
+	// 		if (cuboids[n].nItems() > 0) printf("On cuboid %i (%ix%ix%i) which contains %i atoms\n", n, x, y, z, cuboids[n].nItems());
+			// For each of the atoms in the cuboid, check distance with each atom in eight of the closest
+			// overlay boxes. 
+			checklist[0] = n;
+			x2 = (x == (cuboidBoxes_.x-1) ? 0 : x+1);
+			y2 = (y == (cuboidBoxes_.y-1) ? 0 : y+1);
+			z2 = (z == (cuboidBoxes_.z-1) ? 0 : z+1);
+	// 		if (cuboids[n].nItems() > 0) printf("....xyz = %i,%i,%i, xyz2 = %i,%i,%i\n", x, y, z, x2, y2, z2);
+			checklist[1] = x2*cuboidYZ_+y*cuboidBoxes_.z+z;
+			checklist[2] = x2*cuboidYZ_+y2*cuboidBoxes_.z+z;
+			checklist[3] = x2*cuboidYZ_+y*cuboidBoxes_.z+z2;
+			checklist[4] = x2*cuboidYZ_+y2*cuboidBoxes_.z+z2;
+			checklist[5] = x*cuboidYZ_+y2*cuboidBoxes_.z+z;
+			checklist[6] = x*cuboidYZ_+y*cuboidBoxes_.z+z2;
+			checklist[7] = x*cuboidYZ_+y2*cuboidBoxes_.z+z2;
+			for (ri = bondingCuboids_[n].first(); ri != NULL; ri = ri->next)
 			{
-				msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
-				++count;
-				selectAtom(j, markonly);
+				i = ri->item;
+				if (i->isSelected(markonly)) continue;
+				for (m=0; m<8; m++)
+				{
+					for (rj = bondingOverlays_[checklist[m]].first(); rj != NULL; rj = rj->next)
+					{
+						j = rj->item;
+						if (i == j) continue;
+						dist = cell_.distance(i,j);
+						if (dist < tolerance)
+						{
+							msg.print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), dist, i->id()+1, elements().symbol(i));
+							++count;
+							selectAtom(j, markonly);
+						}
+					}
+				}
+			}
+		}
+		// Increase x,y,z indices for box lookup
+		z ++;
+		if (z == cuboidBoxes_.z)
+		{
+			z = 0;
+			y ++;
+			if (y == cuboidBoxes_.y)
+			{
+				y = 0;
+				x ++;
 			}
 		}
 	}

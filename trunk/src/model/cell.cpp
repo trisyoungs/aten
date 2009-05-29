@@ -570,3 +570,11 @@ double Model::density() const
 {
 	return density_;
 }
+
+// Perform a Miller cut on the cell contents
+void Model::millerCut(int h, int k, int l, int face)
+{
+	msg.enter("Model::millerCut");
+
+	msg.exit("Model::millerCut");
+}

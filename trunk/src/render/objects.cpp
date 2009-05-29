@@ -21,6 +21,7 @@
 
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"
+#include "model/model.h"
 
 /*
 // Primitives
@@ -353,4 +354,30 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, cons
 	    glCallList(list_[GLOB_UNITATOM]);
 	  glPopMatrix();
 	glPopMatrix();
+}
+
+void Canvas::millerPlane(int h, int k, int l, int dir)
+{
+	if (displayModel_->cell()->type() == Cell::NoCell) return;
+	if ((h == 0) && (k == 0) && (l == 0)) return;
+	glDisable(GL_CULL_FACE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	GLdouble glmat[16];
+	displayModel_->cell()->axesForGl(glmat);
+	// Plane Eq : hx + ky + lz - 1 = 0
+	// Get coordinates for plane corners (within cell)
+	Vec3<double> coords[4];
+	if (h != 0) coords[0].set(1.0 / h,0.0,0.0);
+// 	else coords[0].set( 
+	coords[1].set(0.0,k == 0 ? 0.0 : 1.0 / k,0.0);
+	coords[2].set(0.0,0.0,l == 0 ? 0.0 : 1.0 / l);
+	glPushMatrix();
+	  glMultMatrixd(glmat);
+	  glBegin(GL_TRIANGLES);
+	    glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+	    glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+	    glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+	  glEnd();
+	glPopMatrix();
+	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 }
