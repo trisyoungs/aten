@@ -174,6 +174,7 @@ class Command
 		Fold,
 		FoldMolecules,
 		FracToReal,
+		MillerCut,
 		NoCell,
 		Pack,
 		PrintCell,
@@ -591,6 +592,7 @@ class Command
 	static bool function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv);

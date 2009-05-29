@@ -142,3 +142,39 @@ void AtenCellTransform::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionCellTransformWindow->setChecked(FALSE);
 }
+
+/*
+// Miller Cut Functions
+*/
+
+void AtenCellTransform::on_MillerCutButton_clicked(bool checked)
+{
+// 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerCutUpRadio->isChecked());
+	gui.modelChanged(FALSE,TRUE,FALSE);
+}
+
+void AtenCellTransform::on_MillerHSpin_valueChanged(int value)
+{
+	gui.mainView.postRedisplay();
+}
+
+void AtenCellTransform::on_MillerKSpin_valueChanged(int value)
+{
+	gui.mainView.postRedisplay();
+}
+
+void AtenCellTransform::on_MillerLSpin_valueChanged(int value)
+{
+	gui.mainView.postRedisplay();
+}
+
+void AtenCellTransform::on_MillerCutDownRadio_clicked(bool checked)
+{
+	gui.mainView.postRedisplay();
+}
+
+void AtenCellTransform::on_MillerCutUpRadio_clicked(bool checked)
+{
+	gui.mainView.postRedisplay();
+}
+

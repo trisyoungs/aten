@@ -22,6 +22,8 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/canvas.h"
+#include "gui/gui.h"
+#include "gui/celltransform.h"
 #include "base/sysfunc.h"
 
 // Local variables
@@ -104,6 +106,21 @@ void Canvas::renderExtra3d()
 			sprintf(s," l = %f A",mouse.magnitude());
 			glText(textpos,s);
 			break;
+	}
+	// Draw on extra stuff based on the visibility of any tool windows
+	if (gui.cellTransformWindow->isVisible())
+	{
+		Vec3<double> hkl;
+		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+		{
+			// Replicate
+			case (0):
+				break;
+			// Miller
+			case (3):
+				millerPlane(gui.cellTransformWindow->ui.MillerHSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), 1);
+				break;
+		}
 	}
 	msg.exit("Canvas::renderExtra3d");
 }

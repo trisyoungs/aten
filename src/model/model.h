@@ -237,6 +237,8 @@ class Model
 	void rotateCell(int axis, double angle);
 	// Return the density of the model
 	double density() const;
+	// Perform a Miller cut on the cell contents
+	void millerCut(int h, int k, int l, int face);
 
 
 	/*

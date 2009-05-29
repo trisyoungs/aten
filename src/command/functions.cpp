@@ -131,6 +131,7 @@ void Command::initPointers()
 	pointers_[Fold] = &Command::function_Fold;
 	pointers_[FoldMolecules] = &Command::function_FoldMolecules;
 	pointers_[FracToReal] = &Command::function_FracToReal;
+	pointers_[MillerCut] = &Command::function_MillerCut;
 	pointers_[NoCell] = &Command::function_NoCell;
 	pointers_[Pack] = &Command::function_Pack;
 	pointers_[PrintCell] = &Command::function_PrintCell;

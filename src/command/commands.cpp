@@ -255,6 +255,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Fold molecules (defined by patterns) so that they are unbroken across cell boundaries" },
 	{ "fractoreal",		"",		"", VTypes::NoData,
 				"Convert (assumed) fractional model coordinates to real coordinates" },
+	{ "millercut",		"NNNN",		"<h> <k> <l> <dir>", VTypes::NoData,
+				"Cleave the current periodic system along the specified Miller plane" },
 	{ "nocell",		"", 		"", VTypes::NoData,
 				"Remove any cell definition from the current model" },
 	{ "pack",		"",		"", VTypes::NoData,
