@@ -118,7 +118,7 @@ void Canvas::renderExtra3d()
 				break;
 			// Miller
 			case (3):
-				millerPlane(gui.cellTransformWindow->ui.MillerHSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), 1);
+				millerPlane(gui.cellTransformWindow->ui.MillerHSpin->value(), gui.cellTransformWindow->ui.MillerKSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), 1);
 				break;
 		}
 	}

@@ -149,7 +149,13 @@ void AtenCellTransform::dialogFinished(int result)
 
 void AtenCellTransform::on_MillerCutButton_clicked(bool checked)
 {
-// 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerCutUpRadio->isChecked());
+	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
+	gui.modelChanged(FALSE,TRUE,FALSE);
+}
+
+void AtenCellTransform::on_MillerSelectButton_clicked(bool checked)
+{
+	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 
@@ -168,12 +174,12 @@ void AtenCellTransform::on_MillerLSpin_valueChanged(int value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenCellTransform::on_MillerCutDownRadio_clicked(bool checked)
+void AtenCellTransform::on_MillerInRadio_clicked(bool checked)
 {
 	gui.mainView.postRedisplay();
 }
 
-void AtenCellTransform::on_MillerCutUpRadio_clicked(bool checked)
+void AtenCellTransform::on_MillerOutRadio_clicked(bool checked)
 {
 	gui.mainView.postRedisplay();
 }

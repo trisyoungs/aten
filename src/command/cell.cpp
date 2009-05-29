@@ -53,6 +53,33 @@ bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Set/create unit cell ('cell <a b c> <alpha beta gamma>')
+bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.rs->cell()->type() == Cell::NoCell) obj.rs->beginUndoState("Add Cell");
+	else obj.rs->beginUndoState("Edit Cell");
+	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
+bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Mat3<double> mat;
+	mat.rows[0] = c->arg3d(0);
+	mat.rows[1] = c->arg3d(3);
+	mat.rows[2] = c->arg3d(6);
+	obj.rs->beginUndoState("Set cell");
+	obj.rs->setCell(mat);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
 // Fold atoms into unit cell
 bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -85,6 +112,29 @@ bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Convert fractional to real coordinates");
 	obj.rs->fracToReal();
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Cleave crystal along Miller plane
+bool Command::function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Cleave along Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));
+	obj.rs->selectMiller(c->argi(0), c->argi(1), c->argi(2), c->hasArg(3) ? c->argb(3) : FALSE);
+	obj.rs->selectionDelete();
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Remove unit cell
+bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Remove cell");
+	obj.rs->removeCell();
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
@@ -183,44 +233,6 @@ bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &
 	obj.rs->endUndoState();
 	rv.reset();
 	return (result ? TRUE : FALSE);
-}
-
-// Set/create unit cell ('cell <a b c> <alpha beta gamma>')
-bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.rs->cell()->type() == Cell::NoCell) obj.rs->beginUndoState("Add Cell");
-	else obj.rs->beginUndoState("Edit Cell");
-	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
-	obj.rs->endUndoState();
-	rv.reset();
-	return TRUE;
-}
-
-// Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
-bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Mat3<double> mat;
-	mat.rows[0] = c->arg3d(0);
-	mat.rows[1] = c->arg3d(3);
-	mat.rows[2] = c->arg3d(6);
-	obj.rs->beginUndoState("Set cell");
-	obj.rs->setCell(mat);
-	obj.rs->endUndoState();
-	rv.reset();
-	return TRUE;
-}
-
-// Remove unit cell
-bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Remove cell");
-	obj.rs->removeCell();
-	obj.rs->endUndoState();
-	rv.reset();
-	return TRUE;
 }
 
 // Set parameter of unit cell

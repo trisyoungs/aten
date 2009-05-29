@@ -86,6 +86,9 @@ template <class T> class Vec3
 	Vec3<T> operator*(const Mat3<T>&) const;
 	void operator*=(const Mat3<T>&);
 	void operator*=(const Mat4<T> &A);
+	// Element access operator
+	T operator[](int);
+
 
 	/*
 	// Methods
@@ -371,15 +374,15 @@ template <class T> Vec3<T> Vec3<T>::operator*(const Mat3<T> &A) const
 	return result;
 }
 
-/* Operator * (mat4)
-template <class T> Vec3<T> Vec3<T>::operator*(const Mat4<T> &A) const
+// Element access operator
+template <class T> T Vec3<T>::operator[](int index)
 {
-	Vec3<T> result;
-	result.x = x*A.rows[0].x + y*A.rows[0].y + z*A.rows[0].z + A.rows[0].w;
-	result.y = x*A.rows[1].x + y*A.rows[1].y + z*A.rows[1].z + A.rows[1].w;
-	result.z = x*A.rows[2].x + y*A.rows[2].y + z*A.rows[2].z + A.rows[2].w;
-	return result;
-} */
+	if (index == 0) return x;
+	else if (index == 1) return y;
+	else if (index == 2) return z;
+	printf("Vec3 - array access failed - index %i is out of bounds.\n", index);
+	return 0;
+}
 
 /*
 // Methods
