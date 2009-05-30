@@ -586,3 +586,24 @@ void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 	}
 	msg.exit("Model::selectMiller");
 }
+
+// Select atoms within distance from a line (i.e. cylinder select)
+void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markonly)
+{
+	msg.enter("Model::selectLine");
+	// See: A Programmers Geometry, Bowyer and Woodwark, Butterworths (pub.), 1983, p99
+	// Line equation is :
+	//		x = point.x + line.x * t
+	//		y = point.y + line.y * t
+	//		z = point.z + line.z * t
+	// Check line parameters
+	double denom = line.dp(line);
+	if (denom < 1.0e-6)
+	{
+		msg.print("Line parameters appear to be corrupt.\n");
+		msg.exit("Model::selectLine");
+		return;
+	}
+	
+	msg.exit("Model::selectLine");
+}

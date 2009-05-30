@@ -359,6 +359,8 @@ class Model
 	void selectOutsideCell(bool moleculecogs, bool markonly = FALSE);
 	// Perform a Miller 'selection' on the model contents
 	void selectMiller(int h, int k, int l, bool inside, bool markonly = FALSE);
+	// Select atoms within distance from a line (i.e. cylinder select)
+	void selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markonly = FALSE);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()

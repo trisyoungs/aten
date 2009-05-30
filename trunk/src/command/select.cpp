@@ -349,6 +349,18 @@ bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Select atoms near to defined line
+bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	int nselected = obj.rs->nSelected();
+	obj.rs->beginUndoState("Select atoms near line");
+// 	obj.rs->selectLine();
+	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected() - nselected);
+	return TRUE;
+}
+
 // Select no atoms ('selectnone')
 bool Command::function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
