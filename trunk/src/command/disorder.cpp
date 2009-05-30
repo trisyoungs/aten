@@ -73,7 +73,7 @@ bool Command::function_Region(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.m->area.setShape(rs);
 	obj.m->area.setCentre(c->arg3d(1));
 	obj.m->area.setSize(c->arg3d(4));
-	obj.m->area.setAllowOverlap(c->argb(7));
+	if (c->hasArg(7)) obj.m->area.setAllowOverlap(c->argb(7));
 	rv.reset();
 	return TRUE;
 }
