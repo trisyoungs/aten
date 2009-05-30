@@ -46,10 +46,10 @@ class CommandData
 	const char *keyword;
 	// Command arguments
 	const char *arguments;
-	// Command argument names
-	const char *argText;
 	// Return-value datatype
 	VTypes::DataType returnType;
+	// Command argument names
+	const char *argText;
 	// Command syntax
 	const char *syntax;
 

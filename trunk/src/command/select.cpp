@@ -355,7 +355,7 @@ bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int nselected = obj.rs->nSelected();
 	obj.rs->beginUndoState("Select atoms near line");
-// 	obj.rs->selectLine();
+	obj.rs->selectLine(c->arg3d(0), c->arg3d(3), c->argd(6));
 	obj.rs->endUndoState();
 	rv.set(obj.rs->nSelected() - nselected);
 	return TRUE;
