@@ -400,6 +400,7 @@ void Command::initPointers()
 	pointers_[SelectInsideCell] = &Command::function_SelectInsideCell;
 	pointers_[SelectionCog] = &Command::function_SelectionCog;
 	pointers_[SelectionCom] = &Command::function_SelectionCom;
+	pointers_[SelectLine] = &Command::function_SelectLine;
 	pointers_[SelectMiller] = &Command::function_SelectMiller;
 	pointers_[SelectNone] = &Command::function_SelectNone;
 	pointers_[SelectOverlaps] = &Command::function_SelectOverlaps;

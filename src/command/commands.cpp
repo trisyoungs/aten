@@ -739,6 +739,8 @@ CommandData Command::data[Command::nCommands] = {
 				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"", VTypes::NoData,
 				"Select all atoms in the current model" },
+	{ "selectcylinder",	"NNNNNNN",	"<lx> <ly> <lz> <x> <y> <z> <dr>", VTypes::IntegerData,
+				"Select all atoms within a distance <dr> from a line <lxyz> containing a point <xyz>" },
 	{ "selectfftype",	"C",		"<typename>", VTypes::IntegerData,
 				"Select all atoms of a specific forcefield type" },
 	{ "selectf",		"Cz*",		"<'id|el|id~id|el-el|+id|+el|id+|el+,...'>", VTypes::IntegerData,
