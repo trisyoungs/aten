@@ -522,6 +522,9 @@ Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
 // Instantiate a progress dialog
 void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 {
+	// Reset our QTime object...
+	time_.setHMS(0,0,0);
+	time_.start();
 	// If the GUI doesn't exist, call the text-based progress indicator
 	if (!doesExist_)
 	{
@@ -529,15 +532,15 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 		return;
 	}
 	// Check that a progress dialog isn't already running
-	if (mainWindow->progressIndicator->isVisible())
-	{
-		printf("Weird programmatical event - second progress dialog creation request!\n");
-		return;
-	}
+// 	if (mainWindow->progressIndicator->isVisible())
+// 	{
+// 		printf("Weird programmatical event - second progress dialog creation request!\n");
+// 		return;
+// 	}
 	mainWindow->progressBar->setMaximum(stepstodo);
 	mainWindow->progressBar->setValue(0);
 	mainWindow->progressLabel->setText(jobtitle);
-	mainWindow->progressIndicator->setVisible(TRUE);
+// 	mainWindow->progressIndicator->setVisible(TRUE);
 	progressCanceled_ = FALSE;
 	// Disable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(FALSE);
@@ -550,16 +553,20 @@ bool GuiQt::progressUpdate(int currentstep)
 	// If the GUI doesn't exist, call the text-based progress indicator
 	if (!doesExist_)
 	{
-		gui.textProgressUpdate(currentstep);
+		textProgressCurrentStep_ = (currentstep == -1 ? textProgressCurrentStep_+1 : currentstep);
+		gui.textProgressUpdate();
 		return TRUE;
 	}
-	if (!mainWindow->progressIndicator->isVisible())
-	{
-		printf("Weird programmatical event - tried to update a non-existent progress dialog!\n");
-		return TRUE;
-	}
-	mainWindow->progressBar->setValue(currentstep);
-	app->processEvents();
+// 	if (!mainWindow->progressIndicator->isVisible())
+// 	{
+// 		printf("Weird programmatical event - tried to update a non-existent progress dialog!\n");
+// 		return TRUE;
+// 	}
+	// Show the progress bar if enough time has elapsed since the start of the operation...
+	if (time_.elapsed() >= 2000) mainWindow->progressIndicator->setVisible(TRUE);
+	if (currentstep != -1) mainWindow->progressBar->setValue(currentstep);
+	else mainWindow->progressBar->setValue(mainWindow->progressBar->value() + 1);
+	if (time_.elapsed() >= 2000) app->processEvents();
 	// Check to see if the abort button was pressed
 	return (!progressCanceled_);
 }
@@ -573,15 +580,16 @@ void GuiQt::progressTerminate()
 		gui.textProgressTerminate();
 		return;
 	}
-	if (!mainWindow->progressIndicator->isVisible())
-	{
-		printf("Weird programmatical event - tried to terminate a non-existent progress dialog!\n");
-		return;
-	}
+// 	if (!mainWindow->progressIndicator->isVisible())
+// 	{
+// 		printf("Weird programmatical event - tried to terminate a non-existent progress dialog!\n");
+// 		return;
+// 	}
 	// Hide the progress bar and re-enable widgets
 	mainWindow->progressIndicator->setVisible(FALSE);
 	mainWindow->ui.ViewFrame->setEnabled(TRUE);
 	mainWindow->ui.WindowToolbar->setEnabled(TRUE);
+	app->processEvents();
 }
 
 // Notify that the progress indicator should be canceled
@@ -596,8 +604,9 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 	// Reset the counters
 	textProgressStepsToDo_ = stepstodo;
 	textProgressPercent_ = 0;
+	textProgressCurrentStep_ = 0;
 	// Don't print anything if we're in quiet mode
-	if (msg.isQuiet()) return;
+	if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
 	// Print out the empty progress indicator
 	printf("--- %s\n", jobtitle);
 	printf("Progress [-]                              (  0%%)");
@@ -605,7 +614,7 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 }
 
 // Update the text progress dialog
-void GuiQt::textProgressUpdate(int currentstep)
+void GuiQt::textProgressUpdate()
 {
 // 	static char *twister = "-\\|/";
 	static char twister[4] = { '-', '\\', '|', '/' };
@@ -614,9 +623,9 @@ void GuiQt::textProgressUpdate(int currentstep)
 	static double dpercent;
 	static int percent;
 	// Don't print anything if we're in quiet mode
-	if (msg.isQuiet()) return;
+	if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
 	// Work out percentage and print dots and spaces
-	dpercent = double(currentstep) / double(textProgressStepsToDo_);
+	dpercent = double(textProgressCurrentStep_) / double(textProgressStepsToDo_);
 	percent = int(dpercent * 100.0);
 	ndots = int(dpercent * 30.0);
 	dpercent *= 100.0;

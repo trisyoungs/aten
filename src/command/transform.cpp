@@ -68,7 +68,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			return FALSE;
 			break;
 	}
-	obj.rs->beginUndoState("Rotate %i atom(s)\n", obj.rs->nSelected());
+	obj.rs->beginUndoState("Rotate %i atom(s)", obj.rs->nSelected());
 	obj.rs->rotateSelectionVector(o, v, angle);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -82,7 +82,7 @@ bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->parent()->isFilter())
 	{
 		Vec3<double> centre = c->arg3d(0);
-		obj.rs->beginUndoState("Centre %i atom(s) at %f %f %f\n", obj.rs->nSelected(), centre.x, centre.y, centre.z);
+		obj.rs->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs->nSelected(), centre.x, centre.y, centre.z);
 		obj.rs->centre(centre);
 		obj.rs->endUndoState();
 	}
@@ -170,7 +170,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 	target = target.transpose();
 	Mat3<double> rotmat = target * source;
 	// Perform transformation
-	obj.rs->beginUndoState("Transform %i atom(s)\n", obj.rs->nSelected());
+	obj.rs->beginUndoState("Transform %i atom(s)", obj.rs->nSelected());
 	obj.rs->matrixTransformSelection(o, rotmat);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -198,7 +198,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 			return FALSE;
 	}
 	// Perform transformation
-	obj.rs->beginUndoState("Transform %i atom(s)\n", obj.rs->nSelected());
+	obj.rs->beginUndoState("Transform %i atom(s)", obj.rs->nSelected());
 	obj.rs->matrixTransformSelection(o, mat);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -209,7 +209,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Mirror %i atoms along %c\n", obj.rs->nSelected(), 88+c->argi(0));
+	obj.rs->beginUndoState("Mirror %i atoms along %c", obj.rs->nSelected(), 88+c->argi(0));
 	obj.rs->mirrorSelectionLocal(c->argi(0));
 	obj.rs->endUndoState();
 	rv.reset();
@@ -221,7 +221,7 @@ bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec = c->arg3d(0);
-	obj.rs->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -233,7 +233,7 @@ bool Command::function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &r
 {
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	Vec3<double> tvec = c->arg3d(0);
-	obj.rs->beginUndoState("Translate Cartesian (atom %i, %f %f %f)\n", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState("Translate Cartesian (atom %i, %f %f %f)", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
 	obj.rs->translateAtom(obj.i, tvec);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -246,7 +246,7 @@ bool Command::function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &r
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
 	tvec = obj.rs->cell()->axes() * c->arg3d(0);
-	obj.rs->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState("Translate Cell (%i atom(s), %f %f %f)", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
 	rv.reset();
@@ -259,7 +259,7 @@ bool Command::function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
 	tvec = c->arg3d(0);
-	obj.rs->beginUndoState("Translate World (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
+	obj.rs->beginUndoState("Translate World (%i atom(s), %f %f %f)", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->translateSelectionWorld(tvec);
 	obj.rs->endUndoState();
 	rv.reset();

@@ -724,7 +724,7 @@
               </sizepolicy>
              </property>
              <property name="decimals" >
-              <number>5</number>
+              <number>8</number>
              </property>
              <property name="value" >
               <double>1.000000000000000</double>
