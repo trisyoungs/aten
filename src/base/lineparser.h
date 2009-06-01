@@ -38,9 +38,10 @@ class Format;
 class LineParser
 {
 	public:
-	// Constructor
+	// Constructors / Destructor
 	LineParser();
 	LineParser(const char *ifilename, bool outputstream = FALSE);
+	~LineParser();
 	// Parse Options
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, nParseOptions=5};
 	static ParseOption parseOption(const char*);

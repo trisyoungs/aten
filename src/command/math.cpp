@@ -31,6 +31,27 @@ bool Command::function_Abs(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Return invserse cosine of argument
+bool Command::function_ACos(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( acos(c->argd(0)) * DEGRAD );
+	return TRUE;
+}
+
+// Return invserse sine of argument
+bool Command::function_ASin(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( asin(c->argd(0)) * DEGRAD );
+	return TRUE;
+}
+
+// Return invserse tangent of argument
+bool Command::function_ATan(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( atan(c->argd(0)) * DEGRAD );
+	return TRUE;
+}
+
 // Return cosine of argument (supplied in degrees)
 bool Command::function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

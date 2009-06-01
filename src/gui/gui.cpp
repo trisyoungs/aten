@@ -73,15 +73,54 @@ const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
 // Constructor
 GuiQt::GuiQt()
 {
-	mainWidget = NULL;
-	mainWindow = NULL;
-	prefsDialog = NULL;
-	loadModelDialog = NULL;
-	selectPatternDialog = NULL;
 	doesExist_ = FALSE;
 	isAvailable_ = FALSE;
 	trajectoryPlaying_ = FALSE;
 	trajectoryTimerId_ = -1;
+	mainWindow = NULL;
+	mainWidget = NULL;
+	prefsDialog = NULL;
+	forcefieldEditorDialog = NULL;
+	loadModelDialog = NULL;
+	selectPatternDialog = NULL;
+	selectElementDialog = NULL;
+	aboutDialog = NULL;
+	atomlistWindow = NULL;
+	buildWindow = NULL;
+	cellDefineWindow = NULL;
+	cellTransformWindow = NULL;
+	disorderWindow = NULL;
+	forcefieldsWindow = NULL;
+	glyphsWindow = NULL;
+	gridsWindow = NULL;
+	minimiserWindow = NULL;
+	positionWindow = NULL;
+	transformWindow = NULL;
+}
+
+// Destructor
+GuiQt::~GuiQt()
+{
+// 	if (mainWindow != NULL) delete mainWindow;
+// 	mainWidget = NULL;
+// 	prefsDialog = NULL;
+// 	forcefieldEditorDialog = NULL;
+// 	loadModelDialog = NULL;
+// 	selectPatternDialog = NULL;
+// 	selectElementDialog = NULL;
+// 	aboutDialog = NULL;
+// 	// ...tool windows
+// 	atomlistWindow = NULL;
+// 	buildWindow = NULL;
+// 	cellDefineWindow = NULL;
+// 	cellTransformWindow = NULL;
+// 	disorderWindow = NULL;
+// 	forcefieldsWindow = NULL;
+// 	glyphsWindow = NULL;
+// 	gridsWindow = NULL;
+// 	minimiserWindow = NULL;
+// 	positionWindow = NULL;
+// 	transformWindow = NULL;
 }
 
 // Initialise QApplication and the main QGlWidget
@@ -650,7 +689,7 @@ void GuiQt::textProgressUpdate()
 void GuiQt::textProgressTerminate()
 {
 	if (textProgressPercent_ == -1) return;
-	printf("\n");
+	if (time_.elapsed() >= 2000) printf("\n");
 	textProgressPercent_ = -1;
 }
 

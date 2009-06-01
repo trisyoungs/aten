@@ -48,6 +48,7 @@ Tree::Tree()
 	acceptedFail_ = Command::NoFunction;
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
+	readOptions_ = LineParser::Defaults;
 
 	// Public variables
 	prev = NULL;

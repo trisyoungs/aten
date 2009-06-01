@@ -26,6 +26,7 @@
 #include "gui/canvas.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
+#include "templates/reflist.h"
 
 // Stack Pages (must be in order of pages in the stack)
 enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
@@ -56,8 +57,9 @@ class AtenForm : public QMainWindow
 	// Window Functions
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenForm(QMainWindow *parent = 0);
+	~AtenForm();
 	// Main form declaration
 	Ui::MainWindow ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
@@ -356,6 +358,10 @@ class AtenForm : public QMainWindow
 	/*
 	// Local Widgets
 	*/
+	private:
+	// List of manually-created QActionWidgets
+	Reflist<QActionGroup,int> actionGroups_;
+
 	public:
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1, *infoLabel2, *messageLabel;
@@ -374,7 +380,6 @@ class AtenForm : public QMainWindow
 	QActionGroup *uaGroup;
 	// Dummy toolbutton for inclusion in action group
 	QAction *dummyToolButton;
-
 
 	/*
 	// Settings

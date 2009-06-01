@@ -289,6 +289,9 @@ void Command::initPointers()
 
 	// Math Commands
 	pointers_[Abs] = &Command::function_Abs;
+	pointers_[ACos] = &Command::function_ACos;
+	pointers_[ASin] = &Command::function_ASin;
+	pointers_[ATan] = &Command::function_ATan;
 	pointers_[Cos] = &Command::function_Cos;
 	pointers_[Exp] = &Command::function_Exp;
 	pointers_[Ln] = &Command::function_Ln;

@@ -58,6 +58,12 @@ LineParser::LineParser(const char *filename, bool outputstream)
 	openFile(filename, outputstream);
 }
 
+// Destructor
+LineParser::~LineParser()
+{
+	if (file_ != NULL) delete file_;
+}
+
 /*
 // Source line/file and read options
 */

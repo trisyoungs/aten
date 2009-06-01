@@ -52,12 +52,39 @@
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	// Private variables
+	saveModelFilter = NULL;
 	customElement_ = 8;
 	forcefieldCombo_ = NULL;
 	commandEdit_ = NULL;
 	trajectoryToolbarRefreshing_ = FALSE;
 
+	// Public variables
+	infoLabel1 = NULL;
+	infoLabel2 = NULL;
+	messageLabel = NULL;
+	progressBar = NULL;
+	progressLabel = NULL;
+	progressButton = NULL;
+	progressIndicator = NULL;
+	uaGroup = NULL;
+	dummyToolButton = NULL;
+
 	ui.setupUi(this);
+}
+
+// Destructor
+AtenForm::~AtenForm()
+{
+	// No need (i.e. do not) delete: dummyToolButton.
+	if (infoLabel1 != NULL) delete infoLabel1;
+	if (infoLabel2 != NULL) delete infoLabel2;
+	if (messageLabel != NULL) delete messageLabel;
+	if (progressBar != NULL) delete progressBar;
+	if (progressLabel != NULL) delete progressLabel;
+	if (progressButton != NULL) delete progressButton;
+	if (progressIndicator != NULL) delete progressIndicator;
+// 	if (uaGroup != NULL) delete uaGroup;
+// 	for (Refitem<QActionGroup,int> *ri = actionGroups_.first(); ri != NULL; ri = ri->next) delete ri->item;
 }
 
 // Catch window close event
