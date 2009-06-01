@@ -58,6 +58,7 @@ Cell::Cell()
 	volume_ = 0.0;
 	reciprocalVolume_ = 0.0;
 	spacegroup_ = 0;
+	spacegroupId_ = 0;
 	parent_ = NULL;
 }
 

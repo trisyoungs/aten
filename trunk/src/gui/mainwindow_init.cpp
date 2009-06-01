@@ -51,24 +51,27 @@ void AtenForm::finaliseUi()
 	}
 
 	// Create QActionGroup for draw styles
-	QActionGroup *styleGroup = new QActionGroup(this);
-	styleGroup->addAction(ui.actionStyleStick);
-	styleGroup->addAction(ui.actionStyleTube);
-	styleGroup->addAction(ui.actionStyleSphere);
-	styleGroup->addAction(ui.actionStyleScaled);
-	styleGroup->addAction(ui.actionStyleIndividual);
+	QActionGroup *group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionStyleStick);
+	group->addAction(ui.actionStyleTube);
+	group->addAction(ui.actionStyleSphere);
+	group->addAction(ui.actionStyleScaled);
+	group->addAction(ui.actionStyleIndividual);
 
 	// Create QActionGroup for colour schemes
-	QActionGroup *schemeGroup = new QActionGroup(this);
-	schemeGroup->addAction(ui.actionSchemeElement);
-	schemeGroup->addAction(ui.actionSchemeCharge);
-	schemeGroup->addAction(ui.actionSchemeForce);
+	group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionSchemeElement);
+	group->addAction(ui.actionSchemeCharge);
+	group->addAction(ui.actionSchemeForce);
 
 	// Create QActionGroup for Mouse toolbar
-	QActionGroup *mousegroup = new QActionGroup(this);
-	mousegroup->addAction(ui.actionMouseInteract);
-	mousegroup->addAction(ui.actionMouseRotate);
-	mousegroup->addAction(ui.actionMouseTranslate);
+	group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionMouseInteract);
+	group->addAction(ui.actionMouseRotate);
+	group->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
 	ui.BondToolbar->setVisible(FALSE);
@@ -102,14 +105,16 @@ void AtenForm::finaliseUi()
 	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));
 
 	// Create QActionGroup for perspective / orthographic views
-	QActionGroup *viewtypeGroup = new QActionGroup(this);
-	viewtypeGroup->addAction(ui.actionViewOrthographic);
-	viewtypeGroup->addAction(ui.actionViewPerspective);
+	group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionViewOrthographic);
+	group->addAction(ui.actionViewPerspective);
 
 	// Create QActionGroup for model / trajectory render source
-	QActionGroup *rendersourceGroup = new QActionGroup(this);
-	rendersourceGroup->addAction(ui.actionViewModel);
-	rendersourceGroup->addAction(ui.actionViewTrajectory);
+	group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionViewModel);
+	group->addAction(ui.actionViewTrajectory);
 
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();

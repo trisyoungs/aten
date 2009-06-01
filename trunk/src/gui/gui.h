@@ -67,8 +67,9 @@ class GuiQt
 	// Basic Window Functions
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	GuiQt();
+	~GuiQt();
 	// Returns if the GUI has been created
 	bool exists();
 	// Initialise the QApplication (and some other small things)

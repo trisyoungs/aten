@@ -331,6 +331,9 @@ class Command
 
 		// Math Commands
 		Abs,
+		ACos,
+		ASin,
+		ATan,
 		Cos,
 		Exp,
 		Ln,
@@ -746,6 +749,9 @@ class Command
 	static bool function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Math Commands
 	static bool function_Abs(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ACos(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ASin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ATan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Ln(CommandNode *c, Bundle &obj, ReturnValue &rv);

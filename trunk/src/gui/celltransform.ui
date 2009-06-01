@@ -943,15 +943,15 @@
             <property name="text" >
              <string>In</string>
             </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
            </widget>
           </item>
           <item>
            <widget class="QRadioButton" name="MillerOutRadio" >
             <property name="text" >
              <string>Out</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
             </property>
            </widget>
           </item>
