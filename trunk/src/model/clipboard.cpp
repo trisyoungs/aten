@@ -23,6 +23,7 @@
 #include "base/bond.h"
 #include "base/pattern.h"
 #include "model/model.h"
+#include "main/aten.h"
 
 // Constructors
 Clipatom::Clipatom()
@@ -159,6 +160,7 @@ void Clipboard::copyBonds()
 	// Go through pairs of oldptrs in the atoms list and check for bonds, adding to our list as we go.
 	// The bonds we generate will point to pairs of Clipatoms.
 	Bond *oldbond;
+	aten.initialiseProgress("Copying bonds to clipboard", atoms_.nItems());
 	for (Clipatom *ii = atoms_.first(); ii != NULL; ii = ii->getNext())
 	{
 		for (Clipatom *jj = ii->getNext(); jj != NULL; jj = jj->getNext())
@@ -172,7 +174,9 @@ void Clipboard::copyBonds()
 				b->setType(oldbond->type());
 			}
 		}
+		aten.updateProgress();
 	}
+	aten.cancelProgress();
 	msg.exit("Clipboard::copyBonds");
 }
 
@@ -189,7 +193,14 @@ void Clipboard::copySelection(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	// Copy atoms
-	for (Atom *i = m->atoms(); i != NULL; i = i->next) if (i->isSelected()) copyAtom(i);
+	int count = 0;
+	aten.initialiseProgress("Copying atoms to clipboard", m->nAtoms());
+	for (Atom *i = m->atoms(); i != NULL; i = i->next)
+	{
+		if (i->isSelected()) copyAtom(i);
+		aten.updateProgress();
+	}
+	aten.cancelProgress();
 	// Copy bonds
 	copyBonds();
 	msg.exit("Clipboard::copySelection");
@@ -247,6 +258,8 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 	msg.enter("Clipboard::pasteToModel");
 	Atom *pastedi;
 	if (selectpasted) m->selectNone();
+	aten.initialiseProgress("Pasting atoms", atoms_.nItems());
+	int count = 0;
 	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())
 	{
 		// Create a new atom in the target model
@@ -256,7 +269,9 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
 		m->projectAtom(pastedi);
-	}	
+		aten.updateProgress(++count);
+	}
+	aten.cancelProgress();
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
 	msg.exit("Clipboard::pasteToModel");

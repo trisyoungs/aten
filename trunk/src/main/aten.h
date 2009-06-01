@@ -31,8 +31,8 @@
 #include "parser/tree.h"
 
 #define ATENVERSION "1.3"
-#define ATENREVISION "937"
-#define ATENDATE "Sat 30 May - 18:33"
+#define ATENREVISION "938"
+#define ATENDATE "Mon 01 Jun - 12:46"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -263,7 +263,7 @@ class Aten
 	// Initialise a progress indicator
 	void initialiseProgress(const char *jobtitle, int totalsteps);
 	// Update the number of steps (returns if the dialog was canceled)
-	bool updateProgress(int currentstep);
+	bool updateProgress(int currentstep = -1);
 	// Terminate the current progress
 	void cancelProgress();
 

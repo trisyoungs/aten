@@ -56,7 +56,7 @@ Cli cliSwitches[] = {
 		"<file>",	"Load the specified forcefield file" },
 	{ Cli::FoldSwitch,		'\0',"fold",		0,
 		"",		"Force folding of atoms in periodic systems" },
-	{ Cli::FormatSwitch,		'f',"format",		0,
+	{ Cli::FormatSwitch,		'f',"format",		1,
 		"",		"Load models from command-line with specified <format>" },
 	{ Cli::GridSwitch,		'g',"grid",		1,
 		"<file>",	"Load the specified gridded data file" },

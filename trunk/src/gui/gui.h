@@ -217,10 +217,12 @@ class GuiQt
 	// Progress Dialog
 	*/
 	private:
+	// QTime object (used to prevent showing of progress indicator if the operation will be quick)
+	QTime time_;
 	// Indicator that the 'Cancel' button was pressed
 	bool progressCanceled_;
 	// Variables for the position and maximum of the text progress dialog
-	int textProgressStepsToDo_, textProgressPercent_;
+	int textProgressStepsToDo_, textProgressPercent_, textProgressCurrentStep_;
 
 	public:
 	// Notify that the progress indicator should be canceled
@@ -234,7 +236,7 @@ class GuiQt
 	// Instantiate a text-based progress dialog
 	void textProgressCreate(const char *jobtitle, int stepstodo);
 	// Update the text progress dialog
-	void textProgressUpdate(int currentstep);
+	void textProgressUpdate();
 	// Terminate the progress dialog
 	void textProgressTerminate();
 };

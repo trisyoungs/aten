@@ -133,7 +133,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>10000.000000000000000</double>
@@ -179,7 +179,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>10000.000000000000000</double>
@@ -225,7 +225,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>10000.000000000000000</double>
@@ -327,7 +327,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>180.000000000000000</double>
@@ -376,7 +376,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>180.000000000000000</double>
@@ -425,7 +425,7 @@
                </sizepolicy>
               </property>
               <property name="decimals" >
-               <number>4</number>
+               <number>8</number>
               </property>
               <property name="maximum" >
                <double>180.000000000000000</double>

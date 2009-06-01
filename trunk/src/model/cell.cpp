@@ -52,6 +52,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 		newchange->set(oldlengths, oldangles, lengths, angles, oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Visual);
 	msg.exit("Model::setCell[vectors]");
 }
 
@@ -72,6 +73,7 @@ void Model::setCell(Mat3<double> axes)
 		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Visual);
 	msg.exit("Model::setCell[axes]");
 }
 
@@ -92,6 +94,7 @@ void Model::setCell(Cell::CellParameter cp, double value)
 		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
+	changeLog.add(Log::Visual);
 	msg.exit("Model::setCell[parameter]");
 }
 
@@ -114,6 +117,7 @@ void Model::setCell(Cell *newcell)
 			recordingState_->addEvent(newchange);
 		}
 	}
+	changeLog.add(Log::Visual);
 }
 
 // Remove cell
@@ -121,7 +125,7 @@ void Model::removeCell()
 {
 	msg.enter("Model::removeCell");
 	changeLog.add(Log::Visual);
-	changeLog.add(Log::Structure);
+// 	changeLog.add(Log::Structure);
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
