@@ -328,6 +328,8 @@ int CommandParser::lex()
 	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
 	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
+	// If next character is '-', return now if previous char was *not* another '-'
+	if ((c2 == '-') && (c != '-')) return c;
 	// If it is 'punctuation', add this second character to our operator and search for it
 	if (ispunct(c2))
 	{

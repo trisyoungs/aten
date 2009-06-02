@@ -266,9 +266,6 @@ Prefs::Prefs()
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
 
-	// Undo levels
-	maxUndoLevels_ = -1;
-
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
 	angleLabel_ = "Deg";
@@ -276,6 +273,8 @@ Prefs::Prefs()
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
+	maxUndoLevels_ = -1;
+	commandHistoryLimit_ = 25;
 }
 
 // Load user preferences file

@@ -47,6 +47,7 @@ void AtenForm::loadSettings()
 		key += itoa(n);
 		if (settings_.contains(key)) history << settings_.value(key).toString();
 	}
+	commandEditModel_->setStringList(history);
 }
 
 // Save Qt settings
@@ -73,4 +74,6 @@ void AtenForm::saveSettings()
 		key += itoa(n);
 		if (n < history.count()) settings_.setValue(key, history[n]);
 	}
+	// Synchronise (i.e. save) changes to settings
+	settings_.sync();
 }

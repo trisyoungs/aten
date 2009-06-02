@@ -85,6 +85,7 @@ void AtenForm::finaliseUi()
 	commandEdit_ = new QLineEdit(this);
 	commandEditModel_ = new QStringListModel();
 	commandEditCompleter_ = new QCompleter(commandEditModel_, this);
+	commandEditCompleter_->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
 	commandEdit_->setCompleter(commandEditCompleter_);
 	ui.CommandToolbar->addWidget(commandEdit_);
 	ui.CommandToolbar->setMinimumSize(128,16);
@@ -167,7 +168,6 @@ void AtenForm::finaliseUi()
 	dummyToolButton = new QAction(this);
 	dummyToolButton->setCheckable(TRUE);
 	uaGroup->addAction(dummyToolButton);
-	
 
 	// Create a subgroup for the element select buttons
 	QActionGroup *elementGroup = new QActionGroup(this);
