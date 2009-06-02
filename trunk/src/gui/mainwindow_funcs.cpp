@@ -191,11 +191,10 @@ void AtenForm::executeCommand()
 	// Remember this command...
 // 	// Insert new row in the stringlistmodel (*AWFUL* way to do this - isn't there a better solution?) TODO
 	QStringList sl = commandEditModel_->stringList();
-	if (!sl.contains(commandEdit_->text()))
-	{
-		sl.prepend(commandEdit_->text());
-		commandEditModel_->setStringList(sl);
-	}
+	if (!sl.contains(commandEdit_->text())) sl.prepend(commandEdit_->text());
+	// Trim stringlist so it is the same size (or less) than the limit set in prefs
+	if (prefs.commandHistoryLimit() > 0) for (int n = sl.count(); n > prefs.commandHistoryLimit(); --n) sl.removeLast();
+	commandEditModel_->setStringList(sl);
 	commandEdit_->setText("");
 	gui.modelChanged();
 }

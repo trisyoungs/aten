@@ -604,8 +604,6 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 		msg.exit("Model::selectLine");
 		return;
 	}
-	// We calculate the squared distance, so square 'dr'
-	dr *= dr;
 	Vec3<double> r, v;
 	double xyyx, xzzx, yzzy, dist;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
