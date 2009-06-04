@@ -42,8 +42,9 @@ template <class T> class Vec3
 	// Components of vector
 	T x,y,z;
 
+
 	/*
-	// Set / adjust
+	// Set / adjust / retrieve
 	*/
 	public:
 	// Set the vector to 0,0,0
@@ -56,6 +57,9 @@ template <class T> class Vec3
 	void add(int, T);
 	// Add values to all three components simultaneously
 	void add(T, T, T);
+	// Returns the value of the specified element
+	T get(int) const;
+
 
 	/*
 	// Operators
@@ -87,55 +91,55 @@ template <class T> class Vec3
 	void operator*=(const Mat3<T>&);
 	void operator*=(const Mat4<T> &A);
 	// Element access operator
-	T operator[](int);
+	T operator[](int index);
 
 
 	/*
 	// Methods
 	*/
 	public:
+	// Returns the largest absolute component of the vector
+	T absMax() const;
+	// Returns the maximum absolute-valued element in the vector
+	int absMaxElement() const;
+	// Returns the smallest absolute component of the vector
+	T absMin() const;
+	// Returns the minimum absolute-valued element in the vector
+	int absMinElement() const;
+	// Dot product between this and supplied vector
+	double dp(const Vec3<T> &v) const;
+	// Normalise and return original magnitude
+	double magAndNormalise();
+	// Calculate vector magnitude
+	inline double magnitude() const;
+	// Returns the largest component of the vector
+	T max() const;
+	// Returns the maximum valued element in the vector
+	int maxElement() const;
+	// Returns the smallest component of the vector
+	T min() const;
+	// Returns the minimum valued element in the vector
+	int minElement() const;
+	// Multiply elements of this vector with those of supplied vector
+	void multiply(const Vec3<T> &v);
 	// Normalise the vector to unity
 	void normalise();
+	// Returns an orthogonal vector
+	Vec3<T> orthogonal() const;
 	// Orthogonalise (Gram-Schmidt) w.r.t. supplied vector
 	void orthogonalise(const Vec3<T>&);
 	// Orthogonalise (two vectors)
 	void orthogonalise(const Vec3<T> &source1, const Vec3<T> &source2);
-	// Returns the largest component of the vector
-	T max() const;
-	// Returns the smallest component of the vector
-	T min() const;
-	// Returns the largest absolute component of the vector
-	T absMax() const;
-	// Returns the smallest absolute component of the vector
-	T absMin() const;
-	// Calculate vector magnitude
-	inline double magnitude() const;
-	// Normalise and return original magnitude
-	double magAndNormalise();
-	// Dot product between this and supplied vector
-	double dp(const Vec3<T> &v) const;
-	// Multiply elements of this vector with those of supplied vector
-	void multiply(const Vec3<T> &v);
-	// Returns the minimum absolute-valued element in the vector
-	int absMinElement() const;
-	// Returns the maximum absolute-valued element in the vector
-	int absMaxElement() const;
-	// Returns the minimum valued element in the vector
-	int minElement() const;
-	// Returns the maximum valued element in the vector
-	int maxElement() const;
-	// Returns an orthogonal vector
-	Vec3<T> orthogonal() const;
-	// Returns the value of the specified element
-	T get(int) const;
-	// Generate random unit vector
-	void randomUnit();
 	// Prints the contents of the vector
 	void print() const;
-	// Convert cartesian x,y,z coordinates into spherical (rho,phi/zenith,theta/azimuthal)
-	void toSpherical();
+	// Generate random unit vector
+	void randomUnit();
+	// Rotate contained point by the amounts specified
+	void rotate(double angx, double angy);
 	// Convert spherical who,phi,theta coordinates into cartesian x,y,z
 	void toCartesian();
+	// Convert cartesian x,y,z coordinates into spherical (rho,phi/zenith,theta/azimuthal)
+	void toSpherical();
 };
 
 // Constructor
@@ -147,7 +151,7 @@ template <class T> Vec3<T>::Vec3(T xx, T yy, T zz)
 }
 
 /*
-// Set / adjust
+// Set / adjust / retrieve 
 */
 
 // Zero
@@ -188,6 +192,16 @@ template <class T> void Vec3<T>::add(T a, T b, T c)
 	x += a;
 	y += b;
 	z += c;
+}
+
+// Retrieve single element
+template <class T> T Vec3<T>::get(int index) const
+{
+	if (index == 0) return x;
+	else if (index == 1) return y;
+	else if (index == 2) return z;
+	printf("Vec3 - element index %i is out of bounds.\n", index);
+	return 0;
 }
 
 /*
@@ -388,6 +402,96 @@ template <class T> T Vec3<T>::operator[](int index)
 // Methods
 */
 
+// Largest absolute value
+template <class T> T Vec3<T>::absMax() const
+{
+	T a = (fabs(x) < fabs(y)) ? fabs(y) : fabs(x);
+	return (a < fabs(z)) ? fabs(z) : a;
+}
+
+// Maximum absolute element
+template <class T> int Vec3<T>::absMaxElement() const
+{
+	if ((fabs(x) >= fabs(y)) && (fabs(x) >= fabs(z))) return 0;
+	if ((fabs(y) >= fabs(x)) && (fabs(y) >= fabs(z))) return 1;
+	return 2;
+}
+
+// Smallest absolute value
+template <class T> T Vec3<T>::absMin() const
+{
+	T a = (fabs(x) > fabs(y)) ? fabs(y) : fabs(x);
+	return (a > fabs(z)) ? fabs(z) : a;
+}
+
+// Minimum absolute element
+template <class T> int Vec3<T>::absMinElement() const
+{
+	if ((fabs(x) <= fabs(y)) && (fabs(x) <= fabs(z))) return 0;
+	if ((fabs(y) <= fabs(x)) && (fabs(y) <= fabs(z))) return 1;
+	return 2;
+}
+
+// Dot product
+template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
+{
+	return (x*v.x + y*v.y + z*v.z);
+}
+
+// Normalise and return original magnitude
+template <class T> double Vec3<T>::magAndNormalise()
+{
+	double mag = sqrt(x*x + y*y + z*z);
+	x /= mag;
+	y /= mag;
+	z /= mag;
+	return mag;
+}
+
+// Vector magnitude
+template <class T> double Vec3<T>::magnitude() const
+{
+	return sqrt(x*x + y*y + z*z);
+}
+
+// Largest value
+template <class T> T Vec3<T>::max() const
+{
+	T a = (x < y) ? y : x;
+	return (a < z) ? z : a;
+}
+
+// Maximum element
+template <class T> int Vec3<T>::maxElement() const
+{
+	if ((x >= y) && (x >= z)) return 0;
+	if ((y >= x) && (y >= z)) return 1;
+	return 2;
+}
+
+// Smallest value
+template <class T> T Vec3<T>::min() const
+{
+	T a = (x > y) ? y : x;
+	return (a > z) ? z : a;
+}
+
+// Minimum element
+template <class T> int Vec3<T>::minElement() const
+{
+	if ((x <= y) && (x <= z)) return 0;
+	if ((y <= x) && (y <= z)) return 1;
+	return 2;
+}
+
+// Multiply elements of this vector with those of the supplied vector
+template <class T> void Vec3<T>::multiply(const Vec3<T> &v)
+{
+	x *= v.x;
+	y *= v.y;
+	z *= v.z;
+}
+
 // Normalise
 template <class T> void Vec3<T>::normalise()
 {
@@ -395,6 +499,19 @@ template <class T> void Vec3<T>::normalise()
 	x /= mag;
 	y /= mag;
 	z /= mag;
+}
+
+// Get orthogonal vector
+template <class T> Vec3<T> Vec3<T>::orthogonal() const
+{
+	// Returns a vector orthogonal to this vector
+	Vec3<T> result;
+	int a = absMaxElement();
+	if (a == 0) result.set(-y,x,0);
+	else result.set(-get(a),(a == 1 ? x : y),0);
+	result = result * (*this);
+	result.normalise();
+	return result;
 }
 
 // Orthogonalise
@@ -419,118 +536,6 @@ template <class T> void Vec3<T>::orthogonalise(const Vec3<T> &source1, const Vec
 	*this = newvec;
 }
 
-// Largest value
-template <class T> T Vec3<T>::max() const
-{
-	T a = (x < y) ? y : x;
-	return (a < z) ? z : a;
-}
-
-// Smallest value
-template <class T> T Vec3<T>::min() const
-{
-	T a = (x > y) ? y : x;
-	return (a > z) ? z : a;
-}
-// Largest absolute value
-template <class T> T Vec3<T>::absMax() const
-{
-	T a = (fabs(x) < fabs(y)) ? fabs(y) : fabs(x);
-	return (a < fabs(z)) ? fabs(z) : a;
-}
-
-// Smallest absolute value
-template <class T> T Vec3<T>::absMin() const
-{
-	T a = (fabs(x) > fabs(y)) ? fabs(y) : fabs(x);
-	return (a > fabs(z)) ? fabs(z) : a;
-}
-
-// Minimum absolute element
-template <class T> int Vec3<T>::absMinElement() const
-{
-	if ((fabs(x) <= fabs(y)) && (fabs(x) <= fabs(z))) return 0;
-	if ((fabs(y) <= fabs(x)) && (fabs(y) <= fabs(z))) return 1;
-	return 2;
-}
-
-// Maximum absolute element
-template <class T> int Vec3<T>::absMaxElement() const
-{
-	if ((fabs(x) >= fabs(y)) && (fabs(x) >= fabs(z))) return 0;
-	if ((fabs(y) >= fabs(x)) && (fabs(y) >= fabs(z))) return 1;
-	return 2;
-}
-
-// Minimum element
-template <class T> int Vec3<T>::minElement() const
-{
-	if ((x <= y) && (x <= z)) return 0;
-	if ((y <= x) && (y <= z)) return 1;
-	return 2;
-}
-
-// Maximum element
-template <class T> int Vec3<T>::maxElement() const
-{
-	if ((x >= y) && (x >= z)) return 0;
-	if ((y >= x) && (y >= z)) return 1;
-	return 2;
-}
-
-// Get orthogonal vector
-template <class T> Vec3<T> Vec3<T>::orthogonal() const
-{
-	// Returns a vector orthogonal to this vector
-	Vec3<T> result;
-	int a = absMaxElement();
-	if (a == 0) result.set(-y,x,0);
-	else result.set(-get(a),(a == 1 ? x : y),0);
-	result = result * (*this);
-	result.normalise();
-	return result;
-}
-
-// Vector magnitude
-template <class T> double Vec3<T>::magnitude() const
-{
-	return sqrt(x*x + y*y + z*z);
-}
-
-// Normalise and return original magnitude
-template <class T> double Vec3<T>::magAndNormalise()
-{
-	double mag = sqrt(x*x + y*y + z*z);
-	x /= mag;
-	y /= mag;
-	z /= mag;
-	return mag;
-}
-
-// Dot product
-template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
-{
-	return (x*v.x + y*v.y + z*v.z);
-}
-
-// Multiply elements of this vector with those of the supplied vector
-template <class T> void Vec3<T>::multiply(const Vec3<T> &v)
-{
-	x *= v.x;
-	y *= v.y;
-	z *= v.z;
-}
-
-// Get element
-template <class T> T Vec3<T>::get(int el) const
-{
-	T result;
-	if (el == 0) result = x;
-	if (el == 1) result = y;
-	if (el == 2) result = z;
-	return result;
-}
-
 // Print
 template <class T> void Vec3<T>::print() const
 {
@@ -547,16 +552,22 @@ template <class T> void Vec3<T>::randomUnit()
 	normalise();
 }
 
-// Convert to spherical
-template <class T> void Vec3<T>::toSpherical()
+// Rotate contained point by the amounts specified
+template <class T> void Vec3<T>::rotate(double angx, double angy)
 {
-	T rho, s, phi, theta;
-	rho = magnitude();
-	s = sqrt(x*x + y*y);
-	phi = acos(z / rho);
-	if (s < 1e-7) theta = 0.0;
-	else theta = (x < 0 ? PI - asin(y / s) : asin(y / s));
-	set(rho,phi,theta);
+	static double rotx, roty, thetax, thetay, sinx, cosx, siny, cosy, camrot;
+	static Mat3<double> rotmat;
+	// Calculate cos/sin terms
+	thetax = angx / DEGRAD;
+	thetay = angy / DEGRAD;
+	cosx = cos(thetax);
+	cosy = cos(thetay);
+	sinx = sin(thetax);
+	siny = sin(thetay);
+	rotmat.rows[0].set(cosy,0.0,siny);
+	rotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy);
+	rotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy);
+	*this *= rotmat;
 }
 
 // Convert to cartesian
@@ -568,6 +579,18 @@ template <class T> void Vec3<T>::toCartesian()
 	newy = x * sin(y) * sin(z);
 	newz = x * cos(y);
 	set(newx,newy,newz);
+}
+
+// Convert to spherical
+template <class T> void Vec3<T>::toSpherical()
+{
+	T rho, s, phi, theta;
+	rho = magnitude();
+	s = sqrt(x*x + y*y);
+	phi = acos(z / rho);
+	if (s < 1e-7) theta = 0.0;
+	else theta = (x < 0 ? PI - asin(y / s) : asin(y / s));
+	set(rho,phi,theta);
 }
 
 #endif

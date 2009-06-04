@@ -1,6 +1,6 @@
 /*
-	*** Qt canvas
-	*** src/gui/canvas.h
+	*** Rendering Canvas
+	*** src/render/canvas.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CANVASQT_H
-#define ATEN_CANVASQT_H
+#ifndef ATEN_CANVAS_H
+#define ATEN_CANVAS_H
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
@@ -164,9 +164,9 @@ class Canvas
 	// Draw a circle
 	void circlePrimitive(double xcentre, double ycenter, double radius);
 	// Manually draw a unit sphere
-	void spherePrimitive(double radius, bool filled);
+	void spherePrimitive(double radius, bool filled, int nslices = -1, int nstacks = -1);
 	// Manually draw unit cylinder
-	void cylinderPrimitive(double startradius, double endradius, bool filled);
+	void cylinderPrimitive(double startradius, double endradius, bool filled, int nslices = -1, int nstacks = -1);
 
 	/*
 	// Rendering Objects

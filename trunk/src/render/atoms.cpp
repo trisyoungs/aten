@@ -21,7 +21,7 @@
 
 #include "model/model.h"
 #include "base/elements.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 
 // Render model atoms and bonds
 void Canvas::renderModelAtoms()

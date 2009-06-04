@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 
@@ -72,12 +72,12 @@ void Canvas::circlePrimitive(double x, double y, double r)
 }
 
 // Draw a sphere
-void Canvas::spherePrimitive(double radius, bool filled)
+void Canvas::spherePrimitive(double radius, bool filled, int nslices, int nstacks)
 {
 	// Don't use this to render objects to the view - create a display list first!
 	int i, j;
-	int lats = prefs.atomDetail();
-	int longs = int(lats * 1.5);
+	int lats = nstacks == -1 ? prefs.atomDetail() : nstacks;
+	int longs = nslices == -1 ? int(lats * 1.5) : nslices;
 	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
 	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
 	for (i = 1; i <= lats; i++)
@@ -106,23 +106,26 @@ void Canvas::spherePrimitive(double radius, bool filled)
 }
 
 // Draw a cylinder
-void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled)
+void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled, int nslices, int nstacks)
 {
 	int n, m;
-	double d, rdelta, radius1, radius2;
-	rdelta = (endradius - startradius) / prefs.bondDetail();
+	double d, rdelta, radius1, radius2, rnstacks;
+	if (nslices == -1) nslices = prefs.bondDetail();
+	if (nstacks == -1) nstacks = prefs.bondDetail();
+	rnstacks = 1.0 / nstacks;
+	rdelta = (endradius - startradius) / nslices;
 	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
-	for (n=0; n<prefs.bondDetail(); n++)		// Slices
+	for (n=0; n<nslices; n++)		// Slices
 	{
 		radius1 = startradius + n*rdelta;
 		radius2 = startradius + (n+1)*rdelta;
 		glBegin(GL_QUAD_STRIP);
-		  for (m=0; m<=prefs.bondDetail(); m++)	// Stacks
+		  for (m=0; m<=nstacks; m++)	// Stacks
 		  {
-			  d = m * TWOPI / prefs.bondDetail();
+			  d = m * TWOPI / nslices;
 			  glNormal3d(cos(d), sin(d), 0.0);
-			  glVertex3d(cos(d) * radius1, sin(d) * radius1, n * (1.0 / prefs.bondDetail()));
-			  glVertex3d(cos(d) * radius2, sin(d) * radius2, (n + 1) * (1.0 / prefs.bondDetail()));
+			  glVertex3d(cos(d) * radius1, sin(d) * radius1, n * rnstacks);
+			  glVertex3d(cos(d) * radius2, sin(d) * radius2, (n + 1) * rnstacks);
 		  }
 		glEnd();
 	}

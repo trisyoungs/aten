@@ -20,7 +20,7 @@
 */
 
 #include "model/model.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "base/glyph.h"
 
 // Render model glyphs

@@ -43,7 +43,8 @@ class AtenDisorder : public QDialog
 	private:
 	void refreshComponentData(int row);
 	void setComponentCentre();
-	void setComponentSize();
+	void setComponentGeometry();
+	void setComponentRotation();
 	private slots:
 	void on_ComponentTable_itemClicked(QTableWidgetItem *widget);
 	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
@@ -54,11 +55,15 @@ class AtenDisorder : public QDialog
 	void on_CentreXSpin_valueChanged(double d);
 	void on_CentreYSpin_valueChanged(double d);
 	void on_CentreZSpin_valueChanged(double d);
-	void on_SizeXSpin_valueChanged(double d);
-	void on_SizeYSpin_valueChanged(double d);
-	void on_SizeZSpin_valueChanged(double d);
 	void on_CentreFracCheck_clicked(bool checked);
-	void on_SizeFracCheck_clicked(bool checked);
+	void on_GeometryXSpin_valueChanged(double d);
+	void on_GeometryYSpin_valueChanged(double d);
+	void on_GeometryZSpin_valueChanged(double d);
+	void on_GeometryFracCheck_clicked(bool checked);
+	void on_RotationXSpin_valueChanged(double d);
+	void on_RotationYSpin_valueChanged(double d);
+	void on_RotationCheck_clicked(bool checked);
+	void on_AllowOverlapCheck_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*
