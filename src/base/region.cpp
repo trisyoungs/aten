@@ -44,7 +44,6 @@ ComponentRegion::ComponentRegion()
 	allowOverlap_ = TRUE;
 	geometry_.set(5.0,5.0,5.0);
 	rotations_.zero();
-	setRotations( Vec3<double>(45.0,0.0,0.0) );
 	centreFrac_ = FALSE;
 	geometryFrac_ = FALSE;
 	rotateRegion_ = TRUE;

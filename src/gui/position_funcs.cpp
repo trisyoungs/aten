@@ -153,7 +153,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 			msg.print("No unit cell defined for model.\n");
 			return;
 		}
-		tvec = aten.currentModel()->cell()->axes().get(axis);
+		tvec = aten.currentModel()->cell()->axes().getRow(axis);
 		tvec *= double(dir) * step;
 		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->beginUndoState(s);
