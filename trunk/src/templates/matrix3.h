@@ -44,21 +44,31 @@ template <class T> class Mat3
 	Mat3(T xx = 1, T xy = 0, T xz = 0, T yx = 0, T yy = 1, T yz = 0, T zx = 0, T zy = 0, T zz = 1);
 
 	// 3x3 Matrix, consisting of three vec3's:
-	//	{ x.x x.y x.z } rows[0]
-	//	{ y.x y.y y.z } rows[1]
-	//	{ z.x z.y z.z } rows[2]
+	//	{ x.x x.y x.z } rows[0]	[0,1,2]
+	//	{ y.x y.y y.z } rows[1]	[3,4,5]
+	//	{ z.x z.y z.z } rows[2]	[6,7,8]
 	public:
 	// Vectors of matrix
 	Vec3<T> rows[3];
 
 	/*
-	// Set / Get
+	// Set / Adjust / Get
 	*/
 	public:
 	// Aliases for matrix rows
 	Vec3<T> &x();
 	Vec3<T> &y();
 	Vec3<T> &z();
+	// Adjust individual element of matrix (by row/column)
+	void add(int row, int col, T d);
+	// Puts the matrix into the passed 1D-array of type <T>, row-major
+	void copyRowMajor(T*);
+	// Puts the matrix into the passed 1D-array of type <T>, column-major
+	void copyColumnMajor(T*);
+	// Returns the specified element of the matrix
+	T element(int i);
+	// Return the row specified
+	Vec3<T> getRow(int i);
 	// Initialise elements of one row
 	void set(int row, T a, T b, T c);
 	// Initialise elements of one row
@@ -69,30 +79,13 @@ template <class T> class Mat3
 	void set(int i, T d);
 	// Set diagonal elements of matrix (off-diagonals to zero)
 	void setDiagonal(T rx, T ry, T rz);
-	// Adjust individual element of matrix (by row/column)
-	void add(int row, int col, T d);
-	// Return the row specified
-	Vec3<T> get(int i);
-	// Puts the matrix into the passed 1D-array of type <T>, row-major
-	void copyRowMajor(T*);
-	// Puts the matrix into the passed 1D-array of type <T>, column-major
-	void copyColumnMajor(T*);
-	// Returns the specified element of the matrix
-	T element(int i);
-	// Element access operator
-	T operator[](int);
-	// Create rotation matrix about X
-	void createRotationX(double angle);
-	// Create rotation matrix about Y
-	void createRotationY(double angle);
-	// Create rotation matrix about Z
-	void createRotationZ(double angle);
-	// Create XY rotation matrix
-	void createRotationXY(double anglex, double angley);
+	// Reset the matrix to the identity
+	void setIdentity();
 
 	/*
 	// Operators
 	*/
+	public:
 	Vec3<T> operator*(const Vec3<T>&) const;
 	Mat3 operator*(const Mat3&) const;
 	Mat3 operator*(const double) const;
@@ -100,28 +93,36 @@ template <class T> class Mat3
 	Mat3& operator*=(const double);
 	Mat3& operator-=(const T);
 	Mat3 operator-(const Mat3&) const;
+	T operator[](int);
 
 	/*
 	// Methods
 	*/
-	// Swap rows
-	void swapRows(int, int);
-	// Return transpose of matrix
-	Mat3<T> transpose() const;
+	public:
+	// Create matrix of orthogonal vectors from reference
+	void createOrthogonal(const Vec3<T>&);
+	// Create rotation matrix about X
+	void createRotationX(double angle);
+	// Create XY rotation matrix
+	void createRotationXY(double anglex, double angley);
+	// Create rotation matrix about Y
+	void createRotationY(double angle);
+	// Create rotation matrix about Z
+	void createRotationZ(double angle);
 	// Calculate the determinant of the matrix.
 	double determinant();
 	// Invert the matrix
 	void invert();
-	// Reset the matrix to the identity
-	void setIdentity();
-	// Set the zero matrix
-	void zero();
 	// Prints the matrix to stdout
 	void print() const;
-	// Create matrix of orthogonal vectors from reference
-	void createOrthogonal(const Vec3<T>&);
 	// Multiply matrix rows by vector elements
 	void rowMultiply(const Vec3<T>&);
+	// Swap rows
+	void swapRows(int, int);
+	// Return transpose of matrix
+	Mat3<T> transpose() const;
+	// Set the zero matrix
+	void zero();
 };
 
 // Constructor
@@ -133,7 +134,7 @@ template <class T> Mat3<T>::Mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy,
 }
 
 /*
-// Set / Get
+// Set / Adjust / Get
 */
 
 // Aliases for matrix rows
@@ -150,6 +151,42 @@ template <class T> Vec3<T> &Mat3<T>::y()
 template <class T> Vec3<T> &Mat3<T>::z()
 {
 	return rows[2];
+}
+
+// Adjust individual element of matrix (by row/column)
+template <class T> void Mat3<T>::add(int row, int col, T d)
+{
+	rows[row].add(col,d);
+}
+
+// Get (array)
+template <class T> void Mat3<T>::copyColumnMajor(T *colm)
+{
+	// Construct a 1d array of type T with column-major ordering...
+	colm[0] = rows[0].x;	colm[3] = rows[0].y;	colm[6] = rows[0].z;
+	colm[1] = rows[1].x;	colm[4] = rows[1].y;	colm[7] = rows[1].z;
+	colm[2] = rows[2].x;	colm[5] = rows[2].y;	colm[8] = rows[2].z;
+}
+
+// Get (array)
+template <class T> void Mat3<T>::copyRowMajor(T *rowm)
+{
+	// Construct a 1d array of type T with row-major ordering...
+	rowm[0] = rows[0].x;	rowm[1] = rows[0].y;	rowm[2] = rows[0].z;
+	rowm[3] = rows[1].x;	rowm[4] = rows[1].y;	rowm[5] = rows[1].z;
+	rowm[6] = rows[2].x;	rowm[7] = rows[2].y;	rowm[8] = rows[2].z;
+}
+
+// Returns the specified element of the matrix
+template <class T> T Mat3<T>::element(int i)
+{
+	return rows[i/3].get(i%3);
+}
+
+// Return the row specified
+template <class T> Vec3<T> Mat3<T>::getRow(int i)
+{
+	return rows[i];
 }
 
 // Initialise elements of one row
@@ -185,53 +222,6 @@ template <class T> void Mat3<T>::setDiagonal(T rx, T ry, T rz)
 	rows[2].z = rz;
 }
 
-// Adjust individual element of matrix (by row/column)
-template <class T> void Mat3<T>::add(int row, int col, T d)
-{
-	rows[row].add(col,d);
-}
-
-// Return the row specified
-template <class T> Vec3<T> Mat3<T>::get(int i)
-{
-	return rows[i];
-}
-
-// Returns the specified element of the matrix
-template <class T> T Mat3<T>::element(int i)
-{
-	return rows[i/3].get(i%3);
-}
-
-// Element access operator
-template <class T> T Mat3<T>::operator[](int index)
-{
-	if ((index < 0) || (index > 8))
-	{
-		printf("Mat3 <<<< SEVERE - Array index (%i) out of bounds (0-8) >>>>\n",index);
-		return NULL;
-	}
-	return element(index);
-}
-
-// Get (array)
-template <class T> void Mat3<T>::copyRowMajor(T *rowm)
-{
-	// Construct a 1d array of type T with row-major ordering...
-	rowm[0] = rows[0].x;	rowm[1] = rows[0].y;	rowm[2] = rows[0].z;
-	rowm[3] = rows[1].x;	rowm[4] = rows[1].y;	rowm[5] = rows[1].z;
-	rowm[6] = rows[2].x;	rowm[7] = rows[2].y;	rowm[8] = rows[2].z;
-}
-
-// Get (array)
-template <class T> void Mat3<T>::copyColumnMajor(T *colm)
-{
-	// Construct a 1d array of type T with column-major ordering...
-	colm[0] = rows[0].x;	colm[3] = rows[0].y;	colm[6] = rows[0].z;
-	colm[1] = rows[1].x;	colm[4] = rows[1].y;	colm[7] = rows[1].z;
-	colm[2] = rows[2].x;	colm[5] = rows[2].y;	colm[8] = rows[2].z;
-}
-
 // Set identity matrix
 template <class T> void Mat3<T>::setIdentity()
 {
@@ -246,52 +236,6 @@ template <class T> void Mat3<T>::zero()
 	rows[0].zero();
 	rows[1].zero();
 	rows[2].zero();
-}
-
-// Create rotation matrix about X
-template <class T> void Mat3<T>::createRotationX(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,1.0,0.0,0.0);
-	set(1,0.0,cosx,sinx);
-	set(2,0.0,-sinx,cosx);
-}
-
-// Create rotation matrix about Y
-template <class T> void Mat3<T>::createRotationY(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,cosx,0.0,-sinx);
-	set(1,0.0,1.0,0.0);
-	set(2,sinx,0.0,cosx);
-}
-
-// Create rotation matrix about Z
-template <class T> void Mat3<T>::createRotationZ(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,cosx,sinx,0.0);
-	set(1,-sinx,cosx,0.0);
-	set(2,0.0,0.0,1.0);
-}
-
-// Create XY rotation matrix
-template <class T> void Mat3<T>::createRotationXY(double anglex, double angley)
-{
-	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
-	cosx = cos(thetax);
-	cosy = cos(thetay);
-	sinx = sin(thetax);
-	siny = sin(thetay);
-	set(0,cosy,0.0,siny);
-	set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
-	set(2,cosx*(-siny),sinx,cosx*cosy);
 }
 
 /*
@@ -386,34 +330,74 @@ template <class T> Mat3<T> Mat3<T>::operator-(const Mat3<T> &m) const
 	return result;
 }
 
+// Element access operator
+template <class T> T Mat3<T>::operator[](int index)
+{
+	if ((index < 0) || (index > 8))
+	{
+		printf("Mat3 <<<< SEVERE - Array index (%i) out of bounds (0-8) >>>>\n",index);
+		return NULL;
+	}
+	return element(index);
+}
+
 /*
 // Methods
 */
 
-// Swap rows
-template <class T> void Mat3<T>::swapRows(int row1, int row2)
+// Create matrix of orthogonal vectors
+template <class T> void Mat3<T>::createOrthogonal(const Vec3<T> &vec)
 {
-	Vec3<T> temp = rows[row2];
-	rows[row2] = rows[row1];
-	rows[row1] = temp;
+	// Set x-vector to be the passed vector.
+	rows[0] = vec;
+	rows[1].set(rows[0].z,rows[0].x,rows[0].y);
+	rows[2].set(rows[0].y,rows[0].z,rows[0].x);
 }
 
-// Transpose
-template <class T> Mat3<T> Mat3<T>::transpose() const
+// Create rotation matrix about X
+template <class T> void Mat3<T>::createRotationX(double angle)
 {
-	Mat3<T> result;
-	result.rows[0].x = rows[0].x;
-	result.rows[0].y = rows[1].x;
-	result.rows[0].z = rows[2].x;
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,1.0,0.0,0.0);
+	set(1,0.0,cosx,sinx);
+	set(2,0.0,-sinx,cosx);
+}
 
-	result.rows[1].x = rows[0].y;
-	result.rows[1].y = rows[1].y;
-	result.rows[1].z = rows[2].y;
+// Create XY rotation matrix
+template <class T> void Mat3<T>::createRotationXY(double anglex, double angley)
+{
+	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
+	cosx = cos(thetax);
+	cosy = cos(thetay);
+	sinx = sin(thetax);
+	siny = sin(thetay);
+	set(0,cosy,0.0,siny);
+	set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
+	set(2,cosx*(-siny),sinx,cosx*cosy);
+}
 
-	result.rows[2].x = rows[0].z;
-	result.rows[2].y = rows[1].z;
-	result.rows[2].z = rows[2].z;
-	return result;
+// Create rotation matrix about Y
+template <class T> void Mat3<T>::createRotationY(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,0.0,-sinx);
+	set(1,0.0,1.0,0.0);
+	set(2,sinx,0.0,cosx);
+}
+
+// Create rotation matrix about Z
+template <class T> void Mat3<T>::createRotationZ(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,sinx,0.0);
+	set(1,-sinx,cosx,0.0);
+	set(2,0.0,0.0,1.0);
 }
 
 // Calculate determinant
@@ -433,7 +417,7 @@ template <class T> void Mat3<T>::invert()
 	msg.enter("Mat3<T>::invert");
 	// Gauss-Jordan Inversion
 	// Invert the supplied matrix using Gauss-Jordan elimination
-	int pivotrows[3], pivotcols[3], pivotrow, pivotcol;
+	int pivotrows[3], pivotcols[3], pivotrow = 0, pivotcol = 0;
 	bool pivoted[3];
 	int row, col, n, m;
 	double large, element;
@@ -493,7 +477,7 @@ template <class T> void Mat3<T>::invert()
 		}
 	}
 	// Rearrange columns to undo row exchanges performed earlier
-	for (n=3; n>=0; --n)
+	for (n=2; n>=0; --n)
 		if (pivotrows[n] != pivotcols[n])
 			for (m=0; m<3; m++)
 			{
@@ -502,6 +486,14 @@ template <class T> void Mat3<T>::invert()
 				rows[m].set(pivotcols[n], element);
 			}
 	msg.exit("Mat3<T>::invert");
+}
+
+// Print
+template <class T> void Mat3<T>::print() const
+{
+	printf("X: %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
+	printf("Y: %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
+	printf("Z: %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);
 }
 
 // Row Multiply
@@ -513,21 +505,30 @@ template <class T> void Mat3<T>::rowMultiply(const Vec3<T> &v)
 	rows[2] *= v.z;
 }
 
-// Print
-template <class T> void Mat3<T>::print() const
+// Swap rows
+template <class T> void Mat3<T>::swapRows(int row1, int row2)
 {
-	printf("X: %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
-	printf("Y: %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
-	printf("Z: %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);
+	Vec3<T> temp = rows[row2];
+	rows[row2] = rows[row1];
+	rows[row1] = temp;
 }
 
-// Create matrix of orthogonal vectors
-template <class T> void Mat3<T>::createOrthogonal(const Vec3<T> &vec)
+// Transpose
+template <class T> Mat3<T> Mat3<T>::transpose() const
 {
-	// Set x-vector to be the passed vector.
-	rows[0] = vec;
-	rows[1].set(rows[0].z,rows[0].x,rows[0].y);
-	rows[2].set(rows[0].y,rows[0].z,rows[0].x);
+	Mat3<T> result;
+	result.rows[0].x = rows[0].x;
+	result.rows[0].y = rows[1].x;
+	result.rows[0].z = rows[2].x;
+
+	result.rows[1].x = rows[0].y;
+	result.rows[1].y = rows[1].y;
+	result.rows[1].z = rows[2].y;
+
+	result.rows[2].x = rows[0].z;
+	result.rows[2].y = rows[1].z;
+	result.rows[2].z = rows[2].z;
+	return result;
 }
 
 #endif

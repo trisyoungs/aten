@@ -48,8 +48,9 @@ template <class T> class Mat4
 	// Vectors of matrix
 	Vec4<T> rows[4];
 
+
 	/*
-	// Access
+	// Set / Adjust / Get
 	*/
 	public:
 	// Aliases for matrix rows
@@ -57,39 +58,19 @@ template <class T> class Mat4
 	Vec4<T> &y();
 	Vec4<T> &z();
 	Vec4<T> &w();
-	// Set the matrix from a 1D array of values
-	void setFromColumnMajor(T*);
-	// Puts the matrix into the passed 1D-array of type <T>, row-major
-	void copyRowMajor(T*) const;
 	// Puts the matrix into the passed 1D-array of type <T>, column-major
 	void copyColumnMajor(T*) const;
-
-	/*
-	// Methods
-	*/
-	public:
-	// Calculate the determinant of the matrix.
-	double determinant() const;
-	// Invert the matrix
-	void invert();
-	// Reset the matrix to the identity
-	void setIdentity();
-	// Set the zero matrix
-	void zero();
-	// Prints the matrix to stdout
-	void print() const;
+	// Puts the matrix into the passed 1D-array of type <T>, row-major
+	void copyRowMajor(T*) const;
 	// Set individual element of matrix
 	void set(int row, int col, T value);
 	// Set whole row of matrix
 	void set(int row, T x, T y, T z, T w);
-	// Create rotation matrix about X
-	void createRotationX(double angle);
-	// Create rotation matrix about Y
-	void createRotationY(double angle);
-	// Create rotation matrix about Z
-	void createRotationZ(double angle);
-	// Create XY rotation matrix
-	void createRotationXY(double anglex, double angley);
+	// Set the matrix from a 1D array of values
+	void setFromColumnMajor(T*);
+	// Reset the matrix to the identity
+	void setIdentity();
+
 
 	/*
 	// Operators
@@ -99,6 +80,28 @@ template <class T> class Mat4
 	Mat4& operator*=(const double);
 	Vec4<T> operator*(const Vec4<T>&) const;
 	Vec3<T> operator*(const Vec3<T>&) const;
+
+
+	/*
+	// Methods
+	*/
+	public:
+	// Create rotation matrix about X
+	void createRotationX(double angle);
+	// Create XY rotation matrix
+	void createRotationXY(double anglex, double angley);
+	// Create rotation matrix about Y
+	void createRotationY(double angle);
+	// Create rotation matrix about Z
+	void createRotationZ(double angle);
+	// Calculate the determinant of the matrix.
+	double determinant() const;
+	// Invert the matrix
+	void invert();
+	// Prints the matrix to stdout
+	void print() const;
+	// Set the zero matrix
+	void zero();
 };
 
 // Constructor
@@ -117,7 +120,7 @@ template <class T> Mat4<T>::Mat4(const Mat3<T> &m)
 }
 
 /*
-// Set / Get
+// Set / Adjust / Get
 */
 
 // Aliases for matrix rows
@@ -141,13 +144,14 @@ template <class T> Vec4<T> &Mat4<T>::w()
 	return rows[3];
 }
 
-// Set (T[])
-template <class T> void Mat4<T>::setFromColumnMajor(T *m)
+// Get (array)
+template <class T> void Mat4<T>::copyColumnMajor(T *colm) const
 {
-	rows[0].set(m[0],m[4],m[8],m[12]);
-	rows[1].set(m[1],m[5],m[9],m[13]);
-	rows[2].set(m[2],m[6],m[10],m[14]);
-	rows[3].set(m[3],m[7],m[11],m[15]);
+	// Construct a 1d array of type T with column-major ordering...
+	colm[0] = rows[0].x;	colm[4] = rows[0].y;	colm[8] = rows[0].z;	colm[12] = rows[0].w;
+	colm[1] = rows[1].x;	colm[5] = rows[1].y;	colm[9] = rows[1].z;	colm[13] = rows[1].w;
+	colm[2] = rows[2].x;	colm[6] = rows[2].y;	colm[10] = rows[2].z;	colm[14] = rows[2].w;
+	colm[3] = rows[3].x;	colm[7] = rows[3].y;	colm[11] = rows[3].z;	colm[15] = rows[3].w;
 }
 
 // Get (array)
@@ -160,15 +164,25 @@ template <class T> void Mat4<T>::copyRowMajor(T *rowm) const
 	rowm[12] = rows[3].x;	rowm[13] = rows[3].y;	rowm[14] = rows[3].z;	rowm[15] = rows[3].w;
 }
 
-
-// Get (array)
-template <class T> void Mat4<T>::copyColumnMajor(T *colm) const
+// Set individual element of matrix (by row/column)
+template <class T> void Mat4<T>::set(int row, int col, T d)
 {
-	// Construct a 1d array of type T with column-major ordering...
-	colm[0] = rows[0].x;	colm[4] = rows[0].y;	colm[8] = rows[0].z;	colm[12] = rows[0].w;
-	colm[1] = rows[1].x;	colm[5] = rows[1].y;	colm[9] = rows[1].z;	colm[13] = rows[1].w;
-	colm[2] = rows[2].x;	colm[6] = rows[2].y;	colm[10] = rows[2].z;	colm[14] = rows[2].w;
-	colm[3] = rows[3].x;	colm[7] = rows[3].y;	colm[11] = rows[3].z;	colm[15] = rows[3].w;
+	rows[row].set(col,d);
+}
+
+// Set individual row of matrix
+template <class T> void Mat4<T>::set(int row, T x, T y, T z, T w)
+{
+	rows[row].set(x, y, z, w);
+}
+
+// Set (T[])
+template <class T> void Mat4<T>::setFromColumnMajor(T *m)
+{
+	rows[0].set(m[0],m[4],m[8],m[12]);
+	rows[1].set(m[1],m[5],m[9],m[13]);
+	rows[2].set(m[2],m[6],m[10],m[14]);
+	rows[3].set(m[3],m[7],m[11],m[15]);
 }
 
 // Reset to the identity matrix
@@ -188,6 +202,10 @@ template <class T> void Mat4<T>::zero()
 	rows[2].zero();
 	rows[3].zero();
 }
+
+/*
+// Operators
+*/
 
 // Matrix multiply (operator *) (return new matrix)
 template <class T> Mat4<T> Mat4<T>::operator*(const Mat4<T> &B) const
@@ -276,13 +294,78 @@ template <class T> Vec3<T> Mat4<T>::operator*(const Vec3<T> &v) const
 	return result;
 }
 
+/*
+// Methods
+*/
+
+// Create rotation matrix about X
+template <class T> void Mat4<T>::createRotationX(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,1.0,0.0,0.0,0.0);
+	set(1,0.0,cosx,sinx,0.0);
+	set(2,0.0,-sinx,cosx,0.0);
+	set(3,0.0,0.0,0.0,1.0);
+}
+
+// Create XY rotation matrix
+template <class T> void Mat4<T>::createRotationXY(double anglex, double angley)
+{
+	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
+	cosx = cos(thetax);
+	cosy = cos(thetay);
+	sinx = sin(thetax);
+	siny = sin(thetay);
+	set(0,cosy,0.0,siny,0.0);
+	set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+	set(2,cosx*(-siny),sinx,cosx*cosy,0.0);
+	set(3,0.0,0.0,0.0,1.0);
+}
+
+// Create rotation matrix about Y
+template <class T> void Mat4<T>::createRotationY(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,0.0,-sinx,0.0);
+	set(1,0.0,1.0,0.0,0.0);
+	set(2,sinx,0.0,cosx,0.0);
+	set(3,0.0,0.0,0.0,1.0);
+}
+
+// Create rotation matrix about Z
+template <class T> void Mat4<T>::createRotationZ(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,sinx,0.0,0.0);
+	set(1,-sinx,cosx,0.0,0.0);
+	set(2,0.0,0.0,1.0,0.0);
+	set(3,0.0,0.0,0.0,1.0);
+}
+
+template <class T> double Mat4<T>::determinant() const
+{
+	// Calculate the determinant of the 4x4 matrix.
+	// Could write a nice recursive algorithm here, but instead let's hard-code it...
+	double a = rows[0].x * (rows[1].y*(rows[2].z*rows[3].w-rows[2].w*rows[3].z) - rows[2].y*(rows[1].z*rows[3].w-rows[1].w*rows[3].z) + rows[3].y*(rows[1].z*rows[2].w-rows[1].w*rows[2].z) );
+	double b = rows[1].x * (rows[0].y*(rows[2].z*rows[3].w-rows[2].w*rows[3].z) - rows[2].y*(rows[0].z*rows[3].w-rows[0].w*rows[3].z) + rows[3].y*(rows[0].z*rows[2].w-rows[0].w*rows[2].z) );
+	double c = rows[2].x * (rows[0].y*(rows[1].z*rows[3].w-rows[1].w*rows[3].z) - rows[1].y*(rows[0].z*rows[3].w-rows[0].w*rows[3].z) + rows[3].y*(rows[0].z*rows[1].w-rows[0].w*rows[1].z) );
+	double d = rows[3].x * (rows[0].y*(rows[1].z*rows[2].w-rows[1].w*rows[2].z) - rows[1].y*(rows[0].z*rows[2].w-rows[0].w*rows[2].z) + rows[2].y*(rows[0].z*rows[1].w-rows[0].w*rows[1].z) );
+	return (a-b+c-d);
+}
+
 // Calculate matrix inverse
 template <class T> void Mat4<T>::invert()
 {
 	msg.enter("Mat4<T>::invert");
 	// Gauss-Jordan Inversion
 	// Invert the supplied matrix using Gauss-Jordan elimination
-	int pivotrows[4], pivotcols[4], pivotrow, pivotcol;
+	int pivotrows[4], pivotcols[4], pivotrow = 0, pivotcol = 0;
 	bool pivoted[4];
 	int row, col, n, m;
 	double large, element;
@@ -353,85 +436,12 @@ template <class T> void Mat4<T>::invert()
 	msg.exit("Mat4<T>::invert");
 }
 
-// Set individual element of matrix (by row/column)
-template <class T> void Mat4<T>::set(int row, int col, T d)
-{
-	rows[row].set(col,d);
-}
-
-// Set individual row of matrix
-template <class T> void Mat4<T>::set(int row, T x, T y, T z, T w)
-{
-	rows[row].set(x, y, z, w);
-}
-
 template <class T> void Mat4<T>::print() const
 {
 	printf("Mat4_X %8.4f %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z,rows[0].w);
 	printf("Mat4_Y %8.4f %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z,rows[1].w);
 	printf("Mat4_Z %8.4f %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z,rows[2].w);
 	printf("Mat4_W %8.4f %8.4f %8.4f %8.4f\n",rows[3].x,rows[3].y,rows[3].z,rows[3].w);
-}
-
-template <class T> double Mat4<T>::determinant() const
-{
-	// Calculate the determinant of the 4x4 matrix.
-	// Could write a nice recursive algorithm here, but instead let's hard-code it...
-	double a = rows[0].x * (rows[1].y*(rows[2].z*rows[3].w-rows[2].w*rows[3].z) - rows[2].y*(rows[1].z*rows[3].w-rows[1].w*rows[3].z) + rows[3].y*(rows[1].z*rows[2].w-rows[1].w*rows[2].z) );
-	double b = rows[1].x * (rows[0].y*(rows[2].z*rows[3].w-rows[2].w*rows[3].z) - rows[2].y*(rows[0].z*rows[3].w-rows[0].w*rows[3].z) + rows[3].y*(rows[0].z*rows[2].w-rows[0].w*rows[2].z) );
-	double c = rows[2].x * (rows[0].y*(rows[1].z*rows[3].w-rows[1].w*rows[3].z) - rows[1].y*(rows[0].z*rows[3].w-rows[0].w*rows[3].z) + rows[3].y*(rows[0].z*rows[1].w-rows[0].w*rows[1].z) );
-	double d = rows[3].x * (rows[0].y*(rows[1].z*rows[2].w-rows[1].w*rows[2].z) - rows[1].y*(rows[0].z*rows[2].w-rows[0].w*rows[2].z) + rows[2].y*(rows[0].z*rows[1].w-rows[0].w*rows[1].z) );
-	return (a-b+c-d);
-}
-
-// Create rotation matrix about X
-template <class T> void Mat4<T>::createRotationX(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,1.0,0.0,0.0,0.0);
-	set(1,0.0,cosx,sinx,0.0);
-	set(2,0.0,-sinx,cosx,0.0);
-	set(3,0.0,0.0,0.0,1.0);
-}
-
-// Create rotation matrix about Y
-template <class T> void Mat4<T>::createRotationY(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,cosx,0.0,-sinx,0.0);
-	set(1,0.0,1.0,0.0,0.0);
-	set(2,sinx,0.0,cosx,0.0);
-	set(3,0.0,0.0,0.0,1.0);
-}
-
-// Create rotation matrix about Z
-template <class T> void Mat4<T>::createRotationZ(double angle)
-{
-	double cosx, sinx, theta = angle/DEGRAD;
-	cosx = cos(theta);
-	sinx = sin(theta);
-	set(0,cosx,sinx,0.0,0.0);
-	set(1,-sinx,cosx,0.0,0.0);
-	set(2,0.0,0.0,1.0,0.0);
-	set(3,0.0,0.0,0.0,1.0);
-}
-
-// Create XY rotation matrix
-template <class T> void Mat4<T>::createRotationXY(double anglex, double angley)
-{
-	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
-	cosx = cos(thetax);
-	cosy = cos(thetay);
-	sinx = sin(thetax);
-	siny = sin(thetay);
-	set(0,cosy,0.0,siny,0.0);
-	set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-	set(2,cosx*(-siny),sinx,cosx*cosy,0.0);
-	set(3,0.0,0.0,0.0,1.0);
 }
 
 #endif
