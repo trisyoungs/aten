@@ -133,7 +133,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Aten type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		msg.exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -200,7 +200,7 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Aten type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		msg.exit("AtenVariable::setAccessor");
 		return FALSE;
 	}

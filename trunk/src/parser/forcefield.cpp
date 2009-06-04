@@ -96,7 +96,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
 		msg.exit("ForcefieldVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -147,7 +147,7 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
 		msg.exit("ForcefieldVariable::setAccessor");
 		return FALSE;
 	}

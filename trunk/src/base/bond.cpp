@@ -123,6 +123,7 @@ double Bond::order()
 		case (Bond::Aromatic):
 			return 1.5;
 	}
+	return 0.0;
 }
 
 // Return first atom in bond

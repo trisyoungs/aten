@@ -178,7 +178,7 @@ bool VectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
 		msg.exit("VectorVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -223,7 +223,7 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Vector type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Vector type.\n", i);
 		msg.exit("VectorVariable::setAccessor");
 		return FALSE;
 	}

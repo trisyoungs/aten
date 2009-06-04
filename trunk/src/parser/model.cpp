@@ -108,7 +108,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Model type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Model type.\n", i);
 		msg.exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -237,7 +237,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Model type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Model type.\n", i);
 		msg.exit("ModelVariable::setAccessor");
 		return FALSE;
 	}

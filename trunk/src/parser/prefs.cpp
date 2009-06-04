@@ -149,7 +149,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
 		msg.exit("PreferencesVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -381,7 +381,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
 		msg.exit("PreferencesVariable::setAccessor");
 		return FALSE;
 	}
