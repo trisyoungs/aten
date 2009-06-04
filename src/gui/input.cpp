@@ -21,7 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/gui.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "model/model.h"
 
 // Inform mouse down

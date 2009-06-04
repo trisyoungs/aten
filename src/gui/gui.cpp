@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"

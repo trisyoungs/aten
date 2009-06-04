@@ -1,6 +1,6 @@
 /*
-	*** Model canvas stub
-	*** src/gui/canvas.cpp
+	*** Rendering Canvas
+	*** src/render/canvas.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -20,7 +20,7 @@
 */
 
 #include "gui/gui.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
 #include "model/model.h"

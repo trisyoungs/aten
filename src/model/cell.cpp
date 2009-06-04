@@ -512,10 +512,13 @@ void Model::rotateCell(int axis, double angle)
 	if (cell_.type() == Cell::NoCell)
 	{
 		msg.print("This model has no cell, and so it can't be rotated.\n");
+		msg.exit("Model::rotateCell");
 		return;
 	}
 	Mat3<double> rotmat;
-	rotmat.createRotation(axis, angle);
+	if (axis == 0) rotmat.createRotationX(angle);
+	else if (axis == 1) rotmat.createRotationY(angle);
+	else if (axis == 2) rotmat.createRotationZ(angle);
 	// Create new cell axes
 	Mat3<double> axes = cell_.axes();
 	axes *= rotmat;
@@ -535,7 +538,7 @@ void Model::rotateCell(int axis, double angle)
 	
 	// Transform atoms
 	markAll();
-	Vec3<double> origin; 
+	Vec3<double> origin;
 	matrixTransformSelection(origin,rotmat,TRUE);
 	msg.exit("Model::rotateCell");
 }

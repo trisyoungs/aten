@@ -21,7 +21,7 @@
 
 #include "main/aten.h"
 #include "model/model.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "base/sysfunc.h"
@@ -209,12 +209,14 @@ void Canvas::renderExtra2d()
 void Canvas::renderRegions()
 {
 	msg.enter("Canvas::renderRegions");
-	static Vec3<double> centre, size;
+	static Vec3<double> centre, geometry, rotations;
 	static GLfloat colour[4];
+	static Mat4<double> rotmat;
 	int i = 0;
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);
+	glDisable(GL_CULL_FACE);
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		elements().copyAmbientColour(i, colour);
@@ -223,21 +225,33 @@ void Canvas::renderRegions()
 		glPushMatrix();
 		  centre = m->area.centre();
 		  if (m->area.isCentreFrac()) centre = displayModel_->cell()->fracToReal(centre);
-		  size = m->area.size();
-		  if (m->area.isSizeFrac()) size = displayModel_->cell()->fracToReal(size);
+		  geometry = m->area.geometry();
+		  if (m->area.isGeometryFrac()) geometry = displayModel_->cell()->fracToReal(geometry);
+		  glTranslated(centre.x,centre.y,centre.z);
+		  if (m->area.rotateRegion())
+		  {
+			rotations = m->area.rotations();
+			rotmat.createRotationXY(rotations.x, rotations.y);
+			double mat[16];
+			rotmat.copyColumnMajor(mat);
+			glMultMatrixd(mat);
+		  }
 		  switch (m->area.shape())
 		  {
 			case (ComponentRegion::WholeCell):
 				break;
 			case (ComponentRegion::CuboidRegion):
-				glTranslated(centre.x,centre.y,centre.z);
-				glScaled(size.x,size.y,size.z);
+				glScaled(geometry.x,geometry.y,geometry.z);
 				glCallList(list_[GLOB_UNITCUBE]);
 				break;
 			case (ComponentRegion::SpheroidRegion):
-				glTranslated(centre.x,centre.y,centre.z);
-				glScaled(size.x,size.y,size.z);
+				glScaled(geometry.x,geometry.y,geometry.z);
 				glCallList(list_[GLOB_UNITATOM]);
+				break;
+			case (ComponentRegion::CylinderRegion):
+				glTranslated(0.0,0.0,-0.5*geometry.z);
+				glScaled(geometry.x,geometry.y,geometry.z);
+				cylinderPrimitive(1.0, 1.0, TRUE, 25, 25);
 				break;
 			default:
 				printf("renderRegions :: ComponentRegion type not done.\n");
@@ -248,6 +262,7 @@ void Canvas::renderRegions()
 	}
 	// Turn off blending (if not antialiasing)
 	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glDisable(GL_BLEND);
+	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 	glDisable(GL_LIGHTING);
 	msg.exit("Canvas::renderRegions");
 }

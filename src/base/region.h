@@ -50,10 +50,18 @@ class ComponentRegion
 	Vec3<double> centre_;
 	// Whether the region centre is defined in fractional coordinates
 	bool centreFrac_;
-	// Size of the ComponentRegion
-	Vec3<double> size_;
+	// Geometry of the ComponentRegion
+	Vec3<double> geometry_;
 	// Whether the region size is defined in fractional coordinates
-	bool sizeFrac_;
+	bool geometryFrac_;
+	// Rotations of the region
+	Vec3<double> rotations_;
+	// Whether the region should be rotated
+	bool rotateRegion_;
+	// Rotation matrix for region (f the region is to be rotated)
+	Mat3<double> rotationMatrix_;
+	// Inverse rotation matrix for region (f the region is to be rotated)
+	Mat3<double> inverseRotationMatrix_;
 	// Length of cylindrical ComponentRegion
 	double length_;
 	// Whether to allow overlap with other ComponentRegions, or to avoid them
@@ -72,28 +80,32 @@ class ComponentRegion
 	Vec3<double> centre();
 	// Returns whether the centre was set in real or fractional coordinates
 	bool isCentreFrac();
-	// Sets the size of the defined ComponentRegion
-	void setSize(Vec3<double> v);
-	// Sets the size of the defined ComponentRegion in fractional coordinates
-	void setSizeFrac(Vec3<double> v);
-	// Returns the size of the defined ComponentRegion
-	Vec3<double> size();
+	// Sets the geometry of the defined ComponentRegion
+	void setGeometry(Vec3<double> v);
+	// Sets the geometry of the defined ComponentRegion in fractional coordinates
+	void setGeometryFrac(Vec3<double> v);
+	// Returns the geometry of the defined ComponentRegion
+	Vec3<double> geometry();
 	// Returns whether the size of the region was set in real or fractional coordinates
-	bool isSizeFrac();
-	// Sets the length of the ComponentRegion (for some ComponentRegion types)
-	void setLength(double v);
-	// Returns the ComponentRegion length
-	double length();
+	bool isGeometryFrac();
+	// Sets the rotations of the defined ComponentRegion
+	void setRotations(Vec3<double> v);
+	// Returns the rotations of the defined ComponentRegion
+	Vec3<double> rotations();
+	// Return whether to rotate the region
+	bool rotateRegion();
+	// Set wheter to rotate the region
+	void setRotateRegion(bool b);
 	// Sets whether to allow overlap with other ComponentRegions
 	void setAllowOverlap(bool b);
 	// Returns whether to allow overlap over other ComponentRegions when inserting
 	bool allowOverlap();
 	// Determines whether the supplied coordinates are within the ComponentRegion defined
-	bool coordsInRegion(const Vec3<double>&, Cell*);
+	bool coordsInRegion(const Vec3<double> &point, Cell *cell);
 	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
-	bool pointOverlaps(const Vec3<double>&, Cell*, Reflist<Model,int> &components);
+	bool pointOverlaps(const Vec3<double> &point, Cell *cell, Reflist<Model,int> &components);
 	// Generate a random coordinate inside the ComponentRegion
-	Vec3<double> randomCoords(Cell*, Reflist<Model,int> &components);
+	Vec3<double> randomCoords(Cell *cell, Reflist<Model,int> &components);
 };
 
 #endif

@@ -13,7 +13,6 @@ ${CMAKE_BINARY_DIR}
 set(qtproject_SRCS
   actiontext.h
   actiontext.cpp
-  canvas.h 
   gui.h 
   ttreewidgetitem.h
   ttablewidgetitem.h
@@ -23,7 +22,6 @@ set(qtproject_SRCS
   atomlist_funcs.cpp
   bondactions.cpp
   build_funcs.cpp
-  canvas.cpp
   celldefine_funcs.cpp
   celltransform_funcs.cpp
   contextmenu_funcs.cpp

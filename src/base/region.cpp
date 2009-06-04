@@ -42,43 +42,45 @@ ComponentRegion::ComponentRegion()
 	shape_ = ComponentRegion::WholeCell;
 	centre_.zero();
 	allowOverlap_ = TRUE;
-	size_.set(5.0,5.0,5.0);
-	length_ = 5.0;
+	geometry_.set(5.0,5.0,5.0);
+	rotations_.zero();
+	setRotations( Vec3<double>(45.0,0.0,0.0) );
 	centreFrac_ = FALSE;
-	sizeFrac_ = FALSE;
+	geometryFrac_ = FALSE;
+	rotateRegion_ = TRUE;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
 }
 
-// Sets the shape of the ComponentRegion for the component
+// Sets the shape of the region for the component
 void ComponentRegion::setShape(ComponentRegion::RegionShape r)
 {
 	shape_ = r;
 }
 
-// Returns the ComponentRegion defined for the component
+// Returns the region defined for the component
 ComponentRegion::RegionShape ComponentRegion::shape()
 {
 	return shape_;
 }
 
-// Sets the centre of the defined ComponentRegion
+// Sets the centre of the defined region
 void ComponentRegion::setCentre(Vec3<double> v)
 {
 	centre_ = v;
 	centreFrac_ = FALSE;
 }
 
-// Sets the centre of the defined ComponentRegion in fractional coordinates
+// Sets the centre of the defined region in fractional coordinates
 void ComponentRegion::setCentreFrac(Vec3<double> v)
 {
 	centre_ = v;
 	centreFrac_ = TRUE;
 }
 
-// Returns the centre of the defined ComponentRegion
+// Returns the centre of the defined region
 Vec3<double> ComponentRegion::centre()
 {
 	return centre_;
@@ -90,51 +92,67 @@ bool ComponentRegion::isCentreFrac()
 	return centreFrac_;
 }
 
-// Sets the size_.of the defined ComponentRegion
-void ComponentRegion::setSize(Vec3<double> v)
+// Sets the geometry of the defined region
+void ComponentRegion::setGeometry(Vec3<double> v)
 {
-	size_ = v;
-	sizeFrac_ = FALSE;
+	geometry_ = v;
+	geometryFrac_ = FALSE;
 }
 
-// Sets the size of the defined ComponentRegion in fractional coordinates
-void ComponentRegion::setSizeFrac(Vec3<double> v)
+// Sets the geometry of the defined region in fractional coordinates
+void ComponentRegion::setGeometryFrac(Vec3<double> v)
 {
-	size_ = v;
-	sizeFrac_ = TRUE;
+	geometry_ = v;
+	geometryFrac_ = TRUE;
 }
 
-// Returns the size_.of the defined ComponentRegion
-Vec3<double> ComponentRegion::size()
+// Returns the geometry of the defined region
+Vec3<double> ComponentRegion::geometry()
 {
-	return size_;
+	return geometry_;
 }
 
-// Returns whether the size of the region was set in real or fractional coordinates
-bool ComponentRegion::isSizeFrac()
+// Returns whether the geometry of the region was set in real or fractional coordinates
+bool ComponentRegion::isGeometryFrac()
 {
-	return sizeFrac_;
+	return geometryFrac_;
 }
 
-// Sets the length of the ComponentRegion (for some ComponentRegion types)
-void ComponentRegion::setLength(double v)
+// Set the rotations for this region
+void ComponentRegion::setRotations(Vec3<double> v)
 {
-	length_ = v;
+	rotations_ = v;
+	// Recalculate rotation matrices
+	rotationMatrix_.createRotationXY( rotations_.x, rotations_.y );
+	inverseRotationMatrix_ = rotationMatrix_;
+	inverseRotationMatrix_.invert();
 }
 
-// Returns the ComponentRegion length
-double ComponentRegion::length()
+// Returns the rotations of the defined region
+Vec3<double> ComponentRegion::rotations()
 {
-	return length_;
+	return rotations_;
 }
 
-// Sets whether to allow overlap with other ComponentRegions
+// Returns whether the region should be rotated
+bool ComponentRegion::rotateRegion()
+{
+	return rotateRegion_;
+}
+
+// Set whether the region should be rotated
+void ComponentRegion::setRotateRegion(bool b)
+{
+	rotateRegion_ = b;
+}
+
+// Sets whether to allow overlap with other regions
 void ComponentRegion::setAllowOverlap(bool b)
 {
 	allowOverlap_ = b;
 }
 
-// Returns whether to allow overlap over other ComponentRegions when inserting
+// Returns whether to allow overlap over other regions when inserting
 bool ComponentRegion::allowOverlap()
 {
 	return allowOverlap_;
@@ -149,13 +167,13 @@ bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<M
 	bool result = FALSE;
 	ComponentRegion *r;
 	Refitem<Model,int> *ri;
-//	printf("Number of components in list is %i\n",components.nItems());
+// 	printf("Number of components in list is %i\n",components.nItems());
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
 		r = &ri->item->area;
 		if (r == this) continue;
 		if (r->coordsInRegion(v,cell)) result = TRUE;
-		//printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));
+// 		printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));
 		if (result) break;
 	}
 	msg.exit("ComponentRegion::pointOverlaps");
@@ -165,30 +183,46 @@ bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<M
 // Check that specified coordinates are inside this region
 bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell)
 {
-	// Check whether the supplied coordinates overlap with other regions in the list bar this one
 	msg.enter("ComponentRegion::coordsInRegion");
-	static Vec3<double> tempv, realsize;
+	if (shape_ == ComponentRegion::WholeCell)
+	{
+		msg.exit("ComponentRegion::coordsInRegion");
+		return FALSE;
+	}
+	static Vec3<double> tempv, realgeometry;
+	static Mat3<double> rot;
 	bool result = TRUE;
+	// Get position of point relative to centre of region
+	tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
 	switch (shape_)
 	{
-		case (ComponentRegion::WholeCell):
-			// Checking for overlap with whole cell is silly, so always accept....
-			result = FALSE;
-			break;
 		case (ComponentRegion::CuboidRegion):
-			tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
-			realsize = (sizeFrac_ ? cell->fracToReal(size_) : size_);
-			if (fabs(tempv.x) > 0.5*realsize.x) result = FALSE;
-			else if (fabs(tempv.y) > 0.5*realsize.y) result = FALSE;
-			else if (fabs(tempv.z) > 0.5*realsize.z) result = FALSE;
+			if (rotateRegion_) tempv *= inverseRotationMatrix_;
+			realgeometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
+			if (fabs(tempv.x) > 0.5*realgeometry.x) result = FALSE;
+			else if (fabs(tempv.y) > 0.5*realgeometry.y) result = FALSE;
+			else if (fabs(tempv.z) > 0.5*realgeometry.z) result = FALSE;
 			break;
 		case (ComponentRegion::SpheroidRegion):
-			tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
+			if (rotateRegion_) tempv *= inverseRotationMatrix_;
 			// Scale test point by spheroid size
-			tempv /= (sizeFrac_ ? cell->fracToReal(size_) : size_);
+			tempv /= (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
 			if (tempv.magnitude() > 1.0) result = FALSE;
 			break;
 		case (ComponentRegion::CylinderRegion):
+			// We rotate into the frame of the cylinder, so we can do line distance along 0,0,1
+			if (rotateRegion_) tempv *= inverseRotationMatrix_;
+			realgeometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
+			// 'Normalise' coordinate w.r.t. cylinder X/Y radii
+			tempv.x = tempv.x / realgeometry.x;
+			tempv.y = tempv.y / realgeometry.y;
+			// See: A Programmers Geometry, Bowyer and Woodwark, Butterworths (pub.), 1983, p99
+			// Since the point 'tempv' is already relative to the centre, and since the cylinder is along 0,0,1, method is simplified...
+			// Check z coordinate first....
+			if (fabs(tempv.z) > 0.5*realgeometry.z) result = FALSE;
+			else if ((tempv.x*tempv.x + tempv.y*tempv.y) > 1.0) result = FALSE;
+			break;
+		default:
 			printf("ComponentRegion::coordsInRegion - Not done yet for this type.\n");
 			break;
 	}
@@ -200,8 +234,9 @@ bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell)
 Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &components)
 {
 	msg.enter("ComponentRegion::randomCoords");
-	static Vec3<double> v, tempv, realsize;
+	static Vec3<double> v, tempv, geometry;
 	static int nAttempts;
+	double x;
 	bool done = FALSE;
 	nAttempts = 0;
 	// Generate random coords inside this region...
@@ -218,23 +253,39 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				v *= cell->transpose();
 				break;
 			case (ComponentRegion::CuboidRegion):
-				v = sizeFrac_ ? cell->fracToReal(size_) : size_;
+				v = geometryFrac_ ? cell->fracToReal(geometry_) : geometry_;
 				v.x *= csRandom() - 0.5;
 				v.y *= csRandom() - 0.5;
 				v.z *= csRandom() - 0.5;
+				if (rotateRegion_) v *= rotationMatrix_;
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::SpheroidRegion):
-				//tempv.set(csRandom(),(csRandom()-0.5)*PI,(csRandom()-0.5)*PI);
-				tempv.set(csRandom(),(csRandom()*2.0-1.0)*PI,(csRandom()-0.5)*PI);
-				realsize = (sizeFrac_ ? cell->fracToReal(size_) : size_);
-				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * realsize.x;
-				v.y = tempv.x * sin(tempv.y) * sin(tempv.z) * realsize.y;
-				v.z = tempv.x * cos(tempv.y)                * realsize.z;
+				geometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
+				do
+				{
+					v.x = csRandom() * 2.0 - 1.0;
+					v.y = csRandom() * 2.0 - 1.0;
+					v.z = csRandom() * 2.0 - 1.0;
+				} while ( (v.x*v.x + v.y*v.y + v.z*v.z) > 1.0);
+				v.multiply(geometry);
+				if (rotateRegion_) v *= rotationMatrix_;
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::CylinderRegion):
-				printf("ComponentRegion::randomCoords - Cylinder moves not implemented yet...\n");
+				geometry = (geometryFrac_ ? cell->fracToReal(geometry_) : geometry_);
+				do
+				{
+					v.x = csRandom() * 2.0 - 1.0;
+					v.y = csRandom() * 2.0 - 1.0;
+				} while ( (v.x*v.x + v.y*v.y) > 1.0);
+				v.z = (csRandom()-0.5);
+				v.multiply(geometry);
+				if (rotateRegion_) v *= rotationMatrix_;
+				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
+				break;
+			default:
+				msg.print("ComponentRegion::randomCoords - Move not yet implemented.\n");
 				break;
 		}
 		// Now, check that this random coordinate doesn't overlap with others (if this is required)
@@ -242,7 +293,7 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 		else done = TRUE;
 		if ((!done) && (nAttempts == 100))
 		{
-			printf("Failed to find position in region '%s' that doesn't overlap with others within %i trials.\n", ComponentRegion::regionShape(shape_), 100);
+			msg.print("Failed to find position in region '%s' that doesn't overlap with others within %i trials.\n", ComponentRegion::regionShape(shape_), 100);
 			done = TRUE;
 		}
 	} while (!done);

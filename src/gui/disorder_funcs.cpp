@@ -64,29 +64,49 @@ void AtenDisorder::on_CentreZSpin_valueChanged(double d)
 	setComponentCentre();
 }
 
-void AtenDisorder::on_SizeXSpin_valueChanged(double d)
-{
-	setComponentSize();
-}
-
-void AtenDisorder::on_SizeYSpin_valueChanged(double d)
-{
-	setComponentSize();
-}
-
-void AtenDisorder::on_SizeZSpin_valueChanged(double d)
-{
-	setComponentSize();
-}
-
 void AtenDisorder::on_CentreFracCheck_clicked(bool checked)
 {
 	setComponentCentre();
 }
 
-void AtenDisorder::on_SizeFracCheck_clicked(bool checked)
+void AtenDisorder::on_GeometryXSpin_valueChanged(double d)
 {
-	setComponentSize();
+	setComponentGeometry();
+}
+
+void AtenDisorder::on_GeometryYSpin_valueChanged(double d)
+{
+	setComponentGeometry();
+}
+
+void AtenDisorder::on_GeometryZSpin_valueChanged(double d)
+{
+	setComponentGeometry();
+}
+
+void AtenDisorder::on_GeometryFracCheck_clicked(bool checked)
+{
+	setComponentGeometry();
+}
+
+void AtenDisorder::on_RotationXSpin_valueChanged(double d)
+{
+	setComponentRotation();
+}
+
+void AtenDisorder::on_RotationYSpin_valueChanged(double d)
+{
+	setComponentRotation();
+}
+
+void AtenDisorder::on_RotationCheck_clicked(bool checked)
+{
+	setComponentRotation();
+}
+
+void AtenDisorder::on_AllowOverlapCheck_clicked(bool checked)
+{
+	
 }
 
 void AtenDisorder::refresh()
@@ -147,16 +167,21 @@ void AtenDisorder::refreshComponentData(int comp)
 	refreshing_ = TRUE;
 	// Set controls
 	Vec3<double> v;
-	v = m->area.size();
-	ui.SizeXSpin->setValue(v.x);
-	ui.SizeYSpin->setValue(v.y);
-	ui.SizeZSpin->setValue(v.z);
-	ui.SizeFracCheck->setChecked(m->area.isSizeFrac());
+	v = m->area.geometry();
+	ui.GeometryXSpin->setValue(v.x);
+	ui.GeometryYSpin->setValue(v.y);
+	ui.GeometryZSpin->setValue(v.z);
+	ui.GeometryFracCheck->setChecked(m->area.isGeometryFrac());
 	v = m->area.centre();
 	ui.CentreXSpin->setValue(v.x);
 	ui.CentreYSpin->setValue(v.y);
 	ui.CentreZSpin->setValue(v.z);
 	ui.CentreFracCheck->setChecked(m->area.isCentreFrac());
+	v = m->area.rotations();
+	ui.RotationXSpin->setValue(v.x);
+	ui.RotationYSpin->setValue(v.y);
+	ui.RotationCheck->setChecked(m->area.rotateRegion());
+	ui.AllowOverlapCheck->setChecked(m->area.allowOverlap());
 	ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
 	refreshing_ = FALSE;
 }
@@ -174,16 +199,29 @@ void AtenDisorder::setComponentCentre()
 	gui.mainView.postRedisplay();
 }
 
-void AtenDisorder::setComponentSize()
+void AtenDisorder::setComponentGeometry()
 {
 	if (refreshing_) return;
 	Vec3<double> v;
-	v.set(ui.SizeXSpin->value(), ui.SizeYSpin->value(), ui.SizeZSpin->value());
+	v.set(ui.GeometryXSpin->value(), ui.GeometryYSpin->value(), ui.GeometryZSpin->value());
 	// Get current component
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	ui.SizeFracCheck->isChecked() ? m->area.setSizeFrac(v) : m->area.setSize(v);
+	ui.GeometryFracCheck->isChecked() ? m->area.setGeometryFrac(v) : m->area.setGeometry(v);
+	gui.mainView.postRedisplay();
+}
+
+void AtenDisorder::setComponentRotation()
+{
+	if (refreshing_) return;
+	Vec3<double> v(ui.RotationXSpin->value(), ui.RotationYSpin->value(), 0.0);
+	// Get current component
+	int comp = ui.ComponentTable->currentRow();
+	if (comp == -1) return;
+	Model *m = componentList[comp]->item;
+	m->area.setRotateRegion(ui.RotationCheck->isChecked());
+	m->area.setRotations(v);
 	gui.mainView.postRedisplay();
 }
 

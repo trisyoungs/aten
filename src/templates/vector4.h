@@ -39,7 +39,7 @@ template <class T> class Vec4
 	T x,y,z,w;
 
 	/*
-	// Set / adjust
+	// Set / adjust / retrieve
 	*/
 	public:
 	// Set the vector to 0,0,0
@@ -52,6 +52,8 @@ template <class T> class Vec4
 	void add(T, T, T, T);
 	// Set all four components simultaneously
 	void set(Vec3<T>, T);
+	// Retrieve single element
+	T get(int index) const;
 
 	/*
 	// Operators
@@ -70,15 +72,17 @@ template <class T> class Vec4
 	// Operators * and *=
 	Vec4<T> operator*(T) const;
 	void operator*=(T);
+	// Element access operator
+	T operator[](int);
 
 	/*
 	// Methods
 	*/
 	public:
-	// Print data
-	void print() const;
 	// Normalise to unity
 	void normalise();
+	// Print data
+	void print() const;
 };
 
 // Constructur
@@ -130,6 +134,17 @@ template <class T> void Vec4<T>::set(Vec3<T> v, T a)
 	y = v.y;
 	z = v.z;
 	w = a;
+}
+
+// Retrieve single element
+template <class T> T Vec4<T>::get(int index) const
+{
+	if (index == 0) return x;
+	else if (index == 1) return y;
+	else if (index == 2) return z;
+	else if (index == 3) return w;
+	printf("Vec4 - retrieve index %i is out of range.\n", index);
+	return T();
 }
 
 /*
@@ -227,15 +242,20 @@ template <class T> void Vec4<T>::operator*=(T v)
 	w *= v;
 }
 
+// Element access operator
+template <class T> T Vec4<T>::operator[](int index)
+{
+	if (index == 0) return x;
+	else if (index == 1) return y;
+	else if (index == 2) return z;
+	else if (index == 3) return w;
+	printf("Vec4 - array access failed - index %i is out of bounds.\n", index);
+	return 0;
+}
+
 /*
 // Methods
 */
-
-// Print
-template <class T> void Vec4<T>::print() const
-{
-	printf("vec(xyzw) = %8.4f %8.4f %8.4f %8.4f\n", (double)x, (double)y, (double)z, (double)w);
-}
 
 // Normalise
 template <class T> void Vec4<T>::normalise()
@@ -245,6 +265,12 @@ template <class T> void Vec4<T>::normalise()
 	x /= mag;
 	y /= mag;
 	z /= mag;
+}
+
+// Print
+template <class T> void Vec4<T>::print() const
+{
+	printf("vec(xyzw) = %8.4f %8.4f %8.4f %8.4f\n", (double)x, (double)y, (double)z, (double)w);
 }
 
 #endif

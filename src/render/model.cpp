@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/canvas.h"
+#include "render/canvas.h"
 #include "model/model.h"
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"

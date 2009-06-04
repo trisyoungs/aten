@@ -81,8 +81,14 @@ template <class T> class Mat3
 	T element(int i);
 	// Element access operator
 	T operator[](int);
-	// Create rotation matrix about specified axis
-	void createRotation(int axis, double angle);
+	// Create rotation matrix about X
+	void createRotationX(double angle);
+	// Create rotation matrix about Y
+	void createRotationY(double angle);
+	// Create rotation matrix about Z
+	void createRotationZ(double angle);
+	// Create XY rotation matrix
+	void createRotationXY(double anglex, double angley);
 
 	/*
 	// Operators
@@ -112,8 +118,6 @@ template <class T> class Mat3
 	void zero();
 	// Prints the matrix to stdout
 	void print() const;
-	// Invert the matrix (Gauss-Jordan)
-	void matrix3Invert(int, double*);
 	// Create matrix of orthogonal vectors from reference
 	void createOrthogonal(const Vec3<T>&);
 	// Multiply matrix rows by vector elements
@@ -244,36 +248,50 @@ template <class T> void Mat3<T>::zero()
 	rows[2].zero();
 }
 
-// Create rotation matrix about specified axis
-template <class T> void Mat3<T>::createRotation(int axis, double angle)
+// Create rotation matrix about X
+template <class T> void Mat3<T>::createRotationX(double angle)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
 	cosx = cos(theta);
 	sinx = sin(theta);
-	switch (axis)
-	{
-		// X axis
-		case (0):
-			set(0,1.0,0.0,0.0);
-			set(1,0.0,cosx,sinx);
-			set(2,0.0,-sinx,cosx);
-			break;
-		// Y axis
-		case (1):
-			set(0,cosx,0.0,-sinx);
-			set(1,0.0,1.0,0.0);
-			set(2,sinx,0.0,cosx);
-			break;
-		// Z axis
-		case (2):
-			set(0,cosx,sinx,0.0);
-			set(1,-sinx,cosx,0.0);
-			set(2,0.0,0.0,1.0);
-			break;
-		default:
-			printf("Axis type %i not recognised - rotation matrix not created.\n", axis);
-			break;
-	}
+	set(0,1.0,0.0,0.0);
+	set(1,0.0,cosx,sinx);
+	set(2,0.0,-sinx,cosx);
+}
+
+// Create rotation matrix about Y
+template <class T> void Mat3<T>::createRotationY(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,0.0,-sinx);
+	set(1,0.0,1.0,0.0);
+	set(2,sinx,0.0,cosx);
+}
+
+// Create rotation matrix about Z
+template <class T> void Mat3<T>::createRotationZ(double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,cosx,sinx,0.0);
+	set(1,-sinx,cosx,0.0);
+	set(2,0.0,0.0,1.0);
+}
+
+// Create XY rotation matrix
+template <class T> void Mat3<T>::createRotationXY(double anglex, double angley)
+{
+	double cosx, sinx, cosy, siny, thetax = anglex/DEGRAD, thetay = angley/DEGRAD;
+	cosx = cos(thetax);
+	cosy = cos(thetay);
+	sinx = sin(thetax);
+	siny = sin(thetay);
+	set(0,cosy,0.0,siny);
+	set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
+	set(2,cosx*(-siny),sinx,cosx*cosy);
 }
 
 /*
@@ -412,14 +430,78 @@ template <class T> double Mat3<T>::determinant()
 // Calculate matrix inverse
 template <class T> void Mat3<T>::invert()
 {
-	// Must create a T array and pass it to matrix_invert()
-	T m[9];
-	copyRowMajor(m);
-	matrix3Invert(3,m);
-	// TODO Don't do this!
-	rows[0].set(m[0],m[1],m[2]);
-	rows[1].set(m[3],m[4],m[5]);
-	rows[2].set(m[6],m[7],m[8]);
+	msg.enter("Mat3<T>::invert");
+	// Gauss-Jordan Inversion
+	// Invert the supplied matrix using Gauss-Jordan elimination
+	int pivotrows[3], pivotcols[3], pivotrow, pivotcol;
+	bool pivoted[3];
+	int row, col, n, m;
+	double large, element;
+	for (n=0; n<3; ++n)
+	{
+		pivotrows[n] = 0;
+		pivotcols[n] = 0;
+		pivoted[n] = FALSE;
+	}
+	// Loop over columns to be reduced
+	for (n=0; n<3; ++n)
+	{
+		// Locate suitable pivot element - find largest value in the matrix A
+		large = 0.0;
+		for (row=0; row<3; ++row)
+		{
+			// Only search this row if it has not previously contained a pivot element
+			if (pivoted[row]) continue;
+			for (col=0; col<3; ++col)
+			{
+				// Similarly, only look at the column element if the column hasn't been pivoted yet.
+				if (pivoted[col]) continue;
+				// Check the size of the element...
+				element = fabs(rows[row].get(col));
+				if (element > large)
+				{
+					large = element;
+					pivotrow = row;
+					pivotcol = col;
+				}
+			}
+		}
+		// Mark the pivot row/column as changed
+		pivoted[pivotcol] = TRUE;
+		pivotrows[n] = pivotrow;
+		pivotcols[n] = pivotcol;
+		// Exchange rows to put pivot element on the diagonal
+		if (pivotrow != pivotcol)
+			for (m=0; m<3; m++)
+			{
+				element = rows[pivotrow].get(m);
+				rows[pivotrow].set(m, rows[pivotcol].get(m));
+				rows[pivotcol].set(m, element);
+			}
+		// Now ready to divide through row elements.
+		element = 1.0 / rows[pivotcol].get(pivotcol);
+		rows[pivotcol].set(pivotcol, 1.0);
+		rows[pivotcol] *= element;
+
+		// Divide through other rows by the relevant multiple of the pivot row
+		for (row=0; row<3; ++row)
+		{
+			if (row == pivotcol) continue;
+			element = rows[row].get(pivotcol);
+			rows[row].set(pivotcol,0.0);
+			for (m=0; m<3; ++m) rows[row].set(m, rows[row].get(m) - rows[pivotcol].get(m) * element);
+		}
+	}
+	// Rearrange columns to undo row exchanges performed earlier
+	for (n=3; n>=0; --n)
+		if (pivotrows[n] != pivotcols[n])
+			for (m=0; m<3; m++)
+			{
+				element = rows[m].get(pivotrows[n]);
+				rows[m].set(pivotrows[n], rows[m].get(pivotcols[n]));
+				rows[m].set(pivotcols[n], element);
+			}
+	msg.exit("Mat3<T>::invert");
 }
 
 // Row Multiply
@@ -446,82 +528,6 @@ template <class T> void Mat3<T>::createOrthogonal(const Vec3<T> &vec)
 	rows[0] = vec;
 	rows[1].set(rows[0].z,rows[0].x,rows[0].y);
 	rows[2].set(rows[0].y,rows[0].z,rows[0].x);
-}
-
-// Invert matrix
-template <class T> void Mat3<T>::matrix3Invert(int matsize, double *A)
-{
-	// Invert the supplied matrix using Gauss-Jordan elimination
-	int *pivotrows, *pivotcols, pivotrow, pivotcol;
-	int *pivoted;
-	int row, col, n, m;
-	double large, element;
-	msg.enter("invert[GJ]");
-	// Create and blank temporary arrays we need
-	pivotrows = new int[matsize];
-	pivotcols = new int[matsize];
-	pivoted = new int[matsize];
-	pivotrow = 0;
-	pivotcol = 0;
-	large = 0.0;
-	for (n=0; n<matsize; n++)
-	{
-		pivotrows[n] = 0;
-		pivotcols[n] = 0;
-		pivoted[n] = 0;
-	}
-	// Loop over columns to be reduced
-	for (n=0; n<matsize; n++)
-	{
-		// Locate suitable pivot element - find largest value in the matrix A
-		large = 0.0;
-		for (row=0; row<matsize; row++)
-		{
-			// Only search this row if it has not previously contained a pivot element
-			if (pivoted[row] == 1) continue;
-			for (col=0; col<matsize; col++)
-			{
-				// Similarly, only look at the column element if the column hasn't been pivoted yet.
-				if (pivoted[col] == 1) continue;
-				// Check the size of the element...
-				element = fabs(A[row + col*matsize]);
-				if (element > large)
-				{
-					large = element;
-					pivotrow = row;
-					pivotcol = col;
-				}
-			}
-		}
-		// Mark the pivot row/column as changed
-		pivoted[pivotcol] = 1;
-		pivotrows[n] = pivotrow;
-		pivotcols[n] = pivotcol;
-		// Exchange rows to put pivot element on the diagonal
-		if (pivotrow != pivotcol)
-			for (m=0; m<matsize; m++) swap( A[pivotrow + m*matsize], A[pivotcol + m*matsize]);
-		// Now ready to divide through row elements.
-		pivotrow = pivotcol;		// Need to do since pivotrow may not be valid because of row exchange
-		element = 1.0/A[pivotrow + matsize*pivotrow];
-		for (m=0; m<matsize; m++) A[pivotrow + m*matsize] *= element;
-		A[pivotrow + pivotrow*matsize] = element;
-		// Divide through other rows by the relevant multiple of the pivot row
-		for (row=0; row<matsize; row++)
-		{
-			if (row == pivotrow) continue;
-			element = A[row + matsize*pivotcol];
-			A[row + matsize*pivotcol] = 0.0;
-			for (col=0; col<matsize; col++) A[row+matsize*col] -= (A[pivotrow+matsize*col] * element);
-		}
-	}
-	// Rearrange columns to undo row exchanges performed earlier
-	for (n=matsize-1; n>=0; n--)
-		if (pivotrows[n] != pivotcols[n])
-			for (m=0; m<matsize; m++) swap( A[m + matsize*pivotrows[n]], A[m + matsize*pivotcols[n]]);
-	delete[] pivotrows;
-	delete[] pivotcols;
-	delete[] pivoted;
-	msg.exit("invert[GJ]");
 }
 
 #endif

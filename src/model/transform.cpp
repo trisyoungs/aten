@@ -148,7 +148,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	ut = u.transpose();
 
 	// Create rotation matrix
-	r.createRotation(0, step);
+	r.createRotationX( step);
 
 	// Create grand rotation matrix
 	gr = ut * r * u;

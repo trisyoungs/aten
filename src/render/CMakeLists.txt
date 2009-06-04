@@ -1,5 +1,7 @@
 add_library(render
+canvas.h
 atoms.cpp 
+canvas.cpp
 colourscale.cpp
 extra.cpp 
 glyph.cpp 

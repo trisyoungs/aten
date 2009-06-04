@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/canvas.h"
+#include "render/canvas.h"
 
 // User action texts (name, nomod, shift, ctrl, alt)
 UserActionText UserActionTexts[] = {

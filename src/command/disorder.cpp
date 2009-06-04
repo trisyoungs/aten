@@ -42,12 +42,12 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
 	char s[150];
-	msg.print("                                                      Centre                   Size\n");
+	msg.print("                                                      Centre                 Geometry\n");
 	msg.print("Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		v1 = m->area.centre();
-		v2 = m->area.size();
+		v2 = m->area.geometry();
 		sprintf(s,"%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
 			m->name(),m->nRequested(),
 			(m->isMoveAllowed(MonteCarlo::Insert) ? "+" : " "),
@@ -72,7 +72,7 @@ bool Command::function_Region(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (rs == ComponentRegion::nRegionShapes) return FALSE;
 	obj.m->area.setShape(rs);
 	obj.m->area.setCentre(c->arg3d(1));
-	obj.m->area.setSize(c->arg3d(4));
+	obj.m->area.setGeometry(c->arg3d(4));
 	if (c->hasArg(7)) obj.m->area.setAllowOverlap(c->argb(7));
 	rv.reset();
 	return TRUE;
@@ -104,28 +104,26 @@ bool Command::function_RegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (rs == ComponentRegion::nRegionShapes) return FALSE;
 	obj.m->area.setShape(rs);
 	obj.m->area.setCentreFrac(c->arg3d(1));
-	obj.m->area.setSizeFrac(c->arg3d(4));
+	obj.m->area.setGeometryFrac(c->arg3d(4));
 	obj.m->area.setAllowOverlap(c->argb(7));
 	rv.reset();
 	return TRUE;
 }
 
-// Set geometry of region in fractional coordinates ('regiongeometryf <x y z> [l]')
+// Set geometry of region in fractional coordinates ('regiongeometryf <x y z>')
 bool Command::function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->area.setSize(c->arg3d(0));
-	if (!c->hasArg(3)) obj.m->area.setLength(c->argd(3));
+	obj.m->area.setGeometry(c->arg3d(0));
 	rv.reset();
 	return TRUE;
 }
 
-// Set geometry of region ('regiongeometryf <x y z> [l]')
+// Set geometry of region ('regiongeometryf <x y z>')
 bool Command::function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->area.setSizeFrac(c->arg3d(0));
-	if (!c->hasArg(3)) obj.m->area.setLength(c->argd(3));
+	obj.m->area.setGeometryFrac(c->arg3d(0));
 	rv.reset();
 	return TRUE;
 }

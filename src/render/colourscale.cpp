@@ -20,7 +20,7 @@
 */
 
 #include "classes/colourscale.h"
-#include "gui/canvas.h"
+#include "render/canvas.h"
 
 // Render colourscales
 void Canvas::renderColourscales()
