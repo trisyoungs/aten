@@ -98,7 +98,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n");
+		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n", i);
 		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -172,7 +172,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n");
+		printf("Internal Error: Accessor id %i is out of range for ForcefieldAtom type.\n", i);
 		msg.exit("ForcefieldAtomVariable::retrieveAccessor");
 		return FALSE;
 	}

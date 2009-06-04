@@ -91,7 +91,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n", i);
 		msg.exit("PatternBoundVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -197,7 +197,7 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n", i);
 		msg.exit("PatternBoundVariable::setAccessor");
 		return FALSE;
 	}

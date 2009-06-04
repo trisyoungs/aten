@@ -770,7 +770,7 @@ const char *LineParser::argc(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n");
+		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n", i);
 		return "NULL";
 	}
 	return arguments_[i]->get();
@@ -781,7 +781,7 @@ int LineParser::argi(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning 0...\n");
+		printf("Warning: Argument %i is out of range - returning 0...\n", i);
 		return 0;
 	}
 	return arguments_[i]->asInteger();
@@ -792,7 +792,7 @@ double LineParser::argd(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning 0.0...\n");
+		printf("Warning: Argument %i is out of range - returning 0.0...\n", i);
 		return 0.0;
 	}
 	return arguments_[i]->asDouble();
@@ -803,7 +803,7 @@ bool LineParser::argb(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning FALSE...\n");
+		printf("Warning: Argument %i is out of range - returning FALSE...\n", i);
 		return FALSE;
 	}
 	return arguments_[i]->asBool();
@@ -814,7 +814,7 @@ float LineParser::argf(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning 0.0f...\n");
+		printf("Warning: Argument %i is out of range - returning 0.0f...\n", i);
 		return 0.0f;
 	}
 	return (float) argd(i);
@@ -825,7 +825,7 @@ bool LineParser::isBlank(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n");
+		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n", i);
 		return FALSE;
 	}
 	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);

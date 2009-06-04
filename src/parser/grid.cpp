@@ -99,7 +99,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Grid type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
 		msg.exit("GridVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -158,7 +158,7 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Grid type.\n");
+		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
 		msg.exit("GridVariable::setAccessor");
 		return FALSE;
 	}
