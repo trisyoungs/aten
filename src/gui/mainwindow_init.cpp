@@ -212,13 +212,17 @@ void AtenForm::finaliseUi()
 	layout->setMargin(0);
 	progressBar = new QProgressBar(this);
 	progressBar->setMaximumWidth(100);
-	progressLabel = new QLabel(this,0);
+	progressTitle = new QLabel(this,0);
+	progressTitle->setFont(font);
+	progressEta = new QLabel(this,0);
+	progressEta->setFont(font);
 	progressButton = new QPushButton(this);
 	progressButton->setText("Cancel");
 	QObject::connect(progressButton, SIGNAL(clicked()), this, SLOT(progressCancel()));
-	layout->addWidget(progressLabel, 0,0,1,2, Qt::AlignHCenter);
+	layout->addWidget(progressTitle, 0,0,1,2, Qt::AlignHCenter);
 	layout->addWidget(progressBar, 1,0,1,1);
 	layout->addWidget(progressButton, 1,1,1,1);
+	layout->addWidget(progressEta, 2,0,1,2, Qt::AlignHCenter);
 	progressIndicator->setVisible(FALSE);
 	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,0);
 

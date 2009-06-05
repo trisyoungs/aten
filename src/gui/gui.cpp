@@ -123,6 +123,16 @@ GuiQt::~GuiQt()
 // 	transformWindow = NULL;
 }
 
+/*
+// General Functions
+*/
+
+// Returns if the GUI has been created
+bool GuiQt::exists()
+{
+	return doesExist_;
+}
+
 // Initialise QApplication and the main QGlWidget
 void GuiQt::initialise(int &argc, char **argv)
 {
@@ -267,34 +277,9 @@ void GuiQt::run()
 	msg.exit("GuiQt::run");
 }
 
-// Returns if the GUI has been created
-bool GuiQt::exists()
-{
-	return doesExist_;
-}
-
 /*
-// Models
+// Main Window Refresh Functions
 */
-
-// Add model to GUI list, in this case a tab in the ModelTabs widget
-void GuiQt::addModel(Model *m)
-{
-	if (!doesExist_) return;
-	// Create new tab in ModelTabs QTabBar
-	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-	mainWindow->ui.ModelTabs->setCurrentIndex(tabid);
-	m->resetView();
-	gui.modelChanged(TRUE,TRUE,TRUE);
-}
-
-// Remove model from list
-void GuiQt::removeModel(int id)
-{
-	if (!doesExist_) return;
-	mainWindow->ui.ModelTabs->removeTab(id);
-	gui.modelChanged();
-}
 
 // Update GUI after model change (or different model selected)
 void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefield)
@@ -375,18 +360,41 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	mainView.postRedisplay();
 }
 
-/*
-// Main Window Refresh Functions
-*/
-
-// Refresh window title
-void GuiQt::updateWindowTitle()
+// Update statusbar
+void GuiQt::updateStatusBar(bool clear)
 {
-	if (!doesExist_) return;
-	Model *m = aten.currentModel();
-	static char title[512];
-	sprintf(title, "Aten (%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
-	mainWindow->setWindowTitle(title);
+	static Dnchar text(512);
+	static Canvas::UserAction lastAction = Canvas::NoAction;
+	// Initialise string if NoAction
+	if (lastAction == Canvas::NoAction) text.clear();
+	// If current action is not the same as the last action, recreate string
+	if (lastAction != mainView.selectedMode())
+	{
+		lastAction = mainView.selectedMode();
+		text.clear();
+		text.cat("<b>");
+		text.cat(UserActionTexts[lastAction].name);
+		text.cat(":</b> ");
+		text.cat(UserActionTexts[lastAction].unModified);
+		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
+		{
+			text.cat(", <b>+shift</b> ");
+			text.cat(UserActionTexts[lastAction].shiftModified);
+		}
+		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
+		{
+			text.cat(", <b>+ctrl</b> ");
+			text.cat(UserActionTexts[lastAction].ctrlModified);
+		}
+		if (UserActionTexts[lastAction].altModified[0] != '\0')
+		{
+			text.cat(", <b>+alt</b> ");
+			text.cat(UserActionTexts[lastAction].altModified);
+		}
+	}
+	// Set text in statusbar widget
+	if (clear) mainWindow->messageLabel->setText("");
+	else mainWindow->messageLabel->setText(text.get());
 }
 
 // Update trajectory controls
@@ -429,41 +437,60 @@ void GuiQt::updateTrajControls()
 	}
 }
 
-// Update statusbar
-void GuiQt::updateStatusBar(bool clear)
+// Refresh window title
+void GuiQt::updateWindowTitle()
 {
-	static Dnchar text(512);
-	static Canvas::UserAction lastAction = Canvas::NoAction;
-	// Initialise string if NoAction
-	if (lastAction == Canvas::NoAction) text.clear();
-	// If current action is not the same as the last action, recreate string
-	if (lastAction != mainView.selectedMode())
+	if (!doesExist_) return;
+	Model *m = aten.currentModel();
+	static char title[512];
+	sprintf(title, "Aten (%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	mainWindow->setWindowTitle(title);
+}
+
+/*
+// Methods
+*/
+
+// Add model to GUI list, in this case a tab in the ModelTabs widget
+void GuiQt::addModel(Model *m)
+{
+	if (!doesExist_) return;
+	// Create new tab in ModelTabs QTabBar
+	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+	mainWindow->ui.ModelTabs->setCurrentIndex(tabid);
+	m->resetView();
+	gui.modelChanged(TRUE,TRUE,TRUE);
+}
+
+// Convert Qt keysym to key_code
+Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
+{
+	Canvas::KeyCode result = Canvas::OtherKey;
+	switch (sym)
 	{
-		lastAction = mainView.selectedMode();
-		text.clear();
-		text.cat("<b>");
-		text.cat(UserActionTexts[lastAction].name);
-		text.cat(":</b> ");
-		text.cat(UserActionTexts[lastAction].unModified);
-		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
-		{
-			text.cat(", <b>+shift</b> ");
-			text.cat(UserActionTexts[lastAction].shiftModified);
-		}
-		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
-		{
-			text.cat(", <b>+ctrl</b> ");
-			text.cat(UserActionTexts[lastAction].ctrlModified);
-		}
-		if (UserActionTexts[lastAction].altModified[0] != '\0')
-		{
-			text.cat(", <b>+alt</b> ");
-			text.cat(UserActionTexts[lastAction].altModified);
-		}
+		case (Qt::Key_Left):
+			result = Canvas::LeftKey;
+			break;
+		case (Qt::Key_Right):
+			result = Canvas::RightKey;
+			break;
+		case (Qt::Key_Up):
+			result = Canvas::UpKey;
+			break;
+		case (Qt::Key_Down):
+			result = Canvas::DownKey;
+			break;
+		case (Qt::Key_Shift):
+			result = Canvas::LeftShiftKey;
+			break;
+		case (Qt::Key_Control):
+			result = Canvas::LeftControlKey;
+			break;
+		case (Qt::Key_Alt):
+			result = Canvas::LeftAltKey;
+			break;
 	}
-	// Set text in statusbar widget
-	if (clear) mainWindow->messageLabel->setText("");
-	else mainWindow->messageLabel->setText(text.get());
+	return result;
 }
 
 void GuiQt::printMessage(const char *s)
@@ -476,6 +503,14 @@ void GuiQt::printMessage(const char *s)
 	str[n] = '\0';
 	mainWindow->ui.TextDisplay->append(str);
 	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
+}
+
+// Remove model from list
+void GuiQt::removeModel(int id)
+{
+	if (!doesExist_) return;
+	mainWindow->ui.ModelTabs->removeTab(id);
+	gui.modelChanged();
 }
 
 bool GuiQt::saveBeforeClose()
@@ -518,222 +553,6 @@ bool GuiQt::saveBeforeClose()
 	}
 	return TRUE;
 }
-
-/*
-// Keycode Conversion
-*/
-
-// Convert Qt keysym to key_code
-Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
-{
-	Canvas::KeyCode result = Canvas::OtherKey;
-	switch (sym)
-	{
-		case (Qt::Key_Left):
-			result = Canvas::LeftKey;
-			break;
-		case (Qt::Key_Right):
-			result = Canvas::RightKey;
-			break;
-		case (Qt::Key_Up):
-			result = Canvas::UpKey;
-			break;
-		case (Qt::Key_Down):
-			result = Canvas::DownKey;
-			break;
-		case (Qt::Key_Shift):
-			result = Canvas::LeftShiftKey;
-			break;
-		case (Qt::Key_Control):
-			result = Canvas::LeftControlKey;
-			break;
-		case (Qt::Key_Alt):
-			result = Canvas::LeftAltKey;
-			break;
-	}
-	return result;
-}
-
-/*
-// Progress Dialogs
-*/
-
-// Instantiate a progress dialog
-void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
-{
-	// Reset our QTime object...
-	time_.setHMS(0,0,0);
-	time_.start();
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		gui.textProgressCreate(jobtitle, stepstodo);
-		return;
-	}
-	// Check that a progress dialog isn't already running
-// 	if (mainWindow->progressIndicator->isVisible())
-// 	{
-// 		printf("Weird programmatical event - second progress dialog creation request!\n");
-// 		return;
-// 	}
-	mainWindow->progressBar->setMaximum(stepstodo);
-	mainWindow->progressBar->setValue(0);
-	mainWindow->progressLabel->setText(jobtitle);
-// 	mainWindow->progressIndicator->setVisible(TRUE);
-	progressCanceled_ = FALSE;
-	// Disable some key widgets on the main form
-	mainWindow->ui.ViewFrame->setEnabled(FALSE);
-	mainWindow->ui.WindowToolbar->setEnabled(FALSE);
-}
-
-// Update the progress dialog
-bool GuiQt::progressUpdate(int currentstep)
-{
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		textProgressCurrentStep_ = (currentstep == -1 ? textProgressCurrentStep_+1 : currentstep);
-		gui.textProgressUpdate();
-		return TRUE;
-	}
-// 	if (!mainWindow->progressIndicator->isVisible())
-// 	{
-// 		printf("Weird programmatical event - tried to update a non-existent progress dialog!\n");
-// 		return TRUE;
-// 	}
-	// Show the progress bar if enough time has elapsed since the start of the operation...
-	if (time_.elapsed() >= 2000) mainWindow->progressIndicator->setVisible(TRUE);
-	if (currentstep != -1) mainWindow->progressBar->setValue(currentstep);
-	else mainWindow->progressBar->setValue(mainWindow->progressBar->value() + 1);
-	if (time_.elapsed() >= 2000) app->processEvents();
-	// Check to see if the abort button was pressed
-	return (!progressCanceled_);
-}
-
-// Terminate the progress dialog
-void GuiQt::progressTerminate()
-{
-	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!doesExist_)
-	{
-		gui.textProgressTerminate();
-		return;
-	}
-// 	if (!mainWindow->progressIndicator->isVisible())
-// 	{
-// 		printf("Weird programmatical event - tried to terminate a non-existent progress dialog!\n");
-// 		return;
-// 	}
-	// Hide the progress bar and re-enable widgets
-	mainWindow->progressIndicator->setVisible(FALSE);
-	mainWindow->ui.ViewFrame->setEnabled(TRUE);
-	mainWindow->ui.WindowToolbar->setEnabled(TRUE);
-	app->processEvents();
-}
-
-// Notify that the progress indicator should be canceled
-void GuiQt::notifyProgressCanceled()
-{
-	progressCanceled_ = TRUE;
-}
-
-// Instantiate text-based progress dialog
-void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
-{
-	// Reset the counters
-	textProgressStepsToDo_ = stepstodo;
-	textProgressPercent_ = 0;
-	textProgressCurrentStep_ = 0;
-	// Don't print anything if we're in quiet mode
-	if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
-	// Print out the empty progress indicator
-	printf("--- %s\n", jobtitle);
-	printf("Progress [-]                              (  0%%)");
-	fflush(stdout);
-}
-
-// Update the text progress dialog
-void GuiQt::textProgressUpdate()
-{
-// 	static char *twister = "-\\|/";
-	static char twister[4] = { '-', '\\', '|', '/' };
-// 	static char *c = twister;
-	static int n, ndots, c;
-	static double dpercent;
-	static int percent;
-	// Don't print anything if we're in quiet mode
-	if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
-	// Work out percentage and print dots and spaces
-	dpercent = double(textProgressCurrentStep_) / double(textProgressStepsToDo_);
-	percent = int(dpercent * 100.0);
-	ndots = int(dpercent * 30.0);
-	dpercent *= 100.0;
-	// Always print the header and twister character
-	printf("\rProgress [%c]", twister[c]);
-	// Increase the twister character
-	c ++;
-	c = c%4;
-	// New dots or percentage to output?
-	if (percent != textProgressPercent_)
-	{
-		for (n=0; n<ndots; n++) printf(".");
-		for (n=ndots; n<30; n++) printf(" ");
-		// Lastly, print percentage
-		printf("(%-3i%%)",percent);
-		fflush(stdout);
-		textProgressPercent_ = percent;
-	}
-}
-
-// Terminate the text progress dialog
-void GuiQt::textProgressTerminate()
-{
-	if (textProgressPercent_ == -1) return;
-	if (time_.elapsed() >= 2000) printf("\n");
-	textProgressPercent_ = -1;
-}
-
-/*
-// Trajectory
-*/
-
-// Return state of trajectory playback
-bool GuiQt::trajectoryPlaying()
-{
-	return trajectoryPlaying_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryPlaying(bool b)
-{
-	trajectoryPlaying_ = b;
-}
-
-// Return trajectory timer id
-int GuiQt::trajectoryTimerId()
-{
-	return trajectoryTimerId_;
-}
-
-// Set state of trajectory playback
-void GuiQt::setTrajectoryTimerId(int i)
-{
-	trajectoryTimerId_ = i;
-}
-
-// Stop trajectory playback
-void GuiQt::stopTrajectoryPlayback()
-{
-	mainWidget->killTimer(trajectoryTimerId_);
-	mainWindow->ui.actionPlayPause->setChecked(FALSE);
-	trajectoryPlaying_ = FALSE;
-	gui.updateTrajControls();
-	modelChanged();
-}
-
-/*
-// Image Saving
-*/
 
 // Save image of current view
 bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality)
@@ -779,3 +598,183 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	msg.print("Saved current view as '%s' [%ix%i %s]\n", filename, width, height, GuiQt::bitmapFormatFilter(bf));
 	return TRUE;
 }
+
+// Enable / disable GUI (except progress bar group)
+void GuiQt::setWindowsEnabled(bool b)
+{
+	// Disable some key widgets on the main form
+	mainWindow->ui.ViewFrame->setEnabled(b);
+	mainWindow->ui.WindowToolbar->setEnabled(b);
+	atomlistWindow->setEnabled(b);
+	buildWindow->setEnabled(b);
+	cellDefineWindow->setEnabled(b);
+	cellTransformWindow->setEnabled(b);
+	disorderWindow->setEnabled(b);
+	forcefieldsWindow->setEnabled(b);
+	glyphsWindow->setEnabled(b);
+	gridsWindow->setEnabled(b);
+	minimiserWindow->setEnabled(b);
+	positionWindow->setEnabled(b);
+	transformWindow->setEnabled(b);
+	mainWindow->ui.BondToolbar->setEnabled(b);
+	mainWindow->ui.CommandToolbar->setEnabled(b);
+	mainWindow->ui.DrawToolbar->setVisible(b);
+	mainWindow->ui.EditToolbar->setEnabled(b);
+	mainWindow->ui.FileToolbar->setEnabled(b);
+	mainWindow->ui.ForcefieldsToolbar->setEnabled(b);
+	mainWindow->ui.MeasureToolbar->setEnabled(b);
+	mainWindow->ui.MouseToolbar->setEnabled(b);
+	mainWindow->ui.SelectToolbar->setEnabled(b);
+	mainWindow->ui.TrajectoryToolbar->setEnabled(b);
+	app->processEvents();
+}
+
+/*
+// Progress Dialogs
+*/
+
+// Notify that the progress indicator should be canceled
+void GuiQt::notifyProgressCanceled()
+{
+	progressCanceled_ = TRUE;
+}
+
+// Instantiate a progress dialog
+void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
+{
+	// Reset our QTime object...
+	time_.setHMS(0,0,0);
+	time_.start();
+	progressCurrentStep_ = 0;
+	progressStepsToDo_ = stepstodo;
+	progressPercent_ = 0;
+	progressCanceled_ = FALSE;
+	// If the GUI doesn't exist, call the text-based progress indicator
+	if (!doesExist_)
+	{
+		// Don't print anything if we're in quiet mode
+		if (msg.isQuiet() || (time_.elapsed() < 2000) ) return;
+		// Print out the empty progress indicator
+		printf("--- %s\n", jobtitle);
+		printf("Progress [-]                              (  0%%)");
+		fflush(stdout);
+	}
+	else
+	{
+		mainWindow->progressBar->setMaximum(stepstodo);
+		mainWindow->progressBar->setValue(0);
+		mainWindow->progressTitle->setText(jobtitle);
+		mainWindow->progressEta->setText("");
+		setWindowsEnabled(FALSE);
+	}
+}
+
+// Terminate the progress dialog
+void GuiQt::progressTerminate()
+{
+	// If the GUI doesn't exist, call the text-based progress indicator
+	if (!doesExist_)
+	{
+		if (progressPercent_ == -1) return;
+		if (time_.elapsed() >= 2000) printf("\n");
+	}
+	else
+	{
+		// Hide the progress bar and re-enable widgets
+		mainWindow->progressIndicator->setVisible(FALSE);
+		setWindowsEnabled(TRUE);
+		app->processEvents();
+	}
+	progressPercent_ = -1;
+}
+
+// Update the progress dialog
+bool GuiQt::progressUpdate(int currentstep)
+{
+	progressCurrentStep_ = (currentstep == -1 ? progressCurrentStep_+1 : currentstep);
+	static double dpercent;
+	static QTime remtime;
+	dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
+	// Show the progress bar if enough time has elapsed since the start of the operation...
+	// If the GUI doesn't exist, call the text-based progress indicator instead
+	// Calculate ETA
+	if (time_.elapsed()%5 == 0)
+	{
+		remtime.setHMS(0,0,0);
+		remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
+	}
+	if (!doesExist_)
+	{
+		static char twister[4] = { '-', '\\', '|', '/' };
+		static int n, ndots, c, percent;
+		// Don't print anything if we're in quiet mode
+		if (msg.isQuiet() || (time_.elapsed() < 2000) ) return TRUE;
+		// Work out percentage and print dots and spaces
+		percent = int(dpercent * 100.0);
+		ndots = int(dpercent * 30.0);
+		dpercent *= 100.0;
+		// Always print the header and twister character
+		printf("\rProgress [%c]", twister[c]);
+		// Increase the twister character
+		++c;
+		c = c%4;
+		// New dots or percentage to output?
+		if (percent != progressPercent_)
+		{
+			for (n=0; n<ndots; n++) printf(".");
+			for (n=ndots; n<30; n++) printf(" ");
+			// Lastly, print percentage and ETA
+			printf("(%-3i%%, ETA %s)",percent, qPrintable(remtime.toString("h:m:s")));
+			fflush(stdout);
+			progressPercent_ = percent;
+		}
+	}
+	else if (time_.elapsed() >= 2000)
+	{
+		mainWindow->progressIndicator->setVisible(TRUE);
+		mainWindow->progressBar->setValue(progressCurrentStep_);
+		mainWindow->progressEta->setText( remtime.toString("h:m:s") );
+		app->processEvents();
+	}
+	// Check to see if the abort button was pressed
+	return (!progressCanceled_);
+}
+
+/*
+// Trajectory
+*/
+
+// Return state of trajectory playback
+bool GuiQt::trajectoryPlaying()
+{
+	return trajectoryPlaying_;
+}
+
+// Set state of trajectory playback
+void GuiQt::setTrajectoryPlaying(bool b)
+{
+	trajectoryPlaying_ = b;
+}
+
+// Return trajectory timer id
+int GuiQt::trajectoryTimerId()
+{
+	return trajectoryTimerId_;
+}
+
+// Set state of trajectory playback
+void GuiQt::setTrajectoryTimerId(int i)
+{
+	trajectoryTimerId_ = i;
+}
+
+// Stop trajectory playback
+void GuiQt::stopTrajectoryPlayback()
+{
+	mainWidget->killTimer(trajectoryTimerId_);
+	mainWindow->ui.actionPlayPause->setChecked(FALSE);
+	trajectoryPlaying_ = FALSE;
+	gui.updateTrajControls();
+	modelChanged();
+}
+

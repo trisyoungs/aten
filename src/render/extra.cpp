@@ -108,7 +108,7 @@ void Canvas::renderExtra3d()
 			break;
 	}
 	// Draw on extra stuff based on the visibility of any tool windows
-	if (gui.cellTransformWindow->isVisible())
+	if (gui.exists() && gui.cellTransformWindow->isVisible())
 	{
 		Vec3<double> hkl;
 		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())

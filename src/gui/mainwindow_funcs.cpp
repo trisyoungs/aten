@@ -63,7 +63,8 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	infoLabel2 = NULL;
 	messageLabel = NULL;
 	progressBar = NULL;
-	progressLabel = NULL;
+	progressTitle = NULL;
+	progressEta = NULL;
 	progressButton = NULL;
 	progressIndicator = NULL;
 	uaGroup = NULL;
@@ -80,7 +81,8 @@ AtenForm::~AtenForm()
 	if (infoLabel2 != NULL) delete infoLabel2;
 	if (messageLabel != NULL) delete messageLabel;
 	if (progressBar != NULL) delete progressBar;
-	if (progressLabel != NULL) delete progressLabel;
+	if (progressTitle != NULL) delete progressTitle;
+	if (progressEta != NULL) delete progressEta;
 	if (progressButton != NULL) delete progressButton;
 	if (progressIndicator != NULL) delete progressIndicator;
 // 	if (uaGroup != NULL) delete uaGroup;

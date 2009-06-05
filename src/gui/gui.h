@@ -54,8 +54,19 @@ class QProgressDialog;
 // QT4 GUI
 class GuiQt
 {
+	public:
+	// Constructor / Destructor
+	GuiQt();
+	~GuiQt();
+	// Bitmap Formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static BitmapFormat bitmapFormat(const char *s);
+	static BitmapFormat bitmapFormatFromFilter(const char *s);
+	static const char *bitmapFormatFilter(BitmapFormat bf);
+	static const char *bitmapFormatExtension(BitmapFormat bf);
+
 	/*
-	// Existence of GUI
+	// General Functions
 	*/
 	private:
 	// Is a GUI available?
@@ -63,13 +74,7 @@ class GuiQt
 	// Does the GUI exist (has it been created)
 	bool doesExist_;
 
-	/*
-	// Basic Window Functions
-	*/
 	public:
-	// Constructor / Destructor
-	GuiQt();
-	~GuiQt();
 	// Returns if the GUI has been created
 	bool exists();
 	// Initialise the QApplication (and some other small things)
@@ -78,61 +83,38 @@ class GuiQt
 	void run();
 
 	/*
-	// General Window Functions
+	// Refresh Functions
 	*/
 	public:
-	// Add a message to the main window's message output box
-	void printMessage(const char*);
-	// Save before close
-	bool saveBeforeClose();
-
-	/*
-	// Main Window Refresh Functions
-	*/
-	public:
-	// Refresh window title
-	void updateWindowTitle();
-	// Update trajectory control widgets
-	void updateTrajControls();
-	// Update statusbar
-	void updateStatusBar(bool clear = FALSE);
 	// Refreshes all widgets to do with the model
 	void modelChanged(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
+	// Update statusbar
+	void updateStatusBar(bool clear = FALSE);
+	// Update trajectory control widgets
+	void updateTrajControls();
+	// Refresh window title
+	void updateWindowTitle();
 
 	/*
-	// Model management
+	// Methods
 	*/
 	public:
 	// Add model (adds new model to list)
 	void addModel(Model*);
-	// Remove model from list
-	void removeModel(int id);
-
-	/*
-	// Files
-	*/
-	public:
-	// Initialise GUI file filters array
-	void initFilters();
-
-	/*
-	// Image Formats / Saving
-	*/
-	// Bitmap Formats
-	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static BitmapFormat bitmapFormat(const char *s);
-	static BitmapFormat bitmapFormatFromFilter(const char *s);
-	static const char *bitmapFormatFilter(BitmapFormat bf);
-	static const char *bitmapFormatExtension(BitmapFormat bf);
-	// Save image of current view
-	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
-
-	/*
-	// Misc
-	*/
-	public:
 	// Convert Qt key code value to internal key
 	Canvas::KeyCode convertToKeyCode(int);
+	// Initialise GUI file filters array
+	void initFilters();
+	// Add a message to the main window's message output box
+	void printMessage(const char*);
+	// Remove model from list
+	void removeModel(int id);
+	// Save before close
+	bool saveBeforeClose();
+	// Save image of current view
+	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
+	// Enable / disable GUI (except progress bar group)
+	void setWindowsEnabled(bool b);
 
 	/*
 	// Windows / Subwindows
@@ -166,7 +148,7 @@ class GuiQt
 	AtenTransform *transformWindow;
 
 	/*
-	// Dialog Windows
+	// Dialogs
 	*/
 	public:
 	// About Dialog
@@ -223,7 +205,7 @@ class GuiQt
 	// Indicator that the 'Cancel' button was pressed
 	bool progressCanceled_;
 	// Variables for the position and maximum of the text progress dialog
-	int textProgressStepsToDo_, textProgressPercent_, textProgressCurrentStep_;
+	int progressStepsToDo_, progressPercent_, progressCurrentStep_;
 
 	public:
 	// Notify that the progress indicator should be canceled
@@ -234,12 +216,6 @@ class GuiQt
 	bool progressUpdate(int currentstep);
 	// Terminate the progress dialog
 	void progressTerminate();
-	// Instantiate a text-based progress dialog
-	void textProgressCreate(const char *jobtitle, int stepstodo);
-	// Update the text progress dialog
-	void textProgressUpdate();
-	// Terminate the progress dialog
-	void textProgressTerminate();
 };
 
 extern GuiQt gui;
