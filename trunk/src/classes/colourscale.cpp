@@ -27,6 +27,7 @@ ColourScale::ColourScale()
 {
 	// Private variables
 	visible_ = FALSE;
+	interpolated_ = TRUE;
 }
 
 // Set the name of the colourscale
@@ -51,6 +52,18 @@ void ColourScale::setVisible(bool v)
 bool ColourScale::visible()
 {
 	return visible_;
+}
+
+// Set whether the colourscale is interpolated
+void ColourScale::setInterpolated(bool b)
+{
+	interpolated_ = b;
+}
+
+// Return whether the colourscale is interpolated
+bool ColourScale::interpolated()
+{
+	return interpolated_;
 }
 
 // Recalculate colour deltas between points
@@ -172,12 +185,11 @@ void ColourScale::colour(double v, GLfloat *target)
 		return;
 	}
 	// Find the correct delta to use
-	ColourScaleDelta *delta;
-	for (delta = deltas_.first(); delta != NULL; delta = delta->next)
+	for (ColourScaleDelta *delta = deltas_.first(); delta != NULL; delta = delta->next)
 	{
 		if (delta->containsValue(v))
 		{
-			delta->colour(v, target);
+			delta->colour( interpolated_ ? v : delta->start(), target);
 			return;
 		}
 	}

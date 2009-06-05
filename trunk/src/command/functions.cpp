@@ -156,6 +156,7 @@ void Command::initPointers()
 	pointers_[ClearPoints] = &Command::function_ClearPoints;
 	pointers_[ListScales] = &Command::function_ListScales;
 	pointers_[RemovePoint] = &Command::function_RemovePoint;
+	pointers_[ScaleInterpolate] = &Command::function_ScaleInterpolate;
 	pointers_[ScaleName] = &Command::function_ScaleName;
 	pointers_[ScaleVisible] = &Command::function_ScaleVisible;
 	pointers_[SetPoint] = &Command::function_SetPoint;

@@ -604,7 +604,6 @@ void GuiQt::setWindowsEnabled(bool b)
 {
 	// Disable some key widgets on the main form
 	mainWindow->ui.ViewFrame->setEnabled(b);
-	mainWindow->ui.WindowToolbar->setEnabled(b);
 	atomlistWindow->setEnabled(b);
 	buildWindow->setEnabled(b);
 	cellDefineWindow->setEnabled(b);
@@ -626,6 +625,8 @@ void GuiQt::setWindowsEnabled(bool b)
 	mainWindow->ui.MouseToolbar->setEnabled(b);
 	mainWindow->ui.SelectToolbar->setEnabled(b);
 	mainWindow->ui.TrajectoryToolbar->setEnabled(b);
+	mainWindow->ui.WindowToolbar->setEnabled(b);
+	mainWindow->setWidgetsEnabled(b);
 	app->processEvents();
 }
 
@@ -665,7 +666,6 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 		mainWindow->progressBar->setValue(0);
 		mainWindow->progressTitle->setText(jobtitle);
 		mainWindow->progressEta->setText("");
-		setWindowsEnabled(FALSE);
 	}
 }
 
@@ -676,7 +676,7 @@ void GuiQt::progressTerminate()
 	if (!doesExist_)
 	{
 		if (progressPercent_ == -1) return;
-		if (time_.elapsed() >= 2000) printf("\n");
+		if (time_.elapsed() >= 500) printf("\n");
 	}
 	else
 	{
@@ -708,7 +708,7 @@ bool GuiQt::progressUpdate(int currentstep)
 		static char twister[4] = { '-', '\\', '|', '/' };
 		static int n, ndots, c, percent;
 		// Don't print anything if we're in quiet mode
-		if (msg.isQuiet() || (time_.elapsed() < 2000) ) return TRUE;
+		if (msg.isQuiet() || (time_.elapsed() < 500) ) return TRUE;
 		// Work out percentage and print dots and spaces
 		percent = int(dpercent * 100.0);
 		ndots = int(dpercent * 30.0);
@@ -729,8 +729,9 @@ bool GuiQt::progressUpdate(int currentstep)
 			progressPercent_ = percent;
 		}
 	}
-	else if (time_.elapsed() >= 2000)
+	else if (time_.elapsed() >= 500)
 	{
+		setWindowsEnabled(FALSE);
 		mainWindow->progressIndicator->setVisible(TRUE);
 		mainWindow->progressBar->setValue(progressCurrentStep_);
 		mainWindow->progressEta->setText( remtime.toString("h:m:s") );

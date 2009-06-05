@@ -82,7 +82,7 @@ void AtenForm::finaliseUi()
 	ui.TrajectoryToolbar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
-	commandEdit_ = new QLineEdit(this);
+	commandEdit_ = new QLineEdit(ui.CommandToolbar);
 	commandEditModel_ = new QStringListModel();
 	commandEditCompleter_ = new QCompleter(commandEditModel_, this);
 	commandEditCompleter_->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
@@ -92,16 +92,16 @@ void AtenForm::finaliseUi()
 	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
 
 	// Add combobox to ForcefieldsToolbar
-	forcefieldCombo_ = new QComboBox(this);
+	forcefieldCombo_ = new QComboBox(ui.ForcefieldsToolbar);
 	ui.ForcefieldsToolbar->addWidget(forcefieldCombo_);
-	ui.CommandToolbar->setMinimumSize(128,16);
+	ui.ForcefieldsToolbar->setMinimumSize(128,16);
 	QObject::connect(forcefieldCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(forcefieldCombo_currentIndexChanged(int)));
 
 	// Add extra widgets to trajectory toolbar
-	trajectorySlider_ = new QSlider(Qt::Horizontal, this);
+	trajectorySlider_ = new QSlider(Qt::Horizontal, ui.TrajectoryToolbar);
 	ui.TrajectoryToolbar->addWidget(trajectorySlider_);
 	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved(int)), this, SLOT(trajectorySlider_sliderMoved(int)));
-	trajectorySpin_ = new QSpinBox(this);
+	trajectorySpin_ = new QSpinBox(ui.TrajectoryToolbar);
 	ui.TrajectoryToolbar->addWidget(trajectorySpin_);
 	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));
 
@@ -137,7 +137,7 @@ void AtenForm::finaliseUi()
 	}
 
 	// Add bond tolerance spinbox to Bond Toolbar
-	bondToleranceSpin_ = new QDoubleSpinBox(this);
+	bondToleranceSpin_ = new QDoubleSpinBox(ui.BondToolbar);
 	bondToleranceSpin_->setRange(0.0, 100.0);
 	bondToleranceSpin_->setSingleStep(0.01);
 	ui.BondToolbar->addWidget(bondToleranceSpin_);
