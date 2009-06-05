@@ -367,7 +367,7 @@ class AtenForm : public QMainWindow
 	QLabel *infoLabel1, *infoLabel2, *messageLabel;
 	// Statusbar progress indicator widgets
 	QProgressBar *progressBar;
-	QLabel *progressLabel;
+	QLabel *progressTitle, *progressEta;
 	QPushButton *progressButton;
 	QFrame *progressIndicator;
 	// String lists to hold file dialog filter definitions

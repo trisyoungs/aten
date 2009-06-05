@@ -47,9 +47,9 @@ int CommandParser::lex()
 		return 0;
 	}
 
-	int c, length, n;
+	int length, n;
 	bool done, integer, hasexp;
-	static char token[256];
+	static char token[256], quotechar, c;
 	static Dnchar name;
 	length = 0;
 	token[0] = '\0';
@@ -129,9 +129,10 @@ int CommandParser::lex()
 	/*
 	// Literal Character String - surrounded by ""
 	*/
-	if (c == '"')
+	if ((c == '"') || ( c == '\''))
 	{
-		// Just read everything until we find another '"'
+		quotechar = c;
+		// Just read everything until we find a matching quote
 		done = FALSE;
 		do
 		{
@@ -153,7 +154,7 @@ int CommandParser::lex()
 						token[length++] = c2; break;
 				}
 			}
-			else if (c == '"') done = TRUE;
+			else if (c == quotechar) done = TRUE;
 			else if (c == '\0')
 			{
 				msg.print("Runaway character constant in input.\n");
