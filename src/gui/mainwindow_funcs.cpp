@@ -318,6 +318,17 @@ void AtenForm::updateUndoRedo()
 	}
 }
 
+// Enable/disable manually-created widgets
+void AtenForm::setWidgetsEnabled(bool b)
+{
+	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
+	commandEdit_->setEnabled(b);
+	forcefieldCombo_->setEnabled(b);
+	trajectorySlider_->setEnabled(b);
+	trajectorySpin_->setEnabled(b);
+	bondToleranceSpin_->setEnabled(b);
+}
+
 void AtenForm::refreshScriptsMenu()
 {
 	// Remove old actions from menu (i.e. current items in Reflist)

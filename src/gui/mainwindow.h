@@ -353,6 +353,8 @@ class AtenForm : public QMainWindow
 	public:
 	// Update undo/redo labels
 	void updateUndoRedo();
+	// Enable/disable manually-created widgets
+	void setWidgetsEnabled(bool b);
 
 
 	/*

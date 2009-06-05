@@ -199,6 +199,7 @@ class Command
 		ClearPoints,
 		ListScales,
 		RemovePoint,
+		ScaleInterpolate,
 		ScaleName,
 		ScaleVisible,
 		SetPoint,
@@ -620,6 +621,7 @@ class Command
 	static bool function_ClearPoints(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListScales(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ScaleInterpolate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ScaleVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);

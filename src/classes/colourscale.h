@@ -49,6 +49,8 @@ class ColourScale
 	Dnchar name_;
 	// Whether the colourscale is currently visible
 	bool visible_;
+	// Whether colours are interpolated between points in the scale
+	bool interpolated_;
 
 	public:
 	// Set the name of the colourscale
@@ -56,9 +58,13 @@ class ColourScale
 	// Return the name of the colourscale
 	const char *name();
 	// Set whether the colourscale is visible
-	void setVisible(bool v);
+	void setVisible(bool b);
 	// Return whether the colourscale is visible
 	bool visible();
+	// Set whether the colourscale is interpolated
+	void setInterpolated(bool b);
+	// Return whether the colourscale is interpolated
+	bool interpolated();
 
 	/*
 	// Data and data range

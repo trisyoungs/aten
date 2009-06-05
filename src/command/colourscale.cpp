@@ -87,6 +87,21 @@ bool Command::function_RemovePoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Set whether scale is interpolated
+bool Command::function_ScaleInterpolate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg.print( "Colour scale %i is out of range.\n",id+1);
+		return FALSE;
+	}
+	prefs.colourScale[id].setInterpolated(c->argb(1));
+	rv.reset();
+	return TRUE;
+}
+
 // Print/set name of colourscale ('scalename <id> [name]')
 bool Command::function_ScaleName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

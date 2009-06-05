@@ -387,124 +387,6 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog)
 	return TRUE;
 }
 
-// // Replicate Cell
-// void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
-// {
-// 	msg.enter("Model::replicateCell");
-// 	int count;
-// 	bool stop;
-// 	Vec3<double> tvec;
-// 	Mat3<double> newaxes, oldaxes;
-// 
-// 	// If this isn't a periodic model, exit
-// 	if (cell_.type() == Cell::NoCell)
-// 	{
-// 		msg.print("No cell to replicate.\n");
-// 		msg.exit("Model::replicateCell");
-// 		return;
-// 	}
-// 
-// 	// Perform an atomic fold on the crystal before we begin
-// 	if (prefs.replicateFold()) foldAllAtoms();
-// 
-// 	// Create two clipboards - copy the original model to one of them
-// 	Clipboard originalClip, clip;
-// 	originalClip.copyAll(this);
-// 
-// 	// Create the new unit cell in the original model
-// 	oldaxes = cell_.axes();
-// 	// Copy model to clipboard ready for pasting
-// 	clip.copyAll(this);
-// 	// Take transpose of old and new axes for convenient multiplication
-// 	newaxes = oldaxes;
-// 
-// 	// Set new unit cell dimensions
-// 	tvec.set(pos.x+1.0-neg.x, pos.y+1.0-neg.y, pos.z+1.0-neg.z);
-// 	newaxes.rowMultiply(tvec);
-// 	setCell(newaxes);
-// 
-// 	// Clear the original model
-// 	clear();
-// 
-// 	// Re-centre the clipboard copy so it is at the new cell origin
-// 	originalClip.translate(-cell_.centre());	// See above
-// 
-// 	// Paste in whole copies of the original cell - don't worry about fractional cells yet
-// 	Vec3<int> ineg, ipos;
-// 	int ii, jj, kk;
-// 	ineg.set(int(floor(neg.x)), int(floor(neg.y)), int(floor(neg.z)));
-// 	ipos.set(int(ceil(pos.x)), int(ceil(pos.y)), int(ceil(pos.z)));
-// 
-// 	// Set up progress indicator
-// 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-// 	aten.initialiseProgress("Creating cell copies...", count);
-// 
-// 	// Create cell copies
-// 	count = 0;
-// 	stop = FALSE;
-// 	for (ii = 0; ii <= (ipos.x - ineg.x); ii++)
-// 	{
-// 		for (jj = 0; jj <= (ipos.y - ineg.y); jj++)
-// 		{
-// 			for (kk = 0; kk <= (ipos.z - ineg.z); kk++)
-// 			{
-// 				// Set base translation vector for this replication
-// 				tvec = oldaxes.rows[0] * ii;
-// 				tvec += oldaxes.rows[1] * jj;
-// 				tvec += oldaxes.rows[2] * kk;
-// 				//tvec.print();
-// 				clip.pasteToModel(this,tvec);
-// 				msg.print(Messenger::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
-// 				if (!aten.updateProgress(++count))
-// 				{
-// 					stop = TRUE;
-// 					break;
-// 				}
-// 			}
-// 			if (stop) break;
-// 		}
-// 		if (stop) break;
-// 	}
-// 	aten.cancelProgress();
-// 
-// 	// Deselect all atoms
-// 	selectNone();
-// 
-// 	// Now trim off atoms that are outside the new cell
-// 	if (prefs.replicateTrim())
-// 	{
-// 		bool delatom;
-// 		Atom *i, *j;
-// 		Vec3<double> fracr;
-// 		Mat3<double> cellinverse = cell_.inverseTranspose();
-// 	
-// 		aten.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
-// 		i = atoms_.first();
-// 		count = 0;
-// 		while (i != NULL)
-// 		{
-// 			delatom = FALSE;
-// 			// Convert coordinates to fractional coords and test them
-// 			fracr = cellinverse * i->r();
-// 			if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
-// 			else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
-// 			else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
-// 			if (delatom)
-// 			{
-// 				j = i->next;
-// 				deleteAtom(i);
-// 				i = j;
-// 			}
-// 			else i = i->next;
-// 			if (!aten.updateProgress(++count)) break;
-// 		}
-// 		aten.cancelProgress();
-// 	}
-// 
-// 	changeLog.add(Log::Structure);
-// 	msg.exit("Model::replicateCell");
-// }
-
 // Replicate Cell
 void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 {
@@ -526,8 +408,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	// Perform an atomic fold on the crystal before we begin
 	if (prefs.replicateFold()) foldAllAtoms();
 
-	// Copy model to clipboard ready for pasting
+	// Copy model contents to clipboard ready for pasting and then clear the model
 	clip.copyAll(this);
+	clear();
 
 	// Create new unit cell
 	oldaxes = cell_.axes();
