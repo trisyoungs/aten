@@ -60,6 +60,10 @@ class Measurement
 	double value();
 	// Set atom
 	void setAtom(int n, Atom *i);
+	// Return whether the specified atom is used in this measurement
+	bool involvesAtom(Atom *i);
+	// Return specific atom
+	Atom *atom(int index);
 	// Return atoms array
 	Atom **atoms();
 	// Print

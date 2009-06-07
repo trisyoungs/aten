@@ -39,21 +39,29 @@ class AtenPosition : public QDialog
 	void flipSelection(int axis);
 	void translateSelection(int axis, int dir);
 	private slots:
+	void dialogFinished(int result);
+	// Centre
+	void on_DefineCentreButton_clicked(bool checked);
+	void on_CentreSelectionButton_clicked(bool checked);
+	// Flip
 	void on_FlipXButton_clicked(bool checked);
 	void on_FlipYButton_clicked(bool checked);
 	void on_FlipZButton_clicked(bool checked);
-	void on_DefineCentreButton_clicked(bool checked);
-	void on_CentreSelectionButton_clicked(bool checked);
+	// Shift
 	void on_DefineVectorButton_clicked(bool checked);
 	void on_VectorShiftPositiveButton_clicked(bool checked);
 	void on_VectorShiftNegativeButton_clicked(bool checked);
+	// Translate
 	void on_TranslatePosXButton_clicked(bool on);
 	void on_TranslatePosYButton_clicked(bool on);
 	void on_TranslatePosZButton_clicked(bool on);
 	void on_TranslateNegXButton_clicked(bool on);
 	void on_TranslateNegYButton_clicked(bool on);
 	void on_TranslateNegZButton_clicked(bool on);
-	void dialogFinished(int result);
+	// Reposition
+	void on_RepositionSelectionButton_clicked(bool on);
+	void on_DefineRepositionReferenceButton_clicked(bool on);
+	void on_DefineRepositionTargetButton_clicked(bool on);
 
 	/*
 	// Local variables

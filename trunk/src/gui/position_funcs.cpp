@@ -126,23 +126,20 @@ void AtenPosition::translateSelection(int axis, int dir)
 	double step = ui.TranslateShiftSpin->value();	
 	Vec3<double> tvec;
 	tvec.set(axis, double(dir));
-	static char s[128];
 	// Grab model in preparation for undostate...
 	Model *m = aten.currentModel();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
 		tvec *= step;
-		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndoState(s);
+		m->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
 	}
 	else if (ui.TranslateWorldFrameRadio->isChecked())
 	{
 		// Translate selection in the world (view) axes
 		tvec *= step;
-		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndoState(s);
+		m->beginUndoState("Translate Screen (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionWorld(tvec);
 	}
 	else if (ui.TranslateCellFrameRadio->isChecked())
@@ -155,8 +152,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 		}
 		tvec = aten.currentModel()->cell()->axes().getRow(axis);
 		tvec *= double(dir) * step;
-		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndoState(s);
+		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
 	}
 	m->endUndoState();
@@ -167,6 +163,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 /*
 // Vector Shift Functions
 */
+
 void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
 	gui.positionWindow->ui.DefineVectorButton->setChecked(FALSE);
@@ -192,10 +189,8 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v.normalise();
 	v *= ui.VectorDeltaSpin->value();
-	char s[128];
 	Model *m = aten.currentModel();
-	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
-	m->beginUndoState(s);
+	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
@@ -210,14 +205,48 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v.normalise();
 	v *= -ui.VectorDeltaSpin->value();
-	char s[128];
 	Model *m = aten.currentModel();
-	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
-	m->beginUndoState(s);
+	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+/*
+// Move
+*/
+
+void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
+{
+	Vec3<double> v;
+	v.x = ui.RepositionTargetXSpin->value() - ui.RepositionReferenceXSpin->value();
+	v.y = ui.RepositionTargetYSpin->value() - ui.RepositionReferenceYSpin->value();
+	v.z = ui.RepositionTargetZSpin->value() - ui.RepositionReferenceZSpin->value();
+	Model *m = aten.currentModel();
+	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->translateSelectionLocal(v);
+	m->endUndoState();
+	m->updateMeasurements();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
+{
+	// Get centre of current selection
+	Vec3<double> centre = aten.currentModel()->selectionCog();
+	ui.RepositionReferenceXSpin->setValue(centre.x);
+	ui.RepositionReferenceYSpin->setValue(centre.y);
+	ui.RepositionReferenceZSpin->setValue(centre.z);
+}
+
+void AtenPosition::on_DefineRepositionTargetButton_clicked(bool on)
+{
+	// Get centre of current selection
+	Vec3<double> centre = aten.currentModel()->selectionCog();
+	ui.RepositionTargetXSpin->setValue(centre.x);
+	ui.RepositionTargetYSpin->setValue(centre.y);
+	ui.RepositionTargetZSpin->setValue(centre.z);
 }
 
 void AtenPosition::dialogFinished(int result)

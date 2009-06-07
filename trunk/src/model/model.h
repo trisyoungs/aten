@@ -817,16 +817,40 @@ class Model
 	// Measurements
 	*/
 	private:
-	// List of measurements
-	List<Measurement> measurements_;
+	// List of distance measurements
+	List<Measurement> distances_;
+	// List of distance measurements
+	List<Measurement> angles_;
+	// List of distance measurements
+	List<Measurement> torsions_;
 
 	public:
-	// Return first measurement in the list
-	Measurement *measurements();
+	// Return number of measurements in the angles list
+	int nAngles();
+	// Return number of measurements in the distances list
+	int nDistances();
+	// Return number of measurements in the torsions list
+	int nTorsions();
+	// Return first measurement in the angles list
+	Measurement *angles();
+	// Return first measurement in the distances list
+	Measurement *distances();
+	// Return first measurement in the torsions list
+	Measurement *torsions();
+	// Return nth measurement in the angles list
+	Measurement *angle(int index);
+	// Return nth measurement in the distances list
+	Measurement *distance(int index);
+	// Return nth measurement in the torsions list
+	Measurement *torsion(int index);
 	// Clear all measurements
 	void clearMeasurements();
-	// Find specific measurement
-	Measurement *findMeasurement(Measurement::MeasurementType, Atom*, ...);
+	// Find specific distance
+	Measurement *findDistance(Atom *i, Atom *j);
+	// Find specific angle
+	Measurement *findAngle(Atom *i, Atom *j, Atom *k);
+	// Find specific torsion
+	Measurement *findTorsion(Atom *i, Atom *j, Atom *k, Atom *l);
 	// Clear specific type of measurements
 	void removeMeasurements(Measurement::MeasurementType);
 	// Delete specific measurement
@@ -834,7 +858,7 @@ class Model
 	// Delete all measurements involving supplied atom
 	void removeMeasurements(Atom*);
 	// Add measurement (list of atoms)
-	Measurement *addMeasurement(Measurement::MeasurementType, Atom*, ...);
+	Measurement *addMeasurement(Measurement::MeasurementType ...);
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Measure distances between atoms

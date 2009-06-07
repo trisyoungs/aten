@@ -387,6 +387,7 @@ void MeasurementEvent::set(bool creation, Measurement::MeasurementType mt, int i
 void MeasurementEvent::undo(Model *m)
 {
 	msg.enter("MeasurementEvent::undo");
+	Measurement *me = NULL;
 	Atom *i, *j, *k,*l, **modelatoms = m->atomArray();
 	// Measurement creation (UndoEvent::Undo) and deletion (UndoEvent::Redo)
 	i = modelatoms[targetId_[0]];
@@ -396,7 +397,9 @@ void MeasurementEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing measurement - type = %i\n", type_);
-		Measurement *me = m->findMeasurement(type_, i, j, k, l);
+		if (type_ == Measurement::Distance) me = m->findDistance(i, j);
+		if (type_ == Measurement::Angle) me = m->findAngle(i, j, k);
+		if (type_ == Measurement::Torsion) me = m->findTorsion(i, j, k, l);
 		if (me != NULL) m->removeMeasurement(me);
 		else printf("Couldn't find measurement in UndoEvent.\n");
 	}

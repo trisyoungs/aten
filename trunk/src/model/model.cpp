@@ -97,7 +97,9 @@ Model::~Model()
 	grids_.clear();
 	atoms_.clear();
 	patterns_.clear();
-	measurements_.clear();
+	distances_.clear();
+	angles_.clear();
+	torsions_.clear();
 	// Delete sginfo arrays
 	delete[] spacegroup_.ListSeitzMx;
 	delete[] spacegroup_.ListRotMxInfo;
