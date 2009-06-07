@@ -17,6 +17,7 @@ format.h
 grammar.h
 grid.h
 integer.h
+measurement.h
 model.h
 parser.h
 pattern.h
@@ -51,6 +52,7 @@ format.cpp
 grammar.cc
 grid.cpp
 integer.cpp
+measurement.cpp
 model.cpp
 parser.cpp
 parser_lexer.cpp

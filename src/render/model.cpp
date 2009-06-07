@@ -100,106 +100,104 @@ void Canvas::renderModelMeasurements()
 	static Vec3<double> pos1, pos2;
 	double gamma, t;
 	int i;
-	bool rightalign, skip;
+	bool rightalign;
 	static char text[256];
 	static Atom **atoms;
 	// Grab cell origin to get correct positioning
 	cellCentre = -displayModel_->cell()->centre();
 	glPushMatrix();
 	  glTranslated(cellCentre.x, cellCentre.y, cellCentre.z);
-	  // Go through list of measurements
-	  for (Measurement *m = displayModel_->measurements(); m != NULL; m = m->next)
+	  // Distances
+	  for (Measurement *m = displayModel_->distances(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-		skip = FALSE;
-		for (i=0; i<Measurement::nMeasurementAtoms(m->type()); i++)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden()) continue;
+		ri = atoms[0]->r();
+		rj = atoms[1]->r();
+		labpos = (ri + rj) * 0.5;
+		glBegin(GL_LINE_STRIP);
+		  glVertex3d(ri.x, ri.y, ri.z);
+		  glVertex3d(rj.x, rj.y, rj.z);
+		glEnd();
+		sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
+		// Add text object to list
+		pos1 = displayModel_->modelToScreen(labpos);
+		if (pos1.z < 1.0)
 		{
-			if (atoms[i]->isHidden())
-			{
-				skip = TRUE;
-				break;
-			}
+			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), FALSE, text);
+			textObjects_.own(to);
 		}
-		if (skip) continue;
-		switch (m->type())
-		{
-			case (Measurement::Distance):
-				ri = atoms[0]->r();
-				rj = atoms[1]->r();
-				labpos = (ri + rj) * 0.5;
-				glBegin(GL_LINE_STRIP);
-				  glVertex3d(ri.x, ri.y, ri.z);
-				  glVertex3d(rj.x, rj.y, rj.z);
-				glEnd();
-				rightalign = FALSE;
-				sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
-				break;
-			case (Measurement::Angle):
-				ri = atoms[0]->r();
-				rj = atoms[1]->r();
-				rk = atoms[2]->r();
-				glBegin(GL_LINE_STRIP);
-				  glVertex3d(ri.x, ri.y, ri.z);
-				  glVertex3d(rj.x, rj.y, rj.z);
-				  glVertex3d(rk.x, rk.y, rk.z);
-				glEnd();
-				// Angle marker oblongata
-// 				rji = ri - rj;
-// 				rjk = rk - rj;
-				labpos = (rji + rjk) * 0.2 + rj;
-// 				rji = rji * 0.2 + rj;
-// 				rjk = rjk * 0.2 + rj;
-// 				glBegin(GL_LINE_STRIP);
-// 				  glVertex3d(rji.x, rji.y, rji.z);
-// 				  glVertex3d(labpos.x, labpos.y, labpos.z);
-// 				  glVertex3d(rjk.x, rjk.y, rjk.z);
-// 				glEnd();
-				// Curved angle marker
-				rji = (ri - rj);
-				rjk = (rk - rj);
-				rji.normalise();
-				rjk.normalise();
-				gamma = acos(rji.dp(rjk));
-				// Draw segments
-				t = 0.0;
-				glBegin(GL_LINES);
-				  for (int n=0; n<11; n++)
-				  {
-					pos1 = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));
-					pos1 *= 0.2;
-					pos1 += rj;
-					glVertex3d(pos1.x, pos1.y, pos1.z);
-					t += 0.1;
-				  }
-				glEnd();
-				// Determine orientation of text
-				pos1 = displayModel_->modelToScreen(labpos);
-				pos2 = displayModel_->modelToScreen(rj);
-				rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
-				sprintf(text,"%f %s", m->value(), prefs.angleLabel());
-				break;
-			case (Measurement::Torsion):
-				ri = atoms[0]->r();
-				rj = atoms[1]->r();
-				rk = atoms[2]->r();
-				rl = atoms[3]->r();
-				glBegin(GL_LINE_STRIP);
-				  glVertex3d(ri.x, ri.y, ri.z);
-				  glVertex3d(rj.x, rj.y, rj.z);
-				  glVertex3d(rk.x, rk.y, rk.z);
-				  glVertex3d(rl.x, rl.y, rl.z);
-				glEnd();
-				labpos = (rj + rk) * 0.5;
-				rightalign = FALSE;
-				sprintf(text,"%f Deg", m->value());
-				break;
-		}
+	  }
+	  // Angles
+	  for (Measurement *m = displayModel_->angles(); m != NULL; m = m->next)
+	  {
+		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden()) continue;
+		ri = atoms[0]->r();
+		rj = atoms[1]->r();
+		rk = atoms[2]->r();
+		glBegin(GL_LINE_STRIP);
+		  glVertex3d(ri.x, ri.y, ri.z);
+		  glVertex3d(rj.x, rj.y, rj.z);
+		  glVertex3d(rk.x, rk.y, rk.z);
+		glEnd();
+		labpos = (rji + rjk) * 0.2 + rj;
+		// Curved angle marker
+		rji = (ri - rj);
+		rjk = (rk - rj);
+		rji.normalise();
+		rjk.normalise();
+		gamma = acos(rji.dp(rjk));
+		// Draw segments
+		t = 0.0;
+		glBegin(GL_LINES);
+		  for (int n=0; n<11; n++)
+		  {
+			pos1 = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));
+			pos1 *= 0.2;
+			pos1 += rj;
+			glVertex3d(pos1.x, pos1.y, pos1.z);
+			t += 0.1;
+		  }
+		glEnd();
+		// Determine orientation of text
+		pos1 = displayModel_->modelToScreen(labpos);
+		pos2 = displayModel_->modelToScreen(rj);
+		rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
+		sprintf(text,"%f %s", m->value(), prefs.angleLabel());
 		// Add text object to list
 		pos1 = displayModel_->modelToScreen(labpos);
 		if (pos1.z < 1.0)
 		{
 			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), rightalign, text);
+			textObjects_.own(to);
+		}
+	  }
+	  // Torsions
+	  for (Measurement *m = displayModel_->torsions(); m != NULL; m = m->next)
+	  {
+		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden() || atoms[3]->isHidden()) continue;
+		ri = atoms[0]->r();
+		rj = atoms[1]->r();
+		rk = atoms[2]->r();
+		rl = atoms[3]->r();
+		glBegin(GL_LINE_STRIP);
+		  glVertex3d(ri.x, ri.y, ri.z);
+		  glVertex3d(rj.x, rj.y, rj.z);
+		  glVertex3d(rk.x, rk.y, rk.z);
+		  glVertex3d(rl.x, rl.y, rl.z);
+		glEnd();
+		labpos = (rj + rk) * 0.5;
+		sprintf(text,"%f Deg", m->value());
+		// Add text object to list
+		pos1 = displayModel_->modelToScreen(labpos);
+		if (pos1.z < 1.0)
+		{
+			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), FALSE, text);
 			textObjects_.own(to);
 		}
 	  }

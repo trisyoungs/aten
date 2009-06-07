@@ -68,6 +68,21 @@ void Measurement::setAtom(int n, Atom *i)
 	atoms_[n] = i;
 }
 
+// Return whether the specified atom is used in this measurement
+bool Measurement::involvesAtom(Atom *i)
+{
+	for (int n=0; n<4; ++n) if (atoms_[n] == i) return TRUE;
+	return FALSE;
+}
+
+// Return specific atom
+Atom *Measurement::atom(int index)
+{
+	if ((index < 0) || (index > 3)) printf("Index %i out of bounds for measurement.\n", index);
+	else return atoms_[index];
+	return NULL;
+}
+
 // Return atoms array
 Atom **Measurement::atoms()
 {

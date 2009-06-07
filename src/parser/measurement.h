@@ -1,6 +1,6 @@
 /*
-	*** Model Variable and Array
-	*** src/parser/model.h
+	*** Measurement Variable and Array
+	*** src/parser/forcefieldatom.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,29 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELVARIABLE_H
-#define ATEN_MODELVARIABLE_H
+#ifndef ATEN_MEASUREMENTVARIABLE_H
+#define ATEN_MEASUREMENTVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Model;
+class Measurement;
 
-// Model Variable
-class ModelVariable : public PointerVariable
+// Measurement Variable
+class MeasurementVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
-	~ModelVariable();
+	MeasurementVariable(Measurement *ptr = NULL, bool constant = FALSE);
+	~MeasurementVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, AngleTerms, Atoms, Atomtypes, Bonds, BondTerms, Celldata, Distances, Frame, Frames, Name, NAngles, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NDistances, NFrames, NPatterns, NSelected, NTorsions, NTorsionTerms, Patterns, Torsions, TorsionTerms, nAccessors };
+	enum Accessors { Atoms, I, J, K, L, nAccessors };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
 	// Static function to search accessors
@@ -54,12 +54,12 @@ class ModelVariable : public PointerVariable
 	static Accessor accessorData[nAccessors];
 };
 
-// Model Array Variable
-class ModelArrayVariable : public PointerArrayVariable
+// Measurement Array Variable
+class MeasurementArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	MeasurementArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

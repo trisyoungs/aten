@@ -6,7 +6,7 @@
 filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
 	# Variable declaration
-	int natoms,n,i,j,k;
+	int n,i,j,k,l;
 	string e,keywd,line;
 	double rx,ry,rz, lengths[3], angs[3], q;
 
@@ -68,6 +68,14 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			glyphatomr(2,j);
 			glyphatomr(3,k);
 		}
+		else if (keywd == "geometry")
+		{
+			readvar(line,n,i,j,k,l);
+			if (n == 2) measure(i,j);
+			else if (n == 3) measure(i,j,k);
+			else if (n == 4) measure(i,j,k,l);
+			else printf("Warning: Invalid measurement between %i atoms.\n", n);
+		}
 		else printf("Warning: Keyword '%s' not recognised.\n",keywd);
 	}
 	finalisemodel();
@@ -85,4 +93,6 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 
 	// Cell data
 	if (m.cell.type != "none") writelinef("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
+
+	// Measurements
 }

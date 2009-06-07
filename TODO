@@ -1,11 +1,7 @@
-Issues with the current version:
-	- Spherical regions in disordered builder have poor randomness.
-
 General To-Do list:
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
 	- Add CG (needs testing) / simplex / other minimisers
-	- View Miller planes
 	- EPS export
 
 Forcefield To-Do list:
