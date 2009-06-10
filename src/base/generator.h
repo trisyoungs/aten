@@ -49,12 +49,12 @@ class Generator
 	public:
 	// Set from XYZ-style name
 	bool set(const char *xyz);
-	// Set from integer list from sginfo
-	bool set(int *elements);
+	// Set rotation matrix row
+	void setRotation(int row, double x, double y, double z);
+	// Set translation column
+	void setTranslation(double tx, double ty, double tz, double divisor);
 	// Return text 'name' of generator
 	const char *name();
-	// Negate elements in matrix
-	void negateMatrix();
 	// Return operator matrix of generator
 	Mat4<double> &matrix();
 };

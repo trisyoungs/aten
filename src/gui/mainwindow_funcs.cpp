@@ -118,24 +118,6 @@ void AtenForm::closeEvent(QCloseEvent *event)
 }
 
 /*
-// Input
-*/
-
-void AtenForm::keyPressEvent(QKeyEvent *event)
-{
-	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
-	if (kc != Canvas::OtherKey) gui.mainView.informKeyDown(kc);
-	else event->ignore();
-}
-
-void AtenForm::keyReleaseEvent(QKeyEvent *event)
-{
-	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
-	if (kc != Canvas::OtherKey) gui.mainView.informKeyUp(kc);
-	else event->ignore();
-}
-
-/*
 // Model Navigation / Management
 */
 

@@ -70,9 +70,6 @@ class AtenForm : public QMainWindow
 	void setControls();
 	protected:
 	void closeEvent(QCloseEvent *event);
-	public slots:
-	void keyPressEvent(QKeyEvent*);
-	void keyReleaseEvent(QKeyEvent*);
 
 	/*
 	// Model Management

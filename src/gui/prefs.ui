@@ -877,7 +877,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget" >
          <property name="currentIndex" >
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="RadiiSubTab" >
           <attribute name="title" >
@@ -948,7 +948,7 @@
                    <double>0.010000000000000</double>
                   </property>
                   <property name="singleStep" >
-                   <double>0.005000000000000</double>
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -972,10 +972,10 @@
                    <double>100.000000000000000</double>
                   </property>
                   <property name="minimum" >
-                   <double>0.000000000000000</double>
+                   <double>0.010000000000000</double>
                   </property>
                   <property name="singleStep" >
-                   <double>0.005000000000000</double>
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -1002,7 +1002,7 @@
                    <double>0.010000000000000</double>
                   </property>
                   <property name="singleStep" >
-                   <double>0.005000000000000</double>
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -1029,7 +1029,7 @@
                    <double>0.010000000000000</double>
                   </property>
                   <property name="singleStep" >
-                   <double>0.005000000000000</double>
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -1095,12 +1095,30 @@
                   <property name="decimals" >
                    <number>3</number>
                   </property>
+                  <property name="maximum" >
+                   <double>100.000000000000000</double>
+                  </property>
+                  <property name="minimum" >
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="singleStep" >
+                   <double>0.010000000000000</double>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="2" >
                  <widget class="QDoubleSpinBox" name="TubeBondRadiusSpin" >
                   <property name="decimals" >
                    <number>3</number>
+                  </property>
+                  <property name="maximum" >
+                   <double>100.000000000000000</double>
+                  </property>
+                  <property name="minimum" >
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="singleStep" >
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -1109,12 +1127,30 @@
                   <property name="decimals" >
                    <number>3</number>
                   </property>
+                  <property name="maximum" >
+                   <double>100.000000000000000</double>
+                  </property>
+                  <property name="minimum" >
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="singleStep" >
+                   <double>0.010000000000000</double>
+                  </property>
                  </widget>
                 </item>
                 <item row="4" column="2" >
                  <widget class="QDoubleSpinBox" name="ScaledBondRadiusSpin" >
                   <property name="decimals" >
                    <number>3</number>
+                  </property>
+                  <property name="maximum" >
+                   <double>100.000000000000000</double>
+                  </property>
+                  <property name="minimum" >
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="singleStep" >
+                   <double>0.010000000000000</double>
                   </property>
                  </widget>
                 </item>
@@ -2738,7 +2774,28 @@
          <property name="spacing" >
           <number>6</number>
          </property>
-         <item row="6" column="1" >
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_17" >
+           <property name="text" >
+            <string>Energy Unit</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" >
+          <widget class="QLabel" name="label_26" >
+           <property name="text" >
+            <string>Max Ring Size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_33" >
+           <property name="text" >
+            <string>Common Elements</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1" >
           <widget class="QSpinBox" name="MaxUndoLevelsSpin" >
            <property name="toolTip" >
             <string>Number of undo levels per model (-1 = unlimited)</string>
@@ -2752,47 +2809,6 @@
            <property name="minimum" >
             <number>-1</number>
            </property>
-          </widget>
-         </item>
-         <item row="5" column="0" >
-          <widget class="QLabel" name="label_26" >
-           <property name="text" >
-            <string>Max Ring Size</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0" >
-          <widget class="QLabel" name="label_16" >
-           <property name="text" >
-            <string>Max Undo Levels</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" >
-          <widget class="QLabel" name="label_27" >
-           <property name="text" >
-            <string>Energy Update Frequency</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" >
-          <widget class="QComboBox" name="DensityUnitCombo" >
-           <property name="toolTip" >
-            <string>Global density unit in use</string>
-           </property>
-           <property name="currentIndex" >
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text" >
-             <string>g / cm3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text" >
-             <string>Atoms / &amp;#8491;&lt;sup>-3&lt;/sup></string>
-            </property>
-           </item>
           </widget>
          </item>
          <item row="2" column="1" >
@@ -2832,7 +2848,34 @@
            </item>
           </widget>
          </item>
-         <item row="5" column="1" >
+         <item row="8" column="1" >
+          <widget class="QSpinBox" name="ModelUpdateSpin" >
+           <property name="toolTip" >
+            <string>Model view update frequency for various methods</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QComboBox" name="DensityUnitCombo" >
+           <property name="toolTip" >
+            <string>Global density unit in use</string>
+           </property>
+           <property name="currentIndex" >
+            <number>0</number>
+           </property>
+           <item>
+            <property name="text" >
+             <string>g / cm3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text" >
+             <string>Atoms / &amp;#8491;&lt;sup>-3&lt;/sup></string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="6" column="1" >
           <widget class="QSpinBox" name="MaxRingSizeSpin" >
            <property name="toolTip" >
             <string>Maximum ring size detected when typing atoms</string>
@@ -2842,34 +2885,17 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1" >
-          <widget class="QSpinBox" name="EnergyUpdateSpin" >
-           <property name="toolTip" >
-            <string>Frequency of energy output for various methods</string>
-           </property>
-           <property name="maximum" >
-            <number>1000</number>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_18" >
+           <property name="text" >
+            <string>Density Unit</string>
            </property>
           </widget>
          </item>
          <item row="7" column="0" >
-          <widget class="QLabel" name="label_28" >
+          <widget class="QLabel" name="label_16" >
            <property name="text" >
-            <string>Model Update Frequency</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" >
-          <widget class="QLabel" name="label_17" >
-           <property name="text" >
-            <string>Energy Unit</string>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1" >
-          <widget class="QSpinBox" name="ModelUpdateSpin" >
-           <property name="toolTip" >
-            <string>Model view update frequency for various methods</string>
+            <string>Max Undo Levels</string>
            </property>
           </widget>
          </item>
@@ -2883,6 +2909,30 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0" >
+          <widget class="QLabel" name="label_27" >
+           <property name="text" >
+            <string>Energy Update Frequency</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" >
+          <widget class="QSpinBox" name="EnergyUpdateSpin" >
+           <property name="toolTip" >
+            <string>Frequency of energy output for various methods</string>
+           </property>
+           <property name="maximum" >
+            <number>1000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0" >
+          <widget class="QLabel" name="label_28" >
+           <property name="text" >
+            <string>Model Update Frequency</string>
+           </property>
+          </widget>
+         </item>
          <item row="4" column="0" >
           <widget class="QLabel" name="label_19" >
            <property name="text" >
@@ -2890,24 +2940,27 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0" >
-          <widget class="QLabel" name="label_18" >
-           <property name="text" >
-            <string>Density Unit</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0" >
-          <widget class="QLabel" name="label_33" >
-           <property name="text" >
-            <string>Common Elements</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1" >
           <widget class="QLineEdit" name="CommonElementsEdit" >
            <property name="toolTip" >
             <string>List of common elements that appear as separate buttons in the Select Element dialog</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" >
+          <widget class="QLabel" name="label_34" >
+           <property name="text" >
+            <string>Max Rings / Pattern</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" >
+          <widget class="QSpinBox" name="MaxRingsSpin" >
+           <property name="maximum" >
+            <number>10000</number>
+           </property>
+           <property name="minimum" >
+            <number>-1</number>
            </property>
           </widget>
          </item>

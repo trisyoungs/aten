@@ -78,37 +78,36 @@ void Canvas::informScroll(bool dir)
 }
 
 // Inform key down
-void Canvas::informKeyDown(Canvas::KeyCode key)
+void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool altkey)
 {
 	// Check datamodel...
 	if (displayModel_ == NULL) return;
-	static Model *viewtarget;
-	// For view operations when we have a trajectory, apply all movement to the parent model
-	//viewtarget = (displayModel_->trajectoryParent() == NULL ? displayModel_ : displayModel_->trajectoryParent());
-	viewtarget = displayModel_;
+	keyModifier_[Prefs::ShiftKey] = shiftkey;
+	keyModifier_[Prefs::CtrlKey] = ctrlkey;
+	keyModifier_[Prefs::AltKey] = altkey;
 	switch (key)
 	{
 		case (Canvas::LeftKey):
-			viewtarget->rotate(-10.0,0.0);
+			displayModel_->rotate( shiftkey ? -1.0 : -10.0, 0.0);
 			postRedisplay();
 			break;
 		case (Canvas::RightKey):
-			viewtarget->rotate(10.0,0.0);
+			displayModel_->rotate( shiftkey ? 1.0 : 10.0, 0.0);
 			postRedisplay();
 			break;
 		case (Canvas::UpKey):
-			viewtarget->rotate(0.0,-10.0);
+			displayModel_->rotate(0.0, shiftkey ? -1.0 : -10.0);
 			postRedisplay();
 			break;
 		case (Canvas::DownKey):
-			viewtarget->rotate(0.0,10.0);
+			displayModel_->rotate(0.0, shiftkey ? 1.0 : 10.0);
 			postRedisplay();
 			break;
 	}
 }
 
 // Inform key up
-void Canvas::informKeyUp(Canvas::KeyCode key)
+void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool altkey)
 {
 	switch (key)
 	{
@@ -260,7 +259,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 	// Finalize the current action on the model
 	msg.enter("Canvas::endMode");
 	double area, radius;
-	Atom **atoms, *i;
+	Atom *atoms[4], *i;
 	Bond *b;
 	Bond::BondType bt;
 	if (displayModel_ == NULL)
@@ -273,8 +272,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 	bool shifted = keyModifier_[Prefs::ShiftKey];
 	bool ctrled = keyModifier_[Prefs::CtrlKey];
 	bool modded = (shifted || ctrled);
-	// Create atoms pointer array
-	atoms = new Atom*[4];
 	// Reset mouse button flag
 	mouseButton_[button] = FALSE;
 	// Copy the current mode and reset it so we redraw properly
@@ -487,7 +484,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);
 			break;
 	}
-	delete[] atoms;
 	msg.exit("Canvas::endMode");
 }
 

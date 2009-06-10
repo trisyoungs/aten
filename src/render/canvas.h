@@ -338,9 +338,9 @@ class Canvas
 	// Inform the canvas of a mouse wheel scroll event
 	void informScroll(bool);
 	// Inform the canvas of a keydown event
-	void informKeyDown(KeyCode);
+	void informKeyDown(KeyCode kc, bool shiftkey, bool ctrlkey, bool altkey);
 	// Inform the canvas of a keydown event
-	void informKeyUp(KeyCode);
+	void informKeyUp(KeyCode kc, bool shiftkey, bool ctrlkey, bool altkey);
 	// Return modifier status
 	bool modifierOn(Prefs::ModifierKey);
 };

@@ -136,8 +136,9 @@ void Canvas::renderModelAtoms()
 						glCylinder(rj,rij,0,bondradius);
 						break;
 					case (Bond::Double):	// Double bond
-						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.2 * bondradius;
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
+						ijk *= bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						glCylinder(rj,rij,0,bondradius);
@@ -146,7 +147,8 @@ void Canvas::renderModelAtoms()
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 					case (Bond::Triple):	// Triple bond
-						ijk = i->findBondPlane(j,bref->item,rj);
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glCylinder(rj,rij,0,bondradius);
@@ -173,7 +175,8 @@ void Canvas::renderModelAtoms()
 						break;
 					case (Bond::Double):	// Double bond
 						// Must define a plane in which the bond will lay
-						ijk = i->findBondPlane(j,bref->item,rj);
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius; // 0.05;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glBegin(GL_LINES);
@@ -184,7 +187,8 @@ void Canvas::renderModelAtoms()
 						glEnd();
 						break;
 					case (Bond::Triple):	// Triple bond
-						ijk = i->findBondPlane(j,bref->item,rj);
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius; // 0.1;
 						glBegin(GL_LINES);
 						  glVertex3d(0.0,0.0,0.0);
@@ -267,8 +271,9 @@ void Canvas::renderModelAtoms()
 					glCylinder(rj,rij,1,bondradius);
 					break;
 				case (Bond::Double):	// Double bond
-					ijk = i->findBondPlane(j,bref->item,rj);
-					ijk *= 0.1;
+					if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+					else ijk = j->findBondPlane(i,bref->item,rj);
+					ijk *= bondradius;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					glCylinder(rj,rij,1,bondradius);
@@ -277,8 +282,9 @@ void Canvas::renderModelAtoms()
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
 				case (Bond::Triple):	// Triple bond
-					ijk = i->findBondPlane(j,bref->item,rj);
-					ijk *= 0.1;
+					if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+					else ijk = j->findBondPlane(i,bref->item,rj);
+					ijk *= bondradius;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
 					glCylinder(rj,rij,1,bondradius);
 					glTranslated(ijk.x,ijk.y,ijk.z);

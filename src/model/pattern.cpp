@@ -324,7 +324,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	if (nmols != 0)
 	{
 		msg.print("New pattern found: %s\n", emp.get());
-		p = addPattern(nmols,patclip.nAtoms(), emp.get());
+		p = addPattern(nmols, patclip.nAtoms(), emp.get());
 	}
 
 	// Deselect all atoms (unless the default pattern was forced)

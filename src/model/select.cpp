@@ -445,14 +445,14 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	{
 		if (bondingCuboids_[n].nItems() != 0)
 		{
-	// 		if (cuboids[n].nItems() > 0) printf("On cuboid %i (%ix%ix%i) which contains %i atoms\n", n, x, y, z, cuboids[n].nItems());
+// 			if (bondingCuboids_[n].nItems() > 0) printf("On cuboid %i (%ix%ix%i) which contains %i atoms\n", n, x, y, z, bondingCuboids_[n].nItems());
 			// For each of the atoms in the cuboid, check distance with each atom in eight of the closest
 			// overlay boxes. 
 			checklist[0] = n;
 			x2 = (x == (cuboidBoxes_.x-1) ? 0 : x+1);
 			y2 = (y == (cuboidBoxes_.y-1) ? 0 : y+1);
 			z2 = (z == (cuboidBoxes_.z-1) ? 0 : z+1);
-// 			if (cuboids[n].nItems() > 0) printf("....xyz = %i,%i,%i, xyz2 = %i,%i,%i\n", x, y, z, x2, y2, z2);
+// 			if (bondingCuboids_[n].nItems() > 0) printf("....xyz = %i,%i,%i, xyz2 = %i,%i,%i\n", x, y, z, x2, y2, z2);
 			checklist[1] = x2*cuboidYZ_+y*cuboidBoxes_.z+z;
 			checklist[2] = x2*cuboidYZ_+y2*cuboidBoxes_.z+z;
 			checklist[3] = x2*cuboidYZ_+y*cuboidBoxes_.z+z2;
@@ -494,6 +494,8 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 			}
 		}
 	}
+	// Free bonding cuboids
+	freeBondingCuboids();
 	msg.print("%i overlapping atoms selected.\n", count);
 	msg.exit("Model::selectOverlaps");
 }

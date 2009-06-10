@@ -104,6 +104,26 @@ void TCanvas::resizeGL(int width, int height)
 	else printf("NO CANVAS SET RESIZE\n");
 }
 
+/*
+// Input
+*/
+
+void TCanvas::keyPressEvent(QKeyEvent *event)
+{
+	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	Qt::KeyboardModifiers km = event->modifiers();
+	if (kc != Canvas::OtherKey) gui.mainView.informKeyDown(kc, km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
+	else event->ignore();
+}
+
+void TCanvas::keyReleaseEvent(QKeyEvent *event)
+{
+	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	Qt::KeyboardModifiers km = event->modifiers();
+	if (kc != Canvas::OtherKey) gui.mainView.informKeyUp(kc, km&Qt::ShiftModifier, km&Qt::ControlModifier, km&Qt::AltModifier);
+	else event->ignore();
+}
+
 void TCanvas::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse

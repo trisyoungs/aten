@@ -70,6 +70,8 @@ template <class T> class Mat4
 	void setFromColumnMajor(T*);
 	// Reset the matrix to the identity
 	void setIdentity();
+	// Get individual element of matrix
+	T get(int row, int col);
 
 
 	/*
@@ -201,6 +203,12 @@ template <class T> void Mat4<T>::zero()
 	rows[1].zero();
 	rows[2].zero();
 	rows[3].zero();
+}
+
+// Get individual element of matrix (by row/column)
+template <class T> T Mat4<T>::get(int row, int col)
+{
+	return rows[row].get(col);
 }
 
 /*

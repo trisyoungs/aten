@@ -335,7 +335,7 @@ class Pattern
 	// List of rings in one molecule of the pattern
 	List<Ring> rings_;
 	// Recursive ring-search routine
-	void ringSearch(Atom *i, Ring *currentpath);
+	bool ringSearch(Atom *i, Ring *currentpath);
 	// Search existing ring list for existence of supplied ring
 	bool isRingInList(Ring *source);
 

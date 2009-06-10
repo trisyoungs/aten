@@ -871,6 +871,7 @@ void Pattern::findRings()
 {
 	msg.enter("Pattern::findRings");
 	int n, rsize;
+	bool endearly = FALSE;
 	Atom *i;
 	Ring path;
 	// Loop over atoms, searching for rings on each
@@ -885,24 +886,27 @@ void Pattern::findRings()
 				path.clear();
 				path.setRequestedSize(rsize);
 				// Call the recursive search to extend the path by this atom
-				ringSearch(i,&path);
+				endearly = ringSearch(i,&path);
+				if (endearly) break;
 			}
 		}
 		i = i->next;
+		if (endearly) break;
 	}
-	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
+	if (endearly) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
+	else msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
 
 // Ring search
-void Pattern::ringSearch(Atom *i, Ring *currentpath)
+bool Pattern::ringSearch(Atom *i, Ring *currentpath)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	msg.enter("Pattern::ringSearch");
 	Refitem<Bond,int> *bref;
 	Ring *r;
 	Refitem<Atom,int> *lastra;
-	bool done;
+	bool done, maxreached = FALSE;
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
@@ -930,11 +934,15 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath)
 					if (!isRingInList(currentpath))
 					{
 						msg.print(Messenger::Verbose," --- Storing current ring.\n");
-						r = rings_.add();
-						r->copy(currentpath);
-						r->finalise();
-						r->print();
-						done = TRUE;
+						if (rings_.nItems() == prefs.maxRings()) maxreached = TRUE;
+						else
+						{
+							r = rings_.add();
+							r->copy(currentpath);
+							r->finalise();
+							r->print();
+							done = TRUE;
+						}
 					}
 				}
 			}
@@ -944,7 +952,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath)
 				ringSearch(bref->item->partner(i),currentpath);
 			}
 			bref = bref->next;
-			if (done) break;
+			if (done || maxreached) break;
 		}
 		// Return the list to its original state
 		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements().symbol(i),i);
@@ -952,6 +960,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath)
 	}
 // 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
 	msg.exit("Pattern::ringSearch");
+	return (!maxreached);
 }
 
 // Search existing ring list for existence of supplied ring
@@ -1125,14 +1134,17 @@ void printstuff(Pattern *p)
 void Pattern::describeAtoms()
 {
 	// 1) Locate ring structures
+	msg.print(Messenger::Verbose, "Detecting rings in pattern '%s'...\n", name_.get());
 	findRings();
 	// 2) Reset atom environments
+	msg.print(Messenger::Verbose, "Determining atom environments in pattern '%s'...\n", name_.get());
 	clearHybrids();
 	printstuff(this);
 	// 3) Assign hybridisation types
 	assignHybrids();
 	printstuff(this);
 	// 4) Go through the ring list and see if any are aromatic
+	msg.print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...\n", name_.get());
 	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
 }
 

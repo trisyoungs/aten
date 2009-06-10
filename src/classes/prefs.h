@@ -506,6 +506,8 @@ class Prefs
 	int modelUpdate_, energyUpdate_;
 	// Maximum ring size in ring search algorithm
 	int maxRingSize_;
+	// Maximum number of rings to detect per pattern
+	int maxRings_;
 	// Whether to fold atoms before replication
 	bool replicateFold_;
 	// Whether to trim atoms after replication
@@ -532,6 +534,10 @@ class Prefs
 	int maxRingSize();
 	// Set the maximum ring size allowed
 	void setMaxRingSize(int i);
+	// Return the maximum number of rings to detect per pattern
+	int maxRings();
+	// Set the maximum number of rings to detect per pattern
+	void setMaxRings(int i);
 	// Set whether to fold atoms before replication
 	void setReplicateFold(bool b);
 	// Return whether to fold atoms before replication

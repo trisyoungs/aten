@@ -126,6 +126,7 @@ class AtenPrefs : public QDialog
 	void on_EnergyUnitCombo_currentIndexChanged(int index);
 	void on_EnergyUpdateSpin_valueChanged(int value);
 	void on_HAddDistanceSpin_valueChanged(double value);
+	void on_MaxRingsSpin_valueChanged(int value);
 	void on_MaxRingSizeSpin_valueChanged(int value);
 	void on_MaxUndoLevelsSpin_valueChanged(int value);
 	void on_ModelUpdateSpin_valueChanged(int value);
