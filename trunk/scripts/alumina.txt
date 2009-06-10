@@ -12,19 +12,11 @@ newatomfrac(O, 0.1611, 0, 0.0984);
 # Pack and replicate cell
 spacegroup("C2/m");
 pack();
-replicate(0, 0, 0, 5, 20, 2);
+replicate(0, 0, 0, 6, 21, 3);
 
 # Create 001 surfaces
 adjustcell("c", 20.0);
 rebond();
-
-# Add hydrogens to uppermost (in z) oxygen atoms
-# Select the oxygen atoms, copy, paste, and convert to H
-selecttype(O, "nbonds=2");
-for (atom i=aten.model.atoms; i; ++i) if (i.rz < 10.0) deselect(i);
-copy();
-paste(0, 0, 1.0);
-transmute(H);
 
 # Hydroxylate uppermost (in z) aluminium atoms
 # Select, copy, and paste twice, transmuting to O and H
@@ -34,6 +26,8 @@ for (atom i=aten.model.atoms; i; ++i) if (i.rz < 10.0) deselect(i);
 copy();
 paste(0, 0, 2.0);
 transmute(O);
-paste(0, 0, 3.0);
+paste(0.9422, 0.0, 2.3350);
 transmute(H);
+selectnone();
+
 rebond();

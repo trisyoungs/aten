@@ -228,6 +228,7 @@ Prefs::Prefs()
 	modelUpdate_ = 5;
 	energyUpdate_ = 1;
 	maxRingSize_ = 6;
+	maxRings_ = 20;
 	replicateFold_ = TRUE;
 	replicateTrim_ = TRUE;
 
@@ -1144,6 +1145,18 @@ void Prefs::setMaxRingSize(int i)
 {
 	if (i < 3) msg.print("The option 'maxringsize' cannot be set to less than 3.\n");
 	else maxRingSize_ = i;
+}
+
+// Return the maximum number of rings to detect per pattern
+int Prefs::maxRings()
+{
+	return maxRings_;
+}
+
+// Set the maximum number of rings to detect per pattern
+void Prefs::setMaxRings(int i)
+{
+	maxRings_ = i;
 }
 
 // Set whether to fold atoms before replication

@@ -124,6 +124,7 @@ void AtenPrefs::setControls()
 	ui.EnergyUnitCombo->setCurrentIndex(prefs.energyUnit());
 	ui.EnergyUpdateSpin->setValue(prefs.energyUpdate());
 	ui.HAddDistanceSpin->setValue(prefs.hydrogenDistance());
+	ui.MaxRingsSpin->setValue(prefs.maxRings());
 	ui.MaxRingSizeSpin->setValue(prefs.maxRingSize());
 	ui.MaxUndoLevelsSpin->setValue(prefs.maxUndoLevels());
 	ui.ModelUpdateSpin->setValue(prefs.modelUpdate());
@@ -774,6 +775,11 @@ void AtenPrefs::on_EnergyUpdateSpin_valueChanged(int value)
 void AtenPrefs::on_HAddDistanceSpin_valueChanged(double value)
 {
 	prefs.setHydrogenDistance(value);
+}
+
+void AtenPrefs::on_MaxRingsSpin_valueChanged(int value)
+{
+	prefs.setMaxRings(value);
 }
 
 void AtenPrefs::on_MaxRingSizeSpin_valueChanged(int value)

@@ -724,17 +724,19 @@ bool GuiQt::progressUpdate(int currentstep)
 			for (n=0; n<ndots; n++) printf(".");
 			for (n=ndots; n<30; n++) printf(" ");
 			// Lastly, print percentage and ETA
-			printf("(%-3i%%, ETA %s)",percent, qPrintable(remtime.toString("h:m:s")));
+			printf("(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
 			fflush(stdout);
 			progressPercent_ = percent;
 		}
 	}
 	else if (time_.elapsed() >= 500)
 	{
+		static char s[64];
 		setWindowsEnabled(FALSE);
 		mainWindow->progressIndicator->setVisible(TRUE);
 		mainWindow->progressBar->setValue(progressCurrentStep_);
-		mainWindow->progressEta->setText( remtime.toString("h:m:s") );
+		sprintf(s, "ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
+		mainWindow->progressEta->setText(s);
 		app->processEvents();
 	}
 	// Check to see if the abort button was pressed

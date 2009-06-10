@@ -29,6 +29,9 @@
 // Constructor
 Generator::Generator()
 {
+	// Private variables
+	matrix_.set(3, 0.0, 0.0, 0.0, 1.0);
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -82,17 +85,6 @@ bool Generator::set(const char *s)
 	return TRUE;
 }
 
-// Set from SGInfo integer array
-bool Generator::set(int *a)
-{
-	// Structure is a[0] - a[8] = rotation matrix, a[9] - a[11] translation vector
-	matrix_.set(0, a[0], a[1], a[2], a[9] / (1.0*STBF));
-	matrix_.set(1, a[3], a[4], a[5], a[10] / (1.0*STBF));
-	matrix_.set(2, a[6], a[7], a[8], a[11] / (1.0*STBF));
-	matrix_.set(3, 0.0, 0.0, 0.0, 1.0);
-	return TRUE;
-}
-
 // Set partial element of matrix or translation vector
 bool Generator::setMatrixPart(int row, const char *s)
 {
@@ -113,26 +105,32 @@ bool Generator::setMatrixPart(int row, const char *s)
 	{
 		// Must be a number....
 		int num = atoi(s);
- 		printf("Translation integer is %i.\n", num);
+//  		printf("Translation integer is %i.\n", num);
 		matrix_.set(row, 3, num / (1.0*STBF));
 // 		translation.set(row, value);
 	}
 	return TRUE;
 }
 
+// Set rotation matrix row
+void Generator::setRotation(int row, double x, double y, double z)
+{
+	if ((row < 0) || (row > 3)) printf("Generator: Rotation matrix row %i is out of range.\n", row);
+	else matrix_.rows[row].set(x, y, z, matrix_.get(row,3) );
+}
+
+// Set translation column
+void Generator::setTranslation(double tx, double ty, double tz, double divisor)
+{
+	matrix_.set(0,3,tx/divisor);
+	matrix_.set(1,3,ty/divisor);
+	matrix_.set(2,3,tz/divisor);
+}
+
 // Return name of generator
 const char *Generator::name()
 {
 	return name_.get();
-}
-
-// Negate elements in matrix
-void Generator::negateMatrix()
-{
-	matrix_.rows[0] *= -1;
-	matrix_.rows[1] *= -1;
-	matrix_.rows[2] *= -1;
-	matrix_.rows[3] *= -1;
 }
 
 // Return matrix of generator

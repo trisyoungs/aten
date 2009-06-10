@@ -45,6 +45,10 @@ class TCanvas : public QGLWidget
 	// Probe widget/context/format features
 	void probeFeatures();
 
+	public slots:
+	void keyPressEvent(QKeyEvent*);
+	void keyReleaseEvent(QKeyEvent*);
+
 	protected:
 	void initializeGL();
 	void paintGL();

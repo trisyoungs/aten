@@ -286,17 +286,35 @@ void Model::pack()
 	{
 		msg.print("Packing cell from previous spacegroup definition.\n");
 		Generator gen;
-		// Loop over the Seitz matrix definitions in the SGInfo structure
-		for (int n=0; n<spacegroup_.nList; ++n)
+		// Code copied verbatim from http://cci.lbl.gov/sginfo/sginfo_loop_symops.html and modified slightly to use Aten's classes
+		int iList, f, i, nTrV, iTrV, nLoopInv, iLoopInv;
+		const int *TrV;
+		const T_RTMx *lsmx;
+		
+		nLoopInv = Sg_nLoopInv(&spacegroup_);
+		
+		nTrV = spacegroup_.LatticeInfo->nTrVector;
+		TrV = spacegroup_.LatticeInfo->TrVector;
+		
+		for (iTrV = 0; iTrV < nTrV; iTrV++, TrV += 3)
 		{
-			// Create a generator from the Seitz matrix data
-			gen.set(spacegroup_.ListSeitzMx[n].a);
-			pack(&gen);
-			// Perform inversion 
-			if (spacegroup_.Centric == -1)
+			for (iLoopInv = 0; iLoopInv < nLoopInv; iLoopInv++)
 			{
-				gen.negateMatrix();
-				pack(&gen);
+				if (iLoopInv == 0) f =  1;
+				else               f = -1;
+		
+				lsmx = spacegroup_.ListSeitzMx;
+				
+				for (iList = 0; iList < spacegroup_.nList; iList++, lsmx++)
+				{
+					gen.setRotation(0, f*lsmx->s.R[0], f*lsmx->s.R[1], f*lsmx->s.R[2]);
+					gen.setRotation(1, f*lsmx->s.R[3], f*lsmx->s.R[4], f*lsmx->s.R[5]);
+					gen.setRotation(2, f*lsmx->s.R[6], f*lsmx->s.R[7], f*lsmx->s.R[8]);
+
+					gen.setTranslation( iModPositive(f * lsmx->s.T[0] + TrV[0], STBF), iModPositive(f * lsmx->s.T[1] + TrV[1], STBF), iModPositive(f * lsmx->s.T[2] + TrV[2], STBF), STBF);
+				
+					pack(&gen);
+				}
 			}
 		}
 	}

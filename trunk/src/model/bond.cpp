@@ -210,6 +210,7 @@ void Model::initialiseBondingCuboids()
 		lengths /= cuboidSize_;
 		Vec3<int> ilengths;
 		ilengths.set(lengths.x, lengths.y, lengths.z);
+		for (int n=0; n<3; ++n) if (ilengths.get(n) == 0) ilengths.set(n,1);
 		cuboidSize_.set(1.0 / ilengths.x, 1.0 / ilengths.y, 1.0 / ilengths.z);
 		cuboidBoxes_.set(ilengths.x, ilengths.y, ilengths.z);
 	}

@@ -117,7 +117,11 @@ bool Model::createExpression(bool vdwOnly)
 	{
 		p->deleteExpression();
 		p->initExpression(vdwOnly);
-		if (!p->fillExpression()) return FALSE;
+		if (!p->fillExpression())
+		{
+			msg.exit("Model::createExpression");
+			return FALSE;
+		}
 		p->createMatrices();
 	}
 	// 3) Check the electrostatic setup for the model
