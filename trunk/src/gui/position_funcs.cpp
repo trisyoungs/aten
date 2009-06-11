@@ -83,7 +83,9 @@ void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 
 void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 {
-	CommandNode::run(Command::Centre, "ddd", ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
+	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
+	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
+	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

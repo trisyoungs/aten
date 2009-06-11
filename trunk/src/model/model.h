@@ -692,8 +692,8 @@ class Model
 	// Spin the atom selection
 	void rotateSelectionZaxis(double);
 	// Puts the selections centre of geometry at 0,0,0
-	void centre(const Vec3<double> &v);
-	void centre(double x, double y, double z);
+	void centre(const Vec3<double> &v, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
+	void centre(double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
 	// Translate selection by the vector specified
 	void translateSelectionLocal(const Vec3<double>&);
 	// Translate selection by the vector specified (in world coordinates)

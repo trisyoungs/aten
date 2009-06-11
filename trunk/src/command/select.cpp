@@ -50,7 +50,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 		Element *elem = (Element*) value.asPointer(VTypes::ElementData);
 		if (elem == NULL) return FALSE;
 		m->beginUndoState("%select element (%s)", deselect ? "Des" : "S", elem->symbol);
-		deselect ? m->deselectElement(elem->z) : m->selectAtom(elem->z);
+		deselect ? m->deselectElement(elem->z) : m->selectElement(elem->z);
 		m->endUndoState();
 	}
 	else if (value.type() == VTypes::PatternData)
@@ -214,7 +214,8 @@ bool Command::function_Expand(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Expand current selection");
 	int nselected = obj.rs->nSelected();
-	obj.rs->selectionExpand();
+	if (c->hasArg(0)) for (int n=0; n<c->argi(0); ++n) obj.rs->selectionExpand();
+	else obj.rs->selectionExpand();
 	obj.rs->endUndoState();
 	rv.set( obj.rs->nSelected() - nselected );
 	return TRUE;

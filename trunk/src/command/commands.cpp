@@ -25,7 +25,7 @@
 #include "base/bundle.h"
 #include "parser/tree.h"
 
-// Static singletom
+// Static singleton
 Command commands;
 
 /* Argument Specification Tokens:
@@ -941,8 +941,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "deselecttype",	"EC",		VTypes::IntegerData,
 		"element el, string neta",
 		"Deselect all atoms that match the provided atomtype description" },
-	{ "expand",		"",		VTypes::IntegerData, "",
-		"Expands the current atom selection" },
+	{ "expand",		"n",		VTypes::IntegerData,
+		"int nsteps = 1",
+		"Expands the current atom selection along bonds" },
 	{ "invert",		"",		VTypes::IntegerData, "",
 		"Invert the current selection" },
 	{ "select",		"Z*",		VTypes::IntegerData,
@@ -1071,8 +1072,8 @@ CommandData Command::data[Command::nCommands] = {
 	{ "axisrotate",		"NNNNnnn|AANnnn",	VTypes::NoData,
 		"double ax, double ay, double az, double theta, double ox = 0.0, double oy = 0.0, double oz = 0.0  |  atom|int i, atom|int j, double theta, double ox = 0.0, double oy = 0.0, double oz = 0.0",
 		"Rotate the current selection about a defined axis and origin" },
-	{ "centre",		"NNN",		VTypes::NoData,
-		"double x, double y, double z",
+	{ "centre",		"NNN[bbb]",		VTypes::NoData,
+		"double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE",
 		"Centre the atom selection of the current model at the specified coordinates" },
 	{ "matrixconvert",	"NNNNNNNNNNNNnnnnnnnnn",VTypes::NoData,
 		"double i_sx, double j_sx, double i_sy, double j_sy, double i_sz, double j_sz, double i_dx, double j_dx, double i_dy, double j_dy, double i_dz, double j_dz, double ox = 0.0, double oy = 0.0, double oz = 0.0  |  double sax, double say, double saz, double sbx, double sby, double sbz, double scx, double scy, double scz, double dax, double day, double daz, double dbx, double dby, double dbz, double dcx, double dcy, double dcz, double ox = 0.0, double oy = 0.0, double oz = 0.0",

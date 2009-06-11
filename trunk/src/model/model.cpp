@@ -336,10 +336,10 @@ void Model::copy(Model *srcmodel)
 {
 	// Clear any current contents of the model
 	clear();
-	// Copy all atoms with a clipboard
-	Clipboard clip;
-	clip.copyAll(srcmodel);
-	clip.pasteToModel(this);
+	// Copy atoms
+	for (Atom *i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
+	// Copy bonds
+	for (Bond *b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
 	// Copy unit cell
 	cell_ = srcmodel->cell_;
 }

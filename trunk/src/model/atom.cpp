@@ -286,8 +286,18 @@ void Model::zeroForcesFixed()
 // Set visibility of specified atom
 void Model::setHidden(Atom *i, bool hidden)
 {
-	i->setHidden(hidden);
-	changeLog.add(Log::Visual);
+	if (i->isHidden() != hidden)
+	{
+		i->setHidden(hidden);
+		changeLog.add(Log::Visual);
+		// Add the change to the undo state (if there is one)
+		if (recordingState_ != NULL)
+		{
+			HideEvent *newchange = new HideEvent;
+			newchange->set(hidden, i->id());
+			recordingState_->addEvent(newchange);
+		}
+	}
 }
 
 // Normalise forces
