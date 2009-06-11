@@ -32,12 +32,6 @@ double Model::translateScale()
 	return translateScale_;
 }
 
-// Puts the selections centre of geometry at 0,0,0
-void Model::centre(const Vec3<double> &v)
-{
-	centre(v.x, v.y, v.z);
-}
-
 // Prepare model for atom transform
 void Model::prepareTransform()
 {
@@ -232,12 +226,21 @@ void Model::mirrorSelectionLocal(int axis)
 	msg.exit("Model::mirrorSelectionLocal");
 }
 
+// Puts the selections centre of geometry at 0,0,0
+void Model::centre(const Vec3<double> &v, bool lockx, bool locky, bool lockz)
+{
+	centre(v.x, v.y, v.z, lockx, locky, lockz);
+}
+
 // Centre current selection at specified coordinates
-void Model::centre(double newx, double newy, double newz)
+void Model::centre(double newx, double newy, double newz, bool lockx, bool locky, bool lockz)
 {
 	msg.enter("Model::centre");
 	Vec3<double> cog(newx, newy, newz);
 	cog -= selectionCog();
+	if (lockx) cog.x = 0.0;
+	if (locky) cog.y = 0.0;
+	if (lockz) cog.z = 0.0;
 	translateSelectionLocal(cog);
 	msg.exit("Model::centre");
 }

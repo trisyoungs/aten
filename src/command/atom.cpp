@@ -64,7 +64,9 @@ bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Hide %i atoms", obj.rs->nSelected());
 	obj.rs->selectionSetHidden(TRUE);
+	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -238,7 +240,9 @@ bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Show %i atoms", obj.rs->nSelected());
 	obj.rs->selectionSetHidden(FALSE);
+	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -247,7 +251,9 @@ bool Command::function_Show(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Show all atoms", obj.rs->nSelected());
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);
+	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
 }

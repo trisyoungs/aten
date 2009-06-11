@@ -163,6 +163,22 @@ class GlyphEvent : public UndoEvent
 	void print();
 };
 
+// Hide/Show Event
+class HideEvent : public UndoEvent
+{
+	private:
+	// Change data
+	int targetId_;
+
+	public:
+	// Set change data
+	void set(bool hide, int id);
+	// Undo stored change
+	void undo(Model *m);
+	// Print change information
+	void print();
+};
+
 // Atom ID Shift Event
 class IdShiftEvent : public UndoEvent
 {

@@ -286,6 +286,45 @@ void GlyphEvent::print()
 {
 }
 
+/*Hide Event
+*/
+
+// Set change 
+void HideEvent::set(bool hide, int id)
+{
+	msg.enter("HideEvent::set");
+	direction_ = (hide ? UndoEvent::Undo : UndoEvent::Redo);
+	targetId_ = id;
+	msg.exit("HideEvent::set");
+}
+
+// Undo stored change
+void HideEvent::undo(Model *m)
+{
+	msg.enter("HideEvent::undo");
+	Atom *i, **modelatoms = m->atomArray();
+	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
+	i = modelatoms[targetId_];
+	if (direction_ == UndoEvent::Undo)
+	{
+		msg.print(Messenger::Verbose,"Reversing atom hide - atom id = %i\n", targetId_);
+		m->setHidden(i, FALSE);
+	}
+	else
+	{
+		msg.print(Messenger::Verbose,"Replaying atom hide - atom id = %i\n", targetId_);
+		m->setHidden(i, TRUE);
+	}
+	msg.exit("HideEvent::undo");
+}
+
+// Print event info
+void HideEvent::print()
+{
+	if (direction_ == UndoEvent::Undo) printf("       Atom hide - atom id = %i\n", targetId_);
+	else printf("       Atom show - atom id = %i\n", targetId_);
+}
+
 /*
 // IdShift Event
 */

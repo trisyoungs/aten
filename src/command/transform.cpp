@@ -82,8 +82,10 @@ bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (!c->parent()->isFilter())
 	{
 		Vec3<double> centre = c->arg3d(0);
+		Vec3<int> lock(0,0,0);
+		if (c->hasArg(5)) lock = c->arg3i(3);
 		obj.rs->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs->nSelected(), centre.x, centre.y, centre.z);
-		obj.rs->centre(centre);
+		obj.rs->centre(centre, lock.x, lock.y, lock.z);
 		obj.rs->endUndoState();
 	}
 	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.rs->centre(c->arg3d(0));
