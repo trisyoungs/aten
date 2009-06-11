@@ -632,7 +632,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 				{
 					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
 				}
-				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
+				else sprintf(s,"%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
 				{
 					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));

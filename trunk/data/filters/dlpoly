@@ -2,7 +2,7 @@
 # Created:	 25/03/2009
 # Last modified: 11/06/2009
 # ChangeLog:
-#	11/06/2009 - Fixed counting and output of constraint terms in FIELD export
+#	11/06/2009 - Fixed counting and output of constraint terms in FIELD export. 'nvdw' section corrected to 'vdw'.
 
 filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*",exact="CONFIG,REVCON,config,revcon",nickname="dlpoly",id=2)
 {
@@ -403,7 +403,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 	# Get total number of pair terms to write
 	nvdw = 0;
 	for (n=1; n<=m.natomtypes; ++n) nvdw += n;
-	writeline("nvdw",nvdw);
+	writeline("vdw",nvdw);
 	for (n=1; n<=m.natomtypes; ++n)
 	{
 		at1 = m.atomtypes[n];

@@ -261,10 +261,14 @@ template <class T> T Vec4<T>::operator[](int index)
 template <class T> void Vec4<T>::normalise()
 {
 	double mag = sqrt(w*w + x*x + y*y + z*z);
-	w /= mag;
-	x /= mag;
-	y /= mag;
-	z /= mag;
+	if (mag < 1.0E-8) zero();
+	else
+	{
+		x /= mag;
+		y /= mag;
+		z /= mag;
+		w /= mag;
+	}
 }
 
 // Print
