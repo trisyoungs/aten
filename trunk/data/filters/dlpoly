@@ -1,7 +1,8 @@
 # DL_POLY Configuration Import / Export (for v1.2+)
 # Created:	 25/03/2009
-# Last modified: 10/04/2009
+# Last modified: 11/06/2009
 # ChangeLog:
+#	11/06/2009 - Fixed counting and output of constraint terms in FIELD export
 
 filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*",exact="CONFIG,REVCON,config,revcon",nickname="dlpoly",id=2)
 {
@@ -295,7 +296,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 	atom i;
 	bound b;
 	ffatom at1, at2;
-	int nvdw, n,n2, nconstraints;
+	int nvdw, n, nc, n2, nconstraints;
 	model m = aten.model;
 
 	# First, write header consisting of title, energy units, and number of molecule types
@@ -326,7 +327,9 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		}
 
 		# Bonds in pattern
-		writeline("bonds",p.nbonds);
+		nc = 0;
+		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
+		writeline("bonds",p.nbonds-nc);
 		for (n=1; n<=p.nbonds; ++n)
 		{
 			# Grab bound pointer
@@ -344,7 +347,9 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		}
 
 		# Angles in pattern
-		writeline("angles",p.nangles);
+		nc = 0;
+		for (n=1; n<=p.nangles; ++n) if (p.angles[n].form == "bondconstraint") ++nc;
+		writeline("angles",p.nangles-nc);
 		for (n=1; n<=p.nangles; ++n)
 		{
 			# Grab bound pointer
@@ -379,9 +384,17 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		# Constraint terms
 		writeline("constraints",nconstraints);
 		# ...proper bond constraints first
-		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+		for (n=1; n<=p.nbonds; ++n)
+		{
+			b = p.bonds[n];
+			if (b.form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+		}
 		# ...and now angles that are of type 'bondconstraint'
-		for (n=1; n<=p.nangles; ++n) if (p.angles[n].form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
+		for (n=1; n<=p.nangles; ++n)
+		{
+			b = p.angles[n];
+			if (b.form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
+		}
 		# Terminating line
 		writeline("finish");
 	}

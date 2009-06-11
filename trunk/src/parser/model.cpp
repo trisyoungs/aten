@@ -72,6 +72,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
+	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsionterms",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },

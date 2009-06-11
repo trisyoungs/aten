@@ -210,6 +210,11 @@ bool Tree::execute(ReturnValue &rv)
 		switch (filter.type())
 		{
 			case (FilterData::ExpressionExport):
+				if (!aten.current.m->createExpression())
+				{
+					msg.exit("Tree::execute");
+					return FALSE;
+				}
 				aten.current.m->createUniqueLists();
 				break;
 		}

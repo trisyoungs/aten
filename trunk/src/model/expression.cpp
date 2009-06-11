@@ -165,6 +165,14 @@ void Model::createUniqueLists()
 	msg.enter("Model::createUniqueLists");
 	uniqueTypes_.clear();
 
+	// Must have a valid expression to do this...
+	if (!isExpressionValid())
+	{
+		msg.print("Internal Error: Unique lists cannot be created without a valid expression.\n");
+		msg.exit("Model::createUniqueLists");
+		return;
+	}
+
 	// First, create a list of unique type references
 	Reflist<ForcefieldAtom,int> uniqueRef;
 	Refitem<ForcefieldAtom,int> *ri;
