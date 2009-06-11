@@ -165,7 +165,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
 	msg.enter("MonteCarlo::minimise");
-	int n, cycle, nmoves, move, mol, randpat, npats, prog;
+	int n, cycle, nmoves, move, mol, randpat, npats;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
@@ -205,7 +205,6 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	nmoves = 0;
 	npats = srcmodel->nPatterns();
 	Pattern *p = NULL;
-	prog = 0;
 
 	// Start progess indicator
 	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
@@ -214,20 +213,22 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Loop over MC moves
-		for (move=0; move<MonteCarlo::Insert; move++)
+		for (move=0; move<MonteCarlo::Insert; ++move)
 		{
 			// Update progress indicator
-			prog ++;
-			if (gui.exists() && (!gui.progressUpdate(prog))) break;
+			if (gui.exists() && (!gui.progressUpdate())) break;
 
 			acceptanceRatio_[0][move] = 0;
 			// If this move type isn't moveAllowed_ then continue onto the next
 			if (!moveAllowed_[move]) continue;
-			for (n=0; n<nTrials_[move]; n++)
+			for (n=0; n<nTrials_[move]; ++n)
 			{
 				// Select random pattern and molecule
-				npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
-				p = srcmodel->pattern(randpat);
+				do
+				{
+					npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
+					p = srcmodel->pattern(randpat);
+				} while (p->nMolecules() == 0);
 				mol = csRandomi(p->nMolecules());
 	
 				// Copy the coordinates of the current molecule
@@ -344,6 +345,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	if (destmodel->cell()->type() == Cell::NoCell)
 	{
 		msg.print("Model must have a cell definition to be the target of a disordered build.\n");
+		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 
@@ -368,7 +370,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	for (c = aten.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
-		if (c->nRequested() == 0) continue;
+		if (c->nRequested() < 0) continue;
 		if (c->cell()->type() != Cell::NoCell) continue;
 		// Add this model to the component reflist
 		components.add(c);
@@ -628,7 +630,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 				s[0] = '\n';
 				if (p == destmodel->patterns())
 				{
-					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
+					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
 				}
 				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
