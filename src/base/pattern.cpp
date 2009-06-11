@@ -796,7 +796,7 @@ void Pattern::propagateBondTypes()
 // Select atom 'i' in all molecules
 void Pattern::selectAtom(int id, bool markonly, bool deselect)
 {
-	msg.exit("Pattern::selectAtom");
+	msg.enter("Pattern::selectAtom");
 	int n,m;
 	Atom *i = firstAtom_;
 	for (m=0; m<nMolecules_; m++)
@@ -871,7 +871,7 @@ void Pattern::findRings()
 {
 	msg.enter("Pattern::findRings");
 	int n, rsize;
-	bool endearly = FALSE;
+	bool okay;
 	Atom *i;
 	Ring path;
 	// Loop over atoms, searching for rings on each
@@ -886,15 +886,15 @@ void Pattern::findRings()
 				path.clear();
 				path.setRequestedSize(rsize);
 				// Call the recursive search to extend the path by this atom
-				endearly = ringSearch(i,&path);
-				if (endearly) break;
+				okay = ringSearch(i,&path);
+				if (!okay) break;
 			}
 		}
 		i = i->next;
-		if (endearly) break;
+		if (!okay) break;
 	}
-	if (endearly) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
-	else msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
+	if (!okay) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
+	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
 
@@ -949,7 +949,7 @@ bool Pattern::ringSearch(Atom *i, Ring *currentpath)
 			else
 			{
 				// Current path is not long enough, so extend it
-				ringSearch(bref->item->partner(i),currentpath);
+				if (!ringSearch(bref->item->partner(i),currentpath)) maxreached = TRUE;
 			}
 			bref = bref->next;
 			if (done || maxreached) break;

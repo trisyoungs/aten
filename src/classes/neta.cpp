@@ -616,7 +616,9 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		if (found) msg.print(Messenger::Typing,"[passed]\n");
 		else
 		{
-			msg.print(Messenger::Typing,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);
+			msg.print(Messenger::Typing,"[failed - is %i, but type needs ", i->element());
+			for (n=0; n<nAllowedElements_; n++) msg.print(Messenger::Typing, "%i ", allowedElements_[n]);
+			msg.print(Messenger::Typing,"]\n");
 			level --;
 			msg.exit("Neta::matchAtom");
 			return -1;

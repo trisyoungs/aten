@@ -393,7 +393,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "regioncentre",	"NNN",		VTypes::NoData,
 		"double x, double y, double z",
 		"Set the region centre of the current model" },
-	{ "regioncentreffrac",	"NNN",		VTypes::NoData,
+	{ "regioncentrefrac",	"NNN",		VTypes::NoData,
 		"double x, double y, double z",
 		"Set the region centre of the current model (fractional coordinates)" },
 	{ "regionfrac",		"CNNNNNNB",	VTypes::NoData,
