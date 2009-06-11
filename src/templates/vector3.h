@@ -442,9 +442,13 @@ template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
 template <class T> double Vec3<T>::magAndNormalise()
 {
 	double mag = sqrt(x*x + y*y + z*z);
-	x /= mag;
-	y /= mag;
-	z /= mag;
+	if (mag < 1.0E-8) zero();
+	else
+	{
+		x /= mag;
+		y /= mag;
+		z /= mag;
+	}
 	return mag;
 }
 
@@ -496,9 +500,13 @@ template <class T> void Vec3<T>::multiply(const Vec3<T> &v)
 template <class T> void Vec3<T>::normalise()
 {
 	double mag = sqrt(x*x + y*y + z*z);
-	x /= mag;
-	y /= mag;
-	z /= mag;
+	if (mag < 1.0E-8) zero();
+	else
+	{
+		x /= mag;
+		y /= mag;
+		z /= mag;
+	}
 }
 
 // Get orthogonal vector
