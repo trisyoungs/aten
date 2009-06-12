@@ -174,6 +174,8 @@ class Atom
 	int nBonds();
 	// Return the current bond list
 	Refitem<Bond,int> *bonds();
+	// Return nth bond in the list
+	Refitem<Bond,int> *bond(int index);
 	// Check the number of bonds against the supplied value
 	bool isNBonds(int n);
 	// Accept the specified bond to the atom's local reference list

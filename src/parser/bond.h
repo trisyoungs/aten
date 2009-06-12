@@ -41,17 +41,23 @@ class BondVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { I, J, Order, Type, nAccessors };
+	enum Accessors { I, J, Order, Type, nAccessors };
+	// Function list
+	enum Functions { Partner, nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
 	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	// Perform desired function
+	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+	// Function Accessor data
+	static FunctionAccessor functionData[nFunctions];
 };
 
 // Bond Array Variable
@@ -66,7 +72,7 @@ class BondArrayVariable : public PointerArrayVariable
 	*/
 	public:
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

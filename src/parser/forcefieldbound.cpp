@@ -60,13 +60,13 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldBoundVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldBoundVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldBoundVariable::accessorSearch(s, arrayindex);
+	return ForcefieldBoundVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("ForcefieldBoundVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -74,18 +74,42 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'ffbound&' has no member named '%s'.\n", s);
-		msg.exit("ForcefieldBoundVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'ffbound&' has no member or function named '%s'.\n", s);
+			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'ffbound&' function '%s'.\n", s);
+			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::ForcefieldBoundData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'ffbound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ForcefieldBoundVariable::accessorSearch");
 	return result;
 }
@@ -114,7 +138,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("ForcefieldBoundVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -205,6 +229,31 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 	return result;
 }
 
+// Perform desired function
+bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("ForcefieldBoundVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for ForcefieldBound type.\n", i);
+		msg.exit("ForcefieldBoundVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	ForcefieldBound *ptr= (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldBoundVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("ForcefieldBoundVariable::performFunction");
+	return result;
+}
+
 /*
 // Variable Array
 */
@@ -222,7 +271,7 @@ ForcefieldBoundArrayVariable::ForcefieldBoundArrayVariable(TreeNode *sizeexpr, b
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldBoundArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldBoundArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldBoundVariable::accessorSearch(s, arrayindex);
+	return ForcefieldBoundVariable::accessorSearch(s, arrayindex, arglist);
 }

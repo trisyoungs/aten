@@ -336,6 +336,7 @@ class Command
 		ASin,
 		ATan,
 		Cos,
+		DotProduct,
 		Exp,
 		Ln,
 		Log,
@@ -755,6 +756,7 @@ class Command
 	static bool function_ASin(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ATan(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DotProduct(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Ln(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Log(CommandNode *c, Bundle &obj, ReturnValue &rv);

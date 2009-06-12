@@ -696,6 +696,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "cos",		"N",		VTypes::DoubleData,
 		"double degrees",
 		"Return cosine of specified angle (supplied in degrees)" },
+	{ "dotproduct",		"UU",		VTypes::DoubleData,
+		"vector u, vector v",
+		"Calculate dot product of the two supplied vectors" },
 	{ "exp",		"N",		VTypes::DoubleData,
 		"double value",
 		"Return exponential of the argument" },
@@ -709,7 +712,7 @@ CommandData Command::data[Command::nCommands] = {
 		"double number",
 		"Return nearest integer to supplied real value" },
 	{ "normalise",		"U",		VTypes::DoubleData,
-		"double vector",
+		"vector v",
 		"Normalise the values of the 3-vector supplied" },
 	{ "sin",		"N",		VTypes::DoubleData,
 		"double degrees",
@@ -1026,7 +1029,6 @@ CommandData Command::data[Command::nCommands] = {
 	{ "stripchars",		"CC",		VTypes::StringData,
 		"string source, string searchchars",
 		"Strip all occurrences of the supplied characters from the supplied string" },
-
 
 	// System commands
 	{ "debug",		"C",		VTypes::NoData,

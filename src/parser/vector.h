@@ -69,16 +69,22 @@ class VectorVariable : public Variable
 	public:
 	// Accessor list
 	enum Accessors { Magnitude, X, Y, Z, nAccessors };
+	// Function list
+	enum Functions { nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
 	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	// Perform desired function
+	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+	// Function Accessor data
+	static FunctionAccessor functionData[nFunctions];
 };
 
 // Vector Array Variable
@@ -124,7 +130,7 @@ class VectorArrayVariable : public Variable
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

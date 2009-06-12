@@ -137,7 +137,7 @@ bool Variable::setAsArray(ReturnValue &rv, int arrayindex)
 }
 
 // Search accessors (if any) available for node
-StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *Variable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));

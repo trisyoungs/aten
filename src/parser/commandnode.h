@@ -55,8 +55,6 @@ class CommandNode : public TreeNode
 	bool prepFunction();
 	// Get command function
 	Command::Function function();
-	// Check validity of supplied arguments
-	bool checkArguments();
 	// Create format node (if necessary) from supplied argument id
 	Format *createFormat(int fmtargid, int firstargid);
 	// Create a 'delimited' writeable format (if necessary) from supplied argument id

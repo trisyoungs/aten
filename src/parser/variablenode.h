@@ -71,7 +71,7 @@ class VariableNode : public TreeNode
 	// Initialise node
 	bool initialise();
 	// Search accessors (if any) available for linked variable
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

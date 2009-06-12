@@ -31,6 +31,7 @@ class StepNode : public TreeNode
 	public:
 	// Constructor / Destructor
 	StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType returntype, bool readonly, int arraySize);
+	StepNode(int id, VTypes::DataType prevtype, VTypes::DataType returntype);
 	~StepNode();
 
 	/*
@@ -45,6 +46,8 @@ class StepNode : public TreeNode
 	TreeNode *arrayIndex_;
 	// Array size of accessor (-1 = list, 0 = none, 1+ = array size)
 	int arraySize_;
+	// Whether the id refers to a data member or a function
+	bool functionAccessor_;
 
 	public:
 	// Return associated array index
@@ -69,7 +72,7 @@ class StepNode : public TreeNode
 	// Reset node
 	bool initialise();
 	// Search accessors for the type represented by this node
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

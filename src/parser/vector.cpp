@@ -141,13 +141,13 @@ Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return VectorVariable::accessorSearch(s, arrayindex);
+	return VectorVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("VectorVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -155,18 +155,42 @@ StepNode *VectorVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'vector' has no member named '%s'.\n", s);
-		msg.exit("VectorVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'vector' has no member or function named '%s'.\n", s);
+			msg.exit("VectorVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'vector' function '%s'.\n", s);
+			msg.exit("VectorVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::VectorData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'vector' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::VectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("VectorVariable::accessorSearch");
 	return result;
 }
@@ -296,6 +320,31 @@ bool VectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 			break;
 	}
 	msg.exit("VectorVariable::setAccessor");
+	return result;
+}
+
+// Perform desired function
+bool VectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("VectorVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Vector type.\n", i);
+		msg.exit("VectorVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Vec3<double> v = rv.asVector();
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in VectorVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("VectorVariable::performFunction");
 	return result;
 }
 
@@ -443,7 +492,7 @@ bool VectorArrayVariable::initialise()
 }
 
 // Search variable access list for provided accessor
-StepNode *VectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *VectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return VectorVariable::accessorSearch(s, arrayindex);
+	return VectorVariable::accessorSearch(s, arrayindex, arglist);
 }

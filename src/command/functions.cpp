@@ -294,10 +294,12 @@ void Command::initPointers()
 	pointers_[ASin] = &Command::function_ASin;
 	pointers_[ATan] = &Command::function_ATan;
 	pointers_[Cos] = &Command::function_Cos;
+	pointers_[DotProduct] = &Command::function_DotProduct;
 	pointers_[Exp] = &Command::function_Exp;
 	pointers_[Ln] = &Command::function_Ln;
 	pointers_[Log] = &Command::function_Log;
 	pointers_[Nint] = &Command::function_Nint;
+	pointers_[Normalise] = &Command::function_Normalise;
 	pointers_[Sin] = &Command::function_Sin;
 	pointers_[Sqrt] = &Command::function_Sqrt;
 	pointers_[Tan] = &Command::function_Tan;
@@ -418,6 +420,17 @@ void Command::initPointers()
 	pointers_[NewSite] = &Command::function_NewSite;
 	pointers_[SiteAxes] = &Command::function_SiteAxes;
 
+	// String Commands
+	pointers_[AfterStr] = &Command::function_AfterStr;
+	pointers_[AToF] = &Command::function_AToF;
+	pointers_[AToI] = &Command::function_AToI;
+	pointers_[BeforeStr] = &Command::function_BeforeStr;
+	pointers_[Contains] = &Command::function_Contains;
+	pointers_[FToA] = &Command::function_FToA;
+	pointers_[IToA] = &Command::function_IToA;
+	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
+	pointers_[StripChars] = &Command::function_StripChars;
+
 	// System Commands
 	pointers_[Debug] = &Command::function_Debug;
 	pointers_[Gui] = &Command::function_Gui;
@@ -446,18 +459,6 @@ void Command::initPointers()
 	pointers_[MatrixConvert] = &Command::function_MatrixConvert;
 	pointers_[MatrixTransform] = &Command::function_MatrixTransform;
 	pointers_[Mirror] = &Command::function_Mirror;
-
-	// Variable Manipulation Commands
-	pointers_[AfterStr] = &Command::function_AfterStr;
-	pointers_[AToF] = &Command::function_AToF;
-	pointers_[AToI] = &Command::function_AToI;
-	pointers_[BeforeStr] = &Command::function_BeforeStr;
-	pointers_[Contains] = &Command::function_Contains;
-	pointers_[FToA] = &Command::function_FToA;
-	pointers_[IToA] = &Command::function_IToA;
-	pointers_[Normalise] = &Command::function_Normalise;
-	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
-	pointers_[StripChars] = &Command::function_StripChars;
 
 	// View Commands
 	pointers_[GetView] = &Command::function_GetView;

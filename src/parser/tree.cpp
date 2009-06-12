@@ -398,7 +398,11 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments()) leaf = NULL;
+	if (!leaf->checkArguments(aten.commands.data[func].arguments, aten.commands.data[func].keyword))
+	{
+		msg.print("Error: Function syntax is '%s(%s)'.\n", Command::data[func].keyword, Command::data[func].argText);
+		leaf = NULL;
+	}
 	else if (!leaf->prepFunction()) leaf = NULL;
 	msg.exit("Tree::addFunctionWithArglist");
 	return leaf;
@@ -420,7 +424,11 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments()) leaf = NULL;
+	if (!leaf->checkArguments(aten.commands.data[func].arguments, aten.commands.data[func].keyword))
+	{
+		msg.print("Error: Function syntax is '%s(%s)'.\n", Command::data[func].keyword, Command::data[func].argText);
+		leaf = NULL;
+	}
 	else if (!leaf->prepFunction()) leaf = NULL;
 	msg.exit("Tree::addFunction");
 	return leaf;
@@ -457,24 +465,7 @@ TreeNode *Tree::addDeclarations(TreeNode *declist)
 	leaf->addArgumentList(declist);
 	leaf->setParent(this);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments()) leaf = NULL;
-	msg.exit("Tree::addDeclarations");
-	return leaf;
-}
-
-// Add an argument list
-bool Tree::addArguments(TreeNode *arglist)
-{
-	msg.enter("Tree::addDeclarations");
-	// Create new command node
-	CommandNode *leaf = new CommandNode(Command::Declarations);
-	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added arguments to tree %li...\n", this);
-	// Add argument list to node and set parent
-	leaf->addArgumentList(arglist);
-	leaf->setParent(this);
-	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments()) leaf = NULL;
+	if (!leaf->checkArguments(aten.commands.data[Command::Declarations].arguments, aten.commands.data[Command::Declarations].keyword)) leaf = NULL;
 	msg.exit("Tree::addDeclarations");
 	return leaf;
 }
@@ -768,7 +759,7 @@ TreeNode *Tree::finalisePath()
 }
 
 // Expand the topmost path on the stack
-bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
+bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("Tree::expandPath");
 	// Get last item on path stack
@@ -791,7 +782,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 		}
 	}
 	// Find next step accessor
-	StepNode *result = ri->data->findAccessor(name->get(), arrayindex);
+	StepNode *result = ri->data->findAccessor(name->get(), arrayindex, arglist);
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
@@ -808,7 +799,7 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex)
 		}
 		ri->item->addArgument(result);
 	}
-	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(ri->data->returnType()), name->get());
+// 	else msg.print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(ri->data->returnType()), name->get());
 	msg.exit("Tree::expandPath");
 	return result;
 }

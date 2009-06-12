@@ -54,13 +54,13 @@ Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ElementVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ElementVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ElementVariable::accessorSearch(s, arrayindex);
+	return ElementVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("ElementVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -68,18 +68,42 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'elements&' has no member named '%s'.\n", s);
-		msg.exit("ElementVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'element&' has no member or function named '%s'.\n", s);
+			msg.exit("ElementVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'element&' function '%s'.\n", s);
+			msg.exit("ElementVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::ElementData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'element&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::ElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ElementVariable::accessorSearch");
 	return result;
 }
@@ -248,5 +272,30 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 			break;
 	}
 	msg.exit("ElementVariable::setAccessor");
+	return result;
+}
+
+// Perform desired function
+bool ElementVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("ElementVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Element type.\n", i);
+		msg.exit("ElementVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Element *ptr= (Element*) rv.asPointer(VTypes::ElementData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in ElementVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("ElementVariable::performFunction");
 	return result;
 }

@@ -58,14 +58,19 @@ Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
 	{ "type",	VTypes::StringData,	0, TRUE }
 };
 
+// Function data
+FunctionAccessor BondVariable::functionData[BondVariable::nFunctions] = {
+	{ "partner",	VTypes::AtomData,	"A",	"atom i" }
+};
+
 // Search variable access list for provided accessor (call private static function)
-StepNode *BondVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *BondVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return BondVariable::accessorSearch(s, arrayindex);
+	return BondVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("BondVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -73,18 +78,42 @@ StepNode *BondVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'bond&' has no member named '%s'.\n", s);
-		msg.exit("BondVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'bond&' has no member or function named '%s'.\n", s);
+			msg.exit("BondVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'bond&' function '%s'.\n", s);
+			msg.exit("BondVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::BondData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'bond&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::BondData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("BondVariable::accessorSearch");
 	return result;
 }
@@ -113,7 +142,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("BondVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -216,6 +245,34 @@ bool BondVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	return result;
 }
 
+// Perform desired function
+bool BondVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("BondVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Bond type.\n", i);
+		msg.exit("BondVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Bond *ptr= (Bond*) rv.asPointer(VTypes::BondData, result);
+	if (result) switch (i)
+	{
+		case (BondVariable::Partner):
+			rv.set(VTypes::AtomData, ptr->partner( (Atom*) node->argp(0, VTypes::AtomData)));
+			break;
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in BondVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("BondVariable::performFunction");
+	return result;
+}
+
 /*
 // Variable Array
 */
@@ -233,8 +290,8 @@ BondArrayVariable::BondArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *BondArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *BondArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return BondVariable::accessorSearch(s, arrayindex);
+	return BondVariable::accessorSearch(s, arrayindex, arglist);
 }
 
