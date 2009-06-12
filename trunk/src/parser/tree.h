@@ -115,7 +115,7 @@ class Tree
 	// Create a new path on the stack with the specified base 'variable'
 	virtual TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
-	virtual bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
+	virtual bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
 	// Finalise and remove the topmost path on the stack
 	virtual TreeNode *finalisePath();
 	// Return number of arguments defined (for function)
@@ -140,8 +140,6 @@ class Tree
 	virtual TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	virtual TreeNode *addDeclarations(TreeNode *declist);
-	// Add an argument list
-	virtual bool addArguments(TreeNode *arglist);
 	// Join two nodes together
 	static TreeNode *joinArguments(TreeNode *arg1, TreeNode *arg2);
 	// Join two commands together

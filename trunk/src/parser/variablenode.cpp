@@ -280,7 +280,7 @@ bool VariableNode::initialise()
 }
 
 // Search accessors (if any) available for linked variable
-StepNode *VariableNode::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *VariableNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	if (variable_ == NULL)
 	{

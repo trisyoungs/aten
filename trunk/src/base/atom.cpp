@@ -327,6 +327,14 @@ Refitem<Bond,int> *Atom::bonds()
 	return bonds_.first();
 }
 
+// Return nth bond in the list
+Refitem<Bond,int> *Atom::bond(int index)
+{
+	if ((index < 0) || (index >= bonds_.nItems())) msg.print("Bond index %i is out of range for atom.\n", index);
+	else return bonds_[index];
+	return NULL;
+}
+
 // Check the number of bonds against the supplied value
 bool Atom::isNBonds(int n)
 {

@@ -128,8 +128,8 @@ bool Command::function_OperatorAssignmentSubtract(CommandNode *c, Bundle &obj, R
 	return TRUE;
 }
 
-// Integer remainder of A/B
-bool Command::function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Divide one quantity by another
+bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -140,7 +140,27 @@ bool Command::function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue 
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntInt): rv.set(lhs.asInteger(b) % rhs.asInteger(b)); break;
+		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) / rhs.asInteger(i,b)); rv = lhs; break;
+		case (VTypes::IntADblA):
+		case (VTypes::DblAIntA):
+		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) / rhs.asDouble(i,b)); rv = lhs; break;
+		case (VTypes::IntAInt): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) / rhs.asInteger(b)); rv = lhs; break;
+		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, (int) (lhs.asInteger(i,b) / rhs.asDouble(b))); rv = lhs; break;
+		case (VTypes::DblAInt):
+		case (VTypes::DblADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) / rhs.asDouble(b)); rv = lhs; break;
+		case (VTypes::IntInt): rv.set(lhs.asInteger(b) / rhs.asInteger(b)); break;
+		case (VTypes::IntDbl):
+		case (VTypes::DblInt):
+		case (VTypes::DblDbl): rv.set(lhs.asDouble(b) / rhs.asDouble(b)); break;
+		case (VTypes::VecInt):
+		case (VTypes::VecDbl): rv.set(lhs.asVector(b) / rhs.asDouble(b)); break;
+		case (VTypes::VecVec): rv.set(lhs.asVector(b) / rhs.asVector(b)); break;
+		case (VTypes::IntAVec):
+		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
+			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v / rhs.asVector()); } break;
+		case (VTypes::VecIntA):
+		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
+			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v / lhs.asVector()); } break;
 		default:
 			msg.print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -317,8 +337,8 @@ bool Command::function_OperatorLessThanEqualTo(CommandNode *c, Bundle &obj, Retu
 	return b;
 }
 
-// Divide one quantity by another
-bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Integer remainder of A/B
+bool Command::function_OperatorModulus(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
@@ -329,27 +349,7 @@ bool Command::function_OperatorDivide(CommandNode *c, Bundle &obj, ReturnValue &
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) / rhs.asInteger(i,b)); rv = lhs; break;
-		case (VTypes::IntADblA):
-		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) / rhs.asDouble(i,b)); rv = lhs; break;
-		case (VTypes::IntAInt): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) / rhs.asInteger(b)); rv = lhs; break;
-		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, (int) (lhs.asInteger(i,b) / rhs.asDouble(b))); rv = lhs; break;
-		case (VTypes::DblAInt):
-		case (VTypes::DblADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) / rhs.asDouble(b)); rv = lhs; break;
-		case (VTypes::IntInt): rv.set(lhs.asInteger(b) / rhs.asInteger(b)); break;
-		case (VTypes::IntDbl):
-		case (VTypes::DblInt):
-		case (VTypes::DblDbl): rv.set(lhs.asDouble(b) / rhs.asDouble(b)); break;
-		case (VTypes::VecInt):
-		case (VTypes::VecDbl): rv.set(lhs.asVector(b) / rhs.asDouble(b)); break;
-		case (VTypes::VecVec): rv.set(lhs.asVector(b) / rhs.asVector(b)); break;
-		case (VTypes::IntAVec):
-		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
-			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v / rhs.asVector()); } break;
-		case (VTypes::VecIntA):
-		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
-			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v / lhs.asVector()); } break;
+		case (VTypes::IntInt): rv.set(lhs.asInteger(b) % rhs.asInteger(b)); break;
 		default:
 			msg.print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}

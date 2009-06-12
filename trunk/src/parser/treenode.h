@@ -84,6 +84,8 @@ class TreeNode
 	void addArguments(int nargs, ...);
 	// Add multiple arguments to node
 	void addArgument(TreeNode *arg);
+	// Check arguments stored in argument list
+	bool checkArguments(const char *arglist, const char *funcname);
 	// Return (execute) argument specified
 	bool arg(int i, ReturnValue &rv);
 	// Return (execute) argument specified as a bool
@@ -155,7 +157,7 @@ class TreeNode
 	// Reset node
 	virtual bool initialise() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

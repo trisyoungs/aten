@@ -50,8 +50,9 @@ AtomVariable::~AtomVariable()
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
-	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
+	{ "bonds", 	VTypes::BondData,		-1, TRUE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
+	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
 	{ "fx",		VTypes::DoubleData,		0, FALSE },
 	{ "fy",		VTypes::DoubleData,		0, FALSE },
 	{ "fz",		VTypes::DoubleData,		0, FALSE },
@@ -59,6 +60,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "id",		VTypes::IntegerData,		0, TRUE },
 	{ "mass",	VTypes::DoubleData,		0, TRUE },
 	{ "name",	VTypes::StringData,		0, TRUE },
+	{ "nbonds",	VTypes::IntegerData,		0, TRUE },
 	{ "q",		VTypes::DoubleData,		0, FALSE },
 	{ "r",		VTypes::VectorData,		0, FALSE },
 	{ "rx",		VTypes::DoubleData,		0, FALSE },
@@ -75,13 +77,13 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *AtomVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *AtomVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return AtomVariable::accessorSearch(s, arrayindex);
+	return AtomVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("AtomVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -89,18 +91,42 @@ StepNode *AtomVariable::accessorSearch(const char *s, TreeNode *arrayindex)
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'atom&' has no member named '%s'.\n", s);
-		msg.exit("AtomVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'atom&' has no member or function named '%s'.\n", s);
+			msg.exit("AtomVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'atom&' function '%s'.\n", s);
+			msg.exit("AtomVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::AtomData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'atom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::AtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("AtomVariable::accessorSearch");
 	return result;
 }
@@ -129,7 +155,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("AtomVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -138,11 +164,20 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result) switch (acc)
 	{
-		case (AtomVariable::Fixed):
-			rv.set(ptr->isPositionFixed());
+		case (AtomVariable::Bonds):
+			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item );
+			else if (arrayIndex > ptr->nBonds())
+			{
+				msg.print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
+				result = FALSE;
+			}
+			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item);
 			break;
 		case (AtomVariable::F):
 			rv.set(ptr->f());
+			break;
+		case (AtomVariable::Fixed):
+			rv.set(ptr->isPositionFixed());
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
@@ -160,6 +195,9 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (AtomVariable::Name):
 			rv.set(elements().name(ptr));
+			break;
+		case (AtomVariable::NBonds):
+			rv.set(ptr->nBonds());
 			break;
 		case (AtomVariable::Q):
 			rv.set(ptr->charge());
@@ -258,7 +296,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	if (!result)
 	{
-		msg.exit("ElementVariable::setAccessor");
+		msg.exit("AtomVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -267,11 +305,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
-		case (AtomVariable::Fixed):
-			ptr->setPositionFixed(newvalue.asBool());
-			break;
 		case (AtomVariable::F):
 			ptr->f() = newvalue.asVector();
+			break;
+		case (AtomVariable::Fixed):
+			ptr->setPositionFixed(newvalue.asBool());
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
@@ -330,6 +368,31 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	return result;
 }
 
+// Perform desired function
+bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("AtomVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Atom type.\n", i);
+		msg.exit("AtomVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("AtomVariable::performFunction");
+	return result;
+}
+
 /*
 // Variable Array
 */
@@ -347,7 +410,7 @@ AtomArrayVariable::AtomArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *AtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *AtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return AtomVariable::accessorSearch(s, arrayindex);
+	return AtomVariable::accessorSearch(s, arrayindex, arglist);
 }

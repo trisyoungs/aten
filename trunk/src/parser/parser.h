@@ -117,7 +117,7 @@ class CommandParser : public Tree
 	// Create a new path on the stack with the specified base 'variable'
 	TreeNode *createPath(TreeNode *var);
 	// Expand topmost path
-	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL);
+	bool expandPath(Dnchar *name, TreeNode *arrayindex = NULL, TreeNode *arglist = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode *finalisePath();
 
@@ -138,8 +138,6 @@ class CommandParser : public Tree
 	TreeNode *addUserFunction(Tree *func, TreeNode *arglist = NULL);
 	// Add a declaration list
 	TreeNode *addDeclarations(TreeNode *declist);
-	// Add an argument list
-	bool addArguments(TreeNode *arglist);
 	// Join two commands together
 	TreeNode *joinCommands(TreeNode *node1, TreeNode *node2);
 	// Add on a new scope to the stack

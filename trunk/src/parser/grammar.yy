@@ -212,8 +212,8 @@ declaration:
 
 step:
 	STEPTOKEN savestepname '[' expr ']'		{ if (!cmdparser.expandPath(&stepName, $4)) YYABORT; }
-	| STEPTOKEN savestepname '[' constant ']'	{ if (!cmdparser.expandPath(&stepName, $4)) YYABORT; }
-	| STEPTOKEN					{ if (!cmdparser.expandPath($1)) YYABORT; }
+	| STEPTOKEN savestepname '(' exprlist ')'	{ if (!cmdparser.expandPath(&stepName, NULL, $4)) YYABORT; }
+	| STEPTOKEN savestepname			{ if (!cmdparser.expandPath($1)) YYABORT; }
 	;
 
 steplist:

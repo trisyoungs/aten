@@ -60,7 +60,7 @@ class Variable : public TreeNode
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 
 	/*
 	// Inherited Virtuals

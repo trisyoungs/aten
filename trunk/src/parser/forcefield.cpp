@@ -59,13 +59,13 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldVariable::accessorSearch(s, arrayindex);
+	return ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("ForcefieldVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -73,18 +73,42 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'forcefield&' has no member named '%s'.\n", s);
-		msg.exit("ForcefieldVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'forcefield&' has no member or function named '%s'.\n", s);
+			msg.exit("ForcefieldVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'forcefield&' function '%s'.\n", s);
+			msg.exit("ForcefieldVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::ForcefieldData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'forcefield&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ForcefieldVariable::accessorSearch");
 	return result;
 }
@@ -113,7 +137,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("ForcefieldVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -216,6 +240,31 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	return result;
 }
 
+// Perform desired function
+bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("ForcefieldVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Forcefield type.\n", i);
+		msg.exit("ForcefieldVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("ForcefieldVariable::performFunction");
+	return result;
+}
+
 /*
 // Variable Array
 */
@@ -233,7 +282,7 @@ ForcefieldArrayVariable::ForcefieldArrayVariable(TreeNode *sizeexpr, bool consta
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldVariable::accessorSearch(s, arrayindex);
+	return ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
 }

@@ -59,6 +59,14 @@ bool Command::function_Cos(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Calculate vector dot product
+bool Command::function_DotProduct(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Vec3<double> v = c->argv(0);
+	rv.set(v.dp(c->argv(1)));
+	return TRUE;
+}
+
 // Return exponential of of argument
 bool Command::function_Exp(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

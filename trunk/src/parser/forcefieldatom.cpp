@@ -61,13 +61,13 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldAtomVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldAtomVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldAtomVariable::accessorSearch(s, arrayindex);
+	return ForcefieldAtomVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("ForcefieldAtomVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -75,18 +75,42 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'bond&' has no member named '%s'.\n", s);
-		msg.exit("ForcefieldAtomVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'ffatom&' has no member or function named '%s'.\n", s);
+			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'ffatom&' function '%s'.\n", s);
+			msg.exit("ForcefieldAtomVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::ForcefieldAtomData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'ffatom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::ForcefieldAtomData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("ForcefieldAtomVariable::accessorSearch");
 	return result;
 }
@@ -115,7 +139,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("ForcefieldAtomVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -262,6 +286,31 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	return result;
 }
 
+// Perform desired function
+bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("ForcefieldAtomVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for ForcefieldAtom type.\n", i);
+		msg.exit("ForcefieldAtomVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldAtomVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("ForcefieldAtomVariable::performFunction");
+	return result;
+}
+
 /*
 // Variable Array
 */
@@ -279,7 +328,7 @@ ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode *sizeexpr, boo
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldAtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *ForcefieldAtomArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return ForcefieldAtomVariable::accessorSearch(s, arrayindex);
+	return ForcefieldAtomVariable::accessorSearch(s, arrayindex, arglist);
 }

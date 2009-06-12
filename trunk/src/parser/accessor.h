@@ -30,12 +30,26 @@ class Accessor
 	public:
 	// Accessor name
 	const char *name;
-	// Return value of accessor
+	// Return type of accessor
 	VTypes::DataType returnType;
 	// Array data size (-1 = dynamic list, 0 = no array, N = size)
 	int arraySize;
 	// Whether data represented by accessor is read-only
 	bool isReadOnly;
+};
+
+// Function Accessor
+class FunctionAccessor
+{
+	public:
+	// Function name
+	const char *name;
+	// Return type of function
+	VTypes::DataType returnType;
+	// Function argument specification
+	const char *arguments;
+	// Function argument text
+	const char *argText;
 };
 
 #endif

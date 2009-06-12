@@ -35,14 +35,25 @@
 #include "parser/vector.h"
 #include <string.h>
 
-// Constructor
+// Constructors
 StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode *arrayindex, VTypes::DataType rtntype, bool readonly, int arraysize) : arrayIndex_(arrayindex), accessor_(id), previousType_(prevtype), arraySize_(arraysize)
 {
 	// Private variables
 	readOnly_ = readonly;
 	returnType_ = rtntype;
 	nodeType_ = TreeNode::SteppedNode;
+	functionAccessor_ = FALSE;
 // 	printf("Return type of StepNode is %s\n", VTypes::dataType(returnType_));
+}
+StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : accessor_(id), previousType_(prevtype)
+{
+	// Private variables
+	arraySize_ = 0;
+	arrayIndex_ = NULL;
+	readOnly_ = FALSE;
+	returnType_ = rtntype;
+	nodeType_ = TreeNode::SteppedNode;
+	functionAccessor_ = TRUE;
 }
 
 // Destructor
@@ -104,43 +115,56 @@ bool StepNode::execute(ReturnValue &rv)
 			printf("Internal Error: StepNode was expecting NoData (execute).\n");
 			break;
 		case (VTypes::AtenData):
-			result = AtenVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = AtenVariable::performFunction(accessor_, rv, this);
+			else result = AtenVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::AtomData):
-			result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = AtomVariable::performFunction(accessor_, rv, this);
+			else result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::BondData):
-			result = BondVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = BondVariable::performFunction(accessor_, rv, this);
+			else result = BondVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::CellData):
-			result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = CellVariable::performFunction(accessor_, rv, this);
+			else result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ElementData):
-			result = ElementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = ElementVariable::performFunction(accessor_, rv, this);
+			else result = ElementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldData):
-			result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = ForcefieldVariable::performFunction(accessor_, rv, this);
+			else result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			result = ForcefieldAtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = ForcefieldAtomVariable::performFunction(accessor_, rv, this);
+			else result = ForcefieldAtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			result = ForcefieldBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = ForcefieldBoundVariable::performFunction(accessor_, rv, this);
+			else result = ForcefieldBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ModelData):
-			result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = ModelVariable::performFunction(accessor_, rv, this);
+			else result = ModelVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::PatternData):
-			result = PatternVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = PatternVariable::performFunction(accessor_, rv, this);
+			else result = PatternVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::PatternBoundData):
-			result = PatternBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = PatternBoundVariable::performFunction(accessor_, rv, this);
+			else result = PatternBoundVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::PreferencesData):
-			result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = PreferencesVariable::performFunction(accessor_, rv, this);
+			else result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::VectorData):
-			result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			if (functionAccessor_) result = VectorVariable::performFunction(accessor_, rv, this);
+			else result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", VTypes::dataType(previousType_));
@@ -297,7 +321,7 @@ bool StepNode::initialise()
 }
 
 // Static function to search accessors of type represented by this path step
-StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("StepNode::findAccessor");
 	// From the return type of the node, determine which (static) function to call
@@ -308,40 +332,40 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex)
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
 		case (VTypes::AtomData):
-			result = AtomVariable::accessorSearch(s, arrayindex);
+			result = AtomVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::BondData):
-			result = BondVariable::accessorSearch(s, arrayindex);
+			result = BondVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::CellData):
-			result = CellVariable::accessorSearch(s, arrayindex);
+			result = CellVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ElementData):
-			result = ElementVariable::accessorSearch(s, arrayindex);
+			result = ElementVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ForcefieldData):
-			result = ForcefieldVariable::accessorSearch(s, arrayindex);
+			result = ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			result = ForcefieldAtomVariable::accessorSearch(s, arrayindex);
+			result = ForcefieldAtomVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			result = ForcefieldBoundVariable::accessorSearch(s, arrayindex);
+			result = ForcefieldBoundVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ModelData):
-			result = ModelVariable::accessorSearch(s, arrayindex);
+			result = ModelVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::PatternData):
-			result = PatternVariable::accessorSearch(s, arrayindex);
+			result = PatternVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::PatternBoundData):
-			result = PatternBoundVariable::accessorSearch(s, arrayindex);
+			result = PatternBoundVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::PreferencesData):
-			result = PreferencesVariable::accessorSearch(s, arrayindex);
+			result = PreferencesVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::VectorData):
-			result = VectorVariable::accessorSearch(s, arrayindex);
+			result = VectorVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", VTypes::dataType(returnType_));

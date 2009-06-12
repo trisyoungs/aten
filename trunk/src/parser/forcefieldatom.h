@@ -42,16 +42,22 @@ class ForcefieldAtomVariable : public PointerVariable
 	public:
 	// Accessor list
 	enum Accessors { Charge, Data, Description, Equivalent, Form, Id, Name, Neta, ParentFF, nAccessors };
+	// Function list
+	enum Functions { nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex);
+	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
 	// Set desired value
 	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	// Perform desired function
+	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
 	// Accessor data
 	static Accessor accessorData[nAccessors];
+	// Function Accessor data
+	static FunctionAccessor functionData[nFunctions];
 };
 
 // ForcefieldAtom Array Variable
@@ -66,7 +72,7 @@ class ForcefieldAtomArrayVariable : public PointerArrayVariable
 	*/
 	public:
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex);
+	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 };
 
 #endif

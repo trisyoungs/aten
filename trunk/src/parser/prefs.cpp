@@ -113,13 +113,13 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *PreferencesVariable::findAccessor(const char *s, TreeNode *arrayindex)
+StepNode *PreferencesVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return PreferencesVariable::accessorSearch(s, arrayindex);
+	return PreferencesVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayindex)
+StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("PreferencesVariable::accessorSearch");
 	StepNode *result = NULL;
@@ -127,18 +127,42 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
 	if (i == nAccessors)
 	{
-		msg.print("Error: Type 'prefs&' has no member named '%s'.\n", s);
-		msg.exit("PreferencesVariable::accessorSearch");
-		return NULL;
+		// No accessor found - is it a function definition?
+		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		if (i == nFunctions)
+		{
+			msg.print("Error: Type 'prefs&' has no member or function named '%s'.\n", s);
+			msg.exit("PreferencesVariable::accessorSearch");
+			return NULL;
+		}
+		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayindex != NULL)
+		{
+			msg.print("Error: Array index given to 'prefs&' function '%s'.\n", s);
+			msg.exit("PreferencesVariable::accessorSearch");
+			return NULL;
+		}
+		// Add and check supplied arguments...
+		result = new StepNode(i, VTypes::PreferencesData, functionData[i].returnType);
+		result->addArgumentList(arglist);
+		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		{
+			msg.print("Error: Syntax for 'prefs&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			delete result;
+			result = NULL;
+		}
 	}
-	msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
-	// Were we given an array index when we didn't want one?
-	if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+	else
 	{
-		msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
-		result = NULL;
+		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		// Were we given an array index when we didn't want one?
+		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		{
+			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			result = NULL;
+		}
+		else result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	else result = new StepNode(i, VTypes::PreferencesData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	msg.exit("PreferencesVariable::accessorSearch");
 	return result;
 }
@@ -167,7 +191,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ElementVariable::retrieveAccessor");
+			msg.exit("PreferencesVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -711,5 +735,30 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		gui.mainView.postRedisplay();
 	}
 	msg.exit("PreferencesVariable::setAccessor");
+	return result;
+}
+
+// Perform desired function
+bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+{
+	msg.enter("PreferencesVariable::performFunction");
+	// Cast 'i' into Accessors enum value
+	if ((i < 0) || (i >= nFunctions))
+	{
+		printf("Internal Error: FunctionAccessor id %i is out of range for Preferences type.\n", i);
+		msg.exit("PreferencesVariable::performFunction");
+		return FALSE;
+	}
+	// Get current data from ReturnValue
+	bool result = TRUE;
+	Prefs *ptr= (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	if (result) switch (i)
+	{
+		default:
+			printf("Internal Error: Access to function '%s' has not been defined in PreferencesVariable.\n", functionData[i].name);
+			result = FALSE;
+			break;
+	}
+	msg.exit("PreferencesVariable::performFunction");
 	return result;
 }

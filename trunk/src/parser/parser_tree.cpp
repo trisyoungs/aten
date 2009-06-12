@@ -40,7 +40,7 @@ TreeNode *CommandParser::createPath(TreeNode *var)
 }
 
 // Expand topmost path
-bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex)
+bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 {
 	msg.enter("CommandParser::expandPath");
 	if (tree_ == NULL)
@@ -50,7 +50,7 @@ bool CommandParser::expandPath(Dnchar *name, TreeNode *arrayindex)
 		msg.exit("CommandParser::createPath");	
 		return FALSE;
 	}
-	bool result = tree_->expandPath(name, arrayindex);
+	bool result = tree_->expandPath(name, arrayindex, arglist);
 	msg.exit("CommandParser::expandPath");
 	return result;
 }
@@ -164,22 +164,6 @@ TreeNode *CommandParser::addDeclarations(TreeNode *declist)
 	}
 	TreeNode *result = tree_->addDeclarations(declist);
 	msg.exit("CommandParser::addDeclarations");
-	return result;
-}
-
-// Add an argument list
-bool CommandParser::addArguments(TreeNode *arglist)
-{
-	msg.enter("CommandParser::addArguments");
-	if (tree_ == NULL)
-	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addArguments).\n");
-		else printf("Internal Error: No current Tree target for Parser (addArguments).\n");
-		msg.exit("CommandParser::addArguments");	
-		return NULL;
-	}
-	bool result = tree_->addArguments(arglist);
-	msg.exit("CommandParser::addArguments");
 	return result;
 }
 
