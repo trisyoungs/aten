@@ -277,7 +277,7 @@
   <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
-   <header>ttreewidget.uih</header>
+   <header>gui/ttreewidget.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
