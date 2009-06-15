@@ -2030,7 +2030,7 @@
   <customwidget>
    <class>TTabBar</class>
    <extends>QWidget</extends>
-   <header>ttabbar.uih</header>
+   <header>gui/ttabbar.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

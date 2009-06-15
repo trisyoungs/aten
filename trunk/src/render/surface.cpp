@@ -537,6 +537,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	Vec3<int> npoints = g->nPoints();
 	GLfloat colour[4], poscol[4];
 	double **data;
+	bool usez = g->useDataForZ();
 	// Grab the data pointer and surface cutoff
 	data = g->data2d();
 	// Set glBegin based on the surface style
@@ -580,7 +581,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j, g->useDataForZ() ? data[i][j] : 0.0);
+			glVertex3d(i, j, usez ? data[i][j] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+2][j] - data[i][j])*0.5);
 			gradienty.set(0,1.0,(data[i+1][j+1] - data[i+1][j-1])*0.5);
@@ -592,7 +593,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j, g->useDataForZ() ? data[i+1][j] : 0.0);
+			glVertex3d(i+1, j, usez ? data[i+1][j] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+2][j+1] - data[i][j+1])*0.5);
 			gradienty.set(0,1.0,(data[i+1][j+2] - data[i+1][j])*0.5);
@@ -604,7 +605,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j+1, g->useDataForZ() ? data[i+1][j+1] : 0.0);
+			glVertex3d(i+1, j+1, usez ? data[i+1][j+1] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+1][j+1] - data[i-1][j+1])*0.5);
 			gradienty.set(0,1.0,(data[i][j+2] - data[i][j])*0.5);
@@ -616,7 +617,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j+1, g->useDataForZ() ? data[i][j+1] : 0.0);
+			glVertex3d(i, j+1, usez ? data[i][j+1] : 0.0);
 		}
 	}
 	glEnd();

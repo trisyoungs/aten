@@ -908,7 +908,7 @@
   <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
-   <header>tcolourframe.uih</header>
+   <header>gui/tcolourframe.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
