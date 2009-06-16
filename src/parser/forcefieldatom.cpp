@@ -146,6 +146,11 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Charge):
@@ -252,6 +257,11 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	// Get current data from ReturnValue
 	VdwFunctions::VdwFunction vf;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldAtomData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (ForcefieldAtomVariable::Charge):

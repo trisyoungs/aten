@@ -153,6 +153,11 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Pattern *ptr= (Pattern*) rv.asPointer(VTypes::PatternData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (PatternVariable::Angles):
@@ -304,6 +309,11 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	}
 	// Get current data from ReturnValue
 	Pattern *ptr= (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PatternData));
+		result = FALSE;
+	}
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{

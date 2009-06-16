@@ -139,6 +139,11 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 	// Get current data from ReturnValue
 	bool result;
 	Element *ptr = (Element*) rv.asPointer(VTypes::ElementData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ElementData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Colour):
@@ -234,6 +239,11 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	// Get current data from ReturnValue
 	Element *ptr = (Element*) sourcerv.asPointer(VTypes::ElementData, result);
 	int n;
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ElementData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Ambient):

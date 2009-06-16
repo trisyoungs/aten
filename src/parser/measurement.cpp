@@ -143,6 +143,11 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Measurement *ptr = (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (MeasurementVariable::Atoms):
@@ -237,6 +242,11 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	// Get current data from ReturnValue
 	VdwFunctions::VdwFunction vf;
 	Measurement *ptr= (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		default:
