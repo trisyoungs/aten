@@ -162,6 +162,11 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Bonds):
@@ -302,6 +307,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Get current data from ReturnValue
 	Vec3<double> v;
 	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		result = FALSE;
+	}
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{

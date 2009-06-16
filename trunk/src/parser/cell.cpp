@@ -163,6 +163,11 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Cell *ptr= (Cell*) rv.asPointer(VTypes::CellData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):
@@ -285,6 +290,11 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Cell *ptr = (Cell*) sourcerv.asPointer(VTypes::CellData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
+		result = FALSE;
+	}
 	if (result) switch (acc)
 	{
 		case (CellVariable::A):

@@ -198,6 +198,11 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	// Variables used in retrieval
 	bool result;
 	Prefs *ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
+		result = FALSE;
+	}
 	Model *m;
 	if (result) switch (acc)
 	{
@@ -464,6 +469,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	// Get current data from ReturnValue
 	Prefs *ptr= (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
+	if (result && (ptr == NULL))
+	{
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
+		result = FALSE;
+	}
 	int n;
 	Prefs::ColouringScheme cs;
 	Prefs::DensityUnit du;
@@ -475,7 +485,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	Prefs::MouseAction ma;
 	Atom::DrawStyle ds;
 	ElementMap::ZMapType zm;
-	switch (acc)
+	if (result) switch (acc)
 	{
 		case (PreferencesVariable::AngleLabel):
 			ptr->setAngleLabel( newvalue.asString(result) );
