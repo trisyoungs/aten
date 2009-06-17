@@ -11,7 +11,7 @@ loadff("uff.ff", "uff");
 newmodel("blue");
 newatom(N);
 nmols(1000);
-region("cuboid", 15, 15, 15, 30, 15, 15, TRUE);
+setregion("cuboid", 15, 15, 15, 30, 15, 15, TRUE);
 
 # 'red' will be allowed anywhere except 'blue's orthorhomboid
 newmodel("red");

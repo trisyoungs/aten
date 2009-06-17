@@ -76,6 +76,10 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "z",		VTypes::IntegerData, 		0, FALSE }
 };
 
+// Function data
+FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *AtomVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

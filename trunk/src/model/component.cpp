@@ -21,6 +21,12 @@
 
 #include "model/model.h"
 
+// Return region data for model
+ComponentRegion *Model::region()
+{
+	return &region_;
+}
+
 // Set the Component's pattern
 void Model::setComponentPattern(Pattern *p)
 {

@@ -212,6 +212,7 @@ void Canvas::renderRegions()
 	static Vec3<double> centre, geometry, rotations;
 	static GLfloat colour[4];
 	static Mat4<double> rotmat;
+	ComponentRegion *r;
 	int i = 0;
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
@@ -219,24 +220,25 @@ void Canvas::renderRegions()
 	glDisable(GL_CULL_FACE);
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
+		r = m->region();
 		elements().copyAmbientColour(i, colour);
 		colour[3] = 0.4;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
-		  centre = m->area.centre();
-		  if (m->area.isCentreFrac()) centre = displayModel_->cell()->fracToReal(centre);
-		  geometry = m->area.geometry();
-		  if (m->area.isGeometryFrac()) geometry = displayModel_->cell()->fracToReal(geometry);
+		  centre = r->centre();
+		  if (r->isCentreFrac()) centre = displayModel_->cell()->fracToReal(centre);
+		  geometry = r->geometry();
+		  if (r->isGeometryFrac()) geometry = displayModel_->cell()->fracToReal(geometry);
 		  glTranslated(centre.x,centre.y,centre.z);
-		  if (m->area.rotateRegion())
+		  if (r->rotateRegion())
 		  {
-			rotations = m->area.rotations();
+			rotations = r->rotations();
 			rotmat.createRotationXY(rotations.x, rotations.y);
 			double mat[16];
 			rotmat.copyColumnMajor(mat);
 			glMultMatrixd(mat);
 		  }
-		  switch (m->area.shape())
+		  switch (r->shape())
 		  {
 			case (ComponentRegion::WholeCell):
 				break;

@@ -44,6 +44,8 @@ class ComponentRegion
 	static RegionShape regionShape(const char*);
 
 	private:
+	// Parent model
+	Model *parent_;
 	// Type of ComponentRegion the component is limited to
 	RegionShape shape_;
 	// Coordinates of the centre of any defined ComponentRegion
@@ -68,6 +70,10 @@ class ComponentRegion
 	bool allowOverlap_;
 
 	public:
+	// Set parent model
+	void setParent(Model *m);
+	// Return parent model
+	Model *parent();
 	// Sets the shape of the ComponentRegion for the component
 	void setShape(RegionShape r);
 	// Returns the ComponentRegion defined for the component

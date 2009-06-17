@@ -41,7 +41,7 @@ class ModelVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, AngleTerms, Atoms, Atomtypes, Bonds, BondTerms, Celldata, Distances, Frame, Frames, Name, NAngles, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NDistances, NFrames, NPatterns, NSelected, NTorsions, NTorsionTerms, Patterns, Torsions, TorsionTerms, nAccessors };
+	enum Accessors { Angles, AngleTerms, Atoms, Atomtypes, Bonds, BondTerms, Celldata, Distances, Frame, Frames, Name, NAngles, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NDistances, NFrames, NPatterns, NSelected, NTorsions, NTorsionTerms, Patterns, Region, Torsions, TorsionTerms, nAccessors };
 	// Function list
 	enum Functions { nFunctions };
 	// Search variable access list for provided accessor

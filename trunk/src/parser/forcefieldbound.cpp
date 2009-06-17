@@ -59,6 +59,10 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
         { "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE }
 };
 
+// Function data
+FunctionAccessor ForcefieldBoundVariable::functionData[ForcefieldBoundVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *ForcefieldBoundVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

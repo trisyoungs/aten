@@ -75,8 +75,13 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsionterms",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
+	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "torsionterms",	VTypes::ForcefieldBoundData,	-1, TRUE }
+};
+
+// Function data
+FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -303,6 +308,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
+			break;
+		case (ModelVariable::Region):
+			rv.set(VTypes::RegionData, ptr->region());
 			break;
 		case (ModelVariable::Torsions):
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsions());

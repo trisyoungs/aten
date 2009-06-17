@@ -57,6 +57,10 @@ Accessor MeasurementVariable::accessorData[MeasurementVariable::nAccessors] = {
 	{ "l",		VTypes::AtomData,		0, TRUE }
 };
 
+// Function data
+FunctionAccessor MeasurementVariable::functionData[MeasurementVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *MeasurementVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

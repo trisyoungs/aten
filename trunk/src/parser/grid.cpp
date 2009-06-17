@@ -61,6 +61,10 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "visible",	VTypes::IntegerData,	FALSE, FALSE }
 };
 
+// Function data
+FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *GridVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

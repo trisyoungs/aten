@@ -77,6 +77,10 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "volume",	VTypes::DoubleData,	0, TRUE },
 };
 
+// Function data
+FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *CellVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

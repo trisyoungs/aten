@@ -480,7 +480,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 
 			// Get pointers to variables
 			p = c->componentPattern();
-			r = &c->area;
+			r = c->region();
 			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
 			// If the pattern is fixed, move on
 			if (p->isFixed())
