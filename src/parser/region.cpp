@@ -1,6 +1,6 @@
 /*
-	*** Glyph Variable and Array
-	*** src/parser/glyph.cpp
+	*** Region Variable and Array
+	*** src/parser/region.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/glyph.h"
+#include "parser/region.h"
 #include "parser/stepnode.h"
-#include "base/glyph.h"
-#include "base/constants.h"
-#include "base/elements.h"
+#include "base/region.h"
+#include "model/model.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,16 +32,16 @@
 */
 
 // Constructor
-GlyphVariable::GlyphVariable(Glyph *ptr, bool constant)
+RegionVariable::RegionVariable(ComponentRegion *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GlyphData;
+	returnType_ = VTypes::RegionData;
 	readOnly_ = constant;
 	pointerData_ = ptr;
 }
 
 // Destructor
-GlyphVariable::~GlyphVariable()
+RegionVariable::~RegionVariable()
 {
 }
 
@@ -51,27 +50,33 @@ GlyphVariable::~GlyphVariable()
 */
 
 // Accessor data
-Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
-	{ "data",	VTypes::VectorData,	4, FALSE },
-	{ "text",	VTypes::StringData,	0, FALSE },
-	{ "type",	VTypes::StringData,	0, FALSE },
-	{ "visible",	VTypes::IntegerData,	0, FALSE }
+Accessor RegionVariable::accessorData[RegionVariable::nAccessors] = {
+	{ "centre",		VTypes::VectorData,	0, FALSE },
+	{ "centrefrac",		VTypes::VectorData,	0, FALSE },
+	{ "gemetry",		VTypes::VectorData,	0, FALSE },
+	{ "geometryfrac",	VTypes::VectorData,	0, FALSE },
+	{ "iscentrefrac",	VTypes::IntegerData,	0, TRUE },
+	{ "isgeometryfrac",	VTypes::IntegerData,	0, TRUE },
+	{ "overlap",		VTypes::IntegerData,	0, FALSE },
+	{ "shape",		VTypes::StringData,	0, FALSE },
+	{ "xrotation",		VTypes::DoubleData,	0, FALSE },
+	{ "yrotation",		VTypes::IntegerData,	0, FALSE }
 };
 
 // Function data
-FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
+FunctionAccessor RegionVariable::functionData[RegionVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *GlyphVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *RegionVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GlyphVariable::accessorSearch(s, arrayindex, arglist);
+	return RegionVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *RegionVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("GlyphVariable::accessorSearch");
+	msg.enter("RegionVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -82,18 +87,18 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
-			msg.exit("GlyphVariable::accessorSearch");
+			msg.exit("RegionVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
 			msg.print("Error: Array index given to 'grid&' function '%s'.\n", s);
-			msg.exit("GlyphVariable::accessorSearch");
+			msg.exit("RegionVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::GlyphData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::RegionData, functionData[i].returnType);
 		result->addArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
@@ -111,21 +116,21 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::GlyphData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::RegionData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("GlyphVariable::accessorSearch");
+	msg.exit("RegionVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool RegionVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphVariable::retrieveAccessor");
+	msg.enter("RegionVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::retrieveAccessor");
+		printf("Internal Error: Accessor id %i is out of range for Region type.\n", i);
+		msg.exit("RegionVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -133,7 +138,7 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("GlyphVariable::retrieveAccessor");
+		msg.exit("RegionVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
@@ -141,45 +146,72 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("GlyphVariable::retrieveAccessor");
+			msg.exit("RegionVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Glyph *ptr= (Glyph*) rv.asPointer(VTypes::GlyphData, result);
+	ComponentRegion *ptr= (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::RegionData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (GlyphVariable::Data):
-			if (hasArrayIndex) rv.set( ptr->vector(arrayIndex-1) );
-			else rv.set( ptr->vector(0) );
+		case (RegionVariable::Centre):
+			if (ptr->isCentreFrac()) msg.print("Warning: Region centre is currently defined in fractional coordinates.\n");
+			rv.set( ptr->centre() );
 			break;
-		case (GlyphVariable::Text):
-			rv.set( ptr->text() );
+		case (RegionVariable::CentreFrac):
+			if (!ptr->isCentreFrac()) msg.print("Warning: Region centre is currently defined in real coordinates.\n");
+			rv.set( ptr->centre() );
+			break;
+		case (RegionVariable::Geometry):
+			if (ptr->isGeometryFrac()) msg.print("Warning: Region geometry is currently defined in fractional coordinates.\n");
+			rv.set( ptr->geometry() );
+			break;
+		case (RegionVariable::GeometryFrac):
+			if (!ptr->isGeometryFrac()) msg.print("Warning: Region geometry is currently defined in real coordinates.\n");
+			rv.set( ptr->geometry() );
+			break;
+		case (RegionVariable::IsCentreFrac):
+			rv.set( ptr->isCentreFrac() );
+			break;
+		case (RegionVariable::IsGeometryFrac):
+			rv.set( ptr->isGeometryFrac() );
+			break;
+		case (RegionVariable::Overlap):
+			rv.set( ptr->allowOverlap() );
+			break;
+		case (RegionVariable::Shape):
+			rv.set( ComponentRegion::regionShape(ptr->shape()) );
+			break;
+		case (RegionVariable::XRotation):
+			rv.set( ptr->rotations().x );
+			break;
+		case (RegionVariable::YRotation):
+			rv.set( ptr->rotations().y );
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in GlyphVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in RegionVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::retrieveAccessor");
+	msg.exit("RegionVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool RegionVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphVariable::setAccessor");
+	msg.enter("RegionVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::setAccessor");
+		printf("Internal Error: Accessor id %i is out of range for Region type.\n", i);
+		msg.exit("RegionVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -228,56 +260,77 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	if (!result)
 	{
-		msg.exit("GlyphVariable::setAccessor");
+		msg.exit("RegionVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Glyph *ptr= (Glyph*) sourcerv.asPointer(VTypes::GlyphData, result);
+	ComponentRegion *ptr= (ComponentRegion*) sourcerv.asPointer(VTypes::RegionData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::RegionData));
 		result = FALSE;
 	}
+	ComponentRegion::RegionShape rs;
+	Vec3<double> v;
 	if (result) switch (acc)
 	{
-		case (GlyphVariable::Data):
-			if (hasArrayIndex) ptr->setVector(arrayIndex-1, newvalue.asVector());
-			else ptr->setVector(0, newvalue.asVector());
+		case (RegionVariable::Centre):
+			ptr->setCentre( newvalue.asVector() );
 			break;
-		case (GlyphVariable::Text):
-			ptr->setText(newvalue.asString());
+		case (RegionVariable::CentreFrac):
+			ptr->setCentreFrac( newvalue.asVector() );
+			break;
+		case (RegionVariable::Geometry):
+			ptr->setGeometry( newvalue.asVector() );
+			break;
+		case (RegionVariable::GeometryFrac):
+			ptr->setGeometryFrac( newvalue.asVector() );
+			break;
+		case (RegionVariable::Overlap):
+			ptr->setAllowOverlap( newvalue.asBool() );
+			break;
+		case (RegionVariable::Shape):
+			rs = ComponentRegion::regionShape(newvalue.asString());
+			if (rs != ComponentRegion::nRegionShapes) ptr->setShape(rs);
+			else result = FALSE;
+			break;
+		case (RegionVariable::XRotation):
+		case (RegionVariable::YRotation):
+			v = ptr->rotations();
+			v.set(acc-RegionVariable::XRotation, newvalue.asDouble());
+			ptr->setRotations(v);
 			break;
 		default:
-			printf("GlyphVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("RegionVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::setAccessor");
+	msg.exit("RegionVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool RegionVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("GlyphVariable::performFunction");
+	msg.enter("RegionVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
-		printf("Internal Error: FunctionAccessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::performFunction");
+		printf("Internal Error: FunctionAccessor id %i is out of range for Region type.\n", i);
+		msg.exit("RegionVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Glyph *ptr= (Glyph*) rv.asPointer(VTypes::GlyphData, result);
+	Region *ptr= (Region*) rv.asPointer(VTypes::RegionData, result);
 	if (result) switch (i)
 	{
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in GlyphVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in RegionVariable.\n", functionData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::performFunction");
+	msg.exit("RegionVariable::performFunction");
 	return result;
 }
 
@@ -286,10 +339,10 @@ bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 */
 
 // Constructor
-GlyphArrayVariable::GlyphArrayVariable(TreeNode *sizeexpr, bool constant)
+RegionArrayVariable::RegionArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GlyphData;
+	returnType_ = VTypes::RegionData;
 	pointerArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
@@ -298,8 +351,8 @@ GlyphArrayVariable::GlyphArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *GlyphArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *RegionArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GlyphVariable::accessorSearch(s, arrayindex, arglist);
+	return RegionVariable::accessorSearch(s, arrayindex, arglist);
 }
 

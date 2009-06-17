@@ -140,6 +140,10 @@ Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
 	{ "z", VTypes::DoubleData, FALSE, FALSE }
 };
 
+// Function data
+FunctionAccessor VectorVariable::functionData[VectorVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *VectorVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

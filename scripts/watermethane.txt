@@ -5,7 +5,7 @@ newmodel("water");
 newatom(O);
 addhydrogen();
 nmols(150);
-regionfrac("spheroid", 0.5, 0.5, 0.5, 0.3, 0.5, 0.3,TRUE);
+setregionfrac("spheroid", 0.5, 0.5, 0.5, 0.3, 0.5, 0.3,TRUE);
 
 # Create methane model
 newmodel("methane");

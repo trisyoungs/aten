@@ -25,6 +25,7 @@ pattern.h
 patternbound.h
 prefs.h
 pvariable.h
+region.h
 returnvalue.h
 scopenode.h
 stepnode.h
@@ -63,6 +64,7 @@ pattern.cpp
 patternbound.cpp
 prefs.cpp
 pvariable.cpp
+region.cpp
 returnvalue.cpp
 scopenode.cpp
 stepnode.cpp

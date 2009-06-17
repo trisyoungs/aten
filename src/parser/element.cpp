@@ -53,6 +53,10 @@ Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
 	{ "symbol",	VTypes::StringData,	0, TRUE }
 };
 
+// Function data
+FunctionAccessor ElementVariable::functionData[ElementVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *ElementVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

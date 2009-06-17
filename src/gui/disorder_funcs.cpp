@@ -164,25 +164,26 @@ void AtenDisorder::refreshComponentData(int comp)
 {
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
+	ComponentRegion *r = m->region();
 	refreshing_ = TRUE;
 	// Set controls
 	Vec3<double> v;
-	v = m->area.geometry();
+	v = r->geometry();
 	ui.GeometryXSpin->setValue(v.x);
 	ui.GeometryYSpin->setValue(v.y);
 	ui.GeometryZSpin->setValue(v.z);
-	ui.GeometryFracCheck->setChecked(m->area.isGeometryFrac());
-	v = m->area.centre();
+	ui.GeometryFracCheck->setChecked(r->isGeometryFrac());
+	v = r->centre();
 	ui.CentreXSpin->setValue(v.x);
 	ui.CentreYSpin->setValue(v.y);
 	ui.CentreZSpin->setValue(v.z);
-	ui.CentreFracCheck->setChecked(m->area.isCentreFrac());
-	v = m->area.rotations();
+	ui.CentreFracCheck->setChecked(r->isCentreFrac());
+	v = r->rotations();
 	ui.RotationXSpin->setValue(v.x);
 	ui.RotationYSpin->setValue(v.y);
-	ui.RotationCheck->setChecked(m->area.rotateRegion());
-	ui.AllowOverlapCheck->setChecked(m->area.allowOverlap());
-	ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
+	ui.RotationCheck->setChecked(r->rotateRegion());
+	ui.AllowOverlapCheck->setChecked(r->allowOverlap());
+	ui.ComponentRegionCombo->setCurrentIndex(r->shape());
 	refreshing_ = FALSE;
 }
 
@@ -195,7 +196,8 @@ void AtenDisorder::setComponentCentre()
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	ui.CentreFracCheck->isChecked() ? m->area.setCentreFrac(v) : m->area.setCentre(v);
+	ComponentRegion *r = m->region();
+	ui.CentreFracCheck->isChecked() ? r->setCentreFrac(v) : r->setCentre(v);
 	gui.mainView.postRedisplay();
 }
 
@@ -208,7 +210,8 @@ void AtenDisorder::setComponentGeometry()
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	ui.GeometryFracCheck->isChecked() ? m->area.setGeometryFrac(v) : m->area.setGeometry(v);
+	ComponentRegion *r = m->region();
+	ui.GeometryFracCheck->isChecked() ? r->setGeometryFrac(v) : r->setGeometry(v);
 	gui.mainView.postRedisplay();
 }
 
@@ -220,8 +223,9 @@ void AtenDisorder::setComponentRotation()
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	m->area.setRotateRegion(ui.RotationCheck->isChecked());
-	m->area.setRotations(v);
+	ComponentRegion *r = m->region();
+	r->setRotateRegion(ui.RotationCheck->isChecked());
+	r->setRotations(v);
 	gui.mainView.postRedisplay();
 }
 
@@ -260,8 +264,9 @@ void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	printf("Setting model %s region to be %i\n",m->name(), index);
-	m->area.setShape( (ComponentRegion::RegionShape) index);
+	ComponentRegion *r = m->region();
+// 	printf("Setting model %s region to be %i\n",m->name(), index);
+	r->setShape( (ComponentRegion::RegionShape) index);
 	gui.mainView.postRedisplay();
 }
 

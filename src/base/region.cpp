@@ -39,6 +39,7 @@ ComponentRegion::RegionShape ComponentRegion::regionShape(const char *s)
 ComponentRegion::ComponentRegion()
 {
 	// Private variables
+	parent_ = NULL;
 	shape_ = ComponentRegion::WholeCell;
 	centre_.zero();
 	allowOverlap_ = TRUE;
@@ -51,6 +52,18 @@ ComponentRegion::ComponentRegion()
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Set parent model
+void ComponentRegion::setParent(Model *m)
+{
+	parent_ = m;
+}
+
+// Return parent model
+Model *ComponentRegion::parent()
+{
+	return parent_;
 }
 
 // Sets the shape of the region for the component
@@ -169,7 +182,7 @@ bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<M
 // 	printf("Number of components in list is %i\n",components.nItems());
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
-		r = &ri->item->area;
+		r = ri->item->region();
 		if (r == this) continue;
 		if (r->coordsInRegion(v,cell)) result = TRUE;
 // 		printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));

@@ -53,6 +53,10 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 	{ "vscale",	VTypes::DoubleData,		0, TRUE }
 };
 
+// Function data
+FunctionAccessor PatternBoundVariable::functionData[PatternBoundVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *PatternBoundVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

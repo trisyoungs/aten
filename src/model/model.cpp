@@ -70,6 +70,7 @@ Model::Model()
 	currentFrame_ = NULL;
 	componentPattern_ = NULL;
 	nRequested_ = 0;
+	region_.setParent(this);
 	moveAllowed_[MonteCarlo::Insert] = TRUE;
 	moveAllowed_[MonteCarlo::Delete] = FALSE;
 	moveAllowed_[MonteCarlo::Translate] = TRUE;

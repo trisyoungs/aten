@@ -1,6 +1,6 @@
 /*
-	*** Glyph Variable and Array
-	*** src/parser/glyph.h
+	*** Region Variable and Array
+	*** src/parser/grid.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,29 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GLYPHVARIABLE_H
-#define ATEN_GLYPHVARIABLE_H
+#ifndef ATEN_REGIONVARIABLE_H
+#define ATEN_REGIONVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Glyph;
+class ComponentRegion;
 
-// Glyph Variable
-class GlyphVariable : public PointerVariable
+// Region Variable
+class RegionVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphVariable(Glyph *g = NULL, bool constant = FALSE);
-	~GlyphVariable();
+	RegionVariable(ComponentRegion *g = NULL, bool constant = FALSE);
+	~RegionVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Data, Text, Type, Visible, nAccessors };
+        enum Accessors { Centre, CentreFrac, Geometry, GeometryFrac, IsCentreFrac, IsGeometryFrac, Overlap, Shape, XRotation, YRotation, nAccessors };
 	// Function list
 	enum Functions { nFunctions };
 	// Search variable access list for provided accessor
@@ -60,12 +60,12 @@ class GlyphVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Glyph Array Variable
-class GlyphArrayVariable : public PointerArrayVariable
+// Region Array Variable
+class RegionArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	RegionArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

@@ -95,6 +95,10 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
 };
 
+// Function data
+FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *AtenVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

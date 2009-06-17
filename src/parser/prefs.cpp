@@ -112,6 +112,10 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
 };
 
+// Function data
+FunctionAccessor PreferencesVariable::functionData[PreferencesVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *PreferencesVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {

@@ -973,6 +973,8 @@ class Model
 	// Component Definition (for disordered builder only)
 	*/
 	private:
+	// Definition of region the Component is restricted to
+	ComponentRegion region_;
 	// Pointer to the Components related pattern
 	Pattern *componentPattern_;
 	// Number of requested copies
@@ -981,8 +983,8 @@ class Model
 	bool moveAllowed_[MonteCarlo::nMoveTypes];
 
 	public:
-	// Definition of region the Component is restricted to
-	ComponentRegion area;
+	// Return region data for model
+	ComponentRegion *region();
 	// Set the Component's pattern
 	void setComponentPattern(Pattern *p);
 	// Return the Component's pattern

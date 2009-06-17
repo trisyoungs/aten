@@ -210,14 +210,15 @@ class Command
 		Disorder,
 		ListComponents,
 		NMols,
-		Region,
 		RegionCentre,
 		RegionCentreFrac,
-		RegionFrac,
 		RegionGeometry,
 		RegionGeometryFrac,
 		RegionOverlaps,
+		RegionRotation,
 		RegionShape,
+		SetRegion,
+		SetRegionFrac,
 		VdwScale,
 	
 		// Edit commands
@@ -632,14 +633,15 @@ class Command
 	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Region(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionCentre(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_RegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RegionRotation(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionShape(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRegion(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetRegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Edit commands
 	static bool function_Copy(CommandNode *c, Bundle &obj, ReturnValue &rv);

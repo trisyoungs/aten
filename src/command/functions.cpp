@@ -167,14 +167,15 @@ void Command::initPointers()
 	pointers_[Disorder] = &Command::function_Disorder;
 	pointers_[ListComponents] = &Command::function_ListComponents;
 	pointers_[NMols] = &Command::function_NMols;
-	pointers_[Region] = &Command::function_Region;
 	pointers_[RegionCentre] = &Command::function_RegionCentre;
 	pointers_[RegionCentreFrac] = &Command::function_RegionCentreFrac;
-	pointers_[RegionFrac] = &Command::function_RegionFrac;
 	pointers_[RegionGeometry] = &Command::function_RegionGeometry;
 	pointers_[RegionGeometryFrac] = &Command::function_RegionGeometryFrac;
 	pointers_[RegionOverlaps] = &Command::function_RegionOverlaps;
+	pointers_[RegionRotation] = &Command::function_RegionRotation;
 	pointers_[RegionShape] = &Command::function_RegionShape;
+	pointers_[SetRegion] = &Command::function_SetRegion;
+	pointers_[SetRegionFrac] = &Command::function_SetRegionFrac;
 	pointers_[VdwScale] = &Command::function_VdwScale;
 
 	// Edit Commands

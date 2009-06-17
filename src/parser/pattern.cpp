@@ -67,6 +67,10 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "torsions",	VTypes::PatternBoundData,	-1, TRUE }
 };
 
+// Function data
+FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
+};
+
 // Search variable access list for provided accessor (call private static function)
 StepNode *PatternVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
