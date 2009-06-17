@@ -15,6 +15,7 @@ forcefield.h
 forest.h
 format.h
 grammar.h
+glyph.h
 grid.h
 integer.h
 measurement.h
@@ -49,6 +50,7 @@ forcefieldbound.cpp
 forcefield.cpp
 forest.cpp
 format.cpp
+glyph.cpp
 grammar.cc
 grid.cpp
 integer.cpp

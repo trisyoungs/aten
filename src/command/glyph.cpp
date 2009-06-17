@@ -248,7 +248,7 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else if (keywd == "linewidth") obj.gl->setLineWidth((GLfloat) atof(value.get()));
 		else msg.print("Unknown option '%s' given to 'newglyph'.\n", keywd.get());
 	}
-	rv.reset();
+	rv.set(VTypes::GlyphData, obj.gl);
 	return TRUE;
 }
 

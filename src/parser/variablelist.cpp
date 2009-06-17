@@ -28,6 +28,7 @@
 #include "parser/double.h"
 #include "parser/element.h"
 #include "parser/integer.h"
+#include "parser/glyph.h"
 #include "parser/grid.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
@@ -104,6 +105,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::ForcefieldBoundData):
 			v = (Variable*) new ForcefieldBoundVariable(NULL, FALSE);
 			break;
+		case (VTypes::GlyphData):
+			v = (Variable*) new GlyphVariable(NULL, FALSE);
+			break;
 		case (VTypes::GridData):
 			v = (Variable*) new GridVariable(NULL, FALSE);
 			break;
@@ -161,6 +165,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::ForcefieldBoundData):
 			var = new ForcefieldBoundArrayVariable(sizeexpr);
+			break;
+		case (VTypes::GlyphData):
+			var = new GlyphArrayVariable(sizeexpr);
 			break;
 		case (VTypes::GridData):
 			var = new GridArrayVariable(sizeexpr);
