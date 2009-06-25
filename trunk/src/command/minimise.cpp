@@ -34,7 +34,7 @@ bool Command::function_CGMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	cg.setTolerance(linetolerance);
-	cg.setNCycles(c->argi(0));
+	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
@@ -66,7 +66,7 @@ bool Command::function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	mc.setNCycles(c->argi(0));
+	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
@@ -82,7 +82,7 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	sd.setTolerance(linetolerance);
-	sd.setNCycles(c->argi(0));
+	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());

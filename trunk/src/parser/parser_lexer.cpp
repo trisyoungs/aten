@@ -132,10 +132,8 @@ int CommandParser::lex()
 			integer = FALSE;
 			yylval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-// 		if (integer) msg.print(Messenger::Parse, "LEXER (%li): found an integer constant [%i]\n", tree_, yylval.intconst);
-// 		else msg.print(Messenger::Parse, "LEXER (%li): found a floating-point constant [%e]\n", tree_, yylval.doubleconst);
-		if (integer) msg.print(Messenger::Verbose, "LEXER (%li): found an integer constant [%s] [%i]\n", tree_, token, yylval.intconst);
-		else msg.print(Messenger::Verbose, "LEXER (%li): found a floating-point constant [%s] [%e]\n", tree_, token, yylval.doubleconst);
+		if (integer) msg.print(Messenger::Parse, "LEXER (%li): found an integer constant [%s] [%i]\n", tree_, token, yylval.intconst);
+		else msg.print(Messenger::Parse, "LEXER (%li): found a floating-point constant [%s] [%e]\n", tree_, token, yylval.doubleconst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 

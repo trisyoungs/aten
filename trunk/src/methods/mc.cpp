@@ -171,6 +171,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
+	Dnchar etatext;
 
 	/*
 	// Prepare the calculation
@@ -216,7 +217,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 		for (move=0; move<MonteCarlo::Insert; ++move)
 		{
 			// Update progress indicator
-			if (gui.exists() && (!gui.progressUpdate())) break;
+			if (gui.exists() && (!gui.progressUpdate(-1, &etatext))) break;
 
 			acceptanceRatio_[0][move] = 0;
 			// If this move type isn't moveAllowed_ then continue onto the next
@@ -297,6 +298,8 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				sprintf(t," %3i", int(acceptanceRatio_[0][n]*100.0));
 				strcat(s,t);
 			}
+			strcat(s, "  ");
+			strcat(s, etatext.get());
 			strcat(s,"\n");
 			msg.print(s);
 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);

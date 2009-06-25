@@ -689,20 +689,18 @@ void GuiQt::progressTerminate()
 }
 
 // Update the progress dialog
-bool GuiQt::progressUpdate(int currentstep)
+bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 {
 	progressCurrentStep_ = (currentstep == -1 ? progressCurrentStep_+1 : currentstep);
 	static double dpercent;
 	static QTime remtime;
+	static char etatext[64];
 	dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
 	// Show the progress bar if enough time has elapsed since the start of the operation...
 	// If the GUI doesn't exist, call the text-based progress indicator instead
 	// Calculate ETA
-	if (time_.elapsed()%5 == 0)
-	{
-		remtime.setHMS(0,0,0);
-		remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
-	}
+	remtime.setHMS(0,0,0);
+	remtime = remtime.addMSecs( time_.elapsed() * ((1.0 - dpercent) / dpercent) );
 	if (!doesExist_)
 	{
 		static char twister[4] = { '-', '\\', '|', '/' };
@@ -714,17 +712,22 @@ bool GuiQt::progressUpdate(int currentstep)
 		ndots = int(dpercent * 30.0);
 		dpercent *= 100.0;
 		// Always print the header and twister character
-		printf("\rProgress [%c]", twister[c]);
+		if (shorttext == NULL) printf("\rProgress [%c]", twister[c]);
 		// Increase the twister character
 		++c;
 		c = c%4;
 		// New dots or percentage to output?
 		if (percent != progressPercent_)
 		{
-			for (n=0; n<ndots; n++) printf(".");
-			for (n=ndots; n<30; n++) printf(" ");
+			if (etatext == NULL)
+			{
+				for (n=0; n<ndots; n++) printf(".");
+				for (n=ndots; n<30; n++) printf(" ");
+			}
 			// Lastly, print percentage and ETA
-			printf("(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
+			sprintf(etatext, "(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
+			if (shorttext == NULL) printf("%s", etatext);
+			else shorttext->set(etatext);
 			fflush(stdout);
 			progressPercent_ = percent;
 		}

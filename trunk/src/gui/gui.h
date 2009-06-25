@@ -213,7 +213,7 @@ class GuiQt
 	// Instantiate a progress dialog
 	void progressCreate(const char *jobtitle, int stepstodo);
 	// Update the progress dialog
-	bool progressUpdate(int currentstep = -1);
+	bool progressUpdate(int currentstep = -1, Dnchar *shorttext = NULL);
 	// Terminate the progress dialog
 	void progressTerminate();
 };
