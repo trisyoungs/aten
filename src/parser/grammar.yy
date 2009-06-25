@@ -57,7 +57,7 @@ VTypes::DataType declaredType;
 
 %type <node> constant expr rawexpr func var rawvar arg args
 %type <node> fstatement decexpr statement block blockment statementlist exprlist ARRAYCONST
-%type <node> namelist newname
+%type <node> namelist namelistitem newname
 %type <name> newvar
 %type <node> filter pushscope declaration userfunc userfuncdef userstatementdef
 
@@ -177,16 +177,19 @@ pushfunc:
 
 /* Variable declaration and name / assignment list */
 
-namelist:
+namelistitem:
 	newname						{ $$ = $1; if ($1 == NULL) YYABORT; }
-	| namelist ',' newname				{ if ($3 == NULL) YYABORT; $$ = Tree::joinArguments($3,$1); }
-	| namelist ',' constant				{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
-	| namelist newname				{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
-	| namelist error				{ YYABORT; }
-	| namelist ',' FUNCCALL				{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
-	| namelist ',' LOCALVAR				{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
-	| namelist ',' USERFUNCCALL			{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
-	| namelist ',' VTYPE				{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
+	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
+	| constant					{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
+	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
+	| USERFUNCCALL					{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
+	| VTYPE						{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
+	;
+
+namelist:
+	namelistitem					{ $$ = $1; }
+	| namelist ',' namelistitem			{ if ($3 == NULL) YYABORT; $$ = Tree::joinArguments($3,$1); }
+	| namelist namelistitem				{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
 	;
 
 newname:
