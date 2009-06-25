@@ -251,10 +251,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 				case (VTypes::IntInt):
 				case (VTypes::DblInt):
 				case (VTypes::DblDbl):
-					result = type1;
-					break;
 				case (VTypes::IntDbl):
-					result = type2;
+					result = VTypes::DoubleData;
 					break;
 			}
 			break;

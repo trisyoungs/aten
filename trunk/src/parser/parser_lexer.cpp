@@ -96,16 +96,16 @@ int CommandParser::lex()
 				// Check for previous exponential in number
 				if (hasexp)
 				{
-					msg.print("Parse Error: Number has two exponentiations (e/E).\n");
+					msg.print("Error: Number has two exponentiations (e/E).\n");
 					return 0;
 				}
-				hasexp = TRUE;
 				token[length++] = 'E';
+				hasexp = TRUE;
 			}
 			else if ((c == '-') || (c == '+'))
 			{
 				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
-				if (token[length-1] != 'E')
+				if ((length > 0) && (token[length-1] != 'E'))
 				{
 					unGetChar();
 					token[length] = '\0';
@@ -121,8 +121,21 @@ int CommandParser::lex()
 			}
 		} while (!done);
 		// We now have the number as a text token...
-		msg.print(Messenger::Parse, "LEXER (%li): found a number [%s]\n", tree_,token);
-		integer ? yylval.intconst = atoi(token) : yylval.doubleconst = atof(token);
+		if (!hasexp)
+		{
+			if (integer) yylval.intconst = atoi(token);
+			else yylval.doubleconst = atof(token);
+		}
+		else
+		{
+			// Exponentiations are always returned as a double
+			integer = FALSE;
+			yylval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+		}
+// 		if (integer) msg.print(Messenger::Parse, "LEXER (%li): found an integer constant [%i]\n", tree_, yylval.intconst);
+// 		else msg.print(Messenger::Parse, "LEXER (%li): found a floating-point constant [%e]\n", tree_, yylval.doubleconst);
+		if (integer) msg.print(Messenger::Verbose, "LEXER (%li): found an integer constant [%s] [%i]\n", tree_, token, yylval.intconst);
+		else msg.print(Messenger::Verbose, "LEXER (%li): found a floating-point constant [%s] [%e]\n", tree_, token, yylval.doubleconst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -298,13 +311,13 @@ int CommandParser::lex()
 			{
 				if (scopelevel == 0)
 				{
-					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing local variable (->VARNAME)\n", tree_);
+					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing local variable (->LOCALVAR)\n", tree_);
 					yylval.variable = v;
 					return LOCALVAR;
 				}
 				else
 				{
-					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing variable (->VARNAME)\n", tree_);
+					msg.print(Messenger::Parse, "LEXER (%li): ...which is an existing variable (->VAR)\n", tree_);
 					yylval.variable = v;
 					return VAR;
 				}
