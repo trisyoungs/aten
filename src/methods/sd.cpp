@@ -55,6 +55,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms;
 	Atom **modelAtoms;
 	bool lineDone, converged;
+	Dnchar etatext;
 
 	/*
 	// Prepare the calculation
@@ -91,7 +92,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		//for (i=0; i<srcmodel->nAtoms(); i++) modelAtoms[i]->f() /= elements.atomicMass(modelAtoms[i]);
 
 		// Perform linesearch along the gradient vector
-		if (!gui.progressUpdate(cycle)) lineDone = TRUE;
+		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
 		else
 		{
 			newEnergy = lineMinimise(srcmodel);
@@ -105,7 +106,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,currentEnergy,deltaEnergy,currentRms);
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,currentEnergy,deltaEnergy,currentRms,etatext.get());
 
 		if (lineDone || converged) break;
 	}

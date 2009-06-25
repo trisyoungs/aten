@@ -44,6 +44,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	Vec3<double> f;
 	Atom **modelatoms;
 	bool linedone, converged;
+	Dnchar etatext;
 
 	/*
 	// Prepare the calculation
@@ -77,7 +78,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		//for (i=0; i<srcmodel->nAtoms(); i++) modelatoms[i]->f /= elements.mass(modelatoms[i]);
 
 		// Perform linesearch along the gradient vector
-		if (!gui.progressUpdate(cycle)) linedone = TRUE;
+		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
 		else
 		{
 			enew = lineMinimise(srcmodel);
@@ -91,7 +92,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,ecurrent,edelta,rmscurrent);
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,ecurrent,edelta,rmscurrent, etatext.get());
 
 		if (linedone || converged) break;
 
