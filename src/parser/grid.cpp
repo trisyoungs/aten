@@ -63,6 +63,7 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

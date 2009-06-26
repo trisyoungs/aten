@@ -51,6 +51,7 @@ Pattern::Pattern()
 	testElement_ = FALSE;
 	testBonding_ = FALSE;
 	noIntramolecular_ = FALSE;
+	atomsFixed_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -245,6 +246,18 @@ PatternBound *Pattern::angle(int i)
 PatternBound *Pattern::torsion(int i)
 {
 	return torsions_[i];
+}
+
+// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
+bool Pattern::areAtomsFixed()
+{
+	return atomsFixed_;
+}
+
+// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations
+void Pattern::setAtomsFixed(bool b)
+{
+	atomsFixed_ = b;
 }
 
 // Sets the starting atom of the model

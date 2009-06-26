@@ -61,6 +61,7 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 
 // Function data
 FunctionAccessor ForcefieldBoundVariable::functionData[ForcefieldBoundVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

@@ -357,6 +357,7 @@ void Command::initPointers()
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
 	pointers_[CreatePatterns] = &Command::function_CreatePatterns;
+	pointers_[FixPattern] = &Command::function_FixPattern;
 	pointers_[GetPattern] = &Command::function_GetPattern;
 	pointers_[ListPatterns] = &Command::function_ListPatterns;
 	pointers_[NewPattern] = &Command::function_NewPattern;

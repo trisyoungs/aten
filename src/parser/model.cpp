@@ -82,6 +82,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

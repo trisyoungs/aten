@@ -23,6 +23,7 @@
 #include "model/undostate.h"
 #include "model/undoevent.h"
 #include "base/atom.h"
+#include "base/pattern.h"
 #include "base/elements.h"
 
 // Return the start of the atom list
@@ -279,7 +280,15 @@ void Model::zeroForces()
 void Model::zeroForcesFixed()
 {
 	msg.enter("Model::zeroForcesFixed");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
+	Atom *i;
+	// First, apply pattern-designated fixes
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) if (p->areAtomsFixed())
+	{
+		i = p->firstAtom();
+		for (int n=0; n<p->totalAtoms(); ++n) { i->f().zero(); i = i->next; }
+	}
+	// Next, apply specific atom fixes
+	for (i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
 	msg.exit("Model::zeroForcesFixed");
 }
 

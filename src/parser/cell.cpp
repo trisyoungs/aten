@@ -79,6 +79,7 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

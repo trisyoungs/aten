@@ -59,6 +59,7 @@ Accessor MeasurementVariable::accessorData[MeasurementVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor MeasurementVariable::functionData[MeasurementVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

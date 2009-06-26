@@ -54,6 +54,7 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "com", 	VTypes::VectorData,		-1, TRUE },
 	{ "firstatom",	VTypes::AtomData,		0, TRUE },
 	{ "firstatomid",VTypes::IntegerData,		0, TRUE },
+	{ "fixed",	VTypes::IntegerData,		0, FALSE },
 	{ "forcefield",	VTypes::ForcefieldData,		0, FALSE },
 	{ "lastatom",	VTypes::AtomData,		0, TRUE },
 	{ "lastatomid",	VTypes::IntegerData,		0, TRUE },
@@ -69,6 +70,7 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -200,6 +202,9 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (PatternVariable::FirstAtom):
 			rv.set(VTypes::AtomData, ptr->firstAtom());
 			break;
+		case (PatternVariable::Fixed):
+			rv.set(ptr->areAtomsFixed());
+			break;
 		case (PatternVariable::FirstAtomId):
 			rv.set(ptr->startAtom() + 1);
 			break;
@@ -323,6 +328,9 @@ bool PatternVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	{
 		case (PatternVariable::Name):
 			ptr->setName(newvalue.asString());
+			break;
+		case (PatternVariable::Fixed):
+			ptr->setAtomsFixed( newvalue.asBool() );
 			break;
 		case (PatternVariable::FField):
  			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData));

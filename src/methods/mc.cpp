@@ -229,7 +229,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				{
 					npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
 					p = srcmodel->pattern(randpat);
-				} while (p->nMolecules() == 0);
+				} while ((p->nMolecules() == 0) && (!p->areAtomsFixed()));
 				mol = csRandomi(p->nMolecules());
 	
 				// Copy the coordinates of the current molecule
@@ -335,7 +335,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	double penalty;
-	bool done;
+	bool done, endearly = FALSE;
 	Cell *cell;
 	Pattern *p;
 	ComponentRegion *r;
@@ -343,6 +343,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	Clipboard clip;
 	Reflist<Model,int> components;
 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
+	Dnchar etatext;
 
 	// Model must have a cell to continue
 	if (destmodel->cell()->type() == Cell::NoCell)
@@ -465,7 +466,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	msg.print(" %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
-	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MonteCarlo::nMoveTypes);
+	gui.progressCreate("Building disordered system", nCycles_ * components.nItems());
 	prog = 0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
@@ -477,6 +478,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 		{
 			// Get model pointer
 			c = ri->item;
+
+			prog ++;
+			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
+			if (endearly) break;
 
 			// Skip if nRequested == 0, cell.type() != Cell::NoCell, and c == destmodel (to be sure).
 			if ((c->nRequested() == 0) || (c->cell()->type() != Cell::NoCell) || (c == destmodel)) continue;
@@ -497,9 +502,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MonteCarlo::Delete; move>-1; move--)
 			{
-				prog ++;
-				if (gui.exists() && (!gui.progressUpdate(prog))) break;
-
 				acceptanceRatio_[p->id()][move] = 0;
 				// If this move type isn't allowed then continue onto the next
 				if (!moveAllowed_[move]) continue;
@@ -641,19 +643,29 @@ bool MonteCarlo::disorder(Model *destmodel)
 					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));
 					strcat(s,t);
 				}
+				if (p == destmodel->patterns())
+				{
+					strcat(s," ");
+					strcat(s,etatext.get());
+				}
 				strcat(s,"\n");
 				msg.print(s);
 			}
 		}
 		elast = ecurrent;
 		// Check for early termination
+		if (endearly)
+		{
+			msg.print("Stopped.\n");
+			break;
+		}
 		if (done)
 		{
 			msg.print("All component populations satisfied.\n");
 			break;
 		}
 	}
-	if (gui.exists()) gui.progressTerminate();
+	gui.progressTerminate();
 	
 	// Print out final energy and data
 	enew = destmodel->totalEnergy(destmodel);
