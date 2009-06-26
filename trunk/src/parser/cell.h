@@ -43,7 +43,7 @@ class CellVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, Type, Volume, nAccessors };
 	// Function list
-	enum Functions { nFunctions };
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

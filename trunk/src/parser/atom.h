@@ -43,7 +43,7 @@ class AtomVariable : public PointerVariable
 	// Accessor list
         enum Accessors { Bonds, F, Fixed, FX, FY, FZ, Hidden, Id, Mass, Name, NBonds, Q, R, RX, RY, RZ, Selected, Symbol, Type, V, VX, VY, VZ, Z, nAccessors };
 	// Function list
-	enum Functions { nFunctions };
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

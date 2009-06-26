@@ -399,6 +399,7 @@ class Command
 		// Pattern Commands
 		ClearPatterns,
 		CreatePatterns,
+		FixPattern,
 		GetPattern,
 		ListPatterns,
 		NewPattern,
@@ -814,6 +815,7 @@ class Command
 	// Pattern Commands
 	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);

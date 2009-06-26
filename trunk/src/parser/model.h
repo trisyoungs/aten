@@ -43,7 +43,7 @@ class ModelVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { Angles, AngleTerms, Atoms, Atomtypes, Bonds, BondTerms, Celldata, Distances, Frame, Frames, Name, NAngles, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NDistances, NFrames, NPatterns, NSelected, NTorsions, NTorsionTerms, Patterns, Region, Torsions, TorsionTerms, nAccessors };
 	// Function list
-	enum Functions { nFunctions };
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

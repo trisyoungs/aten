@@ -60,6 +60,7 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

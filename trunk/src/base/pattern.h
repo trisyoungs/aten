@@ -244,6 +244,8 @@ class Pattern
 	List<PatternBound> angles_;
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
+	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
+	bool atomsFixed_;
 
 	public:
 	// Empty the arrays of the energy expression
@@ -274,6 +276,10 @@ class Pattern
 	PatternBound *angle(int i);
 	// Return selected torsion of the pattern
 	PatternBound *torsion(int i);
+	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
+	bool areAtomsFixed();
+	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations
+	void setAtomsFixed(bool b);
 
 
 	/*

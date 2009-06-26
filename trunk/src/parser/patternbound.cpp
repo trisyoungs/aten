@@ -55,6 +55,7 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 
 // Function data
 FunctionAccessor PatternBoundVariable::functionData[PatternBoundVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

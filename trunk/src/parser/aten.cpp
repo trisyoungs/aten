@@ -97,6 +97,7 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

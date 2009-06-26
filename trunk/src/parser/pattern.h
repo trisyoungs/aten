@@ -41,9 +41,9 @@ class PatternVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, Fixed, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
 	// Function list
-	enum Functions { nFunctions };
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

@@ -65,6 +65,7 @@ Accessor RegionVariable::accessorData[RegionVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor RegionVariable::functionData[RegionVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -322,7 +323,7 @@ bool RegionVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Region *ptr= (Region*) rv.asPointer(VTypes::RegionData, result);
+	ComponentRegion *ptr= (ComponentRegion*) rv.asPointer(VTypes::RegionData, result);
 	if (result) switch (i)
 	{
 		default:

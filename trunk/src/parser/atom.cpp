@@ -78,6 +78,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

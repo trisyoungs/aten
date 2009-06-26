@@ -24,16 +24,6 @@
 #include "model/model.h"
 #include "base/pattern.h"
 
-// Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
-	// TODO Add 'check_pattern(pattern*) method to model*
-	rv.reset();
-	return TRUE;
-}
-
 // Clear current pattern definition ('clearpatterns')
 bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -48,6 +38,15 @@ bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->autocreatePatterns();
+	rv.reset();
+	return TRUE;
+}
+
+// Fix positions of atoms in pattern
+bool Command::function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.p->setAtomsFixed( c->argb(0) );
 	rv.reset();
 	return TRUE;
 }
@@ -71,3 +70,12 @@ bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
+bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
+	// TODO Add 'check_pattern(pattern*) method to model*
+	rv.reset();
+	return TRUE;
+}

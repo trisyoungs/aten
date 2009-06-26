@@ -62,6 +62,7 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 
 // Function data
 FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

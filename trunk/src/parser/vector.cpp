@@ -142,6 +142,7 @@ Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor VectorVariable::functionData[VectorVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

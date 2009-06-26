@@ -55,6 +55,7 @@ Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ElementVariable::functionData[ElementVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)

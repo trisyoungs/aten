@@ -182,13 +182,11 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 void Model::adjustZoom(bool zoomin)
 {
 	msg.enter("Model::adjustZoom");
-	double dz = -camera_.z * prefs.zoomThrottle();
+	double dz = (trajectoryParent_ == NULL ? -camera_.z : -trajectoryParent_->camera_.z);
+	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz,0.0);
-	calculateViewMatrix();
 	gui.mainView.doProjection();
-	// Log camera change
-	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustZoom");
 }
 

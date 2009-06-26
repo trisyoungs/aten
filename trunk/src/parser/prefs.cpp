@@ -114,6 +114,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor PreferencesVariable::functionData[PreferencesVariable::nFunctions] = {
+	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
