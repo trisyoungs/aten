@@ -90,14 +90,10 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
-	# Variable declarations
-	#atom i;
-
 	# Write a standard control header
-	writeline(" $SYSTEM MEMDDI=16 $END");
 	writeline(" $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE COORD=CART ICHARG=0 MULT=1 $END");
 	writeline(" $STATPT NSTEP=100 $END");
-	writeline(" $SYSTEM TIMLIM=1200 MWORDS=96 $END");
+	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
 	writeline(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END");
 	writeline(" $GUESS GUESS=HUCKEL $END");
 	writeline(" $SCF DIRSCF=.TRUE. $END");

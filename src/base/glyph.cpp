@@ -40,22 +40,15 @@ int Glyph::nGlyphData(Glyph::GlyphType gt)
 	return GlyphTypeNData[gt];
 }
 
-// Constructors
-GlyphData::GlyphData()
-{
-	// Public variables
-	atom = NULL;
-	atomData = GlyphData::PositionData;
-	atomSetLast = FALSE;
-	set = FALSE;
-	prefs.copyColour(Prefs::GlyphColour, colour);
-	prev = NULL;
-	next = NULL;
-}
+/*
+// Glyph
+*/
 
+// Constructor
 Glyph::Glyph()
 {
 	// Private variables
+	visible_ = TRUE;
 	solid_ = TRUE;
 	lineWidth_ = 1.0f;
 
@@ -64,90 +57,18 @@ Glyph::Glyph()
 	next = NULL;
 }
 
-/*
-// Glyph
-*/
-
-// Set vector data for glyph
-void Glyph::setVector(int i, double x, double y, double z)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set vector %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else
-	{
-		data_[i]->vector.set(x,y,z);
-		data_[i]->set = TRUE;
-		data_[i]->atomSetLast = FALSE;
-	}
-}
-
-// Set vector data for glyph
-void Glyph::setVector(int i, Vec3<double> vec)
-{
-	setVector(i, vec.x, vec.y, vec.z);
-}
-
-// Set atom data for glyph
-void Glyph::setAtom(int i, Atom *atom, GlyphData::GlyphDataType av)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set atom id %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else
-	{
-		data_[i]->atom = atom;
-		data_[i]->atomData = av;
-		data_[i]->set = TRUE;
-		data_[i]->atomSetLast = TRUE;
-		if (atom == NULL) msg.print("Warning - NULL atom pointer stored in data %i.\n",i);
-	}
-}
-
-// Returns the atom id of the glyph
-Atom *Glyph::atom(int i)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get atom id %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->atom;
-	return NULL;
-}
-
-// Returns whether the atom was set last for data 'i'
-bool Glyph::atomSetLast(int i)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get atomSetLast %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->atomSetLast;
-	return FALSE;
-}
-
-// Returns the data type for data id 'i'
-GlyphData::GlyphDataType Glyph::atomData(int i)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get dataType id %i from glyph when it has only %i data in total.\n", i+1, data_.nItems());
-	else return data_[i]->atomData;
-	return GlyphData::PositionData;
-}
-
-// Returns the atom id of the glyph
-Vec3<double> Glyph::vector(int i)
-{
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else
-	{
-		if (data_[i]->atomSetLast) return data_[i]->atom->r();
-		else return data_[i]->vector;
-	}
-	return Vec3<double>();
-}
-
-// // Returns whether the specified data is to be taken from an atom
-// bool Glyph::hasAtomId(int i)
-// {
-// 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to test atom id %i in glyph when it has only %i in total.\n", i+1, data_.nItems());
-// 	else return (data_[i]->atomId == -1 ? FALSE : TRUE);
-// 	return FALSE;
-// }
-
 // Returns the number of data set for the Glyph
 int Glyph::nData()
 {
 	return data_.nItems();
+}
+
+// Return nth data in glyph
+GlyphData *Glyph::data(int i)
+{
+	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
+	else return data_[i];
+	return NULL;
 }
 
 // Set parent model
@@ -178,19 +99,13 @@ void Glyph::setType(GlyphType gt)
 	{
 		case (Glyph::ArrowGlyph):
 		case (Glyph::VectorGlyph):
-			setVector(1,0.0,1.0,0.0);
+			data_[1]->setVector(0.0,1.0,0.0);
 			break;
 		case (Glyph::SphereGlyph):
 		case (Glyph::CubeGlyph):
-			setVector(1,1.0,1.0,1.0);
+			data_[1]->setVector(1.0,1.0,1.0);
 			break;
-		case (Glyph::TriangleGlyph):
-			break;
-		case (Glyph::EllipsoidGlyph):
-			break;
-		case (Glyph::TextGlyph):
-			break;
-		case (Glyph::TextGlyph3D):
+		default:
 			break;
 	}
 	type_ = gt;
@@ -208,31 +123,17 @@ const char *Glyph::text()
 	return text_.get();
 }
 
-// Set i'th colour in glyph
-void Glyph::setColour(int i, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+// Set whether the Glyph is visible
+void Glyph::setVisible(bool isvisible)
 {
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set colour %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else
-	{
-		data_[i]->colour[0] = r;
-		data_[i]->colour[1] = g;
-		data_[i]->colour[2] = b;
-		data_[i]->colour[3] = a;
-	}
+	visible_ = isvisible;
 }
 
-// Return i'th colour for glyph
-GLfloat *Glyph::colour(int i)
+// Return whether the Glyph is visible
+bool Glyph::isVisible()
 {
-	static GLfloat black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get colour %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->colour;
-	return black;
+	return visible_;
 }
-
-/*
-// Glyph Style
-*/
 
 // Set whether the Glyph is solid or not
 void Glyph::setSolid(bool issolid)
@@ -256,4 +157,115 @@ void Glyph::setLineWidth(GLfloat width)
 GLfloat Glyph::lineWidth()
 {
 	return lineWidth_;
+}
+
+/*
+// GlyphData
+*/
+
+// Constructor
+GlyphData::GlyphData()
+{
+	// Private variables
+	atom_ = NULL;
+	atomData_ = GlyphData::PositionData;
+	atomSetLast_ = FALSE;
+	set_ = FALSE;
+	colour_[0] = prefs.colour(Prefs::GlyphColour)[0];
+	colour_[1] = prefs.colour(Prefs::GlyphColour)[1];
+	colour_[2] = prefs.colour(Prefs::GlyphColour)[2];
+	colour_[3] = prefs.colour(Prefs::GlyphColour)[3];
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Set vector data
+void GlyphData::setVector(double x, double y, double z)
+{
+	vector_.set(x,y,z);
+	set_ = TRUE;
+	atomSetLast_ = FALSE;
+}
+
+// Set vector data
+void GlyphData::setVector(Vec3<double> vec)
+{
+	setVector(vec.x, vec.y, vec.z);
+}
+
+// Set component of vector data
+void GlyphData::setVector(int i, double d)
+{
+	vector_.set(i, d);
+	set_ = TRUE;
+	atomSetLast_ = FALSE;
+}
+
+// Set atom data
+void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
+{
+	atom_ = atom;
+	atomData_ = av;
+	set_ = TRUE;
+	atomSetLast_ = TRUE;
+	if (atom_ == NULL) msg.print("Warning - NULL atom pointer stored in data.\n");
+}
+
+// Return the atom pointer
+Atom *GlyphData::atom()
+{
+	return atom_;
+}
+
+// Return whether the atom was set last
+bool GlyphData::atomSetLast()
+{
+	return atomSetLast_;
+}
+
+// Return the data type 
+GlyphData::GlyphDataType GlyphData::atomData()
+{
+	return atomData_;
+}
+
+// Return the position
+Vec3<double> GlyphData::vector()
+{
+	if (!atomSetLast_) return vector_;
+	else if (atom_ != NULL) return atom_->r();
+	return Vec3<double>();
+}
+
+// Set colour
+void GlyphData::setColour(double r, double g, double b, double a)
+{
+	colour_[0] = r;
+	colour_[1] = g;
+	colour_[2] = b;
+	colour_[3] = a;
+}
+
+// Set n'th component of colour
+void GlyphData::setColour(int n, double d)
+{
+	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
+	else colour_[n] = d;
+}
+
+// Return colour
+double *GlyphData::colour()
+{
+	return colour_;
+}
+
+// Return i'th colour for glyph
+void GlyphData::copyColour(GLfloat *col)
+{
+	 col[0] = (GLfloat) colour_[0];
+	 col[1] = (GLfloat) colour_[1];
+	 col[2] = (GLfloat) colour_[2];
+	 col[3] = (GLfloat) colour_[3];
 }

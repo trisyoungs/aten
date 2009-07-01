@@ -1,6 +1,6 @@
 /*
-	*** Glyph Variable and Array
-	*** src/parser/glyph.cpp
+	*** GlyphData Variable and Array
+	*** src/parser/glyphdata.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/glyph.h"
+#include "parser/glyphdata.h"
 #include "parser/stepnode.h"
 #include "base/glyph.h"
 #include "base/constants.h"
@@ -33,16 +33,16 @@
 */
 
 // Constructor
-GlyphVariable::GlyphVariable(Glyph *ptr, bool constant)
+GlyphDataVariable::GlyphDataVariable(Glyph *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GlyphData;
+	returnType_ = VTypes::GlyphDataData;
 	readOnly_ = constant;
 	pointerData_ = ptr;
 }
 
 // Destructor
-GlyphVariable::~GlyphVariable()
+GlyphDataVariable::~GlyphDataVariable()
 {
 }
 
@@ -51,29 +51,26 @@ GlyphVariable::~GlyphVariable()
 */
 
 // Accessor data
-Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
-	{ "data",	VTypes::GlyphDataData,	4, TRUE },
-	{ "solid",	VTypes::IntegerData,	0, FALSE },
-	{ "text",	VTypes::StringData,	0, FALSE },
-	{ "type",	VTypes::StringData,	0, FALSE },
-	{ "visible",	VTypes::IntegerData,	0, FALSE }
+Accessor GlyphDataVariable::accessorData[GlyphDataVariable::nAccessors] = {
+	{ "colour",	VTypes::DoubleData,	4, FALSE },
+	{ "value",	VTypes::VectorData,	0, FALSE }
 };
 
 // Function data
-FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
+FunctionAccessor GlyphDataVariable::functionData[GlyphDataVariable::nFunctions] = {
 	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *GlyphVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *GlyphDataVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GlyphVariable::accessorSearch(s, arrayindex, arglist);
+	return GlyphDataVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("GlyphVariable::accessorSearch");
+	msg.enter("GlyphDataVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -84,14 +81,14 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
-			msg.exit("GlyphVariable::accessorSearch");
+			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
 			msg.print("Error: Array index given to 'grid&' function '%s'.\n", s);
-			msg.exit("GlyphVariable::accessorSearch");
+			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
@@ -115,19 +112,19 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		}
 		else result = new StepNode(i, VTypes::GlyphData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("GlyphVariable::accessorSearch");
+	msg.exit("GlyphDataVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphVariable::retrieveAccessor");
+	msg.enter("GlyphDataVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::retrieveAccessor");
+		msg.exit("GlyphDataVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -135,7 +132,7 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("GlyphVariable::retrieveAccessor");
+		msg.exit("GlyphDataVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
@@ -143,13 +140,13 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("GlyphVariable::retrieveAccessor");
+			msg.exit("GlyphDataVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Glyph *ptr= (Glyph*) rv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
@@ -157,40 +154,31 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	}
 	if (result) switch (acc)
 	{
-		case (GlyphVariable::Data):
-			if (hasArrayIndex) rv.set( VTypes::GlyphDataData, ptr->data(arrayIndex-1) );
-			else rv.set( VTypes::GlyphDataData, ptr->data(0) );
+		case (GlyphDataVariable::Colour):
+			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
 			break;
-		case (GlyphVariable::Solid):
-			rv.set( ptr->isSolid() );
-			break;
-		case (GlyphVariable::Text):
-			rv.set( ptr->text() );
-			break;
-		case (GlyphVariable::Type):
-			rv.set( Glyph::glyphType(ptr->type()) );
-			break;
-		case (GlyphVariable::Visible):
-			rv.set( ptr->isVisible() );
+		case (GlyphDataVariable::Value):
+			rv.set( ptr->vector() );
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in GlyphVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in GlyphDataVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::retrieveAccessor");
+	msg.exit("GlyphDataVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphVariable::setAccessor");
+	msg.enter("GlyphDataVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::setAccessor");
+		msg.exit("GlyphDataVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -239,58 +227,58 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	if (!result)
 	{
-		msg.exit("GlyphVariable::setAccessor");
+		msg.exit("GlyphDataVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Glyph *ptr= (Glyph*) sourcerv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) sourcerv.asPointer(VTypes::GlyphData, result);
 	if (result && (ptr == NULL))
 	{
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
 		result = FALSE;
 	}
+	int n;
 	if (result) switch (acc)
 	{
-		case (GlyphVariable::Solid):
-			ptr->setSolid(newvalue.asBool());
+		case (GlyphDataVariable::Colour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
 			break;
-		case (GlyphVariable::Text):
-			ptr->setText(newvalue.asString());
-			break;
-		case (GlyphVariable::Visible):
-			ptr->setVisible(newvalue.asBool());
+		case (GlyphDataVariable::Value):
+			ptr->setVector(newvalue.asVector());
 			break;
 		default:
-			printf("GlyphVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("GlyphDataVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::setAccessor");
+	msg.exit("GlyphDataVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("GlyphVariable::performFunction");
+	msg.enter("GlyphDataVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphVariable::performFunction");
+		msg.exit("GlyphDataVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Glyph *ptr= (Glyph*) rv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphData, result);
 	if (result) switch (i)
 	{
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in GlyphVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in GlyphDataVariable.\n", functionData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphVariable::performFunction");
+	msg.exit("GlyphDataVariable::performFunction");
 	return result;
 }
 
@@ -299,7 +287,7 @@ bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 */
 
 // Constructor
-GlyphArrayVariable::GlyphArrayVariable(TreeNode *sizeexpr, bool constant)
+GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GlyphData;
@@ -311,8 +299,8 @@ GlyphArrayVariable::GlyphArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *GlyphArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *GlyphDataArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GlyphVariable::accessorSearch(s, arrayindex, arglist);
+	return GlyphDataVariable::accessorSearch(s, arrayindex, arglist);
 }
 

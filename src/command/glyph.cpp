@@ -77,7 +77,7 @@ bool Command::function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->setAtom(d, target, GlyphData::ForceData);
+	obj.gl->data(d)->setAtom(target, GlyphData::ForceData);
 	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
 	rv.reset();
 	return TRUE;
@@ -102,7 +102,7 @@ bool Command::function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->setAtom(d, target, GlyphData::PositionData);
+	obj.gl->data(d)->setAtom(target, GlyphData::PositionData);
 	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
 	rv.reset();
 	return TRUE;
@@ -123,8 +123,8 @@ bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argType(1) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);
-		else obj.gl->setAtom(d, obj.rs->atom(c->argi(1)-1), GlyphData::VelocityData); 
+		if (c->argType(1) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);
+		else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(1)-1), GlyphData::VelocityData); 
 	}
 	rv.reset();
 	return TRUE;
@@ -139,8 +139,8 @@ bool Command::function_GlyphAtomsF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::ForceData);
-			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::ForceData); 
+			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::ForceData);
+			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::ForceData); 
 		}
 		else break;
 	}
@@ -157,8 +157,8 @@ bool Command::function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::PositionData);
-			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::PositionData); 
+			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::PositionData);
+			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::PositionData); 
 		}
 		else break;
 	}
@@ -175,8 +175,8 @@ bool Command::function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argType(d) == VTypes::AtomData) obj.gl->setAtom(d, (Atom*) c->argp(d, VTypes::AtomData), GlyphData::VelocityData);
-			else obj.gl->setAtom(d, obj.rs->atom(c->argi(d)-1), GlyphData::VelocityData); 
+			if (c->argType(d) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(d, VTypes::AtomData), GlyphData::VelocityData);
+			else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(d)-1), GlyphData::VelocityData); 
 		}
 		else break;
 	}
@@ -190,7 +190,7 @@ bool Command::function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	obj.gl->setColour(d, c->argGLf(1), c->argGLf(2), c->argGLf(3), c->hasArg(4) ? c->argGLf(4) : 1.0f);
+	obj.gl->data(d)->setColour(c->argGLf(1), c->argGLf(2), c->argGLf(3), c->hasArg(4) ? c->argGLf(4) : 1.0f);
 	rv.reset();
 	return TRUE;
 }
@@ -201,7 +201,7 @@ bool Command::function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	obj.gl->setVector(d, c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
+	obj.gl->data(d)->setVector(c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
 	rv.reset();
 	return TRUE;
 }

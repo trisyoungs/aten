@@ -1,6 +1,6 @@
 /*
-	*** Glyph Variable and Array
-	*** src/parser/glyph.h
+	*** GlyphData Variable and Array
+	*** src/parser/glyphdata.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GLYPHVARIABLE_H
-#define ATEN_GLYPHVARIABLE_H
+#ifndef ATEN_GLYPHDATAVARIABLE_H
+#define ATEN_GLYPHDATAVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
@@ -28,20 +28,20 @@
 // Forward Declarations
 class Glyph;
 
-// Glyph Variable
-class GlyphVariable : public PointerVariable
+// Glyph Data Variable
+class GlyphDataVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphVariable(Glyph *g = NULL, bool constant = FALSE);
-	~GlyphVariable();
+	GlyphDataVariable(Glyph *g = NULL, bool constant = FALSE);
+	~GlyphDataVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Data, Solid, Text, Type, Visible, nAccessors };
+        enum Accessors { Colour, Value, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
@@ -60,12 +60,12 @@ class GlyphVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Glyph Array Variable
-class GlyphArrayVariable : public PointerArrayVariable
+// Glyph Data Array Variable
+class GlyphDataArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	GlyphDataArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

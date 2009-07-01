@@ -435,6 +435,9 @@ void Command::initPointers()
 
 	// System Commands
 	pointers_[Debug] = &Command::function_Debug;
+	pointers_[Getenv] = &Command::function_Getenv;
+	pointers_[Getenvf] = &Command::function_Getenvf;
+	pointers_[Getenvi] = &Command::function_Getenvi;
 	pointers_[Gui] = &Command::function_Gui;
 	pointers_[Help] = &Command::function_Help;
 	pointers_[Seed] = &Command::function_Seed;

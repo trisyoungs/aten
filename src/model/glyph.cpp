@@ -45,9 +45,9 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid)
 	if ((dataid < 0) || (dataid >= g->nData())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());
 	else
 	{
-		if (g->atomSetLast(dataid))
+		if (g->data(dataid)->atomSetLast())
 		{
-			i = g->atom(dataid);
+			i = g->data(dataid)->atom();
 			if (i == NULL)
 			{
 				msg.print( "Atom was apparently set last in glyph, but stored pointer is NULL.\n");
@@ -60,7 +60,7 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid)
 // 				return Vec3<double>();
 // 			}
 // 			Atom *i = atoms_[id];
-			switch (g->atomData(dataid))
+			switch (g->data(dataid)->atomData())
 			{
 				case (GlyphData::PositionData):
 					return i->r();
@@ -71,7 +71,7 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid)
 			}
 		}
 		// Default return value is vector data
-		return g->vector(dataid);
+		return g->data(dataid)->vector();
 	}
 	return Vec3<double>();
 }
@@ -126,15 +126,15 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 					g = addGlyph(Glyph::TriangleGlyph);
 					if (linkatoms)
 					{
-						g->setAtom(0, ri->item, GlyphData::PositionData);
-						g->setAtom(1, rj->item, GlyphData::PositionData);
-						g->setAtom(2, rk->item, GlyphData::PositionData);
+						g->data(0)->setAtom(ri->item, GlyphData::PositionData);
+						g->data(1)->setAtom(rj->item, GlyphData::PositionData);
+						g->data(2)->setAtom(rk->item, GlyphData::PositionData);
 					}
 					else
 					{
-						g->setVector(0, ri->item->r());
-						g->setVector(1, rj->item->r());
-						g->setVector(2, rk->item->r());
+						g->data(0)->setVector(ri->item->r());
+						g->data(1)->setVector(rj->item->r());
+						g->data(2)->setVector(rk->item->r());
 					}
 				}
 			}
@@ -209,8 +209,8 @@ void Model::addEllipsoidGlyphs()
 			}
 		}
 // 		g = addGlyph(Glyph::ArrowGlyph);
-// 		g->setVector(0, centroid);
-// 		g->setVector(1, centroid+axes.x());
+// 		g->data(0)->setVector(centroid);
+// 		g->data(1)->setVector(centroid+axes.x());
 		axes.x().normalise();
 
 		/*
@@ -239,8 +239,8 @@ void Model::addEllipsoidGlyphs()
 		// Must orthogonalise y-axis w.r.t. x
 		axes.y().orthogonalise(axes.x());
 // 		g = addGlyph(Glyph::ArrowGlyph);
-// 		g->setVector(0, centroid);
-// 		g->setVector(1, centroid+axes.y());
+// 		g->data(0)->setVector(centroid);
+// 		g->data(1)->setVector(centroid+axes.y());
 		axes.y().normalise();
 
 		/*
@@ -260,10 +260,10 @@ void Model::addEllipsoidGlyphs()
 		if (extents.z < 0.5) extents.z = 0.5;
 		axes.rowMultiply(extents);
 		g = addGlyph(Glyph::EllipsoidXYZGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1,axes.x());
-		g->setVector(2,axes.y());
-		g->setVector(3,axes.z());
+		g->data(0)->setVector(centroid);
+		g->data(1)->setVector(axes.x());
+		g->data(2)->setVector(axes.y());
+		g->data(3)->setVector(axes.z());
 
 /*
 		for (ri = atoms.first(); ri != NULL; ri = ri->next)
@@ -324,10 +324,10 @@ void Model::addEllipsoidGlyphs()
 		if (extents.z < 0.5) extents.z = 0.5;
 		axes.rowMultiply(extents);
 		g = addGlyph(Glyph::EllipsoidXYZGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1,axes.x());
-		g->setVector(2,axes.y());
-		g->setVector(3,axes.z());*/
+		g->data(0)->setVector(centroid);
+		g->data(1)->setVector(axes.x());
+		g->data(2)->setVector(axes.y());
+		g->data(3)->setVector(axes.z());*/
 	}
 	msg.exit("Model::addEllipsoidGlyphs");
 }

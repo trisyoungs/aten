@@ -37,6 +37,30 @@ bool Command::function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Retrieve environment variable
+bool Command::function_Getenv(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (getenv(c->argc(0)) != '\0') rv.set(getenv(c->argc(0)));
+	else rv.set("");
+	return TRUE;
+}
+
+// Retrieve environment variable as a floating point value
+bool Command::function_Getenvf(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (getenv(c->argc(0)) != '\0') rv.set( atof(getenv(c->argc(0))) );
+	else rv.set(0.0);
+	return TRUE;
+}
+
+// Retrieve environment variable as an integer value
+bool Command::function_Getenvi(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (getenv(c->argc(0)) != '\0') rv.set( atoi(getenv(c->argc(0))) );
+	else rv.set(0);
+	return TRUE;
+}
+
 // Start GUI
 bool Command::function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

@@ -44,19 +44,43 @@ class GlyphData
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
-	public:
+	private:
 	// Position or direction vector
-	Vec3<double> vector;
+	Vec3<double> vector_;
 	// Integer atom id in the parent model from which to get r, f, or v
-	Atom *atom;
+	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
-	GlyphDataType atomData;
+	GlyphDataType atomData_;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
-	bool atomSetLast;
+	bool atomSetLast_;
 	// Status of data item (whether it has been set or not)
-	bool set;
+	bool set_;
 	// Colour at this data point
-	GLfloat colour[4];
+	double colour_[4];
+
+	public:
+	// Set vector data for glyph
+	void setVector(Vec3<double> vec);
+	void setVector(double x, double y, double z);
+	void setVector(int i, double d);
+	// Set atom data for datapoint
+	void setAtom(Atom *atom, GlyphData::GlyphDataType av);
+	// Returns the atom id of the datapoint
+	Atom *atom();
+	// Returns whether the atom was set last
+	bool atomSetLast();
+	// Return the atom data type
+	GlyphData::GlyphDataType atomData();
+	// Return vector data for datapoint
+	Vec3<double> vector();
+	// Set colour of datapoint
+	void setColour(double r, double g, double b, double a = 1.0f);
+	// Set n'th component of colour in datapoint
+	void setColour(int n, double d);
+	// Return i'th colour
+	double *colour();
+	// Copy colour for datapoint
+	void copyColour(GLfloat *c);
 };
 
 // Glyph
@@ -69,9 +93,9 @@ class Glyph
 	Glyph *prev, *next;
 	// Glyph style
 	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, QuadGlyph, TriangleGlyph, LineGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
-	static const char *glyphType(GlyphType);
-	static GlyphType glyphType(const char*);
-	static int nGlyphData(GlyphType);
+	static const char *glyphType(GlyphType gt);
+	static GlyphType glyphType(const char *s);
+	static int nGlyphData(GlyphType gt);
 
 	private:
 	// Style of Glyph
@@ -86,25 +110,8 @@ class Glyph
 	public:
 	// Returns the number of data set for the Glyph
 	int nData();
-	// Set vector data for glyph
-	void setVector(int i, Vec3<double> vec);
-	void setVector(int i, double x, double y, double z);
-	// Set atom data for glyph
-	void setAtom(int i, Atom *atom, GlyphData::GlyphDataType av);
-	// Returns the atom id of the glyph
-	Atom *atom(int i);
-	// Returns whether the atom of the data 'i' was set last
-	bool atomSetLast(int i);
-	// Return the atom data type for data 'i'
-	GlyphData::GlyphDataType atomData(int i);
-	// Return whether one of the data is set to an atomId
-// 	bool hasAtomId(int i);
-	// Return i'th vector data for glyph
-	Vec3<double> vector(int i);
-	// Set i'th colour in glyph
-	void setColour(int i, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
-	// Return i'th colour for glyph
-	GLfloat *colour(int i);
+	// Return the n'th datapoint of the glyph
+	GlyphData *data(int i);
 	// Set style of Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph
@@ -122,12 +129,18 @@ class Glyph
 	// Style
 	*/
 	private:
+	// Whether glyph is visible
+	bool visible_;
 	// Whether Glyph should be drawn with filled polygons (where possible)
 	bool solid_;
 	// Line width to use when drawing
 	GLfloat lineWidth_;
 
 	public:
+	// Set whether the Glyph is visible
+	void setVisible(bool isvisible);
+	// Return whether the Glyph is visible
+	bool isVisible();
 	// Set whether the Glyph is solid or not
 	void setSolid(bool issolid);
 	// Return whether the Glyph should be drawn as a solid

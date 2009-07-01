@@ -27,10 +27,10 @@
 #include <stdio.h>
 
 // Variable Types
-const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "glyph&", "grid&", "measurement&", "model&", "pattern&", "bound&", "prefs&", "region&" };
-const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "an element&", "a forcefield&", "a ffatom&", "a ffbound&", "a glyph&", "a grid&", "a measurement&", "a model&", "a pattern&", "a bound&", "some prefs&", "a region" };
-const char *DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array", "an aten& array", "an atom& array", "a bond& array", "a unitcell& array", "an element& array", "a forcefield& array", "a ffatom& array", "a ffbound& array", "a glyph& array", "a grid& array", "a measurement& array", "a model& array", "a pattern& array", "a bound& array", "a prefs& array", "a region& array" };
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "glyph", "grid", "_MEASUREMENT", "model", "pattern", "bound", "_PREFS", "region" };
+const char *DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "string", "vector", "aten&", "atom&", "bond&", "unitcell&", "elements&", "forcefield&", "ffatom&", "ffbound&", "glyph&", "glyphdata&", "grid&", "measurement&", "model&", "pattern&", "bound&", "prefs&", "region&" };
+const char *DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "aten&", "an atom&", "a bond&", "a unitcell&", "an element&", "a forcefield&", "a ffatom&", "a ffbound&", "a glyph&", "a glyphdata&", "a grid&", "a measurement&", "a model&", "a pattern&", "a bound&", "some prefs&", "a region" };
+const char *DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array", "an aten& array", "an atom& array", "a bond& array", "a unitcell& array", "an element& array", "a forcefield& array", "a ffatom& array", "a ffbound& array", "a glyph& array", "a glyphdata& array", "a grid& array", "a measurement& array", "a model& array", "a pattern& array", "a bound& array", "a prefs& array", "a region& array" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "_ATEN", "atom", "bond", "unitcell", "_ELEMENTS", "forcefield", "ffatom", "ffbound", "glyph", "_GLYPHDATA", "grid", "_MEASUREMENT", "model", "pattern", "bound", "_PREFS", "region" };
 VTypes::DataType VTypes::dataType(const char *s)
 {
 	return (VTypes::DataType) enumSearch("", VTypes::nDataTypes, DataTypeKeywords, s);
