@@ -188,10 +188,8 @@ void DoubleArrayVariable::reset()
 		ReturnValue value;
 		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			count++;
-			if (ri->item->readOnly()) continue;
-			if (!ri->item->execute(value)) doubleArrayData_[count] = 0;
-			else doubleArrayData_[count] = value.asDouble();
+			if (!ri->item->execute(value)) doubleArrayData_[count++] = 0;
+			else doubleArrayData_[count++] = value.asDouble();
 		}
 	}
 	else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = 0;

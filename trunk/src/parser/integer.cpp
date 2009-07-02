@@ -187,10 +187,8 @@ void IntegerArrayVariable::reset()
 		ReturnValue value;
 		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			count++;
-			if (ri->item->readOnly()) continue;
-			if (!ri->item->execute(value)) integerArrayData_[count] = 0;
-			else integerArrayData_[count] = value.asInteger();
+			if (!ri->item->execute(value)) integerArrayData_[count++] = 0;
+			else integerArrayData_[count++] = value.asInteger();
 		}
 	}
 	else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = 0;

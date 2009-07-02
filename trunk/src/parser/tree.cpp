@@ -670,15 +670,50 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 TreeNode *Tree::addArrayConstant(TreeNode *values)
 {
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
-	// From the type of the first argument we determine the type of array to create
+	// Determine numbers of each type in array
 	TreeNode *first;
-	int nvalues = 0;
+	bool baddata = FALSE;
+	int nints = 0, ndoubles = 0, nstrings = 0, npointers = 0, nvalues = 0;
+	VTypes::DataType dt = VTypes::NoData;
 	for (first = values; first != NULL; first = first->prevArgument)
 	{
 		++nvalues;
+		switch (first->returnType())
+		{
+			case (VTypes::IntegerData):
+				++nints;
+				if (nstrings+npointers > 0) baddata = TRUE;
+				break;
+			case (VTypes::DoubleData):
+				++ndoubles;
+				if (nstrings+npointers > 0) baddata = TRUE;
+				break;
+			case (VTypes::StringData):
+				++nstrings;
+				if (nints+ndoubles+npointers > 0) baddata = TRUE;
+				break;
+			default:
+				++npointers;
+				if (nints+ndoubles+nstrings > 0) baddata = TRUE;
+				if ((dt != VTypes::NoData) && (dt != first->returnType())) baddata = TRUE;
+				dt = first->returnType();
+				break;
+		}
+		if (baddata) break;
 		if (first->prevArgument == NULL) break;
 	}
-	Variable *var = ri->item->variables.createArrayConstant(first->returnType(), nvalues);
+	// Check for bad data in array specification
+	if (baddata)
+	{
+		msg.print("Error: Incompatible mixture of data types found in array declaration.\n");
+		return NULL;
+	}
+	// Type of array will be 'highest' type that we found
+	if (npointers > 0) dt = values->returnType();
+	else if (nstrings > 0) dt = VTypes::StringData;
+	else if (ndoubles > 0) dt = VTypes::DoubleData;
+	else dt = VTypes::IntegerData;
+	Variable *var = ri->item->variables.createArrayConstant(dt, nvalues);
 	var->setParent(this);
 	var->addArgumentList(values);
 	nodes_.own(var);

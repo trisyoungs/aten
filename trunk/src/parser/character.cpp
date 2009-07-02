@@ -190,10 +190,8 @@ void StringArrayVariable::reset()
 		ReturnValue value;
 		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			count++;
-			if (ri->item->readOnly()) continue;
-			if (!ri->item->execute(value)) stringArrayData_[count].clear();
-			else stringArrayData_[count] = value.asString();
+			if (!ri->item->execute(value)) stringArrayData_[count++].clear();
+			else stringArrayData_[count++] = value.asString();
 		}
 	}
 	else for (int i=0; i<arraySize_; i++) stringArrayData_[i].clear();

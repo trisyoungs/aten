@@ -153,10 +153,8 @@ void PointerArrayVariable::reset()
 		ReturnValue value;
 		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			count++;
-			if (ri->item->readOnly()) continue;
-			if (!ri->item->execute(value)) pointerArrayData_[count] = 0;
-			else pointerArrayData_[count] = value.asPointer(returnType_);
+			if (!ri->item->execute(value)) pointerArrayData_[count++] = 0;
+			else pointerArrayData_[count++] = value.asPointer(returnType_);
 		}
 	}
 	else for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = 0;
