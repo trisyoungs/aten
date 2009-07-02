@@ -29,6 +29,7 @@
 #include "parser/element.h"
 #include "parser/integer.h"
 #include "parser/glyph.h"
+#include "parser/glyphdata.h"
 #include "parser/grid.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
@@ -108,6 +109,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::GlyphData):
 			v = (Variable*) new GlyphVariable(NULL, FALSE);
 			break;
+		case (VTypes::GlyphDataData):
+			v = (Variable*) new GlyphDataVariable(NULL, FALSE);
+			break;
 		case (VTypes::GridData):
 			v = (Variable*) new GridVariable(NULL, FALSE);
 			break;
@@ -168,6 +172,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::GlyphData):
 			var = new GlyphArrayVariable(sizeexpr);
+			break;
+		case (VTypes::GlyphDataData):
+			var = new GlyphDataArrayVariable(sizeexpr);
 			break;
 		case (VTypes::GridData):
 			var = new GridArrayVariable(sizeexpr);

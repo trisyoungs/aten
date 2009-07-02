@@ -33,7 +33,7 @@
 */
 
 // Constructor
-GlyphDataVariable::GlyphDataVariable(Glyph *ptr, bool constant)
+GlyphDataVariable::GlyphDataVariable(GlyphData *ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GlyphDataData;
@@ -53,7 +53,7 @@ GlyphDataVariable::~GlyphDataVariable()
 // Accessor data
 Accessor GlyphDataVariable::accessorData[GlyphDataVariable::nAccessors] = {
 	{ "colour",	VTypes::DoubleData,	4, FALSE },
-	{ "value",	VTypes::VectorData,	0, FALSE }
+	{ "vector",	VTypes::VectorData,	0, FALSE }
 };
 
 // Function data
@@ -92,7 +92,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::GlyphData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::GlyphDataData, functionData[i].returnType);
 		result->addArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
@@ -110,7 +110,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::GlyphData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::GlyphDataData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
 	msg.exit("GlyphDataVariable::accessorSearch");
 	return result;
@@ -146,10 +146,10 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -158,7 +158,7 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
 			break;
-		case (GlyphDataVariable::Value):
+		case (GlyphDataVariable::Vector):
 			rv.set( ptr->vector() );
 			break;
 		default:
@@ -231,10 +231,10 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	GlyphData *ptr= (GlyphData*) sourcerv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) sourcerv.asPointer(VTypes::GlyphDataData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;
 	}
 	int n;
@@ -245,7 +245,7 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
 			break;
-		case (GlyphDataVariable::Value):
+		case (GlyphDataVariable::Vector):
 			ptr->setVector(newvalue.asVector());
 			break;
 		default:
@@ -270,7 +270,7 @@ bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphData, result);
+	GlyphData *ptr= (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if (result) switch (i)
 	{
 		default:
@@ -290,7 +290,7 @@ bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GlyphData;
+	returnType_ = VTypes::GlyphDataData;
 	pointerArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;

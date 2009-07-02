@@ -29,6 +29,7 @@
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/glyph.h"
+#include "parser/glyphdata.h"
 #include "parser/grid.h"
 #include "parser/model.h"
 #include "parser/pattern.h"
@@ -152,6 +153,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = GlyphVariable::performFunction(accessor_, rv, this);
 			else result = GlyphVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::GlyphDataData):
+			if (functionAccessor_) result = GlyphDataVariable::performFunction(accessor_, rv, this);
+			else result = GlyphDataVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::GridData):
 			if (functionAccessor_) result = GridVariable::performFunction(accessor_, rv, this);
 			else result = GridVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -216,6 +221,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::GlyphData):
 			printf("%s", GlyphVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::GlyphDataData):
+			printf("%s", GlyphDataVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::GridData):
 			printf("%s", GridVariable::accessorData[accessor_].name);
@@ -302,6 +310,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::GlyphData):
 			result = GlyphVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::GlyphDataData):
+			result = GlyphDataVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::GridData):
 			result = GridVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -376,6 +387,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::GlyphData):
 			result = GlyphVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::GlyphDataData):
+			result = GlyphDataVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::GridData):
 			result = GridVariable::accessorSearch(s, arrayindex, arglist);

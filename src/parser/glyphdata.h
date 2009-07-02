@@ -26,14 +26,14 @@
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Glyph;
+class GlyphData;
 
 // Glyph Data Variable
 class GlyphDataVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphDataVariable(Glyph *g = NULL, bool constant = FALSE);
+	GlyphDataVariable(GlyphData *g = NULL, bool constant = FALSE);
 	~GlyphDataVariable();
 
 	/*
@@ -41,7 +41,7 @@ class GlyphDataVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Colour, Value, nAccessors };
+        enum Accessors { Colour, Vector, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
