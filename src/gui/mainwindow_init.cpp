@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "main/version.h"
 #include "parser/tree.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"

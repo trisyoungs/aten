@@ -1,6 +1,6 @@
 /*
 	*** Aten's master structure
-	*** src/aten/aten.cpp
+	*** src/main/aten.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "main/version.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"

@@ -1,6 +1,6 @@
 /*
 	*** Command-line option parsing
-	*** src/aten/cli.cpp
+	*** src/main/cli.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -22,6 +22,7 @@
 
 #include "main/cli.h"
 #include "main/aten.h"
+#include "main/version.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "parser/tree.h"
