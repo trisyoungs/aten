@@ -1,6 +1,7 @@
 add_library(main
 aten.h
 cli.h 
+version.h 
 aten.cpp
 aten_filters.cpp
 cli.cpp 

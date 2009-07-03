@@ -1,6 +1,6 @@
 /*
 	*** Aten's master structure
-	*** src/aten/aten.h
+	*** src/main/aten.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -29,11 +29,6 @@
 #include "command/commands.h"
 #include "parser/forest.h"
 #include "parser/tree.h"
-
-#define ATENVERSION "1.3"
-#define ATENREVISION "963"
-#define ATENDATE "Thu 02 Jul - 16:28"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
 class Model;

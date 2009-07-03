@@ -1,6 +1,6 @@
 /*
 	*** Command-line option parsing
-	*** src/base/cli.h
+	*** src/main/cli.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

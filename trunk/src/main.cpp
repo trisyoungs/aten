@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "main/version.h"
 #include "gui/gui.h"
 #include "base/messenger.h"
 #include <time.h>

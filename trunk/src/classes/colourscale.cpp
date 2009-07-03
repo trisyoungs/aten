@@ -176,12 +176,11 @@ void ColourScale::colour(double v, GLfloat *target)
 		target[3] = 0.0f;
 		return;
 	}
+	ColourScalePoint *csp = points_.first();
 	// Is supplied value less than the value at the first point?
-	ColourScalePoint *first;
-	first = points_.first();
-	if (v < first->value())
+	if (v < csp->value())
 	{
-		first->copyColour(target);
+		csp->copyColour(target);
 		return;
 	}
 	// Find the correct delta to use

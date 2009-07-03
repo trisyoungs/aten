@@ -1,6 +1,6 @@
 /*
 	*** File type probes
-	*** src/aten/probe.cpp
+	*** src/main/probe.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.

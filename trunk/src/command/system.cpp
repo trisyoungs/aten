@@ -22,6 +22,7 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
+#include "main/version.h"
 #include "gui/gui.h"
 
 // Toggle debug modes

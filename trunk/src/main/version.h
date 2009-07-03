@@ -1,6 +1,6 @@
 /*
-	*** Qt GUI: About window functions
-	*** src/gui/about_funcs.cpp
+	*** Aten version information
+	*** src/main/version.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -19,34 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "main/aten.h"
-#include "main/version.h"
-#include "gui/about.h"
+#ifndef ATEN_VERSION_H
+#define ATEN_VERSION_H
 
-// Constructor
-AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
-{
-	ui.setupUi(this);
+#define ATENVERSION "1.3"
+#define ATENREVISION "964"
+#define ATENDATE "Fri 03 Jul - 18:17"
+#define ATENURL "http://aten.googlecode.com/svn/trunk"
 
-	// Setup label contents
-	char s[150];
-	sprintf(s, "%s (from revision %s)", ATENVERSION, ATENREVISION);
-	ui.VersionLabel->setText(s);
-	ui.DateLabel->setText(ATENDATE);
-	ui.UrlLabel->setText(ATENURL);
-}
-
-// Destructor
-AtenAbout::~AtenAbout()
-{
-}
-
-void AtenAbout::on_AboutCloseButton_clicked(bool checked)
-{
-	hide();
-}
-
-void AtenAbout::showWindow()
-{
-	show();
-}
+#endif

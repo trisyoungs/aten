@@ -32,7 +32,7 @@ filter(type="importgrid", name="2D Surface Data", nickname="surf", extension="su
 	npoints = nx*ny;
 	for (n=0; n<npoints; ++n)
 	{
-		readline(data);
+		if (!readline(data)) error("Couldn't read point %i from file.\n", n+1);
 		addnextgridpoint(data);
 	}
 	finalisegrid();
