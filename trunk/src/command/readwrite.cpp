@@ -39,12 +39,12 @@ bool Command::function_AddReadOption(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_Eof(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->parser()->isFileGood())
-	{
+	if (!c->parent()->parser()->isFileGood()) rv.set(TRUE);
+/*	{
 		msg.print("No valid filesource available for the 'eof' command.\n");
 		return FALSE;
-	}
-	rv.set(c->parent()->parser()->eofOrBlank());
+	}*/
+	else rv.set(c->parent()->parser()->eofOrBlank());
 	return TRUE;
 }
 
