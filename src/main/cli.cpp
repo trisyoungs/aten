@@ -408,8 +408,10 @@ int Aten::parseCli(int argc, char *argv[])
 					if (f == NULL) return -1;
 					else if (!f->executeRead(argtext.get())) return -1;
 					break;
-				// Pass integer value
+				// Pass value
+				case (Cli::DoubleSwitch):
 				case (Cli::IntSwitch):
+				case (Cli::StringSwitch):
 					// Split argument into name and value
 					varname = beforeChar(argtext.get(), '=');
 					varvalue = afterChar(argtext.get(), '=');
@@ -418,7 +420,9 @@ int Aten::parseCli(int argc, char *argv[])
 						printf("Error: Passed variable named '%s' has already been declared.\n", varname.get());
 						return -1;
 					}
-					else addPassedValue(VTypes::IntegerData, varname.get(), varvalue.get());
+					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, varname.get(), varvalue.get());
+					else if (opt == Cli::DoubleSwitch) addPassedValue(VTypes::DoubleData, varname.get(), varvalue.get());
+					else if (opt == Cli::StringSwitch) addPassedValue(VTypes::StringData, varname.get(), varvalue.get());
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
@@ -521,6 +525,10 @@ int Aten::parseCli(int argc, char *argv[])
 					zm = ElementMap::zMapType(argtext.get());
 					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
 					break;
+				// Undefined option
+				default:
+					printf("Shoddy programming alert - CLI option has not been implemented.\n");
+					return -1;
 			}
 		}
 		else

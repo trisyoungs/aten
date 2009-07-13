@@ -18,7 +18,6 @@ void yyerror(char *s);
 /* Local Variables */
 Dnchar tokenName;
 Dnchar stepName;
-Dnchar varName;
 VTypes::DataType declaredType;
 
 %}
@@ -179,11 +178,6 @@ pushfunc:
 
 namelistitem:
 	newname						{ $$ = $1; if ($1 == NULL) YYABORT; }
-	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
-	| constant					{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
-	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
-	| USERFUNCCALL					{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
-	| VTYPE						{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	;
 
 namelist:
@@ -199,16 +193,21 @@ newname:
 	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar '[' expr ']' '=' ARRAYCONST		{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
-	| VAR savevarname 				{ $$ = cmdparser.addVariable(declaredType, &varName); }
 	;
 
 newvar:
-	NEWTOKEN savetokenname				{ if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } $$ = $1; }
+	VAR 						{ tokenName = yylval.variable->name(); $$ = &tokenName; }
+	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
+	| constant					{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
+	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
+	| USERFUNCCALL					{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
+	| VTYPE						{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
+	| NEWTOKEN savetokenname				{ if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } $$ = $1; }
 	;
 
 declaration:
-	VTYPE savetype namelist			{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
-	| VTYPE savetype error			{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
+	VTYPE savetype namelist				{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
+	| VTYPE savetype error				{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
 	;
 
 /* Variables / Paths */
@@ -319,10 +318,6 @@ savetype:
 
 cleartype:
 	/* empty */					{ declaredType = VTypes::NoData; }
-	;
-
-savevarname:
-	/* empty */					{ varName = yylval.variable->name(); }
 	;
 
 savestepname:
