@@ -53,7 +53,7 @@ class VariableList
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
-	void take(Variable *v);
+	void take(Variable *v, bool forcevariable = FALSE);
 	// Retrieve a named variable from the list
 	Variable *find(const char *name);
 	// Create a new variable in the list

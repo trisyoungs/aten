@@ -29,6 +29,7 @@
 #include "command/commands.h"
 #include "parser/forest.h"
 #include "parser/tree.h"
+#include "parser/variablelist.h"
 
 // Forward Declarations
 class Model;
@@ -269,6 +270,10 @@ class Aten
 	private:
 	// Print usage information
 	void printUsage() const;
+	// Variable list holding vars set from CLI
+	VariableList passedValues_;
+	// Add passed value
+	bool addPassedValue(VTypes::DataType dt, const char *name, const char *value);
 
 	public:
 	// Parse early command line options, before filter / prefs load
@@ -277,7 +282,8 @@ class Aten
 	int parseCli(int, char**);
 	// Element map name conversions to apply on load
 	List< Namemap<int> > typeMap;
-
+	// Find passed value
+	Variable *findPassedValue(const char *name);
 
 	/*
 	// Single-shot program modes
