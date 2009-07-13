@@ -24,7 +24,6 @@
 
 // External Declarations
 CommandParser cmdparser;
-// Tree *CommandParser::tree_;
 int yyparse();
 
 // Constructor

@@ -523,7 +523,6 @@ bool Tree::popScope()
 // Add constant value to tompost scope
 TreeNode *Tree::addConstant(VTypes::DataType type, Dnchar *token)
 {
-	Variable *result = NULL;
 	if (type == VTypes::IntegerData)
 	{
 		IntegerVariable *var = new IntegerVariable(atoi(token->get()), TRUE);
@@ -723,9 +722,6 @@ TreeNode *Tree::addArrayConstant(TreeNode *values)
 // Search for variable in current scope
 Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 {
-	// If the declaredVariableType is set then this token has been found in a declaration statement.
-	// ---> it must not exist in the local scope
-	// In addition, if this is a declaration assignment, then we search as normal
 	Variable *result = NULL;
 	scopelevel = 0;
 	msg.print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
@@ -737,7 +733,16 @@ Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 		if (result != NULL) break;
 		scopelevel --;
 	}
-	if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
+	if (result == NULL)
+	{
+		result = aten.findPassedValue(name);
+		if (result == NULL) msg.print(Messenger::Parse, "...variable '%s' not found in any scope.\n", name);
+		else
+		{
+			scopelevel = -99;
+			msg.print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
+		}
+	}
 	else msg.print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
 	return result;
 }

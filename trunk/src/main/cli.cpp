@@ -30,10 +30,13 @@
 #include <iostream>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <parser/double.h>
+#include <parser/integer.h>
+#include <parser/character.h>
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
-	{ Cli::AtenDataSwitch,		'\0',"atendata",		1,
+	{ Cli::AtenDataSwitch,		'\0',"atendata",	1,
 		"<dir>",	"Set the data location to the supplied directory (and don't read $ATENDATA)" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
 		"",		"Run any commands supplied with -c or --command on all models and save" },
@@ -49,6 +52,8 @@ Cli cliSwitches[] = {
 		"<commands>",	"Execute supplied commands before main program execution" },
 	{ Cli::DebugSwitch,		'd',"debug",		2,
 		"[output]",	"Print out call debug information, or specific information if output type is supplied" },
+	{ Cli::DoubleSwitch,		'\0',"double",		1,
+		"<var>=<value>","Pass a floating point <value> into Aten with variable name <var>" },
 	{ Cli::ExportSwitch,		'e',"export",		1,
 		"<nickname>",	"Export all loaded models in the nicknamed format" },
 	{ Cli::FilterSwitch,		'\0',"filter",		1,
@@ -63,6 +68,8 @@ Cli cliSwitches[] = {
 		"<file>",	"Load the specified gridded data file" },
 	{ Cli::HelpSwitch,		'h',"help",		0,
 		"",		"Print this information" },
+	{ Cli::IntSwitch,		'\0',"int",		1,
+		"<var>=<value>","Pass an integer <value> into Aten with variable name <var>" },
 	{ Cli::InteractiveSwitch,	'i',"interactive",	0,
 		"",		"Enter interactive mode" },
 	{ Cli::KeepNamesSwitch,		'\0',"keepnames",	0,
@@ -87,6 +94,8 @@ Cli cliSwitches[] = {
 		"",		"Run silently, reporting only errors that stop the program" },
 	{ Cli::ScriptSwitch,		's',"script",		1,
 		"<file>",	"Load and execute the script file specified" },
+	{ Cli::StringSwitch,		'\0',"string",		1,
+		"<var>=<value>","Pass a string <value> into Aten with variable name <var>" },
 	{ Cli::TrajectorySwitch,	't',"trajectory",	1,
 		"<file>",	"Associate a trajectory with the last loaded model" },
 	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,
@@ -246,7 +255,7 @@ int Aten::parseCli(int argc, char *argv[])
 	int argn, opt, ntried = 0, n, el;
 	bool isShort, hasArg;
 	char *line, prompt[32];
-	Dnchar arg, argtext;
+	Dnchar arg, argtext, varname, varvalue;
 	Forcefield *ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
@@ -399,6 +408,18 @@ int Aten::parseCli(int argc, char *argv[])
 					if (f == NULL) return -1;
 					else if (!f->executeRead(argtext.get())) return -1;
 					break;
+				// Pass integer value
+				case (Cli::IntSwitch):
+					// Split argument into name and value
+					varname = beforeChar(argtext.get(), '=');
+					varvalue = afterChar(argtext.get(), '=');
+					if (passedValues_.find(varname.get()) != NULL)
+					{
+						printf("Error: Passed variable named '%s' has already been declared.\n", varname.get());
+						return -1;
+					}
+					else addPassedValue(VTypes::IntegerData, varname.get(), varvalue.get());
+					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
 					sprintf(prompt,"Aten %s > ",ATENVERSION);
@@ -534,4 +555,25 @@ void Aten::printUsage() const
 		}
 		printf("\t\t%s\n",cliSwitches[n].description);
 	}
+}
+
+// Add passed value
+bool Aten::addPassedValue(VTypes::DataType type, const char *name, const char *value)
+{
+	// Search for existing passed value of this name...
+	if (passedValues_.find(name)) return FALSE;
+	Variable *var = NULL;
+	if (type == VTypes::IntegerData) var = new IntegerVariable(atoi(value), TRUE);
+	else if (type == VTypes::DoubleData) var = new DoubleVariable(atof(value), TRUE);
+	else if (type == VTypes::StringData) var = new StringVariable(value, TRUE);
+	else printf("Internal Error: Don't know how to create a passed value of type '%s'.\n", VTypes::dataType(type));
+	var->setName(name);
+	passedValues_.take(var, TRUE);
+	return TRUE;
+}
+
+// Find passed value
+Variable *Aten::findPassedValue(const char *name)
+{
+	return passedValues_.find(name);
 }

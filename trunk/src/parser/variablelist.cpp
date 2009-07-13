@@ -46,10 +46,10 @@ VariableList::VariableList()
 }
 
 // Pass a newly-created variable / constant to the list for it to take ownership of
-void VariableList::take(Variable *v)
+void VariableList::take(Variable *v, bool forcevariable)
 {
 	// Check the readonly status to determine where we put it
-	if (v->readOnly()) constants_.own(v);
+	if (v->readOnly() && (!forcevariable)) constants_.own(v);
 	else variables_.own(v);
 }
 
@@ -68,7 +68,7 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 	switch (type)
 	{
 		case (VTypes::NoData):
-			printf("No data type passed to VariableList::create().\n");
+			printf("No data type passed to VariableList::makeVariable().\n");
 			break;
 		case (VTypes::IntegerData):
 			v = (Variable*) new IntegerVariable(0, FALSE);
