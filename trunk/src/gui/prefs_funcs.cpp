@@ -203,7 +203,9 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
 	elements().setAmbientColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.ElementAmbientColourFrame->setColour(newcol);
@@ -223,7 +225,9 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
 	elements().setDiffuseColour(el, newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.ElementDiffuseColourFrame->setColour(newcol);
@@ -497,7 +501,9 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
 	prefs.setSpotlightColour(sc, newcol.redF(), newcol.greenF(), newcol.blueF());
 	TColourFrame *colframe;
@@ -587,9 +593,11 @@ void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
-	prefs.setColour(Prefs::ForegroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::ForegroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ForegroundColourFrame->setColour(newcol);
 	ui.ForegroundColourFrame->update();
 	// Update display
@@ -603,10 +611,12 @@ void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
+	if (!newcol.isValid()) return;
 	// Store new colour
-	prefs.setColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0f);
 	ui.BackgroundColourFrame->setColour(newcol);
 	ui.BackgroundColourFrame->update();
+	glClearColor( (GLfloat) newcol.redF(), (GLfloat) newcol.greenF(), (GLfloat) newcol.blueF(), (GLfloat) 1.0);
 	// Update display
 	gui.mainView.postRedisplay();
 }
@@ -617,9 +627,11 @@ void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
-	prefs.setColour(Prefs::SpecularColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::SpecularColour, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.SpecularColourFrame->setColour(newcol);
 	ui.SpecularColourFrame->update();
 	// Update display
@@ -704,9 +716,11 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour, and set colours in frame and pointlist
-	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.PointColourFrame->setColour(newcol);
 	ui.PointColourFrame->update();
 	ui.ScalePointsList->item(id)->setBackgroundColor(newcol);

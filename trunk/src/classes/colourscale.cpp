@@ -170,10 +170,10 @@ void ColourScale::colour(double v, GLfloat *target)
 	// Check for no points being defined
 	if (points_.nItems() == 0)
 	{
-		target[0] = 0.0f;
-		target[1] = 0.0f;
-		target[2] = 0.0f;
-		target[3] = 0.0f;
+		target[0] = (GLfloat) 0.0;
+		target[1] = (GLfloat) 0.0;
+		target[2] = (GLfloat) 0.0;
+		target[3] = (GLfloat) 0.0;
 		return;
 	}
 	ColourScalePoint *csp = points_.first();

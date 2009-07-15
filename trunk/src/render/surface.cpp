@@ -363,12 +363,12 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
 	bool symm;
-	GLfloat colour[4];
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
 	cutoff = g->cutoff();
 	symm = g->isSymmetric();
+	cscale = g->useColourScale() ? g->colourScale() : -1;
 	mult = 1.0;
 	// Get distances between grid points
 	r = g->lengths();
@@ -516,8 +516,8 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					glNormal3d(normal.x, normal.y, normal.z);
 					if (cscale != -1)
 					{
-						prefs.colourScale[cscale].colour((a+b)/2.0, colour);
-						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
+						prefs.colourScale[cscale].colour((a+b)/2.0, col);
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, col);
 					}
 
 					glVertex3d(r.x, r.y, r.z);
@@ -559,8 +559,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	prefs.copyColour(Prefs::SpecularColour, colour);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, colour);
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
-	cscale = g->colourScale();
-	if (!g->useColourScale()) cscale = -1;
+	cscale = g->useColourScale() ? g->colourScale() : -1;
 	if (cscale == -1)
 	{
 		g->copyPositiveColour(poscol);
@@ -633,6 +632,7 @@ void Canvas::renderSurfaces()
 	static Vec3<double> origin;
 	static double glmat[16];
 	static Mat4<double> mat;
+	glDisable(GL_CULL_FACE);
 	for (Grid *g = displayModel_->grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
@@ -671,5 +671,6 @@ void Canvas::renderSurfaces()
 		  glCallList(list);
 		glPopMatrix();
 	}
+	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 	msg.exit("Canvas::renderSurfaces");
 }

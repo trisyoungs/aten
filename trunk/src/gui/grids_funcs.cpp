@@ -266,12 +266,12 @@ void AtenGrids::refreshGridInfo()
 	ui.GridCutoffSpin->setValue(g->cutoff());
 	ui.GridCutoffSpin->setMaximum(g->maximum());
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
-	// Set origin
+	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
+	// Set origin and axes
 	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);
 	ui.GridOriginYSpin->setValue(origin.y);
 	ui.GridOriginZSpin->setValue(origin.z);
-	// Set axes
 	Mat3<double> axes = g->axes();
 	ui.GridAxesAXSpin->setValue(axes.rows[0].x);
 	ui.GridAxesAYSpin->setValue(axes.rows[0].y);
@@ -282,21 +282,54 @@ void AtenGrids::refreshGridInfo()
 	ui.GridAxesCXSpin->setValue(axes.rows[2].x);
 	ui.GridAxesCYSpin->setValue(axes.rows[2].y);
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
-	// Set surface style, colour and transparency
+	// Set surface style data
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridPositiveColourFrame->setColour(g->positiveColour());
 	ui.GridPositiveColourFrame->update();
-	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
-	if (!g->useColourScale()) ui.GridPositiveColourButton->setEnabled( !g->isSymmetric() );
-	ui.GridTransparencySpin->setValue( g->alpha() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
-	ui.GridColourscaleSpin->setEnabled( g->useColourScale() );
-	ui.GridNegativeColourButton->setEnabled( !g->useColourScale() );
-	ui.GridPositiveColourButton->setEnabled( !g->useColourScale() );
+	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(TRUE) : ui.GridUseInternalColoursRadio->setChecked(TRUE);
+	{
+		ui.GridUseColourScaleRadio->setChecked(TRUE);
+		ui.GridPositiveColourButton->setEnabled(FALSE);
+		ui.GridNegativeColourButton->setEnabled(FALSE);
+	}
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refreshGridInfo");
+}
+
+void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
+{
+	ui.GridNegativeColourButton->setEnabled(TRUE);
+	ui.GridPositiveColourButton->setEnabled(TRUE);
+	ui.GridColourscaleSpin->setEnabled(FALSE);
+	if (refreshing_) return;
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	ui.GridNegativeColourButton->setEnabled(g->isSymmetric());
+	g->setUseColourScale(FALSE);
+	refreshGridInfo();
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
+{
+	ui.GridNegativeColourButton->setEnabled(FALSE);
+	ui.GridPositiveColourButton->setEnabled(FALSE);
+	ui.GridColourscaleSpin->setEnabled(TRUE);
+	if (refreshing_) return;
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	g->setUseColourScale(TRUE);
+	refreshGridInfo();
+	gui.mainView.postRedisplay();
 }
 
 // Item in forcefield list has changed?
@@ -384,9 +417,11 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
-	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alpha());
 	ui.GridPositiveColourFrame->setColour(newcol);
 	ui.GridPositiveColourFrame->update();
 	gui.mainView.postRedisplay();
@@ -405,23 +440,13 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
 	// Store new colour
-	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alpha());
 	ui.GridNegativeColourFrame->setColour(newcol);
 	ui.GridNegativeColourFrame->update();
-	gui.mainView.postRedisplay();
-}
-
-void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
-{
-	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModel();
-	Grid *g = m->grid(row);
-	g->setAlpha( (GLfloat) value );
 	gui.mainView.postRedisplay();
 }
 
@@ -446,19 +471,6 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	g->setSymmetric(checked);
-	gui.mainView.postRedisplay();
-}
-
-void AtenGrids::on_GridUseColourScaleCheck_clicked(bool checked)
-{
-	if (refreshing_) return;
-	// Get current surface in list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModel();
-	Grid *g = m->grid(row);
-	g->setUseColourScale(checked);
-	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 

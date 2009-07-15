@@ -197,9 +197,9 @@ class Grid
 	// Return the rendering style of the surface
 	SurfaceStyle style();
 	// Set the positive colour of the surface
-	void setPositiveColour(double r, double g, double b);
+	void setPositiveColour(double r, double g, double b, double a = -1);
 	// Set the negative colour of the surface
-	void setNegativeColour(double r, double g, double b);
+	void setNegativeColour(double r, double g, double b, double a = -1);
 	// Set alpha value of the surface
 	void setAlpha(double a);
 	// Return the alpha value of the surface

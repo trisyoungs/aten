@@ -45,15 +45,19 @@ class AtenGrids : public QDialog
 	void gridOriginChanged(int component, double value);
 	void gridAxisChanged(int row, int component, double value);
 	private slots:
+	// Menu
 	void on_actionGridLoad_triggered(bool checked);
 	void on_actionGridCopy_triggered(bool checked);
 	void on_actionGridCut_triggered(bool checked);
 	void on_actionGridDelete_triggered(bool checked);
 	void on_actionGridPaste_triggered(bool checked);
+	// List
 	void on_GridList_currentRowChanged(int row);
-	void on_GridStyleCombo_currentIndexChanged(int index);
 	void on_GridList_itemClicked(QListWidgetItem *item);
+	// Cutoff Page
 	void on_GridCutoffSpin_valueChanged(double d);
+	void on_GridSymmetricCheck_clicked(bool checked);
+	// Origin / Axes Page
 	void on_GridOriginXSpin_valueChanged(double d);
 	void on_GridOriginYSpin_valueChanged(double d);
 	void on_GridOriginZSpin_valueChanged(double d);
@@ -66,12 +70,14 @@ class AtenGrids : public QDialog
 	void on_GridAxesCXSpin_valueChanged(double d);
 	void on_GridAxesCYSpin_valueChanged(double d);
 	void on_GridAxesCZSpin_valueChanged(double d);
+	// Style Page
+	void on_GridStyleCombo_currentIndexChanged(int index);
 	void on_GridPositiveColourButton_clicked(bool checked);
 	void on_GridNegativeColourButton_clicked(bool checked);
-	void on_GridTransparencySpin_valueChanged(double d);
 	void on_GridColourscaleSpin_valueChanged(int n);
-	void on_GridSymmetricCheck_clicked(bool checked);
-	void on_GridUseColourScaleCheck_clicked(bool checked);
+	void on_GridUseInternalColoursRadio_clicked(bool checked);
+	void on_GridUseColourScaleRadio_clicked(bool checked);
+	// Dialog
 	void dialogFinished(int result);
 
 	/*
