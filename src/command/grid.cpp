@@ -101,8 +101,8 @@ bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	if (c->hasArg(3))  obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
 	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
-	if (c->hasArg(3)) obj.g->setAlpha(c->argd(3));
 	rv.reset();
 	return TRUE;
 }
@@ -111,8 +111,8 @@ bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	if (c->hasArg(3)) obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
 	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
-	if (c->hasArg(3)) obj.g->setAlpha(c->argd(3));
 	rv.reset();
 	return TRUE;
 }
@@ -150,7 +150,7 @@ bool Command::function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set loop order to use in CA_ADDNEXTPOINT
+// Set loop order to use in 'gridnextpoint'
 bool Command::function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;

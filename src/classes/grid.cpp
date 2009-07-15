@@ -60,7 +60,7 @@ Grid::Grid()
 	negativeColour_[3] = 0.5;
 	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
-	colourScale_ = -1;
+	colourScale_ = 0;
 	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
@@ -74,7 +74,7 @@ Grid::Grid()
 Grid::~Grid()
 {
 	clear();
-	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
+	if (useColourScale_ && (colourScale_ != -1)) prefs.colourScale[colourScale_].breakLink(this);
 }
 
 // Assignment operator
@@ -345,7 +345,6 @@ void Grid::setColourScale(int id)
 		// Remove link in old colourscale if necessary
 		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 		useColourScale_ = FALSE;
-		//colourScale_ = -1;
 		log_ ++;
 		return;
 	}
@@ -598,19 +597,21 @@ void Grid::setNextData(double d)
 	setLimits(d);
 }
 
-void Grid::setPositiveColour(double r, double g, double b)
+void Grid::setPositiveColour(double r, double g, double b, double a)
 {
 	positiveColour_[0] = r;
 	positiveColour_[1] = g;
 	positiveColour_[2] = b;
+	if (a >= 0.0) positiveColour_[3] = a;
 	log_ ++;
 }
 
-void Grid::setNegativeColour(double r, double g, double b)
+void Grid::setNegativeColour(double r, double g, double b, double a)
 {
 	negativeColour_[0] = r;
 	negativeColour_[1] = g;
 	negativeColour_[2] = b;
+	if (a >= 0.0) negativeColour_[3] = a;
 	log_ ++;
 }
 
