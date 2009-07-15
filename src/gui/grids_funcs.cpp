@@ -289,12 +289,11 @@ void AtenGrids::refreshGridInfo()
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
+	QString scalename = "(";
+	scalename += prefs.colourScale[g->colourScale()].name();
+	scalename += ")";
+	ui.GridColourscaleName->setText(scalename);
 	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(TRUE) : ui.GridUseInternalColoursRadio->setChecked(TRUE);
-	{
-		ui.GridUseColourScaleRadio->setChecked(TRUE);
-		ui.GridPositiveColourButton->setEnabled(FALSE);
-		ui.GridNegativeColourButton->setEnabled(FALSE);
-	}
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refreshGridInfo");
 }
@@ -312,7 +311,6 @@ void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 	Grid *g = m->grid(row);
 	ui.GridNegativeColourButton->setEnabled(g->isSymmetric());
 	g->setUseColourScale(FALSE);
-	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 
@@ -328,7 +326,6 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	g->setUseColourScale(TRUE);
-	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 
@@ -421,7 +418,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alpha());
+	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.GridPositiveColourFrame->setColour(newcol);
 	ui.GridPositiveColourFrame->update();
 	gui.mainView.postRedisplay();
@@ -444,7 +441,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alpha());
+	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.GridNegativeColourFrame->setColour(newcol);
 	ui.GridNegativeColourFrame->update();
 	gui.mainView.postRedisplay();
@@ -459,6 +456,10 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	g->setColourScale(n-1);
+	QString scalename = "(";
+	scalename += prefs.colourScale[g->colourScale()].name();
+	scalename += ")";
+	ui.GridColourscaleName->setText(scalename);
 	gui.mainView.postRedisplay();
 }
 
