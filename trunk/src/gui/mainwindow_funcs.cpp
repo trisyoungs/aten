@@ -126,7 +126,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	msg.enter("AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set aten.currentmodel to reflect it.
 	aten.setCurrentModel(aten.model(n));
-	gui.modelChanged();
+	gui.modelChanged(TRUE,TRUE,TRUE);
 	msg.exit("AtenForm::on_ModelTabs_currentChanged");
 }
 

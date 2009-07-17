@@ -297,8 +297,8 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		s += " of ";
 		s += itoa(m->nFrames());
 		s += ") ";
-		// Toolbar
-		mainWindow->updateTrajectoryToolbar();
+		// Menu controls (and toolbar)
+		updateTrajControls();
 	}
 	m = m->renderSource();
 	s += itoa(m->nAtoms());
