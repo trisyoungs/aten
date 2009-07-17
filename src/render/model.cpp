@@ -143,7 +143,6 @@ void Canvas::renderModelMeasurements()
 		  glVertex3d(rj.x, rj.y, rj.z);
 		  glVertex3d(rk.x, rk.y, rk.z);
 		glEnd();
-		labpos = (rji + rjk) * 0.2 + rj;
 		// Curved angle marker
 		rji = (ri - rj);
 		rjk = (rk - rj);
@@ -163,6 +162,7 @@ void Canvas::renderModelMeasurements()
 		  }
 		glEnd();
 		// Determine orientation of text
+		labpos = (rji + rjk) * 0.2 + rj;
 		pos1 = displayModel_->modelToScreen(labpos);
 		pos2 = displayModel_->modelToScreen(rj);
 		rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
