@@ -81,8 +81,10 @@ bool Command::function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Help function
 bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Command::Function cf = commands.command(c->argc(0));
-	if (cf == Command::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
+// 	Command::Function cf = commands.command(c->argc(0));
+// 	if (cf == Command::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
+	int cf = c->argi(0);
+	if ((cf < 0) || (cf >= Command::nCommands)) msg.print("help: Unrecognised command passed.\n");
 	else if (commands.data[cf].hasArguments()) msg.print("help:  %s(%s)\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
 	else msg.print("help:  %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
 	return TRUE;

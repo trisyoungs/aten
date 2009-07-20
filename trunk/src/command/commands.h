@@ -503,6 +503,7 @@ class Command
 		MatrixConvert,
 		MatrixTransform,
 		Mirror,
+		Reorient,
 		Translate,
 		TranslateAtom,
 		TranslateCell,
@@ -914,6 +915,7 @@ class Command
 	static bool function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);

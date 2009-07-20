@@ -242,6 +242,7 @@ int CommandParser::lex()
 			else if (strcmp(token,"while") == 0) n = WHILE;
 			else if (strcmp(token,"return") == 0) n = RETURN;
 			else if (strcmp(token,"void") == 0) n = DIOV;
+			else if (strcmp(token,"help") == 0) n = HELP;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%li): ...which is a high-level keyword (%i)\n",tree_,n);

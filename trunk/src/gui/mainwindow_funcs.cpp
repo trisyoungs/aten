@@ -166,8 +166,13 @@ void AtenForm::executeCommand()
 {
 	// Clear old script commands and set current model variables
 	aten.tempScript.clear();
+	// Grab string and add trailing semicolon if required
+	char s[4096];
+	strcpy(s, qPrintable(commandEdit_->text()));
+	int linelen = strlen(s);
+	if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
 	// Grab the current text of the line edit
-	if (aten.tempScript.generate(qPrintable(commandEdit_->text())))
+	if (aten.tempScript.generate(s))
 	{
 		ReturnValue result;
 		aten.tempScript.executeAll(result);
