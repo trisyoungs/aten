@@ -252,9 +252,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 // Parse CLI options, after filters / prefs have been loaded
 int Aten::parseCli(int argc, char *argv[])
 {
-	int argn, opt, ntried = 0, n, el;
+	int argn, opt, ntried = 0, n, el, linelen;
 	bool isShort, hasArg;
-	char *line, prompt[32];
+	char *line, prompt[32], s[4096];
 	Dnchar arg, argtext, varname, varvalue;
 	Forcefield *ff;
 	LineParser parser;
@@ -433,8 +433,11 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						// Get string from user
 						line = readline(prompt);
+						strcpy(s, line);
+						linelen = strlen(s);
+						if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
 						aten.interactiveScript.clear();
-						if (aten.interactiveScript.generate(line)) aten.interactiveScript.executeAll(rv);
+						if (aten.interactiveScript.generate(s)) aten.interactiveScript.executeAll(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;

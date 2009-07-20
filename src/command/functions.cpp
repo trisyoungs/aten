@@ -458,12 +458,13 @@ void Command::initPointers()
 	// Transform Commands
 	pointers_[AxisRotate] = &Command::function_AxisRotate;
 	pointers_[Centre] = &Command::function_Centre;
-	pointers_[Translate] = &Command::function_Translate;
-	pointers_[TranslateAtom] = &Command::function_TranslateAtom;
-	pointers_[TranslateCell] = &Command::function_TranslateCell;
 	pointers_[MatrixConvert] = &Command::function_MatrixConvert;
 	pointers_[MatrixTransform] = &Command::function_MatrixTransform;
 	pointers_[Mirror] = &Command::function_Mirror;
+	pointers_[Reorient] = &Command::function_Reorient;
+	pointers_[Translate] = &Command::function_Translate;
+	pointers_[TranslateAtom] = &Command::function_TranslateAtom;
+	pointers_[TranslateCell] = &Command::function_TranslateCell;
 
 	// View Commands
 	pointers_[GetView] = &Command::function_GetView;

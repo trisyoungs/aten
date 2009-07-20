@@ -218,6 +218,66 @@ bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Convert coordinates (specified in atoms/ids) from one reference frame to another
+bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Determine which data has been supplied
+	Mat3<double> source, target;
+	Vec3<double> o, v;
+	bool sourcenoz = FALSE, targetnoz = FALSE;
+	int n;
+	Atom *i, *j;
+
+	// Determine source matrix
+	for (n=0; n<5; n+=2)
+	{
+		if (c->argType(n) == VTypes::IntegerData)
+		{
+			if ((n == 4) && (c->argi(n) == 0)) sourcenoz = TRUE;
+			else i = obj.rs->atom(c->argi(n)-1);
+		}
+		else i = (Atom*) c->argp(n, VTypes::AtomData);
+		if (c->argType(n+1) == VTypes::IntegerData)
+		{
+			if ((n == 4) && (c->argi(n+1) == 0)) sourcenoz = TRUE;
+			else j = obj.rs->atom(c->argi(n+1)-1);
+		}
+		else j = (Atom*) c->argp(n+1, VTypes::AtomData);
+		if ((i == NULL) || (j == NULL)) return FALSE;
+		v = obj.rs->cell()->mimd(j,i);
+		v.normalise();
+		source.set(n/2, v);
+	}
+	// Orthogonalise matrix
+	source.y().orthogonalise(source.x());
+	if (sourcenoz) source.z() = source.x() * source.y();
+	else source.z().orthogonalise(source.x(), source.y());
+
+	// Determine target matrix
+	for (n=0; n<9; ++n) target.set(0, c->argd(n+6));
+
+	// Get origin if provided
+	if (c->nArgs() == 18) o.set(c->argd(15), c->argd(16), c->argd(17));
+
+	if (msg.isOutputActive(Messenger::Verbose))
+	{
+		msg.print("Source matrix:\n");
+		source.print();
+		msg.print("Target matrix:\n");
+		target.print();
+	}
+	// Generate necessary rotation matrix
+	target = target.transpose();
+	Mat3<double> rotmat = target * source;
+	// Perform transformation
+	obj.rs->beginUndoState("Reorient %i atom(s)", obj.rs->nSelected());
+	obj.rs->matrixTransformSelection(o, rotmat);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
 // Translate current selection in local coordinates ('translate dx dy dz')
 bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
