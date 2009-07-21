@@ -8,4 +8,4 @@ libsg_a_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegro
 
 noinst_HEADERS = atomaddress.h atom.h bond.h bundle.h cell.h colourscalepoint.h constants.h dnchar.h elements.h forms.h generator.h glyph.h log.h mathfunc.h measurement.h messenger.h lineparser.h pattern.h region.h sginfo.h spacegroup.h sysfunc.h
 
-INCLUDES = -I$(top_srcdir)/s.cpp -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
