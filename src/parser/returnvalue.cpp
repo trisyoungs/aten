@@ -157,7 +157,7 @@ const char *ReturnValue::info()
 			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		default:
-			if (arraySize_ == -1) sprintf(result,"%li (%s)", valueP_, VTypes::dataType(type_));
+			if (arraySize_ == -1) sprintf(result,"%p (%s)", valueP_, VTypes::dataType(type_));
 			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 	}
@@ -632,7 +632,7 @@ const char *ReturnValue::asString(int index, bool &success)
 		default:
 			// All pointer types
 			converted[0] = '\0';
-			sprintf(converted, "%li", valueP_);
+			sprintf(converted, "%p", valueP_);
 			tempString_ = converted;
 			return tempString_.get();
 			break;

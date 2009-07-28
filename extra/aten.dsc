@@ -4,6 +4,6 @@ Version: 1.3
 Binary: aten
 Maintainer: Tristan Youngs <tris@projectaten.net>
 Architecture: any
-Build-Depends: debhelper (>= 4.1.16), libqt4-gui, libqt4-core, libqt4-dev, libreadline5-dev, libgl1-mesa-dev
+Build-Depends: debhelper (>= 4.1.16), libqt4-gui, libqt4-core, libqt4-dev, libqt4-opengl-dev | libqt4-core, libreadline5-dev, libgl1-mesa-dev
 Files: 
  HASH FILESIZE FILENAME

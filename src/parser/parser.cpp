@@ -212,7 +212,7 @@ void CommandParser::pushTree(bool isfilter)
 {
 	tree_ = forest_->addTree(isfilter ? Tree::FilterTree : Tree::CommandTree);
 	stack_.add(tree_, isfilter);
-	msg.print(Messenger::Parse, "New tree stacked - %li\n", tree_);
+	msg.print(Messenger::Parse, "New tree stacked - %p\n", tree_);
 }
 
 // Push function (into topmost tree)
@@ -223,7 +223,7 @@ void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
-	msg.print(Messenger::Parse, "New function stacked (return type is %s) - %li\n", VTypes::dataType(tree_->returnType()), tree_);
+	msg.print(Messenger::Parse, "New function stacked (return type is %s) - %p\n", VTypes::dataType(tree_->returnType()), tree_);
 }
 
 // Pop tree
@@ -237,7 +237,7 @@ void CommandParser::popTree()
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
-	msg.print(Messenger::Parse, "Removing tree %li from stack.\n", ri->item);
+	msg.print(Messenger::Parse, "Removing tree %p from stack.\n", ri->item);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack
 	ri = stack_.last();
