@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "main/aten.h"
 #include "main/version.h"
 #include "gui/about.h"
+#include <cstdio>
 
 // Constructor
 AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)

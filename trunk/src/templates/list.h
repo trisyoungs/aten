@@ -371,10 +371,10 @@ template <class T> void List<T>::swapItems(T* item1, T* item2)
 	else
 	{
 		// Store the list pointers of the two items
-		//printf("Item 1 %li next %li prev %li\n",item1,item1->next,item1->prev);
-		//printf("Item 2 %li next %li prev %li\n",item2,item2->next,item2->prev);
-		//printf("Item 1 nextprev %li prevnext %li\n",item1->next->prev,item1->prev->next);
-		//printf("Item 2 nextprev %li prevnext %li\n",item2->next->prev,item2->prev->next);
+		//printf("Item 1 %p next %p prev %p\n",item1,item1->next,item1->prev);
+		//printf("Item 2 %p next %p prev %p\n",item2,item2->next,item2->prev);
+		//printf("Item 1 nextprev %p prevnext %p\n",item1->next->prev,item1->prev->next);
+		//printf("Item 2 nextprev %p prevnext %p\n",item2->next->prev,item2->prev->next);
 		n1 = item1->next;
 		p1 = item1->prev;
 		n2 = item2->next;
@@ -384,8 +384,8 @@ template <class T> void List<T>::swapItems(T* item1, T* item2)
 		item1->prev = p2;
 		item2->next = n1;
 		item2->prev = p1;
-		//printf("Item 1 next %li prev %li\n",item1->next,item1->prev);
-		//printf("Item 2 next %li prev %li\n",item2->next,item2->prev);
+		//printf("Item 1 next %p prev %p\n",item1->next,item1->prev);
+		//printf("Item 2 next %p prev %p\n",item2->next,item2->prev);
 		// Set new values of items around swapped items
 		if (item1->next != NULL) item1->next->prev = item1;
 		else listTail_ = item1;
@@ -395,8 +395,8 @@ template <class T> void List<T>::swapItems(T* item1, T* item2)
 		else listTail_ = item2;
 		if (item2->prev != NULL) item2->prev->next = item2;
 		else listHead_ = item2;
-		//printf("Item 1 nextprev %li prevnext %li\n",item1->next->prev,item1->prev->next);
-		//printf("Item 2 nextprev %li prevnext %li\n",item2->next->prev,item2->prev->next);
+		//printf("Item 1 nextprev %p prevnext %p\n",item1->next->prev,item1->prev->next);
+		//printf("Item 2 nextprev %p prevnext %p\n",item2->next->prev,item2->prev->next);
 	}
 	regenerate_ = 1;
 }

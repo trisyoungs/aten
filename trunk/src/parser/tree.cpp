@@ -221,7 +221,7 @@ bool Tree::execute(ReturnValue &rv)
 	}
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
-		msg.print(Messenger::Commands, "Executing tree statement %li...\n", ri->item);
+		msg.print(Messenger::Commands, "Executing tree statement %p...\n", ri->item);
 // 		ri->item->nodePrint(1);
 		result = ri->item->execute(rv);
 		// Catch failures arising from 'return' statements
@@ -335,7 +335,7 @@ void Tree::print()
 	{
 		printf("-------------------------------------------------------------\n");
 		printf("Statement %i:\n", n);
-		printf("item pointer is %li\n", ri->item);
+		printf("item pointer is %p\n", ri->item);
 		ri->item->nodePrint(1);
 		n ++;
 	}
@@ -354,7 +354,7 @@ bool Tree::addStatement(TreeNode *leaf)
 		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
 		return FALSE;
 	}
-	msg.print(Messenger::Parse, "Added statement node %li\n", leaf);
+	msg.print(Messenger::Parse, "Added statement node %p\n", leaf);
 	leaf->setParent(this);
 	statements_.add(leaf);
 	return TRUE;
@@ -373,7 +373,7 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added operator '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added operator '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
@@ -391,7 +391,7 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
 	leaf->setParent(this);
@@ -415,7 +415,7 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added function '%s' (%li)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
 	if (a1 != NULL) leaf->addArgument(a1);
 	if (a2 != NULL) leaf->addArgument(a2);
 	if (a3 != NULL) leaf->addArgument(a3);
@@ -441,7 +441,7 @@ TreeNode *Tree::addUserFunction(Tree *func, TreeNode *arglist)
 	// Create new command node
 	UserCommandNode *leaf = new UserCommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added user function '%s' (%li)...\n", func->name(), leaf);
+	msg.print(Messenger::Parse, "Added user function '%s' (%p)...\n", func->name(), leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(arglist);
 	leaf->setParent(this);
@@ -460,7 +460,7 @@ TreeNode *Tree::addDeclarations(TreeNode *declist)
 	// Create new command node
 	CommandNode *leaf = new CommandNode(Command::Declarations);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added declarations node (%li)...\n", leaf);
+	msg.print(Messenger::Parse, "Added declarations node (%p)...\n", leaf);
 	// Add argument list to node and set parent
 	leaf->addArgumentList(declist);
 	leaf->setParent(this);
@@ -475,7 +475,7 @@ TreeNode *Tree::joinArguments(TreeNode *arg1, TreeNode *arg2)
 {
 	arg1->prevArgument = arg2;
 	arg2->nextArgument = arg1;
-	msg.print(Messenger::Parse, "Joining arguments %li and %li\n", arg1, arg2);
+	msg.print(Messenger::Parse, "Joining arguments %p and %p\n", arg1, arg2);
 	return arg1;
 }
 
@@ -487,7 +487,7 @@ TreeNode *Tree::joinCommands(TreeNode *node1, TreeNode *node2)
 	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
-	msg.print(Messenger::Parse, "Joined command nodes %li and %li (joiner node is %li)\n", node1, node2, leaf);
+	msg.print(Messenger::Parse, "Joined command nodes %p and %p (joiner node is %p)\n", node1, node2, leaf);
 	return leaf;
 }
 
@@ -497,7 +497,7 @@ TreeNode *Tree::pushScope(Command::Function func)
 	ScopeNode *node = new ScopeNode();
 	nodes_.own(node);
 	scopeStack_.add(node,func);
-	msg.print(Messenger::Parse, "ScopeNode %li is pushed.\n", node);
+	msg.print(Messenger::Parse, "ScopeNode %p is pushed.\n", node);
 	return node;
 }
 
@@ -512,7 +512,7 @@ bool Tree::popScope()
 	}
 	ScopeNode *temp = ri->item;
 	scopeStack_.remove(ri);
-	msg.print(Messenger::Parse, "ScopeNode %li is popped.\n", temp);
+	msg.print(Messenger::Parse, "ScopeNode %p is popped.\n", temp);
 	return TRUE;
 }
 
@@ -583,7 +583,7 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 {
 	msg.print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode
-// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
 	if (ri == NULL)
 	{
@@ -606,7 +606,7 @@ TreeNode *Tree::addVariable(VTypes::DataType type, Dnchar *name, TreeNode *initi
 // 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
+	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), ri->item);
 	return var;
 }
 
@@ -620,7 +620,7 @@ TreeNode *Tree::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeN
 		return NULL;
 	}
 	// Get topmost scopenode
-// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
 	if (ri == NULL)
 	{
@@ -634,7 +634,7 @@ TreeNode *Tree::addVariableAsArgument(VTypes::DataType type, Dnchar *name, TreeN
 // 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %li\n", name->get(), ri->item);
+	msg.print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), ri->item);
 	// Wrap the variable and add it to the arguments_ list
 	VariableNode *vnode = new VariableNode(var);
 	arguments_.own(vnode);
@@ -647,7 +647,7 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 {
 	msg.print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode
-// 	printf("nscope = %i, %li  %li\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
+// 	printf("nscope = %i, %p  %p\n", scopeStack_.nItems(), scopeStack_.first(), scopeStack_.last());
 	Refitem<ScopeNode,int> *ri = scopeStack_.last();
 	if (ri == NULL)
 	{
@@ -661,7 +661,7 @@ TreeNode *Tree::addArrayVariable(VTypes::DataType type, Dnchar *name, TreeNode *
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-// 	printf("Created array variable '%s' in scopenode %li   %i\n", name->get(), ri->item, scopeStack_.nItems());
+// 	printf("Created array variable '%s' in scopenode %p   %i\n", name->get(), ri->item, scopeStack_.nItems());
 	return var;
 }
 
@@ -728,7 +728,7 @@ Variable *Tree::findVariableInScope(const char *name, int &scopelevel)
 	// Search the current ScopeNode list for the variable name requested
 	for (Refitem<ScopeNode,int> *ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
 	{
-		msg.print(Messenger::Parse," ... scopenode %li...\n", ri->item);
+		msg.print(Messenger::Parse," ... scopenode %p...\n", ri->item);
 		result = ri->item->variables.find(name);
 		if (result != NULL) break;
 		scopelevel --;

@@ -181,7 +181,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	msg.print("Number of frames in file : %i\n", nFileFrames_);
 	frameIndex_ = 0;
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	msg.print("Estimated trajectory size is %li kb, cache limit = %i kb\n", nFileFrames_ * frameSize_/1024, prefs.cacheLimit());
+	msg.print("Estimated trajectory size is %p kb, cache limit = %i kb\n", nFileFrames_ * frameSize_/1024, prefs.cacheLimit());
 	if ((nFileFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
@@ -297,7 +297,7 @@ void Model::seekNextFrame()
 	}
 	else seekFrame(frameIndex_+1);
 	changeLog.add(Log::Visual);
-	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
+	//printf("Frame = %p, parent = %p (model = %p)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg.exit("Model::seekNextFrame");

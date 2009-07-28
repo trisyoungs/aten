@@ -1183,7 +1183,7 @@ bool CommandData::hasArguments()
 // Execute command
 bool Command::call(Command::Function cf, CommandNode *c, ReturnValue &rv)
 {
-	msg.print(Messenger::Commands, "Calling command '%s' (node is %li)...\n", data[cf].keyword, c);
+	msg.print(Messenger::Commands, "Calling command '%s' (node is %p)...\n", data[cf].keyword, c);
 	return (this->pointers_[cf])(c, aten.current, rv);
 }
 

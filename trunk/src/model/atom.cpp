@@ -95,7 +95,7 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 {
 	msg.enter("Model::addCopy");
 	Atom *newatom = atoms_.insert(afterthis);
-	//printf("Adding copy after... %li %li\n",afterthis,source);
+	//printf("Adding copy after... %p %p\n",afterthis,source);
 	newatom->copy(source);
 	renumberAtoms(afterthis);
 	changeLog.add(Log::Structure);

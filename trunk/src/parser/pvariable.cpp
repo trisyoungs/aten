@@ -66,8 +66,8 @@ void PointerVariable::nodePrint(int offset, const char *prefix)
 	if (offset > 1) strcat(tab,"   |--> ");
 	strcat(tab,prefix);
 	// Output node data
-	if (readOnly_) printf("%s%li (%s) (constant value)\n", tab, pointerData_, VTypes::dataType(returnType_));
-	else printf("%s%li (%s) (variable, name=%s)\n", tab, pointerData_, VTypes::dataType(returnType_), name_.get());
+	if (readOnly_) printf("%s%p (%s) (constant value)\n", tab, pointerData_, VTypes::dataType(returnType_));
+	else printf("%s%p (%s) (variable, name=%s)\n", tab, pointerData_, VTypes::dataType(returnType_), name_.get());
 	delete[] tab;
 }
 

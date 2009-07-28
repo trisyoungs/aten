@@ -167,7 +167,7 @@ void CommandNode::nodePrint(int offset, const char *prefix)
 	if (offset == 1) strcat(tab,"\t");
 	strcat(tab,prefix);
 	// Output node data
-// 	printf("Function id = %li\n", function_);
+// 	printf("Function id = %p\n", function_);
 	printf("[CN]%s%s (Command) (%i arguments)\n", tab, Command::data[function_].keyword, args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
