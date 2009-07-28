@@ -1,3 +1,9 @@
+aten (1.3) stable; urgency=low
+
+  * Update release. Many more bugfixes.
+
+ -- Tris Youngs <tris@projectaten.net>  Tue, 21 Jul 2009 00:00:00 +0000
+
 aten (1.2) stable; urgency=low
 
   * Major release. New scripting language syntax. Many bugfixes.
