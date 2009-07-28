@@ -149,7 +149,7 @@ void Clipboard::setNewBondPointers(Clipatom *clipptr, Atom *newptr)
 	}
 	printf("Linkbonds List after setNewBondPointers:\n");
 	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
-		printf("   Bond %li  = original atom IDs %i and %i\n",b,b->atomI()->id(),b->atomJ()->id());
+		printf("   Bond %p  = original atom IDs %i and %i\n",b,b->atomI()->id(),b->atomJ()->id());
 	msg.exit("Clipboard::setNewBondPointers");
 } */
 

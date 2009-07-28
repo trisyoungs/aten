@@ -580,9 +580,9 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 	}
 	else typescore = 0;
 	level ++;
-	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements().symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
+	msg.print(Messenger::Typing,"(%p %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements().symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
 	// Element check
-	msg.print(Messenger::Typing,"(%li %2i) ... Element  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Element  ",this,level);
 	if (nAllowedElements_ == 0) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
@@ -625,7 +625,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		}
 	}
 	// Atom environment check
-	msg.print(Messenger::Typing,"(%li %2i) ... Environment  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Environment  ",this,level);
 	if (environment_ == Atom::NoEnvironment) msg.print(Messenger::Typing," [defaulted]\n");
 	else
 	{
@@ -643,7 +643,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		}
 	}
 	// Oxidation state check
-	msg.print(Messenger::Typing,"(%li %2i) ... Oxidation state  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Oxidation state  ",this,level);
 	if (os_ == 99) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
@@ -661,7 +661,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		}
 	}
 	// Number of bound atoms check
-	msg.print(Messenger::Typing,"(%li %2i) ... Bond number  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Bond number  ",this,level);
 	if (nBonds_ == -1) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
@@ -679,7 +679,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		}
 	}
 	// Local atom geometry check
-	msg.print(Messenger::Typing,"(%li %2i) ... Geometry  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Geometry  ",this,level);
 	if (geometry_ == Atom::NoGeometry) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
@@ -699,7 +699,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 	// Construct bound atom list for subsequent checks...
 	i->addBoundToReflist(&atomchecklist);
 	// Hydrogen check
-	msg.print(Messenger::Typing,"(%li %2i) ... Attached hydrogens  ",this,level);
+	msg.print(Messenger::Typing,"(%p %2i) ... Attached hydrogens  ",this,level);
 	if (nHydrogen_ == -1) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
@@ -720,14 +720,14 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		}
 	}
 	// List of bound atoms check
-	if (boundList_.first() == NULL) msg.print(Messenger::Typing,"(%li %2i) ... Bound atoms  [defaulted]\n",this,level);
+	if (boundList_.first() == NULL) msg.print(Messenger::Typing,"(%p %2i) ... Bound atoms  [defaulted]\n",this,level);
 	else
 	{
 		for (bat = boundList_.first(); bat != NULL; bat = bat->next)
 		{
 			for (n=0; n<bat->nRepeat_; n++)
 			{
-				msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (n=%i/%i): ",this,level,bat,n+1,bat->nRepeat_);
+				msg.print(Messenger::Typing,"(%p %2i) ... Bound atom %p (n=%i/%i): ",this,level,bat,n+1,bat->nRepeat_);
 				// Check the atomlist for a match to the bound Neta
 				atomscore = bat->matchInList(&atomchecklist,ringdata,parent,topatom);
 				if (atomscore != -1)
@@ -756,13 +756,13 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 			for (r = ringdata->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringchecklist.add(r);
 			if (acyclic_ && (ringchecklist.nItems() != 0))
 			{
-				msg.print(Messenger::Typing,"(%li %2i) [failed - acyclic specified but is in %i rings]\n",this,level,ringchecklist.nItems());
+				msg.print(Messenger::Typing,"(%p %2i) [failed - acyclic specified but is in %i rings]\n",this,level,ringchecklist.nItems());
 				level --;
 				msg.exit("Neta::matchAtom");
 				return -1;
 			}
 		}
-		msg.print(Messenger::Typing,"(%li %2i) ... Rings  [defaulted]\n",this,level);
+		msg.print(Messenger::Typing,"(%p %2i) ... Rings  [defaulted]\n",this,level);
 	}
 	else
 	{
@@ -775,14 +775,14 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		{
 			for (n=0; n<atr->nRepeat_; n++)
 			{
-				msg.print(Messenger::Typing,"(%li %2i) ... Ring (%li) (%i/%i):\n",this,level,atr,n+1,atr->nRepeat_);
+				msg.print(Messenger::Typing,"(%p %2i) ... Ring (%p) (%i/%i):\n",this,level,atr,n+1,atr->nRepeat_);
 				// Loop over rings our atom is involved in, searching for a match.
 				for (refring = ringchecklist.first(); refring != NULL; refring = refring->next)
 				{
 					// Initialise score
 					ringscore = 0;
 					// Check for specific type of ring first...
-					msg.print(Messenger::Typing,"(%li %2i) ... ... Type  ",this,level);
+					msg.print(Messenger::Typing,"(%p %2i) ... ... Type  ",this,level);
 					if (atr->type_ == Ring::AnyRing) msg.print(Messenger::Typing,"[defaulted]");
 					else if (atr->type_ == refring->item->type())
 					{
@@ -798,7 +798,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 					if ((atr->selfAbsent_) && (refring->item->containsAtom(topatom))) continue;
 					else ringscore ++;
 					// Size check
-					msg.print(Messenger::Typing,"(%li %2i) ... ... Size  ",this,level);
+					msg.print(Messenger::Typing,"(%p %2i) ... ... Size  ",this,level);
 					if (atr->nAtoms_ == -1) msg.print(Messenger::Typing,"[defaulted]\n");
 					else if (atr->nAtoms_ == refring->item->nAtoms())
 					{
@@ -811,7 +811,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 						continue;
 					}
 					// Get the list of other atoms in this ring ready for searching.
-					msg.print(Messenger::Typing,"(%li %2i) ... ... Atoms:\n", this, level);
+					msg.print(Messenger::Typing,"(%p %2i) ... ... Atoms:\n", this, level);
 					atomchecklist.clear();
 					refring->item->addAtomsToReflist(&atomchecklist,NULL);
 					// Now go through list of specified Netas in this Ringtype
@@ -819,7 +819,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 					{
 						for (n=0; n<bat->nRepeat_; n++)
 						{
-							msg.print(Messenger::Typing,"(%li %2i) ... ... ... Atom (%li) (%i/%i)  ",this,level,bat,n+1,bat->nRepeat_);
+							msg.print(Messenger::Typing,"(%p %2i) ... ... ... Atom (%p) (%i/%i)  ",this,level,bat,n+1,bat->nRepeat_);
 							atomscore = bat->matchInList(&atomchecklist, ringdata, parent, topatom);
 							if (atomscore > -1)
 							{
@@ -843,14 +843,14 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 				// Check 'refring' - if NULL then we did not manage to find a match for the ring
 				if (refring != NULL)
 				{
-					msg.print(Messenger::Typing,"(%li %2i) ... Ring (%li)  [passed]\n",this,level,atr);
+					msg.print(Messenger::Typing,"(%p %2i) ... Ring (%p)  [passed]\n",this,level,atr);
 					typescore += ringscore;
 					// Remove matched ring from list
 					ringchecklist.remove(refring);
 				}
 				else
 				{
-					msg.print(Messenger::Typing,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
+					msg.print(Messenger::Typing,"(%p %2i) ... Ring (%p)  [failed]\n",this,level,atr);
 					level --;
 					msg.exit("Neta::matchAtom");
 					return -1;

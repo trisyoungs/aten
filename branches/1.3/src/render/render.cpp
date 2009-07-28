@@ -45,7 +45,7 @@ void Canvas::renderScene(Model *source)
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
 	if ((source != displayModel_) || (source == NULL)) renderPoint_ = -1;
-	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %li, renderpoint = %d\n", source, renderPoint_);
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, renderPoint_);
 
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
 	displayModel_ = source;

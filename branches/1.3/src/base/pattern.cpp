@@ -968,7 +968,7 @@ bool Pattern::ringSearch(Atom *i, Ring *currentpath)
 			if (done || maxreached) break;
 		}
 		// Return the list to its original state
-		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements().symbol(i),i);
+		msg.print(Messenger::Verbose," --- Removing atom %s[%p] from current path...\n",elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 // 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");

@@ -165,7 +165,7 @@ void Model::listUndoStates()
 		else if (currentRedoState_ == u) strcpy(suffix,"(Current Redo State)");
 		else suffix[0] = '\0';
 		printf(" %3i : '%s'\n", count, u->description());
-		printf("       Ptr=%li, %4i changes %s\n", u, u->nChanges(), suffix);
+		printf("       Ptr=%p, %4i changes %s\n", u, u->nChanges(), suffix);
 		u->print();
 	}	
 }

@@ -706,7 +706,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
 		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
-		//printf("PATTERN %li NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
+		//printf("PATTERN %p NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
 	}
 	destmodel->foldAllAtoms();
 	destmodel->calculateMass();
