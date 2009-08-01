@@ -198,7 +198,7 @@ bool Command::function_MoveToStart(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Draw unbound atom ('newatom <el> [x y z]')
+// Draw unbound atom ('newatom <el> [x y z] [vx vy vz] [fx fy fz]')
 bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -207,7 +207,9 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ForcefieldAtom *ffa;
 	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
-	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
+	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4), c->arg3d(7));
+	else if (c->hasArg(6)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4));
+	else if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
 	else aten.current.i = obj.rs->addAtomAtPen(el);
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames() && obj.rs->namesForcefield())
@@ -245,7 +247,9 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.rs->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
 	else r = obj.rs->cell()->fracToReal(r);
 	obj.rs->beginUndoState("Draw atom (fractional)");
-	aten.current.i = obj.rs->addAtom(el, r);
+	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4), c->arg3d(7));
+	else if (c->hasArg(6)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4));
+	else aten.current.i = obj.rs->addAtom(el, r);
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;

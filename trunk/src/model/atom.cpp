@@ -39,16 +39,38 @@ int Model::nAtoms() const
 }
 
 // Add atom
-Atom *Model::addAtom(short int newel, Vec3<double> pos, int targetid)
+Atom *Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<double> force)
 {
 	msg.enter("Model::addAtom");
-	Atom *newatom;
-	if (targetid == -1) newatom = atoms_.add();
-	else newatom = atoms_.insert(targetid == 0 ? NULL : atoms_[targetid-1]);
+	Atom *newatom = atoms_.add();
 	newatom->setParent(this);
 	newatom->setElement(newel);
-	newatom->setId(targetid == -1 ? atoms_.nItems() - 1 : targetid);
-	if (targetid != -1) renumberAtoms(newatom);
+	newatom->setId(atoms_.nItems() - 1);
+	newatom->r() = pos;
+	newatom->v() = vel;
+	newatom->f() = force;
+	increaseMass(newel);
+	changeLog.add(Log::Structure);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		AtomEvent *newchange = new AtomEvent;
+		newchange->set(TRUE, newatom);
+		recordingState_->addEvent(newchange);
+	}
+	msg.exit("Model::addAtom");
+	return newatom;
+}
+
+// Add atom with specified id
+Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
+{
+	msg.enter("Model::addAtom");
+	Atom *newatom = atoms_.insert(targetid == 0 ? NULL : atoms_[targetid-1]);
+	newatom->setParent(this);
+	newatom->setElement(newel);
+	newatom->setId(targetid);
+	renumberAtoms(newatom);
 	newatom->r() = pos;
 	increaseMass(newel);
 	changeLog.add(Log::Structure);
