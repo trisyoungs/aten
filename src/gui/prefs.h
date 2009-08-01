@@ -49,6 +49,7 @@ class AtenPrefs : public QDialog
 	void on_ElementList_currentRowChanged(int row);
 	void on_ElementAmbientColourButton_clicked(bool checked);
 	void on_ElementDiffuseColourButton_clicked(bool checked);
+	void on_ElementRadiusSpin_valueChanged(double value);
 
 	/*
 	// Interaction page

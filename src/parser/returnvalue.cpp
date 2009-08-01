@@ -337,6 +337,9 @@ int ReturnValue::asInteger(bool &success)
 		case (VTypes::StringData):
 			return valueS_.asInteger();
 			break;
+		case (VTypes::ElementData):
+			return (valueP_ == NULL ? 0 : ((Element*) valueP_)->z);
+			break;
 		default:
 			printf("ReturnValue::asInteger() doesn't recognise this type.\n");
 			break;

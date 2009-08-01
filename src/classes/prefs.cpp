@@ -345,7 +345,7 @@ bool Prefs::save(const char *filename)
 			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
 			defaultvalue = rv.asString();
 			// Compare the two strings - if different, write the prefs value to the file....
-			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
+// 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
 			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;
 			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) sprintf(line,"aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
 			else sprintf(line,"aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
