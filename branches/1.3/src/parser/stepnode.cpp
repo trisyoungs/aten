@@ -105,7 +105,7 @@ bool StepNode::execute(ReturnValue &rv)
 			printf("Failed to retrieve array index.\n");
 			return FALSE;
 		}
-		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData))
+		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
 			return FALSE;
@@ -270,7 +270,7 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			printf("Failed to retrieve array index.\n");
 			return FALSE;
 		}
-		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData))
+		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
 			return FALSE;

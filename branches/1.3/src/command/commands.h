@@ -668,14 +668,6 @@ class Command
 	static bool function_PrintSummary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_VCut(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// Filter Commands
-	static bool function_Exact(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Extension(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Glob(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Id(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Name(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Nickname(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Zmap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Flow control
 	static bool function_Break(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv);

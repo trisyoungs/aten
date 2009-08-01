@@ -237,6 +237,17 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
+void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
+{
+	// Get current row
+	int el = ui.ElementList->currentRow();
+	if (el == -1) return;
+	elements().setAtomicRadius(el, value);
+	// Re-draw models
+	aten.currentModel()->changeLog.add(Log::Visual);
+	gui.mainView.postRedisplay();
+}
+
 /*
 // View Page
 */
