@@ -588,10 +588,10 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 	{
 		// Check through list of elements/types that this atom is allowed to be
 		found = FALSE;
-		for (n=0; n<nAllowedElements_; n++)
+		for (n=0; n<nAllowedElements_; ++n)
 		{
 			// If its an element, just check the element of the atom.
-			if (i->isElement(allowedElements_[n]))
+			if (i->isElement(allowedElements_[n]))		// VALGRIND - Uninitialised value
 			{
 				found = TRUE;
 				typescore++;

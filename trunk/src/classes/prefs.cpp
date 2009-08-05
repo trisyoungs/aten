@@ -25,6 +25,7 @@
 #include "base/lineparser.h"
 #include "main/aten.h"
 #include "parser/prefs.h"
+#include "methods/mc.h"
 #include <iostream>
 
 Prefs prefs;
@@ -1083,7 +1084,15 @@ double Prefs::gasConstant()
 // Set the internal energy units to use
 void Prefs::setEnergyUnit(EnergyUnit eu)
 {
+	// Store old, and set new energy unit
+	Prefs::EnergyUnit oldunit = energyUnit_;
 	energyUnit_ = eu;
+	// Convert MC acceptance values to new units
+	mc.setAcceptanceEnergy(MonteCarlo::Translate, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Translate), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Rotate, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Rotate), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::ZMatrix, convertEnergy(mc.acceptanceEnergy(MonteCarlo::ZMatrix), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Insert, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Insert), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Delete, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Delete), oldunit));
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];
