@@ -39,6 +39,7 @@ bool PointerVariable::set(ReturnValue &rv)
 	}
 	bool success;
 	pointerData_ = rv.asPointer(returnType_, success);
+	refitemData_ = rv.refPointer();
 	return success;
 }
 
@@ -46,12 +47,13 @@ bool PointerVariable::set(ReturnValue &rv)
 void PointerVariable::reset()
 {
 	pointerData_ = NULL;
+	refitemData_ = NULL;
 }
 
 // Return value of node
 bool PointerVariable::execute(ReturnValue &rv)
 {
-	rv.set(returnType_, pointerData_);
+	rv.set(returnType_, pointerData_, refitemData_);
 	return TRUE;
 }
 

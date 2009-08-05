@@ -248,7 +248,7 @@ template <class T, class D> void Reflist<T,D>::remove(T *xitem)
 // Element access operator
 template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 {
-	if (index >= nItems_)
+	if ((index < 0) || (index >= nItems_))
 	{
 		printf("reflist::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
 		return NULL;
@@ -263,18 +263,9 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 template <class T, class D> Refitem<T,D>* Reflist<T,D>::search(T *xitem)
 {
 	// Search references for specified item
-	Refitem<T,D> *result = NULL;
-	Refitem<T,D> *r = itemsHead_;
-	while (r != NULL)
-	{
-		if (r->item == xitem)
-		{
-			result = r;
-			break;
-		}
-		r = r->next;
-	}
-	return result;
+	Refitem<T,D> *r;
+	for (r = itemsHead_; r != NULL; r = r->next) if (r->item == xitem) break;
+	return r;
 }
 
 // Clear atoms from list

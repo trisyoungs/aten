@@ -492,14 +492,14 @@ class Model
 	private:
 	// Atom changeid at which the expression was/is valid
 	int expressionPoint_;
-	// List containing copies of unique atom types in model (useful in expression export)
-	List<ForcefieldAtom> uniqueTypes_;
-	// List containing copies of bond interactions in model (useful in expression export)
-	List<ForcefieldBound> uniqueBondTerms_;
-	// List containing copies of angle interactions in model (useful in expression export)
-	List<ForcefieldBound> uniqueAngleTerms_;
-	// List containing copies of torsion interactions in model (useful in expression export)
-	List<ForcefieldBound> uniqueTorsionTerms_;
+	// List containing references tobond interactions in model (useful in expression export)
+	Reflist<ForcefieldBound,int> forcefieldBonds_;
+	// List containing references to angle interactions in model (useful in expression export)
+	Reflist<ForcefieldBound,int> forcefieldAngles_;
+	// List containing references to torsion interactions in model (useful in expression export)
+	Reflist<ForcefieldBound,int> forcefieldTorsions_;
+	// List containing references to atom types in used in model (useful in expression export)
+	Reflist<ForcefieldAtom,int> forcefieldTypes_;
 
 	public:
 	// Set type of specified atom
@@ -513,31 +513,31 @@ class Model
 	// Set atomtypes of selected atoms
 	void selectionSetType(ForcefieldAtom *ffa, bool fixed);
 	// Create unique lists
-	void createUniqueLists();
-	// Return number of unique atom types in model
-	int nUniqueTypes();
-	// Return the first item in the list of unique types in the model
-	ForcefieldAtom *uniqueTypes();
-	// Return the unique type specified
-	ForcefieldAtom *uniqueType(int i);
+	void createForcefieldLists();
 	// Return number of unique bond interactions in model
-	int nUniqueBondTerms();
+	int nForcefieldBonds();
 	// Return the first item in the list of unique bond interactions in the model
-	ForcefieldBound *uniqueBondTerms();
+	Refitem<ForcefieldBound,int> *forcefieldBonds();
 	// Return the unique bond term specified
-	ForcefieldBound *uniqueBondTerm(int i);
+	Refitem<ForcefieldBound,int> *forcefieldBond(int i);
 	// Return number of unique angle interactions in model
-	int nUniqueAngleTerms();
+	int nForcefieldAngles();
 	// Return the first item in the list of unique angle interactions in the model
-	ForcefieldBound *uniqueAngleTerms();
+	Refitem<ForcefieldBound,int> *forcefieldAngles();
 	// Return the unique angle term specified
-	ForcefieldBound *uniqueAngleTerm(int i);
+	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
 	// Return number of unique torsion interactionss in model
-	int nUniqueTorsionTerms();
+	int nForcefieldTorsions();
 	// Return the list of unique torsion interactions in the model
-	ForcefieldBound *uniqueTorsionTerms();
+	Refitem<ForcefieldBound,int> *forcefieldTorsions();
 	// Return the unique torsion term specified
-	ForcefieldBound *uniqueTorsionTerm(int i);
+	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
+	// Return number of unique atom types in model
+	int nForcefieldTypes();
+	// Return the first item in the list of unique types in the model
+	Refitem<ForcefieldAtom,int> *forcefieldTypes();
+	// Return the unique type specified
+	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid

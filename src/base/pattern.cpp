@@ -63,6 +63,7 @@ PatternAtom::PatternAtom()
 	// Private variables
 	data_ = NULL;
 	atom_ = NULL;
+	forcefieldDataId_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -74,6 +75,7 @@ PatternBound::PatternBound()
 	// Private variables
 	for (int i=0; i<MAXFFBOUNDTYPES; i++) atomIds_[i] = -1;
 	data_ = NULL;
+	forcefieldDataId_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -114,6 +116,18 @@ Atom *PatternAtom::atom()
 	return atom_;
 }
 
+// Return integer index of unique atom data reference
+int PatternAtom::forcefieldDataId()
+{
+	return forcefieldDataId_;
+}
+
+// Set integer index of unique atom data reference
+void PatternAtom::setForcefieldDataId(int id)
+{
+	forcefieldDataId_ = id;
+}
+
 /*
 // Pattern Bound
 */
@@ -142,9 +156,75 @@ ForcefieldBound *PatternBound::data()
 	return data_;
 }
 
+// Return integer index of unique bound data reference
+int PatternBound::forcefieldDataId()
+{
+	return forcefieldDataId_;
+}
+
+// Set integer index of unique bound data reference
+void PatternBound::setForcefieldDataId(int id)
+{
+	forcefieldDataId_ = id;
+}
+
 /*
 // Pattern
 */
+
+// Set the atom data specified
+void Pattern::setAtomData(int id, Atom *i, ForcefieldAtom *ffa)
+{
+	atoms_[id]->setAtom(i);
+	atoms_[id]->setData(ffa);
+	atoms_[id]->setForcefieldDataId(-1);
+	// Add this to the unique types list if it isn't there already
+	// For types, we only add types if they have different names because of type equivalents
+	int n;
+	for (n=0; n<forcefieldTypes_.nItems(); ++n) if (strcmp(forcefieldTypes_[n]->item->name(),ffa->name()) == 0) break;
+	if (n == forcefieldTypes_.nItems()) forcefieldTypes_.add(ffa, 1);
+	else forcefieldTypes_[n]->data = forcefieldTypes_[n]->data + 1;
+	atoms_[id]->setForcefieldDataId(n);
+}
+
+// Set the bond data specified
+void Pattern::setBondData(int id, ForcefieldBound *ffb)
+{
+	bonds_[id]->setData(ffb);
+	bonds_[id]->setForcefieldDataId(-1);
+	// Add this to the unique bonds list if it isn't there already
+	int n;
+	for (n=0; n<forcefieldBonds_.nItems(); ++n) if (forcefieldBonds_[n]->item == ffb) break;
+	if (n == forcefieldBonds_.nItems()) forcefieldBonds_.add(ffb, 1);
+	else forcefieldBonds_[n]->data = forcefieldBonds_[n]->data + 1;
+	bonds_[id]->setForcefieldDataId(n);
+}
+
+// Set the angle data specified
+void Pattern::setAngleData(int id, ForcefieldBound *ffb)
+{
+	angles_[id]->setData(ffb);
+	angles_[id]->setForcefieldDataId(-1);
+	// Add this to the forcefield angles list if it isn't there already
+	int n;
+	for (n=0; n<forcefieldAngles_.nItems(); ++n) if (forcefieldAngles_[n]->item == ffb) break;
+	if (n == forcefieldAngles_.nItems()) forcefieldAngles_.add(ffb, 1);
+	else forcefieldAngles_[n]->data = forcefieldAngles_[n]->data + 1;
+	angles_[id]->setForcefieldDataId(n);
+}
+
+// Set the torsion data specified
+void Pattern::setTorsionData(int id, ForcefieldBound *ffb)
+{
+	torsions_[id]->setData(ffb);
+	torsions_[id]->setForcefieldDataId(-1);
+	// Add this to the forcefield torsions list if it isn't there already
+	int n;
+	for (n=0; n<forcefieldTorsions_.nItems(); ++n) if (forcefieldTorsions_[n]->item == ffb) break;
+	if (n == forcefieldTorsions_.nItems()) forcefieldTorsions_.add(ffb, 1);
+	else forcefieldTorsions_[n]->data = forcefieldTorsions_[n]->data + 1;
+	torsions_[id]->setForcefieldDataId(n);
+}
 
 // Sets the ID of the pattern
 void Pattern::setId(int i)
@@ -246,6 +326,78 @@ PatternBound *Pattern::angle(int i)
 PatternBound *Pattern::torsion(int i)
 {
 	return torsions_[i];
+}
+
+// Return number of forcefield bonds used in the pattern
+int Pattern::nForcefieldBonds()
+{
+	return forcefieldBonds_.nItems();
+}
+
+// Return number of forcefield angles used in the pattern
+int Pattern::nForcefieldAngles()
+{
+	return forcefieldAngles_.nItems();
+}
+
+// Return number of forcefield torsions used in the pattern
+int Pattern::nForcefieldTorsions()
+{
+	return forcefieldTorsions_.nItems();
+}
+
+// Return number of forcefield types used in the pattern
+int Pattern::nForcefieldTypes()
+{
+	return forcefieldTypes_.nItems();
+}
+
+// Return first forcefield bond used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldBonds()
+{
+	return forcefieldBonds_.first();
+}
+
+// Return first forcefield angle used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldAngles()
+{
+	return forcefieldAngles_.first();
+}
+
+// Return first forcefield torsion used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsions()
+{
+	return forcefieldTorsions_.first();
+}
+
+// Return first forcefield type used in the pattern
+Refitem<ForcefieldAtom,int> *Pattern::forcefieldTypes()
+{
+	return forcefieldTypes_.first();
+}
+
+// Return selected forcefield bond used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldBond(int i)
+{
+	return forcefieldBonds_[i];
+}
+
+// Return selected forcefield angle used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldAngle(int i)
+{
+	return forcefieldAngles_[i];
+}
+
+// Return selected forcefield torsion used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsion(int i)
+{
+	return forcefieldTorsions_[i];
+}
+
+// Return selected forcefield type used in the pattern
+Refitem<ForcefieldAtom,int> *Pattern::forcefieldType(int i)
+{
+	return forcefieldTypes_[i];
 }
 
 // Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations

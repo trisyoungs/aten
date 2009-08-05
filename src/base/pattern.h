@@ -24,6 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/list.h"
+#include "templates/reflist.h"
 #include "base/constants.h"
 #include "base/dnchar.h"
 
@@ -56,6 +57,8 @@ class PatternAtom
 	ForcefieldAtom *data_;
 	// Pointer to atom in parent xmodel
 	Atom *atom_;
+	// Integer index of local forcefield bound data reference
+	int forcefieldDataId_;
 
 	public:
 	// Set ff type of pattern atom
@@ -66,6 +69,10 @@ class PatternAtom
 	void setAtom(Atom *a);
 	// Get pointer to atom in first molecule
 	Atom *atom();
+	// Return integer index of unique atom data reference
+	int forcefieldDataId();
+	// Set integer index of unique atom data reference
+	void setForcefieldDataId(int id);
 };
 
 class PatternBound
@@ -86,6 +93,8 @@ class PatternBound
 	int atomIds_[MAXFFBOUNDTYPES];
 	// Pointer to function data / form
 	ForcefieldBound *data_;
+	// Integer index of local forcefield bound data reference
+	int forcefieldDataId_;
 
 	public:
 	// Set atom id
@@ -96,6 +105,10 @@ class PatternBound
 	void setData(ForcefieldBound *ffb);
 	// Get function data
 	ForcefieldBound *data();
+	// Return integer index of unique bound data reference
+	int forcefieldDataId();
+	// Set integer index of unique bound data reference
+	void setForcefieldDataId(int id);
 };
 
 // Pattern Node
@@ -244,6 +257,22 @@ class Pattern
 	List<PatternBound> angles_;
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
+	// Reference list of bond terms in pattern
+	Reflist<ForcefieldBound, int> forcefieldBonds_;
+	// Reference list of angle terms in pattern
+	Reflist<ForcefieldBound, int> forcefieldAngles_;
+	// Reference list of torsion terms in pattern
+	Reflist<ForcefieldBound, int> forcefieldTorsions_;
+	// Reference list of atom types in pattern
+	Reflist<ForcefieldAtom, int> forcefieldTypes_;
+	// Set nth atom to the data specified
+	void setAtomData(int id, Atom *i, ForcefieldAtom *ffa);
+	// Set nth bond to the data specified
+	void setBondData(int id, ForcefieldBound *ffb);
+	// Set nth angle to the data specified
+	void setAngleData(int id, ForcefieldBound *ffb);
+	// Set nth torsion to the data specified
+	void setTorsionData(int id, ForcefieldBound *ffb);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -276,6 +305,30 @@ class Pattern
 	PatternBound *angle(int i);
 	// Return selected torsion of the pattern
 	PatternBound *torsion(int i);
+	// Return number of unique bonds used in the pattern
+	int nForcefieldBonds();
+	// Return number of forcefield angles used in the pattern
+	int nForcefieldAngles();
+	// Return number of forcefield torsions used in the pattern
+	int nForcefieldTorsions();
+	// Return number of forcefield types used in the pattern
+	int nForcefieldTypes();
+	// Return first forcefield bond of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldBonds();
+	// Return first forcefield angle of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldAngles();
+	// Return first forcefield torsion of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldTorsions();
+	// Return first forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *forcefieldTypes();
+	// Return selected forcefield bond of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldBond(int i);
+	// Return selected forcefield angle of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
+	// Return selected forcefield torsion of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
+	// Return selected forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool areAtomsFixed();
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations

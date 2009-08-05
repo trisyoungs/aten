@@ -31,7 +31,7 @@ const char *ForcefieldBound::boundType(ForcefieldBound::BoundType bt)
 {
 	return ForcefieldBoundKeywords[bt];
 }
-int ForcefieldBound::bountTypeNAtoms(ForcefieldBound::BoundType bt)
+int ForcefieldBound::boundTypeNAtoms(ForcefieldBound::BoundType bt)
 {
 	return ForcefieldBoundNAtoms[bt];
 }
@@ -145,6 +145,12 @@ double *ForcefieldBound::parameters()
 const char *ForcefieldBound::typeName(int n)
 {
 	return (n < MAXFFBOUNDTYPES ? typeNames_[n].get() : "OUTOFRANGE");
+}
+
+// Return the atom type array
+Dnchar *ForcefieldBound::typeNames()
+{
+	return &typeNames_[0];
 }
 
 // Set the atom type 'n'

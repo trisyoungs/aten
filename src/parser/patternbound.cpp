@@ -49,6 +49,7 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 	{ "escale", 	VTypes::DoubleData,		0, TRUE },
 	{ "form", 	VTypes::StringData,		0, TRUE },
 	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, TRUE },
+	{ "termid",	VTypes::IntegerData,		0, TRUE },
 	{ "typenames", 	VTypes::StringData,		MAXFFBOUNDTYPES, TRUE },
 	{ "vscale",	VTypes::DoubleData,		0, TRUE }
 };
@@ -198,6 +199,9 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 				for (int n=0; n<MAXFFPARAMDATA; ++n) ids[n] = ptr->atomIds_[n];
 				rv.setArray(VTypes::IntegerData, &ids, MAXFFPARAMDATA);
 			}
+			break;
+		case (PatternBoundVariable::TermId):
+			rv.set(ptr->forcefieldDataId()+1);
 			break;
 		case (PatternBoundVariable::VScale):
 			if (ptr->data() == NULL)

@@ -52,16 +52,24 @@ Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
 	{ "cog", 	VTypes::VectorData,		-1, TRUE },
 	{ "com", 	VTypes::VectorData,		-1, TRUE },
+	{ "ffangles",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "ffbonds",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "fftorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
+	{ "fftypes",	VTypes::ForcefieldAtomData,	0, TRUE },
+	{ "ff",		VTypes::ForcefieldData,		0, FALSE },
 	{ "firstatom",	VTypes::AtomData,		0, TRUE },
 	{ "firstatomid",VTypes::IntegerData,		0, TRUE },
 	{ "fixed",	VTypes::IntegerData,		0, FALSE },
-	{ "forcefield",	VTypes::ForcefieldData,		0, FALSE },
 	{ "lastatom",	VTypes::AtomData,		0, TRUE },
 	{ "lastatomid",	VTypes::IntegerData,		0, TRUE },
 	{ "name",	VTypes::StringData,		0, FALSE },
 	{ "nangles",	VTypes::IntegerData,		0, TRUE },
 	{ "natoms",	VTypes::IntegerData,		0, TRUE },
 	{ "nbonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nffangles",	VTypes::IntegerData,		0, TRUE },
+	{ "nffbonds",	VTypes::IntegerData,		0, TRUE },
+	{ "nfftorsions",VTypes::IntegerData,		0, TRUE },
+	{ "nfftypes",	VTypes::IntegerData,		0, TRUE },
 	{ "nmolatoms",	VTypes::IntegerData,		0, TRUE },
 	{ "nmols",	VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",	VTypes::IntegerData,		0, TRUE },
@@ -199,6 +207,61 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (PatternVariable::Com):
 			rv.set(ptr->calculateCom(arrayIndex-1));
 			break;
+		case (PatternVariable::FFAngles):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldAngles() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngles()->item, ptr->forcefieldAngles());
+				else rv.set(VTypes::ForcefieldBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldAngles())
+			{
+				msg.print("Forcefield angle array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
+			break;
+		case (PatternVariable::FFBonds):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldBonds() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBonds()->item, ptr->forcefieldBonds());
+				else rv.set(VTypes::ForcefieldBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldBonds())
+			{
+				msg.print("Forcefield bond array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
+			break;
+		case (PatternVariable::FFTorsions):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldTorsions() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsions()->item, ptr->forcefieldTorsions());
+				else rv.set(VTypes::ForcefieldBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldTorsions())
+			{
+				msg.print("Forcefield torsion array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
+			break;
+		case (PatternVariable::FFTypes):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldTypes()->item, ptr->forcefieldTypes());
+				else rv.set(VTypes::ForcefieldAtomData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldTypes())
+			{
+				msg.print("Forcefield types array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldType(arrayIndex-1)->item, ptr->forcefieldType(arrayIndex-1));
+			break;
+		case (PatternVariable::FField):
+			rv.set(VTypes::ForcefieldData, ptr->forcefield());
+			break;
 		case (PatternVariable::FirstAtom):
 			rv.set(VTypes::AtomData, ptr->firstAtom());
 			break;
@@ -207,9 +270,6 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			break;
 		case (PatternVariable::FirstAtomId):
 			rv.set(ptr->startAtom() + 1);
-			break;
-		case (PatternVariable::FField):
-			rv.set(VTypes::ForcefieldData, ptr->forcefield());
 			break;
 		case (PatternVariable::LastAtom):
 			rv.set(VTypes::AtomData, ptr->lastAtom());
@@ -228,6 +288,18 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			break;
 		case (PatternVariable::NBonds):
 			rv.set(ptr->nBonds());
+			break;
+		case (PatternVariable::NFFAngles):
+			rv.set(ptr->nForcefieldAngles());
+			break;
+		case (PatternVariable::NFFBonds):
+			rv.set(ptr->nForcefieldAngles());
+			break;
+		case (PatternVariable::NFFTorsions):
+			rv.set(ptr->nForcefieldTorsions());
+			break;
+		case (PatternVariable::NFFTypes):
+			rv.set(ptr->nForcefieldTypes());
 			break;
 		case (PatternVariable::NMolAtoms):
 			rv.set(ptr->nAtoms());

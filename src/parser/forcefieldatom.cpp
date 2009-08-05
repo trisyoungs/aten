@@ -53,11 +53,12 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 	{ "data",		VTypes::DoubleData,		MAXFFPARAMDATA, FALSE },
 	{ "description",	VTypes::StringData,		0, FALSE },
 	{ "equivalent",		VTypes::StringData,		0, FALSE },
+	{ "ff",			VTypes::ForcefieldData,		0, TRUE },
 	{ "form",		VTypes::StringData,		0, FALSE },
 	{ "id",			VTypes::IntegerData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "neta",		VTypes::StringData,		0, FALSE },
-	{ "ff",			VTypes::ForcefieldData,		0, TRUE }
+	{ "z",			VTypes::IntegerData,		0, FALSE }
 };
 
 // Function data
@@ -175,6 +176,9 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		case (ForcefieldAtomVariable::Equivalent):
 			rv.set(ptr->equivalent());
 			break;
+		case (ForcefieldAtomVariable::FField):
+			rv.set(VTypes::ForcefieldData, ptr->parent());
+			break;
 		case (ForcefieldAtomVariable::Form):
 			rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].keyword);
 			break;
@@ -187,8 +191,8 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		case (ForcefieldAtomVariable::Neta):
 			rv.set(ptr->netaString());
 			break;
-		case (ForcefieldAtomVariable::ParentFF):
-			rv.set(VTypes::ForcefieldData, ptr->parent());
+		case (ForcefieldAtomVariable::Z):
+			rv.set(ptr->neta()->characterElement());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldAtomVariable.\n", accessorData[i].name);
@@ -291,6 +295,9 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 			break;
 		case (ForcefieldAtomVariable::Neta):
 			ptr->setNeta(newvalue.asString(), NULL, ptr);
+			break;
+		case (ForcefieldAtomVariable::Z):
+			ptr->neta()->setCharacterElement(newvalue.asInteger());
 			break;
 		default:
 			printf("ForcefieldAtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

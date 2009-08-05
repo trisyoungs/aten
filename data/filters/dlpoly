@@ -402,18 +402,18 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 	# VDW Specification
 	# Get total number of pair terms to write
 	nvdw = 0;
-	for (n=1; n<=m.natomtypes; ++n) nvdw += n;
+	for (n=1; n<=m.nfftypes; ++n) nvdw += n;
 	writeline("vdw",nvdw);
-	for (n=1; n<=m.natomtypes; ++n)
+	for (n=1; n<=m.nfftypes; ++n)
 	{
-		at1 = m.atomtypes[n];
+		at1 = m.fftypes[n];
 		for (n2=1; n2<=n; ++n2)
 		{
-			at2 = m.atomtypes[n2];
+			at2 = m.fftypes[n2];
 			# Check functional forms of each atomtype
 			if (at1.form != at2.form)
 			{
-				printf("Functional forms of atomtypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
+				printf("Functional forms of fftypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
 				writelinef("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f %12.6f\n",at1.name,at2.name,at1.data[1],at1.data[2],at1.data[3],at1.data[4],at1.data[5],at1.data[6]);
 			}
 			else if (at1.form == "lj")
