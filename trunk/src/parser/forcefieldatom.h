@@ -41,7 +41,7 @@ class ForcefieldAtomVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Charge, Data, Description, Equivalent, Form, Id, Name, Neta, ParentFF, nAccessors };
+	enum Accessors { Charge, Data, Description, Equivalent, FField, Form, Id, Name, Neta, Z, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

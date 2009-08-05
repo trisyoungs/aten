@@ -41,7 +41,7 @@ class PatternVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FirstAtom, FirstAtomId, Fixed, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	enum Accessors { Angles, Atoms, Bonds, Cog, Com, FFAngles, FFBonds, FFTorsions, FFTypes, FField, FirstAtom, FirstAtomId, Fixed, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

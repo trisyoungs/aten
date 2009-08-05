@@ -215,7 +215,6 @@ bool Tree::execute(ReturnValue &rv)
 					msg.exit("Tree::execute");
 					return FALSE;
 				}
-				aten.current.m->createUniqueLists();
 				break;
 		}
 	}

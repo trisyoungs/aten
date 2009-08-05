@@ -30,76 +30,76 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 
-// Return number of unique atom types in model
-int Model::nUniqueTypes()
+// Return number of forcefield atom types in model
+int Model::nForcefieldTypes()
 {
-	return uniqueTypes_.nItems();
+	return forcefieldTypes_.nItems();
 }
 
-// Return the list of unique types in the model
-ForcefieldAtom *Model::uniqueTypes()
+// Return the list of forcefield types in the model
+Refitem <ForcefieldAtom,int> *Model::forcefieldTypes()
 {
-	return uniqueTypes_.first();
+	return forcefieldTypes_.first();
 }
 
-// Return the nth unique type interaction in the model
-ForcefieldAtom *Model::uniqueType(int i)
+// Return the nth forcefield type interaction in the model
+Refitem <ForcefieldAtom,int> *Model::forcefieldType(int i)
 {
-	return uniqueTypes_[i];
+	return forcefieldTypes_[i];
 }
 
-// Return number of unique bond interactions in the model
-int Model::nUniqueBondTerms()
+// Return number of forcefield bond interactions in the model
+int Model::nForcefieldBonds()
 {
-	return uniqueBondTerms_.nItems();
+	return forcefieldBonds_.nItems();
 }
 
-// Return the first in the list of unique bond interactions in the model
-ForcefieldBound *Model::uniqueBondTerms()
+// Return the first in the list of forcefield bond interactions in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldBonds()
 {
-	return uniqueBondTerms_.first();
+	return forcefieldBonds_.first();
 }
 
-// Return the nth unique bond interaction in the model
-ForcefieldBound *Model::uniqueBondTerm(int i)
+// Return the nth forcefield bond interaction in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldBond(int i)
 {
-	return uniqueBondTerms_[i];
+	return forcefieldBonds_[i];
 }
 
-// Return number of unique angle interactions in the model
-int Model::nUniqueAngleTerms()
+// Return number of forcefield angle interactions in the model
+int Model::nForcefieldAngles()
 {
-	return uniqueAngleTerms_.nItems();
+	return forcefieldAngles_.nItems();
 }
 
-// Return the first in the list of unique angle interactions in the model
-ForcefieldBound *Model::uniqueAngleTerms()
+// Return the first in the list of forcefield angle interactions in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldAngles()
 {
-	return uniqueAngleTerms_.first();
+	return forcefieldAngles_.first();
 }
 
-// Return the nth unique angle interaction in the model
-ForcefieldBound *Model::uniqueAngleTerm(int i)
+// Return the nth forcefield angle interaction in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldAngle(int i)
 {
-	return uniqueAngleTerms_[i];
+	return forcefieldAngles_[i];
 }
 
-// Return number of unique torsion interactions in the model
-int Model::nUniqueTorsionTerms()
+// Return number of forcefield torsion interactions in the model
+int Model::nForcefieldTorsions()
 {
-	return uniqueTorsionTerms_.nItems();
+	return forcefieldTorsions_.nItems();
 }
 
-// Return the first in the list of unique torsion interactions in the model
-ForcefieldBound *Model::uniqueTorsionTerms()
+// Return the first in the list of forcefield torsion interactions in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldTorsions()
 {
-	return uniqueTorsionTerms_.first();
+	return forcefieldTorsions_.first();
 }
 
-// Return the nth unique torsion interaction in the model
-ForcefieldBound *Model::uniqueTorsionTerm(int i)
+// Return the nth forcefield torsion interaction in the model
+Refitem <ForcefieldBound,int> *Model::forcefieldTorsion(int i)
 {
-	return uniqueTorsionTerms_[i];
+	return forcefieldTorsions_[i];
 }
 
 /*

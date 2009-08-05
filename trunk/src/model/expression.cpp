@@ -102,7 +102,10 @@ bool Model::createExpression(bool vdwOnly)
 	}
 	// Reset some variables
 	prefs.invalidateEwaldAuto();
-	uniqueTypes_.clear();
+	forcefieldAngles_.clear();
+	forcefieldBonds_.clear();
+	forcefieldTorsions_.clear();
+	forcefieldTypes_.clear();
 	if (vdwOnly) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
 	else msg.print("Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
@@ -152,6 +155,8 @@ bool Model::createExpression(bool vdwOnly)
 				break;
 		}
 	}
+	// 4) Create master (Model) forcefield term lists
+	createForcefieldLists();
 	// Lastly, assign charges to atoms
 	if (!assignForcefieldCharges()) return FALSE;
 	expressionPoint_ = changeLog.log(Log::Structure);
@@ -159,37 +164,54 @@ bool Model::createExpression(bool vdwOnly)
 	return TRUE;
 }
 
-// Create lists of unique FF terms in the model
-void Model::createUniqueLists()
+// Create lists of forcefield terms in the model
+void Model::createForcefieldLists()
 {
-	msg.enter("Model::createUniqueLists");
-	uniqueTypes_.clear();
+	msg.enter("Model::createForcefieldLists");
 
-	// Must have a valid expression to do this...
-	if (!isExpressionValid())
+	msg.print(Messenger::Verbose, "Constructing global forcefield term lists for model...\n");
+	forcefieldAngles_.clear();
+	forcefieldBonds_.clear();
+	forcefieldTorsions_.clear();
+	forcefieldTypes_.clear();
+
+	Refitem<ForcefieldAtom,int> *ffa1, *ffa2;
+	Refitem<ForcefieldBound,int> *ffb;
+
+	// Cycle over patterns, adding their unique forcefield terms to ours...
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		msg.print("Internal Error: Unique lists cannot be created without a valid expression.\n");
-		msg.exit("Model::createUniqueLists");
-		return;
+		msg.print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
+
+		// Atom types. We only add types to the list that have a unique type name.
+		for (Refitem<ForcefieldAtom,int> *ffa1 = p->forcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
+		{
+			// Search through current list...
+			for (ffa2 = forcefieldTypes_.first(); ffa2 != NULL; ffa2 = ffa2->next) if (strcmp(ffa1->item->name(),ffa2->item->name()) == 0) break;
+			if (ffa2 != NULL) continue;
+			forcefieldTypes_.add(ffa1->item);
+		}
+
+		// Bond terms
+		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
+		{
+			if (forcefieldBonds_.search(ffb->item) == NULL) forcefieldBonds_.add(ffb->item);
+		}
+
+		// Angle terms
+		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
+		{
+			if (forcefieldAngles_.search(ffb->item) == NULL) forcefieldAngles_.add(ffb->item);
+		}
+
+		// Torsion terms
+		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
+		{
+			if (forcefieldTorsions_.search(ffb->item) == NULL) forcefieldTorsions_.add(ffb->item);
+		}
 	}
 
-	// First, create a list of unique type references
-	Reflist<ForcefieldAtom,int> uniqueRef;
-	Refitem<ForcefieldAtom,int> *ri;
-	ForcefieldAtom *ffa;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) uniqueRef.addUnique(i->type());
-	// Now, populate the uniquetypes list with copies of these atom types
-	for (ri = uniqueRef.first(); ri != NULL; ri = ri->next)
-	{
-		// We only add types to the list that have a unique type name.
-		// So, check through uniqueTypes_ list.
-		for (ffa = uniqueTypes_.first(); ffa != NULL; ffa = ffa->next)
-			if (strcmp(ri->item->name(),ffa->name()) == 0) break;
-		if (ffa != NULL) continue;
-		ffa = uniqueTypes_.add();
-		ffa->copy(ri->item);
-	}
-	// TODO Unique bond, angle, torsion lists... TGAY
+	msg.print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
-	msg.exit("Model::createUniqueLists");
+	msg.exit("Model::createForcefieldLists");
 }

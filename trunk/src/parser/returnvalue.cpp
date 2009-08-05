@@ -26,6 +26,8 @@
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/grid.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 #include "base/pattern.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -181,6 +183,7 @@ void ReturnValue::set(int i)
 	type_ = VTypes::IntegerData;
 	valueI_ = i;
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from double value
@@ -190,6 +193,7 @@ void ReturnValue::set(double d)
 	type_ = VTypes::DoubleData;
 	valueD_ = d;
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from character value
@@ -199,6 +203,7 @@ void ReturnValue::set(const char *s)
 	type_ = VTypes::StringData;
 	valueS_ = s;
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from vector value
@@ -208,6 +213,7 @@ void ReturnValue::set(Vec3<double> v)
 	type_ = VTypes::VectorData;
 	valueV_ = v;
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from individual vector data
@@ -217,6 +223,7 @@ void ReturnValue::set(double x, double y, double z)
 	type_ = VTypes::VectorData;
 	valueV_.set(x,y,z);
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from single vector data
@@ -226,14 +233,16 @@ void ReturnValue::set(int id, double xyz)
 	type_ = VTypes::VectorData;
 	valueV_.set(id, xyz);
 	arraySize_ = -1;
+	valueRefitem_ = NULL;
 }
 
 // Set from pointer value
-void ReturnValue::set(VTypes::DataType ptrtype, void *ptr)
+void ReturnValue::set(VTypes::DataType ptrtype, void *ptr, void *refitem)
 {
 	clearArrayData();
 	type_ = ptrtype;
 	valueP_ = ptr;
+	valueRefitem_ = refitem;
 	arraySize_ = -1;
 }
 
@@ -243,6 +252,7 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	clearArrayData();
 	type_ = type;
 	arraySize_ = arraysize;
+	valueRefitem_ = NULL;
 	int i;
 	if (type_ == VTypes::IntegerData)
 	{
@@ -520,6 +530,12 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 	}
 	success = FALSE;
 	return NULL;
+}
+
+// Return pointer refitem data
+void *ReturnValue::refPointer()
+{
+	return valueRefitem_;
 }
 
 // Return integer element value
@@ -832,29 +848,94 @@ bool ReturnValue::increase()
 			break;
 		case (VTypes::AtomData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Atom*) valueP_)->next;
 			break;
 		case (VTypes::BondData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Bond*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Forcefield*) valueP_)->next;
+			break;
+		case (VTypes::ForcefieldAtomData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ForcefieldAtom*) valueP_)->next;
+			break;
+		case (VTypes::ForcefieldBoundData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ForcefieldBound*) valueP_)->next;
 			break;
 		case (VTypes::GridData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Grid*) valueP_)->next;
 			break;
 		case (VTypes::ModelData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Model*) valueP_)->next;
 			break;
 		case (VTypes::PatternData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Pattern*) valueP_)->next;
 			break;
-		// TGAY What about ForcefieldAtomData, ForcefieldBoundData, PatternBoundData
+		case (VTypes::PatternBoundData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((PatternBound*) valueP_)->next;
+			break;
 		default:
 			printf("Internal Error: No 'increase' has been defined for %s.\n", VTypes::aDataType(type_));
 			break;

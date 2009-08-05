@@ -32,4 +32,5 @@ for (m=1; m<=p.nmols; ++m)
 	i += p.nmolatoms;
 }
 foldmolecules();
+savemodel("dlpoly", "gaswater.CONFIG");
 saveexpression("dlpoly", "gaswater.FIELD");

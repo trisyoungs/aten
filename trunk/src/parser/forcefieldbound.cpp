@@ -21,9 +21,7 @@
 
 #include "parser/forcefieldbound.h"
 #include "parser/stepnode.h"
-#include "base/atom.h"
-#include "base/constants.h"
-#include "base/elements.h"
+#include "classes/forcefieldbound.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,10 +51,12 @@ ForcefieldBoundVariable::~ForcefieldBoundVariable()
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
 	{ "data",	VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
-        { "form",	VTypes::StringData,	0, FALSE },
-        { "natoms",	VTypes::IntegerData,	0, TRUE },
-        { "type",	VTypes::StringData,	0, FALSE },
-        { "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE }
+	{ "escale",	VTypes::DoubleData,	0, FALSE },
+	{ "form",	VTypes::StringData,	0, FALSE },
+	{ "natoms",	VTypes::IntegerData,	0, TRUE },
+	{ "type",	VTypes::StringData,	0, FALSE },
+	{ "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE },
+	{ "vscale",	VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
@@ -157,6 +157,39 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 	}
 	if (result) switch (acc)
 	{
+		case (ForcefieldBoundVariable::Data):
+			if (hasArrayIndex) rv.set(ptr->parameter(arrayIndex-1));
+			else rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
+			break;
+		case (ForcefieldBoundVariable::EScale):
+			if (ptr->type() != ForcefieldBound::TorsionInteraction)
+			{
+				msg.print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				result = FALSE;
+			}
+			else rv.set(ptr->parameter(TF_ESCALE));
+			break;
+		case (ForcefieldBoundVariable::Form):
+			rv.set(ptr->formText());
+			break;
+		case (ForcefieldBoundVariable::NAtoms):
+			rv.set(ForcefieldBound::boundTypeNAtoms(ptr->type()));
+			break;
+		case (ForcefieldBoundVariable::Type):
+			rv.set(ForcefieldBound::boundType(ptr->type()));
+			break;
+		case (ForcefieldBoundVariable::TypeNames):
+			if (hasArrayIndex) rv.set(ptr->typeName(arrayIndex-1));
+			else rv.setArray(VTypes::StringData, ptr->typeNames(), MAXFFPARAMDATA);
+			break;
+		case (ForcefieldBoundVariable::VScale):
+			if (ptr->type() != ForcefieldBound::TorsionInteraction)
+			{
+				msg.print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
+				result = FALSE;
+			}
+			else rv.set(ptr->parameter(TF_VSCALE));
+			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldBoundVariable.\n", accessorData[i].name);
 			result = FALSE;

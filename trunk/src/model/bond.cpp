@@ -418,7 +418,7 @@ void Model::patternCalculateBonding()
 	double tolerance = prefs.bondTolerance();
 	double radius_i, radsum;
 	clearBonding();
-	msg.print("Calculating bonds within patterns (tolerance = %5.2f)...",tolerance);
+	msg.print("Calculating bonds within patterns (tolerance = %5.2f)...", tolerance);
 	// For all the pattern nodes currently defined, bond within molecules
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{

@@ -56,7 +56,7 @@ class ReturnValue
 	double valueD_;
 	Dnchar valueS_;
 	Vec3<double> valueV_;
-	void *valueP_;
+	void *valueP_, *valueRefitem_;
 	// Array members for returns
 	int *arrayI_;
 	double *arrayD_;
@@ -94,7 +94,7 @@ class ReturnValue
 	// Set from single vector data
 	void set(int id, double xyz);
 	// Set from pointer value
-	void set(VTypes::DataType type, void *ptr);
+	void set(VTypes::DataType type, void *ptr, void *refitem = NULL);
 	// Set from standard array
 	void setArray(VTypes::DataType type, void *source, int arraysize);
 	// Set array element from integer value
@@ -123,6 +123,8 @@ class ReturnValue
 	Vec3<double> asVector(bool &success);
 	// Return pointer data
 	void *asPointer(VTypes::DataType type, bool &success);
+	// Return pointer refitem data
+	void *refPointer();
 	// Return integer element value
 	int asInteger(int index, bool &success);
 	// Return real element value

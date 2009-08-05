@@ -52,32 +52,33 @@ ModelVariable::~ModelVariable()
 // Accessor data
 Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "angles",		VTypes::MeasurementData,	-1, TRUE },
-	{ "angleterms",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "atoms",		VTypes::AtomData,		-1, TRUE },
-	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "bonds",		VTypes::BondData,		-1, TRUE },
-	{ "bondterms",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "cell",		VTypes::CellData,		0, FALSE },
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
+	{ "ffangles",		VTypes::ForcefieldBoundData,	-1, TRUE },
+	{ "ffbonds",		VTypes::ForcefieldBoundData,	-1, TRUE },
+	{ "fftorsions",		VTypes::ForcefieldBoundData,	-1, TRUE },
+	{ "fftypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
+	{ "ff",			VTypes::ForcefieldData,		0, FALSE },
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "nangles",		VTypes::IntegerData,		0, TRUE },
-	{ "nangleterms",	VTypes::IntegerData,		0, TRUE },
 	{ "natoms",		VTypes::IntegerData,		0, TRUE },
-	{ "natomtypes",		VTypes::IntegerData,		0, TRUE },
 	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
-	{ "nbondterms",		VTypes::IntegerData,		0, TRUE },
 	{ "ndistances",		VTypes::IntegerData,		0, TRUE },
+	{ "nffangles",		VTypes::IntegerData,		0, TRUE },
+	{ "nffbonds",		VTypes::IntegerData,		0, TRUE },
+	{ "nfftorsions",	VTypes::IntegerData,		0, TRUE },
+	{ "nfftypes",		VTypes::IntegerData,		0, TRUE },
 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
-	{ "ntorsionterms",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
-	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
-	{ "torsionterms",	VTypes::ForcefieldBoundData,	-1, TRUE }
+	{ "torsions",		VTypes::MeasurementData,	-1, TRUE }
 };
 
 // Function data
@@ -187,15 +188,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::MeasurementData, ptr->angle(arrayIndex-1));
 			break;
-		case (ModelVariable::AngleTerms):
-			if (!hasArrayIndex) rv.set(VTypes::ForcefieldBoundData, ptr->uniqueAngleTerms());
-			else if (arrayIndex > ptr->nUniqueAngleTerms())
-			{
-				msg.print("Angle term array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
-				result = FALSE;
-			}
-			else rv.set(VTypes::ForcefieldBoundData, ptr->uniqueAngleTerm(arrayIndex-1));
-			break;
 		case (ModelVariable::Atoms):
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
@@ -205,15 +197,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
 			break;
-		case (ModelVariable::Atomtypes):
-			if (!hasArrayIndex) rv.set(VTypes::ForcefieldAtomData, ptr->uniqueTypes());
-			else if (arrayIndex > ptr->nUniqueTypes())
-			{
-				msg.print("Unique types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
-				result = FALSE;
-			}
-			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueType(arrayIndex-1));
-			break;
 		case (ModelVariable::Bonds):
 			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
@@ -222,15 +205,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
-			break;
-		case (ModelVariable::BondTerms):
-			if (!hasArrayIndex) rv.set(VTypes::ForcefieldBoundData, ptr->uniqueBondTerms());
-			else if (arrayIndex > ptr->nUniqueBondTerms())
-			{
-				msg.print("Bond term array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
-				result = FALSE;
-			}
-			else rv.set(VTypes::ForcefieldBoundData, ptr->uniqueBondTerm(arrayIndex-1));
 			break;
 		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, ptr->cell());
@@ -243,6 +217,61 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distance(arrayIndex-1));
+			break;
+		case (ModelVariable::FFAngles):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldAngles() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngles()->item, ptr->forcefieldAngles());
+				else rv.set(VTypes::PatternBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldAngles())
+			{
+				msg.print("Forcefield angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
+			break;
+		case (ModelVariable::FFBonds):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldBonds() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBonds()->item, ptr->forcefieldBonds());
+				else rv.set(VTypes::ForcefieldBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldBonds())
+			{
+				msg.print("Forcefield bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
+			break;
+		case (ModelVariable::FFTorsions):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldTorsions() != NULL) rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsions()->item, ptr->forcefieldTorsions());
+				else rv.set(VTypes::ForcefieldBoundData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldTorsions())
+			{
+				msg.print("Forcefield torsion array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
+			break;
+		case (ModelVariable::FFTypes):
+			if (!hasArrayIndex)
+			{
+				if (ptr->forcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldTypes()->item, ptr->forcefieldTypes());
+				else rv.set(VTypes::ForcefieldAtomData, NULL);
+			}
+			else if (arrayIndex > ptr->nForcefieldTypes())
+			{
+				msg.print("Forcefield types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldType(arrayIndex-1)->item, ptr->forcefieldType(arrayIndex-1));
+			break;
+		case (ModelVariable::FField):
+			rv.set(VTypes::ForcefieldData, ptr->forcefield());
 			break;
 		case (ModelVariable::Frame):
 			rv.set(VTypes::ModelData, ptr->currentFrame());
@@ -268,23 +297,26 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
  		case (ModelVariable::NAngles):
 			rv.set(ptr->nAngles());
 			break;
-		case (ModelVariable::NAngleTerms):
-			rv.set(ptr->nUniqueAngleTerms());
-			break;
 		case (ModelVariable::NAtoms):
 			rv.set(ptr->nAtoms());
-			break;
-		case (ModelVariable::NAtomtypes):
-			rv.set(ptr->nUniqueTypes());
 			break;
 		case (ModelVariable::NBonds):
 			rv.set(ptr->nBonds());
 			break;
-		case (ModelVariable::NBondTerms):
-			rv.set(ptr->nUniqueBondTerms());
-			break;
  		case (ModelVariable::NDistances):
 			rv.set(ptr->nDistances());
+			break;
+		case (ModelVariable::NFFAngles):
+			rv.set(ptr->nForcefieldAngles());
+			break;
+		case (ModelVariable::NFFBonds):
+			rv.set(ptr->nForcefieldBonds());
+			break;
+		case (ModelVariable::NFFTorsions):
+			rv.set(ptr->nForcefieldTorsions());
+			break;
+		case (ModelVariable::NFFTypes):
+			rv.set(ptr->nForcefieldTypes());
 			break;
 		case (ModelVariable::NFrames):
 			rv.set(ptr->nFrames());
@@ -297,9 +329,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
  		case (ModelVariable::NTorsions):
 			rv.set(ptr->nTorsions());
-			break;
-		case (ModelVariable::NTorsionTerms):
-			rv.set(ptr->nUniqueTorsionTerms());
 			break;
 		case (ModelVariable::Patterns):
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
@@ -321,15 +350,6 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->torsion(arrayIndex-1));
-			break;
-		case (ModelVariable::TorsionTerms):
-			if (!hasArrayIndex) rv.set(VTypes::ForcefieldBoundData, ptr->uniqueTorsionTerms());
-			else if (arrayIndex > ptr->nUniqueTorsionTerms())
-			{
-				msg.print("Torsion term array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
-				result = FALSE;
-			}
-			else rv.set(VTypes::ForcefieldBoundData, ptr->uniqueTorsionTerm(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);
@@ -411,6 +431,9 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	{
 		case (ModelVariable::Celldata):
 			ptr->setCell( ((Cell*) newvalue.asPointer(VTypes::CellData)) );
+			break;
+		case (ModelVariable::FField):
+			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData) );
 			break;
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
