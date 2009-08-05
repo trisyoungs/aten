@@ -72,6 +72,12 @@ MonteCarlo::MonteCarlo()
 	nCycles_ = 100;
 }
 
+// Destructor
+MonteCarlo::~MonteCarlo()
+{
+	if (acceptanceRatio_ != NULL) delete[] acceptanceRatio_;
+}
+
 // Set maximum stepsize for MC move
 void MonteCarlo::setMaxStep(MonteCarlo::MoveType m, double d)
 {

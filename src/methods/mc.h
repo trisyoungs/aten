@@ -44,8 +44,9 @@ class MonteCarlo
 	// Main Routines
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	MonteCarlo();
+	~MonteCarlo();
 	// Minimise the specified model
 	bool minimise(Model*, double, double);
 	// Run disordered builder

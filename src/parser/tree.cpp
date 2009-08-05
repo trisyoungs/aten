@@ -574,6 +574,7 @@ TreeNode *Tree::addElementConstant(int el)
 	ElementVariable *var;
 	if ((el < 1) || (el > elements().nElements())) var = new ElementVariable(NULL,TRUE);
 	else var = new ElementVariable(&elements().el[el], TRUE);
+	nodes_.own(var);
 	return var;
 }
 

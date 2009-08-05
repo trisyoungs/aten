@@ -82,6 +82,9 @@ int main(int argc, char *argv[])
 			aten.exportModels();
 			break;
 	}
+
+	delete gui.app;
+
 	// Done.
 	return 0;
 }
