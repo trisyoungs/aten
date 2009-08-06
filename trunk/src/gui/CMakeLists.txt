@@ -47,6 +47,7 @@ set(qtproject_SRCS
   prefs_funcs.cpp
   selectactions.cpp
   selectelement_funcs.cpp
+  selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   settings.cpp
   styleactions.cpp
@@ -79,6 +80,7 @@ SET(pro_MOC_HDRS
   position.h
   prefs.h
   selectelement.h
+  selectfilter.h
   selectpattern.h
   transform.h
   tcanvas.uih
@@ -105,6 +107,7 @@ SET(pro_UIS
   position.ui
   prefs.ui
   selectelement.ui
+  selectfilter.ui
   selectpattern.ui
   transform.ui
 )

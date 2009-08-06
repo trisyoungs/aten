@@ -34,6 +34,7 @@ const char *upperCase(const char*);
 const char *lowerCase(const char*);
 const char *beforeChar(const char*, char);
 const char *afterChar(const char*, char);
+const char *afterLastChar(const char*, char);
 const char *beforeStr(const char*, const char*);
 const char *afterStr(const char*, const char*);
 const char *stripTrailing(const char*);

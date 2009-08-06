@@ -26,6 +26,7 @@
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
+#include "gui/selectfilter.h"
 #include "gui/selectpattern.h"
 #include "gui/selectelement.h"
 #include "gui/about.h"
@@ -83,6 +84,7 @@ GuiQt::GuiQt()
 	prefsDialog = NULL;
 	forcefieldEditorDialog = NULL;
 	loadModelDialog = NULL;
+	selectFilterDialog = NULL;
 	selectPatternDialog = NULL;
 	selectElementDialog = NULL;
 	aboutDialog = NULL;
@@ -107,6 +109,7 @@ GuiQt::~GuiQt()
 // 	prefsDialog = NULL;
 // 	forcefieldEditorDialog = NULL;
 // 	loadModelDialog = NULL;
+// 	selectFilterDialog = NULL;
 // 	selectPatternDialog = NULL;
 // 	selectElementDialog = NULL;
 // 	aboutDialog = NULL;
@@ -170,6 +173,7 @@ void GuiQt::run()
 	prefsDialog = new AtenPrefs(mainWindow);
 	forcefieldEditorDialog = new AtenForcefieldEditor(mainWindow);
 	loadModelDialog = new AtenLoadModel(mainWindow);
+	selectFilterDialog = new AtenSelectFilter(mainWindow);
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
 	aboutDialog = new AtenAbout(mainWindow);
@@ -203,6 +207,7 @@ void GuiQt::run()
 	prefsDialog->setModal(TRUE);
 	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
+	selectFilterDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
 // 	atomlistWindow->setModal(TRUE);
@@ -212,6 +217,7 @@ void GuiQt::run()
 	prefsDialog->finaliseUi();
 	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
+	selectFilterDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
 	selectElementDialog->finaliseUi();
 
@@ -223,6 +229,7 @@ void GuiQt::run()
 	prefsDialog->setControls();
 	forcefieldEditorDialog->setControls();
 	loadModelDialog->setControls();
+	selectFilterDialog->setControls();
 	selectPatternDialog->setControls();
 
 	// Show the widgets in the GUI and flag it as existing

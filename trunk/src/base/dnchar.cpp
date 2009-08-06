@@ -365,3 +365,16 @@ bool Dnchar::isNumeric() const
 	return TRUE;
 }
 
+// Return the lowercase conversion of the string
+const char *Dnchar::lower()
+{
+	if (data_ == NULL) return "\0";
+	return lowerCase(data_);
+}
+
+// Return the uppercase conversion of the string
+const char *Dnchar::upper()
+{
+	if (data_ == NULL) return "\0";
+	return upperCase(data_);
+}

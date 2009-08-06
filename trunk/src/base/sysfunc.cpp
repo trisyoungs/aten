@@ -87,6 +87,19 @@ const char *afterChar(const char *s, char delim)
 	return result;
 }
 
+// Get characters after last occurrence of designated character
+const char *afterLastChar(const char *s, char delim)
+{
+	static char result[256];
+	int count;
+	const char *c, *d = '\0';
+	for (c = &s[0]; *c != '\0'; ++c) if (*c == delim) d = c;
+	count = 0;
+	for (c = ++d; *c != '\0'; ++c) result[count++] = *c;
+	result[count] = '\0';
+	return result;
+}
+
 // Get characters before first occurrence of designated string
 const char *beforeStr(const char *s, const char *search)
 {

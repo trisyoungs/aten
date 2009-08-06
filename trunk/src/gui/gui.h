@@ -31,6 +31,7 @@ class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
 class AtenLoadModel;
+class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
 class AtenAtomlist;
@@ -159,6 +160,8 @@ class GuiQt
 	AtenForcefieldEditor *forcefieldEditorDialog;
 	// Load model dialog
 	AtenLoadModel *loadModelDialog;
+	// Select filter dialog
+	AtenSelectFilter *selectFilterDialog;
 	// Select pattern dialog
 	AtenSelectPattern *selectPatternDialog;
 	// Select element dialog

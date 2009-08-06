@@ -297,3 +297,14 @@ Refitem<Tree,int> *Aten::filters(FilterData::FilterType ft) const
 	return filters_[ft].first();
 }
 
+	// Return number of filters of a given type
+int Aten::nFilters(FilterData::FilterType ft) const
+{
+	return filters_[ft].nItems();
+}
+
+// Return pointer to list of filters of given type
+Reflist<Tree,int> *Aten::filterList(FilterData::FilterType ft)
+{
+	return &filters_[ft];
+}
