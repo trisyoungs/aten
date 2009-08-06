@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
+#include "gui/selectfilter.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
@@ -62,17 +63,27 @@ bool AtenForm::runSaveModelDialog()
 {
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
-	Tree *filter;
+	Tree *filter = NULL;
 	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters, &selFilter);
+	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		filter = aten.findFilterByDescription(FilterData::ModelExport, qPrintable(selFilter));
-		if (filter == NULL) printf("CRITICAL: runSaveModelDialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter));
+		// Grab file extension and search for it in our current lists...
+		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+		printf("Extension = [%s]\n", ext.get());
+		// Does this extension uniquely identify a specific filter?
+		Reflist<Tree,int> filters;
+		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+		{
+			if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+		}
+		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+		if (filters.nItems() == 1) filter = filters.first()->item;
+		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter(&filters, aten.filterList(FilterData::ModelExport));
+		if (filter != NULL) printf("Selected filter is '%s', '%s'\n", filter->filter.name(), filter->filter.extensionList());
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
 		return (saveModelFilter == NULL ? FALSE : TRUE);

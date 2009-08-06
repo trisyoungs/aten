@@ -97,6 +97,10 @@ class Dnchar
 	bool asBool() const;
 	// Returns true if the string contains a number
 	bool isNumeric() const;
+	// Return the lowercase conversion of the string
+	const char *lower();
+	// Return the uppercase conversion of the string
+	const char *upper();
 };
 
 #endif

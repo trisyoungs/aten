@@ -130,6 +130,10 @@ class Aten
 	Tree *findFilterByDescription(FilterData::FilterType ft, const char *description) const;
 	// Return first filter in list (of a given type)
 	Refitem<Tree,int> *filters(FilterData::FilterType ft) const;
+	// Return number of filters of a given type
+	int nFilters(FilterData::FilterType ft) const;
+	// Return pointer to list of filters of given type
+	Reflist<Tree,int> *filterList(FilterData::FilterType ft);
 
 
 	/*

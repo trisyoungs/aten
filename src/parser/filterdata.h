@@ -116,6 +116,8 @@ class FilterData
 	const char *nickname();
 	// Return the first file extension
 	Dnchar *extensions();
+	// Return a comma-separated list of file extensions
+	const char *extensionList();
 	// Return the first alias
 	Dnchar *exactNames();
 	// Return the number of identifying strings defined
@@ -126,6 +128,8 @@ class FilterData
 	Dnchar *searchStrings();
 	// Return whether filter has an extension
 	bool hasExtension();
+	// Return whether the supplied text matches any of the filter's possible extensions
+	bool doesExtensionMatch(const char *ext);
 	// Return the partner filter
 	Tree *partner();
 	// Return the file filter

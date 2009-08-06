@@ -91,6 +91,18 @@ Dnchar *FilterData::extensions()
 	return extensions_.first();
 }
 
+// Return a comma-separated list of file extensions
+const char *FilterData::extensionList()
+{
+	static Dnchar extlist(128);
+	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next)
+	{
+		extlist.cat(d->get());
+		if (d->next != NULL) extlist.cat(", ");
+	}
+	return extlist.get();
+}
+
 // Return the first alias
 Dnchar *FilterData::exactNames()
 {
@@ -113,6 +125,14 @@ Dnchar *FilterData::searchStrings()
 bool FilterData::hasExtension()
 {
 	return hasExtension_;
+}
+
+// Return whether the supplied text matches any of the filter's possible extensions
+bool FilterData::doesExtensionMatch(const char *ext)
+{
+	Dnchar lcaseext = lowerCase(ext);
+	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcaseext.get()) == 0) return TRUE;
+	return FALSE;
 }
 
 // Set the partner filter
