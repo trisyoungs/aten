@@ -1,5 +1,5 @@
 /*
-	*** Qt select pattern dialog declaration
+	*** Qt select filter dialog declaration
 	*** src/gui/selectfilter.h
 	Copyright T. Youngs 2007-2009
 
@@ -28,7 +28,7 @@
 // Forward Declarations
 class Tree;
 
-// Select Pattern Dialog
+// Select Filter Dialog
 class AtenSelectFilter : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
@@ -57,8 +57,8 @@ class AtenSelectFilter : public QDialog
 	// Update list
 	void update();
 	public:
-	// Select a pattern from the specified model
-	Tree *selectFilter(Reflist<Tree,int> *partial, Reflist<Tree,int> *full);
+	// Select a filter from the list(s) provided
+	Tree *selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full);
 
 	/*
 	// Widgets

@@ -81,12 +81,19 @@ void AtenSelectFilter::update()
 }
 
 // Select a pattern from the specified model
-Tree *AtenSelectFilter::selectFilter(Reflist<Tree,int> *partial, Reflist<Tree,int> *full)
+Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full)
 {
 	// Set source structures
 	partialList_ = partial;
 	fullList_ = full;
 
+	// Change textlabel
+	ui.TextLabel->setText(text);
+
+	// Check and disable ShowAllCheck if no partial matches were found
+	ui.ShowAllCheck->setChecked(partial == NULL);
+	ui.ShowAllCheck->setEnabled(partial != NULL);
+	
 	update();
 
 	// Execute the dialog and check on the result

@@ -95,6 +95,7 @@ Dnchar *FilterData::extensions()
 const char *FilterData::extensionList()
 {
 	static Dnchar extlist(128);
+	extlist.clear();
 	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next)
 	{
 		extlist.cat(d->get());

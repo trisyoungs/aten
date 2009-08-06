@@ -72,7 +72,6 @@ bool AtenForm::runSaveModelDialog()
 		currentDirectory_.setPath(filename);
 		// Grab file extension and search for it in our current lists...
 		Dnchar ext = afterLastChar(qPrintable(filename), '.');
-		printf("Extension = [%s]\n", ext.get());
 		// Does this extension uniquely identify a specific filter?
 		Reflist<Tree,int> filters;
 		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
@@ -82,10 +81,11 @@ bool AtenForm::runSaveModelDialog()
 		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
 		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 		if (filters.nItems() == 1) filter = filters.first()->item;
-		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter(&filters, aten.filterList(FilterData::ModelExport));
-		if (filter != NULL) printf("Selected filter is '%s', '%s'\n", filter->filter.name(), filter->filter.extensionList());
+		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
+		else filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport));
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
+		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", saveModelFilename.get());
 		return (saveModelFilter == NULL ? FALSE : TRUE);
 	}
 	else return FALSE;
@@ -100,8 +100,12 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m = aten.currentModel()->renderSource();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
-		saveModelFilter->executeWrite(saveModelFilename.get());
-		m->changeLog.updateSavePoint();
+		if (saveModelFilter->executeWrite(saveModelFilename.get()))
+		{
+			m->changeLog.updateSavePoint();
+			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
+		}
+		else msg.print("Failed to save model '%s'.\n", m->name());
 		gui.modelChanged(FALSE,FALSE,FALSE);
 	}
 }
@@ -123,8 +127,12 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		{
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
-			saveModelFilter->executeWrite(saveModelFilename.get());
-			m->changeLog.updateSavePoint();
+			if (saveModelFilter->executeWrite(saveModelFilename.get()))
+			{
+				m->changeLog.updateSavePoint();
+				msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
+			}
+			else msg.print("Failed to save model '%s'.\n", m->name());
 			//refreshModelTabs();
 		}
 	}
@@ -202,16 +210,22 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	// Get filename from user
 	GuiQt::BitmapFormat bf;
 	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters, &selFilter);
+	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		bf = GuiQt::bitmapFormatFromFilter(qPrintable(selFilter));
-		// Save the image
-		gui.saveImage(qPrintable(filename), bf, width, height, -1);
+		// Grab filename extension and search for it
+		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+		bf = GuiQt::bitmapFormat(ext.get());
+		// If we didn't recognise the extension, complain and quit
+		if (bf == GuiQt::nBitmapFormats) 
+		{
+			char text[512];
+			sprintf(text, "Bitmap format not recognised - '%s'.\n", ext.get());
+			int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
+		}
+		else gui.saveImage(qPrintable(filename), bf, width, height, -1);
 	}
 }
 
@@ -247,18 +261,30 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
-	Tree *t;
+	Tree *filter;
 	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters, &selFilter);
+	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
-		// Find the filter that was selected
-		t = aten.findFilterByDescription(FilterData::ExpressionExport, qPrintable(selFilter));
-		if (t == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(selFilter)); 
-		else CommandNode::run(Command::SaveExpression, "cc", t->filter.nickname(), qPrintable(filename));
+		// Grab file extension and search for it in our current lists...
+		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+		// Does this extension uniquely identify a specific filter?
+		Reflist<Tree,int> filters;
+		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+		{
+			if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+		}
+		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+		if (filters.nItems() == 1) filter = filters.first()->item;
+		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+		else filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport));
+		saveModelFilter = filter;
+		saveModelFilename = qPrintable(filename);
+		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
+		else CommandNode::run(Command::SaveExpression, "cc", filter->filter.nickname(), qPrintable(filename));
 	}
 }
 
