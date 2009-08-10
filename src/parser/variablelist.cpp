@@ -34,6 +34,7 @@
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
+#include "parser/measurement.h"
 #include "parser/model.h"
 #include "parser/pattern.h"
 #include "parser/patternbound.h"
@@ -115,6 +116,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::GridData):
 			v = (Variable*) new GridVariable(NULL, FALSE);
 			break;
+		case (VTypes::MeasurementData):
+			v = (Variable*) new MeasurementVariable(NULL, FALSE);
+			break;
 		case (VTypes::ModelData):
 			v = (Variable*) new ModelVariable(NULL, FALSE);
 			break;
@@ -178,6 +182,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::GridData):
 			var = new GridArrayVariable(sizeexpr);
+			break;
+		case (VTypes::MeasurementData):
+			var = new MeasurementArrayVariable(sizeexpr);
 			break;
 		case (VTypes::ModelData):
 			var = new ModelArrayVariable(sizeexpr);
