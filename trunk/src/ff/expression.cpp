@@ -349,7 +349,7 @@ bool Pattern::fillExpression()
 		else if (itorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 	}
-	delete bonding;
+	delete[] bonding;
 	// Print out a warning if the expression is incomplete.
 	if (incomplete_) msg.print("!!! Expression is incomplete.\n");
 	msg.exit("Pattern::fillExpression");

@@ -15,7 +15,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 	# Read line
 	while (!eof())
 	{
-		readlinef("%-6s %r",keywd,line);
+		readlinef("%s %r",keywd,line);
 		if (keywd == "atom")
 		{
 			readvar(line,i,e,rx,ry,rz,q);
@@ -95,4 +95,5 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	if (m.cell.type != "none") writelinef("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
 
 	// Measurements
+	for (measurement g = m.distances; g; ++g) writelinef("geometry 2 %i %i\n", g.i.id, g.j.id);
 }
