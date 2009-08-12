@@ -277,6 +277,7 @@ Prefs::Prefs()
 	manualSwapBuffers_ = FALSE;
 	maxUndoLevels_ = -1;
 	commandHistoryLimit_ = 25;
+	loadQtSettings_ = TRUE;
 }
 
 // Load user preferences file
@@ -1360,6 +1361,18 @@ void Prefs::setCommandHistoryLimit(int i)
 int Prefs::commandHistoryLimit()
 {
 	return commandHistoryLimit_;
+}
+
+// Return whether to load Qt window/toolbar settings on startup
+bool Prefs::loadQtSettings()
+{
+	return loadQtSettings_;
+}
+
+// Whether to load Qt window/toolbar settings on startup
+void Prefs::setLoadQtSettings(bool b)
+{
+	loadQtSettings_ = b;
 }
 
 /*
