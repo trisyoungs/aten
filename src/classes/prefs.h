@@ -518,6 +518,8 @@ class Prefs
 	Dnchar commonElements_;
 	// Maximum number of entries to remember in command toolbar autocomplete
 	int commandHistoryLimit_;
+	// Whether to load Qt window/toolbar settings on startup
+	bool loadQtSettings_;
 
 	public:
 	// Set the model update frequency
@@ -558,6 +560,11 @@ class Prefs
 	void setCommandHistoryLimit(int i);
 	// Return maximum number of entries to remember in command toolbar autocomplete
 	int commandHistoryLimit();
+	// Return whether to load Qt window/toolbar settings on startup
+	bool loadQtSettings();
+	// Whether to load Qt window/toolbar settings on startup
+	void setLoadQtSettings(bool b);
+
 
 
 	/*

@@ -88,6 +88,8 @@ Cli cliSwitches[] = {
 		"",		"Prevent folding of atoms in periodic systems" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::NoQtSettingsSwitch,	'\0',"noqtsettings",	0,
+		"",		"Don't load in Qt window/toolbar settings on startup" },
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",		"Force generation of symmetry-equivalent atoms from spacegroup information" },
 	{ Cli::QuietSwitch,		'q',"quiet",		0,
@@ -487,6 +489,10 @@ int Aten::parseCli(int argc, char *argv[])
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
 					prefs.setPackOnLoad(Prefs::SwitchOff);
+					break;
+				// Don't load Qt window/toolbar settings on startup
+				case (Cli::NoQtSettingsSwitch):
+					prefs.setLoadQtSettings(FALSE);
 					break;
 				// Prohibit packing (application of symmetry operators) on load
 				case (Cli::PackSwitch):

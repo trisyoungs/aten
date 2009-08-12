@@ -38,7 +38,7 @@ void AtenForm::loadSettings()
 		if (settings_.contains(key)) addRecent(qPrintable(settings_.value(key).toString()));
 	}
 	// Toolbar visibility / position
-	if (settings_.contains("MainWinPositions")) gui.mainWindow->restoreState( settings_.value("MainWinPositions").toByteArray());
+	if (prefs.loadQtSettings() && settings_.contains("MainWinPositions")) gui.mainWindow->restoreState( settings_.value("MainWinPositions").toByteArray());
 	// Command toolbar history
 	QStringList history;
 	for (n=0; n < prefs.commandHistoryLimit(); ++n)
