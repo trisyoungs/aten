@@ -31,6 +31,7 @@ AtenSelectFilter::AtenSelectFilter(QWidget *parent) : QDialog(parent)
 	partialList_ = NULL;
 	fullList_ = NULL;
 	selectedFilter_ = NULL;
+	appendExtension_ = TRUE;
 }
 
 // Set controls
@@ -43,6 +44,7 @@ void AtenSelectFilter::finaliseUi()
 {
 }
 
+// Select item in list and finish dialog
 void AtenSelectFilter::on_FilterTable_doubleClicked(const QModelIndex &index)
 {
 	int row = index.row();
@@ -81,7 +83,7 @@ void AtenSelectFilter::update()
 }
 
 // Select a pattern from the specified model
-Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full)
+Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showextcheck)
 {
 	// Set source structures
 	partialList_ = partial;
@@ -93,9 +95,21 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 	// Check and disable ShowAllCheck if no partial matches were found
 	ui.ShowAllCheck->setChecked(partial == NULL);
 	ui.ShowAllCheck->setEnabled(partial != NULL);
+
+	// Show/hide 'Append Extension' checkbox
+	ui.AppendExtensionCheck->setVisible(showextcheck);
 	
 	update();
 
 	// Execute the dialog and check on the result
-	return (exec() == 1 ? selectedFilter_ : NULL);
+	int result = exec();
+	appendExtension_ = ui.AppendExtensionCheck->isChecked();
+	return (result == 1 ? selectedFilter_ : NULL);
+}
+
+
+// Whether to append extension to filename
+bool AtenSelectFilter::appendExtension()
+{
+	return appendExtension_;
 }
