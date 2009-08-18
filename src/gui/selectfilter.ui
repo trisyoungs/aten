@@ -93,6 +93,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="AppendExtensionCheck" >
+     <property name="text" >
+      <string>Append extension automatically</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="maximumSize" >
       <size>

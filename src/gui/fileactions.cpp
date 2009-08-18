@@ -82,7 +82,14 @@ bool AtenForm::runSaveModelDialog()
 		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 		if (filters.nItems() == 1) filter = filters.first()->item;
 		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
-		else filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport));
+		else
+		{
+			filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
+			if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+			{
+				if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+			}
+		}
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", saveModelFilename.get());
@@ -280,7 +287,14 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 		if (filters.nItems() == 1) filter = filters.first()->item;
 		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
-		else filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport));
+		else
+		{
+			filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
+			if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+			{
+				if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+			}
+		}
 		saveModelFilter = filter;
 		saveModelFilename = qPrintable(filename);
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));

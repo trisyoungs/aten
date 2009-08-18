@@ -49,6 +49,8 @@ class AtenSelectFilter : public QDialog
 	Reflist<Tree,int> *partialList_, *fullList_;
 	// Selected filter
 	Tree *selectedFilter_;
+	// Whether to append extension to filename automatically
+	bool appendExtension_;
 
 	/*
 	// Methods
@@ -58,7 +60,9 @@ class AtenSelectFilter : public QDialog
 	void update();
 	public:
 	// Select a filter from the list(s) provided
-	Tree *selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full);
+	Tree *selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showExtCheck = FALSE);
+	// Whether to append extension to filename
+	bool appendExtension();
 
 	/*
 	// Widgets
