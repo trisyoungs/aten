@@ -1,0 +1,96 @@
+# Tripos (Sybyl) Mol2 filter (for v1.2+)
+# Created:	 12/04/2009
+# Last modified: 12/04/2009
+# ChangeLog:
+
+filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
+{
+	# Variable declaration
+	int n,natoms,nbonds,id,ii,jj,spgrp,setting;
+	string tripos,keywd,e,bondtype,title,discard;
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma;
+
+	# Read in lines, looking for the sections we're interested in.
+	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
+	# Read a line and parse it into '@<TRIPOS>' and keyword parts
+	while (!eof())
+	{
+		readlinef("%9s%s",tripos,keywd);
+		if (keywd == "MOLECULE")
+		{
+			# Molecule information
+			getline(title);
+			newmodel(title);
+			readline(natoms,nbonds);
+			# Skip the next four lines, which are type of molecule, charges used, and user comment
+			skipline(4);
+		}
+		else if (keywd == "ATOM")
+		{
+			for (n=0; n<natoms; ++n)
+			{
+				readline(id,e,rx,ry,rz);
+				newatom(e,rx,ry,rz);
+			}
+		}
+		else if (keywd == "BOND")
+		{
+			for (n=0; n<nbonds; ++n)
+			{
+				readline(discard,ii,jj,bondtype);
+				newbond(ii,jj,bondtype);
+			}
+		}
+		else if (keywd == "CRYSIN")
+		{
+			# Crystal cell information
+			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
+			readline(ca,cb,cc,alpha,beta,gamma,spgrp,setting);
+			cell(ca,cb,cc,alpha,beta,gamma);
+			spacegroup(spgrp);
+		}
+	}
+
+	# Perform post-load operations
+	pack();
+	fold();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
+{
+	# Variables
+	atom i;
+	bond b;
+	int n;
+	model m = aten.frame;
+
+	# Write title section
+	writeline("@<TRIPOS>MOLECULE");
+	writeline(m.name);
+	writelinef("%i   %i\n", m.natoms, m.nbonds);
+	writeline("SMALL");
+	writeline("NO_CHARGES");
+	writeline("Coordinates churned out by Aten");
+	writeline("");
+	
+	# Write atoms section
+	writeline("@<TRIPOS>ATOM");
+	for (i = m.atoms; i != 0; ++i) writelinef("%6i  %5s  %10.5f  %10.5f  %10.5f\n",i.id,i.symbol,i.rx,i.ry,i.rz);
+
+	# Write bonds section
+	if (m.nbonds > 0)
+	{
+		writeline("@<TRIPOS>BOND");
+		n = 0;
+		for (b=m.bonds; b != 0; ++b) writelinef("%5i  %5i  %5i  %s\n", ++n, b.i.id, b.j.id, b.type);
+	}
+
+	# Write cell section (if the model has one)
+	if (m.cell.type <> "none")
+	{
+		writeline("@<TRIPOS>CRYSIN");
+		writeline(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgid,0);
+	}
+}
+

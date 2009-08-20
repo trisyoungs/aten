@@ -1,0 +1,22 @@
+General To-Do list:
+	- Molecular dynamics
+	- Calculate average molecule geometry (analyse)
+	- Add CG (needs testing) / simplex / other minimisers
+	- EPS export
+
+Forcefield To-Do list:
+	- UFF - oxidation state, torsions
+	- GAFF
+	- Tripos 5.2
+	- OPLS (types)
+
+Filters To-Do list:
+	- EPSR Ato import / export?
+
+General Qt To-Do list:
+	- Forcefield edit window
+	- Better editability in the atomlist stack page
+
+Optimisation To-Do list:
+	- Hemispherical Ewald summmation
+	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
