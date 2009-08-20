@@ -108,18 +108,25 @@ void Canvas::endGl()
 void Canvas::checkGlError()
 {
 	// Do GL error check
-	if (msg.isOutputActive(Messenger::GL)) switch (glGetError())
+	if (msg.isOutputActive(Messenger::GL))
 	{
-		case (GL_INVALID_ENUM): msg.print(Messenger::GL, "GLenum argument out of range\n"); break;
-		case (GL_INVALID_VALUE): msg.print(Messenger::GL, "Numeric argument out of range\n"); break;
-		case (GL_INVALID_OPERATION): msg.print(Messenger::GL, "Operation illegal in current state\n"); break;
-		case (GL_STACK_OVERFLOW): msg.print(Messenger::GL, "Command would cause a stack overflow\n"); break;
-		case (GL_STACK_UNDERFLOW): msg.print(Messenger::GL, "Command would cause a stack underflow\n"); break;
-		case (GL_OUT_OF_MEMORY): msg.print(Messenger::GL, "Not enough memory left to execute command\n"); break;
-		case (GL_NO_ERROR): msg.print(Messenger::GL, "No GL error\n"); break;
-		default:
-			msg.print(Messenger::GL, "Unknown GL error?\n");
-			break;
+		GLenum glerr;
+		do
+		{
+			switch (glGetError())
+			{
+				case (GL_INVALID_ENUM): msg.print(Messenger::GL, "GLenum argument out of range\n"); break;
+				case (GL_INVALID_VALUE): msg.print(Messenger::GL, "Numeric argument out of range\n"); break;
+				case (GL_INVALID_OPERATION): msg.print(Messenger::GL, "Operation illegal in current state\n"); break;
+				case (GL_STACK_OVERFLOW): msg.print(Messenger::GL, "Command would cause a stack overflow\n"); break;
+				case (GL_STACK_UNDERFLOW): msg.print(Messenger::GL, "Command would cause a stack underflow\n"); break;
+				case (GL_OUT_OF_MEMORY): msg.print(Messenger::GL, "Not enough memory left to execute command\n"); break;
+				case (GL_NO_ERROR): msg.print(Messenger::GL, "No GL error\n"); break;
+				default:
+					msg.print(Messenger::GL, "Unknown GL error?\n");
+					break;
+			}
+		} while (glerr != GL_NO_ERROR);
 	}
 }
 

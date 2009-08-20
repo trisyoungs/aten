@@ -29,19 +29,25 @@ void Canvas::renderScene(Model *source)
 	static GLdouble rotmat[16], cammat[16];
 	static GLdouble camrot;
 
+	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
+
 	// If the canvas is stil restricted, don't draw anything
 	if (noDraw_)
 	{
 		msg.exit("Canvas::renderScene");
+		msg.print(Messenger::GL, " --> RENDERING END (NODRAW)\n");
 		return;
 	}
+	checkGlError();
 
 	// Begin the GL commands
 	if (!beginGl())
 	{
 		msg.exit("Canvas::renderScene");
+		msg.print(Messenger::GL, " --> RENDERING END (BAD BEGIN)\n");
 		return;
 	}
+	checkGlError();
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
 	if ((source != displayModel_) || (source == NULL)) renderPoint_ = -1;
@@ -248,6 +254,9 @@ void Canvas::renderScene(Model *source)
 
 	//glFlush();
 	endGl();
+	checkGlError();
+
+	msg.print(Messenger::GL, " --> RENDERING END\n");
 
 	msg.exit("Canvas::renderScene");
 }
