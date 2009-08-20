@@ -236,9 +236,6 @@ void GuiQt::run()
 	mainWindow->show();
 	doesExist_ = TRUE;
 
-	// Make first loaded model the current one
-	aten.setCurrentModel(aten.models());
-
 	// Refresh the necessary windows
 	gridsWindow->refresh();
 	forcefieldsWindow->refresh();
@@ -250,14 +247,18 @@ void GuiQt::run()
 	gui.mainView.enableDrawing();
 
 	// Add loaded models to tabbar (and reset the view while we're here)
-	int tabid;
+	// Must remember the current model, since adding the tabs will change it (in the currentChanged callback)
+	Model *currentm = aten.currentModel();
+	int tabid, currenttab;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+		if (m == currentm) currenttab = tabid;
 		if (!prefs.keepView()) m->resetView();
 		m->calculateViewMatrix();
 		//m->projectAll();
 	}
+	mainWindow->ui.ModelTabs->setCurrentIndex(currenttab);
 
 	gui.mainView.postRedisplay();
 

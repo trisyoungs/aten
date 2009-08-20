@@ -74,7 +74,7 @@ void TCanvas::paintGL()
 	if (canvas_ != NULL)
 	{
 		// Note: An internet source suggests that the QPainter documentation is incomplete, and that
-		// all OpenGL calls should be made after the QPainter is constructed, and befor ethe QPainter
+		// all OpenGL calls should be made after the QPainter is constructed, and befor the QPainter
 		// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 		// so here it is done in the 'wrong' order.
 

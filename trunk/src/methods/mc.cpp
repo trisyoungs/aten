@@ -364,7 +364,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	*/
         // First, create expression for the current model and assign charges
 	msg.print("Creating expression for target model...\n");
-        if (!destmodel->createExpression())
+        if (!destmodel->createExpression(TRUE))
 	{
 		msg.exit("MonteCarlo::disorder");
 		return FALSE;
@@ -381,11 +381,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 	{
 		// Check that this model is a required component
 		if (c->nRequested() < 0) continue;
-		if (c->cell()->type() != Cell::NoCell) continue;
+		if (c == destmodel) continue;
+		// Warn if this model is periodic
+		if (c->cell()->type() != Cell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
 		// Add this model to the component reflist
 		components.add(c);
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
-		if (!c->createExpression())
+		if (!c->createExpression(TRUE))
 		{
 			msg.print("Failed to create expression for component model '%s'.\n", c->name());
 			msg.exit("MonteCarlo::disorder");
@@ -408,13 +410,17 @@ bool MonteCarlo::disorder(Model *destmodel)
 		c = ri->item;
 		// Copy the model and paste it 'nrequested' times into destmodel
 		clip.copyAll(c);
-		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
-		// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
-		p = destmodel->addPattern(c->nRequested(), c->nAtoms(), c->name());
-		p->setNExpectedMolecules(c->nRequested());
-		c->setComponentPattern(p);
-		// Set the forcefield of the new pattern fo that of the source model
-		p->setForcefield(c->forcefield());
+		if (c->nRequested() > 0)
+		{
+			for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
+			// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
+			p = destmodel->addPattern(c->nRequested(), c->nAtoms(), c->name());
+			p->setNExpectedMolecules(c->nRequested());
+			c->setComponentPattern(p);
+			// Set the forcefield of the new pattern fo that of the source model
+			p->setForcefield(c->forcefield());
+		}
+		else c->setComponentPattern(NULL);
         }
 
 	// Create master expression for the new (filled) model
@@ -489,8 +495,8 @@ bool MonteCarlo::disorder(Model *destmodel)
 			if (!gui.progressUpdate(prog, &etatext)) endearly = TRUE;
 			if (endearly) break;
 
-			// Skip if nRequested == 0, cell.type() != Cell::NoCell, and c == destmodel (to be sure).
-			if ((c->nRequested() == 0) || (c->cell()->type() != Cell::NoCell) || (c == destmodel)) continue;
+			// Skip if nRequested == 0 (or c == destmodel to be sure)
+			if ((c->nRequested() == 0) || (c == destmodel)) continue;
 
 			// Get pointers to variables
 			p = c->componentPattern();
@@ -684,7 +690,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Reset VDW scale ratio and intramolecular status
 	prefs.setVdwScale(1.0);
 	prefs.setCalculateIntra(intrastatus);
-
 	// Remove all hidden atoms in the model (unused molecule space)
 	Atom *i, *j;
 	i = destmodel->atoms();
@@ -698,10 +703,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 		}
 		else i = i->next;
 	}
-
 	// Remove number of molecules inserted from original number requested
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
+		if (c->nRequested() < 1) continue;
 		// Get model pointer
 		c = ri->item;
 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );

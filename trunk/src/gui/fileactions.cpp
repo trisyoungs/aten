@@ -232,7 +232,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 			sprintf(text, "Bitmap format not recognised - '%s'.\n", ext.get());
 			int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
 		}
-		else gui.saveImage(qPrintable(filename), bf, width, height, -1);
+		else if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
 	}
 }
 
@@ -284,6 +284,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 			if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
 		}
 		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+
 		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
 		if (filters.nItems() == 1) filter = filters.first()->item;
 		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
@@ -295,10 +296,11 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 				if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
 			}
 		}
-		saveModelFilter = filter;
-		saveModelFilename = qPrintable(filename);
+
+		Model *m = aten.currentModel()->renderSource();
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
-		else CommandNode::run(Command::SaveExpression, "cc", filter->filter.nickname(), qPrintable(filename));
+		else if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
+		else msg.print("Failed to save expression for model '%s'.\n", m->name());
 	}
 }
 
