@@ -1,0 +1,67 @@
+# XMol-style XYZ coordinates files (for v1.2+)
+# Created:	 25/03/2009
+# Last modified: 10/04/2009
+# ChangeLog:
+
+filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
+{
+	# Variable declaration
+	int natoms,n,m;
+	string e,title;
+	double rx,ry,rz,q;
+	atom i;
+
+	# Read data
+	while (!eof())
+	{
+		readline(natoms);
+		getline(title);
+		newmodel(title);
+		for (n=1; n<=natoms; ++n)
+		{
+			readline(e,rx,ry,rz,q);
+			i = newatom(e, rx, ry, rz);
+			i.q = q;
+		}
+		rebond();
+		finalisemodel();
+	}
+}
+
+filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
+{
+	# Variable declaration
+	model m = aten.frame;
+
+	writeline(m.natoms);
+	writeline(m.name);
+	for (atom i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
+}
+
+#importtrajectory
+#	name "XMol XYZ Coordinates"
+#	extension xyz
+#	glob *xyz
+#	nickname xyz
+#
+#	# Variable declaration
+#	integer n,natoms
+#	character e,title
+#	real rx,ry,rz
+#
+#	# No header in XYZ trajectories, so only check for frames
+#	if $header <> true
+#		readline "$natoms"
+#		getline $title
+#		setname $title
+#		newglyph text
+#		glyphtext $title
+#		glyphdata 1 10 10 0
+#		for $n,1,$natoms
+#			readline "$e $rx $ry $rz"
+#			newatom $e $rx $ry $rz
+#		end
+#		rebond
+#		finaliseframe
+#	end
+#end
