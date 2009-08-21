@@ -1,0 +1,33 @@
+# Hydroxylated alpha-alumina (Example 2 in published paper)
+
+# Create cell and add symmetry-unique atoms
+newmodel("alumina");
+cell(11.854, 2.904, 5.622, 90, 103.83, 90);
+newatomfrac(Al, 0.6595, 0, 0.3165);
+newatomfrac(Al, 0.9166, 0, 0.2073);
+newatomfrac(O, 0.8272, 0, 0.4272);
+newatomfrac(O, 0.495, 0, 0.2526);
+newatomfrac(O, 0.1611, 0, 0.0984);
+
+# Pack and replicate cell
+spacegroup("C2/m");
+pack();
+replicate(0, 0, 0, 6, 21, 3);
+
+# Create 001 surfaces
+adjustcell("c", 20.0);
+rebond();
+
+# Hydroxylate uppermost (in z) aluminium atoms
+# Select, copy, and paste twice, transmuting to O and H
+selectnone();
+selecttype(Al, "nbonds=3");
+for (atom i=aten.model.atoms; i; ++i) if (i.rz < 10.0) deselect(i);
+copy();
+paste(0, 0, 2.0);
+transmute(O);
+paste(0.9422, 0.0, 2.3350);
+transmute(H);
+selectnone();
+
+rebond();
