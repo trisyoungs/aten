@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.3])
+m4_define([ATEN_VERSION],[1.4])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
