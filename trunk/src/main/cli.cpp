@@ -532,7 +532,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
 					zm = ElementMap::zMapType(argtext.get());
-					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
+					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, TRUE);
 					break;
 				// Undefined option
 				default:

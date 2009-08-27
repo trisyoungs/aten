@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 	switch (aten.programMode())
 	{
 		case (Aten::GuiMode):
+			prefs.setZMapType(ElementMap::AutoZMap, FALSE);
 			gui.run();
 			break;
 		case (Aten::BatchExportMode):

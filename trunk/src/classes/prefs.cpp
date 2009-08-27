@@ -240,6 +240,7 @@ Prefs::Prefs()
 	packOnLoad_ = Prefs::SwitchAsFilter;
 	cacheLimit_ = 1024;
 	zMapType_ = ElementMap::AutoZMap;
+	fixedZMapType_ = FALSE;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
 	keepView_ = FALSE;
@@ -1003,6 +1004,15 @@ int Prefs::cacheLimit()
 // Sets the style of element conversion to use
 void Prefs::setZMapType(ElementMap::ZMapType i)
 {
+	if (fixedZMapType_) msg.print("Ignored change of ZMapping type to '%s' since it is currently fixed to '%s'.\n", ElementMap::zMapType(i), ElementMap::zMapType(zMapType_));
+	else zMapType_ = i;
+}
+
+
+// Sets the style of element conversion to use, and the fixed status of the mapping type
+void Prefs::setZMapType(ElementMap::ZMapType i, bool fixed)
+{
+	fixedZMapType_ = fixed;
 	zMapType_ = i;
 }
 

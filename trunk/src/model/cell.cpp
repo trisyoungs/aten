@@ -330,29 +330,34 @@ void Model::pack()
 }
 
 // Scale cell and contents
-bool Model::scaleCell(const Vec3<double> &scale, bool usecog)
+bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 {
 	msg.enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
 	Cell newcell;
 	Mat3<double> newaxes;
-	bool calcenergy;
 	double olde, newe;
 	int n,m;
 	Atom *i;
-	// First, make sure we have a cell and a valid pattern (if using cog
+	// First, make sure we have a cell and a valid pattern (if using cog)
 	if (cell_.type() == Cell::NoCell)
 	{
 		msg.print("No cell to scale.\n");
 		msg.exit("Model::scaleCell");
 		return FALSE;
 	}
-	if (usecog && (!autocreatePatterns(!usecog)))
+	if (usecog)
 	{
-		msg.exit("Model::scaleCell");
-		return FALSE;
+ 		if (!autocreatePatterns(!usecog))
+		{
+			msg.exit("Model::scaleCell");
+			return FALSE;
+		}
 	}
-	calcenergy = createExpression();
+	
+	// Create expression for energy calculation?
+	if (calcenergy) calcenergy = createExpression();
+
 	// Copy original cell axes, expand and save for later
 	newaxes = cell_.axes();
 	newaxes.rowMultiply(scale);
@@ -392,12 +397,14 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog)
 			positionAtom(i,newpos);
 		}
 	}
+
 	// Calculate new energy before leaving...
 	if (calcenergy)
 	{
 		newe = totalEnergy(this);
 		msg.print("Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
 	}
+
 	// Set new cell and update model
 	setCell(newaxes);
 	changeLog.add(Log::Coordinates);
