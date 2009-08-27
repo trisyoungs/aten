@@ -510,7 +510,8 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			break;
 		// Cubic
 		case (Cell::CubicCell):
-			R = r1 - r2;
+			R .set(r1.x,r1.y,r1.z);
+			R -= r2;
 			half = lengths_.x * 0.5;
 			if (R.x < -half) R.x += lengths_.x;
 			else if (R.x > half) R.x -= lengths_.x;
@@ -522,7 +523,8 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			break;
 		// Orthorhombic
 		case (Cell::OrthorhombicCell):
-			R = r1 - r2;
+			R .set(r1.x,r1.y,r1.z);
+			R -= r2;
 			half = lengths_.x * 0.5;
 			if (R.x < -half) R.x += lengths_.x;
 			else if (R.x > half) R.x -= lengths_.x;
@@ -536,7 +538,8 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			break;
 		// Parallelepiped 
 		default:
-			R = r1 - r2;
+			R .set(r1.x,r1.y,r1.z);
+			R -= r2;
 			R *= itranspose_;
 			// TODO Test speed of 'int' version
 			if (R.x < -0.5) R.x += 1.0;
