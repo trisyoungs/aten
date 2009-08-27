@@ -100,8 +100,8 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
-	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::Scale, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
-	else CommandNode::run(Command::ScaleMolecules, "ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
+	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 

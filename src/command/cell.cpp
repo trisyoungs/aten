@@ -213,23 +213,23 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Scale cell and atom positions ('scale <x y z>')
+// Scale cell and atom positions ('scale <x y z> [energy?]')
 bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Scale cell and atoms");
-	obj.rs->scaleCell(c->arg3d(0), FALSE);
+	obj.rs->scaleCell(c->arg3d(0), FALSE, c->hasArg(3) ? c->argb(3) : FALSE);
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
 }
 
-// Scale cell and molecule COGs ('scalemolecules <x y z>')
+// Scale cell and molecule COGs ('scalemolecules <x y z> [energy?]')
 bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Scale cell and molecule centres");
-	bool result = obj.rs->scaleCell(c->arg3d(0), TRUE);
+	bool result = obj.rs->scaleCell(c->arg3d(0), TRUE, c->hasArg(3) ? c->argb(3) : FALSE);
 	obj.rs->endUndoState();
 	rv.reset();
 	return (result ? TRUE : FALSE);

@@ -234,7 +234,7 @@ class Model
 	// Replicate cell to create supercell
 	void replicateCell(const Vec3<double>&, const Vec3<double>&);
 	// Scale cell and contents
-	bool scaleCell(const Vec3<double> &scale, bool usecogs);
+	bool scaleCell(const Vec3<double> &scale, bool usecogs, bool calcenergy);
 	// Rotate cell and contents
 	void rotateCell(int axis, double angle);
 	// Return the density of the model
