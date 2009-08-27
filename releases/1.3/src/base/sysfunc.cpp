@@ -92,10 +92,10 @@ const char *afterLastChar(const char *s, char delim)
 {
 	static char result[256];
 	int count;
-	const char *c, *d = '\0';
+	const char *c, *d = NULL;
 	for (c = &s[0]; *c != '\0'; ++c) if (*c == delim) d = c;
 	count = 0;
-	if (*c != '\0') for (c = ++d; *c != '\0'; ++c) result[count++] = *c;
+	if (d != NULL) for (c = ++d; *c != '\0'; ++c) result[count++] = *c;
 	result[count] = '\0';
 	return result;
 }
