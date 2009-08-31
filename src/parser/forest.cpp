@@ -151,7 +151,8 @@ bool Forest::generateFromFile(const char *filename, const char *name, bool isFil
 {
 	msg.enter("Forest::generateFromFile");
 	filename_ = filename;
-	name_ = name;
+	if (name != NULL) name_ = name;
+	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	bool result = cmdparser.generateFromFile(this, filename);
 // 	print();

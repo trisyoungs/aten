@@ -351,8 +351,16 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		currentDirectory_.setPath(filename);
 		// Create script and model variables within it
 		Forest *ca = aten.scripts.add();
-		if (ca->generateFromFile(qPrintable(filename))) refreshScriptsMenu();
-		else aten.scripts.remove(ca);
+		if (ca->generateFromFile(qPrintable(filename)))
+		{
+			refreshScriptsMenu();
+			msg.print("Script file '%s' loaded succesfully and added to the Scripts menu.\nClick on its menu item to run it.\n", qPrintable(filename));
+		}
+		else
+		{
+			aten.scripts.remove(ca);
+			msg.print("Failed to load script file '%s'.\n", qPrintable(filename));
+		}
 	}
 }
 
@@ -375,6 +383,7 @@ void AtenForm::runScript()
 		ReturnValue result;
 		ri->data->executeAll(result);
 	}
+	gui.modelChanged();
 }
 
 /*
