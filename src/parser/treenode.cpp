@@ -562,7 +562,7 @@ short int TreeNode::argz(int i)
 			break;
 		case (VTypes::StringData):
 			// Attempt conversion of the string first from the users type list
-			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
+			for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),rv.asString()) == 0) break;
 			if (nm == NULL) result = elements().find(rv.asString());
 			else result = nm->data();

@@ -216,6 +216,10 @@ bool Tree::execute(ReturnValue &rv)
 					return FALSE;
 				}
 				break;
+			case (FilterData::ModelExport):
+				// Turn on export type mapping
+				if (aten.typeExportMap.nPairs() != 0) aten.setTypeExportMapping(TRUE);
+				break;
 		}
 	}
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
@@ -242,6 +246,13 @@ bool Tree::execute(ReturnValue &rv)
 	{
 		// For all filters, restore the previous zmapping style
 		prefs.setZMapType(zm);
+		switch (filter.type())
+		{
+			case (FilterData::ModelExport):
+				// Turn off export type mapping
+				aten.setTypeExportMapping(FALSE);
+				break;
+		}
 	}
 	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
 	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());

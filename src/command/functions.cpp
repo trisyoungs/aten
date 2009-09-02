@@ -219,9 +219,11 @@ void Command::initPointers()
         pointers_[AngleDef] = &Command::function_AngleDef;
 	pointers_[BondDef] = &Command::function_BondDef;
 	pointers_[ClearMap] = &Command::function_ClearMap;
+	pointers_[ClearExportMap] = &Command::function_ClearExportMap;
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
 	pointers_[DefaultFF] = &Command::function_DefaultFF;
 	pointers_[Equivalent] = &Command::function_Equivalent;
+	pointers_[ExportMap] = &Command::function_ExportMap;
 	pointers_[FFModel] = &Command::function_FFModel;
 	pointers_[FFPattern] = &Command::function_FFPattern;
 	pointers_[FinaliseFF] = &Command::function_FinaliseFF;

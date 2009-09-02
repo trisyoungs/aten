@@ -56,6 +56,8 @@ Cli cliSwitches[] = {
 		"<var>=<value>","Pass a floating point <value> into Aten with variable name <var>" },
 	{ Cli::ExportSwitch,		'e',"export",		1,
 		"<nickname>",	"Export all loaded models in the nicknamed format" },
+	{ Cli::ExportMapSwitch,		'\0',"exportmap",	1,
+		"<name=element,...>",	"Map forcefield atomtypes to names supplied (for export)" },
 	{ Cli::FilterSwitch,		'\0',"filter",		1,
 		"<filename>",	"Load additional filter data from specified filename" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
@@ -261,7 +263,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Forcefield *ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
-	Namemap<int> *nm;
+	Namemap<int> *nmi;
 	Model *m;
 	Forest *forest, *script, tempforest;
 	ReturnValue rv;
@@ -386,6 +388,17 @@ int Aten::parseCli(int argc, char *argv[])
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
 					else aten.setProgramMode(Aten::BatchExportMode);
 					break;
+				// Set export type remappings
+				case (Cli::ExportMapSwitch):
+					// Get the argument and parse it internally
+					parser.getArgsDelim(argtext.get());
+					if (strchr(parser.argc(n),'=') == NULL)
+					{
+						printf("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+						return -1;
+					}
+					for (n=0; n<parser.nArgs(); n++) typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n), '='));
+					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):
 					if (!aten.openFilter(argtext.get())) return -1;
@@ -460,12 +473,17 @@ int Aten::parseCli(int argc, char *argv[])
 					parser.getArgsDelim(argtext.get());
 					for (n=0; n<parser.nArgs(); n++)
 					{
+						if (strchr(parser.argc(n),'=') == NULL)
+						{
+							printf("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+							return -1;
+						}
 						el = elements().findAlpha(afterChar(parser.argc(n), '='));
 						if (el == 0) printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 						else
 						{
-							nm = typeMap.add();
-							nm->set(beforeChar(parser.argc(n),'='), el);
+							nmi = typeImportMap.add();
+							nmi->set(beforeChar(parser.argc(n),'='), el);
 						}
 					}
 					break;

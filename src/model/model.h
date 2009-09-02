@@ -470,6 +470,8 @@ class Model
 	Forcefield *forcefield_;
 	// Forcefield containing original file type names (if requested)
 	Forcefield *namesForcefield_;
+	// Create a names forcefield containing original atom names for the model
+	void createNamesForcefield();
 
 	public:
 	// Set the model to use the specified forcefield
@@ -480,11 +482,12 @@ class Model
 	bool assignForcefieldCharges();
 	// Reset all model charges to zero
 	void clearCharges();
-	// Set the forcefield containing original atom names for the model
-	void setNamesForcefield(Forcefield *f);
 	// Return the forcefield containing original atom names for the model
 	Forcefield *namesForcefield();
-
+	// Add name to names forcefield
+	ForcefieldAtom *addAtomName(int el, const char *name);
+	// Remove reference to names forcefield
+	void removeNamesForcefield();
 
 	/*
 	// Expression / Typing

@@ -261,9 +261,11 @@ class Command
 		AngleDef,
 		BondDef,
 		ClearMap,
+		ClearExportMap,
 		CreateExpression,
 		DefaultFF,
 		Equivalent,
+		ExportMap,
 		FFModel,
 		FFPattern,
 		FinaliseFF,
@@ -684,9 +686,11 @@ class Command
 	static bool function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);

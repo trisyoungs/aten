@@ -240,13 +240,6 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
 	msg.print(Messenger::Verbose, "Created model '%s'\n", obj.m->name());
-	if (prefs.keepNames())
-	{
-		char s[512];
-		sprintf(s,"Names kept from Model %s",obj.m->name());
-		Forcefield *f = aten.addForcefield(s);
-		obj.m->setNamesForcefield(f);
-	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);

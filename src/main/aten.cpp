@@ -45,8 +45,11 @@ Aten::Aten()
 	// Default program mode
 	programMode_ = Aten::GuiMode;
 
-	// Misc 
+	// Program control / settings (not prefs)
 	sketchElement_ = 6;
+	typeExportMapping_ = FALSE;
+
+	// Misc 
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
 	nFiltersFailed_ = 0;
@@ -90,6 +93,10 @@ Aten::ProgramMode Aten::programMode()
 	return programMode_;
 }
 
+/*
+// Program Control / Settings (not prefs)
+*/
+
 // Set current drawing element
 void Aten::setSketchElement(short int el)
 {
@@ -100,6 +107,26 @@ void Aten::setSketchElement(short int el)
 short int Aten::sketchElement()
 {
 	return sketchElement_;
+}
+
+// Set whether type export conversion is enabled
+void Aten::setTypeExportMapping(bool b)
+{
+	typeExportMapping_ = b;
+}
+
+// Return whether type export conversion is enabled
+bool Aten::typeExportMapping()
+{
+	return typeExportMapping_;
+}
+
+// Convert supplied type name according to export type map
+const char *Aten::typeExportConvert(const char *oldname)
+{
+	if (!typeExportMapping_) return oldname;
+	KVPair *kvp = aten.typeExportMap.search(oldname);
+	return (kvp == NULL ? oldname : kvp->value());
 }
 
 /*

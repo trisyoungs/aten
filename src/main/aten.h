@@ -23,6 +23,7 @@
 #define ATEN_ATEN_H
 
 #include "base/bundle.h"
+#include "base/kvmap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/namemap.h"
@@ -243,17 +244,29 @@ class Aten
 
 
 	/*
-	// Building
+	// Program Control / Settings (not Prefs)
 	*/
 	private:
 	// Selected drawing element
 	short int sketchElement_;
+	// Whether type export conversion is enabled
+	bool typeExportMapping_;
 
 	public:
 	// Set current drawing element
 	void setSketchElement(short int el);
 	// Return current drawing element
 	short int sketchElement();
+	// Element map name conversions to apply on load
+	List< Namemap<int> > typeImportMap;
+	// Type map name conversions to apply on save
+	KVMap typeExportMap;
+	// Set whether type export conversion is enabled
+	void setTypeExportMapping(bool b);
+	// Return whether type export conversion is enabled
+	bool typeExportMapping();
+	// Convert supplied type name according to export type map
+	const char *typeExportConvert(const char *s);
 
 
 	/*
@@ -284,10 +297,9 @@ class Aten
 	bool parseCliEarly(int, char**);
 	// Parse command line options (after filter / prefs load
 	int parseCli(int, char**);
-	// Element map name conversions to apply on load
-	List< Namemap<int> > typeMap;
 	// Find passed value
 	Variable *findPassedValue(const char *name);
+
 
 	/*
 	// Single-shot program modes

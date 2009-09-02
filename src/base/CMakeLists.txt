@@ -9,6 +9,7 @@ dnchar.cpp
 elements.cpp
 forms.cpp
 glyph.cpp
+kvmap.cpp
 lineparser.cpp
 log.cpp
 measurement.cpp
@@ -27,6 +28,7 @@ dnchar.h
 elements.h
 forms.h
 glyph.h
+kvmap.h
 lineparser.h
 log.h
 measurement.h

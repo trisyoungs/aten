@@ -141,19 +141,11 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(4)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), id-1);
 	else aten.current.i = obj.rs->addAtomAtPen(el, id-1);
 	// Add the name to the model's namesForcefield, if requested and it exists
- 	if (prefs.keepNames() && obj.rs->namesForcefield())
+ 	if (prefs.keepNames())
  	{
- 		// Search for this typename in the ff
- 		f = obj.rs->namesForcefield();
- 		ffa = f->findType(c->argc(0));
- 		if (ffa == NULL) 
- 		{
- 			ffa = f->addType();
- 			ffa->setName(c->argc(0));
-			ffa->neta()->setCharacterElement(el);
- 		}
+		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
- 		aten.current.i->setTypeFixed(TRUE);
+ 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
@@ -204,7 +196,6 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
-	ForcefieldAtom *ffa;
 	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
 	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4), c->arg3d(7));
@@ -212,19 +203,11 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	else if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
 	else aten.current.i = obj.rs->addAtomAtPen(el);
 	// Add the name to the model's namesForcefield, if requested and it exists
- 	if (prefs.keepNames() && obj.rs->namesForcefield())
+ 	if (prefs.keepNames())
  	{
- 		// Search for this typename in the ff
- 		f = obj.rs->namesForcefield();
- 		ffa = f->findType(c->argc(0));
- 		if (ffa == NULL) 
- 		{
- 			ffa = f->addType();
- 			ffa->setName(c->argc(0));
-			ffa->neta()->setCharacterElement(el);
- 		}
+		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
  		aten.current.i->setType(ffa);
- 		aten.current.i->setTypeFixed(TRUE);
+ 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
@@ -250,6 +233,13 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4), c->arg3d(7));
 	else if (c->hasArg(6)) aten.current.i = obj.rs->addAtom(el, r, c->arg3d(4));
 	else aten.current.i = obj.rs->addAtom(el, r);
+	// Add the name to the model's namesForcefield, if requested and it exists
+ 	if (prefs.keepNames())
+ 	{
+		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
+ 		aten.current.i->setType(ffa);
+ 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
+ 	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;

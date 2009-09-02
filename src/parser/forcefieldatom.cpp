@@ -23,6 +23,7 @@
 #include "parser/stepnode.h"
 #include "classes/forcefieldatom.h"
 #include "base/constants.h"
+#include "main/aten.h"
 #include <string.h>
 
 /*
@@ -174,7 +175,8 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->description());
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
-			rv.set(ptr->equivalent());
+			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->equivalent()));
+			else rv.set(ptr->equivalent());
 			break;
 		case (ForcefieldAtomVariable::FField):
 			rv.set(VTypes::ForcefieldData, ptr->parent());
@@ -186,7 +188,8 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->typeId());
 			break;
 		case (ForcefieldAtomVariable::Name):
-			rv.set(ptr->name());
+			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->name()));
+			else rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::Neta):
 			rv.set(ptr->netaString());
