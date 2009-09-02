@@ -22,6 +22,7 @@
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
+#include "main/aten.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()
@@ -29,16 +30,41 @@ Forcefield *Model::forcefield()
 	return forcefield_;
 }
 
-// Set the forcefield containing original atom names for the model
-void Model::setNamesForcefield(Forcefield *f)
+// Create a forcefield containing original atom names for the model
+void Model::createNamesForcefield()
 {
-	namesForcefield_ = f;
+	if (namesForcefield_ != NULL) msg.print("Warning - an atom names forcefield already exists for model '%s'.\n", name_.get());
+	msg.print("Creating atom names forcefield for model '%s'.\n", name_.get());
+	char s[512];
+	sprintf(s,"Names kept from Model %s",name_.get());
+	namesForcefield_ = aten.addForcefield(s);
 }
 
 // Return the forcefield containing original atom names for the model
 Forcefield *Model::namesForcefield()
 {
 	return namesForcefield_;
+}
+
+// Add name to names forcefield
+ForcefieldAtom *Model::addAtomName(int el, const char *name)
+{
+	if (namesForcefield_ == NULL) createNamesForcefield();
+	// Search for this typename in the ff
+	ForcefieldAtom *ffa = namesForcefield_->findType(name);
+	if (ffa == NULL)
+	{
+		ffa = namesForcefield_->addType();
+		ffa->setName(name);
+		ffa->neta()->setCharacterElement(el);
+	}
+	return ffa;
+}
+
+// Remove the names forcefield reference
+void Model::removeNamesForcefield()
+{
+	namesForcefield_ = NULL;
 }
 
 // Return whether the expression is valid

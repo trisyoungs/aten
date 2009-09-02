@@ -81,7 +81,15 @@ bool Command::function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Clear manual type mapping list ('clearmap')
 bool Command::function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	aten.typeMap.clear();
+	aten.typeImportMap.clear();
+	rv.reset();
+	return TRUE;
+}
+
+// Clear manual export type mapping list ('clearexportmap')
+bool Command::function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	aten.typeExportMap.clear();
 	rv.reset();
 	return TRUE;
 }
@@ -124,6 +132,30 @@ bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			for (ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next)
 				if (obj.ff->matchType(ffa->name(),parser.argc(i)) < 10) ffa->setEquivalent(c->argc(0));
+		}
+	}
+	rv.reset();
+	return TRUE;
+}
+
+// Add manual export type mappings ('exportmap <typename=name,...>')
+bool Command::function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Get each argument and parse it internally
+	int el;
+	Namemap<Dnchar> *nm;
+	LineParser parser;
+	for (int m=0; m<c->nArgs(); m++)
+	{
+		parser.getArgsDelim(c->argc(m), LineParser::Defaults);
+		for (int n=0; n<parser.nArgs(); n++)
+		{
+			if (strchr(parser.argc(n),'=') == NULL)
+			{
+				msg.print("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+				continue;
+			}
+			aten.typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n),'='));
 		}
 	}
 	rv.reset();
@@ -263,11 +295,16 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		parser.getArgsDelim(c->argc(m), LineParser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
+			if (strchr(parser.argc(n),'=') == NULL)
+			{
+				msg.print("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+				continue;
+			}
 			el = elements().findAlpha(afterChar(parser.argc(n), '='));
 			if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 			else
 			{
-				nm = aten.typeMap.add();
+				nm = aten.typeImportMap.add();
 				nm->set(beforeChar(parser.argc(n),'='), el);
 			}
 		}
