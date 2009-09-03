@@ -74,6 +74,7 @@ void KVMap::clear()
 // Return number of pairs defined
 int KVMap::nPairs()
 {
+	return pairs_.nItems();
 }
 
 // Set (existing) key/value pair
