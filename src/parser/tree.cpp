@@ -210,6 +210,9 @@ bool Tree::execute(ReturnValue &rv)
 		switch (filter.type())
 		{
 			case (FilterData::ExpressionExport):
+				// Turn on export type mapping
+				if (aten.typeExportMap.nPairs() != 0) aten.setTypeExportMapping(TRUE);
+				// Create expression for model
 				if (!aten.current.m->createExpression())
 				{
 					msg.exit("Tree::execute");
@@ -248,6 +251,7 @@ bool Tree::execute(ReturnValue &rv)
 		prefs.setZMapType(zm);
 		switch (filter.type())
 		{
+			case (FilterData::ExpressionExport):
 			case (FilterData::ModelExport):
 				// Turn off export type mapping
 				aten.setTypeExportMapping(FALSE);
