@@ -230,7 +230,9 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		}
 		if (nsel2 != nMarked_)
 		{
-			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\nPattern for model will be 1*N.\n");
+			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\n");
+			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, i->id()+1);
+			msg.print("Pattern for model will be 1*N.\n");
 // 			msg.print("Offending molecule has been selected.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
