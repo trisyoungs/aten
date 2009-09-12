@@ -31,8 +31,10 @@ Atom *target = NULL;
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
+	// If there is no atom under the mouse, then exit
 	target = undermouse;
 	if (target == NULL) return;
+	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
 // 	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
 	if (!target->isSelected())
@@ -42,17 +44,18 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 		viewTarget->selectNone();
 		viewTarget->selectAtom(target);
 		viewTarget->endUndoState();
+		gui.mainView.postRedisplay();
+		// Make sure context menu items are enabled, since nothing may have been selected beforehand
 		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
-		mainWindow->ui.AtomContextMenu->exec(pos);
-		mainWindow->ui.AtomContextMenu->setEnabled(FALSE);
 	}
-	else mainWindow->ui.AtomContextMenu->exec(pos);
+	// Run the popup
+	mainWindow->ui.AtomContextMenu->exec(pos);
 }
 
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
+	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
 	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), target->id());
 	target = NULL;
 }
@@ -84,7 +87,7 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
+	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -94,7 +97,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 void AtenForm::removeAtomLabels(bool all)
 {
 	if (all) CommandNode::run(Command::ClearLabels, "");
-	else if (gui.mainView.displayModel()->nSelected() > 1) CommandNode::run(Command::RemoveLabels, "");
+	else if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
 	else CommandNode::run(Command::RemoveLabels, "i", target->id());
 	target = NULL;
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -138,7 +141,7 @@ void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	if (gui.mainView.displayModel()->nSelected() > 1)
+	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) 
 	{
 		if (hidden) CommandNode::run(Command::Hide, "");
 		else CommandNode::run(Command::Show, "");
