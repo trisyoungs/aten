@@ -95,7 +95,7 @@ double Model::cameraRotation()
 }
 
 // Spin the model about the z axis
-void Model::zRotate(double angle)
+void Model::zRotateView(double angle)
 {
 	adjustCamera(0.0, 0.0, 0.0, angle / DEGRAD);
 }
@@ -271,10 +271,35 @@ void Model::resetView()
 }
 
 // Rotate free
-void Model::rotate(double dx, double dy)
+void Model::axisRotateView(Vec3<double> vec, double angle)
 {
 	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::rotate");
+	msg.enter("Model::axisRotateView");
+	static double theta, camrot;
+	static Mat4<double> newrotmat, oldrotmat;
+	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
+	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
+	// Account for the orientation of the current camera up vector.
+// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
+// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
+	// Generate quaternion
+	newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
+	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
+	// Now, multiply our matrices together...
+	if (trajectoryParent_ == NULL) rotationMatrix_ = newrotmat * oldrotmat;
+	else trajectoryParent_->rotationMatrix_ = newrotmat * oldrotmat;
+	// Recalculate view matrix
+	calculateViewMatrix();
+	// Log camera change
+	changeLog.add(Log::Camera);
+	msg.exit("Model::axisRotateView");
+}
+
+// Rotate free
+void Model::rotateView(double dx, double dy)
+{
+	// Rotate the whole system by the amounts specified.
+	msg.enter("Model::rotateView");
 	static double rotx, roty, theta, sinx, cosx, siny, cosy, camrot;
 	static Mat4<double> newrotmat, oldrotmat;
 	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
@@ -299,7 +324,7 @@ void Model::rotate(double dx, double dy)
 	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
-	msg.exit("Model::rotate");
+	msg.exit("Model::rotateView");
 }
 
 // Calculate View Matrix

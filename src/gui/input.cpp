@@ -88,19 +88,19 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 	switch (key)
 	{
 		case (Canvas::LeftKey):
-			displayModel_->rotate( shiftkey ? -1.0 : -10.0, 0.0);
+			displayModel_->rotateView( shiftkey ? -1.0 : -10.0, 0.0);
 			postRedisplay();
 			break;
 		case (Canvas::RightKey):
-			displayModel_->rotate( shiftkey ? 1.0 : 10.0, 0.0);
+			displayModel_->rotateView( shiftkey ? 1.0 : 10.0, 0.0);
 			postRedisplay();
 			break;
 		case (Canvas::UpKey):
-			displayModel_->rotate(0.0, shiftkey ? -1.0 : -10.0);
+			displayModel_->rotateView(0.0, shiftkey ? -1.0 : -10.0);
 			postRedisplay();
 			break;
 		case (Canvas::DownKey):
-			displayModel_->rotate(0.0, shiftkey ? 1.0 : 10.0);
+			displayModel_->rotateView(0.0, shiftkey ? 1.0 : 10.0);
 			postRedisplay();
 			break;
 	}
@@ -511,10 +511,10 @@ void Canvas::modeMotion(double x, double y)
 		case (Canvas::NoAction):
 			break;
 		case (Canvas::RotateXYAction):
-			displayModel_->rotate(delta.x/2.0,delta.y/2.0);
+			displayModel_->rotateView(delta.x/2.0,delta.y/2.0);
 			break;
 		case (Canvas::RotateZAction):
-			displayModel_->zRotate(delta.x/2.0);
+			displayModel_->zRotateView(delta.x/2.0);
 			break;
 		case (Canvas::TranslateAction):
 			delta.y = -delta.y;
@@ -566,7 +566,7 @@ void Canvas::modeScroll(bool scrollup)
 			useSelectedMode();
 			break;
 		case (Prefs::RotateAction):
-			scrollup ? displayModel_->rotate(1.0,0.0) : displayModel_->rotate(-1.0,0.0);
+			scrollup ? displayModel_->rotateView(1.0,0.0) : displayModel_->rotateView(-1.0,0.0);
 			break;
 		case (Prefs::TranslateAction):
 			break;

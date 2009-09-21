@@ -469,6 +469,7 @@ void Command::initPointers()
 	pointers_[TranslateCell] = &Command::function_TranslateCell;
 
 	// View Commands
+	pointers_[AxisRotateView] = &Command::function_AxisRotateView;
 	pointers_[GetView] = &Command::function_GetView;
 	pointers_[Orthographic] = &Command::function_Orthographic;
 	pointers_[Perspective] = &Command::function_Perspective;

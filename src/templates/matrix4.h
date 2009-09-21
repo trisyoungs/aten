@@ -96,6 +96,8 @@ template <class T> class Mat4
 	void createRotationY(double angle);
 	// Create rotation matrix about Z
 	void createRotationZ(double angle);
+	// Create axis rotation quaternion
+	void createRotationAxis(double ax, double ay, double az, double angle);
 	// Calculate the determinant of the matrix.
 	double determinant() const;
 	// Invert the matrix
@@ -353,6 +355,22 @@ template <class T> void Mat4<T>::createRotationZ(double angle)
 	set(0,cosx,sinx,0.0,0.0);
 	set(1,-sinx,cosx,0.0,0.0);
 	set(2,0.0,0.0,1.0,0.0);
+	set(3,0.0,0.0,0.0,1.0);
+}
+
+// Create axis rotation quaternion
+template <class T> void Mat4<T>::createRotationAxis(double ax, double ay, double az, double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	double mag = sqrt(ax*ax + ay*ay + az*az);
+	ax /= mag;
+	ay /= mag;
+	az /= mag;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,ax*ax*(1.0-cosx) + cosx, ax*ay*(1.0-cosx) - az*sinx, ax*az*(1.0-cosx) + ay*sinx, 0.0);
+	set(1,ax*ay*(1.0-cosx) + az*sinx, ay*ay*(1.0-cosx) + cosx, ay*az*(1.0-cosx) - ax*sinx, 0.0);
+	set(2,ax*az*(1.0-cosx) - ay*sinx, ay*az*(1.0-cosx) + ax*sinx, az*az*(1.0-cosx) + cosx, 0.0);
 	set(3,0.0,0.0,0.0,1.0);
 }
 

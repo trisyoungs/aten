@@ -1124,6 +1124,9 @@ CommandData Command::data[Command::nCommands] = {
 		"Translate the current selection in world (view) coordinates" },
 
 	// View
+	{ "axisrotateview",	"NNNN",		VTypes::NoData,
+		"double ax, double ay, double az, double angle",
+		"Rotate the current view about the specified axis (going through the origin)" },
 	{ "getview",		"",		VTypes::NoData, "",
 		"Print the rotation matrix, camera position, and camera z-rotation for the current model" },
 	{ "orthographic",	"",		VTypes::NoData, "",

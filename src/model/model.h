@@ -409,10 +409,12 @@ class Model
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
 	void viewAlongCell(double x, double y, double z);
-	// Rotate the model about the x and y axes
-	void rotate(double, double);
-	// Spin the model about the z axis
-	void zRotate(double angle);
+	// Rotate view about arbitrary axis
+	void axisRotateView(Vec3<double> axis, double angle);
+	// Rotate view about the x and y axes
+	void rotateView(double xang, double yang);
+	// Spin view about the z axis
+	void zRotateView(double angle);
 	// Adjust the position of the camera
 	void adjustCamera(double, double, double, double);
 	void adjustCamera(const Vec3<double> &v, double r);
