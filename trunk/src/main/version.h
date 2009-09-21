@@ -23,8 +23,8 @@
 #define ATEN_VERSION_H
 
 #define ATENVERSION "1.4"
-#define ATENREVISION "1007"
-#define ATENDATE "Sat 12 Sep - 20:07"
+#define ATENREVISION "1008"
+#define ATENDATE "Mon 21 Sep - 16:37"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 #endif

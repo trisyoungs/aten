@@ -512,6 +512,7 @@ class Command
 		TranslateWorld,
 
 		// View
+		AxisRotateView,
 		GetView,
 		Orthographic,
 		Perspective,
@@ -943,6 +944,7 @@ class Command
 	static bool function_OperatorPrefixIncrease(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_OperatorSubtract(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// View
+	static bool function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv);

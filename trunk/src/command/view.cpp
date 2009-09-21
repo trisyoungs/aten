@@ -26,6 +26,17 @@
 #include "model/model.h"
 #include <ctime>
 
+
+// Rotate view about an arbitrary axis
+bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->axisRotateView(c->arg3d(0), c->argd(3));
+	gui.mainView.postRedisplay();
+	rv.reset();
+	return TRUE;
+}
+
 // Get current view
 bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -70,7 +81,7 @@ bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->rotate(c->argd(1), c->argd(0));
+	obj.rs->rotateView(c->argd(1), c->argd(0));
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -111,7 +122,7 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int nrenders = (c->hasArg(0) ? c->argi(0) : 100);
 	for (int n=0; n < nrenders; n ++)
 	{
-		obj.rs->rotate(5.0,0.0);
+		obj.rs->rotateView(5.0,0.0);
 		gui.mainView.postRedisplay();
 	}
 	clock_t tfinish = clock();
@@ -168,7 +179,7 @@ bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->zRotate(-c->argd(0));
+	obj.rs->zRotateView(-c->argd(0));
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;
