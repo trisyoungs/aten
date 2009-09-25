@@ -416,6 +416,7 @@ void Command::initPointers()
 	pointers_[SelectOverlaps] = &Command::function_SelectOverlaps;
 	pointers_[SelectOutsideCell] = &Command::function_SelectOutsideCell;
 	pointers_[SelectPattern] = &Command::function_SelectPattern;
+	pointers_[SelectRadial] = &Command::function_SelectRadial;
 	pointers_[SelectType] = &Command::function_SelectType;
 	
 	// Site Commands
