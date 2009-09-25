@@ -1,0 +1,49 @@
+/*
+	*** Qt custom tabbar
+	*** src/gui/ttabbar.uih
+	Copyright T. Youngs 2007
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TTABBAR_H
+#define ATEN_TTABBAR_H
+
+#include <QtGui/QTabBar>
+#include <QtCore/QObject>
+#include <QtGui/QMouseEvent>
+
+class TTabBar : public QTabBar
+{
+	Q_OBJECT
+
+	public:
+	TTabBar(QWidget *parent) : QTabBar(parent) {};
+	
+	signals:
+	// Tab was double-clicked
+	void doubleClicked(int tabid);
+
+	protected:
+	// Allow tabs to be double-clicked to change text
+	void mouseDoubleClickEvent(QMouseEvent *event)
+	{
+		for (int i = 0; i < count(); i++) if (tabRect(i).contains(event->pos())) emit doubleClicked(i);
+	}
+};
+
+#endif
+
