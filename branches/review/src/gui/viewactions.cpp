@@ -30,13 +30,13 @@
 
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
-	aten.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
+	aten.currentModel()->zoomCamera(TRUE);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
-	aten.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
+	aten.currentModel()->zoomCamera(FALSE);
 	gui.mainView.postRedisplay();
 }
 
@@ -51,7 +51,6 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
 	gui.mainView.doProjection();
-	//aten.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -59,7 +58,6 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.doProjection();
-	//aten.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 

@@ -380,54 +380,51 @@ class Model
 	// View matrix
 	Mat4<double> viewMatrix_, viewMatrixInverse_;
 	// Camera position
-	Vec3<double> cameraPos_, cameraTarget_, cameraUp_;
+	Vec3<double> cameraPosition_, cameraTarget_, cameraUp_;
 	// Log point at the last projection (Log::Coordinate+Log::Camera)
 	int projectionPoint_;
 
 	public:
-	// Pre-generated display list for atoms
-	//GLuint displaylist;
 	// Project the specified world coordinates into 2D screen coords
 	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculateViewMatrix(bool recalcmatrix = TRUE);
-	// Set the current rotation matrix
-// 	void setRotationMatrix(Mat4<double> &rmat);
-	// Return the current rotation matrix
-// 	Mat4<double> rotationMatrix();
-	// Return the GL-compatible array from the ModelMAT structure
-// 	void copyRotationMatrix(double *m);
-	// Return the GL-compatible array from the ModelMAT structure
-// 	void copyCameraMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyViewMatrix(double *m);
 	// Set the current view matrix
 	void setViewMatrix(Mat4<double> &rmat);
-	// Set the camera z-rotation
-// 	void setCameraRotation(double r);
-	// Return the current camera z-rotation
-// 	double cameraRotation();
-	// Set model rotation to exact values
-// 	void setRotation(double rotx, double roty);
+	// Reset model view
+	void resetView();
+	// Rotate view about arbitrary axis
+	void axisRotateView(Vec3<double> axis, double angle);
+	// Rotate view using screen displacement as guide
+	void rotateView(double screendx, double screendy);
+	// Spin view about the z axis
+	void zRotateView(double angle);
+	// Translate view (modify camera target and position simultaneously)
+	void translateCamera(double dx, double dy);
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
 	void viewAlongCell(double x, double y, double z);
-	// Rotate view about arbitrary axis
-	void axisRotateView(Vec3<double> axis, double angle);
-	// Rotate view about the x and y axes
-	void rotateView(double xang, double yang);
-	// Spin view about the z axis
-	void zRotateView(double angle);
-	// Adjust the position of the camera
-	void adjustCamera(double, double, double, double);
-	void adjustCamera(const Vec3<double> &v, double r);
-	// Adjusts the camera zoom
-	void adjustZoom(bool zoomin);
-	// (Re)set the camera position and matrix
-// 	void resetCamera(const Vec3<double>&);
-	// Reset modelview matrix and camera position
-	void resetView();
+	// Adjust the camera zoom with Prefs-defined zoom throttle
+	void zoomCameraThrottled(bool zoomin);
+	// Adjust the camera zoom by specified model-space distance
+	void zoomCamera(double dz);
+	// Return the camera position
+	Vec3<double> cameraPosition() const;
+	// Set the camera position
+	void setCameraPosition(Vec3<double> v);
+	// Return the camera target
+	Vec3<double> cameraTarget() const;
+	// Set the camera target
+	void setCameraTarget(Vec3<double> v);
+	// Return the camera up
+	Vec3<double> cameraUp() const;
+	// Set the camera up
+	void setCameraUp(Vec3<double> v);
+	// Return the camera view vector (position->target)
+	Vec3<double> viewVector() const;
 	// Project the model coordinates of the atom into local and 2D coordinates
 	void projectAtom(Atom*);
 	// Project given model coordinates into screen coordinates
@@ -436,8 +433,6 @@ class Model
 	void projectAll();
 	// Project the model coordinates of selected atoms
 	void projectSelection();
-	// Return the camera position vector
-	Vec3<double> camera();
 	// Calculate and return drawing pixel width
 	double drawPixelWidth();
 

@@ -137,7 +137,7 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(c->arg3d(0),0.0);
+	obj.rs->translateCamera(c->argd(0),c->argd(1));
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;
@@ -169,7 +169,7 @@ bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
+	obj.rs->zoomCamera(c->argd(0));
 	gui.mainView.postRedisplay();
 	rv.reset();
 	return TRUE;

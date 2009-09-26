@@ -78,19 +78,11 @@ void Canvas::renderScene(Model *source)
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 
-	// Set clear colour
+	// Clear context
 	checkGlError();
-	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
-// // 	GLfloat *clrcol
-// 	prefs.copyColour(Prefs::BackgroundColour, clrcol);
-// 	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
+	msg.print(Messenger::GL, " --> Clearing\n");
 	// Clear colour and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
-// 	displayModel_->copyRotationMatrix(rotmat);
-	displayModel_->copyViewMatrix(viewmat);
-// 	camrot = displayModel_->cameraRotation();
 
 	// Setup pen colour
 	GLfloat fgcol[4];
@@ -98,8 +90,9 @@ void Canvas::renderScene(Model *source)
 	glDisable(GL_COLOR_MATERIAL);
 	glColor4fv(fgcol);
 
-	// Draw on the rotation globe
-	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(viewmat, 0.0);
+	// Grab view matrix and draw rotation globe
+	displayModel_->copyViewMatrix(viewmat);
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(viewmat);
 
 	// Reset projection matrix and set perspective view
 	checkGlError();
@@ -115,7 +108,7 @@ void Canvas::renderScene(Model *source)
 	}
 	else
 	{
-		top = tan(prefs.perspectiveFov() / DEGRAD) * displayModel_->camera().z;
+		top = tan(prefs.perspectiveFov() / DEGRAD) * fabs(displayModel_->viewVector().z);
 		bottom = -top;
 		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
@@ -125,7 +118,6 @@ void Canvas::renderScene(Model *source)
 	msg.print(Messenger::GL, " --> Setting modelview matrix\n");
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-// 	glMultMatrixd(cammat);
 
 	// Draw guide if visible
 	if (prefs.isGuideVisible())
@@ -137,7 +129,8 @@ void Canvas::renderScene(Model *source)
 
 	// Apply model's rotation matrix (which we grabbed earlier)
 	glMultMatrixd(viewmat);
-	glTranslated(-displayModel_->camera().x,-displayModel_->camera().y, -displayModel_->camera().z); 
+	Vec3<double> campos = displayModel_->cameraPosition();
+	glTranslated(-campos.x, -campos.y, -campos.z);
 
 	// Set the initial state of lighting in the model
 	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);

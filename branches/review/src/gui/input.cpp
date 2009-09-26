@@ -491,7 +491,7 @@ void Canvas::modeMotion(double x, double y)
 {
 	// Actively update variables when moving the mouse (possibly while performing a given action)
 	msg.enter("Canvas::modeMotion");
-	static Vec3<double> delta;
+	Vec3<double> delta;
 	//static Model *viewtarget;
 	if (displayModel_ == NULL)
 	{
@@ -517,11 +517,12 @@ void Canvas::modeMotion(double x, double y)
 			displayModel_->zRotateView(delta.x/2.0);
 			break;
 		case (Canvas::TranslateAction):
-			delta.y = -delta.y;
-			displayModel_->adjustCamera(delta/15.0,0.0);
+			delta.x = -delta.x;
+			delta /= 15.0;
+			displayModel_->translateCamera(delta.x, delta.y);
 			break;
 		case (Canvas::ZoomAction):
-			displayModel_->adjustZoom(delta.y < 0.0);
+			displayModel_->zoomCameraThrottled(delta.y < 0.0);
 			break;
 		case (Canvas::TransformRotateXYAction):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
@@ -571,7 +572,7 @@ void Canvas::modeScroll(bool scrollup)
 		case (Prefs::TranslateAction):
 			break;
 		case (Prefs::ZoomAction):
-			displayModel_->adjustZoom(scrollup);
+			displayModel_->zoomCameraThrottled(scrollup);
 			break;
 	}
 	postRedisplay();
