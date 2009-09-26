@@ -233,6 +233,17 @@ template <class T> Vec4<T> Vec4<T>::operator-(Vec3<T> v)
 	return result;
 }
 
+// Operator * (T)
+template <class T> Vec4<T> Vec4<T>::operator*(T a) const
+{
+	Vec4<T> result;
+	result.x = x*a;
+	result.y = y*a;
+	result.z = z*a;
+	result.w = w*a;
+	return result;
+}
+
 // Operator *= (T)
 template <class T> void Vec4<T>::operator*=(T v)
 {

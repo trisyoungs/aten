@@ -151,20 +151,19 @@ void Model::resetView()
 }
 
 // Translate Camera
-void Model::translateCamera(double dx, double dy)
+void Model::translateCamera(double screendx, double screendy)
 {
 	// Reposition model camera
 	msg.enter("Model::translateCamera");
-	Vec3<double> tvec(dx, dy, 0.0);
 	if (trajectoryParent_ == NULL)
 	{
-		tvec *= viewMatrix_;
+		Vec4<double> tvec = viewMatrix_.rows[0]*screendx + viewMatrix_.rows[1]*screendy;
 		cameraPosition_ += tvec;
 		cameraTarget_ += tvec;
 	}
 	else
 	{
-		tvec *= trajectoryParent_->viewMatrix_;
+		Vec4<double> tvec = trajectoryParent_->viewMatrix_.rows[0]*screendx + trajectoryParent_->viewMatrix_.rows[1]*screendy;
 		trajectoryParent_->cameraPosition_ += tvec;
 		trajectoryParent_->cameraTarget_ += tvec;
 	}
@@ -294,10 +293,7 @@ void Model::zoomCamera(double dz)
 		double mag = viewvec.magAndNormalise();
 		mag += dz;
 		if (mag < 1.0) mag = 1.0;
-	printf("zoom\n");
-	cameraPosition_.print();
 		setCameraPosition(cameraTarget_ - viewvec*mag);
-	cameraPosition_.print();
 	}
 	else
 	{
