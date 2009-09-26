@@ -374,13 +374,13 @@ class Model
 	*/
 	private:
 	// Camera rotation
-	double cameraRotation_;
+// 	double cameraRotation_;
 	// Camera, model, and view (cam*rot*cell) matrices associated with the model
-	Mat4<double> cameraMatrix_, rotationMatrix_, viewMatrix_;
-	// Inverse of the view matrix
-	Mat4<double> viewMatrixInverse_;
+// 	Mat4<double> cameraMatrix_, rotationMatrix_, viewMatrix_;
+	// View matrix
+	Mat4<double> viewMatrix_, viewMatrixInverse_;
 	// Camera position
-	Vec3<double> camera_;
+	Vec3<double> cameraPos_, cameraTarget_, cameraUp_;
 	// Log point at the last projection (Log::Coordinate+Log::Camera)
 	int projectionPoint_;
 
@@ -390,21 +390,25 @@ class Model
 	// Project the specified world coordinates into 2D screen coords
 	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
-	void calculateViewMatrix();
+	void calculateViewMatrix(bool recalcmatrix = TRUE);
 	// Set the current rotation matrix
-	void setRotationMatrix(Mat4<double> &rmat);
+// 	void setRotationMatrix(Mat4<double> &rmat);
 	// Return the current rotation matrix
-	Mat4<double> rotationMatrix();
+// 	Mat4<double> rotationMatrix();
 	// Return the GL-compatible array from the ModelMAT structure
-	void copyRotationMatrix(double *m);
+// 	void copyRotationMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure
-	void copyCameraMatrix(double *m);
+// 	void copyCameraMatrix(double *m);
+	// Return the GL-compatible array from the ModelMAT structure
+	void copyViewMatrix(double *m);
+	// Set the current view matrix
+	void setViewMatrix(Mat4<double> &rmat);
 	// Set the camera z-rotation
-	void setCameraRotation(double r);
+// 	void setCameraRotation(double r);
 	// Return the current camera z-rotation
-	double cameraRotation();
+// 	double cameraRotation();
 	// Set model rotation to exact values
-	void setRotation(double rotx, double roty);
+// 	void setRotation(double rotx, double roty);
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
@@ -421,7 +425,7 @@ class Model
 	// Adjusts the camera zoom
 	void adjustZoom(bool zoomin);
 	// (Re)set the camera position and matrix
-	void resetCamera(const Vec3<double>&);
+// 	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
 	void resetView();
 	// Project the model coordinates of the atom into local and 2D coordinates

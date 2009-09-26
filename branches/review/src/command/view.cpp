@@ -41,10 +41,10 @@ bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Mat4<double> rmat = obj.rs->rotationMatrix();
-	Vec3<double> camr = obj.rs->camera();
-	double camrot = obj.rs->cameraRotation();
-	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
+// 	Mat4<double> rmat = obj.rs->rotationMatrix();
+// 	Vec3<double> camr = obj.rs->camera();
+// 	double camrot = obj.rs->cameraRotation();   TGAY
+// 	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
 	rv.reset();
 	return TRUE;
 }
@@ -95,15 +95,15 @@ bool Command::function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Vec3<double> camr;
 	// Get camera position
 	camr = c->arg3d(9);
-	obj.rs->resetCamera(camr);
+// 	obj.rs->resetCamera(camr);   TGAY
 	// Get rotation matrix
 	rmat.rows[0].set(c->arg3d(0),0.0);
 	rmat.rows[1].set(c->arg3d(3),0.0);
 	rmat.rows[2].set(c->arg3d(6),0.0);
 	rmat.rows[3].set(0.0,0.0,0.0,1.0);
-	obj.rs->setRotationMatrix(rmat);
+// 	obj.rs->setRotationMatrix(rmat);   TGAY
 	// Get camera z-rotation (if present)
-	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
+// 	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
 	rv.reset();
 	return TRUE;
 }

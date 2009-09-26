@@ -26,8 +26,8 @@
 void Canvas::renderScene(Model *source)
 {
 	msg.enter("Canvas::renderScene");
-	static GLdouble rotmat[16], cammat[16];
-	static GLdouble camrot;
+	static GLdouble viewmat[16];
+// 	static GLdouble camrot;
 
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 
@@ -88,9 +88,9 @@ void Canvas::renderScene(Model *source)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
-	displayModel_->copyRotationMatrix(rotmat);
-	displayModel_->copyCameraMatrix(cammat);
-	camrot = displayModel_->cameraRotation();
+// 	displayModel_->copyRotationMatrix(rotmat);
+	displayModel_->copyViewMatrix(viewmat);
+// 	camrot = displayModel_->cameraRotation();
 
 	// Setup pen colour
 	GLfloat fgcol[4];
@@ -99,7 +99,7 @@ void Canvas::renderScene(Model *source)
 	glColor4fv(fgcol);
 
 	// Draw on the rotation globe
-	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(viewmat, 0.0);
 
 	// Reset projection matrix and set perspective view
 	checkGlError();
@@ -125,7 +125,7 @@ void Canvas::renderScene(Model *source)
 	msg.print(Messenger::GL, " --> Setting modelview matrix\n");
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glMultMatrixd(cammat);
+// 	glMultMatrixd(cammat);
 
 	// Draw guide if visible
 	if (prefs.isGuideVisible())
@@ -136,7 +136,8 @@ void Canvas::renderScene(Model *source)
 	}
 
 	// Apply model's rotation matrix (which we grabbed earlier)
-	glMultMatrixd(rotmat);
+	glMultMatrixd(viewmat);
+	glTranslated(-displayModel_->camera().x,-displayModel_->camera().y, -displayModel_->camera().z); 
 
 	// Set the initial state of lighting in the model
 	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
