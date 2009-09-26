@@ -458,7 +458,6 @@ class Command
 		SelectOverlaps,
 		SelectOutsideCell,
 		SelectPattern,
-		SelectRadial,
 		SelectType,
 
 		// Site Commands
@@ -871,7 +870,6 @@ class Command
 	static bool function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Site Commands
 	static bool function_GetSite(CommandNode *c, Bundle &obj, ReturnValue &rv);

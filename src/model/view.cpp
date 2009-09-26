@@ -47,10 +47,10 @@ Vec3<double> Model::guideToModel(const Vec3<double> &v)
 }
 
 // Set the current rotation matrix
-void Model::setRotationMatrix(Mat4<double> &rmat)
+void Model::setViewMatrix(Mat4<double> &rmat)
 {
-	if (trajectoryParent_ == NULL) rotationMatrix_ = rmat;
-	else trajectoryParent_->rotationMatrix_ = rmat;
+	if (trajectoryParent_ == NULL) viewMatrix_ = rmat;
+	else trajectoryParent_->viewMatrix_ = rmat;
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -58,41 +58,41 @@ void Model::setRotationMatrix(Mat4<double> &rmat)
 }
 
 // Return the current rotation matrix
-Mat4<double> Model::rotationMatrix()
-{
-	return (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
-}
+// Mat4<double> Model::rotationMatrix()
+// {
+// 	return (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
+// }
 
 // Return the GL-compatible array from the ModelMAT structure
-void Model::copyRotationMatrix(double *m)
-{
-	// If a trajectory frame, return the parent's matrix
-	if (trajectoryParent_ == NULL) rotationMatrix_.copyColumnMajor(m);
-	else trajectoryParent_->rotationMatrix_.copyColumnMajor(m);
-}
+// void Model::copyRotationMatrix(double *m)
+// {
+// 	// If a trajectory frame, return the parent's matrix
+// 	if (trajectoryParent_ == NULL) rotationMatrix_.copyColumnMajor(m);
+// 	else trajectoryParent_->rotationMatrix_.copyColumnMajor(m);
+// }
 
 // Return the GL-compatible array from the ModelMAT structure
-void Model::copyCameraMatrix(double *m)
+void Model::copyViewMatrix(double *m)
 {
 	// If a trajectory frame, return the parent's matrix
-	if (trajectoryParent_ == NULL) cameraMatrix_.copyColumnMajor(m);
-	else trajectoryParent_->cameraMatrix_.copyColumnMajor(m);
+	if (trajectoryParent_ == NULL) viewMatrix_.copyColumnMajor(m);
+	else trajectoryParent_->viewMatrix_.copyColumnMajor(m);
 }
 
 // Set the camera z-rotation
-void Model::setCameraRotation(double r)
-{
-	cameraRotation_ = r;
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-}
+// void Model::setCameraRotation(double r)
+// {
+// 	cameraRotation_ = r;
+// 	calculateViewMatrix();
+// 	// Log camera change
+// 	changeLog.add(Log::Camera);
+// }
 
 // Return the current camera z-rotation
-double Model::cameraRotation()
-{
-	return (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
-}
+// double Model::cameraRotation()
+// {
+// 	return (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
+// }
 
 // Spin the model about the z axis
 void Model::zRotateView(double angle)
@@ -106,37 +106,37 @@ void Model::adjustCamera(const Vec3<double> &v, double r)
 	adjustCamera(v.x,v.y,v.z,r);
 }
 
-// Set exact rotation of model (angles passed in radians)
-void Model::setRotation(double rotx, double roty)
-{
-	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::setRotation");
-	static double sinx, cosx, siny, cosy;
-	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
-	// Calculate cos/sin terms for needless speedup!
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	if (trajectoryParent_ == NULL)
-	{
-		rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
-		rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-	}
-	else
-	{
-		trajectoryParent_->rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
-		trajectoryParent_->rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		trajectoryParent_->rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-	}
-	//rot.rows[3].set(0.0,0.0,0.0,1.0);
-	// Recalculate view matrix
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::setRotation");
-}
+// // Set exact rotation of model (angles passed in radians)
+// void Model::setRotation(double rotx, double roty)
+// {
+// 	// Rotate the whole system by the amounts specified.
+// 	msg.enter("Model::setRotation");
+// 	static double sinx, cosx, siny, cosy;
+// 	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
+// 	// Calculate cos/sin terms for needless speedup!
+// 	cosx = cos(rotx);
+// 	cosy = cos(roty);
+// 	sinx = sin(rotx);
+// 	siny = sin(roty);
+// 	if (trajectoryParent_ == NULL)
+// 	{
+// 		rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
+// 		rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+// 		rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+// 	}
+// 	else
+// 	{
+// 		trajectoryParent_->rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
+// 		trajectoryParent_->rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+// 		trajectoryParent_->rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+// 	}
+// 	//rot.rows[3].set(0.0,0.0,0.0,1.0);
+// 	// Recalculate view matrix
+// 	calculateViewMatrix();
+// 	// Log camera change
+// 	changeLog.add(Log::Camera);
+// 	msg.exit("Model::setRotation");
+// }
 
 // Adjust Camera
 void Model::adjustCamera(double dx, double dy, double dz, double angle)
@@ -146,31 +146,32 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	double sincam, coscam;
 	if (trajectoryParent_ == NULL)
 	{
-		camera_.add(dx, -dy, dz);
+		cameraPos_.add(dx, -dy, dz);
 		// Never let camera z go below -1.0...
-		if (camera_.z > -1.0) camera_.z = -1.0;
-		cameraRotation_ = cameraRotation_ + angle;
-		if (cameraRotation_ > 2.0*PI) cameraRotation_ -= 2.0*PI;
-		coscam = cos(cameraRotation_);
-		sincam = sin(cameraRotation_);
+		if (cameraPos_.z > -1.0) cameraPos_.z = -1.0;
+// 		cameraRotation_ = cameraRotation_ + angle;
+// 		if (cameraRotation_ > 2.0*PI) cameraRotation_ -= 2.0*PI;
+// 		coscam = cos(cameraRotation_);
+// 		sincam = sin(cameraRotation_);
 		// Now create the new matrix
-		cameraMatrix_.rows[0].set(coscam,-sincam,0.0,camera_.x*coscam-camera_.y*sincam);
-		cameraMatrix_.rows[1].set(sincam,coscam,0.0,camera_.x*sincam-camera_.y*coscam);
-		cameraMatrix_.rows[2].set(0.0,0.0,1.0,camera_.z);
-		cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
+// 		cameraMatrix_.rows[0].set(coscam,-sincam,0.0,camera_.x*coscam-camera_.y*sincam);
+// 		cameraMatrix_.rows[1].set(sincam,coscam,0.0,camera_.x*sincam-camera_.y*coscam);
+// 		cameraMatrix_.rows[2].set(0.0,0.0,1.0,camera_.z);
+// 		cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
 	}
 	else
 	{
-		trajectoryParent_->camera_.add(dx, -dy, dz);
-		trajectoryParent_->cameraRotation_ = trajectoryParent_->cameraRotation_ + angle;
-		if (trajectoryParent_->cameraRotation_ > 2.0*PI) trajectoryParent_->cameraRotation_ -= 2.0*PI;
-		coscam = cos(trajectoryParent_->cameraRotation_);
-		sincam = sin(trajectoryParent_->cameraRotation_);
+		trajectoryParent_->cameraPos_.add(dx, -dy, dz);
+		if (trajectoryParent_->cameraPos_.z > -1.0) trajectoryParent_->cameraPos_.z = -1.0;
+// 		trajectoryParent_->cameraRotation_ = trajectoryParent_->cameraRotation_ + angle;
+// 		if (trajectoryParent_->cameraRotation_ > 2.0*PI) trajectoryParent_->cameraRotation_ -= 2.0*PI;
+// 		coscam = cos(trajectoryParent_->cameraRotation_);
+// 		sincam = sin(trajectoryParent_->cameraRotation_);
 		// Now create the new matrix
-		trajectoryParent_->cameraMatrix_.rows[0].set(coscam,-sincam,0.0,trajectoryParent_->camera_.x*coscam-trajectoryParent_->camera_.y*sincam);
-		trajectoryParent_->cameraMatrix_.rows[1].set(sincam,coscam,0.0,trajectoryParent_->camera_.x*sincam-trajectoryParent_->camera_.y*coscam);
-		trajectoryParent_->cameraMatrix_.rows[2].set(0.0,0.0,1.0,trajectoryParent_->camera_.z);
-		trajectoryParent_->cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
+// 		trajectoryParent_->cameraMatrix_.rows[0].set(coscam,-sincam,0.0,trajectoryParent_->camera_.x*coscam-trajectoryParent_->camera_.y*sincam);
+// 		trajectoryParent_->cameraMatrix_.rows[1].set(sincam,coscam,0.0,trajectoryParent_->camera_.x*sincam-trajectoryParent_->camera_.y*coscam);
+// 		trajectoryParent_->cameraMatrix_.rows[2].set(0.0,0.0,1.0,trajectoryParent_->camera_.z);
+// 		trajectoryParent_->cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
 	}
 	calculateViewMatrix();
 	// Log camera change
@@ -182,7 +183,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 void Model::adjustZoom(bool zoomin)
 {
 	msg.enter("Model::adjustZoom");
-	double dz = (trajectoryParent_ == NULL ? -camera_.z : -trajectoryParent_->camera_.z);
+	double dz = (trajectoryParent_ == NULL ? -cameraPos_.z : -trajectoryParent_->cameraPos_.z);
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz,0.0);
@@ -190,22 +191,22 @@ void Model::adjustZoom(bool zoomin)
 	msg.exit("Model::adjustZoom");
 }
 
-// Reset Camera
-void Model::resetCamera(const Vec3<double> &newr)
-{
-	// Adjust the models camera variables
-	msg.enter("Model::resetCamera");
-	// Reset current camera position
-	camera_.zero();
-	cameraRotation_ = 0.0;
-	// Set specified position
-	adjustCamera(newr.x, -newr.y, newr.z, 0.0);
-	// Recalculate viewing matrix
-	calculateViewMatrix();
-	// Log camera change
-	changeLog.add(Log::Camera);
-	msg.exit("Model::resetCamera");
-}
+// // Reset Camera
+// void Model::resetCamera(const Vec3<double> &newr)
+// {
+// 	// Adjust the models camera variables
+// 	msg.enter("Model::resetCamera");
+// 	// Reset current camera position
+// 	camera_.zero();
+// 	cameraRotation_ = 0.0;
+// 	// Set specified position
+// 	adjustCamera(newr.x, -newr.y, newr.z, 0.0);
+// 	// Recalculate viewing matrix
+// 	calculateViewMatrix();
+// 	// Log camera change
+// 	changeLog.add(Log::Camera);
+// 	msg.exit("Model::resetCamera");
+// }
 
 // Reset View
 void Model::resetView()
@@ -216,7 +217,6 @@ void Model::resetView()
 	Atom *i, target;
 	bool done = FALSE;
 	double z, largest = 0.0;
-	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (i = atoms_.first(); i != NULL; i = i->next)
@@ -227,7 +227,10 @@ void Model::resetView()
 	target.r() = cell_.centre();
 	target.r().add(0.0,0.0,cell_.lengths().z+largest);
 	newcam.set(0.0,0.0,0.0);
-	resetCamera(newcam);
+	cameraPos_.set(0.0,0.0,-10.0);
+	cameraUp_.set(0.0,1.0,0.0);
+	cameraTarget_.set(0.0,0.0,0.0);
+	return;
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainView.isValid() && (atoms_.nItems() != 0))
@@ -260,8 +263,8 @@ void Model::resetView()
 	}
 	else
 	{
-		newcam.set(0.0,0.0,-10.0);
-		resetCamera(newcam);
+		cameraPos_.set(0.0,0.0,-10.0);
+// 		resetCamera(newcam);
 	}
 	// Recalculate viewing matrix
 	calculateViewMatrix();
@@ -277,17 +280,25 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 	msg.enter("Model::axisRotateView");
 	static double theta, camrot;
 	static Mat4<double> newrotmat, oldrotmat;
-	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
-	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
+// 	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
+// 	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
 	// Account for the orientation of the current camera up vector.
 // 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
 // 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
 	// Generate quaternion
 	newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
-	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
+// 	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
 	// Now, multiply our matrices together...
-	if (trajectoryParent_ == NULL) rotationMatrix_ = newrotmat * oldrotmat;
-	else trajectoryParent_->rotationMatrix_ = newrotmat * oldrotmat;
+	if (trajectoryParent_ == NULL)
+	{
+		cameraPos_ *= newrotmat;
+		cameraUp_ *= newrotmat;
+	}
+	else
+	{
+		trajectoryParent_->cameraPos_ *= newrotmat;
+		trajectoryParent_->cameraUp_ *= newrotmat;
+	}
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -300,26 +311,37 @@ void Model::rotateView(double dx, double dy)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::rotateView");
-	static double rotx, roty, theta, sinx, cosx, siny, cosy, camrot;
-	static Mat4<double> newrotmat, oldrotmat;
-	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
-	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
+	static double rotx, roty, theta = 0.0, camrot;
+	static Mat4<double> newrotmat;
+	// Now, generate new camera position and up vector
 	// Account for the orientation of the current camera up vector.
-	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
-	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
-	// Calculate cos/sin terms for needless speedup!
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	newrotmat.rows[0].set(cosy,0.0,siny,0.0);
-	newrotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-	newrotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-	newrotmat.rows[3].set(0.0,0.0,0.0,1.0);
-	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
-	// Now, multiply our matrices together...
-	if (trajectoryParent_ == NULL) rotationMatrix_ = newrotmat * oldrotmat;
-	else trajectoryParent_->rotationMatrix_ = newrotmat * oldrotmat;
+	// Camera up vector provides Y, while cross of upvector and eye->target vector
+	Vec3<double> xaxis, yaxis, zaxis, moveaxis(dx,dy,0.0);
+	moveaxis.normalise();
+	if (trajectoryParent_ == NULL)
+	{
+		yaxis = cameraUp_;
+		zaxis = cameraPos_ - cameraTarget_;
+		zaxis.normalise();
+		xaxis = cameraUp_ * zaxis;
+		xaxis.print();
+		yaxis.print();
+		rotx = ( (1.0-moveaxis.dp(xaxis))*dx + moveaxis.dp(yaxis)*dy );
+		roty = ( moveaxis.dp(yaxis)*dx + (1.0-moveaxis.dp(xaxis))*dy );
+// 		roty = ( dx*cos(theta) - dy*sin(theta) );
+// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
+// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
+
+		newrotmat.createRotationXY(rotx, roty);
+		cameraPos_ *= newrotmat;
+		cameraUp_ *= newrotmat;
+	}
+	else
+	{
+		trajectoryParent_->cameraPos_ *= newrotmat;
+		trajectoryParent_->cameraUp_ *= newrotmat;
+	}
+	cameraPos_.print();
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -328,12 +350,21 @@ void Model::rotateView(double dx, double dy)
 }
 
 // Calculate View Matrix
-void Model::calculateViewMatrix()
+void Model::calculateViewMatrix(bool recalcmatrix)
 {
-	// Calculate full viewing matrix
-	if (trajectoryParent_ == NULL) viewMatrix_ = cameraMatrix_ * rotationMatrix_;
-	else viewMatrix_ = trajectoryParent_->cameraMatrix_ * trajectoryParent_->rotationMatrix_;
-	// Calculate inverse
+	if (recalcmatrix)
+	{
+		Vec3<double> f = cameraTarget_ - cameraPos_;
+		f.normalise();
+		cameraUp_.normalise();
+		Vec3<double> s, u;
+		s = f * cameraUp_;
+		u = s * f;
+		viewMatrix_.set(0, s.x, s.y, s.z, 0.0);
+		viewMatrix_.set(1, u.x, u.y, u.z, 0.0);
+		viewMatrix_.set(2, -f.x, -f.y, -f.z, 0.0);
+		viewMatrix_.set(3, 0.0, 0.0, 0.0, 1.0);
+	}
 	viewMatrixInverse_ = viewMatrix_;
 	viewMatrixInverse_.invert();
 }
@@ -465,27 +496,29 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	static Vec3<double> newpoint;
 	static Mat4<double> rotmat;
 	double radius, depth;
-	depth = -camera_.z - prefs.drawDepth();
+	depth = -cameraPos_.z - prefs.drawDepth();
+	printf("GUIDE TO MODEL IS BROKEN.\n");
+	return newpoint;
 	//printf("DEPTH = %f, DRAWDEPTH = %f\n",depth, prefs.drawDepth());
 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(camera_.x, camera_.y, depth);
+	newpoint.set(cameraPos_.x, cameraPos_.y, depth);
 	//printf("newpoint1 "); newpoint.print();
-	rotmat = rotationMatrix_;
-	rotmat.invert();
-	newpoint *= rotmat;
-	//printf("newpoint2 "); newpoint.print();
-	guidepoint = worldToScreen(newpoint);
-	//printf("guidepoint "); guidepoint.print();
-	radius = guidepoint.w;
-	// Now, calculate the position of the clicked point on the guide
-	newpoint.x = sx - (gui.mainView.width() / 2.0 );
-	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
-	newpoint /= radius;
-	newpoint.z = -prefs.drawDepth();
-	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
-	newpoint *= viewMatrixInverse_;
-	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
-	newpoint += cell_.centre();
+// 	rotmat = rotationMatrix_;
+// 	rotmat.invert();
+// 	newpoint *= rotmat;
+// 	//printf("newpoint2 "); newpoint.print();
+// 	guidepoint = worldToScreen(newpoint);
+// 	//printf("guidepoint "); guidepoint.print();
+// 	radius = guidepoint.w;
+// 	// Now, calculate the position of the clicked point on the guide
+// 	newpoint.x = sx - (gui.mainView.width() / 2.0 );
+// 	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
+// 	newpoint /= radius;
+// 	newpoint.z = -prefs.drawDepth();
+// 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
+// 	newpoint *= viewMatrixInverse_;
+// 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
+// 	newpoint += cell_.centre();
 	msg.exit("Model::guideToModel");
 	return newpoint;
 }
@@ -493,7 +526,7 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 // Return the camera position vector
 Vec3<double> Model::camera()
 {
-	return (trajectoryParent_ == NULL ? camera_ : trajectoryParent_->camera_);
+	return (trajectoryParent_ == NULL ? cameraPos_ : trajectoryParent_->cameraPos_);
 }
 
 // Set view to be along the specified cartesian axis
@@ -501,11 +534,10 @@ void Model::viewAlong(double x, double y, double z)
 {
 	msg.enter("Model::viewAlong");
 	// Set model rotation matrix to be along the specified axis
-	Vec3<double> v;
-	v.set(x,y,z);
-	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
-	setRotation(-v.z,v.y);
+	cameraTarget_.zero();
+	cameraPos_.set(x,y,z);
+	cameraUp_.set(0.0,1.0,0.0);
+	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlong");
@@ -519,9 +551,10 @@ void Model::viewAlongCell(double x, double y, double z)
 	Vec3<double> v;
 	v.set(x,y,z);
 	v *= cell()->transpose();
-	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
-	setRotation(-v.z,v.y);
+	cameraTarget_.zero();
+	cameraPos_ = v;
+	cameraUp_.set(0.0,1.0,0.0);
+	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");

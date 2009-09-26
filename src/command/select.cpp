@@ -425,20 +425,6 @@ bool Command::function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &r
 	return TRUE;
 }
 
-// Select all atoms within a distance of target atom
-bool Command::function_SelectRadial(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
-	if (i == NULL) return FALSE;
-	int nselected = obj.rs->nSelected();
-	obj.rs->beginUndoState("Radial selection %8.4f from atom %i", c->argd(1), i->id()+1);
-	obj.rs->selectRadial(i, c->argd(1));
-	obj.rs->endUndoState();
-	rv.set(obj.rs->nSelected() - nselected);
-	return TRUE;
-}
-
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
 bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
