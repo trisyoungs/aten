@@ -402,7 +402,7 @@ class Model
 	// Spin view about the z axis
 	void zRotateView(double angle);
 	// Translate view (modify camera target and position simultaneously)
-	void translateCamera(double dx, double dy);
+	void translateCamera(double screendx, double screendy);
 	// Set view to be along the specified cartesian axis
 	void viewAlong(double x, double y, double z);
 	// Set view to be along the specified cell axis
