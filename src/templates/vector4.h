@@ -188,7 +188,7 @@ template <class T> Vec4<T> Vec4<T>::operator+(Vec3<T> v)
 	result.x = x+v.x;
 	result.y = y+v.y;
 	result.z = z+v.z;
-	result.w = w+v.w;
+	result.w = w;
 	return result;
 }
 
@@ -229,7 +229,7 @@ template <class T> Vec4<T> Vec4<T>::operator-(Vec3<T> v)
 	result.x = x-v.x;
 	result.y = y-v.y;
 	result.z = z-v.z;
-	result.w = w-v.w;
+	result.w = w;
 	return result;
 }
 

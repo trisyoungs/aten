@@ -267,7 +267,7 @@ void Canvas::glSubsel3d()
 	}
 }
 
-void Canvas::renderRotationGlobe(double *rmat, double camrot)
+void Canvas::renderRotationGlobe(double *rmat)
 {
 	// Draw the coordinate axes at the bottom right of the screen.
 	// First set up the small viewport and apply our stored projection matrix.
@@ -280,7 +280,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	glMultMatrixd(pmat);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotated(camrot*DEGRAD,0.0,0.0,1.0);
+// 	glRotated(camrot*DEGRAD,0.0,0.0,1.0);
 	glMultMatrixd(rmat);
 	glLineWidth(1.0);
 	glDisable(GL_LIGHTING);

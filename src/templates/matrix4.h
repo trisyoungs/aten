@@ -97,6 +97,8 @@ template <class T> class Mat4
 	// Create rotation matrix about Z
 	void createRotationZ(double angle);
 	// Create axis rotation quaternion
+	void createRotationAxis(Vec3<T> &axis, double angle);
+	void createRotationAxis(Vec4<T> &axis, double angle);
 	void createRotationAxis(double ax, double ay, double az, double angle);
 	// Calculate the determinant of the matrix.
 	double determinant() const;
@@ -356,6 +358,18 @@ template <class T> void Mat4<T>::createRotationZ(double angle)
 	set(1,-sinx,cosx,0.0,0.0);
 	set(2,0.0,0.0,1.0,0.0);
 	set(3,0.0,0.0,0.0,1.0);
+}
+
+// Create axis rotation quaternion
+template <class T> void Mat4<T>::createRotationAxis(Vec3<T> &axis, double angle)
+{
+	createRotationAxis(axis.x, axis.y, axis.z, angle);
+}
+
+// Create axis rotation quaternion
+template <class T> void Mat4<T>::createRotationAxis(Vec4<T> &axis, double angle)
+{
+	createRotationAxis(axis.x, axis.y, axis.z, angle);
 }
 
 // Create axis rotation quaternion

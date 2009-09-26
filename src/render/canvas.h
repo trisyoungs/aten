@@ -249,7 +249,7 @@ class Canvas
 	// Draw regions specified for MC insertion
 	void renderRegions();
 	// Render the rotation globe
-	void renderRotationGlobe(double *rotmat, double camrot);
+	void renderRotationGlobe(double *rotmat);
 	// Render surfaces
 	void renderSurfaces();
 

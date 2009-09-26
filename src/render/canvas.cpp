@@ -572,7 +572,7 @@ void Canvas::doProjection()
 		}
 		else
 		{
-			top = tan(prefs.perspectiveFov() / DEGRAD) * (displayModel_ == NULL ? 1.0 : displayModel_->camera().z);
+			top = tan(prefs.perspectiveFov() / DEGRAD) * (displayModel_ == NULL ? 1.0 : fabs(displayModel_->viewVector().z));
 			bottom = -top;
 			glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 		}
