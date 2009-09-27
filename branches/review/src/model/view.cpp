@@ -238,7 +238,7 @@ void Model::zRotateView(double angle)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::zRotateView");
-	if (angle < 0.001)
+	if (fabs(angle) < 0.001)
 	{
 		msg.exit("Model::zRotateView");
 		return;
@@ -247,13 +247,11 @@ void Model::zRotateView(double angle)
 	if (trajectoryParent_ == NULL)
 	{
 		newrotmat.createRotationAxis(viewMatrix_.rows[2], angle);
-// 		cameraPosition_ *= newrotmat;
 		cameraUp_ *= newrotmat;
 	}
 	else
 	{
 		newrotmat.createRotationAxis(trajectoryParent_->viewMatrix_.rows[2], angle);
-// 		trajectoryParent_->cameraPosition_ *= newrotmat;
 		trajectoryParent_->cameraUp_ *= newrotmat;
 	}
 	// Recalculate view matrix
@@ -486,7 +484,9 @@ Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 	// We also need to subtract the cell centre coordinate
 	modelr -= cell_.centre();
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	worldr = viewMatrix_ * modelr;
+	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * modelr - cameraPosition_;
+	else worldr = trajectoryParent_->viewMatrix_ * modelr - trajectoryParent_->cameraPosition_;
+// 	worldr = viewMatrix_ * modelr;
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
@@ -515,7 +515,9 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	// Projection formula is : worldr = P x M x modelr
 	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
 	modelr.set(v.x, v.y, v.z, 1.0);
-	worldr = viewMatrix_ * modelr;
+	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * modelr - cameraPosition_;
+	else worldr = trajectoryParent_->viewMatrix_ * modelr - trajectoryParent_->cameraPosition_;
+// 	worldr = viewMatrix_ * modelr;
 	//viewMatrix_.print();
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
