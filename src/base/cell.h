@@ -134,8 +134,6 @@ class Cell
 	// Spacegroup
 	*/
 	private:
-	// Spacegroup name (if any)
-	Dnchar spacegroup_;
 	// Spacegroup ID (if any)
 	int spacegroupId_;
 	// Manual list of generators, if no spacegroup is set
@@ -143,11 +141,7 @@ class Cell
 
 	public:
 	// Sets the spacegroup of the model
-	void setSpacegroup(const char *name);
-	// Return spacegroup name of the model
-	const char *spacegroup();
-	// Set the spacegroup to the spacegroup Id supplied
-	void setSpacegroupId(int i);
+	void setSpacegroupId(int id);
 	// Return the spacegroup of the model
 	int spacegroupId();
 	// Add manual generator

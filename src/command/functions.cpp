@@ -471,6 +471,7 @@ void Command::initPointers()
 	// View Commands
 	pointers_[AxisRotateView] = &Command::function_AxisRotateView;
 	pointers_[GetView] = &Command::function_GetView;
+	pointers_[LookAt] = &Command::function_LookAt;
 	pointers_[Orthographic] = &Command::function_Orthographic;
 	pointers_[Perspective] = &Command::function_Perspective;
 	pointers_[ResetView] = &Command::function_ResetView;

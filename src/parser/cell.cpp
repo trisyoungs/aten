@@ -216,7 +216,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(ptr->spacegroupId());
 			break;
 		case (CellVariable::SpacegroupName):
-			rv.set(ptr->spacegroup());
+			rv.set(Spacegroups[ptr->spacegroupId()].name);
 			break;
 		case (CellVariable::Type):
 			rv.set(lowerCase(Cell::cellType(ptr->type())));

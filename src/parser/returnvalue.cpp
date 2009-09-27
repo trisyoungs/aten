@@ -966,29 +966,94 @@ bool ReturnValue::decrease()
 			break;
 		case (VTypes::AtomData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Atom*) valueP_)->prev;
 			break;
 		case (VTypes::BondData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Bond*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Forcefield*) valueP_)->prev;
+			break;
+		case (VTypes::ForcefieldAtomData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ForcefieldAtom*) valueP_)->prev;
+			break;
+		case (VTypes::ForcefieldBoundData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ForcefieldBound*) valueP_)->prev;
 			break;
 		case (VTypes::GridData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Grid*) valueP_)->prev;
 			break;
 		case (VTypes::ModelData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Model*) valueP_)->prev;
 			break;
 		case (VTypes::PatternData):
 			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
+			}
 			else valueP_ = ((Pattern*) valueP_)->prev;
 			break;
-		// TGAY What about ForcefieldAtomData, ForcefieldBoundData, PatternBoundData
+		case (VTypes::PatternBoundData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((PatternBound*) valueP_)->prev;
+			break;
 		default:
 			printf("Internal Error: No 'decrease' has been defined for %s.\n", VTypes::aDataType(type_));
 			break;

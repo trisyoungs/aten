@@ -72,15 +72,29 @@ void Model::copyViewMatrix(double *m)
 	else trajectoryParent_->viewMatrix_.copyColumnMajor(m);
 }
 
-// Set the current rotation matrix
+// Set the current view matrix
 void Model::setViewMatrix(Mat4<double> &rmat)
 {
-	if (trajectoryParent_ == NULL) viewMatrix_ = rmat;
-	else trajectoryParent_->viewMatrix_ = rmat;
+	if (trajectoryParent_ == NULL)
+	{
+		cameraUp_ = rmat.rows[1];
+		cameraPosition_ = cameraTarget_ + rmat.rows[2];
+	}
+	else
+	{
+		trajectoryParent_->cameraUp_ = rmat.rows[1];
+		trajectoryParent_->cameraPosition_ = trajectoryParent_->cameraTarget_ + rmat.rows[2];
+	}
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
+}
+
+// Return the view matrix
+Mat4<double> Model::viewMatrix()
+{
+	return viewMatrix_;
 }
 
 // Reset View
@@ -99,7 +113,7 @@ void Model::resetView()
 		z = i->r().absMax();
 		if (z > largest) largest = z;
 	}
-	target.r() = cell_.centre();
+// TGAY	target.r() = cell_.centre();
 	target.r().add(0.0,0.0,cell_.lengths().z+largest);
 	if (trajectoryParent_ == NULL)
 	{
@@ -269,13 +283,13 @@ void Model::zoomCameraThrottled(bool zoomin)
 	{
 		Vec3<double> viewvec = cameraTarget_ - cameraPosition_;
 		viewvec *= prefs.zoomThrottle();
-		setCameraPosition(cameraPosition_ + (zoomin ? viewvec : -viewvec));
+		setCameraPosition(cameraPosition_ - (zoomin ? viewvec : -viewvec));
 	}
 	else
 	{
 		Vec3<double> viewvec = trajectoryParent_->cameraTarget_ - trajectoryParent_->cameraPosition_;
 		viewvec *= prefs.zoomThrottle();
-		setCameraPosition(trajectoryParent_->cameraPosition_ + (zoomin ? viewvec : -viewvec));
+		setCameraPosition(trajectoryParent_->cameraPosition_ - (zoomin ? viewvec : -viewvec));
 	}
 	gui.mainView.doProjection();
 	msg.exit("Model::zoomCameraThrottled");
@@ -403,6 +417,25 @@ void Model::setCameraUp(Vec3<double> v)
 	changeLog.add(Log::Camera);
 }
 
+// Set all camera vectors simultaneously
+void Model::setCamera(Vec3<double> pos, Vec3<double> target, Vec3<double> up)
+{
+	if (trajectoryParent_ == NULL)
+	{
+		cameraPosition_ = pos;
+		cameraTarget_ = target;
+		cameraUp_ = up;
+		cameraUp_.normalise();
+	}
+	else
+	{
+		trajectoryParent_->cameraPosition_ = pos;
+		trajectoryParent_->cameraTarget_ = target;
+		trajectoryParent_->cameraUp_ = up;
+		trajectoryParent_->cameraUp_.normalise();
+	}
+}
+
 // Return the camera view vector (position->target)
 Vec3<double> Model::viewVector() const
 {
@@ -445,10 +478,10 @@ void Model::projectAtom(Atom *i)
 	// Projection formula is : worldr = P x M x modelr 
 	modelr.set(i->r(), 1.0);
 	// We also need to subtract the cell centre coordinate
-	modelr -= cell_.centre();
+// 	modelr -= cell_.centre();   TGAY
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * modelr - cameraPosition_;
-	else worldr = trajectoryParent_->viewMatrix_ * modelr - trajectoryParent_->cameraPosition_;
+	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * (modelr - cameraPosition_);
+	else worldr = trajectoryParent_->viewMatrix_ * (modelr - trajectoryParent_->cameraPosition_);
 	i->rWorld().set(worldr.x, worldr.y, worldr.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
@@ -482,11 +515,10 @@ Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 	// Projection formula is : worldr = P x M x modelr 
 	modelr.set(pos, 1.0);
 	// We also need to subtract the cell centre coordinate
-	modelr -= cell_.centre();
+// TGAY	modelr -= cell_.centre();
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * modelr - cameraPosition_;
-	else worldr = trajectoryParent_->viewMatrix_ * modelr - trajectoryParent_->cameraPosition_;
-// 	worldr = viewMatrix_ * modelr;
+	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * (modelr - cameraPosition_);
+	else worldr = trajectoryParent_->viewMatrix_ * (modelr - trajectoryParent_->cameraPosition_);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
@@ -515,10 +547,8 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	// Projection formula is : worldr = P x M x modelr
 	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
 	modelr.set(v.x, v.y, v.z, 1.0);
-	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * modelr - cameraPosition_;
-	else worldr = trajectoryParent_->viewMatrix_ * modelr - trajectoryParent_->cameraPosition_;
-// 	worldr = viewMatrix_ * modelr;
-	//viewMatrix_.print();
+	if (trajectoryParent_ == NULL) worldr = viewMatrix_ * (modelr - cameraPosition_);
+	else worldr = trajectoryParent_->viewMatrix_ * (modelr - trajectoryParent_->cameraPosition_);
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;

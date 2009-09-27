@@ -36,7 +36,7 @@ void Canvas::renderModelLabels()
 	static ForcefieldAtom *ffa;
 	static Vec3<double> cellCentre;
 	// If we have a unit cell we must account for the origin translation
-	cellCentre = displayModel_->cell()->centre();
+// TGAY	cellCentre = displayModel_->cell()->centre();
 	for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
 		// Check if atom has labels and is visible
@@ -104,7 +104,7 @@ void Canvas::renderModelMeasurements()
 	static char text[256];
 	static Atom **atoms;
 	// Grab cell origin to get correct positioning
-	cellCentre = -displayModel_->cell()->centre();
+//TGAY 	cellCentre = -displayModel_->cell()->centre();
 	glPushMatrix();
 	  glTranslated(cellCentre.x, cellCentre.y, cellCentre.z);
 	  // Distances
@@ -233,24 +233,28 @@ void Canvas::renderModelCell()
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
-		//Mat4<double> mat = displayModel_->get_cell()->get_transpose_as_mat4();
-		//mat.get_column_major(glmat);
 		GLdouble glmat[16];
 		displayModel_->cell()->axesForGl(glmat);
 		glPushMatrix();
 		  glMultMatrixd(glmat);
-		  if (prefs.isVisibleOnScreen(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
+		  if (prefs.isVisibleOnScreen(Prefs::ViewCell))
+		  {
+			glPushMatrix();
+			  glTranslated(00.5,0.5,0.5);
+			  glCallList(list_[GLOB_WIREUNITCUBE]);
+			glPopMatrix();
+		  }
 		  lengths = displayModel_->cell()->lengths();
 		  // Render cell axis arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewCellAxes))
 		  {
-			glTranslated(-0.5,-0.5,-0.5);
+// 			glTranslated(-0.5,-0.5,-0.5);  TGAY
 			glScaled(1.0/lengths.x,1.0/lengths.y,1.0/lengths.z);
 			glCallList(list_[GLOB_CELLAXES]);
 		  }
 		glPopMatrix();
 		// Here, translate the initial drawing position to be 0,0,0 in cell coordinates
-		cellCentre = -cell->centre();
-		glTranslated(cellCentre.x,cellCentre.y,cellCentre.z);
+// TGAY		cellCentre = -cell->centre();
+// 		glTranslated(cellCentre.x,cellCentre.y,cellCentre.z);
 	}
 }

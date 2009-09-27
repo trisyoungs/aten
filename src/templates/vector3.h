@@ -74,6 +74,7 @@ template <class T> class Vec3
 	void operator+=(const Vec4<T>&);
 	Vec3<T> operator+(T) const;
 	Vec3<T> operator+(const Vec3<T>&) const;
+	Vec3<T> operator+(const Vec4<T>&) const;
 	// Operators - and -=
 	void operator-=(T);
 	void operator-=(const Vec3<T>&);
@@ -81,6 +82,7 @@ template <class T> class Vec3
 	Vec3<T> operator-(T) const;
 	Vec3<T> operator-() const;
 	Vec3<T> operator-(const Vec3<T>&) const;
+	Vec3<T> operator-(const Vec4<T>&) const;
 	// Operators / and /=
 	void operator/=(const T);
 	void operator/=(const Vec3<T>&);
@@ -273,6 +275,16 @@ template <class T> Vec3<T> Vec3<T>::operator+(const Vec3<T> &v) const
 	return result;
 }
 
+// Operator + (Vec4)
+template <class T> Vec3<T> Vec3<T>::operator+(const Vec4<T> &v) const
+{
+	Vec3<T> result;
+	result.x = x+v.x;
+	result.y = y+v.y;
+	result.z = z+v.z;
+	return result;
+}
+
 // Operator -= (T)
 template <class T> void Vec3<T>::operator-=(T a)
 {
@@ -320,7 +332,19 @@ template <class T> Vec3<T> Vec3<T>::operator-(T a) const
 template <class T> Vec3<T> Vec3<T>::operator-(const Vec3<T> &v) const
 {
 	Vec3<T> result;
-	result.set(x-v.x,y-v.y,z-v.z);
+	result.x = x-v.x;
+	result.y = y-v.y;
+	result.z = z-v.z;
+	return result;
+}
+
+// Operator - (Vec3)
+template <class T> Vec3<T> Vec3<T>::operator-(const Vec4<T> &v) const
+{
+	Vec3<T> result;
+	result.x = x-v.x;
+	result.y = y-v.y;
+	result.z = z-v.z;
 	return result;
 }
 
