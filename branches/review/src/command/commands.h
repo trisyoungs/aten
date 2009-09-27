@@ -514,6 +514,7 @@ class Command
 		// View
 		AxisRotateView,
 		GetView,
+		LookAt,
 		Orthographic,
 		Perspective,
 		ResetView,
@@ -946,6 +947,7 @@ class Command
 	// View
 	static bool function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_LookAt(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv);

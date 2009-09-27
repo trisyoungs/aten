@@ -216,7 +216,6 @@ void Model::setSpacegroup(const char *sg)
 		}
 	}
 	cell_.setSpacegroupId(tsgn->SgNumber);
-	cell_.setSpacegroup(tsgn->HallSymbol);	
 
 	// Initialize the SgInfo structure
 	InitSgInfo(&spacegroup_);

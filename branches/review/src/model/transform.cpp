@@ -110,7 +110,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = i->rWorld() - localcog;
 		newr = (rotmat * newr) + localcog;
-		i->r() = (viewMatrixInverse_ * newr) + cell_.centre();;
+		i->r() = (viewMatrixInverse_ * newr); // TGAY+ cell_.centre();;
 	}
 	changeLog.add(Log::Visual);
 	projectSelection();
@@ -187,7 +187,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 	{
 		newr = i->rWorld() + v;
 		//newr += v;
-		newr = (viewMatrixInverse_ * newr) + cell_.centre();
+		newr = (viewMatrixInverse_ * newr); // TGAY + cell_.centre();
 		positionAtom(i, newr);
 	}
 	changeLog.add(Log::Visual);

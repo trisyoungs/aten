@@ -57,7 +57,6 @@ Cell::Cell()
 	centre_.zero();
 	volume_ = 0.0;
 	reciprocalVolume_ = 0.0;
-	spacegroup_ = 0;
 	spacegroupId_ = 0;
 	parent_ = NULL;
 }
@@ -305,29 +304,17 @@ double Cell::density() const
 	return density_;
 }
 
-// Sets the spacegroup Id
-void Cell::setSpacegroupId(int i)
+// Sets the spacegroup id
+void Cell::setSpacegroupId(int id)
 {
-	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroupId_ = i; // TGAY
+	if ((id < 0) || (id > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", id);
+	else spacegroupId_ = id;
 }
 
 // Return the spacegroup Id
 int Cell::spacegroupId()
 {
 	return spacegroupId_;
-}
-
-// Sets the spacegroup by text name
-void Cell::setSpacegroup(const char *s)
-{
-	// TGAY
-}
-
-// Return the spacegroup name
-const char *Cell::spacegroup()
-{
-	return spacegroup_.get();
 }
 
 // Add manual generator

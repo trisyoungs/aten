@@ -373,10 +373,6 @@ class Model
 	// View
 	*/
 	private:
-	// Camera rotation
-// 	double cameraRotation_;
-	// Camera, model, and view (cam*rot*cell) matrices associated with the model
-// 	Mat4<double> cameraMatrix_, rotationMatrix_, viewMatrix_;
 	// View matrix
 	Mat4<double> viewMatrix_, viewMatrixInverse_;
 	// Camera position
@@ -393,6 +389,8 @@ class Model
 	void copyViewMatrix(double *m);
 	// Set the current view matrix
 	void setViewMatrix(Mat4<double> &rmat);
+	// Return the view matrix
+	Mat4<double> viewMatrix();
 	// Reset model view
 	void resetView();
 	// Rotate view about arbitrary axis
@@ -423,6 +421,8 @@ class Model
 	Vec3<double> cameraUp() const;
 	// Set the camera up
 	void setCameraUp(Vec3<double> v);
+	// Set all camera vectors simultaneously
+	void setCamera(Vec3<double> pos, Vec3<double> target, Vec3<double> up);
 	// Return the camera view vector (position->target)
 	Vec3<double> viewVector() const;
 	// Project the model coordinates of the atom into local and 2D coordinates

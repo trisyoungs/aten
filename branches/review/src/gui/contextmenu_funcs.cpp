@@ -45,10 +45,10 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 		viewTarget->selectAtom(target);
 		viewTarget->endUndoState();
 		gui.mainView.postRedisplay();
-		// Make sure context menu items are enabled, since nothing may have been selected beforehand
-		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
 	}
 	// Run the popup
+	// Make sure context menu items are enabled, since nothing may have been selected beforehand
+	mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
 	mainWindow->ui.AtomContextMenu->exec(pos);
 }
 
