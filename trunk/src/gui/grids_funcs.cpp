@@ -70,7 +70,7 @@ void AtenGrids::refresh()
 // 	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	for (Grid *g = m->grids(); g != NULL; g = g->next)
 	{
 		item = new TListWidgetItem(ui.GridList);
@@ -124,7 +124,7 @@ void AtenGrids::on_actionGridCopy_triggered(bool checked)
 		msg.print("No grid selected to copy.\n");
 		return;
 	}
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	aten.copyGrid(g);
 }
@@ -137,7 +137,7 @@ void AtenGrids::on_actionGridCut_triggered(bool checked)
 		msg.print("No grid selected to cut.\n");
 		return;
 	}
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	aten.copyGrid(g);
 	m->removeGrid(g);
@@ -150,7 +150,7 @@ void AtenGrids::on_actionGridDelete_triggered(bool checked)
 	// Get the current row selected in the grid list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	m->removeGrid(g);
 	refresh();
@@ -167,7 +167,7 @@ void AtenGrids::on_actionGridPaste_triggered(bool checked)
 		msg.print("No grid data on clipboard.\n");
 		return;
 	}
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
@@ -251,7 +251,7 @@ void AtenGrids::refreshGridInfo()
 	msg.enter("AtenGrids::refreshGridInfo");
 	// Get the current row selected in the grid list
 	Grid *g;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	int row = ui.GridList->currentRow();
 	if (row == -1)
 	{
@@ -307,7 +307,7 @@ void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	ui.GridNegativeColourButton->setEnabled(g->isSymmetric());
 	g->setUseColourScale(FALSE);
@@ -323,7 +323,7 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setUseColourScale(TRUE);
 	gui.mainView.postRedisplay();
@@ -346,7 +346,7 @@ void AtenGrids::gridOriginChanged(int component, double value)
 	// Get the current row selected in the grid list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get and re-set origin
 	static Vec3<double> o;
@@ -361,7 +361,7 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 	// Get the current row selected in the grid list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get and re-set axes
 	static Mat3<double> axes;
@@ -383,7 +383,7 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setCutoff(d);
 	gui.mainView.postRedisplay();
@@ -395,7 +395,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setStyle(Grid::SurfaceStyle (index));
 	gui.mainView.postRedisplay();
@@ -407,7 +407,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
 	double *col = g->positiveColour();
@@ -430,7 +430,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
 	double *col = g->positiveColour();
@@ -453,7 +453,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setColourScale(n-1);
 	QString scalename = "(";
@@ -469,7 +469,7 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();

@@ -75,7 +75,7 @@ void AtenPosition::flipSelection(int axis)
 void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModel()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
 	ui.CentreXSpin->setValue(centre.x);
 	ui.CentreYSpin->setValue(centre.y);
 	ui.CentreZSpin->setValue(centre.z);
@@ -129,7 +129,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	Vec3<double> tvec;
 	tvec.set(axis, double(dir));
 	// Grab model in preparation for undostate...
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
@@ -152,7 +152,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 			msg.print("No unit cell defined for model.\n");
 			return;
 		}
-		tvec = aten.currentModel()->cell()->axes().getRow(axis);
+		tvec = aten.currentModelOrFrame()->cell()->axes().getRow(axis);
 		tvec *= double(dir) * step;
 		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
@@ -191,7 +191,7 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v.normalise();
 	v *= ui.VectorDeltaSpin->value();
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
@@ -207,7 +207,7 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v.normalise();
 	v *= -ui.VectorDeltaSpin->value();
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
@@ -225,7 +225,7 @@ void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
 	v.x = ui.RepositionTargetXSpin->value() - ui.RepositionReferenceXSpin->value();
 	v.y = ui.RepositionTargetYSpin->value() - ui.RepositionReferenceYSpin->value();
 	v.z = ui.RepositionTargetZSpin->value() - ui.RepositionReferenceZSpin->value();
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
@@ -236,7 +236,7 @@ void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
 void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModel()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
 	ui.RepositionReferenceXSpin->setValue(centre.x);
 	ui.RepositionReferenceYSpin->setValue(centre.y);
 	ui.RepositionReferenceZSpin->setValue(centre.z);
@@ -245,7 +245,7 @@ void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
 void AtenPosition::on_DefineRepositionTargetButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModel()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
 	ui.RepositionTargetXSpin->setValue(centre.x);
 	ui.RepositionTargetYSpin->setValue(centre.y);
 	ui.RepositionTargetZSpin->setValue(centre.z);

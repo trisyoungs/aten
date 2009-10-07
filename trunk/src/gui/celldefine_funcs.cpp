@@ -53,7 +53,7 @@ void AtenCellDefine::showWindow()
 void AtenCellDefine::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Cell *cell = m->cell();
 	Cell::CellType ct = cell->type();
 	static char s[128];
@@ -97,7 +97,7 @@ void AtenCellDefine::cellChanged()
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
 	CommandNode::run(Command::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
-	Model *m = aten.currentModel()->renderSource();
+	Model *m = aten.currentModelOrFrame();
 	char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
@@ -175,7 +175,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
 	ui.CellSpacegroupEdit->setText("");
 	// Set spacegroup label
-	Model *m = aten.currentModel()->renderSource();
+	Model *m = aten.currentModelOrFrame();
 	sprintf(s,"%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
 	ui.SpacegroupLabel->setText(s);
 }

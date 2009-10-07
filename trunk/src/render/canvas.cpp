@@ -110,7 +110,7 @@ void Canvas::checkGlError()
 	// Do GL error check
 	if (msg.isOutputActive(Messenger::GL))
 	{
-		GLenum glerr;
+		GLenum glerr = GL_NO_ERROR;
 		do
 		{
 			switch (glGetError())

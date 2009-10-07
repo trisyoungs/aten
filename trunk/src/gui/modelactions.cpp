@@ -31,31 +31,31 @@
 
 void AtenForm::on_actionModelFFType_triggered(bool checked)
 {
-	aten.currentModel()->typeAll();
+	aten.currentModelOrFrame()->typeAll();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
 {
-	aten.currentModel()->autocreatePatterns();
+	aten.currentModelOrFrame()->autocreatePatterns();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
 {
-	aten.currentModel()->clearPatterns();
+	aten.currentModelOrFrame()->clearPatterns();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelListPatterns_triggered(bool checked)
 {
-	aten.currentModel()->printPatterns();
+	aten.currentModelOrFrame()->printPatterns();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
-	aten.currentModel()->removeTyping();
+	aten.currentModelOrFrame()->removeTyping();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -99,7 +99,7 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 
 void AtenForm::on_actionModelRename_triggered(bool checked)
 {
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())

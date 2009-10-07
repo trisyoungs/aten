@@ -41,7 +41,7 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
 	prefs.setRenderStyle(ds);
 	// Inform the displayed model
-	m = aten.currentModel()->renderSource();
+	m = aten.currentModelOrFrame();
 	m->projectAll();
 	m->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();

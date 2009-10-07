@@ -115,7 +115,7 @@ void AtenDisorder::refresh()
 	msg.enter("AtenDisorder::refresh");
 	refreshing_ = TRUE;
 	// (De)sensitize controls
-	ui.DisorderStartButton->setDisabled(aten.currentModel()->cell()->type() == Cell::NoCell);
+	ui.DisorderStartButton->setDisabled(aten.currentModelOrFrame()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
 	TTableWidgetItem *item, *firstitem = NULL;
 	//ui.ComponentTable->setCurrentRow(-1);

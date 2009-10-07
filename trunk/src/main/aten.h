@@ -73,6 +73,8 @@ class Aten
 	void setCurrentModel(Model*);
 	// Return current active model for editing
 	Model *currentModel() const;
+	// Return current active model for editing, accounting for trajectory frames
+	Model *currentModelOrFrame() const;
 	// Return first item in the model list
 	Model *models() const;
 	// Return nth item in the model list
