@@ -60,7 +60,7 @@ void AtenTransform::on_RotateAnticlockwiseButton_clicked(bool on)
 void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModel()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
 	// Set widgets
 	ui.RotateOriginXSpin->setValue(v.x);
 	ui.RotateOriginYSpin->setValue(v.y);
@@ -71,7 +71,7 @@ void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
-	v = aten.currentModel()->selectionCog();
+	v = aten.currentModelOrFrame()->selectionCog();
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
@@ -110,7 +110,7 @@ void AtenTransform::rotateSelection(double direction)
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
 	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
@@ -132,7 +132,7 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 
 	CommandNode::run(Command::MatrixTransform, "ddddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
 
-	aten.currentModel()->updateMeasurements();
+	aten.currentModelOrFrame()->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -306,8 +306,8 @@ void AtenTransform::on_TransformGenerateCButton_clicked(bool on)
 void AtenTransform::on_TransformOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (aten.currentModel()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
-	else o = aten.currentModel()->cell()->centre();
+	if (aten.currentModelOrFrame()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
+	else o = aten.currentModelOrFrame()->cell()->centre();
 	ui.TransformOriginXSpin->setValue(o.x);
 	ui.TransformOriginYSpin->setValue(o.y);
 	ui.TransformOriginZSpin->setValue(o.z);
@@ -316,7 +316,7 @@ void AtenTransform::on_TransformOriginCellCentreButton_clicked(bool on)
 void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModel()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
 	// Set widgets
 	ui.TransformOriginXSpin->setValue(v.x);
 	ui.TransformOriginYSpin->setValue(v.y);
@@ -343,7 +343,7 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 
 	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
 
-	aten.currentModel()->updateMeasurements();
+	aten.currentModelOrFrame()->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 	gui.mainView.postRedisplay();
 }
@@ -518,8 +518,8 @@ void AtenTransform::on_ConvertSourceGenerateCButton_clicked(bool on)
 void AtenTransform::on_ConvertOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (aten.currentModel()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
-	else o = aten.currentModel()->cell()->centre();
+	if (aten.currentModelOrFrame()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
+	else o = aten.currentModelOrFrame()->cell()->centre();
 	ui.ConvertOriginXSpin->setValue(o.x);
 	ui.ConvertOriginYSpin->setValue(o.y);
 	ui.ConvertOriginZSpin->setValue(o.z);
@@ -528,7 +528,7 @@ void AtenTransform::on_ConvertOriginCellCentreButton_clicked(bool on)
 void AtenTransform::on_ConvertDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModel()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
 	// Set widgets
 	ui.ConvertOriginXSpin->setValue(v.x);
 	ui.ConvertOriginYSpin->setValue(v.y);

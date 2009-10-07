@@ -32,28 +32,28 @@
 void AtenForm::on_actionFrameNext_triggered(bool checked)
 {
 	aten.currentModel()->seekNextFrame();
-	aten.currentModel()->renderSource()->changeLog.add(Log::Camera);
+	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFramePrevious_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousFrame();
-	aten.currentModel()->renderSource()->changeLog.add(Log::Camera);
+	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameFirst_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstFrame();
-	aten.currentModel()->renderSource()->changeLog.add(Log::Camera);
+	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameLast_triggered(bool checked)
 {
 	aten.currentModel()->seekLastFrame();
-	aten.currentModel()->renderSource()->changeLog.add(Log::Camera);
+	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 

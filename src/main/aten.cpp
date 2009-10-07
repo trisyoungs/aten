@@ -168,6 +168,12 @@ Model *Aten::currentModel() const
 	return current.m;
 }
 
+// Return current active model for editing, accounting for trajectory frames
+Model *Aten::currentModelOrFrame() const
+{
+	return (current.m == NULL ? NULL : current.m->renderSource());
+}
+
 // Return first item in the model list
 Model *Aten::models() const
 {

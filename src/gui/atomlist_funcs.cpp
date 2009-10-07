@@ -71,7 +71,7 @@ void AtenAtomlist::updateSelection()
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
 	gui.mainView.disableDrawing();
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
 		ti = (TTreeWidgetItem*) item;
@@ -92,7 +92,7 @@ void AtenAtomlist::refresh(bool forceupdate)
 		msg.exit("AtenAtomlist::refresh");
 		return;
 	}
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
 	{

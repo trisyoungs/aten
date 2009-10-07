@@ -66,5 +66,5 @@ void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 
 void AtenForm::on_actionMeasureList_triggered(bool on)
 {
-	aten.currentModel()->listMeasurements();
+	aten.currentModelOrFrame()->listMeasurements();
 }

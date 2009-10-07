@@ -67,7 +67,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
 	aten.currentModel()->setRenderFromSelf();
-	Model *m = aten.currentModel()->renderSource();
+	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.modelChanged();
@@ -77,7 +77,7 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
 	aten.currentModel()->setRenderFromFrames();
-	Model *m = aten.currentModel()->renderSource();
+	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
 	gui.modelChanged();
@@ -161,7 +161,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -169,7 +169,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -177,6 +177,6 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
