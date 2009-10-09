@@ -54,7 +54,7 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 	{
 		CommandNode::run(Command::NewAtom, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	}
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenBuild::dialogFinished(int result)

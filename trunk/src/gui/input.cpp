@@ -296,7 +296,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				else displayModel_->selectAtom(atomHover_);
 			}
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,FALSE);
+			gui.update(TRUE,FALSE,FALSE);
 			break;
 		// Now do the rest
 		case (Canvas::SelectMoleculeAction):
@@ -304,14 +304,14 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (!modded) displayModel_->selectNone();
 			if (atomHover_ != NULL)	displayModel_->selectTree(atomHover_, FALSE, ctrled);
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,FALSE);
+			gui.update(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectElementAction):
 			displayModel_->beginUndoState("Select Element");
 			if (!modded) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_, FALSE, ctrled);
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,FALSE);
+			gui.update(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectRadialAction):
 			displayModel_->beginUndoState("Select Radial");
@@ -323,7 +323,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->selectRadial(atomHover_,radius);
 			}
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,FALSE);
+			gui.update(TRUE,FALSE,FALSE);
 			break;
 		// Measurements
 		case (Canvas::MeasureDistanceAction):
@@ -334,7 +334,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureDistance(atoms[0],atoms[1]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.modelChanged(FALSE,FALSE,FALSE);
+			gui.update(FALSE,FALSE,FALSE);
 			break;
 		case (Canvas::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
@@ -344,7 +344,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureAngle(atoms[0],atoms[1],atoms[2]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.modelChanged(FALSE,FALSE,FALSE);
+			gui.update(FALSE,FALSE,FALSE);
 			break;
 		case (Canvas::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
@@ -354,7 +354,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureTorsion(atoms[0],atoms[1],atoms[2],atoms[3]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
-			gui.modelChanged(FALSE,FALSE,FALSE);
+			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Draw single atom
 		case (Canvas::EditDrawAction):
@@ -366,7 +366,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndoState();
 				displayModel_->projectAtom(i);
 			}
-			gui.modelChanged(TRUE,FALSE,TRUE);
+			gui.update(TRUE,FALSE,TRUE);
 			break;
 		// Draw chains of atoms
 		case (Canvas::EditChainAction):
@@ -394,19 +394,19 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->bondAtoms(i,atomHover_,bt);
 			}
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,TRUE);
+			gui.update(TRUE,FALSE,TRUE);
 			break;
 		case (Canvas::EditTransmuteAction):
 			displayModel_->beginUndoState("Transmute");
 			displayModel_->transmuteAtom(atomHover_, aten.sketchElement());
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,TRUE);
+			gui.update(TRUE,FALSE,TRUE);
 			break;
 		case (Canvas::EditDeleteAction):
 			displayModel_->beginUndoState("Delete Atom");
 			displayModel_->deleteAtom(atomHover_);
 			displayModel_->endUndoState();
-			gui.modelChanged(TRUE,FALSE,TRUE);
+			gui.update(TRUE,FALSE,TRUE);
 			break;
 		case (Canvas::EditProbeAction):
 			if (atomHover_ != NULL) atomHover_->print();
@@ -432,7 +432,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.modelChanged(FALSE,FALSE,FALSE);
+			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Delete bond
 		case (Canvas::EditDeleteBondAction):
@@ -446,7 +446,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndoState();
 			}
 			pickedAtoms_.clear();
-			gui.modelChanged(FALSE,FALSE,FALSE);
+			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Misc
 		case (Canvas::EditAddHydrogenAction):
@@ -455,7 +455,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->beginUndoState("Add Hydrogen to Atom");
 				displayModel_->hydrogenSatisfy(atomHover_);
 				displayModel_->endUndoState();
-				gui.modelChanged(TRUE,FALSE,TRUE);
+				gui.update(TRUE,FALSE,TRUE);
 			}
 			break;
 		// Model transformations
@@ -465,7 +465,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
 			displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
-			gui.modelChanged(TRUE,FALSE,FALSE);
+			gui.update(TRUE,FALSE,FALSE);
 			break;
 		// View changes (no action)
 		case (Canvas::RotateXYAction):

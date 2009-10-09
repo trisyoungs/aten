@@ -26,7 +26,20 @@
 // Constructor
 Log::Log()
 {
-	for (int n=0; n<Log::nLogTypes; n++) logs_[n] = 0;
+	reset();
+}
+
+// Operator == (test equivalence of all log values except Total)
+bool Log::operator==(Log &l) const
+{
+	for (int n=0; n<Log::Total; ++n) if (logs_[n] != l.logs_[n]) return FALSE;
+	return TRUE;
+}
+
+// Reset all logs to zero
+void Log::reset()
+{
+	for (int n=0; n<Log::nLogTypes; ++n) logs_[n] = 0;
 	savePoint_ = 0;
 }
 
@@ -51,12 +64,6 @@ void Log::add(Log::LogType cl)
 int Log::log(Log::LogType cl)
 {
 	return logs_[cl];
-}
-
-// Reset all logs to zero
-void Log::reset()
-{
-	for (int i=0; i<Log::nLogTypes; i++) logs_[i] = 0;
 }
 
 // Set the save point log for the model

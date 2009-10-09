@@ -53,7 +53,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			addRecent(gui.loadModelDialog->selectedFilename());
 			refreshModelTabs();
 			aten.currentModel()->changeLog.add(Log::Visual);
-			gui.modelChanged();
+			gui.update();
 		}
 	}
 }
@@ -113,7 +113,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 			msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename.get(), saveModelFilter->filter.name());
 		}
 		else msg.print("Failed to save model '%s'.\n", m->name());
-		gui.modelChanged(FALSE,FALSE,FALSE);
+		gui.update(FALSE,FALSE,FALSE);
 	}
 }
 
@@ -148,7 +148,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		t->executeWrite(filename.get());
 		m->changeLog.updateSavePoint();
 	}	
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 // Close current model
@@ -258,10 +258,10 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			// Ensure trajectory toolbar is visible and View->Trajectory is selected
 			ui.TrajectoryToolbar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
-			gui.updateTrajControls();
+			updateTrajectoryControls();
 		}
 		else msg.print( "Couldn't determine trajectory file format.\n");
-		gui.modelChanged();
+		gui.update();
 	}
 }
 

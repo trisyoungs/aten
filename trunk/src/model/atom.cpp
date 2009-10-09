@@ -470,7 +470,7 @@ void Model::increaseMass(int element)
 // Calculate mass
 void Model::calculateMass()
 {
-	// Recalculate the mass of the atoms in the model.
+	// Recalculate the mass of the atoms in the model
 	msg.enter("Model::calculateMass");
 	mass_ = 0.0;
 	nUnknownAtoms_ = 0;

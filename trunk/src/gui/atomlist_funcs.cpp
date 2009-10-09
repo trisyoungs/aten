@@ -78,7 +78,7 @@ void AtenAtomlist::updateSelection()
 		if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
 	}
 	gui.mainView.enableDrawing();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 // Refresh the atom list
@@ -213,7 +213,7 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 	peekScrollBar();
 	CommandNode::run(Command::ShiftUp, "i", 1);
 	pokeScrollBar();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
@@ -222,21 +222,21 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 	CommandNode::run(Command::ShiftDown, "i", 1);
 	refresh();
 	pokeScrollBar();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToStart, "");
 	refresh();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MoveToEnd, "");
 	refresh();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::peekScrollBar()
@@ -319,7 +319,7 @@ void AtenAtomlist::treeMouseReleaseEvent(QMouseEvent *event)
 // 	printf("Mouse release event.\n");
 	lastHovered_ = NULL;
 	listLastModel_->endUndoState();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 }
 
 void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
@@ -332,6 +332,6 @@ void AtenAtomlist::treeMouseMoveEvent(QMouseEvent *event)
 	{
 		toggleItem(twi);
 		lastHovered_ = twi;
-		gui.modelChanged(FALSE, FALSE, FALSE);
+		gui.update(FALSE, FALSE, FALSE);
 	}
 }

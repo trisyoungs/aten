@@ -70,7 +70,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
@@ -80,7 +80,7 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenForm::setCartesianView(double x, double y, double z)

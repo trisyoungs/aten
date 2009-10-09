@@ -38,7 +38,6 @@ Canvas::Canvas()
 {
 	// Private variables
 	valid_ = FALSE;
-	renderPoint_ = -1;
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	renderOffScreen_ = FALSE;

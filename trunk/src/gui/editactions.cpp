@@ -34,20 +34,20 @@ void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Command::Undo, "");
 	gui.mainView.postRedisplay();
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Command::Redo, "");
 	gui.mainView.postRedisplay();
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Command::Cut, "");
-	gui.modelChanged(TRUE,FALSE,TRUE);
+	gui.update(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
@@ -59,36 +59,36 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Command::Paste, "");
 	gui.mainView.postRedisplay();
-	gui.modelChanged(TRUE,FALSE,TRUE);
+	gui.update(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Command::Delete, "");
-	gui.modelChanged(TRUE,FALSE,TRUE);
+	gui.update(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectAll, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
 	CommandNode::run(Command::SelectNone, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
 	CommandNode::run(Command::Invert, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
 	CommandNode::run(Command::Expand, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 

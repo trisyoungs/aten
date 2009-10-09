@@ -242,7 +242,7 @@ void GuiQt::run()
 	disorderWindow->refresh();
 	cellDefineWindow->refresh();
 	cellTransformWindow->refresh();
-	updateTrajControls();
+	mainWindow->update();
 
 	gui.mainView.enableDrawing();
 
@@ -252,7 +252,7 @@ void GuiQt::run()
 	int tabid, currenttab;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+		tabid = mainWindow->addModelTab(m);
 		if (m == currentm) currenttab = tabid;
 		if (!prefs.keepView()) m->resetView();
 		m->calculateViewMatrix();
@@ -287,67 +287,15 @@ void GuiQt::run()
 }
 
 /*
-// Main Window Refresh Functions
+// Refresh Wrapper
 */
 
-// Update GUI after model change (or different model selected)
-void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefield)
+// Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's functinn)
+void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield)
 {
 	if (!doesExist_) return;
-	// Update status bar
-	QString s;
-	Model *m = aten.currentModel();
-	// First label - atom and trajectory frame information
-	if (m->hasTrajectory())
-	{
-		s = "(Frame ";
-		s += (m->renderSource() == m ? "Main" : itoa(m->frameIndex()+1));
-		s += " of ";
-		s += itoa(m->nFrames());
-		s += ") ";
-		// Menu controls (and toolbar)
-		updateTrajControls();
-	}
-	m = m->renderSource();
-	s += itoa(m->nAtoms());
-	s += " Atoms ";
-	// Add on unknown atom information
-	if (m->nUnknownAtoms() != 0)
-	{
-		s += " (<b>";
-		s += itoa(m->nUnknownAtoms());
-		s += " unknown</b>) ";
-	}
-	if (m->nSelected() != 0)
-	{
-		s += "(<b>";
-		s += itoa(m->nSelected());
-		s += " selected</b>) ";
-	}
-	s += ftoa(m->mass());
-	s += " g mol<sup>-1</sup> ";
-	mainWindow->infoLabel1->setText(s);
-	// Second label - cell information
-	Cell::CellType ct = m->cell()->type();
-	if (ct != Cell::NoCell)
-	{
-		s = Cell::cellType(ct);
-		s += ", ";
-		s += ftoa(m->density());
-		switch (prefs.densityUnit())
-		{
-			case (Prefs::GramsPerCm):
-				s += " g cm<sup>-3</sup>";
-				break;
-			case (Prefs::AtomsPerAngstrom):
-				s += " atoms &#8491;<sup>-3</sup>";
-				break;
-		}
-	}
-	else s = "Non-periodic";
-	mainWindow->infoLabel2->setText(s);
-	// Update save button status
-	mainWindow->ui.actionFileSave->setEnabled( m->changeLog.isModified() );
+	// Refresh aspects of main window
+	mainWindow->update(updateAtoms, updateCell, updateForcefield);
 	// Update contents of the atom list
 	if (updateAtoms) atomlistWindow->refresh();
 	// Update the contents of the cell page
@@ -359,14 +307,8 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	}
 	// Update forcefields in the forcefield window
 	if (updateForcefield) forcefieldsWindow->refresh();
-	// Enable the Atom menu if one or more atoms are selected
-	mainWindow->ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
-	// Update Undo Redo lists
-	mainWindow->updateUndoRedo();
-	// Update main window title
-	gui.updateWindowTitle();
 	// Request redraw of the main canvas
-	mainView.postRedisplay();
+	gui.mainView.postRedisplay();
 }
 
 // Update statusbar
@@ -406,55 +348,6 @@ void GuiQt::updateStatusBar(bool clear)
 	else mainWindow->messageLabel->setText(text.get());
 }
 
-// Update trajectory controls
-void GuiQt::updateTrajControls()
-{
-	if (!doesExist_) return;
-	// First see if the model has a trajectory associated to it
-	Model *m = aten.currentModel();
-	if (m->nFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
-	else
-	{
-		// Make sure the trajectory toolbar is visible
-		mainWindow->ui.TrajectoryToolbar->setDisabled(FALSE);
-		mainWindow->ui.TrajectoryToolbar->setVisible(TRUE);
-		// If the trajectory is playing, desensitise all but the play/pause button
-		if (trajectoryPlaying_)
-		{
-			mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
-			mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
-			mainWindow->ui.actionFrameNext->setDisabled(TRUE);
-			mainWindow->ui.actionFrameLast->setDisabled(TRUE);
-			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
-			mainWindow->setTrajectoryToolbarActive(FALSE);
-		}
-		else
-		{
-			mainWindow->ui.actionFrameFirst->setDisabled(FALSE);
-			mainWindow->ui.actionFramePrevious->setDisabled(FALSE);
-			mainWindow->ui.actionFrameNext->setDisabled(FALSE);
-			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
-			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
-			mainWindow->setTrajectoryToolbarActive(TRUE);
-		}
-		mainWindow->ui.actionViewTrajectory->setDisabled(FALSE);
-		// Select the correct view action
-		if (m->renderSource() == m) mainWindow->ui.actionViewModel->setChecked(TRUE);
-		else mainWindow->ui.actionViewTrajectory->setChecked(TRUE);
-		// Set slider and spinbox
-		mainWindow->updateTrajectoryToolbar();
-	}
-}
-
-// Refresh window title
-void GuiQt::updateWindowTitle()
-{
-	if (!doesExist_) return;
-	Model *m = aten.currentModel();
-	static char title[512];
-	sprintf(title, "Aten (%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
-	mainWindow->setWindowTitle(title);
-}
 
 /*
 // Methods
@@ -464,11 +357,9 @@ void GuiQt::updateWindowTitle()
 void GuiQt::addModel(Model *m)
 {
 	if (!doesExist_) return;
-	// Create new tab in ModelTabs QTabBar
-	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-	mainWindow->ui.ModelTabs->setCurrentIndex(tabid);
+	mainWindow->addModelTab(m);
 	m->resetView();
-	gui.modelChanged(TRUE,TRUE,TRUE);
+	gui.update(TRUE,TRUE,TRUE);
 }
 
 // Convert Qt keysym to key_code
@@ -519,7 +410,7 @@ void GuiQt::removeModel(int id)
 {
 	if (!doesExist_) return;
 	mainWindow->ui.ModelTabs->removeTab(id);
-	gui.modelChanged();
+	gui.update();
 }
 
 bool GuiQt::saveBeforeClose()
@@ -760,7 +651,7 @@ bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 */
 
 // Return state of trajectory playback
-bool GuiQt::trajectoryPlaying()
+bool GuiQt::isTrajectoryPlaying()
 {
 	return trajectoryPlaying_;
 }
@@ -789,7 +680,6 @@ void GuiQt::stopTrajectoryPlayback()
 	mainWidget->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
-	gui.updateTrajControls();
-	modelChanged();
+	mainWindow->updateTrajectoryControls();
+	update();
 }
-

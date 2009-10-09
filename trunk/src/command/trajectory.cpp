@@ -32,7 +32,7 @@ bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs = obj.m->addFrame();
 	obj.m->setRenderFromFrames();
 	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.set(VTypes::ModelData, obj.rs);
 	return TRUE;
 }
@@ -47,7 +47,7 @@ bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue 
 		obj.rs = obj.m->trajectoryParent();
 	}
 	obj.m->clearTrajectory();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }
@@ -88,7 +88,7 @@ bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekFirstFrame();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }
@@ -103,7 +103,7 @@ bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekLastFrame();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }
@@ -129,7 +129,7 @@ bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekNextFrame();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }
@@ -144,7 +144,7 @@ bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekPreviousFrame();
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }
@@ -159,7 +159,7 @@ bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.m->seekFrame(c->argi(0)-1);
-	gui.modelChanged(FALSE, FALSE, FALSE);
+	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
 }

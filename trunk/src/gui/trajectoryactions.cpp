@@ -33,28 +33,28 @@ void AtenForm::on_actionFrameNext_triggered(bool checked)
 {
 	aten.currentModel()->seekNextFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.modelChanged(TRUE,TRUE,FALSE);
+	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFramePrevious_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.modelChanged(TRUE,TRUE,FALSE);
+	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameFirst_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.modelChanged(TRUE,TRUE,FALSE);
+	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameLast_triggered(bool checked)
 {
 	aten.currentModel()->seekLastFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
-	gui.modelChanged(TRUE,TRUE,FALSE);
+	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionPlayPause_triggered(bool checked)
@@ -70,7 +70,7 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 		gui.mainWidget->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
 	}
-	gui.updateTrajControls();
+	updateTrajectoryControls();
 }
 
 void AtenForm::trajectorySlider_sliderMoved(int i)

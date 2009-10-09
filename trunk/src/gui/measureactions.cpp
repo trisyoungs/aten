@@ -43,25 +43,25 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 {
 	CommandNode::run(Command::ClearMeasurements, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
 	CommandNode::run(Command::Distances, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
 	CommandNode::run(Command::Angles, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
 	CommandNode::run(Command::Torsions, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureList_triggered(bool on)

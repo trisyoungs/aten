@@ -65,7 +65,7 @@ void AtenPosition::on_FlipZButton_clicked(bool checked)
 void AtenPosition::flipSelection(int axis)
 {
 	CommandNode::run(Command::Mirror, "i", axis);
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 /*
@@ -86,7 +86,7 @@ void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 /*
@@ -159,7 +159,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 /*
@@ -196,7 +196,7 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
@@ -212,7 +212,7 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 /*
@@ -230,7 +230,7 @@ void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)

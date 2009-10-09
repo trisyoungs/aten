@@ -67,6 +67,16 @@ class GuiQt
 	static const char *bitmapFormatExtension(BitmapFormat bf);
 
 	/*
+	// Refresh Functions
+	*/
+	public:
+	// Refreshes all widgets to do with the model
+	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
+	// Update statusbar
+	void updateStatusBar(bool clear = FALSE);
+
+
+	/*
 	// General Functions
 	*/
 	private:
@@ -83,18 +93,6 @@ class GuiQt
 	// Create the GUI and hand over control to Qt
 	void run();
 
-	/*
-	// Refresh Functions
-	*/
-	public:
-	// Refreshes all widgets to do with the model
-	void modelChanged(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
-	// Update statusbar
-	void updateStatusBar(bool clear = FALSE);
-	// Update trajectory control widgets
-	void updateTrajControls();
-	// Refresh window title
-	void updateWindowTitle();
 
 	/*
 	// Methods
@@ -189,7 +187,7 @@ class GuiQt
 
 	public:
 	// Return state of trajectory playback
-	bool trajectoryPlaying();
+	bool isTrajectoryPlaying();
 	// Set state of trajectory playback
 	void setTrajectoryPlaying(bool b);
 	// Return trajectory timer id

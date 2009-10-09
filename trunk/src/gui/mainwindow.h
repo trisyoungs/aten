@@ -72,14 +72,33 @@ class AtenForm : public QMainWindow
 	void closeEvent(QCloseEvent *event);
 
 	/*
+	// Refresh Functions
+	*/
+	private:
+	// Rename specified (or current if -1) tab
+	void updateModelTabName(int tabid, Model *m);
+	// Refresh window title
+	void updateWindowTitle();
+	// Refresh names in ModelTabs
+	void refreshModelTabs();
+
+	public:
+	// Refreshes all widgets to do with the model
+	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
+	// Add model tab
+	int addModelTab(Model *m);
+	// Update trajectory control widgets
+	void updateTrajectoryControls();
+
+
+	/*
 	// Model Management
 	*/
 	private slots:
 	void on_ModelTabs_currentChanged(int value);
 	void on_ModelTabs_doubleClicked(int tabid);
 	public:
-	// Refresh names in ModelTabs
-	void refreshModelTabs();
+
 
 
 	/*

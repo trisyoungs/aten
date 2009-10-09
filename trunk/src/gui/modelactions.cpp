@@ -32,43 +32,43 @@
 void AtenForm::on_actionModelFFType_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->typeAll();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->autocreatePatterns();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->clearPatterns();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelListPatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->printPatterns();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	CommandNode::run(Command::Fold, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	CommandNode::run(Command::FoldMolecules, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelNext_triggered(bool checked)
@@ -94,7 +94,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Command::ShowAll, "");
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelRename_triggered(bool checked)
@@ -106,6 +106,6 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	{
 		CommandNode::run(Command::SetName, "c", qPrintable(text));
 		refreshModelTabs();
-		gui.updateWindowTitle();
+		updateWindowTitle();
 	}
 }

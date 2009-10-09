@@ -90,7 +90,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), target->id());
 	target = NULL;
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 // Clear atom labels
@@ -100,7 +100,7 @@ void AtenForm::removeAtomLabels(bool all)
 	else if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
 	else CommandNode::run(Command::RemoveLabels, "i", target->id());
 	target = NULL;
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)
@@ -151,7 +151,7 @@ void AtenForm::setAtomHidden(bool hidden)
 		if (hidden) CommandNode::run(Command::Hide, "i", target->id());
 		else CommandNode::run(Command::Show, "i", target->id());
 	}
-	gui.modelChanged(TRUE, FALSE, FALSE);
+	gui.update(TRUE, FALSE, FALSE);
 }
 
 void AtenForm::on_actionAtomHide_triggered(bool checked)

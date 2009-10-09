@@ -57,7 +57,7 @@ void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
 void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 {
 	doMinimisation();
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenMinimiser::doMinimisation()
@@ -85,7 +85,7 @@ void AtenMinimiser::doMinimisation()
 			break;
 	}
 	// Update the view
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenMinimiser::dialogFinished(int result)

@@ -101,7 +101,7 @@ void AtenCellDefine::cellChanged()
 	char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 	refreshing_ = FALSE;
 }
 
@@ -160,7 +160,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWindow->refresh();
 	gui.disorderWindow->refresh();
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 /*
@@ -190,7 +190,7 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Pack, "");
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenCellDefine::dialogFinished(int result)

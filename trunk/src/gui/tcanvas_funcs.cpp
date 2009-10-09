@@ -217,7 +217,7 @@ void TCanvas::timerEvent(QTimerEvent *event)
 		Model *m = aten.currentModel();
 		m->seekNextFrame();
 		if (m->frameIndex() == m->nFrames()-1) gui.stopTrajectoryPlayback();
-		gui.modelChanged(FALSE,FALSE,FALSE);
+		gui.update(FALSE,FALSE,FALSE);
 		DONTDRAW = FALSE;
 	}
 }

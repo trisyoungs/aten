@@ -45,6 +45,7 @@
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
 #include "base/sysfunc.h"
+#include "main/version.h"
 #include <iostream>
 #include <fstream>
 
@@ -118,6 +119,150 @@ void AtenForm::closeEvent(QCloseEvent *event)
 }
 
 /*
+// Refresh Functions
+*/
+
+// Update GUI after model change (or different model selected)
+void AtenForm::update(bool updateAtoms, bool updateCell, bool updateForcefield)
+{
+	// Update status bar
+	QString s;
+	Model *m = aten.currentModel();
+	// First label - atom and trajectory frame information
+	if (m->hasTrajectory())
+	{
+		s = "(Frame ";
+		s += (m->renderSource() == m ? "Main" : itoa(m->frameIndex()+1));
+		s += " of ";
+		s += itoa(m->nFrames());
+		s += ") ";
+		// Menu controls (and toolbar)
+		updateTrajectoryControls();
+		// Update current tab text
+		updateModelTabName(-1, m);
+	}
+	m = m->renderSource();
+	s += itoa(m->nAtoms());
+	s += " Atoms ";
+	// Add on unknown atom information
+	if (m->nUnknownAtoms() != 0)
+	{
+		s += " (<b>";
+		s += itoa(m->nUnknownAtoms());
+		s += " unknown</b>) ";
+	}
+	if (m->nSelected() != 0)
+	{
+		s += "(<b>";
+		s += itoa(m->nSelected());
+		s += " selected</b>) ";
+	}
+	s += ftoa(m->mass());
+	s += " g mol<sup>-1</sup> ";
+	infoLabel1->setText(s);
+	// Second label - cell information
+	Cell::CellType ct = m->cell()->type();
+	if (ct != Cell::NoCell)
+	{
+		s = Cell::cellType(ct);
+		s += ", ";
+		s += ftoa(m->density());
+		switch (prefs.densityUnit())
+		{
+			case (Prefs::GramsPerCm):
+				s += " g cm<sup>-3</sup>";
+				break;
+			case (Prefs::AtomsPerAngstrom):
+				s += " atoms &#8491;<sup>-3</sup>";
+				break;
+		}
+	}
+	else s = "Non-periodic";
+	infoLabel2->setText(s);
+	// Update save button status
+	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
+
+	// Enable the Atom menu if one or more atoms are selected
+	ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
+	// Update Undo Redo lists
+	updateUndoRedo();
+	// Update main window title
+	updateWindowTitle();
+}
+
+// Rename specified (or current if -1) tab
+void AtenForm::updateModelTabName(int tabid, Model *m)
+{
+	if (tabid < 0) tabid = ui.ModelTabs->currentIndex();
+	char title[512];
+	if (m->nFrames() == 0) sprintf(title, "%s", m->name());
+	else if (m->renderSource() == m) sprintf(title, "%s (Parent of %i frames)", m->name(), m->nFrames());
+	else sprintf(title, "%s (Frame %i/%i)", m->name(), m->currentFrame(), m->nFrames());
+	ui.ModelTabs->setTabText(tabid, title);
+}
+
+// Update trajectory controls
+void AtenForm::updateTrajectoryControls()
+{
+	if (!gui.exists()) return;
+	// First see if the model has a trajectory associated to it
+	Model *m = aten.currentModel();
+	if (m->nFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
+	else
+	{
+		// Make sure the trajectory toolbar is visible
+		ui.TrajectoryToolbar->setDisabled(FALSE);
+		ui.TrajectoryToolbar->setVisible(TRUE);
+		// If the trajectory is playing, desensitise all but the play/pause button
+		if (gui.isTrajectoryPlaying())
+		{
+			ui.actionFrameFirst->setDisabled(TRUE);
+			ui.actionFramePrevious->setDisabled(TRUE);
+			ui.actionFrameNext->setDisabled(TRUE);
+			ui.actionFrameLast->setDisabled(TRUE);
+			ui.actionPlayPause->setDisabled(FALSE);
+			setTrajectoryToolbarActive(FALSE);
+		}
+		else
+		{
+			ui.actionFrameFirst->setDisabled(FALSE);
+			ui.actionFramePrevious->setDisabled(FALSE);
+			ui.actionFrameNext->setDisabled(FALSE);
+			ui.actionFrameLast->setDisabled(FALSE);
+			ui.actionPlayPause->setDisabled(FALSE);
+			setTrajectoryToolbarActive(TRUE);
+		}
+		ui.actionViewTrajectory->setDisabled(FALSE);
+		// Select the correct view action
+		if (m->renderSource() == m) ui.actionViewModel->setChecked(TRUE);
+		else ui.actionViewTrajectory->setChecked(TRUE);
+		// Set slider and spinbox
+		updateTrajectoryToolbar();
+	}
+}
+
+// Refresh window title
+void AtenForm::updateWindowTitle()
+{
+	if (!gui.exists()) return;
+	Model *m = aten.currentModel();
+	char title[512];
+	sprintf(title, "Aten (v%s r%s) - %s (%s)%s", ATENVERSION, ATENREVISION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	setWindowTitle(title);
+}
+
+// Add model tab
+int AtenForm::addModelTab(Model *m)
+{
+	if (!gui.exists()) return -1;
+	// Create new tab in ModelTabs QTabBar
+	int tabid = ui.ModelTabs->addTab("Unnamed");
+	ui.ModelTabs->setCurrentIndex(tabid);
+	updateModelTabName(tabid, m);
+	return tabid;
+}
+
+/*
 // Model Navigation / Management
 */
 
@@ -126,7 +271,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	msg.enter("AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set aten.currentmodel to reflect it.
 	aten.setCurrentModel(aten.model(n));
-	gui.modelChanged(TRUE,TRUE,TRUE);
+	gui.update(TRUE,TRUE,TRUE);
 	msg.exit("AtenForm::on_ModelTabs_currentChanged");
 }
 
@@ -141,8 +286,8 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	if (ok && !text.isEmpty())
 	{
 		CommandNode::run(Command::SetName, "c", qPrintable(text));
-		ui.ModelTabs->setTabText(tabid, text);
-		gui.updateWindowTitle();
+		updateModelTabName(tabid, m);
+		updateWindowTitle();
 		gui.disorderWindow->refresh();
 	}
 	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
@@ -152,11 +297,11 @@ void AtenForm::refreshModelTabs()
 {
 	msg.enter("AtenForm::refreshModelTabs");
 	// Set names on tabs
-	int count = 0;
+	int tabid = 0;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		ui.ModelTabs->setTabText(count, m->name());
-		count ++;
+		updateModelTabName(tabid, m);
+		tabid ++;
 	}
 	gui.disorderWindow->refresh();
 	msg.exit("AtenForm::refreshModelTabs");
@@ -185,7 +330,7 @@ void AtenForm::executeCommand()
 	if (prefs.commandHistoryLimit() > 0) for (int n = sl.count(); n > prefs.commandHistoryLimit(); --n) sl.removeLast();
 	commandEditModel_->setStringList(sl);
 	commandEdit_->setText("");
-	gui.modelChanged();
+	gui.update();
 }
 
 // Cancel progress indicator
@@ -275,7 +420,7 @@ void AtenForm::addRecent(const char *filename)
 void AtenForm::updateUndoRedo()
 {
 	static char text[128];
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	// Check the model's state pointers
 	if (m->currentUndoState() == NULL)
 	{
@@ -383,7 +528,7 @@ void AtenForm::runScript()
 		ReturnValue result;
 		ri->data->executeAll(result);
 	}
-	gui.modelChanged();
+	gui.update();
 }
 
 /*
