@@ -112,7 +112,7 @@ void AtenTransform::rotateSelection(double direction)
 	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model *m = aten.currentModelOrFrame();
 	m->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 /*
@@ -133,7 +133,7 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	CommandNode::run(Command::MatrixTransform, "ddddddddddddd", mat[0], mat[1], mat[2], mat[3], mat[4], mat[5], mat[6], mat[7], mat[8], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 }
 
 void transformDefineAButton_callback(Reflist<Atom,int> *picked)
@@ -344,7 +344,7 @@ void AtenTransform::on_ConvertRotateIntoButton_clicked(bool on)
 	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], target[0], target[1], target[2], target[3], target[4], target[5], target[6], target[7], target[8], v.x, v.y, v.z);
 
 	aten.currentModelOrFrame()->updateMeasurements();
-	gui.modelChanged(TRUE,FALSE,FALSE);
+	gui.update(TRUE,FALSE,FALSE);
 	gui.mainView.postRedisplay();
 }
 

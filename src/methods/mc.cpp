@@ -727,7 +727,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	//else printf("Expression is NOT valid.\n");
 	destmodel->changeLog.add(Log::Coordinates);
 	gui.disorderWindow->refresh();
-	gui.modelChanged();
+	gui.update();
 	msg.exit("MonteCarlo::insert");
 	return TRUE;
 }

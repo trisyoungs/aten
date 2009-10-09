@@ -28,6 +28,8 @@ class Log
 	public:
 	// Constructor
 	Log();
+	// Operator == (test equivalence of all log values except Total)
+	bool operator==(Log &l) const;
 	// Log types
 	enum LogType { Structure, Coordinates, Visual, Selection, Camera, Glyphs, Misc, Total, nLogTypes };
 	// Structure  : create/destroy atoms/bonds, change elements
@@ -46,14 +48,14 @@ class Log
 	int savePoint_;
 
 	public:
+	// Reset all logs to zero
+	void reset();
 	// Increment specified log
 	void add(Log::LogType);
 	// Set a log to a specific value
 	void setLog(Log::LogType lt, int value);
 	// Return the log quantity specified
 	int log(Log::LogType cl);
-	// Reset all logs to zero
-	void reset();
 	// Set the save point log for the model
 	void updateSavePoint();
 	// Return if the model has been modified since last being saved

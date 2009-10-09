@@ -139,7 +139,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		aten.setCurrentModel(m);
 		m->setRenderFromSelf();
-		gui.modelChanged(FALSE, FALSE, FALSE);
+		gui.update(FALSE, FALSE, FALSE);
 		obj.p = NULL;
 		obj.i = m->atoms();
 		return TRUE;

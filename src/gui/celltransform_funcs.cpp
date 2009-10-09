@@ -81,7 +81,7 @@ void AtenCellTransform::refresh()
 void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 {
 	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
-	gui.modelChanged();
+	gui.update();
 }
 
 void AtenCellTransform::on_CellReplicateFoldCheck_clicked(bool checked)
@@ -102,7 +102,7 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
 	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
-	gui.modelChanged(FALSE,TRUE,FALSE);
+	gui.update(FALSE,TRUE,FALSE);
 }
 
 /*
@@ -150,13 +150,13 @@ void AtenCellTransform::dialogFinished(int result)
 void AtenCellTransform::on_MillerCutButton_clicked(bool checked)
 {
 	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.modelChanged(FALSE,TRUE,FALSE);
+	gui.update(FALSE,TRUE,FALSE);
 }
 
 void AtenCellTransform::on_MillerSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
-	gui.modelChanged(FALSE,TRUE,FALSE);
+	gui.update(FALSE,TRUE,FALSE);
 }
 
 void AtenCellTransform::on_MillerHSpin_valueChanged(int value)

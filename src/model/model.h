@@ -189,7 +189,7 @@ class Model
 	void styleSelection(Atom::DrawStyle);
 	// Calculate the total mass of the model
 	void calculateMass();
-	// Return the mass of the molecule
+	// Return the mass of the model
 	double mass() const;
 	// Return number of unknown atoms in the model
 	int nUnknownAtoms();

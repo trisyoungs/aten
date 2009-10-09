@@ -28,31 +28,31 @@
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
 	CommandNode::run(Command::ReBond, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
 	CommandNode::run(Command::ClearBonds, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
 	CommandNode::run(Command::ReBondSelection, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
 	CommandNode::run(Command::ClearSelectedBonds, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
 	CommandNode::run(Command::Augment, "");
-	gui.modelChanged(FALSE,FALSE,FALSE);
+	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::bondTolerance_valueChanged(double value)

@@ -63,6 +63,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "ff",			VTypes::ForcefieldData,		0, FALSE },
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
+	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "nangles",		VTypes::IntegerData,		0, TRUE },
 	{ "natoms",		VTypes::IntegerData,		0, TRUE },
@@ -76,6 +77,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
+	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE }
@@ -291,6 +293,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
 			break;
+		case (ModelVariable::Mass):
+			rv.set(ptr->mass());
+			break;
 		case (ModelVariable::Name):
 			rv.set(ptr->name());
 			break;
@@ -329,6 +334,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
  		case (ModelVariable::NTorsions):
 			rv.set(ptr->nTorsions());
+			break;
+ 		case (ModelVariable::NUnknown):
+			rv.set(ptr->nUnknownAtoms());
 			break;
 		case (ModelVariable::Patterns):
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());

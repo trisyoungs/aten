@@ -28,6 +28,7 @@ void Canvas::renderScene(Model *source)
 	msg.enter("Canvas::renderScene");
 	static GLdouble rotmat[16], cammat[16];
 	static GLdouble camrot;
+	static Model *lastDisplayed_ = NULL;
 
 	msg.print(Messenger::GL, " --> RENDERING BEGIN\n");
 
@@ -50,8 +51,8 @@ void Canvas::renderScene(Model *source)
 	checkGlError();
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
-	if ((source != displayModel_) || (source == NULL)) renderPoint_ = -1;
-	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, renderPoint_);
+	if ((source != displayModel_) || (source == NULL)) renderPoint_.reset();
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %p, renderpoint = %d\n", source, renderPoint_.log(Log::Total));
 
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
 	displayModel_ = source;
@@ -73,18 +74,14 @@ void Canvas::renderScene(Model *source)
 	// If this is a trajectory frame, check its ID against the last one rendered
 	if (source->trajectoryParent() != NULL)
 	{
-		if (source->trajectoryParent()->frameIndex() != displayFrameId_) renderPoint_ = -1;
+		if (source->trajectoryParent()->frameIndex() != displayFrameId_) renderPoint_.reset();
 		displayFrameId_ = source->trajectoryParent()->frameIndex();
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 
-	// Set clear colour
+	// Clear colour and depth buffers
 	checkGlError();
 	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
-// // 	GLfloat *clrcol
-// 	prefs.copyColour(Prefs::BackgroundColour, clrcol);
-// 	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
-	// Clear colour and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
@@ -141,11 +138,11 @@ void Canvas::renderScene(Model *source)
 	// Set the initial state of lighting in the model
 	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 	// Draw the main model parts
-	// If renderPoint_ matches the model's Change::TotalLog then just re-render the stored display list. If not, create the display list.
+	// If renderPoint_ (Log) matches the model's then just re-use the stored display list. If not, create the display list.
 	checkGlError();
 	msg.print(Messenger::GL, " --> Drawing model\n");
 	glPushMatrix();
-	  if (renderPoint_ == displayModel_->changeLog.log(Log::Total)) glCallList(list_[GLOB_MODEL]);
+	  if ((renderPoint_ == displayModel_->changeLog) && (lastDisplayed_ == source)) glCallList(list_[GLOB_MODEL]);
 	  else
 	  {
 		msg.print(Messenger::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
@@ -166,8 +163,8 @@ void Canvas::renderScene(Model *source)
 		  // Render force arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
-		renderPoint_ = displayModel_->changeLog.log(Log::Total);
-		msg.print(Messenger::Verbose," Done. (New point = %i)\n",renderPoint_);
+		renderPoint_ = displayModel_->changeLog;
+		msg.print(Messenger::Verbose," Done. (New point = %i)\n",renderPoint_.log(Log::Total));
 	  }
 	  // Render surfaces
 	  checkGlError();
@@ -257,6 +254,7 @@ void Canvas::renderScene(Model *source)
 	checkGlError();
 
 	msg.print(Messenger::GL, " --> RENDERING END\n");
+	lastDisplayed_ = source;
 
 	msg.exit("Canvas::renderScene");
 }
