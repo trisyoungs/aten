@@ -143,7 +143,7 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -437,11 +437,12 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
-   <addaction name="actionFrameFirst" />
-   <addaction name="actionFramePrevious" />
-   <addaction name="actionPlayPause" />
-   <addaction name="actionFrameNext" />
-   <addaction name="actionFrameLast" />
+   <addaction name="actionTrajectoryViewTrajectory" />
+   <addaction name="actionTrajectoryFirstFrame" />
+   <addaction name="actionTrajectoryPreviousFrame" />
+   <addaction name="actionTrajectoryPlayPause" />
+   <addaction name="actionTrajectoryNextFrame" />
+   <addaction name="actionTrajectoryLastFrame" />
   </widget>
   <widget class="QToolBar" name="CommandToolbar" >
    <property name="windowTitle" >
@@ -832,7 +833,7 @@
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionFrameNext" >
+  <action name="actionTrajectoryNextFrame" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/playback/icons/traj_next.svg</iconset>
    </property>
@@ -843,7 +844,7 @@
     <string>Ctrl+.</string>
    </property>
   </action>
-  <action name="actionFramePrevious" >
+  <action name="actionTrajectoryPreviousFrame" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/playback/icons/traj_prev.svg</iconset>
    </property>
@@ -854,7 +855,7 @@
     <string>Ctrl+,</string>
    </property>
   </action>
-  <action name="actionPlayPause" >
+  <action name="actionTrajectoryPlayPause" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -868,7 +869,7 @@
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionFrameFirst" >
+  <action name="actionTrajectoryFirstFrame" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/playback/icons/traj_first.svg</iconset>
    </property>
@@ -879,7 +880,7 @@
     <string>Ctrl+Shift+&lt;</string>
    </property>
   </action>
-  <action name="actionFrameLast" >
+  <action name="actionTrajectoryLastFrame" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/playback/icons/traj_last.svg</iconset>
    </property>
@@ -2022,6 +2023,17 @@
   <action name="actionModelListPatterns" >
    <property name="text" >
     <string>List Patterns</string>
+   </property>
+  </action>
+  <action name="actionTrajectoryViewTrajectory" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/playback/icons/traj_view.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>View Trajectory</string>
    </property>
   </action>
  </widget>

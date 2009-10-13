@@ -97,6 +97,8 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	msg.print("Atoms  : %i\n",obj.m->nAtoms());
 	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
+	// If a trajectory exists for this model, by default we view from trajectory in the GUI
+	if (obj.m->nFrames() > 0) obj.m->setRenderFromFrames();
 	// Lastly, reset all the log points and start afresh
 	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();

@@ -29,35 +29,46 @@
 // Trajectory Actions
 */
 
-void AtenForm::on_actionFrameNext_triggered(bool checked)
+void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
+{
+	// Switch render focus from the model to the trajectory (or vice versa)
+	if (checked) aten.currentModel()->setRenderFromFrames();
+	else aten.currentModel()->setRenderFromSelf();
+	Model *m = aten.currentModelOrFrame();
+	m->calculateViewMatrix();
+	m->changeLog.add(Log::Camera);
+	gui.update();
+}
+
+void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekNextFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
-void AtenForm::on_actionFramePrevious_triggered(bool checked)
+void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekPreviousFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
-void AtenForm::on_actionFrameFirst_triggered(bool checked)
+void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekFirstFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
-void AtenForm::on_actionFrameLast_triggered(bool checked)
+void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
 	aten.currentModel()->seekLastFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
-void AtenForm::on_actionPlayPause_triggered(bool checked)
+void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 {
 	// If button is depressed, begin playback
 	if (checked)
@@ -95,21 +106,4 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 	trajectorySlider_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
 	gui.mainView.postRedisplay();
-}
-
-void AtenForm::updateTrajectoryToolbar()
-{
-	trajectoryToolbarRefreshing_ = TRUE;
-	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nFrames());
-	trajectorySlider_->setValue(aten.currentModel()->frameIndex()+1);
-	trajectorySpin_->setRange(1,aten.currentModel()->nFrames());
-	trajectorySpin_->setValue(aten.currentModel()->frameIndex()+1);
-	trajectoryToolbarRefreshing_ = FALSE;
-}
-
-void AtenForm::setTrajectoryToolbarActive(bool active)
-{
-	trajectorySlider_->setEnabled(active);
-	trajectorySpin_->setEnabled(active);
 }

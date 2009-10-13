@@ -34,6 +34,12 @@ void Model::setRenderFromFrames()
 	renderFromSelf_ = FALSE;
 }
 
+// Return whether rendering from self
+bool Model::renderFromSelf()
+{
+	return renderFromSelf_;
+}
+
 // Return the current rendering source for the model
 Model *Model::renderSource()
 {

@@ -799,6 +799,8 @@ class Model
 	public:
 	// Render from self
 	void setRenderFromSelf();
+	// Return whether rendering from self
+	bool renderFromSelf();
 	// Render from trajectory
 	void setRenderFromFrames();
 	// Return the current rendering source for the model

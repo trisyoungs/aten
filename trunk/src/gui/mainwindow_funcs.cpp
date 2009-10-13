@@ -123,7 +123,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 */
 
 // Update GUI after model change (or different model selected)
-void AtenForm::update(bool updateAtoms, bool updateCell, bool updateForcefield)
+void AtenForm::update()
 {
 	// Update status bar
 	QString s;
@@ -131,15 +131,33 @@ void AtenForm::update(bool updateAtoms, bool updateCell, bool updateForcefield)
 	// First label - atom and trajectory frame information
 	if (m->hasTrajectory())
 	{
-		s = "(Frame ";
-		s += (m->renderSource() == m ? "Main" : itoa(m->frameIndex()+1));
-		s += " of ";
-		s += itoa(m->nFrames());
-		s += ") ";
+		if (m->renderSource() == m)
+		{
+			s = "(Parent of ";
+			s += itoa(m->nFrames());
+			s += " frames) ";
+		}
+		else
+		{
+			s = "(Frame ";
+			s += itoa(m->frameIndex()+1);
+			s += " of ";
+			s += itoa(m->nFrames());
+			s += ") ";
+		}
+		// Make sure the trajectory toolbar is visible
+		ui.TrajectoryToolbar->setDisabled(FALSE);
+		ui.TrajectoryToolbar->setVisible(TRUE);
 		// Menu controls (and toolbar)
 		updateTrajectoryControls();
 		// Update current tab text
 		updateModelTabName(-1, m);
+	}
+	else
+	{
+		// Make sure the trajectory toolbar is visible
+		ui.TrajectoryToolbar->setDisabled(TRUE);
+// 		ui.TrajectoryToolbar->setVisible(FALSE);
 	}
 	m = m->renderSource();
 	s += itoa(m->nAtoms());
@@ -181,7 +199,6 @@ void AtenForm::update(bool updateAtoms, bool updateCell, bool updateForcefield)
 	infoLabel2->setText(s);
 	// Update save button status
 	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
-
 	// Enable the Atom menu if one or more atoms are selected
 	ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
@@ -197,7 +214,7 @@ void AtenForm::updateModelTabName(int tabid, Model *m)
 	char title[512];
 	if (m->nFrames() == 0) sprintf(title, "%s", m->name());
 	else if (m->renderSource() == m) sprintf(title, "%s (Parent of %i frames)", m->name(), m->nFrames());
-	else sprintf(title, "%s (Frame %i/%i)", m->name(), m->currentFrame(), m->nFrames());
+	else sprintf(title, "%s (Frame %i of %i)", m->name(), m->frameIndex()+1, m->nFrames());
 	ui.ModelTabs->setTabText(tabid, title);
 }
 
@@ -210,35 +227,61 @@ void AtenForm::updateTrajectoryControls()
 	if (m->nFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
 	else
 	{
-		// Make sure the trajectory toolbar is visible
-		ui.TrajectoryToolbar->setDisabled(FALSE);
-		ui.TrajectoryToolbar->setVisible(TRUE);
 		// If the trajectory is playing, desensitise all but the play/pause button
 		if (gui.isTrajectoryPlaying())
 		{
-			ui.actionFrameFirst->setDisabled(TRUE);
-			ui.actionFramePrevious->setDisabled(TRUE);
-			ui.actionFrameNext->setDisabled(TRUE);
-			ui.actionFrameLast->setDisabled(TRUE);
-			ui.actionPlayPause->setDisabled(FALSE);
+			ui.actionTrajectoryViewTrajectory->setDisabled(TRUE);
+			ui.actionTrajectoryFirstFrame->setDisabled(TRUE);
+			ui.actionTrajectoryPreviousFrame->setDisabled(TRUE);
+			ui.actionTrajectoryNextFrame->setDisabled(TRUE);
+			ui.actionTrajectoryLastFrame->setDisabled(TRUE);
+			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
 			setTrajectoryToolbarActive(FALSE);
 		}
 		else
 		{
-			ui.actionFrameFirst->setDisabled(FALSE);
-			ui.actionFramePrevious->setDisabled(FALSE);
-			ui.actionFrameNext->setDisabled(FALSE);
-			ui.actionFrameLast->setDisabled(FALSE);
-			ui.actionPlayPause->setDisabled(FALSE);
+			ui.actionTrajectoryViewTrajectory->setDisabled(FALSE);
+			ui.actionTrajectoryFirstFrame->setDisabled(FALSE);
+			ui.actionTrajectoryPreviousFrame->setDisabled(FALSE);
+			ui.actionTrajectoryNextFrame->setDisabled(FALSE);
+			ui.actionTrajectoryLastFrame->setDisabled(FALSE);
+			ui.actionTrajectoryPlayPause->setDisabled(FALSE);
 			setTrajectoryToolbarActive(TRUE);
 		}
 		ui.actionViewTrajectory->setDisabled(FALSE);
 		// Select the correct view action
-		if (m->renderSource() == m) ui.actionViewModel->setChecked(TRUE);
-		else ui.actionViewTrajectory->setChecked(TRUE);
+		if (m->renderFromSelf())
+		{
+			ui.actionViewModel->setChecked(TRUE);
+			ui.actionTrajectoryViewTrajectory->setChecked(FALSE);
+		}
+		else
+		{
+			ui.actionViewTrajectory->setChecked(TRUE);
+			ui.actionTrajectoryViewTrajectory->setChecked(TRUE);
+		}
 		// Set slider and spinbox
 		updateTrajectoryToolbar();
 	}
+}
+
+// Update trajectory toolbar controls
+void AtenForm::updateTrajectoryToolbar()
+{
+	trajectoryToolbarRefreshing_ = TRUE;
+	trajectorySlider_->setMinimum(1);
+	trajectorySlider_->setMaximum(aten.currentModel()->nFrames());
+	trajectorySlider_->setValue(aten.currentModel()->frameIndex()+1);
+	trajectorySpin_->setRange(1,aten.currentModel()->nFrames());
+	trajectorySpin_->setValue(aten.currentModel()->frameIndex()+1);
+	trajectoryToolbarRefreshing_ = FALSE;
+}
+
+// Set the active status of some controls on the trajectory toolbar
+void AtenForm::setTrajectoryToolbarActive(bool active)
+{
+	trajectorySlider_->setEnabled(active);
+	trajectorySpin_->setEnabled(active);
 }
 
 // Refresh window title
