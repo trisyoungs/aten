@@ -83,12 +83,16 @@ class AtenForm : public QMainWindow
 	void refreshModelTabs();
 
 	public:
-	// Refreshes all widgets to do with the model
-	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
+	// Refresh main window to reflect model change
+	void update();
 	// Add model tab
 	int addModelTab(Model *m);
 	// Update trajectory control widgets
 	void updateTrajectoryControls();
+	// Update trajectory toolbar controls
+	void updateTrajectoryToolbar();
+	// Set active status of some trajectory toolbar controls
+	void setTrajectoryToolbarActive(bool active);
 
 
 	/*
@@ -288,16 +292,14 @@ class AtenForm : public QMainWindow
 	QSpinBox *trajectorySpin_;
 	bool trajectoryToolbarRefreshing_;
 	private slots:
-	void on_actionFrameNext_triggered(bool checked);
-	void on_actionFramePrevious_triggered(bool checked);
-	void on_actionFrameFirst_triggered(bool checked);
-	void on_actionFrameLast_triggered(bool checked);
-	void on_actionPlayPause_triggered(bool checked);
+	void on_actionTrajectoryViewTrajectory_triggered(bool checked);
+	void on_actionTrajectoryNextFrame_triggered(bool checked);
+	void on_actionTrajectoryPreviousFrame_triggered(bool checked);
+	void on_actionTrajectoryFirstFrame_triggered(bool checked);
+	void on_actionTrajectoryLastFrame_triggered(bool checked);
+	void on_actionTrajectoryPlayPause_triggered(bool checked);
 	void trajectorySlider_sliderMoved(int i);
 	void trajectorySpin_valueChanged(int i);
-	public:
-	void updateTrajectoryToolbar();
-	void setTrajectoryToolbarActive(bool active);
 
 	/*
 	// View Actions

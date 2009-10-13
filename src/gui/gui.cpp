@@ -265,7 +265,7 @@ void GuiQt::run()
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
 	{
-		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's /data directory, or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. /usr/local/aten/data), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
 	}
 	else if (aten.nFiltersFailed() > 0)
 	{
@@ -295,7 +295,7 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield)
 {
 	if (!doesExist_) return;
 	// Refresh aspects of main window
-	mainWindow->update(updateAtoms, updateCell, updateForcefield);
+	mainWindow->update();
 	// Update contents of the atom list
 	if (updateAtoms) atomlistWindow->refresh();
 	// Update the contents of the cell page
@@ -678,7 +678,7 @@ void GuiQt::setTrajectoryTimerId(int i)
 void GuiQt::stopTrajectoryPlayback()
 {
 	mainWidget->killTimer(trajectoryTimerId_);
-	mainWindow->ui.actionPlayPause->setChecked(FALSE);
+	mainWindow->ui.actionTrajectoryPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
 	mainWindow->updateTrajectoryControls();
 	update();

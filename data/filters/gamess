@@ -1,7 +1,8 @@
 # GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.2+)
 # Created:	 14/04/2009
-# Last modified: 15/04/2009
+# Last modified: 13/10/2009
 # ChangeLog:
+#	13/10/2009 - Last frame and parent frame from logfile are now deselected.
 # Notes:
 #	Output model filter sets symmetry to C1, regardless of the actual symmetry.
 
@@ -47,8 +48,10 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	# Now, copy the contents of the current (i.e. last) frame, and paste it into the parent model
 	selectall();
 	copy();
+	selectnone();
 	getmodel(m);
 	paste();
+	selectnone();
 	finalisemodel();
 }
 

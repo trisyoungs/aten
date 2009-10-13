@@ -94,6 +94,7 @@
         <file>icons/traj_next.svg</file>
         <file>icons/traj_playpause.svg</file>
         <file>icons/traj_prev.svg</file>
+        <file>icons/traj_view.svg</file>
     </qresource>
     <qresource prefix="/prefs" />
     <qresource prefix="/program" >
