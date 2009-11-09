@@ -485,6 +485,7 @@ class Command
 		Getenvi,
 		Gui,
 		Help,
+		SearchCommands,
 		Seed,
 		Quit,
 		Version,
@@ -894,6 +895,7 @@ class Command
 	static bool function_Getenvf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Getenvi(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SearchCommands(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);

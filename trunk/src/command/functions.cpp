@@ -443,6 +443,7 @@ void Command::initPointers()
 	pointers_[Getenvi] = &Command::function_Getenvi;
 	pointers_[Gui] = &Command::function_Gui;
 	pointers_[Help] = &Command::function_Help;
+	pointers_[SearchCommands] = &Command::function_SearchCommands;
 	pointers_[Seed] = &Command::function_Seed;
 	pointers_[Quit] = &Command::function_Quit;
 	pointers_[Version] = &Command::function_Version;
