@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term functional forms
-	*** src/base/forms.h
+	*** src/ff/forms.h
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -58,9 +58,10 @@ namespace VdwFunctions
 // Bond Potential Functions
 namespace BondFunctions
 {
-	enum BondFunction { None, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
+	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char*);
+	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
 	enum MorseParameter { MorseK, MorseEq, MorseD };
@@ -70,9 +71,10 @@ namespace BondFunctions
 // Angle potential forms
 namespace AngleFunctions
 {
-	enum AngleFunction { None, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
+	enum AngleFunction { None, Ignore, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char*);
+	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos2Parameter { Cos2K, Cos2Eq, Cos2C0, Cos2C1, Cos2C2 };
@@ -83,9 +85,10 @@ namespace AngleFunctions
 // Torsion potential forms
 namespace TorsionFunctions
 {
-	enum TorsionFunction { None, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, nTorsionFunctions };
+	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
 	TorsionFunction torsionFunction(const char*);
+	void printValid();
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS, CosineEScale, CosineVScale };
 	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3, Cos3NULL, Cos3EScale, Cos3VScale };
 	enum Cos4Parameter { Cos4K1, Cos4K2, Cos4K3, Cos4K4, Cos4EScale, Cos4VScale };

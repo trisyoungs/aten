@@ -23,7 +23,7 @@
 #define ATEN_FORCEFIELDBOUND_H
 
 #include "base/dnchar.h"
-#include "base/forms.h"
+#include "ff/forms.h"
 
 // Forcefield bound interaction type
 class ForcefieldBound
@@ -34,7 +34,7 @@ class ForcefieldBound
 	// Constructor
 	ForcefieldBound();
 	// Forcefield Bound Interaction Type
-	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction };
+	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction, ImproperInteraction };
 	static const char *boundType(ForcefieldBound::BoundType bt);
 	static int boundTypeNAtoms(ForcefieldBound::BoundType bt);
 
@@ -47,6 +47,7 @@ class ForcefieldBound
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Interaction parameter data
 	double params_[MAXFFPARAMDATA];
+	
 
 	public:
 	// Set the type of bound interaction

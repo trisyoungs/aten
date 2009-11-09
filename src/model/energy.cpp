@@ -22,7 +22,7 @@
 #include "model/model.h"
 #include "base/pattern.h"
 #include "ff/fourier.h"
-#include "base/forms.h"
+#include "ff/forms.h"
 #include "classes/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)

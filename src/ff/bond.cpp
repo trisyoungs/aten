@@ -49,6 +49,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 			{
 				case (BondFunctions::None):
 					msg.print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
+				case (BondFunctions::Ignore):
 					break;
 				case (BondFunctions::Constraint):
 					// U = 0.5 * forcek * (r - eq)**2
@@ -121,6 +122,7 @@ void Pattern::bondForces(Model *srcmodel)
 			{
 				case (BondFunctions::None):
 					msg.print("Warning: No function is specified for bond force %i-%i.\n", i, j);
+				case (BondFunctions::Ignore):
 					du_dr = 0.0;
 					break;
 				case (BondFunctions::Constraint):

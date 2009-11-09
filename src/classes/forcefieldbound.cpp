@@ -25,8 +25,8 @@
 #include <stdio.h>
 
 // Interaction types
-const char *ForcefieldBoundKeywords[] = { "none", "bond", "angle", "torsion" };
-int ForcefieldBoundNAtoms[] = { 0, 2, 3, 4 };
+const char *ForcefieldBoundKeywords[] = { "none", "bond", "angle", "torsion", "improper" };
+int ForcefieldBoundNAtoms[] = { 0, 2, 3, 4, 4 };
 const char *ForcefieldBound::boundType(ForcefieldBound::BoundType bt)
 {
 	return ForcefieldBoundKeywords[bt];
@@ -70,6 +70,7 @@ const char *ForcefieldBound::formText()
 			return AngleFunctions::AngleFunctions[angleStyle()].keyword;
 			break;
 		case (ForcefieldBound::TorsionInteraction):
+		case (ForcefieldBound::ImproperInteraction):
 			return TorsionFunctions::TorsionFunctions[torsionStyle()].keyword;
 			break;
 		default:

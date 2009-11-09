@@ -42,8 +42,9 @@ const char *replaceChars(const char *s, const char *charstoreplace, char r);
 const char *stripChars(const char *s, const char *charstostrip);
 int countChars(const char *string, const char *searchchars, int offset = 0);
 
-// Enum search
+// Enum search and print
 int enumSearch(const char *name, int nitems, const char **list, const char *query);
+void enumPrintValid(int nitems, const char **list);
 
 // Files
 bool fileExists(const char *filename);

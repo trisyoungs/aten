@@ -22,8 +22,8 @@
 #include "model/model.h"
 #include "classes/forcefieldatom.h"
 #include "classes/prefs.h"
+#include "ff/forms.h"
 #include "base/pattern.h"
-#include "base/forms.h"
 
 // Calculate energy for specified interaction
 double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, double *paramsj, double scale, int i, int j)

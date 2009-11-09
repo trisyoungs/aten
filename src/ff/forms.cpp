@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term functional forms
-	*** src/base/forms.cpp
+	*** src/ff/forms.cpp
 	Copyright T. Youngs 2007-2009
 
 	This file is part of Aten.
@@ -20,8 +20,9 @@
 */
 
 #include <string.h>
-#include "base/forms.h"
+#include "ff/forms.h"
 #include "base/sysfunc.h"
+#include "base/messenger.h"
 
 // Electrostatic model
 const char *ElecMethodKeywords[Electrostatics::nElectrostatics] = { "none", "coulomb", "ewald", "ewaldauto" };
@@ -75,6 +76,10 @@ FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Ignore", "ignore",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Constraint", "constraint",
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" },
@@ -99,10 +104,20 @@ BondFunctions::BondFunction BondFunctions::bondFunction(const char *s)
 		if (strcmp(BondFunctions::BondFunctions[i].keyword,s) == 0) break;
 	return (BondFunctions::BondFunction) i;
 }
+void BondFunctions::printValid()
+{
+	msg.print("Valid forms are:\n   ");
+	for (int i=1; i< BondFunctions::nBondFunctions; i++) msg.print("%s ",BondFunctions::BondFunctions[i].keyword);
+	msg.print("\n");
+}
 
 // Angle potential forms
 FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 	{ "None", "none",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Ignore", "ignore",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
@@ -134,6 +149,12 @@ AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 		if (strcmp(AngleFunctions::AngleFunctions[i].keyword,s) == 0) break;
 	return (AngleFunctions::AngleFunction) i;
 }
+void AngleFunctions::printValid()
+{
+	msg.print("Valid forms are:\n   ");
+	for (int i=1; i< AngleFunctions::nAngleFunctions; i++) msg.print("%s ",AngleFunctions::AngleFunctions[i].keyword);
+	msg.print("\n");
+}
 
 // Torsion potential forms
 FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFunctions] = {
@@ -141,6 +162,10 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.5, 0.5 } },
+	{ "Ignore", "ignore",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Cosine", "cos",
 		{ "Force K", "Periodicity", "Eq. Angle", "Sign", "EScale", "VScale" },
 		{ "k", "n", "eq", "s", "escale", "vscale" },
@@ -172,6 +197,12 @@ TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *
 	for (i=0; i < TorsionFunctions::nTorsionFunctions; i++)
 		if (strcmp(TorsionFunctions::TorsionFunctions[i].keyword,s) == 0) break;
 	return (TorsionFunctions::TorsionFunction) i;
+}
+void TorsionFunctions::printValid()
+{
+	msg.print("Valid forms are:\n   ");
+	for (int i=1; i< TorsionFunctions::nTorsionFunctions; i++) msg.print("%s ",TorsionFunctions::TorsionFunctions[i].keyword);
+	msg.print("\n");
 }
 
 // Generation rules (for rule-based FFs)

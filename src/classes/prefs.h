@@ -22,7 +22,7 @@
 #ifndef ATEN_PREFS_H
 #define ATEN_PREFS_H
 
-#include "base/forms.h"
+#include "ff/forms.h"
 #include "base/atom.h"
 #include "base/elements.h"
 #include "classes/colourscale.h"
@@ -523,6 +523,8 @@ class Prefs
 	int commandHistoryLimit_;
 	// Whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings_;
+	// Maximum distance allowed between consecutive improper torsion atoms
+	double maxImproperDist_;
 
 	public:
 	// Set the model update frequency
@@ -565,9 +567,12 @@ class Prefs
 	int commandHistoryLimit();
 	// Return whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings();
-	// Whether to load Qt window/toolbar settings on startup
+	// set whether to load Qt window/toolbar settings on startup
 	void setLoadQtSettings(bool b);
-
+	// Return maximum distance allowed between consecutive improper torsion atoms
+	double maxImproperDist();
+	// Set maximum distance allowed between consecutive improper torsion atoms
+	void setMaxImproperDist(double r);
 
 
 	/*

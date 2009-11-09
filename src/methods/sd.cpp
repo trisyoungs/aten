@@ -71,6 +71,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	modelAtoms = srcmodel->atomArray();
 	currentEnergy = srcmodel->totalEnergy(srcmodel);
 	srcmodel->calculateForces(srcmodel);
+srcmodel->printForces();
 	currentRms = srcmodel->calculateRmsForce();
 	srcmodel->energy.print();
 

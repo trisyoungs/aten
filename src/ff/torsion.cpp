@@ -21,8 +21,8 @@
 
 #include "model/model.h"
 #include "classes/forcefieldbound.h"
+#include "ff/forms.h"
 #include "base/pattern.h"
-#include "base/forms.h"
 
 // Torsion energy
 void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
@@ -52,6 +52,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			{
 				case (TorsionFunctions::None):
 					msg.print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
+				case (TorsionFunctions::Ignore):
 					break;
 				case (TorsionFunctions::Cosine): 
 					// U(phi) = forcek * (1 + s*cos(period*phi - eq))
@@ -219,6 +220,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			{
 				case (TorsionFunctions::None):
 					msg.print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
+				case (TorsionFunctions::Ignore):
 					du_dphi = 0.0;
 					break;
 				case (TorsionFunctions::Cosine): 
