@@ -23,7 +23,7 @@
 #define ATEN_FORCEFIELD_H
 
 #include "base/dnchar.h"
-#include "base/forms.h"
+#include "ff/forms.h"
 #include "base/lineparser.h"
 #include "classes/prefs.h"
 
@@ -42,7 +42,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, InterCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -166,12 +166,33 @@ class Forcefield
 	ForcefieldBound *addTorsion(TorsionFunctions::TorsionFunction form);
 	// Return number of terms defined in torsions list
 	int nTorsions();
-	// Returns the angle list
+	// Returns the torsion list
 	ForcefieldBound *torsions();
 	// Return the n'th torsion in the list
 	ForcefieldBound *torsion(int n);
 	// Retreve torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findTorsion(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
+
+	/*
+	// Improper Torsion Interactions
+	*/
+	private:
+	// List pointers for improper torsions data
+	List<ForcefieldBound> impropers_;
+
+	public:
+	// Generate angle parameters (rule-based Forcefield)
+	ForcefieldBound *generateImproper(Atom*, Atom*, Atom*, Atom*);
+	// Add improper torsion term to the forcefield
+	ForcefieldBound *addImproper(TorsionFunctions::TorsionFunction form);
+	// Return number of improper torsion terms defined in torsions list
+	int nImpropers();
+	// Returns the improper torsion list
+	ForcefieldBound *impropers();
+	// Return the n'th improper torsion in the list
+	ForcefieldBound *improper(int n);
+	// Retreve improper torsion data corresponding to specified atomtype id's
+	ForcefieldBound *findImproper(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
 	/*
 	// Parameter Matching
@@ -202,6 +223,8 @@ class Forcefield
 	bool readAngles();
 	// Reads in torsion data
 	bool readTorsions();
+	// Reads in improper data
+	bool readImpropers();
 
 	public:
 	// Load Forcefield from the filename supplied

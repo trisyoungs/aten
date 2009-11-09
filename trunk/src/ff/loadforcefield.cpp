@@ -33,6 +33,7 @@ bool Forcefield::load(const char *filename)
 {
 	msg.enter("Forcefield::load");
 	bool done, okay;
+	double impropermaxdist;
 	int success, n;
 	Prefs::EnergyUnit ffunit;
 	// Open file for reading
@@ -104,6 +105,9 @@ bool Forcefield::load(const char *filename)
 				break;
 			case (Forcefield::TorsionsCommand):
 				okay = readTorsions();
+				break;
+			case (Forcefield::ImproperCommand):
+				okay = readImpropers();
 				break;
 			case (Forcefield::VScaleCommand):
 				vscale14 = ffparser.argd(1);	// 1-4 VDW scaling
@@ -493,5 +497,63 @@ bool Forcefield::readTorsions()
 	} while (!done);
 	msg.print("\t: Read in %i torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
 	msg.exit("Forcefield::readTorsions");
+	return TRUE;
+}
+
+bool Forcefield::readImpropers()
+{
+	// Read in torsion data
+	msg.enter("Forcefield::readImpropers");
+	ForcefieldBound *newffimproper;
+	int count, success, n;
+	// Get functional form of torsion potential
+	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(ffparser.argc(1));
+	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
+	{
+		torsionstyle = TorsionFunctions::None;
+		msg.print("Improper torsion functional form not recognised - '%s'\n",ffparser.argc(1));
+		TorsionFunctions::printValid();
+		return FALSE;
+	}
+	count = 0;
+	bool done = FALSE;
+	do
+	{
+		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error reading improper torsion data %i.\n",count+1);
+			if (success == -1) msg.print("End of file error reading improper torsion data %i.\n",count+1);
+			msg.exit("Forcefield::readImpropers");
+			return FALSE;
+		}
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		else
+		{
+			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
+			// If not, then check to see that it references an atomname in the atomtypes list
+			for (n=0; n<4; n++)
+			{
+				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
+					msg.print("\t... Warning - improper torsion atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+			}
+			// Create new ff_angle structure
+			newffimproper = impropers_.add();
+			newffimproper->setType(ForcefieldBound::TorsionInteraction);
+			newffimproper->setTypeName(0,ffparser.argc(0));
+			newffimproper->setTypeName(1,ffparser.argc(1));
+			newffimproper->setTypeName(2,ffparser.argc(2));
+			newffimproper->setTypeName(3,ffparser.argc(3));
+			newffimproper->setTorsionStyle(torsionstyle);
+			newffimproper->setParameter(TF_ESCALE, escale14);
+			newffimproper->setParameter(TF_VSCALE, vscale14);
+			for (n=0; n<MAXFFPARAMDATA-2; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
+			msg.print(Messenger::Verbose,"IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
+			count ++;
+		}
+	} while (!done);
+	msg.print("\t: Read in %i improper torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
+	msg.exit("Forcefield::readImpropers");
 	return TRUE;
 }

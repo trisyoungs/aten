@@ -20,9 +20,9 @@
 */
 
 #include "ff/forcefield.h"
+#include "ff/forms.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
-#include "base/forms.h"
 
 // References
 // UFF:

@@ -257,12 +257,16 @@ class Pattern
 	List<PatternBound> angles_;
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
+	// List of improper torsions in one pattern molecule
+	List<PatternBound> impropers_;
 	// Reference list of bond terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldBonds_;
 	// Reference list of angle terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldAngles_;
 	// Reference list of torsion terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldTorsions_;
+	// Reference list of improper torsion terms in pattern
+	Reflist<ForcefieldBound, int> forcefieldImpropers_;
 	// Reference list of atom types in pattern
 	Reflist<ForcefieldAtom, int> forcefieldTypes_;
 	// Set nth atom to the data specified
@@ -273,6 +277,8 @@ class Pattern
 	void setAngleData(int id, ForcefieldBound *ffb);
 	// Set nth torsion to the data specified
 	void setTorsionData(int id, ForcefieldBound *ffb);
+	// Set nth improper torsion to the data specified
+	void setImproperData(int id, ForcefieldBound *ffb);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -293,24 +299,32 @@ class Pattern
 	int nAngles();
 	// Return number of torsions in one molecule of the pattern
 	int nTorsions();
+	// Return number of improper torsions in one molecule of the pattern
+	int nImpropers();
 	// Return first bond of the pattern
 	PatternBound *bonds();
 	// Return first angle of the pattern
 	PatternBound *angles();
 	// Return first torsion of the pattern
 	PatternBound *torsions();
+	// Return first torsion of the pattern
+	PatternBound *impropers();
 	// Return selected bond of the pattern
 	PatternBound *bond(int i);
 	// Return selected angle of the pattern
 	PatternBound *angle(int i);
 	// Return selected torsion of the pattern
 	PatternBound *torsion(int i);
+	// Return selected improper torsion of the pattern
+	PatternBound *improper(int i);
 	// Return number of unique bonds used in the pattern
 	int nForcefieldBonds();
 	// Return number of forcefield angles used in the pattern
 	int nForcefieldAngles();
 	// Return number of forcefield torsions used in the pattern
 	int nForcefieldTorsions();
+	// Return number of forcefield improper torsions used in the pattern
+	int nForcefieldImpropers();
 	// Return number of forcefield types used in the pattern
 	int nForcefieldTypes();
 	// Return first forcefield bond of the pattern
@@ -319,6 +333,8 @@ class Pattern
 	Refitem<ForcefieldBound,int> *forcefieldAngles();
 	// Return first forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldTorsions();
+	// Return first forcefield improper torsion of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldImpropers();
 	// Return first forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *forcefieldTypes();
 	// Return selected forcefield bond of the pattern
@@ -327,6 +343,8 @@ class Pattern
 	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
 	// Return selected forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
+	// Return selected forcefield improper torsion of the pattern
+	Refitem<ForcefieldBound,int> *forcefieldImproper(int i);
 	// Return selected forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
@@ -343,7 +361,7 @@ class Pattern
 	void bondEnergy(Model*, Energy*, int molecule = -1);
 	// Calculate angle energy of pattern (or specific molecule)
 	void angleEnergy(Model*, Energy*, int molecule = -1);
-	// Calculate torsion energy of pattern (or specific molecule)
+	// Calculate torsion energy (including impropers) of pattern (or specific molecule)
 	void torsionEnergy(Model*, Energy*, int molecule = -1);
 	// Calculate intrapattern Vdw energy (or for specific molecule)
 	void vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
@@ -367,7 +385,7 @@ class Pattern
 	void bondForces(Model*);
 	// Calculate angle forces in pattern
 	void angleForces(Model*);
-	// Calculate torsion forces in pattern
+	// Calculate torsion forces (including impropers) in pattern
 	void torsionForces(Model*);
 	// Calculate Vdw intrapattern forces
 	void vdwIntraPatternForces(Model*);

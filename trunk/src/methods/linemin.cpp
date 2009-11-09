@@ -65,13 +65,14 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 
 	srcmodel->zeroForces();
 	srcmodel->calculateForces(srcmodel);
+	srcmodel->printForces();
 	srcmodel->zeroForcesFixed();
-	srcmodel->normaliseForces(1.0);
+// 	srcmodel->normaliseForces(1.0);
 
 	// Set initial bounding values
-	bound[0] = 0.01;
-	bound[1] = 0.02;
-	bound[2] = 0.03;
+	bound[0] = 0.00;
+	bound[1] = -0.01;
+	bound[2] = 0.01;
 	// Compute gradient at each bounding point
 	gradientMove(srcmodel, &destmodel, bound[0]);
 	energy[0] = srcmodel->totalEnergy(&destmodel);

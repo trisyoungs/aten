@@ -35,7 +35,7 @@ int printlevel = 0;
 LineParser elparser;
 
 // Atom typing commands
-const char *NetaCommandKeywords[Neta::nNetaCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+const char *NetaCommandKeywords[Neta::nNetaCommands] = { "aromatic", "bond", "chain", "linear", "nbonds", "nh", "noring", "octahedral", "onebond", "os", "n", "ring", "sp", "sp2", "sp3", "sqplanar", "tetrahedral", "tbp", "trigonal", "tshape", "unbound" };
 Neta::NetaCommand Neta::netaCommand(const char *s)
 {
 	return (Neta::NetaCommand) enumSearch("",Neta::nNetaCommands,NetaCommandKeywords,s);
@@ -46,6 +46,13 @@ const char *RingtypeCommandKeywords[Ringtype::nRingtypeCommands] = { "size", "n"
 Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 {
 	return (Ringtype::RingtypeCommand) enumSearch("",Ringtype::nRingtypeCommands,RingtypeCommandKeywords,s);
+}
+
+// Chain typing commands
+const char *ChaintypeCommandKeywords[Chaintype::nChaintypeCommands] = { "n" };
+Chaintype::ChaintypeCommand Chaintype::chaintypeCommand(const char *s)
+{
+	return (Chaintype::ChaintypeCommand) enumSearch("",Chaintype::nChaintypeCommands,ChaintypeCommandKeywords,s);
 }
 
 // Constructors
@@ -76,6 +83,16 @@ Ringtype::Ringtype()
 	nRepeat_ = 1;
 	selfAbsent_ = FALSE;
 	type_ = Ring::AnyRing;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+Chaintype::Chaintype()
+{
+	// Private Variables
+	nRepeat_ = 1;
 
 	// Public variables
 	prev = NULL;
@@ -329,6 +346,91 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	return TRUE;
 }
 
+bool Chaintype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
+{
+	// Separate function (to prevent brain melting) to recursively create a chain definition.
+	// At least allows the restriction (and addition) of commands to the ring command.
+	msg.enter("Chaintype::expand");
+	Dnchar keywd, optlist, def;
+	char c;
+	int level = 0;
+	bool found, hasopts;
+	ChaintypeCommand rtc;
+	Neta *newat;
+	level ++;
+	msg.print(Messenger::Typing,"expand[chain] : Received string [%s]\n",data);
+	// Grab the next command, trip the keyword and option list (if there is one).
+	def.set(data);
+	do
+	{
+		// Get next command and repeat
+		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
+		optlist = elparser.parseNetaString(def);
+		keywd = elparser.trimNetaKeyword(optlist);
+		hasopts = optlist.isEmpty() ? FALSE : TRUE;
+		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
+		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
+		found = FALSE;
+		// Check for Neta specifier ('-' or '='). Both mean the same here...
+		c = keywd[0];
+		if ((c == '-') || (c == '='))
+		{
+			// Must have optlist...
+			if (keywd[1] == '\0')
+			{
+				msg.print("Bound specifiers ('-' or '=') must be given an element, type, or list.\n");
+				msg.exit("Ringtype::expand");
+				return FALSE;
+			}
+			// Remove leading character, add bound atom and set its element list
+			keywd.eraseStart(1);
+			newat = chainAtoms_.add();
+			newat->setElements(keywd.get(),ff);
+			if (!newat->expand(optlist.get(),ff,parent))
+			{
+				msg.exit("Chaintype::expand");
+				return FALSE;
+			}
+// 			if (c == '=') msg.print("Note: bound specified '=' means the same as '-' in a chain definition.\n");
+			found = TRUE;
+		}
+		// Check for keywords (if it wasn't a bound specifier)
+		if (!found)
+		{
+			rtc = Chaintype::chaintypeCommand(keywd.get());
+			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
+			found = TRUE;
+			switch (rtc)
+			{
+				// Repeat specifier
+				case (Chaintype::RepeatCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Repeat number must be provided in atomtype description (e.g. n=2).\n");
+						msg.exit("Chaintype::expand");
+						return FALSE;
+					}
+					nRepeat_ = atoi(optlist.get());
+					break;
+				// Unrecognised
+				default:
+					if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding chain at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
+					else
+					{
+						msg.print("Chaintype::expand - Unrecognised command (%s).\n", keywd.get());
+						msg.exit("Chaintype::expand");
+						return FALSE;
+					}
+					break;
+			}
+		}
+	} while (!def.isEmpty());
+	level --;
+	msg.exit("Chaintype::expand");
+	return TRUE;
+}
+
 // Master creation routine, returning the head node of an Neta structure.
 bool Neta::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 {
@@ -350,6 +452,7 @@ bool Neta::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	int n, level = 0;
 	Atom::AtomGeometry ag;
 	NetaCommand atc;
+	Chaintype *ct;
 	level ++;
 	msg.print(Messenger::Typing,"Neta::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
@@ -402,6 +505,15 @@ bool Neta::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			found = TRUE;
 			switch (atc)
 			{
+				// Chain
+				case (Neta::ChainCommand):
+					ct = chainList_.add();
+					if (!ct->expand(optlist.get(), ff,parent))
+					{
+						msg.exit("Neta::expand");
+						return FALSE;
+					}	
+					break;
 				// Hybridisation / environment settings (no options)
 				case (Neta::SpCommand):
 					environment_ = Atom::SpEnvironment;
@@ -548,6 +660,37 @@ int Neta::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model *par
 	}
 	msg.exit("Neta::matchInList");
 	return -1;
+}
+
+int Neta::matchChain(Atom *i, Atom *prevatom, Neta *neta, List<Ring> *ringdata, Model *parent, Atom *topatom)
+{
+	msg.enter("Neta::matchChain");
+	// Does this atom (i) match the neta description provided?
+	// If so, search bound neighbours for next chain atom match
+	int score = neta->matchAtom(i, ringdata, parent, topatom);
+	if (score == -1)
+	{
+		msg.exit("Neta::matchChain");
+		return -1;
+	}
+	// Search bound atoms for next neta match (if any)
+	Neta *nextneta = neta->next;
+	if (nextneta == NULL)
+	{
+		msg.exit("Neta::matchChain");
+		return score;
+	}
+	int nextscore = -1;
+	Atom *j;
+	for (Refitem<Bond,int> *ri = i->bonds(); ri != NULL; ri = ri->next)
+	{
+		j = ri->item->partner(i);
+		if (prevatom == j) continue;
+		nextscore = matchChain(j, i, nextneta, ringdata, parent, topatom);
+		if (nextscore != -1) break;
+	}
+	msg.exit("Neta::matchChain");
+	return (nextscore == -1 ? -1 : nextscore+score);
 }
 
 int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
@@ -717,6 +860,38 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 			level --;
 			msg.exit("Neta::matchAtom");
 			return -1;
+		}
+	}
+	// Chain check
+	if (chainList_.first() == NULL) msg.print(Messenger::Typing,"(%p %2i) ... Chains      [defaulted]\n",this,level);
+	else
+	{
+		for (Chaintype *ch = chainList_.first(); ch != NULL; ch = ch->next)
+		{
+			for (n=0; n<ch->nRepeat_; n++)
+			{
+				msg.print(Messenger::Typing,"(%p %2i) ... Chain %p (n=%i/%i): ",this,level,ch,n+1,ch->nRepeat_);
+				atomscore = -1;
+				for (ri = atomchecklist.first(); ri != NULL; ri = ri->next)
+				{
+					// Check the atomlist for a match to the chained Neta
+					atomscore = matchChain(ri->item,i,ch->chainAtoms_.first(),ringdata,parent, topatom);
+					if (atomscore != -1) break;
+				}
+				// Did we find a match?
+				if (atomscore != -1)
+				{
+					msg.print(Messenger::Typing,"[passed]\n");
+					typescore += atomscore;
+				}
+				else
+				{
+					msg.print(Messenger::Typing,"[failed]\n");
+					level --;
+					msg.exit("Neta::matchAtom");
+					return -1;
+				}
+			}
 		}
 	}
 	// List of bound atoms check

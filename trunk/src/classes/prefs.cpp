@@ -279,6 +279,7 @@ Prefs::Prefs()
 	maxUndoLevels_ = -1;
 	commandHistoryLimit_ = 25;
 	loadQtSettings_ = TRUE;
+	maxImproperDist_ = 5.0;
 }
 
 // Load user preferences file
@@ -1383,6 +1384,18 @@ bool Prefs::loadQtSettings()
 void Prefs::setLoadQtSettings(bool b)
 {
 	loadQtSettings_ = b;
+}
+
+// Return maximum distance allowed between consecutive improper torsion atoms
+double Prefs::maxImproperDist()
+{
+	return maxImproperDist_;
+}
+
+// Set maximum distance allowed between consecutive improper torsion atoms
+void Prefs::setMaxImproperDist(double r)
+{
+	maxImproperDist_ = r;
 }
 
 /*

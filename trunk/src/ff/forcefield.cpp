@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "inter", "bonds", "angles", "torsions", "vscale", "escale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "escale", "equivalents", "generator", "impropers", "inter", "name", "rules", "torsions", "types", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
@@ -214,7 +214,7 @@ int Forcefield::nTorsions()
 	return torsions_.nItems();
 }
 
-// Returns the angle list
+// Returns the torsion list
 ForcefieldBound *Forcefield::torsions()
 {
 	return torsions_.first();
@@ -229,6 +229,38 @@ ForcefieldBound *Forcefield::torsion(int n)
 		return NULL;
 	}
 	return torsions_[n];
+}
+
+// Add torsions term to the forcefield
+ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
+{
+	ForcefieldBound *ffb = impropers_.add();
+	ffb->setType(ForcefieldBound::TorsionInteraction);
+	ffb->setTorsionStyle(form);
+	return ffb;
+}
+
+// Return number of improper torsion terms defined in list
+int Forcefield::nImpropers()
+{
+	return impropers_.nItems();
+}
+
+// Returns the improper torsion list
+ForcefieldBound *Forcefield::impropers()
+{
+	return impropers_.first();
+}
+
+// Returns nth defined improper torsion
+ForcefieldBound *Forcefield::improper(int n)
+{
+	if ((n < 0) || (n > impropers_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::impropers_\n",n);
+		return NULL;
+	}
+	return impropers_[n];
 }
 
 // Character-match the atomtype names supplied

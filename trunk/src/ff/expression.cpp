@@ -66,10 +66,11 @@ void Pattern::initExpression(bool vdwOnly)
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		msg.print("Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
+		msg.print("Basic expression for pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
 		bonds_.createEmpty(nBonds);
 		angles_.createEmpty(nAngles);
 		torsions_.createEmpty(nTorsions);
+		impropers_.clear();
 	}
 	if (conMatrix_ != NULL) msg.print("Pattern::initExpression : Warning - connectivity matrix was already allocated.\n");
 	conMatrix_ = new int*[nAtoms_];
@@ -92,7 +93,7 @@ bool Pattern::fillExpression()
 	Atom *ai, *aj, *ak, *al;
 	Refitem<Bond,int> *bref;
 	ForcefieldBound *ffb;
-	PatternAtom *pa;
+	PatternAtom *pa, *ipa[4];
 	PatternBound *pb;
 	Forcefield *ff;
 	// Counters for incomplete aspects of the expression
@@ -100,13 +101,14 @@ bool Pattern::fillExpression()
 	incomplete_ = FALSE;
 	// Temp vars for type storage
 	ForcefieldAtom *ti, *tj, *tk, *tl;
-	int count, ii, jj, kk, ll;
+	int count, ii, jj, kk, ll, n, m;
 	List< ListItem<int> > *bonding;
 	bonding = new List< ListItem<int> >[nAtoms_];
 	// Clear old unique terms lists
 	forcefieldBonds_.clear();
 	forcefieldAngles_.clear();
 	forcefieldTorsions_.clear();
+	forcefieldImpropers_.clear();
 	forcefieldTypes_.clear();
 	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
 	ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
@@ -242,7 +244,7 @@ bool Pattern::fillExpression()
 					angles_[count]->setAtomId(0,bonding[jj][ii]->data);
 					angles_[count]->setAtomId(1,jj);
 					angles_[count]->setAtomId(2,bonding[jj][kk]->data);
-					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
+					// Search for the angle data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findAngle(ti,tj,tk);
 					if (ffb != NULL) setAngleData(count, ffb);
@@ -311,7 +313,7 @@ bool Pattern::fillExpression()
 					torsions_[count]->setAtomId(2,kk);
 					torsions_[count]->setAtomId(3,bonding[kk][ll]->data);
 	
-					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
+					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findTorsion(ti,tj,tk,tl);
 					if (ffb != NULL) setTorsionData(count, ffb);
@@ -348,6 +350,46 @@ bool Pattern::fillExpression()
 		}
 		else if (itorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
+		// Construct improper torsions list
+		// Cycle over impropers defined in forcefield and see if the pattern contains those atoms within a certain distance
+		for (ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
+		{
+			// Loop over four atoms in improper definition in turn
+			count = 0;
+			for (n=0; n<4; ++n)
+			{
+				for (ipa[n] = atoms_.first(); ipa[n] != NULL; ipa[n] = ipa[n]->next)
+				{
+					// Atom cannot have been used before in this improper...
+					for (m=0; m<n; ++m) if (ipa[n] == ipa[m]) continue;
+					if (strcmp(ipa[n]->atom()->type()->equivalent(), ffb->typeName(n)) == 0) break;
+				}
+				// If no match is found, no atoms match this improper so exit
+				if (ai == NULL) break;
+				// The atom contained in 'pa' is a match for the typename in the improper, so check
+				// its distance from the previous atom.
+				if (n > 0)
+				{
+					double dist = parent_->distance(ipa[n]->atom(), ipa[n-1]->atom());
+					if (dist > prefs.maxImproperDist())
+					{
+						msg.print(Messenger::Verbose, "Atom %i of improper is too far from previous atom (%f A).\n", n+1, dist);
+						break;
+					}
+				}
+				count++;
+			}
+			// Did we match all four atoms of the improper?
+			if (count != 4) continue;
+
+			// If we get here, then we did...
+			pb = impropers_.add();
+			for (n=0; n<4; ++n) pb->setAtomId(n, ipa[n]->atom()->id());
+			setImproperData(impropers_.nItems()-1, ffb);
+			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+
+		}
+		if (impropers_.nItems() > 0) msg.print("... Found parameters for %i impropers.\n", impropers_.nItems());
 	}
 	delete[] bonding;
 	// Print out a warning if the expression is incomplete.

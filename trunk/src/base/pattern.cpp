@@ -226,6 +226,19 @@ void Pattern::setTorsionData(int id, ForcefieldBound *ffb)
 	torsions_[id]->setForcefieldDataId(n);
 }
 
+// Set the torsion data specified
+void Pattern::setImproperData(int id, ForcefieldBound *ffb)
+{
+	impropers_[id]->setData(ffb);
+	impropers_[id]->setForcefieldDataId(-1);
+	// Add this to the forcefield improper torsions list if it isn't there already
+	int n;
+	for (n=0; n<forcefieldImpropers_.nItems(); ++n) if (forcefieldImpropers_[n]->item == ffb) break;
+	if (n == forcefieldImpropers_.nItems()) forcefieldImpropers_.add(ffb, 1);
+	else forcefieldImpropers_[n]->data = forcefieldImpropers_[n]->data + 1;
+	impropers_[id]->setForcefieldDataId(n);
+}
+
 // Sets the ID of the pattern
 void Pattern::setId(int i)
 {
@@ -292,6 +305,12 @@ int Pattern::nTorsions()
 	return torsions_.nItems();
 }
 
+// Return number of improper torsions in one molecule of the pattern
+int Pattern::nImpropers()
+{
+	return impropers_.nItems();
+}
+
 // Return first bonds of the pattern
 PatternBound *Pattern::bonds()
 {
@@ -308,6 +327,12 @@ PatternBound *Pattern::angles()
 PatternBound *Pattern::torsions()
 {
 	return torsions_.first();
+}
+
+// Return first improper torsion of the pattern
+PatternBound *Pattern::impropers()
+{
+	return impropers_.first();
 }
 
 // Return selected bond of the pattern
@@ -328,6 +353,12 @@ PatternBound *Pattern::torsion(int i)
 	return torsions_[i];
 }
 
+// Return selected improper torsion of the pattern
+PatternBound *Pattern::improper(int i)
+{
+	return impropers_[i];
+}
+
 // Return number of forcefield bonds used in the pattern
 int Pattern::nForcefieldBonds()
 {
@@ -344,6 +375,12 @@ int Pattern::nForcefieldAngles()
 int Pattern::nForcefieldTorsions()
 {
 	return forcefieldTorsions_.nItems();
+}
+
+// Return number of forcefield improper torsions used in the pattern
+int Pattern::nForcefieldImpropers()
+{
+	return forcefieldImpropers_.nItems();
 }
 
 // Return number of forcefield types used in the pattern
@@ -370,6 +407,12 @@ Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsions()
 	return forcefieldTorsions_.first();
 }
 
+// Return first forcefield improper torsion used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldImpropers()
+{
+	return forcefieldImpropers_.first();
+}
+
 // Return first forcefield type used in the pattern
 Refitem<ForcefieldAtom,int> *Pattern::forcefieldTypes()
 {
@@ -392,6 +435,12 @@ Refitem<ForcefieldBound,int> *Pattern::forcefieldAngle(int i)
 Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsion(int i)
 {
 	return forcefieldTorsions_[i];
+}
+
+// Return selected forcefield improper torsion used in the pattern
+Refitem<ForcefieldBound,int> *Pattern::forcefieldImproper(int i)
+{
+	return forcefieldImpropers_[i];
 }
 
 // Return selected forcefield type used in the pattern
@@ -730,6 +779,7 @@ void Pattern::updateScaleMatrices()
 			vdwScaleMatrix_[n][m] = 1.0;
 			elecScaleMatrix_[n][m] = 1.0;
 		}
+	// XXX TGAY
 	// Interactions at tneds of torsion atoms are scaled by the factors stored in the torsion term
 	for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 	{

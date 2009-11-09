@@ -51,6 +51,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			{
 				case (AngleFunctions::None):
 					msg.print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
+				case (AngleFunctions::Ignore):
 					break;
 				case (AngleFunctions::Harmonic): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
@@ -139,6 +140,7 @@ void Pattern::angleForces(Model *srcmodel)
 			{
 				case (AngleFunctions::None):
 					msg.print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
+				case (AngleFunctions::Ignore):
 					du_dtheta = 0.0;
 					break;
 				case (AngleFunctions::Harmonic): 

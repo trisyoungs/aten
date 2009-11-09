@@ -24,7 +24,7 @@
 
 #include "classes/neta.h"
 #include "base/dnchar.h"
-#include "base/forms.h"
+#include "ff/forms.h"
 
 // Forward declarations
 class Forcefield;

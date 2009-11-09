@@ -7,7 +7,6 @@ cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
 elements.cpp
-forms.cpp
 glyph.cpp
 kvmap.cpp
 lineparser.cpp
@@ -26,7 +25,6 @@ colourscalepoint.h
 constants.h
 dnchar.h
 elements.h
-forms.h
 glyph.h
 kvmap.h
 lineparser.h

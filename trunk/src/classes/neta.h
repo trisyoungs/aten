@@ -68,6 +68,32 @@ class Ringtype
 	friend class Neta;
 };
 
+// Chain type
+class Chaintype
+{
+	// Substructure definition of a separate list of atoms in a chain
+	public:
+	// Constructor
+	Chaintype();
+	// List pointers
+	Chaintype *prev, *next;
+	// Ring typing commands
+	enum ChaintypeCommand { RepeatCommand, nChaintypeCommands };
+	ChaintypeCommand chaintypeCommand(const char*);
+
+	private:
+	// Specification of atoms in chain
+	List<Neta> chainAtoms_;
+	// Add data to the structure from the supplied string
+	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
+	// Number of times this match is required
+	int nRepeat_;
+	// Print the information contained in the structure
+	void print();
+	// Friend classes
+	friend class Neta;
+};
+
 // NETA description
 class Neta
 {
@@ -78,7 +104,7 @@ class Neta
 	// List pointers, used in bound atom list and list of atoms in rings
 	Neta *prev, *next;
 	// Atom typing commands
-	enum NetaCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, UnboundCommand, OneBondCommand, LinearCommand, TShapeCommand, TrigPlanarCommand, TetrahedralCommand, SquarePlanarCommand, TrigBipyramidCommand, OctahedralCommand, nNetaCommands };
+	enum NetaCommand { AromaticCommand, BondCommand, ChainCommand, LinearCommand, NBondsCommand, NHydrogensCommand, NoRingCommand, OctahedralCommand, OneBondCommand, OxidationStateCommand, RepeatCommand, RingCommand, SpCommand, Sp2Command, Sp3Command, SquarePlanarCommand, TetrahedralCommand, TrigBipyramidCommand, TrigPlanarCommand, TShapeCommand, UnboundCommand, nNetaCommands };
 	static NetaCommand netaCommand(const char*);
 
 	/*
@@ -96,7 +122,9 @@ class Neta
 	// Add data to the structure from the supplied string
 	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// See if this type matches any atoms in the list provided
-	int matchInList(Reflist<Atom,int>*, List<Ring>*, Model*, Atom*);
+	int matchInList(Reflist<Atom,int>*, List<Ring>*, Model *parent, Atom *topatom);
+	// See if the required chain connections are present
+	int matchChain(Atom *i, Atom *prevatom, Neta *neta, List<Ring> *ringlist, Model *parent, Atom *topatom);
 	// See if this type matches the atom (+ ring data of pattern)
 	int matchAtom(Atom*, List<Ring>*, Model*, Atom*);
 	// Print the information contained in the structure
@@ -116,6 +144,8 @@ class Neta
 	List<Neta> boundList_;
 	// List of rings that this atom must be a member of
 	List<Ringtype> ringList_;
+	// Chains of atoms to which this atom is bound
+	List<Chaintype> chainList_;
 	// Number of bond connections the atom should have
 	int nBonds_;
 	// Specifies atom must *not* be in a cycle of any type

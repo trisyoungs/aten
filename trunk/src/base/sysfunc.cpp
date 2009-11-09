@@ -21,6 +21,7 @@
 
 #include "base/constants.h"
 #include "base/dnchar.h"
+#include "base/messenger.h"
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -121,7 +122,6 @@ const char *afterStr(const char *s, const char *search)
 	return c;
 }
 
-
 // Search enum list for text
 int enumSearch(const char *name, int maxn, const char **itemlist, const char *query)
 {
@@ -141,6 +141,17 @@ int enumSearch(const char *name, int maxn, const char **itemlist, const char *qu
 	return result;
 }
 
+// Print valid enum values
+void enumPrintValid(int nitems, const char **list)
+{
+	msg.print("Valid values are:\n    ");
+	for (int i=0; i < nitems; i++)
+	{
+		if (strcmp(list[i],"_NULL_") == 0) continue;
+		msg.print("%s ",list[i]);
+	}
+	msg.print("\n");
+}
 
 // Convert the number 'n' to a string representation.
 const char *itoa(int n)
