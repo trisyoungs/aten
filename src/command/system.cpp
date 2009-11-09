@@ -84,9 +84,17 @@ bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // 	Command::Function cf = commands.command(c->argc(0));
 // 	if (cf == Command::nCommands) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
 	int cf = c->argi(0);
-	if ((cf < 0) || (cf >= Command::nCommands)) msg.print("help: Unrecognised command passed.\n");
-	else if (commands.data[cf].hasArguments()) msg.print("help:  %s(%s)\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
-	else msg.print("help:  %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
+	if ((cf < 0) || (cf >= Command::nCommands)) msg.print("Unrecognised command passed to 'help'.\n");
+	else if (commands.data[cf].hasArguments()) msg.print("%s(%s)\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
+	else msg.print("%s\n       %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
+	return TRUE;
+}
+
+// Search available commands
+bool Command::function_SearchCommands(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	for (int cf = 0; cf < Command::nCommands; ++cf) if (strcasestr(commands.data[cf].keyword, c->argc(0)) != NULL)
+		msg.print("  %-15s : %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
 	return TRUE;
 }
 
