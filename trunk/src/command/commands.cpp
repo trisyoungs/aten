@@ -153,7 +153,7 @@ CommandData Command::data[Command::nCommands] = {
 		"atom|int id = 0",
 		"Free positions of current atom selection or specified atom in various methods" },
 	{ "getatom",		"N",		VTypes::AtomData,
-		"atom|int id",
+		"int id",
 		"Retrieve pointer for atom id specified, returning a reference to it" },
 	{ "hide",		"a",		VTypes::NoData,
 		"atom|int id = 0",
