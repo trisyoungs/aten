@@ -138,11 +138,10 @@ class AtenPrefs : public QDialog
 	private:
 	void updateScalePointsList();
 	private slots:
-	void on_ForegroundColourButton_clicked(bool checked);
-	void on_BackgroundColourButton_clicked(bool checked);
-	void on_SpecularColourButton_clicked(bool checked);
+	void on_StandardColoursTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
+	void on_StandardColoursButton_clicked(bool checked);
 	void on_ScaleList_currentRowChanged(int id);
-	void on_ScalePointsList_currentRowChanged(int id);
+	void on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
 	void on_ScaleNameEdit_returnPressed();
 	void on_PointValueSpin_valueChanged(double d);
 	void on_PointColourButton_clicked(bool checked);

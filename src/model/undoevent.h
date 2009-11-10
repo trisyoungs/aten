@@ -147,6 +147,22 @@ class ChargeEvent : public UndoEvent
 	void print();
 };
 
+// Fix/Free Event
+class FixFreeEvent : public UndoEvent
+{
+	private:
+	// Change data
+	int targetId_;
+
+	public:
+	// Set change data
+	void set(bool fix, int id);
+	// Undo stored change
+	void undo(Model *m);
+	// Print change information
+	void print();
+};
+
 // Glyph (Creation/Deletion) Event
 class GlyphEvent : public UndoEvent
 {

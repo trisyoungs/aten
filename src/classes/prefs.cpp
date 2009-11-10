@@ -86,10 +86,19 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char *PenColourKeywords[Prefs::nPenColours] = { "fg", "bg", "specular", "glyph" };
+const char *PenColourKeywords[Prefs::nPenColours] = { "bg", "fixedatom", "fg", "glyph", "specular" };
+const char *PenColourNames[Prefs::nPenColours] = { "Background", "Fixed Atom", "Foreground", "Glyph Default", "Specular" };
 Prefs::PenColour Prefs::penColour(const char *s)
 {
 	return (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
+}
+const char *Prefs::penColour(Prefs::PenColour i)
+{
+	return PenColourKeywords[i];
+}
+const char *Prefs::penColourName(Prefs::PenColour i)
+{
+	return PenColourNames[i];
 }
 
 // Density calculation units
@@ -210,6 +219,7 @@ Prefs::Prefs()
 	setColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
 	setColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
 	setColour(Prefs::GlyphColour, 0.0f, 0.0f, 1.0f, 0.7f);
+	setColour(Prefs::FixedAtomColour, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -261,7 +271,7 @@ Prefs::Prefs()
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
 	calculateElec_ = FALSE;
-	ewaldKvec_.zero();
+	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
 	ewaldPrecision_ = 5.0E-6;
 	vdwCutoff_ = 10.0;
@@ -1257,20 +1267,23 @@ bool Prefs::calculateElec()
 }
 
 // Sets the Ewald k-vector extents
-void Prefs::setEwaldKvec(int a, int b, int c)
+void Prefs::setEwaldKMax(int element, int i)
 {
-	ewaldKvec_.set(a,b,c);
+	ewaldKMax_.set(element,i);
 }
-
-void Prefs::setEwaldKvec(Vec3<int> v)
+void Prefs::setEwaldKMax(int a, int b, int c)
 {
-	ewaldKvec_ = v;
+	ewaldKMax_.set(a,b,c);
+}
+void Prefs::setEwaldKMax(Vec3<int> v)
+{
+	ewaldKMax_ = v;
 }
 
 // Return the Ewald k-vector extents
-Vec3<int> Prefs::ewaldKvec()
+Vec3<int> Prefs::ewaldKMax()
 {
-	return ewaldKvec_;
+	return ewaldKMax_;
 }
 
 // Sets the Ewald precision

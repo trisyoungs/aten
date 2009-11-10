@@ -324,7 +324,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->f() = newvalue.asVector();
 			break;
 		case (AtomVariable::Fixed):
-			ptr->setPositionFixed(newvalue.asBool());
+			ptr->parent()->setFixed(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):

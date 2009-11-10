@@ -286,7 +286,48 @@ void GlyphEvent::print()
 {
 }
 
-/*Hide Event
+/*
+// Fix/Free Event
+*/
+
+// Set change 
+void FixFreeEvent::set(bool fix, int id)
+{
+	msg.enter("FixFreeEvent::set");
+	direction_ = (fix ? UndoEvent::Undo : UndoEvent::Redo);
+	targetId_ = id;
+	msg.exit("FixFreeEvent::set");
+}
+
+// Undo stored change
+void FixFreeEvent::undo(Model *m)
+{
+	msg.enter("FixFreeEvent::undo");
+	Atom *i, **modelatoms = m->atomArray();
+	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
+	i = modelatoms[targetId_];
+	if (direction_ == UndoEvent::Undo)
+	{
+		msg.print(Messenger::Verbose,"Reversing atom fix - atom id = %i\n", targetId_);
+		m->setFixed(i, FALSE);
+	}
+	else
+	{
+		msg.print(Messenger::Verbose,"Replaying atom fix - atom id = %i\n", targetId_);
+		m->setFixed(i, TRUE);
+	}
+	msg.exit("FixFreeEvent::undo");
+}
+
+// Print event info
+void FixFreeEvent::print()
+{
+	if (direction_ == UndoEvent::Undo) printf("       Atom fix - atom id = %i\n", targetId_);
+	else printf("       Atom free - atom id = %i\n", targetId_);
+}
+
+/*
+// Hide Event
 */
 
 // Set change 

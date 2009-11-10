@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/gui.h"
+#include "base/sysfunc.h"
 
 // Toggle debug modes
 bool Command::function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -93,7 +94,8 @@ bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Search available commands
 bool Command::function_SearchCommands(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	for (int cf = 0; cf < Command::nCommands; ++cf) if (strcasestr(commands.data[cf].keyword, c->argc(0)) != NULL)
+	Dnchar lcase = lowerCase(c->argc(0));
+	for (int cf = 0; cf < Command::nCommands; ++cf) if (strstr(commands.data[cf].keyword, lcase.get()) != NULL)
 		msg.print("  %-15s : %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
 	return TRUE;
 }

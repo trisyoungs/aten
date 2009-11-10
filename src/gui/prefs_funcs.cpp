@@ -130,17 +130,26 @@ void AtenPrefs::setControls()
 	ui.ModelUpdateSpin->setValue(prefs.modelUpdate());
 
 	// Set pen colours and colourscale names and checks
-        ui.ForegroundColourFrame->setColour(prefs.colour(Prefs::ForegroundColour));
-        ui.ForegroundColourFrame->update();
-        ui.BackgroundColourFrame->setColour(prefs.colour(Prefs::BackgroundColour));
-        ui.BackgroundColourFrame->update();
-        ui.SpecularColourFrame->setColour(prefs.colour(Prefs::SpecularColour));
-        ui.SpecularColourFrame->update();
-	QListWidgetItem *item;
+	ui.StandardColoursTable->setRowCount(Prefs::nPenColours);
+	double *colour;
+	QColor qcol;
+	QTableWidgetItem *item;
+	for (int n = 0; n < Prefs::nPenColours; ++n)
+	{
+		item = new QTableWidgetItem(Prefs::penColourName( (Prefs::PenColour) n ));
+		ui.StandardColoursTable->setItem(n, 0, item);
+		item = new QTableWidgetItem();
+		colour = prefs.colour( (Prefs::PenColour) n );
+		qcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
+		item->setBackgroundColor(qcol);
+		ui.StandardColoursTable->setItem(n, 1, item);
+	}
+        ui.StandardColoursFrame->setColour(prefs.colour( (Prefs::PenColour) 0 ));
+        ui.StandardColoursFrame->update();
 	char name[128];
 	for (int n=0; n<10; n++)
 	{
-		item = ui.ScaleList->item(n);
+		QListWidgetItem *item = ui.ScaleList->item(n);
 		sprintf(name, "%i. %s", n+1, prefs.colourScale[n].name());
 		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
 	}
@@ -598,9 +607,12 @@ void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
 // Colours Page
 */
 
-void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
+void AtenPrefs::on_StandardColoursButton_clicked(bool checked)
 {
-	double *col = prefs.colour(Prefs::ForegroundColour);
+	// Get current item in table
+	int colid = ui.StandardColoursTable->currentRow();
+	if (colid == -1) return;
+	double *col = prefs.colour( (Prefs::PenColour) colid );
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -608,66 +620,52 @@ void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	prefs.setColour(Prefs::ForegroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.ForegroundColourFrame->setColour(newcol);
-	ui.ForegroundColourFrame->update();
+	prefs.setColour( (Prefs::PenColour) colid, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	ui.StandardColoursFrame->setColour(newcol);
+	ui.StandardColoursFrame->update();
+	ui.StandardColoursTable->item(colid, 1)->setBackgroundColor(newcol);
+	aten.currentModel()->changeLog.add(Log::Visual);
 	// Update display
 	gui.mainView.postRedisplay();
 }
 
-void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
+void AtenPrefs::on_StandardColoursTable_currentCellChanged(int row, int col, int prevrow, int prevcol)
 {
-	double *col = prefs.colour(Prefs::BackgroundColour);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
-	if (!newcol.isValid()) return;
-	// Store new colour
-	prefs.setColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0f);
-	ui.BackgroundColourFrame->setColour(newcol);
-	ui.BackgroundColourFrame->update();
-	glClearColor( (GLfloat) newcol.redF(), (GLfloat) newcol.greenF(), (GLfloat) newcol.blueF(), (GLfloat) 1.0);
-	// Update display
-	gui.mainView.postRedisplay();
-}
-
-void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
-{
-	double *col = prefs.colour(Prefs::SpecularColour);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = FALSE;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour
-	prefs.setColour(Prefs::SpecularColour, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.SpecularColourFrame->setColour(newcol);
-	ui.SpecularColourFrame->update();
-	// Update display
-	gui.mainView.postRedisplay();
-
+	if (row == -1) return;
+	double *colour = prefs.colour( (Prefs::PenColour) row );
+	QColor oldcol;
+	oldcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
+	ui.StandardColoursFrame->setColour(oldcol);
+	ui.StandardColoursFrame->update();
 }
 
 void AtenPrefs::updateScalePointsList()
 {
 	// Clear current list items
-	ui.ScalePointsList->clear();
+	ui.ScalePointsTable->clear();
 	// Get the id of the currently selected point and scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
 	// Cycle over scale points and add the items
 	GLfloat colour[4];
-	QListWidgetItem *item;
+	QColor qcol;
+	ui.ScalePointsTable->setRowCount(prefs.colourScale[scale].nPoints());
+	QTableWidgetItem *item;
+	int count = 0;
 	for (ColourScalePoint *csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
 	{
-		item = new QListWidgetItem(ftoa(csp->value()), ui.ScalePointsList);
+
+		item = new QTableWidgetItem(ftoa(csp->value()));
+		ui.ScalePointsTable->setItem(count, 0, item);
+		item = new QTableWidgetItem();
 		csp->copyColour(colour);
-		item->setBackgroundColor(QColor(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255)));
+		qcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
+		item->setBackgroundColor(qcol);
+		ui.ScalePointsTable->setItem(count, 1, item);
+		++count;
 	}
 	// Select first item in list
-	ui.ScalePointsList->setCurrentItem(0);
+	ui.ScalePointsTable->setCurrentItem(0);
 }
 
 void AtenPrefs::on_ScaleList_currentRowChanged(int id)
@@ -679,14 +677,14 @@ void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 	ui.ScaleNameEdit->setText(prefs.colourScale[id].name());
 }
 
-void AtenPrefs::on_ScalePointsList_currentRowChanged(int id)
+void AtenPrefs::on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol)
 {
 	// Get the id of the currently selected point and scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
-	if (id == -1) return;
+	if (row == -1) return;
 	// Set colour frame and value spin
-	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
+	ColourScalePoint *csp = prefs.colourScale[scale].point(row);
 	ui.PointColourFrame->setColour(csp->colour());
 	ui.PointColourFrame->update();
 	ui.PointValueSpin->setValue(csp->value());
@@ -706,11 +704,13 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	// Get the id of the currently selected point and scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
-	int id = ui.ScalePointsList->currentRow();
+	int id = ui.ScalePointsTable->currentRow();
 	if (id == -1) return;
 	// Set value in colourscale
 	prefs.colourScale[scale].setPointValue(id, d);
-	ui.ScalePointsList->item(id)->setText(ftoa(d));
+	ui.ScalePointsTable->item(id, 0)->setText(ftoa(d));
+	// Update display
+	aten.currentModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -719,7 +719,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	// Get the id of the currently selected point and scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
-	int id = ui.ScalePointsList->currentRow();
+	int id = ui.ScalePointsTable->currentRow();
 	if (id == -1) return;
 	// Get new colour
 	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
@@ -734,8 +734,9 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.PointColourFrame->setColour(newcol);
 	ui.PointColourFrame->update();
-	ui.ScalePointsList->item(id)->setBackgroundColor(newcol);
+	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
 	// Update display
+	aten.currentModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -755,7 +756,7 @@ void AtenPrefs::on_RemovePointButton_clicked(bool checked)
 	// Get the id of the currently selected scale and point
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
-	int id = ui.ScalePointsList->currentRow();
+	int id = ui.ScalePointsTable->currentRow();
 	if (id == -1) return;
 	// Remove selected point
 	prefs.colourScale[scale].removePoint(id);

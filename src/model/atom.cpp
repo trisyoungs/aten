@@ -331,10 +331,27 @@ void Model::setHidden(Atom *i, bool hidden)
 	}
 }
 
+// Set fixed status of specified atom
+void Model::setFixed(Atom *i, bool fixed)
+{
+	if (i->isPositionFixed() != fixed)
+	{
+		i->setPositionFixed(fixed);
+		changeLog.add(Log::Visual);
+		// Add the change to the undo state (if there is one)
+		if (recordingState_ != NULL)
+		{
+			FixFreeEvent *newchange = new FixFreeEvent;
+			newchange->set(fixed, i->id());
+			recordingState_->addEvent(newchange);
+		}
+	}
+}
+
 // Normalise forces
 void Model::normaliseForces(double norm)
 {
-	// 'Normalise' the forces in linecfg such that the largest force is equal to the maximum cartesian step size
+	// 'Normalise' the forces such that the largest force is equal to the value provided
 	msg.enter("Model::normaliseForces");
 	double maxfrc;
 	static Vec3<double> f;

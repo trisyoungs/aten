@@ -295,7 +295,7 @@ void Model::print()
 	msg.print("   Mass : %f\n", mass_);
 	if (cell_.type() != Cell::NoCell) msg.print("   Cell : %s\nDensity : %f %s\n", Cell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
 	msg.print("  Atoms : %i\n", atoms_.nItems());
-	msg.print(" Id     El   FFType         X             Y             Z              Q        S  \n");
+	msg.print(" Id     El   FFType    FFId           X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom *i;
 	int n;
