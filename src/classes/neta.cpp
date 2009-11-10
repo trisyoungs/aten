@@ -175,6 +175,8 @@ bool Neta::setElements(const char *ellist, Forcefield *ff)
 				// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
 				if (ffa == NULL) msg.print("Warning: Forcefield type ID/name %s has not yet been defined in the forcefield.\n",temp.get());
 				else allowedTypes_.add(ffa);
+				// Since this doesn't go into the allowedElements_ list, decrease nAllowedElements_ by 1
+				nAllowedElements_--;
 			}
 			else
 			{
@@ -734,7 +736,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		for (n=0; n<nAllowedElements_; ++n)
 		{
 			// If its an element, just check the element of the atom.
-			if (i->isElement(allowedElements_[n]))		// VALGRIND - Uninitialised value
+			if (i->isElement(allowedElements_[n]))
 			{
 				found = TRUE;
 				typescore++;
