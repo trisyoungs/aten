@@ -75,6 +75,9 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "elecmethod",		VTypes::StringData,	0, FALSE },
 	{ "energyunit",		VTypes::StringData,	0, FALSE },
 	{ "energyupdate",	VTypes::IntegerData,	0, FALSE },
+	{ "ewaldalpha",		VTypes::DoubleData,	0, FALSE },
+	{ "ewaldkmax",		VTypes::IntegerData,	3, FALSE },
+	{ "ewaldprecision",	VTypes::DoubleData,	0, FALSE },
 	{ "forcerhombohedral",	VTypes::IntegerData,	0, FALSE },
 	{ "foregroundcolour",	VTypes::DoubleData,	4, FALSE },
 	{ "globesize",		VTypes::IntegerData,	0, FALSE },
@@ -288,6 +291,16 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::EnergyUpdate):
 			rv.set( ptr->energyUpdate() );
+			break;
+		case (PreferencesVariable::EwaldAlpha):
+			rv.set( ptr->ewaldAlpha() );
+			break;
+		case (PreferencesVariable::EwaldKMax):
+			if (hasArrayIndex) rv.set( ptr->ewaldKMax()[arrayIndex-1] );
+			else rv.setArray(ptr->ewaldKMax());
+			break;
+		case (PreferencesVariable::EwaldPrecision):
+			rv.set( ptr->ewaldPrecision() );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
@@ -580,6 +593,17 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::EnergyUpdate):
 			ptr->setEnergyUpdate( newvalue.asInteger(result) );
+			break;
+		case (PreferencesVariable::EwaldAlpha):
+			ptr->setEwaldAlpha( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::EwaldKMax):
+			if (newvalue.arraySize() == 3) for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newvalue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setEwaldKMax(arrayIndex-1, newvalue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newvalue.asInteger(result));
+			break;
+		case (PreferencesVariable::EwaldPrecision):
+			ptr->setEwaldPrecision( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newvalue.asBool() );

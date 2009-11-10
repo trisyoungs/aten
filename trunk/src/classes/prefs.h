@@ -55,8 +55,9 @@ class Prefs
 	static KeyAction keyAction(const char*);
 	static const char *keyAction(KeyAction);
 	// Standard 'Pen' Colours
-	enum PenColour { ForegroundColour, BackgroundColour, SpecularColour, GlyphColour, nPenColours };
+	enum PenColour { BackgroundColour, FixedAtomColour, ForegroundColour, GlyphColour, SpecularColour, nPenColours };
 	static const char *penColour(PenColour);
+	static const char *penColourName(PenColour);
 	static PenColour penColour(const char*);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree, nEnergyUnits };
@@ -617,7 +618,7 @@ class Prefs
 	// Whether to calculate intramolecular interactions
 	bool calculateIntra_;
 	// Ewald sum extent
-	Vec3<int> ewaldKvec_;
+	Vec3<int> ewaldKMax_;
 	// Ewald sum gaussian width and (for auto option) precision
 	double ewaldAlpha_;
 	// Ewald sum precision for automatic parameter estimation
@@ -647,10 +648,11 @@ class Prefs
 	// Return whether to calculate electrostatic interactions
 	bool calculateElec();
 	// Sets the Ewald k-vector extents
-	void setEwaldKvec(int a, int b, int c);
-	void setEwaldKvec(Vec3<int> v);
+	void setEwaldKMax(int element, int i);
+	void setEwaldKMax(int a, int b, int c);
+	void setEwaldKMax(Vec3<int> v);
 	// Return the Ewald k-vector extents
-	Vec3<int> ewaldKvec();
+	Vec3<int> ewaldKMax();
 	// Sets the Ewald precision
 	void setEwaldPrecision(double d);
 	// Return the Ewald precision

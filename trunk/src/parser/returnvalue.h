@@ -97,6 +97,8 @@ class ReturnValue
 	void set(VTypes::DataType type, void *ptr, void *refitem = NULL);
 	// Set from standard array
 	void setArray(VTypes::DataType type, void *source, int arraysize);
+	// Set from Vec3<int>
+	void setArray(Vec3<int> vec);
 	// Set array element from integer value
 	void setElement(int id, int i);
 	// Set array element from real value

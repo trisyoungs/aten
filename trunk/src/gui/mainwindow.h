@@ -29,7 +29,7 @@
 #include "templates/reflist.h"
 
 // Stack Pages (must be in order of pages in the stack)
-enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
+// enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
 #define MAXRECENTFILES 10
 
@@ -101,8 +101,6 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_ModelTabs_currentChanged(int value);
 	void on_ModelTabs_doubleClicked(int tabid);
-	public:
-
 
 
 	/*
@@ -127,6 +125,8 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelClearAll_triggered(bool checked);
 	void on_actionAtomHide_triggered(bool checked);
 	void on_actionAtomProbe_triggered(bool checked);
+	void on_actionAtomFixPosition_triggered(bool checked);
+	void on_actionAtomFreePosition_triggered(bool checked);
 
 	/*
 	// Bonding Actions

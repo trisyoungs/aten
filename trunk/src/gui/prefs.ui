@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>432</width>
-    <height>465</height>
+    <height>556</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -20,7 +20,7 @@
   <property name="maximumSize" >
    <size>
     <width>432</width>
-    <height>3600</height>
+    <height>560</height>
    </size>
   </property>
   <property name="baseSize" >
@@ -77,7 +77,7 @@
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
-           <vsizetype>7</vsizetype>
+           <vsizetype>3</vsizetype>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1947,6 +1947,9 @@
                <property name="checkable" >
                 <bool>true</bool>
                </property>
+               <property name="checked" >
+                <bool>false</bool>
+               </property>
                <layout class="QHBoxLayout" >
                 <property name="margin" >
                  <number>2</number>
@@ -2222,7 +2225,7 @@
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>1</hsizetype>
-           <vsizetype>1</vsizetype>
+           <vsizetype>3</vsizetype>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -2238,21 +2241,54 @@
            <number>4</number>
           </property>
           <item>
-           <layout class="QGridLayout" >
+           <widget class="QTableWidget" name="StandardColoursTable" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>3</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
+            <property name="editTriggers" >
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="selectionMode" >
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior" >
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="showGrid" >
+             <bool>false</bool>
+            </property>
+            <column>
+             <property name="text" >
+              <string>Property</string>
+             </property>
+            </column>
+            <column>
+             <property name="text" >
+              <string>Colour</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" >
             <property name="margin" >
              <number>0</number>
             </property>
             <property name="spacing" >
-             <number>4</number>
+             <number>6</number>
             </property>
-            <item row="0" column="0" >
-             <widget class="QLabel" name="label_2" >
-              <property name="text" >
-               <string>Foreground</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" >
+            <item>
              <layout class="QHBoxLayout" >
               <property name="margin" >
                <number>0</number>
@@ -2261,7 +2297,7 @@
                <number>4</number>
               </property>
               <item>
-               <widget class="TColourFrame" name="BackgroundColourFrame" >
+               <widget class="TColourFrame" name="StandardColoursFrame" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>7</hsizetype>
@@ -2272,7 +2308,7 @@
                 </property>
                 <property name="minimumSize" >
                  <size>
-                  <width>16</width>
+                  <width>32</width>
                   <height>16</height>
                  </size>
                 </property>
@@ -2285,7 +2321,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="BackgroundColourButton" >
+               <widget class="QPushButton" name="StandardColoursButton" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>5</hsizetype>
@@ -2316,147 +2352,21 @@
               </item>
              </layout>
             </item>
-            <item row="1" column="0" >
-             <widget class="QLabel" name="label_3" >
-              <property name="text" >
-               <string>Background</string>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
               </property>
-             </widget>
-            </item>
-            <item row="0" column="1" >
-             <layout class="QHBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
+              <property name="sizeType" >
+               <enum>QSizePolicy::MinimumExpanding</enum>
               </property>
-              <property name="spacing" >
-               <number>4</number>
+              <property name="sizeHint" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
               </property>
-              <item>
-               <widget class="TColourFrame" name="ForegroundColourFrame" >
-                <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>5</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize" >
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="frameShape" >
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow" >
-                 <enum>QFrame::Raised</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="ForegroundColourButton" >
-                <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>5</hsizetype>
-                  <vsizetype>5</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize" >
-                 <size>
-                  <width>30</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="maximumSize" >
-                 <size>
-                  <width>30</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="text" >
-                 <string/>
-                </property>
-                <property name="icon" >
-                 <iconset resource="icons.qrc" >:/basic/icons/basic_colour.svg</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="0" column="2" >
-             <widget class="QLabel" name="label_4" >
-              <property name="text" >
-               <string>Specular</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3" >
-             <layout class="QHBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
-              <property name="spacing" >
-               <number>4</number>
-              </property>
-              <item>
-               <widget class="TColourFrame" name="SpecularColourFrame" >
-                <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>5</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize" >
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
-                </property>
-                <property name="frameShape" >
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow" >
-                 <enum>QFrame::Raised</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="SpecularColourButton" >
-                <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>5</hsizetype>
-                  <vsizetype>5</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize" >
-                 <size>
-                  <width>30</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="maximumSize" >
-                 <size>
-                  <width>30</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="text" >
-                 <string/>
-                </property>
-                <property name="icon" >
-                 <iconset resource="icons.qrc" >:/basic/icons/basic_colour.svg</iconset>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -2476,15 +2386,175 @@
            <number>4</number>
           </property>
           <item>
-           <layout class="QHBoxLayout" >
+           <layout class="QVBoxLayout" >
             <property name="margin" >
              <number>0</number>
             </property>
             <property name="spacing" >
-             <number>6</number>
+             <number>4</number>
             </property>
             <item>
-             <layout class="QVBoxLayout" >
+             <widget class="QListWidget" name="ScaleList" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>7</vsizetype>
+                <horstretch>9</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize" >
+               <size>
+                <width>128</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="currentRow" >
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text" >
+                <string>1. Charge</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>2. Velocity</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>3. Force</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>4. Scale 4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>5. Scale 5</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>6. Scale 6</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>7. Scale 7</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>8. Scale 8</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>9. Scale 9</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>10. Scale 10</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="ScaleNameEdit" />
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="ScalePointsTable" >
+            <property name="editTriggers" >
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="selectionMode" >
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior" >
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <property name="showGrid" >
+             <bool>false</bool>
+            </property>
+            <column>
+             <property name="text" >
+              <string>Value</string>
+             </property>
+            </column>
+            <column>
+             <property name="text" >
+              <string>Colour</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>4</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>6</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_5" >
+                <property name="text" >
+                 <string>Value</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="PointValueSpin" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>7</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize" >
+                 <size>
+                  <width>64</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="sizeIncrement" >
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="decimals" >
+                 <number>5</number>
+                </property>
+                <property name="maximum" >
+                 <double>10000000.000000000000000</double>
+                </property>
+                <property name="minimum" >
+                 <double>-10000000.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" >
               <property name="margin" >
                <number>0</number>
               </property>
@@ -2492,261 +2562,87 @@
                <number>4</number>
               </property>
               <item>
-               <widget class="QListWidget" name="ScaleList" >
+               <widget class="TColourFrame" name="PointColourFrame" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>7</hsizetype>
-                  <vsizetype>7</vsizetype>
-                  <horstretch>9</horstretch>
+                  <vsizetype>5</vsizetype>
+                  <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="currentRow" >
-                 <number>0</number>
+                <property name="minimumSize" >
+                 <size>
+                  <width>32</width>
+                  <height>16</height>
+                 </size>
                 </property>
-                <item>
-                 <property name="text" >
-                  <string>1. Charge</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>2. Velocity</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>3. Force</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>4. Scale 4</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>5. Scale 5</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>6. Scale 6</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>7. Scale 7</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>8. Scale 8</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>9. Scale 9</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text" >
-                  <string>10. Scale 10</string>
-                 </property>
-                </item>
+                <property name="frameShape" >
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow" >
+                 <enum>QFrame::Raised</enum>
+                </property>
                </widget>
               </item>
               <item>
-               <widget class="QLineEdit" name="ScaleNameEdit" />
+               <widget class="QPushButton" name="PointColourButton" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>5</hsizetype>
+                  <vsizetype>5</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize" >
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize" >
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="text" >
+                 <string/>
+                </property>
+                <property name="icon" >
+                 <iconset resource="icons.qrc" >:/basic/icons/basic_colour.svg</iconset>
+                </property>
+               </widget>
               </item>
              </layout>
             </item>
             <item>
-             <widget class="QGroupBox" name="PointsGroup" >
-              <property name="sizePolicy" >
-               <sizepolicy>
-                <hsizetype>7</hsizetype>
-                <vsizetype>5</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <widget class="QPushButton" name="AddPointButton" >
+              <property name="text" >
+               <string>Add Point</string>
               </property>
-              <property name="title" >
-               <string>Points</string>
-              </property>
-              <layout class="QHBoxLayout" >
-               <property name="margin" >
-                <number>2</number>
-               </property>
-               <property name="spacing" >
-                <number>4</number>
-               </property>
-               <item>
-                <layout class="QHBoxLayout" >
-                 <property name="margin" >
-                  <number>0</number>
-                 </property>
-                 <property name="spacing" >
-                  <number>4</number>
-                 </property>
-                 <item>
-                  <widget class="QListWidget" name="ScalePointsList" />
-                 </item>
-                 <item>
-                  <layout class="QVBoxLayout" >
-                   <property name="margin" >
-                    <number>0</number>
-                   </property>
-                   <property name="spacing" >
-                    <number>4</number>
-                   </property>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>6</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_5" >
-                       <property name="text" >
-                        <string>Value</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QDoubleSpinBox" name="PointValueSpin" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>7</hsizetype>
-                         <vsizetype>0</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize" >
-                        <size>
-                         <width>64</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="sizeIncrement" >
-                        <size>
-                         <width>0</width>
-                         <height>0</height>
-                        </size>
-                       </property>
-                       <property name="decimals" >
-                        <number>5</number>
-                       </property>
-                       <property name="maximum" >
-                        <double>10000000.000000000000000</double>
-                       </property>
-                       <property name="minimum" >
-                        <double>-10000000.000000000000000</double>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>4</number>
-                     </property>
-                     <item>
-                      <widget class="TColourFrame" name="PointColourFrame" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>7</hsizetype>
-                         <vsizetype>5</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize" >
-                        <size>
-                         <width>32</width>
-                         <height>16</height>
-                        </size>
-                       </property>
-                       <property name="frameShape" >
-                        <enum>QFrame::StyledPanel</enum>
-                       </property>
-                       <property name="frameShadow" >
-                        <enum>QFrame::Raised</enum>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="PointColourButton" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>5</hsizetype>
-                         <vsizetype>5</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="minimumSize" >
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="maximumSize" >
-                        <size>
-                         <width>30</width>
-                         <height>30</height>
-                        </size>
-                       </property>
-                       <property name="text" >
-                        <string/>
-                       </property>
-                       <property name="icon" >
-                        <iconset resource="icons.qrc" >:/basic/icons/basic_colour.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="AddPointButton" >
-                     <property name="text" >
-                      <string>Add Point</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="RemovePointButton" >
-                     <property name="text" >
-                      <string>Remove Point</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer>
-                     <property name="orientation" >
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                     <property name="sizeHint" >
-                      <size>
-                       <width>20</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-              </layout>
              </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="RemovePointButton" >
+              <property name="text" >
+               <string>Remove Point</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>

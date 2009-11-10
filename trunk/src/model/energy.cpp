@@ -49,7 +49,7 @@ double Model::totalEnergy(Model *srcmodel)
 	{
 		if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKMax());
 	}
 	while (p != NULL)
 	{
@@ -116,7 +116,7 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	{
 		if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKMax());
 	}
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	for (p = patterns_.first(); p != NULL; p = p->next)
@@ -167,7 +167,7 @@ void Model::calculateForces(Model *srcmodel)
 	{
 		if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKMax());
 	}
 	while (p != NULL)
 	{

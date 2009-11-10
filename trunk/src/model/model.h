@@ -175,6 +175,8 @@ class Model
 	Atom **atomArray();
 	// Set visibility of specified atom
 	void setHidden(Atom *i, bool hidden);
+	// Set fixed status of specified atom
+	void setFixed(Atom *i, bool fixed);
 	// Set charge of specified atom
 	void chargeAtom(Atom *i, double q);
 	// Prints out the coordinates of the atoms in the model
@@ -457,11 +459,9 @@ class Model
 	// Set the specified label for all atoms currently selected
 	void selectionAddLabels(Atom::AtomLabel);
 	// Set the visibility property for all selected atoms
-	void selectionSetHidden(bool);
-	// Sets the 'fixed' variable of all selected atoms to TRUE
-	void selectionSetFixed();
-	// Sets the 'fixed' variable of all selected atoms to FALSE
-	void selectionSetFree();
+	void selectionSetHidden(bool hidden);
+	// Sets the 'fixed' variable of all selected atoms
+	void selectionSetFixed(bool fixed);
 
 
 	/*

@@ -287,6 +287,17 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	}
 }
 
+// Set from Vec3<int>
+void ReturnValue::setArray(Vec3<int> vec)
+{
+	clearArrayData();
+	type_ = VTypes::IntegerData;
+	arraySize_ = 3;
+	valueRefitem_ = NULL;
+	arrayI_ = new int[arraySize_];
+	for (int i = 0; i < 3; ++i) arrayI_[i] = vec.get(i);
+}
+
 // Set array element from integer value
 void ReturnValue::setElement(int id, int i)
 {

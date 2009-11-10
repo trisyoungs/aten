@@ -52,7 +52,12 @@ void Canvas::renderModelAtoms()
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
 		  // Define atom colour
-		  switch (scheme)
+		  if (i->isPositionFixed())
+		  {
+			prefs.copyColour(Prefs::FixedAtomColour, ambient);
+			prefs.copyColour(Prefs::FixedAtomColour, diffuse);
+		  }
+		  else switch (scheme)
 		  {
 			case (Prefs::ElementScheme):
 				elements().copyAmbientColour(i->element(), ambient);
@@ -218,7 +223,12 @@ void Canvas::renderModelAtoms()
 		if (!i->isSelected()) continue;
 		if (i->isHidden()) continue;
 		// Define atom colours
-		switch (scheme)
+		if (i->isPositionFixed())
+		{
+			prefs.copyColour(Prefs::FixedAtomColour, ambient);
+			prefs.copyColour(Prefs::FixedAtomColour, diffuse);
+		}
+		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
 				elements().copyAmbientColour(i->element(), ambient);

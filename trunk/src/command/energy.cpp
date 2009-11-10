@@ -48,7 +48,7 @@ bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &
 				return FALSE;
 			}
 			prefs.setEwaldAlpha(c->argd(1));
-			prefs.setEwaldKvec(c->arg3i(2));
+			prefs.setEwaldKMax(c->arg3i(2));
 			break;
 		// Set ewald precision
 		case (Electrostatics::EwaldAuto):

@@ -45,10 +45,10 @@ void Prefs::estimateEwaldParameters(Cell *cell)
         ewaldAlpha_ = sqrt( fabs( log(ewaldPrecision_*elecCutoff_*tolerance) ) )/elecCutoff_;
         // Estimate kmax
         tolerance = sqrt( -log( ewaldPrecision_*elecCutoff_*( (2.0*tolerance*ewaldAlpha_)*(2.0*tolerance*ewaldAlpha_) ) ) );
-	ewaldKvec_.x = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
-	ewaldKvec_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
-	ewaldKvec_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
-	msg.print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.\n", ewaldAlpha_, ewaldKvec_.x, ewaldKvec_.y, ewaldKvec_.z, ewaldPrecision_);
+	ewaldKMax_.x = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKMax_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKMax_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
+	msg.print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.\n", ewaldAlpha_, ewaldKMax_.x, ewaldKMax_.y, ewaldKMax_.z, ewaldPrecision_);
 	validEwaldAuto_ = TRUE;
 	msg.exit("Prefs::estimateEwaldParameters");
 }

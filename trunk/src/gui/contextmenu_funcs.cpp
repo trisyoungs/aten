@@ -163,3 +163,17 @@ void AtenForm::on_actionAtomProbe_triggered(bool checked)
 {
 	if (target != NULL) target->print();
 }
+
+void AtenForm::on_actionAtomFixPosition_triggered(bool checked)
+{
+	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
+	else CommandNode::run(Command::Fix, "i", target->id());
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
+{
+	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
+	else CommandNode::run(Command::Free, "i", target->id());
+	gui.update(FALSE,FALSE,FALSE);
+}

@@ -71,6 +71,8 @@ void Command::initPointers()
 
 	// Atom commands
 	pointers_[AtomStyle] = &Command::function_AtomStyle;
+	pointers_[Fix] = &Command::function_Fix;
+	pointers_[Free] = &Command::function_Free;
 	pointers_[GetAtom] = &Command::function_GetAtom;
 	pointers_[Hide] = &Command::function_Hide;
 	pointers_[SetCoords] = &Command::function_SetCoords;

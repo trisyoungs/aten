@@ -114,6 +114,8 @@ class Command
 	
 		// Atom Commands
 		AtomStyle,
+		Fix,
+		Free,
 		GetAtom,
 		Hide,
 		SetCharge,
@@ -553,6 +555,8 @@ class Command
 	static bool function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Atom Commands
 	static bool function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv);

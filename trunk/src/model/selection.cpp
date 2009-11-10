@@ -240,17 +240,10 @@ void Model::selectionSetHidden(bool hidden)
 }
 
 // Fix selected atom positions
-void Model::selectionSetFixed()
+void Model::selectionSetFixed(bool fixed)
 {
 	// Sets 'fixed' values to TRUE
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setPositionFixed(TRUE);
-}
-
-// Free selected atom positions
-void Model::selectionSetFree()
-{
-	// Sets 'fixed' values to TRUE
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setPositionFixed(FALSE);
+	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setFixed(i, fixed);
 }
 
 // Select bound and selected atoms from the current atom
