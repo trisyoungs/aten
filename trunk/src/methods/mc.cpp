@@ -424,7 +424,7 @@ bool MonteCarlo::disorder(Model *destmodel)
         }
 
 	// Create master expression for the new (filled) model
-	if (!destmodel->createExpression())
+	if (!destmodel->createExpression(TRUE))
 	{
 		msg.print("Couldn't create master expression for destination model.\n");
 		return FALSE;
