@@ -365,7 +365,7 @@ bool Pattern::fillExpression()
 					if (strcmp(ipa[n]->atom()->type()->equivalent(), ffb->typeName(n)) == 0) break;
 				}
 				// If no match is found, no atoms match this improper so exit
-				if (ai == NULL) break;
+				if (ipa[n] == NULL) break;
 				// The atom contained in 'pa' is a match for the typename in the improper, so check
 				// its distance from the previous atom.
 				if (n > 0)

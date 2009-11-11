@@ -122,7 +122,16 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	do
 	{
 		// If we find a '%' store any previous characters as a plain-text chunk and begin a formatted chunk
-		if (*c == '%')
+		if ((*c == '%') && (*(c+1) == '%'))
+		{
+			// Consecutive '%' indicates just a plain '%' - skip on one char and continue
+			++c;
+			++c;
+			plaintext[length++] = '%';
+			prevchar = '%';
+			continue;
+		}
+		else if (*c == '%')
 		{
 			// Check for a previous format, in which case this one is mangled
 			if (isformatter)
@@ -145,10 +154,9 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 		}
 
 		// Increment character position...
-		plaintext[length] = *c;
+		plaintext[length++] = *c;
 		prevchar = *c;
 		c++;
-		length++;
 
 		// If we're currently in the middle of a formatter, it's terminated by an alpha character or '*'
 		if (isformatter && (isalpha(prevchar) || (prevchar == '*')))

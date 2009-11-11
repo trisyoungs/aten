@@ -123,8 +123,12 @@ void Neta::print()
 {
 	printlevel ++;
 	printf("(%3i) Element :", printlevel);
-	if (nAllowedElements_ == 0) printf(" Any");
-	else for (int n=0; n<nAllowedElements_; n++) printf(" %s",elements().name(allowedElements_[n]));
+	if ((nAllowedElements_ == 0) && (allowedTypes_.nItems() == 0)) printf(" Any");
+	else
+	{
+		for (int n=0; n<nAllowedElements_; n++) printf(" %s",elements().name(allowedElements_[n]));
+		for (Refitem<ForcefieldAtom,int> *rd = allowedTypes_.first(); rd != NULL; rd = rd->next) printf(" &%i",rd->item->typeId());
+	}
 	printf("\n");
 	printf("(%3i)  Repeat : %i\n", printlevel, nRepeat_);
 	if (boundList_.nItems() != 0)
@@ -165,7 +169,7 @@ bool Neta::setElements(const char *ellist, Forcefield *ff)
 		// If name begins with a '&' then we expect an Neta id/name and not an element
 		if (elparser.argc(n)[0] == '&')
 		{
-			// Copy string and remove leading '$'
+			// Copy string and remove leading '&'
 			temp = elparser.argc(n);
 			temp.eraseStart(1);
 			// Search for the Neta pointer with ffid in 'temp' in the forcefield supplied
@@ -728,7 +732,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 	msg.print(Messenger::Typing,"(%p %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements().symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
 	// Element check
 	msg.print(Messenger::Typing,"(%p %2i) ... Element  ",this,level);
-	if (nAllowedElements_ == 0) msg.print(Messenger::Typing,"[defaulted]\n");
+	if ((nAllowedElements_ == 0) && (allowedTypes_.nItems() == 0)) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
 		// Check through list of elements/types that this atom is allowed to be
@@ -746,7 +750,7 @@ int Neta::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 		if (!found) for (rd = allowedTypes_.first(); rd != NULL; rd = rd->next)
 		{
 			ffa = rd->item;
-			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->get_ffid(),ffa->name());
+// 			printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->typeId(),ffa->name());
 			// Check element of type first....
 			if (i->element() != ffa->neta()->characterElement()) continue;
 			// Does this atom match the type descriptions asked for?
