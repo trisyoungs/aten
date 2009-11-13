@@ -148,7 +148,7 @@ void enumPrintValid(int nitems, const char **list)
 	for (int i=0; i < nitems; i++)
 	{
 		if (strcmp(list[i],"_NULL_") == 0) continue;
-		msg.print("%s ",list[i]);
+		msg.print("%s ", lowerCase(list[i]));
 	}
 	msg.print("\n");
 }

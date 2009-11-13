@@ -40,40 +40,40 @@ class Prefs
 	public:
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
-	static MouseButton mouseButton(const char*);
+	static MouseButton mouseButton(const char *name, bool reporterror = 0);
 	static const char *mouseButton(MouseButton);
 	// Mouse Actions
 	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZrotateAction, nMouseActions };
-	static MouseAction mouseAction(const char*);
+	static MouseAction mouseAction(const char *name, bool reporterror = 0);
 	static const char *mouseAction(MouseAction);
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
-	static ModifierKey modifierKey(const char*);
+	static ModifierKey modifierKey(const char *name, bool reporterror = 0);
 	static const char *modifierKey(ModifierKey);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
-	static KeyAction keyAction(const char*);
+	static KeyAction keyAction(const char *name, bool reporterror = 0);
 	static const char *keyAction(KeyAction);
 	// Standard 'Pen' Colours
 	enum PenColour { BackgroundColour, FixedAtomColour, ForegroundColour, GlyphColour, SpecularColour, nPenColours };
 	static const char *penColour(PenColour);
 	static const char *penColourName(PenColour);
-	static PenColour penColour(const char*);
+	static PenColour penColour(const char *name, bool reporterror = 0);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
-	static EnergyUnit energyUnit(const char*);
+	static EnergyUnit energyUnit(const char *name, bool reporterror = 0);
 	// Density calculation units
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
 	static const char *densityUnit(DensityUnit);
-	static DensityUnit densityUnit(const char*);
+	static DensityUnit densityUnit(const char *name, bool reporterror = 0);
 	// View Objects
 	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
-	static ViewObject viewObject(const char*);
+	static ViewObject viewObject(const char *name, bool reporterror = 0);
 	static const char *viewObject(ViewObject);
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
-	static ColouringScheme colouringScheme(const char*);
+	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
 	// Filter override switches
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };

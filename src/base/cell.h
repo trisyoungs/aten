@@ -40,7 +40,7 @@ class Cell
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char *cellType(CellType);
-	static CellType cellType(const char *);
+	static CellType cellType(const char *name, bool reporterror = 0);
 	// Cell definition parameters
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
 	static CellParameter cellParameter(const char *);

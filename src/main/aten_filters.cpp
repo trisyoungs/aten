@@ -116,7 +116,7 @@ void Aten::registerFilter(Tree *filter, FilterData::FilterType ft)
 }
 
 // Reload filters
-bool Aten::reloadFilters()
+int Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
 	char indexfile[512], path[512], filename[128], message[512];
@@ -137,7 +137,7 @@ bool Aten::reloadFilters()
 	// Load filters
 	sprintf(path,"%s%s", dataDir_.get(), "/filters");
 	msg.print("Reading filters from '%s'...\n", path);
-	bool result = parseFilterDir(path);
+	int result = parseFilterDir(path);
 
 	// Print out info and partner filters 
 	partnerFilters();

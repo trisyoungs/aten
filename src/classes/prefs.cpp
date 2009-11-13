@@ -32,9 +32,11 @@ Prefs prefs;
 
 // Colour Schemes
 const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
-Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
+Prefs::ColouringScheme Prefs::colouringScheme(const char *s, bool reporterror)
 {
-	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
+	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
+	if ((cs == Prefs::nColouringSchemes) && reporterror) enumPrintValid(Prefs::nColouringSchemes,ColouringSchemeKeywords);
+	return cs;
 }
 const char *Prefs::colouringScheme(ColouringScheme cs)
 {
@@ -43,9 +45,11 @@ const char *Prefs::colouringScheme(ColouringScheme cs)
 
 // Mouse buttons
 const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "Left", "Middle", "Right", "Wheel" };
-Prefs::MouseButton Prefs::mouseButton(const char *s)
+Prefs::MouseButton Prefs::mouseButton(const char *s, bool reporterror)
 {
-	return (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
+	Prefs::MouseButton mb = (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
+	if ((mb == Prefs::nMouseButtons) && reporterror) enumPrintValid(Prefs::nMouseButtons,MouseButtonKeywords);
+	return mb;
 }
 const char *Prefs::mouseButton(Prefs::MouseButton i)
 {
@@ -54,9 +58,11 @@ const char *Prefs::mouseButton(Prefs::MouseButton i)
 
 // Mouse actions
 const char *MouseActionKeywords[Prefs::nMouseActions] = { "None", "Rotate", "Translate", "Interact", "Zoom", "Z-Rotate" };
-Prefs::MouseAction Prefs::mouseAction(const char *s)
+Prefs::MouseAction Prefs::mouseAction(const char *s, bool reporterror)
 {
-	return (Prefs::MouseAction) enumSearch("mouse action", Prefs::nMouseActions,  MouseActionKeywords, s);
+	Prefs::MouseAction ma = (Prefs::MouseAction) enumSearch("mouse action", Prefs::nMouseActions,  MouseActionKeywords, s);
+	if ((ma == Prefs::nMouseActions) && reporterror) enumPrintValid(Prefs::nMouseActions,MouseActionKeywords);
+	return ma;
 }
 const char *Prefs::mouseAction(Prefs::MouseAction i)
 {
@@ -65,9 +71,11 @@ const char *Prefs::mouseAction(Prefs::MouseAction i)
 
 // Key modifiers
 const char *ModifierKeyKeywords[Prefs::nModifierKeys] = { "Shift", "Ctrl", "Alt" };
-Prefs::ModifierKey Prefs::modifierKey(const char *s)
+Prefs::ModifierKey Prefs::modifierKey(const char *s, bool reporterror)
 {
-	return (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
+	Prefs::ModifierKey mk = (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
+	if ((mk == Prefs::nModifierKeys) && reporterror) enumPrintValid(Prefs::nModifierKeys,ModifierKeyKeywords);
+	return mk;
 }
 const char *Prefs::modifierKey(Prefs::ModifierKey i)
 {
@@ -76,9 +84,11 @@ const char *Prefs::modifierKey(Prefs::ModifierKey i)
 
 // Key actions
 const char *KeyActionKeywords[Prefs::nKeyActions] = { "None", "Transform", "ZRotate" };
-Prefs::KeyAction Prefs::keyAction(const char *s)
+Prefs::KeyAction Prefs::keyAction(const char *s, bool reporterror)
 {
-	return (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
+	Prefs::KeyAction ka = (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
+	if ((ka == Prefs::nKeyActions) && reporterror) enumPrintValid(Prefs::nKeyActions,KeyActionKeywords);
+	return ka;
 }
 const char *Prefs::keyAction(Prefs::KeyAction i)
 {
@@ -88,9 +98,11 @@ const char *Prefs::keyAction(Prefs::KeyAction i)
 // Colours
 const char *PenColourKeywords[Prefs::nPenColours] = { "bg", "fixedatom", "fg", "glyph", "specular" };
 const char *PenColourNames[Prefs::nPenColours] = { "Background", "Fixed Atom", "Foreground", "Glyph Default", "Specular" };
-Prefs::PenColour Prefs::penColour(const char *s)
+Prefs::PenColour Prefs::penColour(const char *s, bool reporterror)
 {
-	return (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
+	Prefs::PenColour pc = (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
+	if ((pc == Prefs::nPenColours) && reporterror) enumPrintValid(Prefs::nPenColours,PenColourKeywords);
+	return pc;
 }
 const char *Prefs::penColour(Prefs::PenColour i)
 {
@@ -107,9 +119,11 @@ const char *Prefs::densityUnit(Prefs::DensityUnit i)
 {
 	return DensityUnitKeywords[i];
 }
-Prefs::DensityUnit Prefs::densityUnit(const char *s)
+Prefs::DensityUnit Prefs::densityUnit(const char *s, bool reporterror)
 {
-	return (Prefs::DensityUnit) enumSearch("density unit", Prefs::nDensityUnits, DensityUnitKeywords, s);
+	Prefs::DensityUnit du = (Prefs::DensityUnit) enumSearch("density unit", Prefs::nDensityUnits, DensityUnitKeywords, s);
+	if ((du == Prefs::nDensityUnits) && reporterror) enumPrintValid(Prefs::nDensityUnits,DensityUnitKeywords);
+	return du;
 }
 
 // Energy Units
@@ -119,16 +133,20 @@ const char *Prefs::energyUnit(Prefs::EnergyUnit i)
 {
 	return EnergyUnitKeywords[i];
 }
-Prefs::EnergyUnit Prefs::energyUnit(const char *s)
+Prefs::EnergyUnit Prefs::energyUnit(const char *s, bool reporterror)
 {
-	return (Prefs::EnergyUnit) enumSearch("energy unit", Prefs::nEnergyUnits, EnergyUnitKeywords, s);
+	Prefs::EnergyUnit eu = (Prefs::EnergyUnit) enumSearch("energy unit", Prefs::nEnergyUnits, EnergyUnitKeywords, s);
+	if ((eu == Prefs::nEnergyUnits) && reporterror) enumPrintValid(Prefs::nEnergyUnits,EnergyUnitKeywords);
+	return eu;
 }
 
 // View Objects
 const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
-Prefs::ViewObject Prefs::viewObject(const char *s)
+Prefs::ViewObject Prefs::viewObject(const char *s, bool reporterror)
 {
-	return (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
+	Prefs::ViewObject vo = (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
+	if ((vo == Prefs::nViewObjects) && reporterror) enumPrintValid(Prefs::nViewObjects,ViewObjectKeywords);
+	return vo;
 }
 const char *Prefs::viewObject(Prefs::ViewObject vo)
 {

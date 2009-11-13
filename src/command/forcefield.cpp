@@ -99,7 +99,8 @@ bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->autocreatePatterns()) return FALSE;
-	if (!obj.m->createExpression()) return FALSE;
+	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
+	if (!obj.m->createExpression(nointra)) return FALSE;
 	rv.reset();
 	return TRUE;
 }

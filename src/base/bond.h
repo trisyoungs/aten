@@ -36,7 +36,7 @@ class Bond
 	// Bond types
 	enum BondType { Any, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text
-	static BondType bondType(const char *s);
+	static BondType bondType(const char *name, bool reporterror = 0);
 	// Bond type from order
 	static BondType bondType(double order);
 	// BondType Keywords

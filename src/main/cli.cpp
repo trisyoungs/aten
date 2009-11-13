@@ -223,7 +223,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					if (!hasArg) msg.addOutputType(Messenger::Calls);
 					else
 					{
-						ot = Messenger::outputType(argtext.get());
+						ot = Messenger::outputType(argtext.get(), TRUE);
 						if (ot != Messenger::nOutputTypes) msg.addOutputType(ot);
 						else return FALSE;
 					}
@@ -549,8 +549,9 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zMapType(argtext.get());
+					zm = ElementMap::zMapType(argtext.get(), TRUE);
 					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, TRUE);
+					else return -1;
 					break;
 				// Undefined option
 				default:

@@ -32,7 +32,7 @@ void AtenForm::on_actionPreferences_triggered(bool checked)
 
 void AtenForm::on_actionReloadFilters_triggered(bool checked)
 {
-	if (!aten.reloadFilters())
+	if (aten.reloadFilters() > 0)
 	{
 		int returnvalue = QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
 	}

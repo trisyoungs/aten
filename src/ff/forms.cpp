@@ -30,9 +30,11 @@ const char *Electrostatics::elecMethod(Electrostatics::ElecMethod i)
 {
 	return ElecMethodKeywords[i];
 }
-Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s)
+Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s, bool reporterror)
 {
-	return (Electrostatics::ElecMethod) enumSearch("electrostatics method", Electrostatics::nElectrostatics, ElecMethodKeywords,s);
+	Electrostatics::ElecMethod em = (Electrostatics::ElecMethod) enumSearch("electrostatics method", Electrostatics::nElectrostatics, ElecMethodKeywords,s);
+	if ((em == Electrostatics::nElectrostatics) && reporterror) enumPrintValid(Electrostatics::nElectrostatics,ElecMethodKeywords);
+	return em;
 }
 
 // VDW potential forms

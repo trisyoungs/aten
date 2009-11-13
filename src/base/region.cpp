@@ -30,9 +30,11 @@ const char *ComponentRegion::regionShape(ComponentRegion::RegionShape i)
 {
 	return RegionShapeKeywords[i];
 }
-ComponentRegion::RegionShape ComponentRegion::regionShape(const char *s)
+ComponentRegion::RegionShape ComponentRegion::regionShape(const char *s, bool reporterror)
 {
-	return (ComponentRegion::RegionShape) enumSearch("region shape", ComponentRegion::nRegionShapes, RegionShapeKeywords, s);
+	ComponentRegion::RegionShape cr = (ComponentRegion::RegionShape) enumSearch("region shape", ComponentRegion::nRegionShapes, RegionShapeKeywords, s);
+	if ((cr == ComponentRegion::nRegionShapes) && reporterror) enumPrintValid(ComponentRegion::nRegionShapes,RegionShapeKeywords);
+	return cr;
 }
 
 // Constructor
