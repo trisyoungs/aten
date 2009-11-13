@@ -103,7 +103,7 @@ namespace Electrostatics
 	// Electrostatic model
 	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
 	const char *elecMethod(ElecMethod);
-	ElecMethod elecMethod(const char*);
+	ElecMethod elecMethod(const char *name, bool reporterror = FALSE);
 }
 
 // Generation rules (for rule-based FFs)

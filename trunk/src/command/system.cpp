@@ -29,7 +29,7 @@
 // Toggle debug modes
 bool Command::function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Messenger::OutputType ot = Messenger::outputType(c->argc(0));
+	Messenger::OutputType ot = Messenger::outputType(c->argc(0), TRUE);
 	if (ot != Messenger::nOutputTypes)
 	{
 		// Check to see if level is already active

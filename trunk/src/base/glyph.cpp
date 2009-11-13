@@ -31,9 +31,11 @@ const char *Glyph::glyphType(Glyph::GlyphType gs)
 {
 	return GlyphTypeKeywords[gs];
 }
-Glyph::GlyphType Glyph::glyphType(const char *s)
+Glyph::GlyphType Glyph::glyphType(const char *s, bool reporterror)
 {
-	return (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
+	Glyph::GlyphType gt = (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
+	if ((gt == Glyph::nGlyphTypes) && reporterror) enumPrintValid(Glyph::nGlyphTypes,GlyphTypeKeywords);
+	return gt;
 }
 int Glyph::nGlyphData(Glyph::GlyphType gt)
 {

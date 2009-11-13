@@ -38,9 +38,11 @@ const char *MonteCarlo::moveTypeKeyword(MonteCarlo::MoveType mt)
 	return MoveTypeKeywords[mt];
 }
 
-MonteCarlo::MoveType MonteCarlo::moveType(const char *s)
+MonteCarlo::MoveType MonteCarlo::moveType(const char *s, bool reporterror)
 {
-	return (MonteCarlo::MoveType) enumSearch("Monte Carlo move", MonteCarlo::nMoveTypes, MoveTypeKeywords, s);
+	MonteCarlo::MoveType mt = (MonteCarlo::MoveType) enumSearch("Monte Carlo move", MonteCarlo::nMoveTypes, MoveTypeKeywords, s);
+	if ((mt == MonteCarlo::nMoveTypes) && reporterror) enumPrintValid(MonteCarlo::nMoveTypes,MoveTypeKeywords);
+	return mt;
 }
 
 // Constructor

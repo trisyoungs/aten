@@ -41,7 +41,7 @@ class ComponentRegion
 	// ComponentRegion Shapes
 	enum RegionShape { WholeCell, CuboidRegion, SpheroidRegion, CylinderRegion, nRegionShapes };
 	static const char *regionShape(RegionShape);
-	static RegionShape regionShape(const char*);
+	static RegionShape regionShape(const char *name, bool reporterror = 0);
 
 	private:
 	// Parent model

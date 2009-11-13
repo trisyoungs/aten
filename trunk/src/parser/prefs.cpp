@@ -554,7 +554,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setClipNear( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ColourScheme):
-			cs = Prefs::colouringScheme( newvalue.asString(result) );
+			cs = Prefs::colouringScheme( newvalue.asString(result), TRUE );
 			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
 			else result = FALSE;
 			break;
@@ -562,7 +562,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setCommonElements( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::DensityUnit):
-			du = Prefs::densityUnit( newvalue.asString(result) );
+			du = Prefs::densityUnit( newvalue.asString(result), TRUE );
 			if (du != Prefs::nDensityUnits) ptr->setDensityUnit(du);
 			else result = FALSE;
 			break;
@@ -582,12 +582,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setElecCutoff( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ElecMethod):
-			em = Electrostatics::elecMethod( newvalue.asString(result) );
+			em = Electrostatics::elecMethod( newvalue.asString(result), TRUE );
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::EnergyUnit):
-			eu = Prefs::energyUnit( newvalue.asString(result) );
+			eu = Prefs::energyUnit( newvalue.asString(result), TRUE );
 			if (eu != Prefs::nEnergyUnits) ptr->setEnergyUnit(eu);
 			else result = FALSE;
 			break;
@@ -698,7 +698,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setPolygonAliasing( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::RenderStyle):
-			ds = Atom::drawStyle( newvalue.asString(result) );
+			ds = Atom::drawStyle( newvalue.asString(result), TRUE );
 			if ((ds != Atom::nDrawStyles) && result) ptr->setRenderStyle(ds);
 			else result = FALSE;
 			break;
@@ -755,7 +755,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setVdwScale( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ZMapping):
-			zm = ElementMap::zMapType( newvalue.asString(result) );
+			zm = ElementMap::zMapType( newvalue.asString(result), TRUE );
 			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
 			else result = FALSE;
 			break;

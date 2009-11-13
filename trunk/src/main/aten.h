@@ -124,7 +124,7 @@ class Aten
 	// Return first item in failed filter list
 	Dnchar *failedFilters();
 	// Reload filters
-	bool reloadFilters();
+	int reloadFilters();
 	// Probe file for its format
 	Tree *probeFile(const char *filename, FilterData::FilterType);
 	// Find filter of specified type with nickname provided

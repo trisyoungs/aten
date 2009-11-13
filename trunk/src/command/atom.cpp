@@ -28,7 +28,7 @@
 bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
+	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0), TRUE);
 	if (ds == Atom::nDrawStyles) return FALSE;
 	if (c->hasArg(1))
 	{

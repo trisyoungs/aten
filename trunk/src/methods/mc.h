@@ -38,7 +38,7 @@ class MonteCarlo
 	// Monte Carlo move types
 	enum MoveType { Translate, Rotate, ZMatrix, Insert, Delete, nMoveTypes };
 	static const char *moveTypeKeyword(MoveType);
-	static MoveType moveType(const char*);
+	static MoveType moveType(const char *name, bool reporterror = 0);
 
 	/*
 	// Main Routines

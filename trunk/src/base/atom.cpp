@@ -29,9 +29,11 @@
 
 // Atom drawing styles
 const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
-Atom::DrawStyle Atom::drawStyle(const char *s)
+Atom::DrawStyle Atom::drawStyle(const char *s, bool reporterror)
 {
-	return (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s);
+	Atom::DrawStyle ds = (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s);
+	if ((ds == Atom::nDrawStyles) && reporterror) enumPrintValid(Atom::nDrawStyles,DrawStyleKeywords);
+	return ds;
 }
 const char *Atom::drawStyle(Atom::DrawStyle i)
 {
@@ -40,9 +42,11 @@ const char *Atom::drawStyle(Atom::DrawStyle i)
 
 // Atom labels
 const char *AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
-Atom::AtomLabel Atom::atomLabel(const char *s)
+Atom::AtomLabel Atom::atomLabel(const char *s, bool reporterror)
 {
-	return (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s));
+	Atom::AtomLabel al = (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s));
+	if ((al == Atom::nLabelTypes) && reporterror) enumPrintValid(Atom::nLabelTypes,AtomLabelKeywords);
+	return al;
 }
 const char *Atom::atomLabel(Atom::AtomLabel al)
 {
@@ -63,9 +67,11 @@ const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
 
 // Geometries about atomic centres
 const char *AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-Atom::AtomGeometry Atom::atomGeometry(const char *s)
+Atom::AtomGeometry Atom::atomGeometry(const char *s, bool reporterror)
 {
-	return (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s);
+	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s);
+	if ((ag == Atom::nAtomGeometries) && reporterror) enumPrintValid(Atom::nAtomGeometries,AtomGeometryKeywords);
+	return ag;
 }
 const char *Atom::atomGeometry(Atom::AtomGeometry i)
 {

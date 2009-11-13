@@ -37,7 +37,7 @@ bool Command::function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
+	Atom::AtomLabel al = Atom::atomLabel(c->argc(0), TRUE);
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{
@@ -61,7 +61,7 @@ bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
+	Atom::AtomLabel al = Atom::atomLabel(c->argc(0), TRUE);
 	if (al == Atom::nLabelTypes) return FALSE;
 	if (c->hasArg(1))
 	{

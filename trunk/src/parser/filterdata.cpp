@@ -28,9 +28,11 @@ const char *FilterData::filterType(FilterData::FilterType ft)
 {
         return FilterTypeKeywords[ft];
 }
-FilterData::FilterType FilterData::filterType(const char *s, bool quiet)
+FilterData::FilterType FilterData::filterType(const char *s,bool reporterror)
 {
-        return (FilterData::FilterType) enumSearch( quiet ? "filter type" : "", FilterData::nFilterTypes, FilterTypeKeywords, s);
+        FilterData::FilterType ft = (FilterData::FilterType) enumSearch("filter type", FilterData::nFilterTypes, FilterTypeKeywords, s);
+	if ((ft == FilterData::nFilterTypes) && reporterror) enumPrintValid(FilterData::nFilterTypes,FilterTypeKeywords);
+	return ft;
 }
 
 // Filter options

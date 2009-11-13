@@ -31,9 +31,11 @@ const char *Cell::cellType(Cell::CellType i)
 {
 	return CellTypeKeywords[i];
 }
-Cell::CellType Cell::cellType(const char *s)
+Cell::CellType Cell::cellType(const char *s, bool reporterror)
 {
-	return (CellType) enumSearch("cell type",Cell::nCellTypes,CellTypeKeywords,s);
+	Cell::CellType ct = (Cell::CellType) enumSearch("cell type",Cell::nCellTypes,CellTypeKeywords,s);
+	if ((ct == Cell::nCellTypes) && reporterror) enumPrintValid(Cell::nCellTypes,CellTypeKeywords);
+	return ct;
 }
 
 // Cell definition parameters
