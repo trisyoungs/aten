@@ -70,7 +70,6 @@ void Pattern::initExpression(bool vdwOnly)
 		bonds_.createEmpty(nBonds);
 		angles_.createEmpty(nAngles);
 		torsions_.createEmpty(nTorsions);
-		impropers_.clear();
 	}
 	if (conMatrix_ != NULL) msg.print("Pattern::initExpression : Warning - connectivity matrix was already allocated.\n");
 	conMatrix_ = new int*[nAtoms_];
@@ -101,14 +100,13 @@ bool Pattern::fillExpression()
 	incomplete_ = FALSE;
 	// Temp vars for type storage
 	ForcefieldAtom *ti, *tj, *tk, *tl;
-	int count, ii, jj, kk, ll, n, m;
+	int count, ii, jj, kk, ll, n, m, nImpropers;
 	List< ListItem<int> > *bonding;
 	bonding = new List< ListItem<int> >[nAtoms_];
 	// Clear old unique terms lists
 	forcefieldBonds_.clear();
 	forcefieldAngles_.clear();
 	forcefieldTorsions_.clear();
-	forcefieldImpropers_.clear();
 	forcefieldTypes_.clear();
 	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
 	ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
@@ -352,6 +350,7 @@ bool Pattern::fillExpression()
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Construct improper torsions list
 		// Cycle over impropers defined in forcefield and see if the pattern contains those atoms within a certain distance
+		nImpropers = 0;
 		for (ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
 		{
 			// Loop over four atoms in improper definition in turn
@@ -361,7 +360,8 @@ bool Pattern::fillExpression()
 				for (ipa[n] = atoms_.first(); ipa[n] != NULL; ipa[n] = ipa[n]->next)
 				{
 					// Atom cannot have been used before in this improper...
-					for (m=0; m<n; ++m) if (ipa[n] == ipa[m]) continue;
+					for (m=0; m<n; ++m) if (ipa[n] == ipa[m]) break;
+					if (m != n) continue;
 					if (strcmp(ipa[n]->atom()->type()->equivalent(), ffb->typeName(n)) == 0) break;
 				}
 				// If no match is found, no atoms match this improper so exit
@@ -382,14 +382,15 @@ bool Pattern::fillExpression()
 			// Did we match all four atoms of the improper?
 			if (count != 4) continue;
 
-			// If we get here, then we did...
-			pb = impropers_.add();
+			// If we get here, then we did, so add this improper to the torsion array
+			pb = torsions_.add();
+			nImpropers++;
 			for (n=0; n<4; ++n) pb->setAtomId(n, ipa[n]->atom()->id());
-			setImproperData(impropers_.nItems()-1, ffb);
+			setTorsionData(torsions_.nItems()-1, ffb);
 			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}
-		if (impropers_.nItems() > 0) msg.print("... Found parameters for %i impropers.\n", impropers_.nItems());
+		if (nImpropers > 0) msg.print("... Found parameters for %i impropers.\n", nImpropers);
 	}
 	delete[] bonding;
 	// Print out a warning if the expression is incomplete.
