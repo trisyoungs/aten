@@ -29,6 +29,7 @@
 #include "gui/selectfilter.h"
 #include "gui/selectpattern.h"
 #include "gui/selectelement.h"
+#include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
@@ -114,6 +115,7 @@ GuiQt::~GuiQt()
 // 	selectFilterDialog = NULL;
 // 	selectPatternDialog = NULL;
 // 	selectElementDialog = NULL;
+// 	commandHelpDialog = NULL;
 // 	aboutDialog = NULL;
 // 	// ...tool windows
 // 	atomlistWindow = NULL;
@@ -178,6 +180,7 @@ void GuiQt::run()
 	selectFilterDialog = new AtenSelectFilter(mainWindow);
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
+	commandHelpDialog = new AtenCommandHelp(mainWindow);
 	aboutDialog = new AtenAbout(mainWindow);
 	// ...tool windows
 	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
@@ -212,6 +215,7 @@ void GuiQt::run()
 	selectFilterDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
+	commandHelpDialog->setModal(TRUE);
 // 	atomlistWindow->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
@@ -222,6 +226,7 @@ void GuiQt::run()
 	selectFilterDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
 	selectElementDialog->finaliseUi();
+	commandHelpDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
 	gui.mainView.disableDrawing();

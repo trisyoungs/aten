@@ -34,6 +34,7 @@ class AtenLoadModel;
 class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
+class AtenCommandHelp;
 class AtenAtomlist;
 class AtenBuild;
 class AtenCellDefine;
@@ -164,6 +165,8 @@ class GuiQt
 	AtenSelectPattern *selectPatternDialog;
 	// Select element dialog
 	AtenSelectElement *selectElementDialog;
+	// Command help dialog
+	AtenCommandHelp *commandHelpDialog;
 
 	/*
 	// Canvas

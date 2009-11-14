@@ -37,6 +37,7 @@
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
+#include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "model/model.h"
 #include "model/undostate.h"
@@ -674,4 +675,9 @@ void AtenForm::on_actionAboutAten_triggered(bool checked)
 void AtenForm::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
+}
+
+void AtenForm::on_actionCommandHelp_triggered(bool checked)
+{
+	gui.commandHelpDialog->exec();
 }
