@@ -360,6 +360,7 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
+	void on_actionCommandHelp_triggered(bool checked);
 
 	/*
 	// Local Routines

@@ -142,17 +142,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>951</width>
-     <height>24</height>
+     <width>709</width>
+     <height>32</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>Help</string>
-    </property>
-    <addaction name="actionAboutAten" />
-    <addaction name="actionAboutQt" />
-   </widget>
    <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
@@ -336,6 +329,15 @@
     <addaction name="actionEditCopy" />
     <addaction name="actionEditPaste" />
     <addaction name="actionEditDelete" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>Help</string>
+    </property>
+    <addaction name="actionAboutAten" />
+    <addaction name="actionAboutQt" />
+    <addaction name="separator" />
+    <addaction name="actionCommandHelp" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -2036,6 +2038,11 @@
    </property>
    <property name="text" >
     <string>View Trajectory</string>
+   </property>
+  </action>
+  <action name="actionCommandHelp" >
+   <property name="text" >
+    <string>Command Help</string>
    </property>
   </action>
   <action name="actionAtomFixPosition" >
