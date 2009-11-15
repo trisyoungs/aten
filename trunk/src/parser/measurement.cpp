@@ -54,7 +54,8 @@ Accessor MeasurementVariable::accessorData[MeasurementVariable::nAccessors] = {
 	{ "i",		VTypes::AtomData,		0, TRUE },
 	{ "j",		VTypes::AtomData,		0, TRUE },
 	{ "k",		VTypes::AtomData,		0, TRUE },
-	{ "l",		VTypes::AtomData,		0, TRUE }
+	{ "l",		VTypes::AtomData,		0, TRUE },
+	{ "value",	VTypes::DoubleData,		0, TRUE }
 };
 
 // Function data
@@ -174,6 +175,9 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (MeasurementVariable::L):
 			rv.set(VTypes::AtomData, ptr->atom(3));
+			break;
+		case (MeasurementVariable::Value):
+			rv.set(ptr->value());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in MeasurementVariable.\n", accessorData[i].name);

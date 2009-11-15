@@ -41,7 +41,7 @@ class MeasurementVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Atoms, I, J, K, L, nAccessors };
+	enum Accessors { Atoms, I, J, K, L, Value, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

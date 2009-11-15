@@ -362,7 +362,7 @@ int ReturnValue::asInteger(bool &success)
 			return (valueP_ == NULL ? 0 : ((Element*) valueP_)->z);
 			break;
 		default:
-			printf("ReturnValue::asInteger() doesn't recognise this type.\n");
+			printf("ReturnValue::asInteger() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -391,7 +391,7 @@ double ReturnValue::asDouble(bool &success)
 			return valueS_.asDouble();
 			break;
 		default:
-			printf("ReturnValue::asDouble() doesn't recognise this type.\n");
+			printf("ReturnValue::asDouble() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -580,7 +580,7 @@ int ReturnValue::asInteger(int index, bool &success)
 			return atoi( arrayS_[index].get() );
 			break;
 		default:
-			printf("ReturnValue::asInteger(id) doesn't recognise this type.\n");
+			printf("ReturnValue::asInteger(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -618,7 +618,7 @@ double ReturnValue::asDouble(int index, bool &success)
 			return atof( arrayS_[index].get() );
 			break;
 		default:
-			printf("ReturnValue::asDouble(id) doesn't recognise this type.\n");
+			printf("ReturnValue::asDouble(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
