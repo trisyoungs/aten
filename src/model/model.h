@@ -497,6 +497,8 @@ class Model
 	private:
 	// Atom changeid at which the expression was/is valid
 	int expressionPoint_;
+	// Whether the last succesfully created expression was VDW-only
+	bool expressionVdwOnly_;
 	// List containing references tobond interactions in model (useful in expression export)
 	Reflist<ForcefieldBound,int> forcefieldBonds_;
 	// List containing references to angle interactions in model (useful in expression export)

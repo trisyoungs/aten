@@ -133,7 +133,7 @@ bool Model::createExpression(bool vdwOnly)
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	msg.enter("Model::createExpression");
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
-	if (isExpressionValid())
+	if (isExpressionValid() && (vdwOnly == expressionVdwOnly_))
 	{
 		for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
 		msg.exit("Model::createExpression");
@@ -145,7 +145,8 @@ bool Model::createExpression(bool vdwOnly)
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
 	forcefieldTypes_.clear();
-	if (vdwOnly) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
+	expressionVdwOnly_ = vdwOnly;
+	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
 	else msg.print("Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
 	if (!typeAll())

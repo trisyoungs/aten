@@ -50,6 +50,7 @@ Model::Model()
 	namesForcefield_ = NULL;
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
+	expressionVdwOnly_ = FALSE;
 	filter_ = NULL;
 	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
