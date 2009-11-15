@@ -196,12 +196,21 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 			{
 				// Need to adjust atom ids to go from 1-N....
 				int ids[MAXFFPARAMDATA];
-				for (int n=0; n<MAXFFPARAMDATA; ++n) ids[n] = ptr->atomIds_[n];
+				for (int n=0; n<MAXFFPARAMDATA; ++n) ids[n] = ptr->atomIds_[n]+1;
 				rv.setArray(VTypes::IntegerData, &ids, MAXFFPARAMDATA);
 			}
 			break;
 		case (PatternBoundVariable::TermId):
 			rv.set(ptr->forcefieldDataId()+1);
+			break;
+		case (PatternBoundVariable::TypeNames):
+			if (ptr->data() == NULL)
+			{
+				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
+				result = FALSE;
+			}
+			else if (hasArrayIndex) rv.set(ptr->data()->typeName(arrayIndex-1));
+			else rv.setArray(VTypes::StringData, ptr->data()->typeNames(), MAXFFPARAMDATA);
 			break;
 		case (PatternBoundVariable::VScale):
 			if (ptr->data() == NULL)

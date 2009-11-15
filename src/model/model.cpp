@@ -82,6 +82,7 @@ Model::Model()
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
 	nCuboids_ = 0;
+	rmsForce_ = 0.0;
 	// Allocate SGInfo Seitz matrix arrays
 	spacegroup_.MaxList = 192;
 	spacegroup_.ListSeitzMx = new T_RTMx[192];
@@ -414,19 +415,8 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 	msg.exit("Model::copyAtomData[range]");
 }
 
-// Calculate and return RMS of current atomic forces
-double Model::calculateRmsForce()
+// Return RMS of last calculated atomic forces
+double Model::rmsForce()
 {
-	msg.enter("Model::calculateRmsForce");
-	double rmsforce = 0.0;
-	Atom **modelatoms = atomArray();
-	for (int i=0; i<atoms_.nItems(); i++)
-	{
-		rmsforce += modelatoms[i]->f().x * modelatoms[i]->f().x;
-		rmsforce += modelatoms[i]->f().y * modelatoms[i]->f().y;
-		rmsforce += modelatoms[i]->f().z * modelatoms[i]->f().z;
-	}
-	rmsforce /= atoms_.nItems();
-	msg.exit("Model::calculateRmsForce");
-	return sqrt(rmsforce);
+	return rmsForce_;
 }

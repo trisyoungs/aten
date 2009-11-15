@@ -560,6 +560,10 @@ class Model
 	/*
 	// Energy / Forces
 	*/
+	private:
+	// RMS force for last calculated forces
+	double rmsForce_;
+
 	public:
 	// Storage for energy
 	Energy energy;
@@ -571,10 +575,10 @@ class Model
 	void calculateForces(Model*);
 	// Prints out atomic forces
 	void printForces();
-	// Calculate RMS of current forces
-	double calculateRmsForce();
-	// Normalise forces (make largest component equal to specified value)
-	void normaliseForces(double norm);
+	// Return RMS of last calculated forces
+	double rmsForce();
+	// Normalise all atomic forces to the value provided
+	void normaliseForces(double norm, bool tolargest);
 	// Zero forces on all atoms
 	void zeroForces();
 	// Zero forces on all atoms that have their 'fixed' property set to true
