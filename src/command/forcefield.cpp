@@ -94,7 +94,16 @@ bool Command::function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &
 	return TRUE;
 }
 
-// Create energy expression for current model ('createexpression'}
+// Clear energy expression for current model ('clearexpression'}
+bool Command::function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.m->clearExpression();
+	rv.reset();
+	return TRUE;
+}
+
+// Create energy expression for current model ('createexpression(bool nointra)'}
 bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -331,6 +340,18 @@ bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
 	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
+	rv.reset();
+	return TRUE;
+}
+
+// Recreate energy expression for current model ('createexpression(bool nointra)'}
+bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.m->clearExpression();
+	if (!obj.m->autocreatePatterns()) return FALSE;
+	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
+	if (!obj.m->createExpression(nointra)) return FALSE;
 	rv.reset();
 	return TRUE;
 }

@@ -73,10 +73,23 @@ bool Model::isExpressionValid()
 	return (expressionPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
 }
 
+// Clear the current expression
+void Model::clearExpression()
+{
+	msg.enter("Model::clearExpression");
+	forcefieldAngles_.clear();
+	forcefieldBonds_.clear();
+	forcefieldTorsions_.clear();
+	forcefieldTypes_.clear();
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->deleteExpression();
+	expressionPoint_  = -1;
+	msg.exit("Model::clearExpression");
+}
+
 // Manually invalidates the expression
 void Model::invalidateExpression()
 {
-	expressionPoint_  = -1;;
+	expressionPoint_  = -1;
 }
 
 // Assign charges from forcefield
@@ -145,8 +158,7 @@ bool Model::createExpression(bool vdwOnly)
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
 		p->deleteExpression();
-		p->initExpression(vdwOnly);
-		if (!p->fillExpression())
+		if (!p->createExpression(vdwOnly))
 		{
 			msg.exit("Model::createExpression");
 			return FALSE;

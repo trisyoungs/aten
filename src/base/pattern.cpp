@@ -172,58 +172,71 @@ void PatternBound::setForcefieldDataId(int id)
 // Pattern
 */
 
-// Set the atom data specified
-void Pattern::setAtomData(int id, Atom *i, ForcefieldAtom *ffa)
+// Add the atom data specified
+void Pattern::addAtomData(Atom *i, ForcefieldAtom *ffa)
 {
-	atoms_[id]->setAtom(i);
-	atoms_[id]->setData(ffa);
-	atoms_[id]->setForcefieldDataId(-1);
+	PatternAtom *pa = atoms_.add();
+	pa->setAtom(i);
+	pa->setData(ffa);
+	pa->setForcefieldDataId(-1);
 	// Add this to the unique types list if it isn't there already
 	// For types, we only add types if they have different names because of type equivalents
 	int n;
 	for (n=0; n<forcefieldTypes_.nItems(); ++n) if (strcmp(forcefieldTypes_[n]->item->name(),ffa->name()) == 0) break;
 	if (n == forcefieldTypes_.nItems()) forcefieldTypes_.add(ffa, 1);
 	else forcefieldTypes_[n]->data = forcefieldTypes_[n]->data + 1;
-	atoms_[id]->setForcefieldDataId(n);
+	pa->setForcefieldDataId(n);
 }
 
 // Set the bond data specified
-void Pattern::setBondData(int id, ForcefieldBound *ffb)
+void Pattern::addBondData(ForcefieldBound *ffb, int i, int j)
 {
-	bonds_[id]->setData(ffb);
-	bonds_[id]->setForcefieldDataId(-1);
+	PatternBound *pb = bonds_.add();
+	pb->setAtomId(0,i);
+	pb->setAtomId(1,j);
+	pb->setData(ffb);
+	pb->setForcefieldDataId(-1);
 	// Add this to the unique bonds list if it isn't there already
 	int n;
 	for (n=0; n<forcefieldBonds_.nItems(); ++n) if (forcefieldBonds_[n]->item == ffb) break;
 	if (n == forcefieldBonds_.nItems()) forcefieldBonds_.add(ffb, 1);
 	else forcefieldBonds_[n]->data = forcefieldBonds_[n]->data + 1;
-	bonds_[id]->setForcefieldDataId(n);
+	pb->setForcefieldDataId(n);
 }
 
 // Set the angle data specified
-void Pattern::setAngleData(int id, ForcefieldBound *ffb)
+void Pattern::addAngleData(ForcefieldBound *ffb, int i, int j, int k)
 {
-	angles_[id]->setData(ffb);
-	angles_[id]->setForcefieldDataId(-1);
+	PatternBound *pb = angles_.add();
+	pb->setAtomId(0,i);
+	pb->setAtomId(1,j);
+	pb->setAtomId(2,k);
+	pb->setData(ffb);
+	pb->setForcefieldDataId(-1);
 	// Add this to the forcefield angles list if it isn't there already
 	int n;
 	for (n=0; n<forcefieldAngles_.nItems(); ++n) if (forcefieldAngles_[n]->item == ffb) break;
 	if (n == forcefieldAngles_.nItems()) forcefieldAngles_.add(ffb, 1);
 	else forcefieldAngles_[n]->data = forcefieldAngles_[n]->data + 1;
-	angles_[id]->setForcefieldDataId(n);
+	pb->setForcefieldDataId(n);
 }
 
 // Set the torsion data specified
-void Pattern::setTorsionData(int id, ForcefieldBound *ffb)
+void Pattern::addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l)
 {
-	torsions_[id]->setData(ffb);
-	torsions_[id]->setForcefieldDataId(-1);
+	PatternBound *pb = torsions_.add();
+	pb->setAtomId(0,i);
+	pb->setAtomId(1,j);
+	pb->setAtomId(2,k);
+	pb->setAtomId(3,l);
+	pb->setData(ffb);
+	pb->setForcefieldDataId(-1);
 	// Add this to the forcefield torsions list if it isn't there already
 	int n;
 	for (n=0; n<forcefieldTorsions_.nItems(); ++n) if (forcefieldTorsions_[n]->item == ffb) break;
 	if (n == forcefieldTorsions_.nItems()) forcefieldTorsions_.add(ffb, 1);
 	else forcefieldTorsions_[n]->data = forcefieldTorsions_[n]->data + 1;
-	torsions_[id]->setForcefieldDataId(n);
+	pb->setForcefieldDataId(n);
 }
 
 // Sets the ID of the pattern
@@ -653,10 +666,20 @@ void Pattern::deleteExpression()
 // Create connectivity and scaling matrices for molecules in pattern
 void Pattern::createMatrices()
 {
-	// Note - this must be called *after* the expression bound terms have been filled in.
 	msg.enter("Pattern::createMatrices");
 	int n, m, a1, a2;
 	PatternBound *pb;
+
+	if (conMatrix_ != NULL) msg.print("Pattern::createMatrices : Warning - connectivity matrix was already allocated.\n");
+	conMatrix_ = new int*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) conMatrix_[n] = new int[nAtoms_];
+	if (vdwScaleMatrix_ != NULL) msg.print("Pattern::createMatrices : Warning - VDW scaling matrix was already allocated.\n");
+	vdwScaleMatrix_ = new double*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) vdwScaleMatrix_[n] = new double[nAtoms_];
+	if (elecScaleMatrix_ != NULL) msg.print("Pattern::createMatrices : Warning - electrostatic scaling matrix was already allocated.\n");
+	elecScaleMatrix_ = new double*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
+
 	for (n=0; n<nAtoms_; n++)
 		for (m=0; m<nAtoms_; m++) conMatrix_[n][m] = 0;
 
@@ -730,8 +753,7 @@ void Pattern::updateScaleMatrices()
 			vdwScaleMatrix_[n][m] = 1.0;
 			elecScaleMatrix_[n][m] = 1.0;
 		}
-	// XXX TGAY
-	// Interactions at tneds of torsion atoms are scaled by the factors stored in the torsion term
+	// Interactions at ends of torsion atoms are scaled by the factors stored in the torsion term
 	for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 	{
 		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->parameter(TF_VSCALE);

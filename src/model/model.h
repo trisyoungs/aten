@@ -547,6 +547,8 @@ class Model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid
 	bool isExpressionValid();
+	// Clear the current expression
+	void clearExpression();
 	// Manually invalidates the expression
 	void invalidateExpression();
 	// Generate parameters for total energy function

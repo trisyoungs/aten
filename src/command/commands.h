@@ -264,6 +264,7 @@ class Command
 		BondDef,
 		ClearMap,
 		ClearExportMap,
+		ClearExpression,
 		CreateExpression,
 		DefaultFF,
 		Equivalent,
@@ -279,6 +280,7 @@ class Command
 		Map,
 		NewFF,
 		PrintSetup,
+		RecreateExpression,
 		Rules,
 		SaveExpression,
 		TorsionDef,
@@ -694,6 +696,7 @@ class Command
 	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -709,6 +712,7 @@ class Command
 	static bool function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
