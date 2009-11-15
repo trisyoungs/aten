@@ -222,6 +222,7 @@ void Command::initPointers()
 	pointers_[BondDef] = &Command::function_BondDef;
 	pointers_[ClearMap] = &Command::function_ClearMap;
 	pointers_[ClearExportMap] = &Command::function_ClearExportMap;
+	pointers_[ClearExpression] = &Command::function_ClearExpression;
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
 	pointers_[DefaultFF] = &Command::function_DefaultFF;
 	pointers_[Equivalent] = &Command::function_Equivalent;
@@ -237,6 +238,7 @@ void Command::initPointers()
 	pointers_[Map] = &Command::function_Map;
 	pointers_[NewFF] = &Command::function_NewFF;
 	pointers_[PrintSetup] = &Command::function_PrintSetup;
+	pointers_[RecreateExpression] = &Command::function_RecreateExpression;
 	pointers_[Rules] = &Command::function_Rules;
 	pointers_[SaveExpression] = &Command::function_SaveExpression;
 	pointers_[TorsionDef] = &Command::function_TorsionDef;

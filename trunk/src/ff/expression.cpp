@@ -26,8 +26,8 @@
 #include "classes/forcefieldbound.h"
 #include "base/pattern.h"
 
-// Initialise expression for pattern
-void Pattern::initExpression(bool vdwOnly)
+// Create forcefield expression for pattern
+bool Pattern::createExpression(bool vdwOnly)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
@@ -36,12 +36,38 @@ void Pattern::initExpression(bool vdwOnly)
 	msg.enter("Pattern::initExpression");
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	int n, atomId, nBonds, nAngles, nTorsions;
-	nBonds = 0;
-	nAngles = 0;
-	nTorsions = 0;
-	// We always create the atom array.
-	atoms_.createEmpty(nAtoms_);
+	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0;
+	Atom *ai, *aj, *ak, *al;
+	ForcefieldBound *ffb;
+	PatternAtom *pa, *ipa[4];
+	PatternBound *pb;
+	// Counters for incomplete aspects of the expression
+	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
+	incomplete_ = FALSE;
+	// Temp vars for type storage
+	ForcefieldAtom *ti, *tj, *tk, *tl;
+	int ii, jj, kk, ll, n, m;
+	List< ListItem<int> > *bonding;
+	bonding = new List< ListItem<int> >[nAtoms_];
+	// Clear old arrays
+	atoms_.clear();
+	bonds_.clear();
+	angles_.clear();
+	torsions_.clear();
+	// Clear old unique terms lists
+	forcefieldBonds_.clear();
+	forcefieldAngles_.clear();
+	forcefieldTorsions_.clear();
+	forcefieldTypes_.clear();
+	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
+	Forcefield *ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
+	if (ff == NULL) ff = aten.defaultForcefield();
+	if (ff == NULL)
+	{
+		msg.print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
+		msg.exit("Pattern::createExpression");
+		return FALSE;
+	}
 	if (vdwOnly)
 	{
 		noIntramolecular_ = TRUE;
@@ -49,6 +75,8 @@ void Pattern::initExpression(bool vdwOnly)
 	}
 	else
 	{
+		noIntramolecular_ = FALSE;
+		// Determine the number of bonds, angles, and torsions to expect in the pattern
 		for (i = parent_->atoms(); i != NULL; i = i->next)
 		{
 			atomId = i->id();
@@ -66,63 +94,17 @@ void Pattern::initExpression(bool vdwOnly)
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		msg.print("Basic expression for pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
-		bonds_.createEmpty(nBonds);
-		angles_.createEmpty(nAngles);
-		torsions_.createEmpty(nTorsions);
+		msg.print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
 	}
-	if (conMatrix_ != NULL) msg.print("Pattern::initExpression : Warning - connectivity matrix was already allocated.\n");
-	conMatrix_ = new int*[nAtoms_];
-	for (n=0; n<nAtoms_; n++) conMatrix_[n] = new int[nAtoms_];
-	if (vdwScaleMatrix_ != NULL) msg.print("Pattern::initExpression : Warning - VDW scaling matrix was already allocated.\n");
-	vdwScaleMatrix_ = new double*[nAtoms_];
-	for (n=0; n<nAtoms_; n++) vdwScaleMatrix_[n] = new double[nAtoms_];
-	if (elecScaleMatrix_ != NULL) msg.print("Pattern::initExpression : Warning - electrostatic scaling matrix was already allocated.\n");
-	elecScaleMatrix_ = new double*[nAtoms_];
-	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
-	msg.exit("Pattern::initExpression");
-}
-
-bool Pattern::fillExpression()
-{
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
 	// to the original atomic elements, to ease the generation of the expression.
-	msg.enter("Pattern::fillExpression");
-	Atom *ai, *aj, *ak, *al;
-	Refitem<Bond,int> *bref;
-	ForcefieldBound *ffb;
-	PatternAtom *pa, *ipa[4];
-	PatternBound *pb;
-	Forcefield *ff;
-	// Counters for incomplete aspects of the expression
-	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
-	incomplete_ = FALSE;
-	// Temp vars for type storage
-	ForcefieldAtom *ti, *tj, *tk, *tl;
-	int count, ii, jj, kk, ll, n, m, nImpropers;
-	List< ListItem<int> > *bonding;
-	bonding = new List< ListItem<int> >[nAtoms_];
-	// Clear old unique terms lists
-	forcefieldBonds_.clear();
-	forcefieldAngles_.clear();
-	forcefieldTorsions_.clear();
-	forcefieldTypes_.clear();
-	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
-	ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
-	if (ff == NULL) ff = aten.defaultForcefield();
-	if (ff == NULL)
-	{	
-		msg.print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
-		msg.exit("Pattern::fillExpression");
-		return FALSE;
-	}
 	msg.print("Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
 	msg.print("... Using forcefield '%s'...\n", ff->name());
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list
 	ai = firstAtom_;
-	for (count = 0; count<nAtoms_; ++count)
+	for (n = 0; n<nAtoms_; ++n)
 	{
 		if (ai == NULL)
 		{
@@ -132,12 +114,12 @@ bool Pattern::fillExpression()
 		}
 		if (ai->type() == NULL)
 		{
-			msg.print("... No FF definition for atom %i (%s).\n", count+1, elements().symbol(ai));
+			msg.print("... No FF definition for atom %i (%s).\n", n+1, elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
 		// Set data
-		setAtomData(count, ai, ai->type());
+		addAtomData(ai, ai->type());
 		// If the forcefield is rule-based, generate the required parameters first
 		if (ff->rules() != Rules::None) ff->generateVdw(ai);
 		ai = ai->next;
@@ -150,9 +132,7 @@ bool Pattern::fillExpression()
 		// Add only bonds where id(i) > id(j) to prevent double counting of bonds
 		// Also, create the lists of bound atoms here for use by the angle and torsion functions.
 		// Again, only add bonds involving atoms in the first molecule of the pattern.
-		//for (count=0; count<nAtoms_; count++) bonding[count][0] = 0;
 		ai = firstAtom_;
-		count = 0;
 		for (ii=0; ii<nAtoms_; ii++)
 		{
 			// Go through the list of bonds to this atom
@@ -173,22 +153,20 @@ bool Pattern::fillExpression()
 				}
 				if (jj > ii)
 				{
-					bonds_[count]->setAtomId(0,ii);
-					bonds_[count]->setAtomId(1,jj);
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findBond(ti,tj);
 					// If we found a match, point to it
-					if (ffb != NULL) setBondData(count, ffb);
+					if (ffb != NULL) addBondData(ffb, ii, jj);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) setBondData(count, NULL);
+						if (ff->rules() == Rules::None) addBondData(NULL, ii, jj);
 						else
 						{
 							// Generate the new parameters required
 							ffb = ff->generateBond(ai,aj);
-							setBondData(count, ffb);
+							addBondData(ffb, ii, jj);
 						}
 					}
 					// Check ffb - if it's still NULL we couldn't find a definition
@@ -210,22 +188,20 @@ bool Pattern::fillExpression()
 					// Add the bond partner to each of the atom's own lists
 					//bonding[ii][bonding[ii][0]] = jj;
 					//bonding[jj][bonding[jj][0]] = ii;
-					count ++;
 				}
 				bref = bref->next;
 			}
 			ai = ai->next;
 		}
-		if (bonds_.nItems() != count)
+		if (bonds_.nItems() != nBonds)
 		{
-			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", bonds_.nItems(), count);
+			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
 			incomplete_ = TRUE;
 		}
 		else if (ibonds == 0) msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
 		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
 		// Construct the angle list.
 		// Use the list of bound atoms in the bonding[][] array generated above
-		count = 0;
 		// Loop over central atoms 'jj'
 		for (jj=0; jj<nAtoms_; jj++)
 		{
@@ -239,22 +215,19 @@ bool Pattern::fillExpression()
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
-					angles_[count]->setAtomId(0,bonding[jj][ii]->data);
-					angles_[count]->setAtomId(1,jj);
-					angles_[count]->setAtomId(2,bonding[jj][kk]->data);
 					// Search for the angle data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findAngle(ti,tj,tk);
-					if (ffb != NULL) setAngleData(count, ffb);
+					if (ffb != NULL) addAngleData(ffb, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) setAngleData(count, NULL);
+						if (ff->rules() == Rules::None) addAngleData(NULL, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
 						else
 						{
 							// Generate the new parameters required
 							ffb = ff->generateAngle(ai,aj,ak);
-							setAngleData(count, ffb);
+							addAngleData(ffb, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
 						}
 					}
 					// Check ffa and raise warning if NULL
@@ -268,20 +241,18 @@ bool Pattern::fillExpression()
 					{
 						msg.print(Messenger::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
-					count ++;
 				}
 			}
 		}
-		if (angles_.nItems() != count)
+		if (angles_.nItems() != nAngles)
 		{
-			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
+			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
 			incomplete_ = TRUE;
 		}
 		else if (iangles == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
 		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
-		count = 0;
 		// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
@@ -306,24 +277,20 @@ bool Pattern::fillExpression()
 					tj = aj->type();
 					tk = ak->type();
 					tl = al->type();
-					torsions_[count]->setAtomId(0,bonding[jj][ii]->data);
-					torsions_[count]->setAtomId(1,jj);
-					torsions_[count]->setAtomId(2,kk);
-					torsions_[count]->setAtomId(3,bonding[kk][ll]->data);
 	
 					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findTorsion(ti,tj,tk,tl);
-					if (ffb != NULL) setTorsionData(count, ffb);
+					if (ffb != NULL) addTorsionData(ffb, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) setTorsionData(count, NULL);
+						if (ff->rules() == Rules::None) addTorsionData(NULL, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
 						else
 						{
 							// Generate the new parameters required
 							ffb = ff->generateTorsion(ai,aj,ak,al);
-							setTorsionData(count, ffb);
+							addTorsionData(ffb, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
 						}
 					}
 					// Check fft and raise warning if NULL
@@ -337,13 +304,12 @@ bool Pattern::fillExpression()
 					{
 						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
-					count ++;
 				}
 			}
 		}
-		if (torsions_.nItems() != count)
+		if (torsions_.nItems() != nTorsions)
 		{
-			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
+			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
 			incomplete_ = TRUE;
 		}
 		else if (itorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
@@ -354,7 +320,7 @@ bool Pattern::fillExpression()
 		for (ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
 		{
 			// Loop over four atoms in improper definition in turn
-			count = 0;
+			ii = 0;
 			for (n=0; n<4; ++n)
 			{
 				for (ipa[n] = atoms_.first(); ipa[n] != NULL; ipa[n] = ipa[n]->next)
@@ -373,20 +339,18 @@ bool Pattern::fillExpression()
 					double dist = parent_->distance(ipa[n]->atom(), ipa[n-1]->atom());
 					if (dist > prefs.maxImproperDist())
 					{
-						msg.print(Messenger::Verbose, "Atom %i of improper is too far from previous atom (%f A).\n", n+1, dist);
+						msg.print(Messenger::Verbose, "Atom %i of improper is too far from previous atom (%f A, limit is %f).\n", n+1, dist, prefs.maxImproperDist());
 						break;
 					}
 				}
-				count++;
+				ii++;
 			}
 			// Did we match all four atoms of the improper?
-			if (count != 4) continue;
+			if (ii != 4) continue;
 
 			// If we get here, then we did, so add this improper to the torsion array
-			pb = torsions_.add();
 			nImpropers++;
-			for (n=0; n<4; ++n) pb->setAtomId(n, ipa[n]->atom()->id());
-			setTorsionData(torsions_.nItems()-1, ffb);
+			addTorsionData(ffb, ipa[0]->atom()->id(), ipa[1]->atom()->id(), ipa[2]->atom()->id(), ipa[3]->atom()->id());
 			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}

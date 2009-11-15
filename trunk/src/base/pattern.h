@@ -265,14 +265,14 @@ class Pattern
 	Reflist<ForcefieldBound, int> forcefieldTorsions_;
 	// Reference list of atom types in pattern
 	Reflist<ForcefieldAtom, int> forcefieldTypes_;
-	// Set nth atom to the data specified
-	void setAtomData(int id, Atom *i, ForcefieldAtom *ffa);
-	// Set nth bond to the data specified
-	void setBondData(int id, ForcefieldBound *ffb);
-	// Set nth angle to the data specified
-	void setAngleData(int id, ForcefieldBound *ffb);
-	// Set nth torsion to the data specified
-	void setTorsionData(int id, ForcefieldBound *ffb);
+	// Add atom data
+	void addAtomData(Atom *i, ForcefieldAtom *ffa);
+	// Add bond data
+	void addBondData(ForcefieldBound *ffb, int i, int j);
+	// Add angle data
+	void addAngleData(ForcefieldBound *ffb, int i, int j, int k);
+	// Add torsion data
+	void addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -280,9 +280,7 @@ class Pattern
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	void initExpression(bool vdwOnly = FALSE);
-	// Fill the energy expression with parameters
-	bool fillExpression();
+	bool createExpression(bool vdwOnly = FALSE);
 	// Create the connectivity and scaling matrices
 	void createMatrices();
 	// Update scaling matrices
