@@ -45,7 +45,7 @@ void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta
 	msg.exit("LineMinimiser::gradientMove");
 }
 
-// Line minimise supplied model along gradient vector 
+// Line minimise supplied model along its current gradient vector (forces)
 double LineMinimiser::lineMinimise(Model *srcmodel)
 {
 	msg.enter("LineMinimiser::lineMinimise");
@@ -63,23 +63,16 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 
 	failed = FALSE;
 
-	srcmodel->zeroForces();
-	srcmodel->calculateForces(srcmodel);
-	srcmodel->printForces();
-	srcmodel->zeroForcesFixed();
-// 	srcmodel->normaliseForces(1.0);
-
 	// Set initial bounding values
-	bound[0] = 0.00;
-	bound[1] = -0.01;
-	bound[2] = 0.01;
-	// Compute gradient at each bounding point
-	gradientMove(srcmodel, &destmodel, bound[0]);
+	bound[0] = 0.0;
 	energy[0] = srcmodel->totalEnergy(&destmodel);
+	bound[1] = -0.5;
 	gradientMove(srcmodel, &destmodel, bound[1]);
 	energy[1] = srcmodel->totalEnergy(&destmodel);
+	bound[2] = 0.5;
 	gradientMove(srcmodel, &destmodel, bound[2]);
 	energy[2] = srcmodel->totalEnergy(&destmodel);
+
 	// Sort w.r.t. energy so that the minimum is in the central point.
 	if (energy[1] > energy[0])
 	{

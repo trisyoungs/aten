@@ -112,6 +112,8 @@ template <class T> class Vec3
 	double magAndNormalise();
 	// Calculate vector magnitude
 	inline double magnitude() const;
+	// Calculate square of vector magnitude
+	inline double magnitudeSq() const;
 	// Returns the largest component of the vector
 	T max() const;
 	// Returns the maximum valued element in the vector
@@ -456,6 +458,12 @@ template <class T> double Vec3<T>::magAndNormalise()
 template <class T> double Vec3<T>::magnitude() const
 {
 	return sqrt(x*x + y*y + z*z);
+}
+
+// Vector magnitude squared
+template <class T> double Vec3<T>::magnitudeSq() const
+{
+	return x*x + y*y + z*z;
 }
 
 // Largest value

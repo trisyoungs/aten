@@ -39,7 +39,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodCg::minimise");
 	int cycle, i;
-	double enew, ecurrent, edelta, rmscurrent, rmsnew, fdelta, g_old_sq, gamma, g_current_sq;
+	double enew, ecurrent, edelta, rmscurrent, rmsnew, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;
 	Atom **modelatoms;
@@ -61,7 +61,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	g_old = new double[srcmodel->nAtoms()*3];
 	ecurrent = srcmodel->totalEnergy(srcmodel);
 	srcmodel->calculateForces(srcmodel);
-	rmscurrent = srcmodel->calculateRmsForce();
+	rmscurrent = srcmodel->rmsForce();
 	srcmodel->energy.print();
 
 	converged = FALSE;
@@ -71,22 +71,19 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	msg.print("Init  %15.5e          ---      %15.5e\n",ecurrent,rmscurrent);
 	gui.progressCreate("Minimising (CG)", nCycles_);
 
+	srcmodel->normaliseForces(5.0, TRUE);
+
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
-		// We need to (do we?) define some sort of length scale so we take sensible steps along the gradient vector.
-		//srcmodel->normalise_forces(1.0);
-		//for (i=0; i<srcmodel->nAtoms(); i++) modelatoms[i]->f /= elements.mass(modelatoms[i]);
-
 		// Perform linesearch along the gradient vector
 		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
 		else
 		{
 			enew = lineMinimise(srcmodel);
 			edelta = enew - ecurrent;
-			rmsnew = srcmodel->calculateRmsForce();
-			fdelta = rmsnew - rmscurrent;
+			rmsnew = srcmodel->rmsForce();
 			// Check convergence criteria
-			if ((fabs(edelta) < econ) && (fabs(fdelta) < fcon)) converged = TRUE;
+			if ((fabs(edelta) < econ) && (rmsnew < fcon)) converged = TRUE;
 			ecurrent = enew;
 			rmscurrent = rmsnew;
 		}
@@ -100,11 +97,12 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)
 		{
 			f = modelatoms[i/3]->f();
-			g_old[i] = -f.x;
-			g_old[i+1] = -f.y;
-			g_old[i+2] = -f.z;
+			g_old[i] = f.x;
+			g_old[i+1] = f.y;
+			g_old[i+2] = f.z;
 		}
 		srcmodel->calculateForces(srcmodel);
+		srcmodel->normaliseForces(5.0, TRUE);
 
 		// Calculate new conjugate gradient vector, if this isn't the first cycle
 		if (cycle != 0)

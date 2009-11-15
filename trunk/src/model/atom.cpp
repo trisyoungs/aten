@@ -314,6 +314,33 @@ void Model::zeroForcesFixed()
 	msg.exit("Model::zeroForcesFixed");
 }
 
+// Normalise forces
+void Model::normaliseForces(double norm, bool tolargest)
+{
+	// 'Normalise' the forces such that the largest force is equal to the value provided
+	msg.enter("Model::normaliseForces");
+	if (tolargest)
+	{
+		double largestsq = 0.0, f;
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			f = i->f().magnitudeSq();
+			if (f > largestsq) largestsq = f;
+		}
+		largestsq = sqrt(largestsq);
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->f() /= largestsq;
+	}
+	else
+	{
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			i->f().normalise();
+			i->f() *= norm;
+		}
+	}
+	msg.exit("Model::normaliseForces");
+}
+
 // Set visibility of specified atom
 void Model::setHidden(Atom *i, bool hidden)
 {
@@ -346,30 +373,6 @@ void Model::setFixed(Atom *i, bool fixed)
 			recordingState_->addEvent(newchange);
 		}
 	}
-}
-
-// Normalise forces
-void Model::normaliseForces(double norm)
-{
-	// 'Normalise' the forces such that the largest force is equal to the value provided
-	msg.enter("Model::normaliseForces");
-	double maxfrc;
-	static Vec3<double> f;
-	Atom **modelatoms = atomArray();
-	int i;
-	// Find the largest force
-	maxfrc = 0.0;
-	for (i=0; i<atoms_.nItems(); i++)
-	{
-		f = modelatoms[i]->f();
-		if (fabs(f.x) > maxfrc) maxfrc = fabs(f.x);
-		if (fabs(f.y) > maxfrc) maxfrc = fabs(f.y);
-		if (fabs(f.z) > maxfrc) maxfrc = fabs(f.z);
-	}
-	// Normalise with respect to this force
-	maxfrc *= norm;
-	for (i=0; i<atoms_.nItems(); i++) modelatoms[i]->f() /= maxfrc;
-	msg.exit("Model::normaliseForces");
 }
 
 // Move specified atom (channel for undo/redo)
