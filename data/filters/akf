@@ -96,4 +96,6 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 
 	// Measurements
 	for (measurement g = m.distances; g; ++g) writelinef("geometry 2 %i %i\n", g.i.id, g.j.id);
+	for (measurement g = m.angles; g; ++g) writelinef("geometry 3 %i %i %i\n", g.i.id, g.j.id, g.k.id);
+	for (measurement g = m.torsions; g; ++g) writelinef("geometry 4 %i %i %i %i\n", g.i.id, g.j.id, g.k.id, g.l.id);
 }
