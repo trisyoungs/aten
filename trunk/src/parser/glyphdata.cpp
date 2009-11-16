@@ -80,14 +80,15 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'glyphdata&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'grid&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'glyphdata&' function '%s'.\n", s);
 			msg.exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
@@ -96,7 +97,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		result->addArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'glyphdata&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -280,6 +281,23 @@ bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("GlyphDataVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void GlyphDataVariable::printAccessors()
+{
+	if (GlyphDataVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<GlyphDataVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((GlyphDataVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<GlyphDataVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

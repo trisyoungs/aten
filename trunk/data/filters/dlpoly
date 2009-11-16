@@ -1,7 +1,8 @@
 # DL_POLY Configuration Import / Export (for v1.2+)
 # Created:	 25/03/2009
-# Last modified: 11/06/2009
+# Last modified: 16/09/2009
 # ChangeLog:
+# 	16/09/2009 - Expression export filter now uses atom type names rathern than ffbound type names. FF term loop styles updated.
 #	11/06/2009 - Fixed counting and output of constraint terms in FIELD export. 'nvdw' section corrected to 'vdw'.
 
 filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCON,config,revcon", glob="*CON*",exact="CONFIG,REVCON,config,revcon",nickname="dlpoly",id=2)
@@ -330,12 +331,10 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 
 		# Bonds in pattern
 		nc = 0;
-		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
+		for (b=p.bonds; b; ++b) if (b.form == "constraint") ++nc;
 		writeline("bonds",p.nbonds-nc);
-		for (n=1; n<=p.nbonds; ++n)
+		for (b=p.bonds; b; ++b)
 		{
-			# Grab bound pointer
-			b = p.bonds[n];
 			# Convert functional form to be recognised by DL_POLY
 			# Note: DL_POLY constraint terms are written in their own section
 			if (b.form == "harmonic") writelinef("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.data[1],b.data[2]);
@@ -350,12 +349,10 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 
 		# Angles in pattern
 		nc = 0;
-		for (n=1; n<=p.nangles; ++n) if (p.angles[n].form == "bondconstraint") ++nc;
+		for (b=p.angles; b; ++b) if (b.form == "bondconstraint") ++nc;
 		writeline("angles",p.nangles-nc);
-		for (n=1; n<=p.nangles; ++n)
+		for (b=p.angles; b; ++b)
 		{
-			# Grab bound pointer
-			b = p.angles[n];
 			# Convert functional form to be recognised by DL_POLY
 			if (b.form == "harmonic") writelinef("harm     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[2]);
 			else if (b.form == "cos") writelinef("cos      %5i %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[3],b.data[2]);
@@ -370,10 +367,8 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 
 		# Torsions in pattern
 		writeline("dihedrals",p.ntorsions);
-		for (n=1; n<=p.ntorsions; ++n)
+		for (b=p.angles; b; ++b)
 		{
-			# Grab bound pointer
-			b = p.torsions[n];
 			# Convert functional form to be recognised by DL_POLY
 			if (b.form == "cos") writelinef("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
 			else if (b.form == "cos3") writelinef("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
@@ -386,15 +381,13 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		# Constraint terms
 		writeline("constraints",nconstraints);
 		# ...proper bond constraints first
-		for (n=1; n<=p.nbonds; ++n)
+		for (b=p.bonds; b; ++b)
 		{
-			b = p.bonds[n];
 			if (b.form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
 		}
 		# ...and now angles that are of type 'bondconstraint'
-		for (n=1; n<=p.nangles; ++n)
+		for (b=p.angles; b; ++b)
 		{
-			b = p.angles[n];
 			if (b.form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
 		}
 		# Terminating line

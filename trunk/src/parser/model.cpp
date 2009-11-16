@@ -108,6 +108,7 @@ StepNode *ModelVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'model&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
@@ -478,6 +479,23 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("ModelVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void ModelVariable::printAccessors()
+{
+	if (ModelVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<ModelVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((ModelVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<ModelVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

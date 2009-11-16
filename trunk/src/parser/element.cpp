@@ -78,6 +78,7 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'element&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("ElementVariable::accessorSearch");
 			return NULL;
 		}
@@ -313,4 +314,22 @@ bool ElementVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("ElementVariable::performFunction");
 	return result;
+}
+
+
+// Print valid accessors/functions
+void ElementVariable::printAccessors()
+{
+	if (ElementVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<ElementVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((ElementVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<ElementVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
