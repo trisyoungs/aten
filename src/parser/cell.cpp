@@ -102,6 +102,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'cell&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -360,6 +361,23 @@ bool CellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("CellVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void CellVariable::printAccessors()
+{
+	if (CellVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<CellVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((CellVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<CellVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

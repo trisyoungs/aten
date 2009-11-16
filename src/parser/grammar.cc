@@ -159,7 +159,7 @@ void yyerror(char *s);
 
 /* Local Variables */
 Dnchar tokenName;
-Dnchar stepName;
+List<Dnchar> stepNameStack;
 VTypes::DataType declaredType;
 
 
@@ -584,7 +584,7 @@ static const char *const yytname[] =
   "namelist", "newname", "newvar", "declaration", "step", "steplist",
   "var", "rawvar", "@1", "exprlist", "expr", "rawexpr", "ARRAYCONST",
   "func", "userfunc", "savetokenname", "savetype", "cleartype",
-  "savestepname", 0
+  "pushstepname", 0
 };
 #endif
 
@@ -2067,17 +2067,17 @@ yyreduce:
 
   case 65:
 #line 216 "grammar.yy"
-    { if (!cmdparser.expandPath(&stepName, (yyvsp[(4) - (5)].node))) YYABORT; }
+    { if (!cmdparser.expandPath(stepNameStack.last(), (yyvsp[(4) - (5)].node))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 66:
 #line 217 "grammar.yy"
-    { if (!cmdparser.expandPath(&stepName, NULL, (yyvsp[(4) - (5)].node))) YYABORT; }
+    { if (!cmdparser.expandPath(stepNameStack.last(), NULL, (yyvsp[(4) - (5)].node))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 67:
 #line 218 "grammar.yy"
-    { if (!cmdparser.expandPath((yyvsp[(1) - (2)].name))) YYABORT; }
+    { if (!cmdparser.expandPath((yyvsp[(1) - (2)].name))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 68:
@@ -2372,7 +2372,7 @@ yyreduce:
 
   case 126:
 #line 324 "grammar.yy"
-    { stepName = *yylval.name; }
+    { stepNameStack.add()->set(yylval.name->get()); }
     break;
 
 

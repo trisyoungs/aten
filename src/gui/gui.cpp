@@ -287,6 +287,13 @@ void GuiQt::run()
 		int ret = QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
+	// Add GNU GPL message to statusbox
+	msg.print("Aten version %s (%s@%s) built on %s, Copyright (C) 2007-2009  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	msg.print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	msg.print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+
 	// Enter main message processing loop
 	int n = app->exec();
 

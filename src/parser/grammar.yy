@@ -17,7 +17,7 @@ void yyerror(char *s);
 
 /* Local Variables */
 Dnchar tokenName;
-Dnchar stepName;
+List<Dnchar> stepNameStack;
 VTypes::DataType declaredType;
 
 %}
@@ -213,9 +213,9 @@ declaration:
 /* Variables / Paths */
 
 step:
-	STEPTOKEN savestepname '[' expr ']'		{ if (!cmdparser.expandPath(&stepName, $4)) YYABORT; }
-	| STEPTOKEN savestepname '(' exprlist ')'	{ if (!cmdparser.expandPath(&stepName, NULL, $4)) YYABORT; }
-	| STEPTOKEN savestepname			{ if (!cmdparser.expandPath($1)) YYABORT; }
+	STEPTOKEN pushstepname '[' expr ']' 		{ if (!cmdparser.expandPath(stepNameStack.last(), $4)) YYABORT; stepNameStack.removeLast(); }
+	| STEPTOKEN pushstepname '(' exprlist ')' 	{ if (!cmdparser.expandPath(stepNameStack.last(), NULL, $4)) YYABORT; stepNameStack.removeLast(); }
+	| STEPTOKEN pushstepname 			{ if (!cmdparser.expandPath($1)) YYABORT; stepNameStack.removeLast(); }
 	;
 
 steplist:
@@ -320,8 +320,8 @@ cleartype:
 	/* empty */					{ declaredType = VTypes::NoData; }
 	;
 
-savestepname:
-	/* empty */					{ stepName = *yylval.name; }
+pushstepname:
+	/* empty */					{ stepNameStack.add()->set(yylval.name->get()); }
 	;
 
 %%

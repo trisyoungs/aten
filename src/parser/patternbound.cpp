@@ -79,6 +79,7 @@ StepNode *PatternBoundVariable::accessorSearch(const char *s, TreeNode *arrayind
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'bound&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("PatternBoundVariable::accessorSearch");
 			return NULL;
 		}
@@ -339,6 +340,23 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 	}
 	msg.exit("PatternBoundVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void PatternBoundVariable::printAccessors()
+{
+	if (PatternBoundVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<PatternBoundVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((PatternBoundVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<PatternBoundVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

@@ -48,7 +48,7 @@ PatternVariable::~PatternVariable()
 // Accessor data
 Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
 	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "atoms", 	VTypes::ForcefieldAtomData,	-1, TRUE },
+	{ "atoms", 	VTypes::AtomData,		-1, TRUE },
 	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
 	{ "cog", 	VTypes::VectorData,		-1, TRUE },
 	{ "com", 	VTypes::VectorData,		-1, TRUE },
@@ -101,6 +101,7 @@ StepNode *PatternVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'pattern&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("PatternVariable::accessorSearch");
 			return NULL;
 		}
@@ -439,6 +440,23 @@ bool PatternVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("PatternVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void PatternVariable::printAccessors()
+{
+	if (PatternVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<PatternVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((PatternVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<PatternVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

@@ -74,6 +74,8 @@ template <class T> class List
 	void own(T*);
 	// Remove an item from the list
 	void remove(T*);
+	// Remove last item from the list
+	void removeLast();
 	// Return whether the item is owned by the list
 	bool ownsItem(T*);
 	// Remove an item from the list, and return the next in the list
@@ -219,11 +221,23 @@ template <class T> void List<T>::remove(T *xitem)
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
 	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
 	delete xitem;
-	nItems_ --;
+	--nItems_;
 	regenerate_ = 1;
 }
 
-	// Return whether the item is owned by the list
+// Remove last item from the list
+template <class T> void List<T>::removeLast()
+{
+	// Delete a specific item from the list
+	T *xitem = listTail_;
+	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
+	listTail_ = (T*) xitem->prev;
+	delete xitem;
+	--nItems_;
+	regenerate_ = 1;
+}
+
+// Return whether the item is owned by the list
 template <class T> bool List<T>::ownsItem(T *searchitem)
 {
 	T *item;
@@ -239,7 +253,7 @@ template <class T> T* List<T>::removeAndGetNext(T *xitem)
 	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
 	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
 	delete xitem;
-	nItems_ --;
+	--nItems_;
 	regenerate_ = 1;
 	return result;
 }
@@ -267,7 +281,7 @@ template <class T> void List<T>::fillArray(int n, T **data)
 	while (i != NULL)
 	{
 		data[count] = i->item;
-		count ++;
+		++count;
 		if (count == n) break;
 		i = i->next;
 		if (i == NULL) printf("list::fill_array <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);

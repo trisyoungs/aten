@@ -88,6 +88,7 @@ StepNode *RegionVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("RegionVariable::accessorSearch");
 			return NULL;
 		}
@@ -335,6 +336,23 @@ bool RegionVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	return result;
 }
 
+// Print valid accessors/functions
+void RegionVariable::printAccessors()
+{
+	if (RegionVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<RegionVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((RegionVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<RegionVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
+}
+
 /*
 // Variable Array
 */
@@ -356,4 +374,3 @@ StepNode *RegionArrayVariable::findAccessor(const char *s, TreeNode *arrayindex,
 {
 	return RegionVariable::accessorSearch(s, arrayindex, arglist);
 }
-

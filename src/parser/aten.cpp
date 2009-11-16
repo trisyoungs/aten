@@ -120,6 +120,7 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'aten&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("AtenVariable::accessorSearch");
 			return NULL;
 		}
@@ -318,4 +319,21 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	msg.exit("AtenVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void AtenVariable::printAccessors()
+{
+	if (AtenVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<AtenVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((AtenVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<AtenVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }

@@ -140,6 +140,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'prefs&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
@@ -800,4 +801,21 @@ bool PreferencesVariable::performFunction(int i, ReturnValue &rv, TreeNode *node
 	}
 	msg.exit("PreferencesVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void PreferencesVariable::printAccessors()
+{
+	if (PreferencesVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<PreferencesVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((PreferencesVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<PreferencesVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }

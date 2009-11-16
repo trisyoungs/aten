@@ -87,6 +87,7 @@ StepNode *ForcefieldAtomVariable::accessorSearch(const char *s, TreeNode *arrayi
 		if (i == nFunctions)
 		{
 			msg.print("Error: Type 'ffatom&' has no member or function named '%s'.\n", s);
+			printAccessors();
 			msg.exit("ForcefieldAtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -334,6 +335,23 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 	}
 	msg.exit("ForcefieldAtomVariable::performFunction");
 	return result;
+}
+
+// Print valid accessors/functions
+void ForcefieldAtomVariable::printAccessors()
+{
+	if (ForcefieldAtomVariable::nAccessors > 0)
+	{
+		msg.print("Valid accessors are:\n");
+		for (int n=0; n<ForcefieldAtomVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		msg.print("\n");
+	}
+	if ((ForcefieldAtomVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	{
+		msg.print("Valid functions are:\n");
+		for (int n=0; n<ForcefieldAtomVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		msg.print("\n");
+	}
 }
 
 /*

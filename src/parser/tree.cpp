@@ -808,6 +808,7 @@ TreeNode *Tree::finalisePath()
 	}
 	ri->item->finalisePath();
 	TreeNode *result = ri->item;
+	msg.print(Messenger::Parse, "Path beginning from variable '%s' has been finalised.\n", ri->item->name());
 	pathStack_.remove(ri);
 	msg.exit("Tree::finalisePath");
 	return result;
