@@ -195,7 +195,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
 			{
-				frames_.remove(newframe);
+				removeFrame(newframe);
 				msg.print("Error during read of frame %i.\n", n);
 				break;
 			}
