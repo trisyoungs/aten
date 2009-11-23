@@ -112,6 +112,7 @@ void AtenDisorder::on_AllowOverlapCheck_clicked(bool checked)
 void AtenDisorder::refresh()
 {
 	if (!gui.exists()) return;
+	if (aten.currentModelOrFrame() == NULL) return;
 	msg.enter("AtenDisorder::refresh");
 	refreshing_ = TRUE;
 	// (De)sensitize controls
