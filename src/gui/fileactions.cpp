@@ -52,7 +52,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			filter->executeRead(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
 			refreshModelTabs();
-			aten.currentModel()->changeLog.add(Log::Visual);
+			aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 			gui.update();
 		}
 	}
@@ -104,7 +104,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	Model *m;
 	if (runSaveModelDialog())
 	{
-		m = aten.currentModel()->renderSource();
+		m = aten.currentModelOrFrame();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
 		if (saveModelFilter->executeWrite(saveModelFilename.get()))
@@ -123,7 +123,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
-	Model *m = aten.currentModel()->renderSource();
+	Model *m = aten.currentModelOrFrame();
 	Tree *t = m->filter();
 	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
 	Dnchar filename;
@@ -297,7 +297,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 			}
 		}
 
-		Model *m = aten.currentModel()->renderSource();
+		Model *m = aten.currentModelOrFrame();
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
 		else if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
 		else msg.print("Failed to save expression for model '%s'.\n", m->name());

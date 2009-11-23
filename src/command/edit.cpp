@@ -74,7 +74,7 @@ bool Command::function_Paste(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	aten.currentModel()->redo();
+	obj.rs->redo();
 	return TRUE;
 }
 
@@ -82,7 +82,7 @@ bool Command::function_Redo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Undo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	aten.currentModel()->undo();
+	obj.rs->undo();
 	return TRUE;
 }
 

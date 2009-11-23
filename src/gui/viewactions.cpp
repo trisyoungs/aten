@@ -30,19 +30,19 @@
 
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
-	aten.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
+	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0,0.0);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
-	aten.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
+	aten.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0,0.0);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
-	aten.currentModel()->resetView();
+	aten.currentModelOrFrame()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -51,7 +51,7 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
 	gui.mainView.doProjection();
-	//aten.currentModel()->resetView();
+	//aten.currentModelOrFrame()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -59,7 +59,7 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.doProjection();
-	//aten.currentModel()->resetView();
+	//aten.currentModelOrFrame()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -86,14 +86,14 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
-	aten.currentModel()->viewAlong(x,y,z);
+	aten.currentModelOrFrame()->viewAlong(x,y,z);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
-	aten.currentModel()->viewAlongCell(x,y,z);
+	aten.currentModelOrFrame()->viewAlongCell(x,y,z);
 	gui.mainView.postRedisplay();
 }
 

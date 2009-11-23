@@ -51,7 +51,7 @@ void AtenCellTransform::showWindow()
 void AtenCellTransform::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = aten.currentModel();
+	Model *m = aten.currentModelOrFrame();
 	Cell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
