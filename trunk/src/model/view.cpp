@@ -349,10 +349,14 @@ void Model::projectAll()
 {
 	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
 	msg.enter("Model::projectAll");
-	if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual)))
+	if (gui.mainView.isValid())
 	{
-		if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
-		projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual);
+		if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual)))
+		{
+			if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
+			projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual);
+		}
+		else printf("Projection point for model %s is vbalud...\n", name_.get());
 	}
 	msg.exit("Model::projectAll");
 }

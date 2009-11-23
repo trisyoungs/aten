@@ -167,6 +167,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 		msg.exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
+	newframe->enableUndoRedo();
 	streampos secondframe = trajectoryParser_.tellg();
 	frameSize_ = secondframe - firstframe;
 	if ((frameSize_/1024) < 10) msg.print("Single frame is %i bytes.\n", frameSize_);
@@ -181,7 +182,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	msg.print("Number of frames in file : %i\n", nFileFrames_);
 	frameIndex_ = 0;
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	msg.print("Estimated trajectory size is %p kb, cache limit = %i kb\n", nFileFrames_ * frameSize_/1024, prefs.cacheLimit());
+	msg.print("Estimated trajectory size is %i kb, cache limit = %i kb\n", nFileFrames_ * frameSize_/1024, prefs.cacheLimit());
 	if ((nFileFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
@@ -198,6 +199,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 				msg.print("Error during read of frame %i.\n", n);
 				break;
 			}
+			newframe->enableUndoRedo();
 		}
 		gui.progressTerminate();
 		nFileFrames_ = 0;

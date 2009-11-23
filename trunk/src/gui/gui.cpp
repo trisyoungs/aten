@@ -272,7 +272,7 @@ void GuiQt::run()
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
 	{
-		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. /usr/local/aten/data), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
 	}
 	else if (aten.nFiltersFailed() > 0)
 	{

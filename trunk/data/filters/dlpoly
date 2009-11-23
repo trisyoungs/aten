@@ -145,6 +145,7 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		# Variables
 		double mass,q,tstep;
 		double axes[9];
+		string title;
 		int natoms, nstep, keytrj, imcon, n;
 
 		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
@@ -157,6 +158,8 @@ filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="H
 		tstep = readdouble(realsize);
 		recsize = readint(intsize);
 		verbose("nstep = %i, natoms = %i, keytrj = %i, imcon = %i, tstep = %f\n", nstep, natoms, keytrj, imcon, tstep);
+		title = "t = " + ftoa(tstep) + ", n = " + itoa(nstep);
+		setname(title);
 
 		# Create temporary data arrays for reading
 		double x[natoms], y[natoms], z[natoms];
