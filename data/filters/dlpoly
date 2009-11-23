@@ -258,6 +258,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 
 		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
 		readlinef("%8s%10i%10i%10i%10i%12.6f", title, nstep, natoms, keytrj, imcon, tstep);
+		title = "t = " + ftoa(tstep) + ", n = " + itoa(nstep);
+		setname(title);
 
 		# Check number of atoms in trajectory frame
 		modeltemplate();
