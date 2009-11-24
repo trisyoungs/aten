@@ -438,6 +438,8 @@ void Command::initPointers()
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
 	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
+	pointers_[ReplaceStr] = &Command::function_ReplaceStr;
+	pointers_[RemoveStr] = &Command::function_RemoveStr;
 	pointers_[StripChars] = &Command::function_StripChars;
 
 	// System Commands

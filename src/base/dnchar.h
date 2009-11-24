@@ -72,7 +72,7 @@ class Dnchar
 	// Cut n characters from start of string and place in other
 	void cutStart(int, Dnchar&);
 	// Concatenate supplied string on to end of this string
-	void cat(const char*);
+	void cat(const char *s, int charcount = -1);
 	// Assignment operator
 	void operator=(const char*);
 	// Assignment operator

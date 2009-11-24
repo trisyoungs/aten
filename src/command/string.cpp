@@ -93,6 +93,40 @@ bool Command::function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Replace substring in supplied string
+bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Dnchar newstr(1024);
+	const char *s = c->argc(0), *orig = s;
+	char *srch;
+	int replacelen = strlen(c->argc(2));
+	printf("Strlen = %i\n", replacelen);
+	while (s != NULL)
+	{
+		srch = strstr(s, c->argc(1));
+		if (srch == NULL)
+		{
+			printf("No substring match\n");
+			newstr.cat(s);
+			s = NULL;
+		}
+		else
+		{
+			printf("Match at %p, offset is %i\n", srch, srch-s);
+			newstr.cat(s, srch-s);
+			newstr.cat(c->argc(2));
+			s = srch+replacelen-1;
+		}
+	}
+	rv.set( newstr.get() );
+	return TRUE;
+}
+
+// Remove substring from supplied string
+bool Command::function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+}
+
 // Strip characters from supplied string
 bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
