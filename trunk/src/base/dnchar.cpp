@@ -266,6 +266,7 @@ void Dnchar::operator+=(char c)
 // String addition
 void Dnchar::cat(const char *s, int charcount)
 {
+	if (charcount == 0) return;
 	// Check whether we need to reallocate
 	int slen = strlen(s);
 	if ((charcount != -1) && (charcount <= slen)) slen = charcount;
