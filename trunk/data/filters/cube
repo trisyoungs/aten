@@ -39,18 +39,20 @@ filter(type="importgrid", name="Gaussian CUBE", nickname="cube", extension="cube
 
 	# Create a grid associated to this model, and set it up with data we read previously
 	newgrid(title);
+	printf("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
 	gridorigin(origin.x, origin.y, origin.z);
+	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
 	gridsize(nx,ny,nz);
 	gridaxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
 
 	# Volumetric data (five points per line)
-	for (i=0; i<nx; ++i)
+	for (i=1; i<=nx; ++i)
 	{
-		for (j=0; j<ny; ++j)
+		for (j=1; j<=ny; ++j)
 		{
-			for (k=0; k<nz; ++k)
+			for (k=1; k<=nz; ++k)
 			{
-				readnext(data);
+				if (!nextarg(data)) error("Error reading point {%i,%i,%i} from file.\n", i,j,k);
 				addgridpoint(i, j, k, data);
 			}
 		}

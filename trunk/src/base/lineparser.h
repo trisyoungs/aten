@@ -128,8 +128,8 @@ class LineParser
 	int getLine();
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
-	// Get next delimited argument from internal file
-	int getArgDelim(Dnchar *destarg, int flags);
+	// Get next delimited argument from internal line
+	bool getArgDelim(Dnchar *destarg, int flags);
 	// Return a number of characters from the input stream
 	const char *getChars(int nchars, bool skipeol = TRUE);
 	// Skip a number of characters from the input stream

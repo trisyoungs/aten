@@ -536,12 +536,12 @@ bool LineParser::getRestDelim(Dnchar *destarg)
 }
 
 // Get next argument (delimited) from file stream
-int LineParser::getArgDelim(Dnchar *destarg, int flags)
+bool LineParser::getArgDelim(Dnchar *destarg, int flags)
 {
 	msg.enter("LineParser::getArgDelim");
 	optionMask_ = flags;
-	int result = getNextArg(destarg);
-	msg.print(Messenger::Parse,"getArgDelim = %i [%s]\n", result, destarg->get());
+	bool result = getNextArg(destarg);
+	msg.print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
 	msg.exit("LineParser::getArgDelim");
 	return result;
 }
