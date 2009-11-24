@@ -42,7 +42,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;

@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "escale", "equivalents", "generator", "impropers", "inter", "name", "rules", "torsions", "types", "units", "vdw", "vscale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "escale", "equivalents", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
