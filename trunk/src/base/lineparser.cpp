@@ -568,6 +568,7 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 		if ((c == '\n') || (c == '\t') || (c == '\r') || (c == ' '))
 		{
 			if (length != 0) break;
+			else continue;
 		}
 		if (c == '\0')
 		{

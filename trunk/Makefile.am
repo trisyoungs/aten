@@ -16,6 +16,9 @@ filter_DATA = data/filters/*
 testdir = $(atendir)/test
 test_DATA = data/test/*
 
+ffdir = $(atendir)/ff
+ff_DATA = data/ff/*
+
 desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = Aten.desktop
 
