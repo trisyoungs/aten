@@ -58,6 +58,10 @@ bool Forcefield::load(const char *filename)
 		// Call subroutines to read in data based on keywords
 		switch (forcefieldCommand(ffparser.argc(0)))
 		{
+			case (Forcefield::MessageCommand):
+				msg.print("####\t %s\n",ffparser.argc(1));
+				okay = TRUE;
+				break;
 			case (Forcefield::NameCommand):
 				name_.set(ffparser.argc(1));
 				msg.print("\t: '%s'\n",name_.get());

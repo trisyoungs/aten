@@ -1,0 +1,5180 @@
+name "General AMBER Force Field (June 2003)"
+
+# J. Wang, R. M. Wolf, J. W. Caldwell, P. A. Kollman, and D. A. Case, J. Comp. Chem. 2004, 25, 1157-1174.
+
+# This FF was converted into a format readable by Aten by T. Youngs.
+# Any mistakes arising from this conversion are not the fault of the original authors!
+# Use at your own risk.
+
+#----------------------------------------------------------------------------
+#		Miscellaneous 
+#	!!!! gaff is still in development, for some molecules, the current version 
+#	may have some problems. Please find the latest parameter file from 
+#	www.amber.ucsf.edu/antechamber.html
+#
+# (1)	Parameters for p4 are not enough
+# (2)     For bond lengty, bond angle and torsional angle parameters, hc and ha 
+#        are the generic names of aliphatic and aromatic hydrogen connected 
+#        to carbon, respectively.
+# (3) 	Defination priority of nitrogen: n>n3, n>n4, n>nh, n2>n, no>n, na>n
+#        n4>nh
+# (5)     Although the four atom types are same, maybe there are several different
+#        parameters correspond to different bond types. You may need to use 
+#        additional atom types to apply them correctly (with antechamber package,
+#        you can easily do this). 
+# (4) 	Polarizabilities: mg2+ 0.120, f- 0.9743
+#----------------------------------------------------------------------------
+
+units kcal
+
+types
+1	c	C	""	# 0.616 Sp2 C carbonyl group 
+2	c1	C	""	# 0.360 Sp C
+3	c2	C	""	# 0.360 Sp2 C  
+4	c3	C	""	# 0.878 Sp3 C
+5	ca	C	""	# 0.360 Sp2 C in pure aromatic systems
+6	cp	C	""	# 0.360 Head Sp2 C that connect two rings in biphenyl sys. 
+7	cq	C	""	# 0.360 Head Sp2 C that connect two rings in biphenyl sys. identical to cp 
+8	cc	C	""	# 0.360 Sp2 carbons in non-pure aromatic systems
+9	cd	C	""	# 0.360 Sp2 carbons in non-pure aromatic systems, identical to cc
+10	ce	C	""	# 0.360 Inner Sp2 carbons in conjugated systems
+11	cf	C	""	# 0.360 Inner Sp2 carbons in conjugated systems, identical to ce
+12	cg	C	""	# 0.360 Inner Sp carbons in conjugated systems
+13	ch	C	""	# 0.360 Inner Sp carbons in conjugated systems, identical to cg
+14	cx	C	""	# 0.360 Sp3 carbons in triangle systems
+15	cy	C	""	# 0.360 Sp3 carbons in square systems
+16	cu	C	""	# 0.360 Sp2 carbons in triangle systems
+17	cv	C	""	# 0.360 Sp2 carbons in square systems
+18	h1	H	""	# 0.135 H bonded to aliphatic carbon with 1 electrwd. group  
+19	h2	H	""	# 0.135 H bonded to aliphatic carbon with 2 electrwd. group 
+20	h3	H	""	# 0.135 H bonded to aliphatic carbon with 3 electrwd. group 
+21	h4	H	""	# 0.135 H bonded to non-sp3 carbon with 1 electrwd. group 
+22	h5	H	""	# 0.135 H bonded to non-sp3 carbon with 2 electrwd. group 
+23	ha	H	""	# 0.135 H bonded to aromatic carbon  
+24	hc	H	""	# 0.135 H bonded to aliphatic carbon without electrwd. group 
+25	hn	H	""	# 0.161 H bonded to nitrogen atoms
+26	ho	H	""	# 0.135 Hydroxyl group
+27	hp	H	""	# 0.135 H bonded to phosphate 
+28	hs	H	""	# 0.135 Hydrogen bonded to sulphur 
+29	hw	H	""	# 0.135 Hydrogen in water 
+30	hx	H	""	# 0.135 H bonded to C next to positively charged group  
+31	f	F	""	# 0.320 Fluorine
+32	cl	Cl	""	# 1.910 Chlorine 
+33	br	Br	""	# 2.880 Bromine 
+34	i	I	""	# 4.690 Iodine 
+35	n	N	""	# 0.530 Sp2 nitrogen in amide groups
+36	n1	N	""	# 0.530 Sp N  
+37	n2	N	""	# 0.530 aliphatic Sp2 N with two connected atoms 
+38	n3	N	""	# 0.530 Sp3 N with three connected atoms
+39	n4	N	""	# 0.530 Sp3 N with four connected atoms 
+40	na	N	""	# 0.530 Sp2 N with three connected atoms 
+41	nb	N	""	# 0.530 Sp2 N in pure aromatic systems 
+42	nc	N	""	# 0.530 Sp2 N in non-pure aromatic systems
+43	nd	N	""	# 0.530 Sp2 N in non-pure aromatic systems, identical to nc
+44	ne	N	""	# 0.530 Inner Sp2 N in conjugated systems
+45	nf	N	""	# 0.530 Inner Sp2 N in conjugated systems, identical to ne
+46	nh	N	""	# 0.530 Amine N connected one or more aromatic rings 
+47	no	N	""	# 0.530 Nitro N  
+48	o	O	""	# 0.434 Oxygen with one connected atom
+49	oh	O	""	# 0.465 Oxygen in hydroxyl group
+50	os	O	""	# 0.465 Ether and ester oxygen
+51	ow	O	""	# 0.465 Oxygen in water 
+52	p2	P	""	# 1.538 Phosphate with two connected atoms 
+53	p3	P	""	# 1.538 Phosphate with three connected atoms, such as PH3
+54	p4	P	""	# 1.538 Phosphate with three connected atoms, such as O=P(CH3)2
+55	p5	P	""	# 1.538 Phosphate with four connected atoms, such as O=P(OH)3
+56	pb	P	""	# 1.538 Sp2 P in pure aromatic systems 
+57	pc	P	""	# 1.538 Sp2 P in non-pure aromatic systems
+58	pd	P	""	# 1.538 Sp2 P in non-pure aromatic systems, identical to pc
+59	pe	P	""	# 1.538 Inner Sp2 P in conjugated systems
+60	pf	P	""	# 1.538 Inner Sp2 P in conjugated systems, identical to pe
+61	px	P	""	# 1.538 Special p4 in conjugated systems
+62	py	P	""	# 1.538 Special p5 in conjugated systems
+63	s	S	""	# 2.900 S with one connected atom 
+64	s2	S	""	# 2.900 S with two connected atom, involved at least one double bond  
+65	s4	S	""	# 2.900 S with three connected atoms 
+66	s6	S	""	# 2.900 S with four connected atoms 
+67	sh	S	""	# 2.900 Sp3 S connected with hydrogen 
+68	ss	S	""	# 2.900 Sp3 S in thio-ester and thio-ether
+69	sx	S	""	# 2.900 Special s4 in conjugated systems
+70	sy	S	""	# 2.900 Special s6 in conjugated systems
+end
+
+# n na n2 
+# LJ converted from r0 to sigma : sigma = 2.0*r0 / 2^(1/6)
+inter lj	# Q	Sigma	Epsilon
+1	c	0.0	0.086	3.39967	# OPLS
+2	c1	0.0	0.086	3.39967	# cp C 
+3	c2	0.0	0.086	3.39967	# sp2 atom in the middle of C=CD-CD=C
+4	c3	0.0	0.1094	3.39967	# OPLS
+5	ca	0.0	0.086	3.39967	# OPLS
+6	cp	0.0	0.086	3.39967	# OPLS
+7	cq	0.0	0.086	3.39967	# OPLS
+8	cc	0.0	0.086	3.39967	# OPLS
+9	cd	0.0	0.086	3.39967	# OPLS
+10	ce	0.0	0.086	3.39967	# OPLS
+11	cf	0.0	0.086	3.39967	# OPLS
+12	cg	0.0	0.086	3.39967	# OPLS
+13	ch	0.0	0.086	3.39967	# OPLS
+14	cx	0.0	0.086	3.39967	# OPLS
+15	cy	0.0	0.086	3.39967	# OPLS
+16	cu	0.0	0.086	3.39967	# OPLS
+17	cv	0.0	0.086	3.39967	# OPLS
+18	h1	0.0	0.0157	2.47135	# Veenstra et al JCC,8,(1992),963 
+19	h2	0.0	0.0157	2.29317	# Veenstra et al JCC,8,(1992),963 
+20	h3	0.0	0.0157	2.11499	# Veenstra et al JCC,8,(1992),963 
+21	h4	0.0	0.015	2.51055	# Spellmeyer, one electrowithdr. neighbor
+22	h5	0.0	0.015	2.42146	# Spellmeyer, two electrowithdr. neighbor
+23	ha	0.0	0.015	2.59964	# Spellmeyer 
+24	hc	0.0	0.0157	2.64953	# OPLS
+25	hn	0.0	0.0157	1.06908	# !Ferguson base pair geom.
+26	ho	0.0	0.0	0	# OPLS Jorgensen, JACS,110,(1988),1657
+27	hp	0.0	0.0157	1.06908	# same to hs (be careful !) 
+28	hs	0.0	0.0157	1.06908	# W. Cornell CH3SH --> CH3OH FEP
+29	hw	0.0	0.0	0	# OPLS Jorgensen, JACS,110,(1988),1657
+30	hx	0.0	0.0157	1.95998	# Veenstra et al JCC,8,(1992),963
+31	f	0.0	0.061	3.11815	# Gough et al. JCC 13,(1992),963.
+32	cl	0.0	0.265	3.47094	# Fox, JPCB,102,8070,(98),flex.mdl CHCl3
+33	br	0.0	0.32	3.95559	# Junmei
+34	i	0.0	0.4	4.18722	# JCC,7,(1986),230;	
+35	n	0.0	0.17	3.25	# OPLS
+36	n1	0.0	0.17	3.25	# OPLS
+37	n2	0.0	0.17	3.25	# OPLS
+38	n3	0.0	0.17	3.25	# OPLS
+39	n4	0.0	0.17	3.25	# OPLS
+40	na	0.0	0.17	3.25	# OPLS
+41	nb	0.0	0.17	3.25	# OPLS
+42	nc	0.0	0.17	3.25	# OPLS
+43	nd	0.0	0.17	3.25	# OPLS
+44	ne	0.0	0.17	3.25	# OPLS
+45	nf	0.0	0.17	3.25	# OPLS
+46	nh	0.0	0.17	3.25	# OPLS
+47	no	0.0	0.17	3.25	# OPLS
+48	o	0.0	0.21	2.95992	# OPLS
+49	oh	0.0	0.2104	3.06647	# OPLS 
+50	os	0.0	0.17	3.00001	# OPLS ether
+51	ow	0.0	0.152	3.15075	# TIP3P water model
+52	p2	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+53	p3	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+54	p4	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+55	p5	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+56	pb	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+57	pc	0		
+58	pd	0		
+59	pe	0		
+60	pf	0		
+61	px	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+62	py	0.0	0.2	3.74177	# JCC,7,(1986),230; 
+63	s	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+64	s2	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+65	s4	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+66	s6	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+67	sh	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+68	ss	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+69	sx	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+70	sy	0.0	0.25	3.56359	# W. Cornell CH3SH and CH3SCH3 FEP's
+end
+
+# What does this mean? : hn  ho  hs  n   na  nc  nd  ne  nf  n2  n3  n4  o   oh  os  ow  sh  ss
+
+bonds harmonic
+br	br	246.4	2.542
+br	c	480.6	1.946
+br	c1	705.4	1.787
+br	c2	557.4	1.883
+br	c3	459.0	1.966
+br	ca	539.2	1.897
+br	cx	522.8	1.910
+br	i	284.8	2.671
+br	n	640.4	1.873
+br	n1	660.8	1.860
+br	n2	438.0	2.038
+br	n3	531.8	1.952
+br	n4	564.8	1.926
+br	na	474.6	2.002
+br	nh	541.8	1.944
+br	no	382.0	2.101
+br	o	557.8	1.800
+br	oh	474.4	1.866
+br	os	451.2	1.887
+br	p2	348.6	2.210
+br	p3	334.0	2.231
+br	p4	377.6	2.171
+br	p5	358.6	2.196
+br	s	341.2	2.220
+br	s4	268.6	2.341
+br	s6	345.4	2.214
+br	sh	348.8	2.209
+br	ss	353.2	2.203
+c	c	580.2	1.550
+c	c1	759.6	1.460
+c	c2	899.8	1.406
+c	c3	656.6	1.508
+c	ca	699.4	1.487
+c	cc	754.8	1.462
+c	cd	754.8	1.462
+c	ce	727.6	1.474
+c	cf	727.6	1.474
+c	cg	778.6	1.452
+c	ch	778.6	1.452
+c	cl	587.0	1.766
+c	cu	882.8	1.412
+c	cx	701.6	1.486
+c	cy	617.0	1.529
+c	f	775.8	1.325
+c	ha	650.2	1.101
+c	i	397.8	2.209
+c	n	956.4	1.345
+c	n2	749.2	1.420
+c	n4	511.0	1.546
+c	nc	877.6	1.371
+c	nd	877.6	1.371
+c	ne	776.0	1.409
+c	nf	776.0	1.409
+c	no	520.2	1.540
+c	o	1296.0	1.214
+c	oh	932.8	1.306
+c	os	822.6	1.343
+c	p2	420.6	1.900
+c	p3	438.0	1.883
+c	p4	441.2	1.880
+c	p5	451.8	1.870
+c	pe	409.8	1.911
+c	pf	409.8	1.911
+c	px	416.6	1.904
+c	py	455.2	1.867
+c	s	657.8	1.675
+c	s4	400.8	1.870
+c	s6	400.8	1.870
+c	sh	499.2	1.781
+c	ss	523.8	1.762
+c	sx	386.6	1.885
+c	sy	405.6	1.865
+c1	c1	1972.4	1.181
+c1	c2	1250.0	1.307
+c1	c3	736.6	1.470
+c1	ca	808.2	1.440
+c1	cg	1691.6	1.222
+c1	ch	1691.6	1.222
+c1	cl	839.4	1.631
+c1	cx	798.2	1.444
+c1	f	938.8	1.270
+c1	ha	751.8	1.066
+c1	hc	771.2	1.060
+c1	i	637.6	1.989
+c1	n	1006.0	1.330
+c1	n1	2029.0	1.138
+c1	n2	1539.6	1.210
+c1	n3	819.6	1.392
+c1	n4	756.4	1.417
+c1	na	904.0	1.362
+c1	ne	1483.6	1.220
+c1	nf	1483.6	1.220
+c1	ng	931.4	1.353
+c1	nh	931.4	1.353
+c1	no	786.0	1.405
+c1	o	1554.0	1.166
+c1	oh	871.2	1.326
+c1	os	874.2	1.325
+c1	p2	578.6	1.770
+c1	p3	550.2	1.790
+c1	p4	550.2	1.790
+c1	p5	604.4	1.753
+c1	s	743.6	1.630
+c1	s2	820.0	1.595
+c1	s4	545.8	1.746
+c1	s6	580.8	1.722
+c1	sh	649.0	1.680
+c1	ss	650.8	1.679
+c2	c2	1179.4	1.324
+c2	c3	656.6	1.508
+c2	ca	714.4	1.480
+c2	cc	1045.2	1.360
+c2	cd	1045.2	1.360
+c2	ce	1121.0	1.339
+c2	cf	1121.0	1.339
+c2	cl	657.6	1.722
+c2	cu	1147.8	1.332
+c2	cx	666.6	1.503
+c2	cy	618.8	1.528
+c2	f	737.4	1.340
+c2	h4	697.2	1.084
+c2	h5	715.0	1.078
+c2	ha	688.6	1.087
+c2	hc	688.6	1.087
+c2	hx	700.2	1.083
+c2	i	446.4	2.153
+c2	n	781.0	1.407
+c2	n1	1092.0	1.306
+c2	n2	1162.2	1.288
+c2	n3	972.6	1.340
+c2	n4	618.2	1.482
+c2	na	822.2	1.391
+c2	nc	1066.0	1.313
+c2	nd	1066.0	1.313
+c2	ne	1195.4	1.280
+c2	nf	1195.4	1.280
+c2	nh	925.2	1.355
+c2	no	655.2	1.463
+c2	o	1092.4	1.261
+c2	oh	850.8	1.333
+c2	os	785.2	1.357
+c2	p2	751.8	1.670
+c2	p3	493.2	1.834
+c2	p4	508.0	1.822
+c2	p5	510.4	1.820
+c2	pe	710.6	1.691
+c2	pf	710.6	1.691
+c2	s	563.0	1.734
+c2	s2	786.2	1.610
+c2	s4	526.4	1.760
+c2	s6	526.4	1.760
+c2	sh	510.6	1.772
+c2	ss	560.0	1.736
+c3	c3	606.2	1.535
+c3	ca	647.0	1.513
+c3	cc	674.6	1.499
+c3	cd	674.6	1.499
+c3	ce	662.6	1.505
+c3	cf	662.6	1.505
+c3	cl	558.0	1.786
+c3	cu	718.8	1.478
+c3	cv	695.2	1.489
+c3	cx	645.0	1.514
+c3	cy	617.0	1.529
+c3	f	727.6	1.344
+c3	h1	671.8	1.093
+c3	h2	652.8	1.100
+c3	h3	671.8	1.093
+c3	hc	674.6	1.092
+c3	hx	677.4	1.091
+c3	i	438.2	2.162
+c3	n	661.2	1.460
+c3	n1	650.2	1.470
+c3	n2	627.6	1.477
+c3	n3	641.2	1.470
+c3	n4	587.2	1.499
+c3	na	669.4	1.456
+c3	nc	669.4	1.456
+c3	nd	669.4	1.456
+c3	nh	665.4	1.458
+c3	no	530.8	1.533
+c3	o	845.2	1.335
+c3	oh	628.2	1.426
+c3	os	603.0	1.439
+c3	p2	468.6	1.855
+c3	p3	481.2	1.844
+c3	p4	494.4	1.833
+c3	p5	519.4	1.813
+c3	px	505.4	1.824
+c3	py	519.4	1.813
+c3	s	425.8	1.845
+c3	s4	467.6	1.807
+c3	s6	508.0	1.774
+c3	sh	450.6	1.822
+c3	ss	451.6	1.821
+c3	sx	465.2	1.809
+c3	sy	497.8	1.782
+ca	ca	956.8	1.387
+ca	cc	823.4	1.434
+ca	cd	823.4	1.434
+ca	ce	732.0	1.472
+ca	cf	732.0	1.472
+ca	cg	813.2	1.438
+ca	ch	813.2	1.438
+ca	cl	645.6	1.729
+ca	cp	932.2	1.395
+ca	cx	701.6	1.486
+ca	f	727.6	1.344
+ca	h4	685.8	1.088
+ca	h5	694.4	1.085
+ca	ha	688.6	1.087
+ca	i	504.8	2.095
+ca	n	744.6	1.422
+ca	n1	796.2	1.400
+ca	n2	641.2	1.470
+ca	n4	651.2	1.465
+ca	na	940.6	1.350
+ca	nb	966.2	1.342
+ca	nc	985.8	1.336
+ca	nd	985.8	1.336
+ca	ne	723.6	1.431
+ca	nf	723.6	1.431
+ca	nh	898.0	1.364
+ca	no	645.2	1.468
+ca	o	1039.4	1.275
+ca	oh	772.2	1.362
+ca	os	744.8	1.373
+ca	p2	486.0	1.840
+ca	p3	505.4	1.824
+ca	p4	528.6	1.806
+ca	p5	543.2	1.795
+ca	pe	499.2	1.829
+ca	pf	499.2	1.829
+ca	px	504.2	1.825
+ca	py	536.6	1.800
+ca	s	555.8	1.739
+ca	s4	490.4	1.788
+ca	s6	527.8	1.759
+ca	sh	491.6	1.787
+ca	ss	513.2	1.770
+ca	sx	467.6	1.807
+ca	sy	495.4	1.784
+cc	cc	836.6	1.429
+cc	cd	1008.0	1.371
+cc	cf	1038.4	1.362
+cc	cg	841.8	1.427
+cc	ch	841.8	1.427
+cc	cl	696.6	1.700
+cc	h4	700.2	1.083
+cc	h5	712.0	1.079
+cc	ha	694.4	1.085
+cc	n	852.0	1.380
+cc	n2	1122.6	1.298
+cc	na	877.6	1.371
+cc	nc	863.2	1.376
+cc	nd	989.2	1.335
+cc	nh	898.0	1.364
+cc	oh	811.8	1.347
+cc	os	752.2	1.370
+cc	pd	636.4	1.733
+cc	ss	558.6	1.737
+cd	cd	836.6	1.429
+cd	cd	1008.0	1.371
+cd	ce	1038.4	1.362
+cd	cg	841.8	1.427
+cd	ch	841.8	1.427
+cd	cl	696.6	1.700
+cd	h4	700.2	1.083
+cd	h5	712.0	1.079
+cd	ha	694.4	1.085
+cd	n	852.0	1.380
+cd	n2	1122.6	1.298
+cd	na	877.6	1.371
+cd	nc	989.2	1.335
+cd	nd	863.2	1.376
+cd	nh	898.0	1.364
+cd	oh	811.8	1.347
+cd	os	752.2	1.370
+cd	pc	636.4	1.733
+cd	ss	558.6	1.737
+ce	ce	781.0	1.451
+ce	cf	1124.8	1.338
+ce	cg	831.2	1.431
+ce	ch	831.2	1.431
+ce	ha	683.0	1.089
+ce	n1	1044.4	1.319
+ce	n2	1199.6	1.279
+ce	ne	763.6	1.414
+ce	nh	969.4	1.341
+ce	p2	518.2	1.814
+ce	pe	513.0	1.818
+ce	px	509.2	1.821
+ce	py	544.6	1.794
+ce	s	649.0	1.680
+ce	sx	479.4	1.797
+ce	sy	497.8	1.782
+cf	cf	781.0	1.451
+cf	cf	1124.8	1.338
+cf	cg	831.2	1.431
+cf	ch	831.2	1.431
+cf	ha	683.0	1.089
+cf	n1	1044.4	1.319
+cf	n2	1199.6	1.279
+cf	nf	763.6	1.414
+cf	nh	969.4	1.341
+cf	p2	518.2	1.814
+cf	pf	513.0	1.818
+cf	px	509.2	1.821
+cf	py	544.6	1.794
+cf	s	649.0	1.680
+cf	sx	479.4	1.797
+cf	sy	497.8	1.782
+cg	cg	988.4	1.377
+cg	ch	1899.0	1.191
+cg	n1	1989.4	1.143
+cg	ne	901.0	1.363
+cg	pe	859.6	1.621
+ch	ch	988.4	1.377
+ch	ch	1899.0	1.191
+ch	n1	1989.4	1.143
+ch	nf	901.0	1.363
+ch	pf	859.6	1.621
+cl	cl	286.6	2.267
+cl	cx	603.6	1.755
+cl	cy	584.0	1.768
+cl	f	597.2	1.648
+cl	i	327.0	2.550
+cl	n	663.6	1.728
+cl	n1	863.2	1.630
+cl	n2	526.8	1.819
+cl	n3	597.2	1.769
+cl	n4	622.2	1.753
+cl	na	506.4	1.835
+cl	nh	606.4	1.763
+cl	no	500.2	1.840
+cl	o	1115.2	1.483
+cl	oh	619.4	1.690
+cl	os	557.6	1.730
+cl	p2	435.0	2.070
+cl	p3	498.8	2.008
+cl	p4	498.8	2.008
+cl	p5	498.8	2.008
+cl	pb	511.2	1.997
+cl	s	417.4	2.072
+cl	s2	345.4	2.161
+cl	s4	417.4	2.072
+cl	s6	417.4	2.072
+cl	sh	417.4	2.072
+cl	ss	417.4	2.072
+cl	sx	417.4	2.072
+cl	sy	417.4	2.072
+cp	cp	693.0	1.490
+cp	nb	940.6	1.350
+cq	cq	693.0	1.490
+cu	cu	1307.4	1.294
+cu	cx	654.6	1.509
+cu	ha	706.0	1.081
+cv	cv	1136.2	1.335
+cv	cy	647.0	1.513
+cv	ha	688.6	1.087
+cx	cv	656.6	1.508
+cx	cx	674.6	1.499
+cx	cy	643.0	1.515
+cx	f	694.4	1.358
+cx	h1	688.6	1.087
+cx	h2	700.2	1.083
+cx	hc	691.6	1.086
+cx	n	631.4	1.475
+cx	n2	618.2	1.482
+cx	n3	637.4	1.472
+cx	oh	774.8	1.361
+cx	os	640.2	1.420
+cx	p3	455.2	1.867
+cx	s4	450.6	1.822
+cx	s6	567.4	1.731
+cx	ss	458.4	1.815
+cy	cy	573.6	1.554
+cy	h1	660.8	1.097
+cy	hc	669.0	1.094
+cy	n3	614.4	1.484
+cy	oh	650.4	1.415
+cy	os	561.4	1.462
+f	n	783.4	1.397
+f	n1	751.4	1.410
+f	n2	675.0	1.444
+f	n3	761.2	1.406
+f	n4	1053.6	1.308
+f	na	749.0	1.411
+f	nh	714.2	1.426
+f	no	628.8	1.467
+f	o	884.4	1.330
+f	oh	610.8	1.444
+f	os	652.4	1.423
+f	p2	574.6	1.536
+f	p3	509.0	1.578
+f	p4	492.0	1.590
+f	p5	507.6	1.579
+f	s	466.6	1.660
+f	s2	488.8	1.643
+f	s4	564.8	1.591
+f	s6	624.2	1.556
+f	sh	480.8	1.649
+f	ss	501.0	1.634
+hn	n	820.4	1.009
+hn	n1	910.2	0.986
+hn	n2	751.0	1.029
+hn	n3	788.2	1.018
+hn	n4	738.0	1.033
+hn	na	813.2	1.011
+hn	nh	802.4	1.014
+hn	no	771.2	1.023
+ho	o	715.8	0.981
+ho	oh	739.2	0.974
+hp	p2	770.2	1.336
+hp	p3	606.2	1.409
+hp	p4	737.4	1.349
+hp	p5	610.0	1.407
+hs	s	572.8	1.353
+hs	s4	532.8	1.375
+hs	s6	561.6	1.359
+hs	sh	604.4	1.337
+i	i	218.4	2.917
+i	n	556.6	2.098
+i	n1	604.2	2.060
+i	n2	365.2	2.304
+i	n3	463.6	2.185
+i	n4	493.2	2.155
+i	na	521.0	2.129
+i	nh	498.4	2.150
+i	no	422.0	2.231
+i	o	647.6	1.980
+i	oh	495.8	2.101
+i	os	467.2	2.129
+i	p2	216.4	2.643
+i	p3	247.2	2.566
+i	p4	366.0	2.352
+i	p5	234.6	2.596
+i	s	350.2	2.430
+i	s4	165.6	2.870
+i	s6	165.6	2.870
+i	sh	277.0	2.560
+i	ss	271.8	2.571
+n	n	939.4	1.390
+n	n1	1107.8	1.340
+n	n2	999.4	1.371
+n	n3	886.6	1.408
+n	n4	821.6	1.432
+n	na	973.6	1.379
+n	nc	1064.2	1.352
+n	nd	1064.2	1.352
+n	nh	875.4	1.412
+n	no	762.4	1.456
+n	o	1293.2	1.264
+n	oh	790.8	1.410
+n	os	744.6	1.429
+n	p2	620.6	1.733
+n	p3	564.4	1.770
+n	p4	619.0	1.734
+n	p5	654.0	1.713
+n	pc	609.6	1.740
+n	pd	609.6	1.740
+n	s	495.0	1.767
+n	s4	476.4	1.782
+n	s6	541.6	1.732
+n	sh	547.2	1.728
+n	ss	563.2	1.717
+n1	n1	2443.4	1.124
+n1	n1	2731.4	1.100
+n1	n2	1714.8	1.216
+n1	n3	1071.4	1.350
+n1	n4	1036.4	1.360
+n1	na	1071.4	1.350
+n1	nc	1714.8	1.216
+n1	nd	1714.8	1.216
+n1	ne	1503.8	1.252
+n1	nf	1503.8	1.252
+n1	nh	1107.8	1.340
+n1	no	909.6	1.400
+n1	o	1235.0	1.277
+n1	oh	1139.6	1.300
+n1	os	1101.0	1.310
+n1	p2	717.6	1.678
+n1	p3	753.4	1.660
+n1	p4	706.0	1.680
+n1	p5	965.4	1.571
+n1	s	657.4	1.659
+n1	s2	1208.6	1.449
+n1	s4	673.6	1.650
+n1	s6	1340.6	1.416
+n1	sh	752.2	1.610
+n1	ss	752.2	1.610
+n2	n2	1405.4	1.271
+n2	n3	1149.6	1.329
+n2	n4	401.6	1.679
+n2	na	900.8	1.403
+n2	nc	1487.8	1.255
+n2	nd	1487.8	1.255
+n2	ne	1371.0	1.278
+n2	nf	1371.0	1.278
+n2	nh	1050.2	1.356
+n2	no	463.8	1.626
+n2	o	1579.8	1.209
+n2	oh	832.4	1.394
+n2	os	801.0	1.406
+n2	p2	876.6	1.605
+n2	p3	573.0	1.764
+n2	p4	635.4	1.724
+n2	p5	891.6	1.599
+n2	pe	1055.8	1.540
+n2	pf	1055.8	1.540
+n2	s	916.2	1.541
+n2	s2	998.0	1.512
+n2	s4	752.2	1.610
+n2	s6	937.8	1.533
+n2	sh	533.2	1.738
+n2	ss	662.8	1.656
+n3	n3	767.2	1.454
+n3	n4	869.8	1.414
+n3	na	853.4	1.420
+n3	nh	853.4	1.420
+n3	no	789.0	1.445
+n3	o	1128.0	1.303
+n3	oh	827.0	1.396
+n3	os	719.2	1.440
+n3	p2	733.2	1.670
+n3	p3	625.6	1.730
+n3	p4	682.2	1.697
+n3	p5	747.2	1.663
+n3	s	464.6	1.792
+n3	s4	502.6	1.761
+n3	s6	707.6	1.632
+n3	sh	531.8	1.739
+n3	ss	555.8	1.722
+n4	n4	699.8	1.484
+n4	na	814.0	1.435
+n4	nh	739.4	1.466
+n4	no	708.4	1.480
+n4	o	927.2	1.361
+n4	oh	816.4	1.400
+n4	os	763.6	1.421
+n4	p2	371.8	1.942
+n4	p3	430.2	1.880
+n4	p4	375.2	1.938
+n4	p5	485.8	1.830
+n4	py	408.4	1.902
+n4	s	420.6	1.832
+n4	s4	302.0	1.972
+n4	s6	345.4	1.914
+n4	sh	443.0	1.811
+n4	ss	442.0	1.812
+na	na	906.6	1.401
+na	nc	1071.4	1.350
+na	nd	1071.4	1.350
+na	nh	906.6	1.401
+na	no	803.8	1.439
+na	o	1288.6	1.265
+na	oh	824.4	1.397
+na	os	710.4	1.444
+na	p2	595.6	1.749
+na	p3	576.0	1.762
+na	p4	984.8	1.564
+na	p5	650.6	1.715
+na	pc	622.2	1.732
+na	pd	622.2	1.732
+na	py	655.6	1.712
+na	s	497.4	1.765
+na	s4	463.4	1.793
+na	s6	548.6	1.727
+na	sh	557.2	1.721
+na	ss	540.2	1.733
+na	sy	548.6	1.727
+nb	nb	1100.4	1.342
+nb	pb	922.2	1.587
+nc	nc	973.6	1.379
+nc	nd	1205.8	1.315
+nc	os	829.8	1.395
+nc	ss	867.0	1.560
+nc	sy	879.6	1.555
+nd	nd	973.6	1.379
+nd	nd	1205.8	1.315
+nd	os	829.8	1.395
+nd	ss	867.0	1.560
+nd	sy	879.6	1.555
+ne	ne	710.6	1.479
+ne	nf	1477.2	1.257
+ne	o	1472.8	1.228
+ne	p2	987.8	1.563
+ne	pe	655.6	1.712
+ne	px	673.2	1.702
+ne	py	640.4	1.721
+ne	s	927.0	1.537
+ne	sx	414.6	1.838
+ne	sy	514.2	1.752
+nf	nf	710.6	1.479
+nf	nf	1477.2	1.257
+nf	o	1472.8	1.228
+nf	p2	987.8	1.563
+nf	pf	655.6	1.712
+nf	px	673.2	1.702
+nf	py	640.4	1.721
+nf	s	927.0	1.537
+nf	sx	414.6	1.838
+nf	sy	514.2	1.752
+nh	nh	906.6	1.401
+nh	no	762.4	1.456
+nh	o	1192.4	1.287
+nh	oh	719.2	1.440
+nh	os	717.0	1.441
+nh	p2	715.6	1.679
+nh	p3	625.6	1.730
+nh	p4	666.2	1.706
+nh	p5	731.2	1.671
+nh	s	474.0	1.784
+nh	s4	518.2	1.749
+nh	s6	600.0	1.693
+nh	sh	576.6	1.708
+nh	ss	576.6	1.708
+nh	sy	648.4	1.664
+no	no	276.6	1.824
+no	o	1522.4	1.219
+no	oh	801.0	1.406
+no	os	641.6	1.477
+no	p2	612.6	1.738
+no	p3	469.4	1.844
+no	p4	440.8	1.870
+no	p5	481.0	1.834
+no	s	527.6	1.742
+no	s4	286.0	1.996
+no	s6	299.2	1.976
+no	sh	450.8	1.804
+no	ss	424.8	1.828
+o	o	768.6	1.430
+o	oh	589.2	1.517
+o	os	612.6	1.504
+o	p2	899.4	1.508
+o	p3	880.8	1.515
+o	p4	912.8	1.503
+o	p5	975.4	1.481
+o	pe	865.2	1.521
+o	pf	865.2	1.521
+o	px	918.4	1.501
+o	py	955.0	1.488
+o	s	389.6	1.802
+o	s2	667.2	1.599
+o	s4	897.4	1.497
+o	s6	1082.2	1.436
+o	sh	656.0	1.605
+o	ss	797.0	1.537
+o	sx	868.4	1.508
+o	sy	986.0	1.466
+oh	oh	681.0	1.469
+oh	os	685.2	1.467
+oh	p2	633.6	1.630
+oh	p3	557.6	1.677
+oh	p4	614.8	1.641
+oh	p5	642.4	1.625
+oh	py	664.2	1.613
+oh	s	380.0	1.812
+oh	s4	548.6	1.670
+oh	s6	688.2	1.588
+oh	sh	517.2	1.692
+oh	ss	531.2	1.682
+oh	sy	605.2	1.634
+os	os	687.2	1.466
+os	p2	743.8	1.573
+os	p3	544.4	1.686
+os	p4	623.2	1.636
+os	p5	685.0	1.602
+os	py	657.0	1.617
+os	s	391.6	1.800
+os	s4	507.8	1.699
+os	s6	710.0	1.577
+os	sh	547.2	1.671
+os	ss	501.0	1.704
+os	sy	507.8	1.699
+p2	p2	980.6	1.786
+p2	p3	423.8	2.152
+p2	p4	400.8	2.179
+p2	p5	399.8	2.180
+p2	pe	803.2	1.867
+p2	pf	803.2	1.867
+p2	s	723.2	1.772
+p2	s4	278.8	2.190
+p2	s6	284.6	2.180
+p2	sh	448.0	1.971
+p2	ss	453.2	1.966
+p3	p3	373.0	2.214
+p3	p4	371.4	2.216
+p3	p5	373.8	2.213
+p3	s	359.4	2.070
+p3	s4	346.4	2.087
+p3	s6	353.8	2.077
+p3	sh	314.6	2.132
+p3	ss	322.0	2.121
+p4	p4	546.2	2.034
+p4	p5	356.0	2.237
+p4	s	305.4	2.146
+p4	s4	246.4	2.251
+p4	s6	237.8	2.269
+p4	sh	326.2	2.115
+p4	ss	334.0	2.104
+p5	p5	522.8	2.054
+p5	s	501.6	1.922
+p5	s4	383.8	2.040
+p5	s6	383.8	2.040
+p5	sh	350.0	2.082
+p5	ss	329.6	2.110
+pe	pe	481.4	2.092
+pe	pf	521.6	2.055
+pe	px	582.8	2.005
+pe	py	557.2	2.025
+pe	s	749.4	1.758
+pe	sx	291.8	2.168
+pe	sy	266.0	2.213
+pf	pf	481.4	2.092
+pf	pf	521.6	2.055
+pf	px	582.8	2.005
+pf	py	557.2	2.025
+pf	s	749.4	1.758
+pf	sx	291.8	2.168
+pf	sy	266.0	2.213
+px	py	384.6	2.199
+px	sx	250.8	2.242
+px	sy	247.4	2.249
+py	py	395.0	2.186
+py	sx	242.4	2.259
+py	sy	283.4	2.182
+s	s	338.0	2.030
+s	s2	458.4	1.897
+s	s4	305.6	2.076
+s	s6	332.0	2.038
+s	sh	284.0	2.110
+s	ss	297.0	2.089
+s4	s4	303.0	2.080
+s4	s6	303.0	2.080
+s4	sh	251.4	2.168
+s4	ss	252.4	2.166
+s6	s6	303.0	2.080
+s6	sh	285.2	2.108
+s6	ss	279.2	2.118
+sh	sh	317.8	2.058
+sh	ss	311.6	2.067
+ss	ss	323.4	2.050
+sx	sx	161.8	2.391
+sx	sy	210.6	2.255
+sy	sy	212.8	2.250
+end
+
+angles harmonic
+hw	ow	hw	200.0	104.52	# TIP3P water
+hw	hw	ow	0.0	127.74	#(found in crystallographic water with 3 bonds)
+br	c	br	133.8	113.10	
+br	c	c3	126.6	110.74	
+br	c	o	126.4	121.46	
+c	c	c	124.6	111.68	
+c	c	c3	123.4	116.86	
+c	c	cc	128.0	111.67	
+c	c	cd	128.0	111.67	
+c	c	ha	89.6	115.43	
+c	c	hc	89.2	117.08	
+c	c	n	139.8	104.81	
+c	c	o	133.6	122.34	
+c	c	oh	136.4	113.23	
+c1	c	c1	130.2	115.32	
+c1	c	o	139.8	122.34	
+c2	c	c2	134.4	116.78	
+c2	c	ha	97.2	115.95	
+c2	c	o	145.6	119.12	
+c2	c	s	129.4	119.16	
+c3	c	c3	125.6	116.05	
+c3	c	ca	124.6	119.53	
+c3	c	cc	134.4	104.51	
+c3	c	cd	134.4	104.51	
+c3	c	ce	126.4	117.28	
+c3	c	cf	126.4	117.28	
+c3	c	cg	128.6	115.00	
+c3	c	ch	128.6	115.00	
+c3	c	cl	116.4	111.99	
+c3	c	f	133.8	110.70	
+c3	c	ha	92.0	115.22	
+c3	c	i	113.8	112.94	
+c3	c	n	135.8	115.15	
+c3	c	n2	133.2	114.53	
+c3	c	n4	129.2	112.26	
+c3	c	ne	134.4	113.38	
+c3	c	nf	134.4	113.38	
+c3	c	nh	136.4	113.58	
+c3	c	o	136.0	123.11	
+c3	c	oh	139.6	112.20	
+c3	c	os	138.6	111.96	
+c3	c	p3	149.0	116.42	
+c3	c	p5	148.4	118.90	
+c3	c	pe	148.4	114.85	
+c3	c	pf	148.4	114.85	
+c3	c	px	148.4	115.60	
+c3	c	py	149.0	118.16	
+c3	c	s	124.0	123.73	
+c3	c	s4	119.2	114.79	
+c3	c	s6	119.4	114.72	
+c3	c	sh	124.0	114.21	
+c3	c	ss	124.8	114.32	
+c3	c	sx	119.0	113.97	
+c3	c	sy	119.8	114.28	
+ca	c	ca	125.6	119.53	
+ca	c	cc	129.6	114.09	
+ca	c	cd	129.6	114.09	
+ca	c	ha	93.6	114.12	
+ca	c	n	138.8	112.03	
+ca	c	o	137.4	123.44	
+ca	c	oh	139.0	115.46	
+ca	c	os	137.6	115.54	
+ca	c	s	124.4	124.28	
+ca	c	sh	122.2	118.63	
+cc	c	cc	130.6	114.45	
+cd	c	cd	130.6	114.45	
+cc	c	cd	131.4	112.79	
+cc	c	n	140.4	111.86	
+cd	c	n	140.4	111.86	
+cc	c	o	137.8	125.71	
+cd	c	o	137.8	125.71	
+cc	c	os	141.0	112.30	
+cd	c	os	141.0	112.30	
+cd	c	oh	143.0	111.59	
+cc	c	oh	143.0	111.59	
+ce	c	ce	128.2	116.78	
+cf	c	cf	128.2	116.78	
+ce	c	ha	93.8	115.22	
+cf	c	ha	93.8	115.22	
+ce	c	n	137.8	115.01	
+cf	c	n	137.8	115.01	
+ce	c	o	138.6	122.92	
+cf	c	o	138.6	122.92	
+ce	c	oh	141.6	112.41	
+cf	c	oh	141.6	112.41	
+ce	c	s	128.2	117.80	
+cf	c	s	128.2	117.80	
+cg	c	cg	130.8	115.38	
+ch	c	ch	130.8	115.38	
+cg	c	ha	95.6	113.90	
+ch	c	ha	95.6	113.90	
+cg	c	o	140.4	122.31	
+ch	c	o	140.4	122.31	
+cl	c	cl	109.6	111.30	
+cl	c	f	118.0	112.00	
+cl	c	ha	80.8	109.90	
+cl	c	o	119.6	121.51	
+cl	c	s	113.4	127.60	
+cx	c	cx	170.8	64.60	
+cy	c	cy	140.2	90.55	
+cy	c	o	128.2	135.74	
+cy	c	os	149.6	94.37	
+f	c	f	144.4	107.35	
+f	c	h	103.0	109.90	
+f	c	o	146.4	123.44	
+f	c	s	126.8	124.00	
+h	c	o	106.2	127.30	
+ha	c	ha	75.8	115.61	
+ha	c	i	73.4	110.58	
+ha	c	n	104.8	112.37	
+ha	c	o	108.6	121.94	
+ha	c	oh	108.0	111.82	
+ha	c	os	106.4	110.34	
+ha	c	s	88.6	119.56	
+hc	c	hc	78.6	115.68	
+hc	c	n	102.2	120.00	
+hc	c	nh	105.0	112.70	
+hc	c	o	110.8	120.00	
+hc	c	oh	108.2	113.70	
+hc	c	os	105.8	113.58	
+i	c	i	119.6	116.45	
+i	c	o	111.0	122.02	
+n	c	n	150.8	111.70	
+n	c	nc	146.0	116.84	
+n	c	nd	146.0	116.84	
+n	c	o	151.6	122.03	
+n	c	os	149.4	115.25	
+n	c	s	131.4	123.88	
+n	c	ss	135.4	107.69	
+n2	c	n2	143.6	110.31	
+n2	c	na	141.4	118.60	
+n2	c	o	146.0	122.50	
+n3	c	n3	144.8	112.98	
+n3	c	o	148.2	122.26	
+n4	c	n4	129.4	114.64	
+n4	c	o	139.2	118.83	
+na	c	na	146.4	115.40	
+na	c	o	150.0	122.85	
+nc	c	o	147.8	125.29	
+nd	c	o	147.8	125.29	
+ne	c	ne	144.8	110.31	
+nf	c	nf	144.8	110.31	
+ne	c	o	145.6	124.39	
+nf	c	o	145.6	124.39	
+nh	c	nh	150.4	110.98	
+nh	c	o	149.6	124.62	
+no	c	no	133.0	109.28	
+no	c	o	136.0	125.36	
+o	c	o	158.2	127.33	
+o	c	oh	154.8	122.88	
+o	c	os	152.4	122.43	
+o	c	p2	151.4	123.10	
+o	c	p3	154.2	120.79	
+o	c	pe	150.4	123.02	
+o	c	pf	150.4	123.02	
+o	c	px	153.4	119.10	
+o	c	py	155.6	120.52	
+o	c	s	136.4	120.44	
+o	c	s4	122.4	121.15	
+o	c	s6	123.4	119.45	
+o	c	sh	128.4	121.41	
+o	c	ss	129.2	122.29	
+o	c	sx	121.4	121.15	
+o	c	sy	123.8	119.32	
+oh	c	oh	157.8	110.56	
+oh	c	s	133.2	123.44	
+os	c	os	155.6	107.49	
+p2	c	p2	188.8	113.75	
+p3	c	p3	187.0	118.04	
+p3	c	py	215.0	90.08	
+p5	c	p5	184.0	123.76	
+pe	c	pe	187.8	113.77	
+pf	c	pf	187.8	113.77	
+py	c	py	184.2	123.80	
+s	c	s	130.0	120.40	
+s	c	sh	125.0	121.94	
+s	c	ss	123.8	125.90	
+s4	c	s4	122.6	108.81	
+s6	c	s6	118.8	115.75	
+sh	c	sh	125.0	115.33	
+ss	c	ss	127.6	113.00	
+sx	c	sx	121.6	108.80	
+sy	c	sy	119.0	115.78	
+br	c1	c1	109.8	180.00	
+c	c1	c1	112.6	180.00	
+c1	c1	c1	128.8	180.00	
+c1	c1	c2	121.6	180.00	
+c1	c1	c3	112.8	177.99	
+c1	c1	ca	113.8	180.00	
+c1	c1	cl	102.8	180.00	
+c1	c1	f	122.0	180.00	
+c1	c1	ha	89.6	178.38	
+c1	c1	hc	89.4	180.00	
+c1	c1	i	99.6	180.00	
+c1	c1	n	124.2	177.18	
+c1	c1	n1	134.4	180.00	
+c1	c1	n2	130.4	180.00	
+c1	c1	n3	119.6	180.00	
+c1	c1	n4	118.2	179.56	
+c1	c1	na	122.4	176.75	
+c1	c1	nh	122.2	179.27	
+c1	c1	no	118.8	180.00	
+c1	c1	o	133.6	180.00	
+c1	c1	oh	125.4	176.65	
+c1	c1	os	125.6	176.42	
+c1	c1	p2	130.4	180.00	
+c1	c1	p3	132.8	169.63	
+c1	c1	p4	129.0	180.00	
+c1	c1	p5	133.0	176.17	
+c1	c1	s	111.4	179.97	
+c1	c1	s4	108.2	167.47	
+c1	c1	s6	107.4	174.38	
+c1	c1	sh	108.2	180.00	
+c1	c1	ss	110.4	173.22	
+c2	c1	c2	116.4	180.00	
+c2	c1	o	126.2	179.50	
+c2	c1	s2	113.4	172.98	
+c3	c1	n1	116.6	177.57	
+cg	c1	ha	88.0	177.41	
+ch	c1	ha	88.0	177.41	
+n1	c1	n1	186.4	102.01	
+n1	c1	n3	127.4	169.70	
+n1	c1	os	129.4	178.59	
+n1	c1	p3	135.4	171.20	
+n1	c1	ss	111.6	178.68	
+n2	c1	o	138.2	171.79	
+n2	c1	s	115.6	174.05	
+ne	c1	o	137.4	172.33	
+nf	c1	o	137.4	172.33	
+br	c2	br	137.2	115.06	
+br	c2	c2	126.2	122.42	
+br	c2	ha	86.4	113.28	
+c	c2	c	133.2	118.88	
+c	c2	c2	135.8	120.70	
+c	c2	c3	127.8	119.70	
+c	c2	ha	95.4	121.33	
+c	c2	hc	96.0	119.70	
+c1	c2	c1	144.6	116.77	
+c1	c2	c2	140.6	121.62	
+c1	c2	c3	130.2	121.60	
+c1	c2	f	136.0	124.90	
+c1	c2	ha	100.8	121.37	
+c2	c2	c2	139.6	121.81	
+c2	c2	c3	128.6	123.42	
+c2	c2	ca	133.8	117.00	
+c2	c2	cc	140.4	117.21	
+c2	c2	cd	140.4	117.21	
+c2	c2	cl	116.8	122.79	
+c2	c2	cx	139.4	105.70	
+c2	c2	cy	139.4	103.30	
+c2	c2	f	135.6	124.01	
+c2	c2	h4	98.6	124.68	
+c2	c2	ha	100.0	120.94	
+c2	c2	hc	100.6	119.70	
+c2	c2	hx	98.0	126.45	
+c2	c2	i	112.6	121.03	
+c2	c2	n	137.6	123.45	
+c2	c2	n2	142.6	126.01	
+c2	c2	n3	140.6	124.55	
+c2	c2	n4	134.4	121.52	
+c2	c2	na	139.6	121.38	
+c2	c2	nh	139.6	124.99	
+c2	c2	no	135.2	121.89	
+c2	c2	o	142.0	130.89	
+c2	c2	oh	143.2	122.28	
+c2	c2	os	142.4	121.43	
+c2	c2	p2	169.4	115.10	
+c2	c2	p3	150.4	124.83	
+c2	c2	p4	154.4	119.76	
+c2	c2	p5	150.8	125.97	
+c2	c2	s	122.6	129.37	
+c2	c2	s4	125.8	119.84	
+c2	c2	s6	125.6	120.01	
+c2	c2	sh	122.0	125.70	
+c2	c2	ss	127.8	118.62	
+c3	c2	c3	125.4	116.52	
+c3	c2	cc	126.4	125.64	
+c3	c2	cd	126.4	125.64	
+c3	c2	ce	131.4	117.40	
+c3	c2	cf	131.4	117.40	
+c3	c2	h4	87.6	127.53	
+c3	c2	ha	91.4	117.30	
+c3	c2	hc	90.2	120.00	
+c3	c2	n2	134.2	121.24	
+c3	c2	na	130.0	122.54	
+c3	c2	ne	134.0	122.15	
+c3	c2	nf	134.0	122.15	
+c3	c2	nh	133.4	118.59	
+c3	c2	o	138.2	116.88	
+c3	c2	oh	134.8	118.81	
+c3	c2	p2	158.0	122.74	
+c3	c2	s	125.6	115.44	
+ca	c2	ca	127.0	117.88	
+ca	c2	hc	90.6	123.30	
+cc	c2	ha	98.2	120.76	
+cd	c2	ha	98.2	120.76	
+ce	c2	ha	99.2	121.19	
+cf	c2	ha	99.2	121.19	
+cl	c2	cl	110.6	114.77	
+cl	c2	ha	81.8	113.20	
+cx	c2	ha	88.6	125.40	
+f	c2	f	141.4	109.60	
+f	c2	ha	102.6	110.00	
+h4	c2	n	98.4	119.41	
+h4	c2	n2	106.6	116.67	
+h4	c2	na	100.8	116.25	
+h4	c2	os	104.4	113.70	
+h4	c2	ss	85.6	118.47	
+h5	c2	n2	104.0	123.09	
+h5	c2	na	96.6	126.39	
+ha	c2	ha	76.0	117.65	
+ha	c2	n	101.0	113.40	
+ha	c2	n1	103.6	120.76	
+ha	c2	n2	104.8	120.54	
+ha	c2	n3	104.8	113.54	
+ha	c2	na	102.4	112.42	
+ha	c2	ne	105.0	121.18	
+ha	c2	nf	105.0	121.18	
+ha	c2	nh	102.6	116.68	
+ha	c2	no	98.2	112.14	
+ha	c2	o	108.4	117.23	
+ha	c2	oh	104.6	116.18	
+ha	c2	os	104.8	112.69	
+ha	c2	p2	111.4	121.48	
+ha	c2	p3	104.0	114.31	
+ha	c2	p4	103.2	117.86	
+ha	c2	p5	102.4	120.10	
+ha	c2	pe	110.0	121.46	
+ha	c2	pf	110.0	121.46	
+ha	c2	s	86.8	115.70	
+ha	c2	s2	92.4	118.74	
+ha	c2	s4	85.6	115.30	
+ha	c2	s6	85.2	116.60	
+ha	c2	sh	86.4	111.74	
+ha	c2	ss	86.4	116.72	
+hc	c2	hc	75.6	118.92	
+hc	c2	n	100.6	114.04	
+hc	c2	n2	104.8	120.40	
+hc	c2	na	99.4	119.10	
+hc	c2	nh	104.0	113.36	
+hc	c2	no	98.2	112.12	
+hc	c2	oh	104.6	116.22	
+hc	c2	os	103.4	116.11	
+hc	c2	p3	102.8	117.19	
+hc	c2	p5	102.6	119.58	
+hc	c2	s4	85.4	116.12	
+hc	c2	s6	85.6	115.45	
+hc	c2	sh	84.8	115.63	
+hc	c2	ss	86.8	115.62	
+hn	c2	n4	23.8	112.74	
+hx	c2	n4	96.8	113.03	
+i	c2	i	122.0	117.94	
+n	c2	n	143.0	113.23	
+n	c2	n2	141.2	125.95	
+n	c2	na	149.2	105.42	
+n	c2	ss	134.8	109.31	
+n2	c2	n2	156.0	113.82	
+n2	c2	na	143.4	123.62	
+n2	c2	nh	145.2	124.27	
+n2	c2	oh	148.8	122.08	
+n2	c2	os	149.2	118.96	
+n2	c2	ss	125.8	129.77	
+n3	c2	n3	146.8	118.47	
+n4	c2	n4	135.4	113.93	
+na	c2	na	147.4	109.33	
+ne	c2	nh	146.6	122.72	
+nf	c2	nh	146.6	122.72	
+nh	c2	nh	145.8	117.50	
+no	c2	no	137.2	113.90	
+o	c2	o	155.8	121.69	
+o	c2	s	128.0	127.68	
+oh	c2	oh	152.0	114.33	
+os	c2	os	148.4	115.80	
+p2	c2	p2	201.2	129.80	
+p3	c2	p3	194.2	115.54	
+p5	c2	p5	190.6	121.85	
+s	c2	s	125.0	121.67	
+s4	c2	s4	123.8	120.32	
+s4	c2	s6	124.0	119.95	
+s6	c2	s6	124.0	119.97	
+sh	c2	sh	128.2	110.48	
+sh	c2	ss	125.4	117.82	
+ss	c2	ss	125.6	120.24	
+br	c3	br	133.2	111.75	
+br	c3	c1	125.6	111.80	
+br	c3	c3	126.0	109.25	
+br	c3	h1	86.2	103.04	
+br	c3	hc	84.8	106.50	
+c	c3	c	127.4	112.95	
+c	c3	c2	129.2	109.73	
+c	c3	c3	127.6	110.53	
+c	c3	ca	128.2	111.23	
+c	c3	h1	95.2	107.66	
+c	c3	hc	94.4	109.68	
+c	c3	hx	94.8	108.64	
+c	c3	n	133.4	111.56	
+c	c3	n3	131.6	113.91	
+c	c3	n4	131.6	111.54	
+c	c3	na	137.2	105.72	
+c	c3	oh	136.8	109.46	
+c	c3	os	136.0	109.82	
+c	c3	ss	123.4	111.58	
+c1	c3	c1	133.0	109.00	
+c1	c3	c3	128.4	111.59	
+c1	c3	cl	117.0	110.63	
+c1	c3	h1	98.2	105.97	
+c1	c3	hc	96.6	109.75	
+c1	c3	os	136.2	112.83	
+c2	c3	c2	129.2	109.71	
+c2	c3	c3	127.4	110.96	
+c2	c3	f	132.8	111.30	
+c2	c3	h1	94.0	110.46	
+c2	c3	hc	94.0	110.49	
+c2	c3	n3	133.0	111.47	
+c2	c3	oh	136.6	109.72	
+c2	c3	os	136.6	108.88	
+c2	c3	ss	127.2	104.97	
+c3	c3	c3	126.4	110.63	
+c3	c3	ca	125.0	114.61	
+c3	c3	cc	129.4	108.10	
+c3	c3	cd	129.4	108.10	
+c3	c3	cl	115.6	110.33	
+c3	c3	cx	131.2	104.10	
+c3	c3	cy	127.2	109.62	
+c3	c3	f	132.4	109.41	
+c3	c3	h1	92.8	110.07	
+c3	c3	h2	92.0	111.59	
+c3	c3	hc	92.8	110.05	
+c3	c3	hx	92.0	111.74	
+c3	c3	i	117.0	110.96	
+c3	c3	n	131.8	112.13	
+c3	c3	n2	132.8	109.16	
+c3	c3	n3	132.4	110.38	
+c3	c3	n4	132.0	108.93	
+c3	c3	na	131.6	112.59	
+c3	c3	nh	133.2	109.78	
+c3	c3	oh	135.4	109.43	
+c3	c3	os	135.6	108.42	
+c3	c3	p5	154.0	114.24	
+c3	c3	s6	124.8	111.90	
+c3	c3	sh	123.0	111.09	
+c3	c3	ss	122.2	112.69	
+ca	c3	ca	127.2	112.47	
+ca	c3	cc	130.4	108.08	
+ca	c3	cd	130.4	108.08	
+ca	c3	h1	93.6	110.95	
+ca	c3	hc	94.0	110.15	
+ca	c3	n2	132.0	112.10	
+ca	c3	nc	136.4	106.51	
+ca	c3	nd	136.4	106.51	
+ca	c3	oh	134.4	112.97	
+ca	c3	os	135.4	110.51	
+cc	c3	cc	131.0	107.99	
+cd	c3	cd	131.0	107.99	
+cc	c3	cd	134.6	102.35	
+cc	c3	h1	94.0	111.62	
+cd	c3	h1	94.0	111.62	
+cc	c3	hc	94.4	110.86	
+cd	c3	hc	94.4	110.86	
+cc	c3	nc	136.8	107.04	
+cd	c3	nd	136.8	107.04	
+cc	c3	os	135.6	111.28	
+cd	c3	os	135.6	111.28	
+cd	c3	sh	122.2	114.02	
+cc	c3	sh	122.2	114.02	
+ce	c3	hc	94.0	110.98	
+cf	c3	hc	94.0	110.98	
+cl	c3	cl	108.4	111.03	
+cl	c3	f	118.0	109.60	
+cl	c3	h1	81.4	105.93	
+cl	c3	hc	80.6	107.65	
+cx	c3	hc	93.4	111.35	
+cy	c3	hc	93.0	110.17	
+f	c3	f	142.6	107.16	
+f	c3	h1	103.2	107.85	
+f	c3	h2	102.8	108.41	
+f	c3	hc	102.6	108.92	
+f	c3	n2	138.4	110.40	
+h1	c3	h1	78.4	109.55	
+h1	c3	n	99.6	109.32	
+h1	c3	n2	98.6	109.61	
+h1	c3	n3	98.8	109.92	
+h1	c3	na	99.8	109.45	
+h1	c3	nc	100.2	108.57	
+h1	c3	nd	100.2	108.57	
+h1	c3	nh	99.4	109.96	
+h1	c3	no	96.2	107.56	
+h1	c3	o	104.0	117.19	
+h1	c3	oh	102.0	109.88	
+h1	c3	os	101.6	108.82	
+h1	c3	s	82.4	112.60	
+h1	c3	s4	85.8	108.66	
+h1	c3	s6	87.8	108.11	
+h1	c3	sh	84.8	109.21	
+h1	c3	ss	84.8	109.34	
+h1	c3	sx	85.6	108.69	
+h1	c3	sy	87.4	108.09	
+h2	c3	h2	78.0	109.19	
+h2	c3	i	77.4	104.99	
+h2	c3	n	100.0	108.31	
+h2	c3	n2	98.2	110.22	
+h2	c3	n3	98.6	109.91	
+h2	c3	na	100.6	107.66	
+h2	c3	nc	99.6	109.47	
+h2	c3	nd	99.6	109.47	
+h2	c3	nh	99.0	110.80	
+h2	c3	no	95.6	108.69	
+h2	c3	o	107.6	108.97	
+h2	c3	oh	102.6	108.30	
+h2	c3	os	101.6	108.58	
+h2	c3	s	84.6	106.75	
+h2	c3	s4	85.8	108.58	
+h2	c3	s6	87.6	108.42	
+h2	c3	sh	85.4	107.87	
+h2	c3	ss	84.6	109.75	
+h3	c3	n3	100.2	106.77	
+h3	c3	nc	99.8	109.37	
+h3	c3	nd	99.8	109.37	
+h3	c3	nh	100.0	108.93	
+hc	c3	hc	78.8	108.35	
+hc	c3	i	77.2	104.99	
+hc	c3	n	99.6	109.50	
+hc	c3	n2	98.6	109.50	
+hc	c3	n3	98.8	109.80	
+hc	c3	n4	98.0	107.90	
+hc	c3	na	99.8	109.50	
+hc	c3	nh	98.8	111.54	
+hc	c3	no	96.4	107.20	
+hc	c3	oh	102.2	109.50	
+hc	c3	os	101.8	108.70	
+hc	c3	p2	104.8	110.18	
+hc	c3	p3	105.4	110.14	
+hc	c3	p4	106.4	109.59	
+hc	c3	p5	107.6	109.64	
+hc	c3	px	107.0	109.74	
+hc	c3	py	107.8	109.54	
+hc	c3	s4	86.2	107.50	
+hc	c3	s6	87.6	108.20	
+hc	c3	sh	85.4	107.87	
+hc	c3	ss	85.0	108.76	
+hx	c3	hx	78.0	110.74	
+hx	c3	n4	98.0	107.91	
+i	c3	i	124.0	113.12	
+n	c3	n	137.6	113.81	
+n2	c3	n2	139.8	107.70	
+n2	c3	os	142.2	108.03	
+n3	c3	n3	138.6	110.48	
+n3	c3	nc	137.6	113.29	
+n3	c3	nd	137.6	113.29	
+n3	c3	nh	142.2	105.80	
+n4	c3	n4	134.2	113.32	
+na	c3	na	138.2	113.49	
+na	c3	os	142.4	109.19	
+nc	c3	nc	140.0	110.61	
+nd	c3	nd	140.0	110.61	
+nc	c3	nh	138.6	112.43	
+nd	c3	nh	138.6	112.43	
+nc	c3	os	138.6	115.41	
+nd	c3	os	138.6	115.41	
+nh	c3	nh	142.8	105.87	
+no	c3	no	134.0	108.76	
+o	c3	o	146.8	122.30	
+oh	c3	oh	144.2	111.08	
+oh	c3	os	142.2	113.27	
+oh	c3	sh	126.6	115.46	
+os	c3	os	143.4	110.24	
+os	c3	ss	130.0	109.20	
+p2	c3	p2	196.4	110.48	
+p3	c3	p3	197.8	110.16	
+p5	c3	p5	195.8	116.24	
+s	c3	s	116.6	123.35	
+s4	c3	s4	124.8	112.29	
+s4	c3	s6	125.2	113.52	
+s6	c3	s6	127.4	111.75	
+sh	c3	sh	121.6	116.26	
+sh	c3	ss	124.6	110.73	
+ss	c3	ss	125.6	109.02	
+br	ca	br	134.6	117.60	
+br	ca	ca	127.0	118.13	
+c	ca	c	125.4	120.00	
+c	ca	c3	125.2	118.06	
+c	ca	ca	129.2	120.14	
+c	ca	ha	93.0	115.90	
+c	ca	hc	22.4	120.00	
+c	ca	nc	128.8	130.80	
+c	ca	nd	128.8	130.80	
+c1	ca	c1	129.4	120.00	
+c1	ca	ca	131.8	120.00	
+c2	ca	c2	125.8	120.00	
+c2	ca	ca	129.4	120.60	
+c3	ca	c2	124.4	120.00	
+c3	ca	c3	124.8	116.80	
+c3	ca	ca	127.6	120.63	
+c3	ca	cp	127.4	120.63	
+c3	ca	cq	127.4	120.63	
+ca	ca	ca	134.4	119.97	
+ca	ca	cc	132.0	120.10	
+ca	ca	cd	132.0	120.10	
+ca	ca	ce	129.8	120.66	
+ca	ca	cf	129.8	120.66	
+ca	ca	cg	131.8	120.05	
+ca	ca	ch	131.8	120.05	
+ca	ca	cl	116.8	119.90	
+ca	ca	cp	134.4	119.07	
+ca	ca	cq	134.4	119.07	
+ca	ca	cx	129.6	119.68	
+ca	ca	f	135.2	118.74	
+ca	ca	h4	96.4	121.09	
+ca	ca	ha	97.0	120.01	
+ca	ca	i	117.2	118.47	
+ca	ca	n	136.0	119.89	
+ca	ca	n2	133.6	119.57	
+ca	ca	n3	37.0	121.19	
+ca	ca	n4	134.6	118.41	
+ca	ca	na	140.4	118.34	
+ca	ca	nb	138.4	122.63	
+ca	ca	nc	140.2	119.72	
+ca	ca	nd	140.2	119.72	
+ca	ca	ne	135.4	119.88	
+ca	ca	nf	135.4	119.88	
+ca	ca	nh	138.6	120.13	
+ca	ca	no	133.8	119.54	
+ca	ca	o	141.8	123.43	
+ca	ca	oh	139.6	119.94	
+ca	ca	os	139.6	119.20	
+ca	ca	p2	155.8	114.36	
+ca	ca	p3	152.6	120.73	
+ca	ca	p4	154.2	120.30	
+ca	ca	p5	155.2	119.98	
+ca	ca	pe	152.6	120.45	
+ca	ca	pf	152.6	120.45	
+ca	ca	px	152.8	120.53	
+ca	ca	py	154.8	119.98	
+ca	ca	s	124.4	122.55	
+ca	ca	s4	123.4	119.15	
+ca	ca	s6	125.0	119.11	
+ca	ca	sh	123.0	120.13	
+ca	ca	ss	124.0	119.93	
+ca	ca	sx	122.4	119.18	
+ca	ca	sy	123.2	119.89	
+cd	ca	nb	133.8	126.21	
+cc	ca	nb	133.8	126.21	
+cl	ca	cl	108.4	118.72	
+cp	ca	ha	96.0	121.08	
+cq	ca	ha	96.0	121.08	
+cp	ca	sy	127.8	111.18	
+cq	ca	sy	127.8	111.18	
+f	ca	f	136.2	117.50	
+h4	ca	n	99.0	116.02	
+h4	ca	na	103.8	114.65	
+h4	ca	nb	103.6	115.94	
+h4	ca	nc	103.0	118.36	
+h4	ca	nd	103.0	118.36	
+h4	ca	os	104.6	111.15	
+h4	ca	ss	84.8	116.19	
+h5	ca	nb	103.6	116.35	
+h5	ca	nc	101.4	122.11	
+h5	ca	nd	101.4	122.11	
+ha	ca	n2	96.2	116.00	
+ha	ca	p2	100.2	122.56	
+i	ca	i	124.6	119.28	
+n	ca	nc	139.4	123.86	
+n	ca	nd	139.4	123.86	
+n	ca	nh	142.6	116.16	
+n2	ca	n2	133.0	120.00	
+n2	ca	na	138.4	119.60	
+n4	ca	n4	135.4	116.82	
+na	ca	na	149.0	113.32	
+na	ca	nb	140.4	128.56	
+nb	ca	nb	142.4	125.84	
+nb	ca	nd	142.2	126.50	
+nb	ca	nc	142.2	126.50	
+nb	ca	nh	145.2	118.96	
+nc	ca	nc	141.4	128.74	
+nd	ca	nd	141.4	128.74	
+nc	ca	nh	145.6	118.86	
+nd	ca	nh	145.6	118.86	
+nh	ca	nh	142.8	120.98	
+no	ca	no	134.8	117.14	
+o	ca	o	151.0	126.82	
+oh	ca	oh	145.2	120.00	
+os	ca	os	148.0	113.73	
+p2	ca	p2	189.0	121.20	
+p3	ca	p3	190.4	121.46	
+p5	ca	p5	194.6	120.00	
+s	ca	s	122.8	125.14	
+s4	ca	s4	130.0	105.81	
+s6	ca	s6	132.0	105.81	
+sh	ca	sh	122.0	120.24	
+ss	ca	ss	125.8	115.15	
+c	cc	c2	130.8	121.76	
+c	cd	c2	130.8	121.76	
+c	cc	c3	129.8	112.75	
+c	cd	c3	129.8	112.75	
+c	cc	ca	127.2	122.95	
+c	cd	ca	127.2	122.95	
+c	cc	cc	127.4	122.69	
+c	cd	cd	127.4	122.69	
+c	cc	cd	131.4	119.92	
+c	cd	cc	131.4	119.92	
+c	cc	cl	115.6	121.79	
+c	cd	cl	115.6	121.79	
+c	cc	ha	94.0	117.02	
+c	cd	ha	94.0	117.02	
+c	cc	n2	136.8	120.89	
+c	cd	n2	136.8	120.89	
+c	cc	nd	140.2	112.91	
+c	cd	nc	140.2	112.91	
+c	cc	oh	137.0	118.74	
+c	cd	oh	137.0	118.74	
+c2	cc	c3	126.6	126.11	
+c2	cd	c3	126.6	126.11	
+c2	cc	ca	128.8	128.22	
+c2	cd	ca	128.8	128.22	
+c2	cc	cc	130.6	125.41	
+c2	cd	cd	130.6	125.41	
+c2	cc	cd	138.2	117.02	
+c2	cd	cc	138.2	117.02	
+c2	cc	ha	97.4	122.72	
+c2	cd	ha	97.4	122.72	
+c2	cc	n	135.4	126.90	
+c2	cd	n	135.4	126.90	
+c2	cc	os	141.0	119.31	
+c2	cd	os	141.0	119.31	
+c3	cc	ca	128.2	117.81	
+c3	cd	ca	128.2	117.81	
+c3	cc	cc	129.4	115.97	
+c3	cd	cd	129.4	115.97	
+c3	cc	cd	129.6	119.45	
+c3	cd	cc	129.6	119.45	
+c3	cc	cf	130.8	117.84	
+c3	cd	ce	130.8	117.84	
+c3	cc	ha	90.2	121.52	
+c3	cd	ha	90.2	121.52	
+c3	cc	n2	129.0	131.55	
+c3	cd	n2	129.0	131.55	
+c3	cc	na	131.0	122.80	
+c3	cd	na	131.0	122.80	
+c3	cc	nc	131.6	121.44	
+c3	cd	nd	131.6	121.44	
+c3	cc	nd	132.8	121.96	
+c3	cd	nc	132.8	121.96	
+ca	cc	cc	135.4	111.04	
+ca	cd	cd	135.4	111.04	
+ca	cc	cd	136.4	113.51	
+ca	cd	cc	136.4	113.51	
+ca	cc	h4	91.2	128.66	
+ca	cd	h4	91.2	128.66	
+ca	cc	ha	92.8	124.04	
+ca	cd	ha	92.8	124.04	
+ca	cc	n	145.0	104.87	
+ca	cd	n	145.0	104.87	
+ca	cc	nd	140.4	115.05	
+ca	cd	nc	140.4	115.05	
+ca	cc	os	139.0	116.24	
+ca	cd	os	139.0	116.24	
+ca	cc	ss	129.8	111.09	
+ca	cd	ss	129.8	111.09	
+cc	cc	cc	135.8	110.70	
+cd	cd	cd	135.8	110.70	
+cc	cc	cd	136.4	114.19	
+cc	cd	cd	136.4	114.19	
+cc	cc	cf	131.2	123.92	
+cd	cd	ce	131.2	123.92	
+cc	cc	h4	91.2	129.47	
+cd	cd	h4	91.2	129.47	
+cc	cc	ha	93.2	123.74	
+cd	cd	ha	93.2	123.74	
+cc	cc	n	135.8	119.89	
+cd	cd	n	135.8	119.89	
+cc	cc	n2	138.6	121.15	
+cd	cd	n2	138.6	121.15	
+cc	cc	na	144.4	106.80	
+cd	cd	na	144.4	106.80	
+cc	cc	nc	140.0	113.42	
+cd	cd	nd	140.0	113.42	
+cc	cc	nd	142.2	112.56	
+cd	cd	nc	142.2	112.56	
+cc	cc	os	136.8	120.43	
+cd	cd	os	136.8	120.43	
+cc	cc	ss	127.6	115.02	
+cd	cd	ss	127.6	115.02	
+cd	cc	cd	138.6	115.51	
+cc	cd	cc	138.6	115.51	
+cd	cc	h4	94.4	129.11	
+cc	cd	h4	94.4	129.11	
+cd	cc	ha	96.8	122.89	
+cc	cd	ha	96.8	122.89	
+cd	cc	n	141.4	115.52	
+cc	cd	n	141.4	115.52	
+cd	cc	na	145.8	109.42	
+cc	cd	na	145.8	109.42	
+cd	cc	nc	142.0	114.98	
+cc	cd	nd	142.0	114.98	
+cd	cc	nh	136.8	125.04	
+cc	cd	nh	136.8	125.04	
+cd	cc	oh	137.6	126.44	
+cc	cd	oh	137.6	126.44	
+cd	cc	os	140.0	120.30	
+cc	cd	os	140.0	120.30	
+cd	cc	ss	127.2	118.17	
+cc	cd	ss	127.2	118.17	
+cl	cc	nd	119.6	125.30	
+cl	cd	nc	119.6	125.30	
+h4	cc	n	100.8	117.62	
+h4	cd	n	100.8	117.62	
+h4	cc	na	100.4	119.66	
+h4	cd	na	100.4	119.66	
+h4	cc	nc	100.0	120.03	
+h4	cd	nd	100.0	120.03	
+h4	cc	nd	102.8	119.11	
+h4	cd	nc	102.8	119.11	
+h4	cc	os	104.6	111.89	
+h4	cd	os	104.6	111.89	
+h4	cc	ss	86.0	117.75	
+h4	cd	ss	86.0	117.75	
+h5	cc	na	99.6	122.10	
+h5	cd	na	99.6	122.10	
+h5	cc	nc	98.6	123.70	
+h5	cd	nd	98.6	123.70	
+h5	cc	nd	100.2	125.38	
+h5	cd	nc	100.2	125.38	
+h5	cc	os	102.6	116.33	
+h5	cd	os	102.6	116.33	
+h5	cc	ss	84.4	122.00	
+h5	cd	ss	84.4	122.00	
+ha	cc	na	99.6	121.50	
+ha	cd	na	99.6	121.50	
+ha	cc	nc	101.4	116.54	
+ha	cd	nd	101.4	116.54	
+ha	cc	nd	102.8	118.88	
+ha	cd	nc	102.8	118.88	
+ha	cc	os	105.0	110.86	
+ha	cd	os	105.0	110.86	
+ha	cc	ss	84.6	121.64	
+ha	cd	ss	84.6	121.64	
+n	cc	c	136.4	116.06	
+c	cd	n	136.4	116.06	
+n	cc	nh	144.4	117.01	
+n	cd	nh	144.4	117.01	
+na	cc	nc	139.4	125.32	
+na	cd	nd	139.4	125.32	
+na	cc	nd	149.6	112.02	
+na	cd	nc	149.6	112.02	
+nc	cc	nd	145.0	118.69	
+nc	cd	nd	145.0	118.69	
+nc	cc	ss	129.2	119.86	
+nd	cd	ss	129.2	119.86	
+nd	cc	nh	144.8	120.11	
+nc	cd	nh	144.8	120.11	
+nd	cc	os	146.0	119.14	
+nc	cd	os	146.0	119.14	
+nd	cc	ss	133.0	114.51	
+nc	cd	ss	133.0	114.51	
+nh	cc	nh	145.8	115.96	
+nh	cd	nh	145.8	115.96	
+os	cc	ss	124.0	132.01	
+os	cd	ss	124.0	132.01	
+ss	cc	ss	124.4	122.30	
+ss	cd	ss	124.4	122.30	
+c	cd	nd	128.6	130.80	
+c	cc	nc	128.6	130.80	
+c3	cd	os	135.6	115.89	
+c3	cc	os	135.6	115.89	
+cd	cd	nh	137.2	118.98	
+cc	cc	nh	137.2	118.98	
+cd	cd	pc	161.6	115.36	
+cc	cc	pd	161.6	115.36	
+ha	cd	pc	107.2	121.76	
+ha	cc	pd	107.2	121.76	
+n	cd	nc	141.8	123.86	
+n	cc	nd	141.8	123.86	
+nd	cd	nh	147.8	111.94	
+nc	cc	nh	147.8	111.94	
+c	ce	c	127.0	118.85	
+c	cf	c	127.0	118.85	
+c	ce	c2	131.6	120.42	
+c	cf	c2	131.6	120.42	
+c	ce	c3	126.2	118.00	
+c	cf	c3	126.2	118.00	
+c	ce	cf	128.6	126.41	
+c	cf	ce	128.6	126.41	
+c	ce	ha	93.2	117.26	
+c	cf	ha	93.2	117.26	
+c	ce	nh	133.4	122.76	
+c	cf	nh	133.4	122.76	
+c2	ce	c3	128.6	122.89	
+c2	cf	c3	128.6	122.89	
+c2	ce	ca	130.4	123.08	
+c2	cf	ca	130.4	123.08	
+c2	ce	ce	131.4	123.08	
+c2	cf	cf	131.4	123.08	
+c2	ce	cg	133.0	122.22	
+c2	cf	ch	133.0	122.22	
+c2	ce	ha	99.2	121.10	
+c2	cf	ha	99.2	121.10	
+c2	ce	n2	140.6	128.70	
+c2	cf	n2	140.6	128.70	
+c2	ce	ne	139.4	118.32	
+c2	cf	nf	139.4	118.32	
+c2	ce	p2	155.8	118.24	
+c2	cf	p2	155.8	118.24	
+c2	ce	pe	155.2	118.76	
+c2	cf	pf	155.2	118.76	
+c2	ce	px	154.4	119.72	
+c2	cf	px	154.4	119.72	
+c2	ce	py	154.8	122.13	
+c2	cf	py	154.8	122.13	
+c2	ce	sx	123.2	119.87	
+c2	cf	sx	123.2	119.87	
+c2	ce	sy	124.0	120.35	
+c2	cf	sy	124.0	120.35	
+c3	ce	ca	126.4	117.62	
+c3	cf	ca	126.4	117.62	
+c3	ce	ce	126.6	118.71	
+c3	cf	cf	126.6	118.71	
+c3	ce	n2	137.2	116.94	
+c3	cf	n2	137.2	116.94	
+ca	ce	ca	127.6	117.93	
+ca	cf	ca	127.6	117.93	
+ca	ce	ha	93.4	116.87	
+ca	cf	ha	93.4	116.87	
+ca	ce	n2	137.0	120.72	
+ca	cf	n2	137.0	120.72	
+ce	ce	ce	129.0	118.74	
+cf	cf	cf	129.0	118.74	
+ce	ce	ha	95.0	115.90	
+cf	cf	ha	95.0	115.90	
+ce	ce	n2	137.0	123.00	
+cf	cf	n2	137.0	123.00	
+cf	ce	ha	101.2	116.11	
+ce	cf	ha	101.2	116.11	
+cg	ce	cg	132.0	116.75	
+ch	cf	ch	132.0	116.75	
+cg	ce	ha	95.6	117.00	
+ch	cf	ha	95.6	117.00	
+cg	ce	n1	138.6	119.50	
+ch	cf	n1	138.6	119.50	
+ha	ce	n2	105.8	119.51	
+ha	cf	n2	105.8	119.51	
+ha	ce	ne	98.4	118.59	
+ha	cf	nf	98.4	118.59	
+ha	ce	nh	104.2	114.99	
+ha	cf	nh	104.2	114.99	
+ha	ce	p2	102.8	120.11	
+ha	cf	p2	102.8	120.11	
+ha	ce	pe	102.8	119.33	
+ha	cf	pf	102.8	119.33	
+ha	ce	px	103.4	117.90	
+ha	cf	px	103.4	117.90	
+ha	ce	py	104.6	118.72	
+ha	cf	py	104.6	118.72	
+ha	ce	sx	83.6	115.45	
+ha	cf	sx	83.6	115.45	
+ha	ce	sy	84.6	114.86	
+ha	cf	sy	84.6	114.86	
+ne	ce	ne	136.2	123.87	
+nf	cf	nf	136.2	123.87	
+pe	ce	pe	184.8	129.79	
+pf	cf	pf	184.8	129.79	
+py	ce	py	205.2	108.06	
+py	cf	py	205.2	108.06	
+sx	ce	sx	121.2	120.32	
+sx	cf	sx	121.2	120.32	
+sy	ce	sy	122.4	119.97	
+sy	cf	sy	122.4	119.97	
+c	cf	cc	127.8	126.07	
+c	ce	cd	127.8	126.07	
+cc	cf	ha	98.6	119.16	
+cd	ce	ha	98.6	119.16	
+ce	cf	cf	127.6	130.92	
+ce	ce	cf	127.6	130.92	
+cf	cf	n1	133.2	127.15	
+ce	ce	n1	133.2	127.15	
+ha	cf	n1	105.0	115.96	
+ha	ce	n1	105.0	115.96	
+c	cg	c1	112.4	179.14	
+c	ch	c1	112.4	179.14	
+c1	cg	ca	112.8	180.00	
+c1	ch	ca	112.8	180.00	
+c1	cg	ce	113.8	178.32	
+c1	ch	cf	113.8	178.32	
+c1	cg	cg	116.2	180.00	
+c1	ch	ch	116.2	180.00	
+c1	cg	ne	123.4	170.02	
+c1	ch	nf	123.4	170.02	
+c1	cg	pe	143.6	173.29	
+c1	ch	pf	143.6	173.29	
+ca	cg	n1	117.6	180.00	
+ca	ch	n1	117.6	180.00	
+ce	cg	n1	118.2	179.58	
+cf	ch	n1	118.2	179.58	
+n1	cg	ne	126.8	176.17	
+n1	ch	nf	126.8	176.17	
+f	cl	f	0.0	87.50	
+ca	cp	ca	134.2	118.75	
+ca	cp	cp	125.2	127.01	
+ca	cp	nb	137.4	122.97	
+cp	cp	cp	144.4	90.00	
+cp	cp	nb	135.8	116.43	
+ca	cq	ca	134.2	118.75	
+ca	cq	cq	125.2	127.01	
+ca	cq	nb	137.4	122.97	
+cq	cq	cq	144.4	90.00	
+cq	cq	nb	135.8	116.43	
+c	cu	cu	190.0	62.60	
+cu	cu	cx	202.0	50.80	
+cu	cu	ha	92.2	147.73	
+cv	cv	cy	146.6	94.17	
+cv	cv	ha	94.6	133.70	
+cx	cv	cx	169.4	63.90	
+cy	cv	ha	85.8	132.14	
+c	cx	cx	145.2	88.75	
+c	cx	hc	92.0	118.50	
+c2	cx	hc	89.0	124.20	
+c3	cx	c3	123.0	120.00	
+c3	cx	cx	123.4	120.67	
+ca	cx	oh	138.6	112.93	
+ca	cx	os	133.0	118.12	
+cl	cx	cl	108.8	114.20	
+cl	cx	cx	113.8	118.70	
+cl	cx	h1	80.8	111.43	
+cl	cx	hc	79.2	115.80	
+cu	cx	cu	183.0	54.60	
+cx	cx	cx	170.6	63.75	
+cx	cx	cy	135.0	100.53	
+cx	cx	f	129.4	117.25	
+cx	cx	h1	91.0	119.66	
+cx	cx	hc	91.6	117.92	
+cx	cx	n3	130.6	116.30	
+cx	cx	os	186.6	59.41	
+cy	cx	hc	88.0	125.43	
+f	cx	f	141.2	106.90	
+f	cx	h1	100.6	111.68	
+f	cx	hc	100.4	112.30	
+h1	cx	h1	76.8	115.45	
+h1	cx	os	100.0	115.17	
+h2	cx	h2	75.8	119.43	
+h2	cx	n2	95.2	117.18	
+hc	cx	hc	77.2	114.47	
+hc	cx	os	100.6	114.10	
+n	cx	oh	138.4	119.75	
+n	cx	os	183.2	65.98	
+n2	cx	n2	204.2	50.16	
+oh	cx	oh	153.4	107.85	
+oh	cx	os	143.2	118.12	
+os	cx	os	186.6	66.95	
+c	cy	cy	142.8	85.95	
+c	cy	hc	91.4	113.85	
+c	cy	os	149.4	88.50	
+c2	cy	cy	132.2	100.40	
+c3	cy	cy	124.0	114.15	
+c3	cy	h1	93.2	109.66	
+c3	cy	hc	92.4	111.55	
+c3	cy	n3	130.6	112.92	
+cl	cy	cy	115.2	112.00	
+cl	cy	h1	82.0	106.59	
+cl	cy	hc	79.2	114.00	
+cv	cy	cy	143.6	85.83	
+cv	cy	hc	91.6	115.88	
+cx	cy	cy	132.2	101.23	
+cx	cy	hc	90.6	118.30	
+cy	cy	cy	140.4	87.61	
+cy	cy	h1	89.8	114.84	
+cy	cy	hc	89.6	115.14	
+cy	cy	n	129.8	112.13	
+cy	cy	n3	147.0	87.58	
+cy	cy	oh	132.0	114.19	
+cy	cy	os	145.8	91.10	
+h1	cy	h1	78.0	109.72	
+h1	cy	n3	96.4	113.36	
+h1	cy	oh	101.8	111.49	
+h1	cy	os	99.4	110.94	
+hc	cy	hc	78.4	109.04	
+ca	i	cl	0.0	90.21	
+ca	i	o	0.0	97.08	
+cl	i	cl	0.0	179.58	
+br	n	br	133.2	116.20	
+br	n	c	123.8	120.77	
+br	n	ca	124.2	118.19	
+br	n	cd	124.6	118.19	
+br	n	cc	124.6	118.19	
+c	n	c	134.8	119.63	
+c	n	c1	137.0	117.04	
+c	n	c2	130.2	122.15	
+c	n	c3	127.8	121.35	
+c	n	ca	128.6	123.71	
+c	n	cc	130.4	124.19	
+c	n	cd	130.4	124.19	
+c	n	cl	116.4	115.32	
+c	n	cx	131.8	112.77	
+c	n	f	136.6	108.63	
+c	n	hn	98.4	118.46	
+c	n	i	112.6	120.38	
+c	n	n	136.4	118.42	
+c	n	n2	136.2	120.59	
+c	n	n3	134.2	120.43	
+c	n	n4	137.6	112.32	
+c	n	na	136.4	119.20	
+c	n	nc	137.2	120.31	
+c	n	nd	137.2	120.31	
+c	n	nh	136.0	117.06	
+c	n	no	133.0	118.16	
+c	n	o	143.2	118.90	
+c	n	oh	139.0	113.39	
+c	n	os	138.2	113.14	
+c	n	p2	153.0	124.56	
+c	n	p3	151.6	122.54	
+c	n	p4	153.6	123.44	
+c	n	p5	156.6	121.27	
+c	n	pc	154.0	122.23	
+c	n	pd	154.0	122.23	
+c	n	s	118.0	126.55	
+c	n	s4	120.2	120.41	
+c	n	s6	123.4	119.57	
+c	n	sh	123.8	119.54	
+c	n	ss	124.0	120.37	
+c1	n	c1	147.0	102.69	
+c1	n	ca	131.8	118.88	
+c1	n	cd	134.0	118.88	
+c1	n	cc	134.0	118.88	
+c2	n	c2	130.4	116.75	
+c2	n	c3	124.2	123.87	
+c2	n	ca	129.8	116.54	
+c2	n	cd	131.8	116.54	
+c2	n	cc	131.8	116.54	
+c2	n	hn	94.8	117.86	
+c3	n	c3	128.0	112.62	
+c3	n	ca	124.8	121.15	
+c3	n	cc	126.6	121.17	
+c3	n	cd	126.6	121.17	
+c3	n	hn	92.0	116.78	
+ca	n	ca	129.0	116.80	
+ca	n	cd	130.0	118.42	
+ca	n	cc	130.0	118.42	
+ca	n	cl	113.8	117.72	
+ca	n	f	129.2	114.92	
+ca	n	hn	95.2	114.59	
+ca	n	i	113.2	119.30	
+ca	n	n2	133.6	118.25	
+ca	n	n4	128.2	122.98	
+ca	n	na	133.6	117.57	
+ca	n	nc	137.6	113.03	
+ca	n	nd	137.6	113.03	
+ca	n	nh	132.8	116.45	
+ca	n	p2	159.2	112.32	
+ca	n	p3	148.4	125.11	
+ca	n	s4	120.0	118.40	
+ca	n	s6	123.2	117.32	
+ca	n	ss	124.4	116.60	
+cc	n	cc	137.6	108.92	
+cd	n	cd	137.6	108.92	
+cc	n	hn	95.0	121.52	
+cd	n	hn	95.0	121.52	
+cc	n	nc	139.8	113.03	
+cd	n	nd	139.8	113.03	
+cd	n	cl	114.6	117.72	
+cc	n	cl	114.6	117.72	
+cd	n	f	131.2	114.92	
+cc	n	f	131.2	114.92	
+cd	n	i	113.2	119.30	
+cc	n	i	113.2	119.30	
+cd	n	n	133.0	121.37	
+cc	n	n	133.0	121.37	
+cd	n	n2	140.2	110.87	
+cc	n	n2	140.2	110.87	
+cd	n	na	135.8	117.57	
+cc	n	na	135.8	117.57	
+cd	n	nh	134.2	117.52	
+cc	n	nh	134.2	117.52	
+cd	n	no	132.8	115.92	
+cc	n	no	132.8	115.92	
+cd	n	o	140.2	120.54	
+cc	n	o	140.2	120.54	
+cd	n	oh	134.6	118.15	
+cc	n	oh	134.6	118.15	
+cd	n	os	135.2	115.56	
+cc	n	os	135.2	115.56	
+cd	n	p2	160.4	112.32	
+cc	n	p2	160.4	112.32	
+cd	n	p3	149.4	125.11	
+cc	n	p3	149.4	125.11	
+cd	n	p5	155.8	121.00	
+cc	n	p5	155.8	121.00	
+cd	n	s	121.6	118.29	
+cc	n	s	121.6	118.29	
+cd	n	s4	120.6	118.40	
+cc	n	s4	120.6	118.40	
+cd	n	s6	124.0	117.32	
+cc	n	s6	124.0	117.32	
+cd	n	sh	123.2	119.13	
+cc	n	sh	123.2	119.13	
+cd	n	ss	125.2	116.60	
+cc	n	ss	125.2	116.60	
+cl	n	cl	108.6	111.69	
+cx	n	os	191.2	54.04	
+f	n	f	135.8	102.98	
+hn	n	hn	79.4	117.85	
+hn	n	i	72.2	117.24	
+hn	n	n	100.2	113.12	
+hn	n	n2	99.2	118.33	
+hn	n	n3	98.6	114.33	
+hn	n	n4	97.8	112.68	
+hn	n	na	100.8	113.55	
+hn	n	nh	99.2	112.41	
+hn	n	no	97.4	110.11	
+hn	n	o	107.6	116.32	
+hn	n	oh	101.4	109.21	
+hn	n	os	100.2	108.90	
+hn	n	p2	105.0	118.05	
+hn	n	p3	101.8	119.63	
+hn	n	p4	106.0	115.71	
+hn	n	p5	107.2	116.26	
+hn	n	s	82.2	114.92	
+hn	n	s4	82.4	112.46	
+hn	n	s6	85.0	112.68	
+hn	n	sh	84.4	114.91	
+hn	n	ss	84.8	115.60	
+i	n	i	121.4	118.20	
+n	n	n	139.8	114.62	
+n2	n	n2	140.4	116.89	
+n3	n	n3	136.0	117.94	
+n4	n	n4	136.8	112.69	
+na	n	na	139.2	117.38	
+nc	n	nc	142.6	116.41	
+nd	n	nd	142.6	116.41	
+nc	n	p2	161.4	117.21	
+nd	n	p2	161.4	117.21	
+nc	n	pc	161.0	117.21	
+nd	n	pd	161.0	117.21	
+nh	n	nh	137.2	115.18	
+no	n	no	137.0	108.66	
+o	n	o	146.8	128.61	
+oh	n	oh	144.0	107.26	
+os	n	os	142.6	106.53	
+p2	n	p2	196.0	119.62	
+p3	n	p3	201.4	108.73	
+p4	n	p4	205.6	108.55	
+p5	n	p5	217.0	99.99	
+pc	n	pc	195.2	119.62	
+pd	n	pd	195.2	119.62	
+s	n	s	117.0	126.00	
+s4	n	s4	122.0	113.75	
+s6	n	s6	122.4	119.68	
+sh	n	sh	123.0	119.03	
+ss	n	ss	124.2	118.49	
+c2	n1	o	146.2	116.94	
+c2	n1	s	129.4	118.00	
+cf	n1	o	142.2	122.40	
+ce	n1	o	142.2	122.40	
+cf	n1	s	129.6	117.34	
+ce	n1	s	129.6	117.34	
+o	n1	p2	169.4	116.05	
+p2	n1	s	160.6	119.93	
+n1	n1	s	109.2	180.00	
+br	n2	br	127.8	106.60	
+br	n2	c2	118.2	112.40	
+br	n2	n2	122.2	110.42	
+br	n2	o	120.2	114.47	
+br	n2	p2	160.2	111.03	
+br	n2	s	124.8	115.78	
+c	n2	c	125.4	123.80	
+c	n2	c2	132.4	120.97	
+c	n2	ca	124.8	120.50	
+c1	n2	c1	148.8	121.10	
+c1	n2	c3	117.4	151.88	
+c1	n2	cl	110.8	118.80	
+c1	n2	hn	103.0	126.50	
+c1	n2	n2	153.6	113.40	
+c1	n2	o	158.4	113.59	
+c1	n2	p2	169.6	119.57	
+c1	n2	s	139.6	117.67	
+c2	n2	c2	141.6	118.18	
+c2	n2	c3	132.2	115.30	
+c2	n2	ca	130.0	119.94	
+c2	n2	cl	113.4	112.64	
+c2	n2	f	136.6	108.14	
+c2	n2	hn	105.2	110.33	
+c2	n2	i	103.8	114.74	
+c2	n2	n	140.8	117.24	
+c2	n2	n2	155.8	103.59	
+c2	n2	n3	142.6	118.14	
+c2	n2	n4	124.8	112.22	
+c2	n2	na	138.6	117.58	
+c2	n2	nh	141.4	117.61	
+c2	n2	no	128.4	111.54	
+c2	n2	o	151.0	116.94	
+c2	n2	oh	144.8	109.82	
+c2	n2	os	144.0	110.01	
+c2	n2	p2	170.0	116.00	
+c2	n2	p3	155.0	119.30	
+c2	n2	p4	158.6	118.77	
+c2	n2	s	137.4	118.00	
+c2	n2	s4	136.2	112.29	
+c2	n2	s6	138.8	116.24	
+c2	n2	sh	126.2	115.48	
+c2	n2	ss	130.0	118.04	
+c3	n2	c3	127.6	110.70	
+c3	n2	ca	121.2	123.20	
+c3	n2	hn	90.4	118.40	
+c3	n2	n1	137.8	115.38	
+c3	n2	n2	138.6	111.18	
+c3	n2	nh	136.2	109.99	
+c3	n2	o	140.6	112.40	
+c3	n2	p2	164.2	114.21	
+c3	n2	s	131.4	116.72	
+c3	n2	s6	133.4	113.84	
+ca	n2	ca	127.2	112.20	
+ca	n2	hn	90.2	120.00	
+ca	n2	n2	137.6	113.53	
+ca	n2	o	138.8	116.00	
+ca	n2	p2	161.8	118.11	
+ca	n2	s	129.8	120.11	
+cc	n2	hn	105.0	109.65	
+cd	n2	hn	105.0	109.65	
+cd	n2	cl	111.8	115.79	
+cc	n2	cl	111.8	115.79	
+ce	n2	hn	107.8	106.50	
+cf	n2	hn	107.8	106.50	
+ce	n2	nh	141.0	119.08	
+cf	n2	nh	141.0	119.08	
+ce	n2	o	154.8	112.16	
+cf	n2	o	154.8	112.16	
+ce	n2	oh	145.2	109.87	
+cf	n2	oh	145.2	109.87	
+ce	n2	s	138.6	116.28	
+cf	n2	s	138.6	116.28	
+cl	n2	n1	118.6	108.70	
+cl	n2	n2	117.4	110.47	
+cl	n2	o	116.4	114.03	
+cl	n2	p2	148.0	112.98	
+cl	n2	s	117.0	115.77	
+cx	n2	n2	181.0	64.92	
+f	n2	n2	136.6	114.60	
+f	n2	o	142.4	110.10	
+f	n2	p2	168.6	107.10	
+f	n2	s	134.2	110.73	
+hn	n2	hn	77.2	120.00	
+hn	n2	n1	110.6	114.10	
+hn	n2	n2	111.6	105.01	
+hn	n2	ne	109.4	108.56	
+hn	n2	nf	109.4	108.56	
+hn	n2	o	115.2	107.37	
+hn	n2	p2	117.2	112.09	
+hn	n2	p4	109.0	111.33	
+hn	n2	p5	112.6	122.34	
+hn	n2	pe	122.6	111.41	
+hn	n2	pf	122.6	111.41	
+hn	n2	s	98.2	108.17	
+hn	n2	s2	96.6	115.80	
+hn	n2	s4	92.6	111.21	
+hn	n2	s6	96.8	112.59	
+i	n2	n2	107.4	111.79	
+i	n2	o	104.6	116.82	
+i	n2	p2	144.6	113.26	
+i	n2	s	112.6	116.85	
+n	n2	n2	149.4	110.42	
+n	n2	o	152.4	111.38	
+n	n2	p2	170.4	117.30	
+n	n2	s	139.2	115.74	
+n2	n2	n2	156.4	109.49	
+n2	n2	n3	153.2	108.88	
+n2	n2	n4	131.6	106.45	
+n2	n2	na	146.2	112.23	
+n2	n2	nh	149.6	111.70	
+n2	n2	no	135.4	105.97	
+n2	n2	o	160.4	110.43	
+n2	n2	oh	148.0	111.51	
+n2	n2	os	149.4	108.38	
+n2	n2	p2	180.2	109.15	
+n2	n2	p3	163.4	113.05	
+n2	n2	p4	162.8	118.77	
+n2	n2	p5	179.6	110.46	
+n2	n2	s	142.4	115.91	
+n2	n2	s4	143.2	107.30	
+n2	n2	s6	146.0	111.25	
+n2	n2	sh	132.0	111.10	
+n2	n2	ss	137.0	112.14	
+n3	n2	n3	146.0	115.07	
+n3	n2	o	153.8	114.00	
+n3	n2	p2	173.4	115.34	
+n3	n2	s	140.0	117.13	
+n4	n2	n4	120.0	106.70	
+n4	n2	o	129.8	112.20	
+n4	n2	p2	159.0	113.07	
+n4	n2	s	124.8	118.50	
+na	n2	na	143.4	107.00	
+na	n2	o	149.0	113.09	
+na	n2	p2	167.8	119.16	
+na	n2	s	136.6	118.26	
+ne	n2	nh	149.4	111.38	
+nf	n2	nh	149.4	111.38	
+ne	n2	o	160.0	110.31	
+nf	n2	o	160.0	110.31	
+ne	n2	s	142.0	116.22	
+nf	n2	s	142.0	116.22	
+nh	n2	nh	139.4	121.20	
+nh	n2	o	152.4	112.96	
+nh	n2	p2	169.8	118.83	
+nh	n2	s	139.2	116.90	
+no	n2	no	125.6	103.70	
+no	n2	o	140.8	100.76	
+no	n2	p2	162.6	111.95	
+o	n2	o	162.0	115.37	
+o	n2	oh	151.2	112.15	
+o	n2	os	151.4	110.35	
+o	n2	p2	177.4	116.08	
+o	n2	p3	164.8	113.43	
+o	n2	p4	170.4	110.61	
+o	n2	p5	183.4	109.11	
+o	n2	pe	170.4	134.56	
+o	n2	pf	170.4	134.56	
+o	n2	s	144.2	117.18	
+o	n2	s4	144.2	108.91	
+o	n2	s6	148.6	111.34	
+o	n2	sh	131.2	114.98	
+o	n2	ss	136.8	115.34	
+oh	n2	oh	149.6	101.70	
+oh	n2	p2	172.2	115.11	
+oh	n2	s	139.0	116.08	
+os	n2	os	142.6	110.29	
+os	n2	p2	175.4	110.20	
+os	n2	s	141.0	112.23	
+p2	n2	p2	214.2	116.80	
+p2	n2	p3	196.8	124.48	
+p2	n2	p4	196.6	128.37	
+p2	n2	p5	208.8	123.47	
+p2	n2	s	171.8	117.84	
+p2	n2	s4	172.6	112.10	
+p2	n2	s6	173.8	115.70	
+p2	n2	sh	160.8	118.45	
+p2	n2	ss	164.0	120.43	
+p3	n2	p3	192.0	120.40	
+p3	n2	s	160.2	120.86	
+p4	n2	s	155.6	131.84	
+p5	n2	p5	211.6	120.60	
+p5	n2	s	170.6	119.89	
+pe	n2	s	177.2	115.73	
+pf	n2	s	177.2	115.73	
+s	n2	s	137.0	120.88	
+s	n2	s4	138.4	113.00	
+s	n2	s6	138.0	119.61	
+s	n2	sh	127.2	122.05	
+s	n2	ss	133.2	118.19	
+s4	n2	s4	132.0	119.18	
+s4	n2	s6	135.0	119.18	
+s6	n2	s6	138.6	119.18	
+sh	n2	sh	120.0	123.93	
+sh	n2	ss	122.6	123.93	
+ss	n2	ss	125.8	123.93	
+br	n3	br	133.0	107.15	
+br	n3	c3	125.4	106.93	
+c	n3	c	126.2	127.17	
+c1	n3	c1	128.2	123.34	
+c1	n3	f	136.4	104.70	
+c1	n3	hn	95.4	118.31	
+c1	n3	o	140.0	116.63	
+c2	n3	c2	132.4	124.68	
+c2	n3	hn	98.2	119.38	
+c3	n3	c3	128.0	110.90	
+c3	n3	ca	33.8	116.39	
+c3	n3	cl	116.2	107.23	
+c3	n3	cy	122.4	120.16	
+c3	n3	f	133.6	103.13	
+c3	n3	hn	94.2	109.92	
+c3	n3	i	114.0	108.48	
+c3	n3	n	134.4	109.97	
+c3	n3	n2	132.4	118.75	
+c3	n3	n3	133.6	108.15	
+c3	n3	n4	134.4	109.65	
+c3	n3	nh	134.8	108.44	
+c3	n3	no	132.0	111.27	
+c3	n3	o	137.4	113.31	
+c3	n3	oh	137.8	106.62	
+c3	n3	os	136.4	105.73	
+c3	n3	p3	151.6	121.93	
+c3	n3	p5	157.4	119.35	
+c3	n3	s	123.0	110.02	
+c3	n3	s4	122.8	112.91	
+c3	n3	s6	127.8	115.81	
+c3	n3	sh	124.2	112.70	
+c3	n3	ss	123.2	116.01	
+cl	n3	cl	107.6	108.28	
+cl	n3	hn	79.8	104.39	
+cl	n3	n3	119.2	107.65	
+cy	n3	cy	141.0	89.57	
+cy	n3	hn	91.4	114.80	
+f	n3	f	135.4	102.22	
+f	n3	hn	101.6	99.80	
+hn	n3	hn	82.6	107.13	
+hn	n3	i	70.8	109.98	
+hn	n3	n	102.0	106.57	
+hn	n3	n2	102.8	115.94	
+hn	n3	n3	100.4	103.98	
+hn	n3	n4	101.8	106.40	
+hn	n3	na	100.6	107.89	
+hn	n3	nh	100.8	107.39	
+hn	n3	no	100.6	104.78	
+hn	n3	o	106.2	113.32	
+hn	n3	oh	106.2	101.11	
+hn	n3	os	103.4	100.92	
+hn	n3	p2	108.4	120.26	
+hn	n3	p3	105.8	116.89	
+hn	n3	p4	110.0	113.05	
+hn	n3	p5	112.0	113.68	
+hn	n3	s	83.0	109.47	
+hn	n3	s4	85.0	108.93	
+hn	n3	s6	90.8	112.52	
+hn	n3	sh	86.2	108.67	
+hn	n3	ss	86.8	109.85	
+i	n3	i	120.0	111.27	
+n	n3	n	140.6	110.55	
+n2	n3	n2	143.6	118.73	
+n2	n3	o	148.2	114.91	
+n3	n3	n3	139.2	105.71	
+n4	n3	n4	138.0	113.48	
+n4	n3	nh	141.8	107.14	
+na	n3	na	138.4	112.00	
+nh	n3	nh	141.6	107.15	
+no	n3	no	134.0	115.26	
+o	n3	o	143.8	126.14	
+o	n3	p2	168.6	117.02	
+o	n3	p4	166.8	116.65	
+o	n3	s	124.0	119.81	
+o	n3	s4	129.2	114.09	
+o	n3	s6	137.6	113.80	
+oh	n3	oh	145.6	107.18	
+os	n3	os	141.6	106.52	
+p2	n3	p2	195.0	130.13	
+p3	n3	p3	197.2	118.74	
+p4	n3	p4	203.0	116.35	
+p5	n3	p5	204.4	119.42	
+s	n3	s	113.0	131.36	
+s4	n3	s4	120.2	120.02	
+s4	n3	s6	124.0	120.95	
+s6	n3	s6	126.6	126.13	
+sh	n3	sh	122.4	118.63	
+sh	n3	ss	122.6	119.67	
+ss	n3	ss	123.2	119.57	
+br	n4	br	130.2	114.82	
+br	n4	hn	82.8	108.44	
+c	n4	c	123.0	108.61	
+c	n4	hn	89.4	110.86	
+c1	n4	c1	131.0	113.87	
+c1	n4	hn	97.2	110.19	
+c2	n4	c2	126.0	112.58	
+c2	n4	h4	22.6	112.46	
+c2	n4	hn	92.8	111.36	
+c3	n4	c3	125.6	110.64	
+c3	n4	ca	126.0	112.41	
+c3	n4	cl	115.8	108.04	
+c3	n4	hn	92.4	110.11	
+c3	n4	n3	133.4	108.72	
+c3	n4	n4	127.4	114.07	
+c3	n4	nh	129.6	111.73	
+c3	n4	no	130.4	109.08	
+c3	n4	o	134.6	111.66	
+c3	n4	oh	131.8	113.73	
+c3	n4	os	134.8	107.42	
+c3	n4	p2	143.8	112.52	
+c3	n4	p3	148.8	110.73	
+c3	n4	p5	150.2	113.22	
+c3	n4	s	118.4	113.55	
+c3	n4	s4	114.4	108.23	
+c3	n4	s6	115.4	111.56	
+c3	n4	sh	118.2	115.81	
+c3	n4	ss	119.4	113.68	
+ca	n4	ca	126.4	114.48	
+ca	n4	hn	95.0	108.52	
+cl	n4	cl	105.4	114.91	
+cl	n4	hn	79.0	108.87	
+f	n4	f	141.0	109.05	
+f	n4	hn	103.4	108.39	
+hn	n4	hn	81.0	108.11	
+hn	n4	i	72.8	108.72	
+hn	n4	n	99.2	109.08	
+hn	n4	n2	84.6	109.68	
+hn	n4	n3	99.8	110.40	
+hn	n4	n4	96.2	108.66	
+hn	n4	na	98.8	109.38	
+hn	n4	nh	96.8	109.92	
+hn	n4	no	98.4	104.38	
+hn	n4	o	104.2	109.26	
+hn	n4	oh	102.2	108.09	
+hn	n4	os	100.4	109.39	
+hn	n4	p2	95.4	110.50	
+hn	n4	p3	99.4	109.89	
+hn	n4	p4	95.4	111.33	
+hn	n4	p5	102.6	110.00	
+hn	n4	py	94.8	117.89	
+hn	n4	s	82.2	106.89	
+hn	n4	s4	74.2	110.10	
+hn	n4	s6	77.2	108.94	
+hn	n4	sh	82.6	108.56	
+hn	n4	ss	82.2	109.17	
+i	n4	i	118.0	118.49	
+n	n4	n	133.4	118.62	
+n2	n4	n2	118.8	108.64	
+n3	n4	n3	139.6	111.07	
+n4	n4	n4	130.4	115.49	
+na	n4	na	132.6	119.60	
+nh	n4	nh	135.6	109.38	
+o	n4	o	140.6	120.97	
+oh	n4	oh	144.4	108.19	
+os	n4	os	145.0	104.40	
+p2	n4	p2	179.2	113.91	
+p3	n4	p3	179.4	121.38	
+p5	n4	p5	196.2	107.02	
+py	n4	py	233.8	69.79	
+s	n4	s	113.4	124.55	
+s4	n4	s4	109.6	115.43	
+s6	n4	s6	115.8	109.51	
+sh	n4	sh	120.8	112.59	
+ss	n4	ss	122.6	109.20	
+br	na	br	121.2	123.00	
+br	na	c2	127.2	100.48	
+br	na	ca	114.2	124.81	
+br	na	cc	114.4	124.62	
+br	na	cd	114.4	124.62	
+br	na	nc	119.8	119.42	
+br	na	nd	119.8	119.42	
+br	na	os	127.8	104.99	
+br	na	p2	151.8	121.01	
+br	na	pc	152.8	120.26	
+br	na	pd	152.8	120.26	
+br	na	ss	125.0	112.28	
+c	na	c	129.4	126.40	
+c	na	c2	128.6	125.09	
+c	na	c3	129.4	117.60	
+c	na	ca	130.6	125.20	
+c	na	hn	97.6	118.00	
+c	na	n	132.6	124.66	
+c1	na	c1	134.4	117.20	
+c1	na	c2	128.6	125.20	
+c1	na	ca	133.0	120.57	
+c1	na	cc	131.6	121.35	
+c1	na	cd	131.6	121.35	
+c1	na	nc	136.6	120.24	
+c1	na	nd	136.6	120.24	
+c1	na	os	140.4	106.96	
+c1	na	p2	153.0	122.25	
+c1	na	pc	154.6	121.48	
+c1	na	pd	154.6	121.48	
+c1	na	ss	123.8	118.30	
+c2	na	c2	135.6	110.37	
+c2	na	c3	128.4	117.20	
+c2	na	ca	132.4	119.26	
+c2	na	cc	128.0	125.75	
+c2	na	cd	128.0	125.75	
+c2	na	cl	117.6	101.01	
+c2	na	f	137.2	103.11	
+c2	na	hn	95.2	119.28	
+c2	na	i	118.0	106.74	
+c2	na	n	131.2	124.70	
+c2	na	n2	130.0	125.00	
+c2	na	n3	129.2	124.80	
+c2	na	n4	130.4	121.32	
+c2	na	na	130.2	124.60	
+c2	na	nc	135.2	119.95	
+c2	na	nd	135.2	119.95	
+c2	na	nh	130.0	124.98	
+c2	na	no	128.6	124.20	
+c2	na	o	136.4	125.90	
+c2	na	oh	131.6	123.90	
+c2	na	os	137.0	110.33	
+c2	na	p2	152.4	122.14	
+c2	na	p3	149.2	126.10	
+c2	na	p4	163.2	125.00	
+c2	na	p5	152.8	125.10	
+c2	na	pc	154.0	121.56	
+c2	na	pd	154.0	121.56	
+c2	na	s	117.8	125.80	
+c2	na	s4	116.8	124.90	
+c2	na	s6	120.4	124.40	
+c2	na	sh	120.4	125.10	
+c2	na	ss	124.6	115.53	
+c3	na	c3	121.4	125.59	
+c3	na	ca	126.2	124.36	
+c3	na	cc	125.2	125.09	
+c3	na	cd	125.2	125.09	
+c3	na	n2	137.4	106.67	
+c3	na	nc	131.4	120.46	
+c3	na	nd	131.4	120.46	
+c3	na	os	137.8	104.39	
+c3	na	p2	150.0	123.12	
+c3	na	pc	151.8	122.11	
+c3	na	pd	151.8	122.11	
+c3	na	sh	126.8	110.28	
+c3	na	ss	125.8	110.87	
+ca	na	ca	134.2	119.80	
+ca	na	cc	137.0	113.15	
+ca	na	cd	137.0	113.15	
+ca	na	cl	106.4	124.79	
+ca	na	f	131.0	116.40	
+ca	na	hn	96.4	122.77	
+ca	na	i	110.4	121.62	
+ca	na	n	134.6	122.00	
+ca	na	n2	133.8	121.23	
+ca	na	n4	132.8	120.19	
+ca	na	na	132.6	123.76	
+ca	na	nc	138.6	117.85	
+ca	na	nd	138.6	117.85	
+ca	na	nh	135.4	118.59	
+ca	na	o	141.8	120.68	
+ca	na	oh	133.4	124.08	
+ca	na	os	139.4	109.46	
+ca	na	p2	151.0	125.85	
+ca	na	p3	151.0	124.38	
+ca	na	p4	164.8	124.97	
+ca	na	p5	155.0	123.30	
+ca	na	pc	154.6	122.13	
+ca	na	pd	154.6	122.13	
+ca	na	py	145.2	140.88	
+ca	na	s	118.6	125.64	
+ca	na	s4	121.2	117.23	
+ca	na	s6	123.2	120.69	
+ca	na	sh	121.0	125.44	
+ca	na	ss	124.8	116.60	
+cc	na	cc	137.8	109.90	
+cd	na	cd	137.8	109.90	
+cc	na	cd	127.8	128.01	
+cc	na	cl	106.2	124.61	
+cd	na	cl	106.2	124.61	
+cc	na	f	129.2	118.03	
+cd	na	f	129.2	118.03	
+cc	na	hn	94.4	124.66	
+cd	na	hn	94.4	124.66	
+cc	na	i	108.6	125.70	
+cd	na	i	108.6	125.70	
+cc	na	n	133.0	123.19	
+cd	na	n	133.0	123.19	
+cc	na	n2	132.0	122.96	
+cd	na	n2	132.0	122.96	
+cc	na	n4	131.8	120.31	
+cd	na	n4	131.8	120.31	
+cc	na	na	131.8	123.43	
+cd	na	na	131.8	123.43	
+cc	na	nc	140.4	113.02	
+cd	na	nd	140.4	113.02	
+cc	na	nh	132.4	122.25	
+cd	na	nh	132.4	122.25	
+cc	na	no	130.8	121.78	
+cd	na	no	130.8	121.78	
+cc	na	o	138.0	125.21	
+cd	na	o	138.0	125.21	
+cc	na	oh	133.4	122.38	
+cd	na	oh	133.4	122.38	
+cc	na	os	134.6	115.74	
+cd	na	os	134.6	115.74	
+cc	na	p2	150.6	125.86	
+cd	na	p2	150.6	125.86	
+cc	na	p3	150.0	125.25	
+cd	na	p3	150.0	125.25	
+cc	na	p4	162.2	127.73	
+cd	na	p4	162.2	127.73	
+cc	na	p5	153.6	124.70	
+cd	na	p5	153.6	124.70	
+cc	na	s	118.2	125.66	
+cd	na	s	118.2	125.66	
+cc	na	s4	118.8	121.03	
+cd	na	s4	118.8	121.03	
+cc	na	s6	122.0	122.19	
+cd	na	s6	122.0	122.19	
+cc	na	sh	121.4	123.96	
+cd	na	sh	121.4	123.96	
+cc	na	ss	123.2	119.18	
+cd	na	ss	123.2	119.18	
+cl	na	cl	97.4	122.80	
+cl	na	nc	111.4	119.36	
+cl	na	nd	111.4	119.36	
+cl	na	os	117.2	106.58	
+cl	na	p2	137.4	121.29	
+cl	na	pc	138.4	120.51	
+cl	na	pd	138.4	120.51	
+cl	na	ss	113.4	111.91	
+f	na	f	124.4	120.20	
+f	na	nc	133.2	118.05	
+f	na	nd	133.2	118.05	
+f	na	os	138.4	103.86	
+f	na	p2	151.0	119.95	
+f	na	pc	152.8	119.10	
+f	na	pd	152.8	119.10	
+f	na	ss	126.6	108.01	
+hn	na	hn	79.6	116.80	
+hn	na	nc	100.0	119.61	
+hn	na	nd	100.0	119.61	
+hn	na	os	102.8	101.41	
+hn	na	p2	102.0	122.52	
+hn	na	pc	103.6	121.48	
+hn	na	pd	103.6	121.48	
+hn	na	ss	84.4	113.95	
+i	na	i	116.6	124.20	
+i	na	nc	113.8	120.03	
+i	na	nd	113.8	120.03	
+i	na	os	119.8	109.91	
+i	na	p2	146.8	122.28	
+i	na	pc	147.6	121.40	
+i	na	pd	147.6	121.40	
+i	na	ss	118.0	118.40	
+n	na	n	135.6	123.80	
+n	na	nc	139.2	119.85	
+n	na	nd	139.2	119.85	
+n	na	os	144.6	104.71	
+n	na	p2	157.0	121.35	
+n	na	pc	158.6	120.64	
+n	na	pd	158.6	120.64	
+n	na	ss	127.6	116.10	
+n2	na	n2	137.2	116.71	
+n2	na	nc	137.8	119.96	
+n2	na	nd	137.8	119.96	
+n2	na	os	139.2	111.53	
+n2	na	p2	154.2	124.88	
+n2	na	pc	156.4	123.18	
+n2	na	pd	156.4	123.18	
+n2	na	ss	122.8	124.64	
+n3	na	n3	131.6	124.00	
+n4	na	n4	137.2	111.70	
+n4	na	nc	138.2	116.44	
+n4	na	nd	138.2	116.44	
+n4	na	os	143.2	102.97	
+n4	na	p2	154.0	123.56	
+n4	na	pc	156.2	121.98	
+n4	na	pd	156.2	121.98	
+na	na	na	133.6	123.60	
+na	na	nc	138.2	119.64	
+na	na	nd	138.2	119.64	
+na	na	os	140.4	109.47	
+na	na	p2	156.2	121.72	
+na	na	pc	157.8	120.91	
+na	na	pd	157.8	120.91	
+na	na	ss	127.0	116.50	
+nc	na	nc	142.4	117.08	
+nd	na	nd	142.4	117.08	
+nc	na	nh	137.6	120.55	
+nd	na	nh	137.6	120.55	
+nc	na	no	136.4	119.15	
+nd	na	no	136.4	119.15	
+nc	na	o	144.0	122.79	
+nd	na	o	144.0	122.79	
+nc	na	oh	139.4	119.22	
+nd	na	oh	139.4	119.22	
+nc	na	os	136.6	119.65	
+nd	na	os	136.6	119.65	
+nc	na	p2	158.4	119.99	
+nd	na	p2	158.4	119.99	
+nc	na	p3	157.4	120.07	
+nd	na	p3	157.4	120.07	
+nc	na	p4	172.4	119.77	
+nd	na	p4	172.4	119.77	
+nc	na	p5	161.6	118.95	
+nd	na	p5	161.6	118.95	
+nc	na	pc	160.6	118.66	
+nd	na	pd	160.6	118.66	
+nc	na	s	123.2	122.26	
+nd	na	s	123.2	122.26	
+nc	na	s4	123.0	119.20	
+nd	na	s4	123.0	119.20	
+nc	na	s6	126.8	119.24	
+nd	na	s6	126.8	119.24	
+nc	na	sh	126.6	120.50	
+nd	na	sh	126.6	120.50	
+nc	na	ss	125.8	120.50	
+nd	na	ss	125.8	120.50	
+nh	na	nh	133.6	123.60	
+nh	na	os	139.2	111.37	
+nh	na	p2	156.6	120.86	
+nh	na	pc	158.2	120.38	
+nh	na	pd	158.2	120.38	
+nh	na	ss	129.4	112.35	
+no	na	no	130.4	122.80	
+no	na	os	140.6	106.55	
+no	na	pc	157.2	120.11	
+no	na	pd	157.2	120.11	
+no	na	ss	127.0	114.95	
+o	na	o	148.0	126.20	
+o	na	os	141.6	118.39	
+o	na	p2	159.0	122.80	
+o	na	pc	160.8	122.34	
+o	na	pd	160.8	122.34	
+oh	na	oh	136.2	122.20	
+oh	na	p2	157.8	120.76	
+oh	na	pc	159.4	119.99	
+oh	na	pd	159.4	119.99	
+oh	na	ss	129.8	113.04	
+os	na	os	142.6	104.45	
+os	na	p2	158.4	117.86	
+os	na	p3	167.2	104.70	
+os	na	p5	165.2	111.41	
+os	na	pc	158.2	119.91	
+os	na	pd	158.2	119.91	
+os	na	s4	129.6	105.88	
+os	na	s6	129.6	112.00	
+os	na	ss	130.6	109.64	
+p2	na	p2	193.2	120.91	
+p2	na	p3	189.4	124.80	
+p2	na	p5	192.6	123.99	
+p2	na	pc	194.4	120.72	
+p2	na	pd	194.4	120.72	
+p2	na	s	151.4	121.85	
+p2	na	s4	149.8	122.47	
+p2	na	s6	152.6	122.50	
+p2	na	sh	153.4	121.75	
+p2	na	ss	152.8	121.88	
+p3	na	p3	187.4	126.60	
+p3	na	pc	191.6	123.32	
+p3	na	pd	191.6	123.32	
+p5	na	p5	194.2	124.60	
+p5	na	pc	194.6	122.69	
+p5	na	pd	194.6	122.69	
+p5	na	ss	156.4	118.52	
+pc	na	pc	195.2	120.78	
+pd	na	pd	195.2	120.78	
+pc	na	s	152.4	121.47	
+pd	na	s	152.4	121.47	
+pc	na	s4	151.0	121.51	
+pd	na	s4	151.0	121.51	
+pc	na	s6	154.0	121.55	
+pd	na	s6	154.0	121.55	
+pc	na	sh	154.6	121.08	
+pd	na	sh	154.6	121.08	
+pc	na	ss	154.0	121.20	
+pd	na	ss	154.0	121.20	
+py	na	py	245.4	78.25	
+s	na	s	117.0	126.00	
+s	na	ss	125.0	112.49	
+s4	na	s4	116.2	124.20	
+s4	na	s6	124.0	112.86	
+s4	na	ss	124.4	111.92	
+s6	na	s6	121.0	123.20	
+s6	na	ss	122.8	119.10	
+sh	na	sh	120.8	124.60	
+sh	na	ss	123.2	118.79	
+ss	na	ss	125.8	113.24	
+sy	na	sy	121.0	123.20	
+ca	nb	ca	137.2	115.86	
+ca	nb	cp	136.0	117.04	
+ca	nb	cq	136.0	117.04	
+ca	nb	nb	138.8	118.89	
+nb	nb	nb	140.8	121.04	
+c	nc	ca	133.2	120.66	
+c	nd	ca	133.2	120.66	
+c	nc	cd	134.0	119.25	
+c	nd	cc	134.0	119.25	
+c3	nc	cd	135.2	109.51	
+c3	nd	cc	135.2	109.51	
+ca	nc	ca	141.4	109.95	
+ca	nd	ca	141.4	109.95	
+ca	nc	cd	142.2	108.82	
+ca	nd	cc	142.2	108.82	
+ca	nc	n	147.6	104.69	
+ca	nd	n	147.6	104.69	
+ca	nc	na	148.2	104.16	
+ca	nd	na	148.2	104.16	
+ca	nc	os	146.2	104.34	
+ca	nd	os	146.2	104.34	
+ca	nc	ss	135.6	116.29	
+ca	nd	ss	135.6	116.29	
+cc	nc	cc	137.2	110.19	
+cd	nd	cd	137.2	110.19	
+cc	nc	cd	141.0	107.47	
+cc	nd	cd	141.0	107.47	
+cc	nc	na	146.8	102.97	
+cd	nd	na	146.8	102.97	
+cc	nc	nd	145.0	107.94	
+cd	nd	nc	145.0	107.94	
+cd	nc	n	148.0	104.15	
+cc	nd	n	148.0	104.15	
+cd	nc	na	148.4	103.73	
+cc	nd	na	148.4	103.73	
+cd	nc	nc	142.8	109.51	
+cc	nd	nd	142.8	109.51	
+cd	nc	os	144.4	106.99	
+cc	nd	os	144.4	106.99	
+cd	nc	ss	140.6	108.50	
+cc	nd	ss	140.6	108.50	
+na	nc	nd	152.0	105.47	
+na	nd	nc	152.0	105.47	
+nd	nc	os	148.8	107.22	
+nc	nd	os	148.8	107.22	
+nc	nd	nd	146.4	111.15	
+nc	nc	nd	146.4	111.15	
+c	ne	c2	134.8	118.53	
+c	nf	c2	134.8	118.53	
+c1	ne	ca	125.8	137.74	
+c1	nf	ca	125.8	137.74	
+c1	ne	cg	128.8	140.00	
+c1	nf	ch	128.8	140.00	
+c2	ne	ca	133.4	118.67	
+c2	nf	ca	133.4	118.67	
+c2	ne	ce	134.6	118.17	
+c2	nf	cf	134.6	118.17	
+c2	ne	n2	149.2	113.31	
+c2	nf	n2	149.2	113.31	
+c2	ne	ne	138.4	110.86	
+c2	nf	nf	138.4	110.86	
+c2	ne	p2	161.6	134.03	
+c2	nf	p2	161.6	134.03	
+c2	ne	pe	158.4	120.52	
+c2	nf	pf	158.4	120.52	
+c2	ne	px	161.2	117.75	
+c2	nf	px	161.2	117.75	
+c2	ne	py	160.2	117.04	
+c2	nf	py	160.2	117.04	
+c2	ne	sx	122.0	111.98	
+c2	nf	sx	122.0	111.98	
+c2	ne	sy	125.8	114.81	
+c2	nf	sy	125.8	114.81	
+ca	ne	n2	140.0	113.11	
+ca	nf	n2	140.0	113.11	
+ca	ne	nf	139.8	114.72	
+ca	nf	ne	139.8	114.72	
+ca	ne	o	142.2	113.96	
+ca	nf	o	142.2	113.96	
+ca	ne	p2	166.2	118.09	
+ca	nf	p2	166.2	118.09	
+ca	ne	s	131.6	120.11	
+ca	nf	s	131.6	120.11	
+ce	ne	n2	142.4	111.19	
+cf	nf	n2	142.4	111.19	
+ce	ne	o	144.6	112.16	
+cf	nf	o	144.6	112.16	
+ce	ne	p2	167.6	117.02	
+cf	nf	p2	167.6	117.02	
+ce	ne	s	134.2	116.28	
+cf	nf	s	134.2	116.28	
+cg	ne	n1	141.2	120.20	
+ch	nf	n1	141.2	120.20	
+cg	ne	n2	144.0	113.39	
+ch	nf	n2	144.0	113.39	
+cg	ne	o	146.4	114.70	
+ch	nf	o	146.4	114.70	
+cg	ne	p2	168.0	119.57	
+ch	nf	p2	168.0	119.57	
+cg	ne	s	135.4	117.70	
+ch	nf	s	135.4	117.70	
+n2	ne	n2	157.2	107.22	
+n2	nf	n2	157.2	107.22	
+n2	ne	ne	141.8	110.72	
+n2	nf	nf	141.8	110.72	
+n2	ne	o	156.2	114.10	
+n2	nf	o	156.2	114.10	
+n2	ne	p2	183.2	109.66	
+n2	nf	p2	183.2	109.66	
+n2	ne	pe	168.4	112.15	
+n2	nf	pf	168.4	112.15	
+n2	ne	px	166.4	115.97	
+n2	nf	px	166.4	115.97	
+n2	ne	py	165.8	114.60	
+n2	nf	py	165.8	114.60	
+n2	ne	s	142.6	115.90	
+n2	nf	s	142.6	115.90	
+n2	ne	sx	127.6	107.29	
+n2	nf	sx	127.6	107.29	
+n2	ne	sy	131.0	111.21	
+n2	nf	sy	131.0	111.21	
+ne	ne	o	144.6	110.45	
+nf	nf	o	144.6	110.45	
+ne	ne	p2	170.6	114.39	
+nf	nf	p2	170.6	114.39	
+ne	ne	s	135.2	115.95	
+nf	nf	s	135.2	115.95	
+o	ne	o	153.8	124.09	
+o	nf	o	153.8	124.09	
+o	ne	pe	156.6	132.32	
+o	nf	pf	156.6	132.32	
+o	ne	px	172.2	110.62	
+o	nf	px	172.2	110.62	
+o	ne	py	170.4	110.79	
+o	nf	py	170.4	110.79	
+o	ne	s	144.0	117.19	
+o	nf	s	144.0	117.19	
+o	ne	sx	127.6	108.92	
+o	nf	sx	127.6	108.92	
+o	ne	sy	132.2	111.34	
+o	nf	sy	132.2	111.34	
+p2	ne	pe	209.2	116.81	
+p2	nf	pf	209.2	116.81	
+p2	ne	px	200.2	128.35	
+p2	nf	px	200.2	128.35	
+p2	ne	py	202.8	123.47	
+p2	nf	py	202.8	123.47	
+p2	ne	sx	161.0	112.12	
+p2	nf	sx	161.0	112.12	
+p2	ne	sy	163.6	115.73	
+p2	nf	sy	163.6	115.73	
+pe	ne	s	167.0	115.73	
+pf	nf	s	167.0	115.73	
+px	ne	s	157.0	131.84	
+px	nf	s	157.0	131.84	
+py	ne	s	166.2	116.18	
+py	nf	s	166.2	116.18	
+s	ne	s	137.2	120.87	
+s	nf	s	137.2	120.87	
+s	ne	sx	127.4	112.96	
+s	nf	sx	127.4	112.96	
+s	ne	sy	127.8	119.63	
+s	nf	sy	127.8	119.63	
+br	nh	br	134.2	106.27	
+br	nh	ca	124.0	111.88	
+br	nh	hn	84.2	101.56	
+c	nh	c	134.0	119.57	
+c	nh	ca	131.2	123.57	
+c	nh	hn	99.0	115.73	
+c	nh	n4	136.0	111.35	
+c1	nh	c1	135.4	116.98	
+c1	nh	ca	131.8	122.36	
+c1	nh	hn	98.0	118.07	
+c2	nh	c2	131.0	124.69	
+c2	nh	c3	126.4	123.71	
+c2	nh	ca	131.0	123.66	
+c2	nh	hn	98.0	117.94	
+c3	nh	c3	127.0	114.54	
+c3	nh	ca	129.2	117.77	
+c3	nh	cc	127.4	121.18	
+c3	nh	cd	127.4	121.18	
+c3	nh	hn	93.0	114.95	
+c3	nh	n2	135.8	112.35	
+c3	nh	p2	154.2	123.35	
+ca	nh	ca	128.6	127.46	
+ca	nh	cl	115.4	113.15	
+ca	nh	f	135.8	106.09	
+ca	nh	hn	99.2	113.79	
+ca	nh	i	111.0	117.83	
+ca	nh	n	137.6	112.95	
+ca	nh	n2	136.2	120.05	
+ca	nh	n3	136.4	114.21	
+ca	nh	n4	137.2	108.94	
+ca	nh	na	137.2	114.54	
+ca	nh	nh	137.0	114.87	
+ca	nh	no	134.6	113.92	
+ca	nh	o	139.2	121.92	
+ca	nh	oh	137.0	112.80	
+ca	nh	os	138.6	110.17	
+ca	nh	p2	156.0	125.27	
+ca	nh	p3	152.2	125.70	
+ca	nh	p4	154.8	124.01	
+ca	nh	p5	156.4	125.61	
+ca	nh	s	118.8	122.54	
+ca	nh	s4	124.2	115.62	
+ca	nh	s6	127.4	115.88	
+ca	nh	sh	123.6	121.41	
+ca	nh	ss	123.6	121.50	
+ca	nh	sy	128.0	117.74	
+cc	nh	hn	97.8	117.16	
+cd	nh	hn	97.8	117.16	
+ce	nh	hn	100.2	114.73	
+cf	nh	hn	100.2	114.73	
+ce	nh	o	136.4	129.43	
+cf	nh	o	136.4	129.43	
+cl	nh	cl	108.8	106.60	
+cl	nh	hn	80.2	104.14	
+f	nh	f	133.8	101.70	
+f	nh	hn	99.6	101.23	
+hn	nh	hn	80.2	114.43	
+hn	nh	i	73.0	107.57	
+hn	nh	n	102.2	105.95	
+hn	nh	n2	101.4	115.14	
+hn	nh	n3	100.2	109.12	
+hn	nh	n4	99.4	104.40	
+hn	nh	na	101.8	107.91	
+hn	nh	nh	101.8	108.08	
+hn	nh	no	99.8	104.71	
+hn	nh	o	106.0	116.45	
+hn	nh	oh	102.2	103.15	
+hn	nh	os	101.4	104.76	
+hn	nh	p2	108.8	118.18	
+hn	nh	p3	106.2	116.19	
+hn	nh	p4	109.4	112.60	
+hn	nh	p5	110.6	115.26	
+hn	nh	s	81.6	114.37	
+hn	nh	s4	86.2	107.48	
+hn	nh	s6	89.6	106.95	
+hn	nh	sh	86.6	112.25	
+hn	nh	ss	86.0	113.89	
+hn	nh	sy	90.4	109.10	
+i	nh	i	119.6	115.82	
+n	nh	o	143.6	115.63	
+n2	nh	n2	141.6	117.50	
+n2	nh	n3	139.2	115.54	
+n2	nh	o	140.8	126.06	
+n3	nh	n3	139.0	110.98	
+n4	nh	n4	136.4	108.36	
+na	nh	na	140.2	112.01	
+nh	nh	nh	140.2	112.23	
+no	nh	no	137.2	108.55	
+o	nh	o	144.4	128.06	
+oh	nh	oh	141.8	106.27	
+os	nh	os	142.4	105.27	
+p2	nh	p2	196.2	127.33	
+p3	nh	p3	192.0	125.08	
+p5	nh	p5	209.4	112.76	
+s	nh	s	119.4	118.73	
+s4	nh	s4	125.2	112.39	
+s6	nh	s6	125.0	120.27	
+sh	nh	sh	124.6	119.00	
+ss	nh	ss	124.4	119.25	
+br	no	o	117.0	113.19	
+c	no	o	134.2	115.26	
+c1	no	o	142.6	116.63	
+c2	no	o	138.6	116.87	
+c3	no	o	134.0	116.56	
+ca	no	o	137.4	118.10	
+cl	no	o	114.6	115.08	
+hn	no	o	110.6	115.49	
+i	no	o	109.2	116.31	
+n	no	o	143.4	115.41	
+n2	no	o	131.6	115.10	
+n3	no	o	144.0	115.56	
+n4	no	o	145.8	109.00	
+na	no	o	144.4	115.49	
+nh	no	o	143.2	115.71	
+no	no	o	119.8	112.38	
+o	no	o	152.8	127.55	
+o	no	oh	148.2	114.70	
+o	no	os	143.6	114.01	
+o	no	p2	164.2	117.38	
+o	no	p3	155.4	116.78	
+o	no	p4	153.4	116.64	
+o	no	p5	156.4	116.69	
+o	no	s	128.0	119.81	
+o	no	s4	114.2	114.49	
+o	no	s6	115.6	114.39	
+o	no	sh	125.8	116.10	
+o	no	ss	124.6	115.58	
+br	oh	ho	84.4	101.60	
+c	oh	ho	102.4	107.37	
+c1	oh	ho	100.4	108.76	
+c2	oh	ho	99.8	108.98	
+c3	oh	ho	94.2	108.16	
+ca	oh	ho	97.8	109.47	
+cc	oh	ho	99.4	107.72	
+cd	oh	ho	99.4	107.72	
+cl	oh	ho	81.0	102.40	
+cx	oh	ho	99.2	106.17	
+cy	oh	ho	95.4	106.88	
+f	oh	ho	97.0	96.80	
+ho	oh	ho	83.8	104.80	
+ho	oh	i	71.4	107.98	
+ho	oh	n	101.0	101.03	
+ho	oh	n2	101.2	102.74	
+ho	oh	n3	101.2	102.33	
+ho	oh	n4	98.8	106.63	
+ho	oh	na	100.4	103.71	
+ho	oh	nh	98.6	101.78	
+ho	oh	no	100.6	102.17	
+ho	oh	o	94.6	100.87	
+ho	oh	oh	98.6	98.72	
+ho	oh	os	98.8	98.77	
+ho	oh	p2	111.8	109.45	
+ho	oh	p3	107.6	110.64	
+ho	oh	p4	110.6	110.19	
+ho	oh	p5	111.8	110.14	
+ho	oh	py	112.4	110.73	
+ho	oh	s	81.8	100.15	
+ho	oh	s4	87.2	106.31	
+ho	oh	s6	91.0	109.20	
+ho	oh	sh	86.0	106.24	
+ho	oh	ss	86.2	107.06	
+ho	oh	sy	89.4	106.11	
+br	os	br	130.2	110.63	
+c	os	c	128.0	122.65	
+c	os	c2	136.4	106.90	
+c	os	c3	127.2	115.14	
+c	os	ca	129.2	117.61	
+c	os	cc	128.4	119.62	
+c	os	cd	128.4	119.62	
+c	os	cy	141.8	91.10	
+c	os	oh	132.4	110.50	
+c	os	sy	123.8	113.49	
+c1	os	c1	134.0	115.02	
+c1	os	c3	129.0	113.39	
+c2	os	c2	132.0	113.14	
+c2	os	c3	128.4	112.09	
+c2	os	ca	130.8	113.59	
+c2	os	n2	129.8	118.13	
+c2	os	na	136.4	103.85	
+c2	os	os	136.6	102.77	
+c2	os	ss	126.2	108.13	
+c3	os	c3	124.2	113.41	
+c3	os	ca	124.8	117.60	
+c3	os	cc	126.2	115.18	
+c3	os	cd	126.2	115.18	
+c3	os	cl	112.4	110.50	
+c3	os	i	109.8	113.70	
+c3	os	n	130.6	108.57	
+c3	os	n2	131.8	108.12	
+c3	os	n3	130.6	107.69	
+c3	os	n4	129.8	110.50	
+c3	os	na	129.0	109.91	
+c3	os	nc	129.6	112.73	
+c3	os	nd	129.6	112.73	
+c3	os	nh	130.8	107.26	
+c3	os	no	126.6	111.47	
+c3	os	o	131.2	103.00	
+c3	os	oh	131.4	105.42	
+c3	os	os	131.8	105.01	
+c3	os	p2	160.4	115.47	
+c3	os	p3	153.0	115.97	
+c3	os	p4	155.2	117.48	
+c3	os	p5	157.0	118.00	
+c3	os	py	156.2	117.80	
+c3	os	s	118.6	109.55	
+c3	os	s4	122.6	111.50	
+c3	os	s6	126.6	115.38	
+c3	os	sh	123.4	112.82	
+c3	os	ss	121.4	113.19	
+ca	os	ca	127.2	118.96	
+ca	os	cc	132.4	109.77	
+ca	os	cd	132.4	109.77	
+ca	os	n3	130.8	112.19	
+ca	os	na	133.0	108.24	
+ca	os	nc	132.2	113.68	
+ca	os	nd	132.2	113.68	
+cc	os	cc	133.0	109.17	
+cd	os	cd	133.0	109.17	
+cc	os	cd	125.4	122.99	
+cc	os	na	131.0	111.66	
+cd	os	na	131.0	111.66	
+cc	os	nc	136.2	107.23	
+cd	os	nd	136.2	107.23	
+cc	os	os	132.6	108.47	
+cd	os	os	132.6	108.47	
+cc	os	ss	119.8	119.59	
+cd	os	ss	119.8	119.59	
+cl	os	cl	104.6	110.76	
+cx	os	cx	171.4	61.19	
+cx	os	n	176.8	59.99	
+cx	os	os	180.8	56.52	
+cy	os	cy	134.8	93.40	
+f	os	f	127.8	103.30	
+f	os	os	127.8	109.50	
+i	os	i	116.2	115.67	
+n	os	n	134.4	108.31	
+n2	os	n2	137.6	106.83	
+n3	os	n3	135.6	104.88	
+n4	os	n4	131.4	114.68	
+na	os	na	132.2	109.59	
+na	os	ss	129.4	104.34	
+nc	os	nc	136.4	110.40	
+nd	os	nd	136.4	110.40	
+nc	os	ss	126.8	110.97	
+nd	os	ss	126.8	110.97	
+nh	os	nh	133.2	108.29	
+no	os	no	128.0	111.86	
+o	os	o	125.6	114.68	
+p2	os	p2	207.2	120.02	
+p2	os	p5	216.6	107.86	
+p3	os	p3	192.4	121.22	
+p3	os	py	210.2	105.58	
+p5	os	p5	198.4	126.25	
+s	os	s	114.0	118.08	
+s4	os	s4	124.2	111.63	
+s6	os	s6	129.6	119.07	
+sh	os	sh	122.4	118.95	
+ss	os	ss	121.6	115.64	
+br	p2	br	81.4	108.60	
+br	p2	c2	78.8	102.32	
+br	p2	n2	80.8	103.33	
+br	p2	o	78.8	110.87	
+br	p2	p2	100.4	115.46	
+br	p2	s	81.2	110.52	
+c	p2	c	76.6	90.10	
+c	p2	c2	77.8	97.30	
+c1	p2	c1	78.4	99.04	
+c1	p2	c2	79.6	101.29	
+c1	p2	n2	82.8	101.79	
+c1	p2	o	82.6	107.62	
+c1	p2	p2	106.6	99.54	
+c1	p2	s	82.0	105.90	
+c2	p2	c2	80.8	104.50	
+c2	p2	c3	77.2	101.90	
+c2	p2	ca	77.6	101.95	
+c2	p2	cl	71.2	102.72	
+c2	p2	f	83.2	103.47	
+c2	p2	hp	60.2	97.19	
+c2	p2	i	67.8	101.94	
+c2	p2	n	81.8	103.28	
+c2	p2	n2	86.4	99.88	
+c2	p2	n3	84.0	101.80	
+c2	p2	n4	78.2	98.26	
+c2	p2	na	81.0	103.99	
+c2	p2	nh	82.4	105.17	
+c2	p2	no	83.8	97.97	
+c2	p2	o	83.0	115.16	
+c2	p2	oh	85.0	102.89	
+c2	p2	os	86.6	102.12	
+c2	p2	p2	109.4	99.56	
+c2	p2	p3	96.2	99.27	
+c2	p2	p4	96.4	96.94	
+c2	p2	p5	96.0	97.61	
+c2	p2	s	84.4	105.53	
+c2	p2	s4	76.6	95.15	
+c2	p2	s6	76.6	95.51	
+c2	p2	sh	80.4	101.49	
+c2	p2	ss	80.4	101.81	
+c3	p2	c3	74.8	99.30	
+c3	p2	n2	80.6	100.82	
+c3	p2	o	80.2	106.72	
+c3	p2	os	81.4	101.34	
+c3	p2	p2	103.6	100.48	
+c3	p2	s	80.0	105.68	
+ca	p2	ca	75.2	99.70	
+ca	p2	n	83.4	89.97	
+ca	p2	n2	81.0	100.82	
+ca	p2	na	83.4	89.21	
+ca	p2	o	80.6	106.88	
+ca	p2	s	79.6	107.93	
+ce	p2	o	81.2	107.44	
+cf	p2	o	81.2	107.44	
+ce	p2	s	81.2	105.54	
+cf	p2	s	81.2	105.54	
+cl	p2	cl	64.0	108.70	
+cl	p2	n2	73.4	103.38	
+cl	p2	o	72.0	110.57	
+cl	p2	p2	95.6	103.11	
+cl	p2	s	73.2	110.11	
+f	p2	f	84.4	107.10	
+f	p2	n2	87.2	103.57	
+f	p2	o	87.6	110.61	
+f	p2	p2	109.0	103.48	
+f	p2	s	82.4	114.71	
+hp	p2	hp	45.6	98.76	
+hp	p2	n1	62.2	95.18	
+hp	p2	n2	64.2	95.54	
+hp	p2	ne	63.8	100.10	
+hp	p2	nf	63.8	100.10	
+hp	p2	o	64.0	105.58	
+hp	p2	p2	76.4	101.88	
+hp	p2	p4	65.4	94.51	
+hp	p2	p5	67.4	89.07	
+hp	p2	pe	75.2	97.25	
+hp	p2	pf	75.2	97.25	
+hp	p2	s	60.6	102.52	
+hp	p2	s4	52.6	89.99	
+hp	p2	s6	53.4	88.13	
+i	p2	i	71.6	104.16	
+i	p2	n2	69.2	101.77	
+i	p2	o	66.6	109.51	
+i	p2	p2	92.4	102.63	
+i	p2	s	70.4	110.60	
+n	p2	n2	87.2	98.85	
+n	p2	o	87.0	105.08	
+n	p2	p2	109.0	102.12	
+n	p2	s	82.4	112.34	
+n2	p2	n2	91.2	98.00	
+n2	p2	n3	88.2	100.42	
+n2	p2	n4	83.0	93.42	
+n2	p2	na	85.2	102.03	
+n2	p2	nh	87.4	101.87	
+n2	p2	no	87.2	98.12	
+n2	p2	o	87.0	115.34	
+n2	p2	oh	86.0	109.72	
+n2	p2	os	90.8	102.29	
+n2	p2	p3	99.2	99.51	
+n2	p2	p4	97.0	101.73	
+n2	p2	p5	101.0	93.68	
+n2	p2	s	85.0	112.94	
+n2	p2	s4	77.8	97.83	
+n2	p2	s6	78.0	98.14	
+n2	p2	sh	83.6	100.82	
+n2	p2	ss	83.2	101.76	
+n3	p2	n3	84.2	106.30	
+n3	p2	o	88.4	106.83	
+n3	p2	p2	111.6	100.58	
+n3	p2	s	86.4	105.75	
+n4	p2	n4	79.2	88.80	
+n4	p2	o	81.4	101.36	
+n4	p2	p2	105.4	96.53	
+n4	p2	s	80.2	104.98	
+na	p2	na	80.4	106.10	
+na	p2	o	85.4	107.46	
+na	p2	s	83.6	108.15	
+ne	p2	o	91.4	107.71	
+nf	p2	o	91.4	107.71	
+ne	p2	s	88.6	105.50	
+nf	p2	s	88.6	105.50	
+nh	p2	nh	84.6	104.00	
+nh	p2	o	87.4	108.11	
+nh	p2	p2	107.6	107.73	
+nh	p2	s	84.6	109.62	
+no	p2	no	84.2	98.20	
+no	p2	o	86.8	104.87	
+no	p2	p2	105.4	108.57	
+no	p2	s	83.6	109.06	
+o	p2	o	88.8	119.96	
+o	p2	oh	88.6	110.46	
+o	p2	os	91.2	108.81	
+o	p2	p2	109.2	114.23	
+o	p2	p3	97.0	106.69	
+o	p2	p4	96.8	104.37	
+o	p2	p5	96.8	104.49	
+o	p2	pe	93.4	145.96	
+o	p2	pf	93.4	145.96	
+o	p2	s	85.6	117.42	
+o	p2	s4	75.4	106.59	
+o	p2	s6	76.2	105.04	
+o	p2	sh	81.6	109.60	
+o	p2	ss	81.8	109.60	
+oh	p2	oh	90.0	100.10	
+oh	p2	p2	109.4	107.82	
+oh	p2	s	86.2	109.75	
+os	p2	os	94.0	98.30	
+os	p2	p2	114.2	101.46	
+os	p2	s	87.8	108.47	
+p2	p2	n2	115.2	97.40	
+p2	p2	p3	128.2	101.73	
+p2	p2	p4	126.8	101.98	
+p2	p2	p5	128.4	99.33	
+p2	p2	s	109.0	111.28	
+p2	p2	s4	103.0	95.73	
+p2	p2	s6	103.2	95.95	
+p2	p2	sh	101.6	113.94	
+p3	p2	p3	119.8	101.00	
+p3	p2	s	96.2	113.28	
+p4	p2	s	99.4	103.89	
+p5	p2	p5	125.6	89.40	
+p5	p2	s	100.8	101.21	
+pe	p2	s	109.0	106.35	
+pf	p2	s	109.0	106.35	
+s	p2	s	88.4	106.60	
+s	p2	s4	77.8	105.29	
+s	p2	s6	77.4	106.93	
+s	p2	sh	81.6	110.73	
+s	p2	ss	80.6	114.14	
+s4	p2	s4	80.0	85.30	
+s6	p2	s6	74.8	98.20	
+sh	p2	sh	82.6	98.50	
+ss	p2	ss	83.2	97.90	
+br	p3	br	82.6	103.54	
+br	p3	hp	53.8	96.36	
+c	p3	c	73.0	100.90	
+c	p3	c3	75.2	97.06	
+c	p3	hp	54.2	96.55	
+c	p3	os	87.8	81.32	
+c1	p3	c1	77.0	100.50	
+c1	p3	f	81.4	96.90	
+c1	p3	hp	56.2	97.67	
+c2	p3	c2	74.6	101.77	
+c2	p3	hp	55.2	97.85	
+c3	p3	c3	75.0	99.66	
+c3	p3	ca	74.6	101.94	
+c3	p3	cl	71.4	99.89	
+c3	p3	f	79.4	97.80	
+c3	p3	hp	55.0	97.66	
+c3	p3	n	77.6	101.77	
+c3	p3	n2	79.8	96.55	
+c3	p3	n3	78.6	101.18	
+c3	p3	n4	77.2	96.94	
+c3	p3	na	78.4	100.17	
+c3	p3	nh	77.2	104.50	
+c3	p3	no	78.0	96.98	
+c3	p3	o	78.6	111.67	
+c3	p3	oh	81.2	98.21	
+c3	p3	os	80.4	99.53	
+c3	p3	p3	91.6	100.31	
+c3	p3	p5	91.2	100.90	
+c3	p3	s4	75.8	98.88	
+c3	p3	s6	75.2	101.18	
+c3	p3	sh	74.8	98.71	
+c3	p3	ss	74.8	99.37	
+ca	p3	ca	75.8	99.86	
+ca	p3	hp	55.4	97.50	
+cl	p3	cl	67.8	102.82	
+cl	p3	f	74.0	99.20	
+cl	p3	hp	51.4	96.30	
+cx	p3	hp	55.0	95.20	
+f	p3	f	86.2	97.40	
+f	p3	hp	61.2	96.41	
+f	p3	n3	83.8	100.60	
+f	p3	os	84.8	102.20	
+f	p3	p3	94.2	97.20	
+hp	p3	hp	44.0	95.52	
+hp	p3	i	46.8	96.19	
+hp	p3	n	59.0	95.15	
+hp	p3	n2	58.2	98.28	
+hp	p3	n3	60.2	94.46	
+hp	p3	n4	56.6	93.21	
+hp	p3	na	58.4	97.27	
+hp	p3	nh	60.4	94.10	
+hp	p3	no	57.6	93.06	
+hp	p3	o	64.0	101.02	
+hp	p3	oh	61.4	95.95	
+hp	p3	os	60.8	97.35	
+hp	p3	p2	64.8	99.11	
+hp	p3	p3	64.2	95.52	
+hp	p3	p4	64.0	95.95	
+hp	p3	p5	64.2	95.54	
+hp	p3	s4	53.8	95.49	
+hp	p3	s6	54.8	92.95	
+hp	p3	sh	53.0	94.21	
+hp	p3	ss	53.2	94.61	
+i	p3	i	73.2	105.25	
+n	p3	n	80.0	104.58	
+n	p3	o	85.6	104.99	
+n2	p3	n2	80.8	103.46	
+n3	p3	n3	78.6	113.80	
+n3	p3	o	86.0	107.10	
+n3	p3	oh	86.2	98.36	
+n4	p3	n4	77.0	100.53	
+na	p3	na	79.8	106.22	
+nh	p3	nh	80.2	109.11	
+no	p3	no	79.2	98.33	
+o	p3	o	87.6	122.18	
+o	p3	p3	90.2	116.74	
+o	p3	p5	94.0	107.62	
+o	p3	s4	77.2	110.70	
+o	p3	s6	79.0	106.66	
+oh	p3	oh	85.6	104.48	
+os	p3	os	84.2	106.65	
+p2	p3	p2	118.2	103.58	
+p3	p3	p3	114.0	105.31	
+p4	p3	p4	117.4	99.09	
+p5	p3	p5	117.6	99.10	
+s	p3	s	68.2	131.32	
+s4	p3	s4	78.2	98.26	
+s6	p3	s6	78.8	97.78	
+sh	p3	sh	73.2	107.58	
+ss	p3	ss	73.0	109.24	
+br	p4	br	82.2	110.41	
+br	p4	o	75.6	124.80	
+c2	p4	c2	74.2	104.21	
+c2	p4	hp	55.4	99.50	
+c2	p4	o	78.8	113.59	
+c3	p4	c3	74.4	102.55	
+c3	p4	n	78.0	103.26	
+c3	p4	n2	78.2	103.17	
+c3	p4	n3	79.0	102.37	
+c3	p4	n4	75.0	99.57	
+c3	p4	na	75.8	117.67	
+c3	p4	nh	78.6	102.79	
+c3	p4	no	76.4	99.80	
+c3	p4	o	77.6	116.44	
+c3	p4	oh	82.0	98.56	
+c3	p4	os	82.4	98.01	
+c3	p4	p2	88.8	109.27	
+c3	p4	p3	90.2	103.53	
+c3	p4	p4	96.2	102.12	
+c3	p4	p5	89.2	104.15	
+c3	p4	sh	74.8	100.17	
+c3	p4	ss	74.8	101.19	
+ca	p4	ca	73.6	107.77	
+ca	p4	o	80.0	111.64	
+cl	p4	cl	67.6	103.51	
+cl	p4	o	72.0	116.53	
+hp	p4	hp	45.2	99.21	
+hp	p4	o	62.8	109.35	
+hp	p4	p3	62.8	98.96	
+hp	p4	s	48.6	110.24	
+i	p4	i	77.0	113.22	
+i	p4	o	75.4	110.22	
+n	p4	o	82.0	117.99	
+n2	p4	n2	83.0	102.54	
+n2	p4	o	81.6	120.28	
+n3	p4	o	85.0	113.27	
+n4	p4	o	79.2	107.61	
+na	p4	o	90.4	110.60	
+nh	p4	nh	87.0	95.30	
+nh	p4	o	83.8	115.86	
+no	p4	o	78.8	114.69	
+o	p4	o	90.2	117.22	
+o	p4	oh	85.8	117.39	
+o	p4	os	86.2	116.67	
+o	p4	p2	89.8	121.35	
+o	p4	p3	91.2	114.00	
+o	p4	p4	97.6	116.43	
+o	p4	p5	92.0	109.76	
+o	p4	s	74.6	112.78	
+o	p4	s4	71.6	112.19	
+o	p4	s6	70.4	113.89	
+o	p4	sh	74.0	118.09	
+o	p4	ss	75.0	116.14	
+oh	p4	oh	91.4	95.71	
+os	p4	os	89.4	100.34	
+p2	p4	p2	113.0	110.71	
+p3	p4	p3	109.0	114.98	
+p4	p4	p4	122.8	107.38	
+p5	p4	p5	111.6	107.78	
+s	p4	s	73.0	106.30	
+s4	p4	s4	73.2	96.24	
+s6	p4	s6	70.4	102.36	
+sh	p4	sh	77.0	98.81	
+ss	p4	ss	75.2	104.41	
+br	p5	br	84.0	103.38	
+br	p5	o	78.0	114.65	
+br	p5	oh	81.8	102.92	
+c	p5	c	72.4	104.16	
+c	p5	o	77.4	113.88	
+c	p5	oh	79.8	102.12	
+c1	p5	c1	77.6	102.89	
+c1	p5	o	80.6	115.77	
+c1	p5	oh	82.8	102.79	
+c2	p5	c2	73.6	106.56	
+c2	p5	o	78.8	114.81	
+c2	p5	oh	81.4	101.69	
+c2	p5	os	81.2	103.34	
+c3	p5	c3	74.0	106.23	
+c3	p5	hp	53.8	104.49	
+c3	p5	n3	80.0	102.76	
+c3	p5	o	79.8	112.50	
+c3	p5	oh	81.6	101.56	
+c3	p5	os	81.2	103.83	
+c3	p5	p4	88.6	106.27	
+c3	p5	s	75.0	113.40	
+c3	p5	ss	74.0	103.76	
+ca	p5	ca	74.2	107.53	
+ca	p5	o	79.8	113.98	
+ca	p5	oh	82.0	101.77	
+ca	p5	os	81.8	103.75	
+cl	p5	cl	67.6	103.70	
+cl	p5	o	72.6	115.32	
+cl	p5	oh	75.8	102.44	
+f	p5	f	85.0	99.96	
+f	p5	o	84.6	116.75	
+f	p5	oh	86.6	101.98	
+f	p5	s	76.2	117.40	
+ho	p5	os	15.8	102.31	
+hp	p5	hp	42.8	101.09	
+hp	p5	o	60.4	116.58	
+hp	p5	oh	61.2	101.45	
+hp	p5	s	52.0	119.20	
+i	p5	i	71.8	107.17	
+i	p5	o	66.0	115.93	
+i	p5	oh	70.8	102.26	
+n	p5	n	83.4	103.09	
+n	p5	o	84.2	115.26	
+n	p5	oh	86.2	102.44	
+n	p5	os	87.6	100.48	
+n2	p5	n2	88.0	106.34	
+n2	p5	o	88.6	113.53	
+n2	p5	oh	89.4	102.40	
+n3	p5	n3	87.6	99.11	
+n3	p5	o	86.4	113.54	
+n3	p5	oh	86.8	104.18	
+n3	p5	os	89.8	98.88	
+n4	p5	n4	78.4	102.20	
+n4	p5	o	82.2	109.78	
+n4	p5	oh	84.4	98.48	
+n4	p5	os	86.6	94.55	
+na	p5	na	81.2	108.57	
+na	p5	o	84.8	113.43	
+na	p5	oh	86.2	102.07	
+na	p5	os	86.4	103.06	
+nh	p5	nh	87.0	99.51	
+nh	p5	o	84.2	118.91	
+nh	p5	oh	86.8	103.81	
+nh	p5	os	88.8	100.51	
+no	p5	no	80.8	95.68	
+no	p5	o	81.0	112.75	
+no	p5	oh	83.2	101.35	
+no	p5	os	83.4	101.70	
+o	p5	o	92.0	115.80	
+o	p5	oh	87.6	115.03	
+o	p5	os	88.0	116.09	
+o	p5	p2	92.4	114.60	
+o	p5	p3	90.8	115.48	
+o	p5	p4	90.2	114.66	
+o	p5	p5	98.2	113.44	
+o	p5	s	81.0	116.94	
+o	p5	s4	79.2	110.23	
+o	p5	s6	78.6	111.75	
+o	p5	sh	76.2	114.56	
+o	p5	ss	76.0	112.46	
+oh	p5	oh	89.2	102.45	
+oh	p5	os	89.8	102.37	
+oh	p5	p2	96.4	103.53	
+oh	p5	p3	95.0	103.83	
+oh	p5	p4	95.2	101.79	
+oh	p5	p5	102.8	100.45	
+oh	p5	s	84.4	102.88	
+oh	p5	s4	80.6	103.24	
+oh	p5	s6	81.4	101.48	
+oh	p5	sh	80.0	101.41	
+oh	p5	ss	78.0	104.33	
+os	p5	os	90.4	102.46	
+os	p5	p3	95.4	103.67	
+os	p5	p5	101.2	104.48	
+os	p5	s4	81.2	102.52	
+os	p5	s6	81.4	101.89	
+os	p5	sh	79.0	104.59	
+os	p5	ss	79.8	100.24	
+p2	p5	p2	114.8	107.14	
+p3	p5	p3	114.0	105.23	
+p4	p5	p4	114.8	101.62	
+p5	p5	p5	118.8	112.72	
+s	p5	s	78.8	114.13	
+s6	p5	s6	77.2	105.18	
+sh	p5	sh	76.0	104.56	
+sh	p5	ss	74.6	107.13	
+ss	p5	ss	73.2	109.61	
+cd	pc	n	85.6	90.80	
+cc	pd	n	85.6	90.80	
+cd	pc	na	86.0	90.18	
+cc	pd	na	86.0	90.18	
+c	pe	c2	77.2	97.30	
+c	pf	c2	77.2	97.30	
+c2	pe	ca	77.6	101.44	
+c2	pf	ca	77.6	101.44	
+c2	pe	ce	77.4	103.01	
+c2	pf	cf	77.4	103.01	
+c2	pe	cg	81.6	104.03	
+c2	pf	ch	81.6	104.03	
+c2	pe	n2	89.8	94.14	
+c2	pf	n2	89.8	94.14	
+c2	pe	ne	83.6	98.70	
+c2	pf	nf	83.6	98.70	
+c2	pe	o	82.2	115.16	
+c2	pf	o	82.2	115.16	
+c2	pe	p2	101.8	107.82	
+c2	pf	p2	101.8	107.82	
+c2	pe	pe	96.4	102.99	
+c2	pf	pf	96.4	102.99	
+c2	pe	px	102.2	97.37	
+c2	pf	px	102.2	97.37	
+c2	pe	py	101.8	96.71	
+c2	pf	py	101.8	96.71	
+c2	pe	s	82.2	111.16	
+c2	pf	s	82.2	111.16	
+c2	pe	sx	77.0	95.11	
+c2	pf	sx	77.0	95.11	
+c2	pe	sy	75.6	95.56	
+c2	pf	sy	75.6	95.56	
+ca	pe	n2	82.0	102.03	
+ca	pf	n2	82.0	102.03	
+ca	pe	o	80.8	106.88	
+ca	pf	o	80.8	106.88	
+ca	pe	p2	102.0	100.79	
+ca	pf	p2	102.0	100.79	
+ca	pe	pf	96.8	99.70	
+ca	pf	pe	96.8	99.70	
+ca	pe	s	80.2	107.93	
+ca	pf	s	80.2	107.93	
+ce	pe	n2	82.8	100.55	
+cf	pf	n2	82.8	100.55	
+ce	pe	o	81.0	107.44	
+cf	pf	o	81.0	107.44	
+ce	pe	p2	102.8	99.56	
+cf	pf	p2	102.8	99.56	
+ce	pe	s	81.4	105.54	
+cf	pf	s	81.4	105.54	
+cg	pe	n2	88.6	101.79	
+ch	pf	n2	88.6	101.79	
+cg	pe	o	87.2	107.62	
+ch	pf	o	87.2	107.62	
+cg	pe	p2	105.0	104.68	
+ch	pf	p2	105.0	104.68	
+cg	pe	s	84.6	108.60	
+ch	pf	s	84.6	108.60	
+n2	pe	n2	90.6	108.14	
+n2	pf	n2	90.6	108.14	
+n2	pe	ne	85.8	106.80	
+n2	pf	nf	85.8	106.80	
+n2	pe	o	88.6	115.39	
+n2	pf	o	88.6	115.39	
+n2	pe	p2	105.8	111.60	
+n2	pf	p2	105.8	111.60	
+n2	pe	pe	97.4	109.40	
+n2	pf	pf	97.4	109.40	
+n2	pe	px	100.6	110.30	
+n2	pf	px	100.6	110.30	
+n2	pe	py	108.2	93.68	
+n2	pf	py	108.2	93.68	
+n2	pe	s	85.8	114.84	
+n2	pf	s	85.8	114.84	
+n2	pe	sx	78.8	97.83	
+n2	pf	sx	78.8	97.83	
+n2	pe	sy	77.2	98.14	
+n2	pf	sy	77.2	98.14	
+ne	pe	o	85.4	110.24	
+nf	pf	o	85.4	110.24	
+ne	pe	p2	105.6	104.48	
+nf	pf	p2	105.6	104.48	
+ne	pe	s	84.4	109.19	
+nf	pf	s	84.4	109.19	
+o	pe	o	88.0	119.96	
+o	pf	o	88.0	119.96	
+o	pe	p2	105.4	114.23	
+o	pf	p2	105.4	114.23	
+o	pe	pe	85.0	145.96	
+o	pf	pf	85.0	145.96	
+o	pe	px	104.2	104.37	
+o	pf	px	104.2	104.37	
+o	pe	py	103.2	104.49	
+o	pf	py	103.2	104.49	
+o	pe	s	85.8	117.42	
+o	pf	s	85.8	117.42	
+o	pe	sx	76.0	106.59	
+o	pf	sx	76.0	106.59	
+o	pe	sy	75.2	105.04	
+o	pf	sy	75.2	105.04	
+p2	pe	pe	131.2	98.24	
+p2	pf	pf	131.2	98.24	
+p2	pe	px	128.2	108.28	
+p2	pf	px	128.2	108.28	
+p2	pe	py	126.0	110.87	
+p2	pf	py	126.0	110.87	
+p2	pe	s	106.8	111.28	
+p2	pf	s	106.8	111.28	
+p2	pe	sx	102.6	95.73	
+p2	pf	sx	102.6	95.73	
+p2	pe	sy	101.0	95.95	
+p2	pf	sy	101.0	95.95	
+pe	pe	s	100.8	107.91	
+pf	pf	s	100.8	107.91	
+px	pe	s	104.0	107.62	
+px	pf	s	104.0	107.62	
+py	pe	s	102.8	108.73	
+py	pf	s	102.8	108.73	
+s	pe	s	68.8	178.44	
+s	pf	s	68.8	178.44	
+s	pe	sx	77.4	108.32	
+s	pf	sx	77.4	108.32	
+s	pe	sy	76.8	106.93	
+s	pf	sy	76.8	106.93	
+c	px	c3	73.4	101.72	
+c	px	o	76.0	114.47	
+c3	px	ca	74.0	104.79	
+c3	px	ce	74.0	104.86	
+c3	px	cf	74.0	104.86	
+c3	px	ne	79.0	102.46	
+c3	px	nf	79.0	102.46	
+c3	px	o	78.8	113.68	
+c3	px	pe	95.6	105.73	
+c3	px	pf	95.6	105.73	
+c3	px	py	91.0	103.11	
+c3	px	sx	72.2	99.55	
+c3	px	sy	70.6	103.41	
+ca	px	ca	74.2	104.15	
+ca	px	o	81.0	107.50	
+ce	px	ce	74.2	104.21	
+cf	px	cf	74.2	104.21	
+ce	px	o	78.8	113.79	
+cf	px	o	78.8	113.79	
+ne	px	ne	83.8	103.22	
+nf	px	nf	83.8	103.22	
+ne	px	o	84.6	114.13	
+nf	px	o	84.6	114.13	
+o	px	pe	98.8	116.50	
+o	px	pf	98.8	116.50	
+o	px	py	91.8	114.20	
+o	px	sx	71.6	112.81	
+o	px	sy	71.2	113.54	
+pe	px	pe	122.8	110.71	
+pf	px	pf	122.8	110.71	
+py	px	py	113.4	107.78	
+sx	px	sx	73.6	96.24	
+sy	px	sy	71.0	102.36	
+c	py	c	72.4	104.20	
+c	py	c3	71.4	110.36	
+c	py	o	77.0	115.25	
+c	py	oh	80.0	102.14	
+c	py	os	82.6	95.74	
+c3	py	n4	74.6	103.83	
+c3	py	na	77.6	106.89	
+c3	py	o	77.8	117.87	
+c3	py	oh	82.4	100.16	
+c3	py	os	80.4	105.39	
+c3	py	px	89.8	106.27	
+c3	py	py	87.0	113.97	
+c3	py	sx	69.4	106.36	
+ca	py	ca	74.0	107.55	
+ca	py	o	79.6	113.98	
+ca	py	oh	82.2	101.78	
+ca	py	os	81.4	103.75	
+ce	py	ce	74.6	106.54	
+cf	py	cf	74.6	106.54	
+ce	py	o	80.4	112.16	
+cf	py	o	80.4	112.16	
+ce	py	oh	81.2	104.77	
+cf	py	oh	81.2	104.77	
+ce	py	os	81.6	103.34	
+cf	py	os	81.6	103.34	
+n4	py	o	77.6	115.58	
+n4	py	py	126.4	55.10	
+na	py	o	81.6	122.40	
+na	py	py	135.4	50.88	
+ne	py	ne	81.8	106.29	
+nf	py	nf	81.8	106.29	
+ne	py	o	84.6	113.21	
+nf	py	o	84.6	113.21	
+ne	py	oh	85.2	104.70	
+nf	py	oh	85.2	104.70	
+ne	py	os	86.6	101.33	
+nf	py	os	86.6	101.33	
+o	py	oh	87.4	116.14	
+o	py	os	87.2	116.79	
+o	py	pe	99.0	114.56	
+o	py	pf	99.0	114.56	
+o	py	px	93.0	111.37	
+o	py	py	90.0	120.43	
+o	py	sx	69.4	118.56	
+o	py	sy	74.0	111.71	
+oh	py	oh	90.2	101.78	
+oh	py	pe	102.0	104.84	
+oh	py	pf	102.0	104.84	
+oh	py	px	95.4	104.30	
+oh	py	py	97.8	100.45	
+oh	py	sx	74.8	100.94	
+oh	py	sy	77.0	101.47	
+os	py	os	90.2	101.25	
+os	py	py	95.8	104.48	
+os	py	sx	73.8	103.86	
+os	py	sy	76.8	102.12	
+pe	py	pe	123.6	107.14	
+pf	py	pf	123.6	107.14	
+py	py	py	111.6	112.70	
+py	py	sx	117.4	61.54	
+sy	py	sy	72.2	105.17	
+c1	s2	o	131.6	117.25	
+c2	s2	n2	137.4	110.84	
+c2	s2	o	132.4	114.70	
+cl	s2	n1	106.8	117.70	
+f	s2	n1	132.2	116.90	
+n2	s2	o	135.8	121.20	
+o	s2	o	136.0	116.17	
+o	s2	s	127.6	118.30	
+s	s2	s	127.0	115.04	
+br	s4	br	129.2	98.02	
+br	s4	c3	124.4	92.98	
+br	s4	o	118.4	112.07	
+c	s4	c	126.6	86.83	
+c	s4	c3	123.0	95.07	
+c	s4	o	128.0	106.17	
+c1	s4	c1	130.8	93.55	
+c1	s4	o	132.0	110.36	
+c2	s4	c2	124.0	102.29	
+c2	s4	c3	127.0	94.95	
+c2	s4	o	133.2	107.09	
+c3	s4	c3	124.2	96.82	
+c3	s4	ca	126.0	95.00	
+c3	s4	f	132.6	91.70	
+c3	s4	hs	93.0	90.60	
+c3	s4	i	105.8	90.53	
+c3	s4	n	128.6	96.07	
+c3	s4	n2	138.2	90.59	
+c3	s4	n3	130.4	94.49	
+c3	s4	n4	124.0	92.47	
+c3	s4	na	130.2	93.07	
+c3	s4	nh	129.0	97.08	
+c3	s4	no	125.0	89.53	
+c3	s4	o	131.2	106.21	
+c3	s4	oh	134.6	93.88	
+c3	s4	os	136.4	90.06	
+c3	s4	p2	152.8	94.37	
+c3	s4	p3	156.4	96.54	
+c3	s4	p4	147.4	97.40	
+c3	s4	p5	156.6	99.18	
+c3	s4	s	122.6	98.72	
+c3	s4	s4	128.6	89.50	
+c3	s4	s6	123.2	97.48	
+c3	s4	sh	121.4	94.66	
+c3	s4	ss	121.2	95.31	
+ca	s4	ca	126.6	95.21	
+ca	s4	o	132.0	106.63	
+cl	s4	cl	107.8	97.68	
+cl	s4	o	116.2	108.34	
+cx	s4	cx	173.4	48.80	
+cx	s4	o	128.2	110.00	
+f	s4	f	140.0	92.71	
+f	s4	o	140.2	106.81	
+f	s4	s	119.6	107.50	
+hn	s4	hs	20.4	86.99	
+hs	s4	hs	75.6	87.00	
+hs	s4	o	99.6	110.27	
+i	s4	i	108.8	97.29	
+i	s4	o	94.6	113.91	
+n	s4	n	136.0	91.30	
+n	s4	o	136.2	105.70	
+n2	s4	n2	151.6	90.17	
+n2	s4	o	144.2	107.57	
+n3	s4	n3	137.8	91.19	
+n3	s4	o	135.2	109.07	
+n4	s4	n4	120.8	94.61	
+n4	s4	o	126.4	104.91	
+na	s4	na	127.2	103.10	
+na	s4	o	133.0	109.75	
+nh	s4	nh	138.0	92.24	
+nh	s4	o	136.8	107.54	
+no	s4	no	127.2	83.40	
+no	s4	o	125.8	103.58	
+o	s4	o	148.8	110.61	
+o	s4	oh	142.6	106.38	
+o	s4	os	139.4	109.02	
+o	s4	p2	152.4	106.77	
+o	s4	p3	159.6	106.51	
+o	s4	p4	150.8	103.36	
+o	s4	p5	170.6	96.95	
+o	s4	s	123.4	112.22	
+o	s4	s4	127.6	104.55	
+o	s4	s6	128.6	102.84	
+o	s4	sh	121.2	107.51	
+o	s4	ss	120.2	109.49	
+oh	s4	oh	140.2	100.34	
+os	s4	os	142.6	93.68	
+p2	s4	p2	196.4	92.62	
+p3	s4	p3	202.8	95.71	
+p5	s4	p5	209.4	93.86	
+s	s4	s	119.8	108.08	
+s4	s4	s4	130.8	90.17	
+s4	s4	s6	130.8	90.17	
+s6	s4	s6	128.4	93.52	
+sh	s4	sh	117.6	102.76	
+sh	s4	ss	117.8	102.64	
+ss	s4	ss	122.2	95.47	
+br	s6	br	134.2	101.57	
+br	s6	c3	126.4	98.99	
+br	s6	f	126.2	100.60	
+br	s6	o	127.8	107.58	
+c	s6	c	118.2	99.82	
+c	s6	c3	120.2	101.24	
+c	s6	o	128.0	107.97	
+c	s6	os	128.8	102.12	
+c1	s6	c1	128.2	99.99	
+c1	s6	o	136.2	108.23	
+c2	s6	c2	123.8	102.75	
+c2	s6	c3	122.4	104.05	
+c2	s6	o	135.0	106.58	
+c3	s6	c3	122.8	102.83	
+c3	s6	ca	123.0	103.17	
+c3	s6	f	131.4	97.11	
+c3	s6	hs	89.8	100.62	
+c3	s6	i	101.6	97.74	
+c3	s6	n	127.0	102.97	
+c3	s6	n2	130.6	107.47	
+c3	s6	n3	130.4	102.92	
+c3	s6	n4	122.6	99.40	
+c3	s6	na	127.4	102.81	
+c3	s6	nh	129.6	101.13	
+c3	s6	no	120.2	99.57	
+c3	s6	o	133.2	108.32	
+c3	s6	oh	137.2	95.95	
+c3	s6	os	137.8	95.65	
+c3	s6	p2	145.0	106.47	
+c3	s6	p3	152.4	103.40	
+c3	s6	p4	142.2	104.12	
+c3	s6	p5	154.4	103.46	
+c3	s6	s	121.4	104.50	
+c3	s6	s4	123.6	98.10	
+c3	s6	s6	121.2	101.95	
+c3	s6	sh	120.2	101.84	
+c3	s6	ss	119.4	102.47	
+ca	s6	ca	123.6	103.08	
+ca	s6	o	134.6	107.49	
+cl	s6	cl	105.8	101.25	
+cl	s6	f	115.8	99.00	
+cl	s6	o	117.0	107.66	
+cx	s6	cx	172.4	54.70	
+f	s6	f	141.6	94.70	
+f	s6	o	144.8	106.48	
+hs	s6	hs	71.6	99.02	
+hs	s6	o	103.8	107.60	
+i	s6	i	107.8	99.25	
+i	s6	o	95.4	109.74	
+n	s6	n	131.0	104.16	
+n	s6	o	140.4	105.91	
+n2	s6	n2	152.2	98.61	
+n2	s6	o	145.2	116.41	
+n2	s6	oh	144.2	106.96	
+n2	s6	os	147.4	103.25	
+n3	s6	n3	139.0	104.28	
+n3	s6	o	145.8	106.80	
+n4	s6	n4	120.0	101.85	
+n4	s6	o	131.6	102.92	
+na	s6	na	135.4	98.04	
+na	s6	o	141.0	105.67	
+nh	s6	nh	140.8	94.56	
+nh	s6	o	140.6	109.12	
+no	s6	no	122.4	91.63	
+no	s6	o	125.4	107.43	
+o	s6	o	149.2	119.82	
+o	s6	oh	148.2	108.21	
+o	s6	os	149.2	107.84	
+o	s6	p2	153.2	106.61	
+o	s6	p3	160.4	107.07	
+o	s6	p4	147.8	105.67	
+o	s6	p5	163.4	106.64	
+o	s6	s	127.0	110.29	
+o	s6	s4	126.0	107.85	
+o	s6	s6	127.2	106.07	
+o	s6	sh	125.0	106.81	
+o	s6	ss	124.2	107.43	
+oh	s6	p2	150.2	109.67	
+oh	s6	oh	147.4	100.34	
+os	s6	os	149.6	98.70	
+p3	s6	p3	189.8	110.17	
+p5	s6	p5	198.4	104.49	
+s	s6	s	121.2	109.34	
+s4	s6	s4	123.0	101.99	
+s4	s6	s6	130.8	90.17	
+s6	s6	s6	122.2	103.29	
+sh	s6	sh	118.8	106.43	
+sh	s6	ss	120.8	102.64	
+ss	s6	ss	121.0	101.82	
+br	sh	hs	87.0	95.64	
+c	sh	hs	92.0	96.07	
+c2	sh	hs	92.4	95.94	
+c3	sh	hs	89.8	96.60	
+ca	sh	hs	91.4	96.61	
+f	sh	hs	96.2	96.50	
+hs	sh	hs	74.8	93.72	
+hs	sh	i	74.2	96.44	
+hs	sh	n	96.8	95.59	
+hs	sh	n2	96.2	95.82	
+hs	sh	n3	96.2	95.98	
+hs	sh	n4	94.2	93.13	
+hs	sh	na	96.2	97.38	
+hs	sh	nh	95.0	101.11	
+hs	sh	no	94.8	92.93	
+hs	sh	o	96.4	109.23	
+hs	sh	oh	97.4	98.64	
+hs	sh	os	98.6	98.15	
+hs	sh	p2	113.0	99.12	
+hs	sh	p3	106.2	95.81	
+hs	sh	p4	108.0	94.22	
+hs	sh	p5	109.6	94.52	
+hs	sh	s	81.8	102.87	
+hs	sh	s4	84.0	92.16	
+hs	sh	s6	85.8	93.83	
+hs	sh	sh	85.6	99.07	
+hs	sh	ss	85.2	99.17	
+br	ss	br	134.0	102.92	
+br	ss	c3	126.2	99.03	
+c	ss	c	124.4	101.40	
+c	ss	c2	131.2	92.43	
+c	ss	c3	123.0	100.29	
+c1	ss	c1	132.6	98.30	
+c1	ss	c3	125.8	99.90	
+c2	ss	c2	127.4	99.56	
+c2	ss	c3	126.8	95.73	
+c2	ss	n2	129.0	106.76	
+c2	ss	na	130.0	100.51	
+c2	ss	os	139.6	89.76	
+c2	ss	ss	129.6	92.26	
+c3	ss	c3	121.2	99.92	
+c3	ss	ca	122.6	100.62	
+c3	ss	cl	112.8	99.40	
+c3	ss	f	126.8	97.49	
+c3	ss	ha	22.2	96.50	
+c3	ss	i	112.0	100.00	
+c3	ss	n	127.4	100.30	
+c3	ss	n2	131.8	96.42	
+c3	ss	n3	128.2	98.83	
+c3	ss	n4	125.8	97.79	
+c3	ss	na	127.0	100.14	
+c3	ss	nh	127.4	100.63	
+c3	ss	no	124.8	98.62	
+c3	ss	o	129.4	106.60	
+c3	ss	oh	130.6	98.28	
+c3	ss	os	130.0	98.21	
+c3	ss	p2	160.4	98.41	
+c3	ss	p3	152.6	98.70	
+c3	ss	p4	153.8	98.16	
+c3	ss	p5	152.8	99.03	
+c3	ss	s	119.8	101.90	
+c3	ss	s4	120.2	96.37	
+c3	ss	s6	121.8	96.76	
+c3	ss	sh	120.8	101.93	
+c3	ss	ss	119.6	104.90	
+ca	ss	ca	124.8	99.92	
+ca	ss	cc	127.8	96.98	
+ca	ss	cd	127.8	96.98	
+ca	ss	cl	113.0	101.05	
+ca	ss	n	131.6	97.16	
+ca	ss	na	129.6	99.32	
+ca	ss	nc	138.4	94.76	
+ca	ss	nd	138.4	94.76	
+cc	ss	cc	134.0	89.91	
+cd	ss	cd	134.0	89.91	
+cc	ss	cd	122.4	107.91	
+cc	ss	nc	139.4	95.66	
+cd	ss	nd	139.4	95.66	
+cc	ss	os	133.0	98.81	
+cd	ss	os	133.0	98.81	
+cc	ss	ss	123.0	102.46	
+cd	ss	ss	123.0	102.46	
+cd	ss	n	132.8	97.16	
+cc	ss	n	132.8	97.16	
+cd	ss	na	130.8	99.33	
+cc	ss	na	130.8	99.33	
+cl	ss	cl	104.8	103.37	
+cx	ss	cx	175.0	48.30	
+f	ss	f	132.4	98.30	
+f	ss	ss	119.8	108.30	
+i	ss	i	116.2	106.29	
+n	ss	n	132.8	103.10	
+n2	ss	n2	142.2	96.75	
+n3	ss	n3	133.0	102.34	
+n4	ss	n4	127.2	101.19	
+na	ss	na	131.8	102.81	
+nc	ss	nc	148.8	99.50	
+nd	ss	nd	148.8	99.50	
+nh	ss	nh	130.6	107.89	
+no	ss	no	122.8	106.43	
+o	ss	o	139.6	119.30	
+o	ss	p5	157.6	106.41	
+o	ss	s6	124.8	105.39	
+o	ss	ss	124.0	112.70	
+oh	ss	oh	136.4	104.25	
+os	ss	os	135.6	102.99	
+p2	ss	p2	211.0	99.52	
+p3	ss	p3	193.6	101.67	
+p5	ss	p5	207.0	89.83	
+s	ss	s	115.4	115.04	
+s4	ss	s4	121.8	96.08	
+s4	ss	s6	119.8	101.26	
+s6	ss	s6	121.0	101.81	
+sh	ss	sh	120.6	107.54	
+sh	ss	ss	121.6	106.53	
+ss	ss	ss	120.8	108.71	
+c	sx	c	125.6	86.85	
+c	sx	c3	124.0	92.71	
+c	sx	o	127.0	106.17	
+c3	sx	ca	125.2	95.00	
+c3	sx	ce	125.6	94.95	
+c3	sx	cf	125.6	94.95	
+c3	sx	ne	130.6	90.06	
+c3	sx	nf	130.6	90.06	
+c3	sx	o	129.8	107.88	
+c3	sx	pe	154.0	94.32	
+c3	sx	pf	154.0	94.32	
+c3	sx	px	148.6	96.46	
+c3	sx	py	148.2	95.67	
+c3	sx	sx	114.4	91.47	
+c3	sx	sy	117.4	95.47	
+ca	sx	ca	125.2	95.21	
+ca	sx	o	130.6	106.92	
+ce	sx	ce	126.0	94.96	
+cf	sx	cf	126.0	94.96	
+ce	sx	o	130.8	107.47	
+cf	sx	o	130.8	107.47	
+ne	sx	ne	132.8	90.17	
+nf	sx	nf	132.8	90.17	
+ne	sx	o	130.8	109.20	
+nf	sx	o	130.8	109.20	
+o	sx	pe	154.0	106.43	
+o	sx	pf	154.0	106.43	
+o	sx	px	150.4	104.77	
+o	sx	py	146.2	109.13	
+o	sx	sx	111.4	104.65	
+o	sx	sy	118.8	103.41	
+pe	sx	pe	198.4	92.62	
+pf	sx	pf	198.4	92.62	
+py	sx	py	220.2	69.23	
+sx	sx	sx	117.2	84.90	
+sy	sx	sy	118.4	93.52	
+c	sy	c	118.4	99.81	
+c	sy	c3	120.2	101.25	
+c	sy	o	128.2	107.23	
+c3	sy	ca	121.8	103.17	
+c3	sy	ce	121.6	103.81	
+c3	sy	cf	121.6	103.81	
+c3	sy	ne	126.0	103.12	
+c3	sy	nf	126.0	103.12	
+c3	sy	o	132.0	108.48	
+c3	sy	pe	143.6	106.03	
+c3	sy	pf	143.6	106.03	
+c3	sy	px	143.4	103.62	
+c3	sy	py	147.0	103.39	
+c3	sy	sx	112.6	104.64	
+c3	sy	sy	114.8	100.78	
+ca	sy	ca	124.2	99.34	
+ca	sy	nh	130.4	100.83	
+ca	sy	o	131.6	108.73	
+ca	sy	oh	131.4	101.84	
+ca	sy	os	135.2	92.98	
+ce	sy	ce	122.2	102.78	
+cf	sy	cf	122.2	102.78	
+ce	sy	o	132.8	107.25	
+cf	sy	o	132.8	107.25	
+na	sy	na	135.4	98.04	
+nc	sy	nc	150.4	98.04	
+nd	sy	nd	150.4	98.04	
+ne	sy	ne	133.2	98.62	
+nf	sy	nf	133.2	98.62	
+ne	sy	o	137.8	107.06	
+nf	sy	o	137.8	107.06	
+nh	sy	o	141.8	108.46	
+o	sy	o	144.8	121.88	
+o	sy	oh	145.4	106.93	
+o	sy	os	141.2	107.62	
+o	sy	pe	150.8	106.90	
+o	sy	pf	150.8	106.90	
+o	sy	px	148.8	106.17	
+o	sy	py	153.0	106.67	
+o	sy	sx	117.2	106.33	
+o	sy	sy	117.6	106.19	
+py	sy	py	185.6	104.49	
+sx	sy	sx	113.4	101.99	
+sy	sy	sy	113.0	103.29	
+br	n1	c1	102.2	180.00	# HF/6-31G*
+c1	n1	c1	129.8	179.92	# HF/6-31G*
+c1	n1	c2	120.4	177.73	# HF/6-31G*
+c1	n1	c3	119.8	180.00	# HF/6-31G*
+c1	n1	ca	119.8	179.99	# HF/6-31G*
+c1	n1	cl	100.2	179.95	# HF/6-31G*
+c1	n1	f	111.8	179.96	# HF/6-31G*
+c1	n1	hn	91.2	179.98	# HF/6-31G*
+c1	n1	i	92.4	179.95	# HF/6-31G*
+c1	n1	n1	133.8	180.00	# HF/6-31G*
+c1	n1	n2	131.4	171.56	# HF/6-31G*
+c1	n1	n3	121.4	175.59	# HF/6-31G*
+c1	n1	n4	119.4	179.69	# HF/6-31G*
+c1	n1	na	119.8	180.00	# HF/6-31G*
+c1	n1	nh	121.8	176.35	# HF/6-31G*
+c1	n1	o	125.2	179.95	# HF/6-31G*
+c1	n1	oh	125.8	174.31	# HF/6-31G*
+c1	n1	os	124.4	176.61	# HF/6-31G*
+c1	n1	p1	167.0	172.83	# HF/6-31G*
+c1	n1	p3	137.4	173.51	# HF/6-31G*
+c1	n1	p4	137.4	173.64	# HF/6-31G*
+c1	n1	p5	143.0	177.28	# HF/6-31G*
+c1	n1	s	106.6	179.99	# HF/6-31G*
+c1	n1	s2	120.6	178.11	# HF/6-31G*
+c1	n1	s4	110.4	169.60	# HF/6-31G*
+c1	n1	s6	123.6	175.92	# HF/6-31G*
+c1	n1	sh	111.4	174.25	# HF/6-31G*
+c1	n1	ss	110.8	176.06	# HF/6-31G*
+c1	ng	ng	103.8	179.97	# HF/6-31G*
+c2	c1	n1	126.2	180.00	# HF/6-31G*
+c2	c2	n1	143.4	122.98	# HF/6-31G*
+c2	n1	n1	123.2	180.00	# HF/6-31G*
+c2	n2	n1	151.0	115.09	# HF/6-31G*
+c2	na	n1	132.6	124.81	# HF/6-31G*
+c3	n1	n1	117.6	180.00	# HF/6-31G*
+c3	os	n1	132.6	113.50	# HF/6-31G*
+c3	ss	n1	131.8	98.44	# HF/6-31G*
+ca	ca	n1	126.8	118.50	# HF/6-31G*
+ca	n1	n1	118.0	180.00	# HF/6-31G*
+ca	nh	n1	138.8	117.13	# HF/6-31G*
+cl	n1	n1	102.8	179.94	# HF/6-31G*
+f	n1	n1	114.8	179.93	# HF/6-31G*
+h1	c3	n1	120.6	107.31	# HF/6-31G*
+hn	n1	n1	94.2	179.91	# HF/6-31G*
+hn	n3	n1	104.0	110.17	# HF/6-31G*
+hn	n4	n1	103.6	109.39	# HF/6-31G*
+hn	nh	n1	104.6	110.57	# HF/6-31G*
+ho	oh	n1	105.0	107.81	# HF/6-31G*
+hp	p3	n1	62.6	92.98	# HF/6-31G*
+hp	p4	n1	61.0	99.91	# HF/6-31G*
+hp	p5	n1	62.2	101.32	# HF/6-31G*
+hs	s4	n1	102.4	90.51	# HF/6-31G*
+hs	s6	n1	109.4	97.27	# HF/6-31G*
+hs	sh	n1	103.4	93.51	# HF/6-31G*
+i	n1	n1	94.6	179.94	# HF/6-31G*
+n1	n1	n1	138.0	179.97	# HF/6-31G*
+n1	n1	n2	135.4	171.57	# HF/6-31G*
+n1	n1	n3	125.0	175.09	# HF/6-31G*
+n1	n1	n4	122.6	179.91	# HF/6-31G*
+n1	n1	na	123.2	179.97	# HF/6-31G*
+n1	n1	nh	125.4	176.00	# HF/6-31G*
+n1	n1	o	128.8	179.94	# HF/6-31G*
+n1	n1	oh	129.6	173.77	# HF/6-31G*
+n1	n1	os	128.0	176.12	# HF/6-31G*
+n1	n1	p2	138.8	174.71	# HF/6-31G*
+n1	n1	p3	140.4	174.27	# HF/6-31G*
+n1	n1	s	109.2	179.96	# HF/6-31G*
+n1	n1	sh	114.0	175.07	# HF/6-31G*
+n1	n1	ss	113.8	175.61	# HF/6-31G*
+n1	p4	o	99.4	114.59	# HF/6-31G*
+n1	p5	o	89.4	113.78	# HF/6-31G*
+n1	s2	o	146.2	108.46	# HF/6-31G*
+n1	s4	o	140.4	110.09	# HF/6-31G*
+n1	s6	o	157.6	107.52	# HF/6-31G*
+n1	c1	n1	140.4	180.00	# HF/6-31G*
+n1	c2	n1	147.2	124.15	# HF/6-31G*
+n1	c3	n1	160.0	105.07	# HF/6-31G*
+n1	ca	n1	151.6	117.03	# HF/6-31G*
+n1	n2	n1	161.6	112.00	# HF/6-31G*
+n1	n3	n1	144.8	113.21	# HF/6-31G*
+n1	n4	n1	145.4	110.67	# HF/6-31G*
+n1	no	o	147.6	115.00	# HF/6-31G*
+n1	nh	n1	150.2	106.71	# HF/6-31G*
+n1	os	n1	140.6	117.79	# HF/6-31G*
+n1	ss	n1	146.2	96.96	# HF/6-31G*
+n1	s4	n1	144.8	94.02	# HF/6-31G*
+n1	s6	n1	167.4	95.52	# HF/6-31G*
+n1	p2	n1	93.0	86.22	# HF/6-31G*
+n1	p3	n1	91.8	90.44	# HF/6-31G*
+n1	p4	n1	87.0	100.61	# HF/6-31G*
+n1	p5	n1	91.6	101.55	# HF/6-31G*
+o	c1	o	138.6	180.00	# Guess
+c3	c1	c3	103.4	180.00	# Guess
+ca	c1	ca	105.6	180.00	# Guess
+f	c1	f	116.4	180.00	# Guess
+cl	c1	cl	93.2	180.00	# Guess
+br	c1	br	115.6	180.00	# Guess
+i	c1	i	106.8	180.00	# Guess
+s	c1	s	109.2	180.00	# Guess
+s2	c1	s2	111.6	180.00	# Guess
+s4	c1	s4	102.0	180.00	# Guess
+s6	c1	s6	103.4	180.00	# Guess
+sh	c1	sh	106.0	180.00	# Guess
+ss	c1	ss	106.0	180.00	# Guess
+oh	c1	oh	121.8	180.00	# Guess
+os	c1	os	122.0	180.00	# Guess
+p2	c1	p2	161.2	180.00	# Guess
+p3	c1	p3	159.4	180.00	# Guess
+p4	c1	p4	159.4	180.00	# Guess
+p5	c1	p5	162.8	180.00	# Guess
+n	c1	n	120.0	180.00	# Guess
+n2	c1	n2	132.0	180.00	# Guess
+n3	c1	n3	114.8	180.00	# Guess
+n4	c1	n4	112.6	180.00	# Guess
+nh	c1	nh	118.0	180.00	# Guess
+no	c1	no	113.6	180.00	# Guess
+na	c1	na	117.2	180.00	# Guess
+na	c1	na	117.2	180.00	# Guess
+na	c1	na	117.2	180.00	# Guess
+end
+
+torsions cos
+*	c	c	*	0.6	180.0	2.0
+*	c	c1	*	0	180.0	2.0
+*	c	cg	*	0	180.0	2.0	# same as *-c-c1-* 
+*	c	ch	*	0	180.0	2.0
+*	c	c2	*	4.35	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	cu	*	4.35	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	cv	*	4.35	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	ce	*	4.35	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	cf	*	4.35	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	c3	*	0	180.0	2.0	# JCC, 7, (1986), 230
+*	c	cx	*	0	180.0	2.0	# JCC, 7, (1986), 230
+*	c	cy	*	0	180.0	2.0	# JCC, 7, (1986), 230
+*	c	ca	*	7.25	180.0	2.0	# intrpol.bsd.on C6H6
+*	c	cc	*	5.75	180.0	2.0	# statistic value 
+*	c	cd	*	5.75	180.0	2.0	# statistic value 
+*	c	n	*	5	180.0	2.0	# AA,NMA (no c n3, c-n4, c-nh)
+*	c	n2	*	4.15	180.0	2.0	# double bond, same as *-c2-n2-*
+*	c	nc	*	4	180.0	2.0	# same as *-C-NC-* 
+*	c	nd	*	4	180.0	2.0	# same as *-C-NC-* 
+*	c	ne	*	0.2	180.0	2.0	# single bond
+*	c	nf	*	0.2	180.0	2.0	# single bond
+*	c	na	*	2.9	180.0	-2.0
+*	c	na	*	0.7	180.0	4.0
+*	c	no	*	0.9	180.0	2.0
+*	c	oh	*	2.3	180.0	2.0	# Junmei et al, 1999
+*	c	os	*	2.7	180.0	2.0	# Junmei et al, 1999
+*	c	pc	*	2	180.0	2.0	# estimated	
+*	c	p2	*	6.65	180.0	2.0	# double bond, same as *-c2-p2-* 
+*	c	pc	*	2	180.0	2.0	# estimated	
+*	c	pd	*	2	180.0	2.0	# estimated 
+*	c	pe	*	0	180.0	2.0	# single bond
+*	c	pf	*	0	180.0	2.0	# single bond
+*	c	p3	*	3.1	180.0	2.0
+*	c	p4	*	2.7	180.0	2.0
+*	c	px	*	2.7	180.0	2.0
+*	c	p5	*	2	0.0	2.0
+*	c	py	*	2	0.0	2.0
+*	c	sh	*	2.25	180.0	2.0
+*	c	ss	*	3.1	180.0	2.0
+*	c	s4	*	0.4	180.0	2.0
+*	c	sx	*	0.4	180.0	2.0
+*	c	s6	*	1.5	0.0	2.0
+*	c	sy	*	1.5	0.0	2.0
+*	c1	c1	*	0	180.0	2.0	# for both triple and single bonds
+*	c1	cg	*	0	180.0	2.0	# for both triple and single bonds
+*	c1	ch	*	0	180.0	2.0	# for both triple and single bonds
+*	cg	cg	*	0	180.0	2.0	# for both triple and single bonds
+*	ch	ch	*	0	180.0	2.0	# for both triple and single bonds
+*	cg	ch	*	0	180.0	2.0	# for both triple and single bonds
+*	c1	c2	*	0	180.0	2.0
+*	c1	c3	*	0	180.0	2.0
+*	c1	ca	*	0	180.0	2.0
+*	c1	cb	*	0	180.0	2.0
+*	c1	cc	*	0	180.0	2.0
+*	c1	cd	*	0	180.0	2.0
+*	c1	ce	*	0	180.0	2.0
+*	c1	cf	*	0	180.0	2.0
+*	c1	cu	*	0	180.0	2.0
+*	c1	cv	*	0	180.0	2.0
+*	c1	cx	*	0	180.0	2.0
+*	c1	cy	*	0	180.0	2.0
+*	c1	n	*	0	180.0	2.0
+*	c1	n2	*	0	180.0	2.0
+*	c1	n3	*	0	180.0	2.0
+*	c1	n4	*	0	180.0	2.0
+*	c1	na	*	0	180.0	2.0
+*	c1	nb	*	0	180.0	2.0
+*	c1	nc	*	0	180.0	2.0
+*	c1	nd	*	0	180.0	2.0
+*	c1	ne	*	0	180.0	2.0
+*	c1	nf	*	0	180.0	2.0
+*	c1	nh	*	0	180.0	2.0
+*	c1	no	*	0	180.0	2.0
+*	c1	oh	*	0	180.0	2.0
+*	c1	os	*	0	180.0	2.0
+*	c1	p2	*	0	180.0	2.0
+*	c1	pb	*	0	180.0	2.0
+*	c1	pc	*	0	180.0	2.0
+*	c1	pd	*	0	180.0	2.0
+*	c1	pe	*	0	180.0	2.0
+*	c1	pf	*	0	180.0	2.0
+*	c1	p3	*	0	180.0	2.0
+*	c1	p4	*	0	180.0	2.0
+*	c1	px	*	0	180.0	2.0
+*	c1	p5	*	0	180.0	2.0
+*	c1	py	*	0	180.0	2.0
+*	c1	s2	*	0	180.0	2.0
+*	c1	sh	*	0	180.0	2.0
+*	c1	ss	*	0	180.0	2.0
+*	c1	s4	*	0	180.0	2.0
+*	c1	sx	*	0	180.0	2.0
+*	c1	s6	*	0	180.0	2.0
+*	c1	sy	*	0	180.0	2.0
+*	c2	c2	*	13.3	180.0	2.0	# c2=c2 double bond, intrpol.bsd.on C6H6
+*	c2	ce	*	13.3	180.0	2.0	# c2=c2 double bond, intrpol.bsd.on C6H6
+*	c2	cf	*	13.3	180.0	2.0	# c2=c2 double bond, intrpol.bsd.on C6H6
+*	ce	cf	*	13.3	180.0	2.0	# c2=c2 double bond, intrpol.bsd.on C6H6
+*	ce	ce	*	2	180.0	2.0	# c2 c2 single bond, parm99 
+*	cf	cf	*	2	180.0	2.0	# c2 c2 single bond, parm99 
+*	cc	cd	*	8	180.0	2.0	# statistic value of parm94
+*	cc	cc	*	8	180.0	2.0	# statistic value of parm94
+*	cd	cd	*	8	180.0	2.0	# statistic value of parm94
+*	c2	c3	*	0	0.0	2.0	# JCC,7,(1986),230
+*	c2	ca	*	5.1	180.0	2.0	# intrpol.bsd.on C6H6
+*	c2	n	*	1.3	180.0	2.0
+*	c2	n2	*	4.15	180.0	2.0	# double bond, parm99
+*	c2	ne	*	4.15	180.0	2.0	# double bond, parm99
+*	c2	nf	*	4.15	180.0	2.0	# double bond, parm99
+*	ce	ne	*	0.8	180.0	2.0	# single bond
+*	cf	nf	*	0.8	180.0	2.0	# single bond
+*	c2	nc	*	4.75	180.0	2.0	# statistic value from parm94
+*	c2	nd	*	4.75	180.0	2.0	# statistic value from parm94
+*	cc	nd	*	4.75	180.0	2.0	# statistic value from parm94
+*	cd	nc	*	4.75	180.0	2.0	# statistiv value from parm94
+*	cc	nc	*	4.75	180.0	2.0	# statistic value from parm94
+*	cd	nd	*	4.75	180.0	2.0	# statistiv value from parm94
+*	c2	n3	*	0.6	180.0	2.0	# intrpol.	
+*	c2	n4	*	0	180.0	3.0	# intrpol. 
+*	c2	na	*	1.25	180.0	2.0
+*	cc	na	*	3.4	180.0	2.0	# statistic value from parm94
+*	cd	na	*	3.4	180.0	2.0	# statistic value from parm94
+*	c2	nh	*	1.35	180.0	2.0
+*	c2	no	*	1.5	180.0	2.0
+*	c2	oh	*	1.05	180.0	2.0	# parm99 
+*	c2	os	*	1.05	180.0	2.0	# parm99 
+*	c2	p2	*	6.65	180.0	2.0	# double bond
+*	c2	pe	*	6.65	180.0	2.0	# double bond
+*	c2	pf	*	6.65	180.0	2.0	# double bond
+*	ce	pf	*	6.65	180.0	2.0	# double bond
+*	ce	pe	*	0.95	180.0	2.0	# single bond
+*	cf	pf	*	0.95	180.0	2.0	# single bond
+*	c2	pc	*	4.75	180.0	2.0	# estimated 
+*	c2	pd	*	4.75	180.0	2.0	# estimated 
+*	cc	pc	*	4.75	180.0	2.0	# estimated 
+*	cc	pd	*	4.75	180.0	2.0	# estimated 
+*	cd	pc	*	4.75	180.0	2.0	# estimated 
+*	cd	pd	*	4.75	180.0	2.0	# estimated
+*	c2	p3	*	0.9	180.0	2.0
+*	c2	p4	*	13.3	180.0	2.0	# c2=p4 double bond !!!	
+*	ce	p4	*	13.3	180.0	2.0	# c2=p4 double bond !!!	
+*	cf	p4	*	13.3	180.0	2.0	# c2=p4 double bond !!!	
+*	c2	px	*	0.65	0.0	2.0
+*	ce	px	*	0.65	0.0	2.0
+*	cf	px	*	0.65	0.0	2.0
+*	c2	p5	*	19.95	180.0	2.0	# c2=p5 double bond !!!
+*	ce	p5	*	19.95	180.0	2.0	# c2=p5 double bond !!!
+*	cf	p5	*	19.95	180.0	2.0	# c2=p5 double bond !!!
+*	c2	py	*	4.3	180.0	2.0
+*	ce	py	*	4.3	180.0	2.0
+*	cf	py	*	4.3	180.0	2.0
+*	c2	sh	*	0.5	180.0	2.0
+*	c2	ss	*	1.1	180.0	2.0
+*	c2	s4	*	13.3	180.0	2.0	# c2=s4 double bond	!!!
+*	ce	s4	*	13.3	180.0	2.0	# c2=s4 double bond	!!!
+*	cf	s4	*	13.3	180.0	2.0	# c2=s4 double bond	!!!
+*	c2	sx	*	1.2	0.0	2.0
+*	ce	sx	*	1.2	0.0	2.0
+*	cf	sx	*	1.2	0.0	2.0
+*	c2	s6	*	19.95	180.0	2.0	# c2=s6 double bond	!!!
+*	ce	s6	*	19.95	180.0	2.0	# c2=s6 double bond	!!!
+*	cf	s6	*	19.95	180.0	2.0	# c2=s6 double bond	!!!
+*	c2	sy	*	3.8	180.0	2.0
+*	ce	sy	*	3.8	180.0	2.0
+*	cf	sy	*	3.8	180.0	2.0
+*	c3	c3	*	0.7	0.0	3.0	# JCC,7,(1986),230
+*	cx	cx	*	0.7	0.0	3.0	# same as * c3-c3 * 
+*	cy	cy	*	0.7	0.0	3.0	# same as * c3-c3 * 
+*	c3	ca	*	0	0.0	2.0	# JCC,7,(1986),230
+*	c3	n	*	0	0.0	2.0	# JCC,7,(1986),230
+*	cx	n	*	0	0.0	2.0	# same as * c3-n * 
+*	cy	n	*	0	0.0	2.0	# same as * c3-n *
+*	c3	n2	*	0	0.0	3.0	# JCC,7,(1986),230
+*	c3	ne	*	0	0.0	3.0	# JCC,7,(1986),230
+*	c3	nf	*	0	0.0	3.0	# JCC,7,(1986),230
+*	c3	n3	*	0.9	0.0	3.0	# Junmei et al, 1999 
+*	c3	n4	*	0.7	0.0	3.0	# JCC,7,(1986),230
+*	c3	na	*	0	0.0	2.0	# JCC,7,(1986),230
+*	c3	nh	*	0	0.0	2.0	# JCC,7,(1986),230
+*	c3	no	*	0	0.0	2.0	# JCC,7,(1986),230
+*	c3	oh	*	0.25	0.0	3.0	# JCC,7,(1986),230
+*	c3	os	*	0.575	0.0	3.0	# JCC,7,(1986),230
+*	c3	p2	*	0.4	180.0	2.0
+*	c3	pe	*	0.4	180.0	2.0
+*	c3	pf	*	0.4	180.0	2.0
+*	c3	p3	*	0.4	0.0	3.0
+*	c3	p4	*	0.4	0.0	3.0
+*	c3	px	*	0.4	0.0	3.0
+*	c3	p5	*	0.1	0.0	3.0
+*	c3	py	*	0.1	0.0	3.0
+*	c3	sh	*	0.375	0.0	3.0	# JCC,7,(1986),230
+*	c3	ss	*	0.5	0.0	3.0	# JCC,7,(1986),230
+*	c3	s4	*	0.6	0.0	3.0
+*	c3	sx	*	0.6	0.0	3.0
+*	c3	s6	*	0.65	0.0	3.0
+*	c3	sy	*	0.65	0.0	3.0
+*	c3	cc	*	0	0.0	3.0	# same as * c3-ca *
+*	c3	cd	*	0	0.0	3.0	# same as * c3-ca *
+*	ca	ca	*	7.25	180.0	2.0	# intrpol.bsd.on C6H6
+*	ca	cp	*	7.25	180.0	2.0	# intrpol.bsd.on C6H6
+*	ca	cq	*	7.25	180.0	2.0	# intrpol.bsd.on C6H6
+*	cp	cp	*	2	180.0	2.0	# estimated, intrpol. 
+*	cq	cq	*	2	180.0	2.0	# estimated, intrpol. 
+*	ca	n	*	0.9	180.0	2.0
+*	ca	n2	*	0	180.0	3.0
+*	ca	ne	*	0	180.0	3.0
+*	ca	nf	*	0	180.0	3.0
+*	ca	n4	*	3.5	0.0	2.0
+*	ca	na	*	0.6	180.0	2.0
+*	ca	nb	*	4.8	180.0	2.0	# same as *-CA-NC *
+*	ca	nc	*	4.8	180.0	2.0	# same as *-CA-NC *
+*	ca	nd	*	4.8	180.0	2.0	# same as *-CA-NC *
+*	ca	nh	*	2.1	180.0	2.0
+*	cc	nh	*	2.1	180.0	2.0	# same as * ca-nh *
+*	cd	nh	*	2.1	180.0	2.0	# same as * ca-nh *
+*	ca	no	*	1.2	180.0	2.0
+*	ca	oh	*	0.9	180.0	2.0	# Junmei et al, 99
+*	ca	os	*	0.9	180.0	2.0	# same as * ca-oh * 
+*	ca	p2	*	0.6	180.0	2.0
+*	ca	pe	*	0.6	180.0	2.0	# same as * ca-p2 *
+*	ca	pf	*	0.6	180.0	2.0	# same as * ca-p2 *
+*	ca	pc	*	4.8	180.0	2.0	# estimated, intrpol 
+*	ca	pd	*	4.8	180.0	2.0	# estimated, intrpol 
+*	ca	p3	*	0	180.0	2.0
+*	ca	p4	*	1.05	180.0	2.0
+*	ca	px	*	1.05	180.0	2.0	# estimated, same as * ca-p4 *
+*	ca	p5	*	4.4	180.0	2.0
+*	ca	py	*	4.4	180.0	2.0	# estimated, same as * ca-p5 *
+*	ca	sh	*	0	180.0	2.0
+*	ca	ss	*	0.4	180.0	2.0
+*	ca	s4	*	0.6	0.0	2.0
+*	ca	sx	*	0.6	0.0	2.0	# estimated, same as * ca-s4 *
+*	ca	s6	*	3.9	180.0	2.0
+*	ca	sy	*	3.9	180.0	2.0	# estimated, same as * ca-s6 *
+*	n	cc	*	3.3	180.0	2.0	# statistic value from parm94
+*	n	cd	*	3.3	180.0	2.0	# statistic value from parm94
+*	n	n	*	2.3	0.0	2.0
+*	n	n2	*	0.4	0.0	2.0
+*	n	ne	*	0.4	0.0	2.0
+*	n	nf	*	0.4	0.0	2.0
+*	n	n3	*	2.15	0.0	2.0
+*	n	n4	*	1.9	0.0	2.0
+*	n	na	*	1.4	0.0	2.0
+*	n	nc	*	4.8	180.0	2.0	# estimated, intrpol.
+*	n	nd	*	4.8	180.0	2.0	# estimated, intrpol.
+*	n	nh	*	2.2	0.0	2.0
+*	n	no	*	2.75	180.0	2.0
+*	n	oh	*	1.5	0.0	2.0
+*	n	os	*	1.1	0.0	2.0
+*	n	p2	*	1	180.0	2.0
+*	n	pe	*	1	180.0	2.0
+*	n	pf	*	4.8	180.0	2.0	# estimated, intrpol.
+*	n	pc	*	4.8	180.0	2.0	# estimated, intrpol.
+*	n	pd	*	1	180.0	2.0
+*	n	p3	*	4.5	0.0	2.0
+*	n	p4	*	0.65	0.0	2.0
+*	n	px	*	0.65	0.0	2.0
+*	n	p5	*	6.6	180.0	2.0
+*	n	py	*	6.6	180.0	2.0
+*	n	sh	*	1.1	0.0	2.0
+*	n	ss	*	1.5	0.0	2.0
+*	n	s4	*	3	0.0	3.0
+*	n	sx	*	3	0.0	3.0
+*	n	s6	*	3.3	180.0	2.0
+*	n	sy	*	3.3	180.0	2.0
+*	n1	c2	*	0	180.0	2.0
+*	n1	c3	*	0	180.0	2.0
+*	n1	ca	*	0	180.0	2.0
+*	n1	cb	*	0	180.0	2.0
+*	n1	cc	*	0	180.0	2.0
+*	n1	cd	*	0	180.0	2.0
+*	n1	ce	*	0	180.0	2.0
+*	n1	cf	*	0	180.0	2.0
+*	n1	cu	*	0	180.0	2.0
+*	n1	cv	*	0	180.0	2.0
+*	n1	cx	*	0	180.0	2.0
+*	n1	cy	*	0	180.0	2.0
+*	n1	n	*	0	180.0	2.0
+*	n1	n1	*	0	180.0	2.0
+*	n1	n2	*	0	180.0	2.0
+*	n1	n3	*	0	180.0	2.0
+*	n1	n4	*	0	180.0	2.0
+*	n1	na	*	0	180.0	2.0
+*	n1	nb	*	0	180.0	2.0
+*	n1	nc	*	0	180.0	2.0
+*	n1	nd	*	0	180.0	2.0
+*	n1	ne	*	0	180.0	2.0
+*	n1	nf	*	0	180.0	2.0
+*	n1	nh	*	0	180.0	2.0
+*	n1	no	*	0	180.0	2.0
+*	n1	oh	*	0	180.0	2.0
+*	n1	os	*	0	180.0	2.0
+*	n1	p2	*	0	180.0	2.0
+*	n1	pb	*	0	180.0	2.0
+*	n1	pc	*	0	180.0	2.0
+*	n1	pd	*	0	180.0	2.0
+*	n1	pe	*	0	180.0	2.0
+*	n1	pf	*	0	180.0	2.0
+*	n1	p3	*	0	180.0	2.0
+*	n1	p4	*	0	180.0	2.0
+*	n1	px	*	0	180.0	2.0
+*	n1	p5	*	0	180.0	2.0
+*	n1	py	*	0	180.0	2.0
+*	n1	s2	*	0	180.0	2.0
+*	n1	sh	*	0	180.0	2.0
+*	n1	ss	*	0	180.0	2.0
+*	n1	s4	*	0	180.0	2.0
+*	n1	sx	*	0	180.0	2.0
+*	n1	s6	*	0	180.0	2.0
+*	n1	sy	*	0	180.0	2.0
+*	n2	n2	*	1.5	180.0	-2.0	# double bond
+*	n2	n2	*	1.4	0.0	1.0	# double bond
+*	n2	ne	*	1.5	180.0	-2.0	# double bond
+*	n2	ne	*	1.4	0.0	1.0	# double bond
+*	n2	nf	*	1.5	180.0	-2.0	# double bond
+*	n2	nf	*	1.4	0.0	1.0	# double bond
+*	ne	nf	*	1.5	180.0	-2.0	# double bond
+*	ne	nf	*	1.4	0.0	1.0	# double bond
+*	ne	ne	*	0.6	180.0	2.0	# single bond, intrpol
+*	nf	nf	*	0.6	180.0	2.0	# single bond, intrpol
+*	nc	nc	*	2	180.0	2.0	# estimated, intrpol 
+*	nd	nd	*	2	180.0	2.0	# estimated, intrpol	
+*	nc	nd	*	2	180.0	2.0	# estimated, intrpol 
+*	n2	nc	*	1.5	180.0	-2.0	# same as *-n2-n2-*
+*	n2	nc	*	1.4	0.0	1.0
+*	n2	nd	*	1.5	180.0	-2.0	# same as *-n2-n2-* 
+*	n2	nd	*	1.4	0.0	1.0
+*	n2	n3	*	6.1	180.0	2.0
+*	ne	n3	*	6.1	180.0	2.0
+*	nf	n3	*	6.1	180.0	2.0
+*	n2	n4	*	12	180.0	2.0
+*	ne	n4	*	12	180.0	2.0
+*	nf	n4	*	12	180.0	2.0
+*	n2	na	*	1.7	180.0	2.0
+*	ne	na	*	1.7	180.0	2.0
+*	nf	na	*	1.7	180.0	2.0
+*	na	nc	*	4.8	180.0	2.0	# estimated, intrpol.
+*	na	nd	*	4.8	180.0	2.0	# estimated, intrpol.
+*	n2	nh	*	2.8	180.0	2.0
+*	ne	nh	*	2.8	180.0	2.0
+*	nf	nh	*	2.8	180.0	2.0
+*	n2	no	*	0.75	180.0	2.0
+*	ne	no	*	0.75	180.0	2.0
+*	nf	no	*	0.75	180.0	2.0
+*	n2	oh	*	1.6	180.0	2.0
+*	ne	oh	*	1.6	180.0	2.0
+*	nf	oh	*	1.6	180.0	2.0
+*	n2	os	*	1.5	180.0	2.0
+*	ne	os	*	1.5	180.0	2.0
+*	nf	os	*	1.5	180.0	2.0
+*	nc	os	*	2.4	180.0	2.0	# estimated, intrpol.
+*	nc	ss	*	2.4	180.0	2.0	# estimated, intrpol.
+*	n2	p2	*	2.7	180.0	2.0	# estimated, intrpol.
+*	n2	pe	*	2.7	180.0	2.0	# estimated, intrpol.
+*	n2	pf	*	2.7	180.0	2.0	# estimated, intrpol.
+*	ne	pf	*	2.7	180.0	2.0	# estimated, intrpol.
+*	n2	pc	*	2.7	180.0	2.0	# estimated, intrpol.
+*	n2	pd	*	2.7	180.0	2.0	# estimated, intrpol.
+*	nc	p2	*	2.7	180.0	2.0	# estimated, intrpol.
+*	nd	p2	*	2.7	180.0	2.0	# estimated, intrpol.
+*	nc	pc	*	3.3	180.0	2.0	# estimated, intrpol.
+*	nd	pd	*	3.3	180.0	2.0	# estimated, intrpol.
+*	nd	pc	*	3.3	180.0	2.0	# estimated, intrpol. 
+*	nc	pd	*	3.3	180.0	2.0	# estimated, intrpol. 
+*	ne	pe	*	0.3	0.0	1.0	# single bond
+*	nf	pf	*	0.3	0.0	1.0	# single bond
+*	n2	p3	*	2.1	180.0	2.0
+*	n2	p4	*	6.65	180.0	2.0	# estimated	!!!
+*	ne	p4	*	6.65	180.0	2.0	# estimated	!!!
+*	nf	p4	*	6.65	180.0	2.0	# estimated	!!!
+*	n2	p5	*	10	180.0	2.0	# estimated	!!!
+*	ne	p5	*	1.5	180.0	3.0
+*	nf	p5	*	1.5	180.0	3.0
+*	ne	px	*	1.5	180.0	3.0
+*	nf	px	*	1.5	180.0	3.0
+*	n2	sh	*	1.05	180.0	2.0
+*	ne	sh	*	1.05	180.0	2.0
+*	nf	sh	*	1.05	180.0	2.0
+*	n2	ss	*	1.4	180.0	-2.0
+*	n2	ss	*	0.65	180.0	1.0
+*	ne	ss	*	1.4	180.0	-2.0
+*	ne	ss	*	0.65	180.0	1.0
+*	nf	ss	*	1.4	180.0	-2.0
+*	nf	ss	*	0.65	180.0	1.0
+*	n2	s4	*	6.65	180.0	2.0	# estimated !!!
+*	ne	sx	*	1.5	180.0	3.0
+*	nf	sx	*	1.5	180.0	3.0
+*	n2	s6	*	10	180.0	2.0	# estimated	!!!
+*	ne	sy	*	0.75	180.0	-3.0
+*	ne	sy	*	10.2	180.0	1.0
+*	nf	sy	*	0.75	180.0	-3.0
+*	nf	sy	*	10.2	180.0	1.0
+*	n3	n3	*	4.5	0.0	2.0
+*	n3	n4	*	0.75	0.0	3.0
+*	n3	na	*	3.2	0.0	2.0
+*	n3	nh	*	3.8	0.0	2.0
+*	n3	no	*	8	180.0	2.0
+*	n3	oh	*	1.1	0.0	2.0
+*	n3	os	*	0.9	0.0	2.0
+*	n3	p2	*	3.2	180.0	2.0
+*	n3	pe	*	3.2	180.0	2.0
+*	n3	pf	*	3.2	180.0	2.0
+*	n3	p3	*	4.7	0.0	2.0
+*	n3	p4	*	4.2	180.0	2.0
+*	n3	px	*	4.2	180.0	2.0
+*	n3	p5	*	9	180.0	2.0
+*	n3	py	*	9	180.0	2.0
+*	n3	sh	*	1.55	0.0	2.0
+*	n3	ss	*	1.3	0.0	2.0
+*	n3	s4	*	7.5	0.0	2.0
+*	n3	sx	*	7.5	0.0	2.0
+*	n3	s6	*	9.4	0.0	2.0
+*	n3	sy	*	9.4	0.0	2.0
+*	n4	n4	*	0.85	0.0	3.0
+*	n4	na	*	0.7	0.0	3.0
+*	n4	nh	*	0.55	0.0	3.0
+*	n4	no	*	0.25	180.0	3.0
+*	n4	oh	*	0.5	0.0	3.0
+*	n4	os	*	0.85	0.0	3.0
+*	n4	p2	*	0.25	180.0	3.0
+*	n4	pe	*	0.25	180.0	3.0
+*	n4	pf	*	0.25	180.0	3.0
+*	n4	p3	*	0.45	0.0	3.0
+*	n4	p4	*	0.1	0.0	3.0
+*	n4	px	*	0.1	0.0	3.0
+*	n4	p5	*	0.4	0.0	3.0
+*	n4	py	*	0.4	0.0	3.0
+*	n4	sh	*	1	0.0	3.0
+*	n4	ss	*	0.5	0.0	3.0
+*	n4	s4	*	0.85	0.0	3.0
+*	n4	sx	*	0.85	0.0	3.0
+*	n4	s6	*	0.6	0.0	3.0
+*	n4	sy	*	0.6	0.0	3.0
+*	na	na	*	1.8	0.0	2.0
+*	na	nh	*	2.4	0.0	2.0
+*	na	no	*	12	180.0	2.0
+*	na	oh	*	1	0.0	2.0
+*	na	os	*	0.65	0.0	2.0
+*	na	p2	*	0.5	180.0	2.0
+*	na	pe	*	0.5	180.0	2.0
+*	na	pf	*	0.5	180.0	2.0
+*	na	p3	*	2.9	0.0	2.0
+*	na	p4	*	2.2	0.0	3.0
+*	na	px	*	2.2	0.0	3.0
+*	na	p5	*	2.5	180.0	2.0
+*	na	py	*	2.5	180.0	2.0
+*	na	sh	*	1.8	0.0	2.0
+*	na	ss	*	7.8	0.0	2.0
+*	na	s4	*	2.1	0.0	2.0
+*	na	sx	*	2.1	0.0	2.0
+*	na	s6	*	11	180.0	2.0
+*	na	sy	*	11	180.0	2.0
+*	nh	nh	*	3.6	180.0	3.0
+*	nh	no	*	5.1	180.0	2.0
+*	nh	oh	*	1.5	0.0	2.0
+*	nh	os	*	1.5	0.0	1.0
+*	nh	p2	*	1.4	180.0	2.0
+*	nh	pe	*	1.4	180.0	2.0
+*	nh	pf	*	1.4	180.0	2.0
+*	nh	p3	*	4.7	0.0	2.0
+*	nh	p4	*	2.35	0.0	3.0
+*	nh	px	*	2.35	0.0	3.0
+*	nh	p5	*	2.4	0.0	2.0
+*	nh	py	*	2.4	0.0	2.0
+*	nh	sh	*	1.6	0.0	2.0
+*	nh	ss	*	2.1	0.0	2.0
+*	nh	s4	*	1.5	0.0	-2.0
+*	nh	s4	*	0.2	180.0	3.0
+*	nh	sx	*	1.5	0.0	-2.0
+*	nh	sx	*	0.2	180.0	3.0
+*	nh	s6	*	0.3	180.0	2.0
+*	nh	sy	*	0.3	180.0	2.0
+*	no	no	*	0.8	180.0	-4.0
+*	no	no	*	3.6	180.0	2.0
+*	no	oh	*	3.9	180.0	2.0
+*	no	os	*	3	180.0	2.0
+*	no	p2	*	0.15	180.0	2.0
+*	no	pe	*	0.15	180.0	2.0
+*	no	pf	*	0.15	180.0	2.0
+*	no	p3	*	3.8	180.0	2.0
+*	no	p4	*	1.15	180.0	2.0
+*	no	px	*	1.15	180.0	2.0
+*	no	p5	*	7.2	0.0	-2.0
+*	no	p5	*	1.2	0.0	3.0
+*	no	py	*	7.2	0.0	-2.0
+*	no	py	*	1.2	0.0	3.0
+*	no	sh	*	2.3	180.0	2.0
+*	no	ss	*	2.7	180.0	2.0
+*	no	s4	*	5.2	180.0	2.0
+*	no	sx	*	5.2	180.0	2.0
+*	no	s6	*	1	0.0	2.0
+*	no	sy	*	1	0.0	2.0
+*	oh	oh	*	0.8	0.0	2.0
+*	oh	os	*	0.8	0.0	2.0
+*	oh	p2	*	0.75	180.0	2.0
+*	oh	pe	*	0.75	180.0	2.0
+*	oh	pf	*	0.75	180.0	2.0
+*	oh	p3	*	0.4	180.0	3.0
+*	oh	p4	*	0.7	0.0	1.0
+*	oh	px	*	0.7	0.0	1.0
+*	oh	p5	*	0.8	0.0	3.0
+*	oh	py	*	0.8	0.0	3.0
+*	oh	sh	*	1.2	0.0	2.0
+*	oh	ss	*	1.2	0.0	2.0
+*	oh	s4	*	5	0.0	1.0
+*	oh	sx	*	5	0.0	1.0
+*	oh	s6	*	14.25	180.0	1.0
+*	oh	sy	*	14.25	180.0	1.0
+*	os	os	*	0.5	0.0	1.0
+*	os	ss	*	1.1	0.0	2.0
+*	os	sh	*	0.9	0.0	2.0
+*	os	s4	*	1.65	0.0	3.0
+*	os	sx	*	1.65	0.0	3.0
+*	os	s6	*	1.8	180.0	2.0
+*	os	sy	*	1.8	180.0	2.0
+*	os	p2	*	1.5	180.0	-2.0
+*	os	p2	*	1	180.0	1.0
+*	os	pe	*	1.5	180.0	-2.0
+*	os	pe	*	1	180.0	1.0
+*	os	pf	*	1.5	180.0	-2.0
+*	os	pf	*	1	180.0	1.0
+*	os	p3	*	2.2	0.0	2.0
+*	os	p4	*	1.05	180.0	2.0
+*	os	px	*	1.05	180.0	2.0
+*	os	p5	*	1.2	0.0	2.0
+*	os	py	*	1.2	0.0	2.0
+*	p2	p2	*	3.3	180.0	2.0	# estimated, intrpol.
+*	p2	pe	*	3.3	180.0	2.0	# estimated, intrpol.
+*	p2	pf	*	3.3	180.0	2.0	# estimated, intrpol.
+*	p2	pc	*	3.3	180.0	2.0	# estimated, intrpol.
+*	p2	pd	*	3.3	180.0	2.0	# estimated, intrpol.
+*	pe	pe	*	0.6	180.0	2.0	# single bond
+*	pf	pf	*	0.6	180.0	2.0	# single bond
+*	pc	pc	*	3.6	180.0	2.0	# estimated, intrpol. 
+*	pd	pd	*	3.6	180.0	2.0	# estimated, intrpol.	
+*	pc	pd	*	3.6	180.0	2.0	# estimated, intrpol. 
+*	p2	p3	*	1.2	0.0	1.0
+*	pe	p3	*	1.2	0.0	1.0
+*	pf	p3	*	1.2	0.0	1.0
+*	p2	p4	*	6.65	180.0	2.0	# estimated	!!!
+*	pe	px	*	2.45	0.0	2.0
+*	pf	px	*	2.45	0.0	2.0
+*	p2	p5	*	10	180.0	2.0	# estimated	!!!
+*	pe	py	*	2.85	0.0	1.0
+*	pf	py	*	2.85	0.0	1.0
+*	p2	sh	*	0.7	180.0	2.0
+*	pe	sh	*	0.7	180.0	2.0
+*	pf	sh	*	0.7	180.0	2.0
+*	p2	ss	*	0.7	180.0	2.0
+*	pe	ss	*	0.7	180.0	2.0
+*	pf	ss	*	0.7	180.0	2.0
+*	p2	s4	*	6.65	180.0	2.0	# estimated !!!
+*	pe	sx	*	1.5	0.0	2.0
+*	pf	sx	*	1.5	0.0	2.0
+*	p2	s6	*	10	180.0	2.0	# estimated !!!
+*	pe	sy	*	0.6	180.0	3.0
+*	pf	sy	*	0.6	180.0	3.0
+*	p3	p3	*	1	0.0	3.0
+*	p3	p4	*	1.8	0.0	1.0
+*	p3	px	*	1.8	0.0	1.0
+*	p3	p5	*	5.5	180.0	2.0
+*	p3	py	*	5.5	180.0	2.0
+*	p3	sh	*	4.6	0.0	2.0
+*	p3	ss	*	1.15	0.0	3.0
+*	p3	ss	*	1.15	0.0	3.0
+*	p3	s4	*	7.7	0.0	2.0
+*	p3	sx	*	7.7	0.0	2.0
+*	p3	s6	*	0.8	0.0	3.0
+*	p3	sy	*	0.8	0.0	3.0
+*	p4	p4	*	13.3	180.0	2.0	# estimated	!!!
+*	px	px	*	2.9	180.0	2.0
+*	p4	p5	*	19.95	180.0	2.0	# estimated	!!!
+*	px	py	*	0.95	180.0	2.0
+*	p4	s4	*	13.3	180.0	2.0	# estimated	!!!
+*	px	sx	*	1.7	0.0	1.0
+*	p4	s6	*	19.95	180.0	2.0	# estimated	!!!
+*	px	sy	*	0.35	0.0	3.0
+*	p4	sh	*	0.25	180.0	1.0
+*	px	sh	*	0.25	180.0	1.0
+*	p4	ss	*	0.6	180.0	2.0
+*	px	ss	*	0.6	180.0	2.0
+*	p5	p5	*	30	180.0	2.0	# estimated	!!!
+*	py	py	*	2.7	0.0	2.0
+*	p5	sh	*	0.45	0.0	3.0
+*	py	sh	*	0.45	0.0	3.0
+*	p5	ss	*	5.7	180.0	2.0
+*	py	ss	*	5.7	180.0	2.0
+*	p5	s4	*	20	180.0	2.0	# estimated	!!!
+*	py	sx	*	0.8	0.0	3.0
+*	p5	s6	*	30	180.0	2.0	# estimated	!!!
+*	py	sy	*	1.25	0.0	3.0
+*	sh	sh	*	2.8	0.0	3.0
+*	sh	ss	*	2.65	0.0	3.0
+*	sh	s4	*	0.7	0.0	3.0
+*	sh	sx	*	0.7	0.0	3.0
+*	sh	s6	*	7	180.0	2.0
+*	sh	sy	*	7	180.0	2.0
+*	ss	ss	*	0	0.0	3.0
+*	ss	s4	*	0.3	0.0	3.0
+*	ss	sx	*	0.3	0.0	3.0
+*	ss	s6	*	4.6	180.0	2.0
+*	ss	sy	*	4.6	180.0	2.0
+*	s4	s4	*	13.3	180.0	2.0	# estimated !!!
+*	sx	sx	*	1.25	0.0	3.0
+*	s4	s6	*	20	180.0	2.0	# estimated !!!
+*	sx	sy	*	13	180.0	2.0
+*	s6	s6	*	30	180.0	2.0	# estimated !!!
+*	sy	sy	*	0.7	180.0	2.0
+c3	c	sh	hs	1.125	180.0	-2.0
+c3	c	sh	hs	0.65	180.0	1.0
+c2	c2	ss	c3	0.55	180.0	-2.0
+c2	c2	ss	c3	0.35	180.0	3.0
+c2	c2	n	c	0.325	180.0	-2.0
+c2	c2	n	c	0.6	180.0	1.0
+c	n	p2	c2	0.5	180.0	-2.0
+c	n	p2	c2	0.95	180.0	1.0
+n	c3	c	n	0.85	180.0	-1.	
+n	c3	c	n	1	180.0	2.	
+c	n	c3	c	0.425	180.0	-2.	
+c	n	c3	c	0.4	0.0	1.	
+c3	c3	n	c	0.25	180.0	-4.	# phi,psi,parm94
+c3	c3	n	c	0.075	180.0	-3.	# phi,psi,parm94
+c3	c3	n	c	0.265	0.0	1.	# phi,psi,parm94
+c3	c3	c	n	0.05	0.0	-4.	# phi,psi,parm94
+c3	c3	c	n	0.035	0.0	2.	# phi,psi,parm94
+c2	ne	p5	o	1.15	0.0	1.	# phi,psi,parm94
+c2	nf	p5	o	1.15	0.0	1.	# phi,psi,parm94
+ce	ne	p5	o	1.15	0.0	1.	# phi,psi,parm94
+ce	nf	p5	o	1.15	0.0	1.	# phi,psi,parm94
+cf	ne	p5	o	1.15	0.0	1.	# phi,psi,parm94
+cf	nf	p5	o	1.15	0.0	1.	# phi,psi,parm94
+hn	n	c	o	1.25	180.0	-2.	# JCC,7,(1986),230
+hn	n	c	o	1	0.0	1.	# J.C.cistrans-NMA DE
+c3	ss	ss	c3	1.75	0.0	-2.	# JCC,7,(1986),230
+c3	ss	ss	c3	0.3	0.0	3.	# JCC,7,(1986),230
+c3	n3	nh	ca	0.95	0.0	-2.	
+c3	n3	nh	ca	0.95	0.0	3.	
+c3	n3	p5	o	1.5	180.0	-2.	
+c3	n3	p5	o	1.15	0.0	3.	
+ca	nh	oh	ho	0.6	0.0	-1.	
+ca	nh	oh	ho	1.5	0.0	2.	
+oh	p5	os	c3	0.125	0.0	-3.	# JCC,7,(1986),230
+oh	p5	os	c3	0.6	0.0	2.	# gg&gt ene.631g*/mp2
+os	p5	os	c3	0.125	0.0	-3.	# JCC,7,(1986),230
+os	p5	os	c3	0.6	0.0	2.	# gg&gt ene.631g*/mp2
+h1	c3	c	o	0.4	0.0	-1.	# Junmei et al, 1999
+h1	c3	c	o	0.04	180.0	3.	# Junmei et al, 1999
+hc	c3	c	o	0.4	0.0	-1.	# Junmei et al, 1999
+hc	c3	c	o	0.04	180.0	3.	# Junmei et al, 1999
+hc	c3	c3	hc	0.075	0.0	3.	# Junmei et al, 1999
+hc	c3	c3	c3	0.08	0.0	3.	# Junmei et al, 1999
+hc	c3	c2	c2	0.19	180.0	-3.	# Junmei et al, 1999
+hc	c3	c2	c2	0.575	0.0	1.	# Junmei et al, 1999
+ho	oh	c3	c3	0.08	0.0	-3.	# Junmei et al, 1999
+ho	oh	c3	c3	0.125	0.0	1.	# Junmei et al, 1999
+ho	oh	c	o	1.15	180.0	-2.	# Junmei et al, 1999
+ho	oh	c	o	0.95	0.0	1.	# Junmei et al, 1999
+c2	c2	c	o	1.0875	180.0	-2.	# Junmei et al, 1999
+c2	c2	c	o	0.15	0.0	3.	# Junmei et al, 1999
+c3	c2	c2	c3	3.325	180.0	-2.	# Junmei et al, 1999
+c3	c2	c2	c3	0.95	180.0	1.	# Junmei et al, 1999
+c3	c3	c3	c3	0.09	0.0	-3.	# Junmei et al, 1999
+c3	c3	c3	c3	0.125	180.0	-2.	# Junmei et al, 1999
+c3	c3	c3	c3	0.1	180.0	1.	# Junmei et al, 1999
+c3	c3	n3	c3	0.15	0.0	-3.	# Junmei et al, 1999
+c3	c3	n3	c3	0.24	180.0	2.	# Junmei et al, 1999
+c3	c3	os	c3	0.1915	0.0	-3.	
+c3	c3	os	c3	0.05	180.0	2.	
+c3	c3	os	c	0.1915	0.0	-3.	# Junmei et al, 1999
+c3	c3	os	c	0.4	180.0	1.	# Junmei et al, 1999
+c3	os	c3	os	0.05	0.0	-3.	# Junmei et al, 1999
+c3	os	c3	os	0.425	180.0	-2.	# Junmei et al, 1999
+c3	os	c3	os	0.675	180.0	1.	# Junmei et al, 1999
+c3	os	c3	na	0.1915	0.0	-3.	# parm98.dat, TC,PC,PAK
+c3	os	c3	na	0.325	0.0	2.	# Piotr et al.
+o	c	os	c3	1.35	180.0	-2.	# Junmei et al, 1999
+o	c	os	c3	0.7	180.0	1.	# Junmei et al, 1999
+os	c3	na	c2	0	000.0	-2.	# parm98, TC,PC,PAK
+os	c3	na	c2	1.25	0.0	1.	# parm98, TC,PC,PAK
+os	c3	c3	os	0.072	0.0	-3.	# parm98, TC,PC,PAK
+os	c3	c3	os	0.5875	0.0	2.	# Piotr et al.
+os	c3	c3	oh	0.072	0.0	-3.	# parm98, TC,PC,PAK
+os	c3	c3	oh	0.5875	0.0	2.	# parm98, TC,PC,PAK
+oh	c3	c3	oh	0.072	0.0	-3.	# parm98, TC,PC,PAK
+oh	c3	c3	oh	0.5875	0.0	2.	# parm98, TC,PC,PAK
+f	c3	c3	f	0.6	180.0	1.	# Junmei et al, 1999
+cl	c3	c3	cl	0.225	180.0	1.	# Junmei et al, 1999
+br	c3	c3	br	0	180.0	1.	# Junmei et al, 1999
+h1	c3	c3	os	0.125	0.0	1.	# Junmei et al, 1999
+h1	c3	c3	oh	0.125	0.0	1.	# Junmei et al, 1999
+h1	c3	c3	f	0.095	0.0	1.	# Junmei et al, 1999
+h1	c3	c3	cl	0.125	0.0	1.	# Junmei et al, 1999
+h1	c3	c3	br	0.275	0.0	1.	# Junmei et al, 1999
+hc	c3	c3	os	0.125	0.0	1.	# Junmei et al, 1999
+hc	c3	c3	oh	0.125	0.0	1.	# Junmei et al, 1999
+hc	c3	c3	f	0.095	0.0	1.	# Junmei et al, 1999
+hc	c3	c3	cl	0.125	0.0	1.	# Junmei et al, 1999
+hc	c3	c3	br	0.275	0.0	1.	# Junmei et al, 1999
+*	o	c	o	0.55	180.	2.	# JCC,7,(1986),230
+*	*	c	o	5.25	180.	2.	# JCC,7,(1986),230
+*	*	ca	hc	0.55	180.	2.	# bsd.on C6H6 nmodes
+*	*	n	hn	0.55	180.	2.	# JCC,7,(1986),230
+*	*	n2	Hn	0.55	180.	2.	# JCC,7,(1986),230
+*	*	na	hn	0.55	180.	2.	# JCC,7,(1986),230
+*	c3	n	c3	0.55	180.	2.	# JCC,7,(1986),230
+*	n2	ca	n2	5.25	180.	2.	# JCC,7,(1986),230
+c	c2	c2	c3	0.55	180.	2.	# dac guess, 9/94
+c	ca	ca	c3	0.55	180.	2.	# dac guess, 9/94
+c	c3	n	hn	0.55	180.	2.	# Junmei et al.1999
+c	c3	n	o	0.55	180.	2.	# Junmei et al.1999
+c2	c2	na	c3	0.55	180.	2.	
+c2	c	c2	c3	0.55	180.	2.	
+c3	o	c	oh	0.55	180.	2.	
+c2	c3	c2	hc	0.55	180.	2.	# Junmei et al.1999
+c2	c3	ca	hc	0.55	180.	2.	# Junmei et al.1999
+c2	hc	c	o	0.55	180.	2.	# Junmei et al.1999
+c3	o	c	oh	0.55	180.	2.	
+c3	c2	c2	n2	0.55	180.	2.	
+c3	c2	c2	na	0.55	180.	2.	
+c3	ca	ca	n2	0.55	180.	2.	
+c3	ca	ca	na	0.55	180.	2.	
+ca	ca	ca	c2	0.55	180.	2.	
+ca	ca	ca	c3	0.55	180.	2.	
+ca	ca	ca	f	0.55	180.	2.	# Junmei et al.1999
+ca	ca	ca	cl	0.55	180.	2.	# Junmei et al.1999
+ca	ca	ca	br	0.55	180.	2.	# Junmei et al.1999
+ca	ca	ca	i	0.55	180.	2.	# Junmei et al.1999
+ca	ca	c	oh	0.55	180.	2.	# (not used in tyr!)
+ca	ca	na	c3	0.55	180.	2.	
+ca	c	ca	c3	0.55	180.	2.	
+ca	hc	c	o	0.55	180.	2.	# Junmei et al.1999
+ca	n2	ca	n2	0.55	180.	2.	# dac, 10/94
+hc	o	c	oh	0.55	180.	2.	# Junmei et al.1999
+hc	o	c	os	0.55	180.	2.	
+n2	c2	ca	n2	0.55	180.	2.	# dac guess, 9/94
+n2	ca	ca	c3	0.55	180.	2.	
+n2	ca	ca	n2	0.55	180.	2.	# dac guess, 9/94
+na	ca	ca	c3	0.55	180.	2.	
+na	n2	ca	n2	0.55	180.	2.	# dac, 10/94
+*	*	*	*	0.55	180.	2.	# dac, 10/94
+end
+

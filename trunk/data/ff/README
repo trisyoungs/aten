@@ -1,0 +1,10 @@
+Forcefields supplied with Aten are, to the best intentions, complete and accurate, but no
+guarantee of this is made (its free software after all). It is wise to check by hand the 
+types applied to your system by Aten, at least until you are confident that everything is
+okay with a forcefield.  OPLS-AA  in particular is very large and missing many descriptions.
+
+So, be thorough and check any forcefield expressions you export. If you find any mistakes or
+add any useful information to a forcefield, please contact me so the files can be updated.
+
+tris@projectaten.net
+
