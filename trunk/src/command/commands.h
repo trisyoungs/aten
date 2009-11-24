@@ -480,6 +480,8 @@ class Command
 		FToA,
 		IToA,
 		ReplaceChars,
+		ReplaceStr,
+		RemoveStr,
 		StripChars,
 
 		// System commands
@@ -896,6 +898,8 @@ class Command
 	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
 	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -264,10 +264,11 @@ void Dnchar::operator+=(char c)
 }
 
 // String addition
-void Dnchar::cat(const char *s)
+void Dnchar::cat(const char *s, int charcount)
 {
 	// Check whether we need to reallocate
 	int slen = strlen(s);
+	if ((charcount != -1) && (charcount <= slen)) slen = charcount;
 	if ((slen+endPosition_) > (size_-1))
 	{
 		size_ = slen+endPosition_+1;
@@ -286,7 +287,9 @@ void Dnchar::cat(const char *s)
 			return;
 		}
 		data_[endPosition_] = *c;
-		endPosition_ ++;
+		++endPosition_;
+		--slen;
+		if (slen == 0) break;
 	}
 	data_[endPosition_] = '\0';
 }
