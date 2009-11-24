@@ -536,17 +536,17 @@ void Grid::setData(int x, int y, int z, double d)
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= nPoints_.x))
 	{
-		msg.print("X index %i is outside array bounds (0--%i) for grid data.\n", x, nPoints_.x-1);
+		msg.print("X index %i is outside array bounds (0 to %i) for grid data.\n", x, nPoints_.x-1);
 		return;
 	}
 	else if ((y < 0) || (y >= nPoints_.y))
 	{
-		msg.print("Y index %i is outside array bounds (0--%i) for grid data.\n", y, nPoints_.y-1);
+		msg.print("Y index %i is outside array bounds (0 to %i) for grid data.\n", y, nPoints_.y-1);
 		return;
 	}
 	else if ((type_ == Grid::SurfaceData) && ((z < 0) || (z >= nPoints_.z)))
 	{
-		msg.print("Z index %i is outside array bounds (0--%i) for grid data.\n", z, nPoints_.z-1);
+		msg.print("Z index %i is outside array bounds (0 to %i) for grid data.\n", z, nPoints_.z-1);
 		return;
 	}
 	// Okay, so store data
@@ -568,6 +568,7 @@ void Grid::setNextData(double d)
 	// Set current point referenced by currentpoint and increase it
 	if (type_ == Grid::VolumetricData)
 	{
+		currentPoint_.print();
 		data3d_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
 		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
 		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))

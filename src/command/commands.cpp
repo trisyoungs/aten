@@ -918,7 +918,7 @@ CommandData Command::data[Command::nCommands] = {
 		"Read a line from the input file, and parse into supplied variables using format string" },
 	{ "readnext",		"^Z",		VTypes::IntegerData,
 		"string|int|double var",
-		"Read the next delimited item from the file and place in the variable supplied" },
+		"Read the next delimited item from the last line read with 'getline' and place in the variable supplied" },
 	{ "readvar",		"C^z*",		VTypes::IntegerData,
 		"Parse delimited arguments from a character variable" },
 	{ "readvarf",		"CC^z*",	VTypes::IntegerData,
