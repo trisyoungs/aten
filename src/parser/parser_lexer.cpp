@@ -55,7 +55,7 @@ int CommandParser::lex()
 	token[0] = '\0';
 
 	// Skip over whitespace
-	while ((c = getChar()) == ' ' || c == '\t' || c == '\r');
+	while ((c = getChar()) == ' ' || c == '\t' || c == '\r' || c == '\n' );
 
 	if (c == 0) return 0;
 
