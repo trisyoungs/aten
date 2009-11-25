@@ -368,12 +368,12 @@ int Aten::parseCli(int argc, char *argv[])
 					if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
 					{
 						script = aten.addBatchCommand();
-						if (!script->generate(argtext.get(), "batchcommand")) return -1;
+						if (!script->generateFromString(argtext.get(), "batchcommand")) return -1;
 					}
 					else
 					{
 						tempforest.clear();
-						if (tempforest.generate(argtext.get(), "CLI command"))
+						if (tempforest.generateFromString(argtext.get(), "CLI command"))
 						{
 							if (!tempforest.executeAll(rv)) return -1;
 						}
@@ -452,7 +452,7 @@ int Aten::parseCli(int argc, char *argv[])
 						linelen = strlen(s);
 						if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
 						aten.interactiveScript.clear();
-						if (aten.interactiveScript.generate(s)) aten.interactiveScript.executeAll(rv);
+						if (aten.interactiveScript.generateFromString(s)) aten.interactiveScript.executeAll(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;
@@ -567,6 +567,36 @@ int Aten::parseCli(int argc, char *argv[])
 			else f = aten.probeFile(argv[argn], FilterData::ModelImport);
 			if (f != NULL) f->executeRead(argv[argn]);
 			else return -1;
+		}
+	}
+	// Anything redirected to stdin?
+	if ((!cin.eof()) && cin.good())
+	{
+		// Grab all content from cin to a temporary string....
+		cin.seekg(0,ios::end);
+		int buflen = cin.tellg();
+		if (buflen > 0)
+		{
+			cin.seekg(0, ios::beg);
+			char *buf = new char[buflen+1];
+			// read data as a block:
+			cin.read(buf,buflen);
+			buf[buflen] = '\0';
+			if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
+			{
+				script = aten.addBatchCommand();
+				if (!script->generateFromString(buf, "batchcommand")) return -1;
+			}
+			else
+			{
+				tempforest.clear();
+				if (tempforest.generateFromString(buf, "CLI command (cin)"))
+				{
+					if (!tempforest.executeAll(rv)) return -1;
+				}
+				else return -1;
+			}
+			delete[] buf;
 		}
 	}
 	return aten.nModels();

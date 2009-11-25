@@ -361,7 +361,7 @@ void AtenForm::executeCommand()
 	int linelen = strlen(s);
 	if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
 	// Grab the current text of the line edit
-	if (aten.tempScript.generate(s))
+	if (aten.tempScript.generateFromString(s))
 	{
 		ReturnValue result;
 		aten.tempScript.executeAll(result);

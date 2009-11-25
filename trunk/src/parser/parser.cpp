@@ -129,15 +129,32 @@ void CommandParser::unGetChar()
 // Tree Generation
 */
 
-// Fill target forest from specified character string
-bool CommandParser::generate(Forest *f, const char *s)
+// Perform tree generation (base function, called by generateFrom*)
+bool CommandParser::generate()
 {
-	msg.enter("CommandParser::generate[string]");
+	msg.enter("CommandParser::generate");
+	expectPathStep_ = FALSE;
+	// Perform the parsing
+	int result = yyparse();
+	if (result != 0)
+	{
+		printErrorInfo();
+		forest_->clear();
+	}
+	forest_ = NULL;
+	msg.exit("CommandParser::generate");
+	return (result != 0 ? FALSE : TRUE);
+}
+
+// Fill target forest from specified character string
+bool CommandParser::generateFromString(Forest *f, const char *s)
+{
+	msg.enter("CommandParser::generateFromString");
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
-		printf("Internal Error: No Forest passed to CommandParser::generate().\n");
-		msg.exit("CommandParser::generate[string]");
+		printf("Internal Error: No Forest passed to CommandParser::generateFromString.\n");
+		msg.exit("CommandParser::generateFromString");
 		return FALSE;
 	}
 	forest_ = f;
@@ -149,32 +166,20 @@ bool CommandParser::generate(Forest *f, const char *s)
 	stringLength_ = stringSource_.length();
 	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
 	isFileSource_ = FALSE;
-	expectPathStep_ = FALSE;
-	// Perform the parsing
-	int result = yyparse();
-	if (result != 0)
-	{
-		printErrorInfo();
-		forest_->clear();
-		forest_ = NULL;
-		msg.exit("CommandParser::generate[string]");
-		return FALSE;
-	}
-	forest_ = NULL;
-	msg.exit("CommandParser::generate[string]");
-	return TRUE;
+	bool result = generate();
+	msg.exit("CommandParser::generateFromString");
+	return result;
 }
 
 // Fill target forest from specified character string
 bool CommandParser::generateFromFile(Forest *f, const char *filename)
 {
-	msg.enter("CommandParser::generate[file]");
-	bool result = TRUE;
+	msg.enter("CommandParser::generateFromFile");
 	// Clear any data in the existing forest
 	if (f == NULL)
 	{
-		printf("Internal Error: No Forest passed to CommandParser::generate().\n");
-		msg.exit("CommandParser::generate[file]");
+		printf("Internal Error: No Forest passed to CommandParser::generateFromFile.\n");
+		msg.exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
 	forest_ = f;
@@ -185,25 +190,16 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	if (!parser_.isFileGood())
 	{
 		msg.print("Error: File '%s' could not be opened.\n", filename);
-		msg.exit("CommandParser::generate[file]");
+		msg.exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
 	// Set initial string pos and string length so we read in a line on the first getChar.
 	stringPos_ = 0;
 	stringLength_ = 0;
 	isFileSource_ = TRUE;
-	expectPathStep_ = FALSE;
-	// Perform the parsing
-	if (yyparse() != 0)
-	{
-		printErrorInfo();
-		forest_->clear();
-		result = FALSE;
-	}
-	parser_.closeFile();
-	isFileSource_ = NULL;
-	forest_ = NULL;
-	msg.exit("CommandParser::generate[file]");
+	bool result = generate();
+	isFileSource_ = FALSE;
+	msg.exit("CommandParser::generateFromFile");
 	return result;
 }
 

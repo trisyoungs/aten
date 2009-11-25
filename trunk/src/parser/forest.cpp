@@ -135,14 +135,14 @@ Tree *Forest::findGlobalFunction(const char *name)
 }
 
 // Generate forest from string 
-bool Forest::generate(const char *s, const char *name)
+bool Forest::generateFromString(const char *s, const char *name)
 {
-	msg.enter("Forest::generate[string]");
+	msg.enter("Forest::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
-	bool result = cmdparser.generate(this, s);
+	bool result = cmdparser.generateFromString(this, s);
 	finalise();
-	msg.exit("Forest::generate[string]");
+	msg.exit("Forest::generateFromString");
 	return result;
 }
 

@@ -90,9 +90,11 @@ class CommandParser : public Tree
 	Tree *tree_;
 	// Stack of created trees
 	Reflist<Tree,bool> stack_;
+	// Perform tree generation (base function, called by generateFrom*)
+	bool generate();
 	// Populate target forest from specified character string
-	bool generate(Forest *f, const char *s);
-	// Populate target forest from specified file
+	bool generateFromString(Forest *f, const char *s);
+	// Populate target forest from specified file(name)
 	bool generateFromFile(Forest *f, const char *filename);
 
 	public:
