@@ -441,6 +441,7 @@ void Command::initPointers()
 	pointers_[ReplaceStr] = &Command::function_ReplaceStr;
 	pointers_[RemoveStr] = &Command::function_RemoveStr;
 	pointers_[StripChars] = &Command::function_StripChars;
+	pointers_[ToA] = &Command::function_ToA;
 
 	// System Commands
 	pointers_[Debug] = &Command::function_Debug;

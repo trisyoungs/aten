@@ -55,6 +55,7 @@ bool CommandNode::prepFunction()
 		case (Command::Verbose):
 		case (Command::ReadLineFormatted):
 		case (Command::WriteLineFormatted):
+		case (Command::ToA):
 			if (!args_.first()->item->readOnly()) break;
 			result = createFormat(0,1);
 			break;

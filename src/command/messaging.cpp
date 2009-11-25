@@ -28,7 +28,7 @@ bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
-		printf("Warning - No format defined in 'error' command.\n");
+		printf("Error - No format defined in 'error' command.\n");
 		return FALSE;
 	}
 	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
@@ -41,7 +41,7 @@ bool Command::function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
-		printf("Warning - No format defined in 'printf' command.\n");
+		printf("Error - No format defined in 'printf' command.\n");
 		return FALSE;
 	}
 	if (fmt->writeToString()) msg.print("%s",fmt->string());
@@ -54,7 +54,7 @@ bool Command::function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Format *fmt = c->createFormat(0,1);
 	if (fmt == NULL)
 	{
-		printf("Warning - No format defined in 'verbose' command.\n");
+		printf("Error - No format defined in 'verbose' command.\n");
 		return FALSE;
 	}
 	if (!msg.isOutputActive(Messenger::Verbose)) return TRUE;

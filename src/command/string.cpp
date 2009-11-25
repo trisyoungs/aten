@@ -97,9 +97,10 @@ bool Command::function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Dnchar newstr(1024);
-	const char *s = c->argc(0), *orig = s;
+	const char *s = c->argc(0);
 	char *srch;
 	int replacelen = strlen(c->argc(2)), searchlen = strlen(c->argc(1));
+// 	printf("Original [%s], search [%s], replace [%s]\n", s, c->argc(1), c->argc(2));
 // 	printf("Strlen = %i\n", replacelen);
 	while (s != NULL)
 	{
@@ -156,4 +157,19 @@ bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( stripChars(c->argc(0), c->argc(1)) );
 	return TRUE;
+}
+
+// Return string based on supplied format and arguments
+bool Command::function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Format *fmt = c->createFormat(0,1);
+	if (fmt == NULL)
+	{
+		printf("Error - No format defined in 'toa' command.\n");
+		return FALSE;
+	}
+	bool result = fmt->writeToString();
+	if (result) rv.set(fmt->string());
+	else rv.reset();
+	return result;
 }

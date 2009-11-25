@@ -1062,6 +1062,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "stripchars",		"CC",		VTypes::StringData,
 		"string source, string searchchars",
 		"Strip all occurrences of the supplied characters from the supplied string" },
+	{ "toa",		"Cz*",		VTypes::StringData,
+		"string format ...",
+		"Return a string formatted in the C printf style)" },
 
 	// System commands
 	{ "debug",		"C",		VTypes::NoData,
