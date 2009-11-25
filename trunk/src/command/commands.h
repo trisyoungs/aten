@@ -483,6 +483,7 @@ class Command
 		ReplaceStr,
 		RemoveStr,
 		StripChars,
+		ToA,
 
 		// System commands
 		Debug,
@@ -901,6 +902,7 @@ class Command
 	static bool function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
 	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Getenv(CommandNode *c, Bundle &obj, ReturnValue &rv);

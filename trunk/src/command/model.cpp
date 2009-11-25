@@ -293,9 +293,15 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	obj.rs->setFilter(filter);
 	obj.rs->setFilename(c->argc(1));
-	bool result = filter->executeWrite(c->argc(1));
+	bool result = filter->executeWrite(obj.rs->filename());
+	if (result)
+	{
+		obj.rs->changeLog.updateSavePoint();
+		msg.print("Model '%s' saved to file '%s' (%s)\n", obj.rs->name(), obj.rs->filename(), filter->filter.name());
+	}
+	else msg.print("Failed to save model '%s'.\n", obj.rs->name());
 	rv.set(result);
-	return (result);
+	return result;
 }
 
 // Set name of current model ('setname <name>')

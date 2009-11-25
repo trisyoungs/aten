@@ -61,6 +61,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "fftorsions",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "fftypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "ff",			VTypes::ForcefieldData,		0, FALSE },
+	{ "filename",		VTypes::StringData,		0, TRUE },
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
@@ -275,6 +276,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::FField):
 			rv.set(VTypes::ForcefieldData, ptr->forcefield());
+			break;
+		case (ModelVariable::Filename):
+			rv.set(ptr->filename());
 			break;
 		case (ModelVariable::Frame):
 			rv.set(VTypes::ModelData, ptr->currentFrame());
