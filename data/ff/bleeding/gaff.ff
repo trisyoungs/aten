@@ -27,77 +27,81 @@ name "General AMBER Force Field (June 2003)"
 
 units kcal
 
+defines
+EWG	"N,O,S,P,Cl,Br,I,F"
+end
+
 types
-1	c	C	""	# 0.616 Sp2 C carbonyl group 
-2	c1	C	""	# 0.360 Sp C
-3	c2	C	""	# 0.360 Sp2 C  
-4	c3	C	""	# 0.878 Sp3 C
-5	ca	C	""	# 0.360 Sp2 C in pure aromatic systems
-6	cp	C	""	# 0.360 Head Sp2 C that connect two rings in biphenyl sys. 
-7	cq	C	""	# 0.360 Head Sp2 C that connect two rings in biphenyl sys. identical to cp 
-8	cc	C	""	# 0.360 Sp2 carbons in non-pure aromatic systems
-9	cd	C	""	# 0.360 Sp2 carbons in non-pure aromatic systems, identical to cc
-10	ce	C	""	# 0.360 Inner Sp2 carbons in conjugated systems
-11	cf	C	""	# 0.360 Inner Sp2 carbons in conjugated systems, identical to ce
-12	cg	C	""	# 0.360 Inner Sp carbons in conjugated systems
-13	ch	C	""	# 0.360 Inner Sp carbons in conjugated systems, identical to cg
-14	cx	C	""	# 0.360 Sp3 carbons in triangle systems
-15	cy	C	""	# 0.360 Sp3 carbons in square systems
-16	cu	C	""	# 0.360 Sp2 carbons in triangle systems
-17	cv	C	""	# 0.360 Sp2 carbons in square systems
-18	h1	H	""	# 0.135 H bonded to aliphatic carbon with 1 electrwd. group  
-19	h2	H	""	# 0.135 H bonded to aliphatic carbon with 2 electrwd. group 
-20	h3	H	""	# 0.135 H bonded to aliphatic carbon with 3 electrwd. group 
-21	h4	H	""	# 0.135 H bonded to non-sp3 carbon with 1 electrwd. group 
-22	h5	H	""	# 0.135 H bonded to non-sp3 carbon with 2 electrwd. group 
-23	ha	H	""	# 0.135 H bonded to aromatic carbon  
-24	hc	H	""	# 0.135 H bonded to aliphatic carbon without electrwd. group 
-25	hn	H	""	# 0.161 H bonded to nitrogen atoms
-26	ho	H	""	# 0.135 Hydroxyl group
-27	hp	H	""	# 0.135 H bonded to phosphate 
-28	hs	H	""	# 0.135 Hydrogen bonded to sulphur 
-29	hw	H	""	# 0.135 Hydrogen in water 
-30	hx	H	""	# 0.135 H bonded to C next to positively charged group  
-31	f	F	""	# 0.320 Fluorine
-32	cl	Cl	""	# 1.910 Chlorine 
-33	br	Br	""	# 2.880 Bromine 
-34	i	I	""	# 4.690 Iodine 
-35	n	N	""	# 0.530 Sp2 nitrogen in amide groups
-36	n1	N	""	# 0.530 Sp N  
-37	n2	N	""	# 0.530 aliphatic Sp2 N with two connected atoms 
-38	n3	N	""	# 0.530 Sp3 N with three connected atoms
-39	n4	N	""	# 0.530 Sp3 N with four connected atoms 
-40	na	N	""	# 0.530 Sp2 N with three connected atoms 
-41	nb	N	""	# 0.530 Sp2 N in pure aromatic systems 
-42	nc	N	""	# 0.530 Sp2 N in non-pure aromatic systems
-43	nd	N	""	# 0.530 Sp2 N in non-pure aromatic systems, identical to nc
-44	ne	N	""	# 0.530 Inner Sp2 N in conjugated systems
-45	nf	N	""	# 0.530 Inner Sp2 N in conjugated systems, identical to ne
-46	nh	N	""	# 0.530 Amine N connected one or more aromatic rings 
-47	no	N	""	# 0.530 Nitro N  
-48	o	O	""	# 0.434 Oxygen with one connected atom
-49	oh	O	""	# 0.465 Oxygen in hydroxyl group
-50	os	O	""	# 0.465 Ether and ester oxygen
-51	ow	O	""	# 0.465 Oxygen in water 
-52	p2	P	""	# 1.538 Phosphate with two connected atoms 
-53	p3	P	""	# 1.538 Phosphate with three connected atoms, such as PH3
-54	p4	P	""	# 1.538 Phosphate with three connected atoms, such as O=P(CH3)2
-55	p5	P	""	# 1.538 Phosphate with four connected atoms, such as O=P(OH)3
-56	pb	P	""	# 1.538 Sp2 P in pure aromatic systems 
-57	pc	P	""	# 1.538 Sp2 P in non-pure aromatic systems
-58	pd	P	""	# 1.538 Sp2 P in non-pure aromatic systems, identical to pc
-59	pe	P	""	# 1.538 Inner Sp2 P in conjugated systems
-60	pf	P	""	# 1.538 Inner Sp2 P in conjugated systems, identical to pe
-61	px	P	""	# 1.538 Special p4 in conjugated systems
-62	py	P	""	# 1.538 Special p5 in conjugated systems
-63	s	S	""	# 2.900 S with one connected atom 
-64	s2	S	""	# 2.900 S with two connected atom, involved at least one double bond  
-65	s4	S	""	# 2.900 S with three connected atoms 
-66	s6	S	""	# 2.900 S with four connected atoms 
-67	sh	S	""	# 2.900 Sp3 S connected with hydrogen 
-68	ss	S	""	# 2.900 Sp3 S in thio-ester and thio-ether
-69	sx	S	""	# 2.900 Special s4 in conjugated systems
-70	sy	S	""	# 2.900 Special s6 in conjugated systems
+1	c	C	"nbonds=3,-O(bond=double),-O"		"Sp2 C carbonyl group " # 0.616
+2	c1	C	"nbonds=2,-[C,N,S](bond=triple)"	"Sp C" # 0.360
+3	c2	C	"nbonds=3,noring"			"Sp2 C  " # 0.360
+4	c3	C	"nbonds=4"				"Sp3 C" # 0.878
+5	ca	C	"nbonds=3, ring(aromatic), aromatic"	"Sp2 C in pure aromatic systems" # 0.360
+6	cp	C	"nbonds=3, ring(size=6,aromatic), -C(ring(notself,size=6,aromatic))"	"Head Sp2 C that connect two rings in biphenyl sys. " # 0.360
+7	cq	C	"=&6,-C(ring(notself,size=6,aromatic))"	"Head Sp2 C that connect two rings in biphenyl sys. identical to cp " # 0.360
+8	cc	C	"sp2,ring(aromatic,-[N,O,S])"		"Sp2 carbons in non-pure aromatic systems" # 0.360
+9	cd	C	"ring(aromatic,-[N,O,S]),sp2,=&8"	"Sp2 carbons in non-pure aromatic systems, identical to cc" # 0.360
+10	ce	C	""	"Inner Sp2 carbons in conjugated systems" # 0.360
+11	cf	C	""	"Inner Sp2 carbons in conjugated systems, identical to ce" # 0.360
+12	cg	C	""	"Inner Sp carbons in conjugated systems" # 0.360
+13	ch	C	""	"Inner Sp carbons in conjugated systems, identical to cg" # 0.360
+14	cx	C	"nbonds=4,ring(size=3)"			"Sp3 carbons in triangle systems" # 0.360
+15	cy	C	"nbonds=4,ring(size=4)"			"Sp3 carbons in square systems" # 0.360
+16	cu	C	"nbonds=3,ring(size=3)"			"Sp2 carbons in triangle systems" # 0.360
+17	cv	C	"nbonds=3,ring(size=4)"			"Sp2 carbons in square systems" # 0.360
+18	h1	H	"-C(nbonds=4,-[C,H](n=3),-[$EWG](n=1))"	"H bonded to aliphatic carbon with 1 electrwd. group  " # 0.135
+19	h2	H	"-C(nbonds=4,-[C,H](n=2),-[$EWG](n=2))"	"H bonded to aliphatic carbon with 2 electrwd. group " # 0.135
+20	h3	H	"-C(nbonds=4,-[C,H](n=1),-[$EWG](n=3))"	"H bonded to aliphatic carbon with 3 electrwd. group " # 0.135
+21	h4	H	""	"H bonded to non-sp3 carbon with 1 electrwd. group " # 0.135
+22	h5	H	""	"H bonded to non-sp3 carbon with 2 electrwd. group " # 0.135
+23	ha	H	"-[&5,&3]"				"H bonded to aromatic carbon  " # 0.135
+24	hc	H	"-C(nbonds=4,-[C,H](n=4))"		"H bonded to aliphatic carbon without electrwd. group " # 0.135
+25	hn	H	"-N"					"H bonded to nitrogen atoms" # 0.161
+26	ho	H	"-O"					"Hydroxyl group" # 0.135
+27	hp	H	"-P"					"H bonded to phosphate " # 0.135
+28	hs	H	"-S"					"Hydrogen bonded to sulphur " # 0.135
+29	hw	H	"-O(-H,-H)"				"Hydrogen in water " # 0.135
+30	hx	H	""	"H bonded to C next to positively charged group  " # 0.135
+31	f	F	""					"Fluorine" # 0.320
+32	cl	Cl	""					"Chlorine " # 1.910
+33	br	Br	""					"Bromine " # 2.880
+34	i	I	""					"Iodine" # 4.690
+35	n	N	"nbonds=3, planar"			"Sp2 nitrogen in amide groups" # 0.530
+36	n1	N	"-Any(bond=triple)"	"Sp N  " # 0.530
+37	n2	N	"nbonds=2, aliphatic"			"aliphatic Sp2 N with two connected atoms " # 0.530
+38	n3	N	"nbonds=3, tetrahedral"		"Sp3 N with three connected atoms" # 0.530
+39	n4	N	"nbonds=4, tetrahedral"		"Sp3 N with four connected atoms " # 0.530
+40	na	N	"nbonds=3, planar"		"Sp2 N with three connected atoms " # 0.530
+41	nb	N	""	"Sp2 N in pure aromatic systems " # 0.530
+42	nc	N	""	"Sp2 N in non-pure aromatic systems" # 0.530
+43	nd	N	""	"Sp2 N in non-pure aromatic systems, identical to nc" # 0.530
+44	ne	N	""	"Inner Sp2 N in conjugated systems" # 0.530
+45	nf	N	""	"Inner Sp2 N in conjugated systems, identical to ne" # 0.530
+46	nh	N	"-C(ring(aromatic))"			"Amine N connected one or more aromatic rings " # 0.530
+47	no	N	"-O(n=2)"				"Nitro N  " # 0.530
+48	o	O	"nbonds=1"				"Oxygen with one connected atom" # 0.434
+49	oh	O	"nbonds=2,-H"				"Oxygen in hydroxyl group" # 0.465
+50	os	O	"nbonds=2,-C,-[C,O]"			"Ether and ester oxygen" # 0.465
+51	ow	O	"nbonds=2,-H(n=2)"			"Oxygen in water " # 0.465
+52	p2	P	"nbonds=2,noring"			"Phosphate with two connected atoms " # 1.538
+53	p3	P	"nbonds=3,noring"			"Phosphate with three connected atoms, such as PH3" # 1.538
+54	p4	P	"nbonds=3,=O,noring"			"Phosphate with three connected atoms, such as O=P(CH3)2" # 1.538
+55	p5	P	"nbonds=4"				"Phosphate with four connected atoms, such as O=P(OH)3" # 1.538
+56	pb	P	"planar, ring(aromatic)"		"Sp2 P in pure aromatic systems " # 1.538
+57	pc	P	""	"Sp2 P in non-pure aromatic systems" # 1.538
+58	pd	P	""	"Sp2 P in non-pure aromatic systems, identical to pc" # 1.538
+59	pe	P	""	"Inner Sp2 P in conjugated systems" # 1.538
+60	pf	P	""	"Inner Sp2 P in conjugated systems, identical to pe" # 1.538
+61	px	P	""	"Special p4 in conjugated systems" # 1.538
+62	py	P	""	"Special p5 in conjugated systems" # 1.538
+63	s	S	"nbonds=1"				"S with one connected atom " # 2.900
+64	s2	S	"nbonds=2,=Any"				"S with two connected atom, involved at least one double bond  " # 2.900
+65	s4	S	"nbonds=3"				"S with three connected atoms " # 2.900
+66	s6	S	"nbonds=4			"	"S with four connected atoms " # 2.900
+67	sh	S	"nbonds=2,-H"				"Sp3 S connected with hydrogen " # 2.900
+68	ss	S	"nbonds=2,-[S,O]"			"Sp3 S in thio-ester and thio-ether" # 2.900
+69	sx	S	"=Any,-Any(=Any)"			"Special s4 in conjugated systems" # 2.900
+70	sy	S	"=Any(n=2),-Any(=Any)"			"Special s6 in conjugated systems" # 2.900
 end
 
 # n na n2 

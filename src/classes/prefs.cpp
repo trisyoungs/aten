@@ -218,7 +218,6 @@ Prefs::Prefs()
 	guideExtent_ = 10;
 	guideShape_ = Prefs::SquareGuide;
 	hydrogenDistance_ = 1.08;
-	forceRhombohedral_ = FALSE;
 
 	// Input
 	mouseAction_[Prefs::LeftButton] = Prefs::InteractAction;
@@ -260,6 +259,8 @@ Prefs::Prefs()
 	maxRings_ = 20;
 	replicateFold_ = TRUE;
 	replicateTrim_ = TRUE;
+	forceRhombohedral_ = FALSE;
+	augmentAfterRebond_ = TRUE;
 
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
@@ -912,18 +913,6 @@ double Prefs::hydrogenDistance()
 	return hydrogenDistance_;
 }
 
-// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-void Prefs::setForceRhombohedral(bool b)
-{
-	forceRhombohedral_ = b;
-}
-
-// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-bool Prefs::forceRhombohedral()
-{
-	return forceRhombohedral_;
-}
-
 /*
 // Interaction Preferences
 */
@@ -1230,6 +1219,30 @@ void Prefs::setReplicateTrim(bool b)
 bool Prefs::replicateTrim()
 {
 	return replicateTrim_;
+}
+
+// Return whether to augment when rebonding
+bool Prefs::augmentAfterRebond()
+{
+	return augmentAfterRebond_;
+}
+
+// Set whether to augment when rebonding
+void Prefs::setAugmentAfterRebond(bool b)
+{
+	augmentAfterRebond_ = TRUE;
+}
+
+// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+void Prefs::setForceRhombohedral(bool b)
+{
+	forceRhombohedral_ = b;
+}
+
+// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+bool Prefs::forceRhombohedral()
+{
+	return forceRhombohedral_;
 }
 
 /*

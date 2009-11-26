@@ -189,6 +189,7 @@ void Ring::recallBondTypes()
 // Detect ring type based on atom hybridicities and bonds
 void Ring::detectType()
 {
+	msg.enter("Ring::detectType");
 	int nsingle = 0, ndouble = 0, nother = 0;
 	Bond::BondType lasttype, thistype;
 	bool alternating = TRUE;
@@ -248,6 +249,9 @@ void Ring::detectType()
 			type_ = Ring::AromaticRing;	
 		}
 	}
+	// If aromatic, set atom environments to match
+	if (type_ == Ring::AromaticRing) for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
+	msg.exit("Ring::detectType");
 }
 
 // Return type of ring

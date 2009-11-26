@@ -400,6 +400,7 @@ class Command
 		NextModel,
 		PrevModel,
 		SaveModel,
+		SaveSelection,
 		SetName,
 	
 		// Pattern Commands
@@ -458,6 +459,7 @@ class Command
 		SelectionCom,
 		SelectLine,
 		SelectMiller,
+		SelectMolecule,
 		SelectNone,
 		SelectOverlaps,
 		SelectOutsideCell,
@@ -825,6 +827,7 @@ class Command
 	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Pattern Commands
 	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -880,6 +883,7 @@ class Command
 	static bool function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectNone(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOutsideCell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SelectPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);

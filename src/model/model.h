@@ -91,11 +91,11 @@ class Model
 	// Print log information for the current model
 	void printLogs();
 	// Copy all information from another model
-	void copy(Model*);
+	void copy(Model *source);
 	// Copy all atom data from specified model
-	void copyAtomData(Model*, int);
+	void copyAtomData(Model *source, int);
 	// Copy range of atom data from specified model
-	void copyAtomData(Model*, int, int, int);
+	void copyAtomData(Model *source, int, int, int);
 
 
 	/*

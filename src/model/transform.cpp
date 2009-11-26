@@ -110,7 +110,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = i->rWorld() - localcog;
 		newr = (rotmat * newr) + localcog;
-		i->r() = (viewMatrixInverse_ * newr) + cell_.centre();;
+		i->r() = (viewMatrixInverse_ * newr) + cell_.centre();
 	}
 	changeLog.add(Log::Visual);
 	projectSelection();

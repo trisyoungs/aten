@@ -69,6 +69,7 @@ if [ "$#" -eq "2" ]
 then
   cp ./extra/aten.dsc ./extra/aten.dsc.orig
   sed -e "s/Version: \([0-9\.]\+\)/Version: $1.$2/g" ./extra/aten.dsc.orig > ./extra/aten.dsc
+  rm ./extra/aten.dsc.orig
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9\.]\+\)/\1/g'
 

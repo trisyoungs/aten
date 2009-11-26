@@ -1,5 +1,5 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
-  <!ENTITY introduction SYSTEM "introduction.docbook">
+  <!ENTITY introduction SYSTEM "introduction.xml">
 ]>
 <book>
 	<bookinfo>

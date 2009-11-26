@@ -70,7 +70,6 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No valid filesource available for the 'find' command.\n");
 		return FALSE;
 	}
-	int result;
 	rv.set(0);
 	do
 	{

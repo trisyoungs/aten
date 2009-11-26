@@ -82,12 +82,40 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 {
 	// Check datamodel...
 	if (displayModel_ == NULL) return;
+	// Set keystates
 	keyModifier_[Prefs::ShiftKey] = shiftkey;
 	keyModifier_[Prefs::CtrlKey] = ctrlkey;
 	keyModifier_[Prefs::AltKey] = altkey;
+
+	// Set some useful flags...
+	bool manipulate = FALSE;
+	for (int n=0; n<3; n++)
+	{
+		if (keyModifier_[n])
+		{
+			switch (prefs.keyAction(Prefs::ModifierKey(n)))
+			{
+				case (Prefs::ManipulateKeyAction):
+					manipulate = TRUE;
+					break;
+			}
+		}
+	}
+
 	switch (key)
 	{
 		case (Canvas::LeftKey):
+// 			if (keyModifier_[Prefs::CtrlKey])
+// 			{
+// 				displayModel_->prepareTransform();
+// 				displayModel_->beginUndoState("Rotate selection about world Y axis");
+// 				displayModel_->rotateSelectionWorld(2.0,0.0);
+// 				displayModel_->endUndoState();
+// 				displayModel_->updateMeasurements();
+// 				displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
+// 				gui.update(TRUE,FALSE,FALSE);
+// 			}
+// 			else
 			displayModel_->rotateView( shiftkey ? -1.0 : -10.0, 0.0);
 			postRedisplay();
 			break;

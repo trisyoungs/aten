@@ -379,6 +379,8 @@ void Model::calculateBonding()
 	rebond();
 	// Free bonding cuboids
 	freeBondingCuboids();
+	// Augment?
+	if (prefs.augmentAfterRebond()) augmentBonding();
 	msg.print(Messenger::Verbose, "Done.\n");
 	msg.exit("Model::calculateBonding");
 }
@@ -458,6 +460,8 @@ void Model::patternCalculateBonding()
 			i = i->next;
 		}
 	}
+	// Augment?
+	if (prefs.augmentAfterRebond()) augmentBonding();
 	msg.print(" Done.\n");
 	msg.exit("Model::patternCalculateBonding");
 }
@@ -477,6 +481,8 @@ void Model::selectionCalculateBonding()
 	rebond();
 	// Free bonding cuboids
 	freeBondingCuboids();
+	// Augment?
+	if (prefs.augmentAfterRebond()) augmentBonding();
 	msg.exit("Model::selectionCalculateBonding");
 }
 
@@ -497,6 +503,8 @@ void Model::selectionBondAll()
 			}
 		}
 	}
+	// Augment?
+	if (prefs.augmentAfterRebond()) augmentBonding();
 	msg.exit("Model::selectionBondAll");
 }
 
