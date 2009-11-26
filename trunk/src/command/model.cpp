@@ -25,6 +25,7 @@
 #include "main/aten.h"
 #include "ff/forcefield.h"
 #include "model/model.h"
+#include "model/clipboard.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "gui/gui.h"
@@ -285,7 +286,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
-		msg.print("Valid nicknames are:\n");
+		msg.print("Valid model export nicknames are:\n");
 		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			msg.print("  %-15s %s\n", ri->item->filter.nickname(), ri->item->filter.name());
 		msg.print("Not saved.\n");
@@ -301,7 +302,48 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	else msg.print("Failed to save model '%s'.\n", obj.rs->name());
 	rv.set(result);
-	return result;
+	return TRUE;
+}
+
+// Save selection of current model ('saveselection <format> <filename>')
+bool Command::function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Find filter with a nickname matching that given in argc(0)
+	Tree *filter = aten.findFilter(FilterData::ModelExport, c->argc(0));
+	// Check that a suitable format was found
+	if (filter == NULL)
+	{
+		msg.print("Valid model export nicknames are:\n");
+		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			msg.print("  %-15s %s\n", ri->item->filter.nickname(), ri->item->filter.name());
+		msg.print("Not saved.\n");
+		return FALSE;
+	}
+	// Is anything selected in the source model?
+	if (obj.rs->nSelected() == 0)
+	{
+		msg.print("Nothing selected in current model - nothing to save.\n");
+		rv.set(FALSE);
+		return FALSE;
+	}
+	// Create a copy of the current basic model info, and then copy the selection of atoms
+	Model m;
+	Clipboard clip;
+	m.setCell(obj.rs->cell());
+	m.setFilter(filter);
+	m.setFilename(c->argc(1));
+	clip.copySelection(obj.rs);
+	clip.pasteToModel(&m, FALSE);
+	Bundle oldbundle = obj;
+	obj.rs = &m;
+	obj.m = &m;
+	bool result = filter->executeWrite(m.filename());
+	obj = oldbundle;
+	if (result) msg.print("Selection from model '%s' saved to file '%s' (%s)\n", m.name(), m.filename(), filter->filter.name());
+	else msg.print("Failed to save selection from model '%s'.\n", m.name());
+	rv.set(result);
+	return TRUE;
 }
 
 // Set name of current model ('setname <name>')
@@ -314,4 +356,3 @@ bool Command::function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return TRUE;
 }
-

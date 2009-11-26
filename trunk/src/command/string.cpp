@@ -97,8 +97,7 @@ bool Command::function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Dnchar newstr(1024);
-	const char *s = c->argc(0);
-	char *srch;
+	const char *s = c->argc(0), *srch;
 	int replacelen = strlen(c->argc(2)), searchlen = strlen(c->argc(1));
 // 	printf("Original [%s], search [%s], replace [%s]\n", s, c->argc(1), c->argc(2));
 // 	printf("Strlen = %i\n", replacelen);
@@ -127,8 +126,7 @@ bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Dnchar newstr(strlen(c->argc(0)+1));
-	const char *s = c->argc(0);
-	char *srch;
+	const char *s = c->argc(0), *srch;
 	int searchlen = strlen(c->argc(1));
 // 	printf("Strlen = %i\n", replacelen);
 	while (s != NULL)

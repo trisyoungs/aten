@@ -350,6 +350,19 @@ bool Command::function_SelectMiller(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Select bound fragment or molecule
+bool Command::function_SelectMolecule(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	int nselected = obj.rs->nSelected();
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	obj.rs->beginUndoState("Select bound fragment/molecule");
+	obj.rs->selectTree(i);
+	obj.rs->endUndoState();
+	rv.set(obj.rs->nSelected() - nselected);
+	return TRUE;
+}
+
 // Select atoms near to defined line
 bool Command::function_SelectLine(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

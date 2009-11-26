@@ -358,6 +358,7 @@ void Command::initPointers()
 	pointers_[PrevModel] = &Command::function_PrevModel;
 	pointers_[Info] = &Command::function_Info;
 	pointers_[SaveModel] = &Command::function_SaveModel;
+	pointers_[SaveSelection] = &Command::function_SaveSelection;
 	pointers_[SetName] = &Command::function_SetName;
 
 	// Pattern Commands
@@ -416,6 +417,7 @@ void Command::initPointers()
 	pointers_[SelectionCom] = &Command::function_SelectionCom;
 	pointers_[SelectLine] = &Command::function_SelectLine;
 	pointers_[SelectMiller] = &Command::function_SelectMiller;
+	pointers_[SelectMolecule] = &Command::function_SelectMolecule;
 	pointers_[SelectNone] = &Command::function_SelectNone;
 	pointers_[SelectOverlaps] = &Command::function_SelectOverlaps;
 	pointers_[SelectOutsideCell] = &Command::function_SelectOutsideCell;

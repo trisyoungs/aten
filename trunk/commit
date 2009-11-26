@@ -49,6 +49,7 @@ let NEWREV=OLDREV+1
 echo "Current version is revision $OLDREV - committed version will be revision $NEWREV..."
 
 # Determine svn URL
+grep 'Version:' ./doc/aten.xml | sed -e 's/Version: \([0-9\.]\+\)/\1/g'
 URL=`svn info | grep URL | sed -e "s/URL: \(.*\)/\1/g" -e "s/https/http/g"`
 echo "Subversion repository is: "$URL
 

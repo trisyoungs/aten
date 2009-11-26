@@ -521,6 +521,9 @@ bool Neta::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					}	
 					break;
 				// Hybridisation / environment settings (no options)
+				case (Neta::AromaticCommand):
+					environment_ = Atom::AromaticEnvironment;
+					break;
 				case (Neta::SpCommand):
 					environment_ = Atom::SpEnvironment;
 					break;

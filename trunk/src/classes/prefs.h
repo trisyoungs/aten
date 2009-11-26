@@ -432,8 +432,6 @@ class Prefs
 	Prefs::GuideGeometry guideShape_;
 	// Hydrogen add distance
 	double hydrogenDistance_;
-	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
-	bool forceRhombohedral_;
 
 	public:
 	// Sets the bonding tolerance
@@ -468,10 +466,6 @@ class Prefs
 	void setHydrogenDistance(double d);
 	// Return hydrogen add distance
 	double hydrogenDistance();
-	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	void setForceRhombohedral(bool b);
-	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral();
 
 
 	/*
@@ -526,6 +520,10 @@ class Prefs
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
 	double maxImproperDist_;
+	// Whether to augment when rebonding
+	bool augmentAfterRebond_;
+	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
+	bool forceRhombohedral_;
 
 	public:
 	// Set the model update frequency
@@ -574,6 +572,14 @@ class Prefs
 	double maxImproperDist();
 	// Set maximum distance allowed between consecutive improper torsion atoms
 	void setMaxImproperDist(double r);
+	// Return whether to augment when rebonding
+	bool augmentAfterRebond();
+	// Set whether to augment when rebonding
+	void setAugmentAfterRebond(bool b);
+	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	bool forceRhombohedral();
+	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	void setForceRhombohedral(bool b);
 
 
 	/*

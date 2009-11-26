@@ -1,4 +1,21 @@
 #!/bin/bash
 
-rm -rf aten/*
-sgmltools -b html aten.docbook
+# Update version info...
+DESTFILE=../src/main/version.h
+ATENREVISION=`grep '#define ATENREVISION' $DESTFILE | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'`
+ATENVERSION=`grep '#define ATENVERSION' $DESTFILE | sed -e 's/#define ATENVERSION "\(.*\)"/\1/g'`
+ATENDATE=`grep '#define ATENDATE' $DESTFILE | sed -e 's/#define ATENDATE "\(.*\)"/\1/g'`
+ATENURL=`grep '#define ATENURL' $DESTFILE | sed -e 's/#define ATENURL "\(.*\)"/\1/g'`
+echo "     version.h (ATENREVISION) : $ATENREVISION"
+echo "     version.h (ATENVERSION)  : $ATENVERSION"
+echo "     version.h (ATENDATE)     : $ATENDATE"
+echo "     version.h (ATENURL)      : $ATENURL"
+
+for a in aten faq
+do
+  sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" $a.xml > $a-versioned.xml
+  rm -rf $a $a-versioned
+  sgmltools -b html $a-versioned.xml
+  mv $a-versioned $a
+  rm $a-versioned.xml
+done

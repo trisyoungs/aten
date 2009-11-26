@@ -158,12 +158,10 @@ void AtenForcefields::refreshTypes()
 // Load forcefield (public function)
 void AtenForcefields::loadForcefield()
 {
-	QString filename;
-	if (openForcefieldDialog->exec() == 1)
+	static QDir currentDirectory_(aten.workDir());
+	QString filename = QFileDialog::getOpenFileName(this, "Select Forcefield", currentDirectory_.path());
+	if (!filename.isEmpty())
 	{
-		// Get selected filter in file dialog
-		QString filter = openForcefieldDialog->selectedFilter();
-		filename = openForcefieldDialog->selectedFiles().first();
 		aten.loadForcefield(qPrintable(filename));
 		refresh();
 	}
