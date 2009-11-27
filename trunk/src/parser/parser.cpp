@@ -24,7 +24,7 @@
 
 // External Declarations
 CommandParser cmdparser;
-int yyparse();
+int CommandParser_parse();
 
 // Constructor
 CommandParser::CommandParser()
@@ -135,7 +135,7 @@ bool CommandParser::generate()
 	msg.enter("CommandParser::generate");
 	expectPathStep_ = FALSE;
 	// Perform the parsing
-	int result = yyparse();
+	int result = CommandParser_parse();
 	if (result != 0)
 	{
 		printErrorInfo();

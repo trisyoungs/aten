@@ -12,8 +12,8 @@
 #include "parser/tree.h"
 
 /* Prototypes */
-int yylex(void);
-void yyerror(char *s);
+int CommandParser_lex(void);
+void CommandParser_error(char *s);
 
 /* Local Variables */
 Dnchar tokenName;
@@ -21,6 +21,9 @@ List<Dnchar> stepNameStack;
 VTypes::DataType declaredType;
 
 %}
+
+// Redeclare function names
+%name-prefix="CommandParser_"
 
 /* Type Definition */
 %union {

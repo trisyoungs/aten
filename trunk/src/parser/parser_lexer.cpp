@@ -21,8 +21,8 @@
 
 #include "base/dnchar.h"
 #include "parser/variable.h"
-#include "parser/grammar.h"
 #include "parser/parser.h"
+#include "parser/grammar.h"
 #include "parser/tree.h"
 #include "parser/forest.h"
 #include "command/commands.h"
@@ -32,8 +32,8 @@
 const char *SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--", "&&", "||" };
 int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, PEQ, MEQ, TEQ, DEQ, PP, MM, AND, OR };
 
-// Original yylex()
-int yylex()
+// Bison-generated CommandParser_lex()
+int CommandParser_lex()
 {
 	return cmdparser.lex();
 }
@@ -123,17 +123,17 @@ int CommandParser::lex()
 		// We now have the number as a text token...
 		if (!hasexp)
 		{
-			if (integer) yylval.intconst = atoi(token);
-			else yylval.doubleconst = atof(token);
+			if (integer) CommandParser_lval.intconst = atoi(token);
+			else CommandParser_lval.doubleconst = atof(token);
 		}
 		else
 		{
 			// Exponentiations are always returned as a double
 			integer = FALSE;
-			yylval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+			CommandParser_lval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token, yylval.intconst);
-		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token, yylval.doubleconst);
+		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token, CommandParser_lval.intconst);
+		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token, CommandParser_lval.doubleconst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -176,7 +176,7 @@ int CommandParser::lex()
 		token[length] = '\0';
 		msg.print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token);
 		name = token;
-		yylval.name = &name;
+		CommandParser_lval.name = &name;
 		return CHARCONST;
 	}
 
@@ -202,7 +202,7 @@ int CommandParser::lex()
 			if (dt != VTypes::nDataTypes)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a variable type name (->VTYPE)\n",tree_);
-				yylval.vtype = dt;
+				CommandParser_lval.vtype = dt;
 				return VTYPE;
 			}
 
@@ -210,17 +210,17 @@ int CommandParser::lex()
 			// TRUE, FALSE, or NULL token?
 			if (strcmp(token,"TRUE") == 0)
 			{
-				yylval.intconst = 1;
+				CommandParser_lval.intconst = 1;
 				return INTCONST;
 			}
 			else if ((strcmp(token,"FALSE") == 0) || (strcmp(token,"NULL") == 0))
 			{
-				yylval.intconst = 0;
+				CommandParser_lval.intconst = 0;
 				return INTCONST;
 			}
 			else if (strcmp(token,"PI") == 0)
 			{
-				yylval.doubleconst = 3.14159265358979323846;
+				CommandParser_lval.doubleconst = 3.14159265358979323846;
 				return DOUBLECONST;
 			}
 
@@ -228,7 +228,7 @@ int CommandParser::lex()
 			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
 			if (n < elements().nElements())
 			{
-				yylval.intconst = n;
+				CommandParser_lval.intconst = n;
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)\n",tree_,n);
 				return ELEMENTCONST;
 			}
@@ -262,7 +262,7 @@ int CommandParser::lex()
 			if (n != Command::nCommands)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a function (->FUNCCALL).\n", tree_);
-				yylval.functionId = n;
+				CommandParser_lval.functionId = n;
 				// Quick check - if we are declaring variables then we must raise an error
 				functionStart_ = tokenStart_;
 				return FUNCCALL;
@@ -276,7 +276,7 @@ int CommandParser::lex()
 				if (func != NULL)
 				{
 					msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined function local to this tree (->USERFUNCCALL).\n", tree_);
-					yylval.functree = func;
+					CommandParser_lval.functree = func;
 					return USERFUNCCALL;
 				}
 			}
@@ -286,7 +286,7 @@ int CommandParser::lex()
 			if (func != NULL)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
-				yylval.functree = func;
+				CommandParser_lval.functree = func;
 				return USERFUNCCALL;
 			}
 
@@ -298,7 +298,7 @@ int CommandParser::lex()
 			expectPathStep_ = FALSE;
 			msg.print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)\n", tree_);
 			name = token;
-			yylval.name = &name;
+			CommandParser_lval.name = &name;
 			return STEPTOKEN;
 		}
 		else if (tree_ != NULL)
@@ -311,13 +311,13 @@ int CommandParser::lex()
 				if (scopelevel == 0)
 				{
 					msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
-					yylval.variable = v;
+					CommandParser_lval.variable = v;
 					return LOCALVAR;
 				}
 				else
 				{
 					msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
-					yylval.variable = v;
+					CommandParser_lval.variable = v;
 					return VAR;
 				}
 			}
@@ -326,7 +326,7 @@ int CommandParser::lex()
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
 		msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
 		name = token;
-		yylval.name = &name;
+		CommandParser_lval.name = &name;
 		return NEWTOKEN;
 	}
 
