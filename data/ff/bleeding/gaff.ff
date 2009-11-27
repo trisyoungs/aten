@@ -66,16 +66,16 @@ types
 32	cl	Cl	""					"Chlorine " # 1.910
 33	br	Br	""					"Bromine " # 2.880
 34	i	I	""					"Iodine" # 4.690
-35	n	N	"nbonds=3, planar"			"Sp2 nitrogen in amide groups" # 0.530
-36	n1	N	"-Any(bond=triple)"	"Sp N  " # 0.530
+35	n	N	"nbonds=3, planar, -C(=O)"		"Sp2 nitrogen in amide groups" # 0.530
+36	n1	N	"-Any(bond=triple)"			"Sp N" # 0.530
 37	n2	N	"nbonds=2, aliphatic"			"aliphatic Sp2 N with two connected atoms " # 0.530
-38	n3	N	"nbonds=3, tetrahedral"		"Sp3 N with three connected atoms" # 0.530
-39	n4	N	"nbonds=4, tetrahedral"		"Sp3 N with four connected atoms " # 0.530
-40	na	N	"nbonds=3, planar"		"Sp2 N with three connected atoms " # 0.530
-41	nb	N	""	"Sp2 N in pure aromatic systems " # 0.530
+38	n3	N	"nbonds=3, tetrahedral"			"Sp3 N with three connected atoms" # 0.530
+39	n4	N	"nbonds=4, tetrahedral"			"Sp3 N with four connected atoms " # 0.530
+40	na	N	"nbonds=3, planar"			"Sp2 N with three connected atoms " # 0.530
+41	nb	N	"nbonds=2, =Any, -Any, ring(aromatic)"	"Sp2 N in pure aromatic systems " # 0.530
 42	nc	N	""	"Sp2 N in non-pure aromatic systems" # 0.530
 43	nd	N	""	"Sp2 N in non-pure aromatic systems, identical to nc" # 0.530
-44	ne	N	""	"Inner Sp2 N in conjugated systems" # 0.530
+44	ne	N	"nbonds=2,=[C,N],-[C,N](notself,"	"Inner Sp2 N in conjugated systems" # 0.530
 45	nf	N	""	"Inner Sp2 N in conjugated systems, identical to ne" # 0.530
 46	nh	N	"-C(ring(aromatic))"			"Amine N connected one or more aromatic rings " # 0.530
 47	no	N	"-O(n=2)"				"Nitro N  " # 0.530

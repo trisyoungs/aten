@@ -116,7 +116,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 26 "grammar.yy"
+#line 29 "grammar.yy"
 {
 	int functionId;			/* Function enum id */
 	Dnchar *name;			/* character pointer for names */
@@ -135,5 +135,5 @@ typedef union YYSTYPE
 # define YYSTYPE_IS_TRIVIAL 1
 #endif
 
-extern YYSTYPE yylval;
+extern YYSTYPE CommandParser_lval;
 

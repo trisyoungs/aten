@@ -193,6 +193,8 @@ bool Neta::setElements(const char *ellist, Forcefield *ff)
 		else
 		{
 			// WATCH Since Neta::el became Neta::characterElement_, this does not get set. Should it have been set before? WATCH
+			// Check for 'Any' keyword which specifies any bound atom
+// 			if 
 			el = elements().findAlpha(elparser.argc(n));
 			if (el == 0)
 			{

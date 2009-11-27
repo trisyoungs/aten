@@ -58,6 +58,14 @@
 /* Using locations.  */
 #define YYLSP_NEEDED 0
 
+/* Substitute the variable and function names.  */
+#define yyparse CommandParser_parse
+#define yylex   CommandParser_lex
+#define yyerror CommandParser_error
+#define yylval  CommandParser_lval
+#define yychar  CommandParser_char
+#define yydebug CommandParser_debug
+#define yynerrs CommandParser_nerrs
 
 
 /* Tokens.  */
@@ -154,8 +162,8 @@
 #include "parser/tree.h"
 
 /* Prototypes */
-int yylex(void);
-void yyerror(char *s);
+int CommandParser_lex(void);
+void CommandParser_error(char *s);
 
 /* Local Variables */
 Dnchar tokenName;
@@ -184,7 +192,7 @@ VTypes::DataType declaredType;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 26 "grammar.yy"
+#line 29 "grammar.yy"
 {
 	int functionId;			/* Function enum id */
 	Dnchar *name;			/* character pointer for names */
@@ -196,7 +204,7 @@ typedef union YYSTYPE
 	double doubleconst;		/* double constant value */
 }
 /* Line 187 of yacc.c.  */
-#line 200 "grammar.cc"
+#line 208 "grammar.cc"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -209,7 +217,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 213 "grammar.cc"
+#line 221 "grammar.cc"
 
 #ifdef short
 # undef short
@@ -549,19 +557,19 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    66,    66,    67,    68,    72,    73,    79,    80,    84,
-      88,    92,    93,    97,    98,    99,   105,   106,   110,   114,
-     120,   121,   122,   123,   124,   128,   129,   133,   134,   135,
-     136,   137,   138,   139,   145,   146,   147,   148,   155,   159,
-     163,   164,   165,   169,   170,   174,   180,   184,   185,   186,
-     190,   191,   192,   193,   194,   195,   199,   200,   201,   202,
-     203,   204,   205,   209,   210,   216,   217,   218,   222,   223,
-     224,   228,   232,   233,   234,   235,   236,   236,   238,   244,
-     245,   246,   250,   254,   255,   256,   257,   258,   259,   260,
-     261,   262,   263,   264,   265,   266,   267,   268,   269,   270,
-     271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
-     281,   282,   283,   284,   285,   286,   292,   298,   299,   300,
-     304,   305,   306,   312,   316,   320,   324
+       0,    69,    69,    70,    71,    75,    76,    82,    83,    87,
+      91,    95,    96,   100,   101,   102,   108,   109,   113,   117,
+     123,   124,   125,   126,   127,   131,   132,   136,   137,   138,
+     139,   140,   141,   142,   148,   149,   150,   151,   158,   162,
+     166,   167,   168,   172,   173,   177,   183,   187,   188,   189,
+     193,   194,   195,   196,   197,   198,   202,   203,   204,   205,
+     206,   207,   208,   212,   213,   219,   220,   221,   225,   226,
+     227,   231,   235,   236,   237,   238,   239,   239,   241,   247,
+     248,   249,   253,   257,   258,   259,   260,   261,   262,   263,
+     264,   265,   266,   267,   268,   269,   270,   271,   272,   273,
+     274,   275,   276,   277,   278,   279,   280,   281,   282,   283,
+     284,   285,   286,   287,   288,   289,   295,   301,   302,   303,
+     307,   308,   309,   315,   319,   323,   327
 };
 #endif
 
@@ -1751,633 +1759,633 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 66 "grammar.yy"
+#line 69 "grammar.yy"
     { }
     break;
 
   case 3:
-#line 67 "grammar.yy"
+#line 70 "grammar.yy"
     { }
     break;
 
   case 4:
-#line 68 "grammar.yy"
+#line 71 "grammar.yy"
     { }
     break;
 
   case 5:
-#line 72 "grammar.yy"
+#line 75 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(1) - (1)].node))) YYABORT; }
     break;
 
   case 6:
-#line 73 "grammar.yy"
+#line 76 "grammar.yy"
     { }
     break;
 
   case 7:
-#line 79 "grammar.yy"
+#line 82 "grammar.yy"
     { (yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (5)].node),(yyvsp[(3) - (5)].node)); }
     break;
 
   case 8:
-#line 80 "grammar.yy"
+#line 83 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::NoFunction); }
     break;
 
   case 9:
-#line 84 "grammar.yy"
+#line 87 "grammar.yy"
     { (yyval.node) = cmdparser.pushScope(); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 10:
-#line 88 "grammar.yy"
+#line 91 "grammar.yy"
     { if (!cmdparser.popScope()) YYABORT; }
     break;
 
   case 11:
-#line 92 "grammar.yy"
+#line 95 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 12:
-#line 93 "grammar.yy"
+#line 96 "grammar.yy"
     { (yyval.node) = cmdparser.joinCommands((yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node)); }
     break;
 
   case 13:
-#line 97 "grammar.yy"
+#line 100 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (2)].node); }
     break;
 
   case 14:
-#line 98 "grammar.yy"
+#line 101 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 15:
-#line 99 "grammar.yy"
+#line 102 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 16:
-#line 105 "grammar.yy"
+#line 108 "grammar.yy"
     { if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(4) - (4)].node))) YYABORT; }
     break;
 
   case 17:
-#line 106 "grammar.yy"
+#line 109 "grammar.yy"
     { if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(6) - (6)].node))) YYABORT; }
     break;
 
   case 18:
-#line 110 "grammar.yy"
+#line 113 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(6) - (6)].node))) YYABORT; cmdparser.popTree(); }
     break;
 
   case 19:
-#line 114 "grammar.yy"
+#line 117 "grammar.yy"
     { cmdparser.pushTree(TRUE); }
     break;
 
   case 20:
-#line 120 "grammar.yy"
+#line 123 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 21:
-#line 121 "grammar.yy"
+#line 124 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::Help, cmdparser.addConstant((yyvsp[(2) - (2)].functionId))); }
     break;
 
   case 22:
-#line 122 "grammar.yy"
+#line 125 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::Return,(yyvsp[(2) - (2)].node)); }
     break;
 
   case 23:
-#line 123 "grammar.yy"
+#line 126 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::Return); }
     break;
 
   case 24:
-#line 124 "grammar.yy"
+#line 127 "grammar.yy"
     { msg.print("Error: Expected ';' before current expression.\n"); YYABORT; }
     break;
 
   case 25:
-#line 128 "grammar.yy"
+#line 131 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 26:
-#line 129 "grammar.yy"
+#line 132 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 27:
-#line 133 "grammar.yy"
+#line 136 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::If,(yyvsp[(3) - (7)].node),(yyvsp[(5) - (7)].node),(yyvsp[(7) - (7)].node)); }
     break;
 
   case 28:
-#line 134 "grammar.yy"
+#line 137 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction(Command::If,(yyvsp[(3) - (5)].node),(yyvsp[(5) - (5)].node)); }
     break;
 
   case 29:
-#line 135 "grammar.yy"
+#line 138 "grammar.yy"
     { (yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (10)].node), cmdparser.addFunction(Command::For, (yyvsp[(4) - (10)].node),(yyvsp[(6) - (10)].node),(yyvsp[(8) - (10)].node),(yyvsp[(10) - (10)].node))); cmdparser.popScope(); }
     break;
 
   case 30:
-#line 136 "grammar.yy"
+#line 139 "grammar.yy"
     { (yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (6)].node), cmdparser.addFunction(Command::While, (yyvsp[(4) - (6)].node),(yyvsp[(6) - (6)].node))); cmdparser.popScope(); }
     break;
 
   case 31:
-#line 137 "grammar.yy"
+#line 140 "grammar.yy"
     { (yyval.node) = cmdparser.joinCommands((yyvsp[(2) - (7)].node), cmdparser.addFunction(Command::DoWhile, (yyvsp[(3) - (7)].node),(yyvsp[(6) - (7)].node))); cmdparser.popScope(); }
     break;
 
   case 32:
-#line 138 "grammar.yy"
+#line 141 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(1) - (1)].node))) YYABORT; }
     break;
 
   case 33:
-#line 139 "grammar.yy"
+#line 142 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(1) - (1)].node))) YYABORT; }
     break;
 
   case 34:
-#line 145 "grammar.yy"
+#line 148 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].intconst)); }
     break;
 
   case 35:
-#line 146 "grammar.yy"
+#line 149 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].doubleconst)); }
     break;
 
   case 36:
-#line 147 "grammar.yy"
+#line 150 "grammar.yy"
     { (yyval.node) = cmdparser.addConstant((yyvsp[(1) - (1)].name)->get()); }
     break;
 
   case 37:
-#line 148 "grammar.yy"
+#line 151 "grammar.yy"
     { (yyval.node) = cmdparser.addElementConstant((yyvsp[(1) - (1)].intconst)); }
     break;
 
   case 38:
-#line 155 "grammar.yy"
+#line 158 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(8) - (8)].node))) YYABORT; (yyval.node) = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
     break;
 
   case 39:
-#line 159 "grammar.yy"
+#line 162 "grammar.yy"
     { if (!cmdparser.addStatement((yyvsp[(8) - (8)].node))) YYABORT; (yyval.node) = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
     break;
 
   case 40:
-#line 163 "grammar.yy"
+#line 166 "grammar.yy"
     { }
     break;
 
   case 41:
-#line 164 "grammar.yy"
+#line 167 "grammar.yy"
     { }
     break;
 
   case 42:
-#line 165 "grammar.yy"
+#line 168 "grammar.yy"
     { }
     break;
 
   case 43:
-#line 169 "grammar.yy"
+#line 172 "grammar.yy"
     { (yyval.node) = cmdparser.addVariableAsArgument(declaredType, &tokenName); }
     break;
 
   case 44:
-#line 170 "grammar.yy"
+#line 173 "grammar.yy"
     { (yyval.node) = cmdparser.addVariableAsArgument(declaredType, &tokenName, (yyvsp[(6) - (6)].node)); }
     break;
 
   case 45:
-#line 174 "grammar.yy"
+#line 177 "grammar.yy"
     { cmdparser.pushFunction(yylval.name->get(), declaredType); }
     break;
 
   case 46:
-#line 180 "grammar.yy"
+#line 183 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyvsp[(1) - (1)].node) == NULL) YYABORT; }
     break;
 
   case 47:
-#line 184 "grammar.yy"
+#line 187 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 48:
-#line 185 "grammar.yy"
+#line 188 "grammar.yy"
     { if ((yyvsp[(3) - (3)].node) == NULL) YYABORT; (yyval.node) = Tree::joinArguments((yyvsp[(3) - (3)].node),(yyvsp[(1) - (3)].node)); }
     break;
 
   case 49:
-#line 186 "grammar.yy"
+#line 189 "grammar.yy"
     { msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
     break;
 
   case 50:
-#line 190 "grammar.yy"
+#line 193 "grammar.yy"
     { (yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName, (yyvsp[(3) - (4)].node)); }
     break;
 
   case 51:
-#line 191 "grammar.yy"
+#line 194 "grammar.yy"
     { (yyval.node) = cmdparser.addVariable(declaredType, &tokenName, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 52:
-#line 192 "grammar.yy"
+#line 195 "grammar.yy"
     { (yyval.node) = cmdparser.addVariable(declaredType, &tokenName, (yyvsp[(3) - (3)].node)); }
     break;
 
   case 53:
-#line 193 "grammar.yy"
+#line 196 "grammar.yy"
     { (yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName,(yyvsp[(3) - (6)].node),(yyvsp[(6) - (6)].node)); }
     break;
 
   case 54:
-#line 194 "grammar.yy"
+#line 197 "grammar.yy"
     { (yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName,(yyvsp[(3) - (6)].node),(yyvsp[(6) - (6)].node)); }
     break;
 
   case 55:
-#line 195 "grammar.yy"
+#line 198 "grammar.yy"
     { (yyval.node) = cmdparser.addVariable(declaredType, (yyvsp[(1) - (1)].name)); }
     break;
 
   case 56:
-#line 199 "grammar.yy"
+#line 202 "grammar.yy"
     { tokenName = yylval.variable->name(); (yyval.name) = &tokenName; }
     break;
 
   case 57:
-#line 200 "grammar.yy"
+#line 203 "grammar.yy"
     { msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
     break;
 
   case 58:
-#line 201 "grammar.yy"
+#line 204 "grammar.yy"
     { msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
     break;
 
   case 59:
-#line 202 "grammar.yy"
+#line 205 "grammar.yy"
     { msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
     break;
 
   case 60:
-#line 203 "grammar.yy"
+#line 206 "grammar.yy"
     { msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
     break;
 
   case 61:
-#line 204 "grammar.yy"
+#line 207 "grammar.yy"
     { msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
     break;
 
   case 62:
-#line 205 "grammar.yy"
+#line 208 "grammar.yy"
     { if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } (yyval.name) = (yyvsp[(1) - (2)].name); }
     break;
 
   case 63:
-#line 209 "grammar.yy"
+#line 212 "grammar.yy"
     { (yyval.node) = cmdparser.addDeclarations((yyvsp[(3) - (3)].node)); declaredType = VTypes::NoData; }
     break;
 
   case 64:
-#line 210 "grammar.yy"
+#line 213 "grammar.yy"
     { msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
     break;
 
   case 65:
-#line 216 "grammar.yy"
+#line 219 "grammar.yy"
     { if (!cmdparser.expandPath(stepNameStack.last(), (yyvsp[(4) - (5)].node))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 66:
-#line 217 "grammar.yy"
+#line 220 "grammar.yy"
     { if (!cmdparser.expandPath(stepNameStack.last(), NULL, (yyvsp[(4) - (5)].node))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 67:
-#line 218 "grammar.yy"
+#line 221 "grammar.yy"
     { if (!cmdparser.expandPath((yyvsp[(1) - (2)].name))) YYABORT; stepNameStack.removeLast(); }
     break;
 
   case 68:
-#line 222 "grammar.yy"
+#line 225 "grammar.yy"
     { }
     break;
 
   case 69:
-#line 223 "grammar.yy"
+#line 226 "grammar.yy"
     { }
     break;
 
   case 70:
-#line 224 "grammar.yy"
+#line 227 "grammar.yy"
     { msg.print("Error formulating path.\n"); YYABORT; }
     break;
 
   case 71:
-#line 228 "grammar.yy"
+#line 231 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 72:
-#line 232 "grammar.yy"
+#line 235 "grammar.yy"
     { (yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (4)].variable),(yyvsp[(3) - (4)].node)); }
     break;
 
   case 73:
-#line 233 "grammar.yy"
+#line 236 "grammar.yy"
     { (yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (1)].variable)); }
     break;
 
   case 74:
-#line 234 "grammar.yy"
+#line 237 "grammar.yy"
     { (yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (4)].variable),(yyvsp[(3) - (4)].node)); }
     break;
 
   case 75:
-#line 235 "grammar.yy"
+#line 238 "grammar.yy"
     { (yyval.node) = cmdparser.wrapVariable((yyvsp[(1) - (1)].variable)); }
     break;
 
   case 76:
-#line 236 "grammar.yy"
+#line 239 "grammar.yy"
     { cmdparser.createPath((yyvsp[(1) - (2)].node)); }
     break;
 
   case 77:
-#line 237 "grammar.yy"
+#line 240 "grammar.yy"
     { (yyval.node) = cmdparser.finalisePath(); }
     break;
 
   case 78:
-#line 238 "grammar.yy"
+#line 241 "grammar.yy"
     { msg.print("Can't use a variable as a function. Did you mean '[' instead?\n"); (yyval.node) = NULL; }
     break;
 
   case 79:
-#line 244 "grammar.yy"
+#line 247 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 80:
-#line 245 "grammar.yy"
+#line 248 "grammar.yy"
     { (yyval.node) = Tree::joinArguments((yyvsp[(3) - (3)].node),(yyvsp[(1) - (3)].node)); }
     break;
 
   case 81:
-#line 246 "grammar.yy"
+#line 249 "grammar.yy"
     { msg.print("Error: Missing comma between items.\n"); YYABORT; }
     break;
 
   case 82:
-#line 250 "grammar.yy"
+#line 253 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); if ((yyval.node) == NULL) YYABORT; }
     break;
 
   case 83:
-#line 254 "grammar.yy"
+#line 257 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 84:
-#line 255 "grammar.yy"
+#line 258 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 85:
-#line 256 "grammar.yy"
+#line 259 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 86:
-#line 257 "grammar.yy"
+#line 260 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignment,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 87:
-#line 258 "grammar.yy"
+#line 261 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignment,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 88:
-#line 259 "grammar.yy"
+#line 262 "grammar.yy"
     { msg.print("Mangled expression used in assignment.\n"); YYABORT; }
     break;
 
   case 89:
-#line 260 "grammar.yy"
+#line 263 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentPlus,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 90:
-#line 261 "grammar.yy"
+#line 264 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentSubtract,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 91:
-#line 262 "grammar.yy"
+#line 265 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentMultiply,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 92:
-#line 263 "grammar.yy"
+#line 266 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAssignmentDivide,(yyvsp[(1) - (3)].node),(yyvsp[(3) - (3)].node)); }
     break;
 
   case 93:
-#line 264 "grammar.yy"
+#line 267 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNegate, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 94:
-#line 265 "grammar.yy"
+#line 268 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPostfixIncrease, (yyvsp[(1) - (2)].node));  }
     break;
 
   case 95:
-#line 266 "grammar.yy"
+#line 269 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPostfixDecrease, (yyvsp[(1) - (2)].node)); }
     break;
 
   case 96:
-#line 267 "grammar.yy"
+#line 270 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPrefixIncrease, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 97:
-#line 268 "grammar.yy"
+#line 271 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPrefixDecrease, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 98:
-#line 269 "grammar.yy"
+#line 272 "grammar.yy"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 99:
-#line 270 "grammar.yy"
+#line 273 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAdd, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 100:
-#line 271 "grammar.yy"
+#line 274 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorSubtract, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 101:
-#line 272 "grammar.yy"
+#line 275 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorMultiply, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 102:
-#line 273 "grammar.yy"
+#line 276 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorDivide, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 103:
-#line 274 "grammar.yy"
+#line 277 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorPower, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 104:
-#line 275 "grammar.yy"
+#line 278 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorModulus, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 105:
-#line 276 "grammar.yy"
+#line 279 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 106:
-#line 277 "grammar.yy"
+#line 280 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNotEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 107:
-#line 278 "grammar.yy"
+#line 281 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorGreaterThan, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 108:
-#line 279 "grammar.yy"
+#line 282 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorGreaterThanEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 109:
-#line 280 "grammar.yy"
+#line 283 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorLessThan, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 110:
-#line 281 "grammar.yy"
+#line 284 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorLessThanEqualTo, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 111:
-#line 282 "grammar.yy"
+#line 285 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorAnd, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 112:
-#line 283 "grammar.yy"
+#line 286 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorOr, (yyvsp[(1) - (3)].node), (yyvsp[(3) - (3)].node)); }
     break;
 
   case 113:
-#line 284 "grammar.yy"
+#line 287 "grammar.yy"
     { (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 114:
-#line 285 "grammar.yy"
+#line 288 "grammar.yy"
     { (yyval.node) = cmdparser.addOperator(Command::OperatorNot, (yyvsp[(2) - (2)].node)); }
     break;
 
   case 115:
-#line 286 "grammar.yy"
+#line 289 "grammar.yy"
     { msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
     break;
 
   case 116:
-#line 292 "grammar.yy"
+#line 295 "grammar.yy"
     { (yyval.node) = cmdparser.addArrayConstant((yyvsp[(2) - (3)].node)); }
     break;
 
   case 117:
-#line 298 "grammar.yy"
+#line 301 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction( (Command::Function) (yyvsp[(1) - (3)].functionId)); }
     break;
 
   case 118:
-#line 299 "grammar.yy"
+#line 302 "grammar.yy"
     { (yyval.node) = cmdparser.addFunctionWithArglist( (Command::Function) (yyvsp[(1) - (4)].functionId),(yyvsp[(3) - (4)].node)); }
     break;
 
   case 119:
-#line 300 "grammar.yy"
+#line 303 "grammar.yy"
     { (yyval.node) = cmdparser.addFunction( (Command::Function) (yyvsp[(1) - (1)].functionId)); }
     break;
 
   case 120:
-#line 304 "grammar.yy"
+#line 307 "grammar.yy"
     { (yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (4)].functree),(yyvsp[(3) - (4)].node)); }
     break;
 
   case 121:
-#line 305 "grammar.yy"
+#line 308 "grammar.yy"
     { (yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (3)].functree)); }
     break;
 
   case 122:
-#line 306 "grammar.yy"
+#line 309 "grammar.yy"
     { (yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (1)].functree)); }
     break;
 
   case 123:
-#line 312 "grammar.yy"
+#line 315 "grammar.yy"
     { tokenName = *yylval.name; }
     break;
 
   case 124:
-#line 316 "grammar.yy"
+#line 319 "grammar.yy"
     { declaredType = yylval.vtype; }
     break;
 
   case 125:
-#line 320 "grammar.yy"
+#line 323 "grammar.yy"
     { declaredType = VTypes::NoData; }
     break;
 
   case 126:
-#line 324 "grammar.yy"
+#line 327 "grammar.yy"
     { stepNameStack.add()->set(yylval.name->get()); }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2381 "grammar.cc"
+#line 2389 "grammar.cc"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2591,7 +2599,7 @@ yyreturn:
 }
 
 
-#line 327 "grammar.yy"
+#line 330 "grammar.yy"
 
 
 void yyerror(char *s)
