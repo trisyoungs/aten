@@ -81,7 +81,7 @@ types
 47	no	N	"-O(n=2)"				"Nitro N  " # 0.530
 48	o	O	"nbonds=1"				"Oxygen with one connected atom" # 0.434
 49	oh	O	"nbonds=2,-H"				"Oxygen in hydroxyl group" # 0.465
-50	os	O	"nbonds=2,-C,-[C,O]"			"Ether and ester oxygen" # 0.465
+50	os	O	"nbonds=2,nh=0"				"Ether and ester oxygen" # 0.465
 51	ow	O	"nbonds=2,-H(n=2)"			"Oxygen in water " # 0.465
 52	p2	P	"nbonds=2,noring"			"Phosphate with two connected atoms " # 1.538
 53	p3	P	"nbonds=3,noring"			"Phosphate with three connected atoms, such as PH3" # 1.538

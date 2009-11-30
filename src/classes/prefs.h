@@ -243,6 +243,8 @@ class Prefs
 	bool useNiceText_;
 	// Flag to manually perform swapBuffers
 	bool manualSwapBuffers_;
+	// Flag to use framebuffer for image saving rather than the renderPixmap() method
+	bool useFrameBuffer_;
 
 	public:
 	// Set the postfix distance label
@@ -265,7 +267,10 @@ class Prefs
 	void setManualSwapBuffers(bool on);
 	// Return whether manual buffer swapping is enabled
 	bool manualSwapBuffers();
-
+	// Set usage of framebuffer in image saving
+	void setUseFrameBuffer(bool on);
+	// Return whether to use framebuffer for image saving
+	bool useFrameBuffer();
 
 	/*
 	// GL Options
