@@ -494,7 +494,12 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	// Flag any surfaces to be rerendered for use in this context
 	aten.current.rs->rerenderGrids();
 
-	pixmap = mainWidget->renderPixmap(width, height, FALSE);
+	if (prefs.useFrameBuffer() == FALSE) pixmap = mainWidget->renderPixmap(width, height, FALSE);
+	else
+	{
+		QImage image = mainWidget->grabFrameBuffer();
+		pixmap = QPixmap::fromImage(image);
+	}
 
 	mainView.setOffScreenRendering(FALSE);
 	prefs.setScreenObjects(screenbits);
