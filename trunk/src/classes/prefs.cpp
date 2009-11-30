@@ -305,6 +305,7 @@ Prefs::Prefs()
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
 	manualSwapBuffers_ = FALSE;
+	useFrameBuffer_ = FALSE;
 	maxUndoLevels_ = -1;
 	commandHistoryLimit_ = 25;
 	loadQtSettings_ = TRUE;
@@ -1498,6 +1499,18 @@ bool Prefs::useNiceText()
 void Prefs::setManualSwapBuffers(bool on)
 {
 	manualSwapBuffers_ = on;
+}
+
+// Return whether manual buffer swapping is enabled
+bool Prefs::useFrameBuffer()
+{
+	return useFrameBuffer_;
+}
+
+// Set manual swapbuffers
+void Prefs::setUseFrameBuffer(bool on)
+{
+	useFrameBuffer_ = on;
 }
 
 // Return whether manual buffer swapping is enabled

@@ -108,6 +108,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "spotlightdiffuse",	VTypes::DoubleData,	4, FALSE },
 	{ "spotlightposition",	VTypes::DoubleData,	4, FALSE },
 	{ "spotlightspecular",	VTypes::DoubleData,	4, FALSE },
+	{ "useframebuffer",	VTypes::IntegerData,	0, FALSE },
 	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
 	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
@@ -401,6 +402,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::SpotlightSpecular):
 			if (hasArrayIndex) rv.set( ptr->spotlightColour(Prefs::SpecularComponent)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->spotlightColour(Prefs::SpecularComponent), 4);
+			break;
+		case (PreferencesVariable::UseFrameBuffer):
+			rv.set( ptr->useFrameBuffer() );
 			break;
 		case (PreferencesVariable::UseNiceText):
 			rv.set( ptr->useNiceText() );
@@ -745,6 +749,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::UseFrameBuffer):
+			ptr->setUseFrameBuffer( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::UseNiceText):
 			ptr->setUseNiceText( newvalue.asBool() );
