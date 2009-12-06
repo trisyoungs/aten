@@ -42,7 +42,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -211,6 +211,8 @@ class Forcefield
 	private:
 	// Reads in the atom type definitions
 	bool readTypes();
+	// Reads in the united atom type definitions
+	bool readUnitedAtomTypes();
 	// Reads in generator data for atoms (rule-based ff)
 	bool readGenerator();
 	// Reads in and applies equivalent atomtype names

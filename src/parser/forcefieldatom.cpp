@@ -57,6 +57,7 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 	{ "ff",			VTypes::ForcefieldData,		0, TRUE },
 	{ "form",		VTypes::StringData,		0, FALSE },
 	{ "id",			VTypes::IntegerData,		0, TRUE },
+	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "neta",		VTypes::StringData,		0, FALSE },
 	{ "z",			VTypes::IntegerData,		0, FALSE }
@@ -187,6 +188,9 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			break;
 		case (ForcefieldAtomVariable::Id):
 			rv.set(ptr->typeId());
+			break;
+		case (ForcefieldAtomVariable::Mass):
+			rv.set(ptr->elementMass());
 			break;
 		case (ForcefieldAtomVariable::Name):
 			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->name()));

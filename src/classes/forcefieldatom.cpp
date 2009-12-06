@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/elements.h"
 #include "classes/forcefieldatom.h"
 
 // Constructor
@@ -31,6 +32,7 @@ ForcefieldAtom::ForcefieldAtom()
 	vdwForm_ = VdwFunctions::None;
 	generator_ = NULL;
 	parent_ = NULL;
+	element_ = 0;
 
 	// Public variables
 	prev = NULL;
@@ -203,6 +205,30 @@ double ForcefieldAtom::generator(int i)
 	if ((i < 0) || (i > MAXFFGENDATA)) printf("generator() - index %i is out of range.\n", i);
 	else return generator_[i];
 	return 0.0;
+}
+
+// Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
+void ForcefieldAtom::setElement(int n)
+{
+	element_ = n;
+}
+
+// Return the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
+int ForcefieldAtom::element()
+{
+	return element_;
+}
+
+// Set custom 'element' mass
+void ForcefieldAtom::setElementMass(double d)
+{
+	elementMass_ = d;
+}
+
+// Custom 'element' mass (or natural element mass)
+double ForcefieldAtom::elementMass()
+{
+	return (element_ == -1 ? elementMass_ : elements().atomicMass(element_));
 }
 
 // Copy structure
