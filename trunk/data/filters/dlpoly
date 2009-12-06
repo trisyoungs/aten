@@ -84,7 +84,7 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 		# Get variable pointer to make manipulation a little less cluttered
 		i = m.atoms[n];
 		if (i.type == 0) writelinef("%-8s%10i%20f\n",i.symbol,i.id,i.mass);
-		else writelinef("%-8s%10i%20f\n",i.type.name,i.id,i.mass);
+		else writelinef("%-8s%10i%20f\n",i.type.name,i.id,i.type.mass);
 		writelinef("%20.14f%20.14f%20.14f\n",i.rx,i.ry,i.rz);
 	}
 }
@@ -330,7 +330,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		i = p.firstatom;
 		for (n=0; n<p.nmolatoms; ++n)
 		{
-			writelinef("%-8s   %10.5f  %9.6f   1   0   1\n",i.type.name,i.mass,i.q);
+			writelinef("%-8s   %10.5f  %9.6f   1   0   1\n",i.type.name,i.type.mass,i.q);
 			++i;
 		}
 

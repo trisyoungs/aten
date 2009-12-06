@@ -67,6 +67,10 @@ class ForcefieldAtom
 	double charge_;
 	// Parent forcefield
 	Forcefield *parent_;
+	// Element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
+	int element_;
+	// Custom 'element' mass
+	double elementMass_;
 
 
 	/*
@@ -121,6 +125,14 @@ class ForcefieldAtom
 	double *generator();
 	// Return single generator value
 	double generator(int i);
+	// Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
+	void setElement(int n);
+	// Return the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
+	int element();
+	// Set custom 'element' mass
+	void setElementMass(double d);
+	// Custom 'element' mass (or natural element name)
+	double elementMass();
 };
 
 #endif

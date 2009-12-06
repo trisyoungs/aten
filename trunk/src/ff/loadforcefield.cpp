@@ -82,6 +82,9 @@ bool Forcefield::load(const char *filename)
 				msg.print("\t: Rule-set to use is '%s'\n", Rules::forcefieldRules(rules_));
 				okay = TRUE;
 				break;
+			case (Forcefield::UATypesCommand):
+				okay = readUnitedAtomTypes();
+				break;
 			case (Forcefield::TypesCommand):
 				okay = readTypes();
 				break;
@@ -124,7 +127,7 @@ bool Forcefield::load(const char *filename)
 				okay = TRUE;
 				break;
 			default:
-				msg.print("Unrecognised forcefield keyword '%s'\n.",ffparser.argc(0));
+				msg.print("Unrecognised forcefield keyword '%s'.\n",ffparser.argc(0));
 				break;
 		}
 		// Check on 'okay'
@@ -186,8 +189,10 @@ bool Forcefield::readTypes()
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
 		ffa->setName(ffparser.argc(1));
+		int el = elements().findAlpha(ffparser.argc(2));
+		ffa->setElement(el);
 		ffa->setEquivalent(ffparser.argc(1));
-		ffa->neta()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
+		ffa->neta()->setCharacterElement(el);
 		if (!ffa->setNeta(ffparser.argc(3), this, ffa))
 		{
 			msg.exit("Forcefield::readTypes");
@@ -198,6 +203,57 @@ bool Forcefield::readTypes()
 	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.line());
 	else msg.print("\t: Read in %i type descriptions\n", nadded);
 	msg.exit("Forcefield::readTypes");
+	return TRUE;
+}
+
+// Read in united atom forcefield types.
+bool Forcefield::readUnitedAtomTypes()
+{
+	msg.enter("Forcefield::readUnitedAtomTypes");
+	int success, newffid, nadded = 0;
+	bool done;
+	ForcefieldAtom *ffa, *idsearch;
+	done = FALSE;
+	// Format of lines is 'ffid typename element description [text]'
+	do
+	{
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error while reading united atom type description %i.\n", types_.nItems());
+			if (success == -1) msg.print("End of file while reading united atom type description %i.\n", types_.nItems());
+			msg.exit("Forcefield::readUnitedAtomTypes");
+			return FALSE;
+		}
+		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		// Search for this ID to make sure it hasn't already been used
+		newffid = ffparser.argi(0);
+		idsearch = findType(newffid);
+		if (idsearch != NULL)
+		{
+			msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
+			msg.exit("Forcefield::readTypes");
+			return FALSE;
+		}
+		ffa = types_.add();
+		nadded ++;
+		ffa->setParent(this);
+		ffa->setTypeId(newffid);
+		ffa->setName(ffparser.argc(1));
+		ffa->setEquivalent(ffparser.argc(1));
+		ffa->setElement(-1);
+		ffa->setElementMass(ffparser.argd(3));
+		ffa->neta()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
+		if (!ffa->setNeta(ffparser.argc(4), this, ffa))
+		{
+			msg.exit("Forcefield::readUnitedAtomTypes");
+			return FALSE;
+		}
+		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
+	} while (!done);
+	if (nadded == 0) msg.print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.line());
+	else msg.print("\t: Read in %i united-atom type descriptions\n", nadded);
+	msg.exit("Forcefield::readUnitedAtomTypes");
 	return TRUE;
 }
 
