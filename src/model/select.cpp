@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "classes/neta.h"
+#include "classes/neta_parser.h"
 #include "base/pattern.h"
 #include "gui/gui.h"
 
@@ -329,7 +329,7 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 	msg.enter("Model::selectType");
 	Neta testat;
 	testat.setCharacterElement(element);
-	if (!testat.expand(typedesc,NULL,NULL))
+	if (!netaparser.createNeta(&testat, typedesc, NULL))
 	{
 		msg.print("Failed to create type description.\n");
 		msg.exit("Model::selectType");
@@ -346,7 +346,7 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 		{
 			p->resetTempI(0);
 			i->tempi = 1;
-			atomscore = testat.matchAtom(i,p->ringList(),this,i);
+			atomscore = testat.matchAtom(i,p->ringList(),this);
 			if (atomscore > 0)
 			{
 				// Select this atom in all pattern molecules

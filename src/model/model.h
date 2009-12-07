@@ -286,11 +286,11 @@ class Model
 	// Clear all bonding in model
 	void clearBonding();
 	// Calculate bonding in the model
-	void calculateBonding();
+	void calculateBonding(bool augment);
 	// Augment bonding in the model
 	void augmentBonding();
 	// Calculate bonding in current atom selection
-	void selectionCalculateBonding();
+	void selectionCalculateBonding(bool augment);
 	// Bond all atom pairs in current atom selection
 	void selectionBondAll();
 	// Clear bonding in current atom selection
@@ -632,7 +632,7 @@ class Model
 	// Charge the pattern atom across the model
 	void chargePatternAtom(Pattern*, int, double);
 	// Calculate bonding restricted to patterns
-	void patternCalculateBonding();
+	void patternCalculateBonding(bool augment);
 	// Position specified molecule within pattern
 	void positionMolecule(Pattern*, int, const Vec3<double>&);
 	// Translate specified molecule within pattern

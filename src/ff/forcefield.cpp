@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "escale", "equivalents", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "defines", "escale", "equivalents", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
@@ -307,6 +307,13 @@ ForcefieldAtom *Forcefield::findByTypeId(int i, ForcefieldAtom *excluding)
 	return result;
 }
 
+	// Find type define
+Neta *Forcefield::typeDefine(const char *name)
+{
+	Neta *node;
+	for (node = typeDefines_.first(); node != NULL; node = node->next) if (strcmp(name,node->name()) == 0) break;
+	return node;
+}
 
 // Match two forcefield type strings
 int Forcefield::matchType(const char *test, const char *target)

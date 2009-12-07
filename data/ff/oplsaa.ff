@@ -268,7 +268,7 @@ types
 251	N		N	"-C(=O,n=2),-[C,H]"			"N in imide"
 252	C		C	"=O,-&251"				"C(=O) in imide"
 253	O		O	"=&252"					"O in imide"
-254	H		H	""	"H(N) in imide" SARAH
+254	H		H	""	"H(N) in imide"
 255	HC		H	""	"H(C) in formimide"
 256	CT		C	""	"C in CH3 imide"
 257	CT		C	""	"C in RCH2 imide"
@@ -280,7 +280,7 @@ types
 263	CA		C	"ring(size=6,-C(n=6)),-Cl"		"C(Cl)  chlorobenzene"
 264	Cl		Cl	"-&263"					"Cl     chlorobenzene"
 265	N		N	"-C(ring(size=6,-C(n=6))),-C(=O,-C),-H"	"N: N-phenylacetamide"
-266	CA		C	""	"ipso C in N-phenylacetamide" SARAH
+266	CA		C	""	"ipso C in N-phenylacetamide"
 267	C		C	"-C,=O,-O(-H)"				"Co in CCOOH carboxylic acid"
 268	OH		O	"-&267,-H"				"Oh in CCOOH R in RCOOH is"
 269	O		O	"=&267"					"Oc in CCOOH neutral; use 135-140"

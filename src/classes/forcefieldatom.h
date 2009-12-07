@@ -108,7 +108,7 @@ class ForcefieldAtom
 	// Returns the atomtype description
 	Neta *neta();
 	// Set the NETA string (and calculate new atomtype)
-	bool setNeta(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
+	bool setNeta(const char *s, Forcefield *parent);
 	// Returns the original atomtype string
 	const char *netaString();
 	// Set the parameter data specified

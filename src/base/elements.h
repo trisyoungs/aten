@@ -55,6 +55,8 @@ class Element
 	int bondOrderPenalty[9];
 	// Formal charges for bond orders 0 - 8
 	int formalCharges[9];
+	// List pointers
+	Element *prev, *next;	
 
 	/*
 	// Data by Z

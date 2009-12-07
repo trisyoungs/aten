@@ -12,29 +12,29 @@ types
 #
 # Dialkylimidazolium - JPCb 108, p2038 (2004)
 1	C1	C	"nbonds=4,-N(ring),-H,-H"			# First tetrahedral carbon in R group on ring nitrogen
-2	C2	C	"nbonds=4,-C(-[N,P]),-H(n=2),-C"		# Second carbon in R group (> ethyl)
-3	CE	C	"nbonds=4,-C(-[N,P]),-H(n=3)"			# Terminal carbon of ethyl R group
+2	C2	C	"nbonds=4,-C(~[N,P]),-H(n=2),-C"		# Second carbon in R group (> ethyl)
+3	CE	C	"nbonds=4,-C(~[N,P]),-H(n=3)"			# Terminal carbon of ethyl R group
 4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			# General carbon in R group
-5	CT	C	"nbonds=4,-C(-C(-H(n=2)),-C),-H(n=3)"		# Terminal carbon in R group (> ethyl)
-6	CR	C	"nbonds=3,-N(n=2,-C(n=2)),ring(size=5)"		# Carbon adjacent to two nitrogens with alkyl groups
-7	CW	C	"nbonds=3,-N(-C,-C),-C,ring(size=5)"		# Carbon adjacent to nitrogen (with alkyl group) and carbon
+5	CT	C	"nbonds=4,~C(~C(-H(n=2)),~C),-H(n=3)"		# Terminal carbon in R group (> ethyl)
+6	CR	C	"nbonds=3,~N(n=2,~C(n=3)),ring(size=5)"		# Carbon adjacent to two nitrogens with alkyl groups
+7	CW	C	"nbonds=3,~N(~C,~C),~C,ring(size=5)"		# Carbon adjacent to nitrogen (with alkyl group) and carbon
 8	HA	H	"nbonds=1"					# ???
-9	HCR	H	"-C(-N(-C(n=2),n=2),ring(size=5))"		# H on carbon adjacent to two N
-10	HCW	H	"-C(-N(-C(n=2)),-C,ring(size=5))"		# H on carbon adjacent to N and C
+9	HCR	H	"-C(~N(-C(n=3),n=2),ring(size=5))"		# H on carbon adjacent to two N
+10	HCW	H	"-C(~N(-C(n=3)),~C,ring(size=5))"		# H on carbon adjacent to N and C
 11	HC	H	"-C(-C,-H)"					# Hydrogen on other carbon in R group
 12	H1	H	"-C(-N(ring(size=5)),-H)"			# Hydrogen on first carbon in R group
-13	NA	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=3)"	# Nitrogen with alkyl group attached
+13	NA	N	"nbonds=3,ring(size=5,-N,-N,-C(n=3)),-C(n=3)"	# Nitrogen with alkyl group attached
 # Alkylimidazolium
-21	NAH	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=2),-H"	# Nitrogen with hydrogen attached
-22	CRH	C	"nbonds=3,-N(-C,-C),-N(-H),ring(size=5)"	# Carbon adjacent to two nitrogens
-23	CWH	C	"nbonds=3,-N(-C,-H),-C,ring(size=5)"		# Carbon adjavent to N with H attached
-24	HNA	H	"-N(-C(n=2),ring(size=5))"			# Nitrogen with hydrogen attached
+21	NAH	N	"nbonds=3,ring(size=5,~N,~C(n=3)),~C(n=2),-H"	# Nitrogen with hydrogen attached
+22	CRH	C	"nbonds=3,~N(~C,~C),~N(-H),ring(size=5)"	# Carbon adjacent to two nitrogens
+23	CWH	C	"nbonds=3,~N(~C,-H),~C,ring(size=5)"		# Carbon adjavent to N with H attached
+24	HNA	H	"-N(~C(n=2),ring(size=5))"			# Nitrogen with hydrogen attached
 # Alkylpyridinium - Perkin 2, p2365 (1999)
 31	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			
-32	CA1	C	"nbonds=3,ring(size=6),-N,-C,-H"		# Carbon in ring, adjacent to ring nitrogen (ortho)
-33	CA2	C	"nbonds=3,ring(size=6),-C,-H,-C"		# Carbon in ring, adjacent to two carbons (meta)
-34	CA3	C	"nbonds=3,ring(size=6),-C(n=2,-C(-N))"		# Carbon in ring, adjacent to two carbons (para)
-35	HAP	H	"nbonds=1,-C(ring(size=6,-C(n=5),-N),-C)"	# Hydrogen on ring carbon
+32	CA1	C	"nbonds=3,ring(size=6),~N,~C,-H"		# Carbon in ring, adjacent to ring nitrogen (ortho)
+33	CA2	C	"nbonds=3,ring(size=6),~C,-H,~C"		# Carbon in ring, adjacent to two carbons (meta)
+34	CA3	C	"nbonds=3,ring(size=6),~C(n=2,~C(~N))"		# Carbon in ring, adjacent to two carbons (para)
+35	HAP	H	"nbonds=1,~C(ring(size=6,-C(n=5),~N),~C)"	# Hydrogen on ring carbon
 # Ammonium (also pyrrolidinium) - OPLS-AA / JACS 121, p4827 (1999) / AMBER
 41	N3	N	""
 42	H	H	""

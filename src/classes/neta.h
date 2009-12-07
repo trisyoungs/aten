@@ -24,6 +24,7 @@
 
 #include "base/atom.h"
 #include "base/bond.h"
+#include "base/dnchar.h"
 #include "classes/ring.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
@@ -36,63 +37,11 @@ class Model;
 class Ring;
 class Forcefield;
 
-// Ring type
-class Ringtype
-{
-	// Substructure definition of a separate list of atoms in a ring
-	public:
-	// Constructor
-	Ringtype();
-	// List pointers
-	Ringtype *prev, *next;
-	// Ring typing commands
-	enum RingtypeCommand { SizeCommand, RepeatCommand, AliphaticCommand, NonAromaticCommand, AromaticCommand, NotSelfCommand, nRingtypeCommands };
-	RingtypeCommand ringtypeCommand(const char*);
-
-	private:
-	// Number of atoms in ring
-	int nAtoms_;
-	// Optional specification of atoms in ring
-	List<Neta> ringAtoms_;
-	// Add data to the structure from the supplied string
-	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
-	// Number of times this match is required
-	int nRepeat_;
-	// Print the information contained in the structure
-	void print();
-	// Flag that the owner bound atom (if any) should not itself appear in the ring
-	bool selfAbsent_;
-	// Requested style of the ring
-	Ring::RingType type_;
-	// Friend classes
-	friend class Neta;
-};
-
-// Chain type
-class Chaintype
-{
-	// Substructure definition of a separate list of atoms in a chain
-	public:
-	// Constructor
-	Chaintype();
-	// List pointers
-	Chaintype *prev, *next;
-	// Ring typing commands
-	enum ChaintypeCommand { RepeatCommand, nChaintypeCommands };
-	ChaintypeCommand chaintypeCommand(const char*);
-
-	private:
-	// Specification of atoms in chain
-	List<Neta> chainAtoms_;
-	// Add data to the structure from the supplied string
-	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
-	// Number of times this match is required
-	int nRepeat_;
-	// Print the information contained in the structure
-	void print();
-	// Friend classes
-	friend class Neta;
-};
+// NEW
+class Element;
+class NetaNode;
+class NetaContextNode;
+class NetaRootNode;
 
 // NETA description
 class Neta
@@ -101,78 +50,362 @@ class Neta
 	// Constructor / Destructor
 	Neta();
 	~Neta();
-	// List pointers, used in bound atom list and list of atoms in rings
+	// List pointers
 	Neta *prev, *next;
-	// Atom typing commands
-	enum NetaCommand { AromaticCommand, BondCommand, ChainCommand, LinearCommand, NBondsCommand, NHydrogensCommand, NoRingCommand, OctahedralCommand, OneBondCommand, OxidationStateCommand, RepeatCommand, RingCommand, SpCommand, Sp2Command, Sp3Command, SquarePlanarCommand, TetrahedralCommand, TrigBipyramidCommand, TrigPlanarCommand, TShapeCommand, UnboundCommand, nNetaCommands };
-	static NetaCommand netaCommand(const char*);
+	// NETA Keywords
+	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, nNetaKeywords };
+	static NetaKeyword netaKeyword(const char *s, bool reporterror = FALSE);
+	static const char *netaKeyword(NetaKeyword nk);
+	// NETA expanders
+	enum NetaExpander { BoundExpanded, ChainExpander, DoublyBoundExpander, RingExpander, nNetaExpanders };
+	static NetaExpander netaExpander(const char *s, bool reporterror = FALSE);
+	// NETA values
+	enum NetaValue { BondValue, NBondsValue, NHydrogensValue, OxidationStateValue, RepeatValue, SizeValue, nNetaValues };
+	static NetaValue netaValue(const char *s, bool reporterror = FALSE);
+	static const char *netaValue(NetaValue nv);
+	// NETA Value comparison operators
+	enum NetaValueComparison { EqualTo, NotEqualTo, GreaterThan, LessThan, GreaterThanEqualTo, LessThanEqualTo, nNetaValueComparisons };
+	static const char *netaValueComparison(NetaValueComparison nvc);
+	static bool netaValueCompare(int lhsvalue, NetaValueComparison nvc, int rhsvalue);
+	// Node logic types
+	enum NetaLogicType { NetaAndLogic, NetaOrLogic, NetaAndNotLogic, nNetaLogicTypes };
+	static const char *netaLogic(NetaLogicType lt);
+	// Friend Class
+	friend class NetaParser;
+
 
 	/*
-	// Character
+	// Definition
 	*/
 	private:
+	// Parent forcefield
+	Forcefield *parentForcefield_;
+	// Parent forcefield atom
+	ForcefieldAtom *parentForcefieldAtom_;
 	// Character element (i.e. the element that the matching atom must be)
 	int characterElement_;
+	// Owned node list
+	List<NetaNode> ownedNodes_;
+	// Top of NETA nodelist describing the type
+	NetaRootNode *description_;
+	// Reference name (if a define)
+	Dnchar name_;
 
 	public:
+	// Set parent forcefield
+	void setParentForcefield(Forcefield *ff);
+	// Return parent forcefield
+	Forcefield *parentForcefield();
+	// Set parent forcefield atom
+	void setParentForcefieldAtom(ForcefieldAtom *ff);
+	// Return parent forcefield atom
+	ForcefieldAtom *parentForcefieldAtom();
 	// Set character element
 	void setCharacterElement(int el);
 	// Return character element
 	int characterElement();
-	// Add data to the structure from the supplied string
-	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
-	// See if this type matches any atoms in the list provided
-	int matchInList(Reflist<Atom,int>*, List<Ring>*, Model *parent, Atom *topatom);
-	// See if the required chain connections are present
-	int matchChain(Atom *i, Atom *prevatom, Neta *neta, List<Ring> *ringlist, Model *parent, Atom *topatom);
-	// See if this type matches the atom (+ ring data of pattern)
-	int matchAtom(Atom*, List<Ring>*, Model*, Atom*);
-	// Print the information contained in the structure
+	// Take ownership of selected node
+	void ownNode(NetaNode *node);
+	// Return reference name (if a define)
+	const char *name();
+	// Set reference name (if a define)
+	void setName(const char *s);
+	// Return top of description nodelist
+	NetaRootNode *description();
+	// Print
 	void print();
 
+
 	/*
-	// High-level descriptors
+	// Methods
 	*/
 	private:
-	// Environment of atom
-	Atom::AtomEnvironment environment_;
-	// Geometry of bonding about atom
-	Atom::AtomGeometry geometry_;
-	// Required oxidation state (99 for don't mind)
-	short int os_;
-	// List of atoms to which this atom must be bound
-	List<Neta> boundList_;
-	// List of rings that this atom must be a member of
-	List<Ringtype> ringList_;
-	// Chains of atoms to which this atom is bound
-	List<Chaintype> chainList_;
-	// Number of bond connections the atom should have
-	int nBonds_;
-	// Specifies atom must *not* be in a cycle of any type
-	bool acyclic_;
-	
-	/*
-	// Bound atoms descriptors
-	*/
-	private:
-	// Specifies number of attached hydrogens
-	int nHydrogen_;
-	// List of elements that the bound atom may be (can be empty for 'unspecified' [*])
-	int *allowedElements_;
-	// List of ForcefieldAtom types that the bound atom may be
-	Reflist<ForcefieldAtom,int> allowedTypes_;
-	// Number of elements specified in bound_el[]
-	int nAllowedElements_;
-	// Number of times this match is required
-	int nRepeat_;
-	// Type of bond to bound (parent) atom
-	Bond::BondType boundBond_;
-	
+	// Supplied list of rings for the atom matchAtom() is targetting
+	List<Ring> *targetRingList_;
+	// Parent model of target atom
+	Model *targetParent_;
+
 	public:
-	// Expand the allowedElements_ array with the element string provided
-	bool setElements(const char*, Forcefield*);
-	// Set the bound bond type
-	void setBoundBond(Bond::BondType bt);
+	// Clone nodes (and own them) beginning from the node supplied
+	NetaNode *clone(NetaNode *topnode);
+	// Clear all associated node data (but leave character element as-is)
+	void clear();
+	// Return ringList of supplied atom
+	List<Ring> *targetRingList();
+	// Return target atom's parent model
+	Model *targetParent();
+	// Check supplied atom to see if it matches this NETA description
+	int matchAtom(Atom *i, List<Ring> *rings, Model *parent);
+	// Link forcefield type references in elementtype lists
+	void linkReferenceTypes();
+};
+
+// NETA Specification Node
+class NetaNode
+{
+	public:
+	// Constructor / Destructor
+	NetaNode();
+	// List pointers
+	NetaNode *prev, *next;
+	// Linear node pointers
+	NetaNode *prevNode, *nextNode;
+	// Neta node types
+	enum NetaNodeType { BoundNode, ChainNode, ElementNode, GeometryNode, KeywordNode, LogicNode, RingNode, RootNode, ValueNode, nNetaNodeTypes };
+
+	protected:
+	// Node type
+	NetaNodeType nodeType_;
+	// Whether to use reverse logic when returning the final value
+	bool reverseLogic_;
+
+	private:
+	// Parent NETA structure
+	Neta *parent_;
+
+	public:
+	// Return node type
+	NetaNodeType nodeType();
+	// Set node to use reverse logic
+	void setReverseLogic();
+	// Return parent NETA structure
+	Neta *parent();
+	// Set parent NETA structure
+	void setParent(Neta *neta);
+	// Validation function
+	virtual int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)=0;
+	// Print node contents
+	virtual void nodePrint(int offset, const char *prefix)=0;
+	// Print (append) NETA representation of node contents
+	virtual void netaPrint(Dnchar &neta)=0;
+	// Clone node structure
+	virtual NetaNode *clone(Neta *newparent)=0;
+	// Print contextual score
+	static void printScore(int level, const char *fmt ...);
+};
+
+// NETA context node
+class NetaContextNode : public NetaNode
+{
+	public:
+	// Constructor
+	NetaContextNode();
+
+	protected:
+	// Repetition specifier
+	int repeat_;
+	// Repetition logic
+	Neta::NetaValueComparison repeatComparison_;
+	// Inner NETA description
+	NetaNode *innerNeta_;
+	// Inner linear NETA description (used by ChainNode)
+	NetaNode *linearNeta_;
+
+	public:
+	// Set repetition specifier
+	void setRepeat(int n);
+	// Return repetition specified
+	int repeat();
+	// Set value comparison
+	void setRepeatComparison(Neta::NetaValueComparison nvc);
+	// Set inner neta description
+	void setInnerNeta(NetaNode *innerneta, NetaNode *linearneta = NULL);
+	// Return inner neta description
+	NetaNode *innerNeta();
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// NETA logic node
+class NetaLogicNode : public NetaNode
+{
+	public:
+	// Constructor
+	NetaLogicNode(Neta::NetaLogicType nt, NetaNode *arg1, NetaNode *arg2);
+
+	private:
+	// Logic type
+	Neta::NetaLogicType netaLogic_;
+	// Specification(s)
+	NetaNode *argument1_, *argument2_;
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// NETA Bound atom node
+class NetaBoundNode : public NetaContextNode
+{
+	public:
+	// Constructor
+	NetaBoundNode();
+
+	private:
+	// List of elements/types that the current context atom may be
+	Reflist<ForcefieldAtom,int> allowedElementsAndTypes_;
+	// Type of required connection
+	Bond::BondType bondType_;
+	// Validation function to check supplied atom against allowed elements and types
+	int atomScore(Atom *target);
+	// Create formatted element/type list
+	const char *elementsAndTypesString();
+
+	public:
+	// Set node data
+	void set(Refitem<ForcefieldAtom,int> *elemtypes, NetaNode *innerneta, Bond::BondType bondtype);
+	// Link forcefield type references in elementtype lists
+	void linkReferenceTypes();
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// NETA keyword node
+class NetaKeywordNode : public NetaNode
+{
+	public:
+	// Constructor
+	NetaKeywordNode(Neta::NetaKeyword nv);
+
+	private:
+	// Keyword
+	Neta::NetaKeyword netaKeyword_;
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// NETA geometry node
+class NetaGeometryNode : public NetaNode
+{
+	public:
+	// Constructor
+	NetaGeometryNode(Atom::AtomGeometry ag);
+
+	private:
+	// Keyword
+	Atom::AtomGeometry geometry_;
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// NETA Value comparison node
+class NetaValueNode : public NetaNode
+{
+	public:
+	// Constructor
+	NetaValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
+
+	private:
+	// Value to check
+	Neta::NetaValue netaValue_;
+	// Comparison operator to use
+	Neta::NetaValueComparison netaComparison_;
+	// Integer value to compare against
+	int value_;
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// Root type
+class NetaRootNode : public NetaContextNode
+{
+	public:
+	// Constructor
+	NetaRootNode();
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// Ring type
+class NetaRingNode : public NetaContextNode
+{
+	public:
+	// Constructor
+	NetaRingNode();
+
+	private:
+	// Current ring under consideration
+	Ring *currentRing_;
+
+	public:
+	// Retrieve current ring under consideration
+	Ring *currentRing();
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
+};
+
+// Chain type
+class NetaChainNode : public NetaContextNode
+{
+	public:
+	// Constructor
+	NetaChainNode();
+
+	private:
+	// Current chain of matched atoms
+	Reflist<Atom,int> currentChain_;
+	// Private (recursive) scoring function
+	int score(NetaNode *currentNode, int nrepeat, Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, Atom *prevtarget, int level);
+
+	public:
+	// Validation function (virtual)
+	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
+	// Print node contents
+	void nodePrint(int offset, const char *prefix);
+	// Print (append) NETA representation of node contents
+	void netaPrint(Dnchar &neta);
+	// Clone node structure
+	NetaNode *clone(Neta *newparent);
 };
 
 #endif

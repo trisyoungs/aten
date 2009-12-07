@@ -54,7 +54,7 @@ class Atom
 	// Atom structure data
 	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
 	// Atom environment
-	enum AtomEnvironment { NoEnvironment, UnboundEnvironment, Sp3Environment, Sp2Environment, SpEnvironment, AromaticEnvironment, nEnvironments };
+	enum AtomEnvironment { NoEnvironment, UnboundEnvironment, PureEnvironment, NonPureEnvironment, AromaticEnvironment, nEnvironments };
 	static const char *atomEnvironment(AtomEnvironment);
 	// Geometries about atomic centres
 	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
@@ -181,15 +181,15 @@ class Atom
 	// Accept the specified bond to the atom's local reference list
 	void acceptBond(Bond *b);
 	// Delete the specified bond from the atom's local reference list
-	void detachBond(Bond*);
+	void detachBond(Bond *b);
 	// Return the total bond order of the atom
 	int totalBondOrder();
 	// Calculate the bond order between this atom and the specified atom
-	double bondOrder(Atom*);
+	double bondOrder(Atom *j);
 	// Calculates the geometry of the atom's bound environment
-	Atom::AtomGeometry geometry(Model*);
+	Atom::AtomGeometry geometry(Model *parent);
 	// Returns bond pointer between this and atom 'j' (if it exists)
-	Bond *findBond(Atom*);
+	Bond *findBond(Atom *j);
 	// Determine bond plane
 	Vec3<double> findBondPlane(Atom*, Bond*, const Vec3<double>&);
 

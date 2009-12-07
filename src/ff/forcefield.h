@@ -23,9 +23,10 @@
 #define ATEN_FORCEFIELD_H
 
 #include "base/dnchar.h"
-#include "ff/forms.h"
 #include "base/lineparser.h"
 #include "classes/prefs.h"
+#include "classes/neta.h"
+#include "ff/forms.h"
 
 // Forward declarations
 class Atom;
@@ -42,7 +43,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -84,6 +85,8 @@ class Forcefield
 	// Types
 	*/
 	private:
+	// List of type defines
+	List<Neta> typeDefines_;
 	// Atom type name and dispersion data array
 	List<ForcefieldAtom> types_;
 
@@ -102,6 +105,8 @@ class Forcefield
 	ForcefieldAtom *findType(const char*);
 	// Returns the ForcefieldAtom with the typeId provided
 	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
+	// Find type define
+	Neta *typeDefine(const char *name);
 
 	/*
 	// VDW
@@ -209,6 +214,8 @@ class Forcefield
 	// File
 	*/
 	private:
+	// Reads in any type defines
+	bool readDefines();
 	// Reads in the atom type definitions
 	bool readTypes();
 	// Reads in the united atom type definitions

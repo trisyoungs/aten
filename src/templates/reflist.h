@@ -55,7 +55,7 @@ template <class T, class D> class Reflist
 	*/
 	private:
 	// Head and tail of reference items
-	Refitem<T,D> *itemsHead_, *itemsTail_;
+	Refitem<T,D> *listHead_, *listTail_;
 	// Number of items in list
 	int nItems_;
 
@@ -67,9 +67,9 @@ template <class T, class D> class Reflist
 	// Returns the number of atoms in the list
 	int nItems() const;
 	// Add reference to the list
-	void add(T *item);
+	Refitem<T,D> *add(T *item);
 	// Add reference to the list with extra data
-	void add(T* item, D extradata);
+	Refitem<T,D> *add(T* item, D extradata);
 	// Add reference to the beginning of the list
 	void addStart(T *item);
 	// Add reference to the beginning of the list with extra data
@@ -78,6 +78,8 @@ template <class T, class D> class Reflist
 	void addUnique(T *item);
 	// Add reference to list, unless already there
 	void addUnique(T *, D extradata);
+	// Add an orphaned item into this list
+	void own(Refitem<T,D> *item);
 	// Delete the reference from the list
 	void remove(Refitem<T,D> *item);
 	// Delete the reference containing specified item from the list
@@ -112,8 +114,8 @@ template <class T, class D> Refitem<T,D>::Refitem()
 
 template <class T, class D> Reflist<T,D>::Reflist()
 {
-	itemsHead_ = NULL;
-	itemsTail_ = NULL;
+	listHead_ = NULL;
+	listTail_ = NULL;
 	nItems_ = 0;
 }
 
@@ -138,13 +140,13 @@ template <class T, class D> void Reflist<T,D>::operator=(Reflist<T,D> &source)
 // Returns the head of the atom list
 template <class T, class D> Refitem<T,D> *Reflist<T,D>::first() const
 {
-	return itemsHead_;
+	return listHead_;
 }
 
 // Returns the last item in the list
 template <class T, class D> Refitem<T,D> *Reflist<T,D>::last() const
 {
-	return itemsTail_;
+	return listTail_;
 }
 
 // Returns the number of atoms in the list
@@ -154,28 +156,30 @@ template <class T, class D> int Reflist<T,D>::nItems() const
 }
 
 // Add item to list
-template <class T, class D> void Reflist<T,D>::add(T* target)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* target)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the list
-	itemsHead_ == NULL ? itemsHead_ = newitem : itemsTail_->next = newitem;
-	newitem->prev = itemsTail_;
-	itemsTail_ = newitem;
+	listHead_ == NULL ? listHead_ = newitem : listTail_->next = newitem;
+	newitem->prev = listTail_;
+	listTail_ = newitem;
 	newitem->item = target;
 	nItems_ ++;
+	return newitem;
 }
 
 // Add item to list with extra data
-template <class T, class D> void Reflist<T,D>::add(T* target, D extradata)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* target, D extradata)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the list
-	itemsHead_ == NULL ? itemsHead_ = newitem : itemsTail_->next = newitem;
-	newitem->prev = itemsTail_;
-	itemsTail_ = newitem;
+	listHead_ == NULL ? listHead_ = newitem : listTail_->next = newitem;
+	newitem->prev = listTail_;
+	listTail_ = newitem;
 	newitem->item = target;
 	newitem->data = extradata;
 	nItems_ ++;
+	return newitem;
 }
 
 // Add item to start of list
@@ -183,9 +187,9 @@ template <class T, class D> void Reflist<T,D>::addStart(T* target)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the beginning of the list
-	newitem->next = itemsHead_;
-	itemsHead_ == NULL ? itemsHead_ = newitem : itemsHead_->prev = newitem;
-	itemsHead_ = newitem;
+	newitem->next = listHead_;
+	listHead_ == NULL ? listHead_ = newitem : listHead_->prev = newitem;
+	listHead_ = newitem;
 	newitem->item = target;
 	nItems_ ++;
 }
@@ -195,9 +199,9 @@ template <class T, class D> void Reflist<T,D>::addStart(T* target, D extradata)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the beginning of the list
-	newitem->next = itemsHead_;
-	itemsHead_ == NULL ? itemsHead_ = newitem : itemsHead_->prev = newitem;
-	itemsHead_ = newitem;
+	newitem->next = listHead_;
+	listHead_ == NULL ? listHead_ = newitem : listHead_->prev = newitem;
+	listHead_ = newitem;
 	newitem->item = target;
 	newitem->data = extradata;
 	nItems_ ++;
@@ -215,12 +219,28 @@ template <class T, class D> void Reflist<T,D>::addUnique(T* target, D extradata)
 	if (search(target) == NULL) add(target, extradata);
 }
 
+// Own an existing item
+template <class T, class D> void Reflist<T,D>::own(Refitem<T,D> *olditem)
+{
+	// In the interests of 'pointer cleanliness, refuse to own the item if its pointers are not NULL
+	if ((olditem->next != NULL) || (olditem->prev != NULL))
+	{
+		printf("reflist::own <<<< Reflist refused to own an item that still had ties >>>>\n");
+		return;
+	}
+	listHead_ == NULL ? listHead_ = olditem : listTail_->next = olditem;
+	olditem->prev = listTail_;
+	olditem->next = NULL;
+	listTail_ = olditem;
+	nItems_ ++;
+}
+
 // Remove Refitem from list
 template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 {
 	// Delete a specific Refitem from the list
-	xitem->prev == NULL ? itemsHead_ = xitem->next : xitem->prev->next = xitem->next;
-	xitem->next == NULL ? itemsTail_ = xitem->prev : xitem->next->prev = xitem->prev;
+	xitem->prev == NULL ? listHead_ = xitem->next : xitem->prev->next = xitem->next;
+	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
 	delete xitem;
 	nItems_ --;
 }
@@ -228,13 +248,13 @@ template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 // Remove first item from list
 template <class T, class D> void Reflist<T,D>::removeFirst()
 {
-	remove(itemsHead_);
+	remove(listHead_);
 }
 
 // Remove last item from list
 template <class T, class D> void Reflist<T,D>::removeLast()
 {
-	remove(itemsTail_);
+	remove(listTail_);
 }
 
 // Remove item from list
@@ -254,7 +274,7 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 		return NULL;
 	}
 	// Scan through for element number 'index' in the list and return it
-	Refitem<T,D> *result = itemsHead_;
+	Refitem<T,D> *result = listHead_;
 	for (int i=0; i<index; i++) result = result->next;
 	return result;
 }
@@ -264,7 +284,7 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::search(T *xitem)
 {
 	// Search references for specified item
 	Refitem<T,D> *r;
-	for (r = itemsHead_; r != NULL; r = r->next) if (r->item == xitem) break;
+	for (r = listHead_; r != NULL; r = r->next) if (r->item == xitem) break;
 	return r;
 }
 
@@ -272,14 +292,14 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::search(T *xitem)
 template <class T, class D> void Reflist<T,D>::clear()
 {
 	// Clear the list 
-	Refitem<T,D> *xitem = itemsHead_;
+	Refitem<T,D> *xitem = listHead_;
 	while (xitem != NULL)
 	{
 		remove(xitem);
-		xitem = itemsHead_;
+		xitem = listHead_;
 	}
-	itemsHead_ = NULL;
-	itemsTail_ = NULL;
+	listHead_ = NULL;
+	listTail_ = NULL;
 	nItems_ = 0;
 }
 
@@ -287,9 +307,9 @@ template <class T, class D> void Reflist<T,D>::clear()
 template <class T, class D> void Reflist<T,D>::moveHeadToTail()
 {
 	// Add a new item to the list (a copy of the current head)
-	add(itemsHead_->item,itemsHead_->data);
+	add(listHead_->item,listHead_->data);
 	// Delete head item
-	remove(itemsHead_);
+	remove(listHead_);
 }
 
 // Create from list
@@ -308,7 +328,7 @@ template <class T, class D> void Reflist<T,D>::createFromList(T *xitem)
 template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 {
 	int count = 0;
-	Refitem<T,D> *ri = itemsHead_;
+	Refitem<T,D> *ri = listHead_;
 	while (ri != NULL)
 	{
 		data[count] = ri->item;

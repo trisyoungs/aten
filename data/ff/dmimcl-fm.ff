@@ -3,9 +3,9 @@ name "FM DMIM-Cl
 units kcal
 types
 1    N   N	""
-2    C1  C	"-N,-N,ring(size=5)"
-3    C2  C	"-C,-N,ring(size=5)"
-4    CM  C	"nh=3,-N(ring(size=5))"
+2    C1  C	"~N,~N,ring(size=5)"
+3    C2  C	"~C,~N,ring(size=5)"
+4    CM  C	"nh=3,~N(ring(size=5))"
 5    H1  H	"-&2"
 6    H2  H	"-&3"
 7    HM  H	"-&4"

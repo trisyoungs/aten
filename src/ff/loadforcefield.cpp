@@ -23,6 +23,7 @@
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
+#include "classes/neta_parser.h"
 
 // Local variables
 double escale14 = 0.5;
@@ -81,6 +82,9 @@ bool Forcefield::load(const char *filename)
 				rules_ = Rules::forcefieldRules(ffparser.argc(1));
 				msg.print("\t: Rule-set to use is '%s'\n", Rules::forcefieldRules(rules_));
 				okay = TRUE;
+				break;
+			case (Forcefield::DefinesCommand):
+				okay = readDefines();
 				break;
 			case (Forcefield::UATypesCommand):
 				okay = readUnitedAtomTypes();
@@ -149,9 +153,56 @@ bool Forcefield::load(const char *filename)
 		for (ForcefieldAtom *ffa = types_.first()->next; ffa != NULL; ffa = ffa->next)
 			if (ffa->generator() == NULL) msg.print("Warning - type '%s' has no generator data.\n", ffa->name());
 	}
+	// Link forcefield type references (&N) to their actual forcefield types
+	for (ForcefieldAtom *ffa = types_.first(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
 	convertParameters();
 	msg.exit("Forcefield::load");
+	return TRUE;
+}
+
+// Read in forcefield type defines
+bool Forcefield::readDefines()
+{
+	msg.enter("Forcefield::readDefines");
+	int success, nadded = 0;
+	bool done;
+	Neta *neta;
+	done = FALSE;
+	// Format of lines is 'ffid typename element description [text]'
+	do
+	{
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error while reading atom type defines %i.\n", types_.nItems());
+			if (success == -1) msg.print("End of file while reading atom type defines %i.\n", types_.nItems());
+			msg.exit("Forcefield::readDefines");
+			return FALSE;
+		}
+		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		// Search for this define name to make sure it hasn't already been used
+		for (neta = typeDefines_.first(); neta != NULL; neta = neta->next) if (strcmp(ffparser.argc(0), neta->name()) == 0) break;
+		if (neta != NULL)
+		{
+			msg.print("Error: Duplicate type define name specified (%s) at line %i.\n", ffparser.argc(0), ffparser.line());
+			msg.exit("Forcefield::readDefines");
+			return FALSE;
+		}
+		neta = typeDefines_.add();
+		nadded ++;
+		neta->setName(ffparser.argc(0));
+		neta->setParentForcefield(this);
+		if (!netaparser.createNeta(neta, ffparser.argc(1), this))
+		{
+			msg.print("Error parsing type define at line %i.\n", ffparser.line());
+			msg.exit("Forcefield::readDefines");
+			return FALSE;
+		}
+	} while (!done);
+	if (nadded == 0) msg.print("Warning - No atype defines specified in this block (at line %i)!\n", ffparser.line());
+	else msg.print("\t: Read in %i type defines\n", nadded);
+	msg.exit("Forcefield::readDefines");
 	return TRUE;
 }
 
@@ -193,7 +244,7 @@ bool Forcefield::readTypes()
 		ffa->setElement(el);
 		ffa->setEquivalent(ffparser.argc(1));
 		ffa->neta()->setCharacterElement(el);
-		if (!ffa->setNeta(ffparser.argc(3), this, ffa))
+		if (!ffa->setNeta(ffparser.argc(3), this))
 		{
 			msg.exit("Forcefield::readTypes");
 			return FALSE;
@@ -244,7 +295,7 @@ bool Forcefield::readUnitedAtomTypes()
 		ffa->setElement(-1);
 		ffa->setElementMass(ffparser.argd(3));
 		ffa->neta()->setCharacterElement(elements().findAlpha(ffparser.argc(2)));
-		if (!ffa->setNeta(ffparser.argc(4), this, ffa))
+		if (!ffa->setNeta(ffparser.argc(4), this))
 		{
 			msg.exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
