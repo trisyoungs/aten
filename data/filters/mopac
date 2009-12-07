@@ -1,14 +1,15 @@
 # Mopac input file (for v1.2+)
 # Created:	 13/04/2009
-# Last modified: 13/04/2009
+# Last modified: 07/12/2009
 # ChangeLog:
+#	07/12/2009 - Fixed (uncommented) 'newatom' line in importmodel filter, which had been taken out for some reason. Tweaked '+' and '&' detection.
 # Notes:
 #   Cartesian coordinate format is assumed
 
 filter(type="importmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
 {
 	# Variable declaration
-	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2;
+	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2, morekeywords, lesstitle;
 	string e,line,title;
 	double rx,ry,rz;
 	vector v[3];
@@ -18,8 +19,9 @@ filter(type="importmodel", name="Mopac Control File", nickname="mopac", extensio
 	# A '&' in a line indicates that a title/description line is replaced by keywords.
 	while (getline(line))
 	{
-		if (contains(line,"+") == 0) break;
-		if (contains(line,"&") == 0) ntitle--;
+		if (contains(line,"&") == 0) { ntitle--; continue; }
+		if (contains(line,"+") != 0) continue;	# Read another line of keywords
+		break;
 	}
 
 	# Description lines follow, unless replaced by keyword lines with '&' in previous lines
@@ -44,8 +46,12 @@ filter(type="importmodel", name="Mopac Control File", nickname="mopac", extensio
 			}
 			else printf("Extra translation vector data found - ignored...\n");
 		}
-	#	else newatom(e,rx,ry,rz);
+		else newatom(e,rx,ry,rz);
 	}
+
+	# Were we supplied with a full cell description?
+	if (cellcount >= 3) cellaxes(v[1].x,v[1].y,v[1].z,v[2].x,v[2].y,v[2].z,v[3].x,v[3].y,v[3].z);
+
 	rebond();
 	finalisemodel();
 }
