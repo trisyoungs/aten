@@ -1356,6 +1356,7 @@ void Pattern::assignHybrids()
 	// Assign hybridisation types to the atoms in this pattern.
 	msg.enter("Pattern::assignHybrids");
 	Atom *i = firstAtom_;
+	int nsingle, nother;
 	for (int n=0; n<nAtoms_; n++)
 	{
 		// Set to no environment to begin with
@@ -1364,18 +1365,25 @@ void Pattern::assignHybrids()
 		// We can increase the hybridisation at any point, but never decrease it.
 		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 		{
+			nsingle = 0;
+			nother = 0;
 			switch (bref->item->type())
 			{
 				case (Bond::Single):
-					if (i->environment() < Atom::Sp3Environment) i->setEnvironment(Atom::Sp3Environment);
+					nsingle ++;
 					break;
 				case (Bond::Double):
-					if (i->environment() < Atom::Sp2Environment) i->setEnvironment(Atom::Sp2Environment);
-					break;
 				case (Bond::Triple):
-					if (i->environment() < Atom::SpEnvironment) i->setEnvironment(Atom::SpEnvironment);
+					nother ++;
+					break;
+				default:
+					printf("Warning - Unrecognised bond type in Pattern::assignHybrids.\n");
+					nother ++;
 					break;
 			}
+			if (nother == 0) i->setEnvironment(Atom::PureEnvironment);
+			else if (nsingle == 0) i->setEnvironment(Atom::UnboundEnvironment);
+			else i->setEnvironment(Atom::NonPureEnvironment);
 		}
 		i = i->next;
 	}
@@ -1448,7 +1456,7 @@ bool Pattern::typeAtoms()
 			if (i->element() != at->characterElement()) continue;
 			// See how well this ff description matches the environment of our atom 'i'
 			msg.print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
-			newmatch = at->matchAtom(i,&rings_,parent_,i);
+			newmatch = at->matchAtom(i,&rings_,parent_);
 			msg.print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n", ffa->typeId(), newmatch);
 			if (newmatch > bestmatch)
 			{
@@ -1463,7 +1471,7 @@ bool Pattern::typeAtoms()
 			nfailed ++;
 			result = FALSE;
 		}
-		else msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type(), i->type()->name());
+		else msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type()->typeId(), i->type()->name());
 		i = i->next;
 	}
 	// Print warning if we failed...

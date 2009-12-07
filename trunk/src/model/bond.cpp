@@ -174,48 +174,52 @@ void Model::clearBonding()
 void Model::initialiseBondingCuboids()
 {
 	msg.enter("Model::initialiseBondingCuboids");
+	double size = 5.0;
 	Vec3<double> r;
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;
-	cuboidSize_.set(5.0,5.0,5.0);
-	nCuboids_ = 0;
-	if (atoms_.nItems() == 0) return;
-	// Determine the number of cuboids to partition our space into
-	if (cell_.type() == Cell::NoCell)
+	do
 	{
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		cuboidSize_.set(5.0,5.0,5.0);
+		nCuboids_ = 0;
+		if (atoms_.nItems() == 0) return;
+		// Determine the number of cuboids to partition our space into
+		if (cell_.type() == Cell::NoCell)
 		{
-			r = i->r();
-			if (r.x < extentMin_.x) extentMin_.x = r.x;
-			if (r.x > extentMax_.x) extentMax_.x = r.x;
-			if (r.y < extentMin_.y) extentMin_.y = r.y;
-			if (r.y > extentMax_.y) extentMax_.y = r.y;
-			if (r.z < extentMin_.z) extentMin_.z = r.z;
-			if (r.z > extentMax_.z) extentMax_.z = r.z;
+			for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+			{
+				r = i->r();
+				if (r.x < extentMin_.x) extentMin_.x = r.x;
+				if (r.x > extentMax_.x) extentMax_.x = r.x;
+				if (r.y < extentMin_.y) extentMin_.y = r.y;
+				if (r.y > extentMax_.y) extentMax_.y = r.y;
+				if (r.z < extentMin_.z) extentMin_.z = r.z;
+				if (r.z > extentMax_.z) extentMax_.z = r.z;
+			}
+			extentRange_ = extentMax_ - extentMin_;
+			cuboidBoxes_.x = (extentRange_.x / cuboidSize_.x) + 1;
+			cuboidBoxes_.y = (extentRange_.y / cuboidSize_.y) + 1;
+			cuboidBoxes_.z = (extentRange_.z / cuboidSize_.z) + 1;
 		}
-		extentRange_ = extentMax_ - extentMin_;
-		cuboidBoxes_.x = (extentRange_.x / cuboidSize_.x) + 1;
-		cuboidBoxes_.y = (extentRange_.y / cuboidSize_.y) + 1;
-		cuboidBoxes_.z = (extentRange_.z / cuboidSize_.z) + 1;
-	}
-	else
-	{
-		// For periodic systems, we will use fractional coordinates to partition the atoms
-		foldAllAtoms();
-		extentMin_ = 0.0;
-		extentMax_ = 1.0;
-		extentRange_ = 1.0;
-		// Work out the box sizes necessary in each direction to get a suitable box length and no remainder of 'overlap'
-		Vec3<double> lengths = cell_.lengths();
-		lengths /= cuboidSize_;
-		Vec3<int> ilengths;
-		ilengths.set(lengths.x, lengths.y, lengths.z);
-		for (int n=0; n<3; ++n) if (ilengths.get(n) == 0) ilengths.set(n,1);
-		cuboidSize_.set(1.0 / ilengths.x, 1.0 / ilengths.y, 1.0 / ilengths.z);
-		cuboidBoxes_.set(ilengths.x, ilengths.y, ilengths.z);
-	}
-	// Create reference arrays
-	nCuboids_ = cuboidBoxes_.x * cuboidBoxes_.y * cuboidBoxes_.z;
+		else
+		{
+			// For periodic systems, we will use fractional coordinates to partition the atoms
+			foldAllAtoms();
+			extentMin_ = 0.0;
+			extentMax_ = 1.0;
+			extentRange_ = 1.0;
+			// Work out the box sizes necessary in each direction to get a suitable box length and no remainder of 'overlap'
+			Vec3<double> lengths = cell_.lengths();
+			lengths /= cuboidSize_;
+			Vec3<int> ilengths;
+			ilengths.set(lengths.x, lengths.y, lengths.z);
+			for (int n=0; n<3; ++n) if (ilengths.get(n) == 0) ilengths.set(n,1);
+			cuboidSize_.set(1.0 / ilengths.x, 1.0 / ilengths.y, 1.0 / ilengths.z);
+			cuboidBoxes_.set(ilengths.x, ilengths.y, ilengths.z);
+		}
+		nCuboids_ = cuboidBoxes_.x * cuboidBoxes_.y * cuboidBoxes_.z;
+		size += 5.0;
+	} while (cuboidBoxes_.max() > prefs.maxCuboids());
 	cuboidYZ_ = cuboidBoxes_.y * cuboidBoxes_.z;
 	freeBondingCuboids();
 // 	printf("Box counts: x = %i, y = %i, z = %i, cube = %i\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, nCuboids_);
@@ -363,7 +367,7 @@ void Model::rebond()
 }
 
 // Calculate Bonding
-void Model::calculateBonding()
+void Model::calculateBonding(bool augment)
 {
 	msg.enter("Model::calculateBonding");
 	Atom *i, *j;
@@ -380,7 +384,7 @@ void Model::calculateBonding()
 	// Free bonding cuboids
 	freeBondingCuboids();
 	// Augment?
-	if (prefs.augmentAfterRebond()) augmentBonding();
+	if (augment) augmentBonding();
 	msg.print(Messenger::Verbose, "Done.\n");
 	msg.exit("Model::calculateBonding");
 }
@@ -411,7 +415,7 @@ void Model::calculateBonding()
 // }
 
 // Calculate Bonding within Patterns
-void Model::patternCalculateBonding()
+void Model::patternCalculateBonding(bool augment)
 {
 	msg.enter("Model::patternCalculateBonding");
 	Atom *i,*j;
@@ -467,7 +471,7 @@ void Model::patternCalculateBonding()
 }
 
 // Calculate Bonding in current selection
-void Model::selectionCalculateBonding()
+void Model::selectionCalculateBonding(bool augment)
 {
 	msg.enter("Model::selectionCalculateBonding");
 	double tolerance = prefs.bondTolerance();
@@ -482,7 +486,7 @@ void Model::selectionCalculateBonding()
 	// Free bonding cuboids
 	freeBondingCuboids();
 	// Augment?
-	if (prefs.augmentAfterRebond()) augmentBonding();
+	if (augment) augmentBonding();
 	msg.exit("Model::selectionCalculateBonding");
 }
 

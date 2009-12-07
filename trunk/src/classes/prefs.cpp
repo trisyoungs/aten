@@ -257,6 +257,7 @@ Prefs::Prefs()
 	energyUpdate_ = 1;
 	maxRingSize_ = 6;
 	maxRings_ = 20;
+	maxCuboids_ = 100;
 	replicateFold_ = TRUE;
 	replicateTrim_ = TRUE;
 	forceRhombohedral_ = FALSE;
@@ -1196,6 +1197,18 @@ int Prefs::maxRings()
 void Prefs::setMaxRings(int i)
 {
 	maxRings_ = i;
+}
+
+// Return maximum number of bonding cuboids in each direction
+int Prefs::maxCuboids()
+{
+	return maxCuboids_;
+}
+
+// Set maximum number of bonding cuboids in each direction
+void Prefs::setMaxCuboids(int i)
+{
+	maxCuboids_ = i;
 }
 
 // Set whether to fold atoms before replication

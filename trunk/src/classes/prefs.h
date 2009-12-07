@@ -511,6 +511,8 @@ class Prefs
 	int maxRingSize_;
 	// Maximum number of rings to detect per pattern
 	int maxRings_;
+	// Maximum number of bonding cuboids in each direction
+	int maxCuboids_;
 	// Whether to fold atoms before replication
 	bool replicateFold_;
 	// Whether to trim atoms after replication
@@ -549,6 +551,10 @@ class Prefs
 	int maxRings();
 	// Set the maximum number of rings to detect per pattern
 	void setMaxRings(int i);
+	// Return maximum number of bonding cuboids in each direction
+	int maxCuboids();
+	// Set maximum number of bonding cuboids in each direction
+	void setMaxCuboids(int i);
 	// Set whether to fold atoms before replication
 	void setReplicateFold(bool b);
 	// Return whether to fold atoms before replication

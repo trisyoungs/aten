@@ -87,6 +87,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
 	{ "linealiasing",	VTypes::IntegerData,	0, FALSE },
 	{ "manualswapbuffers",	VTypes::IntegerData,	0, FALSE },
+	{ "maxcuboids",		VTypes::IntegerData,	0, FALSE },
 	{ "maxrings",		VTypes::IntegerData,	0, FALSE },
 	{ "maxringsize",	VTypes::IntegerData,	0, FALSE },
 	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
@@ -333,6 +334,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::ManualSwapBuffers):
 			rv.set( ptr->manualSwapBuffers() );
+			break;
+		case (PreferencesVariable::MaxCuboids):
+			rv.set( ptr->maxCuboids() );
 			break;
 		case (PreferencesVariable::MaxRings):
 			rv.set( ptr->maxRings() );
@@ -657,6 +661,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::ManualSwapBuffers):
 			ptr->setManualSwapBuffers( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::MaxCuboids):
+			ptr->setMaxCuboids( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MaxRings):
 			ptr->setMaxRings( newvalue.asInteger(result) );

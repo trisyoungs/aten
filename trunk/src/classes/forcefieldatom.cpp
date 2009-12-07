@@ -24,6 +24,7 @@
 
 #include "base/elements.h"
 #include "classes/forcefieldatom.h"
+#include "classes/neta_parser.h"
 
 // Constructor
 ForcefieldAtom::ForcefieldAtom()
@@ -35,6 +36,7 @@ ForcefieldAtom::ForcefieldAtom()
 	vdwForm_ = VdwFunctions::None;
 	generator_ = NULL;
 	parent_ = NULL;
+	neta_.setParentForcefieldAtom(this);
 	element_ = 0;
 
 	// Public variables
@@ -52,6 +54,7 @@ ForcefieldAtom::~ForcefieldAtom()
 void ForcefieldAtom::setParent(Forcefield *ff)
 {
 	parent_ = ff;
+	neta_.setParentForcefield(ff);
 }
 
 // Return parent forcefield
@@ -135,16 +138,16 @@ const char *ForcefieldAtom::description()
 }
 
 // Set atomtype string and generate new type description
-bool ForcefieldAtom::setNeta(const char *s, Forcefield *parent, ForcefieldAtom *root)
+bool ForcefieldAtom::setNeta(const char *s, Forcefield *parent)
 {
 	netaString_ = s;
 	// If supplied parent is NULL, use current parent (if not also NULL)
 	if (parent == NULL)
 	{
 		parent = parent_;
-		if (parent == NULL) printf("ForcefieldAtom::setNeta has no valid parent.\n");
+		if (parent == NULL) printf("ForcefieldAtom::setNeta has no valid parent forcefield.\n");
 	}
-	return neta_.expand(s, parent, root);
+	return netaparser.createNeta(&neta_, s, parent);
 }
 
 // Return original typestring

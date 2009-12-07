@@ -32,7 +32,7 @@ Dnchar::Dnchar()
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
-	endPosition_ = -1;
+	endPosition_ = 0;
 
 	// Public variables
 	prev = NULL;
@@ -44,7 +44,7 @@ Dnchar::Dnchar(int emptysize)
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
-	endPosition_ = -1;
+	endPosition_ = 0;
 
 	// Public variables
 	prev = NULL;
@@ -58,7 +58,7 @@ Dnchar::Dnchar(const char *s)
 	// Private variables
 	data_ = NULL;
 	size_ = 0;
-	endPosition_ = -1;
+	endPosition_ = 0;
 
 	// Public variables
 	prev = NULL;
@@ -274,8 +274,11 @@ void Dnchar::cat(const char *s, int charcount)
 	{
 		size_ = slen+endPosition_+1;
 		char *newdata = new char[size_];
-		strcpy(newdata, data_);
-		delete[] data_;
+		if (data_ != NULL)
+		{
+			strcpy(newdata, data_);
+			delete[] data_;
+		}
 		data_ = newdata;
 	}
 	for (const char *c = s; *c != '\0'; ++c)

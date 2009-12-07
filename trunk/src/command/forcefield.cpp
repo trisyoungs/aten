@@ -423,7 +423,7 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ffa->setName(c->argc(1));
 	ffa->setEquivalent(c->argc(1));
 	ffa->neta()->setCharacterElement(c->argz(2));
-	ffa->setNeta(c->argc(3), obj.ff, ffa);
+	ffa->setNeta(c->argc(3), obj.ff);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
 	rv.reset();
 	return TRUE;
@@ -460,7 +460,7 @@ bool Command::function_TypeTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			if (c->argType(1) == VTypes::AtomData) i = (Atom*) c->argp(1, VTypes::AtomData);
 			else if (c->argType(1) == VTypes::IntegerData) i = obj.m->atomArray()[c->argi(1)-1];
 			Pattern *p = obj.m->pattern(i);
-			int score = ffa->neta()->matchAtom(i,p->ringList(),obj.m,i);
+			int score = ffa->neta()->matchAtom(i,p->ringList(),obj.m);
 			if (score > 0) msg.print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
 			else msg.print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 			rv.set(score);

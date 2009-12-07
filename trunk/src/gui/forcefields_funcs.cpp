@@ -271,7 +271,11 @@ void AtenForcefields::on_ManualTypeSetButton_clicked(bool checked)
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
 	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
-	if (ffa != NULL) m->selectionSetType(ffa, TRUE);
+	if (ffa != NULL)
+	{
+		m->selectionSetType(ffa, TRUE);
+		msg.print("Manually set types of %i atoms.\n", aten.currentModel()->nSelected());
+	}
 	gui.update();
 }
 
@@ -279,6 +283,7 @@ void AtenForcefields::on_ManualTypeSetButton_clicked(bool checked)
 void AtenForcefields::on_ManualTypeClearButton_clicked(bool checked)
 {
 	aten.currentModel()->selectionSetType(NULL, FALSE);
+	msg.print("Cleared types of %i atoms.\n", aten.currentModel()->nSelected());
 	gui.update();
 }
 
@@ -306,7 +311,7 @@ void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 				Pattern *p = m->pattern(i);
 				if (i->element() == at->characterElement())
 				{
-					matchscore = at->matchAtom(i, p->ringList(), m, i);
+// TGAYNETA					matchscore = at->matchAtom(i, p->ringList(), m, i);
 					msg.print("Atom %i (%s) matched type with score %i.\n", i->id()+1, elements().symbol(i), matchscore);
 				}
 				else msg.print("Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements().symbol(i));

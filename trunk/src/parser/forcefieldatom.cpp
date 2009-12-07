@@ -302,7 +302,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 			ptr->setName(newvalue.asString());
 			break;
 		case (ForcefieldAtomVariable::Neta):
-			ptr->setNeta(newvalue.asString(), NULL, ptr);
+			ptr->setNeta(newvalue.asString(), NULL);
 			break;
 		case (ForcefieldAtomVariable::Z):
 			ptr->neta()->setCharacterElement(newvalue.asInteger());

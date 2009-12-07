@@ -31,7 +31,7 @@
 const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
 Atom::DrawStyle Atom::drawStyle(const char *s, bool reporterror)
 {
-	Atom::DrawStyle ds = (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s);
+	Atom::DrawStyle ds = (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s, reporterror);
 	if ((ds == Atom::nDrawStyles) && reporterror) enumPrintValid(Atom::nDrawStyles,DrawStyleKeywords);
 	return ds;
 }
@@ -44,7 +44,7 @@ const char *Atom::drawStyle(Atom::DrawStyle i)
 const char *AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
 Atom::AtomLabel Atom::atomLabel(const char *s, bool reporterror)
 {
-	Atom::AtomLabel al = (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s));
+	Atom::AtomLabel al = (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reporterror));
 	if ((al == Atom::nLabelTypes) && reporterror) enumPrintValid(Atom::nLabelTypes,AtomLabelKeywords);
 	return al;
 }
@@ -59,7 +59,7 @@ const char *Atom::atomLabel(Atom::AtomLabel al)
 }
 
 // Atom environment
-const char *AtomEnvironmentText[Atom::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
+const char *AtomEnvironmentText[Atom::nEnvironments] = { "unspecified", "unbound", "pure", "nonpure", "aromatic" };
 const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
 {
 	return AtomEnvironmentText[ae];
@@ -69,7 +69,7 @@ const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
 const char *AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 Atom::AtomGeometry Atom::atomGeometry(const char *s, bool reporterror)
 {
-	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s);
+	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s, reporterror);
 	if ((ag == Atom::nAtomGeometries) && reporterror) enumPrintValid(Atom::nAtomGeometries,AtomGeometryKeywords);
 	return ag;
 }
@@ -426,7 +426,7 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
 	{
-		// Simple cases first
+		// 'Simple' cases first
 		case (0):
 			result = Atom::UnboundGeometry;
 			break;

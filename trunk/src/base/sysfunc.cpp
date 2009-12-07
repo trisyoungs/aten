@@ -123,7 +123,7 @@ const char *afterStr(const char *s, const char *search)
 }
 
 // Search enum list for text
-int enumSearch(const char *name, int maxn, const char **itemlist, const char *query)
+int enumSearch(const char *name, int maxn, const char **itemlist, const char *query, bool reporterror)
 {
 	static char lowerq[50], lowers[50];
 	int result = maxn, i;
@@ -137,7 +137,7 @@ int enumSearch(const char *name, int maxn, const char **itemlist, const char *qu
 			break;
 		}
 	}
-	if ((result == maxn) && (name[0] != '\0')) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '\0') && reporterror) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 
@@ -147,7 +147,7 @@ void enumPrintValid(int nitems, const char **list)
 	msg.print("Valid values are:\n    ");
 	for (int i=0; i < nitems; i++)
 	{
-		if (strcmp(list[i],"_NULL_") == 0) continue;
+		if ((strcmp(list[i],"_NULL_") == 0) || (list[i][0] == '_')) continue;
 		msg.print("%s ", lowerCase(list[i]));
 	}
 	msg.print("\n");

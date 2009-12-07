@@ -31,7 +31,7 @@
 const char *BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };
 Bond::BondType Bond::bondType(const char *s, bool reporterror)
 {
-	Bond::BondType bt = (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s);
+	Bond::BondType bt = (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s,reporterror);
 	if ((bt == Bond::nBondTypes) && reporterror) enumPrintValid(Bond::nBondTypes,BondTypeKeywords);
 	return bt;
 }

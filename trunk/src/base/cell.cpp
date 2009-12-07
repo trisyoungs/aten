@@ -311,7 +311,7 @@ double Cell::density() const
 void Cell::setSpacegroupId(int i)
 {
 	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroupId_ = i; // TGAY
+	else spacegroupId_ = i;
 }
 
 // Return the spacegroup Id
@@ -323,6 +323,7 @@ int Cell::spacegroupId()
 // Sets the spacegroup by text name
 void Cell::setSpacegroup(const char *s)
 {
+	printf("Oddly, setting spacegroups by name is not implemented yet.\n");
 	// TGAY
 }
 

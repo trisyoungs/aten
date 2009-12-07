@@ -11,6 +11,13 @@
 	</author>
 	</bookinfo>
 	
+	<!-- DISCLAIMER -->
+	<sect1 id="disclaimer">
+	<para>
+	</para>
+
+	</sect1>
+
 	&introduction;
 
 </book>

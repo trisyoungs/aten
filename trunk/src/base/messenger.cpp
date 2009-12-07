@@ -31,7 +31,7 @@
 Messenger msg;
 
 // Message output types
-const char *OutputTypeKeywords[] = { "calls", "typing", "parse", "verbose", "commands", "expressions", "_ERROR_", "gl", "all" };
+const char *OutputTypeKeywords[] = { "all", "calls", "commands", "_ERROR_", "gl", "parse", "test", "typing", "verbose" };
 Messenger::OutputType Messenger::outputType(const char *s, bool reporterror)
 {
 	Messenger::OutputType ot = (Messenger::OutputType) enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s);

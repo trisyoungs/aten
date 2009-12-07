@@ -225,11 +225,14 @@ CommandData Command::data[Command::nCommands] = {
 	{ "newbondid",		"NNs",		VTypes::NoData,
 		"int id1, int id2, string|int|double bondtype = 1",
 		"Create a bond between atoms with ids specified" },
-	{ "rebond",		"",		VTypes::NoData, "",
+	{ "rebond",		"b",		VTypes::NoData,
+		"bool augment = <aten.prefs.augmentafterrebond>",
 		"Calculate bonding in the current model" },
-	{ "rebondpatterns",	"",		VTypes::NoData, "",
+	{ "rebondpatterns",	"b",		VTypes::NoData,
+		"bool augment = <aten.prefs.augmentafterrebond>",
 		"Calculate bonds between atoms, restricted to atoms in pattern molecules" },
-	{ "rebondselection",	"",		VTypes::NoData, "",
+	{ "rebondselection",	"b",		VTypes::NoData,
+		"bool augment = <aten.prefs.augmentafterrebond>",
 		"Calculate bonds between atoms in the current selection" },
 
 	// Build commands

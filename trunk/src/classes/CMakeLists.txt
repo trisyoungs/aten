@@ -4,6 +4,8 @@ grid.h
 forcefieldatom.h
 forcefieldbound.h
 neta.h
+neta_grammar.h
+neta_parser.h
 prefs.h
 restraint.h
 ring.h
@@ -13,6 +15,9 @@ forcefieldatom.cpp
 forcefieldbound.cpp
 grid.cpp
 neta.cpp
+neta_grammar.cc
+neta_lexer.cpp
+neta_parser.cpp
 prefs.cpp
 restraint.cpp
 ring.cpp
