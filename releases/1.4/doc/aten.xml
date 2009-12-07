@@ -1,0 +1,17 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
+  <!ENTITY introduction SYSTEM "introduction.xml">
+]>
+<book>
+	<bookinfo>
+	<title>Aten vATENVERSION (rATENREVISION)</title>
+	<subtitle>User Manual</subtitle>
+	<author>
+		<firstname>Tristan</firstname>
+		<surname>Youngs</surname>
+	</author>
+	</bookinfo>
+	
+	&introduction;
+
+</book>
+
