@@ -262,6 +262,7 @@ Prefs::Prefs()
 	replicateTrim_ = TRUE;
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
+	warning1056_ = TRUE;
 
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
@@ -1257,6 +1258,18 @@ void Prefs::setForceRhombohedral(bool b)
 bool Prefs::forceRhombohedral()
 {
 	return forceRhombohedral_;
+}
+
+// Whether to display warning for version 1.5 (r1056) newness
+bool Prefs::warning1056()
+{
+	return warning1056_;
+}
+
+// Set whether to display warning for version 1.5 (r1056) newness
+void Prefs::setWarning1056(bool b)
+{
+	warning1056_ = b;
 }
 
 /*

@@ -113,6 +113,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
 	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
+	{ "warn1056",		VTypes::IntegerData,	0, FALSE },
 	{ "zmap",		VTypes::StringData,	0, FALSE },
 	{ "zoomthrottle",	VTypes::DoubleData,	0, FALSE }
 };
@@ -418,6 +419,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::VdwScale):
 			rv.set( ptr->vdwScale() );
+			break;
+		case (PreferencesVariable::Warn1056):
+			rv.set( ptr->warning1056() );
 			break;
 		case (PreferencesVariable::ZMapping):
 			rv.set( ElementMap::zMapType( ptr->zMapType()) );
@@ -768,6 +772,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::VdwScale):
 			ptr->setVdwScale( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::Warn1056):
+			ptr->setWarning1056( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::ZMapping):
 			zm = ElementMap::zMapType( newvalue.asString(result), TRUE );
