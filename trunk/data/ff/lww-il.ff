@@ -10,11 +10,11 @@ units kj
 vscale 0.5
 escale 0.83333333	# 5/6
 
-types
 #
 # Cations
 #
 # 1-hexyl-3-methyl imidazolium - JPCb, 2009, 113, 7591-7598.
+types
 1	CR_h	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C-C-C-C-C(nbonds=1)))"
 2	NAm_h	N	"~&1,-C(nbonds=1)"
 3	NAa_h	N	"~&1,chain(-C-C-C-C-C-C(nbonds=1))"
@@ -23,14 +23,18 @@ types
 6	H5_h	H	"-&1"
 7	H4m_h	H	"-&4"
 8	H4a_h	H	"-&5"
-9	CN3_h	C	"-&2,noring"
-10	CN2_h	C	"-&3,noring"
-11	CT2_2_h	C	"-&10"
-12	CT2_3_h	C	"chain(-&11,-&10)"
-13	CT2_4_h	C	"chain(-&12,-&11,-&10)"
-14	CT2_5_h	C	"chain(-&13,-&12,-&11,-&10)"
-15	CT3_h	C	"chain(-&14,-&13,-&12,-&11,-&10),nbonds=1"
+end
+uatypes
+9	CN3_h	C	15.0455	"-&2,noring"
+10	CN2_h	C	14.0265	"-&3,noring"
+11	CT2_2_h	C	14.0265	"-&10"
+12	CT2_3_h	C	14.0265	"chain(-&11-&10)"
+13	CT2_4_h	C	14.0265	"chain(-&12-&11-&10)"
+14	CT2_5_h	C	14.0265	"chain(-&13-&12-&11-&10)"
+15	CT3_h	C	15.0455	"chain(-&14-&13-&12-&11-&10),nbonds=1"
+end
 # 1-butyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
 16	CR_b	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C-C-C(nbonds=1)))"
 17	NAm_b	N	"~&16,-C(nbonds=1)"
 18	NAa_b	N	"~&16,chain(-C-C-C-C(nbonds=1))"
@@ -39,12 +43,16 @@ types
 21	H5_b	H	"-&16"
 22	H4m_b	H	"-&19"
 23	H4a_b	H	"-&20"
-24	CN3_b	C	"-&17,noring"
-25	CN2_b	C	"-&18,noring"
-26	CT2_2_b	C	"-&25"
-27	CT2_3_b	C	"chain(-&26,-&25)"
-28	CT2_4_b	C	"chain(-&27,-&26,-&25),nbonds=1"
+end
+uatypes
+24	CN3_b	C	15.0455	"-&17,noring"
+25	CN2_b	C	14.0265	"-&18,noring"
+26	CT2_2_b	C	14.0265	"-&25"
+27	CT2_3_b	C	14.0265	"chain(-&26-&25)"
+28	CT2_4_b	C	15.0455	"chain(-&27-&26-&25),nbonds=1"
+end
 # 1-ethyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
 29	CR_e	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C(nbonds=1)))"
 30	NAm_e	N	"~&29,-C(nbonds=1)"
 31	NAa_e	N	"~&29,chain(-C-C(nbonds=1))"
@@ -53,30 +61,43 @@ types
 34	H5_e	H	"-&29"
 35	H4m_e	H	"-&32"
 36	H4a_e	H	"-&33"
-37	CN3_e	C	"-&30,noring"
-38	CN2_e	C	"-&31,noring"
-39	CT2_2_e	C	"-&38"
+end
+uatypes
+37	CN3_e	C	15.0455	"-&30,noring"
+38	CN2_e	C	14.0265	"-&31,noring"
+39	CT2_2_e	C	15.0455	"-&38"
+end
 # 1,3-dimethyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
 40	CR	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1),n=2)"
 41	NA	N	"~&40,-C(nbonds=1)"
 42	CW	C	"~N(-C(nbonds=1),~&40)"
 43	H5	H	"-&40"
 44	H4	H	"-&42"
-45	CN3	C	"-&41,noring"
+end
+uatypes
+45	CN3	C	15.0455	"-&41,noring"
+end
+
 #
 # Anions
 #
+types
 # Tetrafluoroborate - PCCP, 2006, 8, 1096-1104.
 100	B	B	"-F(n=4)"
 101	FB	F	"-&100"
 # Hexafluorophosphate - PCCP, 2006, 8, 1096-1104.
 102	P	P	"-F(n=6)"
 103	FP	F	"-&102"
+end
 # Tris(pentafluoroethyl)trifluorophosphate ('FEP' or 'FAP') - JPCb, 2009, 113, 7591-7598.
+types
 104	P_fap	P	"-F(n=3),chain(-C-C(nbonds=1),n=3)"
 105	F_fap	F	"-&104"
-106	CF2	C	"-&104"
-107	CF3	C	"-&106,nbonds=1"
+end
+uatypes
+106	CF2	C	50.0075	"-&104"
+107	CF3	C	69.0059 "-&106,nbonds=1"
 end
 
 inter lj
@@ -229,38 +250,38 @@ end
 torsions cos
 # PCCP, 2006, 8, 1096-1104.
 # Some torsions appear to be labelled incorrectly in Table 1 in the above ref, with CT3 and CT2 used instead of CN2 and CN3.
-NA	CR	NA	CW	180	50.21	2
-H4	CW	NA	CN3	180	6.276	2	# CT3 -> CN3
-NA	CR	NA	CN3	180	8.368	2	# CT3 -> CN3
-H4	CW	NA	CN2	180	6.276	2	# CT2 -> CN2
-NA	CR	NA	CN2	180	8.368	2	# CT2 -> CN2
-NA	CW	CW	H4	180	6.276	2
-H5	CR	NA	CW	180	6.276	2
-NA	CW	CW	NA	180	50.21	2
-H5	CR	NA	CN3	180	6.276	2	# CT3 -> CN3
-H4	CW	CW	H4	180	6.276	2
-H5	CR	NA	CN2	180	6.276	2	# CT2 -> CN2
-CN2	CT2	CT2	CT3	0	4.180	3
-CW	CW	NA	CR	180	50.21	2
-CT2	CT2	CT2	CT3	0	4.180	3
-CW	CW	NA	CN3	180	8.368	2	# CT3 -> CN3
-NA	CN2	CT2	CT2	0	4.180	3
-CW	CW	NA	CN2	180	8.368	2	# CT2 -> CN2
-CT2	CN2	NA	CW	0	-0.745	1
-H4	CW	NA	CR	180	8.368	2
-CT2	CN2	NA	CR	0	-0.987	1
+NA	CR	NA	CW	50.21	180	2
+H4	CW	NA	CN3	6.276	180	2	# CT3 -> CN3
+NA	CR	NA	CN3	8.368	180	2	# CT3 -> CN3
+H4	CW	NA	CN2	6.276	180	2	# CT2 -> CN2
+NA	CR	NA	CN2	8.368	180	2	# CT2 -> CN2
+NA	CW	CW	H4	6.276	180	2
+H5	CR	NA	CW	6.276	180	2
+NA	CW	CW	NA	50.21	180	2
+H5	CR	NA	CN3	6.276	180	2	# CT3 -> CN3
+H4	CW	CW	H4	6.276	180	2
+H5	CR	NA	CN2	6.276	180	2	# CT2 -> CN2
+CN2	CT2	CT2	CT3	4.180	0	3
+CW	CW	NA	CR	50.21	180	2
+CT2	CT2	CT2	CT3	4.180	0	3
+CW	CW	NA	CN3	8.368	180	2	# CT3 -> CN3
+NA	CN2	CT2	CT2	4.180	0	3
+CW	CW	NA	CN2	8.368	180	2	# CT2 -> CN2
+CT2	CN2	NA	CW	-0.745	0	1
+H4	CW	NA	CR	8.368	180	2
+CT2	CN2	NA	CR	-0.987	0	1
 # JPCb, 2009, 113, 7591-7598.
-CF2	P	CF2	CF3	180	3.345	2
-F	P	CF2	CF3	0.0	14.83	1
+CF2	P	CF2	CF3	3.345	180	2
+F	P	CF2	CF3	14.83	0	1
 # Following torsions are missing from above ref, so are set to the same for bmim's CN
-CN2	CT2	CT2	CT2	0.0	4.180	3
-CT2	CT2	CT2	CT2	0.0	4.180	3
+CN2	CT2	CT2	CT2	4.180	0	3
+CT2	CT2	CT2	CT2	4.180	0	3
 end
 
 impropers cos
 # PCCP, 2006, 8, 1096-1104.
-NA	NA	CR	H5	180	4.602	2	
-CR	CW	NA	CN3	180	4.184	2
-CW	NA	CW	H4	180	4.602	2	
-CR	CW	NA	CN2	180	4.184	2
+NA	NA	CR	H5	4.602	180	2	
+CR	CW	NA	CN3	4.184	180	2
+CW	NA	CW	H4	4.602	180	2	
+CR	CW	NA	CN2	4.184	180	2
 end

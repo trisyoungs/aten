@@ -531,6 +531,8 @@ class Prefs
 	bool augmentAfterRebond_;
 	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
 	bool forceRhombohedral_;
+	// Display warning for version 1.5 (r1056) newness
+	bool warning1056_;
 
 	public:
 	// Set the model update frequency
@@ -591,6 +593,10 @@ class Prefs
 	bool forceRhombohedral();
 	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
 	void setForceRhombohedral(bool b);
+	// Whether to display warning for version 1.5 (r1056) newness
+	bool warning1056();
+	// Set whether to display warning for version 1.5 (r1056) newness
+	void setWarning1056(bool b);
 
 
 	/*

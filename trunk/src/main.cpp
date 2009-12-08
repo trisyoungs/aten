@@ -64,6 +64,12 @@ int main(int argc, char *argv[])
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;
 
+	// Display message for 1056
+	if (prefs.warning1056())
+	{
+		printf("****** INFO *******\nNote that v1.5 (revision 1056) introduced a rewrite of the typing language, along with some subtle changes to the syntax.\nYour own forcefield files may need to be checked in order to ensure consistency.\n(Disable this warning with 'aten.prefs.warn1056 = FALSE;' in your prefs file)\n");
+	}
+
 	// Enter the correct program mode
 	switch (aten.programMode())
 	{
