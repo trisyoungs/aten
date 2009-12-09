@@ -350,7 +350,7 @@ bool Pattern::createExpression(bool vdwOnly)
 
 			// If we get here, then we did, so add this improper to the torsion array
 			nImpropers++;
-			addTorsionData(ffb, ipa[0]->atom()->id(), ipa[1]->atom()->id(), ipa[2]->atom()->id(), ipa[3]->atom()->id());
+			addTorsionData(ffb, ipa[0]->atom()->id()-startAtom_, ipa[1]->atom()->id()-startAtom_, ipa[2]->atom()->id()-startAtom_, ipa[3]->atom()->id()-startAtom_);
 			msg.print(Messenger::Verbose,"Improper %s-%s-%s-%s data : %f %f %f %f\n", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}

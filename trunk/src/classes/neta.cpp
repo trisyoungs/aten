@@ -1327,7 +1327,7 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 	// Check for reverse logic
 	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Chain Check (%i required) = %i", repeat_ == -1 ? 1 : repeat_, totalscore);
-	msg.enter("NetaChainNode::score");
+	msg.exit("NetaChainNode::score");
 	return totalscore;
 }
 
