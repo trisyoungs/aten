@@ -521,7 +521,8 @@ bool Atom::isPlanar(double tolerance)
 		// Calculate angle
 		v1 = parent_->cell()->mimd(this, ri->item->partner(this));
 		v1.normalise();
-		angle = acos(normal.dp(v1)) * DEGRAD;
+		angle = fabs(acos(normal.dp(v1)) * DEGRAD - 90.0);
+// 		printf("Out-of-plane bond angle is %f degrees\n", angle);
 		if (angle > tolerance)
 		{
 			result = FALSE;
