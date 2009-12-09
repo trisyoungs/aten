@@ -27,20 +27,21 @@ name "General AMBER Force Field (June 2003)"
 
 units kcal
 
+# Note - these defines need to be expanded to be more comprehensive.
 defines
 EWG	"(-Cl | -Br | -I | -F | -N(=O(n=2)))"
 end
 
 types
-1	c	C	"nbonds=3,-O(bond=double),-O"		"Sp2 C carbonyl group " # 0.616
-2	c1	C	"nbonds=2,-[C,N,S](bond=triple)"	"Sp C" # 0.360
+1	c	C	"nbonds=3,=O,-O"			"Sp2 C carbonyl group " # 0.616
+2	c1	C	"nbonds=2,~[C,N,S](bond=triple)"	"Sp C" # 0.360
 3	c2	C	"nbonds=3,noring"			"Sp2 C  " # 0.360
 4	c3	C	"nbonds=4"				"Sp3 C" # 0.878
 5	ca	C	"nbonds=3, ring(aromatic), aromatic"	"Sp2 C in pure aromatic systems" # 0.360
 6	cp	C	"nbonds=3, ring(size=6,aromatic), -C(ring(notself,size=6,aromatic))"	"Head Sp2 C that connect two rings in biphenyl sys. " # 0.360
 7	cq	C	"=&6,-C(ring(notself,size=6,aromatic))"	"Head Sp2 C that connect two rings in biphenyl sys. identical to cp " # 0.360
-8	cc	C	"sp2,ring(aromatic,-[N,O,S])"		"Sp2 carbons in non-pure aromatic systems" # 0.360
-9	cd	C	"ring(aromatic,-[N,O,S]),sp2,=&8"	"Sp2 carbons in non-pure aromatic systems, identical to cc" # 0.360
+8	cc	C	"planar,ring(aromatic,-[N,O,S])"	"Sp2 carbons in non-pure aromatic systems" # 0.360
+9	cd	C	"ring(aromatic,-[N,O,S]),planar,=&8"	"Sp2 carbons in non-pure aromatic systems, identical to cc" # 0.360
 10	ce	C	""	"Inner Sp2 carbons in conjugated systems" # 0.360
 11	cf	C	""	"Inner Sp2 carbons in conjugated systems, identical to ce" # 0.360
 12	cg	C	""	"Inner Sp carbons in conjugated systems" # 0.360
@@ -67,12 +68,12 @@ types
 33	br	Br	""					"Bromine " # 2.880
 34	i	I	""					"Iodine" # 4.690
 35	n	N	"nbonds=3, -C(=O)"			"Sp2 nitrogen in amide groups" # 0.530
-36	n1	N	"-C(bond=triple)"			"Sp N" # 0.530
-37	n2	N	"nbonds=2, sp2"				"aliphatic Sp2 N with two connected atoms " # 0.530
+36	n1	N	"~C(bond=triple)"			"Sp N" # 0.530
+37	n2	N	"nbonds=2,planar"			"aliphatic Sp2 N with two connected atoms " # 0.530
 38	n3	N	"nbonds=3, tetrahedral"			"Sp3 N with three connected atoms" # 0.530
-39	n4	N	"nbonds=4, tetrahedral"			"Sp3 N with four connected atoms " # 0.530
-40	na	N	"nbonds=3, sp2"				"Sp2 N with three connected atoms " # 0.530
-41	nb	N	"nbonds=2, =C, -C, ring(aromatic)"	"Sp2 N in pure aromatic systems " # 0.530
+39	n4	N	"nbonds=4,tetrahedral"			"Sp3 N with four connected atoms " # 0.530
+40	na	N	"nbonds=3,planar"			"Sp2 N with three connected atoms " # 0.530
+41	nb	N	"nbonds=2,=C,-C,ring(aromatic)"	"Sp2 N in pure aromatic systems " # 0.530
 42	nc	N	""	"Sp2 N in non-pure aromatic systems" # 0.530
 43	nd	N	""	"Sp2 N in non-pure aromatic systems, identical to nc" # 0.530
 44	ne	N	"nbonds=2,=[C,N],-[C,N](notself)"	"Inner Sp2 N in conjugated systems" # 0.530

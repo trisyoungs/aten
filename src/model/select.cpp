@@ -333,7 +333,7 @@ int Model::selectType(int element, const char *typedesc, bool markonly, bool des
 	{
 		msg.print("Failed to create type description.\n");
 		msg.exit("Model::selectType");
-		return 0;
+		return -1;
 	}
 	int count = 0, matchscore = 0, atomscore, n;
 	// Prepare for typing

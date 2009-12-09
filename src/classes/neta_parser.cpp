@@ -177,76 +177,89 @@ bool NetaParser::createNeta(Neta *target, const char *s, Forcefield *parentff)
 // Set description (called by lexer)
 void NetaParser::setDescription(NetaNode *desc)
 {
-// 	printf("Set Description....\n");
-	// Create a RootNode to head the structure
+	msg.enter("NetaParser::setDescription");
 	NetaRootNode *rootnode = new NetaRootNode();
 	rootnode->setInnerNeta(desc);
 	neta_->ownedNodes_.own(rootnode);
 	neta_->description_ = rootnode;
+	msg.exit("NetaParser::setDescription");
 }
 
 // Join two nodes together
 NetaNode *NetaParser::join(Neta::NetaLogicType logic, NetaNode *node1, NetaNode *node2)
 {
+	msg.enter("NetaParser::join");
 	NetaLogicNode *newnode = new NetaLogicNode(logic, node1, node2);
 	newnode->setParent(neta_);
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::join");
 	return newnode;	
 }
 
 // Link two nodes together
 NetaNode *NetaParser::link(NetaNode *node1, NetaNode *node2)
 {
+	msg.enter("NetaParser::link");
 	NetaNode *tail = node1;
 	while (tail->nextNode != NULL) tail = tail->nextNode;
 	tail->nextNode = node2;
 	node2->prevNode = tail;
+	msg.exit("NetaParser::link");
 	return node1;
 }
 
 // Create element/type list item
 Refitem<ForcefieldAtom,int> *NetaParser::createElementType(int eltype)
 {
+	msg.enter("NetaParser::createElementType");
 	Refitem<ForcefieldAtom,int> *newitem = new Refitem<ForcefieldAtom,int>;
 	newitem->item = NULL;
 	newitem->data = eltype;
 // 	printf("Created an element type.\n");
+	msg.exit("NetaParser::createElementType");
 	return newitem;
 }
 
 // Join element/type list items
 Refitem<ForcefieldAtom,int> *NetaParser::joinElementTypes(Refitem<ForcefieldAtom,int> *type1, Refitem<ForcefieldAtom,int> *type2)
 {
+	msg.enter("NetaParser::joinElementTypes");
 	// Find tail of list begun by type1
 	Refitem<ForcefieldAtom,int> *tail = type1;
 	while (type1->next != NULL) type1 = type1->next;
 	// Append on type2
 	type2->prev = tail;
 	tail->next = type2;
+	msg.exit("NetaParser::joinElementTypes");
 	return type1;
 }
 
 // Create keyword node in current NETA structure
 NetaNode *NetaParser::createKeywordNode(Neta::NetaKeyword nk)
 {
+	msg.enter("NetaParser::createKeywordNode");
 	NetaKeywordNode *newnode = new NetaKeywordNode(nk);
 	newnode->setParent(neta_);
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createKeywordNode");
 	return newnode;
 }
 
 // Create geometry node in current NETA structure
 NetaNode *NetaParser::createGeometryNode(Atom::AtomGeometry ag)
 {
+	msg.enter("NetaParser::createGeometryNode");
 	NetaGeometryNode *newnode = new NetaGeometryNode(ag);
 	newnode->setParent(neta_);
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createGeometryNode");
 	return newnode;
 }
 
 // Create value node in current NETA structure
 NetaNode *NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value)
 {
+	msg.enter("NetaParser::createValueNode");
 	NetaValueNode *newnode = new NetaValueNode(nv, nvc, value);
 	newnode->setParent(neta_);
 	neta_->ownedNodes_.own(newnode);
@@ -256,48 +269,57 @@ NetaNode *NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueCompari
 		if (contextStack_.nItems() == 0)
 		{
 			msg.print("Error: Repeat value ('n') given in an invalid context.\n");
+			msg.exit("NetaParser::createValueNode");
 			return NULL;
 		}
 		contextStack_.last()->item->setRepeat(value);
 		contextStack_.last()->item->setRepeatComparison(nvc);
 	}
+	msg.exit("NetaParser::createValueNode");
 	return newnode;
 }
 
 // Create expander node in current NETA structure
 NetaBoundNode *NetaParser::createBoundNode()
 {
+	msg.enter("NetaParser::createBoundNode");
 	NetaBoundNode *newnode = new NetaBoundNode();
 	newnode->setParent(neta_);
 	contextStack_.add(newnode);
 // 	printf("Added stacknode %p - %i in list\n", newnode, contextStack_.nItems());
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createBoundNode");
 	return newnode;
 }
 
 // Create ring node in current NETA structure
 NetaRingNode *NetaParser::createRingNode()
 {
+	msg.enter("NetaParser::createRingNode");
 	NetaRingNode *newnode = new NetaRingNode();
 	newnode->setParent(neta_);
 	contextStack_.add(newnode);
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createRingNode");
 	return newnode;
 }
 
 // Create chain node in current NETA structure
 NetaChainNode *NetaParser::createChainNode()
 {
+	msg.enter("NetaParser::createChainNode");
 	NetaChainNode *newnode = new NetaChainNode();
 	newnode->setParent(neta_);
 	contextStack_.add(newnode);
 	neta_->ownedNodes_.own(newnode);
+	msg.exit("NetaParser::createChainNode");
 	return newnode;
 }
 
 // Find named define in forcefield
 NetaNode *NetaParser::findDefine(const char *name)
 {
+	msg.enter("NetaParser::findDefine");
 	if (targetParentForcefield_ == NULL) return NULL;
 	Neta *neta = targetParentForcefield_->typeDefine(name);
 	if (neta == NULL)
@@ -306,5 +328,6 @@ NetaNode *NetaParser::findDefine(const char *name)
 		return NULL;
 	}
 	NetaNode *node = neta_->clone(neta->description());
+	msg.exit("NetaParser::findDefine");
 	return node;
 }

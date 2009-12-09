@@ -173,7 +173,7 @@ int NetaParser::lex()
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
 	// Return immediately in the case of brackets, commas etc.
-	if ((c == '(') || (c == ')') || (c == ',') || (c == '[') || (c == ']') || (c == '-') || (c == '~') || (c == '&') || ( c == '!') || (c == '$'))
+	if ((c == '(') || (c == ')') || (c == ',') || (c == '[') || (c == ']') || (c == '-') || (c == '~') || (c == '&') || ( c == '!') || (c == '$') || (c == '='))
 	{
 		msg.print(Messenger::Test, "NETA : found symbol [%c]\n",c);
 		return c;
