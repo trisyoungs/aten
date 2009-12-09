@@ -193,17 +193,16 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Tree *filter = aten.probeFile(c->argc(0), FilterData::ModelImport);
 	rv.set(0);
-	if (filter != NULL)
+	if (filter == NULL) return FALSE;
+	int oldnmodels = aten.nModels();
+	if (filter->executeRead(c->argc(0)))
 	{
-		int oldnmodels = aten.nModels();
-		if (filter->executeRead(c->argc(0)))
-		{
-			Model *m = aten.currentModel();
-			if (c->hasArg(1)) m->setName(c->argc(1));
-			obj.i = m->atoms();
-			rv.set(aten.nModels() - oldnmodels);
-		}
+		Model *m = aten.currentModel();
+		if (c->hasArg(1)) m->setName(c->argc(1));
+		obj.i = m->atoms();
+		rv.set(aten.nModels() - oldnmodels);
 	}
+	else return FALSE;
 	return TRUE;
 }
 

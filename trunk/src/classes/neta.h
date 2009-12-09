@@ -53,7 +53,7 @@ class Neta
 	// List pointers
 	Neta *prev, *next;
 	// NETA Keywords
-	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, nNetaKeywords };
+	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, PlanarKeyword, nNetaKeywords };
 	static NetaKeyword netaKeyword(const char *s, bool reporterror = FALSE);
 	static const char *netaKeyword(NetaKeyword nk);
 	// NETA expanders
@@ -166,6 +166,8 @@ class NetaNode
 	public:
 	// Return node type
 	NetaNodeType nodeType();
+	// Return whether to use reverse logic when returning the final value
+	bool reverseLogic();
 	// Set node to use reverse logic
 	void setReverseLogic();
 	// Return parent NETA structure

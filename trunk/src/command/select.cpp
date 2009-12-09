@@ -199,12 +199,16 @@ bool Command::function_DeSelectType(CommandNode *c, Bundle &obj, ReturnValue &rv
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
 		obj.rs->beginUndoState("Deselect %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		obj.rs->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
+		int result = obj.rs->selectType(c->argz(0), c->argc(1), FALSE, TRUE);
 		obj.rs->endUndoState();
-		rv.set(nselected - obj.rs->nSelected());
-		return TRUE;
+		if (result != -1)
+		{
+			rv.set(nselected - obj.rs->nSelected());
+			return TRUE;
+		}
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
+	rv.reset();
 	return FALSE;
 }
 
@@ -461,10 +465,13 @@ bool Command::function_SelectType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		// Store current number of selected atoms
 		int nselected = obj.rs->nSelected();
 		obj.rs->beginUndoState("Select %s by type (%s)", elements().el[c->argz(0)].symbol, c->argc(1));
-		obj.rs->selectType(c->argz(0), c->argc(1));
+		int result = obj.rs->selectType(c->argz(0), c->argc(1));
 		obj.rs->endUndoState();
-		rv.set(obj.rs->nSelected() - nselected);
-		return TRUE;
+		if (result != -1)
+		{
+			rv.set(obj.rs->nSelected() - nselected);
+			return TRUE;
+		}
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
 	rv.reset();

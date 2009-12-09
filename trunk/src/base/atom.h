@@ -187,7 +187,9 @@ class Atom
 	// Calculate the bond order between this atom and the specified atom
 	double bondOrder(Atom *j);
 	// Calculates the geometry of the atom's bound environment
-	Atom::AtomGeometry geometry(Model *parent);
+	Atom::AtomGeometry geometry();
+	// Return if the local bound geometry of the atom is planar (within a certain tolerance)
+	bool isPlanar(double tolerance);
 	// Returns bond pointer between this and atom 'j' (if it exists)
 	Bond *findBond(Atom *j);
 	// Determine bond plane

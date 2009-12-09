@@ -415,7 +415,7 @@ double Atom::bondOrder(Atom *j)
 }
 
 // Determine bonding geometry
-Atom::AtomGeometry Atom::geometry(Model *parent)
+Atom::AtomGeometry Atom::geometry()
 {
 	msg.enter("Atom::geometry");
 	static Atom::AtomGeometry result;
@@ -443,7 +443,7 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 		case (2):
 			b1 = bonds()->item;
 			b2 = bonds()->next->item;
-			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle> 170.0) result = Atom::LinearGeometry;
 			else if ((angle > 100.0) && (angle < 115.0)) Atom::TetrahedralGeometry;
 			break;
@@ -452,13 +452,13 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 			bref2 = bonds()->next;
 			b1 = bref1->item;
 			b2 = bref2->item;
-			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			largest = angle;
 			b2 = bref2->next->item;
-			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
 			b1 = bref1->next->item;
-			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
 			if (largest > 170.0) result = Atom::TShapeGeometry;
 			else if ((largest > 115.0) && (largest < 125.0)) result = Atom::TrigPlanarGeometry;
@@ -474,7 +474,7 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 				bref2 = bref1->next;
 				while (bref2 != NULL)
 				{
-					angle += parent->angle(bref1->item->partner(this),this,bref2->item->partner(this)) * DEGRAD;
+					angle += parent_->angle(bref1->item->partner(this),this,bref2->item->partner(this)) * DEGRAD;
 					//printf("Case 4: added an angle.\n");
 					bref2 = bref2->next;
 				}
@@ -486,6 +486,49 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 			break;
 	}
 	msg.exit("Atom::geometry");
+	return result;
+}
+
+// Return if the local bound geometry of the atom is planar (within a certain tolerance)
+bool Atom::isPlanar(double tolerance)
+{
+	msg.enter("Atom::isPlanar");
+	// Simple cases first
+	if (bonds_.nItems() == 1)
+	{
+		msg.exit("Atom::isPlanar");
+		return FALSE;
+	}
+	if (bonds_.nItems() == 2)
+	{
+		msg.exit("Atom::isPlanar");
+		return TRUE;
+	}
+	// Any other case is more complex.
+	bool result = TRUE;
+	Refitem<Bond,int> *ri = bonds_.first();
+	// Take the first two bound atom vectors and get the cross product to define the plane's normal
+	Vec3<double> v1 = parent_->cell()->mimd(this, ri->item->partner(this));
+	v1.normalise();
+	ri = ri->next;
+	Vec3<double> v2 = parent_->cell()->mimd(this, ri->item->partner(this));
+	v2.normalise();
+	Vec3<double> normal = v1*v2;
+	double angle;
+	// Cycle over remaining bound neighbours and determine angle with plane normal
+	for (ri = ri->next; ri != NULL; ri = ri->next)
+	{
+		// Calculate angle
+		v1 = parent_->cell()->mimd(this, ri->item->partner(this));
+		v1.normalise();
+		angle = acos(normal.dp(v1)) * DEGRAD;
+		if (angle > tolerance)
+		{
+			result = FALSE;
+			break;
+		}
+	}
+	msg.exit("Atom::isPlanar");
 	return result;
 }
 

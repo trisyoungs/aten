@@ -30,7 +30,7 @@
 #include "base/lineparser.h"
 
 // NETA Keywords
-const char *NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notself" };
+const char *NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notself", "planar" };
 enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotSelfKeyword, nNetaKeywords };
 Neta::NetaKeyword Neta::netaKeyword(const char *s, bool reporterror)
 {
@@ -299,6 +299,12 @@ void NetaNode::setReverseLogic()
 	reverseLogic_ = TRUE;
 }
 
+// Return whether to use reverse logic when returning the final value
+bool NetaNode::reverseLogic()
+{
+	return reverseLogic_;
+}
+
 // Return parent NETA structure
 Neta *NetaNode::parent()
 {
@@ -432,6 +438,8 @@ int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 			}
 			break;
 	}
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	msg.exit("NetaLogicNode::score");
 	return totalscore;
 }
@@ -546,6 +554,7 @@ void NetaBoundNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaBoundNode::clone(Neta *newparent)
 {
+	msg.enter("NetaBoundNode::clone");
 	NetaBoundNode *node = new NetaBoundNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
@@ -555,12 +564,14 @@ NetaNode *NetaBoundNode::clone(Neta *newparent)
 	node->repeat_ = repeat_;
 	node->innerNeta_ = innerNeta_ == NULL ? NULL : innerNeta_->clone(newparent);
 	newparent->ownNode(node);
+	msg.exit("NetaBoundNode::clone");
 	return node;
 }
 
 // Set bound data
 void NetaBoundNode::set(Refitem<ForcefieldAtom,int> *elemtypes, NetaNode *innerneta, Bond::BondType bt)
 {
+	msg.enter("NetaBoundNode::set");
 	bondType_ = bt;
 	innerNeta_ = innerneta;
 	// Take items from list
@@ -570,13 +581,14 @@ void NetaBoundNode::set(Refitem<ForcefieldAtom,int> *elemtypes, NetaNode *innern
 		// Store next item pointer
 		nextitem = item->next;
 		// Remove current item from list
-		if (nextitem != NULL) nextitem->prev = NULL;
+		item->prev = NULL;
 		item->next = NULL;
 		// Own item
 		allowedElementsAndTypes_.own(item);
 		// Next item...
 		item = nextitem;
 	}
+	msg.exit("NetaBoundNode::set");
 }
 
 // Link forcefield type references in elementtype lists
@@ -743,6 +755,8 @@ int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 		}
 		else totalscore = -1;
 	}
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Bound Check (%i of %s) = %i", repeat_ == -1 ? 1 : repeat_, elementsAndTypesString(), totalscore);
 	msg.exit("NetaBoundNode::score");
 	return totalscore;
@@ -791,7 +805,15 @@ int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,i
 			if (context->nodeType() == NetaNode::RootNode) msg.print("NETA: Invalid context for 'notself' keyword.\n");
 			else if (target != prevTarget) totalscore = 1;
 			break;
+		case (Neta::PlanarKeyword):
+			if (target->isPlanar(15.0)) totalscore = 1;
+			break;
+		default:
+			msg.print("Internal NETA Error: Unrecognised keyword in NetaKeywordNode::score.\n");
+			break;
 	}
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Keyword (%s) = %i", Neta::netaKeyword(netaKeyword_), totalscore);
 	msg.exit("NetaKeywordNode::score");
 	return totalscore;
@@ -849,8 +871,10 @@ int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,
 {
 	msg.enter("NetaGeometryNode::score");
 	int totalscore = -1;
-	Atom::AtomGeometry ag = target->geometry( parent()->targetParent() );
+	Atom::AtomGeometry ag = target->geometry();
 	if (ag == geometry_) totalscore = 1;
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Geometry (%s == %s) = %i", Atom::atomGeometry(ag), Atom::atomGeometry(geometry_), totalscore);
 	msg.exit("NetaGeometryNode::score");
 	return totalscore;
@@ -948,7 +972,12 @@ int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 					break;
 			}
 			break;
+		default:
+			msg.print("Internal NETA Error: Unrecognised value in NetaValueNode::score.\n");
+			break;
 	}
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Value (%s %s %i) = %i", Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_, totalscore);
 	msg.exit("NetaValueNode::score");
 	return totalscore;
@@ -1129,6 +1158,8 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 			printf("NetaRingNode::score : Unrecognised context.\n");
 			break;
 	}
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Ring Check (%i required) = %i", repeat_ == -1 ? 1 : repeat_, totalscore);
 	msg.exit("NetaRingNode::score");
 	return totalscore;
@@ -1245,6 +1276,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 		else totalscore += atomscore;
 		currentChain_.removeLast();
 	}
+	// No check for reverse logic needs to be done here since it is accounted for by NetaBoundNode::score().
 	msg.exit("NetaChainNode::score(private)");
 	return totalscore;
 }
@@ -1292,6 +1324,8 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 		}
 	}
 	else totalscore = -1;
+	// Check for reverse logic
+	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
 	NetaNode::printScore(level, "Chain Check (%i required) = %i", repeat_ == -1 ? 1 : repeat_, totalscore);
 	msg.enter("NetaChainNode::score");
 	return totalscore;

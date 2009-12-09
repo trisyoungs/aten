@@ -105,7 +105,9 @@ expander:
 
 chain:
 	bound						{ $$ = $1; }
+	| '!' bound					{ $$ = $2; $2->setReverseLogic(); }
 	| chain bound					{ $$ = netaparser.link($1,$2); }
+	| chain '!' bound				{ $$ = netaparser.link($1,$3); $3->setReverseLogic(); }
 	;
 
 bound:
