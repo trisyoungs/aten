@@ -5183,3 +5183,10 @@ na	n2	ca	n2	0.55	180.	2.	# dac, 10/94
 *	*	*	*	0.55	180.	2.	# dac, 10/94
 end
 
+# Extra angles calculated from equations in paper (present until automatic generation is implemented)
+angles harmonic
+cl	p3	os	79.731	104.735
+cl	p3	na	78.276	104.520
+os	p3	na	81.895	106.435
+p3	na	c3	147.505	126.095
+end
