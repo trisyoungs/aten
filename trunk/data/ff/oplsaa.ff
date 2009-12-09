@@ -60,7 +60,7 @@ types
 #59
 #60
 # United atom acetic acid : JPC,95,3315(1991)
-61	C		C	"-C(nbonds=1),-O,-O(bond=double)"	"Co in CCOOH"
+61	C		C	"-C(nbonds=1),-O,=O"	"Co in CCOOH"
 62	O		O	""	"Oc in CCOOH     UA acid"
 63	OH		O	""	"Oh in CCOOH"
 64	C3		C	""	"CH3 in CH3COOH"
@@ -134,7 +134,7 @@ types
 122	CT		C	"-Cl(n=4)"				"C   CCl4"
 123	Cl		Cl	"-&122"					"Cl  CCl4"
 # UA DMSO
-124	SZ		S	"-C(nbonds=1,n=2),-O(bond=double)"	"DMSO UA (unpub.)"
+124	SZ		S	"-C(nbonds=1,n=2),=O"		"DMSO UA (unpub.)"
 125	OY		O	"-&124"					"DMSO UA (unpub.)"
 126	C3		C	"-&124"					"DMSO UA (unpub.)"
 # Ammonia
@@ -154,16 +154,16 @@ types
 138	CT		C	"-H(n=4)"				"C(H4) AA methane"
 139	CT		C	"-C(n=4)"				"all-atom C: alkanes"
 140	HC		H	"-C"					"all-atom H: alkanes"
-141	CM		C	"-C(bond=double),-C(n=2,bond=single)"	"alkene C (R2-C=) all atom"
-142	CM		C	"-C(bond=double),-C,-H"			"alkene C (RH-C=) all atom"
-143	CM		C	"-C(bond=double),-H,-H"			"alkene C (H2-C=) all atom"
-144	HC		H	"-C(bond=double),-H"			"alkene H (H-C=)  all atom"
+141	CM		C	"=C,-C(n=2)"				"alkene C (R2-C=) all atom"
+142	CM		C	"=C,-C,-H"				"alkene C (RH-C=) all atom"
+143	CM		C	"=C,-H,-H"				"alkene C (H2-C=) all atom"
+144	HC		H	"=C,-H"					"alkene H (H-C=)  all atom"
 145	CA		C	"ring(size=6,-C(n=6)),-H"		"Benzene C - 12 site JACS,112,4768-90"
 146	HA		H	"-C(ring(size=6,-C(n=6)))"		"Benzene H - 12 site (see 145)"
 147	CA		C	"ring(size=6,-C(n=6)),ring(size=6,=C(n=6))"		"Naphthalene fusion C (C9)"
 148	CT		C	"-H(n=3),-C(ring(size=6,-C(n=6),aromatic))"	"all-atom C: CH3, toluene"
 149	CT		C	"-H(n=2),-C(ring(size=6,-C(n=6),aromatic)),-C"	"all-atom C: CH2, ethyl benzene"
-150	Ceq		C	"-C(bond=double),-H,-C(bond=single,=C)"		"diene =CH-CH=; see 178 also"
+150	Ceq		C	"=C,-H,-C(=C)"				"diene =CH-CH=; see 178 also"
 151	Cl		Cl	"-C"					"Cl in alkyl chlorides"
 152	CT		C	"-Cl,-C,-H,-H"				"RCH2Cl in alkyl chlorides"
 153	HC		H	"-C(-Cl)"				"H in alkyl chlorides"
@@ -779,7 +779,7 @@ types
 751	NY		N	""	"N2  "    "     " (H2N-CZ)"
 752	CA		C	""	"CZ  "    "     ""
 # Nitriles
-753	NZ		N	"-C(bond=triple,-C)"			"N: AA RCN"
+753	NZ		N	"~C(bond=triple,-C)"			"N: AA RCN"
 754	CZ		C	"-&753"					"C: AA RCN"
 755	CT		C	"nh=3,-&754"				"C(H3): AA CH3CN"
 756	CT		C	"nh=2,-&754"				"C(RH2): AA RCH2CN"
@@ -795,7 +795,7 @@ types
 766	CT		C	"-C(n=3),-&760"				"CT-NO2 2-methyl-2-nitropropane"
 767	NO		N	"-C(ring(size=6,-C(n=6)))"		"N in nitro Ar-NO2"
 768	CA		C	"-&767"					"C(NO2) nitrobenzene"
-769	CT		C	"-C(ring(size=6,-C(n=6))),-C(-N(bond=triple))"	"C of CH2 in PhCH2CN"
+769	CT		C	"-C(ring(size=6,-C(n=6))),-C(~N(bond=triple))"	"C of CH2 in PhCH2CN"
 770	NC		N	""	"N   in neutral benzamidine" XXX
 # Propylene carbonate
 771	O		O	"=C(ring(size=5,-C(n=3),-O,-O),-O,-O)"	"propylene carbonate O"
