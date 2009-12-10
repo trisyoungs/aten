@@ -793,7 +793,7 @@ types
 764	CT		C	"nh=2,-C,-&760"				"CT-NO2 nitroethane"
 765	CT		C	"-H,-C,-C,-&760"			"CT-NO2 2-nitropropane"
 766	CT		C	"-C(n=3),-&760"				"CT-NO2 2-methyl-2-nitropropane"
-767	NO		N	"-C(ring(size=6,-C(n=6)))"		"N in nitro Ar-NO2"
+767	NO		N	"-C(ring(aromatic,size=6,-C(n=6)))"	"N in nitro Ar-NO2"
 768	CA		C	"-&767"					"C(NO2) nitrobenzene"
 769	CT		C	"-C(ring(size=6,-C(n=6))),-C(~N(bond=triple))"	"C of CH2 in PhCH2CN"
 770	NC		N	""	"N   in neutral benzamidine" XXX

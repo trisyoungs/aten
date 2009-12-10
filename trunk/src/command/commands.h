@@ -164,6 +164,7 @@ class Command
 		RotX,
 		RotY,
 		RotZ,
+		SelectionAddHydrogen,
 		ShiftDown,
 		ShiftUp,
 		Transmute,
@@ -610,6 +611,7 @@ class Command
 	static bool function_RotX(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RotY(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ShiftUp(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv);

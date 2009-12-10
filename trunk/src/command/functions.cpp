@@ -121,6 +121,7 @@ void Command::initPointers()
 	pointers_[RotX] = &Command::function_RotX;
 	pointers_[RotY] = &Command::function_RotY;
 	pointers_[RotZ] = &Command::function_RotZ;
+	pointers_[SelectionAddHydrogen] = &Command::function_SelectionAddHydrogen;
 	pointers_[ShiftDown] = &Command::function_ShiftDown;
 	pointers_[ShiftUp] = &Command::function_ShiftUp;
 	pointers_[Transmute] = &Command::function_Transmute;
