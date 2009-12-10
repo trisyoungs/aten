@@ -281,6 +281,7 @@ class Command
 		Map,
 		NewFF,
 		PrintSetup,
+		PrintType,
 		RecreateExpression,
 		Rules,
 		SaveExpression,
@@ -719,6 +720,7 @@ class Command
 	static bool function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);

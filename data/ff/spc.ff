@@ -2,7 +2,7 @@ name "SPC Water"
 units kj
 types
 1	HW	H	"nbonds=1,-O(nh=2)"
-2	OW	O	"nbonds=2,nh=2,
+2	OW	O	"nbonds=2,nh=2"
 end
 inter  lj
 1	HW	0.41	0.0	0.0	

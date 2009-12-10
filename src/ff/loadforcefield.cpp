@@ -195,7 +195,7 @@ bool Forcefield::readDefines()
 		neta->setParentForcefield(this);
 		if (!netaparser.createNeta(neta, ffparser.argc(1), this))
 		{
-			msg.print("Error parsing type define at line %i.\n", ffparser.line());
+			msg.print("Error parsing type define '%s'.\n", ffparser.argc(0));
 			msg.exit("Forcefield::readDefines");
 			return FALSE;
 		}
