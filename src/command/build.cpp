@@ -292,6 +292,17 @@ bool Command::function_RotZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Add hydrogens to current selection ('selectionaddhydrogen')
+bool Command::function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Add Hydrogens to selection");
+	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->next) obj.rs->hydrogenSatisfy(i);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
 // Shift the current selection down ('shiftdown [n]')
 bool Command::function_ShiftDown(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -325,4 +336,3 @@ bool Command::function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	return TRUE;
 }
-
