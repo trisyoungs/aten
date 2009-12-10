@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "defines", "escale", "equivalents", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
@@ -43,6 +43,10 @@ Forcefield::Forcefield()
 	ffa->setName("_NDEF_");
 	ffa->setTypeId(-1);
 	for (int i=0; i<MAXFFGENDATA; i++) energyGenerators_[i] = FALSE;
+	vdwdGenerator_ = NULL;
+	bondGenerator_ = NULL;
+	angleGenerator_ = NULL;
+	torsionGenerator_ = NULL;
 
 	// Public variables
 	next = NULL;

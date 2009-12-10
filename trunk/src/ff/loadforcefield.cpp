@@ -24,6 +24,7 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 #include "classes/neta_parser.h"
+#include "templates/namemap.h"
 
 // Local variables
 double escale14 = 0.5;
@@ -95,8 +96,14 @@ bool Forcefield::load(const char *filename)
 			case (Forcefield::GeneratorCommand):
 				okay = readGenerator();
 				break;
+			case (Forcefield::DataCommand):
+				okay = readData(ffparser.argc(1));
+				break;
 			case (Forcefield::EquivalentsCommand):
 				okay = readEquivalents();
+				break;
+			case (Forcefield::FunctionCommand):
+				okay = readFunctions();
 				break;
 			case (Forcefield::ConvertCommand):
 				// Check that generator data has been initialised
@@ -138,7 +145,7 @@ bool Forcefield::load(const char *filename)
 		if (!okay)
 		{
 			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
-			msg.print("Error at line %i of file.\n", ffparser.lastLine());
+			msg.print("Error at line %i of file.\n", ffparser.lastLineNo());
 			msg.exit("Forcefield::load");
 			ffparser.closeFile();
 			return FALSE;
@@ -185,7 +192,7 @@ bool Forcefield::readDefines()
 		for (neta = typeDefines_.first(); neta != NULL; neta = neta->next) if (strcmp(ffparser.argc(0), neta->name()) == 0) break;
 		if (neta != NULL)
 		{
-			msg.print("Error: Duplicate type define name specified (%s) at line %i.\n", ffparser.argc(0), ffparser.line());
+			msg.print("Error: Duplicate type define name specified (%s) at line %i.\n", ffparser.argc(0), ffparser.lastLineNo());
 			msg.exit("Forcefield::readDefines");
 			return FALSE;
 		}
@@ -195,12 +202,12 @@ bool Forcefield::readDefines()
 		neta->setParentForcefield(this);
 		if (!netaparser.createNeta(neta, ffparser.argc(1), this))
 		{
-			msg.print("Error parsing type define '%s'.\n", ffparser.argc(0));
+			msg.print("Error parsing type define at line %i.\n", ffparser.lastLineNo());
 			msg.exit("Forcefield::readDefines");
 			return FALSE;
 		}
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No atype defines specified in this block (at line %i)!\n", ffparser.line());
+	if (nadded == 0) msg.print("Warning - No atype defines specified in this block (at line %i)!\n", ffparser.lastLineNo());
 	else msg.print("\t: Read in %i type defines\n", nadded);
 	msg.exit("Forcefield::readDefines");
 	return TRUE;
@@ -251,7 +258,7 @@ bool Forcefield::readTypes()
 		}
 		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.line());
+	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
 	else msg.print("\t: Read in %i type descriptions\n", nadded);
 	msg.exit("Forcefield::readTypes");
 	return TRUE;
@@ -302,12 +309,91 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
-	if (nadded == 0) msg.print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.line());
+	if (nadded == 0) msg.print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
 	else msg.print("\t: Read in %i united-atom type descriptions\n", nadded);
 	msg.exit("Forcefield::readUnitedAtomTypes");
 	return TRUE;
 }
 
+// Reads in extra data for atoms
+bool Forcefield::readData(const char *vars)
+{
+	msg.enter("Forcefield::readData");
+	// First, parse list of data items to get name
+	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
+	LineParser parser;
+	parser.getArgsDelim(vars);
+	int n;
+	for (n=0; n<parser.nArgs(); n += 2)
+	{
+		// Determine data type
+		VTypes::DataType vt = VTypes::dataType(parser.argc(n));
+		if (vt == VTypes::nDataTypes)
+		{
+			msg.print("Unrecognised type ('%s') found in list in 'data' block header.\n", parser.argc(0));
+			msg.exit("Forcefield::readData");
+			return FALSE;
+		}
+		items.add(parser.argc(n+1), vt);
+	}
+	// Next, each line contains the forcefield atom to which the data relates, the type name (for bookkeeping, nothing more)
+	// and then the data in the order specified in the header above.
+	bool done = FALSE;
+	int nadded = 0, success;
+	do
+	{
+		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error while reading atom type data.\n");
+			if (success == -1) msg.print("End of file while reading atom type data.\n");
+			msg.exit("Forcefield::readData");
+			return FALSE;
+		}
+		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		// Search for this ffatom ID and retrieve it
+		ForcefieldAtom *ffa = findType(ffparser.argi(0));
+		if (ffa == NULL)
+		{
+			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add data to it.\n", ffparser.argi(0));
+			msg.exit("Forcefield::readData");
+			return FALSE;
+		}
+		nadded ++;
+		// Get data from lines in the order it was specified above
+		for (n=2; n<ffparser.nArgs(); ++n)
+		{
+			// If the parser argument is blank we've run out of arguments early
+			if (ffparser.isBlank(n))
+			{
+				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
+				break;
+			}
+			switch (items.data(n-2))
+			{
+				case (VTypes::IntegerData):
+					ffa->addData(items.name(n-2), ffparser.argi(n));
+					break;
+				case (VTypes::DoubleData):
+					ffa->addData(items.name(n-2), ffparser.argd(n));
+					break;
+				case (VTypes::StringData):
+					ffa->addData(items.name(n-2), ffparser.argc(n));
+					break;
+				default:
+					msg.print("Error: Unsuitable datatype for data item %i.\n", n-1);
+					msg.exit("Forcefield::readData");
+					return TRUE;
+			}
+		}
+	} while (!done);
+	if (nadded == 0) msg.print("Warning - No data specified in this block (at line %i)!\n", ffparser.lastLineNo());
+	else msg.print("\t: Read in data for %i types\n", nadded);
+	msg.exit("Forcefield::readData");
+	return TRUE;
+}
+
+// Read generator data
 bool Forcefield::readGenerator()
 {
 	// Read in generator data for atom types in rule-based forcefields
@@ -355,6 +441,47 @@ bool Forcefield::readGenerator()
 	msg.print("\t: Read in generator data for %i atomtypes.\n", count);
 	msg.exit("Forcefield::readGenerator");
 	return TRUE;
+}
+
+// Read in generator function definitions
+bool Forcefield::readFunctions()
+{
+	msg.enter("Forcefield::readFunctions");
+	// Store every line from the file up to the next 'end' block
+	List<Dnchar> stringList;
+	bool done = FALSE;
+	int success;
+	do
+	{
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error while reading function block.\n");
+			if (success == -1) msg.print("End of file while reading function block.\n");
+			msg.exit("Forcefield::readFunctions");
+			return FALSE;
+		}
+		if (strcmp(ffparser.argc(0),"end") != 0)
+		{
+			// Add line to internal list and continue
+			Dnchar *newline = stringList.add();
+			newline->set(ffparser.line());
+		}
+		else done = TRUE;
+	} while (!done);
+	// Check for empty string list
+	if (stringList.nItems() == 0)
+	{
+		msg.print("Found an empty 'functions' block - ignored.\n");
+		msg.exit("Forcefield::readFunctions");
+		return TRUE;
+	}
+	printf("Finished reading stringlist.\n");
+// 	for (Dnchar *d = stringList.first(); d != NULL; d = d->next) d->print();
+	// Now, attempt to parser the lines we just read in to create functions....
+	bool result = generatorFunctions_.generateFromStringList(stringList.first());
+	msg.exit("Forcefield::readFunctions");
+	return result;
 }
 
 bool Forcefield::readEquivalents()

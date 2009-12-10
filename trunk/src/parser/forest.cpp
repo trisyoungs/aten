@@ -146,6 +146,18 @@ bool Forest::generateFromString(const char *s, const char *name)
 	return result;
 }
 
+// Generate forest from string list
+bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name)
+{
+	msg.enter("Forest::generateFromStringList");
+	name_ = name;
+	fromFilterFile_ = FALSE;
+	bool result = cmdparser.generateFromStringList(this, stringListHead);
+	finalise();
+	msg.exit("Forest::generateFromStringList");
+	return result;
+}
+
 // Generate forest from input file
 bool Forest::generateFromFile(const char *filename, const char *name, bool isFilterFile)
 {

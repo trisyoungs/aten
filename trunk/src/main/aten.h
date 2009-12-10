@@ -260,7 +260,7 @@ class Aten
 	// Return current drawing element
 	short int sketchElement();
 	// Element map name conversions to apply on load
-	List< Namemap<int> > typeImportMap;
+	List< NameMap<int> > typeImportMap;
 	// Type map name conversions to apply on save
 	KVMap typeExportMap;
 	// Set whether type export conversion is enabled

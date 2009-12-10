@@ -60,7 +60,7 @@ class LineParser
 	// Current reading position in line
 	int linePos_;
 	// Integer line number of last read line
-	int lastLine_;
+	int lastLineNo_;
 	// Source file (for reading or writing)
 	std::fstream *file_;
 	// Whether the file is for reading or writing
@@ -76,7 +76,7 @@ class LineParser
 	// Set line target
 	void setLine(const char *s);
 	// Return integer line number of last read line
-	int lastLine();
+	int lastLineNo();
 	// Return read-only status of file
 	bool isFileReadOnly();
 	// Open new file for parsing or writing

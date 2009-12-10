@@ -42,7 +42,7 @@ LineParser::LineParser()
 	readOnly_ = FALSE;
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
-	lastLine_ = 0;
+	lastLineNo_ = 0;
 	file_ = NULL;
 }
 LineParser::LineParser(const char *filename, bool outputstream)
@@ -52,7 +52,7 @@ LineParser::LineParser(const char *filename, bool outputstream)
 	lineLength_ = 0;
 	linePos_ = 0;
 	optionMask_ = LineParser::Defaults;
-	lastLine_ = 0;
+	lastLineNo_ = 0;
 	file_ = NULL;
 	// Open new file for reading or writing
 	openFile(filename, outputstream);
@@ -89,9 +89,9 @@ void LineParser::setLine(const char *s)
 }
 
 // Return integer line number of last read line
-int LineParser::lastLine()
+int LineParser::lastLineNo()
 {
-	return lastLine_;
+	return lastLineNo_;
 }
 
 // Return read-only status of file
@@ -123,7 +123,7 @@ bool LineParser::openFile(const char *filename, bool outputstream)
 	}
 	// Reset variables
 	readOnly_ = outputstream ? FALSE : TRUE;
-	lastLine_ = 0;
+	lastLineNo_ = 0;
 	filename_ = filename;
 	msg.exit("LineParser::openFile");
 	return TRUE;
@@ -138,7 +138,7 @@ void LineParser::closeFile()
 		delete file_;
 	}
 	file_ = NULL;
-	lastLine_ = 0;
+	lastLineNo_ = 0;
 }
 
 // Return whether current file source is good for reading/writing
@@ -244,7 +244,7 @@ int LineParser::readLine()
 	}
 	lineLength_ = strlen(line_);
 	linePos_ = 0;
-	lastLine_ ++;
+	lastLineNo_ ++;
 	//printf("Line = [%s], length = %i\n",line_,lineLength_);
 	msg.exit("LineParser::readLine");
 	return 0;

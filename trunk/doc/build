@@ -11,7 +11,7 @@ echo "     version.h (ATENVERSION)  : $ATENVERSION"
 echo "     version.h (ATENDATE)     : $ATENDATE"
 echo "     version.h (ATENURL)      : $ATENURL"
 
-for a in aten faq
+for a in aten 
 do
   sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" $a.xml > $a-versioned.xml
   rm -rf $a $a-versioned

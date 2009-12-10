@@ -70,7 +70,7 @@ class VariableList
 	Variable *first();
 	// Reset all variable values
 	bool initialise();
-	// Clear all variables, expressions etc. stored in class
+	// Clear all variables and constants
 	void clear();
 	// Print list of variables and their values
 	void print();

@@ -27,6 +27,7 @@
 #include "classes/prefs.h"
 #include "classes/neta.h"
 #include "ff/forms.h"
+#include "parser/forest.h"
 
 // Forward declarations
 class Atom;
@@ -43,7 +44,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -56,10 +57,6 @@ class Forcefield
 	Dnchar name_;
 	// Filename
 	Dnchar filename_;
-	// Generator values that have units of energy (and thus should be converted)
-	bool energyGenerators_[MAXFFGENDATA];
-	// Which rules the ff uses (if any)
-	Rules::ForcefieldRules rules_;
 	// Energy unit of the forcefield parameters
 	Prefs::EnergyUnit energyUnit_;
 
@@ -72,14 +69,9 @@ class Forcefield
 	void setFilename(const char *s);
 	// Return filename
 	const char *filename();
-	// Returns the typing rules of the Forcefield
-	Rules::ForcefieldRules rules();
-	// Set conversion flag for energetic generator data
-	void setEnergyGenerator(int n);
-	// Return energy generator array
-	bool *energyGenerators();
 	// Set internal energy unit of forcefield
 	void setEnergyUnit(Prefs::EnergyUnit eu);
+
 
 	/*
 	// Types
@@ -108,12 +100,6 @@ class Forcefield
 	// Find type define
 	Neta *typeDefine(const char *name);
 
-	/*
-	// VDW
-	*/
-	public:
-	// Generate the VDW parameters (rule-based Forcefield)
-	void generateVdw(Atom*);
 
 	/*
 	// Bonding Interactions
@@ -123,8 +109,6 @@ class Forcefield
 	List<ForcefieldBound> bonds_;
 
 	public:
-	// Generate bond parameters (rule-based Forcefield)
-	ForcefieldBound *generateBond(Atom*, Atom*);
 	// Add bond term to the forcefield
 	ForcefieldBound *addBond(BondFunctions::BondFunction form);
 	// Return number of terms defined in bonds list
@@ -136,6 +120,7 @@ class Forcefield
 	// Retrieve bond data corresponding to specified atomtype id's
 	ForcefieldBound *findBond(ForcefieldAtom*, ForcefieldAtom*);
 
+
 	/*
 	// Angle Interactions
 	*/
@@ -144,8 +129,6 @@ class Forcefield
 	List<ForcefieldBound> angles_;
 
 	public:
-	// Generate angle parameters (rule-based Forcefield)
-	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
 	// Add angle term to the forcefield
 	ForcefieldBound *addAngle(AngleFunctions::AngleFunction form);
 	// Return number of terms defined in angles list
@@ -157,6 +140,7 @@ class Forcefield
 	// Retrieve angle data corresponding to specified atomtype id's
 	ForcefieldBound *findAngle(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
+
 	/*
 	// Torsion Interactions
 	*/
@@ -165,8 +149,6 @@ class Forcefield
 	List<ForcefieldBound> torsions_;
 
 	public:
-	// Generate angle parameters (rule-based Forcefield)
-	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
 	// Add torsion term to the forcefield
 	ForcefieldBound *addTorsion(TorsionFunctions::TorsionFunction form);
 	// Return number of terms defined in torsions list
@@ -178,6 +160,7 @@ class Forcefield
 	// Retreve torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findTorsion(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
+
 	/*
 	// Improper Torsion Interactions
 	*/
@@ -186,8 +169,6 @@ class Forcefield
 	List<ForcefieldBound> impropers_;
 
 	public:
-	// Generate angle parameters (rule-based Forcefield)
-	ForcefieldBound *generateImproper(Atom*, Atom*, Atom*, Atom*);
 	// Add improper torsion term to the forcefield
 	ForcefieldBound *addImproper(TorsionFunctions::TorsionFunction form);
 	// Return number of improper torsion terms defined in torsions list
@@ -198,6 +179,47 @@ class Forcefield
 	ForcefieldBound *improper(int n);
 	// Retreve improper torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findImproper(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
+
+
+	/*
+	// Generator
+	*/
+	// BEGIN OLD
+	private:
+	// Generator values that have units of energy (and thus should be converted)
+	bool energyGenerators_[MAXFFGENDATA];
+	// Which rules the ff uses (if any)
+	Rules::ForcefieldRules rules_;
+
+	public:
+	// Returns the typing rules of the Forcefield
+	Rules::ForcefieldRules rules();
+	// Set conversion flag for energetic generator data
+	void setEnergyGenerator(int n);
+	// Return energy generator array
+	bool *energyGenerators();
+	// Generate the VDW parameters (rule-based Forcefield)
+	void generateVdw(Atom*);
+	// Generate bond parameters (rule-based Forcefield)
+	ForcefieldBound *generateBond(Atom*, Atom*);
+	// Generate angle parameters (rule-based Forcefield)
+	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
+	// Generate angle parameters (rule-based Forcefield)
+	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
+	// END OLD
+	// BEGIN NEW
+	private:
+	// Container for generator functions defined in this forcefield
+	Forest generatorFunctions_;
+	// Pointer to vdw generation function (if one is defined)
+	Tree *vdwdGenerator_;
+	// Pointer to bond generation function (if one is defined)
+	Tree *bondGenerator_;
+	// Pointer to angle generation function (if one is defined)
+	Tree *angleGenerator_;
+	// Pointer to torsion generation function (if one is defined)
+	Tree *torsionGenerator_;
+	// END NEW
 
 	/*
 	// Parameter Matching
@@ -220,8 +242,12 @@ class Forcefield
 	bool readTypes();
 	// Reads in the united atom type definitions
 	bool readUnitedAtomTypes();
+	// Reads in extra data for atoms
+	bool readData(const char *vars);
 	// Reads in generator data for atoms (rule-based ff)
 	bool readGenerator();
+	// Read in generator function definitions
+	bool readFunctions();
 	// Reads in and applies equivalent atomtype names
 	bool readEquivalents();
 	// Reads in intermolecular parameters for atom types

@@ -65,7 +65,12 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 
 // Function data
 FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "datad",		VTypes::DoubleData,	"S",	"string name" },
+	{ "datai",		VTypes::IntegerData,	"S",	"string name" },
+	{ "datas",		VTypes::StringData,	"S",	"string name" },
+	{ "generatord",		VTypes::DoubleData,	"S",	"string name" },
+	{ "generatori",		VTypes::IntegerData,	"S",	"string name" },
+	{ "generators",		VTypes::StringData,	"S",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -330,8 +335,27 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
+	Variable *v;
+	ReturnValue resultrv;
 	if (result) switch (i)
 	{
+		case (ForcefieldAtomVariable::DataD):
+		case (ForcefieldAtomVariable::DataI):
+		case (ForcefieldAtomVariable::DataS):
+			// Find data item in local variable list
+			v = ptr->data(node->argc(0));
+			if (v == NULL)
+			{
+				result = FALSE;
+				msg.print("Error: Data '%s' has not been defined in this ForcefieldAtom.\n", node->argc(0));
+				break;
+			}
+			v->execute(resultrv);
+			if (i == ForcefieldAtomVariable::DataD) rv.set(resultrv.asDouble());
+			else if (i == ForcefieldAtomVariable::DataI) rv.set(resultrv.asInteger());
+			else if (i == ForcefieldAtomVariable::DataS) rv.set(resultrv.asString());
+			else result = FALSE;
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldAtomVariable.\n", functionData[i].name);
 			result = FALSE;

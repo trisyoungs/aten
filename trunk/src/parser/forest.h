@@ -60,7 +60,9 @@ class Forest
 	// Return associated filename (if any)
 	const char *filename();
 	// Generate forest from string 
-	bool generateFromString(const char *, const char *name = NULL);
+	bool generateFromString(const char *s, const char *name = NULL);
+	// Generate forest from string list
+	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL);
 	// Generate forest from input file
 	bool generateFromFile(const char *filename, const char *name = NULL, bool isFilterFile = FALSE);
 	// Finalise forest
