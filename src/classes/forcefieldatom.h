@@ -25,6 +25,7 @@
 #include "classes/neta.h"
 #include "base/dnchar.h"
 #include "ff/forms.h"
+#include "parser/variablelist.h"
 
 // Forward declarations
 class Forcefield;
@@ -71,6 +72,8 @@ class ForcefieldAtom
 	int element_;
 	// Custom 'element' mass
 	double elementMass_;
+	// Variable list of data items
+	VariableList data_;
 
 
 	/*
@@ -133,6 +136,14 @@ class ForcefieldAtom
 	void setElementMass(double d);
 	// Custom 'element' mass (or natural element name)
 	double elementMass();
+	// Add associated data
+	void addData(const char *name, double d);
+	void addData(const char *name, int i);
+	void addData(const char *name, const char *);
+	// Retrieve named variable
+	Variable *data(const char *s);
+	// Return variable list
+	VariableList *data();
 };
 
 #endif

@@ -272,3 +272,15 @@ bool VariableList::initialise()
 	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) if (!v->initialise()) return FALSE;
 	return TRUE;
 }
+
+// Clear all variables and constants
+void VariableList::clear()
+{
+	variables_.clear();
+}
+
+// Print list of variables and their values
+void VariableList::print()
+{
+	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) v->nodePrint(0,"");
+}

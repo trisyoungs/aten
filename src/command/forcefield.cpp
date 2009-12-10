@@ -153,7 +153,7 @@ bool Command::function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Get each argument and parse it internally
 	int el;
-	Namemap<Dnchar> *nm;
+	NameMap<Dnchar> *nm;
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
@@ -298,7 +298,7 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Get each argument and parse it internally
 	int el;
-	Namemap<int> *nm;
+	NameMap<int> *nm;
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{

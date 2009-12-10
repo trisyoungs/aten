@@ -30,7 +30,8 @@ int CommandParser_parse();
 CommandParser::CommandParser()
 {
 	// Private variables
-	isFileSource_ = FALSE;
+	source_ = StringSource;
+	stringListSource_ = NULL;
 	stringPos_ = -1;
 	tokenStart_ = 0;
 	functionStart_ = -1;
@@ -48,7 +49,7 @@ CommandParser::~CommandParser()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (isFileSource_) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLine(), parser_.filename());
+	if (source_ != CommandParser::StringSource) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.filename());
 	// QUICK'n'DIRTY!
 	char *temp = new char[stringLength_+32];
 	int i;
@@ -67,30 +68,41 @@ void CommandParser::printErrorInfo()
 */
 
 // Return whether the current input stream is a file
-bool CommandParser::isFileSource()
+CommandParser::ParserSource CommandParser::source()
 {
-	return isFileSource_;
+	return source_;
 }
 
 // Get next character from current input stream
 char CommandParser::getChar()
 {
 	char c = 0;
-	if (isFileSource_)
+	// Are we at the end of the current string?
+	if (stringPos_ == stringLength_)
 	{
-		// If the stringPos_ is equal to the string length, read in another line
-		if (stringPos_ == stringLength_)
+		switch (source_)
 		{
-			if (parser_.getLine() != 0) return 0;
-			stringSource_ = parser_.line();
-			stringLength_ = stringSource_.length();
-			stringPos_ = 0;
+			case (CommandParser::FileSource):
+				if (parser_.getLine() != 0) return 0;
+				stringSource_ = parser_.line();
+				stringLength_ = stringSource_.length();
+				stringPos_ = 0;
+				break;
+			case (CommandParser::StringListSource):
+				// Are there any more strings to read in?
+				if (stringListSource_ == NULL) return 0;
+				stringSource_ = stringListSource_->get();
+				stringListSource_ = stringListSource_->next;
+				stringLength_ = stringSource_.length();
+				stringPos_ = 0;
+				break;
+			case (CommandParser::StringSource):
+				return 0;
+				break;
 		}
 	}
-	// Return current character
-	if (stringPos_ == stringLength_) return '\0';
+	// Return current char
 	c = stringSource_[stringPos_];
-	// Increment string position
 	stringPos_++;
 	return c;
 }
@@ -99,16 +111,22 @@ char CommandParser::getChar()
 char CommandParser::peekChar()
 {
 	char c = 0;
-	if (isFileSource_)
+	switch (source_)
 	{
-		if (stringPos_ == stringLength_) return parser_.peek();
-		c = stringSource_[stringPos_];
-	}
-	else
-	{
-		// Return current character
-		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_[stringPos_];
+		case (CommandParser::FileSource):
+			c = (stringPos_ == stringLength_ ? parser_.peek() : stringSource_[stringPos_]);
+			break;
+		case (CommandParser::StringListSource):
+			if (stringPos_ == stringLength_)
+			{
+				if (stringListSource_ == NULL) c = 0;
+				else c = stringListSource_->get()[0];
+			}
+			else c = stringSource_[stringPos_];
+			break;
+		case (CommandParser::StringSource):
+			c = (stringPos_ == stringLength_ ? 0 : stringSource_[stringPos_]);
+			break;
 	}
 	return c;
 }
@@ -116,13 +134,20 @@ char CommandParser::peekChar()
 // 'Replace' last character read from current input stream
 void CommandParser::unGetChar()
 {
-	if (isFileSource_)
+	switch (source_)
 	{
-		// If we are at position 0, then we need the last character from the previous line!
-		if (stringPos_ == 0) printf("Fix Required: last character from previous line...\n");
-		else stringPos_ --;
+		case (CommandParser::FileSource):
+			if (stringPos_ == 0) printf("Fix Required: Last character from previous line required for unGetChar...\n");
+			else stringPos_ --;
+			break;
+		case (CommandParser::StringListSource):
+			if (stringPos_ == 0) printf("Fix Required: Last character from previous string required for unGetChar...\n");
+			else stringPos_ --;
+			break;
+		case (CommandParser::StringSource):
+			stringPos_ --;
+			break;
 	}
-	else stringPos_--;
 }
 
 /*
@@ -165,9 +190,36 @@ bool CommandParser::generateFromString(Forest *f, const char *s)
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
 	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
-	isFileSource_ = FALSE;
+	source_ = CommandParser::StringSource;
 	bool result = generate();
 	msg.exit("CommandParser::generateFromString");
+	return result;
+}
+
+// Populate target forest from specified string list
+bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead)
+{
+	msg.enter("CommandParser::generateFromStringList");
+	// Clear any data in the existing forest
+	if (f == NULL)
+	{
+		printf("Internal Error: No Forest passed to CommandParser::generateFromStringList.\n");
+		msg.exit("CommandParser::generateFromStringList");
+		return FALSE;
+	}
+	forest_ = f;
+	forest_->clear();
+	pushTree();
+	// Store the source string
+	stringListSource_ = stringListHead;
+	stringPos_ = 0;
+	stringLength_ = 0;
+// 	stringListSource_->print();
+	msg.print(Messenger::Parse, "Parser source is now string list.\n");
+	source_ = CommandParser::StringListSource;
+	bool result = generate();
+	stringListSource_ = NULL;
+	msg.exit("CommandParser::generateFromStringList");
 	return result;
 }
 
@@ -196,9 +248,9 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	// Set initial string pos and string length so we read in a line on the first getChar.
 	stringPos_ = 0;
 	stringLength_ = 0;
-	isFileSource_ = TRUE;
+	source_ = CommandParser::FileSource;
 	bool result = generate();
-	isFileSource_ = FALSE;
+	source_ = CommandParser::StringSource;
 	msg.exit("CommandParser::generateFromFile");
 	return result;
 }

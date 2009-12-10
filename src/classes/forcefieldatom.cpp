@@ -25,6 +25,9 @@
 #include "base/elements.h"
 #include "classes/forcefieldatom.h"
 #include "classes/neta_parser.h"
+#include "parser/double.h"
+#include "parser/integer.h"
+#include "parser/character.h"
 
 // Constructor
 ForcefieldAtom::ForcefieldAtom()
@@ -235,6 +238,51 @@ void ForcefieldAtom::setElementMass(double d)
 double ForcefieldAtom::elementMass()
 {
 	return (element_ == -1 ? elementMass_ : elements().atomicMass(element_));
+}
+
+// Add associated data
+void ForcefieldAtom::addData(const char *name, double d)
+{
+	// Does this data already exist?
+	Variable *v = data_.find(name);
+	if (v != NULL) msg.print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	v = new DoubleVariable(d, FALSE);
+	v->setName(name);
+	data_.take(v);
+}
+
+void ForcefieldAtom::addData(const char *name, int i)
+{
+	// Does this data already exist?
+	Variable *v = data_.find(name);
+	if (v != NULL) msg.print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	v = new IntegerVariable(i, FALSE);
+	v->setName(name);
+	data_.take(v);
+}
+
+void ForcefieldAtom::addData(const char *name, const char *s)
+{
+	// Does this data already exist?
+	Variable *v = data_.find(name);
+	if (v != NULL) msg.print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	v = new StringVariable(s, FALSE);
+	v->setName(name);
+	data_.take(v);
+}
+
+// Retrieve named variable
+Variable *ForcefieldAtom::data(const char *s)
+{
+	Variable *v = data_.find(s);
+	if (v == NULL) msg.print("Error: Forcefield atom '%s' does not contain any data named '%s'.\n", name_.get(), s);
+	return v;
+}
+
+// Return variable list
+VariableList *ForcefieldAtom::data()
+{
+	return &data_;	
 }
 
 // Copy structure

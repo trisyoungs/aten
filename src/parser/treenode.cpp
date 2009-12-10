@@ -547,7 +547,7 @@ short int TreeNode::argz(int i)
 	}
 	static ReturnValue rv;
 	bool success;
-	Namemap<int> *nm;
+	NameMap<int> *nm;
 	Atom *atm;
 	short int result = 0;
 	Element *elem;

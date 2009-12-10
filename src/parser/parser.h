@@ -41,6 +41,8 @@ class CommandParser : public Tree
 	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, AndSymbol, OrSymbol, nSymbolTokens };
+	// Source of parser input
+	enum ParserSource { StringSource, StringListSource, FileSource, nParserSources };
 	// Friend declarations
 	friend class Forest;
 
@@ -50,22 +52,24 @@ class CommandParser : public Tree
 	private:
 	// Character string source
 	Dnchar stringSource_;
+	// Character string list source
+	Dnchar *stringListSource_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
 	LineParser parser_;
 	// Line number in source file that we've just read
 	int lineNumber_;
-	// Whether the current input source is a file or not
-	bool isFileSource_;
+	// Current input type to parser
+	ParserSource source_;
 	// Whether the next token to expect is a path step
 	bool expectPathStep_;
 
 	public:
 	// Parser lexer, called by yylex()
 	int lex();
-	// Return whether the current input stream is a file or not
-	bool isFileSource();
+	// Return current input source
+	ParserSource source();
 	// Get next character from current input stream
 	char getChar();
 	// Peek next character from current input stream
@@ -94,6 +98,8 @@ class CommandParser : public Tree
 	bool generate();
 	// Populate target forest from specified character string
 	bool generateFromString(Forest *f, const char *s);
+	// Populate target forest from specified string list
+	bool generateFromStringList(Forest *f, Dnchar *stringListHead);
 	// Populate target forest from specified file(name)
 	bool generateFromFile(Forest *f, const char *filename);
 

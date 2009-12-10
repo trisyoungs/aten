@@ -439,7 +439,7 @@ types
 419	HC		H	"-&418"					"H in CH3O- alkoxide"
 420	OH		O	"-&419"					"O in CH3O- alkoxide"
 # Organic anions: JACS, 111, 4190 (1989)
-421	CT		C	"-H,-H,-C(-N(nbonds=1))"		"C1 in CH2CN-"
+421	CT		C	"nh=2,-C(-N(nbonds=1))"		"C1 in CH2CN-"
 422	HC		H	"-&421"					"H in CH2CN-"
 423	CZ		C	"-&421,-N(nbonds=1)"			"C2 in CH2CN-"
 424	NZ		N	"-&421"					"N in CH2CN-"

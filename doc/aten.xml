@@ -1,5 +1,9 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
-  <!ENTITY introduction SYSTEM "introduction.xml">
+  <!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
+  <!ENTITY installation SYSTEM "gettingstarted/installation.xml">
+  <!ENTITY faq SYSTEM "gettingstarted/faq.xml">
+  <!ENTITY cli SYSTEM "gettingstarted/cli.xml">
+  <!ENTITY gui SYSTEM "gettingstarted/gui.xml">
 ]>
 <book>
 	<bookinfo>
@@ -12,13 +16,19 @@
 	</bookinfo>
 	
 	<!-- DISCLAIMER -->
-	<sect1 id="disclaimer">
-	<para>
-	</para>
+	<chapter id="disclaimer"><title>Disclaimer</title>
+	<para>Aten comes with ABSOLUTELY NO WARRANTY.</para>
+	<para>This is free software, and you are welcome to redistribute it under certain conditions. For more details read the GPL at [http://www.gnu.org/copyleft/gpl.html].</para>
+	<para>Aten is under continual development and tweaking. If you have a feature suggestion, a feature request, or have found a bug or an idiosyncrasy, please contact me at <email>tris@projectaten.net</email>.</para>
+	<para>Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve, the Qt toolkit (C) Trolltech, and the readline library.</para>
+	</chapter>
 
-	</sect1>
-
-	&introduction;
+	<!-- GETTING STARTED -->
+	&compilation;
+	&installation;
+	&faq;
+	&cli;
+	&gui;
 
 </book>
 
