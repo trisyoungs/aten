@@ -50,13 +50,13 @@ types
 15	cy	C	"nbonds=4,ring(size=4)"			"Sp3 carbons in square systems" # 0.360
 16	cu	C	"nbonds=3,ring(size=3)"			"Sp2 carbons in triangle systems" # 0.360
 17	cv	C	"nbonds=3,ring(size=4)"			"Sp2 carbons in square systems" # 0.360
-18	h1	H	"-C(nbonds=4,-[C,H](n=3),$EWG)"		"H bonded to aliphatic carbon with 1 electrwd. group  " # 0.135
-19	h2	H	"-C(nbonds=4,-[C,H](n=2),$EWG,$EWG)"	"H bonded to aliphatic carbon with 2 electrwd. group " # 0.135
-20	h3	H	"-C(nbonds=4,-[C,H](n=1),$EWG,$EWG)"	"H bonded to aliphatic carbon with 3 electrwd. group " # 0.135
-21	h4	H	""	"H bonded to non-sp3 carbon with 1 electrwd. group " # 0.135
-22	h5	H	""	"H bonded to non-sp3 carbon with 2 electrwd. group " # 0.135
+18	h1	H	"-C(nbonds=4,$EWG,-Any(n=3))"		"H bonded to aliphatic carbon with 1 electrwd. group" # 0.135
+19	h2	H	"-C(nbonds=4,$EWG,$EWG,-Any(n=2))"	"H bonded to aliphatic carbon with 2 electrwd. group" # 0.135
+20	h3	H	"-C(nbonds=4,$EWG,$EWG,$EWG,-Any(n=3))"	"H bonded to aliphatic carbon with 3 electrwd. group" # 0.135
+21	h4	H	"-C(nbonds<>4,$EWG)"			"H bonded to non-sp3 carbon with 1 electrwd. group" # 0.135
+22	h5	H	"-C(nbonds<>4,$EWG,$EWG)"		"H bonded to non-sp3 carbon with 2 electrwd. group" # 0.135
 23	ha	H	"-[&5,&3]"				"H bonded to aromatic carbon  " # 0.135
-24	hc	H	"-C(nbonds=4,-[C,H](n=4))"		"H bonded to aliphatic carbon without electrwd. group " # 0.135
+24	hc	H	"-C(nbonds=4,-Any(n=4))"		"H bonded to aliphatic carbon without electrwd. group " # 0.135
 25	hn	H	"-N"					"H bonded to nitrogen atoms" # 0.161
 26	ho	H	"-O"					"Hydroxyl group" # 0.135
 27	hp	H	"-P"					"H bonded to phosphate " # 0.135
@@ -67,10 +67,10 @@ types
 32	cl	Cl	""					"Chlorine " # 1.910
 33	br	Br	""					"Bromine " # 2.880
 34	i	I	""					"Iodine" # 4.690
-35	n	N	"nbonds=3, -C(=O)"			"Sp2 nitrogen in amide groups" # 0.530
+35	n	N	"nbonds=3,-C(=O)"			"Sp2 nitrogen in amide groups" # 0.530
 36	n1	N	"~C(bond=triple)"			"Sp N" # 0.530
 37	n2	N	"nbonds=2,planar"			"aliphatic Sp2 N with two connected atoms " # 0.530
-38	n3	N	"nbonds=3, tetrahedral"			"Sp3 N with three connected atoms" # 0.530
+38	n3	N	"nbonds=3,tetrahedral"			"Sp3 N with three connected atoms" # 0.530
 39	n4	N	"nbonds=4,tetrahedral"			"Sp3 N with four connected atoms " # 0.530
 40	na	N	"nbonds=3,planar"			"Sp2 N with three connected atoms " # 0.530
 41	nb	N	"nbonds=2,=C,-C,ring(aromatic)"	"Sp2 N in pure aromatic systems " # 0.530

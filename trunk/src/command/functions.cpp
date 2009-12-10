@@ -239,6 +239,7 @@ void Command::initPointers()
 	pointers_[Map] = &Command::function_Map;
 	pointers_[NewFF] = &Command::function_NewFF;
 	pointers_[PrintSetup] = &Command::function_PrintSetup;
+	pointers_[PrintType] = &Command::function_PrintType;
 	pointers_[RecreateExpression] = &Command::function_RecreateExpression;
 	pointers_[Rules] = &Command::function_Rules;
 	pointers_[SaveExpression] = &Command::function_SaveExpression;

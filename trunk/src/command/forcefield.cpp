@@ -344,6 +344,23 @@ bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Print type specified ('printtype')
+bool Command::function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
+	// Does the identified type exist in the forcefield
+	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
+	if (ffa == NULL)
+	{
+		msg.print("Error: Type id %i is not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
+		return FALSE;
+	}
+	msg.print("Internal NETA description for type '%i' (%s, equivalent = %s)\n", ffa->typeId(), ffa->name(), ffa->equivalent());
+	ffa->neta()->print();
+	rv.reset();
+	return TRUE;
+}
+
 // Recreate energy expression for current model ('createexpression(bool nointra)'}
 bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

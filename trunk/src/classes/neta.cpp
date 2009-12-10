@@ -201,9 +201,13 @@ void Neta::print()
 // Clone nodes (and own them) beginning from the node supplied
 NetaNode *Neta::clone(NetaNode *topnode)
 {
+	msg.enter("Neta::clone");
+	NetaNode *result;
 	// Just call top node's routine, and get the result
-	if (topnode == NULL) return NULL;
-	return topnode->clone(this);
+	if (topnode == NULL) result = NULL;
+	else result = topnode->clone(this);
+	msg.exit("Neta::clone");
+	return result;
 }
 
 // Clear all associated node data (but leave character element as-is)
@@ -486,6 +490,7 @@ void NetaLogicNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaLogicNode::clone(Neta *newparent)
 {
+	msg.enter("NetaLogicNode::clone");
 	NetaLogicNode *node = new NetaLogicNode(netaLogic_, NULL, NULL);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
@@ -493,6 +498,7 @@ NetaNode *NetaLogicNode::clone(Neta *newparent)
 	node->argument1_ = argument1_ == NULL ? NULL : argument1_->clone(newparent);
 	node->argument2_ = argument2_ == NULL ? NULL : argument2_->clone(newparent);
 	newparent->ownNode(node);
+	msg.exit("NetaLogicNode::clone");
 	return node;
 }
 
@@ -846,11 +852,13 @@ void NetaKeywordNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaKeywordNode::clone(Neta *newparent)
 {
+	msg.enter("NetaKeywordNode::clone");
 	NetaKeywordNode *node = new NetaKeywordNode(netaKeyword_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
 	newparent->ownNode(node);
+	msg.exit("NetaKeywordNode::clone");
 	return node;
 }
 
@@ -907,11 +915,13 @@ void NetaGeometryNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaGeometryNode::clone(Neta *newparent)
 {
+	msg.enter("NetaGeometryNode::clone");
 	NetaGeometryNode *node = new NetaGeometryNode(geometry_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
 	newparent->ownNode(node);
+	msg.exit("NetaGeometryNode::clone");
 	return node;
 }
 
@@ -1012,11 +1022,13 @@ void NetaValueNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaValueNode::clone(Neta *newparent)
 {
+	msg.enter("NetaValueNode::clone");
 	NetaValueNode *node = new NetaValueNode(netaValue_, netaComparison_, value_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
 	newparent->ownNode(node);
+	msg.exit("NetaValueNode::clone");
 	return node;
 }
 
@@ -1065,11 +1077,14 @@ void NetaRootNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaRootNode::clone(Neta *newparent)
 {
+	msg.enter("NetaRootNode::clone");
 	NetaRootNode *node = new NetaRootNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
 	newparent->ownNode(node);
+	if (innerNeta_ != NULL) node->innerNeta_ = innerNeta_->clone(newparent);
+	msg.exit("NetaRootNode::clone");
 	return node;
 }
 
@@ -1200,6 +1215,7 @@ void NetaRingNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaRingNode::clone(Neta *newparent)
 {
+	msg.enter("NetaRingNode::clone");
 	NetaRingNode *node = new NetaRingNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
@@ -1207,6 +1223,7 @@ NetaNode *NetaRingNode::clone(Neta *newparent)
 	node->repeat_ = repeat_;
 	node->innerNeta_ = innerNeta_ == NULL ? NULL : innerNeta_->clone(newparent);
 	newparent->ownNode(node);
+	msg.exit("NetaRingNode::clone");
 	return node;
 }
 
@@ -1366,6 +1383,7 @@ void NetaChainNode::netaPrint(Dnchar &neta)
 // Clone node structure
 NetaNode *NetaChainNode::clone(Neta *newparent)
 {
+	msg.enter("NetaChainNode::clone");
 	NetaChainNode *node = new NetaChainNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
@@ -1373,5 +1391,6 @@ NetaNode *NetaChainNode::clone(Neta *newparent)
 	node->repeat_ = repeat_;
 	node->innerNeta_ = innerNeta_ == NULL ? NULL : innerNeta_->clone(newparent);
 	newparent->ownNode(node);
+	msg.exit("NetaChainNode::clone");
 	return node;
 }
