@@ -1,13 +1,4 @@
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.2//EN">
-<article>
-	<articleinfo>
-	<title>Aten vATENVERSION (rATENREVISION)</title>
-	<subtitle>Frequently Asked Questions</subtitle>
-	<author>
-		<firstname>Tristan</firstname>
-		<surname>Youngs</surname>
-	</author>
-	</articleinfo>
+<chapter id="faq"><title>Frequently Asked Questions</title>
 	
 <qandaset>
 
@@ -127,5 +118,5 @@ Chances are you have an 'old' operating system - Panther (10.3.9) is confirmed t
 
 </qandaset>
 
-</article>
+</chapter>
 

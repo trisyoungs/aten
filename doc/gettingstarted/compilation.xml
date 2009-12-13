@@ -1,62 +1,62 @@
 <chapter id="compilation"><title>Compilation</title>
 
-<para>If you want to compile Aten by hand (e.g. if you're keeping your own copy of the source and updating it <i>via</i> subversion) then these guides may help.</para>
+<para>If you want to compile Aten by hand (e.g. if you're keeping your own copy of the source and updating it <emphasis>via</emphasis> subversion) then these guides may help.</para>
 
-<section id="compilation_linux"><title>Linux</title>
+<section id="compilation.linux"><title>Linux</title>
 
 <para>Very few Linux distributions have guides in this section - if you wish to contribute details of your own experience for the benefit of others, get in touch.</para>
 
-<section id="compilation_linux_suse"><title>SuSE</title>
+<section id="compilation.linux.suse"><title>SuSE</title>
 
 <section><title>Installing Subversion and obtaining the source</title>
 
-</section>
-
-</section>
-
-<section id="compilation_linux_ubuntu"><title>Ubuntu (9.04)</title>
+	
+	<para>TODO</para>
+	
+	
+<section id="compilation.linux.ubuntu"><title>Ubuntu (9.04)</title>
 
 <section><title>Installing Subversion and obtaining the source</title>
 <para>Run the following commands to install subversion (if you don't already have it) and download the latest source to a directory names 'aten-latest' in the current directory:</para>
 
-<code>
+<synopsis>
 bob@pc:~> sudo apt-get install subversion
 bob@pc:~> svn co http://aten.googlecode.com/svn/trunk ./aten-latest
 bob@pc:~> cd aten-latest
-</code>
+</synopsis>
 
 </section>
 
 <section><title>Installing all necessary pre-requisites</title>
 <para>The following command should install all necessary packages needed to compile Aten, including the Qt4 development libraries, C++ (g++) compiler, and the automake/libtool packages.</para>
 
-<code>
+<synopsis>
 bob@pc:> sudo apt-get install autotools-dev libtool autoconf automake g++ libreadline5-dev libqt4-gui libqt4-opengl libqt4-core libqt4-dev
-</code>
+</synopsis>
 
 </section>
 
 <section><title>Configure and compile</title>
 <para>Configure the source with the following commands, run from the 'aten-latest' directory:</para>
 
-<code>
+<synopsis>
 bob@pc:> ./autogen.sh
 bob@pc:> ./configure
-</code>
+</synopsis>
 
 <para>All being well, no errors should be encountered by the configure script. If there are any and you have problems, please email me!</para>
 
 <para>Once succesfully configured, build the source with:</para>
 
-{CODE()}
+<synopsis>
 bob@pc:> make
-{CODE}
+</synopsis>
 
 </section>
 
 </section>
 
-<section id="compilation_mac"><title>Mac</title>
+<section id="compilation.mac"><title>Mac</title>
 
 <section><title>Prerequisites</title>
 
@@ -76,9 +76,9 @@ bob@pc:> make
 
 <para>If you obtained the source via ((SVN)), at the top of the source tree run:</para>
 
-<code>
+<synopsis>
 bob@pc~> ./autogen.sh
-</code>
+</synopsis>
 
 <para>This creates the necessary files needed to properly configure the build. If you unpacked the source from a tarball, it shouldn't be necessary to run autogen.sh, but you could if unexpected other errors occur in a last ditch attempt to remedy the situation.</para>
 
@@ -86,21 +86,21 @@ bob@pc~> ./autogen.sh
 
 <para>If using the installed Framework from Trolltech, run:</para>
 
-<code>
+<synopsis>
 bob@pc~> ./configure --with-qt=framework
-</code>
+</synopsis>
 
 <para>If using the Fink installation, run:</para>
 
-<code>
+<synopsis>
 bob@pc~> ./configure --with-qt=fink
-</code>
+</synopsis>
 
 <para>With the Fink installation you may also need to direct ./configure.ac to the correct Qt4 development binaries either by setting your $PATH to '/sw/lib/qt4-x11/bin:${PATH}' or by running:</para>
 
-<code>
+<synopsis>
 bob@pc~> ./configure --with-qt=fink --with-qtdir=path
-</code>
+</synopsis>
 
 <para>...where 'path' is the path where the development binaries can be found.</para>
 
@@ -110,19 +110,19 @@ bob@pc~> ./configure --with-qt=fink --with-qtdir=path
 
 <section><title>CMake</title>
 
-An out-of-tree build is best. Make a directory somewhere, enter in to it, and run:
+<para>An out-of-tree build is best. Make a directory somewhere, enter in to it, and run:</para>
 
-<code>
+<synopsis>
 bob@pc~> cmake /path/to/source/for/aten
-</aten>
+</synopsis>
 
 <para>For example:</para>
 
-<code>
+<synopsis>
 bob@pc:> mkdir aten-build
 bob@pc:> cd aten-build
 bob@pc:~/aten-build> cmake /home/bob/aten-0.99-713
-</code>
+</synopsis>
 
 <para>Once configured successfully, run 'make' to compile the source and build the program. Then, go make some tea or brew some coffee.</para>
 

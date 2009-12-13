@@ -1,0 +1,399 @@
+<chapter id="cli"><title>The Command Line</title>
+
+<para>From a shell, running Aten with no arguments will start up the code in GUI mode and patiently wait for something nice to happen. If model files are provided on the command line, these will be loaded in so that, when the GUI starts, they may be hacked apart according to your desired tastes. The command-line is also a powerful way of editing without using the GUI at all. What follows is a description of the usage of command-line arguments, and a list of all recognised arguments.</para>
+
+<section id="cli.switchorder"><title>Switch Order</title>
+
+<para>Two important things. Firstly, short options (e.g. '-b', '-d', etc.) may not be concatenated into one long specification of a short option (i.e. '-bd') - they must be given separately as '-b -d' or they will not be recognised. Secondly, the order of the given switches is important! Commonly, the actions of command-line switches and arguments do not depend on order, however in Aten this is not the case. For example:</para>
+
+<synopsis>
+bob@pc:~> aten --nobond test1.xyz test2.xyz
+</synopsis>
+
+<para>will load the models 'test1.xyz' and 'test2.xyz', preventing recalculation of bonds between atoms in both. However:</para>
+
+<synopsis>
+bob@pc:~> aten test1.xyz --nobond test2.xyz
+</synopsis>
+
+<para>will only prevent recalculation of bonds for the second model. The reason for acting on switches and arguments in the order they are encountered on the command line is to allow for flexibility, especially when using Aten as a non-graphical processor (for examples of this type of usage, see ((Command Line Editing))).</para>
+
+<para>__Note:__ The position of debug switches or those affecting the verbosity of the program has no bearing on the timeliness of their effect - they are dealt with first by Aten regardless of where they appear in the program's arguments.</para>
+
+</section>
+
+<section id="cli.switches"><title>Switches</title>
+
+<section id="cli.switches.groups.a"><title>A</title>
+
+<variablelist>
+	<varlistentry id="cli.switches.atendata">
+		<term><indexterm><primary>command line switches</primary><secondary>--atendata</secondary></indexterm>
+		--atendata &lt;dir&gt;</term>
+		<listitem><para>Tells Aten to use the specified &lt;dir&gt; as its data directory (where filters etc are stored). This overrides the ATENDATA shell variable.</para></listitem>
+	</varlistentry>
+</variablelist>
+
+</section>
+
+<section id="cli.switches.groups.b"><title>B</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.b">
+			<term><indexterm><primary>command line switches</primary><secondary>-b, --bohr</secondary></indexterm>
+			-b, --bohr</term>
+			<listitem><para>Specifies that the unit of length used in any models and grid data that follow is Bohr rather than Angstroms, and should be converted to the latter.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.batch">
+			<term><indexterm><primary>command line switches</primary><secondary>--batch</secondary></indexterm>
+			--batch</term>
+			<listitem>
+				<para>When specified, each subsequent command given with the <link linkend="cli.switches.c.c">-c</link> or <link linkend="cli.switches.c.command">--command</link> switches will be stored but not executed. Once all model files specified on the command-line are loaded, each stored command is executed on each loaded model, before being saved to the same filename. In this way, batch processing of multiple files can be performed. The GUI is not started if <link linkend="cli.switches.b.batch">--batch</link> is specified. If model export filters are not available for one or more loaded models, any changes will not be saved. It is advisable to work on a copy of the model files when using this command, or to export to a different format in order to preserve the original files (see the <link linkend="cli.switches.e.export">--export</link> switch).</para>
+				
+				<para>For example, to transmute all iron atoms into cobalt for a series of xyz files named 'complex_001.xyz', 'complex_002.xyz' etc.</para>
+				
+				<synopsis>
+					bob@pc: ~> aten --batch -c 'select(Fe); transmute(Co);'
+				</synopsis>
+			</listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.bond">
+			<term><indexterm><primary>command line switches</primary><secondary>--bond</secondary></indexterm>
+				--bond</term>
+			<listitem><para>Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the <link linkend="commands.groups.bonding">Bond Commands</link>).</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.c"><title>C</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.c">
+			<term><indexterm><primary>command line switches</primary><secondary>-c, --command</secondary></indexterm>
+				-c &lt;commands&gt;, --command &lt;commands&gt;</term>
+			<listitem>
+				<para>Provides a command or compound command to execute. Commands should be enclosed in single quotes (to prevent the shell from misquoting any character strings) and individual commands separated with semicolons. Commands provided in this way can be used to set up Aten in the way you want it from the command line, perform operations on model files before loading the GUI, or perform operations on model files without loading the GUI at all.</para>
+				
+				<para>For example, to start the GUI with a new model named 'cube' that has a cubic cell of 30 Angstrom side length:</para>
+				
+				<synopsis>
+					bob@pc:~> aten -c 'newmodel("cube"); cell(30,30,30,90,90,90);'
+				</synopsis>
+				
+				<para>Similarly, to load a model and make a duplicate copy of the atoms (pasted into the same model):</para>
+				
+				<synopsis>
+					bob@pc:~> aten original.xyz -c 'selectall(); copy(); paste(10,10,10);'
+				</synopsis>
+				
+				<para>In both cases the GUI initialises itself without being told - this can be prevented with the <link linkend="commands.quit">quit</link> command. Consider the last example - to save the newly-expanded model and quit without ever launching the GUI:</para>
+				
+				<synopsis>
+					bob@pc:~> aten original.xyz -c 'selectall; copy; paste(10,10,10); savemodel(&quot;xyz&quot;, &quot;pasted.xyz&quot;); quit;'
+				</synopsis>
+				
+				<para>Multiple sets of commands may be given:</para>
+				
+				<synopsis>
+					bob@pc:~> aten source.xyz -c 'selectall; copy' target.xyz -c 'paste(10,10,10);'
+				</synopsis>
+				
+				<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see ((Commands: Models))) but that would confuse this supposedly simple example, wouldn't it?</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.cachelimit">
+			<term><indexterm><primary>command line switches</primary><secondary>--cachelimit</secondary></indexterm>
+				--cachelimit &lt;limit&gt;</term>
+			<listitem><para>Sets the size limit for trajectory loading, in kilobytes. If an entire trajectory will fit into this cache, all frames in the trajectory are loaded immediately. If not, frames will be read from disk as and when required.</para></listitem>
+		</varlistentry>
+		<varlistentry>
+			<term><indexterm><primary>command line switches</primary><secondary>--centre</secondary></indexterm>
+				--centre</term>
+			<listitem><para>Force translation of non-periodic models centre-of-geometry to the origin, even if the <link linkend="commands.centre">centre</link> was not used in the corresponding filter.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.d"><title>D</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.d">
+			<term><indexterm><primary>command line switches</primary><secondary>-d, --debug</secondary></indexterm>
+				-d [&lt;type&gt;], --debug [&lt;type&gt;]</term>
+			<listitem><para>Enables debugging of subroutine calls so that program execution can be traced, or enables extra debug output from specific types of routines (if &lt;type&gt; is given). Warning - this creates a lot of output, most of which is incomprehensible to people with their sanity still intact, but is useful to track the program up to the point of, say, a hideous crash. Valid &lt;type&gt; options are listed in <link linkend="enums.outputtypes">Output Types</link>.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.double">
+			<term><indexterm><primary>command line switches</primary><secondary>--double</secondary></indexterm>
+				--double &lt;name=value&gt;</term>
+			<listitem>
+			<para>Creates a 'floating' variable &lt;name&gt; which is of type 'double' and that can be accessed from any subsequent script, command, or filter. Note that declarations of variables with the same name made in scripts, commands and filters will override any passed value names in order to avoid conflicts and breaking of existing filters and scripts. The intended use is to be able to pass values easily from the command-line into scripts or one-line commands.</para>
+		
+			<para>For example, in a bash shell:</para>
+			<synopsis>
+				bob@pc:~> for num in 10.0 50.5 100.0; do aten --double d=$num -c 'printf("Value is %f\n", d); quit();' done
+			</synopsis>
+			
+			</listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.e"><title>E</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.export">
+			<term><indexterm><primary>command line switches</primary><secondary>--export</secondary></indexterm>
+				--export &lt;nickname&gt;</term>
+			<listitem>
+				<para>For each model file specified on the command line, it is loaded and immediately saved in the format specified by &lt;nickname&gt;. The GUI is not started.</para>
+				
+				<para>For instance, to convert three DL_POLY CONFIG files and an xyz into mol2 format:</para>
+				<synopsis>
+					bob@pc:~> aten --export mol2 bio1.CONFIG bio2.CONFIG watercell.CONFIG random.xyz
+				</synopsis>
+				
+				<para>If specified in conjunction with the <link linkend="cli.switches.batch">--batch</link> switch, commands may be applied to each loaded model file before it is saved.</para>
+			</listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.exportmap">
+			<term><indexterm><primary>command line switches</primary><secondary>--exportmap</secondary></indexterm>
+				--exportmap &lt;name=element,...&gt;</term>
+			<listitem>
+				<para>Manually map assigned atom typenames in an expression to the names defined here when expressions are written to a file. For example:</para>
+				<synopsis>
+					bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c 'saveexpression("dlpoly", "water.FIELD"); quit();'
+				</synopsis>
+				
+				<para>writes the water forcefield with the OW and HW atomtype names mapped to Ospc and Hspc respectively.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.f"><title>F</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.f">
+			<term><indexterm><primary>command line switches</primary><secondary>-f, --format</secondary></indexterm>
+				-f &lt;nickname&gt;, --format &lt;nickname&gt;</term>
+			<listitem><para>For any forthcoming model files provided as arguments on the command line, the specified model import filter is used to load them, regardless of their filename extension (or, indeed, actual format). Since Aten tends not to determine file formats by looking at their content, this is useful for when you know that file is in a particular format, but with an extension that doesn't help Aten recognise it as such.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.ff">
+			<term><indexterm><primary>command line switches</primary><secondary>--ff</secondary></indexterm>
+				--ff &lt;file&gt;</term>
+			<listitem><para>Loads the specified forcefield file, making it the current forcefield. If the desired forcefield is present in either Aten's installed data/ directory or in your own '.aten/ff' directory (see <link linkend="installation.dotaten">Installation</link>), then just the filename need be given as Aten searches these locations by default.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.filter">
+			<term><indexterm><primary>command line switches</primary><secondary>--filter</secondary></indexterm>
+				--filter &lt;file&gt;</term>
+			<listitem><para>Load the specified &lt;file&gt; as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same 'nickname', 'id' etc. will be hidden by those loaded from &lt;file&gt;. See <link linkend="filters.overriding">Overriding Existing Filters</link> for more information.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.fold">
+			<term><indexterm><primary>command line switches</primary><secondary>fold</secondary></indexterm>
+			--fold</term>
+			<listitem><para>Force folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, even if the command <link linkend="commands.fold">fold</link> was not used in the corresponding filter.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.g"><title>G</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.g">
+			<term><indexterm><primary>command line switches</primary><secondary>-g, --grid</secondary></indexterm>
+				-g &lt;file&gt;, --grid &lt;file&gt;</term>
+			<listitem><para>Loads the specified grid data file, associating it to the current model, and making it the current grid. A model (even an empty one) must exist for a grid to be loaded.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.h"><title>H</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.h">
+			<term><indexterm><primary>command line switches</primary><secondary>-h, --help</secondary></indexterm>
+				-h, --help</term>
+			<listitem><para>Show the possible command-line switches and a short description of their meaning.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.i"><title>I</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.i">
+			<term><indexterm><primary>command line switches</primary><secondary>-i, --interactive</secondary></indexterm>
+				-i, --interactive</term>
+			<listitem><para>Starts Aten in interactive mode, where commands are typed and immediately executed. The GUI is not started by default, but may be invoked. See the section on ((Interactive Mode)) for more information.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.int">
+			<term><indexterm><primary>command line switches</primary><secondary>--int</secondary></indexterm>
+				--int &lt;name=value&gt;</term>
+			<listitem><para>Creates a 'floating' variable &lt;name&gt; which is of type 'int'. See the '((The Command Line|#--double|--double))' switch for a full description.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.k"><title>K</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.k">
+			<term><indexterm><primary>command line switches</primary><secondary>-k, --keepview</secondary></indexterm>
+				-k, --keepview</term>
+			<listitem><para>Preserves the last stored view of models when the GUI starts, retaining any model rotations and camera transformations performed in scripts or on the command line (normally, the view is reset to display the entire model on startup).</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.keepnames">
+			<term><indexterm><primary>command line switches</primary><secondary>--keepnames</secondary></indexterm>
+			--keepnames</term>
+			<listitem><para>If specified, for each model loaded the original atom names in the file will be preserved as a series of forcefield types generated within a new forcefield created specifically for the model. Elements are still determined from conversion of the atom names, and may still be mapped with the --map option. This option is useful for quickly creating a skeleton set of forcefield types from an existing model with type names, or to allow quick import and export of typed configurations without requiring the original forcefield file to be loaded.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.m"><title>M</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.m">
+			<term><indexterm><primary>command line switches</primary><secondary>-m, --map</secondary></indexterm>
+				-m &lt;name=element,...&gt;, --map &lt;name=element,...&gt;</term>
+			<listitem>
+				<para>Manually map atom typenames occurring in model files to elements according to the rules defined here. For example:</para>
+				
+				<synopsis>
+					bob@pc:~> aten --map 'CX=C,N_=P'
+				</synopsis>
+				
+				<para>will result in atoms called 'CX' being mapped to carbon, and atoms called 'N_' mapped to phosphorus (for whatever reason). These mappings are attempted prior to any z-mapping scheme defined in the filter, and so will take precedence over standard typename-to-element conversions.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.n"><title>N</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.nobond">
+			<term><indexterm><primary>command line switches</primary><secondary>--nobond</secondary></indexterm>
+				--nobond</term>
+			<listitem><para>Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the '((Commands: Bonding|#rebond|rebond))' command, then specifying <link linkend="cli.switches.n.nobond">--nobond</link> will prevent it.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.nocentre">
+			<term><indexterm><primary>command line switches</primary><secondary>--nocentre</secondary></indexterm>
+				--nocentre</term>
+			<listitem><para>Prevent translation of non-periodic models centre-of-geometry to the origin, overriding filter directives.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.nofold">
+			<term><indexterm><primary>command line switches</primary><secondary>--nofold</secondary></indexterm>
+				--nofold</term>
+			<listitem><para>Prevent initial folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, overriding the use of the <link linkend="commands.fold">fold</link> command in the corresponding filters.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.n">
+			<term><indexterm><primary>command line switches</primary><secondary>-n</secondary></indexterm>
+				-n</term>
+			<listitem><para>Create a new, empty model.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.nopack">
+			<term><indexterm><primary>command line switches</primary><secondary>--nopack</secondary></indexterm>
+				--nopack</term>
+			<listitem><para>Prevent generation of symmetry-equivalent atoms from spacegroup information in loaded models, overriding any occurences of the <link linkend="commands.pack">pack</link> command is used in the corresponding filter.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.noqtsettings">
+			<term><indexterm><primary>command line switches</primary><secondary>--noqtsettings</secondary></indexterm>
+				--noqtsettings</term>
+			<listitem><para>Don't read in any system-stored Qt settings on startup (such as window positions, toolbar visibilities etc.) using the defaults instead.</para></listitem>
+		</varlistentry>
+	</variablelist>
+
+</section>
+
+<section id="cli.switches.groups.p"><title>P</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.pack">
+			<term><indexterm><primary>command line switches</primary><secondary>--pack</secondary></indexterm>
+			</term>
+			<listitem><para>Force generation of symmetry-equivalent atoms from spacegroup information in loaded models, even if the command <link linkend="commands.pack">pack</link> was not used in the corresponding filter.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.s"><title>S</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.">
+			<term><indexterm><primary>command line switches</primary><secondary>XXX</secondary></indexterm>
+				-s &lt;file&gt;, --script &lt;file&gt;</term>
+			<listitem><para>Specifies that the script file is to be loaded and run before moving on to the next command-line argument. See the ((Scripting)) section for more information on scripts.</para></listitem>
+		</varlistentry>
+		<varlistentry id="cli.switches.string">
+			<term><indexterm><primary>command line switches</primary><secondary>--string</secondary></indexterm>
+				--string &lt;name=value&gt;</term>
+			<listitem><para>Creates a 'floating' variable &lt;name&gt; which is of type 'string'. See the <link linkend="cli.commands.double">--double</link> switch for a full description.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.t"><title>T</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.t">
+			<term><indexterm><primary>command line switches</primary><secondary>-t, --trajectory</secondary></indexterm>
+				-t &lt;file&gt;, --trajectory &lt;file&gt;</term>
+			<listitem><para>Associates a trajectory file with the last loaded / current model.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.u"><title>U</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.u">
+			<term><indexterm><primary>command line switches</primary><secondary>-u, --undolevels</secondary></indexterm>
+				-u &lt;nlevels&gt;, --undolevels &lt;nlevels&gt;</term>
+			<listitem><para>Set the maximum number of undo levels per model, or -1 for unlimited (the default).</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.v"><title>V</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.v">
+			<term><indexterm><primary>command line switches</primary><secondary>-v, --verbose</secondary></indexterm>
+			-v, --verbose</term>
+			<listitem><para>Switch on verbose reporting of program actions.</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+<section id="cli.switches.groups.z"><title>Z</title>
+	
+	<variablelist>
+		<varlistentry id="cli.switches.z">
+			<term><indexterm><primary>command line switches</primary><secondary>-z, --zmap</secondary></indexterm>
+				-z &lt;maptype&gt;, --zmap &lt;maptype&gt;</term>
+			<listitem><para>Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see ((ZMapping Types)).</para></listitem>
+		</varlistentry>
+	</variablelist>
+	
+</section>
+
+</section>
+
+</chapter>
+
