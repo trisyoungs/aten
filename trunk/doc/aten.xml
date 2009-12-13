@@ -1,9 +1,16 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
-  <!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
-  <!ENTITY installation SYSTEM "gettingstarted/installation.xml">
-  <!ENTITY faq SYSTEM "gettingstarted/faq.xml">
-  <!ENTITY cli SYSTEM "gettingstarted/cli.xml">
-  <!ENTITY gui SYSTEM "gettingstarted/gui.xml">
+	<!--GETTING STARTED-->
+	<!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
+	<!ENTITY installation SYSTEM "gettingstarted/installation.xml">
+	<!ENTITY faq SYSTEM "gettingstarted/faq.xml">
+	<!ENTITY cli SYSTEM "gettingstarted/cli.xml">
+	<!ENTITY gui SYSTEM "gettingstarted/gui.xml">
+	<!--Import / Export-->
+	<!ENTITY compatnotes SYSTEM "importexport/compatibility.xml">
+	<!ENTITY suppertedformats SYSTEM "importexport/supportedformats.xml">
+	<!ENTITY filters SYSTEM "importexport/filters.xml">
+	<!ENTITY trajectories SYSTEM "importexport/trajectories.xml">
+	<!ENTITY readwrite SYSTEM "importexport/readwrite.xml">
 ]>
 <book>
 	<bookinfo>
@@ -29,6 +36,13 @@
 	&faq;
 	&cli;
 	&gui;
+
+	<!-- IMPORT / EXPORT -->
+	&compatnotes;
+	&suppertedformats;
+	&filters;
+	&trajectories;
+	&readwrite;
 
 </book>
 
