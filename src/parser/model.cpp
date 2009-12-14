@@ -58,6 +58,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
 	{ "ffangles",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "ffbonds",		VTypes::ForcefieldBoundData,	-1, TRUE },
+	{ "ffmass",		VTypes::DoubleData,		0, TRUE },
 	{ "fftorsions",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "fftypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "ff",			VTypes::ForcefieldData,		0, FALSE },
@@ -260,6 +261,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
+			break;
+		case (ModelVariable::FFMass):
+			rv.set(ptr->forcefieldMass());
 			break;
 		case (ModelVariable::FFTypes):
 			if (!hasArrayIndex)

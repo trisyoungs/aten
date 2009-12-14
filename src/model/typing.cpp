@@ -31,7 +31,7 @@
 #include "classes/forcefieldbound.h"
 
 // Return number of forcefield atom types in model
-int Model::nForcefieldTypes()
+int Model::nForcefieldTypes() const
 {
 	return forcefieldTypes_.nItems();
 }
@@ -49,7 +49,7 @@ Refitem <ForcefieldAtom,int> *Model::forcefieldType(int i)
 }
 
 // Return number of forcefield bond interactions in the model
-int Model::nForcefieldBonds()
+int Model::nForcefieldBonds() const
 {
 	return forcefieldBonds_.nItems();
 }
@@ -67,7 +67,7 @@ Refitem <ForcefieldBound,int> *Model::forcefieldBond(int i)
 }
 
 // Return number of forcefield angle interactions in the model
-int Model::nForcefieldAngles()
+int Model::nForcefieldAngles() const
 {
 	return forcefieldAngles_.nItems();
 }
@@ -85,7 +85,7 @@ Refitem <ForcefieldBound,int> *Model::forcefieldAngle(int i)
 }
 
 // Return number of forcefield torsion interactions in the model
-int Model::nForcefieldTorsions()
+int Model::nForcefieldTorsions() const
 {
 	return forcefieldTorsions_.nItems();
 }

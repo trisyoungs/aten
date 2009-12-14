@@ -25,6 +25,7 @@
 #include "base/atom.h"
 #include "base/pattern.h"
 #include "base/elements.h"
+#include "classes/forcefieldatom.h"
 
 // Return the start of the atom list
 Atom *Model::atoms() const
@@ -466,6 +467,24 @@ void Model::styleSelection(Atom::DrawStyle ds)
 double Model::mass() const
 {
 	return mass_;
+}
+
+// Calculate and return the forcefield mass of the model
+double Model::forcefieldMass() const
+{
+	msg.enter("Model::forcefieldMass");
+	double ffmass = 0.0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	{
+		if (i->type() == NULL)
+		{
+			msg.print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...\n", i->id()+1);
+			ffmass += elements().atomicMass(i);
+		}
+		else ffmass += i->type()->elementMass();
+	}
+	msg.exit("Model::forcefieldMass");
+	return ffmass;
 }
 
 // Reduce the mass (and unknown element count) of the model

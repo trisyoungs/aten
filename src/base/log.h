@@ -55,13 +55,13 @@ class Log
 	// Set a log to a specific value
 	void setLog(Log::LogType lt, int value);
 	// Return the log quantity specified
-	int log(Log::LogType cl);
+	int log(Log::LogType cl) const;
 	// Set the save point log for the model
 	void updateSavePoint();
 	// Return if the model has been modified since last being saved
-	bool isModified();
+	bool isModified() const;
 	// Print logs
-	void print();
+	void print() const;
 };
 
 #endif
