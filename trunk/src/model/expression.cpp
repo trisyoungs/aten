@@ -68,7 +68,7 @@ void Model::removeNamesForcefield()
 }
 
 // Return whether the expression is valid
-bool Model::isExpressionValid()
+bool Model::isExpressionValid() const
 {
 	return (expressionPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
 }

@@ -193,6 +193,8 @@ class Model
 	void calculateMass();
 	// Return the mass of the model
 	double mass() const;
+	// Calculate and return the forcefield mass of the model
+	double forcefieldMass() const;
 	// Return number of unknown atoms in the model
 	int nUnknownAtoms();
 
@@ -522,25 +524,25 @@ class Model
 	// Create unique lists
 	void createForcefieldLists();
 	// Return number of unique bond interactions in model
-	int nForcefieldBonds();
+	int nForcefieldBonds() const;
 	// Return the first item in the list of unique bond interactions in the model
 	Refitem<ForcefieldBound,int> *forcefieldBonds();
 	// Return the unique bond term specified
 	Refitem<ForcefieldBound,int> *forcefieldBond(int i);
 	// Return number of unique angle interactions in model
-	int nForcefieldAngles();
+	int nForcefieldAngles() const;
 	// Return the first item in the list of unique angle interactions in the model
 	Refitem<ForcefieldBound,int> *forcefieldAngles();
 	// Return the unique angle term specified
 	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
 	// Return number of unique torsion interactionss in model
-	int nForcefieldTorsions();
+	int nForcefieldTorsions() const;
 	// Return the list of unique torsion interactions in the model
 	Refitem<ForcefieldBound,int> *forcefieldTorsions();
 	// Return the unique torsion term specified
 	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
 	// Return number of unique atom types in model
-	int nForcefieldTypes();
+	int nForcefieldTypes() const;
 	// Return the first item in the list of unique types in the model
 	Refitem<ForcefieldAtom,int> *forcefieldTypes();
 	// Return the unique type specified
@@ -548,7 +550,7 @@ class Model
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid
-	bool isExpressionValid();
+	bool isExpressionValid() const;
 	// Clear the current expression
 	void clearExpression();
 	// Manually invalidates the expression

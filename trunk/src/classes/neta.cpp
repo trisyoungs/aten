@@ -115,6 +115,9 @@ Neta::Neta()
 	characterElement_ = -1;
 	parentForcefield_ = NULL;
 	parentForcefieldAtom_ = NULL;
+	targetAtom_ = NULL;
+	targetRingList_ = NULL;
+	targetParent_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -217,6 +220,12 @@ void Neta::clear()
 	ownedNodes_.clear();
 }
 
+// Return current atom target
+Atom *Neta::targetAtom()
+{
+	return targetAtom_;
+}
+
 // Return ringList of supplied atom
 List<Ring> *Neta::targetRingList()
 {
@@ -248,6 +257,7 @@ int Neta::matchAtom(Atom *i, List<Ring> *rings, Model *parent)
 	// Store ring list and parent model of atom
 	targetRingList_ = rings;
 	targetParent_ = parent;
+	targetAtom_ = i;
 	// Create a bound list of atoms and a list of rings to pass to the head of the description
 	Reflist<Atom,int> boundList;
 	i->addBoundToReflist(&boundList);
@@ -255,6 +265,9 @@ int Neta::matchAtom(Atom *i, List<Ring> *rings, Model *parent)
 	for (Ring *r = targetRingList_->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringList.add(r);
 	int score = description_->score(i, &boundList, &ringList, description_, NULL, 0);
 // 	printf("Score is %i\n", score);
+	targetAtom_ = NULL;
+	targetRingList_ = NULL;
+	targetParent_ = NULL;
 	msg.exit("Neta::matchAtom");
 	return (score == -1 ? -1 : score+1);
 }
@@ -741,7 +754,7 @@ int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 			}
 		}
 		n = 0;
-		for (si = scores.first(); si != NULL; si = si->next) if (si->data != -1) ++n;
+		for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
 		if (n == 0) totalscore = -1;
 		else if ((repeat_ == -1) || (Neta::netaValueCompare(n, repeatComparison_, repeat_)))
 		{
@@ -750,16 +763,17 @@ int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 			totalscore = 0;
 			for (si = scores.first(); si != NULL; si = si->next)
 			{
-				if (si->data != -1)
+				if (si->data > 0)
 				{
 					totalscore += si->data;
 					nbrs->remove(si->item);
+					--n;
 				}
-				--n;
 				if (n == 0) break;
 			}
 		}
 		else totalscore = -1;
+		if (totalscore == 0) totalscore = -1;
 	}
 	// Check for reverse logic
 	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
@@ -809,6 +823,10 @@ int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,i
 			break;
 		case (Neta::NotSelfKeyword):
 			if (context->nodeType() == NetaNode::RootNode) msg.print("NETA: Invalid context for 'notself' keyword.\n");
+			else if (context->nodeType() == NetaNode::RingNode)
+			{
+				totalscore = (((NetaRingNode*) context)->currentRing()->containsAtom( parent()->targetAtom() ) ? -1 : 1);
+			}
 			else if (target != prevTarget) totalscore = 1;
 			break;
 		case (Neta::PlanarKeyword):
@@ -1109,7 +1127,7 @@ Ring *NetaRingNode::currentRing()
 int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
 {
 	msg.enter("NetaRingNode::score");
-	int totalscore = 0, n;
+	int totalscore = -1, n;
 	Refitem<Ring,int> *ri;
 	Reflist<Atom,int> atomCheckList;
 	Reflist< Refitem<Ring,int>, int > scores;
@@ -1138,7 +1156,12 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 			{
 				si = scores.add(ri, 0);
 				currentRing_ = ri->item;
-				if (innerNeta_ == NULL) continue;
+				if (innerNeta_ == NULL)
+				{
+					// By virtue of having no inner NETA, *any* ring will match...
+					si->data = 1;
+					continue;
+				}
 				// Add atoms in this ring to an atomCheckList
 				ri->item->addAtomsToReflist(&atomCheckList,NULL);
 				// Get a match score for the innerNeta
@@ -1146,7 +1169,7 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 			}
 			// Calculate how many rings we matched, and if this satisfies any repeat condition
 			n = 0;
-			for (si = scores.first(); si != NULL; si = si->next) if (si->data != -1) ++n;
+			for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
 			if ((repeat_ == -1) || (Neta::netaValueCompare(n, repeatComparison_, repeat_)))
 			{
 				n = repeat_ == -1 ? 1 : repeat_;
@@ -1154,16 +1177,17 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 				totalscore = 0;
 				for (si = scores.first(); si != NULL; si = si->next)
 				{
-					if (si->data != -1)
+					if (si->data > 0)
 					{
 						totalscore += si->data;
 						rings->remove(si->item);
+						--n;
 					}
-					--n;
 					if (n == 0) break;
 				}
 			}
 			else totalscore = -1;
+			if (totalscore == 0) totalscore = -1;
 			break;
 		case (NetaNode::RingNode):
 			msg.print("NETA Error: Specifying a 'ring' directly inside another 'ring' is meaningless.\n");
@@ -1322,7 +1346,7 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 	// innerNeta_->score();
 	// How many matches?
 	n = 0;
-	for (si = scores.first(); si != NULL; si = si->next) if (si->data != -1) ++n;
+	for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
 	if (n == 0) totalscore = -1;
 	else if ((repeat_ == -1) || (Neta::netaValueCompare(n, repeatComparison_, repeat_)))
 	{
@@ -1331,12 +1355,12 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 		totalscore = 0;
 		for (si = scores.first(); si != NULL; si = si->next)
 		{
-			if (si->data != -1)
+			if (si->data > 0)
 			{
 				totalscore += si->data;
 				nbrs->remove(si->item);
+				--n;
 			}
-			--n;
 			if (n == 0) break;
 		}
 	}

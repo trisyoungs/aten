@@ -61,7 +61,7 @@ void Log::add(Log::LogType cl)
 }
 
 // Return the log quantity specified
-int Log::log(Log::LogType cl)
+int Log::log(Log::LogType cl) const
 {
 	return logs_[cl];
 }
@@ -73,13 +73,13 @@ void Log::updateSavePoint()
 }
 
 // Return if the log has been modified since last being saved
-bool Log::isModified()
+bool Log::isModified() const
 {
 	return (savePoint_ == (logs_[Log::Structure] + logs_[Log::Coordinates]) ? FALSE : TRUE);
 }
 
 // Print logs
-void Log::print()
+void Log::print() const
 {
 	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Camera], logs_[Log::Glyphs], logs_[Log::Total]); 
 }

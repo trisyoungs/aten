@@ -120,6 +120,8 @@ class Neta
 	// Methods
 	*/
 	private:
+	// Current atom being checked...
+	Atom *targetAtom_;
 	// Supplied list of rings for the atom matchAtom() is targetting
 	List<Ring> *targetRingList_;
 	// Parent model of target atom
@@ -130,6 +132,8 @@ class Neta
 	NetaNode *clone(NetaNode *topnode);
 	// Clear all associated node data (but leave character element as-is)
 	void clear();
+	// Return current atom target
+	Atom *targetAtom();
 	// Return ringList of supplied atom
 	List<Ring> *targetRingList();
 	// Return target atom's parent model
