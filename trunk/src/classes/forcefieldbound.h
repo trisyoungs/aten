@@ -47,7 +47,10 @@ class ForcefieldBound
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Interaction parameter data
 	double params_[MAXFFPARAMDATA];
-	
+	// Electrostatic scale factor (if torsion)
+	double elecScale_;
+	// VDW scale factor (if torsion)
+	double vdwScale_;	
 
 	public:
 	// Set the type of bound interaction
@@ -80,6 +83,12 @@ class ForcefieldBound
 	Dnchar *typeNames();
 	// Set the atom type 'n'
 	void setTypeName(int n, const char *s);
+	// Set 1-4 scale factors
+	void setScaleFactors(double escale, double vscale);
+	// Return electrostatic scale factor (if torsion)
+	double elecScale();
+	// Return VDW scale factor (if torsion)
+	double vdwScale();
 };
 
 #endif

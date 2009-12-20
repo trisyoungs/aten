@@ -26,10 +26,6 @@
 #include "classes/neta_parser.h"
 #include "templates/namemap.h"
 
-// Local variables
-double escale14 = 0.5;
-double vscale14 = 0.5;
-
 // Load the specified forcefield
 bool Forcefield::load(const char *filename)
 {
@@ -128,14 +124,12 @@ bool Forcefield::load(const char *filename)
 				okay = readImpropers();
 				break;
 			case (Forcefield::VScaleCommand):
-				vscale14 = ffparser.argd(1);	// 1-4 VDW scaling
-				msg.print("\t: VDW 1-4 scale factor = %6.3f\n", vscale14);
-				okay = TRUE;
+				msg.print("Error: Use of 'vscale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
+				okay = FALSE;
 				break;
 			case (Forcefield::EScaleCommand):
-				escale14 = ffparser.argd(1);	// 1-4 electrostatic scaling
-				msg.print("\t: Electrostatic 1-4 scale factor = %6.3f\n", vscale14);
-				okay = TRUE;
+				msg.print("Error: Use of 'escale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
+				okay = FALSE;
 				break;
 			default:
 				msg.print("Unrecognised forcefield keyword '%s'.\n",ffparser.argc(0));
@@ -687,6 +681,7 @@ bool Forcefield::readTorsions()
 	msg.enter("Forcefield::readTorsions");
 	ForcefieldBound *newfftorsion;
 	int count, success, n;
+	double escale = 0.5, vscale = 0.5;
 	// Get functional form of torsion potential
 	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(ffparser.argc(1));
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
@@ -694,6 +689,19 @@ bool Forcefield::readTorsions()
 		torsionstyle = TorsionFunctions::None;
 		msg.print("Torsion twist functional form not recognised - '%s'\n",ffparser.argc(1));
 		return FALSE;
+	}
+	// Have new scaling factors been provided?
+	if (ffparser.isBlank(2)) msg.print("   Electrostatic/VDW 1-4 scale factors not provided - defaults of %f and %f used instead.\n", escale, vscale);
+	else if (ffparser.isBlank(3))
+	{
+		msg.print("Error: Only electrostatic 1-4 scale factor was provided in torsion block header (line %i).\n",ffparser.lastLineNo());
+		return FALSE;
+	}
+	else
+	{
+		escale = ffparser.argd(2);
+		vscale = ffparser.argd(3);
+		msg.print("   Electrostatic/VDW 1-4 scale factors for these torsions are %f and %f.\n", escale, vscale);
 	}
 	count = 0;
 	bool done = FALSE;
@@ -726,9 +734,8 @@ bool Forcefield::readTorsions()
 			newfftorsion->setTypeName(2,ffparser.argc(2));
 			newfftorsion->setTypeName(3,ffparser.argc(3));
 			newfftorsion->setTorsionStyle(torsionstyle);
-			newfftorsion->setParameter(TF_ESCALE, escale14);
-			newfftorsion->setParameter(TF_VSCALE, vscale14);
-			for (n=0; n<MAXFFPARAMDATA-2; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
+			newfftorsion->setScaleFactors(escale, vscale);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}
@@ -784,9 +791,8 @@ bool Forcefield::readImpropers()
 			newffimproper->setTypeName(2,ffparser.argc(2));
 			newffimproper->setTypeName(3,ffparser.argc(3));
 			newffimproper->setTorsionStyle(torsionstyle);
-			newffimproper->setParameter(TF_ESCALE, escale14);
-			newffimproper->setParameter(TF_VSCALE, vscale14);
-			for (n=0; n<MAXFFPARAMDATA-2; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
+			newffimproper->setScaleFactors(1.0,1.0);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
 			count ++;
 		}

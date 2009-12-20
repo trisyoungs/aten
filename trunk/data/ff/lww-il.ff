@@ -7,8 +7,6 @@ message "Converted for use in Aten by T. Youngs."
 message "NOTE: Some torsions appeared to be missing or named incorrectly, and have been filled in/corrected by hand."
 
 units kj
-vscale 0.5
-escale 0.83333333	# 5/6
 
 #
 # Cations
@@ -236,7 +234,7 @@ CW	NA	CN2	418	125.7
 CR	NA	CN2	418	126.3
 CW	CW	NA	1004	107.1
 F	B	F	209.2	109.5
-F	P	F	334.7	90.0
+#F	P	F	334.7	90.0
 # JPCb, 2009, 113, 7591-7598.
 P	CF2	CF3	1254	120.0
 F	P	CF2	1634	90.0
@@ -247,7 +245,7 @@ F	P	F	1634	90.0
 CT2	CT2	CT2	526	109.5
 end
 
-torsions cos
+torsions cos 0.83333333 0.5
 # PCCP, 2006, 8, 1096-1104.
 # Some torsions appear to be labelled incorrectly in Table 1 in the above ref, with CT3 and CT2 used instead of CN2 and CN3.
 NA	CR	NA	CW	50.21	180	2

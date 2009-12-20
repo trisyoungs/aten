@@ -41,6 +41,8 @@ ForcefieldBound::ForcefieldBound()
 {
 	// Private variables
 	type_ = NoInteraction;
+	elecScale_ = 0.5;
+	vdwScale_ = 0.5;
 
 	// Public variables
 	prev = NULL;
@@ -160,4 +162,23 @@ void ForcefieldBound::setTypeName(int n, const char *s)
 	// Check range
 	if ((n < 0) || (n > MAXFFBOUNDTYPES)) printf("setAtomType - index %i is out of range.\n",n);
 	else typeNames_[n] = s;
+}
+
+// Set 1-4 scale factors
+void ForcefieldBound::setScaleFactors(double escale, double vscale)
+{
+	elecScale_ = escale;
+	vdwScale_ = vscale;
+}
+
+// Return electrostatic scale factor (if torsion)
+double ForcefieldBound::elecScale()
+{
+	return elecScale_;
+}
+
+// Return VDW scale factor (if torsion)
+double ForcefieldBound::vdwScale()
+{
+	return vdwScale_;
 }

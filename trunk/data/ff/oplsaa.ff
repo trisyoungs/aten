@@ -3335,7 +3335,7 @@ N	Zn	O	40.0	109.5
 end
 
 # Torsions
-torsions cos3
+torsions cos3 0.5 0.5 
 HC	CT	CT	HC	0.0	0.0	0.3	0.0		#hydrocarbon
 HC	C	C	HC	0.0	0.0	0.3	0.0		#
 HC	Ceq	Ceq	HC	0.0	0.0	0.3	0.0		#

@@ -168,7 +168,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 				msg.print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
-			else rv.set(ptr->parameter(TF_ESCALE));
+			else rv.set(ptr->elecScale());
 			break;
 		case (ForcefieldBoundVariable::Form):
 			rv.set(ptr->formText());
@@ -189,7 +189,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 				msg.print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
-			else rv.set(ptr->parameter(TF_VSCALE));
+			else rv.set(ptr->vdwScale());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldBoundVariable.\n", accessorData[i].name);

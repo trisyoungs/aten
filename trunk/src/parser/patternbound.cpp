@@ -175,7 +175,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 					msg.print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
 					result = FALSE;
 				}
-				else rv.set(ptr->data()->parameter(TF_ESCALE));
+				else rv.set(ptr->data()->elecScale());
 			}
 			break;
 		case (PatternBoundVariable::Form):
@@ -226,7 +226,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 					msg.print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
 					result = FALSE;
 				}
-				else rv.set(ptr->data()->parameter(TF_VSCALE));
+				else rv.set(ptr->data()->vdwScale());
 			}
 			break;
 		default:

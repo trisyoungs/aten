@@ -4,8 +4,7 @@ message "Ionic liquids forcefield of Canongia Lopes and Padua, converted for Ate
 message "No warranty provided! If you find a mistake, please let me know."
 
 units kj
-vscale 0.5
-escale 0.5
+
 types
 #
 # Cations
@@ -268,7 +267,8 @@ SBT	NBT	SBT	671	125.6
 CZA	N3	CZA	362	118.5
 N3	CZA	NZA	425	175.2
 end
-torsions cos3
+
+torsions cos3 0.5 0.5
 # Alkanes
 HC	CT	CT	HC	0.0000	0.0000	1.3305	0.0000
 CT	CT	CT	HC	0.0000	0.0000	1.5313	0.0000
