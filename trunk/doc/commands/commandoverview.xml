@@ -50,7 +50,7 @@
 			</listitem>
 		</itemizedlist>
 		
-		<para>Since variables are strongly-typed, trying to set an integer variable from a string will not work since these are incompatible types. However, standard C-style string conversion functions are available - see <link linkend="command.ref.groups.string">String Commands</link>.</para>
+		<para>Since variables are strongly-typed, trying to set an integer variable from a string will not work since these are incompatible types. However, standard C-style string conversion functions are available - see <link linkend="command.groups.string">String Commands</link>.</para>
 		
 		<para>So, to initialise some variables, assign them values, and print them out, we would do the following:</para>
 		

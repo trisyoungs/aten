@@ -1,0 +1,113 @@
+<section id="commands.groups.charges"><title>Charges Commands</title>
+	
+	<para>Assign partial charges to models, atoms, and patterns.</para>
+
+		<section id="command.ref.charge"><title>charge</title>
+			<indexterm><primary>commands</primary><secondary>charge</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> double charge ( )</para>
+				</listitem>
+				<listitem>
+					<para> double charge ( double ''q'' )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Assigns a charge of ''q'' to each selected atom in the current model, or returns the total charge of the current selection if no value is supplied.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				charge(1.0);
+			</synopsis>
+			<para>gives each atom in the current model's selection a charge of 1.0.</para>
+			
+		</section>
+		
+		<section id="command.ref.chargeff"><title>chargeff</title>
+			<indexterm><primary>commands</primary><secondary>chargeff</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> chargeff ( )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Assigns charges to all atoms in the current model based on the forcefield associated to the model and the current types of the atoms.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				chargeff();
+			</synopsis>
+		
+		</section>
+		
+		<section id="command.ref.chargefrommodel"><title>chargefrommodel</title>
+			<indexterm><primary>commands</primary><secondary>chargefrommodel</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> chargefrommodel ( )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Copies charges of all atoms in the current model to the atoms of the current trajectory frame.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				chargefrommodel();
+			</synopsis>
+		
+		</section>
+		
+		<section id="command.ref.chargepatom"><title>chargepatom</title>
+			<indexterm><primary>commands</primary><secondary>chargepatom</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> chargepatom ( int ''id'', double ''q'' )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Assigns a charge of ''q'' to atom ''id'' in each molecule of the current pattern.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				chargepatom(3, 0.1);
+			</synopsis>
+			<para>assigns a charge of 0.1 to the third atom in each molecule of the current pattern.</para>
+		
+		</section>
+		
+		<section id="command.ref.chargetype"><title>chargetype</title>
+			<indexterm><primary>commands</primary><secondary>chargetype</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> chargetype ( string ''fftype'', double ''q'' )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Assigns a charge of ''q'' to each atom that is of type ''fftype'' in the current model.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				chargetype(&quot;OW&quot;,-0.8);
+			</synopsis>
+			<para>gives a charge of -0.8 to every atom that has an assigned typename of 'OW'.</para>
+		
+		</section>
+		
+		<section id="command.ref.clearcharges"><title>clearcharges</title>
+			<indexterm><primary>commands</primary><secondary>clearcharges</secondary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para> clearcharges ( )</para>
+				</listitem>
+			</itemizedlist>
+			<para>Clears all charges in the current model, setting them to zero.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				clearcharges();
+			</synopsis>
+
+	</section>
+
+</section>

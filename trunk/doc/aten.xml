@@ -17,6 +17,9 @@
 	<!ENTITY commandatoms SYSTEM "commands/atoms.xml">
 	<!ENTITY commandbonding SYSTEM "commands/bonding.xml">
 	<!ENTITY commandbuilding SYSTEM "commands/building.xml">
+	<!ENTITY commandcell SYSTEM "commands/cell.xml">
+	<!ENTITY commandcharges SYSTEM "commands/charges.xml">
+	<!ENTITY commandcolourscales SYSTEM "commands/colourscales.xml">
 ]>
 
 <book>
@@ -94,6 +97,9 @@
 			&commandatoms;
 			&commandbonding;
 			&commandbuilding;
+			&commandcell;
+			&commandcharges;
+			&commandcolourscales;
 		</section>
 	</chapter>
 </book>
