@@ -1,19 +1,7 @@
-<chapter id="introduction">
-<title>Introduction</title>
+<section id="introduction"><title>Introduction</title>
 
-<sect1 id="overview"><title>Overview</title>
+	<section id="overview"><title>Overview</title>
 
-<para>
-This is a paragraph.  
-</para>
+	<para>This is a paragraph.</para>
 
-<sect2><title>Section 2 Title</title>
-<para>
-More introduction
-</para>
-
-</sect2>
-
-</sect1>
-
-</chapter>
+</section>

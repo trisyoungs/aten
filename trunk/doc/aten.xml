@@ -7,11 +7,18 @@
 	<!ENTITY gui SYSTEM "gettingstarted/gui.xml">
 	<!--Import / Export-->
 	<!ENTITY compatnotes SYSTEM "importexport/compatibility.xml">
-	<!ENTITY suppertedformats SYSTEM "importexport/supportedformats.xml">
+	<!ENTITY supportedformats SYSTEM "importexport/supportedformats.xml">
 	<!ENTITY filters SYSTEM "importexport/filters.xml">
 	<!ENTITY trajectories SYSTEM "importexport/trajectories.xml">
 	<!ENTITY readwrite SYSTEM "importexport/readwrite.xml">
+	<!--Commands-->
+	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
+	<!ENTITY commandtypes SYSTEM "commands/commandtypes.xml">
+	<!ENTITY commandatoms SYSTEM "commands/atoms.xml">
+	<!ENTITY commandbonding SYSTEM "commands/bonding.xml">
+	<!ENTITY commandbuilding SYSTEM "commands/building.xml">
 ]>
+
 <book>
 	<bookinfo>
 	<title>Aten vATENVERSION (rATENREVISION)</title>
@@ -28,21 +35,66 @@
 	<para>This is free software, and you are welcome to redistribute it under certain conditions. For more details read the GPL at [http://www.gnu.org/copyleft/gpl.html].</para>
 	<para>Aten is under continual development and tweaking. If you have a feature suggestion, a feature request, or have found a bug or an idiosyncrasy, please contact me at <email>tris@projectaten.net</email>.</para>
 	<para>Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve, the Qt toolkit (C) Trolltech, and the readline library.</para>
+	<para>Some general notes:</para>
+	<itemizedlist mark="opencircle">
+		<listitem>
+			<para>First off, if you find that Aten doesn't support the format you want, consider writing a <link linkend="filters">filter</link> to do so. And if you need help, please ask!</para>
+		</listitem>
+		<listitem>
+			<para>More so, if you find that Aten <emphasis>does</emphasis> support the format you want, but doesn't appear to write it out correctly, please let me know.</para>
+		</listitem>
+		<listitem>
+			<para>For forcefield expression files written with Aten, I recommend that you check that the correct atom types get assigned to your molecule(s). Blind trust that this has actually occurred should only be employed once you are confident that the forcefield types are consistently correct! Larger forcefields, e.g. OPLS-AA by Jorgensen et al., do not have a complete set of type descriptions. Once more, if your add some in, please send them to me so they can be included in a future revision of the code.</para>
+		</listitem>
+	</itemizedlist>
+	<para><ulink url="mailto:tris@projectaten.net">tris@projectaten.net</ulink></para>
 	</chapter>
 
+	<!-- ACKNOWLEDGEMENTS -->
+	<chapter id="acknowledgements"><title>Acknowledgements</title>
+		<para>Aten is maintained entirely by T. Youngs. However, many people have contributed useful thoughts, ideas, bugfixes, and motivation to the project over its lifetime. These people are, in no particular order:</para>
+		
+		<para>A. K. Croft and crew (Mac afficionado, supreme fault-finder)</para>
+		<para>S. Cromie (algebraic guidance)</para>
+		<para>A. Elena (bug-finder extraordinaire, 'pathological case'-locator, Windows / Mac building and packaging)</para>
+		<para>D. Pashov (Windows / Mac building and packaging)</para>
+		<para>S. Norman (icon judgment)</para>
+		
+	</chapter>	
+	
 	<!-- GETTING STARTED -->
-	&compilation;
-	&installation;
-	&faq;
-	&cli;
-	&gui;
+	<chapter id="gettingstarted"><title>Getting Started</title>
+		&compilation;
+		&installation;
+		&faq;
+		&cli;
+		&gui;
+	</chapter>
 
 	<!-- IMPORT / EXPORT -->
-	&compatnotes;
-	&suppertedformats;
-	&filters;
-	&trajectories;
-	&readwrite;
-
+	<chapter id="importexport"><title>Import / Export</title>
+		&compatnotes;
+		&supportedformats;
+		&filters;
+		&trajectories;
+		&readwrite;
+	</chapter>
+	
+	<!-- COMMANDS -->
+	<chapter id="command"><title>Command Language</title>
+		&commandoverview;
+<!-- 	* ((Command Language)) - Language basics -->
+<!-- 	* ((Command Reference)) - Descriptions of every script command available in Aten -->
+<!-- 	** Skip to section: ((Commands: Atoms|Atoms))       ((Commands: Bonding|Bonding))   ((Commands: Building|Building))         ((Commands: Cell|Cell))         ((Commands: Charges|Charges))   ((Commands: Colourscales|Colourscales)) ((Commands: Disordered|Disordered))     ((Commands: Energies|Energies))       ((Commands: Edit|Edit))     ((Commands: Flow|Flow))         ((Commands: Forcefields|Forcefields))   ((Commands: Forces|Forces))     ((Commands: Glyphs|Glyphs))     ((Commands: Grids|Grids))       ((Commands: Image|Image))       ((Commands: Labeling|Labeling))     ((Commands: Math|Math))         ((Commands: Measuring|Measuring))       ((Commands: Messaging|Messaging))       ((Commands: Minimiser|Minimiser))       ((Commands: Models|Models))     ((Commands: Monte Carlo|Monte Carlo))        ((Commands: Pattern|Pattern))   ((Commands: Patterns|Patterns))         ((Commands: Prefs|Prefs))       ((Commands: Read Write|Read Write))   ((Commands: Scripts|Scripts))   ((Commands: Selection|Selection))       ((Commands: Sites|Sites))     ((Commands: String|String))       ((Commands: System|System))     ((Commands: Trajectory|Trajectory))     ((Commands: Transformation|Transformation))       ((Commands: View|View)) -->
+<!-- 	* ((Command Index)) - Index of all available commands -->
+<!-- 	* ((Variables)) - Variable types -->
+<!-- 	* ((Paths and Subvariables)) - Subvariable access -->
+		&commandtypes;
+		<section id="command.ref"><title>Command Reference</title>
+			&commandatoms;
+			&commandbonding;
+			&commandbuilding;
+		</section>
+	</chapter>
 </book>
 

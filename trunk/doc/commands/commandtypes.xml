@@ -1,0 +1,1954 @@
+<section id="command.types"><title>Variable Types</title>
+	
+	<indexterm id="idx.variables.types" class="startofrange"><primary>variables</primary><secondary>types</secondary></indexterm>
+	
+	<para>For variables in Aten that are of reference type (i.e. the non-standard types) various sub-variables and functions may be accessed in the same way class members are utilised in C++. Each non-standard variable type is listed here along with the types and descriptions of their available subvariables / members.</para>
+	
+	<para>In the same way that class members are accessed in C/C++, subvariables of reference types are accessed by use of the full stops '.' between member names. For instance, the <link linkend="command.types.atom">atom</link> type allows all the information of a given atom to be accessed. The following example illustrates the process of retrieving the third atom in the current model, finding its coordinates, and subsequently adjusting them:</para>
+	
+	<synopsis>
+		atom a = aten.model.atoms[3];
+		vector v = a.r;
+		printf(&quot;Old coordinates are: %f %f %f\n&quot;, v.x, v.y, v.z);
+		v.x += 4.0;
+		a.r = v;
+		printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
+	</synopsis>
+	
+	<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector <filename>v</filename> by requesting the <filename>r</filename> subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
+	
+	<para>All subvariables can be read, but not all can be written back to - these are read-only subvariables, and are indicated with 'ro' in the <emphasis>Access</emphasis> column in the following tables.</para>
+	
+	<para>Function members were introduced in v1.3, and act in the same as subvariables except that they take one or more arguments enclosed in parentheses immediately following the member name.</para>
+	
+	<section id="command.types.arrays"><title>Arrays</title>
+		
+		<indexterm id="idx.command.types.arrays1" class="startofrange"><primary>variables</primary><secondary>arrays</secondary></indexterm>
+		<indexterm id="idx.command.types.arrays2" class="startofrange"><primary>types</primary><secondary>arrays</secondary></indexterm>
+		
+		<para>Many types have some subvariables that are arrays, with individual elements accessed by use of square brackets containing the array index in the same way as user-declared arrays:</para>
+		
+		<synopsis>
+			int i[10];
+			int j = i[9];
+			model m = aten.models[5];
+		</synopsis>
+		
+		<para>For subvariables that are arrays of <emphasis>plain</emphasis> datatypes (int, double, string, or vector) the array index may be omitted and the whole array will be returned/accessed rather than an individual element. For subvariables that are arrays of pointer/reference types (e.g. <link linkend="command.types.atom">atom</link>, <link linkend="command.types.bond">bond</link>, <link linkend="command.types.unitcell">unitcell</link> etc.) omitting the array index returns the first item in the array (if any). Why? Aten stores most of its dynamic data in linked lists, and so returning this as a proper array complicates matters a little (more from the perspective of implementation alongside the existing code rather than any pathological problem).</para>
+	
+		<indexterm startref="idx.command.types.arrays1" class="endofrange"></indexterm>
+		<indexterm startref="idx.command.types.arrays2" class="endofrange"></indexterm>
+	
+	</section>
+		
+	<section id="command.types.aten"><title>Aten</title>
+		
+		<indexterm id="idx.command.types.aten" class="startofrange"><primary>types</primary><secondary>aten</secondary></indexterm>
+	
+		<para>The 'master' class type, 'aten', is there to provide access to various other structures such as the list of loaded models, preferences, element data etc. It is available at all times from any command, script, or filter, and is always called 'aten'.</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Aten type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>frame</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current model being 'displayed' and the focus of editing, i.e. the current trajectory frame or, if no trajectory is associated to the current model then the current selected model is returned</entry>
+					</row>
+					<row>
+						<entry>model</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current model selected (this is the parent model of a trajectory if a frame is currently being displayed)</entry>
+					</row>
+					<row>
+						<entry>models</entry>
+						<entry><link linkend="command.types.model">model</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of all loaded models currently available</entry>
+					</row>
+					<row>
+						<entry>nelements</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of chemical elements defined in the 'elements' array</entry>
+					</row>
+					<row>
+						<entry>prefs</entry>
+						<entry><link linkend="command.types.prefs">prefs</link></entry>
+						<entry>ro</entry>
+						<entry>Program preferences</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.aten" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.atom"><title>Atom</title>
+	
+		<indexterm id="idx.command.types.atom" class="startofrange"><primary>types</primary><secondary>atom</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Atom type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>fixed</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom's position is fixed (1) or not (0)</entry>
+					</row>
+					<row>
+						<entry>f</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Force vector</entry>
+					</row>
+					<row>
+						<entry>fx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Force ''x''-component</entry>
+					</row>
+					<row>
+						<entry>fy</entry>
+						<entry>double</entry>
+						<entry> rw</entry>
+						<entry>Force ''y''-component</entry>
+					</row>
+					<row>
+						<entry>fz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Force ''z''-component</entry>
+					</row>
+					<row>
+						<entry>hidden</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom is hidden (1) or visible (0)</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Numerical ID of the atom within its parent model</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Atomic mass of the atom</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Element name of the atom</entry>
+					</row>
+					<row>
+						<entry>q</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Atomic charge associated to the atom</entry>
+					</row>
+					<row>
+						<entry>r</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Position vector</entry>
+					</row>
+					<row>
+						<entry>rx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position ''x''-component</entry>
+					</row>
+					<row>
+						<entry>ry</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position ''y''-component</entry>
+					</row>
+					<row>
+						<entry>rz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position ''z''-component</entry>
+					</row>
+					<row>
+						<entry>selected</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom is selected (1) or unselected (0)</entry>
+					</row>
+					<row>
+						<entry>symbol</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Element symbol of the atom</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>rw</entry>
+						<entry>Forcefield type of the atom</entry>
+					</row>
+					<row>
+						<entry>v</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Velocity vector</entry>
+					</row>
+					<row>
+						<entry>vx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity ''x''-component</entry>
+					</row>
+					<row>
+						<entry>vy</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity ''y''-component</entry>
+					</row>
+					<row>
+						<entry>vz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity ''z''-component</entry>
+					</row>
+					<row>
+						<entry>z</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Atomic number of the atom</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.atom" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.bond"><title>Bond</title>
+		
+		<indexterm id="idx.command.types.bond" class="startofrange"><primary>types</primary><secondary>bond</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Bond type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>i</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>First atom involved in the bond</entry>
+					</row>
+					<row>
+						<entry>j</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>Second atom involved in the bond</entry>
+					</row>
+					<row>
+						<entry>order</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Bond order</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Bond type - see <link linkend="enums.bondtype">Bond Types</link> for a list</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Bond type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>partner ( Atom <emphasis>i</emphasis> )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Return the other atom (i.e. not ''i'') involved in the bond</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<indexterm startref="idx.command.types.aten" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.bound"><title>Bound</title>
+	
+		<indexterm id="idx.command.types.bound" class="startofrange"><primary>types</primary><secondary>bound</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Bound type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>data</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Parameters describing the bound interaction</entry>
+					</row>
+					<row>
+						<entry>escale</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Electrostatic 1-4 scaling factor (for torsion interactions)</entry>
+					</row>
+					<row>
+						<entry>form</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Functional form of the bound interaction</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atom IDs involved in the interaction</entry>
+					</row>
+					<row>
+						<entry>termid</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Array index of forcefield term in relevant list (ffangles, ffbonds, or fftorsions) in local <link linkend="command.types.pattern">pattern</link></entry>
+					</row>
+					<row>
+						<entry>typenames</entry>
+						<entry>string[]</entry>
+						<entry>ro</entry>
+						<entry>Array of typenames involved in the interaction</entry>
+					</row>
+					<row>
+						<entry>vscale</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Short-range 1-4 scaling factor (for torsion interactions)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<indexterm startref="idx.command.types.bound" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.element"><title>Element</title>
+		
+		<indexterm id="idx.command.types.element" class="startofrange"><primary>types</primary><secondary>element</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Element type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>ambient</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Ambient colour of the element</entry>
+					</row>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Returns the ambient colour of the element. Set this property to define both ambient (supplied values) and diffuse (0.75*supplied values) components simultaneously</entry>
+					</row>
+					<row>
+						<entry>diffuse</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Diffuse colour of the element</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Atomic mass of the element</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Capitalised name of the element</entry>
+					</row>
+					<row>
+						<entry>radius</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Atomic radius of the element. Affects the scaled sphere rendering style and bond calculation.
+					</row>
+					<row>
+						<entry>symbol</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Atomic symbols of the element</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.element" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.ffatom"><title>FFAtom</title>
+		
+		<indexterm id="idx.command.types.ffatom" class="startofrange"><primary>types</primary><secondary>ffatom</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>FFAtom type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>charge</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Charge associated to the type</entry>
+					</row>
+					<row>
+						<entry>data</entry>
+						<entry>double[6]</entry>
+						<entry>rw</entry>
+						<entry>Parameter data for short-range potential</entry>
+					</row>
+					<row>
+						<entry>description</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Text data describing the type</entry>
+					</row>
+					<row>
+						<entry>equivalent</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Equivalent name for the type</entry>
+					</row>
+					<row>
+						<entry>form</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Functional form of short-range potential</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Internal ID of the atom type within its parent forcefield</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the type</entry>
+					</row>
+					<row>
+						<entry>neta</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>The original type description used to identify the type</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
+						<entry>ro</entry>
+						<entry>Parent forcefield containing the type</entry>
+					</row>
+					<row>
+						<entry>z</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Element id (Z) corresponding to the target element of this type</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.ffatom" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.ffbound"><title>FFBound</title>
+		
+		<indexterm id="idx.command.types.ffbound" class="startofrange"><primary>types</primary><secondary>ffbound</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>FFBound type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>data</entry>
+						<entry>double[]</entry>
+						<entry>rw</entry>
+						<entry>Parameter data for short-range potential</entry>
+					</row>
+					<row>
+						<entry>escale</entry>
+						<entry>double[]</entry>
+						<entry>rw</entry>
+						<entry>For torsion-type interactions, the electrostatic scaling factor between atoms 1 and 4</entry>
+					</row>
+					<row>
+						<entry>form</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Functional form of short-range potential - see <link linkend="ff.forms.vdw">VDW Forms</link></entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms involved in the bound interaction</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Actual type of the bound interaction (bond, angle, etc.)</entry>
+					</row>
+					<row>
+						<entry>typenames</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Names of the atom types the interaction is relevant to</entry>
+					</row>
+					<row>
+						<entry>vscale</entry>
+						<entry>double[]</entry>
+						<entry>rw</entry>
+						<entry>For torsion-type interactions, the VDW scaling factor between atoms 1 and 4</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	<indexterm startref="idx.command.types.ffbound" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.forcefield"><title>Forcefield</title>
+		
+		<indexterm id="idx.command.types.forcefield" class="startofrange"><primary>types</primary><secondary>forcefield</secondary></indexterm>	
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Forcefield type members3</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>energygenerators</entry>
+						<entry>int[]</entry>
+						<entry>rw</entry>
+						<entry>Array of integers flagging which generator data are 'energetic' and should be converted</entry>
+					</row>
+					<row>
+						<entry>filename</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Filename if the forcefield was loaded from a file</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the forcefield</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.forcefield" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.glyph"><title>Glyph</title>
+		
+		<indexterm id="idx.command.types.glyph" class="startofrange"><primary>types</primary><secondary>glyph</secondary></indexterm>
+		
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Glyph type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>data</entry>
+						<entry><link linkend="command.types.glyphdata">glyphdata</link></entry>
+						<entry>ro</entry>
+						<entry>Individual data for each vertex of the glyph</entry>
+					</row>
+					<row>
+						<entry>solid</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Specifies whether the glyph is drawn as a filled (solid) shape or in wireframe</entry>
+					</row>
+					<row>
+						<entry>text</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Text data associated to the glyph. Not all glyphs use text</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Style of the glyph - see <link linkend="enums.glyphtypes">Glyph Types</link> for a list</entry>
+					</row>
+					<row>
+						<entry>visible</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag indicating whether the glyph is currently visible</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.glyph" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.glyphdata"><title>GlyphData</title>
+		
+		<indexterm id="idx.command.types.glyphdata" class="startofrange"><primary>types</primary><secondary>glyphdata</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>GlyphData type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>RGBA colour of the vertex</entry>
+					</row>
+					<row>
+						<entry>vector</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Vertex coordinates</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.glyphdata" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.measurement"><title>Measurement</title>
+		
+		<indexterm id="idx.command.types.measurement" class="startofrange"><primary>types</primary><secondary>measurement</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Measurement type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms involved in the measurement</entry>
+					</row>
+					<row>
+						<entry>i</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>First atom involved in the measurement</entry>
+					</row>
+					<row>
+						<entry>j</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>Second atom involved in the measurement</entry>
+					</row>
+					<row>
+						<entry>k</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>Third atom involved in the measurement (if any)</entry>
+					</row>
+					<row>
+						<entry>l</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>ro</entry>
+						<entry>Fourth atom involved in the measurement (if any)</entry>
+					</row>
+					<row>
+						<entry>value</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Value (e.g. distance, angle, or torsion angle) of the measurement</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.measurement" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.Model"><title>Model</title>
+		
+		<indexterm id="idx.command.types.model" class="startofrange"><primary>types</primary><secondary>model</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Model type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>angles</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current angle measurements in the model (v1.3 r946)</entry>
+					</row>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bond">bond</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of bonds defined in the model</entry>
+					</row>
+					<row>
+						<entry>cell</entry>
+						<entry><link linkend="command.types.unitcell">unitcell</link></entry>
+						<entry>rw</entry>
+						<entry>The model's unit cell</entry>
+					</row>
+					<row>
+						<entry>distances</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current distance measurements in the model (v1.3 r946)</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
+						<entry>rw</entry>
+						<entry>Forcefield associated to the model (if any) (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>ffangles</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield angle terms in the model (added v1.3 r946, renamed r984, was 'angleterms')</entry>
+					</row>
+					<row>
+						<entry>ffbonds</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield bond terms in the model (added v1.3 r946, renamed r984, was 'bondterms')</entry>
+					</row>
+					<row>
+						<entry>fftorsions</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield torsion terms in the model (added v1.3 r946, renamed r984, was 'torsionterms')</entry>
+					</row>
+					<row>
+						<entry>fftypes</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>ro</entry>
+						<entry>Array of unique atom types used in the model (renamed v1.3 r984, was 'atomtypes')</entry>
+					</row>
+					<row>
+						<entry>frame</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current frame in the model's trajectory (if it has one)</entry>
+					</row>
+					<row>
+						<entry>frames</entry>
+						<entry><link linkend="command.types.model">model</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of trajectory frame pointers (only if the trajectory is cached)</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Mass of the current model (v1.4 (r1019)</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the model</entry>
+					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of angle measurements in the model (v1.3 r946)</entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of bonds in the model</entry>
+					</row>
+					<row>
+						<entry>ndistances</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of distance measurements in the model (v1.3 r946)</entry>
+					</row>
+					<row>
+						<entry>nffangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique angle terms used in the model (renamed v1.3 r984, was 'nangleterms')</entry>
+					</row>
+					<row>
+						<entry>nffbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique bond terms used in the model (renamed v1.3 r984, was 'nbondterms')</entry>
+					</row>
+					<row>
+						<entry>nfftorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique torsion terms used in the model (renamed v1.3 r984, was 'ntorsionterms')</entry>
+					</row>
+					<row>
+						<entry>nfftypes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique atom types used in the model (renamed v1.3 r984, was 'natomtypes')</entry>
+					</row>
+					<row>
+						<entry>nframes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of frames in associated trajectory</entry>
+					</row>
+					<row>
+						<entry>npatterns</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of patterns defined for the model</entry>
+					</row>
+					<row>
+						<entry>nselected</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms selected in the model</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion angle measurements in the model (v1.3 r946)</entry>
+					</row>
+					<row>
+						<entry>nunknown</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model that are of unknown element (v1.4 r1019)</entry>
+					</row>
+					<row>
+						<entry>patterns</entry>
+						<entry><link linkend="command.types.pattern">pattern</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of patterns currently defined for the model</entry>
+					</row>
+					<row>
+						<entry>region</entry>
+						<entry><link linkend="command.types.region">region</link></entry>
+						<entry>ro</entry>
+						<entry>Region data for this model, used by the disordered builder (v1.3 r957)</entry>
+					</row>
+					<row>
+						<entry>torsions</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current torsion angle measurements in the model (v1.3 r946)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.model" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.pattern"><title>Pattern</title>
+		
+		<indexterm id="idx.command.types.pattern" class="startofrange"><primary>types</primary><secondary>pattern</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Pattern type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>angles</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of angle interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of bond interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>cog</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of centres of mass of the molecules in the pattern</entry>
+					</row>
+					<row>
+						<entry>com</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of centres of geometry of the molecules in the pattern</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link>[]</entry>
+						<entry>rw</entry>
+						<entry>Reference to the forcefield associated to the pattern (if any)</entry>
+					</row>
+					<row>
+						<entry>ffangles</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield angle terms in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>ffbonds</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield bond terms in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>fftorsions</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield torsion terms in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>fftypes</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>ro</entry>
+						<entry>Array of unique atom types used in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>firstatom</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Reference to the first atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>firstatomid</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Atom ID of the first atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>fixed</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the coordinates of all atoms in the pattern are fixed in MC routines (v1.3 r961)</entry>
+					</row>
+					<row>
+						<entry>lastatom</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Reference to the last atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>lastatomid</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Atom ID of the last atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the pattern</entry>
+					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of angles in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Total number of atoms spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of bonds in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>nffangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique angle terms used in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>nffbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique bond terms used in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>nfftorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique torsion terms used in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>nfftypes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique atom types used in the pattern (added v1.3 r984)</entry>
+					</row>
+					<row>
+						<entry>nmolatoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>nmols</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of molecules (repeat units) in the pattern</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>torsions</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of torsion interactions in one molecule of the pattern</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.pattern" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.prefs"><title>Prefs</title>
+		
+		<indexterm id="idx.command.types.prefs" class="startofrange"><primary>types</primary><secondary>prefs</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Prefs type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>anglelabel</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The units label appended to angle measurements</entry>
+					</row>
+					<row>
+						<entry>atomdetail</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Quadric detail of atoms. Higher values give rounder atoms but make rendering slower</entry>
+					</row>
+					<row>
+						<entry>atomstyleradius</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawingstyle">Drawing Styles</link></entry>
+					</row>
+					<row>
+						<entry>backcull</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether culling of backward-facing polygons should be performed</entry>
+					</row>
+					<row>
+						<entry>backgroundcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Background colour of the main canvas on which models are drawn</entry>
+					</row>
+					<row>
+						<entry>bonddetail</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Quadric detail of bonds. Higher values give rounder bonds but make rendering slower</entry>
+					</row>
+					<row>
+						<entry>bondstyleradius</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawingstyle">Drawing Styles</link></entry>
+					</row>
+					<row>
+						<entry>bondtolerance</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Tolerance used in automatic calculation of bonds between atoms</entry>
+					</row>
+					<row>
+						<entry>cachelimit</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The trajectory cache size (in kilobytes) - trajectory files calculated to have more than this amount of data will not be cached in memory</entry>
+					</row>
+					<row>
+						<entry>calculateelec</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether electrostatic contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>calculateintra</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether intramolecular contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>calculatevdw</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Controls whether short-range Vdw contributions to the energy/forces are calculated</entry>
+					</row>
+					<row>
+						<entry>clipfar</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The far clipping distance used when rendering</entry>
+					</row>
+					<row>
+						<entry>clipnear</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The near clipping distance used when rendering</entry>
+					</row>
+					<row>
+						<entry>colourscheme</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current <link linkend="enums.colourscheme">Colour Scheme</link> used to colour atoms and bonds</entry>
+					</row>
+					<row>
+						<entry>commonelements</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Comma-separated list of common elements that appear in the Select Element dialog</entry>
+					</row>
+					<row>
+						<entry>densityunit</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The unit of density to used when displaying cell densities</entry>
+					</row>
+					<row>
+						<entry>depthcue</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables depth cueing</entry>
+					</row>
+					<row>
+						<entry>depthfar</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The far fog distance used when rendering (if depth cueing is enabled)</entry>
+					</row>
+					<row>
+						<entry>depthnear</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The near fog distance used when rendering (if depth cueing is enabled)</entry>
+					</row>
+					<row>
+						<entry>distancelabel</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The units label appended to distance measurements</entry>
+					</row>
+					<row>
+						<entry>eleccutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The electrostatic cutoff distance</entry>
+					</row>
+					<row>
+						<entry>elecmethod</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The method of electrostatic energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>energyunit</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Set the unit of energy to use</entry>
+					</row>
+					<row>
+						<entry>energyupdate</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Update frequency for the energy in various methods</entry>
+					</row>
+					<row>
+						<entry>ewaldalpha</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Convergence parameter in Ewald sum (v1.4 r1023)
+					</row>
+					<row>
+						<entry>ewaldkmax</entry>
+						<entry>int[3]</entry>
+						<entry>rw</entry>
+						<entry>Vector of Ewald reciprocal space vector limits (kmax)</entry>
+					</row>
+					<row>
+						<entry>ewaldprecision</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Precision parameter to use when generating parameters in EwaldAuto</entry>
+					</row>
+					<row>
+						<entry>forcerhombohedral</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>For spacegroups that are detected to have a hexagonal basis, force packing to use generators in a rhombohedral basis</entry>
+					</row>
+					<row>
+						<entry>foregroundcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Forground pen colour of the main canvas on which models are drawn, affecting colour of text labels, rotation globe, unit cell etc.</entry>
+					</row>
+					<row>
+						<entry>globesize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Size, in pixels, of the rotation globe in the lower-right-hand corner of the screen</entry>
+					</row>
+					<row>
+						<entry>hdistance</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Default H-X bond distance to use when adding hydrogen atoms</entry>
+					</row>
+					<row>
+						<entry>keyaction</entry>
+						<entry>string[3]</entry>
+						<entry>rw</entry>
+						<entry>Current actions of the modifier keys Shift, Ctrl, and Alt</entry>
+					</row>
+					<row>
+						<entry>labelsize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Font pointsize for label text</entry>
+					</row>
+					<row>
+						<entry>linealiasing</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables line aliasing</entry>
+					</row>
+					<row>
+						<entry>manualswapbuffers</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag whether manual swapping of GL buffers is enabled</entry>
+					</row>
+					<row>
+						<entry>maxrings</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum allowable number of rings to detect within any single pattern</entry>
+					</row>
+					<row>
+						<entry>maxringsize</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum size of ring to detect when atom typing</entry>
+					</row>
+					<row>
+						<entry>maxundo</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Maximum number of undo levels remembered for each model (-1 = unlimited)</entry>
+					</row>
+					<row>
+						<entry>modelupdate</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Update frequency for the current model in various methods</entry>
+					</row>
+					<row>
+						<entry>mouseaction</entry>
+						<entry>string[4]</entry>
+						<entry>rw</entry>
+						<entry>Current actions of the Left, Middle, Right, and Wheel mouse buttons</entry>
+					</row>
+					<row>
+						<entry>offscreenobjects</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Bitarray of <link linkend="enums.viewobjects">View Objects</link> drawn when rendering scenes to image files</entry>
+					</row>
+					<row>
+						<entry>perspective</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether perspective view is enabled</entry>
+					</row>
+					<row>
+						<entry>perspectivefov</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Field of vision angle to use for perspective rendering</entry>
+					</row>
+					<row>
+						<entry>polygonaliasing</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables polygon aliasing</entry>
+					</row>
+					<row>
+						<entry>renderstyle</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current model drawing style</entry>
+					</row>
+					<row>
+						<entry>replicatefold</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to fold atoms before cell replicate</entry>
+					</row>
+					<row>
+						<entry>replicatetrim</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to trim atoms after cell replicate</entry>
+					</row>
+					<row>
+						<entry>screenobjects</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Bitarray of <link linkend="enums.viewobjects">View objects</link> drawn when rendering to screen</entry>
+					</row>
+					<row>
+						<entry>selectionscale</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Multiple of the standard atom radius to use for transparent selection spheres</entry>
+					</row>
+					<row>
+						<entry>shininess</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>The shininess of atoms (value must be between 0 and 127 inclusive)</entry>
+					</row>
+					<row>
+						<entry>specularcolour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Colour of all specular reflections</entry>
+					</row>
+					<row>
+						<entry>spotlight</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the spotlight is on or off</entry>
+					</row>
+					<row>
+						<entry>spotlightambient</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The ambient colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>spotlightdiffuse</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The diffuse colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>spotlightposition</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Spotlight coordinates (in Angstroms)
+					</row>
+					<row>
+						<entry>spotlightspecular</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>The specular colour component of the spotlight</entry>
+					</row>
+					<row>
+						<entry>usenicetext</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether QPainter (on/1/TRUE) or QGlWidget (off/0/FALSE) is used to render label text</entry>
+					</row>
+					<row>
+						<entry>vdwcut</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The VDW cutoff distance</entry>
+					</row>
+					<row>
+						<entry>vdwscale</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Scaling factor to use for short-range radii in energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>zoomthrottle</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Zooming 'throttle' value used to calm down or increase the distance jumped when zooming with the mouse</entry>
+					</row>
+
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<indexterm startref="idx.command.types.prefs" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.region"><title>Region</title>
+		
+		<indexterm id="idx.command.types.region" class="startofrange"><primary>types</primary><secondary>region</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Region type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>centre</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometric centre of the region in real coordinates</entry>
+					</row>
+					<row>
+						<entry>centrefrac</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometric centre of the region in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>geometry</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometry of the region in real coordinates</entry>
+					</row>
+					<row>
+						<entry>geometry</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometry of the region in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>iscentrefrac</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Indicates whether the current region centre was defined in fractional coordinates</entry>
+					</row>
+					<row>
+						<entry>isgeometryfrac</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Indicates whether the current region geometry was defined in fractional coordinates</entry>
+					</row>
+					<row>
+						<entry>overlap</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag to specify whether inserting molecules at positions that overlap with other regions is allowed</entry>
+					</row>
+					<row>
+						<entry>shape</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current shape of the region. See <link linkend="enums.regionshapes">Region Shapes</link> for a list</entry>
+					</row>
+					<row>
+						<entry>xrotation</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The x-rotation of the region</entry>
+					</row>
+					<row>
+						<entry>yrotation</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The y-rotation of the region</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.region" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.unitcell"><title>UnitCell</title>
+		
+		<indexterm id="idx.command.types.unitcell" class="startofrange"><primary>types</primary><secondary>unitcell</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>UnitCell type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>a</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of cell axis A</entry>
+					</row>
+					<row>
+						<entry>alpha</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle between cell axes B and C</entry>
+					</row>
+					<row>
+						<entry>b</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of cell axis B</entry>
+					</row>
+					<row>
+						<entry>beta</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle between cell axes B and C</entry>
+					</row>
+					<row>
+						<entry>c</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Length of cell axis C</entry>
+					</row>
+					<row>
+						<entry>ax</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>x</filename>-component of cell axis A</entry>
+					</row>
+					<row>
+						<entry>ay</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>y</filename>-component of cell axis A</entry>
+					</row>
+					<row>
+						<entry>az</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>z</filename>-component of cell axis A</entry>
+					</row>
+					<row>
+						<entry>bx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>x</filename>-component of cell axis B</entry>
+					</row>
+					<row>
+						<entry>by</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>y</filename>-component of cell axis B</entry>
+					</row>
+					<row>
+						<entry>bz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>z</filename>-component of cell axis B</entry>
+					</row>
+					<row>
+						<entry>centrex</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry><filename>x</filename>-coordinate at centre of defined cell</entry>
+					</row>
+					<row>
+						<entry>centrey</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry><filename>y</filename>-coordinate at centre of defined cell</entry>
+					</row>
+					<row>
+						<entry>centrez</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry><filename>z</filename>-coordinate at centre of defined cell</entry>
+					</row>
+					<row>
+						<entry>cx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>x</filename>-component of cell axis C</entry>
+					</row>
+					<row>
+						<entry>cy</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>y</filename>-component of cell axis C</entry>
+					</row>
+					<row>
+						<entry>cz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry><filename>z</filename>-component of cell axis C</entry>
+					</row>
+					<row>
+						<entry>density</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Density of the current cell</entry>
+					</row>
+					<row>
+						<entry>gamma</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Angle between cell axes A and B</entry>
+					</row>
+					<row>
+						<entry>matrix</entry>
+						<entry>double[9]</entry>
+						<entry>rw</entry>
+						<entry>Cell axis matrix containing all three cell vectors. For example, ax = matrix[1], ay = matrix[2], etc.)</entry>
+					</row>
+					<row>
+						<entry>sgid</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Integer ID of the current spacegroup</entry>
+					</row>
+					<row>
+						<entry>sgname</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Symbol of the current spacegroup</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Type of the current unit cell (see <link linkend="enums.celltypes">Cell Types</link></entry>
+					</row>
+					<row>
+						<entry>volume</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Volume of the cell in cubic Angstroms</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<indexterm startref="idx.command.types.unitcell" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<section id="command.types.vector"><title>Vector</title>
+		
+		<indexterm id="idx.command.types.vector" class="startofrange"><primary>types</primary><secondary>vector</secondary></indexterm>	
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Vector type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>mag</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Magnitude of the vector. Setting this value rescales the vector</entry>
+					</row>
+					<row>
+						<entry>x</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The <filename>x</filename> component of the vector</entry>
+					</row>
+					<row>
+						<entry>y</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The <filename>y</filename> component of the vector</entry>
+					</row>
+					<row>
+						<entry>z</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The <filename>z</filename> component of the vector</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<indexterm startref="idx.command.types.vector" class="endofrange"></indexterm>
+	
+	</section>
+	
+	<indexterm startref="idx.variables.types" class="endofrange"></indexterm>
+
+</section>
