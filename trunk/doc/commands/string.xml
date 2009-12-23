@@ -1,168 +1,181 @@
-Manipulation and conversion of variables.
+<section id="commands.groups.string"><title>String Commands</title>
+	
+	<para>Manipulation and conversion of variables.
+	
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para>((Variables)) for information on using variables in Aten.</para>
+			</listitem>
+			<listitem>
+				<para>((Paths and Subvariables)) for lists of properties available in reference variable types.^</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.afterstr"><title>afterstr</title>
+		<indexterm><primary>commands</primary><secondary>afterstr</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> string afterstr ( string ''source'', string ''search'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Return the part of the ''source'' string that comes after the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
+		
+		<para>For example:</para>
+		<synopsis>
+			string fullname = &quot;BobBobbinson&quot;;
+			string firstname = afterstr(name, &quot;Bob&quot;);
+		</synopsis>
+		<para>sets the variable ''firstname'' to the value 'Bobbinson'.
+		<synopsis>
+			string text1, text2;
+			text1 = &quot;No taxes on axes&quot;;
+			text2 = afterstr(text1, &quot;x&quot;);
+		</synopsis>
+		<para>results in ''text2'' having a value of 'es on axes'.
+	
+	</section>
+	
+	<section id="command.ref.atof"><title>atof</title>
+		<indexterm><primary>commands</primary><secondary>atof</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double atof ( string ''text'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Converts the supplied ''text'' into its floating point (double) representation. Equivalent to the standard C routine 'atof'.
+		
+		<para>For example:</para>
+		<synopsis>
+			double x = atof(&quot;1.099d&quot;);
+		</synopsis>
+		<para>would set ''x'' to the value '1.099'.
+		
+	</section>
+	
+	<section id="command.ref.atoi"><title>atoi</title>
+		<indexterm><primary>commands</primary><secondary>atoi</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> int atoi ( string ''text'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Converts the supplied ''text'' into its integer representation. Equivalent to the standard C routine 'atoi'.
+		
+		<para>For example:</para>
+		<synopsis>
+			int i = atoi(&quot;000023&quot;);
+		</synopsis>
+		<para>would set ''i'' to the value '23'.
+	
+	</section>
+	
+	<section id="command.ref.beforestr"><title>beforestr</title>
+		<indexterm><primary>commands</primary><secondary>beforestr</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> string beforestr ( string ''source'', string ''search'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Return the part of the ''source'' string that comes before the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
+		
+		<para>For example:</para>
+		<synopsis>
+			string source, target;
+			source = &quot;Engelbert&quot;;
+			target = beforestr(source, &quot;e&quot;);
+		</synopsis>
+		<para>places the text &quot;Eng&quot; in the variable ''target''.
+		<synopsis>
+			string text1 = &quot;No taxes on axes&quot;, text2;
+			text2 = beforestr(text1, &quot; ax&quot;);
+		</synopsis>
+		<para>places the text &quot;No taxes on&quot; in the variable ''text2''.</para>
+	
+	</section>
+	
+	<section id="command.ref.contains"><title>contains</title>
+		<indexterm><primary>commands</primary><secondary>contains</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> int contains ( string ''source'', string ''search'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the number of times the ''search'' string is found in the ''source'' string. The function counts only non-overlapping occurrences of ''search''.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string poem = &quot;six sixes are thirty-six&quot;;
+			int count = contains(poem, &quot;six&quot;);
+		</synopsis>
+		<para>sets ''count'' to '3'.</para>
+	
+	</section>
+	
+	<section id="command.ref.ftoa"><title>ftoa</title>
+		<indexterm><primary>commands</primary><secondary>ftoa</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> string ftoa ( double ''d'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Converts the supplied double ''d'' into a string representation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string num = ftoa(100.001);
+		</synopsis>
+		<para>would set ''num'' to the value &quot;100.001&quot;.</para>
+		
+	</section>
+	
+	<section id="command.ref.itoa"><title>itoa</title>
+		<indexterm><primary>commands</primary><secondary>itoa</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> string itoa ( int ''i'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Converts the supplied integer ''i'' into a string representation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string num = itoa(54);
+		</synopsis>
+		<para>would set ''num'' to the value &quot;54&quot;.</para>
+		
+	</section>
+	
+	<section id="command.ref.stripchars"><title>stripchars</title>
+		<indexterm><primary>commands</primary><secondary>stripchars</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> string stripchars ( string ''source'', string ''chars'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Strip the supplied character(s) from the ''source'' string, returning the result.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string abc = stripchars(&quot;Oodles of noodles&quot;, &quot;o&quot;);
+		</synopsis>
+		<para>places the text &quot;Odles f ndles&quot; in the variable ''abc''.</para>
+		<synopsis>
+			string abc;
+			abc = &quot;Oodles of noodles&quot;;
+			abc = stripchars(abc, &quot;aeiou&quot;);
+		</synopsis>
+		<para>strips all vowels from the input string, placing the text &quot;Odls f ndls&quot; in the variable ''abc''.</para>
 
-<note><title>See also:</title>
-	<itemizedlist mark='opencircle'>
-		<listitem>
-			<para>((Variables)) for information on using variables in Aten.</para>
-		</listitem>
-		<listitem>
-			<para>((Paths and Subvariables)) for lists of properties available in reference variable types.^</para>
-		</listitem>
-
+	</section>
+		
 </section>
-
-<section id="command.ref.afterstr"><title>afterstr</title>
-	<indexterm><primary>commands</primary><secondary>afterstr</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> string afterstr ( string ''source'', string ''search'' )</para>
-		</listitem>
-Return the part of the ''source'' string that comes after the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
-
-<para>For example:</para>
-<synopsis>
-string fullname = &quot;BobBobbinson&quot;;
-string firstname = afterstr(name, &quot;Bob&quot;);
-</synopsis>
-sets the variable ''firstname'' to the value 'Bobbinson'.
-<synopsis>
-string text1, text2;
-text1 = &quot;No taxes on axes&quot;;
-text2 = afterstr(text1, &quot;x&quot;);
-</synopsis>
-results in ''text2'' having a value of 'es on axes'.
-
-</section>
-
-<section id="command.ref.atof"><title>atof</title>
-	<indexterm><primary>commands</primary><secondary>atof</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> double atof ( string ''text'' )</para>
-		</listitem>
-Converts the supplied ''text'' into its floating point (double) representation. Equivalent to the standard C routine 'atof'.
-
-<para>For example:</para>
-<synopsis>
-double x = atof(&quot;1.099d&quot;);
-</synopsis>
-would set ''x'' to the value '1.099'.
-
-</section>
-
-<section id="command.ref.atoi"><title>atoi</title>
-	<indexterm><primary>commands</primary><secondary>atoi</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> int atoi ( string ''text'' )</para>
-		</listitem>
-Converts the supplied ''text'' into its integer representation. Equivalent to the standard C routine 'atoi'.
-
-<para>For example:</para>
-<synopsis>
-int i = atoi(&quot;000023&quot;);
-</synopsis>
-would set ''i'' to the value '23'.
-
-</section>
-
-<section id="command.ref.beforestr"><title>beforestr</title>
-	<indexterm><primary>commands</primary><secondary>beforestr</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> string beforestr ( string ''source'', string ''search'' )</para>
-		</listitem>
-Return the part of the ''source'' string that comes before the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
-
-<para>For example:</para>
-<synopsis>
-string source, target;
-source = &quot;Engelbert&quot;;
-target = beforestr(source, &quot;e&quot;);
-</synopsis>
-places the text &quot;Eng&quot; in the variable ''target''.
-<synopsis>
-string text1 = &quot;No taxes on axes&quot;, text2;
-text2 = beforestr(text1, &quot; ax&quot;);
-
-</synopsis>
-places the text &quot;No taxes on&quot; in the variable ''text2''.
-
-</section>
-
-<section id="command.ref.contains"><title>contains</title>
-	<indexterm><primary>commands</primary><secondary>contains</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> int contains ( string ''source'', string ''search'' )</para>
-		</listitem>
-Returns the number of times the ''search'' string is found in the ''source'' string. The function counts only non-overlapping occurrences of ''search''.
-
-<para>For example:</para>
-<synopsis>
-string poem = &quot;six sixes are thirty-six&quot;;
-int count = contains(poem, &quot;six&quot;);
-</synopsis>
-sets ''count'' to '3'.
-
-</section>
-
-<section id="command.ref.ftoa"><title>ftoa</title>
-	<indexterm><primary>commands</primary><secondary>ftoa</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> string ftoa ( double ''d'' )</para>
-		</listitem>
-Converts the supplied double ''d'' into a string representation.
-
-<para>For example:</para>
-<synopsis>
-string num = ftoa(100.001);
-</synopsis>
-would set ''num'' to the value &quot;100.001&quot;.
-
-</section>
-
-<section id="command.ref.itoa"><title>itoa</title>
-	<indexterm><primary>commands</primary><secondary>itoa</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> string itoa ( int ''i'' )</para>
-		</listitem>
-Converts the supplied integer ''i'' into a string representation.
-
-<para>For example:</para>
-<synopsis>
-string num = itoa(54);
-</synopsis>
-would set ''num'' to the value &quot;54&quot;.
-
-</section>
-
-<section id="command.ref.stripchars"><title>stripchars</title>
-	<indexterm><primary>commands</primary><secondary>stripchars</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> string stripchars ( string ''source'', string ''chars'' )</para>
-		</listitem>
-Strip the supplied character(s) from the ''source'' string, returning the result.
-
-<para>For example:</para>
-<synopsis>
-string abc = stripchars(&quot;Oodles of noodles&quot;, &quot;o&quot;);
-</synopsis>
-places the text &quot;Odles f ndles&quot; in the variable ''abc''.
-<synopsis>
-string abc;
-abc = &quot;Oodles of noodles&quot;;
-abc = stripchars(abc, &quot;aeiou&quot;);
-</synopsis>
-strips all vowels from the input string, placing the text &quot;Odls f ndls&quot; in the variable ''abc''.

@@ -1,6 +1,6 @@
-<section id="commands.groups.image"><title>Image Commands</title>
+<section id="commands.groups.minimiser"><title>Minimiser Commands</title>
 	
-	<para>Perform energy minimisation on models.
+	<para>Perform energy minimisation on models.</para>
 	
 	<section id="command.ref.cgminimise"><title>cgminimise</title>
 		<indexterm><primary>commands</primary><secondary>cgminimise</secondary></indexterm>
@@ -10,13 +10,13 @@
 				<para> cgminimise ( int ''maxsteps'' )</para>
 			</listitem>
 		</itemizedlist>
-		Geometry optimises the current model using the conjugate gradient method.
+		<para>Geometry optimises the current model using the conjugate gradient method.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			cgminimise(20);
 		</synopsis>
-		runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.
+		<para>runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.</para>
 		
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
@@ -36,13 +36,13 @@
 				<para> converge ( double ''econv'', double ''fconv'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.
+		<para>Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			converge(1e-6, 1e-4);
 		</synopsis>
-		sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.
+		<para>sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.</para>
 	
 	</section>
 	
@@ -54,13 +54,13 @@
 				<para> linetol ( double ''tolerance'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the tolerance of the line minimiser.
+		<para>Sets the tolerance of the line minimiser.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			linetol(1e-5);
 		</synopsis>
-		sets the line tolerance to 1.0E-5.
+		<para>sets the line tolerance to 1.0E-5.</para>
 
 	</section>
 	
@@ -72,13 +72,13 @@
 				<para> mcminimise ( int ''maxsteps'' )</para>
 			</listitem>
 		</itemizedlist>
-		Optimises the current model using a molecular Monte Carlo minimisation method.
+		<para>Optimises the current model using a molecular Monte Carlo minimisation method.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			mcminimise(20);
 		</synopsis>
-		runs a geometry optimisation for a maximum of 20 cycles.
+		<para>runs a geometry optimisation for a maximum of 20 cycles.</para>
 		
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
@@ -98,13 +98,13 @@
 				<para> sdminimise ( int ''maxsteps'' )</para>
 			</listitem>
 		</itemizedlist>
-		Optimises the current model using the Steepest Descent method.
+		<para>Optimises the current model using the Steepest Descent method.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			sdminimise(100);
 		</synopsis>
-		minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.
+		<para>minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.</para>
 		
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>

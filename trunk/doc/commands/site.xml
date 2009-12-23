@@ -1,76 +1,82 @@
-Describe sites within molecules for use in analysis.
+<section id="commands.groups.site"><title>Site Commands</title>
+	
+	<para>Describe sites within molecules for use in analysis.</para>
 
-''Note: These commands are outdated and may be removed completely in a future version.''
-
+	<para><emphasis>Note: These commands are outdated and may be removed completely in a future version.</emphasis></para>
+	
+	<section id="command.ref.getsite"><title>getsite</title>
+		<indexterm><primary>commands</primary><secondary>getsite</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> getsite ( string ''name'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Selects (makes current) the site referenced by ''name''. If the site cannot be found an error is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			getsite(&quot;carb1&quot;);
+		</synopsis>
+		<para>makes the site 'carb1' the current site.</para>
+	
+	</section>
+	
+	<section id="command.ref.listsites"><title>listsites</title>
+		<indexterm><primary>commands</primary><secondary>listsites</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> listsites ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Prints the list of sites defined for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			listsites();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.newsite"><title>newsite</title>
+		<indexterm><primary>commands</primary><secondary>newsite</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> newsite ( string ''name'', pattern ''pattern'', string &quot;''atomlist''&quot; )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Creates a new site ''name'' for the current model, based on the molecule of ''pattern'', and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			newsite(&quot;watercentre&quot;, &quot;h2o&quot;);
+		</synopsis>
+		<para>adds a site called 'watercentre' based on the pattern called 'h2o' and located at the centre of geometry of all atoms.</para>
+		<synopsis>
+			newsite(&quot;oxy&quot;, &quot;methanol&quot;, &quot;5&quot;);
+		</synopsis>
+		<para>adds a site called 'oxy' based on the pattern called 'methanol' and located at the fifth atom in each molecule.</para>
+	
+	</section>
+	
+	<section id="command.ref.siteaxes"><title>siteaxes</title>
+		<indexterm><primary>commands</primary><secondary>siteaxes</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> siteaxes ( string &quot;''x atomlist''&quot;, string &quot;''y atomlist''&quot;</para>
+			</listitem>
+		</itemizedlist>
+		<para>Sets the local ''x'' (first set of atom IDs) and ''y'' (second set of atom IDs) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by 'addsite') and the geometric centre of the list of atoms provided here. The ''y'' axis is orthogonalised with respect to the ''x'' axis and the ''z'' axis constructed from the cross product of the orthogonal ''x'' and ''y'' vectors.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			siteaxes(&quot;1,2&quot;, &quot;6&quot;);
+		</synopsis>
+		<para>sets the ''x'' axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the ''y'' axis definition to be the vector between the site centre and the position of the sixth atom.</para>
+	
+	</section>
+	
 </section>
-
-<section id="command.ref.getsite"><title>getsite</title>
-	<indexterm><primary>commands</primary><secondary>getsite</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> getsite ( string ''name'' )</para>
-		</listitem>
-Selects (makes current) the site referenced by ''name''. If the site cannot be found an error is returned.
-
-<para>For example:</para>
-<synopsis>
-getsite(&quot;carb1&quot;);
-</synopsis>
-makes the site 'carb1' the current site.
-
-</section>
-
-<section id="command.ref.listsites"><title>listsites</title>
-	<indexterm><primary>commands</primary><secondary>listsites</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> listsites ( )</para>
-		</listitem>
-Prints the list of sites defined for the current model.
-
-<para>For example:</para>
-<synopsis>
-listsites();
-</synopsis>
-
-</section>
-
-<section id="command.ref.newsite"><title>newsite</title>
-	<indexterm><primary>commands</primary><secondary>newsite</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> newsite ( string ''name'', pattern ''pattern'', string &quot;''atomlist''&quot; )</para>
-		</listitem>
-Creates a new site ''name'' for the current model, based on the molecule of ''pattern'', and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.
-
-<para>For example:</para>
-<synopsis>
-newsite(&quot;watercentre&quot;, &quot;h2o&quot;);
-</synopsis>
-adds a site called 'watercentre' based on the pattern called 'h2o' and located at the centre of geometry of all atoms.
-
-<synopsis>
-newsite(&quot;oxy&quot;, &quot;methanol&quot;, &quot;5&quot;);
-</synopsis>
-adds a site called 'oxy' based on the pattern called 'methanol' and located at the fifth atom in each molecule.
-
-</section>
-
-<section id="command.ref.siteaxes"><title>siteaxes</title>
-	<indexterm><primary>commands</primary><secondary>siteaxes</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> siteaxes ( string &quot;''x atomlist''&quot;, string &quot;''y atomlist''&quot;</para>
-		</listitem>
-Sets the local ''x'' (first set of atom IDs) and ''y'' (second set of atom IDs) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by 'addsite') and the geometric centre of the list of atoms provided here. The ''y'' axis is orthogonalised with respect to the ''x'' axis and the ''z'' axis constructed from the cross product of the orthogonal ''x'' and ''y'' vectors.
-
-<para>For example:</para>
-<synopsis>
-siteaxes(&quot;1,2&quot;, &quot;6&quot;);
-</synopsis>
-sets the ''x'' axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the ''y'' axis definition to be the vector between the site centre and the position of the sixth atom.
-

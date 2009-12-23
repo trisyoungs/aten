@@ -1,104 +1,113 @@
-Automatically or manually create pattern descriptions for models.
+<section id="commands.groups.pattern"><title>Pattern Commands</title>
+	
+	<para>Automatically or manually create pattern descriptions for models.</para>
 
+	<section id="command.ref.clearpatterns"><title>clearpatterns</title>
+		<indexterm><primary>commands</primary><secondary>clearpatterns</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> clearpatterns ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to 'newpattern'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			clearpatterns();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.createpatterns"><title>createpatterns</title>
+		<indexterm><primary>commands</primary><secondary>createpatterns</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> createpatterns ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Automatically detect and create the pattern description for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			createpatterns();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.getpattern"><title>getpattern</title>
+		<indexterm><primary>commands</primary><secondary>getpattern</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> pattern getpattern ( int|string ''id'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Get the named pattern, or pattern with id specified, make it current, returning its reference.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			pattern p = getpattern(&quot;solid&quot;);
+		</synopsis>
+		<para>sets the pattern named 'solid' in the current model to be the current pattern, setting its reference in the variable ''p''.</para>
+		<synopsis>
+			getpattern(3);
+		</synopsis>
+		<para>sets the third pattern in the current model as the current pattern.</para>
+		
+	</section>
+	
+	<section id="command.ref.listpatterns"><title>listpatterns</title>
+		<indexterm><primary>commands</primary><secondary>listpatterns</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> listpatterns ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>List the patterns in the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			listpatterns();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.newpattern"><title>newpattern</title>
+		<indexterm><primary>commands</primary><secondary>newpattern</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> pattern newpattern ( string ''name'', int ''nmols'', int ''natoms'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Add a new pattern node to the current model, spanning ''nmols'' molecules of ''natoms'' atoms each, and called ''name''. A reference to the new pattern is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			pattern p = newpattern(&quot;water&quot;, 100, 3);
+		</synopsis>
+		<para>creates a new pattern description of 100 molecules of 3 atoms each named 'water' (i.e. 100 water molecules) in the current model, and returns its reference</para>
+	
+	</section>
+	
+	<section id="command.ref.printpatterns"><title>printpatterns</title>
+		<indexterm><primary>commands</primary><secondary>printpatterns</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> printpatterns ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Prints out the current pattern description of the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printpatterns();
+		</synopsis>
+
+	</section>
+	
 </section>
-
-<section id="command.ref.clearpatterns"><title>clearpatterns</title>
-	<indexterm><primary>commands</primary><secondary>clearpatterns</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> clearpatterns ( )</para>
-		</listitem>
-Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to 'newpattern'.
-
-<para>For example:</para>
-<synopsis>
-clearpatterns();
-</synopsis>
-
-</section>
-
-<section id="command.ref.createpatterns"><title>createpatterns</title>
-	<indexterm><primary>commands</primary><secondary>createpatterns</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> createpatterns ( )</para>
-		</listitem>
-Automatically detect and create the pattern description for the current model.
-
-<para>For example:</para>
-<synopsis>
-createpatterns();
-</synopsis>
-
-</section>
-
-<section id="command.ref.getpattern"><title>getpattern</title>
-	<indexterm><primary>commands</primary><secondary>getpattern</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> pattern getpattern ( int|string ''id'' )</para>
-		</listitem>
-Get the named pattern, or pattern with id specified, make it current, returning its reference.
-
-<para>For example:</para>
-<synopsis>
-pattern p = getpattern(&quot;solid&quot;);
-</synopsis>
-sets the pattern named 'solid' in the current model to be the current pattern, setting its reference in the variable ''p''.
-<synopsis>
-getpattern(3);
-</synopsis>
-sets the third pattern in the current model as the current pattern.
-
-</section>
-
-<section id="command.ref.listpatterns"><title>listpatterns</title>
-	<indexterm><primary>commands</primary><secondary>listpatterns</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> listpatterns ( )</para>
-		</listitem>
-List the patterns in the current model.
-
-<para>For example:</para>
-<synopsis>
-listpatterns();
-</synopsis>
-
-</section>
-
-<section id="command.ref.newpattern"><title>newpattern</title>
-	<indexterm><primary>commands</primary><secondary>newpattern</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> pattern newpattern ( string ''name'', int ''nmols'', int ''natoms'' )</para>
-		</listitem>
-Add a new pattern node to the current model, spanning ''nmols'' molecules of ''natoms'' atoms each, and called ''name''. A reference to the new pattern is returned.
-
-<para>For example:</para>
-<synopsis>
-pattern p = newpattern(&quot;water&quot;, 100, 3);
-</synopsis>
-creates a new pattern description of 100 molecules of 3 atoms each named 'water' (i.e. 100 water molecules) in the current model, and returns its reference
-
-</section>
-
-<section id="command.ref.printpatterns"><title>printpatterns</title>
-	<indexterm><primary>commands</primary><secondary>printpatterns</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> printpatterns ( )</para>
-		</listitem>
-Prints out the current pattern description of the current model.
-
-<para>For example:</para>
-<synopsis>
-printpatterns();
-</synopsis>
-
