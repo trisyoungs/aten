@@ -7,20 +7,20 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> adjustcell ( string ''parameter'', double ''value'' )</para>
+				<para> adjustcell ( string parameter, double value )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Adjust a single unit cell parameter (one of ''a'', ''b'', ''c'', ''alpha'', ''beta'', ''gamma'', or one of the matrix elements ''ax'', ''ay'', ''az'', ..., ''cz'') by the given ''value''. This does not set the specified ''parameter'' to the given ''value''; instead the supplied ''value'' is added to the existing value of the parameter.</para>
+		<para>Adjust a single unit cell parameter (one of 'a', 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') by the given 'value'. This does not set the specified 'parameter' to the given 'value'; instead the supplied 'value' is added to the existing value of the parameter.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			adjustcell(&quot;alpha&quot;,5.0);
 		</synopsis>
-		<para>increases the cell angle ''alpha'' by 5 degrees.</para>
+		<para>increases the cell angle 'alpha' by 5 degrees.</para>
 		<synopsis>
 			adjustcell(&quot;c&quot;,-10.0);
 		</synopsis>
-		<para>decreases the cell length ''c'' by 10 Angstroms.</para>
+		<para>decreases the cell length 'c' by 10 Angstroms.</para>
 	
 	</section>
 	
@@ -29,7 +29,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> cell ( double ''a'', double ''b'', double ''c'', double ''alpha'', double ''beta'', double ''gamma'' )</para>
+				<para> cell ( double a, double b, double c, double alpha, double beta, double gamma )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set cell lengths and angles of current model. This command will modify an existing cell or add a new cell to a model currently without a unit cell specification.</para>
@@ -47,7 +47,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> cellaxes ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'' )</para>
+				<para> cellaxes ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set cell axes of current model. This command will modify an existing cell or add a new cell to a model currently without a unit cell specification.</para>
@@ -99,7 +99,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> millercut ( int ''h'', int ''k'', int ''l'', bool ''inside'' = FALSE )</para>
+				<para> millercut ( int h, int k, int l, bool inside = FALSE )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Remove all atoms from the unit cell that lay 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is given as TRUE, then atoms 'inside' the bounding Miller plane(s) are selected.</para>
@@ -151,10 +151,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> replicate ( double ''negx'', double ''negy'', double ''negz'', double ''posx'', double ''posy'', double ''posz'' )</para>
+				<para> replicate ( double negx, double negy, double negz, double posx, double posy, double posz )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The number of cells to replicate in each positive and negative direction are specified as ''additional'' cells beyond the original. So:</para>
+		<para>Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The number of cells to replicate in each positive and negative direction are specified as 'additional' cells beyond the original. So:</para>
 		
 		<synopsis>
 			replicate(0, 0, 0, 0, 0, 0);
@@ -163,7 +163,7 @@
 		<synopsis>	
 		replicate(-5, 0, 0, 5, 0, 0);
 		</synopsis>
-		<para>will result in a supercell that consists of eleven copies of the original cell along the ''x'' axis direction. Similarly,</para>
+		<para>will result in a supercell that consists of eleven copies of the original cell along the 'x' axis direction. Similarly,</para>
 		<synopsis>
 			replicate(0, 0, 0, 4, 4, 4);
 			replicate(-2, -2, -2, 2, 2, 2);
@@ -194,16 +194,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> scale ( double ''x'', double ''y'', double ''z'', bool ''calcenergy'' = FALSE )</para>
+				<para> scale ( double x, double y, double z, bool calcenergy = FALSE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Scale unit cell and its constituent atoms by the scale factors ''x'', ''y'', and ''z''. The optional ''calcenergy'' parameter (r1003) calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and its constituent atoms by the scale factors ''x'', ''y'', and ''z''. The optional ''calcenergy'' parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			scale(1.0, 2.0, 1.0);
 		</synopsis>
-		<para>doubles the length of the ''y''-axis of the system. ''x'' and ''z'' axes remain unchanged.</para>
+		<para>doubles the length of the y-axis of the system. x- and z-axes remain unchanged.</para>
 		
 	</section>
 	
@@ -212,10 +212,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> scalemolecules ( double, ''x'', double ''y'', double ''z'', bool ''calcenergy'' = FALSE )</para>
+				<para> scalemolecules ( double, x, double y, double z, bool calcenergy = FALSE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors ''x'', ''y'', and ''z''. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional ''calcenergy'' parameter (r1003) calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors ''x'', ''y'', and ''z''. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional ''calcenergy'' parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -230,20 +230,20 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setcell ( string ''parameter'', double ''value'' )</para>
+				<para> setcell ( string parameter, double value )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set a single unit cell parameter one of ''a'', ''b'', ''c'', ''alpha'', ''beta'', ''gamma'', or one of the matrix elements ''ax'', ''ay'', ''az'', ..., ''cz'') to the given ''value''.</para>
+		<para>Set a single unit cell parameter one of 'a'/, 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') to the given ''value''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			setcell(&quot;beta&quot;, 101.0);
 		</synopsis>
-		<para>sets the cell angle ''beta'' to 101 degrees.</para>
+		<para>sets the cell angle 'beta' to 101 degrees.</para>
 		<synopsis>
 			setcell(&quot;a&quot;, 15.5);
 		</synopsis>
-		<para>sets the cell length ''a'' to 15.5 Angstrom.</para>
+		<para>sets the cell length 'a' to 15.5 Angstrom.</para>
 		
 	</section>
 	
@@ -252,7 +252,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> spacegroup ( int|string ''sg'' )</para>
+				<para> spacegroup ( int|string sg )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the spacegroup of the model, used for crystal packing.</para>

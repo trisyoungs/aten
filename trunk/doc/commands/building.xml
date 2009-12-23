@@ -10,7 +10,7 @@
 				<para> addhydrogen ( )</para>
 			</listitem>
 			<listitem>
-				<para> addhydrogen ( int|atom ''i'' )</para>
+				<para> addhydrogen ( int|atom i )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Satisfy the valencies of all atoms in the current model by adding hydrogens to heavy atoms. If an integer id or atom reference is provided as the argument then the addition of hydrogen is restricted to the specified atom.</para>
@@ -51,16 +51,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> atom chain ( int|string ''el'' )</para>
+				<para> atom chain ( int|string el )</para>
 			</listitem>
 			<listitem>
-				<para> atom chain ( int|string ''el'', int|string ''bondtype'' )</para>
+				<para> atom chain ( int|string el, int|string bondtype )</para>
 			</listitem>
 			<listitem>
-				<para> atom chain ( int|string ''el'', double ''x'', double ''y'', double ''z'' )</para>
+				<para> atom chain ( int|string el, double x, double y, double z )</para>
 			</listitem>
 			<listitem>
-				<para> atom chain ( int|string ''el'', double ''x'', double ''y'', double ''z'', int|string ''bondtype'' )</para>
+				<para> atom chain ( int|string el, double x, double y, double z, int|string bondtype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new atom of element ''el'' at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type ''bondtype'' if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.</para>
@@ -103,7 +103,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> locate ( double ''dx'', double ''dy'', double ''dz'' )</para>
+				<para> locate ( double dx, double dy, double dz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the pen position to the coordinates specified (in Angstroms).</para>
@@ -121,7 +121,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> move ( double ''dx'', double ''dy'', double ''dz'' )</para>
+				<para> move ( double dx, double dy, double dz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Moves the pen position by the amounts specified (in Angstroms).</para>
@@ -130,7 +130,7 @@
 		<synopsis>
 			move(1.0, 1.0, 0.0);
 		</synopsis>
-		<para>moves the pen +1 Angstrom in both the ''x'' and ''y'' directions.</para>
+		<para>moves the pen +1 Angstrom in both the x and y directions.</para>
 	
 	</section>
 	
@@ -139,7 +139,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> atom newatom ( int|string ''el'', double ''x'' = 0.0, double ''y'' = 0.0, double ''z'' = 0.0, double ''vx'' = 0.0, double ''vy'' = 0.0, double ''vz'' = 0.0, double ''fx'' = 0.0, double ''fy'' = 0.0, double ''fz'' = 0.0, )</para>
+				<para> atom newatom ( int|string el, double x = 0.0, double y = 0.0, double z = 0.0, double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0, )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new atom of element ''el'' at the current pen position or, if provided, the specified coordinates (and optional velocities or velocities and forces). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
@@ -161,7 +161,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> atom newatomfrac ( int|string ''el'', double ''x'', double ''y'', double ''z'',  double ''vx'' = 0.0, double ''vy'' = 0.0, double ''vz'' = 0.0, double ''fx'' = 0.0, double ''fy'' = 0.0, double ''fz'' = 0.0 )</para>
+				<para> atom newatomfrac ( int|string el, double x, double y, double z,  double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0 )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new atom of element ''el'' at the specified fractional coordinates (velocities and forces are optional). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
@@ -196,16 +196,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> rotx ( double ''angle'' )</para>
+				<para> rotx ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the ''x'' axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the x axis by ''angle'' degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			rotx(90.0);
 		</synopsis>
-		<para>rotates around the ''x'' axis by 90 degrees.</para>
+		<para>rotates around the x axis by 90 degrees.</para>
 	
 	</section>
 	
@@ -214,16 +214,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> roty ( double ''angle'' )</para>
+				<para> roty ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the ''y'' axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the y axis by ''angle'' degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			roty(45.0);
 		</synopsis>
-		<para>rotates around the ''y'' axis by 45 degrees.</para>
+		<para>rotates around the y axis by 45 degrees.</para>
 	
 	</section>
 	
@@ -232,16 +232,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> rotz ( double ''angle'' )</para>
+				<para> rotz ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the ''z'' axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the z axis by ''angle'' degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			rotz(109.5);
 		</synopsis>
-		<para>rotates around the ''z'' axis by 109.5 degrees.</para>
+		<para>rotates around the z axis by 109.5 degrees.</para>
 	
 	</section>
 	
@@ -287,7 +287,7 @@
 				<para> shiftdown ( )</para>
 			</listitem>
 			<listitem>
-				<para> shiftdown ( int ''n'' )</para>
+				<para> shiftdown ( int n )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Move the current atom selection one (or ''n'') places down in the atom list (i.e. towards higher IDs).</para>
@@ -308,7 +308,7 @@
 				<para> shiftup ( )</para>
 			</listitem>
 			<listitem>
-				<para> shiftup ( int ''n'' )</para>
+				<para> shiftup ( int n )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Move the current atom selection one (or ''n'') places up in the atom list (i.e. towards lower IDs).</para>
@@ -326,7 +326,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> transmute ( int|string ''el'' )</para>
+				<para> transmute ( int|string el )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Transmute the current atom selection to the specified element.</para>
