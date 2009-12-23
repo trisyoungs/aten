@@ -6,7 +6,6 @@
 	<!ENTITY cli SYSTEM "gettingstarted/cli.xml">
 	<!ENTITY gui SYSTEM "gettingstarted/gui.xml">
 	<!--Import / Export-->
-	<!ENTITY compatnotes SYSTEM "importexport/compatibility.xml">
 	<!ENTITY supportedformats SYSTEM "importexport/supportedformats.xml">
 	<!ENTITY filters SYSTEM "importexport/filters.xml">
 	<!ENTITY trajectories SYSTEM "importexport/trajectories.xml">
@@ -28,6 +27,23 @@
 	<!ENTITY commandforce SYSTEM "commands/force.xml">
 	<!ENTITY commandglyph SYSTEM "commands/glyph.xml">
 	<!ENTITY commandimage SYSTEM "commands/image.xml">
+	<!ENTITY commandlabel SYSTEM "commands/label.xml">
+	<!ENTITY commandmath SYSTEM "commands/math.xml">
+	<!ENTITY commandmeasure SYSTEM "commands/measure.xml">
+	<!ENTITY commandmessaging SYSTEM "commands/messaging.xml">
+	<!ENTITY commandminimiser SYSTEM "commands/minimiser.xml">
+	<!ENTITY commandmodel SYSTEM "commands/model.xml">
+	<!ENTITY commandmontecarlo SYSTEM "commands/montecarlo.xml">
+	<!ENTITY commandpattern SYSTEM "commands/pattern.xml">
+	<!ENTITY commandreadwrite SYSTEM "commands/readwrite.xml">
+	<!ENTITY commandscript SYSTEM "commands/script.xml">
+	<!ENTITY commandselect SYSTEM "commands/select.xml">
+	<!ENTITY commandsite SYSTEM "commands/site.xml">
+	<!ENTITY commandstring SYSTEM "commands/string.xml">
+	<!ENTITY commandsystem SYSTEM "commands/system.xml">
+	<!ENTITY commandtrajectory SYSTEM "commands/trajectory.xml">
+	<!ENTITY commandtransform SYSTEM "commands/transform.xml">
+	<!ENTITY commandview SYSTEM "commands/view.xml">
 ]>
 
 <book>
@@ -94,9 +110,6 @@
 	<!-- COMMANDS -->
 	<chapter id="command"><title>Command Language</title>
 		&commandoverview;
-<!-- 	* ((Command Language)) - Language basics -->
-<!-- 	* ((Command Reference)) - Descriptions of every script command available in Aten -->
-<!-- 	** Skip to section: ((Commands: Atoms|Atoms))       ((Commands: Bonding|Bonding))   ((Commands: Building|Building))         ((Commands: Cell|Cell))         ((Commands: Charges|Charges))   ((Commands: Colourscales|Colourscales)) ((Commands: Disordered|Disordered))     ((Commands: Energies|Energies))       ((Commands: Edit|Edit))     ((Commands: Flow|Flow))         ((Commands: Forcefields|Forcefields))   ((Commands: Forces|Forces))     ((Commands: Glyphs|Glyphs))     ((Commands: Grids|Grids))       ((Commands: Image|Image))       ((Commands: Labeling|Labeling))     ((Commands: Math|Math))         ((Commands: Measuring|Measuring))       ((Commands: Messaging|Messaging))       ((Commands: Minimiser|Minimiser))       ((Commands: Models|Models))     ((Commands: Monte Carlo|Monte Carlo))        ((Commands: Pattern|Pattern))   ((Commands: Patterns|Patterns))         ((Commands: Prefs|Prefs))       ((Commands: Read Write|Read Write))   ((Commands: Scripts|Scripts))   ((Commands: Selection|Selection))       ((Commands: Sites|Sites))     ((Commands: String|String))       ((Commands: System|System))     ((Commands: Trajectory|Trajectory))     ((Commands: Transformation|Transformation))       ((Commands: View|View)) -->
 <!-- 	* ((Command Index)) - Index of all available commands -->
 <!-- 	* ((Variables)) - Variable types -->
 <!-- 	* ((Paths and Subvariables)) - Subvariable access -->
@@ -106,7 +119,7 @@
 			&commandbond;
 			&commandbuilding;
 			&commandcell;
-			&commandcharges;
+			&commandcharge;
 			&commandcolourscale;
 			&commanddisordered;
 			&commandedit;
@@ -116,6 +129,23 @@
 			&commandforce;
 			&commandglyph;
 			&commandimage;
+			&commandlabel;
+			&commandmath;
+			&commandmeasure;
+			&commandmessaging;
+			&commandminimiser;
+			&commandmodel;
+			&commandmontecarlo;
+			&commandpattern;
+			&commandreadwrite;
+			&commandscript;
+			&commandselect;
+			&commandsite;
+			&commandstring;
+			&commandsystem;
+			&commandtrajectory;
+			&commandtransform;
+			&commandview;
 		</section>
 	</chapter>
 </book>

@@ -1,6 +1,6 @@
-<section id="commands.groups.image"><title>Image Commands</title>
+<section id="commands.group.model"><title>Model Commands</title>
 	
-	<para>Model creation and management.
+	<para>Model creation and management.</para>
 
 	<section id="command.ref.createatoms"><title>createatoms</title>
 		<indexterm><primary>commands</primary><secondary>createatoms</secondary></indexterm>
@@ -10,7 +10,7 @@
 				<para> createatoms ( )</para>
 			</listitem>
 		</itemizedlist>
-		Can be run when importing trajectory frames. Creates enough atoms in the current trajectory frame to match the parent model.
+		<para>Can be run when importing trajectory frames. Creates enough atoms in the current trajectory frame to match the parent model.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -37,24 +37,24 @@
 			</listitem>
 		</itemizedlist>
 		
-		Returns a reference to the current model (if no argument is given) or selects the supplied model and makes it the current model. The model may be selected either by name, by its integer position in the list of loaded models (i.e. 1 to N), or a model-type variable containing a valid model reference may be passed.
+		<para>Returns a reference to the current model (if no argument is given) or selects the supplied model and makes it the current model. The model may be selected either by name, by its integer position in the list of loaded models (i.e. 1 to N), or a model-type variable containing a valid model reference may be passed.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			currentmodel(4);
 		</synopsis>
-		selects the fourth loaded model.
+		<para>selects the fourth loaded model.</para>
 		<synopsis>
 			currentmodel(&quot;Protein coordinates&quot;)
 		</synopsis>
-		selects the model named &quot;Protein coordinates&quot; (provided it exists)
+		<para>selects the model named &quot;Protein coordinates&quot; (provided it exists)</para>
 		<synopsis>
 			model m1, m2;
 			m1 = newmodel(&quot;Test model 1&quot;);
 			m2 = newmodel(&quot;Test model 2&quot;);
 			currentmodel(m1);
 		</synopsis>
-		creates two models, storing references to each, and then re-selects the first one and makes it the current target again.
+		<para>creates two models, storing references to each, and then re-selects the first one and makes it the current target again.</para>
 		
 	</section>
 	
@@ -66,7 +66,7 @@
 				<para> model firstmodel ( )</para>
 			</listitem>
 		</itemizedlist>
-		Makes the first loaded / created model the current model, and returns a reference to it.
+		<para>Makes the first loaded / created model the current model, and returns a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -83,7 +83,7 @@
 				<para> info ( )</para>
 			</listitem>
 		</itemizedlist>
-		Print out information on the current model and its atoms.
+		<para>Print out information on the current model and its atoms.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -100,7 +100,7 @@
 				<para> finalisemodel ( )</para>
 			</listitem>
 		</itemizedlist>
-		Performs various internal tasks after a model has been fully created within a filter. Should be called after all operations on each created model have finished.
+		<para>Performs various internal tasks after a model has been fully created within a filter. Should be called after all operations on each created model have finished.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -123,18 +123,18 @@
 				<para> model getmodel ( model ''m'' )</para>
 			</listitem>
 		</itemizedlist>
-		Makes the named model, or the model id specified, or the referenced model the current model, returning a reference to that model. Equivalent to the ((Commands: Models|#currentmodel|currentmodel)) command, except that an argument specifying the new model <emphasis>must</emphasis> be provided.
+		<para>Makes the named model, or the model id specified, or the referenced model the current model, returning a reference to that model. Equivalent to the ((Commands: Models|#currentmodel|currentmodel)) command, except that an argument specifying the new model <emphasis>must</emphasis> be provided.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			getmodel(&quot;alpha2&quot;);
 		</synopsis>
-		sets the model named 'alpha2' as the current model.
+		<para>sets the model named 'alpha2' as the current model.</para>
 		
 		<synopsis>
 			model m = getmodel(5);
 		</synopsis>
-		sets the fifth loaded model as the current model, and stores a reference to it in the variable ''m''.
+		<para>sets the fifth loaded model as the current model, and stores a reference to it in the variable ''m''.</para>
 	
 	</section>
 	
@@ -149,7 +149,7 @@
 				<para> ''Introduced in v1.1 (r754)''</para>
 			</listitem>
 		</itemizedlist>
-		Makes the last loaded / created model the current model, and returns a reference to it.
+		<para>Makes the last loaded / created model the current model, and returns a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -166,7 +166,7 @@
 				<para> listmodels ( )</para>
 			</listitem>
 		</itemizedlist>
-		Lists all models currently available.
+		<para>Lists all models currently available.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -186,13 +186,13 @@
 				<para> int loadmodel ( string ''filename'', string ''newname'' )</para>
 			</listitem>
 		</itemizedlist>
-		Load model(s) from the ''filename'' provided, changing the name of the the (last loaded) model to ''newname'' if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.
+		<para>Load model(s) from the ''filename'' provided, changing the name of the the (last loaded) model to ''newname'' if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			loadmodel(&quot;/home/foo/coords/test.xyz&quot;, &quot;mymodel&quot;);
 		</synopsis>
-		loads a model called 'test.xyz' and gives it the new name 'mymodel'.
+		<para>loads a model called 'test.xyz' and gives it the new name 'mymodel'.</para>
 		
 	</section>
 	
@@ -204,7 +204,7 @@
 				<para> modeltemplate ( )</para>
 			</listitem>
 		</itemizedlist>
-		Can only be run when importing trajectory frames. Templates the atoms in the trajectory's parent model by creating an equal number of atoms in the target trajectory frame, and copying the element and style data. Positions, forces, and velocities are not copied from the parent model atoms.
+		<para>Can only be run when importing trajectory frames. Templates the atoms in the trajectory's parent model by creating an equal number of atoms in the target trajectory frame, and copying the element and style data. Positions, forces, and velocities are not copied from the parent model atoms.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -221,17 +221,17 @@
 				<para> model newmodel ( string ''name'' )</para>
 			</listitem>
 		</itemizedlist>
-		Create a new model called ''name'' which becomes the current model, and return a reference to it.
+		<para>Create a new model called ''name'' which becomes the current model, and return a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			newmodel(&quot;emptymodel&quot;);
 		</synopsis>
-		creates a new, empty model called 'emptymodel' and makes it current.
+		<para>creates a new, empty model called 'emptymodel' and makes it current.</para>
 		<synopsis>
 			model c12 = newmodel(&quot;dodecane&quot;);
 		</synopsis>
-		creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable ''c12''.
+		<para>creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable ''c12''.</para>
 		
 	</section>
 	
@@ -243,7 +243,7 @@
 				<para> model nextmodel ( )</para>
 			</listitem>
 		</itemizedlist>
-		Skips to the next loaded model, makes it current, and returns a reference to it.
+		<para>Skips to the next loaded model, makes it current, and returns a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -260,7 +260,7 @@
 				<para> model prevmodel ( )</para>
 			</listitem>
 		</itemizedlist>
-		Skips to the previous loaded model, makes it current, and returns a reference to it.
+		<para>Skips to the previous loaded model, makes it current, and returns a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -277,13 +277,13 @@
 				<para> int savemodel ( string ''format'', string ''filename'' )</para>
 			</listitem>
 		</itemizedlist>
-		Save the current model in the  ''format'' given (which should correspond to a model export ((Filter)) nickname) to the ''filename'' specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.
+		<para>Save the current model in the  ''format'' given (which should correspond to a model export ((Filter)) nickname) to the ''filename'' specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int success = savemodel(&quot;xyz&quot;, &quot;/home/foo/newcoords/test.config&quot;);
 		</synopsis>
-		saves the current model in xyz' format to the filename given.
+		<para>saves the current model in xyz' format to the filename given.</para>
 	
 	</section>
 	
@@ -295,13 +295,13 @@
 				<para> setname ( string ''name'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the name of the current model.
+		<para>Sets the name of the current model.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			setname(&quot;panther)&quot;;
 		</synopsis>
-		gives the current model the cool-sounding name of 'panther'! Ahem.
+		<para>gives the current model the cool-sounding name of 'panther'! Ahem.</para>
 
 	</section>
 	

@@ -1,56 +1,61 @@
-Commands to load and run scripts.
+<section id="commands.groups.script"><title>Script Commands</title>
+	
+	<para>Commands to load and run scripts.</para>
 
+	<section id="command.ref.listscripts"><title>listscripts</title>
+		<indexterm><primary>commands</primary><secondary>listscripts</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> listscripts ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Lists all loaded scripts.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			listscripts();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.loadscript"><title>loadscript</title>
+		<indexterm><primary>commands</primary><secondary>loadscript</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> loadscript ( string ''filename'' )</para>
+			</listitem>
+			<listitem>
+				<para> loadscript ( string ''filename'', string ''nickname'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Loads a script from the ''filename'' specified, giving it the optional ''nickname''.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			loadscript(&quot;scripts/liquid-water.txt&quot;, &quot;water&quot;);
+		</synopsis>
+		<para>loads the script from 'scripts/liquid-water.txt' and gives it the nickname 'water'.</para>
+	
+	</section>
+	
+	<section id="command.ref.runscript"><title>runscript</title>
+		<indexterm><primary>commands</primary><secondary>runscript</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> runscript ( string ''name'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Executes the specified script.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			runscript(&quot;water&quot;);
+		</synopsis>
+		<para>executes the water script loaded in the previous example.</para>
+	
+	</section>
+	
 </section>
-
-<section id="command.ref.listscripts"><title>listscripts</title>
-	<indexterm><primary>commands</primary><secondary>listscripts</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> listscripts ( )</para>
-		</listitem>
-Lists all loaded scripts.
-
-<para>For example:</para>
-<synopsis>
-listscripts();
-</synopsis>
-
-</section>
-
-<section id="command.ref.loadscript"><title>loadscript</title>
-	<indexterm><primary>commands</primary><secondary>loadscript</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> loadscript ( string ''filename'' )</para>
-		</listitem>
-		<listitem>
-			<para> loadscript ( string ''filename'', string ''nickname'' )</para>
-		</listitem>
-Loads a script from the ''filename'' specified, giving it the optional ''nickname''.
-
-<para>For example:</para>
-<synopsis>
-loadscript(&quot;scripts/liquid-water.txt&quot;, &quot;water&quot;);
-</synopsis>
-loads the script from 'scripts/liquid-water.txt' and gives it the nickname 'water'.
-
-</section>
-
-<section id="command.ref.runscript"><title>runscript</title>
-	<indexterm><primary>commands</primary><secondary>runscript</secondary></indexterm>
-	<para><emphasis>Syntax:</emphasis></para>
-	<itemizedlist>
-		<listitem>
-			<para> runscript ( string ''name'' )</para>
-		</listitem>
-Executes the specified script.
-
-<para>For example:</para>
-<synopsis>
-runscript(&quot;water&quot;);
-</synopsis>
-executes the water script loaded in the previous example.
-
-

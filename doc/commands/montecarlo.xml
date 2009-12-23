@@ -1,6 +1,6 @@
-<section id="commands.groups.image"><title>Image Commands</title>
+<section id="commands.groups.montecarlo"><title>Monte Carlo Commands</title>
 	
-	<para>Change parameters for Monte Carlo-based calculations. Energy values should be given in the current working unit of energy in the program.
+	<para>Change parameters for Monte Carlo-based calculations. Energy values should be given in the current working unit of energy in the program.</para>
 	
 	<section id="command.ref.mcaccept"><title>mcaccept</title>
 		<indexterm><primary>commands</primary><secondary>mcaccept</secondary></indexterm>
@@ -10,17 +10,17 @@
 				<para> mcaccept ( string ''move'', double ''emax'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the energy difference ''emax'' for the movetype ''move'' above which moves will be rejected.
+		<para>Sets the energy difference ''emax'' for the movetype ''move'' above which moves will be rejected.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			mcaccept(&quot;translate&quot;, 0.0);
 		</synopsis>
-		requests that only translation moves that lower the overall energy will be accepted.
+		<para>requests that only translation moves that lower the overall energy will be accepted.</para>
 		<synopsis>
 			mcaccept(&quot;insert&quot;, 200.0);
 		</synopsis>
-		requests that insertion moves will be accepted provided the total energy does not rise more than 200.0 units.
+		<para>requests that insertion moves will be accepted provided the total energy does not rise more than 200.0 units.</para>
 	
 	</section>
 	
@@ -32,17 +32,17 @@
 				<para> mcallow ( string ''move'', bool ''true''|''false'' )</para>
 			</listitem>
 		</itemizedlist>
-		Indicates whether to allow moves of the specified type in Monte Carlo calculations.
+		<para>Indicates whether to allow moves of the specified type in Monte Carlo calculations.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			mcallow(&quot;translate&quot;, FALSE);
 		</synopsis>
-		disallows translation moves in Monte Carlo calculations.
+		<para>disallows translation moves in Monte Carlo calculations.</para>
 		<synopsis>
 			mcallow(&quot;rotate&quot;, &quot;true&quot;);
 		</synopsis>
-		allows rotation moves in Monte Carlo calculations.
+		<para>allows rotation moves in Monte Carlo calculations.</para>
 	
 	</section>
 	
@@ -54,17 +54,17 @@
 				<para> mcmaxstep ( string ''move'', double ''size'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the maximal step size for the move type ''move''.
+		<para>Sets the maximal step size for the move type ''move''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			mcmaxstep(&quot;translate&quot;, 5.0);
 		</synopsis>
-		sets the maximum translation displacement to 5 Angstrom.
+		<para>sets the maximum translation displacement to 5 Angstrom.</para>
 		<synopsis>
 			mcmaxstep(&quot;rotate&quot;, 30.0);
 		</synopsis>
-		sets the maximum rotation to 30 degrees.
+		<para>sets the maximum rotation to 30 degrees.</para>
 	
 	</section>
 	
@@ -76,13 +76,13 @@
 				<para> mctrials ( string ''move'', int ''n'' )</para>
 			</listitem>
 		</itemizedlist>
-		Sets the number of times ''n'' that the move type ''move'' should be attempted in each cycle.
+		<para>Sets the number of times ''n'' that the move type ''move'' should be attempted in each cycle.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			mcntrials(&quot;insert&quot;, 50);
 		</synopsis>
-		requests that there will be 50 insertion attempts per cycle per molecule type.
+		<para>requests that there will be 50 insertion attempts per cycle per molecule type.</para>
 		
 	</section>
 	
@@ -94,7 +94,7 @@
 				<para> printmc ( )</para>
 			</listitem>
 		</itemizedlist>
-		Prints the current Monte Carlo parameters.
+		<para>Prints the current Monte Carlo parameters.</para>
 		
 		<para>For example:</para>
 		<synopsis>
