@@ -1,0 +1,140 @@
+Open and associate trajectory files to models, and select frames to display/edit from the current trajectory.
+
+<note><title>See also:</title>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para>((Trajectories)) for information on how trajectories are handled within Aten.^</para>
+		</listitem>
+
+</section>
+
+<section id="command.ref.addframe"><title>addframe</title>
+	<indexterm><primary>commands</primary><secondary>addframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> model addframe ( )</para>
+		</listitem>
+		<listitem>
+			<para> model addframe ( string ''title'' )</para>
+		</listitem>
+Append a new trajectory frame to the current model's trajectory. The reference to the new frame is returned.
+
+<para>For example:</para>
+<synopsis>
+model m = addframe(&quot;new config&quot;);
+</synopsis>
+
+</section>
+
+<section id="command.ref.cleartrajectory"><title>cleartrajectory</title>
+	<indexterm><primary>commands</primary><secondary>cleartrajectory</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> cleartrajectory ( )</para>
+		</listitem>
+Clear any associated trajectory and frame data in the current model.
+
+<para>For example:</para>
+<synopsis>
+cleartrajectory();
+</synopsis>
+
+</section>
+
+<section id="command.ref.firstframe"><title>firstframe</title>
+	<indexterm><primary>commands</primary><secondary>firstframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> firstframe ( )</para>
+		</listitem>
+Select the first frame from trajectory of current model.
+
+<para>For example:</para>
+<synopsis>
+firstframe();
+</synopsis>
+
+</section>
+
+<section id="command.ref.lastframe"><title>lastframe</title>
+	<indexterm><primary>commands</primary><secondary>lastframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> lastframe ( )</para>
+		</listitem>
+Select last frame in trajectory of current model.
+
+<para>For example:</para>
+<synopsis>
+lastframe();
+</synopsis>
+
+</section>
+
+<section id="command.ref.loadtrajectory"><title>loadtrajectory</title>
+	<indexterm><primary>commands</primary><secondary>loadtrajectory</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int loadtrajectory (string ''file'' )</para>
+		</listitem>
+Associate trajectory in ''file'' with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.
+
+<para>For example:</para>
+<synopsis>
+int success = loadtrajectory(&quot;/home/foo/md/water.HISf&quot;);
+</synopsis>
+opens and associated the formatted DL_POLY trajectory file 'water.HISf' with the current model.
+
+</section>
+
+<section id="command.ref.nextframe"><title>nextframe</title>
+	<indexterm><primary>commands</primary><secondary>nextframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> nextframe ( )</para>
+		</listitem>
+Select next frame from trajectory of current model.
+
+<para>For example:</para>
+<synopsis>
+nextframe();
+</synopsis>
+
+</section>
+
+<section id="command.ref.prevframe"><title>prevframe</title>
+	<indexterm><primary>commands</primary><secondary>prevframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> prevframe ( )</para>
+		</listitem>
+Select the previous frame from the trajectory of the current model.
+
+<para>For example:</para>
+<synopsis>
+prevframe();
+</synopsis>
+
+</section>
+
+<section id="command.ref.seekframe"><title>seekframe</title>
+	<indexterm><primary>commands</primary><secondary>seekframe</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> seekframe ( int ''frame'' )</para>
+		</listitem>
+Seeks to the fame number specified
+
+<para>For example:</para>
+<synopsis>
+seekframe(10);
+</synopsis>
+ seeks to the 10th frame of the current trajectory.

@@ -1,0 +1,148 @@
+<section id="commands.groups.math"><title>Math Commands</title>
+	
+	<para>Standard mathematical functions.</para>
+
+	<section id="command.ref.abs"><title>abs</title>
+		<indexterm><primary>commands</primary><secondary>abs</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double abs ( int|double ''num'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the absolute (positively-signed) value of ''num''.</para>
+	
+	</section>
+	
+	<section id="command.ref.cos"><title>cos</title>
+		<indexterm><primary>commands</primary><secondary>cos</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double cos ( double ''angle'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the cosine of ''angle'' (which should be given in degrees).</para>
+	
+	</section>
+	
+	<section id="command.ref.dotproduct"><title>dotproduct</title>
+		<indexterm><primary>commands</primary><secondary>dotproduct</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double dotproduct ( vector ''u'', vector ''v'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Calculate and return the dot product of the two vectors ''u'' and ''v''.</para>
+	
+	</section>
+	
+	<section id="command.ref.exp"><title>exp</title>
+		<indexterm><primary>commands</primary><secondary>exp</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double exp ( double ''x'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the exponential of ''x''.</para>
+	
+	</section>
+	
+	<section id="command.ref.ln"><title>ln</title>
+		<indexterm><primary>commands</primary><secondary>ln</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double ln ( double ''x'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the natural base-e logarithm of ''x''.</para>
+	
+	</section>
+	
+	<section id="command.ref.log"><title>log</title>
+		<indexterm><primary>commands</primary><secondary>log</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double log ( double ''x'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the base-10 logarithm of ''x''.</para>
+	
+	</section>
+	
+	<section id="command.ref.nint"><title>nint</title>
+		<indexterm><primary>commands</primary><secondary>nint</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> int nint ( double ''x'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the nearest integer value to ''x''.</para>
+	
+	</section>
+	
+	<section id="command.ref.normalise"><title>normalise</title>
+		<indexterm><primary>commands</primary><secondary>normalise</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double normalise ( vector ''v'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Normalises the vector ''v'', returning the magnitude of the vector before the normalisation was performed.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+			vector v = { 1, 2, 3 };
+			double mag = normalise(v);
+			printf(&quot;Normalised vector is { %f, %f, %f }, old magnitude was %f\n&quot;, v.x, v.y, v.z, mag);
+		</synopsis>
+		<para>prints the following:</para>
+		<synopsis>
+			Normalised vector is { 0.267261, 0.534522, 0.801784 }, old magnitude was 3.741657
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.sin"><title>sin</title>
+		<indexterm><primary>commands</primary><secondary>sin</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double sin ( double ''angle'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the sine of ''angle'' (which should be given in degrees).</para>
+	
+	</section>
+	
+	<section id="command.ref.sqrt"><title>sqrt</title>
+		<indexterm><primary>commands</primary><secondary>sqrt</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double sqrt ( double ''x'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the square root of ''x'.</para>
+	
+	</section>
+	
+	<section id="command.ref.tan"><title>tan</title>
+		<indexterm><primary>commands</primary><secondary>tan</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> double tan ( double ''angle'' )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Returns the tangent of ''angle'' (which should be given in degrees).</para>
+
+	</section>
+	
+</section>

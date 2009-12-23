@@ -1,0 +1,142 @@
+System commands for controlling debug output, instantiation of the GUI, and exiting from the program.
+
+</section>
+
+<section id="command.ref.debug"><title>debug</title>
+	<indexterm><primary>commands</primary><secondary>debug</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> debug ( string ''type'' )</para>
+		</listitem>
+Toggles debug output from various parts of the code. A full list of valid types is given in ((Output Types)).
+
+<para>For example:</para>
+<synopsis>
+debug(&quot;parse&quot;);
+</synopsis>
+
+</section>
+
+<section id="command.ref.getenv"><title>getenv</title>
+	<indexterm><primary>commands</primary><secondary>getenv</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> string getenv ( string ''variable'' )</para>
+		</listitem>
+Retrieves the contents of the named environment variable so that transfer of useful quantities can be made to Aten through a shell.
+
+<para>For example:</para>
+<synopsis>
+string s = getenv(&quot;HOSTNAME&quot;);
+</synopsis>
+gets the name of the host Aten is running on (although what you would then usefully do with it I don't know).
+Better example(s) can be found in the [http://www.projectaten.net/tiki-view_articles.php?topic=2|Examples] section.
+
+</section>
+
+<section id="command.ref.getenvf"><title>getenvf</title>
+	<indexterm><primary>commands</primary><secondary>getenvf</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> double getenvf ( string ''variable'' )</para>
+		</listitem>
+Retrieves the contents of the named environment variable, converting it to a floating-point (double) value in the process.
+<para>For example:</para>
+<synopsis>
+double d = getenvf(&quot;num&quot;);
+</synopsis>
+gets the shell variable 'num' as a real number.
+
+</section>
+
+<section id="command.ref.getenvi"><title>getenvi</title>
+	<indexterm><primary>commands</primary><secondary>getenvi</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> integer getenvf ( string ''variable'' )</para>
+		</listitem>
+Retrieves the contents of the named environment variable, converting it to an integer value in the process.
+<para>For example:</para>
+<synopsis>
+int i = getenvi(&quot;count&quot;);
+</synopsis>
+gets the shell variable 'count' as an integer number.
+
+</section>
+
+<section id="command.ref.gui"><title>gui</title>
+	<indexterm><primary>commands</primary><secondary>gui</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> gui ( )</para>
+		</listitem>
+Starts the GUI (e.g. from a script), if it isn't already running.
+
+<para>For example:</para>
+<synopsis>
+gui();
+</synopsis>
+
+</section>
+
+<section id="command.ref.help"><title>help</title>
+	<indexterm><primary>commands</primary><secondary>help</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> help ''command''</para>
+		</listitem>
+Provide short help on the supplied ''command''.
+
+<para>For example:</para>
+<synopsis>
+help cellaxes;
+</synopsis>
+
+</section>
+
+<section id="command.ref.searchcommands"><title>searchcommands</title>
+	<indexterm><primary>commands</primary><secondary>searchcommands</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> searchcommands ( string ''srch'' )</para>
+		</listitem>
+Search all available commands for the (partial) command name specified.
+
+</section>
+
+<section id="command.ref.seed"><title>seed</title>
+	<indexterm><primary>commands</primary><secondary>seed</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> seed ( int ''n'' )</para>
+		</listitem>
+Sets the random seed.
+
+<para>For example:</para>
+<synopsis>
+seed(3242638);
+</synopsis>
+
+</section>
+
+<section id="command.ref.quit"><title>quit</title>
+	<indexterm><primary>commands</primary><secondary>quit</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> quit ( )</para>
+		</listitem>
+Quits out of the program.
+
+<para>For example:</para>
+<synopsis>
+quit();
+</synopsis>

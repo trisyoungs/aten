@@ -1,0 +1,72 @@
+<section id="commands.groups.image"><title>Image Commands</title>
+	
+	<para>Save bitmap and vector images of the current view. The GUI is not required in order to save images -- using these commands from the command-line, for example, works just as well (models still have a current view, even without the GUI, and can be rotated, translated etc. just as if they were in the GUI).</para>
+
+	<section id="command.ref.savebitmap"><title>savebitmap</title>
+		<indexterm><primary>commands</primary><secondary>savebitmap</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename> )</para>
+			</listitem>
+			<listitem>
+				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename>, int <filename>width</filename>, int <filename>height</filename> )</para>
+			</listitem>
+			<listitem>
+				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename>, int <filename>width</filename>, int <filename>height</filename>, int <filename>quality</filename> )</para>
+			</listitem>
+		</itemizedlist>
+		
+		<para>Saves the current view as a bitmap image. Allowable values for <filename>format</filename> are:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>Newglyph options</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Shortname</entry>
+						<entry>Format</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>bmp</entry>
+						<entry>Windows Bitmap</entry>
+					</row>
+					<row>
+						<entry>jpg</entry>
+						<entry>Joint Photographic Expers Group</entry>
+					</row>
+					<row>
+						<entry>png</entry>
+						<entry>Portable Network Graphic</entry>
+					</row>
+					<row>
+						<entry>ppm</entry>
+						<entry>Portable Pixmap</entry>
+					</row>
+					<row>
+						<entry>xbm</entry>
+						<entry>X11 Bitmap</entry>
+					</row>
+					<row>
+						<entry>xpm</entry>
+						<entry>X11 Pixmap</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<para>If <filename>width</filename> and <filename>height</filename> are not specified the current dimensions of the view are used (800x600 if no GUI is present). The <filename>quality</filename> option determines the compression used on saved images, affecting, for example, the quality and size of jpegs and pngs, and should be an integer between 1 and 100 (with 100 being the best compression).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			savebitmap(&quot;bmp&quot;, &quot;test.bmp&quot;);
+		</synopsis>
+		<para>saves the current view to a file 'test.bmp'.</para>
+		<synopsis>
+			savebitmap(&quot;png&quot;, &quot;big.png&quot;, 5000, 5000, 10);
+		</synopsis>
+		<para>saves an enormous, highly uncompressed png.</para>
+
+	</section>
+	
+</section>

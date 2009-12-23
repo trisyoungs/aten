@@ -1,0 +1,119 @@
+<section id="commands.groups.image"><title>Image Commands</title>
+	
+	<para>Perform energy minimisation on models.
+	
+	<section id="command.ref.cgminimise"><title>cgminimise</title>
+		<indexterm><primary>commands</primary><secondary>cgminimise</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> cgminimise ( int ''maxsteps'' )</para>
+			</listitem>
+		</itemizedlist>
+		Geometry optimises the current model using the conjugate gradient method.
+		
+		<para>For example:</para>
+		<synopsis>
+			cgminimise(20);
+		</synopsis>
+		runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para>((Methods: Conjugate Gradient Minimiser)) for details on the conjugate gradient method as it is implemented in Aten.^</para>
+				</listitem>
+			</itemizedlist>
+		</note>	
+		
+	</section>
+	
+	<section id="command.ref.converge"><title>converge</title>
+		<indexterm><primary>commands</primary><secondary>converge</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> converge ( double ''econv'', double ''fconv'' )</para>
+			</listitem>
+		</itemizedlist>
+		Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.
+		
+		<para>For example:</para>
+		<synopsis>
+			converge(1e-6, 1e-4);
+		</synopsis>
+		sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.
+	
+	</section>
+	
+	<section id="command.ref.linetol"><title>linetol</title>
+		<indexterm><primary>commands</primary><secondary>linetol</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> linetol ( double ''tolerance'' )</para>
+			</listitem>
+		</itemizedlist>
+		Sets the tolerance of the line minimiser.
+		
+		<para>For example:</para>
+		<synopsis>
+			linetol(1e-5);
+		</synopsis>
+		sets the line tolerance to 1.0E-5.
+
+	</section>
+	
+	<section id="command.ref.mcminimise"><title>mcminimise</title>
+		<indexterm><primary>commands</primary><secondary>mcminimise</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> mcminimise ( int ''maxsteps'' )</para>
+			</listitem>
+		</itemizedlist>
+		Optimises the current model using a molecular Monte Carlo minimisation method.
+		
+		<para>For example:</para>
+		<synopsis>
+			mcminimise(20);
+		</synopsis>
+		runs a geometry optimisation for a maximum of 20 cycles.
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para>((Methods: Monte Carlo Minimiser)) for details on the Monte Carlo minimisation method as it is implemented in Aten.^</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+	
+	</section>
+	
+	<section id="command.ref.sdminimise"><title>sdminimise</title>
+		<indexterm><primary>commands</primary><secondary>sdminimise</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> sdminimise ( int ''maxsteps'' )</para>
+			</listitem>
+		</itemizedlist>
+		Optimises the current model using the Steepest Descent method.
+		
+		<para>For example:</para>
+		<synopsis>
+			sdminimise(100);
+		</synopsis>
+		minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para>((Methods: Steepest Descent Minimiser)) for details on the steepest descent minimisation method as it is implemented in Aten.^</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+		
+	</section>
+	
+</section>

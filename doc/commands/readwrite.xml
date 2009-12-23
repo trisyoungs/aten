@@ -1,0 +1,501 @@
+Methods of reading and writing data from / to files in import and export filters. Many commands here use ((Formatting Strings)) to provide formatted input and output. All reading and writing commands here work on input or output files as defined internally by the program.
+
+<note><title>See also:</title>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para>((Commands: Messaging)) for commands that write to the screen.</para>
+		</listitem>
+		<listitem>
+			<para>((Formatting Strings)) for details on the C-style formatting of data employed by some commands.</para>
+		</listitem>
+		<listitem>
+			<para>((Delimited Reading and Writing)) for details on the parsing of delimited data, as employed by some commands.^</para>
+		</listitem>
+
+</section>
+
+<section id="command.ref.addreadoption"><title>addreadoption</title>
+	<indexterm><primary>commands</primary><secondary>addreadoption</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> addreadoption ( string ''option'' )</para>
+		</listitem>
+Controls aspects of file reading. See ((Read Options)) for a list of possible ''options''.
+
+<para>For example:</para>
+<synopsis>
+addreadoption(&quot;stripbrackets&quot;);
+</synopsis>
+
+</section>
+
+<section id="command.ref.eof"><title>eof</title>
+	<indexterm><primary>commands</primary><secondary>eof</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int eof ( )</para>
+		</listitem>
+Returns 1 if at the end of the current input file, 0 otherwise.
+
+<para>For example:</para>
+<synopsis>
+string s;
+while (!eof())
+{
+     getline(s):
+     printf(&quot;%s\n&quot;, s);
+} 
+</synopsis>
+Reads in and prints out all lines in the current source file.
+
+</section>
+
+<section id="command.ref.filterfilename"><title>filterfilename</title>
+	<indexterm><primary>commands</primary><secondary>filterfilename</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> string filterfilename ( )</para>
+		</listitem>
+Returns the name of the current input or output file (typically useful from within an import or export filter).
+
+<para>For example:</para>
+<synopsis>
+string filename = filterfilename();
+</synopsis>
+Puts the current source/destination filename in the variable ''filename''.
+
+</section>
+
+<section id="command.ref.find"><title>find</title>
+	<indexterm><primary>commands</primary><secondary>find</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int find ( string ''searchstring'' )</para>
+		</listitem>
+		<listitem>
+			<para> int find ( string ''searchstring'', string ''linevar'' )</para>
+		</listitem>
+Searches for the specified ''searchstring'' in the input file, returning 0 if ''searchstring'' is not found before the end of the file, and 1 if it is. The optional argument ''linevar'' is a character variable in which the matching line (if any) is put.
+
+<para>For example:</para>
+<synopsis>
+int iresult = find(&quot;Final Energy:&quot;);
+</synopsis>
+searches for the string 'Final Energy' in the input file, placing the result of the search in the variable ''iresult''.
+<synopsis>
+string line;
+int n = find(&quot;Optimised Geometry:&quot;, line);
+</synopsis>
+searches for the string 'Optimised Geometry:' in the input file, placing the whole of the matching line from the input file in the variable ''line''.
+
+</section>
+
+<section id="command.ref.getline"><title>getline</title>
+	<indexterm><primary>commands</primary><secondary>getline</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int getline ( string ''variable'' )</para>
+		</listitem>
+Read an entire line from the input file, and put it in the character variable provided. The line also becomes the current target for '((Commands: Read Write|#readnext|readnext))'. The command returns a ((Read Success)) integer.
+
+<para>For example:</para>
+<synopsis>
+string nextline;
+int n = getline(nextline);
+</synopsis>
+gets the next line from the file and places it in the variable ''nextline''.
+
+</section>
+
+<section id="command.ref.nextarg"><title>nextarg</title>
+	<indexterm><primary>commands</primary><secondary>nextarg</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int nextarg( int|double|string ''var'' )</para>
+		</listitem>
+Read the next whitespace-delimited chunk of text from the current file and place it in the variable supplied. Note that this command reads directly from the file and not the last line read with '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' (see '((Commands: Read Write|#readnext|readnext))' to read the next delimited argument from the last read line). The command returns TRUE (1) if an argument was successfully read, or FALSE (0) otherwise (e.g. if the end of the file was found).
+
+<para>For example:</para>
+<synopsis>
+int i;
+int success = nextarg(i);
+</synopsis>
+
+</section>
+
+<section id="command.ref.peekchar"><title>peekchar</title>
+	<indexterm><primary>commands</primary><secondary>peekchar</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> string peekchar ( )</para>
+		</listitem>
+Peeks the next character that will be read from the source file, and returns it as a string. The actual file position for reading is unaffected.
+
+<para>For example:</para>
+<synopsis>
+string char = peekchar();
+</synopsis>
+
+</section>
+
+<section id="command.ref.peekchari"><title>peekchari</title>
+	<indexterm><primary>commands</primary><secondary>peekchari</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int peekchar ( )</para>
+		</listitem>
+Peeks the next character that will be read from the source file, and returns it as an integer value representing the ASCII character code (see [http://www.asciitable.com], for example). The actual file position for reading is unaffected.
+
+<para>For example:</para>
+<synopsis>
+int char = peekchari();
+</synopsis>
+
+</section>
+
+<section id="command.ref.readchars"><title>readchars</title>
+	<indexterm><primary>commands</primary><secondary>readchars</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> string readchars ( int ''nchars'', bool ''skipeol'' = TRUE )</para>
+		</listitem>
+Reads and returns (as a string) a number of characters from the input file. If ''skipeol'' is true (the default) then the end-of-line markers '\n' and '\r' will be ignored and will not count towards ''nchars'' - this is of most use when reading formatted text files and you want to 'ignore' the fact that data is presented on many lines rather than one. If ''skipeol'' is false then '\n' and '\r' __will__ count towards the total number of characters. Used on formatted text files, this might give you unexpected results.
+
+<para>For example:</para>
+<synopsis>
+string text = readchars(80);
+</synopsis>
+reads the next 80 characters from the input file and puts it into the variable ''text''.
+
+</section>
+
+<section id="command.ref.readdouble"><title>readdouble</title>
+	<indexterm><primary>commands</primary><secondary>readdouble</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> double readdouble ( )</para>
+		</listitem>
+		<listitem>
+			<para> double readdouble ( int ''nbytes'' )</para>
+		</listitem>
+Read a floating point value (the size determined from the machines 'double' size) from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of double (e.g. long double)  on the machine this size is used instead.
+
+<para>For example:</para>
+<synopsis>
+double x = readdouble();
+</synopsis>
+reads a floating point value into the variable ''x''.
+
+</section>
+
+<section id="command.ref.readdoublearray"><title>readdoublearray</title>
+	<indexterm><primary>commands</primary><secondary>readdoublearray</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readdoublearray ( double &amp;''array'', int ''n'' )</para>
+		</listitem>
+Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(double)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.
+
+<para>For example:</para>
+<synopsis>
+double data[45];
+int success = readdoublearray(data, 45);
+</synopsis>
+reads 45 double numbers into the array ''data''.
+
+</section>
+
+<section id="command.ref.readint"><title>readint</title>
+	<indexterm><primary>commands</primary><secondary>readint</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readint ( )</para>
+		</listitem>
+		<listitem>
+			<para> int readint ( int ''nbytes'' )</para>
+		</listitem>
+Read an integer value (the size determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of int (e.g. long int) on the machine this size is used instead.
+
+<para>For example:</para>
+<synopsis>
+int i = readint();
+</synopsis>
+reads an integer number into the variable ''i''.
+
+</section>
+
+<section id="command.ref.readintarray"><title>readintarray</title>
+	<indexterm><primary>commands</primary><secondary>readintarray</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readintarray ( int &amp;''array'', int ''n'')</para>
+		</listitem>
+Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.
+
+<para>For example:</para>
+<synopsis>
+int data[100];
+int success = readintarray(data, 100);
+</synopsis>
+reads 100 integer numbers into the array ''data''.
+
+</section>
+
+<section id="command.ref.readline"><title>readline</title>
+	<indexterm><primary>commands</primary><secondary>readline</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readline ( int|double|string ''var'', ... )</para>
+		</listitem>
+Read a line of delimited items from the input file, placing them into the list of variable(s) provided. Conversion of data from the file into the types of the destination variables is performed automatically. The number of items parsed successfully is returned.
+
+<para>For example:</para>
+<synopsis>
+double x,y,z;
+int n = readline(x,y,z);
+</synopsis>
+reads a line from the file and places the first three delimited items on the line into the variables ''x'', ''y'', and ''z''.
+
+</section>
+
+<section id="command.ref.readlinef"><title>readlinef</title>
+	<indexterm><primary>commands</primary><secondary>readlinef</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readlinef ( string ''format'', int|double|string ''var'', ... )</para>
+		</listitem>
+Read a line of data from the input file and separate them into the list of variable(s) provided, and according to the format provided. The number of items parsed successfully is returned.
+
+<para>For example:</para>
+<synopsis>
+double x,y,z;
+int n = readlinef(&quot;%8.6f %8.6f %8.6f&quot;,x,y,z);
+</synopsis>
+reads a line from the file, assuming that the line contains three floating point values of 8 characters length, and separated by a space, into the three variables ''x'', ''y'', and ''z''.
+
+</section>
+
+<section id="command.ref.readnext"><title>readnext</title>
+	<indexterm><primary>commands</primary><secondary>readnext</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readnext ( int|double|string ''variable'' )</para>
+		</listitem>
+Read the next delimited argument from the last line read with either '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' into the ''variable'' supplied. The command returns either TRUE for success or FALSE (e.g. if the end of file was reached without reading any non-whitespace characters, or an error was encountered).
+
+<para>For example:</para>
+<synopsis>
+double d;
+int n = readnext(d);
+</synopsis>
+read the next delimited argument into the double variable ''d''.
+
+</section>
+
+<section id="command.ref.readvar"><title>readvar</title>
+	<indexterm><primary>commands</primary><secondary>readvar</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readvar ( string ''source'', int|double|string ''var'', ... )</para>
+		</listitem>
+Parse the contents of the supplied string ''source'' into the supplied variables, assuming delimited data items. Delimited items read from ''source'' are converted automatically to the type inferred by the target variable. The number of data items parsed successfully is returned.
+
+<para>For example:</para>
+<synopsis>
+string data = &quot;rubbish ignore  Carbon  green  1.0 2.5 5.3&quot;;
+string element, discard;
+vector v;
+int n = readvar(data,discard,discard,element,discard,v.x,v.y,v.z,discard);
+printf(&quot;Element = %s, n = %i\n&quot;, element, n);
+</synopsis>
+outputs
+<synopsis>
+Element = Carbon, n = 7
+</synopsis>
+The character string in the variable ''data'' is parsed, with delimited chunks placed into the supplied variables. Note the repeated use of the variable ''discard'', used to get rid of unwanted data. Also, note that there are not enough items in ''data'' to satisfy the final occurrence of ''discard'', and so the function returns a value of 7 (as opposed to the actual number of target variables supplied, 8).
+
+</section>
+
+<section id="command.ref.readvarf"><title>readvarf</title>
+	<indexterm><primary>commands</primary><secondary>readvarf</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> int readvar ( string ''variable'', string ''format'', int|double|string ''var'', ... )</para>
+		</listitem>
+Parse the contents of the supplied string ''variable'' according to the supplied ''format'' string, placing in the supplied variables. The number of format specifiers successfully parsed (or, to look at it another way, the number of the supplied variables that were assigned values) is returned.
+
+<para>For example:</para>
+<synopsis>
+string a, b, data = &quot;abc def123456.0&quot;;
+double d; int i, n;
+n = readvarf(data,&quot;%3s %3s%4i%4f%8*&quot;,a,b,i,d);
+printf(&quot;a = %s, b = %s, d = %f, i = %i, n = %i\n&quot;, a, b, d, i, n);
+</synopsis>
+outputs
+<synopsis>
+a = abc, b = def, d = 56.000000, i = 1234, n = 4
+</synopsis>
+The supplied format string contains a single space in between the two '%3s' specifiers, and is significant since it corresponds to actual (discarded) space when processing the format. Furthermore, the last specifier '%8*' (discard 8 characters) is not fulfilled by the ''data'' string, and so the number of arguments successfully parsed is 4, not 5.
+
+</section>
+
+<section id="command.ref.removereadoption"><title>removereadoption</title>
+	<indexterm><primary>commands</primary><secondary>removereadoption</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> removereadoption ( string ''option'' )</para>
+		</listitem>
+Removes a previously-set read option. See ((Read Options)) for a list of possible ''options''.
+
+<para>For example:</para>
+<synopsis>
+removereadoption(&quot;skipblanks&quot;);
+</synopsis>
+
+</section>
+
+<section id="command.ref.rewind"><title>rewind</title>
+	<indexterm><primary>commands</primary><secondary>rewind</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> rewind ( )</para>
+		</listitem>
+Rewind the input file to the beginning of the file.
+
+<para>For example:</para>
+<synopsis>
+rewind();
+</synopsis>
+
+</section>
+
+<section id="command.ref.skipchars"><title>skipchars</title>
+	<indexterm><primary>commands</primary><secondary>skipchars</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> skipchars ( int ''n'' )</para>
+		</listitem>
+Skips the next ''n'' characters in the input file.
+
+<para>For example:</para>
+<synopsis>
+skipchars(15);
+</synopsis>
+discards the next 15 characters from the input file.
+
+</section>
+
+<section id="command.ref.skipline"><title>skipline</title>
+	<indexterm><primary>commands</primary><secondary>skipline</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> skipline ( int ''n'' = 0 )</para>
+		</listitem>
+Skips the next line in the file, or the next ''n'' lines if a number supplied.
+
+<para>For example:</para>
+<synopsis>
+skipline();
+</synopsis>
+skips the next line in the file.
+<synopsis>
+skipline(5);
+</synopsis>
+discards 5 lines from the file.
+
+</section>
+
+<section id="command.ref.writeline"><title>writeline</title>
+	<indexterm><primary>commands</primary><secondary>writeline</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> writeline( ... )</para>
+		</listitem>
+Write a line to the current output file that consists of the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.
+
+<para>For example:</para>
+<synopsis>
+writeline(&quot;Number of atoms =&quot;, aten.model.natoms);
+</synopsis>
+writes a line indicating the number of atoms in the model to the current output file.
+
+</section>
+
+<section id="command.ref.writelinef"><title>writelinef</title>
+	<indexterm><primary>commands</primary><secondary>writelinef</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> writelinef( string ''format'', ... )</para>
+		</listitem>
+Write a formatted line to the current output file, according to the supplied ''format'' and any supplied arguments. Usage is the same as for the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is __not__ automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.
+
+<para>For example:</para>
+<synopsis>
+writelinef(&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+</synopsis>
+writes a line indicating the number of atoms in the model to the current output file, e.g.:
+<synopsis>
+Number of atoms =        3
+</synopsis>
+
+</section>
+
+<section id="command.ref.writevar"><title>writevar</title>
+	<indexterm><primary>commands</primary><secondary>writevar</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> writevar ( string ''dest'', ...)</para>
+		</listitem>
+Write to the supplied string variable ''dest'' the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.
+
+<para>For example:</para>
+<synopsis>
+string s;
+writevar(s,&quot;Number of atoms =&quot;, aten.model.natoms);
+writeline(s);
+</synopsis>
+same result as the example for the 'writeline' command, except that the final string is written to a variable first, and then the file.
+
+</section>
+
+<section id="command.ref.writevarf"><title>writevarf</title>
+	<indexterm><primary>commands</primary><secondary>writevarf</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> writevarf ( string ''dest'', string ''format'', ...)</para>
+		</listitem>
+Write to the supplied string variable ''dest'' the string resulting from the supplied ''format'' and any other supplied arguments. Apart from the mandatory first argument being the destination string variable, usage is otherwise the same as the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is __not__ automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.
+
+<para>For example:</para>
+<synopsis>
+string s;
+writevarf(s,&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+writeline(s);
+</synopsis>
+same result as the example for the 'writelinef' command, except that the final string is written to a variable first, and then the file.
