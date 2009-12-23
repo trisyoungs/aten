@@ -35,7 +35,7 @@
 				<para> double bondtolerance ( )</para>
 			</listitem>
 			<listitem>
-				<para> double bondtolerance ( double ''tol'' )</para>
+				<para> double bondtolerance ( double tol )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise ((Patterns)) within models correctly. The current or new bond tolerance is returned.</para>
@@ -99,13 +99,13 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> newbond ( int|atom ''i'', int|atom ''j'' )</para>
+				<para> newbond ( int|atom i, int|atom j )</para>
 			</listitem>
 			<listitem>
-				<para> newbond ( int|atom ''i'', int|atom ''j'', int ''bondtype'' )</para>
+				<para> newbond ( int|atom i, int|atom j, int bondtype )</para>
 			</listitem>
 			<listitem>
-				<para> newbond ( int|atom ''i'', int|atom ''j'', string ''bondtype'' )</para>
+				<para> newbond ( int|atom i, int|atom j, string bondtype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new bond in the model between the specified atoms. The optional ''bondtype'' argument specified the type of bond: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.</para>
@@ -134,13 +134,13 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> newbondid ( int ''i'', int ''j'' )</para>
+				<para> newbondid ( int i, int j )</para>
 			</listitem>
 			<listitem>
-				<para> newbondid ( int ''i'', int ''j'', int ''bondtype'' )</para>
+				<para> newbondid ( int i, int j, int bondtype )</para>
 			</listitem>
 			<listitem>
-				<para> newbondid ( int ''i'', int ''j'', string ''bondtype'' )</para>
+				<para> newbondid ( int i, int j, string bondtype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new bond in the model between atoms referenced by their temporary ID, set manually with the ((Commands: Atoms|#setid|setid)) command. Otherwise identical to the ((Commands: Bonding|#newbond|newbond)) command.</para>

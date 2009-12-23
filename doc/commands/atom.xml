@@ -1,11 +1,11 @@
-<section id="commands.groups.atoms"><title>Atom Commands</title>
+<section id="commands.groups.atom"><title>Atom Commands</title>
 	
 	<para>Define and set properties of atoms.</para>
 
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para>((Commands: Building)) for commands to create atoms in the first place.</para>
+				<para><link linkend="command.group.building">Building commands</link> for methods to create atoms in the first place.</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -15,7 +15,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> atomstyle ( string ''style'' )</para>
+				<para> atomstyle ( string style )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the individual drawing ''style'' for the current atom selection, used when the global drawing style is 'individual'.</para>
@@ -111,10 +111,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setcharge ( double ''charge'' )</para>
+				<para> setcharge ( double charge )</para>
 			</listitem>
 			<listitem>
-				<para> setcharge ( double ''charge'', int ''id'' )</para>
+				<para> setcharge ( double charge, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the atomic charge of the current (or specified) atom.</para>
@@ -126,10 +126,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setcoords ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> setcoords ( double x, double y, double z )</para>
 			</listitem>
 			<listitem>
-				<para> setcoords ( double ''x'', double ''y'', double ''z'', int ''id'' )</para>
+				<para> setcoords ( double x, double y, double z, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the coordinates of the current (or specified) atom.</para>
@@ -141,16 +141,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setelement ( int ''element'' )</para>
+				<para> setelement ( int element )</para>
 			</listitem>
 			<listitem>
-				<para> setelement ( string ''element'' )</para>
+				<para> setelement ( string element )</para>
 			</listitem>
 			<listitem>
-				<para> setelement ( int ''element'', int ''id'' )</para>
+				<para> setelement ( int element, int id )</para>
 			</listitem>
 			<listitem>
-				<para> setelement ( string ''element'', int ''id'' )</para>
+				<para> setelement ( string element, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the element of the current (or specified) atom.</para>
@@ -162,10 +162,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setforces ( double ''fx'', double ''fy'', double ''fz'' )</para>
+				<para> setforces ( double fx, double fy, double fz )</para>
 			</listitem>
 			<listitem>
-				<para> setforces ( double ''fx'', double ''fy'', double ''fz'', int ''id'' )</para>
+				<para> setforces ( double fx, double fy, double fz, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the forces of the current (or specified) atom.</para>
@@ -177,10 +177,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setfx ( double ''f'' )</para>
+				<para> setfx ( double f )</para>
 			</listitem>
 			<listitem>
-				<para> setfx ( double ''f'', int ''id'' )</para>
+				<para> setfx ( double f, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the x force of the current (or specified) atom.</para>
@@ -192,10 +192,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setfy ( double ''f'' )</para>
+				<para> setfy ( double f )</para>
 			</listitem>
 			<listitem>
-				<para> setfy ( double ''f'', int ''id'' )</para>
+				<para> setfy ( double f, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the y force of the current (or specified) atom.</para>
@@ -207,10 +207,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setfz ( double ''f'' )</para>
+				<para> setfz ( double f )</para>
 			</listitem>
 			<listitem>
-				<para> setfz ( double ''f'', int ''id'' )</para>
+				<para> setfz ( double f, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the z force of the current (or specified) atom.</para>
@@ -222,10 +222,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setid ( int ''newid'' )</para>
+				<para> setid ( int newid )</para>
 			</listitem>
 			<listitem>
-				<para> setid ( int ''newid'', int ''id'' )</para>
+				<para> setid ( int newid, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the temporary ID of the current (or specified) atom, useful for when parsing atoms from a file that are not in any useful order but have an id specified for the purposes of subsequent connectivity definitions, for example. Within filters, once loading is complete the ((Commands: Model|#finalisemodel|finalisemodel)) command will reset all atom ids to internal numbering.</para>
@@ -237,10 +237,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setrx ( double ''r'' )</para>
+				<para> setrx ( double r )</para>
 			</listitem>
 			<listitem>
-				<para> setrx ( double ''r'', int ''id'' )</para>
+				<para> setrx ( double r, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the x coordinate of the current (or specified) atom.</para>
@@ -252,10 +252,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setry ( double ''r'' )</para>
+				<para> setry ( double r )</para>
 			</listitem>
 			<listitem>
-				<para> setry ( double ''r'', int ''id'' )</para>
+				<para> setry ( double r, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the y coordinate of the current (or specified) atom.</para>
@@ -267,10 +267,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setrz ( double ''r'' )</para>
+				<para> setrz ( double r )</para>
 			</listitem>
 			<listitem>
-				<para> setrz ( double ''r'', int ''id'' )</para>
+				<para> setrz ( double r, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the z coordinate of the current (or specified) atom.</para>
@@ -282,10 +282,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setvelocities ( double ''vx'', double ''vy'', double ''vz'' )</para>
+				<para> setvelocities ( double vx, double vy, double vz )</para>
 			</listitem>
 			<listitem>
-				<para> setvelocities ( double ''vx'', double ''vy'', double ''vz'', int ''id'' )</para>
+				<para> setvelocities ( double vx, double vy, double vz, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the velocity components of the current (or specified) atom.</para>
@@ -297,10 +297,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setvx ( double ''v'' )</para>
+				<para> setvx ( double v )</para>
 			</listitem>
 			<listitem>
-				<para> setvx ( double ''v'', int ''id'' )</para>
+				<para> setvx ( double v, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the x velocity of the current (or specified) atom.</para>
@@ -312,10 +312,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setvy ( double ''v'' )</para>
+				<para> setvy ( double v )</para>
 			</listitem>
 			<listitem>
-				<para> setvy ( double ''v'', int ''id'' )</para>
+				<para> setvy ( double v, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the y velocity of the current (or specified) atom.</para>
@@ -327,10 +327,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setvz ( double ''v'' )</para>
+				<para> setvz ( double v )</para>
 			</listitem>
 			<listitem>
-				<para> setvz ( double ''v'', int ''id'' )</para>
+				<para> setvz ( double v, int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the z velocity of the current (or specified) atom.</para>

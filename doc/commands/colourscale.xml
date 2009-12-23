@@ -15,10 +15,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> addpoint ( int ''id'', double ''value'', double ''r'', double ''g'', double ''b'' )</para>
+				<para> addpoint ( int id, double value, double r, double g, double b )</para>
 			</listitem>
 			<listitem>
-				<para> addpoint ( int ''id'', double ''value'', double ''r'', double ''g'', double ''b'', double ''alpha'' )</para>
+				<para> addpoint ( int id, double value, double r, double g, double b, double alpha )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Adds a new point to the end of the specified colourscale, at the point ''value'' and with the RGB[A] colour provided.</para>
@@ -36,7 +36,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> clearpoints ( int ''id'' )</para>
+				<para> clearpoints ( int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Clears all points from the specified colourscale.</para>
@@ -71,7 +71,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> removepoint ( int ''id'', int ''point'' )</para>
+				<para> removepoint ( int id, int point )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Remove a single point from the selected colourscale.</para>
@@ -89,10 +89,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string scalename ( int ''id' )</para>
+				<para> string scalename ( int id )</para>
 			</listitem>
 			<listitem>
-				<para> scalename ( int ''id', string ''name'' )</para>
+				<para> scalename ( int id, string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Retrieves the name of the colourscale id provided, or sets the name if a new name is provided). The name is displayed next to the gradient bar (if drawn).</para>
@@ -110,7 +110,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> scalevisible ( int ''id'', string &quot;on&quot;|&quot;off&quot; )</para>
+				<para> scalevisible ( int id, string &quot;on&quot;|&quot;off&quot; )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets whether the gradient bar for the specified colourscale should be drawn in the main view. Default is 'off' for all colourscales.</para>
@@ -128,10 +128,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setpoint ( int ''id'', int ''point'', double ''value'', double ''r'', double ''g'', double ''b'' )</para>
+				<para> setpoint ( int id, int point, double value, double r, double g, double b )</para>
 			</listitem>
 			<listitem>
-				<para> setpoint ( int ''id'', int ''point'', double ''value'', double ''r'', double ''g'', double ''b'', double ''alpha'' )</para>
+				<para> setpoint ( int id, int point, double value, double r, double g, double b, double alpha )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the value and colour of an existing point in the specified colourscale.</para>
@@ -149,10 +149,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setpointcolour ( int ''id'', int ''point'', double ''r'', double ''g'', double ''b'' )</para>
+				<para> setpointcolour ( int id, int point, double r, double g, double b )</para>
 			</listitem>
 			<listitem>
-				<para> setpointcolour ( int ''id'', int ''point'', double ''r'', double ''g'', double ''b'', double ''alpha'' )</para>
+				<para> setpointcolour ( int id, int point, double r, double g, double b, double alpha )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the colour of an existing point in the specified colourscale.</para>
@@ -170,7 +170,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setpointvalue ( int ''id'', int ''point'', double ''value'' )</para>
+				<para> setpointvalue ( int id, int point, double value )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the value of an existing point in the specified colourscale.</para>
