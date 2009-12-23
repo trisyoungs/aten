@@ -14,12 +14,20 @@
 	<!--Commands-->
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
 	<!ENTITY commandtypes SYSTEM "commands/commandtypes.xml">
-	<!ENTITY commandatoms SYSTEM "commands/atoms.xml">
-	<!ENTITY commandbonding SYSTEM "commands/bonding.xml">
+	<!ENTITY commandatom SYSTEM "commands/atom.xml">
+	<!ENTITY commandbond SYSTEM "commands/bond.xml">
 	<!ENTITY commandbuilding SYSTEM "commands/building.xml">
 	<!ENTITY commandcell SYSTEM "commands/cell.xml">
-	<!ENTITY commandcharges SYSTEM "commands/charges.xml">
-	<!ENTITY commandcolourscales SYSTEM "commands/colourscales.xml">
+	<!ENTITY commandcharge SYSTEM "commands/charge.xml">
+	<!ENTITY commandcolourscale SYSTEM "commands/colourscale.xml">
+	<!ENTITY commanddisordered SYSTEM "commands/disordered.xml">
+	<!ENTITY commandedit SYSTEM "commands/edit.xml">
+	<!ENTITY commandenergy SYSTEM "commands/energy.xml">
+	<!ENTITY commandflow SYSTEM "commands/flow.xml">
+	<!ENTITY commandforcefield SYSTEM "commands/forcefield.xml">
+	<!ENTITY commandforce SYSTEM "commands/force.xml">
+	<!ENTITY commandglyph SYSTEM "commands/glyph.xml">
+	<!ENTITY commandimage SYSTEM "commands/image.xml">
 ]>
 
 <book>
@@ -94,12 +102,20 @@
 <!-- 	* ((Paths and Subvariables)) - Subvariable access -->
 		&commandtypes;
 		<section id="command.ref"><title>Command Reference</title>
-			&commandatoms;
-			&commandbonding;
+			&commandatom;
+			&commandbond;
 			&commandbuilding;
 			&commandcell;
 			&commandcharges;
-			&commandcolourscales;
+			&commandcolourscale;
+			&commanddisordered;
+			&commandedit;
+			&commandenergy;
+			&commandflow;
+			&commandforcefield;
+			&commandforce;
+			&commandglyph;
+			&commandimage;
 		</section>
 	</chapter>
 </book>

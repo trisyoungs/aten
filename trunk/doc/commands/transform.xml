@@ -1,0 +1,212 @@
+Commands to transform the current selection of the model.
+
+</section>
+
+<section id="command.ref.axisrotate"><title>axisrotate</title>
+	<indexterm><primary>commands</primary><secondary>axisrotate</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> axisrotate ( atom|id ''i'', atom|id ''j'', double ''theta'' )</para>
+		</listitem>
+		<listitem>
+			<para> axisrotate ( atom|id ''i'', atom|id ''j'', double ''theta'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+		<listitem>
+			<para> axisrotate ( double ''x'', double ''y'', double ''z'', double ''theta'' )</para>
+		</listitem>
+		<listitem>
+			<para> axisrotate ( double ''x'', double ''y'', double ''z'', double ''theta'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+Rotate the current selection by an angle ''theta'' (in degrees) about an axis defined either by the vector between two atom IDs or the vector components provided. If supplied, the rotation is performed using the coordinate origin specified by ''ox'', ''oy'', and ''oz'', otherwise {0,0,0} is assumed.
+
+<para>For example:</para>
+<synopsis>
+axisrotate(4, 5, 90.0);
+</synopsis>
+rotates the current selection 90 degrees about the axis formed by the vector between atom ids 4 and 5 (4-&gt;5).
+<synopsis>
+axisrotate(0, 1, 0, -52.0);
+</synopsis>
+rotates the current selection -52 degrees about the y-axis.
+<synopsis>
+axisrotate(0, 1, 0, -52.0, 4.0, 4.0, 4.0);
+</synopsis>
+rotates the current selection -52 degrees about the y-axis, but with the rotation centre at {4.0,4.0,4.0}.
+
+</section>
+
+<section id="command.ref.centre"><title>centre</title>
+	<indexterm><primary>commands</primary><secondary>centre</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> centre ( double ''x'', double ''y'', double ''z'', bool ''lockx'' = FALSE, bool ''locky'' = FALSE, bool ''lockz'' = FALSE)</para>
+		</listitem>
+Centre the current atom selection at the specified coordinates. The three optional arguments ''lockx'', ''locky'', and ''lockz'' (added in r953) specify one or more atomic coordinates that are to remain unchanged during the transformation.
+
+<para>For example:</para>
+<synopsis>
+centre(0.0, 0.0, 15.0);
+</synopsis>
+centres the current selection at the coordinates (0 0 15).
+
+
+</section>
+
+<section id="command.ref.matrixconvert"><title>matrixconvert</title>
+	<indexterm><primary>commands</primary><secondary>matrixconvert</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> matrixconvert int ''i_sx'', int ''j_sx'', int ''i_sy'', int ''j_sy'', int ''i_sz'', int ''j_sz'', int ''i_tx'', int ''j_tx'', int ''i_ty'', int ''j_ty'', int ''i_tz'', int ''j_tz'' )</para>
+		</listitem>
+		<listitem>
+			<para> matrixconvert int ''i_sx'', int ''j_sx'', int ''i_sy'', int ''j_sy'', int ''i_sz'', int ''j_sz'', int ''i_tx'', int ''j_tx'', int ''i_ty'', int ''j_ty'', int ''i_tz'', int ''j_tz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+		<listitem>
+			<para> matrixconvert double ''s_ax'', double ''s_ay'', double ''s_az'', double ''s_bx'', double ''s_by'', double ''s_bz'', double ''s_cx'', double ''s_cy'', double ''s_cz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'' )</para>
+		</listitem>
+		<listitem>
+			<para> matrixconvert double ''s_ax'', double ''s_ay'', double ''s_az'', double ''s_bx'', double ''s_by'', double ''s_bz'', double ''s_cx'', double ''s_cy'', double ''s_cz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+''See also ((Commands: Transformation|#reorient|reorient))''
+From a defined frame of reference (i.e. a set of axes defining the spatial orientation), rotate the current selection from this frame into the second frame, using the coordinate origin supplied or {0,0,0} by default. In the first form six pairs of atom IDs define each matrix, with the vectors taken to be i-&gt;j in all cases (i.e. the resulting vector is ''i-j'', normalised to 1.0), and specifying the ''x'', ''y'', and ''z'' axes in turn. In the second, the matrices are given as two sets of nine numbers that define the vectors of the axes.
+When supplying atom IDs, the ''x'' axis is taken to be absolute, the ''y''-axis is orthogonalised w.r.t. the ''x''-axis, and the ''z''-axis is taken as the cross product between the ''x'' and ''y'' axes. Note that providing the definition of the ''z'' axis is still important, however, since the vector cross product is adjusted (if necessary) to point along the same direction as this supplied ''z''-axis. When supplying the complete matrices no orthogonalisation or normalisation of the axes is performed (permitting arbitrary scale and shear operations).
+
+<para>For example:</para>
+<synopsis>
+matrixconvert(1, 2, 1, 3, 1, 4, 10, 11, 12, 13, 14, 15);
+</synopsis>
+defines a the current selection's frame of reference as (in terms of atom IDs) X=(1-&gt;2), Y=(1-&gt;3), and Z=(1-&gt;4), which will be rotated such that it corresponds to the new frame of reference (again defined by atom IDs) X=(10-&gt;11), Y=(12-&gt;13), and Z=(14-&gt;15).
+<synopsis>
+matrixconvert -0.7348 -0.0192 -0.678 0.4979 0.6635 -0.5584 0.4606 -0.7479 -0.47801 1 0 0 0 1 0 0 0 1 
+</synopsis>
+defines a the current selection's frame of reference as the vectors X={-0.7348, -0.0192, -0.678}, Y={0.4979, 0.6635, -0.5584}, and Z={0.4606, -0.7479, -0.47801}, which will be rotated into the standard reference frame.
+
+</section>
+
+<section id="command.ref.matrixtransform"><title>matrixtransform</title>
+	<indexterm><primary>commands</primary><secondary>matrixtransform</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> matrixtransform ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'' )</para>
+		</listitem>
+		<listitem>
+			<para> matrixtransform ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+Transform the current selection by applying the defined matrix to each coordinate, operating about the supplied origin (or {0,0,0} by default). No orthogonalisation or normalisation of the defined axes is performed.
+
+<para>For example:</para>
+<synopsis>
+matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, 1);
+</synopsis>
+does absolutely nothing (multiplying by the identity matrix).
+<synopsis>
+matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, -1);
+</synopsis>
+mirrors the current selection in the ''xy'' plane.
+<synopsis>
+matrixtransform(0.5, 0, 0, 0, 0.5, 0, 0, 0, -1);
+</synopsis>
+scales the ''x'' and ''y''-coordinates of all selected atoms by 0.5, leaving the ''z'' coordinates intact.
+
+</section>
+
+<section id="command.ref.reorient"><title>reorient</title>
+	<indexterm><primary>commands</primary><secondary>reorient</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> reorient ( atom|int ''i_sx'', atom|int ''j_sx'', atom|int ''i_sy'', atom|int ''j_sy'', atom|int ''i_sz'', atom|int ''j_sz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'' )</para>
+		</listitem>
+		<listitem>
+			<para> reorient ( atom|int ''i_sx'', atom|int ''j_sx'', atom|int ''i_sy'', atom|int ''j_sy'', atom|int ''i_sz'', atom|int ''j_sz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+		</listitem>
+Operates in exactly the same manner as '((Commands: Transformation|#matrixtransform|matrixtransform))' except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.
+
+</section>
+
+<section id="command.ref.translate"><title>translate</title>
+	<indexterm><primary>commands</primary><secondary>translate</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> translate ( double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+Translates the current selection by the specified vector.
+
+<para>For example:</para>
+<synopsis>
+translate(1, 0, 0);
+</synopsis>
+moves the current selection 1 Angstrom along the ''x'' axis.
+
+</section>
+
+<section id="command.ref.translateatom"><title>translateatom</title>
+	<indexterm><primary>commands</primary><secondary>translateatom</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> translateatom ( double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+Translates the current atom by the specified vector.
+
+<para>For example:</para>
+<synopsis>
+translateatom(1, 0, -1);
+</synopsis>
+translates the current atom 1 Angstrom along ''x'' and -1 Angstrom along ''z''.
+
+</section>
+
+<section id="command.ref.translatecell"><title>translatecell</title>
+	<indexterm><primary>commands</primary><secondary>translatecell</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> translatecell ( double ''fracx'', double ''fracy'', double ''fracz'' )</para>
+		</listitem>
+Translates the current selection by the fractional cell vectors specified. The model must have a unit cell for this command to work.
+
+<para>For example:</para>
+<synopsis>
+translatecell(0, 0.5, 0);
+</synopsis>
+translates the current selection by an amount equivalent to half of the current cell's ''B'' vector.
+
+</section>
+
+<section id="command.ref.translateworld"><title>translateworld</title>
+	<indexterm><primary>commands</primary><secondary>translateworld</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> translateworld ( double ''wx'', double ''wy'', double ''wz'' )</para>
+		</listitem>
+Translates the current selection by the Angstrom amounts specified, with the XY plane parallel to the monitor screen.
+
+<para>For example:</para>
+<synopsis>
+translateworld(0, 0, 10);
+</synopsis>
+translates the current selection 10 Angstroms 'into' the screen.
+
+</section>
+
+<section id="command.ref.mirror"><title>mirror</title>
+	<indexterm><primary>commands</primary><secondary>mirror</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> mirror ( string ''axis'' )</para>
+		</listitem>
+Mirror the current selection in the specified plane about its geometric centre.
+
+<para>For example:</para>
+<synopsis>
+mirror(&quot;y&quot;);
+</synopsis>
+mirrors the current selection about the ''y'' axis.

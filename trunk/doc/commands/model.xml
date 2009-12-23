@@ -1,0 +1,308 @@
+<section id="commands.groups.image"><title>Image Commands</title>
+	
+	<para>Model creation and management.
+
+	<section id="command.ref.createatoms"><title>createatoms</title>
+		<indexterm><primary>commands</primary><secondary>createatoms</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> createatoms ( )</para>
+			</listitem>
+		</itemizedlist>
+		Can be run when importing trajectory frames. Creates enough atoms in the current trajectory frame to match the parent model.
+		
+		<para>For example:</para>
+		<synopsis>
+			createatoms();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.currentmodel"><title>currentmodel</title>
+		<indexterm><primary>commands</primary><secondary>currentmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model currentmodel ( )</para>
+			</listitem>
+			<listitem>
+				<para> model currentmodel ( int ''id'' )</para>
+			</listitem>
+			<listitem>
+				<para> model currentmodel ( string ''name'' )</para>
+			</listitem>
+			<listitem>
+				<para> model currentmodel ( model ''m'' )</para>
+			</listitem>
+		</itemizedlist>
+		
+		Returns a reference to the current model (if no argument is given) or selects the supplied model and makes it the current model. The model may be selected either by name, by its integer position in the list of loaded models (i.e. 1 to N), or a model-type variable containing a valid model reference may be passed.
+		
+		<para>For example:</para>
+		<synopsis>
+			currentmodel(4);
+		</synopsis>
+		selects the fourth loaded model.
+		<synopsis>
+			currentmodel(&quot;Protein coordinates&quot;)
+		</synopsis>
+		selects the model named &quot;Protein coordinates&quot; (provided it exists)
+		<synopsis>
+			model m1, m2;
+			m1 = newmodel(&quot;Test model 1&quot;);
+			m2 = newmodel(&quot;Test model 2&quot;);
+			currentmodel(m1);
+		</synopsis>
+		creates two models, storing references to each, and then re-selects the first one and makes it the current target again.
+		
+	</section>
+	
+	<section id="command.ref.firstmodel"><title>firstmodel</title>
+		<indexterm><primary>commands</primary><secondary>firstmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model firstmodel ( )</para>
+			</listitem>
+		</itemizedlist>
+		Makes the first loaded / created model the current model, and returns a reference to it.
+		
+		<para>For example:</para>
+		<synopsis>
+			firstmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.info"><title>info</title>
+		<indexterm><primary>commands</primary><secondary>info</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> info ( )</para>
+			</listitem>
+		</itemizedlist>
+		Print out information on the current model and its atoms.
+		
+		<para>For example:</para>
+		<synopsis>
+			info();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.finalisemodel"><title>finalisemodel</title>
+		<indexterm><primary>commands</primary><secondary>finalisemodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> finalisemodel ( )</para>
+			</listitem>
+		</itemizedlist>
+		Performs various internal tasks after a model has been fully created within a filter. Should be called after all operations on each created model have finished.
+		
+		<para>For example:</para>
+		<synopsis>
+			finalisemodel();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.getmodel"><title>getmodel</title>
+		<indexterm><primary>commands</primary><secondary>getmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model getmodel ( string ''name'' )</para>
+			</listitem>
+			<listitem>
+				<para> model getmodel ( int ''id'' )</para>
+			</listitem>
+			<listitem>
+				<para> model getmodel ( model ''m'' )</para>
+			</listitem>
+		</itemizedlist>
+		Makes the named model, or the model id specified, or the referenced model the current model, returning a reference to that model. Equivalent to the ((Commands: Models|#currentmodel|currentmodel)) command, except that an argument specifying the new model <emphasis>must</emphasis> be provided.
+		
+		<para>For example:</para>
+		<synopsis>
+			getmodel(&quot;alpha2&quot;);
+		</synopsis>
+		sets the model named 'alpha2' as the current model.
+		
+		<synopsis>
+			model m = getmodel(5);
+		</synopsis>
+		sets the fifth loaded model as the current model, and stores a reference to it in the variable ''m''.
+	
+	</section>
+	
+	<section id="command.ref.lastmodel"><title>lastmodel</title>
+		<indexterm><primary>commands</primary><secondary>lastmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model lastmodel ( )</para>
+			</listitem>
+			<listitem>
+				<para> ''Introduced in v1.1 (r754)''</para>
+			</listitem>
+		</itemizedlist>
+		Makes the last loaded / created model the current model, and returns a reference to it.
+		
+		<para>For example:</para>
+		<synopsis>
+			model final = lastmodel();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.listmodels"><title>listmodels</title>
+		<indexterm><primary>commands</primary><secondary>listmodels</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> listmodels ( )</para>
+			</listitem>
+		</itemizedlist>
+		Lists all models currently available.
+		
+		<para>For example:</para>
+		<synopsis>
+			listmodels();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.loadmodel"><title>loadmodel</title>
+		<indexterm><primary>commands</primary><secondary>loadmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> int loadmodel ( string ''filename'' )</para>
+			</listitem>
+			<listitem>
+				<para> int loadmodel ( string ''filename'', string ''newname'' )</para>
+			</listitem>
+		</itemizedlist>
+		Load model(s) from the ''filename'' provided, changing the name of the the (last loaded) model to ''newname'' if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.
+		
+		<para>For example:</para>
+		<synopsis>
+			loadmodel(&quot;/home/foo/coords/test.xyz&quot;, &quot;mymodel&quot;);
+		</synopsis>
+		loads a model called 'test.xyz' and gives it the new name 'mymodel'.
+		
+	</section>
+	
+	<section id="command.ref.modeltemplate"><title>modeltemplate</title>
+		<indexterm><primary>commands</primary><secondary>modeltemplate</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> modeltemplate ( )</para>
+			</listitem>
+		</itemizedlist>
+		Can only be run when importing trajectory frames. Templates the atoms in the trajectory's parent model by creating an equal number of atoms in the target trajectory frame, and copying the element and style data. Positions, forces, and velocities are not copied from the parent model atoms.
+		
+		<para>For example:</para>
+		<synopsis>
+			modeltemplate();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.newmodel"><title>newmodel</title>
+		<indexterm><primary>commands</primary><secondary>newmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model newmodel ( string ''name'' )</para>
+			</listitem>
+		</itemizedlist>
+		Create a new model called ''name'' which becomes the current model, and return a reference to it.
+		
+		<para>For example:</para>
+		<synopsis>
+			newmodel(&quot;emptymodel&quot;);
+		</synopsis>
+		creates a new, empty model called 'emptymodel' and makes it current.
+		<synopsis>
+			model c12 = newmodel(&quot;dodecane&quot;);
+		</synopsis>
+		creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable ''c12''.
+		
+	</section>
+	
+	<section id="command.ref.nextmodel"><title>nextmodel</title>
+		<indexterm><primary>commands</primary><secondary>nextmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model nextmodel ( )</para>
+			</listitem>
+		</itemizedlist>
+		Skips to the next loaded model, makes it current, and returns a reference to it.
+		
+		<para>For example:</para>
+		<synopsis>
+			model next = nextmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.prevmodel"><title>prevmodel</title>
+		<indexterm><primary>commands</primary><secondary>prevmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> model prevmodel ( )</para>
+			</listitem>
+		</itemizedlist>
+		Skips to the previous loaded model, makes it current, and returns a reference to it.
+		
+		<para>For example:</para>
+		<synopsis>
+			model prev = prevmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.savemodel"><title>savemodel</title>
+		<indexterm><primary>commands</primary><secondary>savemodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> int savemodel ( string ''format'', string ''filename'' )</para>
+			</listitem>
+		</itemizedlist>
+		Save the current model in the  ''format'' given (which should correspond to a model export ((Filter)) nickname) to the ''filename'' specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.
+		
+		<para>For example:</para>
+		<synopsis>
+			int success = savemodel(&quot;xyz&quot;, &quot;/home/foo/newcoords/test.config&quot;);
+		</synopsis>
+		saves the current model in xyz' format to the filename given.
+	
+	</section>
+	
+	<section id="command.ref.setname"><title>setname</title>
+		<indexterm><primary>commands</primary><secondary>setname</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> setname ( string ''name'' )</para>
+			</listitem>
+		</itemizedlist>
+		Sets the name of the current model.
+		
+		<para>For example:</para>
+		<synopsis>
+			setname(&quot;panther)&quot;;
+		</synopsis>
+		gives the current model the cool-sounding name of 'panther'! Ahem.
+
+	</section>
+	
+</section>

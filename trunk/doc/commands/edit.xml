@@ -1,0 +1,107 @@
+<section id="commands.groups.edit"><title>Edit Commands</title>
+	
+	<para>Standard editing commands.</para>
+
+	<section id="command.ref.copy"><title>copy</title>
+		<indexterm><primary>commands</primary><secondary>copy</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> copy ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Copy the current atom selection to the clipboard, ready for ((Commands: Building|#paste|pasting)).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			copy();
+		</synopsis>
+		
+	</section>
+		
+		<section id="command.ref.cut"><title>cut</title>
+		<indexterm><primary>commands</primary><secondary>cut</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> cut ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Cut the current atom selection to the clipboard.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			cut();
+		</synopsis>
+		
+	</section>
+
+	<section id="command.ref.delete"><title>delete</title>
+		<indexterm><primary>commands</primary><secondary>delete</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> delete ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Delete the current atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+		delete();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.paste"><title>paste</title>
+		<indexterm><primary>commands</primary><secondary>paste</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> paste ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Paste the copied atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			paste();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.redo"><title>redo</title>
+		<indexterm><primary>commands</primary><secondary>redo</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> redo ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Redo the last 'undone' operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			redo();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.undo"><title>undo</title>
+		<indexterm><primary>commands</primary><secondary>undo</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<itemizedlist>
+			<listitem>
+				<para> undo ( )</para>
+			</listitem>
+		</itemizedlist>
+		<para>Undo the last operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			undo();
+		</synopsis>
+
+	</section>
+
+</section>

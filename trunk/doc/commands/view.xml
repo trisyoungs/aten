@@ -1,0 +1,207 @@
+Commands to change the current model's view.
+
+</section>
+
+<section id="command.ref.axisrotateview"><title>axisrotateview</title>
+	<indexterm><primary>commands</primary><secondary>axisrotateview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> rotateview ( double ''ax'', double ''ay'', double ''az'', double ''angle'' )</para>
+		</listitem>
+Rotate the current view ''angle'' degrees about an axis defined between the supplied point {ax,ay,az} and the origin.
+
+</section>
+
+<section id="command.ref.getview"><title>getview</title>
+	<indexterm><primary>commands</primary><secondary>getview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> getview ( )</para>
+		</listitem>
+Outputs the 3x3 rotation matrix, the camera position vector, and the z-rotation of the camera for the current model's view. The list of numbers may be passed directly to the 'setview' command to re-create the view exactly.
+
+<para>For example:</para>
+<synopsis>
+getview();
+</synopsis>
+
+</section>
+
+<section id="command.ref.orthographic"><title>orthographic</title>
+	<indexterm><primary>commands</primary><secondary>orthographic</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> orthographic ( )</para>
+		</listitem>
+Set the view for all models to be an orthographic projection.
+
+<para>For example:</para>
+<synopsis>
+orthographic();
+</synopsis>
+
+</section>
+
+<section id="command.ref.perspective"><title>perspective</title>
+	<indexterm><primary>commands</primary><secondary>perspective</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> perspective ( )</para>
+		</listitem>
+Set the view for all models to be a perspective projection.
+
+<para>For example:</para>
+<synopsis>
+perspective();
+</synopsis>
+
+</section>
+
+<section id="command.ref.resetview"><title>resetview</title>
+	<indexterm><primary>commands</primary><secondary>resetview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> resetview ( )</para>
+		</listitem>
+Resets the view rotation and zoom for the current model.
+
+<para>For example:</para>
+<synopsis>
+resetview();
+</synopsis>
+
+</section>
+
+<section id="command.ref.rotateview"><title>rotateview</title>
+	<indexterm><primary>commands</primary><secondary>rotateview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> rotateview ( double ''rotx'', double ''roty'' )</para>
+		</listitem>
+Rotates the current view by ''rotx'' degrees around the ''x'' axis and ''roty'' degrees around the ''y'' axis.
+
+<para>For example:</para>
+<synopsis>
+rotateview(10.0, 0.0);
+</synopsis>
+
+</section>
+
+<section id="command.ref.setview"><title>setview</title>
+	<indexterm><primary>commands</primary><secondary>setview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> setview ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+		<listitem>
+			<para> setview ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''x'', double ''y'', double ''z'', double ''zrot'' )</para>
+		</listitem>
+Sets the current view to the rotation matrix, camera vector, and (if supplied) camera ''z'' rotation specified. The 10-number output of ((Commands: View|#getview|getview)) can be passed to 'setview' to recreate the old camera rotation and position.
+
+<para>For example:</para>
+<synopsis>
+setview(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
+</synopsis>
+sets a view with the ''z'' axis pointing up, and the ''y'' axis normal to the screen (i.e. rotated 90 degrees around the ''x'' axis)
+
+</section>
+
+<section id="command.ref.speedtest"><title>speedtest</title>
+	<indexterm><primary>commands</primary><secondary>speedtest</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> speedtest ( )</para>
+		</listitem>
+		<listitem>
+			<para> speedtest ( int ''nrenders'' )</para>
+		</listitem>
+Performs a quick speed test based on rendering of the current model and general view.
+
+<para>For example:</para>
+<synopsis>
+speedtest();
+</synopsis>
+spins the current model for the default of 100 rendering passes.
+<synopsis>
+speedtest(2000);
+</synopsis>
+spins the current model for 2000 rendering passes.
+
+</section>
+
+<section id="command.ref.translateview"><title>translateview</title>
+	<indexterm><primary>commands</primary><secondary>translateview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> translateview ( double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+Translates the camera viewing the current model.
+
+<para>For example:</para>
+<synopsis>
+translateview(0.0, 0.0, 1.0);
+</synopsis>
+
+</section>
+
+<section id="command.ref.viewalong"><title>viewalong</title>
+	<indexterm><primary>commands</primary><secondary>viewalong</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> viewalong ( double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+Sets the current view so that it is along the specified vector.
+
+<para>For example:</para>
+<synopsis>
+viewalong(0, 0, -1);
+</synopsis>
+view the current model along the negative z-axis.
+
+</section>
+
+<section id="command.ref.viewalongcell"><title>viewalongcell</title>
+	<indexterm><primary>commands</primary><secondary>viewalongcell</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> viewalongcell ( double ''x'', double ''y'', double ''z'' )</para>
+		</listitem>
+Sets the current view so that is along the specified cell vector.
+
+<para>For example:</para>
+<synopsis>
+viewalongcell(1, 0, 0);
+</synopsis>
+view the current model along the cells ''x'' axis.
+
+</section>
+
+<section id="command.ref.zoomview"><title>zoomview</title>
+	<indexterm><primary>commands</primary><secondary>zoomview</secondary></indexterm>
+	<para><emphasis>Syntax:</emphasis></para>
+	<itemizedlist>
+		<listitem>
+			<para> zoomview ( double ''dz'' )</para>
+		</listitem>
+Zooms the view by the specified amount.
+
+<para>For example:</para>
+<synopsis>
+zoomview(10.0);
+</synopsis>
+moves the camera 10 Angstroms forwards along the z-direction.
+<synopsis>
+zoomview(-5);
+</synopsis>
+moves the camera 5 Angstroms backwards along the z-direction.
