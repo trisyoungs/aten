@@ -1,0 +1,440 @@
+<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
+
+<section id="enums.celltypes"><title>Cell Types</title>
+
+	<para>A model's unit cell is, at any given time, one of the following:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Cell type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>none</entry>
+					<entry>The model has no unit cell (i.e. it is non-periodic)</entry>
+				</row>
+				<row>
+					<entry>cubic</entry>
+					<entry>The model's unit cell is cubic, with A=B=C and alpha=beta=gamma=90</entry>
+				</row>
+				<row>
+					<entry>orthorhombic</entry>
+					<entry>The model's unit cell is an orthorhombus, with any cell lengths and alpha=beta=gamma=90</entry>
+				</row>
+				<row>
+					<entry>parallelepiped</entry>
+					<entry>The model's unit cell is monoclinic or triclinic, with any cell lengths and angles</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="commands.groups.cell">Cell Commands</link> for methods to set and manipulate unit cells of models</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="command.types.unitcell">Unitcell type</link> for information on the relevant variable type</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.colourschemes"><title>Colour Schemes</title>
+
+	<para>Available atomic colouring schemes are:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Colour scheme keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>charge</entry>
+					<entry>Atoms and connected bonds are coloured according to their charge</entry>
+				</row>
+				<row>
+					<entry>element</entry>
+					<entry>Atoms and connected bonds are coloured according to their element</entry>
+				</row>
+				<row>
+					<entry>force</entry>
+					<entry>Atoms and connected bonds are coloured according to the force acting on the atom</entry>
+				</row>
+				<row>
+					<entry>velocity</entry>
+					<entry>Atoms and connected bonds are coloured according to the velocities of the atoms</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="commands.groups.atom">Atom Commands</link> for methods to create and edit atoms</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+</section>
+
+<section id="enums.drawingstyles"><title>Drawing Styles</title>
+	
+	<para>Available drawing styles for individual atoms are:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Drawing style keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>stick</entry>
+					<entry>Atoms and connected bonds are drawn using simple lines</entry>
+				</row>
+				<row>
+					<entry>tube</entry>
+					<entry>Atoms and connected bonds are drawn using 'capped' cylinders</entry>
+				</row>
+				<row>
+					<entry>sphere</entry>
+					<entry>Atoms and connected bonds are drawn using spheres and cylinders, with all atoms the same size</entry>
+				</row>
+				<row>
+					<entry>scaled</entry>
+					<entry>Atoms and connected bonds are drawn using spheres and cylinders, with all atoms sized according to their atomic radius set in the preferences</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+</section>
+
+<section id="enums.labeltypes"><title>Label Types</title>
+	
+	<para>Valid label types are as follows:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Label type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>charge</entry>
+					<entry>Atomic charge currently assigned to the atom</entry>
+				</row>
+				<row>
+					<entry>element</entry>
+					<entry>Element symbol of the atom</entry>
+				</row>
+				<row>
+					<entry>ffequiv</entry>
+					<entry>Forcefield equivalent name from the assigned forcefield atom type (or the forcefield atom type name if no equivalent applies)</entry>
+				</row>
+				<row>
+					<entry>id</entry>
+					<entry>Integer atom ID</entry>
+				</row>
+				<row>
+					<entry>type</entry>
+					<entry>Assigned forcefield atom type name (if any)</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.groups.label">Labeling Commands</link> for methods to set and remove atom labels</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.outputtypes"><title>Output Types</title>
+	
+	<para>Valid output types (or debug modes) are as follows:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Output type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>all</entry>
+					<entry>Enable output of all types listed in this table</entry>
+				</row>
+				<row>
+					<entry>calls</entry>
+					<entry>Print out entrances and exits to most subroutines to enable quick tracing of crash locations</entry>
+				</row>
+				<row>
+					<entry>commands</entry>
+					<entry>Trace execution of commands in command lists (e.g. filters) and print information on variable access paths</entry>
+				</row>
+				<row>
+					<entry>gl</entry>
+					<entry>Debug OpenGL calls and graphics capabilities as best as is possible</entry>
+				</row>
+				<row>
+					<entry>parse</entry>
+					<entry>Debug file-reading and argument parsing routines</entry>
+				</row>
+				<row>
+					<entry>typing</entry>
+					<entry>Print (lots of) information regarding setting and matching of atom type descriptions</entry>
+				</row>
+				<row>
+					<entry>verbose</entry>
+					<entry>Enable a little extra output (but not much)</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="commands.groups.system">System Commands</link> for methods to set various system values</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.parseoptions"><title>Parse Options</title>
+	
+	<para>These options determine how general parsing of plain text files proceeds, as well as controlling delimited argument parsing.</para>
+
+	<table frame='all' pgwide='1' tocentry='1'><title>Parse option keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>usequotes</entry>
+					<entry>Phrases enclosed in quotes will be parsed as single arguments</entry>
+				</row>
+				<row>
+					<entry>skipblanks</entry>
+					<entry>Blank lines (or those containing comments) are automatically skipped</entry>
+				</row>
+				<row>
+					<entry>stripbrackets</entry>
+					<entry>Normal parentheses are automatically stripped from the input file</entry>
+				</row>
+				<row>
+					<entry>noescapes</entry>
+					<entry>Treat backslash as a normal character</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="commands.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.readsuccess"><title>Read Success Integers</title>
+	
+	<para>Integer return values for many <link linkend="commands.groups.readwrite">read/write</link> operations.</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Read/write return values</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>1</entry>
+					<entry>Success - no errors encountered</entry>
+				</row>
+				<row>
+					<entry>0</entry>
+					<entry>The read/write operation failed before it was completed</entry>
+				</row>
+				<row>
+					<entry>-1</entry>
+					<entry>End-of-file was encountered during read operation||</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="commands.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.viewobjects"><title>View Objects</title>
+	
+	<para>Any combination of the following 'bit' values may be summed into a single integer and given to the 'screenobjects' or 'offscreenobjects' <link linkend="command.types.preferences">preferences</link> members to determine exactly what is drawn on and off screen (i.e. to bitmap images).</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>View object keywords</title>
+		<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Keyword</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>1</entry>
+					<entry>atoms</entry>
+					<entry>Atoms and bonds in the model</entry>
+				</row>
+				<row>
+					<entry>2</entry>
+					<entry>cell</entry>
+					<entry>The unit cell of the model, if any</entry>
+				</row>
+				<row>
+					<entry>4</entry>
+					<entry>cellaxes</entry>
+					<entry>Cell axes at the corner of the unit cell (if displayed)</entry>
+				</row>
+				<row>
+					<entry>8</entry>
+					<entry>cellrepeat</entry>
+					<entry>Cell repeat units</entry>
+				</row>
+				<row>
+					<entry>16</entry>
+					<entry>forcearrows</entry>
+					<entry>Force arrows (defunct)</entry>
+				</row>
+				<row>
+					<entry>32</entry>
+					<entry>globe</entry>
+					<entry>Rotation globe</entry>
+				</row>
+				<row>
+					<entry>64</entry>
+					<entry>labels</entry>
+					<entry>Atom labels</entry>
+				</row>
+				<row>
+					<entry>128</entry>
+					<entry>measurements</entry>
+					<entry>Geometry measurements</entry>
+				</row>
+				<row>
+					<entry>256</entry>
+					<entry>regions</entry>
+					<entry>Disordered builder regions</entry>
+				</row>
+				<row>
+					<entry>512</entry>
+					<entry>surfaces</entry>
+					<entry>3D and 2D grid-data surfaces</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.types.preferences">Preferences</link> variable type for the relevant prefs values to set</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>
+
+<section id="enums.zmaptypes"><title>ZMapping Types</title>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Map type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>alpha</entry>
+					<entry>Convert based on the alpha part of the name only. Leading or trailing numbers and symbols are discarded. The alpha part is assumed to be an element symbol</entry>
+				</row>
+				<row>
+					<entry>auto</entry>
+					<entry>Attempts several of the other conversions of increasing complexity until a match is found</entry>
+				</row>
+				<row>
+					<entry>ff</entry>
+					<entry>Search through the names of atomtypes in currently-loaded forcefields, assigning elements based on matches found</entry>
+				</row>
+				<row>
+					<entry>firstalpha</entry>
+					<entry>Convert based on the first alpha part of the name only (i.e. until a non-alpha character is found). The alpha part is assumed to be an element symbol</entry>
+				</row>
+				<row>
+					<entry>name</entry>
+					<entry>The name is assumed to be an actual element name, and is converted to the relevant element number</entry>
+				</row>
+				<row>
+					<entry>numeric</entry>
+					<entry>Use the numeric part of the name as the element number</entry>
+				</row>
+				<row>
+					<entry>singlealpha</entry>
+					<entry>Convert based on the first alphabetic character encountered - useful only when single-character element symbols are likely to be found (e.g. for pure organic CHON systems)</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="cli.commands.z">ZMapping CLI option</link> to see how to set the zmapping style from the command line</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>

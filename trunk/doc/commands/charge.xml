@@ -13,7 +13,7 @@
 				<para> double charge ( double q )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Assigns a charge of ''q'' to each selected atom in the current model, or returns the total charge of the current selection if no value is supplied.</para>
+		<para>Assigns a charge of <emphasis>q</emphasis> to each selected atom in the current model, or returns the total charge of the current selection if no value is supplied.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -65,7 +65,7 @@
 				<para> chargepatom ( int id, double q )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Assigns a charge of ''q'' to atom ''id'' in each molecule of the current pattern.</para>
+		<para>Assigns a charge of <emphasis>q</emphasis> to atom <emphasis>id</emphasis> in each molecule of the current pattern.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -83,7 +83,7 @@
 				<para> chargetype ( string fftype, double q )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Assigns a charge of ''q'' to each atom that is of type ''fftype'' in the current model.</para>
+		<para>Assigns a charge of <emphasis>q</emphasis> to each atom that is of type <emphasis>fftype</emphasis> in the current model.</para>
 		
 		<para>For example:</para>
 		<synopsis>

@@ -10,7 +10,7 @@
 				<para> mcaccept ( string move, double emax )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the energy difference ''emax'' for the movetype ''move'' above which moves will be rejected.</para>
+		<para>Sets the energy difference <emphasis>emax</emphasis> for the movetype <emphasis>move</emphasis> above which moves will be rejected.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -54,7 +54,7 @@
 				<para> mcmaxstep ( string move, double size )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the maximal step size for the move type ''move''.</para>
+		<para>Sets the maximal step size for the move type <emphasis>move''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -76,7 +76,7 @@
 				<para> mctrials ( string move, int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the number of times ''n'' that the move type ''move'' should be attempted in each cycle.</para>
+		<para>Sets the number of times <emphasis>n</emphasis> that the move type <emphasis>move</emphasis> should be attempted in each cycle.</para>
 		
 		<para>For example:</para>
 		<synopsis>

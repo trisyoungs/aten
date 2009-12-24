@@ -197,7 +197,7 @@
 				<para> scale ( double x, double y, double z, bool calcenergy = FALSE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Scale unit cell and its constituent atoms by the scale factors ''x'', ''y'', and ''z''. The optional ''calcenergy'' parameter calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and its constituent atoms by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -215,7 +215,7 @@
 				<para> scalemolecules ( double, x, double y, double z, bool calcenergy = FALSE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors ''x'', ''y'', and ''z''. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional ''calcenergy'' parameter calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -233,7 +233,7 @@
 				<para> setcell ( string parameter, double value )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set a single unit cell parameter one of 'a'/, 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') to the given ''value''.</para>
+		<para>Set a single unit cell parameter one of 'a'/, 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') to the given <emphasis>value''.</para>
 		
 		<para>For example:</para>
 		<synopsis>

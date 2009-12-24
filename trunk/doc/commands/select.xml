@@ -117,7 +117,7 @@
 				<para> int selectfftype ( string fftype )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Select all atoms with forcefield type ''fftype'' in the current model. The number of atoms selected is returned.</para>
+		<para>Select all atoms with forcefield type <emphasis>fftype</emphasis> in the current model. The number of atoms selected is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -135,7 +135,7 @@
 				<para> void selectmiller ( int h, int k, int l, bool inside = FALSE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Select all atoms that are 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is specified as TRUE then atoms ''inside'' the specified Miller plane (and its mirror) are selected.</para>
+		<para>Select all atoms that are 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is specified as TRUE then atoms <emphasis>inside</emphasis> the specified Miller plane (and its mirror) are selected.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -210,7 +210,7 @@
 				<para> int selectradial ( atom|int id, double r )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Select all atoms within ''r'' Angstroms of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
+		<para>Select all atoms within <emphasis>r</emphasis> Angstroms of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -228,7 +228,7 @@
 				<para> int selecttype ( int|string element, string description )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Selects all atoms of the given ''element'' that also match the NETA ''description'' given, allowing selections to be made based on the connectivity and local environment of atoms. The number of (previously unselected) atoms matched is returned.</para>
+		<para>Selects all atoms of the given <emphasis>element</emphasis> that also match the NETA <emphasis>description</emphasis> given, allowing selections to be made based on the connectivity and local environment of atoms. The number of (previously unselected) atoms matched is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>

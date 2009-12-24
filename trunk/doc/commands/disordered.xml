@@ -10,7 +10,7 @@
 				<para> disorder ( int ncycles )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Start the disordered builder, requesting ''ncycles'' cycles of Monte Carlo moves.</para>
+		<para>Start the disordered builder, requesting <emphasis>ncycles</emphasis> cycles of Monte Carlo moves.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -28,7 +28,7 @@
 				<para> nmols ( int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Specify that ''n'' copies of the current model are to be added (or attempted to be added) during the build process.</para>
+		<para>Specify that <emphasis>n</emphasis> copies of the current model are to be added (or attempted to be added) during the build process.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -93,7 +93,7 @@
 				<para> regiongeometry ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the geometry of the allowed region for the current model. The ''x'', ''y'', and ''z'' values determine the total extent/size of the region along each principal axis. For cylindrical regions, ''x'' and ''y'' determine the radii of the cylinder in the perpendicular directions to the cylinder vector, while ''z'' determines the length of the cylinder.</para>
+		<para>Sets the geometry of the allowed region for the current model. The <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis> values determine the total extent/size of the region along each principal axis. For cylindrical regions, <emphasis>x</emphasis> and <emphasis>y</emphasis> determine the radii of the cylinder in the perpendicular directions to the cylinder vector, while <emphasis>z</emphasis> determines the length of the cylinder.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -156,7 +156,7 @@
 				<para> regionshape ( string shape )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the shape of the allowed insertion region for the current model. Valid ''shapes'' are 'cell', 'cuboid', 'spheroid' and 'cylinder'.</para>
+		<para>Sets the shape of the allowed insertion region for the current model. Valid <emphasis>shapes</emphasis> are 'cell', 'cuboid', 'spheroid' and 'cylinder'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

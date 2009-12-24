@@ -21,7 +21,7 @@
 				<para> addpoint ( int id, double value, double r, double g, double b, double alpha )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Adds a new point to the end of the specified colourscale, at the point ''value'' and with the RGB[A] colour provided.</para>
+		<para>Adds a new point to the end of the specified colourscale, at the point <emphasis>value</emphasis> and with the RGB[A] colour provided.</para>
 		
 		<para>For example:</para>
 		<synopsis>

@@ -15,7 +15,7 @@
 		printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	</synopsis>
 	
-	<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector ''v'' by requesting the ''r'' subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
+	<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector <emphasis>v</emphasis> by requesting the <emphasis>r</emphasis> subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
 	
 	<para>All subvariables can be read, but not all can be written back to - these are read-only subvariables, and are indicated with 'ro' in the <emphasis>Access</emphasis> column in the following tables.</para>
 	
@@ -98,7 +98,7 @@
 					</row>
 					<row>
 						<entry>prefs</entry>
-						<entry><link linkend="command.types.prefs">prefs</link></entry>
+						<entry><link linkend="command.types.preferences">prefs</link></entry>
 						<entry>ro</entry>
 						<entry>Program preferences</entry>
 					</row>
@@ -149,19 +149,19 @@
 						<entry>fx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Force ''x''-component</entry>
+						<entry>Force <emphasis>x''-component</entry>
 					</row>
 					<row>
 						<entry>fy</entry>
 						<entry>double</entry>
 						<entry> rw</entry>
-						<entry>Force ''y''-component</entry>
+						<entry>Force <emphasis>y''-component</entry>
 					</row>
 					<row>
 						<entry>fz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Force ''z''-component</entry>
+						<entry>Force <emphasis>z''-component</entry>
 					</row>
 					<row>
 						<entry>hidden</entry>
@@ -203,19 +203,19 @@
 						<entry>rx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position ''x''-component</entry>
+						<entry>Position <emphasis>x''-component</entry>
 					</row>
 					<row>
 						<entry>ry</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position ''y''-component</entry>
+						<entry>Position <emphasis>y''-component</entry>
 					</row>
 					<row>
 						<entry>rz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position ''z''-component</entry>
+						<entry>Position <emphasis>z''-component</entry>
 					</row>
 					<row>
 						<entry>selected</entry>
@@ -245,19 +245,19 @@
 						<entry>vx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity ''x''-component</entry>
+						<entry>Velocity <emphasis>x''-component</entry>
 					</row>
 					<row>
 						<entry>vy</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity ''y''-component</entry>
+						<entry>Velocity <emphasis>y''-component</entry>
 					</row>
 					<row>
 						<entry>vz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity ''z''-component</entry>
+						<entry>Velocity <emphasis>z''-component</entry>
 					</row>
 					<row>
 						<entry>z</entry>
@@ -333,7 +333,7 @@
 					<row>
 						<entry>partner ( Atom <emphasis>i</emphasis> )</entry>
 						<entry><link linkend="command.types.atom">atom</link></entry>
-						<entry>Return the other atom (i.e. not ''i'') involved in the bond</entry>
+						<entry>Return the other atom (i.e. not <emphasis>i'') involved in the bond</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -1248,14 +1248,12 @@
 	
 	</section>
 	
-	<section id="command.types.prefs"><title>Prefs</title>
+	<section id="command.types.preferences"><title>Prefs</title>
 		
-		<indexterm id="idx.command.types.prefs" class="startofrange"><primary>types</primary><secondary>prefs</secondary></indexterm>
+		<indexterm id="idx.command.types.preferences" class="startofrange"><primary>types</primary><secondary>prefs</secondary></indexterm>
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Prefs type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -1287,7 +1285,7 @@
 						<entry>atomstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawingstyle">Drawing Styles</link></entry>
+						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawingstyles">Drawing Styles</link></entry>
 					</row>
 					<row>
 						<entry>backcull</entry>
@@ -1311,7 +1309,7 @@
 						<entry>bondstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawingstyle">Drawing Styles</link></entry>
+						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawingstyles">Drawing Styles</link></entry>
 					</row>
 					<row>
 						<entry>bondtolerance</entry>
@@ -1359,7 +1357,7 @@
 						<entry>colourscheme</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
-						<entry>The current <link linkend="enums.colourscheme">Colour Scheme</link> used to colour atoms and bonds</entry>
+						<entry>The current <link linkend="enums.colourschemes">Colour Scheme</link> used to colour atoms and bonds</entry>
 					</row>
 					<row>
 						<entry>commonelements</entry>
@@ -1642,7 +1640,7 @@
 			</tgroup>
 		</table>
 		
-		<indexterm startref="idx.command.types.prefs" class="endofrange"></indexterm>
+		<indexterm startref="idx.command.types.preferences" class="endofrange"></indexterm>
 	
 	</section>
 	

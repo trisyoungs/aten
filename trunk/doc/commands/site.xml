@@ -12,7 +12,7 @@
 				<para> getsite ( string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Selects (makes current) the site referenced by ''name''. If the site cannot be found an error is returned.</para>
+		<para>Selects (makes current) the site referenced by <emphasis>name''. If the site cannot be found an error is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -47,7 +47,7 @@
 				<para> newsite ( string name, pattern pattern, string &quot;atomlist&quot; )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Creates a new site ''name'' for the current model, based on the molecule of ''pattern'', and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
+		<para>Creates a new site <emphasis>name</emphasis> for the current model, based on the molecule of <emphasis>pattern</emphasis>, and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
 		
 		<para>For example:</para>
 		<synopsis>

@@ -24,7 +24,7 @@
 				<para> addreadoption ( string option )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Controls aspects of file reading. See ((Read Options)) for a list of possible ''options''.</para>
+		<para>Controls aspects of file reading. See ((Read Options)) for a list of possible <emphasis>options''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -85,18 +85,18 @@
 				<para> int find ( string searchstring, string linevar )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Searches for the specified ''searchstring'' in the input file, returning 0 if ''searchstring'' is not found before the end of the file, and 1 if it is. The optional argument ''linevar'' is a character variable in which the matching line (if any) is put.</para>
+		<para>Searches for the specified <emphasis>searchstring</emphasis> in the input file, returning 0 if <emphasis>searchstring</emphasis> is not found before the end of the file, and 1 if it is. The optional argument <emphasis>linevar</emphasis> is a character variable in which the matching line (if any) is put.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int iresult = find(&quot;Final Energy:&quot;);
 		</synopsis>
-		<para>searches for the string 'Final Energy' in the input file, placing the result of the search in the variable ''iresult''.</para>
+		<para>searches for the string 'Final Energy' in the input file, placing the result of the search in the variable <emphasis>iresult''.</para>
 		<synopsis>
 			string line;
 			int n = find(&quot;Optimised Geometry:&quot;, line);
 		</synopsis>
-		<para>searches for the string 'Optimised Geometry:' in the input file, placing the whole of the matching line from the input file in the variable ''line''.</para>
+		<para>searches for the string 'Optimised Geometry:' in the input file, placing the whole of the matching line from the input file in the variable <emphasis>line''.</para>
 	
 	</section>
 	
@@ -115,7 +115,7 @@
 			string nextline;
 			int n = getline(nextline);
 		</synopsis>
-		<para>gets the next line from the file and places it in the variable ''nextline''.</para>
+		<para>gets the next line from the file and places it in the variable <emphasis>nextline''.</para>
 	
 	</section>
 	
@@ -162,7 +162,7 @@
 				<para> int peekchar ( )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Peeks the next character that will be read from the source file, and returns it as an integer value representing the ASCII character code (see [http://www.asciitable.com], for example). The actual file position for reading is unaffected.</para>
+		<para>Peeks the next character that will be read from the source file, and returns it as an integer value representing the ASCII character code (see <ulink url="http://www.asciitable.com">http://www.asciitable.com</ulink>, for example). The actual file position for reading is unaffected.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -179,13 +179,13 @@
 				<para> string readchars ( int nchars, bool skipeol = TRUE )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Reads and returns (as a string) a number of characters from the input file. If ''skipeol'' is true (the default) then the end-of-line markers '\n' and '\r' will be ignored and will not count towards ''nchars'' - this is of most use when reading formatted text files and you want to 'ignore' the fact that data is presented on many lines rather than one. If ''skipeol'' is false then '\n' and '\r' <emphasis>will</emphasis> count towards the total number of characters. Used on formatted text files, this might give you unexpected results.</para>
+		<para>Reads and returns (as a string) a number of characters from the input file. If <emphasis>skipeol</emphasis> is true (the default) then the end-of-line markers '\n' and '\r' will be ignored and will not count towards <emphasis>nchars</emphasis> - this is of most use when reading formatted text files and you want to 'ignore' the fact that data is presented on many lines rather than one. If <emphasis>skipeol</emphasis> is false then '\n' and '\r' <emphasis>will</emphasis> count towards the total number of characters. Used on formatted text files, this might give you unexpected results.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			string text = readchars(80);
 		</synopsis>
-		<para>reads the next 80 characters from the input file and puts it into the variable ''text''.</para>
+		<para>reads the next 80 characters from the input file and puts it into the variable <emphasis>text''.</para>
 		
 	</section>
 	
@@ -206,7 +206,7 @@
 		<synopsis>
 			double x = readdouble();
 		</synopsis>
-		<para>reads a floating point value into the variable ''x''.</para>
+		<para>reads a floating point value into the variable <emphasis>x''.</para>
 		
 	</section>
 	
@@ -218,14 +218,14 @@
 				<para> int readdoublearray ( double &amp;array, int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(double)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.</para>
+		<para>Read <emphasis>n</emphasis> consecutive integer values (whose individual size is determined from the result of calling 'sizeof(double)') from an unformatted (binary) input file, placing in the <emphasis>array</emphasis> provided. The size of the array provided must be at least <emphasis>n''. The command returns a ((Read Success)) integer.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			double data[45];
 			int success = readdoublearray(data, 45);
 		</synopsis>
-		<para>reads 45 double numbers into the array ''data''.</para>
+		<para>reads 45 double numbers into the array <emphasis>data''.</para>
 		
 	</section>
 	
@@ -246,7 +246,7 @@
 		<synopsis>
 			int i = readint();
 		</synopsis>
-		<para>reads an integer number into the variable ''i''.</para>
+		<para>reads an integer number into the variable <emphasis>i''.</para>
 		
 	</section>
 	
@@ -258,14 +258,14 @@
 				<para> int readintarray ( int &amp;array, int n)</para>
 			</listitem>
 		</itemizedlist>
-		<para>Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.</para>
+		<para>Read <emphasis>n</emphasis> consecutive integer values (whose individual size is determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file, placing in the <emphasis>array</emphasis> provided. The size of the array provided must be at least <emphasis>n''. The command returns a ((Read Success)) integer.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int data[100];
 			int success = readintarray(data, 100);
 		</synopsis>
-		<para>reads 100 integer numbers into the array ''data''.</para>
+		<para>reads 100 integer numbers into the array <emphasis>data''.</para>
 		
 	</section>
 	
@@ -284,7 +284,7 @@
 			double x,y,z;
 			int n = readline(x,y,z);
 		</synopsis>
-		<para>reads a line from the file and places the first three delimited items on the line into the variables ''x'', ''y'', and ''z''.</para>
+		<para>reads a line from the file and places the first three delimited items on the line into the variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''.</para>
 	
 	</section>
 	
@@ -303,7 +303,7 @@
 			double x,y,z;
 			int n = readlinef(&quot;%8.6f %8.6f %8.6f&quot;,x,y,z);
 		</synopsis>
-		<para>reads a line from the file, assuming that the line contains three floating point values of 8 characters length, and separated by a space, into the three variables ''x'', ''y'', and ''z''.</para>
+		<para>reads a line from the file, assuming that the line contains three floating point values of 8 characters length, and separated by a space, into the three variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''.</para>
 		
 	</section>
 	
@@ -315,14 +315,14 @@
 				<para> int readnext ( int|double|string variable )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Read the next delimited argument from the last line read with either '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' into the ''variable'' supplied. The command returns either TRUE for success or FALSE (e.g. if the end of file was reached without reading any non-whitespace characters, or an error was encountered).</para>
+		<para>Read the next delimited argument from the last line read with either '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' into the <emphasis>variable</emphasis> supplied. The command returns either TRUE for success or FALSE (e.g. if the end of file was reached without reading any non-whitespace characters, or an error was encountered).</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			double d;
 			int n = readnext(d);
 		</synopsis>
-		<para>read the next delimited argument into the double variable ''d''.</para>
+		<para>read the next delimited argument into the double variable <emphasis>d''.</para>
 		
 	</section>
 	
@@ -334,7 +334,7 @@
 				<para> int readvar ( string source, int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Parse the contents of the supplied string ''source'' into the supplied variables, assuming delimited data items. Delimited items read from ''source'' are converted automatically to the type inferred by the target variable. The number of data items parsed successfully is returned.</para>
+		<para>Parse the contents of the supplied string <emphasis>source</emphasis> into the supplied variables, assuming delimited data items. Delimited items read from <emphasis>source</emphasis> are converted automatically to the type inferred by the target variable. The number of data items parsed successfully is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -348,7 +348,7 @@
 		<synopsis>
 			Element = Carbon, n = 7
 		</synopsis>
-		<para>The character string in the variable ''data'' is parsed, with delimited chunks placed into the supplied variables. Note the repeated use of the variable ''discard'', used to get rid of unwanted data. Also, note that there are not enough items in ''data'' to satisfy the final occurrence of ''discard'', and so the function returns a value of 7 (as opposed to the actual number of target variables supplied, 8).</para>
+		<para>The character string in the variable <emphasis>data</emphasis> is parsed, with delimited chunks placed into the supplied variables. Note the repeated use of the variable <emphasis>discard</emphasis>, used to get rid of unwanted data. Also, note that there are not enough items in <emphasis>data</emphasis> to satisfy the final occurrence of <emphasis>discard</emphasis>, and so the function returns a value of 7 (as opposed to the actual number of target variables supplied, 8).</para>
 		
 	</section>
 	
@@ -360,7 +360,7 @@
 				<para> int readvar ( string variable, string format, int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Parse the contents of the supplied string ''variable'' according to the supplied ''format'' string, placing in the supplied variables. The number of format specifiers successfully parsed (or, to look at it another way, the number of the supplied variables that were assigned values) is returned.</para>
+		<para>Parse the contents of the supplied string <emphasis>variable</emphasis> according to the supplied <emphasis>format</emphasis> string, placing in the supplied variables. The number of format specifiers successfully parsed (or, to look at it another way, the number of the supplied variables that were assigned values) is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -373,7 +373,7 @@
 		<synopsis>
 			a = abc, b = def, d = 56.000000, i = 1234, n = 4
 		</synopsis>
-		<para>The supplied format string contains a single space in between the two '%3s' specifiers, and is significant since it corresponds to actual (discarded) space when processing the format. Furthermore, the last specifier '%8*' (discard 8 characters) is not fulfilled by the ''data'' string, and so the number of arguments successfully parsed is 4, not 5.</para>
+		<para>The supplied format string contains a single space in between the two '%3s' specifiers, and is significant since it corresponds to actual (discarded) space when processing the format. Furthermore, the last specifier '%8*' (discard 8 characters) is not fulfilled by the <emphasis>data</emphasis> string, and so the number of arguments successfully parsed is 4, not 5.</para>
 		
 	</section>
 	
@@ -385,7 +385,7 @@
 				<para> removereadoption ( string option )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Removes a previously-set read option. See ((Read Options)) for a list of possible ''options''.</para>
+		<para>Removes a previously-set read option. See ((Read Options)) for a list of possible <emphasis>options''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -419,7 +419,7 @@
 				<para> skipchars ( int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Skips the next ''n'' characters in the input file.</para>
+		<para>Skips the next <emphasis>n</emphasis> characters in the input file.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -437,7 +437,7 @@
 				<para> skipline ( int n = 1 )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Skips the next line in the file, or the next ''n'' lines if a number supplied.</para>
+		<para>Skips the next line in the file, or the next <emphasis>n</emphasis> lines if a number supplied.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -477,7 +477,7 @@
 				<para> writelinef( string format, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Write a formatted line to the current output file, according to the supplied ''format'' and any supplied arguments. Usage is the same as for the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -498,7 +498,7 @@
 				<para> writevar ( string dest, ...)</para>
 			</listitem>
 		</itemizedlist>
-		<para>Write to the supplied string variable ''dest'' the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.</para>
+		<para>Write to the supplied string variable <emphasis>dest</emphasis> the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -518,7 +518,7 @@
 				<para> writevarf ( string dest, string format, ...)</para>
 			</listitem>
 		</itemizedlist>
-		<para>Write to the supplied string variable ''dest'' the string resulting from the supplied ''format'' and any other supplied arguments. Apart from the mandatory first argument being the destination string variable, usage is otherwise the same as the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is __not__ automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		<para>Write to the supplied string variable <emphasis>dest</emphasis> the string resulting from the supplied <emphasis>format</emphasis> and any other supplied arguments. Apart from the mandatory first argument being the destination string variable, usage is otherwise the same as the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is __not__ automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

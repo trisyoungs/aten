@@ -10,7 +10,7 @@
 				<para> rotateview ( double ax, double ay, double az, double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotate the current view ''angle'' degrees about an axis defined between the supplied point {ax,ay,az} and the origin.</para>
+		<para>Rotate the current view <emphasis>angle</emphasis> degrees about an axis defined between the supplied point {ax,ay,az} and the origin.</para>
 	
 	</section>
 	
@@ -90,7 +90,7 @@
 				<para> rotateview ( double rotx, double roty )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the current view by ''rotx'' degrees around the x axis and ''roty'' degrees around the y axis.</para>
+		<para>Rotates the current view by <emphasis>rotx</emphasis> degrees around the x axis and <emphasis>roty</emphasis> degrees around the y axis.</para>
 		
 		<para>For example:</para>
 		<synopsis>

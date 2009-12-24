@@ -10,7 +10,7 @@
 				<para> double abs ( int|double num )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the absolute (positively-signed) value of ''num''.</para>
+		<para>Returns the absolute (positively-signed) value of <emphasis>num''.</para>
 	
 	</section>
 	
@@ -22,7 +22,7 @@
 				<para> double cos ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the cosine of ''angle'' (which should be given in degrees).</para>
+		<para>Returns the cosine of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 	
 	</section>
 	
@@ -34,7 +34,7 @@
 				<para> double dotproduct ( vector u, vector v )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Calculate and return the dot product of the two vectors ''u'' and ''v''.</para>
+		<para>Calculate and return the dot product of the two vectors <emphasis>u</emphasis> and <emphasis>v''.</para>
 	
 	</section>
 	
@@ -46,7 +46,7 @@
 				<para> double exp ( double x )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the exponential of ''x''.</para>
+		<para>Returns the exponential of <emphasis>x''.</para>
 	
 	</section>
 	
@@ -58,7 +58,7 @@
 				<para> double ln ( double x )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the natural base-e logarithm of ''x''.</para>
+		<para>Returns the natural base-e logarithm of <emphasis>x''.</para>
 	
 	</section>
 	
@@ -70,7 +70,7 @@
 				<para> double log ( double x )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the base-10 logarithm of ''x''.</para>
+		<para>Returns the base-10 logarithm of <emphasis>x''.</para>
 	
 	</section>
 	
@@ -82,7 +82,7 @@
 				<para> int nint ( double x )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the nearest integer value to ''x''.</para>
+		<para>Returns the nearest integer value to <emphasis>x''.</para>
 	
 	</section>
 	
@@ -94,7 +94,7 @@
 				<para> double normalise ( vector v )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Normalises the vector ''v'', returning the magnitude of the vector before the normalisation was performed.</para>
+		<para>Normalises the vector <emphasis>v</emphasis>, returning the magnitude of the vector before the normalisation was performed.</para>
 	
 		<para>For example:</para>
 		<synopsis>
@@ -117,7 +117,7 @@
 				<para> double sin ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the sine of ''angle'' (which should be given in degrees).</para>
+		<para>Returns the sine of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 	
 	</section>
 	
@@ -129,7 +129,7 @@
 				<para> double sqrt ( double x )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the square root of ''x'.</para>
+		<para>Returns the square root of <emphasis>x'.</para>
 	
 	</section>
 	
@@ -141,7 +141,7 @@
 				<para> double tan ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the tangent of ''angle'' (which should be given in degrees).</para>
+		<para>Returns the tangent of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 
 	</section>
 	

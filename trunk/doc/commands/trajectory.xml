@@ -89,7 +89,7 @@
 				<para> int loadtrajectory (string file )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Associate trajectory in ''file'' with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.</para>
+		<para>Associate trajectory in <emphasis>file</emphasis> with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>

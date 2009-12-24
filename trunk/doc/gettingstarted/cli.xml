@@ -7,18 +7,18 @@
 		<para>Two important things. Firstly, short options (e.g. '-b', '-d', etc.) may not be concatenated into one long specification of a short option (i.e. '-bd') - they must be given separately as '-b -d' or they will not be recognised. Secondly, the order of the given switches is important! Commonly, the actions of command-line switches and arguments do not depend on order, however in Aten this is not the case. For example:</para>
 		
 		<synopsis>
-		bob@pc:~> aten --nobond test1.xyz test2.xyz
+			bob@pc:~> aten --nobond test1.xyz test2.xyz
 		</synopsis>
 		
 		<para>will load the models 'test1.xyz' and 'test2.xyz', preventing recalculation of bonds between atoms in both. However:</para>
 		
 		<synopsis>
-		bob@pc:~> aten test1.xyz --nobond test2.xyz
+			bob@pc:~> aten test1.xyz --nobond test2.xyz
 		</synopsis>
 		
 		<para>will only prevent recalculation of bonds for the second model. The reason for acting on switches and arguments in the order they are encountered on the command line is to allow for flexibility, especially when using Aten as a non-graphical processor (for examples of this type of usage, see ((Command Line Editing))).</para>
 		
-		<para>__Note:__ The position of debug switches or those affecting the verbosity of the program has no bearing on the timeliness of their effect - they are dealt with first by Aten regardless of where they appear in the program's arguments.</para>
+		<para><emphasis>Note:</emphasis> The position of debug switches or those affecting the verbosity of the program has no bearing on the timeliness of their effect - they are dealt with first by Aten regardless of where they appear in the program's arguments.</para>
 	
 	</section>
 	
@@ -60,7 +60,7 @@
 				<varlistentry id="cli.switches.bond">
 					<term><indexterm><primary>command line switches</primary><secondary>--bond</secondary></indexterm>
 						--bond</term>
-					<listitem><para>Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the <link linkend="command.group.bond">Bond Commands</link>).</para></listitem>
+					<listitem><para>Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the <link linkend="command.groups.bond">Bond Commands</link>).</para></listitem>
 				</varlistentry>
 			</variablelist>
 			
@@ -99,7 +99,7 @@
 							bob@pc:~> aten source.xyz -c 'selectall; copy' target.xyz -c 'paste(10,10,10);'
 						</synopsis>
 						
-						<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see the list of <link linkend="command.group.model">model commands</link>) but that would confuse this supposedly simple example, wouldn't it?</para>
+						<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see the list of <link linkend="command.groups.model">model commands</link>) but that would confuse this supposedly simple example, wouldn't it?</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.cachelimit">

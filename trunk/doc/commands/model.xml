@@ -1,4 +1,4 @@
-<section id="commands.group.model"><title>Model Commands</title>
+<section id="command.groups.model"><title>Model Commands</title>
 	
 	<para>Model creation and management.</para>
 
@@ -134,7 +134,7 @@
 		<synopsis>
 			model m = getmodel(5);
 		</synopsis>
-		<para>sets the fifth loaded model as the current model, and stores a reference to it in the variable ''m''.</para>
+		<para>sets the fifth loaded model as the current model, and stores a reference to it in the variable <emphasis>m''.</para>
 	
 	</section>
 	
@@ -183,7 +183,7 @@
 				<para> int loadmodel ( string filename, string newname )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Load model(s) from the ''filename'' provided, changing the name of the the (last loaded) model to ''newname'' if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.</para>
+		<para>Load model(s) from the <emphasis>filename</emphasis> provided, changing the name of the the (last loaded) model to <emphasis>newname</emphasis> if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -218,7 +218,7 @@
 				<para> model newmodel ( string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new model called ''name'' which becomes the current model, and return a reference to it.</para>
+		<para>Create a new model called <emphasis>name</emphasis> which becomes the current model, and return a reference to it.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -228,7 +228,7 @@
 		<synopsis>
 			model c12 = newmodel(&quot;dodecane&quot;);
 		</synopsis>
-		<para>creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable ''c12''.</para>
+		<para>creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable <emphasis>c12''.</para>
 		
 	</section>
 	
@@ -274,7 +274,7 @@
 				<para> int savemodel ( string format, string filename )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Save the current model in the  ''format'' given (which should correspond to a model export ((Filter)) nickname) to the ''filename'' specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.</para>
+		<para>Save the current model in the  <emphasis>format</emphasis> given (which should correspond to a model export ((Filter)) nickname) to the <emphasis>filename</emphasis> specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

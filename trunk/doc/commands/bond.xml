@@ -1,4 +1,4 @@
-<section id="commands.groups.bonding"><title>Bonding Commands</title>
+<section id="command.groups.bond"><title>Bond Commands</title>
 	
 	<para>Create bonds and perform automatic bonding operations.</para>
 
@@ -108,7 +108,7 @@
 				<para> newbond ( int|atom i, int|atom j, string bondtype )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new bond in the model between the specified atoms. The optional ''bondtype'' argument specified the type of bond: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.</para>
+		<para>Create a new bond in the model between the specified atoms. The optional <emphasis>bondtype</emphasis> argument specified the type of bond: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.</para>
 		
 		<para>For example:</para>
 		<synopsis>
