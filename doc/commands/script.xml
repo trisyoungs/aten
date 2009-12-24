@@ -24,10 +24,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> loadscript ( string ''filename'' )</para>
+				<para> loadscript ( string filename )</para>
 			</listitem>
 			<listitem>
-				<para> loadscript ( string ''filename'', string ''nickname'' )</para>
+				<para> loadscript ( string filename, string nickname )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Loads a script from the ''filename'' specified, giving it the optional ''nickname''.</para>
@@ -45,7 +45,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> runscript ( string ''name'' )</para>
+				<para> runscript ( string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Executes the specified script.</para>

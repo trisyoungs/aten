@@ -7,7 +7,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double angle ( atom|int ''i'', atom|int ''j'', atom|int ''k'' )</para>
+				<para> double angle ( atom|int i, atom|int j, atom|int k )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Measure (and return) the angle between the three atoms supplied.</para>
@@ -67,7 +67,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double distance ( atom|int ''i'', atom|int ''j'' )</para>
+				<para> double distance ( atom|int i, atom|int j )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Measure and return the distance between the two atoms supplied.</para>
@@ -120,13 +120,13 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double measure ( atom|int ''i'', atom|int ''j'' )</para>
+				<para> double measure ( atom|int i, atom|int j )</para>
 			</listitem>
 			<listitem>
-				<para> double measure ( atom|int ''i'', atom|int ''j'', atom|int ''k'' )</para>
+				<para> double measure ( atom|int i, atom|int j, atom|int k )</para>
 			</listitem>
 			<listitem>
-				<para> double measure ( atom|int ''i'', atom|int ''j'', atom|int ''k'', atom|int ''l'' )</para>
+				<para> double measure ( atom|int i, atom|int j, atom|int k, atom|int l )</para>
 			</listitem>
 		</itemizedlist>
 		<para>This command is a general measuring tool, able to measure distances, angles, and torsions, depending on how many arguments are supplied.</para>
@@ -152,7 +152,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double torsion ( atom|int ''i'', atom|int ''j'', atom|int ''k'', atom|int ''l'' )</para>
+				<para> double torsion ( atom|int i, atom|int j, atom|int k, atom|int l )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Measure (and return) the torsion angle between the four atoms supplied.</para>

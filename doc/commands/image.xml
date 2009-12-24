@@ -7,17 +7,17 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename> )</para>
+				<para> savebitmap ( string format, string filename )</para>
 			</listitem>
 			<listitem>
-				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename>, int <filename>width</filename>, int <filename>height</filename> )</para>
+				<para> savebitmap ( string format, string filename, int width, int height )</para>
 			</listitem>
 			<listitem>
-				<para> savebitmap ( string <filename>format</filename>, string <filename>filename</filename>, int <filename>width</filename>, int <filename>height</filename>, int <filename>quality</filename> )</para>
+				<para> savebitmap ( string format, string filename, int width, int height, int quality )</para>
 			</listitem>
 		</itemizedlist>
 		
-		<para>Saves the current view as a bitmap image. Allowable values for <filename>format</filename> are:</para>
+		<para>Saves the current view as a bitmap image. Allowable values for <emphasis>format</emphasis> are:</para>
 		<table frame='all' pgwide='1' tocentry='0'><title>Newglyph options</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 				<thead>
@@ -55,7 +55,7 @@
 			</tgroup>
 		</table>
 		
-		<para>If <filename>width</filename> and <filename>height</filename> are not specified the current dimensions of the view are used (800x600 if no GUI is present). The <filename>quality</filename> option determines the compression used on saved images, affecting, for example, the quality and size of jpegs and pngs, and should be an integer between 1 and 100 (with 100 being the best compression).</para>
+		<para>If <emphasis>width</emphasis> and <emphasis>height</emphasis> are not specified the current dimensions of the view are used (800x600 if no GUI is present). The <emphasis>quality</emphasis> option determines the compression used on saved images, affecting, for example, the quality and size of jpegs and pngs, and should be an integer between 1 and 100 (with 100 being the best compression).</para>
 		
 		<para>For example:</para>
 		<synopsis>

@@ -60,7 +60,7 @@
 				<varlistentry id="cli.switches.bond">
 					<term><indexterm><primary>command line switches</primary><secondary>--bond</secondary></indexterm>
 						--bond</term>
-					<listitem><para>Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the <link linkend="command.groups.bonding">Bond Commands</link>).</para></listitem>
+					<listitem><para>Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the <link linkend="command.group.bond">Bond Commands</link>).</para></listitem>
 				</varlistentry>
 			</variablelist>
 			
@@ -99,7 +99,7 @@
 							bob@pc:~> aten source.xyz -c 'selectall; copy' target.xyz -c 'paste(10,10,10);'
 						</synopsis>
 						
-						<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see the list of <link linkend="command.groups.model">model commands</link>) but that would confuse this supposedly simple example, wouldn't it?</para>
+						<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see the list of <link linkend="command.group.model">model commands</link>) but that would confuse this supposedly simple example, wouldn't it?</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.cachelimit">

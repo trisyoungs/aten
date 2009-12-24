@@ -9,7 +9,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> getsite ( string ''name'' )</para>
+				<para> getsite ( string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Selects (makes current) the site referenced by ''name''. If the site cannot be found an error is returned.</para>
@@ -44,7 +44,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> newsite ( string ''name'', pattern ''pattern'', string &quot;''atomlist''&quot; )</para>
+				<para> newsite ( string name, pattern pattern, string &quot;atomlist&quot; )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Creates a new site ''name'' for the current model, based on the molecule of ''pattern'', and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
@@ -66,16 +66,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> siteaxes ( string &quot;''x atomlist''&quot;, string &quot;''y atomlist''&quot;</para>
+				<para> siteaxes ( string &quot;x atomlist&quot;, string &quot;y atomlist&quot;</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the local ''x'' (first set of atom IDs) and ''y'' (second set of atom IDs) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by 'addsite') and the geometric centre of the list of atoms provided here. The ''y'' axis is orthogonalised with respect to the ''x'' axis and the ''z'' axis constructed from the cross product of the orthogonal ''x'' and ''y'' vectors.</para>
+		<para>Sets the local x (first set of atom IDs) and y (second set of atom IDs) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by 'addsite') and the geometric centre of the list of atoms provided here. The y axis is orthogonalised with respect to the x axis and the z axis constructed from the cross product of the orthogonal x and y vectors.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			siteaxes(&quot;1,2&quot;, &quot;6&quot;);
 		</synopsis>
-		<para>sets the ''x'' axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the ''y'' axis definition to be the vector between the site centre and the position of the sixth atom.</para>
+		<para>sets the x axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the y axis definition to be the vector between the site centre and the position of the sixth atom.</para>
 	
 	</section>
 	

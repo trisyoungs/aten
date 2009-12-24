@@ -18,7 +18,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string afterstr ( string ''source'', string ''search'' )</para>
+				<para> string afterstr ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Return the part of the ''source'' string that comes after the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
@@ -43,7 +43,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double atof ( string ''text'' )</para>
+				<para> double atof ( string text )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Converts the supplied ''text'' into its floating point (double) representation. Equivalent to the standard C routine 'atof'.
@@ -61,7 +61,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int atoi ( string ''text'' )</para>
+				<para> int atoi ( string text )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Converts the supplied ''text'' into its integer representation. Equivalent to the standard C routine 'atoi'.
@@ -79,7 +79,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string beforestr ( string ''source'', string ''search'' )</para>
+				<para> string beforestr ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Return the part of the ''source'' string that comes before the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
@@ -104,7 +104,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int contains ( string ''source'', string ''search'' )</para>
+				<para> int contains ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Returns the number of times the ''search'' string is found in the ''source'' string. The function counts only non-overlapping occurrences of ''search''.</para>
@@ -123,7 +123,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string ftoa ( double ''d'' )</para>
+				<para> string ftoa ( double d )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Converts the supplied double ''d'' into a string representation.</para>
@@ -141,7 +141,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string itoa ( int ''i'' )</para>
+				<para> string itoa ( int i )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Converts the supplied integer ''i'' into a string representation.</para>
@@ -159,7 +159,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string stripchars ( string ''source'', string ''chars'' )</para>
+				<para> string stripchars ( string source, string chars )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Strip the supplied character(s) from the ''source'' string, returning the result.</para>

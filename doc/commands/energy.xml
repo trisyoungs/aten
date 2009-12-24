@@ -10,7 +10,7 @@
 				<para> double ecut ( )</para>
 			</listitem>
 			<listitem>
-				<para> double ecut ( double ''cutoff'' )</para>
+				<para> double ecut ( double cutoff )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Return (or set and return) the cutoff radius used in calculation of the electrostatics for a system.</para>
@@ -34,10 +34,10 @@
 				<para> elec ( &quot;coulomb&quot; );</para>
 			</listitem>
 			<listitem>
-				<para> elec ( &quot;ewald&quot;, double ''alpha'', int ''kx'', int ''ky'', int ''kz'' )</para>
+				<para> elec ( &quot;ewald&quot;, double alpha, int kx, int ky, int kz )</para>
 			</listitem>
 			<listitem>
-				<para> elec ( &quot;ewaldauto&quot;, double ''precision'' )</para>
+				<para> elec ( &quot;ewaldauto&quot;, double precision )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the style of electrostatic energy calculation to use, either no electrostatics, coulombic (non-periodic) electrostatics, or Ewald-based electrostatics. For the latter, either the various parameters may be defined explicitly (when &quot;ewald&quot; is the chosen method) or may be estimated for the current system by using &quot;ewaldauto&quot;.</para>
@@ -205,7 +205,7 @@
 				<para> double vcut ( )</para>
 			</listitem>
 			<listitem>
-				<para> double vcut ( double ''cutoff'' )</para>
+				<para> double vcut ( double cutoff )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Return (or set and return) the cutoff radius used in calculation of the VDW interactions for a system.</para>

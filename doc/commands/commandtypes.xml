@@ -15,7 +15,7 @@
 		printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	</synopsis>
 	
-	<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector <filename>v</filename> by requesting the <filename>r</filename> subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
+	<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector ''v'' by requesting the ''r'' subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
 	
 	<para>All subvariables can be read, but not all can be written back to - these are read-only subvariables, and are indicated with 'ro' in the <emphasis>Access</emphasis> column in the following tables.</para>
 	
@@ -1782,73 +1782,73 @@
 						<entry>ax</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>x</filename>-component of cell axis A</entry>
+						<entry>x-component of cell axis A</entry>
 					</row>
 					<row>
 						<entry>ay</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>y</filename>-component of cell axis A</entry>
+						<entry>y-component of cell axis A</entry>
 					</row>
 					<row>
 						<entry>az</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>z</filename>-component of cell axis A</entry>
+						<entry>z-component of cell axis A</entry>
 					</row>
 					<row>
 						<entry>bx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>x</filename>-component of cell axis B</entry>
+						<entry>x-component of cell axis B</entry>
 					</row>
 					<row>
 						<entry>by</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>y</filename>-component of cell axis B</entry>
+						<entry>y-component of cell axis B</entry>
 					</row>
 					<row>
 						<entry>bz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>z</filename>-component of cell axis B</entry>
+						<entry>z-component of cell axis B</entry>
 					</row>
 					<row>
 						<entry>centrex</entry>
 						<entry>double</entry>
 						<entry>ro</entry>
-						<entry><filename>x</filename>-coordinate at centre of defined cell</entry>
+						<entry>x-coordinate at centre of defined cell</entry>
 					</row>
 					<row>
 						<entry>centrey</entry>
 						<entry>double</entry>
 						<entry>ro</entry>
-						<entry><filename>y</filename>-coordinate at centre of defined cell</entry>
+						<entry>y-coordinate at centre of defined cell</entry>
 					</row>
 					<row>
 						<entry>centrez</entry>
 						<entry>double</entry>
 						<entry>ro</entry>
-						<entry><filename>z</filename>-coordinate at centre of defined cell</entry>
+						<entry>z-coordinate at centre of defined cell</entry>
 					</row>
 					<row>
 						<entry>cx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>x</filename>-component of cell axis C</entry>
+						<entry>x-component of cell axis C</entry>
 					</row>
 					<row>
 						<entry>cy</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>y</filename>-component of cell axis C</entry>
+						<entry>y-component of cell axis C</entry>
 					</row>
 					<row>
 						<entry>cz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry><filename>z</filename>-component of cell axis C</entry>
+						<entry>z-component of cell axis C</entry>
 					</row>
 					<row>
 						<entry>density</entry>
@@ -1927,19 +1927,19 @@
 						<entry>x</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>The <filename>x</filename> component of the vector</entry>
+						<entry>The x component of the vector</entry>
 					</row>
 					<row>
 						<entry>y</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>The <filename>y</filename> component of the vector</entry>
+						<entry>The y component of the vector</entry>
 					</row>
 					<row>
 						<entry>z</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>The <filename>z</filename> component of the vector</entry>
+						<entry>The z component of the vector</entry>
 					</row>
 				</tbody>
 			</tgroup>

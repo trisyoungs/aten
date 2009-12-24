@@ -7,10 +7,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int deselect ( atom|int|string ''selection'', ... )</para>
+				<para> int deselect ( atom|int|string selection, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Deselect atoms in the current model, returning the number of atoms deselected by the provided selection arguments. One or more arguments may be supplied, and each may be of the type int, atom, or string. In the case of the first two types, individual atoms (or those corresponding to the integer id) are deselected. On the other hand, strings may contain ranges of atom IDs and element symbols permitting atoms to be deselected in groups. Ranges are specified as ''a-b'' where ''a'' and ''b'' are either both atom IDs or both element symbols. In addition, the '+' symbol can be used before (''+a'') or after (''a+'') an atom ID or element symbol to mean either 'everything up to and including this' or 'this and everything after'. Within a string argument, one or more selection ranges may be separated by commas.</para>
+		<para>Deselect atoms in the current model, returning the number of atoms deselected by the provided selection arguments. One or more arguments may be supplied, and each may be of the type int, atom, or string. In the case of the first two types, individual atoms (or those corresponding to the integer id) are deselected. On the other hand, strings may contain ranges of atom IDs and element symbols permitting atoms to be deselected in groups. Ranges are specified as '<emphasis>a</emphasis>-<emphasis>b</emphasis>' where <emphasis>a</emphasis> and <emphasis>b</emphasis> are either both atom IDs or both element symbols. In addition, the '+' symbol can be used before ('+<emphasis>a</emphasis>') or after ('<emphasis>a</emphasis>+') an atom ID or element symbol to mean either 'everything up to and including this' or 'this and everything after'. Within a string argument, one or more selection ranges may be separated by commas.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -75,7 +75,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int select ( int|atom|string ''selection'', ... )</para>
+				<para> int select ( int|atom|string selection, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select atoms in the current model, keeping any previous selection of atoms. See the ((Commands: Selection|#deselect|deselect)) command for a full description of the syntax. The number of atoms added to the existing selection is returned.</para>
@@ -114,7 +114,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int selectfftype ( string ''fftype'' )</para>
+				<para> int selectfftype ( string fftype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select all atoms with forcefield type ''fftype'' in the current model. The number of atoms selected is returned.</para>
@@ -132,7 +132,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> void selectmiller ( int ''h'', int ''k'', int ''l'', bool ''inside'' = FALSE )</para>
+				<para> void selectmiller ( int h, int k, int l, bool inside = FALSE )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select all atoms that are 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is specified as TRUE then atoms ''inside'' the specified Miller plane (and its mirror) are selected.</para>
@@ -167,7 +167,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int selectoverlaps ( double ''distance'' = 0.2 )</para>
+				<para> int selectoverlaps ( double distance = 0.2 )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select all atoms that are within a certain distance of another, or the default of 0.2 Angstroms if no argument is provided. The number of selected overlapping atoms is returned.</para>
@@ -185,7 +185,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int selectpattern ( int|pattern|string ''pat'' )</para>
+				<para> int selectpattern ( int|pattern|string pat )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Selects all atoms in the current (or named/specified) pattern. Returns the number of atoms added to the existing selection.</para>
@@ -207,7 +207,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int selectradial ( atom|int ''id'', double ''r'' )</para>
+				<para> int selectradial ( atom|int id, double r )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select all atoms within ''r'' Angstroms of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
@@ -225,10 +225,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int selecttype ( int|string ''element'', string ''type description'' )</para>
+				<para> int selecttype ( int|string element, string description )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Selects all atoms of the given ''element'' that also match the NETA ''type description'' given, allowing selections to be made based on the connectivity and local environment of atoms. The number of (previously unselected) atoms matched is returned.</para>
+		<para>Selects all atoms of the given ''element'' that also match the NETA ''description'' given, allowing selections to be made based on the connectivity and local environment of atoms. The number of (previously unselected) atoms matched is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>

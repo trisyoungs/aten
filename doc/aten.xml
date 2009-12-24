@@ -100,7 +100,6 @@
 
 	<!-- IMPORT / EXPORT -->
 	<chapter id="importexport"><title>Import / Export</title>
-		&compatnotes;
 		&supportedformats;
 		&filters;
 		&trajectories;

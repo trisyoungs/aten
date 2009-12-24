@@ -24,7 +24,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> labeltype ( string ''labeltype'' )</para>
+				<para> labeltype ( string labeltype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Adds the specified label to each atom in the current selection. Valid labels are listed in ((Label Types)).</para>
@@ -42,7 +42,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> removelabel ( string ''labeltype'' )</para>
+				<para> removelabel ( string labeltype )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Remove the specified label (if it exists) from each atom in the current selection.</para>

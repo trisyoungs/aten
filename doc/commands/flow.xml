@@ -7,7 +7,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> do { ''commands'' } while ( ''condition'' )</para>
+				<para> do { commands } while ( condition )</para>
 			</listitem>
 		</itemizedlist>
 		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the ''condition'' which is tested at the end of every execution of the ''commands''. If 'true', the ''commands'' are executed again, and ''condition'' re-tested afterwards. If 'false' the loop ends.</para>
@@ -40,10 +40,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> for ( ''startvalue'' ; ''condition'' ; ''increment'' ) { ''commands''... }</para>
+				<para> for ( startvalue ; condition ; increment ) { commands... }</para>
 			</listitem>
 			<listitem>
-				<para> for ( ''startvalue'' ; ''condition'' ; ''increment'' ) { ''commands''... }</para>
+				<para> for ( startvalue ; condition ; increment ) { commands... }</para>
 			</listitem>
 		</itemizedlist>
 		<para>Three separate components make up a 'for' loop. ''startvalue'' defines both the control variable (i.e. the variable that changes on each loop iteration) and  optionally its starting value, the ''condition'' is tested on each loop iteration to see whether or not to continue with the loop, and finally the ''increment'' is an expression to modify the control variable after each iteration, setting it to a new value. If multiple ''commands'' are to make up the body of the loop (executed on each iteration) then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is executed on each iteration, the curly brackets may be omitted.</para>
@@ -69,10 +69,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> if ( ''condition'' ) { ''commands''... }</para>
+				<para> if ( condition ) { commands... }</para>
 			</listitem>
 			<listitem>
-				<para> if ( ''condition'' ) { ''commands''... } else { ''commands''... }</para>
+				<para> if ( condition ) { commands... } else { commands... }</para>
 			</listitem>
 		</itemizedlist>
 		<para>The 'if' statement permits sections of code to be executed based on the assessment of logical comparison of values. If the supplied ''condition'' evaluates to be 'true' then the following ''commands'' are executed, otherwise nothing happens. In the second form of the command, if the ''condition'' evaluates to be 'false' then the second set of ''commands'' are executed instead. If multiple ''commands'' are to be executed then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is to be executed the curly brackets may be omitted.</para>
@@ -81,8 +81,6 @@
 
 		<table frame='all' pgwide='1' tocentry='0'><title>Test Operators</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='command'/> -->
-				<!-- <colspec colname='function'/> -->
 				<thead>
 					<row>
 						<entry>Operator</entry>
@@ -129,12 +127,12 @@
 			int i = 10;
 			if (i &gt; 5) printf(&quot;Hooray!\n&quot;);
 		</synopsis>
-		<para>in this case 'Hooray!' __will__ be printed, because ''i'' is greater than 5.</para>
+		<para>in this case 'Hooray!' <emphasis>will</emphasis> be printed, because ''i'' is greater than 5.</para>
 		<synopsis>
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;);
 		</synopsis>
-		<para>but in this case 'Hooray!' will __not__ be printed, because ''i'' is not greater than ''j''.</para>
+		<para>but in this case 'Hooray!' will <emphasis>not</emphasis> be printed, because ''i'' is not greater than ''j''.</para>
 		<synopsis>
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;); else { printf(&quot;Too small.\n&quot;); i = j; }
@@ -184,7 +182,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> while ( ''condition'' ) { ''commands'' }</para>
+				<para> while ( condition ) { commands }</para>
 			</listitem>
 		</itemizedlist>
 		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the ''condition'' which is tested at the beginning of the loop, before execution of the ''commands''. If 'true', the ''commands'' are executed, but if 'false' the loop ends without executing the ''commands'' (and meaning that it is possible that the ''commands'' are <emphasis>never</emphasis> executed).</para>

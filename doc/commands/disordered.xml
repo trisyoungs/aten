@@ -7,10 +7,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> disorder ( int <filename>ncycles</filename> )</para>
+				<para> disorder ( int ncycles )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Start the disordered builder, requesting <filename>ncycles</filename> cycles of Monte Carlo moves.</para>
+		<para>Start the disordered builder, requesting ''ncycles'' cycles of Monte Carlo moves.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -25,10 +25,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> nmols ( int <filename>n</filename> )</para>
+				<para> nmols ( int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Specify that <filename>n</filename> copies of the current model are to be added (or attempted to be added) during the build process.</para>
+		<para>Specify that ''n'' copies of the current model are to be added (or attempted to be added) during the build process.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -60,7 +60,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regioncentre ( double <filename>x</filename>, double <filename>y</filename>, double <filename>z</filename> )</para>
+				<para> regioncentre ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the coordinates of the centre of the set region for the current model.</para>
@@ -78,7 +78,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regioncentref ( double <filename>fracx</filename>, double <filename>fracy</filename>, double <filename>fracz</filename> )</para>
+				<para> regioncentref ( double fracx, double fracy, double fracz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>As with <link linkend="command.ref.regioncentre">regioncentre</link>, sets the coordinates of the centre of the set region for the current model but in fractional cell coordinates.</para>
@@ -90,10 +90,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regiongeometry ( double <filename>x</filename>, double <filename>y</filename>, double <filename>z</filename> )</para>
+				<para> regiongeometry ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the geometry of the allowed region for the current model. The <filename>x</filename>, <filename>y</filename>, and <filename>z</filename> values determine the total extent/size of the region along each principal axis. For cylindrical regions, <filename>x</filename> and <filename>y</filename> determine the radii of the cylinder in the perpendicular directions to the cylinder vector, while <filename>z</filename> determines the length of the cylinder.</para>
+		<para>Sets the geometry of the allowed region for the current model. The ''x'', ''y'', and ''z'' values determine the total extent/size of the region along each principal axis. For cylindrical regions, ''x'' and ''y'' determine the radii of the cylinder in the perpendicular directions to the cylinder vector, while ''z'' determines the length of the cylinder.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -108,10 +108,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regiongeometryf ( double <filename>fracx</filename>, double <filename>fracy</filename>, double <filename>fracz</filename> )</para>
+				<para> regiongeometryf ( double fracx, double fracy, double fracz )</para>
 			</listitem>
 			<listitem>
-				<para> regiongeometryf ( double <filename>fracx</filename>, double <filename>fracy</filename>, double <filename>fracz</filename> )</para>
+				<para> regiongeometryf ( double fracx, double fracy, double fracz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>As with <link linkend="command.ref.regiongeometry">regiongeometry</link>, sets the geometry of the allowed region for the current model but in fractional cell coordinates.</para>
@@ -141,7 +141,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regionrotation ( double <filename>rotx</filename>, double <filename>roty</filename> )</para>
+				<para> regionrotation ( double rotx, double roty )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the rotations of the current region.</para>
@@ -153,10 +153,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> regionshape ( string <filename>shape</filename> )</para>
+				<para> regionshape ( string shape )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the shape of the allowed insertion region for the current model. Valid <filename>shapes</filename> are 'cell', 'cuboid', 'spheroid' and 'cylinder'.</para>
+		<para>Sets the shape of the allowed insertion region for the current model. Valid ''shapes'' are 'cell', 'cuboid', 'spheroid' and 'cylinder'.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -174,7 +174,7 @@
 				<para> double vdwscale ( )</para>
 			</listitem>
 			<listitem>
-				<para> double vdwscale ( double <filename>scale</filename> )</para>
+				<para> double vdwscale ( double scale )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the scaling factor for VDW radii to use in the disordered builder, or returns the current value.</para>

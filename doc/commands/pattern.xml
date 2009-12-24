@@ -41,7 +41,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> pattern getpattern ( int|string ''id'' )</para>
+				<para> pattern getpattern ( int|string id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Get the named pattern, or pattern with id specified, make it current, returning its reference.</para>
@@ -80,7 +80,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> pattern newpattern ( string ''name'', int ''nmols'', int ''natoms'' )</para>
+				<para> pattern newpattern ( string name, int nmols, int natoms )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add a new pattern node to the current model, spanning ''nmols'' molecules of ''natoms'' atoms each, and called ''name''. A reference to the new pattern is returned.</para>

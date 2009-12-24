@@ -7,16 +7,16 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> axisrotate ( atom|id ''i'', atom|id ''j'', double ''theta'' )</para>
+				<para> axisrotate ( atom|id i, atom|id j, double theta )</para>
 			</listitem>
 			<listitem>
-				<para> axisrotate ( atom|id ''i'', atom|id ''j'', double ''theta'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> axisrotate ( atom|id i, atom|id j, double theta, double ox, double oy, double oz )</para>
 			</listitem>
 			<listitem>
-				<para> axisrotate ( double ''x'', double ''y'', double ''z'', double ''theta'' )</para>
+				<para> axisrotate ( double x, double y, double z, double theta )</para>
 			</listitem>
 			<listitem>
-				<para> axisrotate ( double ''x'', double ''y'', double ''z'', double ''theta'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> axisrotate ( double x, double y, double z, double theta, double ox, double oy, double oz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Rotate the current selection by an angle ''theta'' (in degrees) about an axis defined either by the vector between two atom IDs or the vector components provided. If supplied, the rotation is performed using the coordinate origin specified by ''ox'', ''oy'', and ''oz'', otherwise {0,0,0} is assumed.</para>
@@ -42,7 +42,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> centre ( double ''x'', double ''y'', double ''z'', bool ''lockx'' = FALSE, bool ''locky'' = FALSE, bool ''lockz'' = FALSE)</para>
+				<para> centre ( double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE)</para>
 			</listitem>
 		</itemizedlist>
 		<para>Centre the current atom selection at the specified coordinates. The three optional arguments ''lockx'', ''locky'', and ''lockz'' specify one or more atomic coordinates that are to remain unchanged during the transformation.</para>
@@ -60,20 +60,20 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> matrixconvert int ''i_sx'', int ''j_sx'', int ''i_sy'', int ''j_sy'', int ''i_sz'', int ''j_sz'', int ''i_tx'', int ''j_tx'', int ''i_ty'', int ''j_ty'', int ''i_tz'', int ''j_tz'' )</para>
+				<para> matrixconvert int i_sx, int j_sx, int i_sy, int j_sy, int i_sz, int j_sz, int i_tx, int j_tx, int i_ty, int j_ty, int i_tz, int j_tz )</para>
 			</listitem>
 			<listitem>
-				<para> matrixconvert int ''i_sx'', int ''j_sx'', int ''i_sy'', int ''j_sy'', int ''i_sz'', int ''j_sz'', int ''i_tx'', int ''j_tx'', int ''i_ty'', int ''j_ty'', int ''i_tz'', int ''j_tz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> matrixconvert int i_sx, int j_sx, int i_sy, int j_sy, int i_sz, int j_sz, int i_tx, int j_tx, int i_ty, int j_ty, int i_tz, int j_tz, double ox, double oy, double oz )</para>
 			</listitem>
 			<listitem>
-				<para> matrixconvert double ''s_ax'', double ''s_ay'', double ''s_az'', double ''s_bx'', double ''s_by'', double ''s_bz'', double ''s_cx'', double ''s_cy'', double ''s_cz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'' )</para>
+				<para> matrixconvert double s_ax, double s_ay, double s_az, double s_bx, double s_by, double s_bz, double s_cx, double s_cy, double s_cz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz )</para>
 			</listitem>
 			<listitem>
-				<para> matrixconvert double ''s_ax'', double ''s_ay'', double ''s_az'', double ''s_bx'', double ''s_by'', double ''s_bz'', double ''s_cx'', double ''s_cy'', double ''s_cz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> matrixconvert double s_ax, double s_ay, double s_az, double s_bx, double s_by, double s_bz, double s_cx, double s_cy, double s_cz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz, double ox, double oy, double oz )</para>
 			</listitem>
 		</itemizedlist>
-		<para>From a defined frame of reference (i.e. a set of axes defining the spatial orientation), rotate the current selection from this frame into the second frame, using the coordinate origin supplied or {0,0,0} by default. In the first form six pairs of atom IDs define each matrix, with the vectors taken to be i-&gt;j in all cases (i.e. the resulting vector is ''i-j'', normalised to 1.0), and specifying the ''x'', ''y'', and ''z'' axes in turn. In the second, the matrices are given as two sets of nine numbers that define the vectors of the axes.</para>
-		<para>When supplying atom IDs, the ''x'' axis is taken to be absolute, the ''y''-axis is orthogonalised w.r.t. the ''x''-axis, and the ''z''-axis is taken as the cross product between the ''x'' and ''y'' axes. Note that providing the definition of the ''z'' axis is still important, however, since the vector cross product is adjusted (if necessary) to point along the same direction as this supplied ''z''-axis. When supplying the complete matrices no orthogonalisation or normalisation of the axes is performed (permitting arbitrary scale and shear operations).</para>
+		<para>From a defined frame of reference (i.e. a set of axes defining the spatial orientation), rotate the current selection from this frame into the second frame, using the coordinate origin supplied or {0,0,0} by default. In the first form six pairs of atom IDs define each matrix, with the vectors taken to be i-&gt;j in all cases (normalised to 1.0), and specifying the x, y, and z axes in turn. In the second, the matrices are given as two sets of nine numbers that define the vectors of the axes.</para>
+		<para>When supplying atom IDs, the x axis is taken to be absolute, the y-axis is orthogonalised w.r.t. the x-axis, and the z-axis is taken as the cross product between the x and y axes. Note that providing the definition of the z axis is still important, however, since the vector cross product is adjusted (if necessary) to point along the same direction as this supplied z-axis. When supplying the complete matrices no orthogonalisation or normalisation of the axes is performed (permitting arbitrary scale and shear operations).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -100,10 +100,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> matrixtransform ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'' )</para>
+				<para> matrixtransform ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz )</para>
 			</listitem>
 			<listitem>
-				<para> matrixtransform ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> matrixtransform ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz, double ox, double oy, double oz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Transform the current selection by applying the defined matrix to each coordinate, operating about the supplied origin (or {0,0,0} by default). No orthogonalisation or normalisation of the defined axes is performed.</para>
@@ -116,11 +116,11 @@
 		<synopsis>
 			matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, -1);
 		</synopsis>
-		<para>mirrors the current selection in the ''xy'' plane.</para>
+		<para>mirrors the current selection in the xy plane.</para>
 		<synopsis>
 			matrixtransform(0.5, 0, 0, 0, 0.5, 0, 0, 0, -1);
 		</synopsis>
-		<para>scales the ''x'' and ''y''-coordinates of all selected atoms by 0.5, leaving the ''z'' coordinates intact.</para>
+		<para>scales the x and y-coordinates of all selected atoms by 0.5, leaving the z coordinates intact.</para>
 	
 	</section>
 	
@@ -129,10 +129,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> reorient ( atom|int ''i_sx'', atom|int ''j_sx'', atom|int ''i_sy'', atom|int ''j_sy'', atom|int ''i_sz'', atom|int ''j_sz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'' )</para>
+				<para> reorient ( atom|int i_sx, atom|int j_sx, atom|int i_sy, atom|int j_sy, atom|int i_sz, atom|int j_sz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz )</para>
 			</listitem>
 			<listitem>
-				<para> reorient ( atom|int ''i_sx'', atom|int ''j_sx'', atom|int ''i_sy'', atom|int ''j_sy'', atom|int ''i_sz'', atom|int ''j_sz'', double ''t_ax'', double ''t_ay'', double ''t_az'', double ''t_bx'', double ''t_by'', double ''t_bz'', double ''t_cx'', double ''t_cy'', double ''t_cz'', double ''ox'', double ''oy'', double ''oz'' )</para>
+				<para> reorient ( atom|int i_sx, atom|int j_sx, atom|int i_sy, atom|int j_sy, atom|int i_sz, atom|int j_sz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz, double ox, double oy, double oz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Operates in exactly the same manner as <link linkend="command.ref.matrixtransform">matrixtransform</link> except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.</para>
@@ -144,7 +144,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> translate ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> translate ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Translates the current selection by the specified vector.</para>
@@ -153,7 +153,7 @@
 		<synopsis>
 			translate(1, 0, 0);
 		</synopsis>
-		<para>moves the current selection 1 Angstrom along the ''x'' axis.</para>
+		<para>moves the current selection 1 Angstrom along the x axis.</para>
 	
 	</section>
 	
@@ -162,7 +162,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> translateatom ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> translateatom ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Translates the current atom by the specified vector.</para>
@@ -171,7 +171,7 @@
 		<synopsis>
 			translateatom(1, 0, -1);
 		</synopsis>
-		<para>translates the current atom 1 Angstrom along ''x'' and -1 Angstrom along ''z''.</para>
+		<para>translates the current atom 1 Angstrom along x and -1 Angstrom along z.</para>
 		
 	</section>
 	
@@ -180,7 +180,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> translatecell ( double ''fracx'', double ''fracy'', double ''fracz'' )</para>
+				<para> translatecell ( double fracx, double fracy, double fracz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Translates the current selection by the fractional cell vectors specified. The model must have a unit cell for this command to work.</para>
@@ -189,7 +189,7 @@
 		<synopsis>
 			translatecell(0, 0.5, 0);
 		</synopsis>
-		<para>translates the current selection by an amount equivalent to half of the current cell's ''B'' vector.</para>
+		<para>translates the current selection by an amount equivalent to half of the current cell's B vector.</para>
 	
 	</section>
 	
@@ -198,7 +198,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> translateworld ( double ''wx'', double ''wy'', double ''wz'' )</para>
+				<para> translateworld ( double wx, double wy, double wz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Translates the current selection by the Angstrom amounts specified, with the XY plane parallel to the monitor screen.</para>
@@ -216,7 +216,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> mirror ( string ''axis'' )</para>
+				<para> mirror ( string axis )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Mirror the current selection in the specified plane about its geometric centre.</para>
@@ -225,7 +225,7 @@
 		<synopsis>
 			mirror(&quot;y&quot;);
 		</synopsis>
-		<para>mirrors the current selection about the ''y'' axis.</para>
+		<para>mirrors the current selection about the y axis.</para>
 
 	</section>
 	
