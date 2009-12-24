@@ -7,7 +7,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> debug ( string ''type'' )</para>
+				<para> debug ( string type )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Toggles debug output from various parts of the code. A full list of valid types is given in ((Output Types)).</para>
@@ -24,7 +24,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string getenv ( string ''variable'' )</para>
+				<para> string getenv ( string variable )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Retrieves the contents of the named environment variable so that transfer of useful quantities can be made to Aten through a shell.</para>
@@ -43,7 +43,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> double getenvf ( string ''variable'' )</para>
+				<para> double getenvf ( string variable )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Retrieves the contents of the named environment variable, converting it to a floating-point (double) value in the process.</para>
@@ -61,7 +61,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> integer getenvf ( string ''variable'' )</para>
+				<para> integer getenvf ( string variable )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Retrieves the contents of the named environment variable, converting it to an integer value in the process.</para>
@@ -96,7 +96,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> help ''command''</para>
+				<para> help command</para>
 			</listitem>
 		</itemizedlist>
 		<para>Provide short help on the supplied ''command''.</para>
@@ -113,7 +113,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> searchcommands ( string ''srch'' )</para>
+				<para> searchcommands ( string srch )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Search all available commands for the (partial) command name specified.</para>
@@ -125,7 +125,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> seed ( int ''n'' )</para>
+				<para> seed ( int n )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the random seed.</para>

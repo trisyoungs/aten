@@ -56,7 +56,7 @@
 				<para> autopolyhedra ( )</para>
 			</listitem>
 			<listitem>
-				<para> autopolyhedra ( string ''options'' )</para>
+				<para> autopolyhedra ( string options )</para>
 			</listitem>
 		</itemizedlist>
 	
@@ -88,7 +88,7 @@
 						<entry>Do not link the coordinates of generated glyphs to coordinates of the atoms (the default is to link glyph coordinates to atoms).</entry>
 					</row>
 					<row>
-						<entry>rcut=<filename>distance</filename></entry>
+						<entry>rcut=<emphasis>distance</emphasis></entry>
 						<entry>Specifies the maximum distance allowed between vertices of a triangle</entry>
 					</row>
 				</tbody>
@@ -110,10 +110,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomf ( int ''n'' )</para>
+				<para> glyphatomf ( int n )</para>
 			</listitem>
 			<listitem>
-				<para> glyphatomf ( int ''n'', atom|int ''sourceatom'' )</para>
+				<para> glyphatomf ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set current (or specified) atom's forces as data ''n'' in the current glyph.</para>
@@ -131,10 +131,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomr ( int ''n'' )</para>
+				<para> glyphatomr ( int n )</para>
 			</listitem>
 			<listitem>
-				<para> glyphatomr ( int ''n'', atom|int ''sourceatom'' )</para>
+				<para> glyphatomr ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set current (or specified) atom's position as data ''n'' in the current glyph.</para>
@@ -152,10 +152,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomv ( int ''n'' )</para>
+				<para> glyphatomv ( int n )</para>
 			</listitem>
 			<listitem>
-				<para> glyphatomv ( int ''n'', atom|int ''sourceatom'' )</para>
+				<para> glyphatomv ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set current (or specified) atom's velocity as data ''n'' in the current glyph.</para>
@@ -174,7 +174,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomsf ( atom|int ''sourceatom'', ... )</para>
+				<para> glyphatomsf ( atom|int sourceatom, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the forces of the atoms / atom IDs provided.</para>
@@ -192,7 +192,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomsr ( atom|int ''sourceatom'', ... )</para>
+				<para> glyphatomsr ( atom|int sourceatom, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the positions of the atoms / atom IDs provided.</para>
@@ -210,7 +210,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphatomsv ( atom|int ''sourceatom'', ... )</para>
+				<para> glyphatomsv ( atom|int sourceatom, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the velocities of the atoms / atom IDs provided.</para>
@@ -228,10 +228,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphcolour ( int ''n'', double ''r'', double ''g'', double ''b'' )</para>
+				<para> glyphcolour ( int n, double r, double g, double b )</para>
 			</listitem>
 			<listitem>
-				<para> glyphcolour ( int ''n'', double ''r'', double ''g'', double ''b'', double ''a'' )</para>
+				<para> glyphcolour ( int n, double r, double g, double b, double a )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the colour of vertex ''n'' for the current glyph to the RGB(A) colour provided.</para>
@@ -249,7 +249,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphdata ( int ''n'', double ''x'', double ''y'', double ''z'' )</para>
+				<para> glyphdata ( int n, double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set vector data ''n'' for the current glyph to the fixed values provided.</para>
@@ -267,7 +267,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphsolid ( bool ''true''|''false'' )</para>
+				<para> glyphsolid ( bool issolid )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the drawing style of the current glyph to solid (true) or wireframe (false) (if the glyph style permits).</para>
@@ -284,7 +284,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> glyphtext ( string ''text'' )</para>
+				<para> glyphtext ( string text )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set the text data in the current glyph. For text-style glyphs, this is of course useful! For others, whether or not the text is used depends on the style of the glyph.</para>
@@ -301,10 +301,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string ''style'' )</para>
+				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string style )</para>
 			</listitem>
 			<listitem>
-				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string ''style'', string ''options'' )</para>
+				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string style, string options )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global ((Preferences)). Valid glyph styles are listed in the ((Glyphs)) section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
@@ -321,7 +321,7 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>linewidth=<filename>width</filename></entry>
+						<entry>linewidth=<emphasis>width</emphasis></entry>
 						<entry>Set the linewidth used to draw the glyph to the (floating point) value provided.</entry>
 					</row>
 					<row>
@@ -329,7 +329,7 @@
 						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid(TRUE)</link> after creation.</entry>
 					</row>
 					<row>
-						<entry>text=<filename>string</filename></entry>
+						<entry>text=<emphasis>string</emphasis></entry>
 						<entry>Set the character data associated to the glyph to ''string''. Currently, this has no effect for glyphs other than those that display text.</entry>
 					</row>
 					<row>

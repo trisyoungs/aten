@@ -7,7 +7,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> rotateview ( double ''ax'', double ''ay'', double ''az'', double ''angle'' )</para>
+				<para> rotateview ( double ax, double ay, double az, double angle )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Rotate the current view ''angle'' degrees about an axis defined between the supplied point {ax,ay,az} and the origin.</para>
@@ -87,10 +87,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> rotateview ( double ''rotx'', double ''roty'' )</para>
+				<para> rotateview ( double rotx, double roty )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the current view by ''rotx'' degrees around the ''x'' axis and ''roty'' degrees around the ''y'' axis.</para>
+		<para>Rotates the current view by ''rotx'' degrees around the x axis and ''roty'' degrees around the y axis.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -104,19 +104,19 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setview ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''x'', double ''y'', double ''z'' )</para>
+				<para> setview ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz, double x, double y, double z )</para>
 			</listitem>
 			<listitem>
-				<para> setview ( double ''ax'', double ''ay'', double ''az'', double ''bx'', double ''by'', double ''bz'', double ''cx'', double ''cy'', double ''cz'', double ''x'', double ''y'', double ''z'', double ''zrot'' )</para>
+				<para> setview ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz, double x, double y, double z, double zrot )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the current view to the rotation matrix, camera vector, and (if supplied) camera ''z'' rotation specified. The 10-number output of ((Commands: View|#getview|getview)) can be passed to 'setview' to recreate the old camera rotation and position.</para>
+		<para>Sets the current view to the rotation matrix, camera vector, and (if supplied) camera rotation (''zrot'') specified. The 10-number output of ((Commands: View|#getview|getview)) can be passed to 'setview' to recreate the old camera rotation and position.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			setview(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
 		</synopsis>
-		<para>sets a view with the ''z'' axis pointing up, and the ''y'' axis normal to the screen (i.e. rotated 90 degrees around the ''x'' axis)</para>
+		<para>sets a view with the z axis pointing up, and the y axis normal to the screen (i.e. rotated 90 degrees around the x axis)</para>
 	
 	</section>
 	
@@ -128,7 +128,7 @@
 				<para> speedtest ( )</para>
 			</listitem>
 			<listitem>
-				<para> speedtest ( int ''nrenders'' )</para>
+				<para> speedtest ( int nrenders )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Performs a quick speed test based on rendering of the current model and general view.</para>
@@ -150,7 +150,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> translateview ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> translateview ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Translates the camera viewing the current model.</para>
@@ -167,7 +167,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> viewalong ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> viewalong ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the current view so that it is along the specified vector.</para>
@@ -185,7 +185,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> viewalongcell ( double ''x'', double ''y'', double ''z'' )</para>
+				<para> viewalongcell ( double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the current view so that is along the specified cell vector.</para>
@@ -194,7 +194,7 @@
 		<synopsis>
 			viewalongcell(1, 0, 0);
 		</synopsis>
-		<para>view the current model along the cells ''x'' axis.</para>
+		<para>view the current model along the cell's x axis.</para>
 		
 	</section>
 	
@@ -203,7 +203,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> zoomview ( double ''dz'' )</para>
+				<para> zoomview ( double dz )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Zooms the view by the specified amount.</para>

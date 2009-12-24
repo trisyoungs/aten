@@ -7,7 +7,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> angledef ( string ''form'', string ''type_i'', string ''type_j'', string ''type_k'', double ''data1'', ... )</para>
+				<para> angledef ( string form, string type_i, string type_j, string type_k, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add an angle definition to the current forcefield. ''form'' should correspond to one of the implemented ((Angle Functions)) names, while the three ''types'' refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
@@ -19,7 +19,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> bonddef ( string ''form'', string ''type_i'', string ''type_j'', double ''data1'', ... )</para>
+				<para> bonddef ( string form, string type_i, string type_j, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add a bond definition to the current forcefield. ''form'' should correspond to one of the implemented ((Bond Functions)) names, while the two ''types'' refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
@@ -99,7 +99,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> defaultff ( string|forcefield ''ff'' )</para>
+				<para> defaultff ( string|forcefield ff )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Makes the supplied/named forcefield the default forcefield to use when none is associated.</para>
@@ -116,7 +116,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> equivalents ( string ''name'', string ''&quot;typenames...&quot;'' )</para>
+				<para> equivalents ( string name, string &quot;typenames...&quot; )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Define equivalent terms in the current forcefield. ''name'' is the new typename to which the list of quoted ''typenames'' are linked, for subsequent use in intramolecular term definitions. See ((Forcefield Files|#equivalents)) for more information.</para>
@@ -128,7 +128,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> exportmap ( string ''&quot;typename=newname,...&quot;'' )</para>
+				<para> exportmap ( string &quot;typename=newname,...&quot; )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set up manual mappings that convert atomtype names when expression are exported. Works in the opposite way to the 'map' command.</para>
@@ -175,7 +175,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> ffpattern ( string|int|pattern ''pat'')</para>
+				<para> ffpattern ( string|int|pattern pattern )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Associates current forcefield to the current pattern, or one specified by either a reference, integer ID in the current model, or a pattern pointer.</para>
@@ -197,10 +197,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> forcefield getff ( string ''name'' )</para>
+				<para> forcefield getff ( string name )</para>
 			</listitem>
 			<listitem>
-				<para> forcefield getff ( int ''id'' )</para>
+				<para> forcefield getff ( int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Select the named forcefield (or forcefield with the specified id) and make it current, returning a reference to it in the process.</para>
@@ -218,7 +218,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> interdef  ( string ''form'', int ''typeid'', double ''charge'', double ''data1'', ... )</para>
+				<para> interdef  ( string form, int typeid, double charge, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add a new short-range data definition to a type in the current forcefield. ''form'' should correspond to one of the implemented ((VDW Functions)). Up to ten parameters for the VDW potential may be given.</para>
@@ -230,7 +230,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> forcefield loadff ( string ''file'', string ''name'' )</para>
+				<para> forcefield loadff ( string file, string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Load a forcefield from ''file'' and reference it by ''name''. Becomes the current forcefield.</para>
@@ -248,7 +248,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> map ( string ''&quot;name=element,...&quot;'' )</para>
+				<para> map ( string &quot;name=element,...&quot; )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set up manual typename mappings for atom names that do not readily correspond to element symbols, forcefield types etc. All atoms that are subsequently created using ''name'' as the element are automatically converted to the corresponding element.</para>
@@ -266,10 +266,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> forcefield newff ( string ''name'' )</para>
+				<para> forcefield newff ( string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new, empty forcefield with the given &lt;''name''&gt; and make it current. Returns a reference to the new forcefield.</para>
+		<para>Create a new, empty forcefield with the given ''name'' and make it current. Returns a reference to the new forcefield.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -317,10 +317,11 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> rules ( string ''rules set'' )</para>
+				<para> rules ( string ruleset )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Set rules set to use for parameter generation in the current forcefield. See ((Forcefield Files|#Rule-based Forcefields)).</para>
+		<para><emphasis>Note: The implementation of rule-based forcefields will change in a future release.</emphasis></para>
 	
 	</section>
 	
@@ -329,7 +330,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int saveexpression ( string ''filter'', string ''filename'' )</para>
+				<para> int saveexpression ( string filter, string filename )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Export the forcefield expression for the current model in the format determined by the ''filter'' nickname, to the ''filename'' specified. Return value is '1' for successful write, or '0' otherwise.</para>
@@ -346,7 +347,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> torsiondef ( string ''form'', string ''type_i'', string ''type_j'', string ''type_k'', string ''type_l'', double ''data1'', ...)</para>
+				<para> torsiondef ( string form, string type_i, string type_j, string type_k, string type_l, double data1, ...)</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add a torsion definition to the current forcefield. ''form'' should correspond to one of the implemented ((Torsion Functions)), while the four ''types'' refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
@@ -358,10 +359,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int typedef ( int ''typeid'', string ''name'', string ''element'', string ''type'' )</para>
+				<para> int typedef ( int typeid, string name, string element, string type )</para>
 			</listitem>
 			<listitem>
-				<para> int typedef ( int ''typeid'', string ''name'', string ''element'', string ''type'', string ''description'' )</para>
+				<para> int typedef ( int typeid, string name, string element, string type, string description )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Add a new atom type definition to the current forcefield, with the identifying ''typeid''. Other arguments are described in more detail in ((Forcefield Files|#Keyword: types)). The command returns '1' if the model was typed successfully or '0' otherwise.</para>
@@ -396,7 +397,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int typetest ( int ''typeid'', atom|int ''id'' )</para>
+				<para> int typetest ( int typeid, atom|int id )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Test the forcefield atomtype ''typeid'' on the atom specified, returning the type score of the match (zero indicating no match).</para>
@@ -414,7 +415,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> units ( string ''unit'' )</para>
+				<para> units ( string unit )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the units in which energetic parameters are given for the current forcefield. For a list of available units see ((Energy Units)).</para>
@@ -426,7 +427,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> vdw ( bool ''on''|''off'' )</para>
+				<para> vdw ( bool calculate )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Controls calculation of van der Waals terms in energy / force calculations (on by default).</para>

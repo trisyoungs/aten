@@ -21,7 +21,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> addreadoption ( string ''option'' )</para>
+				<para> addreadoption ( string option )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Controls aspects of file reading. See ((Read Options)) for a list of possible ''options''.</para>
@@ -70,7 +70,7 @@
 		<synopsis>
 			string filename = filterfilename();
 		</synopsis>
-		<para>Puts the current source/destination filename in the variable ''filename''.</para>
+		<para>Puts the current source/destination filename in the variable filename.</para>
 
 	</section>
 	
@@ -79,10 +79,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int find ( string ''searchstring'' )</para>
+				<para> int find ( string searchstring )</para>
 			</listitem>
 			<listitem>
-				<para> int find ( string ''searchstring'', string ''linevar'' )</para>
+				<para> int find ( string searchstring, string linevar )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Searches for the specified ''searchstring'' in the input file, returning 0 if ''searchstring'' is not found before the end of the file, and 1 if it is. The optional argument ''linevar'' is a character variable in which the matching line (if any) is put.</para>
@@ -105,7 +105,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int getline ( string ''variable'' )</para>
+				<para> int getline ( string variable )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read an entire line from the input file, and put it in the character variable provided. The line also becomes the current target for '((Commands: Read Write|#readnext|readnext))'. The command returns a ((Read Success)) integer.</para>
@@ -124,7 +124,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int nextarg( int|double|string ''var'' )</para>
+				<para> int nextarg( int|double|string var )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read the next whitespace-delimited chunk of text from the current file and place it in the variable supplied. Note that this command reads directly from the file and not the last line read with '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' (see '((Commands: Read Write|#readnext|readnext))' to read the next delimited argument from the last read line). The command returns TRUE (1) if an argument was successfully read, or FALSE (0) otherwise (e.g. if the end of the file was found).</para>
@@ -176,7 +176,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> string readchars ( int ''nchars'', bool ''skipeol'' = TRUE )</para>
+				<para> string readchars ( int nchars, bool skipeol = TRUE )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Reads and returns (as a string) a number of characters from the input file. If ''skipeol'' is true (the default) then the end-of-line markers '\n' and '\r' will be ignored and will not count towards ''nchars'' - this is of most use when reading formatted text files and you want to 'ignore' the fact that data is presented on many lines rather than one. If ''skipeol'' is false then '\n' and '\r' <emphasis>will</emphasis> count towards the total number of characters. Used on formatted text files, this might give you unexpected results.</para>
@@ -197,7 +197,7 @@
 				<para> double readdouble ( )</para>
 			</listitem>
 			<listitem>
-				<para> double readdouble ( int ''nbytes'' )</para>
+				<para> double readdouble ( int nbytes )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read a floating point value (the size determined from the machines 'double' size) from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of double (e.g. long double)  on the machine this size is used instead.</para>
@@ -215,7 +215,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readdoublearray ( double &amp;''array'', int ''n'' )</para>
+				<para> int readdoublearray ( double &amp;array, int n )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(double)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.</para>
@@ -237,7 +237,7 @@
 				<para> int readint ( )</para>
 			</listitem>
 			<listitem>
-				<para> int readint ( int ''nbytes'' )</para>
+				<para> int readint ( int nbytes )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read an integer value (the size determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of int (e.g. long int) on the machine this size is used instead.</para>
@@ -255,7 +255,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readintarray ( int &amp;''array'', int ''n'')</para>
+				<para> int readintarray ( int &amp;array, int n)</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read ''n'' consecutive integer values (whose individual size is determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file, placing in the ''array'' provided. The size of the array provided must be at least ''n''. The command returns a ((Read Success)) integer.</para>
@@ -274,7 +274,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readline ( int|double|string ''var'', ... )</para>
+				<para> int readline ( int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read a line of delimited items from the input file, placing them into the list of variable(s) provided. Conversion of data from the file into the types of the destination variables is performed automatically. The number of items parsed successfully is returned.</para>
@@ -293,7 +293,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readlinef ( string ''format'', int|double|string ''var'', ... )</para>
+				<para> int readlinef ( string format, int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read a line of data from the input file and separate them into the list of variable(s) provided, and according to the format provided. The number of items parsed successfully is returned.</para>
@@ -312,7 +312,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readnext ( int|double|string ''variable'' )</para>
+				<para> int readnext ( int|double|string variable )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Read the next delimited argument from the last line read with either '((Commands: Read Write|#getline|getline))' or '((Commands: Read Write|#readline|readline))' into the ''variable'' supplied. The command returns either TRUE for success or FALSE (e.g. if the end of file was reached without reading any non-whitespace characters, or an error was encountered).</para>
@@ -331,7 +331,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readvar ( string ''source'', int|double|string ''var'', ... )</para>
+				<para> int readvar ( string source, int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Parse the contents of the supplied string ''source'' into the supplied variables, assuming delimited data items. Delimited items read from ''source'' are converted automatically to the type inferred by the target variable. The number of data items parsed successfully is returned.</para>
@@ -357,7 +357,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int readvar ( string ''variable'', string ''format'', int|double|string ''var'', ... )</para>
+				<para> int readvar ( string variable, string format, int|double|string var, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Parse the contents of the supplied string ''variable'' according to the supplied ''format'' string, placing in the supplied variables. The number of format specifiers successfully parsed (or, to look at it another way, the number of the supplied variables that were assigned values) is returned.</para>
@@ -382,7 +382,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> removereadoption ( string ''option'' )</para>
+				<para> removereadoption ( string option )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Removes a previously-set read option. See ((Read Options)) for a list of possible ''options''.</para>
@@ -416,7 +416,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> skipchars ( int ''n'' )</para>
+				<para> skipchars ( int n )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Skips the next ''n'' characters in the input file.</para>
@@ -434,7 +434,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> skipline ( int ''n'' = 0 )</para>
+				<para> skipline ( int n = 1 )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Skips the next line in the file, or the next ''n'' lines if a number supplied.</para>
@@ -474,7 +474,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> writelinef( string ''format'', ... )</para>
+				<para> writelinef( string format, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Write a formatted line to the current output file, according to the supplied ''format'' and any supplied arguments. Usage is the same as for the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
@@ -495,7 +495,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> writevar ( string ''dest'', ...)</para>
+				<para> writevar ( string dest, ...)</para>
 			</listitem>
 		</itemizedlist>
 		<para>Write to the supplied string variable ''dest'' the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.</para>
@@ -515,7 +515,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> writevarf ( string ''dest'', string ''format'', ...)</para>
+				<para> writevarf ( string dest, string format, ...)</para>
 			</listitem>
 		</itemizedlist>
 		<para>Write to the supplied string variable ''dest'' the string resulting from the supplied ''format'' and any other supplied arguments. Apart from the mandatory first argument being the destination string variable, usage is otherwise the same as the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is __not__ automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>

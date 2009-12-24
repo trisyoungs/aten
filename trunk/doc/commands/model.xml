@@ -27,13 +27,13 @@
 				<para> model currentmodel ( )</para>
 			</listitem>
 			<listitem>
-				<para> model currentmodel ( int ''id'' )</para>
+				<para> model currentmodel ( int id )</para>
 			</listitem>
 			<listitem>
-				<para> model currentmodel ( string ''name'' )</para>
+				<para> model currentmodel ( string name )</para>
 			</listitem>
 			<listitem>
-				<para> model currentmodel ( model ''m'' )</para>
+				<para> model currentmodel ( model m )</para>
 			</listitem>
 		</itemizedlist>
 		
@@ -114,13 +114,13 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> model getmodel ( string ''name'' )</para>
+				<para> model getmodel ( string name )</para>
 			</listitem>
 			<listitem>
-				<para> model getmodel ( int ''id'' )</para>
+				<para> model getmodel ( int id )</para>
 			</listitem>
 			<listitem>
-				<para> model getmodel ( model ''m'' )</para>
+				<para> model getmodel ( model m )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Makes the named model, or the model id specified, or the referenced model the current model, returning a reference to that model. Equivalent to the ((Commands: Models|#currentmodel|currentmodel)) command, except that an argument specifying the new model <emphasis>must</emphasis> be provided.</para>
@@ -144,9 +144,6 @@
 		<itemizedlist>
 			<listitem>
 				<para> model lastmodel ( )</para>
-			</listitem>
-			<listitem>
-				<para> ''Introduced in v1.1 (r754)''</para>
 			</listitem>
 		</itemizedlist>
 		<para>Makes the last loaded / created model the current model, and returns a reference to it.</para>
@@ -180,10 +177,10 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int loadmodel ( string ''filename'' )</para>
+				<para> int loadmodel ( string filename )</para>
 			</listitem>
 			<listitem>
-				<para> int loadmodel ( string ''filename'', string ''newname'' )</para>
+				<para> int loadmodel ( string filename, string newname )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Load model(s) from the ''filename'' provided, changing the name of the the (last loaded) model to ''newname'' if one is specified. The last loaded model becomes the current model, and the number of models loaded is returned.</para>
@@ -218,7 +215,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> model newmodel ( string ''name'' )</para>
+				<para> model newmodel ( string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Create a new model called ''name'' which becomes the current model, and return a reference to it.</para>
@@ -274,7 +271,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int savemodel ( string ''format'', string ''filename'' )</para>
+				<para> int savemodel ( string format, string filename )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Save the current model in the  ''format'' given (which should correspond to a model export ((Filter)) nickname) to the ''filename'' specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.</para>
@@ -292,7 +289,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> setname ( string ''name'' )</para>
+				<para> setname ( string name )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Sets the name of the current model.</para>

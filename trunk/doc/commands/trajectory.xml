@@ -18,7 +18,7 @@
 				<para> model addframe ( )</para>
 			</listitem>
 			<listitem>
-				<para> model addframe ( string ''title'' )</para>
+				<para> model addframe ( string title )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Append a new trajectory frame to the current model's trajectory. The reference to the new frame is returned.</para>
@@ -86,7 +86,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> int loadtrajectory (string ''file'' )</para>
+				<para> int loadtrajectory (string file )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Associate trajectory in ''file'' with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.</para>
@@ -138,7 +138,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> seekframe ( int ''frame'' )</para>
+				<para> seekframe ( int frame )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Seeks to the frame number specified.</para>
