@@ -18,7 +18,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> error ( string ''format'', ... )</para>
+				<para> error ( string <emphasis>format</emphasis>, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Print a message to screen and immediately exit the current command structure / filter.</para>
@@ -37,7 +37,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> printf ( string ''format'', ... )</para>
+				<para> printf ( string <emphasis>format</emphasis>, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Standard printing command.</para>
@@ -50,7 +50,7 @@
 		<synopsis>
 			printf(&quot;Number of atoms = %i\n&quot;, natoms);
 		</synopsis>
-		<para>prints the contents of the variable ''natoms'' to the screen.</para>
+		<para>prints the contents of the variable <emphasis>natoms</emphasis> to the screen.</para>
 		
 	</section>
 	
@@ -59,7 +59,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<itemizedlist>
 			<listitem>
-				<para> verbose ( string ''format'', ... )</para>
+				<para> verbose ( string <emphasis>format</emphasis>, ... )</para>
 			</listitem>
 		</itemizedlist>
 		<para>Prints a message, but only when verbose output is enabled (with the -v command-line switch).</para>

@@ -10,7 +10,7 @@
 				<para> angledef ( string form, string type_i, string type_j, string type_k, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Add an angle definition to the current forcefield. ''form'' should correspond to one of the implemented ((Angle Functions)) names, while the three ''types'' refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Angle Functions)) names, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
 	
@@ -22,7 +22,7 @@
 				<para> bonddef ( string form, string type_i, string type_j, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Add a bond definition to the current forcefield. ''form'' should correspond to one of the implemented ((Bond Functions)) names, while the two ''types'' refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+		<para>Add a bond definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Bond Functions)) names, while the two <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
 	
@@ -119,7 +119,7 @@
 				<para> equivalents ( string name, string &quot;typenames...&quot; )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Define equivalent terms in the current forcefield. ''name'' is the new typename to which the list of quoted ''typenames'' are linked, for subsequent use in intramolecular term definitions. See ((Forcefield Files|#equivalents)) for more information.</para>
+		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See ((Forcefield Files|#equivalents)) for more information.</para>
 	
 	</section>
 	
@@ -221,7 +221,7 @@
 				<para> interdef  ( string form, int typeid, double charge, double data1, ... )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Add a new short-range data definition to a type in the current forcefield. ''form'' should correspond to one of the implemented ((VDW Functions)). Up to ten parameters for the VDW potential may be given.</para>
+		<para>Add a new short-range data definition to a type in the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((VDW Functions)). Up to ten parameters for the VDW potential may be given.</para>
 	
 	</section>
 	
@@ -233,7 +233,7 @@
 				<para> forcefield loadff ( string file, string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Load a forcefield from ''file'' and reference it by ''name''. Becomes the current forcefield.</para>
+		<para>Load a forcefield from <emphasis>file</emphasis> and reference it by <emphasis>name''. Becomes the current forcefield.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -251,7 +251,7 @@
 				<para> map ( string &quot;name=element,...&quot; )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set up manual typename mappings for atom names that do not readily correspond to element symbols, forcefield types etc. All atoms that are subsequently created using ''name'' as the element are automatically converted to the corresponding element.</para>
+		<para>Set up manual typename mappings for atom names that do not readily correspond to element symbols, forcefield types etc. All atoms that are subsequently created using <emphasis>name</emphasis> as the element are automatically converted to the corresponding element.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -269,7 +269,7 @@
 				<para> forcefield newff ( string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new, empty forcefield with the given ''name'' and make it current. Returns a reference to the new forcefield.</para>
+		<para>Create a new, empty forcefield with the given <emphasis>name</emphasis> and make it current. Returns a reference to the new forcefield.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -333,7 +333,7 @@
 				<para> int saveexpression ( string filter, string filename )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Export the forcefield expression for the current model in the format determined by the ''filter'' nickname, to the ''filename'' specified. Return value is '1' for successful write, or '0' otherwise.</para>
+		<para>Export the forcefield expression for the current model in the format determined by the <emphasis>filter</emphasis> nickname, to the <emphasis>filename</emphasis> specified. Return value is '1' for successful write, or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -350,7 +350,7 @@
 				<para> torsiondef ( string form, string type_i, string type_j, string type_k, string type_l, double data1, ...)</para>
 			</listitem>
 		</itemizedlist>
-		<para>Add a torsion definition to the current forcefield. ''form'' should correspond to one of the implemented ((Torsion Functions)), while the four ''types'' refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
+		<para>Add a torsion definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Torsion Functions)), while the four <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
 	
 	</section>
 	
@@ -365,7 +365,7 @@
 				<para> int typedef ( int typeid, string name, string element, string type, string description )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Add a new atom type definition to the current forcefield, with the identifying ''typeid''. Other arguments are described in more detail in ((Forcefield Files|#Keyword: types)). The command returns '1' if the model was typed successfully or '0' otherwise.</para>
+		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid''. Other arguments are described in more detail in ((Forcefield Files|#Keyword: types)). The command returns '1' if the model was typed successfully or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -400,7 +400,7 @@
 				<para> int typetest ( int typeid, atom|int id )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Test the forcefield atomtype ''typeid'' on the atom specified, returning the type score of the match (zero indicating no match).</para>
+		<para>Test the forcefield atomtype <emphasis>typeid</emphasis> on the atom specified, returning the type score of the match (zero indicating no match).</para>
 		
 		<para>For example:</para>
 		<synopsis>

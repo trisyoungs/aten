@@ -99,7 +99,7 @@
 				<para> help command</para>
 			</listitem>
 		</itemizedlist>
-		<para>Provide short help on the supplied ''command''.</para>
+		<para>Provide short help on the supplied <emphasis>command''.</para>
 		
 		<para>For example:</para>
 		<synopsis>

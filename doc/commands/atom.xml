@@ -5,7 +5,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="command.group.building">Building commands</link> for methods to create atoms in the first place.</para>
+				<para><link linkend="command.groups.building">Building commands</link> for methods to create atoms in the first place.</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -18,7 +18,7 @@
 				<para> atomstyle ( string style )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Sets the individual drawing ''style'' for the current atom selection, used when the global drawing style is 'individual'.</para>
+		<para>Sets the individual drawing <emphasis>style</emphasis> for the current atom selection, used when the global drawing style is 'individual'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

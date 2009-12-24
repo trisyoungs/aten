@@ -10,7 +10,7 @@
 				<para> do { commands } while ( condition )</para>
 			</listitem>
 		</itemizedlist>
-		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the ''condition'' which is tested at the end of every execution of the ''commands''. If 'true', the ''commands'' are executed again, and ''condition'' re-tested afterwards. If 'false' the loop ends.</para>
+		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the end of every execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed again, and <emphasis>condition</emphasis> re-tested afterwards. If 'false' the loop ends.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -31,7 +31,7 @@
 			i = 64
 			i = 128
 		</synopsis>
-		<para>Note that the final value of ''i'' inside the loop is '128' (greater than 100) since the ''condition'' is only tested at the end of the execution of the ''commands''. The '((Commands: Flow|#while|while))' loop works in the same way, save that the ''condition'' is tested at the beginning of the loop, before ''commands'' are executed, rather than at the end.</para>
+		<para>Note that the final value of <emphasis>i</emphasis> inside the loop is '128' (greater than 100) since the <emphasis>condition</emphasis> is only tested at the end of the execution of the <emphasis>commands''. The '((Commands: Flow|#while|while))' loop works in the same way, save that the <emphasis>condition</emphasis> is tested at the beginning of the loop, before <emphasis>commands</emphasis> are executed, rather than at the end.</para>
 	
 	</section>
 	
@@ -46,21 +46,21 @@
 				<para> for ( startvalue ; condition ; increment ) { commands... }</para>
 			</listitem>
 		</itemizedlist>
-		<para>Three separate components make up a 'for' loop. ''startvalue'' defines both the control variable (i.e. the variable that changes on each loop iteration) and  optionally its starting value, the ''condition'' is tested on each loop iteration to see whether or not to continue with the loop, and finally the ''increment'' is an expression to modify the control variable after each iteration, setting it to a new value. If multiple ''commands'' are to make up the body of the loop (executed on each iteration) then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is executed on each iteration, the curly brackets may be omitted.</para>
+		<para>Three separate components make up a 'for' loop. <emphasis>startvalue</emphasis> defines both the control variable (i.e. the variable that changes on each loop iteration) and  optionally its starting value, the <emphasis>condition</emphasis> is tested on each loop iteration to see whether or not to continue with the loop, and finally the <emphasis>increment</emphasis> is an expression to modify the control variable after each iteration, setting it to a new value. If multiple <emphasis>commands</emphasis> are to make up the body of the loop (executed on each iteration) then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is executed on each iteration, the curly brackets may be omitted.</para>
 		
 		<para>Some examples:</para>
 		<synopsis>
 			for (int i=1; i&lt;=10; i = i + 1) printf(&quot;%i\n&quot;, i);
 		</synopsis>
-		<para>Loop over and print all integers between 1 and 10. A local variable ''i'' is declared and initialised all in one go in the ''startvalue'' part of the loop. The 'long' way of incrementing the integer variable (i = i + 1) is typically not used in C/C++, most people preferring to take advantage of the C's useful postfix and prefix operators, as in the next example).</para>
+		<para>Loop over and print all integers between 1 and 10. A local variable <emphasis>i</emphasis> is declared and initialised all in one go in the <emphasis>startvalue</emphasis> part of the loop. The 'long' way of incrementing the integer variable (i = i + 1) is typically not used in C/C++, most people preferring to take advantage of the C's useful postfix and prefix operators, as in the next example).</para>
 		<synopsis>
 			for (n = 100; n&gt;0; --n) printf(&quot;Counting down... %i\n&quot;, n);
 		</synopsis>
-		<para>Here, an existing variable ''n'' is decreased from 100 to 1, printing out all numbers along the way. Note the usage of the double-minus '--' operator (the prefix decrease operator) which decreases its associated variable, in this case ''n''. For integers, to decrease means to reduce the value by 1. For other types the meaning may vary - for instance, with reference types the '--' operator means 'previous item in the list', since all such objects in Aten (e.g. atoms) are stored in lists containing many objects of the same type. This makes iterating over, say, all atoms in a given model pretty easy...</para>
+		<para>Here, an existing variable <emphasis>n</emphasis> is decreased from 100 to 1, printing out all numbers along the way. Note the usage of the double-minus '--' operator (the prefix decrease operator) which decreases its associated variable, in this case <emphasis>n''. For integers, to decrease means to reduce the value by 1. For other types the meaning may vary - for instance, with reference types the '--' operator means 'previous item in the list', since all such objects in Aten (e.g. atoms) are stored in lists containing many objects of the same type. This makes iterating over, say, all atoms in a given model pretty easy...</para>
 		<synopsis>
 			for (atom a = aten.model.atoms; a; ++a) printf(&quot;Atom id %i is element %s.\n&quot;, a.id, a.symbol);
 		</synopsis>
-		<para>In this example the variable ''a'' is declared and initialised to be a reference to the first atom in the current model. The ''condition'' part simply consists of the expression 'a', which effectively tests the reference address currently stored in ''a''. Since any positive number equates to 'true' (see below for the 'if' test) the loop will continue until ''a'' contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator ('++') changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.</para>
+		<para>In this example the variable <emphasis>a</emphasis> is declared and initialised to be a reference to the first atom in the current model. The <emphasis>condition</emphasis> part simply consists of the expression 'a', which effectively tests the reference address currently stored in <emphasis>a''. Since any positive number equates to 'true' (see below for the 'if' test) the loop will continue until <emphasis>a</emphasis> contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator ('++') changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.</para>
 	
 	</section>
 	
@@ -75,9 +75,9 @@
 				<para> if ( condition ) { commands... } else { commands... }</para>
 			</listitem>
 		</itemizedlist>
-		<para>The 'if' statement permits sections of code to be executed based on the assessment of logical comparison of values. If the supplied ''condition'' evaluates to be 'true' then the following ''commands'' are executed, otherwise nothing happens. In the second form of the command, if the ''condition'' evaluates to be 'false' then the second set of ''commands'' are executed instead. If multiple ''commands'' are to be executed then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is to be executed the curly brackets may be omitted.</para>
+		<para>The 'if' statement permits sections of code to be executed based on the assessment of logical comparison of values. If the supplied <emphasis>condition</emphasis> evaluates to be 'true' then the following <emphasis>commands</emphasis> are executed, otherwise nothing happens. In the second form of the command, if the <emphasis>condition</emphasis> evaluates to be 'false' then the second set of <emphasis>commands</emphasis> are executed instead. If multiple <emphasis>commands</emphasis> are to be executed then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is to be executed the curly brackets may be omitted.</para>
 		
-		<para>Typically, comparisons are made between two variables, for example 'if ( ''var1'' &gt; ''var2'' ) ... ' checks for ''var1'' being greater in value than ''var2'', executing the following commands if this turns out to be true. The comparison operator may be any one of the following symbols:</para>
+		<para>Typically, comparisons are made between two variables, for example 'if ( <emphasis>var1</emphasis> &gt; <emphasis>var2</emphasis> ) ... ' checks for <emphasis>var1</emphasis> being greater in value than <emphasis>var2</emphasis>, executing the following commands if this turns out to be true. The comparison operator may be any one of the following symbols:</para>
 
 		<table frame='all' pgwide='1' tocentry='0'><title>Test Operators</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
@@ -120,24 +120,24 @@
 			</tgroup>
 		</table>
 		
-		<para>In truth, the ''condition'' part may be any expression, command, or amalgam of both, provided the end result of executing it is a single value. The type of the final result doesn't even matter, since conversion to a boolean is guaranteed. Deep down in the logic of Aten, integers are at the heart of it all, with zero or any negative number being 'false', and any positive number meaning 'true'.</para>
+		<para>In truth, the <emphasis>condition</emphasis> part may be any expression, command, or amalgam of both, provided the end result of executing it is a single value. The type of the final result doesn't even matter, since conversion to a boolean is guaranteed. Deep down in the logic of Aten, integers are at the heart of it all, with zero or any negative number being 'false', and any positive number meaning 'true'.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int i = 10;
 			if (i &gt; 5) printf(&quot;Hooray!\n&quot;);
 		</synopsis>
-		<para>in this case 'Hooray!' <emphasis>will</emphasis> be printed, because ''i'' is greater than 5.</para>
+		<para>in this case 'Hooray!' <emphasis>will</emphasis> be printed, because <emphasis>i</emphasis> is greater than 5.</para>
 		<synopsis>
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;);
 		</synopsis>
-		<para>but in this case 'Hooray!' will <emphasis>not</emphasis> be printed, because ''i'' is not greater than ''j''.</para>
+		<para>but in this case 'Hooray!' will <emphasis>not</emphasis> be printed, because <emphasis>i</emphasis> is not greater than <emphasis>j''.</para>
 		<synopsis>
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;); else { printf(&quot;Too small.\n&quot;); i = j; }
 		</synopsis>
-		<para>Here, the test fails for the same reason, but since an 'else' part was provided we still execute some commands (printing 'Too small.' and setting the variable ''i'' equal to ''j'').</para>
+		<para>Here, the test fails for the same reason, but since an 'else' part was provided we still execute some commands (printing 'Too small.' and setting the variable <emphasis>i</emphasis> equal to <emphasis>j'').</para>
 		<synopsis>
 			if (i) printf(&quot;Snoopy.\n&quot;);
 		</synopsis>
@@ -152,13 +152,13 @@
 			double alpha = 100.0;
 			if ( (a) &amp;&amp; (alpha &lt; 50.0) ) printf(&quot;Alpha and atom are OK.\n&quot;); else printf(&quot;No good!\n&quot;);
 		</synopsis>
-		<para>Two or more consecutive ''conditions'' can be tested in order to determine 'truth', in this case using the 'and' operator '&amp;&amp;'. Here, the value of the reference variable ''a'' and the value of ''alpha'' are both checked, and the text 'Alpha and atom are OK.' is only printed if both turn out to be 'true'.</para>
+		<para>Two or more consecutive <emphasis>conditions</emphasis> can be tested in order to determine 'truth', in this case using the 'and' operator '&amp;&amp;'. Here, the value of the reference variable <emphasis>a</emphasis> and the value of <emphasis>alpha</emphasis> are both checked, and the text 'Alpha and atom are OK.' is only printed if both turn out to be 'true'.</para>
 		<synopsis>
 			if (time == 0) printf(&quot;There is no time.&quot;);
 			else if (time &gt; 5) printf(&quot;There is more than enough time.&quot;);
 			else printf(&quot;There is only a little time.&quot;);
 		</synopsis>
-		<para>Multiple if tests can also be nested to create a sequence of tests. As soon as a ''condition'' is encountered that equates to 'true' the accompanying ''commands'' are executed and any subsequent 'else'd tests or commands are ignored.</para>
+		<para>Multiple if tests can also be nested to create a sequence of tests. As soon as a <emphasis>condition</emphasis> is encountered that equates to 'true' the accompanying <emphasis>commands</emphasis> are executed and any subsequent 'else'd tests or commands are ignored.</para>
 	
 	</section>
 	
@@ -185,7 +185,7 @@
 				<para> while ( condition ) { commands }</para>
 			</listitem>
 		</itemizedlist>
-		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the ''condition'' which is tested at the beginning of the loop, before execution of the ''commands''. If 'true', the ''commands'' are executed, but if 'false' the loop ends without executing the ''commands'' (and meaning that it is possible that the ''commands'' are <emphasis>never</emphasis> executed).</para>
+		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the beginning of the loop, before execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed, but if 'false' the loop ends without executing the <emphasis>commands</emphasis> (and meaning that it is possible that the <emphasis>commands</emphasis> are <emphasis>never</emphasis> executed).</para>
 		
 		<para>For example:</para>
 		<synopsis>

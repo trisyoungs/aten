@@ -19,7 +19,7 @@
 				<para> axisrotate ( double x, double y, double z, double theta, double ox, double oy, double oz )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotate the current selection by an angle ''theta'' (in degrees) about an axis defined either by the vector between two atom IDs or the vector components provided. If supplied, the rotation is performed using the coordinate origin specified by ''ox'', ''oy'', and ''oz'', otherwise {0,0,0} is assumed.</para>
+		<para>Rotate the current selection by an angle <emphasis>theta</emphasis> (in degrees) about an axis defined either by the vector between two atom IDs or the vector components provided. If supplied, the rotation is performed using the coordinate origin specified by <emphasis>ox</emphasis>, <emphasis>oy</emphasis>, and <emphasis>oz</emphasis>, otherwise {0,0,0} is assumed.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -45,7 +45,7 @@
 				<para> centre ( double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE)</para>
 			</listitem>
 		</itemizedlist>
-		<para>Centre the current atom selection at the specified coordinates. The three optional arguments ''lockx'', ''locky'', and ''lockz'' specify one or more atomic coordinates that are to remain unchanged during the transformation.</para>
+		<para>Centre the current atom selection at the specified coordinates. The three optional arguments <emphasis>lockx</emphasis>, <emphasis>locky</emphasis>, and <emphasis>lockz</emphasis> specify one or more atomic coordinates that are to remain unchanged during the transformation.</para>
 		
 		<para>For example:</para>
 		<synopsis>

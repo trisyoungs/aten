@@ -64,7 +64,7 @@
 		
 		<para>In a similar way to the 'autoellipsoid' command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
 		
-		<para>Possible ''options'' are:</para>
+		<para>Possible <emphasis>options</emphasis> are:</para>
 
 		<table frame='all' pgwide='1' tocentry='0'><title>Autopolyhedra options</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
@@ -116,7 +116,7 @@
 				<para> glyphatomf ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set current (or specified) atom's forces as data ''n'' in the current glyph.</para>
+		<para>Set current (or specified) atom's forces as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -137,7 +137,7 @@
 				<para> glyphatomr ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set current (or specified) atom's position as data ''n'' in the current glyph.</para>
+		<para>Set current (or specified) atom's position as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -158,14 +158,14 @@
 				<para> glyphatomv ( int n, atom|int sourceatom )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set current (or specified) atom's velocity as data ''n'' in the current glyph.</para>
+		<para>Set current (or specified) atom's velocity as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			atom i = newatom(&quot;H&quot;);
 			glyphatomv(2,i);
 		</synopsis>
-		<para>links the velocity of new atom ''i'' to the second datum in the current glyph.</para>
+		<para>links the velocity of new atom <emphasis>i</emphasis> to the second datum in the current glyph.</para>
 	
 	</section>
 	
@@ -234,7 +234,7 @@
 				<para> glyphcolour ( int n, double r, double g, double b, double a )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set the colour of vertex ''n'' for the current glyph to the RGB(A) colour provided.</para>
+		<para>Set the colour of vertex <emphasis>n</emphasis> for the current glyph to the RGB(A) colour provided.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -252,7 +252,7 @@
 				<para> glyphdata ( int n, double x, double y, double z )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Set vector data ''n'' for the current glyph to the fixed values provided.</para>
+		<para>Set vector data <emphasis>n</emphasis> for the current glyph to the fixed values provided.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -330,7 +330,7 @@
 					</row>
 					<row>
 						<entry>text=<emphasis>string</emphasis></entry>
-						<entry>Set the character data associated to the glyph to ''string''. Currently, this has no effect for glyphs other than those that display text.</entry>
+						<entry>Set the character data associated to the glyph to <emphasis>string''. Currently, this has no effect for glyphs other than those that display text.</entry>
 					</row>
 					<row>
 						<entry>wire</entry>

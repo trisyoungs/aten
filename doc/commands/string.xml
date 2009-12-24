@@ -1,4 +1,4 @@
-<section id="commands.groups.string"><title>String Commands</title>
+<section id="command.groups.string"><title>String Commands</title>
 	
 	<para>Manipulation and conversion of variables.
 	
@@ -21,20 +21,20 @@
 				<para> string afterstr ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Return the part of the ''source'' string that comes after the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
+		<para>Return the part of the <emphasis>source</emphasis> string that comes after the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned.
 		
 		<para>For example:</para>
 		<synopsis>
 			string fullname = &quot;BobBobbinson&quot;;
 			string firstname = afterstr(name, &quot;Bob&quot;);
 		</synopsis>
-		<para>sets the variable ''firstname'' to the value 'Bobbinson'.
+		<para>sets the variable <emphasis>firstname</emphasis> to the value 'Bobbinson'.
 		<synopsis>
 			string text1, text2;
 			text1 = &quot;No taxes on axes&quot;;
 			text2 = afterstr(text1, &quot;x&quot;);
 		</synopsis>
-		<para>results in ''text2'' having a value of 'es on axes'.
+		<para>results in <emphasis>text2</emphasis> having a value of 'es on axes'.
 	
 	</section>
 	
@@ -46,13 +46,13 @@
 				<para> double atof ( string text )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Converts the supplied ''text'' into its floating point (double) representation. Equivalent to the standard C routine 'atof'.
+		<para>Converts the supplied <emphasis>text</emphasis> into its floating point (double) representation. Equivalent to the standard C routine 'atof'.
 		
 		<para>For example:</para>
 		<synopsis>
 			double x = atof(&quot;1.099d&quot;);
 		</synopsis>
-		<para>would set ''x'' to the value '1.099'.
+		<para>would set <emphasis>x</emphasis> to the value '1.099'.
 		
 	</section>
 	
@@ -64,13 +64,13 @@
 				<para> int atoi ( string text )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Converts the supplied ''text'' into its integer representation. Equivalent to the standard C routine 'atoi'.
+		<para>Converts the supplied <emphasis>text</emphasis> into its integer representation. Equivalent to the standard C routine 'atoi'.
 		
 		<para>For example:</para>
 		<synopsis>
 			int i = atoi(&quot;000023&quot;);
 		</synopsis>
-		<para>would set ''i'' to the value '23'.
+		<para>would set <emphasis>i</emphasis> to the value '23'.
 	
 	</section>
 	
@@ -82,7 +82,7 @@
 				<para> string beforestr ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Return the part of the ''source'' string that comes before the first occurrence of the ''search'' string. If ''source'' doesn't contain any occurrences of ''search'' an empty string is returned.
+		<para>Return the part of the <emphasis>source</emphasis> string that comes before the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned.
 		
 		<para>For example:</para>
 		<synopsis>
@@ -90,12 +90,12 @@
 			source = &quot;Engelbert&quot;;
 			target = beforestr(source, &quot;e&quot;);
 		</synopsis>
-		<para>places the text &quot;Eng&quot; in the variable ''target''.
+		<para>places the text &quot;Eng&quot; in the variable <emphasis>target''.
 		<synopsis>
 			string text1 = &quot;No taxes on axes&quot;, text2;
 			text2 = beforestr(text1, &quot; ax&quot;);
 		</synopsis>
-		<para>places the text &quot;No taxes on&quot; in the variable ''text2''.</para>
+		<para>places the text &quot;No taxes on&quot; in the variable <emphasis>text2''.</para>
 	
 	</section>
 	
@@ -107,14 +107,14 @@
 				<para> int contains ( string source, string search )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Returns the number of times the ''search'' string is found in the ''source'' string. The function counts only non-overlapping occurrences of ''search''.</para>
+		<para>Returns the number of times the <emphasis>search</emphasis> string is found in the <emphasis>source</emphasis> string. The function counts only non-overlapping occurrences of <emphasis>search''.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			string poem = &quot;six sixes are thirty-six&quot;;
 			int count = contains(poem, &quot;six&quot;);
 		</synopsis>
-		<para>sets ''count'' to '3'.</para>
+		<para>sets <emphasis>count</emphasis> to '3'.</para>
 	
 	</section>
 	
@@ -126,13 +126,13 @@
 				<para> string ftoa ( double d )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Converts the supplied double ''d'' into a string representation.</para>
+		<para>Converts the supplied double <emphasis>d</emphasis> into a string representation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			string num = ftoa(100.001);
 		</synopsis>
-		<para>would set ''num'' to the value &quot;100.001&quot;.</para>
+		<para>would set <emphasis>num</emphasis> to the value &quot;100.001&quot;.</para>
 		
 	</section>
 	
@@ -144,13 +144,13 @@
 				<para> string itoa ( int i )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Converts the supplied integer ''i'' into a string representation.</para>
+		<para>Converts the supplied integer <emphasis>i</emphasis> into a string representation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			string num = itoa(54);
 		</synopsis>
-		<para>would set ''num'' to the value &quot;54&quot;.</para>
+		<para>would set <emphasis>num</emphasis> to the value &quot;54&quot;.</para>
 		
 	</section>
 	
@@ -162,19 +162,19 @@
 				<para> string stripchars ( string source, string chars )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Strip the supplied character(s) from the ''source'' string, returning the result.</para>
+		<para>Strip the supplied character(s) from the <emphasis>source</emphasis> string, returning the result.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			string abc = stripchars(&quot;Oodles of noodles&quot;, &quot;o&quot;);
 		</synopsis>
-		<para>places the text &quot;Odles f ndles&quot; in the variable ''abc''.</para>
+		<para>places the text &quot;Odles f ndles&quot; in the variable <emphasis>abc''.</para>
 		<synopsis>
 			string abc;
 			abc = &quot;Oodles of noodles&quot;;
 			abc = stripchars(abc, &quot;aeiou&quot;);
 		</synopsis>
-		<para>strips all vowels from the input string, placing the text &quot;Odls f ndls&quot; in the variable ''abc''.</para>
+		<para>strips all vowels from the input string, placing the text &quot;Odls f ndls&quot; in the variable <emphasis>abc''.</para>
 
 	</section>
 		

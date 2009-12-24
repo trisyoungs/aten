@@ -9,15 +9,15 @@
 		<para>Keywords, variables, and function names are case sensitive, so 'for' is different from 'For' (all internal commands in Aten are in lowercase). Individual commands must be separated by a semicolon ';', and newlines are optional. For example:</para>
 		
 		<synopsis>
-		int i; printf(&quot;Hello there.\n&quot;); i = 5;
+			int i; printf(&quot;Hello there.\n&quot;); i = 5;
 		</synopsis>
 		
 		<para>...and...</para>
 		
 		<synopsis>
-		int i;
-		printf(&quot;Hello there.\n&quot;);
-		i = 5;
+			int i;
+			printf(&quot;Hello there.\n&quot;);
+			i = 5;
 		</synopsis>
 		
 		<para>...are equivalent. Whitespace characters (spaces and tabs) are ignored and may be present in any amount in any position in the code.</para>
@@ -70,8 +70,8 @@
 		<para>All variables will default to sensible values (e.g. empty string, numbers equal to zero) on initialisation. To create a variable with a specific value simply do the following:</para>
 		
 		<synopsis>
-		int i=1,j=2,k=1001;
-		double myvar=0.0, angle = 90.0;
+			int i=1,j=2,k=1001;
+			double myvar=0.0, angle = 90.0;
 		</synopsis>
 		
 		<indexterm startref="idx.command.variables1" class="endofrange"></indexterm>
@@ -84,8 +84,8 @@
 		<para>Arrays of most variable types are allowed (some, for instance the <link linkend="command.types.aten">aten</link> type, don't really make sense as an array). Arrays are requested by providing a constant size (or an expression) in square brackets after the name:</para>
 		
 		<synopsis>
-		int values[100], i = 4;
-		double q[i];
+			int values[100], i = 4;
+			double q[i];
 		</synopsis>
 		
 		<para>Here, two arrays are created - an array of 100 integer numbers called 'values', and an array of four floating point numbers called 'q'. Array indices always run from 1 to the size of the array, unlike C in which arrays run from 0 to N-1, and Fortran in which it is possible to specify custom lower and upper indices for an array.</para>
@@ -93,26 +93,26 @@
 		<para>Arrays can be initialised to a simple value on creation, setting all elements to the same value...</para>
 		
 		<synopsis>
-		string s[4] = &quot;Nothing&quot;;
+			string s[4] = &quot;Nothing&quot;;
 		</synopsis>
 		
 		<para>...or each element to a different value using alist enclosed in curly brackets:</para>
 		
 		<synopsis>
-		string s[4] = { &quot;Nothing&quot;, &quot;Nicht&quot;, &quot;Nada&quot;, &quot;Not a sausage&quot; };
+			string s[4] = { &quot;Nothing&quot;, &quot;Nicht&quot;, &quot;Nada&quot;, &quot;Not a sausage&quot; };
 		</synopsis>
 		
 		<para>Also, all array elements can be set to the same value with a simple assignment:</para>
 		
 		<synopsis>
-		int t[100];
-		t = 40;
+			int t[100];
+			t = 40;
 		</synopsis>
 		
 		<note><title>See Also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para><link linkend="commands.groups.string">String Commands</link> for commands to convert to/from string data</para>
+					<para><link linkend="command.group.string">String Commands</link> for commands to convert to/from string data</para>
 				</listitem>
 				<listitem>
 					<para><link linkend="command.types">Variable types</link> for reference information on the non-standard types</para>
@@ -168,9 +168,9 @@
 		<para>In addition, all element symbols found in the input will be seen as their equivalent integer atomic number. So, instead of having to provide short strings containing the element name to, for example, the <link linkend="command.ref.transmute">transmute</link> command, simply the capitalised element name itself may be used. Thus...</para>
 		
 		<synopsis>
-		transmute(&quot;Xe&quot;);
-		transmute(Xe);
-		transmute(54);
+			transmute(&quot;Xe&quot;);
+			transmute(Xe);
+			transmute(54);
 		</synopsis>
 		
 		<para>...are all entirely equivalent.</para>
@@ -195,12 +195,12 @@
 		<para>...will generate the following output:</para>
 		
 		<synopsis>
-		99
-		0
-		99
+			99
+			0
+			99
 		</synopsis>
 		
-		<para>Why? Well, even though two variables called ''i'' have legitimately been declared, the second declaration is made within a different block, enclosed within a pair of curly braces. Each time a new block is opened it has access to all of the variables visible within the preceeding scope, but these existing variable names may be re-used within the new block in new declarations, and does *not* affect the original variable. Hence, in the example given above, after the termination of the block the final printf statement again sees the original variable ''i'', complete with its initial value of '99' intact. Note that if a variable is re-declared within a scoping block, there is no way to access the original variable until the scoping block has been closed. Blocks can be nested to any depth.</para>
+		<para>Why? Well, even though two variables called <emphasis>i</emphasis> have legitimately been declared, the second declaration is made within a different block, enclosed within a pair of curly braces. Each time a new block is opened it has access to all of the variables visible within the preceeding scope, but these existing variable names may be re-used within the new block in new declarations, and does *not* affect the original variable. Hence, in the example given above, after the termination of the block the final printf statement again sees the original variable <emphasis>i</emphasis>, complete with its initial value of '99' intact. Note that if a variable is re-declared within a scoping block, there is no way to access the original variable until the scoping block has been closed. Blocks can be nested to any depth.</para>
 	
 	</section>
 	
@@ -209,7 +209,7 @@
 		<para>For functions that take arguments, the argument list should be provided as a comma-separated list in parentheses after the function name. For instance:</para>
 		
 		<synopsis>
-		newatom(&quot;C&quot;, 1.1, 0, 4.2);
+			newatom(&quot;C&quot;, 1.1, 0, 4.2);
 		</synopsis>
 		
 		<para>Arguments may be constant values (as in this example), variables, arithmetic expressions, or any other function that returns the correct type. For functions that (optionally) do not take arguments, the empty parentheses may be omitted. A list of all functions, their arguments, and their return types is given in the <link linkend="command.ref">command reference</link>.</para>
@@ -217,8 +217,8 @@
 		<para>All functions return a value, even if it is 'no data' (the equivalent of 'void' in C/C++). For instance, in the example above the <link linkend="command.ref.newatom">newatom</link> command actually returns a reference to the atom it has just created, and this may be stored for later use:</para>
 		
 		<synopsis>
-		atom a;
-		a = newatom(&quot;C&quot;, 1.0, 1.0, 1.0);
+			atom a;
+			a = newatom(&quot;C&quot;, 1.0, 1.0, 1.0);
 		</synopsis>
 		
 		<para>However, if the return value of any function is not required then it may simply be 'forgotten about', as in the example prior to the one above.</para>
@@ -230,41 +230,41 @@
 		<para>User-defined functions can be defined and used in Aten, taking a list of variable arguments with (optional) default values. The syntax for defining a function is as follows:</para>
 		
 		<synopsis>
-		''type'' ''name'' ( ''arguments'' ) { ''commands'' }
+			<emphasis>type</emphasis> name ( arguments ) { commands }
 		</synopsis>
 		
-		<para>''type'' is one of the standard variable types and indicates the expected return value type for the function. If no return value is required (i.e. it is a subroutine rather than a function) then ''type'' should be replaced by the keyword 'void':</para>
+		<para><emphasis>type</emphasis> is one of the standard variable types and indicates the expected return value type for the function. If no return value is required (i.e. it is a subroutine rather than a function) then <emphasis>type</emphasis> should be replaced by the keyword 'void':</para>
 		
 		<synopsis>
-		void ''name'' ( ''arguments'' ) { ''commands'' }
+			void name ( arguments ) { commands }
 		</synopsis>
 		
-		<para>Once defined, functions are called in the same way as are built-in functions. The ''name'' of the function obeys the same conventions that apply to variable names, e.g. must begin with a letter, cannot be the name of an existing keyword, function, or variable. The ''arguments'' are specified in a similar manner to variable declarations. A comma-separated list of ''types'' and ''names' should be provided, e.g.:</para>
+		<para>Once defined, functions are called in the same way as are built-in functions. The <emphasis>name</emphasis> of the function obeys the same conventions that apply to variable names, e.g. must begin with a letter, cannot be the name of an existing keyword, function, or variable. The <emphasis>arguments</emphasis> are specified in a similar manner to variable declarations. A comma-separated list of <emphasis>types</emphasis> and <emphasis>names</emphasis> should be provided, e.g.:</para>
 		
 		<synopsis>
-		void testroutine ( int i, int j, double factor ) { ... }
+			void testroutine ( int i, int j, double factor ) { ... }
 		</synopsis>
 		
-		<para>Our new subroutine 'testroutine' is defined to take three arguments; two integers, ''i'' and ''j'', and a double ''factor''. All three must be supplied when calling the function, e.g.</para>
+		<para>Our new subroutine 'testroutine' is defined to take three arguments; two integers, <emphasis>i</emphasis> and <emphasis>j</emphasis>, and a double <emphasis>factor</emphasis>. All three must be supplied when calling the function, e.g.</para>
 		
 		<synopsis>
-		printf(&quot;Calling testroutine...\n&quot;);
-		int num = 2;
-		double d = 10.0;
-		testroutine(num, 4, d);
-		printf(&quot;Done.\n&quot;);
+			printf(&quot;Calling testroutine...\n&quot;);
+			int num = 2;
+			double d = 10.0;
+			testroutine(num, 4, d);
+			printf(&quot;Done.\n&quot;);
 		</synopsis>
 		
-		<para>When defining the function/subroutine arguments, default values may be indicated, and permit the function to be called in the absence of one or more arguments. For instance, lets say that for our 'testroutine', the final argument ''factor'' is likely to be 10.0 on most occasions. We may then define a default value for this argument, such that if the function is called without it, this default value will be assumed:</para>
+		<para>When defining the function/subroutine arguments, default values may be indicated, and permit the function to be called in the absence of one or more arguments. For instance, lets say that for our 'testroutine', the final argument <emphasis>factor</emphasis> is likely to be 10.0 on most occasions. We may then define a default value for this argument, such that if the function is called without it, this default value will be assumed:</para>
 		
 		<synopsis>
-		void testroutine ( int i, int j, double factor = 10.0 ) { ... }
-		
-		printf(&quot;Calling testroutine...\n&quot;);
-		int num = 2;
-		testroutine(num, 4);
-		testroutine(num, 4, 20.0);
-		printf(&quot;Done.\n&quot;);
+			void testroutine ( int i, int j, double factor = 10.0 ) { ... }
+			
+			printf(&quot;Calling testroutine...\n&quot;);
+			int num = 2;
+			testroutine(num, 4);
+			testroutine(num, 4, 20.0);
+			printf(&quot;Done.\n&quot;);
 		</synopsis>
 		
 		<para>Both methods of calling 'testroutine' in this example are valid.</para>
@@ -276,11 +276,11 @@
 		<para>For functions defined to return a specific type, at some point in the bpdy of the function a suitable value should be returned. This is achieved with the <link linkend="command.ref.return">return</link> keyword. Consider this simple example which checks the sign of a numeric argument, returning '1' for a positive number and '-1' for a negative number:
 		
 		<synopsis>
-		int checksign ( double num )
-		{
-		if (num &lt; 0) return -1;
-		else return 1;
-		}
+			int checksign ( double num )
+			{
+				if (num &lt; 0) return -1;
+				else return 1;
+			}
 		</synopsis>
 		
 		<para>If an attempt is made to return a value whose type does not match the type of the function, an error will be raised. Note that, once a <link linkend="command.ref.return">return</link> statement is reached, the function is exited immediately. For functions that do not return values (i.e. those declared with 'void') then <link linkend="command.ref.return">return</link> simply exits from the function - no return value need be supplied.</para>

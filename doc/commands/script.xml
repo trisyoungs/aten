@@ -30,7 +30,7 @@
 				<para> loadscript ( string filename, string nickname )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Loads a script from the ''filename'' specified, giving it the optional ''nickname''.</para>
+		<para>Loads a script from the <emphasis>filename</emphasis> specified, giving it the optional <emphasis>nickname''.</para>
 		
 		<para>For example:</para>
 		<synopsis>

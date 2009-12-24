@@ -44,6 +44,8 @@
 	<!ENTITY commandtrajectory SYSTEM "commands/trajectory.xml">
 	<!ENTITY commandtransform SYSTEM "commands/transform.xml">
 	<!ENTITY commandview SYSTEM "commands/view.xml">
+	<!-- 	Lists / Enums -->
+	<!ENTITY enums SYSTEM "enumlist/enums.xml">
 ]>
 
 <book>
@@ -109,9 +111,7 @@
 	<!-- COMMANDS -->
 	<chapter id="command"><title>Command Language</title>
 		&commandoverview;
-<!-- 	* ((Command Index)) - Index of all available commands -->
-<!-- 	* ((Variables)) - Variable types -->
-<!-- 	* ((Paths and Subvariables)) - Subvariable access -->
+		<!-- 	* ((Command Index)) - Index of all available commands -->
 		&commandtypes;
 		<section id="command.ref"><title>Command Reference</title>
 			&commandatom;
@@ -147,5 +147,11 @@
 			&commandview;
 		</section>
 	</chapter>
+	
+	<!-- ENUMS -->
+	<chapter id="enums"><title>Lists / Enumerations</title>
+		&enums;
+	</chapter>
+	
 </book>
 

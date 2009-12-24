@@ -1,4 +1,4 @@
-<section id="commands.groups.building"><title>Building Commands</title>
+<section id="command.groups.building"><title>Building Commands</title>
 	
 	<para>Tools to build molecules from scratch, or finalise unfinished models. When creating atoms using the relevant ((Commands: Atoms)), if the coordinates of the new atom are not specified then it is placed at the current pen position. In addition, the reference frame of the pen position is represented as a set of three orthogonal vectors defining the pen's local coordinate system (set initially to the Cartesian axes) centred at an arbitrary origin (the pen position). Subsequent rotations operate on these coordinate axes. Think of it as a 3D version of the old-school turtle.</para>
 
@@ -63,7 +63,7 @@
 				<para> atom chain ( int|string el, double x, double y, double z, int|string bondtype )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new atom of element ''el'' at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type ''bondtype'' if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.</para>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type <emphasis>bondtype</emphasis> if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -142,7 +142,7 @@
 				<para> atom newatom ( int|string el, double x = 0.0, double y = 0.0, double z = 0.0, double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0, )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new atom of element ''el'' at the current pen position or, if provided, the specified coordinates (and optional velocities or velocities and forces). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position or, if provided, the specified coordinates (and optional velocities or velocities and forces). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -164,7 +164,7 @@
 				<para> atom newatomfrac ( int|string el, double x, double y, double z,  double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0 )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Create a new atom of element ''el'' at the specified fractional coordinates (velocities and forces are optional). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the specified fractional coordinates (velocities and forces are optional). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -199,7 +199,7 @@
 				<para> rotx ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the x axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the x axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -217,7 +217,7 @@
 				<para> roty ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the y axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the y axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -235,7 +235,7 @@
 				<para> rotz ( double angle )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Rotates the reference coordinate system about the z axis by ''angle'' degrees.</para>
+		<para>Rotates the reference coordinate system about the z axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -290,7 +290,7 @@
 				<para> shiftdown ( int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Move the current atom selection one (or ''n'') places down in the atom list (i.e. towards higher IDs).</para>
+		<para>Move the current atom selection one (or <emphasis>n'') places down in the atom list (i.e. towards higher IDs).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -311,7 +311,7 @@
 				<para> shiftup ( int n )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Move the current atom selection one (or ''n'') places up in the atom list (i.e. towards lower IDs).</para>
+		<para>Move the current atom selection one (or <emphasis>n'') places up in the atom list (i.e. towards lower IDs).</para>
 		
 		<para>For example:</para>
 		<synopsis>
