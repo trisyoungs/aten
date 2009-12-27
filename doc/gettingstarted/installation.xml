@@ -4,7 +4,7 @@
 	
 	<section id="installation.filters"><title>Filters</title>
 		
-		<para>As already mentioned, Aten comes with a selection of filters ready to import and export a fair number of file formats (you can write your own - see the chapter on <link linkend="filters">Filters</link>). These filters should be found automatically, but if they are not Aten can be given their location in one of two ways:</para>
+		<para>As already mentioned, Aten comes with a selection of filters ready to import and export a fair number of file formats (you can write your own - see the chapter on <link linkend="readwrite.filters">Filters</link>). These filters should be found automatically, but if they are not Aten can be given their location in one of two ways:</para>
 		
 		<variablelist>
 			<varlistentry>

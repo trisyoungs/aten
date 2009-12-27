@@ -19,8 +19,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Formatted output commands</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='command'/> -->
-				<!-- <colspec colname='function'/> -->
 				<thead>
 					<row>
 						<entry>Command</entry>
@@ -193,9 +191,7 @@
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Extra read/write specifiers</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='specifier'/> -->
-				<!-- <colspec colname='meaning'/> -->
-				<thead>
+			<thead>
 				<row>
 					<entry>Specifier</entry>
 					<entry>Meaning</entry>

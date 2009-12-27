@@ -1,0 +1,42 @@
+<section id="ff.rules"><title>Rule-Based Forcefields</title>
+	<indexterm id="idx.ff.rules" class="startofrange"><primary>forcefields</primary><secondary>rule-based</secondary></indexterm>
+	
+	<!--
+	
+	
+	!!Rule-based Forcefields
+	Forcefields exist where individual intramolecular parameter definitions (i.e. those provided by the 'bond', 'angle', and 'torsion' blocks) are not necessary. Instead, such parameters are constructed as and when necessary using a set of parameters that depend only on the atomtypes involved. These forcefields are so-called 'rule-based', and are often able to describe enormously varied systems from a small set of defining parameters.
+	
+	^__Note:__
+	Currently only two (closely-related) rule-sets have been implemented - those for the Dreiding and UFF forcefields - but future versions of Aten will allow user-defined rules to be provided. There is not much to learn from reading this section at the current time, since it isn't particularly useful in the definition of new forcefields.^
+	
+	Rule-based forcefields are defined in exactly the same way as normal forcefields, save for the lack of blocks that define intramolecular terms. Instead, the per-atomtype parameters must be provided instead, and for all atomtypes defined in the 'types' section. This ''generator'' data is then used by the equations defined within the code to construct the necessary intramolecular terms when required. The rules-set to use must also be specified with the 'rules' keyword.
+	
+	!!!Keyword: generator ''ndata''
+	The 'generator' block defines all the necessary parameters for all atomtypes defined in the 'types' block. ''ndata'' specifies how many parameters are provided for each atomtype. The format of the block is as follows:
+	
+	^generator ''ndata''
+	''typeid''  ''typename'' ''data1'' [[''data2..dataN]''
+	...
+	end^
+	The name and ID for each type are given, followed by the necessary parameter data.
+	
+	!!!Keyword: convert ''dataid1'' [[''dataid2...'']
+	Since all energetic forcefield parameters are converted into the internal units of energy with Aten once the forcefield loaded, Aten must be told which of the generator parameters to convert in thie manner. The 'convert' keyword should be followed by a list of integer data IDs that should be converted, corresponding to the order of the data given in the 'generator' section.
+	
+	For example:
+	^convert  3  5^
+	will convert the third and fifth generator data from the energy units specified in the forcefield file into Aten's internal units.
+	
+	
+	!!!Keyword: rules ''ruleset''
+	For forcefields that are rule-based, the rules set to use is specified here. See ((Rule Sets)) for more information.
+	-->
+
+<!--	SOME OF THIS IS RELEVANT FOR THE NEW SECTION ON GENERATOR FFS
+	<para>Definitions of intramolecular terms are given in the 'bonds', 'angles', and 'torsions' sections, unless the forcefield is rule-based in which case the relevant data are given in a 'generator' block instead (see the ((Forcefields|#Rule-based Forcefields|section below))). It is not necessary to define every possible bond, angle, and torsion arising from every combination of defined atom types - if, when creating an expression, Aten needs parameters that are not defined in the forcefield a suitable complaint will be raised at the time.
+		
+		All of the following blocks refer to atom types by their type name (second column in the 'types' block). Alternatively, the names of any defined ((Forcefields|#Equivalents|equivalents)) may be used instead. Each of the block keywords takes a ''form'' parameter specifying the functional form of the subsequent terms. Consult the section on ((Functional Forms)) for a list of implemented functions, the relevant ''form'' keyword, and the ordering of parameters. If the forcefield contains, for example, bond definitions that are not all of the same functional form they should be specified in separate blocks, one for each functional form. As many blocks as are necessary may be defined in a single forcefield file, with any number of definitions in each.-->
+
+	<indexterm startref="idx.ff.rules" class="endofrange"></indexterm>
+</section>
