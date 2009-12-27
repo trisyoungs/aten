@@ -44,18 +44,13 @@ const char *Atom::drawStyle(Atom::DrawStyle i)
 const char *AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
 Atom::AtomLabel Atom::atomLabel(const char *s, bool reporterror)
 {
-	Atom::AtomLabel al = (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reporterror));
+	Atom::AtomLabel al = (Atom::AtomLabel) enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reporterror);
 	if ((al == Atom::nLabelTypes) && reporterror) enumPrintValid(Atom::nLabelTypes,AtomLabelKeywords);
 	return al;
 }
 const char *Atom::atomLabel(Atom::AtomLabel al)
 {
-	if (al == Atom::IdLabel) return AtomLabelKeywords[0];
-	else if (al == Atom::ElementLabel) return AtomLabelKeywords[1];
-	else if (al == Atom::TypeLabel) return AtomLabelKeywords[2];
-	else if (al == Atom::EquivLabel) return AtomLabelKeywords[3];
-	else if (al == Atom::ChargeLabel) return AtomLabelKeywords[4];
-	return "Atom::nLabelTypes";
+	return AtomLabelKeywords[al];
 }
 
 // Atom environment
@@ -678,13 +673,13 @@ short int Atom::labels()
 // Set the bit for the specified label (if it is not set already)
 void Atom::addLabel(Atom::AtomLabel label)
 {
-	if (!(labels_&label)) labels_ += (short int) label;
+	if (!(labels_&(1 << label))) labels_ += (1 << label);
 }
 
 // Unsets the bit for the specified label (if it is not unset already)
 void Atom::removeLabel(Atom::AtomLabel label)
 {
-	if (labels_&label) labels_ -= (short int) label;
+	if (labels_&(1 << label)) labels_ -= (1 << label);
 }
 
 // Clear all labels from the atom

@@ -46,7 +46,7 @@ class Atom
 	static DrawStyle drawStyle(const char *name, bool reporterror = 0);
 	static const char *drawStyle(DrawStyle);	
 	// Atom label enum
-	enum AtomLabel { IdLabel=1, ElementLabel=2, TypeLabel=4, EquivLabel=8, ChargeLabel=16, nLabelTypes=5 };
+	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivLabel, ChargeLabel, nLabelTypes };
 	static AtomLabel atomLabel(const char *name, bool reporterror = 0);
 	static const char *atomLabel(Atom::AtomLabel);
 	// Hydrogen-add geometries enum

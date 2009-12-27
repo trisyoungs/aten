@@ -18,7 +18,7 @@
 		</itemizedlist>
 		
 		<para>Saves the current view as a bitmap image. Allowable values for <emphasis>format</emphasis> are:</para>
-		<table frame='all' pgwide='1' tocentry='0'><title>Newglyph options</title>
+		<table frame='all' pgwide='1' tocentry='0'><title>Bitmap image formats</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

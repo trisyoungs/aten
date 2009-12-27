@@ -50,7 +50,7 @@
 			</listitem>
 		</itemizedlist>
 		
-		<para>Since variables are strongly-typed, trying to set an integer variable from a string will not work since these are incompatible types. However, standard C-style string conversion functions are available - see <link linkend="command.group.string">String Commands</link>.</para>
+		<para>Since variables are strongly-typed, trying to set an integer variable from a string will not work since these are incompatible types. However, standard C-style string conversion functions are available - see <link linkend="command.groups.string">String Commands</link>.</para>
 		
 		<para>So, to initialise some variables, assign them values, and print them out, we would do the following:</para>
 		
@@ -80,6 +80,7 @@
 	</section>
 	
 	<section id="command.overview.arrays"><title>Arrays</title>
+		<indexterm><primary>command language</primary><secondary>arrays</secondary></indexterm>
 	
 		<para>Arrays of most variable types are allowed (some, for instance the <link linkend="command.types.aten">aten</link> type, don't really make sense as an array). Arrays are requested by providing a constant size (or an expression) in square brackets after the name:</para>
 		
@@ -112,7 +113,7 @@
 		<note><title>See Also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para><link linkend="command.group.string">String Commands</link> for commands to convert to/from string data</para>
+					<para><link linkend="command.groups.string">String Commands</link> for commands to convert to/from string data</para>
 				</listitem>
 				<listitem>
 					<para><link linkend="command.types">Variable types</link> for reference information on the non-standard types</para>
@@ -125,7 +126,8 @@
 	<section id="command.overview.constants"><title>Predefined Constants</title>
 	
 		<indexterm id="index.constants" class="startofrange"><primary>constants</primary></indexterm>
-	
+		<indexterm><primary>command language</primary><secondary>constants</secondary></indexterm>
+
 		<para>Several predefined constants exist, and may not be overridden by variables of the same name. All predefined in constants are defined using uppercase letters, so the lower case equivalents of the names <emphasis>may</emphasis> be used as variables, functions etc.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Built-in Constants</title>
@@ -178,7 +180,8 @@
 	</section>
 	
 	<section id="command.overview.blocks"><title>Blocks, Scope, and Variable Hiding</title>
-	
+		<indexterm><primary>command language</primary><secondary>blocks</secondary></indexterm>
+
 		<para>As with C, variable scope is employed in Aten meaning that a variable may be local to certain parts of the code / filter / script. In addition, two or more variables of the same name (but possibly different types) may peacefully co-exist in different scopes within the same code / filter / script. Consider this example:</para>
 		
 		<synopsis>
@@ -186,8 +189,8 @@
 		printf(&quot;%i\n&quot;, i);
 		if (n == 4)
 		{
-		int i = 0;
-		printf(&quot;%i\n&quot;, i);
+			int i = 0;
+			printf(&quot;%i\n&quot;, i);
 		}
 		printf(&quot;%i\n&quot;, i);
 		</synopsis>
@@ -205,7 +208,8 @@
 	</section>
 	
 	<section id="command.overview.functions"><title>Functions</title>
-	
+		<indexterm><primary>command language</primary><secondary>functions</secondary></indexterm>
+
 		<para>For functions that take arguments, the argument list should be provided as a comma-separated list in parentheses after the function name. For instance:</para>
 		
 		<synopsis>
@@ -225,8 +229,9 @@
 
 	</section>
 	
-	<section id="command.overview.userfunctions"><title>User Defined Functions</title>
-	
+	<section id="command.overview.userfunctions"><title>User Defined Functions</title>	
+		<indexterm><primary>command language</primary><secondary>user functions</secondary></indexterm>
+
 		<para>User-defined functions can be defined and used in Aten, taking a list of variable arguments with (optional) default values. The syntax for defining a function is as follows:</para>
 		
 		<synopsis>
@@ -272,7 +277,8 @@
 	</section>
 	
 	<section id="commandlanguage.returnvalues"><title>Return Values</title>
-	
+		<indexterm><primary>command language</primary><secondary>return values</secondary></indexterm>
+
 		<para>For functions defined to return a specific type, at some point in the bpdy of the function a suitable value should be returned. This is achieved with the <link linkend="command.ref.return">return</link> keyword. Consider this simple example which checks the sign of a numeric argument, returning '1' for a positive number and '-1' for a negative number:
 		
 		<synopsis>

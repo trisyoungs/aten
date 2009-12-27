@@ -44,7 +44,11 @@
 	<!ENTITY commandtrajectory SYSTEM "commands/trajectory.xml">
 	<!ENTITY commandtransform SYSTEM "commands/transform.xml">
 	<!ENTITY commandview SYSTEM "commands/view.xml">
-	<!-- 	Lists / Enums -->
+	<!-- Forcefields -->
+	<!ENTITY fffiles SYSTEM "ff/files.xml">
+	<!ENTITY ffkeywords SYSTEM "ff/keywords.xml">
+	<!ENTITY ffrules SYSTEM "ff/rules.xml">
+	<!-- Lists / Enums -->
 	<!ENTITY enums SYSTEM "enumlist/enums.xml">
 ]>
 
@@ -146,6 +150,22 @@
 			&commandtransform;
 			&commandview;
 		</section>
+	</chapter>
+
+	<chapter id="ff"><title>Forcefields and Typing</title>
+		&fffiles;
+		&ffkeywords;
+		&ffrules;
+		<!-- 	!!#Forcefields / Atom Typing -->
+<!-- 	* ((Forcefield Files)) - Forcefield file format, and currently-implemented functional forms -->
+<!-- 	* Functional Forms - All functional forms currently implemented in Aten -->
+<!-- 	** ((VDW Functional Forms)) - Short-range interatomic interactions -->
+<!-- 	** ((Bond Functional Forms)) - Bond (i-j) intramolecular interactions -->
+<!-- 	** ((Angle Functional Forms)) - Angle (i-j-k) intramolecular interactions -->
+<!-- 	** ((Torsion Functional Forms)) - Torsion/Dihedral (i-j-k-l) intramolecular interactions -->
+<!-- 	* ((Atom Typing)) - Concepts of atom typing -->
+<!-- 	* ((Methods: NETA|NETA)) - Describing atom types with the Nested English Typing Approach -->
+<!-- 	* ((NETA Reference)) - Reference for the NETA language -->
 	</chapter>
 	
 	<!-- ENUMS -->

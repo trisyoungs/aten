@@ -190,7 +190,7 @@
 				<varlistentry id="cli.switches.filter">
 					<term><indexterm><primary>command line switches</primary><secondary>--filter</secondary></indexterm>
 						--filter &lt;file&gt;</term>
-					<listitem><para>Load the specified &lt;file&gt; as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same 'nickname', 'id' etc. will be hidden by those loaded from &lt;file&gt;. See <link linkend="filters.overriding">Overriding Existing Filters</link> for more information.</para></listitem>
+					<listitem><para>Load the specified &lt;file&gt; as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same 'nickname', 'id' etc. will be hidden by those loaded from &lt;file&gt;. See <link linkend="readwrite.filters.overriding">Overriding Existing Filters</link> for more information.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.fold">
 					<term><indexterm><primary>command line switches</primary><secondary>fold</secondary></indexterm>

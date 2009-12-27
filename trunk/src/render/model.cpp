@@ -46,17 +46,17 @@ void Canvas::renderModelLabels()
 		// Blank label string
 		text[0] = '\0';
 		// Now add on all parts of the label that are required
-		if (labels&Atom::IdLabel)
+		if (labels&(1 << Atom::IdLabel))
 		{
 			strcat(text,itoa(i->id()+1));
 			strcat(text," ");
 		}
-		if (labels&Atom::ElementLabel)
+		if (labels&(1 << Atom::ElementLabel))
 		{
 			strcat(text, elements().symbol(i));
 			strcat(text," ");
 		}
-		if (labels&Atom::TypeLabel)
+		if (labels&(1 << Atom::TypeLabel))
 		{
 			strcat(text,"[");
 			if (ffa == NULL) strcat(text, "None");
@@ -68,13 +68,13 @@ void Canvas::renderModelLabels()
 			}
 			strcat(text,"] ");
 		}
-		if (labels&Atom::EquivLabel)
+		if (labels&(1 << Atom::EquivLabel))
 		{ 
 			strcat(text,"[=");
 			strcat(text,(ffa == NULL ? "None" : ffa->equivalent()));
 			strcat(text,"] ");
 		}
-		if (labels&Atom::ChargeLabel)
+		if (labels&(1 << Atom::ChargeLabel))
 		{
 			strcat(text,"(");
 			strcat(text,ftoa(i->charge()));

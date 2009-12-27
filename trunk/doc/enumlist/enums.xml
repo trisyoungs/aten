@@ -432,7 +432,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="cli.commands.z">ZMapping CLI option</link> to see how to set the zmapping style from the command line</para>
+				<para><link linkend="cli.switches.z">ZMapping CLI switch</link> to see how to set the zmapping style from the command line</para>
 			</listitem>
 		</itemizedlist>
 	</note>
