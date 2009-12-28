@@ -2,8 +2,6 @@
 	<indexterm id="idx.ff.rules" class="startofrange"><primary>forcefields</primary><secondary>rule-based</secondary></indexterm>
 	
 	<!--
-	
-	
 	!!Rule-based Forcefields
 	Forcefields exist where individual intramolecular parameter definitions (i.e. those provided by the 'bond', 'angle', and 'torsion' blocks) are not necessary. Instead, such parameters are constructed as and when necessary using a set of parameters that depend only on the atomtypes involved. These forcefields are so-called 'rule-based', and are often able to describe enormously varied systems from a small set of defining parameters.
 	

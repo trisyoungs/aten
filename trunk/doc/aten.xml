@@ -48,6 +48,8 @@
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
 	<!ENTITY ffkeywords SYSTEM "ff/keywords.xml">
 	<!ENTITY ffrules SYSTEM "ff/rules.xml">
+	<!ENTITY fftyping SYSTEM "ff/typing.xml">
+	<!ENTITY ffneta SYSTEM "ff/neta.xml">
 	<!-- Lists / Enums -->
 	<!ENTITY enums SYSTEM "enumlist/enums.xml">
 ]>
@@ -71,13 +73,13 @@
 	<para>Some general notes:</para>
 	<itemizedlist mark="opencircle">
 		<listitem>
-			<para>First off, if you find that Aten doesn't support the format you want, consider writing a <link linkend="filters">filter</link> to do so. And if you need help, please ask!</para>
+			<para>First off, if you find that Aten doesn't support the format you want, consider writing a <link linkend="readwrite.filters">filter</link> to do so. And if you need help, please ask!</para>
 		</listitem>
 		<listitem>
 			<para>More so, if you find that Aten <emphasis>does</emphasis> support the format you want, but doesn't appear to write it out correctly, please let me know.</para>
 		</listitem>
 		<listitem>
-			<para>For forcefield expression files written with Aten, I recommend that you check that the correct atom types get assigned to your molecule(s). Blind trust that this has actually occurred should only be employed once you are confident that the forcefield types are consistently correct! Larger forcefields, e.g. OPLS-AA by Jorgensen et al., do not have a complete set of type descriptions. Once more, if your add some in, please send them to me so they can be included in a future revision of the code.</para>
+			<para>For forcefield expression files written with Aten, I recommend that you check that the correct atom types get assigned to your molecule(s). Blind trust that this has actually occurred should only be employed once you are confident that the forcefield types are consistently correct! Larger forcefields, e.g. OPLS-AA by Jorgensen et al., do not have a complete set of type descriptions implemented in Aten. Once more, if your add some in, please send them to me so they can be included in a future revision of the code.</para>
 		</listitem>
 	</itemizedlist>
 	<para><ulink url="mailto:tris@projectaten.net">tris@projectaten.net</ulink></para>
@@ -156,20 +158,19 @@
 		&fffiles;
 		&ffkeywords;
 		&ffrules;
-		<!-- 	!!#Forcefields / Atom Typing -->
-<!-- 	* ((Forcefield Files)) - Forcefield file format, and currently-implemented functional forms -->
+		&fftyping;
+		&ffneta;
+	</chapter>
 <!-- 	* Functional Forms - All functional forms currently implemented in Aten -->
 <!-- 	** ((VDW Functional Forms)) - Short-range interatomic interactions -->
 <!-- 	** ((Bond Functional Forms)) - Bond (i-j) intramolecular interactions -->
 <!-- 	** ((Angle Functional Forms)) - Angle (i-j-k) intramolecular interactions -->
 <!-- 	** ((Torsion Functional Forms)) - Torsion/Dihedral (i-j-k-l) intramolecular interactions -->
-<!-- 	* ((Atom Typing)) - Concepts of atom typing -->
 <!-- 	* ((Methods: NETA|NETA)) - Describing atom types with the Nested English Typing Approach -->
-<!-- 	* ((NETA Reference)) - Reference for the NETA language -->
-	</chapter>
 	
 	<!-- ENUMS -->
-	<chapter id="enums"><title>Lists / Enumerations</title>
+	<chapter id="enums"><title>Enumerations</title>
+		<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
 		&enums;
 	</chapter>
 	

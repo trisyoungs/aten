@@ -1,4 +1,41 @@
-<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
+<section id="enums.bondtypes"><title>Bond Types</title>
+	
+	<para>A bond between atoms is of one of the following types:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Bond type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>any</entry>
+					<entry>Special case, never assigned to an actual bond but used in bond-matching functions</entry>
+				</row>
+				<row>
+					<entry>single</entry>
+					<entry>A single bond</entry>
+				</row>
+				<row>
+					<entry>double</entry>
+					<entry>A double bond</entry>
+				</row>
+				<row>
+					<entry>triple</entry>
+					<entry>A triple bond</entry>
+				</row>
+				<row>
+					<entry>aromatic</entry>
+					<entry>An aromatic bond, assigned automatically by the atom typing routines</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>
 
 <section id="enums.celltypes"><title>Cell Types</title>
 
@@ -122,6 +159,77 @@
 		</tgroup>
 	</table>
 
+</section>
+
+<section id="enums.glyphtypes"><title>Glyph Types</title>
+	
+	<para>Available glyph types (drawing objects) are:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Glyph type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>arrow</entry>
+					<entry>Simple arrow</entry>
+				</row>
+				<row>
+					<entry>cube</entry>
+					<entry>A cuboid</entry>
+				</row>
+				<row>
+					<entry>ellipsoid</entry>
+					<entry>An ellipsoid, oriented by face and edge vectors</entry>
+				</row>
+				<row>
+					<entry>ellipsoidxyz</entry>
+					<entry>An ellipsoid, oriented by an explicit set of provided axes</entry>
+				</row>
+				<row>
+					<entry>line</entry>
+					<entry>A line between two points</entry>
+				</row>
+				<row>
+					<entry>quad</entry>
+					<entry>Standard four-vertex quad</entry>
+				</row>
+				<row>
+					<entry>sphere</entry>
+					<entry>A sphere or spheroid</entry>
+				</row>
+				<row>
+					<entry>svector</entry>
+					<entry>A sense vector</entry>
+				</row>
+				<row>
+					<entry>tetrahedron</entry>
+					<entry>Regular tetrahedron</entry>
+				</row>
+				<row>
+					<entry>text</entry>
+					<entry>Text rendered at 2D screen coordinates</entry>
+				</row>
+				<row>
+					<entry>text3d</entry>
+					<entry>Text rendered at 3D model coordinates</entry>
+				</row>
+				<row>
+					<entry>triangle</entry>
+					<entry>Regular triangle</entry>
+				</row>
+				<row>
+					<entry>vector</entry>
+					<entry>An arrow centred on a point and pointing along a specified local vector</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
 </section>
 
 <section id="enums.labeltypes"><title>Label Types</title>

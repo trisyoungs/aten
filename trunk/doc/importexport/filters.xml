@@ -236,12 +236,14 @@
 			<synopsis>
 				search=&quot;UberCode Version 20.0&quot;
 			</synopsis>
-			matches the filter to any file containing the string 'UberCode Version 20.0' within its first 10 lines (the default).</para>
+			<para>matches the filter to any file containing the string 'UberCode Version 20.0' within its first 10 lines (the default).</para>
 			<synopsis>
 				search=&quot;SIESTA&quot;
 			</synopsis>
 			<para>searches the first 10 lines of the file for the string 'SIESTA'.</para>
-			{CODE()}search=&quot;&quot;GAMESS VERSION = 11 APR 2008 (R1)&quot;{CODE}
+			<synopsis>
+				search=&quot;&quot;GAMESS VERSION = 11 APR 2008 (R1)&quot;
+			</synopsis>
 			<para>attempts to identify output from a specific version of GAMESS-US.</para>
 	
 		</section>
@@ -340,7 +342,7 @@
 			
 		</section>
 		
-	<indexterm id="idx.readwrite.filters.properties" class="startofrange"><primary>filters</primary><secondary>properties</secondary></indexterm>
+	<indexterm startref="idx.readwrite.filters.properties" class="endofrange"></indexterm>
 
-	<indexterm startref="idx.readwrite.filters" class="endofrange"><primary>filters</primary></indexterm>
+	<indexterm startref="idx.readwrite.filters" class="endofrange"></indexterm>
 </section>
