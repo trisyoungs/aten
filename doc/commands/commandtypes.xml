@@ -312,7 +312,7 @@
 						<entry>type</entry>
 						<entry>string</entry>
 						<entry>ro</entry>
-						<entry>Bond type - see <link linkend="enums.bondtype">Bond Types</link> for a list</entry>
+						<entry>Bond type - see <link linkend="enums.bondtypes">Bond Types</link> for a list</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -320,8 +320,6 @@
 	
 		<table frame='all' pgwide='1' tocentry='0'><title>Bond type functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Function</entry>

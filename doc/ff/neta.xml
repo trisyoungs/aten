@@ -1,0 +1,150 @@
+<section id="ff.neta"><title>NETA Reference</title>
+	<indexterm id="idx.ff.neta1" class="startofrange"><primary>NETA</primary></indexterm>
+	<indexterm id="idx.ff.neta2" class="startofrange"><primary>typing</primary><secondary>NETA</secondary></indexterm>
+	
+<!--This section lists all the available commands that may make up a type description. Many keywords only make sense within the bracketed parts associated with bound types - for instance it is meaningless to specify the connection type with the 'bond' keyword in the root of a typing command since no connections are relevant at this point.
+
+{maketoc}
+
+!!Connectivity Keywords
+
+!!!Keyword: -X (bound to X)
+Specifies that a connection to another atom 'X' must exist, but makes no demand of the type (bond order) of the connection. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a '((NETA Reference|#Keyword: ring|ring))' description the keyword indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant.
+
+For example:
+|| __Command__ | __Meaning__
+-H | A bond to a hydrogen atom
+-&amp;120 | A bond to an atom which has already been assigned a type ID of 120 (see ((Atom Typing|#Reusing Types)))
+-[[C,N] | A bond to either a carbon or a nitrogen
+-[[F,Cl,Br,I,At] | A bond to any halogen atom
+-[[&amp;10,&amp;11,&amp;18,-Kr] | A bond to an atom with type ID 10, 11, or 18, or a krypton atom
+||
+
+!!!Keyword: =X (double bond to X)
+Same as the bound to (-X) keyword, except that the connection must be a double bond. Equivalent to writing '-X(bond=double)'.
+
+For example:
+|| __Command__ | __Meaning__
+=O | A double bond to an oxygen atom
+=&amp;4 | A double bond to an atom which has already been assigned a type ID of 4 (see ((Atom Typing|#Reusing Types)))
+||
+
+!!!bond
+__Syntax:__
+* bond=''type''
+Defines the specific ''type'' of connection (e.g. 'single', 'double', etc.) required for a bound atom. The keyword should be used inside bracketed parts of bound atom descriptions.
+
+For example:
+|| __Command__ | __Meaning__
+-O(bond=double) | A double bond to an oxygen atom
+-&amp;55(bond=triple) | A triple bond to an atom which has already been assigned a type ID of 55 (see ((Atom Typing|#Reusing Types)))
+-C(bond=single) | A single bond to a carbon atom
+||
+
+!!!chain
+__Syntax:__
+* chain( ''NETA'', ... )
+''Introduced in v1.4 r1021''
+The 'chain' command provides an easy was of specifying a linear sequence of atoms from the current atom forward. Within the bracketed part, connections to atoms are specified in the same way (e.g. '-C(nbonds=2)'), are separated by commas, and are listed in the order in which they are to appear in the matching chain. The keyword 'n=''repeat''' may also be specified at some point in the bracketed part to define that more than one of the defined chains is required. Note that, if all atoms specified for the chain are matched, but the actual chain in the model is longer, a positive match will be returned. Thus, it is usually a good idea to define the last atom in the chain more explicitly to prevent false matches.
+
+For example:
+{CODE()}chain(-C,-C,-C,-C){CODE}
+specifies a (minimum) four-carbon chain of any degree of saturation
+{CODE()}chain(-C(nh=2),-C(nh=2),-C(nh=2),-C(nh=3)){CODE}
+specifies explicitly a butyl chain.
+
+!!!n
+__Syntax:__
+* n=''repeat''
+The 'n' keyword, when placed in the bracketed parts of bound atom, ring, and chain descriptions requires that they are matched a number of times rather than once.
+
+For example:
+{CODE()}
+1	Cnp	C	&quot;-C(n=4,-H(n=3))&quot;			# Central C in neopentane (2,2-dimethylpropane)
+{CODE}
+
+!!!nbonds
+__Syntax:__
+* nbonds=''n''
+Specifies the exact number of connections this atom must possess.
+
+For example:
+{CODE()}
+1	Cnp	C	&quot;-C(n=4,-H(n=3))&quot;			# Central C in neopentane (2,2-dimethylpropane)
+{CODE}
+
+!!!nh
+__Syntax:__
+* nh=''nhydrogens''
+The 'nh' keyword is shorthand for explicitly specifying the number of attached hydrogens to the target atom or a bound atom. It is equivalent to '-H(n=''m'')'.
+
+For example:
+{CODE()}
+1	Cmet	C	&quot;nh=2&quot;					# Methylene carbon
+{CODE}
+
+!!Environment Keywords
+
+!!!aromatic
+__Syntax:__
+* aromatic
+Indicates that this atom must be in an aromatic environment (e.g. in an aromatic ring etc.)
+
+!!!TODO
+os, sp, sp2, sp3
+
+!!Ring Keywords
+
+!!!noring
+__Syntax:__
+* noring
+Indicates that the atom must not be present in any rings.
+
+!!!ring
+__Syntax:__
+* ring ( ''NETA'', ... )
+Denotes that the target atom (if specified in the root of the description) or a bound atom (if used inside the associated bracketed part) should be present in a ring structure of some kind. The 'ring' keyword alone simply demands that the atom is present inside a ring of some size, but may take an optional bracketed part describing more fully the number of atoms in the ring, and the individual nature of each of these atoms. Within the bracketed part, bound atoms may be specified as usual, but the connection type is irrelevant as it is only the presence of those particular atoms within the ring that is considered important.
+
+For example:
+
+{CODE()}
+1	Cbnz	C	&quot;ring(size=6,-C(n=6))&quot;			# Benzene carbon
+2	Hbnz	H	&quot;-C(ring(size=6,-C(n=6)))&quot;		# Benzene hydrogen
+{CODE}
+
+For the carbon atom, we have stated that it must be in a ring made up of six atoms, and that these six atoms are carbon atoms. Here we have specified all atoms that make up the ring, but this is by no means necessary.  Similarly, for the hydrogen we have stipulated that it is bound to carbon which fulfils the same criteria.
+
+Bound atom descriptions given inside the bracketed part should again be listed in order of decreasing complexity. Multiple rings may be specified with separate 'ring' keywords, allowing the location of fused ring atoms.
+
+!!!Keyword: size=''natoms''
+Only relevant in the bracketed part of a '((NETA Reference|#ring|ring))' keyword, requests the exact number of atoms (''natoms'') comprising the cycle. Note that this may be used independently of the implicit size suggested by the number of atom descriptions supplied, or in conjunction with a partial list of atoms.
+
+For example:
+{CODE()}ring(size=6,-C(n=6)){CODE}
+specifies a six-membered ring such as benzene or cyclohexane.
+{CODE()}ring(size=4){CODE}
+specifies a four-membered ring made up of any atoms.
+
+
+!!Geometry Keywords
+
+These keywords requests that the target atom (if specified in the root of the type description) or a bound atom (if used inside the associated bracketed part) should possess a certain physical geometry in terms of its connections. The number of bonds to the target atom and the angles between them are used to determine the geometry. Valid geometry keywords and the criteria that are used to identify them are as follows:
+
+|| __Keyword__ | __Number of Bonds__ | __Description__
+unbound | 0 | An unbound atom. Only makes sense when used in the root of a type description.
+onebond | 1 | The atom has one bond.
+linear | 2 | Two bonds to the atom, making an angle &gt; 170deg.
+tshape | 3 | Three bonds to the atom, with two bonds making an angle &gt; 170deg.
+trigonal | 3 | Trigonal planar arrangement of three bonds, with the largest of the three angles between 115 and 125deg.
+tetrahedral | 2 | Two bonds to the atom, making an angle between 100 and 115deg.
+tetrahedral | 3 | Three bonds to the atom, with the largest of the angles between 100 and 115deg.
+tetrahedral | 4 | Four bonds to the atom, with the average of the angles laying between 100 and 115deg.
+sqplanar | 4 | Four bonds to the atom, with the average of the angles laying between 115 and 125deg.
+tbp | 5 | Five bonds to the atom are assumed to be trigonal bipyramidal geometry.
+octahedral | 6 | Six bonds to the atom are assumed to be octahedral geometry.
+||
+
+Note that, for some geometry types, there are several ways for the atom to have this geometry. Also note that, since the geometry is determined by consideration of ideal angles within some tolerance, an atom may not possess no detectable geometry.-->
+	<indexterm startref="idx.ff.neta1" class="endofrange"></indexterm>
+	<indexterm startref="idx.ff.neta2" class="endofrange"></indexterm>
+</section>

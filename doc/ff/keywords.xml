@@ -248,10 +248,51 @@
 			<note><title>See also:</title>
 				<itemizedlist mark='opencircle'>
 					<listitem>
-						<para><link linkend="ff.typing">Atom typing</link> for an overview of atom typing</para>
+						<para><link linkend="ff.typing.overview">Atom typing</link> for an overview of atom typing</para>
 					</listitem>
 					<listitem>
 						<para>The <link linkend="ff.neta">NETA reference</link> for a description of the atom typing language</para>
+					</listitem>
+				</itemizedlist>
+			</note>
+			
+		</section>
+
+		<section id="ff.keywords.uatypes"><title>UATypes</title>
+			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>uatypes</tertiary></indexterm>
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para>uatypes</para>
+				</listitem>
+			</itemizedlist>
+			<para>The 'uatypes' section contains exactly the same information as the '<link linkend="ff.keywords.types">types</link>' block except that a mass must also be provided. In the '<link linkend="ff.keywords.types">types</link>' block it is assumed that the character element of the type also implicitly defines the mass (as would be expected). In the case of united-atom forcefields, this is not necessarily the case. Thus, the 'uatypes' block allows a mass to be associated in order to account for the light atoms subsumed into the heavy atom's mass. This information can be accesses through the 'mass' member of the <link linkend="command.types.ffatom">ffatom</link> variable type.</para>
+			
+			<para>The format of each line in the 'uatypes' block is as follows:</para>
+			<synopsis>
+				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>element</emphasis>  <emphasis>mass</emphasis>  <emphasis>NETA</emphasis>  [<emphasis>description</emphasis>]
+			</synopsis>
+			
+			<para>The ''id'' is an integer number used to identify the type. It should be positive, and must be unique amongst all those defined in a single forcefield. ''typename'' is the actual name of the atom type ('OW', 'C1', 'N_ar' etc.), and is referred to in the other sections of the forcefield file, and ''element'' is the type's element symbol as found in the periodic table ('O', 'C', 'N', etc.). The ''type description'' defining how Aten should recognise this particular type follows in quotes, and then optionally a short text describing the type (which appears in lists within the program to help identify particular types). The ''mass'' is the united atom mass of the type (i.e. the sum of heavy and light atom masses). Atom types may be defined over multiple 'types' blocks within the same file if necessary, i.e. more than one 'types' block may exist, but all type IDs must be unique over all such blocks.</para>
+			
+			<para>For example:</para>
+			<synopsis>
+				uatypes
+				10  CH2  C  14.0265  &quot;nbonds=2,nh=0&quot;  &quot;United atom methylene carbon&quot;
+				end
+			</synopsis>
+			<para>describes a united-atom methylene carbon, with mass of 14.0265 (C+2H).</para>
+			
+			<note><title>See also:</title>
+				<itemizedlist mark='opencircle'>
+					<listitem>
+						<para><link linkend="ff.typing.overview">Atom typing</link> for an overview of atom typing</para>
+					</listitem>
+					<listitem>
+						<para>The <link linkend="ff.neta">NETA reference</link> for a description of the atom typing language</para>
+					</listitem>
+					<listitem>
+						<para>The <link linkend="command.types.ffatom">ffatom type</link> for how to access the 'mass' parameter</para>
 					</listitem>
 				</itemizedlist>
 			</note>
