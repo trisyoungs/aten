@@ -4,12 +4,16 @@
 	
 	<section id="command.ref.angle"><title>angle</title>
 		<indexterm><primary>commands</primary><secondary>angle</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double angle ( atom|int i, atom|int j, atom|int k )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>angle</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+				<paramdef>atom|int <parameter>k</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure (and return) the angle between the three atoms supplied.</para>
 		
 		<para>For example:</para>
@@ -30,12 +34,14 @@
 	
 	<section id="command.ref.angles"><title>angles</title>
 		<indexterm><primary>commands</primary><secondary>angles</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> angles ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>angles</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure (and print out) all bond angles present in the current atom selection.</para>
 		
 		<para>For example:</para>
@@ -47,12 +53,14 @@
 	
 	<section id="command.ref.clearmeasurements"><title>clearmeasurements</title>
 		<indexterm><primary>commands</primary><secondary>clearmeasurements</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearmeasurements ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearmeasurements</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Clear all measurements in the current model.</para>
 		
 		<para>For example:</para>
@@ -64,12 +72,15 @@
 	
 	<section id="command.ref.distance"><title>distance</title>
 		<indexterm><primary>commands</primary><secondary>distance</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double distance ( atom|int i, atom|int j )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>distance</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure and return the distance between the two atoms supplied.</para>
 		
 		<para>For example:</para>
@@ -82,12 +93,14 @@
 	
 	<section id="command.ref.distances"><title>distances</title>
 		<indexterm><primary>commands</primary><secondary>distances</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> distances ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>distances</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure (and print out) the lengths of all bonds present in the current atom selection.</para>
 		
 		<para>For example:</para>
@@ -99,12 +112,14 @@
 	
 	<section id="command.ref.listmeasurements"><title>listmeasurements</title>
 		<indexterm><primary>commands</primary><secondary>listmeasurements</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> listmeasurements ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listmeasurements</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>List all measurements in the current model.</para>
 		
 		<para>For example:</para>
@@ -117,18 +132,17 @@
 	
 	<section id="command.ref.measure"><title>measure</title>
 		<indexterm><primary>commands</primary><secondary>measure</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double measure ( atom|int i, atom|int j )</para>
-			</listitem>
-			<listitem>
-				<para> double measure ( atom|int i, atom|int j, atom|int k )</para>
-			</listitem>
-			<listitem>
-				<para> double measure ( atom|int i, atom|int j, atom|int k, atom|int l )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>measure</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+				<paramdef>atom|int <parameter>k = 0</parameter></paramdef>
+				<paramdef>atom|int <parameter>l = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>This command is a general measuring tool, able to measure distances, angles, and torsions, depending on how many arguments are supplied.</para>
 		
 		<para>For example:</para>
@@ -149,12 +163,17 @@
 	
 	<section id="command.ref.torsion"><title>torsion</title>
 		<indexterm><primary>commands</primary><secondary>torsion</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double torsion ( atom|int i, atom|int j, atom|int k, atom|int l )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>torsion</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+				<paramdef>atom|int <parameter>k</parameter></paramdef>
+				<paramdef>atom|int <parameter>l</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure (and return) the torsion angle between the four atoms supplied.</para>
 		
 		<para>For example:</para>
@@ -167,12 +186,14 @@
 	
 	<section id="command.ref.torsions"><title>torsions</title>
 		<indexterm><primary>commands</primary><secondary>torsions</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> torsions ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>torsions</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Measure (and print out) all torsion angles present in the current atom selection.</para>
 		
 		<para>For example:</para>

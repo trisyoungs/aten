@@ -38,7 +38,7 @@
 			<funcprototype>
 				<funcdef>void <function>bohr</function></funcdef>
 				<paramdef>object <parameter>x</parameter></paramdef>
-				<varargs>
+				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Converts the specified object(s) data to Angstroms, assuming that it is currently specified in Bohr.</para>

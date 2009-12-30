@@ -49,7 +49,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 	selectall();
 	copy();
 	selectnone();
-	getmodel(m);
+	currentmodel(m);
 	paste();
 	selectnone();
 	finalisemodel();

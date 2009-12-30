@@ -4,12 +4,14 @@
 	
 	<section id="command.ref.cgminimise"><title>cgminimise</title>
 		<indexterm><primary>commands</primary><secondary>cgminimise</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> cgminimise ( int maxsteps )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cgminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Geometry optimises the current model using the conjugate gradient method.</para>
 		
 		<para>For example:</para>
@@ -30,12 +32,15 @@
 	
 	<section id="command.ref.converge"><title>converge</title>
 		<indexterm><primary>commands</primary><secondary>converge</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> converge ( double econv, double fconv )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>converge</function></funcdef>
+				<paramdef>double <parameter>econv</parameter></paramdef>
+				<paramdef>double <parameter>fconv</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.</para>
 		
 		<para>For example:</para>
@@ -48,12 +53,14 @@
 	
 	<section id="command.ref.linetol"><title>linetol</title>
 		<indexterm><primary>commands</primary><secondary>linetol</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> linetol ( double tolerance )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>linetol</function></funcdef>
+				<paramdef>double <parameter>tolerance</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the tolerance of the line minimiser.</para>
 		
 		<para>For example:</para>
@@ -66,12 +73,14 @@
 	
 	<section id="command.ref.mcminimise"><title>mcminimise</title>
 		<indexterm><primary>commands</primary><secondary>mcminimise</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mcminimise ( int maxsteps )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Optimises the current model using a molecular Monte Carlo minimisation method.</para>
 		
 		<para>For example:</para>
@@ -92,12 +101,14 @@
 	
 	<section id="command.ref.sdminimise"><title>sdminimise</title>
 		<indexterm><primary>commands</primary><secondary>sdminimise</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> sdminimise ( int maxsteps )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>sdminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Optimises the current model using the Steepest Descent method.</para>
 		
 		<para>For example:</para>
@@ -109,7 +120,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para>((Methods: Steepest Descent Minimiser)) for details on the steepest descent minimisation method as it is implemented in Aten.^</para>
+					<para><link linkend="methods.sd">Steepest Descent Method</link> for details on the steepest descent minimisation method as it is implemented in Aten.</para>
 				</listitem>
 			</itemizedlist>
 		</note>

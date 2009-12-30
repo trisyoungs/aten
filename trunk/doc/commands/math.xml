@@ -4,96 +4,113 @@
 
 	<section id="command.ref.abs"><title>abs</title>
 		<indexterm><primary>commands</primary><secondary>abs</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double abs ( int|double num )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the absolute (positively-signed) value of <emphasis>num''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>abs</function></funcdef>
+				<paramdef>int|double <parameter>num</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the absolute (positively-signed) value of <emphasis>num</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.cos"><title>cos</title>
 		<indexterm><primary>commands</primary><secondary>cos</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double cos ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>cos</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Returns the cosine of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 	
 	</section>
 	
 	<section id="command.ref.dotproduct"><title>dotproduct</title>
 		<indexterm><primary>commands</primary><secondary>dotproduct</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double dotproduct ( vector u, vector v )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Calculate and return the dot product of the two vectors <emphasis>u</emphasis> and <emphasis>v''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>dotproduct</function></funcdef>
+				<paramdef>vector <parameter>u</parameter></paramdef>
+				<paramdef>vector <parameter>v</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Calculate and return the dot product of the two vectors <emphasis>u</emphasis> and <emphasis>v</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.exp"><title>exp</title>
 		<indexterm><primary>commands</primary><secondary>exp</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double exp ( double x )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the exponential of <emphasis>x''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>exp</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the exponential of <emphasis>x</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.ln"><title>ln</title>
 		<indexterm><primary>commands</primary><secondary>ln</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double ln ( double x )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the natural base-e logarithm of <emphasis>x''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>ln</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the natural base-e logarithm of <emphasis>x</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.log"><title>log</title>
 		<indexterm><primary>commands</primary><secondary>log</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double log ( double x )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the base-10 logarithm of <emphasis>x''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>log</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the base-10 logarithm of <emphasis>x</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.nint"><title>nint</title>
 		<indexterm><primary>commands</primary><secondary>nint</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> int nint ( double x )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the nearest integer value to <emphasis>x''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>nint</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the nearest integer value to <emphasis>x</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.normalise"><title>normalise</title>
 		<indexterm><primary>commands</primary><secondary>normalise</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double normalise ( vector v )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>normalise</function></funcdef>
+				<paramdef>vector <parameter>v</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Normalises the vector <emphasis>v</emphasis>, returning the magnitude of the vector before the normalisation was performed.</para>
 	
 		<para>For example:</para>
@@ -111,36 +128,42 @@
 	
 	<section id="command.ref.sin"><title>sin</title>
 		<indexterm><primary>commands</primary><secondary>sin</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double sin ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>sin</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Returns the sine of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 	
 	</section>
 	
 	<section id="command.ref.sqrt"><title>sqrt</title>
 		<indexterm><primary>commands</primary><secondary>sqrt</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double sqrt ( double x )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Returns the square root of <emphasis>x'.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>sqrt</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the square root of <emphasis>x</emphasis>.</para>
 	
 	</section>
 	
 	<section id="command.ref.tan"><title>tan</title>
 		<indexterm><primary>commands</primary><secondary>tan</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double tan ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>tan</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Returns the tangent of <emphasis>angle</emphasis> (which should be given in degrees).</para>
 
 	</section>

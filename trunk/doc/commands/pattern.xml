@@ -4,12 +4,14 @@
 
 	<section id="command.ref.clearpatterns"><title>clearpatterns</title>
 		<indexterm><primary>commands</primary><secondary>clearpatterns</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearpatterns ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearpatterns</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to 'newpattern'.</para>
 		
 		<para>For example:</para>
@@ -21,12 +23,14 @@
 	
 	<section id="command.ref.createpatterns"><title>createpatterns</title>
 		<indexterm><primary>commands</primary><secondary>createpatterns</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> createpatterns ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>createpatterns</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Automatically detect and create the pattern description for the current model.</para>
 		
 		<para>For example:</para>
@@ -36,36 +40,76 @@
 		
 	</section>
 	
+	<section id="command.ref.currentpattern"><title>currentpattern</title>
+		<indexterm><primary>commands</primary><secondary>currentpattern</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Get the named pattern or pattern with given id (if either was specified), returning its reference and setting it to be the current pattern.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			pattern p = currentpattern(&quot;liquid&quot;);
+		</synopsis>
+		<para>sets the pattern named 'liquid' in the current model to be the current pattern, setting its reference in the variable <emphasis>p</emphasis>.</para>
+		<synopsis>
+			pattern p = currentpattern();
+		</synopsis>
+		<para>returns a reference to the current pattern.</para>
+			
+	</section>
+	
 	<section id="command.ref.getpattern"><title>getpattern</title>
 		<indexterm><primary>commands</primary><secondary>getpattern</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> pattern getpattern ( int|string id )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Get the named pattern, or pattern with id specified, make it current, returning its reference.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>getpattern</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>getpattern</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Get the named pattern, or pattern with id specified, returning its reference.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			pattern p = getpattern(&quot;solid&quot;);
 		</synopsis>
-		<para>sets the pattern named 'solid' in the current model to be the current pattern, setting its reference in the variable <emphasis>p''.</para>
+		<para>gets the pattern named 'solid' in the current model, setting its reference in the variable <emphasis>p</emphasis>.</para>
 		<synopsis>
 			getpattern(3);
 		</synopsis>
-		<para>sets the third pattern in the current model as the current pattern.</para>
+		<para>gets the third pattern in the current model.</para>
 		
 	</section>
 	
 	<section id="command.ref.listpatterns"><title>listpatterns</title>
 		<indexterm><primary>commands</primary><secondary>listpatterns</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> listpatterns ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listpatterns</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>List the patterns in the current model.</para>
 		
 		<para>For example:</para>
@@ -77,13 +121,17 @@
 	
 	<section id="command.ref.newpattern"><title>newpattern</title>
 		<indexterm><primary>commands</primary><secondary>newpattern</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> pattern newpattern ( string name, int nmols, int natoms )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Add a new pattern node to the current model, spanning <emphasis>nmols</emphasis> molecules of <emphasis>natoms</emphasis> atoms each, and called <emphasis>name''. A reference to the new pattern is returned.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.pattern">pattern</link> <function>newpattern</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>int <parameter>nmols</parameter></paramdef>
+				<paramdef>int <parameter>atomspermol</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a new pattern node to the current model, spanning <emphasis>nmols</emphasis> molecules of <emphasis>atomspermol</emphasis> atoms each, and called <emphasis>name</emphasis>. A reference to the new pattern is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -91,23 +139,6 @@
 		</synopsis>
 		<para>creates a new pattern description of 100 molecules of 3 atoms each named 'water' (i.e. 100 water molecules) in the current model, and returns its reference</para>
 	
-	</section>
-	
-	<section id="command.ref.printpatterns"><title>printpatterns</title>
-		<indexterm><primary>commands</primary><secondary>printpatterns</secondary></indexterm>
-		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> printpatterns ( )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Prints out the current pattern description of the current model.</para>
-		
-		<para>For example:</para>
-		<synopsis>
-			printpatterns();
-		</synopsis>
-
 	</section>
 	
 </section>

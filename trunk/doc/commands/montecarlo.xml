@@ -4,12 +4,15 @@
 	
 	<section id="command.ref.mcaccept"><title>mcaccept</title>
 		<indexterm><primary>commands</primary><secondary>mcaccept</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mcaccept ( string move, double emax )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcaccept</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>emax</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the energy difference <emphasis>emax</emphasis> for the movetype <emphasis>move</emphasis> above which moves will be rejected.</para>
 		
 		<para>For example:</para>
@@ -26,12 +29,15 @@
 	
 	<section id="command.ref.mcallow"><title>mcallow</title>
 		<indexterm><primary>commands</primary><secondary>mcallow</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mcallow ( string move, bool allow )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcallow</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>bool <parameter>allow</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Indicates whether to allow moves of the specified type in Monte Carlo calculations.</para>
 		
 		<para>For example:</para>
@@ -48,13 +54,16 @@
 	
 	<section id="command.ref.mcmaxstep"><title>mcmaxstep</title>
 		<indexterm><primary>commands</primary><secondary>mcmaxstep</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mcmaxstep ( string move, double size )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Sets the maximal step size for the move type <emphasis>move''.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcmaxstep</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>mcmaxstep</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the maximal step size for the move type <emphasis>move</emphasis>.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -70,12 +79,15 @@
 	
 	<section id="command.ref.mcntrials"><title>mcntrials</title>
 		<indexterm><primary>commands</primary><secondary>mcntrials</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mctrials ( string move, int n )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcntrials</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the number of times <emphasis>n</emphasis> that the move type <emphasis>move</emphasis> should be attempted in each cycle.</para>
 		
 		<para>For example:</para>
@@ -88,12 +100,14 @@
 	
 	<section id="command.ref.printmc"><title>printmc</title>
 		<indexterm><primary>commands</primary><secondary>printmc</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> printmc ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printmc</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Prints the current Monte Carlo parameters.</para>
 		
 		<para>For example:</para>

@@ -4,24 +4,37 @@
 
 	<section id="command.ref.angledef"><title>angledef</title>
 		<indexterm><primary>commands</primary><secondary>angledef</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> angledef ( string form, string type_i, string type_j, string type_k, double data1, ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>angledef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>string <parameter>type_k</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Angle Functions)) names, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
 	
 	<section id="command.ref.bonddef"><title>bonddef</title>
 		<indexterm><primary>commands</primary><secondary>bonddef</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> bonddef ( string form, string type_i, string type_j, double data1, ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>bonddef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Add a bond definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Bond Functions)) names, while the two <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
@@ -344,32 +357,43 @@
 	
 	<section id="command.ref.torsiondef"><title>torsiondef</title>
 		<indexterm><primary>commands</primary><secondary>torsiondef</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> torsiondef ( string form, string type_i, string type_j, string type_k, string type_l, double data1, ...)</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>torsiondef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>string <parameter>type_k</parameter></paramdef>
+				<paramdef>string <parameter>type_l</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Add a torsion definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Torsion Functions)), while the four <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
 	
 	</section>
 	
 	<section id="command.ref.typedef"><title>typedef</title>
 		<indexterm><primary>commands</primary><secondary>typedef</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> int typedef ( int typeid, string name, string element, string type )</para>
-			</listitem>
-			<listitem>
-				<para> int typedef ( int typeid, string name, string element, string type, string description )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid''. Other arguments are described in more detail in ((Forcefield Files|#Keyword: types)). The command returns '1' if the model was typed successfully or '0' otherwise.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typedef</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>string <parameter>element</parameter></paramdef>
+				<paramdef>string <parameter>neta</parameter></paramdef>
+				<paramdef>string <parameter>description = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid</emphasis> and called <emphasis>name</emphasis>. The basic element of the new type is given as <emphasis>element</emphasis>, and <emphasis>neta</emphasis> is the <link linkend="ff.neta">NETA</link> definition of the type. An optional string describing the type in more detail can be given in <emphasis>description</emphasis>. The command returns '1' if the model was typed successfully or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-			typedef(101,&quot;CT&quot;, C, &quot;nbonds=4&quot;, &quot;Standard tetrahedral carbon&quot;);
+			typedef(101, &quot;Ctet&quot;, C, &quot;nbonds=4&quot;, &quot;Standard tetrahedral carbon&quot;);
 		</synopsis>
 		<para>creates a new simple type for a carbon atom with four bonds.</para>
 		
@@ -377,34 +401,39 @@
 	
 	<section id="command.ref.typemodel"><title>typemodel</title>
 		<indexterm><primary>commands</primary><secondary>typemodel</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> typemodel ( )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Perform atom typing on the current model.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typemodel</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform atom typing on the current model. Returns '1' if atom typing was performed successfully or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-			typemodel();
+			int success = typemodel();
 		</synopsis>
 	
 	</section>
 	
 	<section id="command.ref.typetest"><title>typetest</title>
 		<indexterm><primary>commands</primary><secondary>typetest</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> int typetest ( int typeid, atom|int id )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Test the forcefield atomtype <emphasis>typeid</emphasis> on the atom specified, returning the type score of the match (zero indicating no match).</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typetest</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>atom|int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Test the current forcefield's atomtype <emphasis>typeid</emphasis> on the atom specified, returning the type score of the match (zero indicating no match).</para>
 		
 		<para>For example:</para>
 		<synopsis>
-			typetest(112,10);
+			int score = typetest(112,10);
 		</synopsis>
 		<para>tests typeid 112 on the tenth atom in the model.</para>
 		
@@ -412,24 +441,28 @@
 	
 	<section id="command.ref.units"><title>units</title>
 		<indexterm><primary>commands</primary><secondary>units</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> units ( string unit )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Sets the units in which energetic parameters are given for the current forcefield. For a list of available units see ((Energy Units)).</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>units</function></funcdef>
+				<paramdef>string <parameter>unit</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the units in which energetic parameters are given for the current forcefield. For a list of available units see <link linkend="enums.energyunits">energy units</link>.</para>
 	
 	</section>
 	
 	<section id="command.ref.vdw"><title>vdw</title>
 		<indexterm><primary>commands</primary><secondary>vdw</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> vdw ( bool calculate )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>vdw</function></funcdef>
+				<paramdef>bool <parameter>calculate</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Controls calculation of van der Waals terms in energy / force calculations (on by default).</para>
 		
 		<para>For example:</para>

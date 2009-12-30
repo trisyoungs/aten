@@ -38,6 +38,30 @@
 	
 	</section>
 	
+	<section id="command.ref.currentatom"><title>currentatom</title>
+		<indexterm><primary>commands</primary><secondary>currentatom</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>atom <function>currentatom</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>currentatom</function></funcdef>
+				<paramdef>atom|id <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return a reference to the current atom. If a new atom/id is provided the current atom is set before being returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			atom i = getatom(1);
+		</synopsis>
+		<para>makes the first atom in the current model the current atom, and returns a reference to it.</para>
+		
+	</section>
+	
 	<section id="command.ref.fix"><title>fix</title>
 		<indexterm><primary>commands</primary><secondary>fix</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
@@ -88,16 +112,16 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>atom <function>getatom</function></funcdef>
-				<paramdef>atom|id <parameter>id = 0</parameter></paramdef>
+				<paramdef>atom|id <parameter>id</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Return a reference to the atom specified.</para>
 	
 		<para>For example:</para>
 		<synopsis>
-			atom i = getatom(1);
+			atom i = getatom(3);
 		</synopsis>
-		<para>returns a reference to the first atom in the current model.</para>
+		<para>returns a reference to the third atom in the current model.</para>
 	
 	</section>
 	

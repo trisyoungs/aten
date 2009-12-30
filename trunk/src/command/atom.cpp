@@ -48,6 +48,18 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Set current atom ('currentatom <id>')
+bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Atom *i = obj.rs->atom(c->argi(0)-1);
+	if (i == NULL) return FALSE;
+	// Set atom information
+	obj.i = i;
+	rv.set(VTypes::AtomData, i);
+	return TRUE;
+}
+
 // Fix positions of current atom selection or specified atom
 bool Command::function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -70,15 +82,12 @@ bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-
-// Retrieve atom info ('getatom <id> [var]')
+// Retrieve atom info ('getatom <id>')
 bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom *i = obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
-	// Set atom information
-	obj.i = i;
 	rv.set(VTypes::AtomData, i);
 	return TRUE;
 }
