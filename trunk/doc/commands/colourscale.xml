@@ -5,22 +5,26 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para> ((Colourscales)) for a discussion of colourscales and how they may be used within Aten.</para>
+				<para><link linkend="colourscales">Colourscales</link> for a discussion of colourscales and how they may be used within Aten.</para>
 			</listitem>
 		</itemizedlist>
 	</note>
 	
 	<section id="command.ref.addpoint"><title>addpoint</title>
 		<indexterm><primary>commands</primary><secondary>addpoint</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> addpoint ( int id, double value, double r, double g, double b )</para>
-			</listitem>
-			<listitem>
-				<para> addpoint ( int id, double value, double r, double g, double b, double alpha )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addpoint</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Adds a new point to the end of the specified colourscale, at the point <emphasis>value</emphasis> and with the RGB[A] colour provided.</para>
 		
 		<para>For example:</para>
@@ -33,12 +37,14 @@
 	
 	<section id="command.ref.clearpoints"><title>clearpoints</title>
 		<indexterm><primary>commands</primary><secondary>clearpoints</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearpoints ( int id )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearpoints</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Clears all points from the specified colourscale.</para>
 		
 		<para>For example:</para>
@@ -51,12 +57,14 @@
 	
 	<section id="command.ref.listscales"><title>listscales</title>
 		<indexterm><primary>commands</primary><secondary>listscales</secondary></indexterm>
+
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> listscales ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listscales</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Lists the current types, colours, and ranges of the colourscales</para>
 		
 		<para>For example:</para>
@@ -68,12 +76,15 @@
 	
 	<section id="command.ref.removepoint"><title>removepoint</title>
 		<indexterm><primary>commands</primary><secondary>removepoint</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> removepoint ( int id, int point )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>removepoint</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>int <parameter>pointid</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Remove a single point from the selected colourscale.</para>
 		
 		<para>For example:</para>
@@ -86,15 +97,19 @@
 	
 	<section id="command.ref.scalename"><title>scalename</title>
 		<indexterm><primary>commands</primary><secondary>scalename</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> string scalename ( int id )</para>
-			</listitem>
-			<listitem>
-				<para> scalename ( int id, string name )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>scalename</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>string <function>scalename</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>string <parameter>newname</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Retrieves the name of the colourscale id provided, or sets the name if a new name is provided). The name is displayed next to the gradient bar (if drawn).</para>
 		
 		<para>For example:</para>
@@ -107,12 +122,15 @@
 	
 	<section id="command.ref.scalevisible"><title>scalevisible</title>
 		<indexterm><primary>commands</primary><secondary>scalevisible</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> scalevisible ( int id, string &quot;on&quot;|&quot;off&quot; )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>scalevisible</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>bool <parameter>visible</parameter></paramdef>	
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets whether the gradient bar for the specified colourscale should be drawn in the main view. Default is 'off' for all colourscales.</para>
 		
 		<para>For example:</para>
@@ -125,15 +143,20 @@
 	
 	<section id="command.ref.setpoint"><title>setpoint</title>
 		<indexterm><primary>commands</primary><secondary>setpoint</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> setpoint ( int id, int point, double value, double r, double g, double b )</para>
-			</listitem>
-			<listitem>
-				<para> setpoint ( int id, int point, double value, double r, double g, double b, double alpha )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setpoint</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>int <parameter>pointid</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the value and colour of an existing point in the specified colourscale.</para>
 		
 		<para>For example:</para>
@@ -146,15 +169,19 @@
 	
 	<section id="command.ref.setpointcolour"><title>setpointcolour</title>
 		<indexterm><primary>commands</primary><secondary>setpointcolour</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> setpointcolour ( int id, int point, double r, double g, double b )</para>
-			</listitem>
-			<listitem>
-				<para> setpointcolour ( int id, int point, double r, double g, double b, double alpha )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setpointcolour</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>int <parameter>pointid</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the colour of an existing point in the specified colourscale.</para>
 		
 		<para>For example:</para>
@@ -167,12 +194,16 @@
 	
 	<section id="command.ref.setpointvalue"><title>setpointvalue</title>
 		<indexterm><primary>commands</primary><secondary>setpointvalue</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> setpointvalue ( int id, int point, double value )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setpointvalue</function></funcdef>
+				<paramdef>int <parameter>scaleid</parameter></paramdef>
+				<paramdef>int <parameter>pointid</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the value of an existing point in the specified colourscale.</para>
 	
 		<para>For example:</para>

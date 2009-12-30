@@ -4,12 +4,14 @@
 
 	<section id="command.ref.augment"><title>augment</title>
 		<indexterm><primary>commands</primary><secondary>augment</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> augment ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>augment</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Augments bonds in the current model, automatically determining multiple bonds based on the valency of atoms, and aromaticity based on double bonds in rings.</para>
 		
 		<para>For example:</para>
@@ -29,15 +31,18 @@
 	
 	<section id="command.ref.bondtolerance"><title>bondtolerance</title>
 		<indexterm><primary>commands</primary><secondary>bondtolerance</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> double bondtolerance ( )</para>
-			</listitem>
-			<listitem>
-				<para> double bondtolerance ( double tol )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>bondtolerance</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>bondtolerance</function></funcdef>
+				<paramdef>double <parameter>tol</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise ((Patterns)) within models correctly. The current or new bond tolerance is returned.</para>
 		
 		<para>For example:</para>
@@ -62,12 +67,14 @@
 	
 	<section id="command.ref.clearbonds"><title>clearbonds</title>
 		<indexterm><primary>commands</primary><secondary>clearbonds</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearbonds ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearbonds</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Delete all bonds in the current model.</para>
 		
 		<para>For example:</para>
@@ -79,12 +86,14 @@
 	
 	<section id="command.ref.clearselectedbonds"><title>clearselectedbonds</title>
 		<indexterm><primary>commands</primary><secondary>clearselectedbonds</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearselectedbonds ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearselectedbonds</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Delete all bonds in the current atom selection.</para>
 		
 		<para>For example:</para>
@@ -96,19 +105,22 @@
 	
 	<section id="command.ref.newbond"><title>newbond</title>
 		<indexterm><primary>commands</primary><secondary>newbond</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> newbond ( int|atom i, int|atom j )</para>
-			</listitem>
-			<listitem>
-				<para> newbond ( int|atom i, int|atom j, int bondtype )</para>
-			</listitem>
-			<listitem>
-				<para> newbond ( int|atom i, int|atom j, string bondtype )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Create a new bond in the model between the specified atoms. The optional <emphasis>bondtype</emphasis> argument specified the type of bond: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newbond</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newbond</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+				<paramdef>string|int <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new bond in the model between the specified atoms. The optional <emphasis>bondtype</emphasis> argument specified the <link linkend="enums.bondtypes">type of bond</link>: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -131,47 +143,54 @@
 	
 	<section id="command.ref.newbondid"><title>newbondid</title>
 		<indexterm><primary>commands</primary><secondary>newbondid</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> newbondid ( int i, int j )</para>
-			</listitem>
-			<listitem>
-				<para> newbondid ( int i, int j, int bondtype )</para>
-			</listitem>
-			<listitem>
-				<para> newbondid ( int i, int j, string bondtype )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Create a new bond in the model between atoms referenced by their temporary ID, set manually with the ((Commands: Atoms|#setid|setid)) command. Otherwise identical to the ((Commands: Bonding|#newbond|newbond)) command.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newbondid</function></funcdef>
+				<paramdef>int <parameter>i</parameter></paramdef>
+				<paramdef>int <parameter>j</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newbondid</function></funcdef>
+				<paramdef>int <parameter>i</parameter></paramdef>
+				<paramdef>int <parameter>j</parameter></paramdef>
+				<paramdef>string|int <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new bond in the model between atoms referenced by their temporary ID, set manually with the <link linkend="command.setid">setid</link> command. Otherwise identical to the <link linkend="command.newbond">newbond</link> command.</para>
 	
 	</section>
 	
 	<section id="command.ref.rebond"><title>rebond</title>
 		<indexterm><primary>commands</primary><secondary>rebond</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rebond ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rebond</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Calculate bonding in the current model.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-		rebond();
+			rebond();
 		</synopsis>
 	
 	</section>
 	
 	<section id="command.ref.rebondpatterns"><title>rebondpatterns</title>
 		<indexterm><primary>commands</primary><secondary>rebondpatterns</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rebondpatterns ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rebondpatterns</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Calculate bonding in the current model, but restrict bond creation to between atoms in individual molecules of defined patterns.</para>
 		
 		<para>For example:</para>
@@ -194,12 +213,14 @@
 	
 	<section id="command.ref.rebondselection"><title>rebondselection</title>
 		<indexterm><primary>commands</primary><secondary>rebondselection</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rebondselection</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rebondselection</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Calculate bonding between atoms in the current atom selection.</para>
 		
 		<para>For example:</para>

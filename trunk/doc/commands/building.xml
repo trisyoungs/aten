@@ -4,15 +4,18 @@
 
 	<section id="command.ref.addhydrogen"><title>addhydrogen</title>
 		<indexterm><primary>commands</primary><secondary>addhydrogen</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> addhydrogen ( )</para>
-			</listitem>
-			<listitem>
-				<para> addhydrogen ( int|atom i )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addhydrogen</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>addhydrogen</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Satisfy the valencies of all atoms in the current model by adding hydrogens to heavy atoms. If an integer id or atom reference is provided as the argument then the addition of hydrogen is restricted to the specified atom.</para>
 		
 		<para>For example:</para>
@@ -29,12 +32,15 @@
 	
 	<section id="command.ref.bohr"><title>bohr</title>
 		<indexterm><primary>commands</primary><secondary>bohr</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> bohr ( object ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>bohr</function></funcdef>
+				<paramdef>object <parameter>x</parameter></paramdef>
+				<varargs>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Converts the specified object(s) data to Angstroms, assuming that it is currently specified in Bohr.</para>
 		
 		<para>For example:</para>
@@ -48,21 +54,34 @@
 	
 	<section id="command.ref.chain"><title>chain</title>
 		<indexterm><primary>commands</primary><secondary>chain</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> atom chain ( int|string el )</para>
-			</listitem>
-			<listitem>
-				<para> atom chain ( int|string el, int|string bondtype )</para>
-			</listitem>
-			<listitem>
-				<para> atom chain ( int|string el, double x, double y, double z )</para>
-			</listitem>
-			<listitem>
-				<para> atom chain ( int|string el, double x, double y, double z, int|string bondtype )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>int|string <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>int|string <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type <emphasis>bondtype</emphasis> if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
@@ -83,12 +102,14 @@
 	
 	<section id="command.ref.endchain"><title>endchain</title>
 		<indexterm><primary>commands</primary><secondary>endchain</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para>endchain ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>endchain</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Ends the current chain (so that the next atom drawn with 'chain' will be unbound).</para>
 		
 		<para>For example:</para>
@@ -100,12 +121,16 @@
 	
 	<section id="command.ref.locate"><title>locate</title>
 		<indexterm><primary>commands</primary><secondary>locate</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> locate ( double dx, double dy, double dz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>locate</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the pen position to the coordinates specified (in Angstroms).</para>
 		
 		<para>For example:</para>
@@ -118,12 +143,16 @@
 	
 	<section id="command.ref.move"><title>move</title>
 		<indexterm><primary>commands</primary><secondary>move</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> move ( double dx, double dy, double dz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>move</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Moves the pen position by the amounts specified (in Angstroms).</para>
 		
 		<para>For example:</para>
@@ -136,12 +165,44 @@
 	
 	<section id="command.ref.newatom"><title>newatom</title>
 		<indexterm><primary>commands</primary><secondary>newatom</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> atom newatom ( int|string el, double x = 0.0, double y = 0.0, double z = 0.0, double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0, )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position or, if provided, the specified coordinates (and optional velocities or velocities and forces). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
@@ -158,12 +219,40 @@
 	
 	<section id="command.ref.newatomfrac"><title>newatomfrac</title>
 		<indexterm><primary>commands</primary><secondary>newatomfrac</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> atom newatomfrac ( int|string el, double x, double y, double z,  double vx = 0.0, double vy = 0.0, double vz = 0.0, double fx = 0.0, double fy = 0.0, double fz = 0.0 )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Create a new atom of element <emphasis>el</emphasis> at the specified fractional coordinates (velocities and forces are optional). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
 		
 		<para>For example:</para>
@@ -176,12 +265,14 @@
 	
 	<section id="command.ref.reorder"><title>reorder</title>
 		<indexterm><primary>commands</primary><secondary>reorder</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> reorder ( );</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>reorder</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Adjust the ordering of atoms in the current selection such that atoms in bound fragments/molecules have successive IDs. Useful to recover 'molecularity' in order to apply a suitable ((Patterns|pattern)) to the system.</para>
 		
 		<para>For example:</para>
@@ -193,12 +284,14 @@
 	
 	<section id="command.ref.rotx"><title>rotx</title>
 		<indexterm><primary>commands</primary><secondary>rotx</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rotx ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rotx</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Rotates the reference coordinate system about the x axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
@@ -211,12 +304,14 @@
 	
 	<section id="command.ref.roty"><title>roty</title>
 		<indexterm><primary>commands</primary><secondary>roty</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> roty ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>roty</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Rotates the reference coordinate system about the y axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
@@ -229,12 +324,14 @@
 	
 	<section id="command.ref.rotz"><title>rotz</title>
 		<indexterm><primary>commands</primary><secondary>rotz</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rotz ( double angle )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rotz</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Rotates the reference coordinate system about the z axis by <emphasis>angle</emphasis> degrees.</para>
 		
 		<para>For example:</para>
@@ -247,12 +344,14 @@
 	
 	<section id="command.ref.movetoend"><title>movetoend</title>
 		<indexterm><primary>commands</primary><secondary>movetoend</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> movetoend ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetoend</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Move the current atom selection to the end of the list. The relative order of atoms in the selection is preserved.</para>
 		
 		<para>For example:</para>
@@ -264,12 +363,14 @@
 	
 	<section id="command.ref.movetostart"><title>movetostart</title>
 		<indexterm><primary>commands</primary><secondary>movetostart</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> movetostart ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetostart</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Move the current atom selection to the start of the list. The relative order of the atoms in the selection is preserved.</para>
 		
 		<para>For example:</para>
@@ -281,16 +382,19 @@
 	
 	<section id="command.ref.shiftdown"><title>shiftdown</title>
 		<indexterm><primary>commands</primary><secondary>shiftdown</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> shiftdown ( )</para>
-			</listitem>
-			<listitem>
-				<para> shiftdown ( int n )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Move the current atom selection one (or <emphasis>n'') places down in the atom list (i.e. towards higher IDs).</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>shiftdown</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>shiftdown</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection one (or <emphasis>n</emphasis>) places down in the atom list (i.e. towards higher IDs).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -302,16 +406,19 @@
 	
 	<section id="command.ref.shiftup"><title>shiftup</title>
 		<indexterm><primary>commands</primary><secondary>shiftup</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> shiftup ( )</para>
-			</listitem>
-			<listitem>
-				<para> shiftup ( int n )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Move the current atom selection one (or <emphasis>n'') places up in the atom list (i.e. towards lower IDs).</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>shiftup</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>shiftup</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection one (or <emphasis>n</emphasis>) places up in the atom list (i.e. towards lower IDs).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -323,12 +430,14 @@
 	
 	<section id="command.ref.transmute"><title>transmute</title>
 		<indexterm><primary>commands</primary><secondary>transmute</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> transmute ( int|string el )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>transmute</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Transmute the current atom selection to the specified element.</para>
 		
 		<para>For example:</para>
