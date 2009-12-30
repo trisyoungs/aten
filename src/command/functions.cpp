@@ -71,6 +71,7 @@ void Command::initPointers()
 
 	// Atom commands
 	pointers_[AtomStyle] = &Command::function_AtomStyle;
+	pointers_[CurrentAtom] = &Command::function_CurrentAtom;
 	pointers_[Fix] = &Command::function_Fix;
 	pointers_[Free] = &Command::function_Free;
 	pointers_[GetAtom] = &Command::function_GetAtom;
@@ -225,6 +226,7 @@ void Command::initPointers()
 	pointers_[ClearExportMap] = &Command::function_ClearExportMap;
 	pointers_[ClearExpression] = &Command::function_ClearExpression;
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
+	pointers_[CurrentFF] = &Command::function_CurrentFF;
 	pointers_[DefaultFF] = &Command::function_DefaultFF;
 	pointers_[Equivalent] = &Command::function_Equivalent;
 	pointers_[ExportMap] = &Command::function_ExportMap;
@@ -267,6 +269,7 @@ void Command::initPointers()
 	// Grid Commands
 	pointers_[AddGridPoint] = &Command::function_AddGridPoint;
 	pointers_[AddNextGridPoint] = &Command::function_AddNextGridPoint;
+	pointers_[CurrentGrid] = &Command::function_CurrentGrid;
 	pointers_[FinaliseGrid] = &Command::function_FinaliseGrid;
 	pointers_[GetGrid] = &Command::function_GetGrid;
 	pointers_[GridAlpha] = &Command::function_GridAlpha;
@@ -366,6 +369,7 @@ void Command::initPointers()
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
 	pointers_[CreatePatterns] = &Command::function_CreatePatterns;
+	pointers_[CurrentPattern] = &Command::function_CurrentPattern;
 	pointers_[FixPattern] = &Command::function_FixPattern;
 	pointers_[GetPattern] = &Command::function_GetPattern;
 	pointers_[ListPatterns] = &Command::function_ListPatterns;

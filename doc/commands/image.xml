@@ -4,18 +4,30 @@
 
 	<section id="command.ref.savebitmap"><title>savebitmap</title>
 		<indexterm><primary>commands</primary><secondary>savebitmap</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> savebitmap ( string format, string filename )</para>
-			</listitem>
-			<listitem>
-				<para> savebitmap ( string format, string filename, int width, int height )</para>
-			</listitem>
-			<listitem>
-				<para> savebitmap ( string format, string filename, int width, int height, int quality )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>savebitmap</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>savebitmap</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+				<paramdef>int <parameter>width</parameter></paramdef>
+				<paramdef>int <parameter>height</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>savebitmap</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+				<paramdef>int <parameter>width</parameter></paramdef>
+				<paramdef>int <parameter>height</parameter></paramdef>
+				<paramdef>int <parameter>quality</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		
 		<para>Saves the current view as a bitmap image. Allowable values for <emphasis>format</emphasis> are:</para>
 		<table frame='all' pgwide='1' tocentry='0'><title>Bitmap image formats</title>
@@ -33,7 +45,7 @@
 					</row>
 					<row>
 						<entry>jpg</entry>
-						<entry>Joint Photographic Expers Group</entry>
+						<entry>Joint Photographic Experts Group</entry>
 					</row>
 					<row>
 						<entry>png</entry>

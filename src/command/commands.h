@@ -114,6 +114,7 @@ class Command
 	
 		// Atom Commands
 		AtomStyle,
+		CurrentAtom,
 		Fix,
 		Free,
 		GetAtom,
@@ -267,6 +268,7 @@ class Command
 		ClearExportMap,
 		ClearExpression,
 		CreateExpression,
+		CurrentFF,
 		DefaultFF,
 		Equivalent,
 		ExportMap,
@@ -309,6 +311,7 @@ class Command
 		// Grid Commands
 		AddGridPoint,
 		AddNextGridPoint,
+		CurrentGrid,
 		FinaliseGrid,
 		GetGrid,
 		GridAlpha,
@@ -408,6 +411,7 @@ class Command
 		// Pattern Commands
 		ClearPatterns,
 		CreatePatterns,
+		CurrentPattern,
 		FixPattern,
 		GetPattern,
 		ListPatterns,
@@ -564,6 +568,7 @@ class Command
 	static bool function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Atom Commands
 	static bool function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -706,6 +711,7 @@ class Command
 	static bool function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -746,6 +752,7 @@ class Command
 	// Grid Commands
 	static bool function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -836,6 +843,7 @@ class Command
 	// Pattern Commands
 	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_CurrentPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);

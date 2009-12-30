@@ -46,6 +46,26 @@ bool Command::function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue
 	return TRUE;
 }
 
+// Return nth grid of model
+bool Command::function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Grid *g = NULL;
+	switch (c->argType(0))
+	{
+		case (VTypes::IntegerData):
+			g = obj.rs->grid(c->argi(0)-1);
+			break;
+		case (VTypes::GridData):
+			g = (Grid*) c->argp(0, VTypes::GridData);
+			break;
+	}
+	if (g == NULL) return FALSE;
+	obj.g = g;
+	rv.set(VTypes::GridData, g);
+	return TRUE;
+}
+
 // Finalise current surface
 bool Command::function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -70,7 +90,6 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 	}
 	if (g == NULL) return FALSE;
-	obj.g = g;
 	rv.set(VTypes::GridData, g);
 	return TRUE;
 }

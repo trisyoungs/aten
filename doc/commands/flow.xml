@@ -6,11 +6,9 @@
 		<indexterm><primary>commands</primary><secondary>do</secondary></indexterm>
 		
 		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef><function>do { commands } while { condition }</function></funcdef>
-			</funcprototype>
-		</funcsynopsis>
+		<synopsis>
+			do { commands } while { condition }
+		</synopsis>
 		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the end of every execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed again, and <emphasis>condition</emphasis> re-tested afterwards. If 'false' the loop ends.</para>
 		
 		<para>For example:</para>
@@ -40,11 +38,9 @@
 		<indexterm><primary>commands</primary><secondary>for</secondary></indexterm>
 		
 		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef><function> for ( startvalue ; condition ; increment ) { commands }</function></funcdef>
-			</funcprototype>
-		</funcsynopsis>
+		<synopsis>
+			for ( startvalue ; condition ; increment ) { commands }
+		</synopsis>
 		<para>Three separate components make up a 'for' loop. <emphasis>startvalue</emphasis> defines both the control variable (i.e. the variable that changes on each loop iteration) and  optionally its starting value, the <emphasis>condition</emphasis> is tested on each loop iteration to see whether or not to continue with the loop, and finally the <emphasis>increment</emphasis> is an expression to modify the control variable after each iteration, setting it to a new value. If multiple <emphasis>commands</emphasis> are to make up the body of the loop (executed on each iteration) then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is executed on each iteration, the curly brackets may be omitted.</para>
 		
 		<para>Some examples:</para>
@@ -67,14 +63,10 @@
 		<indexterm><primary>commands</primary><secondary>if</secondary></indexterm>
 		
 		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef><function>if ( condition ) { commands }</function></funcdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef><function>if ( condition ) { commands... } else { commands }</function></funcdef>
-			</funcprototype>
-		</funcsynopsis>
+		<synopsis>
+			if ( condition ) { commands }
+			if ( condition ) { commands... } else { commands }
+		</synopsis>
 		<para>The 'if' statement permits sections of code to be executed based on the assessment of logical comparison of values. If the supplied <emphasis>condition</emphasis> evaluates to be 'true' then the following <emphasis>commands</emphasis> are executed, otherwise nothing happens. In the second form of the command, if the <emphasis>condition</emphasis> evaluates to be 'false' then the second set of <emphasis>commands</emphasis> are executed instead. If multiple <emphasis>commands</emphasis> are to be executed then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is to be executed the curly brackets may be omitted.</para>
 		
 		<para>Typically, comparisons are made between two variables, for example 'if ( <emphasis>var1</emphasis> &gt; <emphasis>var2</emphasis> ) ... ' checks for <emphasis>var1</emphasis> being greater in value than <emphasis>var2</emphasis>, executing the following commands if this turns out to be true. The comparison operator may be any one of the following symbols:</para>
@@ -169,31 +161,24 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef><function>return</function></funcdef>
+				<void>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><function>if ( condition ) { commands... } else { commands }</function></funcdef>
+				<funcdef><function>return</function></funcdef>
+				<paramdef><parameter>value</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<itemizedlist>
-			<listitem>
-				<para>return</para>
-			</listitem>
-			<listitem>
-				<para>return <filename>value</filename></para>
-			</listitem>
-		</itemizedlist>
 		<para>Used in (user-defined) functions, and returns control immediately back to the calling function. In the case of a 'void' function, no return value must be specified. Similarly, for functions returning a value a valid value of that type must be given.</para>
 		
 	</section>
 	
 	<section id="command.ref.while"><title>while</title>
 		<indexterm><primary>commands</primary><secondary>while</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> while ( condition ) { commands }</para>
-			</listitem>
-		</itemizedlist>
+		<synopsis>
+			while ( condition ) { commands }
+		</synopsis>
 		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the beginning of the loop, before execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed, but if 'false' the loop ends without executing the <emphasis>commands</emphasis> (and meaning that it is possible that the <emphasis>commands</emphasis> are <emphasis>never</emphasis> executed).</para>
 		
 		<para>For example:</para>

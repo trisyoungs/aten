@@ -5,22 +5,24 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para>((Glyphs)) for information on glyph types and how they use vector data.</para>
+				<para><link linkend="XXX.glyphs">Glyphs</link> for information on glyph types and how they use vector data.</para>
 			</listitem>
 			<listitem>
-				<para>((Glyph Window)) for management of glyphs in the GUI.^</para>
+				<para><link linkend="gui.windows.glyph">Glyph window</link> for management of glyphs in the GUI.</para>
 			</listitem>
 		</itemizedlist>
 	</note>
 	
 	<section id="command.ref.autoellipsoids"><title>autoellipsoids</title>
 		<indexterm><primary>commands</primary><secondary>autoellipsoids</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> autoellipsoids ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>autoellipsoids</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		
 		<para><emphasis>Note: Experimental Feature!</emphasis></para>
 		
@@ -50,19 +52,18 @@
 
 	<section id="command.ref.autopolyhedra"><title>autopolyhedra</title>
 		<indexterm><primary>commands</primary><secondary>autopolyhedra</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> autopolyhedra ( )</para>
-			</listitem>
-			<listitem>
-				<para> autopolyhedra ( string options )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>autopolyhedra</function></funcdef>
+				<paramdef>string <parameter>options = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 	
 		<para><emphasis>Note: Very Experimental Feature!</emphasis></para>
 		
-		<para>In a similar way to the 'autoellipsoid' command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
+		<para>In a similar way to the <link linkend="command.autoellipsoid">autoellipsoid</link> command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
 		
 		<para>Possible <emphasis>options</emphasis> are:</para>
 
@@ -98,7 +99,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para>((Methods: Autopolyhedra)) for a description of the process.^</para>
+					<para><link linkend="methods.autopolyhedra">Autopolyhedra Method</link> for a description of the process.</para>
 				</listitem>
 			</itemizedlist>
 		</note>
@@ -107,15 +108,19 @@
 
 	<section id="command.ref.glyphatomf"><title>glyphatomf</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomf</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomf ( int n )</para>
-			</listitem>
-			<listitem>
-				<para> glyphatomf ( int n, atom|int sourceatom )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomf</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomf</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set current (or specified) atom's forces as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
@@ -128,15 +133,19 @@
 	
 	<section id="command.ref.glyphatomr"><title>glyphatomr</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomr</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomr ( int n )</para>
-			</listitem>
-			<listitem>
-				<para> glyphatomr ( int n, atom|int sourceatom )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomr</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomr</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set current (or specified) atom's position as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
@@ -149,15 +158,19 @@
 	
 	<section id="command.ref.glyphatomv"><title>glyphatomv</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomv</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomv ( int n )</para>
-			</listitem>
-			<listitem>
-				<para> glyphatomv ( int n, atom|int sourceatom )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomv</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomv</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set current (or specified) atom's velocity as data <emphasis>n</emphasis> in the current glyph.</para>
 		
 		<para>For example:</para>
@@ -171,12 +184,15 @@
 	
 	<section id="command.ref.glyphatomsf"><title>glyphatomsf</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomsf</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomsf ( atom|int sourceatom, ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsf</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the forces of the atoms / atom IDs provided.</para>
 		
 		<para>For example:</para>
@@ -189,12 +205,15 @@
 	
 	<section id="command.ref.glyphatomsr"><title>glyphatomsr</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomsr</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomsr ( atom|int sourceatom, ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsr</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the positions of the atoms / atom IDs provided.</para>
 		
 		<para>For example:</para>
@@ -207,12 +226,15 @@
 	
 	<section id="command.ref.glyphatomsv"><title>glyphatomsv</title>
 		<indexterm><primary>commands</primary><secondary>glyphatomsv</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphatomsv ( atom|int sourceatom, ... )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsv</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the velocities of the atoms / atom IDs provided.</para>
 		
 		<para>For example:</para>
@@ -225,15 +247,18 @@
 	
 	<section id="command.ref.glyphcolour"><title>glyphcolour</title>
 		<indexterm><primary>commands</primary><secondary>glyphcolour</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphcolour ( int n, double r, double g, double b )</para>
-			</listitem>
-			<listitem>
-				<para> glyphcolour ( int n, double r, double g, double b, double a )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphcolour</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>alpha = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set the colour of vertex <emphasis>n</emphasis> for the current glyph to the RGB(A) colour provided.</para>
 		
 		<para>For example:</para>
@@ -246,30 +271,37 @@
 	
 	<section id="command.ref.glyphdata"><title>glyphdata</title>
 		<indexterm><primary>commands</primary><secondary>glyphdata</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphdata ( int n, double x, double y, double z )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphdata</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set vector data <emphasis>n</emphasis> for the current glyph to the fixed values provided.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			glyphdata(1, 0.0, 5.0, 2.4);
 		</synopsis>
-		<para>sets the glyph data 1 to the position {0.0, 5.0, 2.4}.</para>
+		<para>sets the first positional data in the glyph to {0.0, 5.0, 2.4}.</para>
 	
 	</section>
 	
 	<section id="command.ref.glyphsolid"><title>glyphsolid</title>
 		<indexterm><primary>commands</primary><secondary>glyphsolid</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphsolid ( bool issolid )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphsolid</function></funcdef>
+				<paramdef>bool <parameter>issolid</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the drawing style of the current glyph to solid (true) or wireframe (false) (if the glyph style permits).</para>
 		
 		<para>For example:</para>
@@ -281,12 +313,14 @@
 	
 	<section id="command.ref.glyphtext"><title>glyphtext</title>
 		<indexterm><primary>commands</primary><secondary>glyphtext</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> glyphtext ( string text )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphtext</function></funcdef>
+				<paramdef>string <parameter>text</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set the text data in the current glyph. For text-style glyphs, this is of course useful! For others, whether or not the text is used depends on the style of the glyph.</para>
 		
 		<para>For example:</para>
@@ -298,16 +332,16 @@
 	
 	<section id="command.ref.newglyph"><title>newglyph</title>
 		<indexterm><primary>commands</primary><secondary>newglyph</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string style )</para>
-			</listitem>
-			<listitem>
-				<para> ((Paths and Subvariables|#Glyph|glyph)) newglyph ( string style, string options )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global ((Preferences)). Valid glyph styles are listed in the ((Glyphs)) section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.glyph">glyph</link> <function>newglyph</function></funcdef>
+				<paramdef>string <parameter>style</parameter></paramdef>
+				<paramdef>string <parameter>options = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global ((Preferences)). Valid glyph styles are listed in the <link linkend="xxx.glyph">Glyphs</link> section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
 		
 		<para>One or more options may be given to the command. The list of possible options is:</para>
 		
@@ -326,15 +360,15 @@
 					</row>
 					<row>
 						<entry>solid</entry>
-						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid(TRUE)</link> after creation.</entry>
+						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid<link>(TRUE) after creation.</entry>
 					</row>
 					<row>
 						<entry>text=<emphasis>string</emphasis></entry>
-						<entry>Set the character data associated to the glyph to <emphasis>string''. Currently, this has no effect for glyphs other than those that display text.</entry>
+						<entry>Set the character data associated to the glyph to <emphasis>string</emphasis>. Currently, this has no effect for glyphs other than those that display text.</entry>
 					</row>
 					<row>
 						<entry>wire</entry>
-						<entry>Render the glyph in wireframe mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid(FALSE)</link> after creation.</entry>
+						<entry>Render the glyph in wireframe mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid</link>(FALSE) after creation.</entry>
 					</row>
 				</tbody>
 			</tgroup>
