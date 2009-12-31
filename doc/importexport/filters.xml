@@ -1,5 +1,5 @@
 <section id="readwrite.filters"><title>Filters</title>
-	<indexterm id="idx.readwrite.filters" class="startofrange"><primary>filters</primary></indexterm>
+	<indexterm zone="readwrite.filters"><primary>filters</primary></indexterm>
 	
 	<para>Filters determine the model/trajectory, grid/surface, and forcefield expression formats that Aten can read and write. They are essentially small programs written in the style of C, and are stored as plain text files (source files, if you like) on disk and loaded and 'compiled' when Aten starts up. This has several advantages:</para>
 	
@@ -74,7 +74,7 @@
 			}
 		</synopsis>
 		
-		<indexterm id="idx.readwrite.filters.properties" class="startofrange"><primary>filters</primary><secondary>properties</secondary></indexterm>
+		<indexterm zone="readwrite.filters.definitions"><primary>filters</primary><secondary>properties</secondary></indexterm>
 	
 		<para>The comma-separated list of properties defines the type of filter ('type=&quot;importmodel&quot;') and how to recognise files of that type (e.g., 'extension=&quot;xyz&quot;'), amongst other things. The full list of possible properties is as follows:</para>
 	
@@ -342,7 +342,6 @@
 			
 		</section>
 		
-	<indexterm startref="idx.readwrite.filters.properties" class="endofrange"></indexterm>
+	</section>
 
-	<indexterm startref="idx.readwrite.filters" class="endofrange"></indexterm>
 </section>

@@ -1,4 +1,4 @@
-<section id="commands.groups.edit"><title>Edit Commands</title>
+<section id="command.groups.edit"><title>Edit Commands</title>
 	
 	<para>Standard editing commands.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>copy</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Copy the current atom selection to the clipboard, ready for <link linkend="command.ref.paste">pasting</link>.</para>
@@ -28,7 +28,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>cut</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Cut the current atom selection to the clipboard.</para>
@@ -47,7 +47,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>delete</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Delete the current atom selection.</para>
@@ -66,7 +66,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>paste</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Paste the copied atom selection.</para>
@@ -85,7 +85,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>redo</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Redo the last 'undone' operation.</para>
@@ -104,7 +104,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>undo</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Undo the last operation.</para>

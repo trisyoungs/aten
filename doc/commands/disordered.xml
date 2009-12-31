@@ -1,4 +1,4 @@
-<section id="commands.groups.disordered"><title>Disordered Commands</title>
+<section id="command.groups.disordered"><title>Disordered Commands</title>
 	
 	<para>Set up the disordered builder to create systems from individual components using Monte Carlo methods.</para>
 
@@ -49,7 +49,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listcomponents</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints a list of the currently requested populations for all models to be added during the disordered building process.</para>
@@ -199,7 +199,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>vdwscale</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>vdwscale</function></funcdef>

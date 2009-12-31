@@ -1,4 +1,4 @@
-<section id="commands.groups.system"><title>System Commands</title>
+<section id="command.groups.system"><title>System Commands</title>
 	
 	<para>System commands for controlling debug output, instantiation of the GUI, and exiting from the program.</para>
 
@@ -89,7 +89,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>gui</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Starts the GUI (e.g. from a script), if it isn't already running.</para>
@@ -107,7 +107,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
 			help command
-		<synopsis>
+		</synopsis>
 		<para>Provide short help on the supplied <emphasis>command</emphasis>.</para>
 		
 		<para>For example:</para>
@@ -157,7 +157,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>quit</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Quits out of the program.</para>

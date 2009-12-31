@@ -1,4 +1,4 @@
-<section id="commands.groups.atom"><title>Atom Commands</title>
+<section id="command.groups.atom"><title>Atom Commands</title>
 	
 	<para>Define and set properties of atoms.</para>
 
@@ -45,7 +45,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>atom <function>currentatom</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>atom <function>currentatom</function></funcdef>

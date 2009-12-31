@@ -1,4 +1,4 @@
-<section id="commands.groups.trajectory"><title>Trajectory Commands</title>
+<section id="command.groups.trajectory"><title>Trajectory Commands</title>
 	
 	<para>Open and associate trajectory files to models, and select frames to display/edit from the current trajectory.</para>
 
@@ -16,11 +16,11 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>addframe</function></funcdef>
-				<void>
+				<funcdef>model <function>addframe</function></funcdef>
+				<void/>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>addframe</function></funcdef>
+				<funcdef>model <function>addframe</function></funcdef>
 				<paramdef>string <parameter>title</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -40,7 +40,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>cleartrajectory</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Clear any associated trajectory and frame data in the current model.</para>
@@ -59,7 +59,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>firstframe</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Select the first frame from trajectory of current model.</para>
@@ -78,7 +78,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>lastframe</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Select last frame in trajectory of current model.</para>
@@ -117,7 +117,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>nextframe</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Select next frame from trajectory of current model.</para>
@@ -136,7 +136,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>prevframe</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Select the previous frame from the trajectory of the current model.</para>

@@ -21,13 +21,13 @@
 	
 	<section id="installation.userfilters"><title>User Filters</title>
 		
-		<para>Any filters written or obtained by the used can be placed in their <filename>~/.aten/filters</filename> directory. See the <link linkend="installation.dotaten">next section</link>
+		<para>Any filters written or obtained by the used can be placed in their <filename>~/.aten/filters</filename> directory. See the <link linkend="installation.dotaten">next section</link>.</para>
 			
 	</section>
 	
 	<section id="installation.dotaten"><title>The ~/.aten Directory</title>
 		
-		<para>User filters and preferences files should be placed in a <filename>.aten</filename> directory in your home directory (it must be created by hand).  Within this directory can exist the user preferences file <filename>prefs.dat</filename> exists, along with another directory named <filename>filters</filename> which is used to store custom filters, or those currently under development by the user.
+		<para>User filters and preferences files should be placed in a <filename>.aten</filename> directory in your home directory (it must be created by hand).  Within this directory can exist the user preferences file <filename>prefs.dat</filename> exists, along with another directory named <filename>filters</filename> which is used to store custom filters, or those currently under development by the user.</para>
 		
 	</section>
 

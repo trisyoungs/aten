@@ -1,6 +1,6 @@
 <section id="command.types"><title>Variable Types</title>
 	
-	<indexterm id="idx.variables.types" class="startofrange"><primary>variables</primary><secondary>types</secondary></indexterm>
+	<indexterm zone="variables.types"><primary>variables</primary><secondary>types</secondary></indexterm>
 	
 	<para>For variables in Aten that are of reference type (i.e. the non-standard types) various sub-variables and functions may be accessed in the same way class members are utilised in C++. Each non-standard variable type is listed here along with the types and descriptions of their available subvariables / members.</para>
 	
@@ -19,12 +19,12 @@
 	
 	<para>All subvariables can be read, but not all can be written back to - these are read-only subvariables, and are indicated with 'ro' in the <emphasis>Access</emphasis> column in the following tables.</para>
 	
-	<para>Function members were introduced in v1.3, and act in the same as subvariables except that they take one or more arguments enclosed in parentheses immediately following the member name.</para>
+	<para>Function members act in the same as subvariable members except that they take one or more arguments enclosed in parentheses immediately following the member name, just as command functions do.</para>
 	
 	<section id="command.types.arrays"><title>Arrays</title>
 		
-		<indexterm id="idx.command.types.arrays1" class="startofrange"><primary>variables</primary><secondary>arrays</secondary></indexterm>
-		<indexterm id="idx.command.types.arrays2" class="startofrange"><primary>types</primary><secondary>arrays</secondary></indexterm>
+		<indexterm zone="idx.command.types.arrays"><primary>variables</primary><secondary>arrays</secondary></indexterm>
+		<indexterm zone="idx.command.types.arrays"><primary>types</primary><secondary>arrays</secondary></indexterm>
 		
 		<para>Many types have some subvariables that are arrays, with individual elements accessed by use of square brackets containing the array index in the same way as user-declared arrays:</para>
 		
@@ -36,18 +36,15 @@
 		
 		<para>For subvariables that are arrays of <emphasis>plain</emphasis> datatypes (int, double, string, or vector) the array index may be omitted and the whole array will be returned/accessed rather than an individual element. For subvariables that are arrays of pointer/reference types (e.g. <link linkend="command.types.atom">atom</link>, <link linkend="command.types.bond">bond</link>, <link linkend="command.types.unitcell">unitcell</link> etc.) omitting the array index returns the first item in the array (if any). Why? Aten stores most of its dynamic data in linked lists, and so returning this as a proper array complicates matters a little (more from the perspective of implementation alongside the existing code rather than any pathological problem).</para>
 	
-		<indexterm startref="idx.command.types.arrays1" class="endofrange"></indexterm>
-		<indexterm startref="idx.command.types.arrays2" class="endofrange"></indexterm>
-	
 	</section>
 		
 	<section id="command.types.aten"><title>Aten</title>
 		
-		<indexterm id="idx.command.types.aten" class="startofrange"><primary>types</primary><secondary>aten</secondary></indexterm>
+		<indexterm zone="command.types.aten"><primary>types</primary><secondary>aten</secondary></indexterm>
 	
 		<para>The 'master' class type, 'aten', is there to provide access to various other structures such as the list of loaded models, preferences, element data etc. It is available at all times from any command, script, or filter, and is always called 'aten'.</para>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Aten type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Aten type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -106,18 +103,14 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.aten" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.atom"><title>Atom</title>
 	
-		<indexterm id="idx.command.types.atom" class="startofrange"><primary>types</primary><secondary>atom</secondary></indexterm>
+		<indexterm zone="command.types.atom"><primary>types</primary><secondary>atom</secondary></indexterm>
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Atom type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Atom type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -149,19 +142,19 @@
 						<entry>fx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Force <emphasis>x''-component</entry>
+						<entry>Force x-component</entry>
 					</row>
 					<row>
 						<entry>fy</entry>
 						<entry>double</entry>
 						<entry> rw</entry>
-						<entry>Force <emphasis>y''-component</entry>
+						<entry>Force y-component</entry>
 					</row>
 					<row>
 						<entry>fz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Force <emphasis>z''-component</entry>
+						<entry>Force z-component</entry>
 					</row>
 					<row>
 						<entry>hidden</entry>
@@ -203,19 +196,19 @@
 						<entry>rx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position <emphasis>x''-component</entry>
+						<entry>Position x-component</entry>
 					</row>
 					<row>
 						<entry>ry</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position <emphasis>y''-component</entry>
+						<entry>Position y-component</entry>
 					</row>
 					<row>
 						<entry>rz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Position <emphasis>z''-component</entry>
+						<entry>Position z-component</entry>
 					</row>
 					<row>
 						<entry>selected</entry>
@@ -245,19 +238,19 @@
 						<entry>vx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity <emphasis>x''-component</entry>
+						<entry>Velocity x-component</entry>
 					</row>
 					<row>
 						<entry>vy</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity <emphasis>y''-component</entry>
+						<entry>Velocity y-component</entry>
 					</row>
 					<row>
 						<entry>vz</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Velocity <emphasis>z''-component</entry>
+						<entry>Velocity z-component</entry>
 					</row>
 					<row>
 						<entry>z</entry>
@@ -269,15 +262,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.atom" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.bond"><title>Bond</title>
 		
-		<indexterm id="idx.command.types.bond" class="startofrange"><primary>types</primary><secondary>bond</secondary></indexterm>
+		<indexterm zone="command.types.bond"><primary>types</primary><secondary>bond</secondary></indexterm>
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Bond type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Bond type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -318,7 +309,7 @@
 			</tgroup>
 		</table>
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Bond type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Bond type functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -331,24 +322,20 @@
 					<row>
 						<entry>partner ( Atom <emphasis>i</emphasis> )</entry>
 						<entry><link linkend="command.types.atom">atom</link></entry>
-						<entry>Return the other atom (i.e. not <emphasis>i'') involved in the bond</entry>
+						<entry>Return the other atom (i.e. not <emphasis>i</emphasis>) involved in the bond</entry>
 					</row>
 				</tbody>
 			</tgroup>
 		</table>
 
-		<indexterm startref="idx.command.types.aten" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.bound"><title>Bound</title>
 	
-		<indexterm id="idx.command.types.bound" class="startofrange"><primary>types</primary><secondary>bound</secondary></indexterm>
+		<indexterm zone="command.types.bound"><primary>types</primary><secondary>bound</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Bound type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Bound type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -410,15 +397,13 @@
 			</tgroup>
 		</table>
 
-		<indexterm startref="idx.command.types.bound" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.element"><title>Element</title>
 		
-		<indexterm id="idx.command.types.element" class="startofrange"><primary>types</primary><secondary>element</secondary></indexterm>
+		<indexterm zone="command.types.element"><primary>types</primary><secondary>element</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Element type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Element type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -471,7 +456,7 @@
 						<entry>radius</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Atomic radius of the element. Affects the scaled sphere rendering style and bond calculation.
+						<entry>Atomic radius of the element. Affects the scaled sphere rendering style and bond calculation.</entry>
 					</row>
 					<row>
 						<entry>symbol</entry>
@@ -483,15 +468,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.element" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.ffatom"><title>FFAtom</title>
 		
-		<indexterm id="idx.command.types.ffatom" class="startofrange"><primary>types</primary><secondary>ffatom</secondary></indexterm>
+		<indexterm zone="command.types.ffatom"><primary>types</primary><secondary>ffatom</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>FFAtom type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -574,15 +557,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.ffatom" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.ffbound"><title>FFBound</title>
 		
-		<indexterm id="idx.command.types.ffbound" class="startofrange"><primary>types</primary><secondary>ffbound</secondary></indexterm>
+		<indexterm zone="command.types.ffbound"><primary>types</primary><secondary>ffbound</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>FFBound type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>FFBound type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -641,15 +622,13 @@
 			</tgroup>
 		</table>
 	
-	<indexterm startref="idx.command.types.ffbound" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.forcefield"><title>Forcefield</title>
 		
-		<indexterm id="idx.command.types.forcefield" class="startofrange"><primary>types</primary><secondary>forcefield</secondary></indexterm>	
+		<indexterm zone="command.types.forcefield"><primary>types</primary><secondary>forcefield</secondary></indexterm>	
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Forcefield type members3</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield type members3</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -684,16 +663,14 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.forcefield" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.glyph"><title>Glyph</title>
 		
-		<indexterm id="idx.command.types.glyph" class="startofrange"><primary>types</primary><secondary>glyph</secondary></indexterm>
+		<indexterm zone="command.types.glyph"><primary>types</primary><secondary>glyph</secondary></indexterm>
 		
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Glyph type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -740,15 +717,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.glyph" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.glyphdata"><title>GlyphData</title>
 		
-		<indexterm id="idx.command.types.glyphdata" class="startofrange"><primary>types</primary><secondary>glyphdata</secondary></indexterm>
+		<indexterm zone="command.types.glyphdata"><primary>types</primary><secondary>glyphdata</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>GlyphData type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>GlyphData type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -777,15 +752,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.glyphdata" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.measurement"><title>Measurement</title>
 		
-		<indexterm id="idx.command.types.measurement" class="startofrange"><primary>types</primary><secondary>measurement</secondary></indexterm>
+		<indexterm zone="command.types.measurement"><primary>types</primary><secondary>measurement</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Measurement type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Measurement type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -838,15 +811,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.measurement" class="endofrange"></indexterm>
-	
 	</section>
 	
-	<section id="command.types.Model"><title>Model</title>
+	<section id="command.types.model"><title>Model</title>
 		
-		<indexterm id="idx.command.types.model" class="startofrange"><primary>types</primary><secondary>model</secondary></indexterm>
+		<indexterm zone="command.types.model"><primary>types</primary><secondary>model</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Model type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Model type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -869,7 +840,7 @@
 						<entry>angles</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of current angle measurements in the model (v1.3 r946)</entry>
+						<entry>List of current angle measurements in the model</entry>
 					</row>
 					<row>
 						<entry>atoms</entry>
@@ -893,37 +864,37 @@
 						<entry>distances</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of current distance measurements in the model (v1.3 r946)</entry>
+						<entry>List of current distance measurements in the model</entry>
 					</row>
 					<row>
 						<entry>ff</entry>
 						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
 						<entry>rw</entry>
-						<entry>Forcefield associated to the model (if any) (added v1.3 r984)</entry>
+						<entry>Forcefield associated to the model (if any)</entry>
 					</row>
 					<row>
 						<entry>ffangles</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield angle terms in the model (added v1.3 r946, renamed r984, was 'angleterms')</entry>
+						<entry>List of unique forcefield angle terms in the model</entry>
 					</row>
 					<row>
 						<entry>ffbonds</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield bond terms in the model (added v1.3 r946, renamed r984, was 'bondterms')</entry>
+						<entry>List of unique forcefield bond terms in the model</entry>
 					</row>
 					<row>
 						<entry>fftorsions</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield torsion terms in the model (added v1.3 r946, renamed r984, was 'torsionterms')</entry>
+						<entry>List of unique forcefield torsion terms in the model</entry>
 					</row>
 					<row>
 						<entry>fftypes</entry>
 						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
 						<entry>ro</entry>
-						<entry>Array of unique atom types used in the model (renamed v1.3 r984, was 'atomtypes')</entry>
+						<entry>Array of unique atom types used in the model</entry>
 					</row>
 					<row>
 						<entry>frame</entry>
@@ -941,7 +912,7 @@
 						<entry>mass</entry>
 						<entry>double</entry>
 						<entry>ro</entry>
-						<entry>Mass of the current model (v1.4 (r1019)</entry>
+						<entry>Mass of the current model</entry>
 					</row>
 					<row>
 						<entry>name</entry>
@@ -953,7 +924,7 @@
 						<entry>nangles</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of angle measurements in the model (v1.3 r946)</entry>
+						<entry>Number of angle measurements in the model</entry>
 					</row>
 					<row>
 						<entry>natoms</entry>
@@ -971,31 +942,31 @@
 						<entry>ndistances</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of distance measurements in the model (v1.3 r946)</entry>
+						<entry>Number of distance measurements in the model</entry>
 					</row>
 					<row>
 						<entry>nffangles</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique angle terms used in the model (renamed v1.3 r984, was 'nangleterms')</entry>
+						<entry>Number of unique angle terms used in the model</entry>
 					</row>
 					<row>
 						<entry>nffbonds</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique bond terms used in the model (renamed v1.3 r984, was 'nbondterms')</entry>
+						<entry>Number of unique bond terms used in the model</entry>
 					</row>
 					<row>
 						<entry>nfftorsions</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique torsion terms used in the model (renamed v1.3 r984, was 'ntorsionterms')</entry>
+						<entry>Number of unique torsion terms used in the model</entry>
 					</row>
 					<row>
 						<entry>nfftypes</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique atom types used in the model (renamed v1.3 r984, was 'natomtypes')</entry>
+						<entry>Number of unique atom types used in the model</entry>
 					</row>
 					<row>
 						<entry>nframes</entry>
@@ -1019,13 +990,13 @@
 						<entry>ntorsions</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of torsion angle measurements in the model (v1.3 r946)</entry>
+						<entry>Number of torsion angle measurements in the model</entry>
 					</row>
 					<row>
 						<entry>nunknown</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of atoms in the model that are of unknown element (v1.4 r1019)</entry>
+						<entry>Number of atoms in the model that are of unknown element</entry>
 					</row>
 					<row>
 						<entry>patterns</entry>
@@ -1037,27 +1008,25 @@
 						<entry>region</entry>
 						<entry><link linkend="command.types.region">region</link></entry>
 						<entry>ro</entry>
-						<entry>Region data for this model, used by the disordered builder (v1.3 r957)</entry>
+						<entry>Region data for this model, used by the disordered builder</entry>
 					</row>
 					<row>
 						<entry>torsions</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of current torsion angle measurements in the model (v1.3 r946)</entry>
+						<entry>List of current torsion angle measurements in the model</entry>
 					</row>
 				</tbody>
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.model" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.pattern"><title>Pattern</title>
 		
-		<indexterm id="idx.command.types.pattern" class="startofrange"><primary>types</primary><secondary>pattern</secondary></indexterm>
+		<indexterm zone="command.types.pattern"><primary>types</primary><secondary>pattern</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Pattern type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Pattern type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -1116,25 +1085,25 @@
 						<entry>ffangles</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield angle terms in the pattern (added v1.3 r984)</entry>
+						<entry>List of unique forcefield angle terms in the pattern</entry>
 					</row>
 					<row>
 						<entry>ffbonds</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield bond terms in the pattern (added v1.3 r984)</entry>
+						<entry>List of unique forcefield bond terms in the pattern</entry>
 					</row>
 					<row>
 						<entry>fftorsions</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>
-						<entry>List of unique forcefield torsion terms in the pattern (added v1.3 r984)</entry>
+						<entry>List of unique forcefield torsion terms in the pattern</entry>
 					</row>
 					<row>
 						<entry>fftypes</entry>
 						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
 						<entry>ro</entry>
-						<entry>Array of unique atom types used in the pattern (added v1.3 r984)</entry>
+						<entry>Array of unique atom types used in the pattern</entry>
 					</row>
 					<row>
 						<entry>firstatom</entry>
@@ -1152,7 +1121,7 @@
 						<entry>fixed</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
-						<entry>Whether the coordinates of all atoms in the pattern are fixed in MC routines (v1.3 r961)</entry>
+						<entry>Whether the coordinates of all atoms in the pattern are fixed in MC routines</entry>
 					</row>
 					<row>
 						<entry>lastatom</entry>
@@ -1194,25 +1163,25 @@
 						<entry>nffangles</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique angle terms used in the pattern (added v1.3 r984)</entry>
+						<entry>Number of unique angle terms used in the pattern</entry>
 					</row>
 					<row>
 						<entry>nffbonds</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique bond terms used in the pattern (added v1.3 r984)</entry>
+						<entry>Number of unique bond terms used in the pattern</entry>
 					</row>
 					<row>
 						<entry>nfftorsions</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique torsion terms used in the pattern (added v1.3 r984)</entry>
+						<entry>Number of unique torsion terms used in the pattern</entry>
 					</row>
 					<row>
 						<entry>nfftypes</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
-						<entry>Number of unique atom types used in the pattern (added v1.3 r984)</entry>
+						<entry>Number of unique atom types used in the pattern</entry>
 					</row>
 					<row>
 						<entry>nmolatoms</entry>
@@ -1242,15 +1211,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.pattern" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.preferences"><title>Prefs</title>
 		
-		<indexterm id="idx.command.types.preferences" class="startofrange"><primary>types</primary><secondary>prefs</secondary></indexterm>
+		<indexterm zone="command.types.preferences"><primary>types</primary><secondary>prefs</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Prefs type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Prefs type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -1421,7 +1388,7 @@
 						<entry>ewaldalpha</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
-						<entry>Convergence parameter in Ewald sum (v1.4 r1023)
+						<entry>Convergence parameter in Ewald sum</entry>
 					</row>
 					<row>
 						<entry>ewaldkmax</entry>
@@ -1601,7 +1568,7 @@
 						<entry>spotlightposition</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>Spotlight coordinates (in Angstroms)
+						<entry>Spotlight coordinates (in Angstroms)</entry>
 					</row>
 					<row>
 						<entry>spotlightspecular</entry>
@@ -1638,15 +1605,13 @@
 			</tgroup>
 		</table>
 		
-		<indexterm startref="idx.command.types.preferences" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.region"><title>Region</title>
 		
-		<indexterm id="idx.command.types.region" class="startofrange"><primary>types</primary><secondary>region</secondary></indexterm>
+		<indexterm zone="command.types.region"><primary>types</primary><secondary>region</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>Region type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Region type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -1723,15 +1688,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.region" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.unitcell"><title>UnitCell</title>
 		
-		<indexterm id="idx.command.types.unitcell" class="startofrange"><primary>types</primary><secondary>unitcell</secondary></indexterm>
+		<indexterm zone="command.types.unitcell"><primary>types</primary><secondary>unitcell</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='0'><title>UnitCell type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>UnitCell type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -1892,15 +1855,13 @@
 			</tgroup>
 		</table>
 	
-		<indexterm startref="idx.command.types.unitcell" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.types.vector"><title>Vector</title>
 		
-		<indexterm id="idx.command.types.vector" class="startofrange"><primary>types</primary><secondary>vector</secondary></indexterm>	
+		<indexterm zone="command.types.vector"><primary>types</primary><secondary>vector</secondary></indexterm>	
 	
-		<table frame='all' pgwide='1' tocentry='0'><title>Vector type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Vector type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<!-- <colspec colname='escape sequence'/> -->
 				<!-- <colspec colname='meaning'/> -->
@@ -1941,10 +1902,6 @@
 			</tgroup>
 		</table>
 
-		<indexterm startref="idx.command.types.vector" class="endofrange"></indexterm>
-	
 	</section>
 	
-	<indexterm startref="idx.variables.types" class="endofrange"></indexterm>
-
 </section>

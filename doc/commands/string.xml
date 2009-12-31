@@ -1,6 +1,6 @@
 <section id="command.groups.string"><title>String Commands</title>
 	
-	<para>Manipulation and conversion of variables.
+	<para>Manipulation and conversion of variables.</para>
 	
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
@@ -100,7 +100,7 @@
 			source = &quot;Engelbert&quot;;
 			target = beforestr(source, &quot;e&quot;);
 		</synopsis>
-		<para>places the text &quot;Eng&quot; in the variable <emphasis>target</emphasis>.
+		<para>places the text &quot;Eng&quot; in the variable <emphasis>target</emphasis>.</para>
 		<synopsis>
 			string text1 = &quot;No taxes on axes&quot;, text2;
 			text2 = beforestr(text1, &quot; ax&quot;);

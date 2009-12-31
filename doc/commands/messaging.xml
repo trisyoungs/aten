@@ -1,4 +1,4 @@
-<section id="commands.groups.messaging"><title>Messaging Commands</title>
+<section id="command.groups.messaging"><title>Messaging Commands</title>
 	
 	<para>Output messages from command lists / filters. All commands work like the C printf() command, and accept the same ((Formatting Strings|formatting tokens)). All output from these messaging commands is directed to either the GUI message box or stdout on the command line.</para>
 	

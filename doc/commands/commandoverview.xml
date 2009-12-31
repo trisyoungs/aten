@@ -279,7 +279,7 @@
 	<section id="commandlanguage.returnvalues"><title>Return Values</title>
 		<indexterm><primary>command language</primary><secondary>return values</secondary></indexterm>
 
-		<para>For functions defined to return a specific type, at some point in the bpdy of the function a suitable value should be returned. This is achieved with the <link linkend="command.ref.return">return</link> keyword. Consider this simple example which checks the sign of a numeric argument, returning '1' for a positive number and '-1' for a negative number:
+		<para>For functions defined to return a specific type, at some point in the bpdy of the function a suitable value should be returned. This is achieved with the <link linkend="command.ref.return">return</link> keyword. Consider this simple example which checks the sign of a numeric argument, returning '1' for a positive number and '-1' for a negative number:</para>
 		
 		<synopsis>
 			int checksign ( double num )

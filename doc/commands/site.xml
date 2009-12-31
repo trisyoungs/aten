@@ -1,4 +1,4 @@
-<section id="commands.groups.site"><title>Site Commands</title>
+<section id="command.groups.site"><title>Site Commands</title>
 	
 	<para>Describe sites within molecules for use in analysis.</para>
 
@@ -31,7 +31,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listsites</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints the list of sites defined for the current model.</para>
@@ -49,7 +49,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef>void <function>newfunction></funcdef>
+				<funcdef>void <function>newsite</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 				<paramdef>string <parameter>atomlist = ""</parameter></paramdef>
 			</funcprototype>

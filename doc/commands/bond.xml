@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>augment</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Augments bonds in the current model, automatically determining multiple bonds based on the valency of atoms, and aromaticity based on double bonds in rings.</para>
@@ -36,7 +36,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>bondtolerance</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>bondtolerance</function></funcdef>
@@ -72,7 +72,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>clearbonds</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Delete all bonds in the current model.</para>
@@ -91,7 +91,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>clearselectedbonds</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Delete all bonds in the current atom selection.</para>
@@ -169,7 +169,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>rebond</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate bonding in the current model.</para>
@@ -188,7 +188,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>rebondpatterns</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate bonding in the current model, but restrict bond creation to between atoms in individual molecules of defined patterns.</para>
@@ -218,7 +218,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>rebondselection</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate bonding between atoms in the current atom selection.</para>

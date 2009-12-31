@@ -1,4 +1,4 @@
-<section id="commands.groups.montecarlo"><title>Monte Carlo Commands</title>
+<section id="command.groups.montecarlo"><title>Monte Carlo Commands</title>
 	
 	<para>Change parameters for Monte Carlo-based calculations. Energy values should be given in the current working unit of energy in the program.</para>
 	
@@ -105,7 +105,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printmc</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints the current Monte Carlo parameters.</para>

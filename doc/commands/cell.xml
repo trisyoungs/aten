@@ -1,4 +1,4 @@
-<section id="commands.groups.cell"><title>Cell Commands</title>
+<section id="command.groups.cell"><title>Cell Commands</title>
 	
 	<para>Create, remove, modify, pack, and replicate the model's unit cell.</para>
 
@@ -87,7 +87,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>fold</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Fold all atoms so they are within the boundaries of the unit cell.</para>
@@ -106,7 +106,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>foldmolecules</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Fold all pattern molecules so the are unbroken across cell boundaries.</para>
@@ -148,7 +148,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>pack</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Perform spacegroup packing on the current model.</para>
@@ -167,7 +167,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printcell</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints the cell parameters of the current model.</para>
@@ -219,7 +219,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>removecell</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Clears any cell description (removes periodic boundary conditions) from the current model.</para>
@@ -244,7 +244,7 @@
 				<paramdef>bool <parameter>calcenergy = FALSE</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Scale unit cell and its constituent atoms by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and its constituent atoms by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -267,7 +267,7 @@
 				<paramdef>bool <parameter>calcenergy = FALSE</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z''. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
+		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
 		
 		<para>For example:</para>
 		<synopsis>

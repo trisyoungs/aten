@@ -1,4 +1,4 @@
-<section id="commands.groups.energy"><title>Energy Commands</title>
+<section id="command.groups.energy"><title>Energy Commands</title>
 	
 	<para>Calculate energies for models and trajectory frames. All printing commands refer to the last energy calculated for either the model or a trajectory frame.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>ecut</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>ecut</function></funcdef>
@@ -64,7 +64,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>frameenergy</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate energy of the current frame of the trajectory associated with the current model.</para>
@@ -83,7 +83,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>modelenergy</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate the energy of the current model, which can then be printed out (in whole or by parts) by the other subcommands.</para>
@@ -102,7 +102,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printelec</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints out the electrostatic energy decomposition matrix.</para>
@@ -121,7 +121,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printewald</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints the components of the Ewald sum energy.</para>
@@ -140,7 +140,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printinter</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints out the total inter-pattern energy decomposition matrix.</para>
@@ -159,7 +159,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printintra</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints out the total intramolecular energy decomposition matrix.</para>
@@ -178,7 +178,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printenergy</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints the elements of the calculated energy in a list.</para>
@@ -197,7 +197,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printsummary</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Print out a one-line summary of the calculated energy.</para>
@@ -216,7 +216,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printvdw</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Prints out the VDW energy decomposition matrix.</para>
@@ -235,7 +235,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>vcut</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>vcut</function></funcdef>

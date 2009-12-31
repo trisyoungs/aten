@@ -1,25 +1,121 @@
-<section id="ff.neta"><title>NETA Reference</title>
+<section id="ff.neta.ref"><title>NETA Reference</title>
 	<indexterm id="idx.ff.neta1" class="startofrange"><primary>NETA</primary></indexterm>
 	<indexterm id="idx.ff.neta2" class="startofrange"><primary>typing</primary><secondary>NETA</secondary></indexterm>
 	
-<!--This section lists all the available commands that may make up a type description. Many keywords only make sense within the bracketed parts associated with bound types - for instance it is meaningless to specify the connection type with the 'bond' keyword in the root of a typing command since no connections are relevant at this point.
+	<para>This section lists all the available commands that may make up a type description. Many keywords only make sense within the bracketed parts of keywords that expand the depth of the description. For instance, it is meaningless to specify the connection type with the 'bond' keyword in the root of a typing command since no connections are relevant at this point.</para>
 
-{maketoc}
+	<section id="ff.neta.ref.anybondto"><title>~X (any bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>any bond to</indexterm>
+			
+			<para>Specifies that a connection to 'X' must exist, but makes no demand of the type (bond order) of the connection. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. Specifying an 'unknown' connection with ~X is often useful in, for example, aromatic rings or conjugated systems where the connection might be either a double or single bond.</para>
+			
+			<para>For example:</para>
+			<table frame='all' pgwide='1' tocentry='0'><title>Any bond specifier examples</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<thead>
+						<row>
+							<entry>Command</entry>
+							<entry>Meaning</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>~C</entry>
+							<entry>Any bond to a carbon atom</entry>
+						</row>
+						<row>
+							<entry>~&amp;101</entry>
+							<entry>Any bond to an atom which matches type ID 101 (see ((Atom Typing|#Reusing Types)))</entry>
+						</row>
+						<row>
+							<entry>~[N,S,P]</entry>
+							<entry>Any connection to either nitrogen, sulfur, or phosphorous</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+	</section>
+	
+	<section id="ff.neta.ref.singlebondto"><title>-X (single bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>single bond to</indexterm>
+		
+		<para>Specifies that a single bond to 'X' must exist. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a <link linkend="ff.neta.ring">ring</link> description this only indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant. If used in a <link linkend="ff.neta.ref.chain">chain</link> keyword the connection type is honoured.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>Single bond specifier examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-H</entry>
+						<entry>A single bond to a hydrogen atom</entry>
+					</row>
+					<row>
+						<entry>-&amp;120</entry>
+						<entry>A single bond to an atom which matches type ID 120 (see ((Atom Typing|#Reusing Types)))</entry>
+					</row>
+					<row>
+						<entry>-[C,N]</entry>
+						<entry>A single bond to either a carbon or a nitrogen</entry>
+					</row>
+					<row>
+						<entry>-[F,Cl,Br,I,At]</entry>
+						<entry>A single bond to any halogen atom</entry>
+					</row>
+					<row>
+						<entry>-[&amp;10,&amp;11,&amp;18,-Kr]</entry>
+						<entry>A single bond to an atom with type ID 10, 11, or 18, or a krypton atom</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
 
-!!Connectivity Keywords
-
-!!!Keyword: -X (bound to X)
-Specifies that a connection to another atom 'X' must exist, but makes no demand of the type (bond order) of the connection. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a '((NETA Reference|#Keyword: ring|ring))' description the keyword indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant.
-
-For example:
-|| __Command__ | __Meaning__
--H | A bond to a hydrogen atom
--&amp;120 | A bond to an atom which has already been assigned a type ID of 120 (see ((Atom Typing|#Reusing Types)))
--[[C,N] | A bond to either a carbon or a nitrogen
--[[F,Cl,Br,I,At] | A bond to any halogen atom
--[[&amp;10,&amp;11,&amp;18,-Kr] | A bond to an atom with type ID 10, 11, or 18, or a krypton atom
-||
-
+	<section id="ff.neta.ref.doublebondto"><title>-X (double bond to X)</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>single bond to</indexterm>
+			
+			<para>Specifies that a double bond to 'X' must exist. 'X' may be either an element symbol, an id for another type specifier, or a list containing one or both of these to allow more flexible specifications. If used inside the bracketed part of a <link linkend="ff.neta.ring">ring</link> description this only indicates that the atom/type should be present within the cycle - the connection to the target atom is unimportant. If used in a <link linkend="ff.neta.ref.chain">chain</link> keyword the connection type is honoured.</para>
+			
+			<para>For example:</para>
+			<table frame='all' pgwide='1' tocentry='0'><title>Single bond specifier examples</title>
+				<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+					<thead>
+						<row>
+							<entry>Command</entry>
+							<entry>Meaning</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>-H</entry>
+							<entry>A single bond to a hydrogen atom</entry>
+						</row>
+						<row>
+							<entry>-&amp;120</entry>
+							<entry>A single bond to an atom which matches type ID 120 (see ((Atom Typing|#Reusing Types)))</entry>
+						</row>
+						<row>
+							<entry>-[C,N]</entry>
+							<entry>A single bond to either a carbon or a nitrogen</entry>
+						</row>
+						<row>
+							<entry>-[F,Cl,Br,I,At]</entry>
+							<entry>A single bond to any halogen atom</entry>
+						</row>
+						<row>
+							<entry>-[&amp;10,&amp;11,&amp;18,-Kr]</entry>
+							<entry>A single bond to an atom with type ID 10, 11, or 18, or a krypton atom</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
+	</section>
+	
 !!!Keyword: =X (double bond to X)
 Same as the bound to (-X) keyword, except that the connection must be a double bond. Equivalent to writing '-X(bond=double)'.
 
