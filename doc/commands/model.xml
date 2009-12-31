@@ -27,19 +27,19 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>currentmodel</function></funcdef>
+				<funcdef>model <function>currentmodel</function></funcdef>
 				<void>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>currentmodel</function></funcdef>
+				<funcdef>model <function>currentmodel</function></funcdef>
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>currentmodel</function></funcdef>
+				<funcdef>model <function>currentmodel</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>currentmodel</function></funcdef>
+				<funcdef>model <function>currentmodel</function></funcdef>
 				<paramdef><link linkend="command.types.model">model</link> <parameter>m</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -71,7 +71,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>firstmodel</function></funcdef>
+				<funcdef>model <function>firstmodel</function></funcdef>
 				<void>
 			</funcprototype>
 		</funcsynopsis>
@@ -128,15 +128,15 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>getmodel</function></funcdef>
+				<funcdef>model <function>getmodel</function></funcdef>
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>getmodel</function></funcdef>
+				<funcdef>model <function>getmodel</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>getmodel</function></funcdef>
+				<funcdef>model <function>getmodel</function></funcdef>
 				<paramdef><link linkend="command.types.model">model</link> <parameter>m</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -160,7 +160,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>lastmodel</function></funcdef>
+				<funcdef>model <function>lastmodel</function></funcdef>
 				<void>
 			</funcprototype>
 		</funcsynopsis>
@@ -242,7 +242,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>newmodel</function></funcdef>
+				<funcdef>model <function>newmodel</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -266,7 +266,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>nextmodel</function></funcdef>
+				<funcdef>model <function>nextmodel</function></funcdef>
 				<void>
 			</funcprototype>
 		</funcsynopsis>
@@ -285,7 +285,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.model">model</link> <function>prevmodel</function></funcdef>
+				<funcdef>model <function>prevmodel</function></funcdef>
 				<void>
 				</funcprototype>
 		</funcsynopsis>

@@ -4,21 +4,42 @@
 
 	<section id="command.ref.axisrotate"><title>axisrotate</title>
 		<indexterm><primary>commands</primary><secondary>axisrotate</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> axisrotate ( atom|id i, atom|id j, double theta )</para>
-			</listitem>
-			<listitem>
-				<para> axisrotate ( atom|id i, atom|id j, double theta, double ox, double oy, double oz )</para>
-			</listitem>
-			<listitem>
-				<para> axisrotate ( double x, double y, double z, double theta )</para>
-			</listitem>
-			<listitem>
-				<para> axisrotate ( double x, double y, double z, double theta, double ox, double oy, double oz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>axisrotate</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>double <parameter>theta</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>axisrotate</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>double <parameter>theta</parameter></paramdef>
+				<paramdef>double <parameter>ox</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>axisrotate</function></funcdef>
+				<paramdef>double <parameter></parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>theta</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>axisrotate</function></funcdef>
+				<paramdef>double <parameter></parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>theta</parameter></paramdef>
+				<paramdef>double <parameter>ox</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Rotate the current selection by an angle <emphasis>theta</emphasis> (in degrees) about an axis defined either by the vector between two atom IDs or the vector components provided. If supplied, the rotation is performed using the coordinate origin specified by <emphasis>ox</emphasis>, <emphasis>oy</emphasis>, and <emphasis>oz</emphasis>, otherwise {0,0,0} is assumed.</para>
 		
 		<para>For example:</para>
@@ -39,12 +60,19 @@
 	
 	<section id="command.ref.centre"><title>centre</title>
 		<indexterm><primary>commands</primary><secondary>centre</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> centre ( double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE)</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>centre</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>bool <parameter>lockx = FALSE</parameter></paramdef>
+				<paramdef>bool <parameter>locky = FALSE</parameter></paramdef>
+				<paramdef>bool <parameter>lockz = FALSE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Centre the current atom selection at the specified coordinates. The three optional arguments <emphasis>lockx</emphasis>, <emphasis>locky</emphasis>, and <emphasis>lockz</emphasis> specify one or more atomic coordinates that are to remain unchanged during the transformation.</para>
 		
 		<para>For example:</para>
@@ -57,21 +85,88 @@
 	
 	<section id="command.ref.matrixconvert"><title>matrixconvert</title>
 		<indexterm><primary>commands</primary><secondary>matrixconvert</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> matrixconvert int i_sx, int j_sx, int i_sy, int j_sy, int i_sz, int j_sz, int i_tx, int j_tx, int i_ty, int j_ty, int i_tz, int j_tz )</para>
-			</listitem>
-			<listitem>
-				<para> matrixconvert int i_sx, int j_sx, int i_sy, int j_sy, int i_sz, int j_sz, int i_tx, int j_tx, int i_ty, int j_ty, int i_tz, int j_tz, double ox, double oy, double oz )</para>
-			</listitem>
-			<listitem>
-				<para> matrixconvert double s_ax, double s_ay, double s_az, double s_bx, double s_by, double s_bz, double s_cx, double s_cy, double s_cz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz )</para>
-			</listitem>
-			<listitem>
-				<para> matrixconvert double s_ax, double s_ay, double s_az, double s_bx, double s_by, double s_bz, double s_cx, double s_cy, double s_cz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz, double ox, double oy, double oz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>matrixconvert</function></funcdef>
+				<paramdef>int <parameter>i_sx</parameter></paramdef>
+				<paramdef>int <parameter>j_sx</parameter></paramdef>
+				<paramdef>int <parameter>i_sy</parameter></paramdef>
+				<paramdef>int <parameter>j_sy</parameter></paramdef>
+				<paramdef>int <parameter>i_sz</parameter></paramdef>
+				<paramdef>int <parameter>j_sz</parameter></paramdef>
+				<paramdef>int <parameter>i_tx</parameter></paramdef>
+				<paramdef>int <parameter>j_tx</parameter></paramdef>
+				<paramdef>int <parameter>i_ty</parameter></paramdef>
+				<paramdef>int <parameter>j_ty</parameter></paramdef>
+				<paramdef>int <parameter>i_tz</parameter></paramdef>
+				<paramdef>int <parameter>j_tz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>matrixconvert</function></funcdef>
+				<paramdef>int <parameter>i_sx</parameter></paramdef>
+				<paramdef>int <parameter>j_sx</parameter></paramdef>
+				<paramdef>int <parameter>i_sy</parameter></paramdef>
+				<paramdef>int <parameter>j_sy</parameter></paramdef>
+				<paramdef>int <parameter>i_sz</parameter></paramdef>
+				<paramdef>int <parameter>j_sz</parameter></paramdef>
+				<paramdef>int <parameter>i_tx</parameter></paramdef>
+				<paramdef>int <parameter>j_tx</parameter></paramdef>
+				<paramdef>int <parameter>i_ty</parameter></paramdef>
+				<paramdef>int <parameter>j_ty</parameter></paramdef>
+				<paramdef>int <parameter>i_tz</parameter></paramdef>
+				<paramdef>int <parameter>j_tz</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>matrixconvert</function></funcdef>
+				<paramdef>double <parameter>s_ax</parameter></paramdef>
+				<paramdef>double <parameter>s_ay</parameter></paramdef>
+				<paramdef>double <parameter>s_az</parameter></paramdef>
+				<paramdef>double <parameter>s_bx</parameter></paramdef>
+				<paramdef>double <parameter>s_by</parameter></paramdef>
+				<paramdef>double <parameter>s_bz</parameter></paramdef>
+				<paramdef>double <parameter>s_cx</parameter></paramdef>
+				<paramdef>double <parameter>s_cy</parameter></paramdef>
+				<paramdef>double <parameter>s_cz</parameter></paramdef>
+				<paramdef>double <parameter>t_ax</parameter></paramdef>
+				<paramdef>double <parameter>t_ay</parameter></paramdef>
+				<paramdef>double <parameter>t_az</parameter></paramdef>
+				<paramdef>double <parameter>t_bx</parameter></paramdef>
+				<paramdef>double <parameter>t_by</parameter></paramdef>
+				<paramdef>double <parameter>t_bz</parameter></paramdef>
+				<paramdef>double <parameter>t_cx</parameter></paramdef>
+				<paramdef>double <parameter>t_cy</parameter></paramdef>
+				<paramdef>double <parameter>t_cz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>matrixconvert</function></funcdef>
+				<paramdef>double <parameter>s_ax</parameter></paramdef>
+				<paramdef>double <parameter>s_ay</parameter></paramdef>
+				<paramdef>double <parameter>s_az</parameter></paramdef>
+				<paramdef>double <parameter>s_bx</parameter></paramdef>
+				<paramdef>double <parameter>s_by</parameter></paramdef>
+				<paramdef>double <parameter>s_bz</parameter></paramdef>
+				<paramdef>double <parameter>s_cx</parameter></paramdef>
+				<paramdef>double <parameter>s_cy</parameter></paramdef>
+				<paramdef>double <parameter>s_cz</parameter></paramdef>
+				<paramdef>double <parameter>t_ax</parameter></paramdef>
+				<paramdef>double <parameter>t_ay</parameter></paramdef>
+				<paramdef>double <parameter>t_az</parameter></paramdef>
+				<paramdef>double <parameter>t_bx</parameter></paramdef>
+				<paramdef>double <parameter>t_by</parameter></paramdef>
+				<paramdef>double <parameter>t_bz</parameter></paramdef>
+				<paramdef>double <parameter>t_cx</parameter></paramdef>
+				<paramdef>double <parameter>t_cy</parameter></paramdef>
+				<paramdef>double <parameter>t_cz</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>From a defined frame of reference (i.e. a set of axes defining the spatial orientation), rotate the current selection from this frame into the second frame, using the coordinate origin supplied or {0,0,0} by default. In the first form six pairs of atom IDs define each matrix, with the vectors taken to be i-&gt;j in all cases (normalised to 1.0), and specifying the x, y, and z axes in turn. In the second, the matrices are given as two sets of nine numbers that define the vectors of the axes.</para>
 		<para>When supplying atom IDs, the x axis is taken to be absolute, the y-axis is orthogonalised w.r.t. the x-axis, and the z-axis is taken as the cross product between the x and y axes. Note that providing the definition of the z axis is still important, however, since the vector cross product is adjusted (if necessary) to point along the same direction as this supplied z-axis. When supplying the complete matrices no orthogonalisation or normalisation of the axes is performed (permitting arbitrary scale and shear operations).</para>
 		
@@ -97,15 +192,37 @@
 	
 	<section id="command.ref.matrixtransform"><title>matrixtransform</title>
 		<indexterm><primary>commands</primary><secondary>matrixtransform</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> matrixtransform ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz )</para>
-			</listitem>
-			<listitem>
-				<para> matrixtransform ( double ax, double ay, double az, double bx, double by, double bz, double cx, double cy, double cz, double ox, double oy, double oz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>matrixtransform</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>matrixtransform</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+				<paramdef>double <parameter>ox</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Transform the current selection by applying the defined matrix to each coordinate, operating about the supplied origin (or {0,0,0} by default). No orthogonalisation or normalisation of the defined axes is performed.</para>
 		
 		<para>For example:</para>
@@ -126,27 +243,65 @@
 	
 	<section id="command.ref.reorient"><title>reorient</title>
 		<indexterm><primary>commands</primary><secondary>reorient</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> reorient ( atom|int i_sx, atom|int j_sx, atom|int i_sy, atom|int j_sy, atom|int i_sz, atom|int j_sz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz )</para>
-			</listitem>
-			<listitem>
-				<para> reorient ( atom|int i_sx, atom|int j_sx, atom|int i_sy, atom|int j_sy, atom|int i_sz, atom|int j_sz, double t_ax, double t_ay, double t_az, double t_bx, double t_by, double t_bz, double t_cx, double t_cy, double t_cz, double ox, double oy, double oz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>reorient</function></funcdef>
+				<paramdef>atom|int <parameter>i_sx</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sx</parameter></paramdef>
+				<paramdef>atom|int <parameter>i_sy</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sy</parameter></paramdef>
+				<paramdef>atom|int <parameter>i_sz</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sz</parameter></paramdef>
+				<paramdef>double <parameter>t_ax</parameter></paramdef>
+				<paramdef>double <parameter>t_ay</parameter></paramdef>
+				<paramdef>double <parameter>t_az</parameter></paramdef>
+				<paramdef>double <parameter>t_bx</parameter></paramdef>
+				<paramdef>double <parameter>t_by</parameter></paramdef>
+				<paramdef>double <parameter>t_bz</parameter></paramdef>
+				<paramdef>double <parameter>t_cx</parameter></paramdef>
+				<paramdef>double <parameter>t_cy</parameter></paramdef>
+				<paramdef>double <parameter>t_cz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>reorient</function></funcdef>
+				<paramdef>atom|int <parameter>i_sx</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sx</parameter></paramdef>
+				<paramdef>atom|int <parameter>i_sy</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sy</parameter></paramdef>
+				<paramdef>atom|int <parameter>i_sz</parameter></paramdef>
+				<paramdef>atom|int <parameter>j_sz</parameter></paramdef>
+				<paramdef>double <parameter>t_ax</parameter></paramdef>
+				<paramdef>double <parameter>t_ay</parameter></paramdef>
+				<paramdef>double <parameter>t_az</parameter></paramdef>
+				<paramdef>double <parameter>t_bx</parameter></paramdef>
+				<paramdef>double <parameter>t_by</parameter></paramdef>
+				<paramdef>double <parameter>t_bz</parameter></paramdef>
+				<paramdef>double <parameter>t_cx</parameter></paramdef>
+				<paramdef>double <parameter>t_cy</parameter></paramdef>
+				<paramdef>double <parameter>t_cz</parameter></paramdef>
+				<paramdef>double <parameter>ox</parameter></paramdef>
+				<paramdef>double <parameter>oy</parameter></paramdef>
+				<paramdef>double <parameter>oz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Operates in exactly the same manner as <link linkend="command.ref.matrixtransform">matrixtransform</link> except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.</para>
 	
 	</section>
 	
 	<section id="command.ref.translate"><title>translate</title>
 		<indexterm><primary>commands</primary><secondary>translate</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> translate ( double x, double y, double z )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>translate</function></funcdef>
+				<paramdef>double <parameter>dx</parameter></paramdef>
+				<paramdef>double <parameter>dy</parameter></paramdef>
+				<paramdef>double <parameter>dz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Translates the current selection by the specified vector.</para>
 		
 		<para>For example:</para>
@@ -158,13 +313,17 @@
 	</section>
 	
 	<section id="command.ref.translateatom"><title>translateatom</title>
+		
 		<indexterm><primary>commands</primary><secondary>translateatom</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> translateatom ( double x, double y, double z )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>translateatom</function></funcdef>
+				<paramdef>double <parameter>dx</parameter></paramdef>
+				<paramdef>double <parameter>dy</parameter></paramdef>
+				<paramdef>double <parameter>dz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Translates the current atom by the specified vector.</para>
 		
 		<para>For example:</para>
@@ -177,12 +336,16 @@
 	
 	<section id="command.ref.translatecell"><title>translatecell</title>
 		<indexterm><primary>commands</primary><secondary>translatecell</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> translatecell ( double fracx, double fracy, double fracz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>translatecell</function></funcdef>
+				<paramdef>double <parameter>fracx</parameter></paramdef>
+				<paramdef>double <parameter>fracy</parameter></paramdef>
+				<paramdef>double <parameter>fracz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Translates the current selection by the fractional cell vectors specified. The model must have a unit cell for this command to work.</para>
 		
 		<para>For example:</para>
@@ -195,12 +358,16 @@
 	
 	<section id="command.ref.translateworld"><title>translateworld</title>
 		<indexterm><primary>commands</primary><secondary>translateworld</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> translateworld ( double wx, double wy, double wz )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>translateworld</function></funcdef>
+				<paramdef>double <parameter>dx</parameter></paramdef>
+				<paramdef>double <parameter>dy</parameter></paramdef>
+				<paramdef>double <parameter>dz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Translates the current selection by the Angstrom amounts specified, with the XY plane parallel to the monitor screen.</para>
 		
 		<para>For example:</para>
@@ -213,12 +380,14 @@
 	
 	<section id="command.ref.mirror"><title>mirror</title>
 		<indexterm><primary>commands</primary><secondary>mirror</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> mirror ( string axis )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mirror</function></funcdef>
+				<paramdef>string <parameter>axis</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Mirror the current selection in the specified plane about its geometric centre.</para>
 		
 		<para>For example:</para>

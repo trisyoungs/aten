@@ -158,7 +158,7 @@
 				<paramdef>string|int <parameter>bondtype</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Create a new bond in the model between atoms referenced by their temporary ID, set manually with the <link linkend="command.setid">setid</link> command. Otherwise identical to the <link linkend="command.newbond">newbond</link> command.</para>
+		<para>Create a new bond in the model between atoms referenced by their temporary ID, set manually with the <link linkend="command.setid">setid</link> command. Otherwise identical to the <link linkend="command.ref.newbond">newbond</link> command.</para>
 	
 	</section>
 	

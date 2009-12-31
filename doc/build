@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Fix MathML usage in sgmltools-lite
+export SGML_CATALOG_FILES=~/.docbook/catalog.txt
+
 # Update version info...
 DESTFILE=../src/main/version.h
 ATENREVISION=`grep '#define ATENREVISION' $DESTFILE | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'`

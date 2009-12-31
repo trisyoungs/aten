@@ -284,11 +284,11 @@
 						</row>
 						<row>
 							<entry>importgrid</entry>
-							<entry>Describes how to read gridded volumetric or surface data from files. Any grids created in these sections must have the <link linkend="command.finalisegrid">finalisegrid</link> command called on them, otherwise they will not be registered properly within the program.</entry>
+							<entry>Describes how to read gridded volumetric or surface data from files. Any grids created in these sections must have the <link linkend="command.ref.finalisegrid">finalisegrid</link> command called on them, otherwise they will not be registered properly within the program.</entry>
 						</row>
 						<row>
 							<entry>importmodel</entry>
-							<entry>Describes how to import model data, including atoms, cell and spacegroup data, bonds, glyphs etc. Any models created in 'importmodel' sections must have the <link linkend="command.finalisemodel">finalisemodel</link> command called on them, otherwise they will not be registered properly within the program.</entry>
+							<entry>Describes how to import model data, including atoms, cell and spacegroup data, bonds, glyphs etc. Any models created in 'importmodel' sections must have the <link linkend="command.ref.finalisemodel">finalisemodel</link> command called on them, otherwise they will not be registered properly within the program.</entry>
 						</row>
 						<row>
 							<entry>importtrajectory</entry>
