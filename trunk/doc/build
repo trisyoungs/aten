@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Fix MathML usage in sgmltools-lite
-export SGML_CATALOG_FILES=~/.docbook/catalog.txt
+#export SGML_CATALOG_FILES=~/.docbook/catalog.txt
 
 # Update version info...
 DESTFILE=../src/main/version.h
@@ -14,11 +14,11 @@ echo "     version.h (ATENVERSION)  : $ATENVERSION"
 echo "     version.h (ATENDATE)     : $ATENDATE"
 echo "     version.h (ATENURL)      : $ATENURL"
 
-for a in aten 
-do
-  sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" $a.xml > $a-versioned.xml
-  rm -rf $a $a-versioned
-  sgmltools -b html $a-versioned.xml
-  mv $a-versioned $a
-  rm $a-versioned.xml
-done
+rm -rf aten aten-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
+
+#sgmltools -b html $a-versioned.xml
+
+mkdir aten
+docbook2html --output aten aten-versioned.xml
+rm aten-versioned.xml

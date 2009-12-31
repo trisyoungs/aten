@@ -1,11 +1,11 @@
 <section id="ff.ref"><title>Keyword Reference</title>
-	<indexterm id="idx.ff.ref" class="startofrange"><primary>forcefields</primary><secondary>keywords</secondary></indexterm>
 	
 	<section id="ff.keywords"><title>General Keywords</title>
-	
+		<indexterm zone="ff.keywords"><primary>forcefields</primary><secondary>general keywords</secondary></indexterm>
+		
 		<para>General keywords are simple keywords that take single items of data as arguments.</para>
 		
-		<section id="ff.keywords.name"><title>name</title>
+		<section id="ff.ref.name"><title>name</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>name</tertiary></indexterm>
 			<para><emphasis>Syntax:</emphasis></para>
 			<itemizedlist>
@@ -19,11 +19,11 @@
 			<synopsis>
 				name "Test Forcefield"
 			</synopsis>
-			<para>sets the name of the forcefield to "Test Forcefield".
+			<para>sets the name of the forcefield to "Test Forcefield".</para>
 				
 		</section>
 	
-		<section id="ff.keywords.units"><title>units</title>
+		<section id="ff.ref.units"><title>units</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>units</tertiary></indexterm>
 			<para><emphasis>Syntax:</emphasis></para>
 			<itemizedlist>
@@ -55,7 +55,7 @@
 		
 		<para>All lists of terms, types, and extraneous data are specified in the form of 'blocks'. Each keyword in this section marks the start of block, and must at some point be terminated by an 'end' keyword. In addition each keyword may take one or more (optional) values.</para>
 		
-		<section id="ff.keywords.angles"><title>Angles</title>
+		<section id="ff.ref.angles"><title>Angles</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>angles</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -88,7 +88,7 @@
 			
 		</section>
 
-		<section id="ff.keywords.bonds"><title>Bonds</title>
+		<section id="ff.ref.bonds"><title>Bonds</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>bonds</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -120,7 +120,7 @@
 
 		</section>
 		
-		<section id="ff.keywords.equivalents"><title>Equivalents</title>
+		<section id="ff.ref.equivalents"><title>Equivalents</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>equivalents</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -151,7 +151,7 @@
 		
 		</section>
 
-		<section id="ff.keywords.inter"><title>Inter</title>
+		<section id="ff.ref.inter"><title>Inter</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>inter</tertiary></indexterm>
 			<para><emphasis>Syntax:</emphasis></para>
 			<itemizedlist>
@@ -181,7 +181,7 @@
 			
 		</section>
 
-		<section id="ff.keywords.torsions"><title>Torsions</title>
+		<section id="ff.ref.torsions"><title>Torsions</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>torsions</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -220,7 +220,7 @@
 
 		</section>
 
-		<section id="ff.keywords.types"><title>Types</title>
+		<section id="ff.ref.types"><title>Types</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>types</tertiary></indexterm>
 			<para><emphasis>Syntax:</emphasis></para>
 			<itemizedlist>
@@ -258,7 +258,7 @@
 			
 		</section>
 
-		<section id="ff.keywords.uatypes"><title>UATypes</title>
+		<section id="ff.ref.uatypes"><title>UATypes</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>uatypes</tertiary></indexterm>
 			<para><emphasis>Syntax:</emphasis></para>
 			<itemizedlist>

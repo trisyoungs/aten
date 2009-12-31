@@ -1,4 +1,4 @@
-<section id="commands.groups.pattern"><title>Pattern Commands</title>
+<section id="command.groups.pattern"><title>Pattern Commands</title>
 	
 	<para>Automatically or manually create pattern descriptions for models.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>clearpatterns</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to <link linkend="command.ref.newpattern">newpattern</link>.</para>
@@ -28,7 +28,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>createpatterns</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Automatically detect and create the pattern description for the current model.</para>
@@ -46,15 +46,15 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
-				<void>
+				<funcdef>pattern <function>currentpattern</function></funcdef>
+				<void/>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
+				<funcdef>pattern <function>currentpattern</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>currentpattern</function></funcdef>
+				<funcdef>pattern <function>currentpattern</function></funcdef>
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -78,11 +78,11 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>getpattern</function></funcdef>
+				<funcdef>pattern <function>getpattern</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>getpattern</function></funcdef>
+				<funcdef>pattern <function>getpattern</function></funcdef>
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
@@ -107,7 +107,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listpatterns</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>List the patterns in the current model.</para>
@@ -125,7 +125,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef><link linkend="command.types.pattern">pattern</link> <function>newpattern</function></funcdef>
+				<funcdef>pattern <function>newpattern</function></funcdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
 				<paramdef>int <parameter>nmols</parameter></paramdef>
 				<paramdef>int <parameter>atomspermol</parameter></paramdef>

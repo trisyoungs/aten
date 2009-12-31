@@ -1,4 +1,4 @@
-<section id="commands.groups.readwrite"><title>Read / Write Commands</title>
+<section id="command.groups.readwrite"><title>Read / Write Commands</title>
 	
 	<para>Methods of reading and writing data from / to files in import and export filters. Many commands here use ((Formatting Strings)) to provide formatted input and output. All reading and writing commands here work on input or output files as defined internally by the program.</para>
 	
@@ -42,7 +42,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>eof</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Returns 1 if at the end of the current input file, 0 otherwise.</para>
@@ -67,7 +67,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>string <function>filterfilename</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Returns the name of the current input or output file (typically useful from within an import or export filter).</para>
@@ -167,7 +167,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>string <function>peekchar</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Peeks the next character that will be read from the source file, and returns it as a string. The actual file position for reading is unaffected.</para>
@@ -186,7 +186,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>peekchari</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Peeks the next character that will be read from the source file, and returns it as an integer value representing the ASCII character code (see <ulink url="http://www.asciitable.com">http://www.asciitable.com</ulink>, for example). The actual file position for reading is unaffected.</para>
@@ -226,7 +226,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>readdouble</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>readdouble</function></funcdef>
@@ -272,7 +272,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>readint</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>int <function>readint</function></funcdef>
@@ -470,7 +470,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>rewind</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Rewind the input file to the beginning of the file.</para>

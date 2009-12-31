@@ -1,4 +1,4 @@
-<section id="commands.groups.image"><title>Image Commands</title>
+<section id="command.groups.image"><title>Image Commands</title>
 	
 	<para>Save bitmap and vector images of the current view. The GUI is not required in order to save images -- using these commands from the command-line, for example, works just as well (models still have a current view, even without the GUI, and can be rotated, translated etc. just as if they were in the GUI).</para>
 

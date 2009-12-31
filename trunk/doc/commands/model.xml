@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>createatoms</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Can be run when importing trajectory frames. Creates enough atoms in the current trajectory frame to match the parent model.</para>
@@ -28,7 +28,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>model <function>currentmodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>model <function>currentmodel</function></funcdef>
@@ -40,7 +40,7 @@
 			</funcprototype>
 			<funcprototype>
 				<funcdef>model <function>currentmodel</function></funcdef>
-				<paramdef><link linkend="command.types.model">model</link> <parameter>m</parameter></paramdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		
@@ -72,7 +72,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>model <function>firstmodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Makes the first loaded / created model the current model, and returns a reference to it.</para>
@@ -91,7 +91,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>info</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Print out information on the current model and its atoms.</para>
@@ -110,7 +110,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>finalisemodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Performs various internal tasks after a model has been fully created within a filter. Should be called after all operations on each created model have finished.</para>
@@ -137,7 +137,7 @@
 			</funcprototype>
 			<funcprototype>
 				<funcdef>model <function>getmodel</function></funcdef>
-				<paramdef><link linkend="command.types.model">model</link> <parameter>m</parameter></paramdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Returns a reference to the requested model, but unlike <link linkend="command.ref.currentmodel">currentmodel</link> does not make it the current model.</para>
@@ -161,7 +161,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>model <function>lastmodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Makes the last loaded / created model the current model, and returns a reference to it.</para>
@@ -180,7 +180,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listmodels</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Lists all models currently available.</para>
@@ -224,7 +224,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>modeltemplate</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Can only be run when importing trajectory frames. Templates the atoms in the trajectory's parent model by creating an equal number of atoms in the target trajectory frame, and copying the element and style data. Positions, forces, and velocities are not copied from the parent model atoms.</para>
@@ -267,7 +267,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>model <function>nextmodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Skips to the next loaded model, makes it current, and returns a reference to it.</para>
@@ -286,7 +286,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>model <function>prevmodel</function></funcdef>
-				<void>
+				<void/>
 				</funcprototype>
 		</funcsynopsis>
 		<para>Skips to the previous loaded model, makes it current, and returns a reference to it.</para>

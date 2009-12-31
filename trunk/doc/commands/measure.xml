@@ -1,4 +1,4 @@
-<section id="commands.groups.measuring"><title>Measuring Commands</title>
+<section id="command.groups.measuring"><title>Measuring Commands</title>
 	
 	<para>Make measurements of distances, angles, and torsion angles (dihedrals) in models.</para>
 	
@@ -39,7 +39,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>angles</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Measure (and print out) all bond angles present in the current atom selection.</para>
@@ -58,7 +58,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>clearmeasurements</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Clear all measurements in the current model.</para>
@@ -98,7 +98,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>distances</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Measure (and print out) the lengths of all bonds present in the current atom selection.</para>
@@ -117,7 +117,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listmeasurements</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>List all measurements in the current model.</para>
@@ -191,7 +191,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>torsions</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Measure (and print out) all torsion angles present in the current atom selection.</para>

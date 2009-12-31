@@ -31,7 +31,7 @@
 		<synopsis>
 			deselect(&quot;C+&quot;);
 		</synopsis>
-		<para>deselects all elements carbon and above.
+		<para>deselects all elements carbon and above.</para>
 		<synopsis>
 			deselect(1, 2, 5, &quot;8+&quot;);
 		</synopsis>
@@ -46,7 +46,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>expand</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Expand the current selection of atoms by selecting any atoms that are directly bound to an already-selected atom. The number of atoms added to the previous selection is returned.</para>
@@ -65,7 +65,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>invert</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Inverts the selection of all atoms in the current model. Returns the number of atoms selected.</para>
@@ -109,7 +109,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>selectall</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Select all atoms in the current model. The number of selected atoms is returned.</para>
@@ -171,7 +171,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>selectnone</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Deselect all atoms in the current model.</para>
@@ -212,7 +212,7 @@
 				<funcdef>int <function>selectpattern</function></funcdef>
 				<paramdef>int <parameter>id</parameter></paramdef>
 				<paramdef>string <parameter>name</parameter></paramdef>
-				<paramdef><link linkend="command.types.pattern">pattern</link> <parameter>p</parameter></paramdef>
+				<paramdef>pattern <parameter>p</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Selects all atoms in the current (or named/specified) pattern. Returns the number of atoms added to the existing selection.</para>

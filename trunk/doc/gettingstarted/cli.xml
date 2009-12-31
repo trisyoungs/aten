@@ -1,5 +1,6 @@
 <section id="cli"><title>The Command Line</title>
-
+	<indexterm zone="cli"><primary>command line</primary></indexterm>
+	
 	<para>From a shell, running Aten with no arguments will start up the code in GUI mode and patiently wait for something nice to happen. If model files are provided on the command line, these will be loaded in so that, when the GUI starts, they may be hacked apart according to your desired tastes. The command-line is also a powerful way of editing without using the GUI at all. What follows is a description of the usage of command-line arguments, and a list of all recognised arguments.</para>
 	
 	<section id="cli.switchorder"><title>Switch Order</title>
@@ -23,7 +24,8 @@
 	</section>
 	
 	<section id="cli.switches"><title>Switches</title>
-	
+		<indexterm zone="cli.switches"><primary>command line switches</primary></indexterm>
+		
 		<section id="cli.switches.groups.a"><title>A</title>
 		
 		<variablelist>

@@ -1,4 +1,4 @@
-<section id="commands.groups.charges"><title>Charges Commands</title>
+<section id="command.groups.charges"><title>Charges Commands</title>
 	
 	<para>Assign partial charges to models, atoms, and patterns.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>double <function>charge</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>double <function>charge</function></funcdef>
@@ -33,7 +33,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>charge</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Assigns charges to all atoms in the current model based on the forcefield associated to the model and the current types of the atoms.</para>
@@ -52,7 +52,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>chargefrommodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Copies charges of all atoms in the current model to the atoms of the current trajectory frame.</para>
@@ -113,7 +113,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>clearcharges</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Clears all charges in the current model, setting them to zero.</para>

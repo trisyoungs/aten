@@ -1,4 +1,4 @@
-<section id="commands.groups.script"><title>Script Commands</title>
+<section id="command.groups.script"><title>Script Commands</title>
 	
 	<para>Commands to load and run scripts.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>listscripts</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Lists all loaded scripts.</para>

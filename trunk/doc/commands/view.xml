@@ -1,4 +1,4 @@
-<section id="commands.groups.view"><title>View Commands</title>
+<section id="command.groups.view"><title>View Commands</title>
 	
 	<para>Commands to change the current model's view.</para>
 
@@ -26,7 +26,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>getview</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Outputs the 3x3 rotation matrix, the camera position vector, and the z-rotation of the camera for the current model's view. The list of numbers may be passed directly to the 'setview' command to re-create the view exactly.</para>
@@ -45,7 +45,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>orthographic</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Set the view for all models to be an orthographic projection.</para>
@@ -64,7 +64,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>perspective</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Set the view for all models to be a perspective projection.</para>
@@ -83,7 +83,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>resetview</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Resets the view rotation and zoom for the current model.</para>
@@ -178,7 +178,7 @@
 		<synopsis>
 			speedtest();
 		</synopsis>
-		<para>spins the current model for the default of 100 rendering passes.
+		<para>spins the current model for the default of 100 rendering passes.</para>
 		<synopsis>
 			speedtest(2000);
 		</synopsis>

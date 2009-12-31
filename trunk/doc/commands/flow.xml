@@ -9,7 +9,7 @@
 		<synopsis>
 			do { commands } while { condition }
 		</synopsis>
-		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the end of every execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed again, and <emphasis>condition</emphasis> re-tested afterwards. If 'false' the loop ends.</para>
+		<para>The do-while loop is cousin of the 'for' loop, except that there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the end of every execution of the <emphasis>commands</emphasis>. If 'true', the <emphasis>commands</emphasis> are executed again, and <emphasis>condition</emphasis> re-tested afterwards. If 'false' the loop ends.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -30,7 +30,7 @@
 			i = 64
 			i = 128
 		</synopsis>
-		<para>Note that the final value of <emphasis>i</emphasis> inside the loop is '128' (greater than 100) since the <emphasis>condition</emphasis> is only tested at the end of the execution of the <emphasis>commands''. The '((Commands: Flow|#while|while))' loop works in the same way, save that the <emphasis>condition</emphasis> is tested at the beginning of the loop, before <emphasis>commands</emphasis> are executed, rather than at the end.</para>
+		<para>Note that the final value of <emphasis>i</emphasis> inside the loop is '128' (greater than 100) since the <emphasis>condition</emphasis> is only tested at the end of the execution of the <emphasis>commands</emphasis>. The '((Commands: Flow|#while|while))' loop works in the same way, save that the <emphasis>condition</emphasis> is tested at the beginning of the loop, before <emphasis>commands</emphasis> are executed, rather than at the end.</para>
 	
 	</section>
 	
@@ -51,11 +51,11 @@
 		<synopsis>
 			for (n = 100; n&gt;0; --n) printf(&quot;Counting down... %i\n&quot;, n);
 		</synopsis>
-		<para>Here, an existing variable <emphasis>n</emphasis> is decreased from 100 to 1, printing out all numbers along the way. Note the usage of the double-minus '--' operator (the prefix decrease operator) which decreases its associated variable, in this case <emphasis>n''. For integers, to decrease means to reduce the value by 1. For other types the meaning may vary - for instance, with reference types the '--' operator means 'previous item in the list', since all such objects in Aten (e.g. atoms) are stored in lists containing many objects of the same type. This makes iterating over, say, all atoms in a given model pretty easy...</para>
+		<para>Here, an existing variable <emphasis>n</emphasis> is decreased from 100 to 1, printing out all numbers along the way. Note the usage of the double-minus '--' operator (the prefix decrease operator) which decreases its associated variable, in this case <emphasis>n</emphasis>. For integers, to decrease means to reduce the value by 1. For other types the meaning may vary - for instance, with reference types the '--' operator means 'previous item in the list', since all such objects in Aten (e.g. atoms) are stored in lists containing many objects of the same type. This makes iterating over, say, all atoms in a given model pretty easy...</para>
 		<synopsis>
 			for (atom a = aten.model.atoms; a; ++a) printf(&quot;Atom id %i is element %s.\n&quot;, a.id, a.symbol);
 		</synopsis>
-		<para>In this example the variable <emphasis>a</emphasis> is declared and initialised to be a reference to the first atom in the current model. The <emphasis>condition</emphasis> part simply consists of the expression 'a', which effectively tests the reference address currently stored in <emphasis>a''. Since any positive number equates to 'true' (see below for the 'if' test) the loop will continue until <emphasis>a</emphasis> contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator ('++') changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.</para>
+		<para>In this example the variable <emphasis>a</emphasis> is declared and initialised to be a reference to the first atom in the current model. The <emphasis>condition</emphasis> part simply consists of the expression 'a', which effectively tests the reference address currently stored in <emphasis>a</emphasis>. Since any positive number equates to 'true' (see below for the 'if' test) the loop will continue until <emphasis>a</emphasis> contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator ('++') changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.</para>
 	
 	</section>
 	
@@ -124,12 +124,12 @@
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;);
 		</synopsis>
-		<para>but in this case 'Hooray!' will <emphasis>not</emphasis> be printed, because <emphasis>i</emphasis> is not greater than <emphasis>j''.</para>
+		<para>but in this case 'Hooray!' will <emphasis>not</emphasis> be printed, because <emphasis>i</emphasis> is not greater than <emphasis>j</emphasis>.</para>
 		<synopsis>
 			int i = 10, j = 20;
 			if (i &gt; j) printf(&quot;Hooray!\n&quot;); else { printf(&quot;Too small.\n&quot;); i = j; }
 		</synopsis>
-		<para>Here, the test fails for the same reason, but since an 'else' part was provided we still execute some commands (printing 'Too small.' and setting the variable <emphasis>i</emphasis> equal to <emphasis>j'').</para>
+		<para>Here, the test fails for the same reason, but since an 'else' part was provided we still execute some commands (printing 'Too small.' and setting the variable <emphasis>i</emphasis> equal to <emphasis>j</emphasis>).</para>
 		<synopsis>
 			if (i) printf(&quot;Snoopy.\n&quot;);
 		</synopsis>
@@ -161,7 +161,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef><function>return</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 			<funcprototype>
 				<funcdef><function>return</function></funcdef>
@@ -179,7 +179,7 @@
 		<synopsis>
 			while ( condition ) { commands }
 		</synopsis>
-		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the beginning of the loop, before execution of the <emphasis>commands''. If 'true', the <emphasis>commands</emphasis> are executed, but if 'false' the loop ends without executing the <emphasis>commands</emphasis> (and meaning that it is possible that the <emphasis>commands</emphasis> are <emphasis>never</emphasis> executed).</para>
+		<para>The while loop is another cousin of the 'for' loop, and as with the <link linkend="command.ref.do">do</link>-while loop there is no control variable. The termination of the loop depends on the <emphasis>condition</emphasis> which is tested at the beginning of the loop, before execution of the <emphasis>commands</emphasis>. If 'true', the <emphasis>commands</emphasis> are executed, but if 'false' the loop ends without executing the <emphasis>commands</emphasis> (and meaning that it is possible that the <emphasis>commands</emphasis> are <emphasis>never</emphasis> executed).</para>
 		
 		<para>For example:</para>
 		<synopsis>

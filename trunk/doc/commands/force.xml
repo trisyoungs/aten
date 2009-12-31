@@ -1,4 +1,4 @@
-<section id="commands.groups.focres"><title>Forces Commands</title>
+<section id="command.groups.focres"><title>Forces Commands</title>
 	
 	<para>Calculate forces for models and trajectory frames.</para>
 
@@ -9,7 +9,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>frameforces</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate the atomic forces of the current frame of the trajectory associated with the current model.</para>
@@ -28,7 +28,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>modelforces</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Calculate the atomic forces of the current model.</para>
@@ -47,7 +47,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>printforces</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Print out the forces of the current model.</para>

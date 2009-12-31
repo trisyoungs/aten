@@ -1,4 +1,4 @@
-<section id="commands.groups.forcefield"><title>Forcefield Commands</title>
+<section id="command.groups.forcefield"><title>Forcefield Commands</title>
 	
 	<para>Forcefield management and manual term creation.</para>
 
@@ -246,7 +246,7 @@
 				<para> forcefield loadff ( string file, string name )</para>
 			</listitem>
 		</itemizedlist>
-		<para>Load a forcefield from <emphasis>file</emphasis> and reference it by <emphasis>name''. Becomes the current forcefield.</para>
+		<para>Load a forcefield from <emphasis>file</emphasis> and reference it by <emphasis>name</emphasis>. Becomes the current forcefield.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -406,7 +406,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>int <function>typemodel</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		<para>Perform atom typing on the current model. Returns '1' if atom typing was performed successfully or '0' otherwise.</para>

@@ -1,4 +1,4 @@
-<section id="commands.groups.glyph"><title>Glyph Commands</title>
+<section id="command.groups.glyph"><title>Glyph Commands</title>
 	
 	<para>Add glyphs to atoms in the model.</para>
 
@@ -20,7 +20,7 @@
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>autoellipsoids</function></funcdef>
-				<void>
+				<void/>
 			</funcprototype>
 		</funcsynopsis>
 		
@@ -360,7 +360,7 @@
 					</row>
 					<row>
 						<entry>solid</entry>
-						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid<link>(TRUE) after creation.</entry>
+						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid</link>(TRUE) after creation.</entry>
 					</row>
 					<row>
 						<entry>text=<emphasis>string</emphasis></entry>
