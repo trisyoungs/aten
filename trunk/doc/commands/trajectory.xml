@@ -12,15 +12,18 @@
 	
 	<section id="command.ref.addframe"><title>addframe</title>
 		<indexterm><primary>commands</primary><secondary>addframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> model addframe ( )</para>
-			</listitem>
-			<listitem>
-				<para> model addframe ( string title )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.model">model</link> <function>addframe</function></funcdef>
+				<void>
+			</funcprototype>
+			<funcprototype>
+				<funcdef><link linkend="command.types.model">model</link> <function>addframe</function></funcdef>
+				<paramdef>string <parameter>title</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Append a new trajectory frame to the current model's trajectory. The reference to the new frame is returned.</para>
 		
 		<para>For example:</para>
@@ -32,12 +35,14 @@
 	
 	<section id="command.ref.cleartrajectory"><title>cleartrajectory</title>
 		<indexterm><primary>commands</primary><secondary>cleartrajectory</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> cleartrajectory ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cleartrajectory</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Clear any associated trajectory and frame data in the current model.</para>
 		
 		<para>For example:</para>
@@ -49,12 +54,14 @@
 	
 	<section id="command.ref.firstframe"><title>firstframe</title>
 		<indexterm><primary>commands</primary><secondary>firstframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> firstframe ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>firstframe</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Select the first frame from trajectory of current model.</para>
 		
 		<para>For example:</para>
@@ -66,12 +73,14 @@
 	
 	<section id="command.ref.lastframe"><title>lastframe</title>
 		<indexterm><primary>commands</primary><secondary>lastframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> lastframe ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>lastframe</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Select last frame in trajectory of current model.</para>
 		
 		<para>For example:</para>
@@ -83,13 +92,15 @@
 	
 	<section id="command.ref.loadtrajectory"><title>loadtrajectory</title>
 		<indexterm><primary>commands</primary><secondary>loadtrajectory</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> int loadtrajectory (string file )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Associate trajectory in <emphasis>file</emphasis> with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>loadtrajectory</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Associate trajectory in <emphasis>filename</emphasis> with the current model. An integer value of '1' is returned if the association was successful, or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -101,12 +112,14 @@
 	
 	<section id="command.ref.nextframe"><title>nextframe</title>
 		<indexterm><primary>commands</primary><secondary>nextframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> nextframe ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>nextframe</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Select next frame from trajectory of current model.</para>
 		
 		<para>For example:</para>
@@ -118,12 +131,14 @@
 	
 	<section id="command.ref.prevframe"><title>prevframe</title>
 		<indexterm><primary>commands</primary><secondary>prevframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> prevframe ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>prevframe</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Select the previous frame from the trajectory of the current model.</para>
 		
 		<para>For example:</para>
@@ -135,12 +150,14 @@
 	
 	<section id="command.ref.seekframe"><title>seekframe</title>
 		<indexterm><primary>commands</primary><secondary>seekframe</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> seekframe ( int frame )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>seekframe</function></funcdef>
+				<paramdef>int <parameter>frameno</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Seeks to the frame number specified.</para>
 		
 		<para>For example:</para>

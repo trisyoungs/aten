@@ -12,7 +12,7 @@
 				<void>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Copy the current atom selection to the clipboard, ready for <link linkend="command.paste">pasting</link>.</para>
+		<para>Copy the current atom selection to the clipboard, ready for <link linkend="command.ref.paste">pasting</link>.</para>
 		
 		<para>For example:</para>
 		<synopsis>

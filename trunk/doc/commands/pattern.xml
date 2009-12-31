@@ -12,7 +12,7 @@
 				<void>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to 'newpattern'.</para>
+		<para>Delete the pattern description of the current model. It's a good idea to run this command before adding a pattern definition by hand with calls to <link linkend="command.ref.newpattern">newpattern</link>.</para>
 		
 		<para>For example:</para>
 		<synopsis>

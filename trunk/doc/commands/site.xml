@@ -6,13 +6,15 @@
 	
 	<section id="command.ref.getsite"><title>getsite</title>
 		<indexterm><primary>commands</primary><secondary>getsite</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> getsite ( string name )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Selects (makes current) the site referenced by <emphasis>name''. If the site cannot be found an error is returned.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>getsite</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Selects (makes current) the site referenced by <emphasis>name</emphasis>. If the site cannot be found an error is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -24,12 +26,14 @@
 	
 	<section id="command.ref.listsites"><title>listsites</title>
 		<indexterm><primary>commands</primary><secondary>listsites</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> listsites ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listsites</function></funcdef>
+				<void>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Prints the list of sites defined for the current model.</para>
 		
 		<para>For example:</para>
@@ -41,13 +45,16 @@
 	
 	<section id="command.ref.newsite"><title>newsite</title>
 		<indexterm><primary>commands</primary><secondary>newsite</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> newsite ( string name, pattern pattern, string &quot;atomlist&quot; )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Creates a new site <emphasis>name</emphasis> for the current model, based on the molecule of <emphasis>pattern</emphasis>, and placed at the geometric centre of the atom IDs given in &quot;''atomlist''&quot;. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newfunction></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>string <parameter>atomlist = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Creates a new site <emphasis>name</emphasis> for the current model, based on the molecule of <emphasis>pattern</emphasis>, and placed at the geometric centre of the atom IDs given in <emphasis>atomlist</emphasis>. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -63,12 +70,15 @@
 	
 	<section id="command.ref.siteaxes"><title>siteaxes</title>
 		<indexterm><primary>commands</primary><secondary>siteaxes</secondary></indexterm>
+		
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> siteaxes ( string &quot;x atomlist&quot;, string &quot;y atomlist&quot;</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>siteaxes</function></funcdef>
+				<paramdef>string <parameter>x_atomlist</parameter></paramdef>
+				<paramdef>string <parameter>y_atomlist</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Sets the local x (first set of atom IDs) and y (second set of atom IDs) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by 'addsite') and the geometric centre of the list of atoms provided here. The y axis is orthogonalised with respect to the x axis and the z axis constructed from the cross product of the orthogonal x and y vectors.</para>
 		
 		<para>For example:</para>
