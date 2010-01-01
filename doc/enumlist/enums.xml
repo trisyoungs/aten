@@ -73,7 +73,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="commands.groups.cell">Cell Commands</link> for methods to set and manipulate unit cells of models</para>
+				<para><link linkend="command.groups.cell">Cell Commands</link> for methods to set and manipulate unit cells of models</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="command.types.unitcell">Unitcell type</link> for information on the relevant variable type</para>
@@ -119,7 +119,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="commands.groups.atom">Atom Commands</link> for methods to create and edit atoms</para>
+				<para><link linkend="command.groups.atom">Atom Commands</link> for methods to create and edit atoms</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -327,7 +327,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="commands.groups.system">System Commands</link> for methods to set various system values</para>
+				<para><link linkend="command.groups.system">System Commands</link> for methods to set various system values</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -370,7 +370,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="commands.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
+				<para><link linkend="command.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -379,7 +379,7 @@
 
 <section id="enums.readsuccess"><title>Read Success Integers</title>
 	
-	<para>Integer return values for many <link linkend="commands.groups.readwrite">read/write</link> operations.</para>
+	<para>Integer return values for many <link linkend="command.groups.readwrite">read/write</link> operations.</para>
 	
 	<table frame='all' pgwide='1' tocentry='1'><title>Read/write return values</title>
 		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
@@ -409,7 +409,7 @@
 	<note><title>See Also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="commands.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
+				<para><link linkend="command.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
 			</listitem>
 		</itemizedlist>
 	</note>

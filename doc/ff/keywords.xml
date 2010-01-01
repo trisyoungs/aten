@@ -147,7 +147,7 @@
 				H1   H1  H2  H3
 				end
 			</synopsis>
-			<para>Note that the aliased name does not have to be an atomtype name already defined in the <link linkend="ff.keywords.types">types</link> section.</para>
+			<para>Note that the aliased name does not have to be an atomtype name already defined in the <link linkend="ff.ref.types">types</link> section.</para>
 		
 		</section>
 
@@ -248,10 +248,10 @@
 			<note><title>See also:</title>
 				<itemizedlist mark='opencircle'>
 					<listitem>
-						<para><link linkend="ff.typing.overview">Atom typing</link> for an overview of atom typing</para>
+						<para><link linkend="ff.typing">Atom typing</link> for an overview of atom typing</para>
 					</listitem>
 					<listitem>
-						<para>The <link linkend="ff.neta">NETA reference</link> for a description of the atom typing language</para>
+						<para>The <link linkend="ff.neta.ref">NETA reference</link> for a description of the atom typing language</para>
 					</listitem>
 				</itemizedlist>
 			</note>
@@ -266,7 +266,7 @@
 					<para>uatypes</para>
 				</listitem>
 			</itemizedlist>
-			<para>The 'uatypes' section contains exactly the same information as the '<link linkend="ff.keywords.types">types</link>' block except that a mass must also be provided. In the '<link linkend="ff.keywords.types">types</link>' block it is assumed that the character element of the type also implicitly defines the mass (as would be expected). In the case of united-atom forcefields, this is not necessarily the case. Thus, the 'uatypes' block allows a mass to be associated in order to account for the light atoms subsumed into the heavy atom's mass. This information can be accesses through the 'mass' member of the <link linkend="command.types.ffatom">ffatom</link> variable type.</para>
+			<para>The 'uatypes' section contains exactly the same information as the '<link linkend="ff.ref.types">types</link>' block except that a mass must also be provided. In the '<link linkend="ff.ref.types">types</link>' block it is assumed that the character element of the type also implicitly defines the mass (as would be expected). In the case of united-atom forcefields, this is not necessarily the case. Thus, the 'uatypes' block allows a mass to be associated in order to account for the light atoms subsumed into the heavy atom's mass. This information can be accesses through the 'mass' member of the <link linkend="command.types.ffatom">ffatom</link> variable type.</para>
 			
 			<para>The format of each line in the 'uatypes' block is as follows:</para>
 			<synopsis>
@@ -286,10 +286,10 @@
 			<note><title>See also:</title>
 				<itemizedlist mark='opencircle'>
 					<listitem>
-						<para><link linkend="ff.typing.overview">Atom typing</link> for an overview of atom typing</para>
+						<para><link linkend="ff.typing">Atom typing</link> for an overview of atom typing</para>
 					</listitem>
 					<listitem>
-						<para>The <link linkend="ff.neta">NETA reference</link> for a description of the atom typing language</para>
+						<para>The <link linkend="ff.neta.ref">NETA reference</link> for a description of the atom typing language</para>
 					</listitem>
 					<listitem>
 						<para>The <link linkend="command.types.ffatom">ffatom type</link> for how to access the 'mass' parameter</para>

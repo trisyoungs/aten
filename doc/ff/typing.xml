@@ -11,7 +11,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para>The <link linkend="ff.neta">NETA reference</link> for a description of the atom typing language</para>
+				<para>The <link linkend="ff.neta.ref">NETA reference</link> for a description of the atom typing language</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="command.groups.select">Selection commands</link> for commands to select atoms by their type description</para>
@@ -31,7 +31,7 @@
 			<indexterm><primary>typing</primary><secondary>examples</secondary><tertiary>water</tertiary></indexterm>
 			
 			<figure><title>Water</title>
-				<graphic fileref="figures/typing_water.png"/>
+				<graphic fileref="images/typing_water.png"/>
 			</figure>
 		
 			<para>Consider a water molecule. If you were describing it in terms of its structure to someone who understands the concept of atoms and bonds, but has no idea what the water molecule looks like, you might say:</para>
@@ -67,7 +67,7 @@
 				A 'water oxygen' is an oxygen atom that is connected to two hydrogen atoms ''via'' single bonds, and nothing else
 			</screen>
 	
-			<para>An atom description in Aten is a string of comma-separated commands that describe this kind of information. So, to tell the program how to recognise a water oxygen and a water hydrogen, we could use the following type descriptions (written in the proper forcefield input style for the <link linkend="ff.keywords.types">types</link> block:</para>
+			<para>An atom description in Aten is a string of comma-separated commands that describe this kind of information. So, to tell the program how to recognise a water oxygen and a water hydrogen, we could use the following type descriptions (written in the proper forcefield input style for the <link linkend="ff.ref.types">types</link> block:</para>
 	
 			<screen>
 				1	OW	O	&quot;nbonds=2,-H,-H&quot;			# Water oxygen
@@ -81,7 +81,10 @@
 		<section id="ff.typing.language.example2"><title>Example 2 - 3-hydroxypropanoic acid</title>
 			<indexterm><primary>typing</primary><secondary>examples</secondary><tertiary>water</tertiary></indexterm>
 		
-	{img src=show_image.php?name=typing_propanoic.png}
+			<figure><title>3-hydroxypropanoic acid</title>
+				<graphic fileref="images/typing_propanoic.png"/>
+			</figure>
+			
 			<para>Assuming that the OH group in the carboxylic acid functionalisation will have different forcefield parameters to the primary alcohol at the other end of the molecule, here we must describe the first and second neighbours of the oxygen atoms to differentiate them.</para>
 	
 			<para>To begin, we can describe the carbon atoms as either two or three different types -- either methylene/carboxylic acid, or carboxylic acid/adjacent to a carboxylic acid/adjacent to alcohol. For both, we only need describe the first neighbours of the atoms. For the first:</para>
@@ -120,56 +123,101 @@
 	
 		</section>
 	
-	</section>
-		<!--
-	Example 3 - 'N','N',2,5-tetramethylpyridin-4-amine
-	
-	{img src=show_image.php?name=typing_amine.png}
-	At last, a proper problem - an asymmetric substituted pyridine. Lets assume that we need to distinguish between every non-hydrogen atom  - we'll skip describing the hydrogen atoms for now, but note that this is most easily achieved by specifying directly the atomtype that the H is bound to (see later on). Let's start with the pyridine nitrogen. We basically need to say that its in a 6-membered aromatic ring:
-	
-	{CODE()}
-	13	N_py	N	&quot;ring(size=6,aromatic)&quot;			# Pyridine N
-	{CODE}
-	
-	XXX Unfinished
-	
-	!!Description Format
-	Many subtleties related to the form of type descriptions is perhaps evident from the examples given above. Then again, perhaps not! It is useful to think of type descriptions as having many different 'depths', loosely corresponding to the number of bonds followed away from a central atom (the target atom, or the one currently being tested against the type description). The target atom of the type description is the 'root' of the description since all connections are defined relative to this atom. A type description requiring specific connections to this target atom is using the target atom's bonds in order to identify it - atoms to a depth of 1 bond are being used to describe the atom. If these bound atoms are in turn described by their bound neighbours then atoms to a depth of 2 bonds are being used.
-	
-	For example:
-	
-	|| __Description__ | __Effective Depth__
-	nbonds=4,tetrahedral | 0 (root commands only)
-	nbonds=4.tetrahedral,-H,-C | 1 (root commands and first bound neighbours)
-	nbonds=4,tetrahedral,-H,-C(-H(n=3)) | 2 (root commands, first and second bound neighbours)
-	||
-	
-	Any depth of description can be handled by Aten, becoming as complex as is necessary to uniquely identify the target atom.
-	!!Type Scoring
-	In a forcefield with many defined types, more than one type may match an atom in a molecule. In order to best assign types to atoms, Aten scores each type description according to the number of terms defined within it, one point for each term satisfied. Once a matching type for an atom is located in the forcefield it is assigned to that atom, but the search for a better-scoring type continues. If a match with a higher score is found it replaces the previously-assigned type. If a match with the same score is found, the previous type is __not__ replaced.
-	
-	!!!Non-Matching Types (Score = -1)
-	When a type description is tested for a given atom, it accumulates points for each term in the description that is satisfied by the environment of the atom. As soon as a term is found that is not satisfied, however, the score is reset to -1 and the match will fail. All terms in a type description must be satisfied in order for the type to be assigned to an atom.
-	
-	!!!Empty Types (Score = 1)
-	A type description containing no terms has a maximum score of 1 (coming from a match of the element type). Hence:
-	
-	{CODE()}
-	99	Cgen	C	&quot;&quot;			# Generic carbon
-	{CODE}
-	
-	matches any carbon in any system, but will be replaced fairly easily by other types since it has such a low score.
-	
-	!!!Normal Types (Score = +N)
-	For a type in which all terms are matched successfully, one point is scored for each individual term. All of the following types have a potential maximum score of 3 (don't forget, one point comes from matching the element):
-	
-	{CODE()}
-	100	C1	C	&quot;nbonds=2,linear&quot;	# Carbon A
-	101	C2	C	&quot;-C,-C&quot;			# Carbon B
-	102	C3	C	&quot;-C(n=2)&quot;		# Carbon C
-	102	C4	C	&quot;=C&quot;			# Carbon D
-	{CODE}
-	
-	Moreover, they all potentially match the same atom (for example the central carbon in 1,2-propadiene). Since they have the same score, the first type C1 will match and persist over the other three, since only types with higher (not equivalent) scores can replace it.-->
+		<section id="ff.typing.language.example3"><title>Example 3 - <emphasis>N</emphasis>,<emphasis>N</emphasis>,2,5-tetramethylpyridin-4-amine</title>
+			<indexterm><primary>typing</primary><secondary>examples</secondary><tertiary>N,N-2,5-tetramethylpyridine-4-amine</tertiary></indexterm>
+			
+			<figure><title><emphasis>N</emphasis>,<emphasis>N</emphasis>,2,5-tetramethylpyridin-4-amine</title>
+				<graphic fileref="images/typing_nn25tmp4amine.png"/>
+			</figure>
+			
+			<para>At last, a proper problem - an asymmetric substituted pyridine. Lets assume that we need to distinguish between every non-hydrogen atom  - we'll skip describing the hydrogen atoms for now, but note that this is most easily achieved by specifying directly the atomtype that the H is bound to (see later on). Let's start with the pyridine nitrogen. We basically need to say that its in a 6-membered aromatic ring:</para>
+			
+			<synopsis>
+			13	N_py	N	&quot;ring(size=6,aromatic)&quot;			# Pyridine N
+			</synopsis>
+			
+			<todo/>
 
+		</section>
+
+	</section>
+	
+	<section id="ff.typing.depth"><title>Description Depth</title>
+		<indexterm><primary>typing</primary><secondary>depth</secondary></indexterm>
+		
+		<para>Many subtleties related to the form of type descriptions is perhaps evident from the examples given above. Then again, perhaps not! It is useful to think of type descriptions as having many different 'depths', loosely corresponding to the number of bonds followed away from a central atom (the target atom, or the one currently being tested against the type description). The target atom of the type description is the 'root' of the description since all connections are defined relative to this atom. A type description requiring specific connections to this target atom is using the target atom's bonds in order to identify it - atoms to a depth of 1 bond are being used to describe the atom. If these bound atoms are in turn described by their bound neighbours then atoms to a depth of 2 bonds are being used.</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword '~X' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Example Description</entry>
+						<entry>Effective Depth</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>nbonds=4,tetrahedral</entry>
+						<entry>Zero - contains specifications relevant to the root atom only</entry>
+					</row>
+					<row>
+						<entry>nbonds=4.tetrahedral,-H,-C</entry>
+						<entry>1 - root commands and first bound neighbours</entry>
+					</row>
+					<row>
+						<entry>nbonds=4,tetrahedral,-H,-C(-H(n=3))</entry>
+						<entry>2 - root commands, first and second bound neighbours</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+		<para>Any depth of description can be handled by Aten, becoming as complex as is necessary to uniquely identify the target atom.</para>
+		
+	</section>
+	
+	<section id="ff.typing.scores"><title>Type Scoring</title>
+		<indexterm><primary>typing</primary><secondary>scores</secondary></indexterm>
+	
+		<para>In a forcefield with many defined types, more than one type may match an atom in a molecule. In order to best assign types to atoms, Aten scores each type description according to the number of terms defined within it, one point for each term satisfied. Once a matching type for an atom is located in the forcefield it is assigned to that atom, but the search for a better-scoring type continues. If a match with a higher score is found it replaces the previously-assigned type. If a match with the same score is found, the previous type is <emphasis>not</emphasis> replaced.</para>
+	
+		<section id="ff.typing.scores.nonmatching"><title>Non-Matching Types (Score = -1)</title>
+			<indexterm><primary>typing</primary><secondary>scores</secondary><tertiary>non-matching</tertiary></indexterm>
+			
+			<para>When a type description is tested for a given atom, it accumulates points for each term in the description that is satisfied by the environment of the atom. As soon as a term is found that is not satisfied, however, the score is reset to -1 and the match will fail. All terms in a type description must be satisfied in order for the type to be assigned to an atom.</para>
+			
+		</section>
+	
+		<section id="ff.typing.scores.empty"><title>Empty Types (Score = 1)</title>
+			<indexterm><primary>typing</primary><secondary>scores</secondary><tertiary>empty types</tertiary></indexterm>
+			
+			<para>A type description containing no terms has a maximum score of 1 (coming from a match of the element type). Hence:</para>
+				
+			<synopsis>
+				99	Cgen	C	&quot;&quot;			# Generic carbon
+			</synopsis>
+				
+			<para>matches any carbon in any system, but will be replaced fairly easily by other types since it has such a low score.</para>
+			
+		</section>
+
+		<section id="ff.typing.scores.normal"><title>Normal Types (Score > 1)</title>
+			<indexterm><primary>typing</primary><secondary>scores</secondary><tertiary>normal types</tertiary></indexterm>
+			
+			<para>For a type in which all terms are matched successfully, one point is scored for each individual term. All of the following types have a potential maximum score of 3 (don't forget, one point comes from matching the element):</para>
+			
+			<synopsis>
+				100	C1	C	&quot;nbonds=2,linear&quot;	# Carbon A
+				101	C2	C	&quot;-C,-C&quot;			# Carbon B
+				102	C3	C	&quot;-C(n=2)&quot;		# Carbon C
+				102	C4	C	&quot;=C&quot;			# Carbon D
+			</synopsis>
+			
+			<para>Moreover, they all potentially match the same atom (for example the central carbon in 1,2-propadiene). Since they have the same score, the first type C1 will match and persist over the other three, since only types with higher (not equivalent) scores can replace it.</para>
+			
+		</section>
+
+	</section>
+	
 </section>

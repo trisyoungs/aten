@@ -1,6 +1,6 @@
 <section id="command.types"><title>Variable Types</title>
 	
-	<indexterm zone="variables.types"><primary>variables</primary><secondary>types</secondary></indexterm>
+	<indexterm zone="command.types"><primary>variables</primary><secondary>types</secondary></indexterm>
 	
 	<para>For variables in Aten that are of reference type (i.e. the non-standard types) various sub-variables and functions may be accessed in the same way class members are utilised in C++. Each non-standard variable type is listed here along with the types and descriptions of their available subvariables / members.</para>
 	
@@ -23,8 +23,8 @@
 	
 	<section id="command.types.arrays"><title>Arrays</title>
 		
-		<indexterm zone="idx.command.types.arrays"><primary>variables</primary><secondary>arrays</secondary></indexterm>
-		<indexterm zone="idx.command.types.arrays"><primary>types</primary><secondary>arrays</secondary></indexterm>
+		<indexterm zone="command.types.arrays"><primary>variables</primary><secondary>arrays</secondary></indexterm>
+		<indexterm zone="command.types.arrays"><primary>types</primary><secondary>arrays</secondary></indexterm>
 		
 		<para>Many types have some subvariables that are arrays, with individual elements accessed by use of square brackets containing the array index in the same way as user-declared arrays:</para>
 		

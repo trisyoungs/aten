@@ -389,7 +389,7 @@
 				<paramdef>string <parameter>description = ""</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid</emphasis> and called <emphasis>name</emphasis>. The basic element of the new type is given as <emphasis>element</emphasis>, and <emphasis>neta</emphasis> is the <link linkend="ff.neta">NETA</link> definition of the type. An optional string describing the type in more detail can be given in <emphasis>description</emphasis>. The command returns '1' if the model was typed successfully or '0' otherwise.</para>
+		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid</emphasis> and called <emphasis>name</emphasis>. The basic element of the new type is given as <emphasis>element</emphasis>, and <emphasis>neta</emphasis> is the <link linkend="ff.neta.ref">NETA</link> definition of the type. An optional string describing the type in more detail can be given in <emphasis>description</emphasis>. The command returns '1' if the model was typed successfully or '0' otherwise.</para>
 		
 		<para>For example:</para>
 		<synopsis>
