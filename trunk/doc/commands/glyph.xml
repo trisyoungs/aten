@@ -63,7 +63,7 @@
 	
 		<para><emphasis>Note: Very Experimental Feature!</emphasis></para>
 		
-		<para>In a similar way to the <link linkend="command.ref.autoellipsoid">autoellipsoid</link> command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
+		<para>In a similar way to the <link linkend="command.ref.autoellipsoids">autoellipsoids</link> command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
 		
 		<para>Possible <emphasis>options</emphasis> are:</para>
 
