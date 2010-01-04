@@ -1,0 +1,825 @@
+<section id="changelogs.1.3"><title>Version 1.3</title>
+	<indexterm zone="changelogs.1.3"><primary>changelogs</primary><secondary>1.3</secondary></indexterm>
+
+	<para>Version 1.3 fixes many bugs (as usual) over 1.2, and adds many new accessors and improvements.</para>
+
+	<para>Detailed SVN ChangeLog follows:</para>
+	
+	<para><emphasis>Revision 996</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Modified configure.ac to replace link to libncurses, and added pkgconfig to extra/aten.dsc.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 991</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Disordered builder now accepts periodic models as components.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Crash when specifying zero molecules in a component for the disordered builder.</para>
+		</listitem>
+		<listitem>
+			<para> Corrected definitions of 'setregion' and 'setregionfrac' to allow optional 8th argument.</para>
+		</listitem>
+		<listitem>
+			<para> Added verbosity to saving of forcefield expressions.</para>
+		</listitem>
+		<listitem>
+			<para> On startup, current model is no longer automatically set to first in the list - scripts and commands will now display the last current model correctly.</para>
+		</listitem>
+		<listitem>
+			<para> Added some more reporting to GL error debugging.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 990</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Enormously stupid error in afterLastChar(), leading to crashes in save dialogs when a filename with no extension was given.</para>
+		</listitem>
+		<listitem>
+			<para> Added checkbox to SelectFilter dialog to allow/prevent automatic adding of filename extension to filename.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 989</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added CLI switch 'noqtsettings' to prevent loading of stored window/toolbar positions on startup.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 988</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Silly crash caused by using 'delete' as opposed to 'delete[]' in Pattern::fillExpression().</para>
+		</listitem>
+		<listitem>
+			<para> Added missing internal function calls related to creation of Measurement variables, and renamed variable type specified from '_MEASUREMENT' to 'measurement'.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 987</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Refinements to filter selection processes.</para>
+		</listitem>
+		<listitem>
+			<para> Added filter selection to expression export.</para>
+		</listitem>
+		<listitem>
+			<para> Format of saved images now determined by filename extension.</para>
+		</listitem>
+		<listitem>
+			<para> Better output added when saving models.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 986</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - 'CRITICAL : runSaveModelDialog' filter recognition idiocy.</para>
+		</listitem>
+		<listitem>
+			<para> Formats of saved files are now determined (as they probably always should have been) by examining the file extension - if none match, or there isn't one, a dialog (AtenSelectFilter) presents the available formats.</para>
+		</listitem>
+		<listitem>
+			<para> Added functions to Dhcnar to return upper and lowercase conversions of contained string.</para>
+		</listitem>
+		<listitem>
+			<para> Added additional member functions to FilterData and Aten (filter-specific) to present/access data in more useful forms.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 985</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Monte Carlo acceptance energy levels were not converted on energy unit change in Prefs.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed memory leaks in MonteCarlo (acceptanceRatio_), Pattern::fillExpression (bonding), and added delete call on gui.app in main().</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 984</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added 'z' accessor to ForcefieldAtom.</para>
+		</listitem>
+		<listitem>
+			<para> Added bond/angle/torsion/type forcefield term list accessors to patterns and parent model - renamed existing accessors in Model.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'forcefield' accessors to Model and Pattern.</para>
+		</listitem>
+		<listitem>
+			<para> ReturnValue now holds Refitem pointer to allow increase/decrease (++/ii) of Reflists.</para>
+		</listitem>
+		<listitem>
+			<para> Internal change in ForcefieldAtom accessors - ParentFF now FField for consistency.</para>
+		</listitem>
+		<listitem>
+			<para> Added missing ForcefieldBound accessors.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'termid' to PatternBound accessors.</para>
+		</listitem>
+		<listitem>
+			<para> Corrected email address in CMakeLists.txt.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 982</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Removed some defunct filter command definitions from src/command/commands.h.</para>
+		</listitem>
+		<listitem>
+			<para> Extended 'newatom' and 'newatomfrac' commands to take optional velocty and force triplets.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Saving of prefs values for element data, and conversion of Element type to integer.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Atomic radii were not set properly in the prefs GUI.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 981</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Updated extra/debian.changelog.</para>
+		</listitem>
+		<listitem>
+			<para> Removed unnecessary linkage to libncurses.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 979</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Corrected extra/aten.dsc to fix building on xUbuntu_8.10, and included in src/gui/about_funcs.cpp to help fix OpenSuSE_Factory and Fedora_11 builds.</para>
+		</listitem>
+		<listitem>
+			<para> Globally-replaced usage of '%li' in format statements with '%p'.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 976</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Missing menubar in Grids window.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 974</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Small corruption in src/base/Makefile.am includes corrected.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 972</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Corrected 'matrixconvert' command argument text.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'reorient' command, acting like 'matrixconvert' except that source axes are supplied in terms of atoms/ids and destionation matrix is given as a matrix.</para>
+		</listitem>
+		<listitem>
+			<para> Help command ('help') now doesn't need function name enclosed in brackets and quoted (e.g. now works as 'help printf').</para>
+		</listitem>
+		<listitem>
+			<para> For commands given on the command-line or through the Command toolbar, a terminal ';' is automatically added if not present.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 971</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Placement of angle measurement labels was quirky, swapping labels of adjacent angles.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Some Trajectory controls/menu items were not updated on model change.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 970</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Completed new Grids page.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 969</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixes - Grid rendering via colourscale (initialisation of colourscale ID, use within cubeIt()).</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Colour dialogs, when canccelled, reset colour to black.</para>
+		</listitem>
+		<listitem>
+			<para> Colour dialogs now allow setting of alpha value where appropriate.</para>
+		</listitem>
+		<listitem>
+			<para> Handling of alpha within grid colours corrected.</para>
+		</listitem>
+		<listitem>
+			<para> Removed 'Transparency' control from Grids window.</para>
+		</listitem>
+		<listitem>
+			<para> New Grids window layout (UNFINISHED).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 968</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Passing double and string values was not implemented!</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Grammar did not allow redeclaration and simultaneous assignment of nonlocal variables (including passed values).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 967</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - Passing double and string values was not implemented!</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Grammar did not allow redeclaration and simultaneous assignment of nonlocal variables (including passed values).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 966</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added '--int', '--double', and '--string' CLI options to enable passing of shell variables.</para>
+		</listitem>
+		<listitem>
+			<para> Bug - Passed value variable names cannot be redeclared and assigned simultaneously.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 965</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Modified EOF command to be a little more sensible.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 964</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed definition for 'scaleinterpolate'.</para>
+		</listitem>
+		<listitem>
+			<para> Adjusted 'surface' filter to fail properly if next data point cannot be read.</para>
+		</listitem>
+		<listitem>
+			<para> Moved version information from main/aten.h to main/version.h to make rebuilding after even minor changes a little less tiresome.</para>
+		</listitem>
+		<listitem>
+			<para> Corrected filepaths listed in header of files in src/main.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 963</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added missing calls for GlyphDataVariable accessor searching etc. Added proper recognition of mismatched types in constant array declaration.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Retrieval (resetting) of constant array values involving expressions did not work correctly.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 962</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Supplying a non-existent filter nickname to 'savemodel' now prints out a list of available filter nicknames.</para>
+		</listitem>
+		<listitem>
+			<para> Added better access to glyph data - new GlyphDataVariable, and reworked Glyph class to use GlyphData as proper members.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'getenv', 'getenvf', and 'getenvi' commands.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 961</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added 'fixpattern' command and 'fixed' Pattern accessor to allow whole patterns to be fixed in minimisations.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Missing progress indicator when using disordered builded from CLI.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Win/Mac builds, related to zero-sized function accessor arrays.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Model zoom was not correctly linked to cached trajectory frames.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 960</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed - 'cgminimise' command was not expecting an 'ncycles' argument.</para>
+		</listitem>
+		<listitem>
+			<para> All minimisation commands now assume a default of 100 cycles if no number is specified.</para>
+		</listitem>
+		<listitem>
+			<para> Added optional argument to GuiQt::progressUpdate() to store short ETA text instead of printing in order to make some output (e.g. minimisers) a little neater in the CLI.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 959</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Power operator now always returns a real (double) result.</para>
+		</listitem>
+		<listitem>
+			<para> Adjusted parser to better handle declaration list errors.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed - Constants with exponentiations were not parsed correctly.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 958</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added new region example script (scripts/regions2.txt).</para>
+		</listitem>
+		<listitem>
+			<para> Bug - Locally-scoped variables (e.g. in loops) with initial values are never re-set (behaving effectively as static vars).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 957</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added missing (empty) function definition arrays to Access classes.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'regionrotation' command and Region accessors.</para>
+		</listitem>
+		<listitem>
+			<para> Bug - Region rotations around both x and y axes simultaneosly are incorrect.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 956</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added basic glyph accessors.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 955</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added checking for NULL pointers in variable paths.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 954</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed Mac build - headers for proprietary Qt widgets did not have correct path specified for headers in .ui files (since canvas.cpp moved to src/render).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 953</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Tidied TreeNode and Parser.</para>
+		</listitem>
+		<listitem>
+			<para> Moved CommandNode::checkArguments() to TreeNode and made more general.</para>
+		</listitem>
+		<listitem>
+			<para> Added code to allow variable accessors which are functions and accept one or more arguments.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'dotproduct' command.</para>
+		</listitem>
+		<listitem>
+			<para> Removed old src/command/variables.cpp' from repo.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 952</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> 'expand' command now takes optional argument for number of times to perform expansion.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed bug with selection by element using 'select' command.</para>
+		</listitem>
+		<listitem>
+			<para> Removed old src/energy directory and files from repo.</para>
+		</listitem>
+		<listitem>
+			<para> Model::copy() no longer uses a (slow) Clipboard to copy atom/bond data.</para>
+		</listitem>
+		<listitem>
+			<para> Position window allows coordinates to be locked when centering.</para>
+		</listitem>
+		<listitem>
+			<para> 'centre' command now takes three optional booleans specifying locked coordinates.</para>
+		</listitem>
+		<listitem>
+			<para> Added hide/show undo states.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 951</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Torsion angle calculations involving collinear bonds would return NaNs - added check to Vec3&lt;&gt;::normalise() (also for Vec4&lt;&gt;) to check for and catch effective zero magnitudes.</para>
+		</listitem>
+		<listitem>
+			<para> Another small fix to 'dlpoly' expression export filter.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 950</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Adjusted MC disordered builder to accept component models specified with '0' molecules to allow for dummy regions to be specified.</para>
+		</listitem>
+		<listitem>
+			<para> MC minimiser would generate errors if a pattern had no molecules - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Default value (-1) for parameter to GuiQt::progressUpdate() was not set - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Tweaked output of MC disordered builder.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed crash when attempting to create unique ff term lists without a valid expression.</para>
+		</listitem>
+		<listitem>
+			<para> Another missing ModelVariable accessor definition added (broke DL_POLY field export, for example).</para>
+		</listitem>
+		<listitem>
+			<para> Fixes to constraint handling in 'dlpoly' expression export.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 949</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Corrected 'regioncentrefrac' command - was misspelled as 'regioncentreffrac'.</para>
+		</listitem>
+		<listitem>
+			<para> Ring search routine was 'broken' because of bad logic - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Made verbose NETA output a little clearer for element matching.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 948</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added finer control of arrow-key rotation of model - holding SHIFT now reduces step to 1 degree.</para>
+		</listitem>
+		<listitem>
+			<para> Spacegroup packing was not correct for Centric spacegroups - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Updated scripts/alumina.txt.</para>
+		</listitem>
+		<listitem>
+			<para> Added prefs limit to ring detection (default = 20).</para>
+		</listitem>
+		<listitem>
+			<para> Fixed/improved rendering of bonds.</para>
+		</listitem>
+		<listitem>
+			<para> Corrected some spinedit controls in Prefs window (stepsizes and minimum values for atom/bond radii).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 947</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added missing accessor definitions to ModelAccessors (missing terms played havoc with nearly all filters).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 946</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Rejiggered measurement storage in Model.</para>
+		</listitem>
+		<listitem>
+			<para> Added measurements and unique FF term accessors to ModelVariable.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 945</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Some widgets (manually created ones) were still disabled on toolbars after a progress indicator had been called - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Add flag in colourscale to turn off interpolation between colour points.</para>
+		</listitem>
+		<listitem>
+			<para> Partial implementation of non-interpolated colourscales.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 944</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Better disabling of GUI for long operations.</para>
+		</listitem>
+		<listitem>
+			<para> Progress indicator updated.</para>
+		</listitem>
+		<listitem>
+			<para> Parser did not recognise character literals enclosed in single quotes - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed crash when rendering offscreen and checking whether to draw extra cell-related graphics.</para>
+		</listitem>
+		<listitem>
+			<para> Added ETA to progress indicators.</para>
+		</listitem>
+		<listitem>
+			<para> Rewrote Model::replicateCell().</para>
+		</listitem>
+		<listitem>
+			<para> Fixed bug in Clipboard::pasteToModel() where redoing a translated paste operation would lose the translation.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 943</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixes to many compiler warnings (icpc).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 942</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Tidied matrix3.h and matrix4.h, and fixed overflow error in Mat3::invert().</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 941</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Removed unused templates/vobject.h.</para>
+		</listitem>
+		<listitem>
+			<para> Rejigged ComponentRegion - size_ member is now geometry_, and added in rotations_ member.</para>
+		</listitem>
+		<listitem>
+			<para> Cylinder regions implemented.</para>
+		</listitem>
+		<listitem>
+			<para> Point generation/checking inside regions improved, and region rotation implemented.</para>
+		</listitem>
+		<listitem>
+			<para> Rewrote matrix inversion routines to work with standard class data members.</para>
+		</listitem>
+		<listitem>
+			<para> Updated Disorder window.</para>
+		</listitem>
+		<listitem>
+			<para> Moved canvas.h|cpp from src/gui to src/render for consistency.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 940</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed parser bug - '=-' would break parsing (e.g. i=-10).</para>
+		</listitem>
+		<listitem>
+			<para> Saving of command toolbar entries in program prefs was not finished - now it is - default command storage set to 25 items.</para>
+		</listitem>
+		<listitem>
+			<para> Command toolbar's QCompleter now set to display unfiltered list of entries.</para>
+		</listitem>
+		<listitem>
+			<para> Saving of program QSettings was not working - add a call to sync().</para>
+		</listitem>
+		<listitem>
+			<para> Model::selectLine() was mistakenly comparing squared and unsquared distances - fixed.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 939</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Minor fix to text progress indicator update.</para>
+		</listitem>
+		<listitem>
+			<para> Added inverse trigonometric functions 'acos', 'asin', and 'atan'.</para>
+		</listitem>
+		<listitem>
+			<para> Memory leak fixed: LineParser was not freeing fstream object on destruction.</para>
+		</listitem>
+		<listitem>
+			<para> Overflow fixed: creation of text in CellDefine tool window.</para>
+		</listitem>
+		<listitem>
+			<para> Data members in various places had not been initialised - fixed.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 938</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed undo state messages for atom transformations (extra newline present at end of text).</para>
+		</listitem>
+		<listitem>
+			<para> Added progress bars to copy/pate operations.</para>
+		</listitem>
+		<listitem>
+			<para> CLI option '-f/--format' was not taking an argument - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Internal improvements to progress indicator usage.</para>
+		</listitem>
+		<listitem>
+			<para> Increased number of decimal places in some GUI SpinEdits.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed update of view after changing cell parameters.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 937</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Finished reformatting of command descriptions.</para>
+		</listitem>
+		<listitem>
+			<para> 'selectline' now fully implemented.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 936</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Partial reformatting of command help descriptions.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 935</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added 'selectline' command and Model::selectLine() function stub.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 934</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fixed folding of atoms in fractional coordinates (led to crashes elsewhere).</para>
+		</listitem>
+		<listitem>
+			<para> Added Model::selectMiller() function and 'selectmiller' and 'millercut' commands.</para>
+		</listitem>
+		<listitem>
+			<para> Updated CellTransform window.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 933</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Rewrote Model::selectOverlaps() to use bonding cuboids for efficiency.</para>
+		</listitem>
+		<listitem>
+			<para> Added basic GUI functions and code stubs for performing Miller plane cuts.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 932</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Updated Model::beginUndoState() to accept arguments in the same way as printf() in order to make naming of undostates a little neater in the code.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed atom flip (using Model::mirrorSelectionLocal).</para>
+		</listitem>
+		<listitem>
+			<para> Fixed new CLI argument parsing - arguments to options were being grabbed a little too readily.</para>
+		</listitem>
+		<listitem>
+			<para> Grid variables were not entirely implemented - fixed.</para>
+		</listitem>
+		<listitem>
+			<para> Added 'gridvisible', fixed 'getgrid'.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 931</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Minor changes to parser lexer - skipped ascii code 13 (carriage return) as whitespace to allow correct parsing of DOS-formatted text files/filters on UNIX machines.</para>
+		</listitem>
+		<listitem>
+			<para> Adjusted filter location warning text.</para>
+		</listitem>
+		<listitem>
+			<para> Reworked CLI parsing to accept long options of the form '--opt=value'.</para>
+		</listitem>
+		<listitem>
+			<para> Changed Cell:fold() to work on multiples of cell lengths so atoms in any position are folded correctly.</para>
+		</listitem>
+		<listitem>
+			<para> Modified Bison associativity for AND and OR from 'nonassoc' to 'left' to allow multiple consecutive tests.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 930</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Minor changes to parser lexer - skipped ascii code 13 (carriage return) as whitespace to allow correct parsing of DOS-formatted text files/filters on UNIX machines.</para>
+		</listitem>
+		<listitem>
+			<para> Adjusted filter location warning text.</para>
+		</listitem>
+		<listitem>
+			<para> Reworked CLI parsing to accept long options of the form '--opt=value'.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 929</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Reverted 'corrupt' root Makefile.am.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 928</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added QCompleter to command edit in GUI.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed creation of 'keepnames' forcefields so they are named before (potentially) being set as the default FF.</para>
+		</listitem>
+		<listitem>
+			<para> Program settings now save command (toolbar) history.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 926</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Added relative path to default search locations for data directory.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 924</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Reverted LineParser to instantiate new (and delete old) fstream object as and when necessary, owing to problems with having an fstream data member to work on many different (sequential) files under Windows.</para>
+		</listitem>
+		<listitem>
+			<para> Fixed user home directory probing under Windows (wrong environment variable was used).</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 920</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Fix to Windows default filter path.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 919</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Reversioned to 1.3.</para>
+		</listitem>
+	</itemizedlist>
+	
+	<para><emphasis>Revision 918</emphasis></para>
+	<itemizedlist mark='opencircle'>
+		<listitem>
+			<para> Changed version in debian.changelog.</para>
+		</listitem>
+	</itemizedlist>
+	
+</section>
