@@ -38,6 +38,16 @@ ReturnValue::ReturnValue()
 	// Private variables
 	type_ = VTypes::NoData;
 	arraySize_ = -1;
+	valueI_ = 0;
+	valueD_ = 0.0;
+	valueI_ = 0;
+	valueP_ = NULL;
+	valueRefitem_ = NULL;
+	arrayI_ = NULL;
+	arrayD_ = NULL;
+	arrayS_ = NULL;
+	arrayV_ = NULL;
+	arrayP_ = NULL;
 }
 ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), valueI_(i), arraySize_(-1)
 {
@@ -100,6 +110,7 @@ void ReturnValue::operator=(ReturnValue &source)
 			if (arraySize_ == -1) valueP_ = source.valueP_;
 			else
 			{
+				valueP_ = NULL;
 				arrayP_ = new void*[arraySize_];
 				for (int i=0; i<arraySize_; ++i) arrayP_[i] = source.arrayP_[i];
 			}
