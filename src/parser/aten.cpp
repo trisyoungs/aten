@@ -190,12 +190,17 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (AtenVariable::Elements):
-			if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
+			if (hasArrayIndex)
 			{
-				msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
-				result = FALSE;
+				if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
+				{
+					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
+					result = FALSE;
+				}
+				else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
+				// Note: array index is not decreased by 1, since element 0 is 'XXX'
 			}
-			else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
+			else rv.set(VTypes::ElementData, &elements().el[0]);
 			break;
 		case (AtenVariable::Frame):
 			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
@@ -204,9 +209,18 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(VTypes::ModelData, aten.currentModel());
 			break;
 		case (AtenVariable::Models):
-			m = aten.model(arrayIndex-1);
+			if (hasArrayIndex)
+			{
+				if ((arrayIndex < 1) || (arrayIndex > aten.nModels()))
+				{
+					msg.print("Array index [%i] is out of range for 'model' member.\n", arrayIndex);
+					result = FALSE;
+				}
+				else m = aten.model(arrayIndex-1);
+			}
+			else m = aten.model(0);
 			if (m == NULL) result = FALSE;
-			else rv.set(VTypes::ModelData, m);
+			rv.set(VTypes::ModelData, m);
 			break;
 		case (AtenVariable::NElements):
 			rv.set(elements().nElements());
