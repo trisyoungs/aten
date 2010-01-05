@@ -114,6 +114,32 @@ bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue
 	return TRUE;
 }
 
+// Set current forcefield
+bool Command::function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Forcefield *ff = NULL;
+	if (c->hasArg(0))
+	{
+		switch (c->argType(0))
+		{
+			case (VTypes::IntegerData):
+				ff = aten.forcefield(c->argi(0)-1);
+				break;
+			case (VTypes::StringData):
+				ff = aten.findForcefield(c->argc(0));
+				break;
+			case (VTypes::ForcefieldData):
+				ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
+				break;
+		}
+		if (ff == NULL)	return FALSE;
+		aten.setCurrentForcefield(ff);
+		rv.set(VTypes::ForcefieldData, ff);
+	}
+	else rv.set(VTypes::ForcefieldData, aten.currentForcefield());
+	return TRUE;
+}
+
 // Set default forcefield ('defaultff <ff>')
 bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -257,7 +283,7 @@ bool Command::function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &r
 	return TRUE;
 }
 
-// Select current forcefield ('getff <name>')
+// Retrieve forcefield
 bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Forcefield *ff = NULL;
@@ -274,7 +300,6 @@ bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 	}
 	if (ff == NULL)	return FALSE;
-	aten.setCurrentForcefield(ff);
 	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
 }
