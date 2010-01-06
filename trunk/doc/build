@@ -20,5 +20,6 @@ sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE
 #sgmltools -b html $a-versioned.xml
 
 mkdir aten
-docbook2html --output aten aten-versioned.xml
+#docbook2html --output aten aten-versioned.xml
+docbook2pdf --output aten.pdf aten-versioned.xml
 rm aten-versioned.xml

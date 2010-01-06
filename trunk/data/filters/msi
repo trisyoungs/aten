@@ -4,7 +4,7 @@
 # ChangeLog:
 # Notes:
 
-filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi")
+filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi", id=12)
 {
 	# Variable declarations
 	int n,cellvar,id,bondi,bondj;
