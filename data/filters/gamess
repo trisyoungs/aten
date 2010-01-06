@@ -6,7 +6,7 @@
 # Notes:
 #	Output model filter sets symmetry to C1, regardless of the actual symmetry.
 
-filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", extension="log", glob="*.log", zmap="name", search="GAMESS VERSION")
+filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", extension="log", glob="*.log", zmap="name", search="GAMESS VERSION", id=10)
 {
 	# Variable declaration
 	int result,nstructures,natoms,n;

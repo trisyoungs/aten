@@ -3,7 +3,7 @@
 # Last modified: 12/04/2009
 # ChangeLog:
 
-filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", glob="*.mol")
+filter(type="importmodel",name="MDL Mol File", nickname="mol", extension="mol", glob="*.mol", id=10)
 {
 	# Variable declaration
 	string line,e,title;

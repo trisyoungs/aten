@@ -4,7 +4,7 @@
 # ChangeLog:
 # Notes:
 
-filter(type="importgrid", name="Probability Density", nickname="pdens", extension="pdens", glob="*.pdens")
+filter(type="importgrid", name="Probability Density", nickname="pdens", extension="pdens", glob="*.pdens", id=2)
 {
 	# Variable declarations
 	string order;

@@ -59,8 +59,19 @@
 	<!ENTITY ffrules SYSTEM "ff/rules.xml">
 	<!ENTITY fftyping SYSTEM "ff/typing.xml">
 	<!ENTITY ffneta SYSTEM "ff/neta.xml">
+	<!ENTITY ffformsvdw SYSTEM "ff/forms-vdw.xml">
 	<!-- Enums -->
-	<!ENTITY enums SYSTEM "enumlist/enums.xml">
+	<!ENTITY bondtypes SYSTEM "enums/bondtypes.xml">
+	<!ENTITY celltypes SYSTEM "enums/celltypes.xml">
+	<!ENTITY colourschemes SYSTEM "enums/colourschemes.xml">
+	<!ENTITY drawingstyles SYSTEM "enums/drawingstyles.xml">
+	<!ENTITY glyphtypes SYSTEM "enums/glyphtypes.xml">
+	<!ENTITY labeltypes SYSTEM "enums/labeltypes.xml">
+	<!ENTITY outputtypes SYSTEM "enums/outputtypes.xml">
+	<!ENTITY parseoptions SYSTEM "enums/parseoptions.xml">
+	<!ENTITY readsuccess SYSTEM "enums/readsuccess.xml">
+	<!ENTITY viewobjects SYSTEM "enums/viewobjects.xml">
+	<!ENTITY zmaptypes SYSTEM "enums/zmaptypes.xml">
 	<!-- Changelogs -->
 	<!ENTITY changelog11 SYSTEM "changelogs/changelog1.1.xml">
 	<!ENTITY changelog12 SYSTEM "changelogs/changelog1.2.xml">
@@ -173,6 +184,7 @@
 		&ffrules;
 		&fftyping;
 		&ffneta;
+		&ffformsvdw;
 	</chapter>
 <!-- 	* Functional Forms - All functional forms currently implemented in Aten -->
 <!-- 	** ((VDW Functional Forms)) - Short-range interatomic interactions -->
@@ -184,7 +196,17 @@
 	<!-- ENUMS -->
 	<chapter id="enums"><title>Enumerations</title>
 		<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
-		&enums;
+		&bondtypes;
+		&celltypes;
+		&colourschemes;
+		&drawingstyles;
+		&glyphtypes;
+		&labeltypes;
+		&outputtypes;
+		&parseoptions;
+		&readsuccess;
+		&viewobjects;
+		&zmaptypes;
 	</chapter>
 
 	<!-- CHANGELOGS -->

@@ -5,7 +5,7 @@
 # Notes:
 #   Residue data etc. are ignored.
 
-filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", zmap="firstalpha")
+filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", zmap="firstalpha", id=13)
 {
 	# Variable declarations
 	string keyword,line,e,name;
