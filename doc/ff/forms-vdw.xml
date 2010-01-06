@@ -1,0 +1,130 @@
+<section id="ff.forms.vdw"><title>VDW Functional Forms</title>
+
+	<table frame='all' pgwide='1' tocentry='1'><title>VDW Functional Forms</title>
+		<tgroup cols='5' align='center' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Name</entry>
+					<entry>Keyword</entry>
+					<entry>NParams (Req)</entry>
+					<entry>Form</entry>
+					<entry>Parameters</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>Lennard-Jones 12-6</entry>
+					<entry>lj</entry>
+					<entry>3 (2)</entry>
+					<entry>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:mi>U</mml:mi>
+									<mml:msub>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mn>4</mml:mn>
+									<mml:mo>*</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mfrac>
+										<mml:mi>&sigma;</mml:mi>
+										<mml:mi>r</mml:mi>
+									</mml:mfrac>
+									<mml:mo>)</mml:mo>
+									<mml:msup>
+										<mml:mn>12</mml:mn>
+									</mml:msup>
+									<mml:mo>-</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>XXX</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+</section>
+
+<!--!!Lennard-Jones 12-6
+
+{CODE()}
+Keyword: lj
+NParams: 3 (2 required, 1 default)
+{CODE}
+
+::{img src=show_image.php?name=lj }::
+
+|| __Data[[] Index__ | __Parameter (Default Value)__
+1 | {img src=show_image.php?name=epsilon }
+2 | {img src=show_image.php?name=sigma }
+3 | {img src=show_image.php?name=n } (1.0)
+||
+
+
+</section>-->
+
+<!--
+!!Inverse Power
+
+{CODE()}
+Keyword: inversepower
+NParams: 3 (2 required, 1 default)
+{CODE}
+
+::{img src=show_image.php?name=inversepower }::
+
+|| __Data[[] Index__ | __Parameter (Default Value)__
+1 | {img src=show_image.php?name=epsilon }
+2 | {img src=show_image.php?name=r }
+3 | {img src=show_image.php?name=n } (1.0)
+||
+
+!!Lennard-Jones AB
+
+{CODE()}
+Keyword: ljab
+NParams: 2
+{CODE}
+
+::{img src=show_image.php?name=ljab }::
+
+|| __Data[[] Index__ | __Parameter (Default Value)__
+1 | {img src=show_image.php?name=A }
+2 | {img src=show_image.php?name=B }
+||
+
+!!Buckingham
+
+{CODE()}
+Keyword: buck
+NParams: 3 (3 required)
+{CODE}
+
+::{img src=show_image.php?name=buck }::
+
+|| __Data[[] Index__ | __Parameter (Default Value)__
+1 | {img src=show_image.php?name=A }
+2 | {img src=show_image.php?name=B }
+3 | {img src=show_image.php?name=C }
+||
+
+!!Morse
+
+{CODE()}
+Keyword: morse
+NParams: 3 (3 required)
+{CODE}
+
+::{img src=show_image.php?name=morse }::
+
+|| __Data[[] Index__ | __Parameter (Default Value)__
+1 | {img src=show_image.php?name=k }
+2 | {img src=show_image.php?name=r0 }
+3 | {img src=show_image.php?name=E0 }
+||
+
+-->
