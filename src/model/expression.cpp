@@ -99,6 +99,7 @@ bool Model::assignForcefieldCharges()
 	// Perform forcefield typing if necessary
 	msg.enter("Model::assignForcefieldCharges");
 	int nfailed = 0;
+	double totalq = 0.0;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->type() == NULL)
@@ -106,9 +107,13 @@ bool Model::assignForcefieldCharges()
 			nfailed ++;
 			msg.print("Could not assign charge to atom %i since it has no atomtype associated to it.\n", i->id()+1);
 		}
-		else i->setCharge( i->type()->charge() );
+		else
+		{
+			i->setCharge( i->type()->charge() );
+			totalq += i->type()->charge();
+		}
 	}
-	if (nfailed == 0) msg.print("Charges assigned successfully to all atoms.\n");
+	if (nfailed == 0) msg.print("Charges assigned successfully to all atoms.\nTotal charge in model is %f e.\n", totalq);
 	else msg.print("Failed to assign charges to %i atoms.\n", nfailed);
 	msg.exit("Model::assignForcefieldCharges");
 	return (nfailed == 0);
