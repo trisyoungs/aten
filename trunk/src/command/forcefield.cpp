@@ -37,7 +37,7 @@ bool Command::function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
 	// Get functional form of bond potential
-	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(c->argc(0));
+	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(c->argc(0), TRUE);
 	if (anglestyle == AngleFunctions::nAngleFunctions) return FALSE;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
@@ -60,7 +60,7 @@ bool Command::function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
 	// Get functional form of bond potential
-	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(c->argc(0));
+	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(c->argc(0),TRUE);
 	if (bondstyle == BondFunctions::nBondFunctions) return FALSE;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
@@ -246,10 +246,15 @@ bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Print some information about the terms read in from the forcefield
-	msg.print("Read in %i type descriptions\n", obj.ff->nTypes() - 1);
-	msg.print("Read in %i bond definitions\n", obj.ff->nBonds());
-	msg.print("Read in %i angle definitions\n", obj.ff->nAngles());
-	msg.print("Read in %i torsion definitions\n", obj.ff->nTorsions());
+	msg.print("Forcefield now contains:\n");
+	msg.print("\t%i type descriptions\n", obj.ff->nTypes() - 1);
+	msg.print("\t%i bond definitions\n", obj.ff->nBonds());
+	msg.print("\t%i angle definitions\n", obj.ff->nAngles());
+	msg.print("\t%i torsion definitions\n", obj.ff->nTorsions());
+	// Check that some forcefield types were defined...
+	if (obj.ff->nTypes() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
+	// Link forcefield type references (&N) to their actual forcefield types
+	for (ForcefieldAtom *ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
 	rv.reset();
@@ -304,6 +309,28 @@ bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Add a new intermolecular definition to the current forcefield
+bool Command::function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
+	// Get functional form of vdw
+	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(c->argc(0), TRUE);
+	if (vdwstyle == VdwFunctions::nVdwFunctions) return FALSE;
+	// Find typeId referenced by command
+	ForcefieldAtom *ffa = obj.ff->findType(c->argi(1));
+	if (ffa == NULL)
+	{
+		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
+		return FALSE;
+	}
+	ffa->setVdwForm(vdwstyle);
+	ffa->setCharge(c->argd(2));
+	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
+	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
+	rv.reset();
+	return TRUE;
+}
+
 // Load forcefield ('loadff <filename> [nickname]')
 bool Command::function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -348,16 +375,15 @@ bool Command::function_Map(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Create new, empty forcefield ('newff <name>')
+// Create new, empty forcefield
 bool Command::function_NewFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	obj.ff = aten.addForcefield();
-	obj.ff->setName(c->argc(0));
+	obj.ff = aten.addForcefield(c->argc(0));
 	rv.set(VTypes::ForcefieldData, obj.ff);
 	return TRUE;
 }
 
-// Print expression setup ('printsetup')
+// Print expression setup
 bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	msg.print("Current Energy Setup:\n");
@@ -369,7 +395,7 @@ bool Command::function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Print type specified ('printtype')
+// Print type specified
 bool Command::function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
@@ -430,7 +456,7 @@ bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	int n;
 	// Get functional form of bond potential
-	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(c->argc(0));
+	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(c->argc(0), TRUE);
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions) return FALSE;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
@@ -524,25 +550,4 @@ bool Command::function_Units(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Add a new intermolecular definition to the current forcefield
-bool Command::function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	// Get functional form of vdw
-	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(c->argc(0));
-	if (vdwstyle == VdwFunctions::nVdwFunctions) return FALSE;
-	// Find typeId referenced by command
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(1));
-	if (ffa == NULL)
-	{
-		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
-		return FALSE;
-	}
-	ffa->setCharge(c->argd(2));
-	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
-	ffa->setVdwForm(vdwstyle);
-	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
-	rv.reset();
-	return TRUE;
-}
 

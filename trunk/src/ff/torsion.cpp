@@ -155,7 +155,6 @@ void Pattern::torsionForces(Model *srcmodel)
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
-
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -175,18 +174,23 @@ void Pattern::torsionForces(Model *srcmodel)
 			mag_ij = rij.magnitude();
 			mag_kj = rkj.magnitude();
 			mag_lk = rlk.magnitude();
+// 			printf("i-j-k-l %i-%i-%i-%i MAGs %f %f %f\n",i,j,k,l, mag_ij,mag_kj, mag_lk);
 			// Calculate cross products and torsion angle formed (in radians)
 			xpj = rij * rkj;
 			xpk = rlk * rkj;
 			mag_xpj = xpj.magAndNormalise();
 			mag_xpk = xpk.magAndNormalise();
 			dp = xpj.dp(xpk);
-			if (dp < -1.0) dp = -1;
+			if (dp < -1.0) dp = -1.0;
+			else if (dp > 1.0) dp = 1.0;
 			phi = acos(dp);
+// 			printf("i-j-k-l %i-%i-%i-%i DP %16.13f %16.13f %16.13f %16.13f\n",i,j,k,l, mag_xpj, mag_xpk, dp, phi);
+			if (phi < 0.0) { if (phi > -1e-8) phi = -1e-8; }
+			else if (phi < 1e-8) phi = 1e-8;
 			// Derivative w.r.t. change in torsion angle
 			dphi_dcosphi = -1.0 / sin(phi);
 			// Pathological case where phi = 0...
-			if (phi < 1E-10) dphi_dcosphi = 0.0;
+			if (phi < 1E-8) dphi_dcosphi = 0.0;
 
 			/* Construct derivatives of perpendicular axis (cross product) w.r.t. component vectors.
 			E.g.
@@ -271,8 +275,8 @@ void Pattern::torsionForces(Model *srcmodel)
 					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
 					break;
 			}
-
-			// Calculate forces	TODO Rewrite to re-use fi and fl terms in fj and fk
+// 			printf("i-j-k-l %i-%i-%i-%i %f %f %f\n",i,j,k,l, phi, dphi_dcosphi, du_dphi);
+			// Calculate forces
 			fi.x = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[0]);
 			fi.y = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[1]);
 			fi.z = -du_dphi * dcos_dxpj.dp(dxpj_dij.rows[2]);

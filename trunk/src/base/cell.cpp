@@ -718,8 +718,8 @@ double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<do
 	xpk.normalise();
 	dp = xpj.dp(xpk);
 	//dp = (dp < 0 ? (dp < -1 ? : min(dp,1));
-	if (dp < -1) dp = -1;
-	else if (dp > 1) dp = 1;
+	if (dp < -1.0) dp = -1.0;
+	else if (dp > 1.0) dp = 1.0;
 	angle = acos(dp);
 	// Calculate sign of torsion
 	dp = xpj.dp(veckl);
