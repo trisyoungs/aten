@@ -8,110 +8,289 @@
 					<entry>Keyword</entry>
 					<entry>NParams (Req)</entry>
 					<entry>Form</entry>
-					<entry>Parameters</entry>
+					<entry>Param</entry>
+					<entry>Default</entry>
 				</row>
 			</thead>
 			<tbody>
 				<row>
-					<entry>Lennard-Jones 12-6</entry>
-					<entry>lj</entry>
-					<entry>3 (2)</entry>
-					<entry>
+					<entry morerows='2'>Lennard-Jones 12-6</entry>
+					<entry morerows='2'>lj</entry>
+					<entry morerows='2'>3 (2)</entry>
+					<entry morerows='2'>
 						<inlineequation>
 							<mml:math>
 								<mml:mrow>
-									<mml:mi>U</mml:mi>
 									<mml:msub>
+										<mml:mi>U</mml:mi>
 										<mml:mi>ij</mml:mi>
 									</mml:msub>
 									<mml:mo>=</mml:mo>
 									<mml:mn>4</mml:mn>
-									<mml:mo>*</mml:mo>
-									<mml:mo>(</mml:mo>
-									<mml:mfrac>
-										<mml:mi>&sigma;</mml:mi>
-										<mml:mi>r</mml:mi>
-									</mml:mfrac>
-									<mml:mo>)</mml:mo>
-									<mml:msup>
-										<mml:mn>12</mml:mn>
-									</mml:msup>
-									<mml:mo>-</mml:mo>
+									<mml:mi>&epsi;</mml:mi>
+									<mml:mrow><mml:mo>(</mml:mo>
+										<mml:msup>
+											<mml:mrow><mml:mo>(</mml:mo>
+												<mml:mfrac>
+													<mml:mi>&sigma;</mml:mi>
+													<mml:mi>r</mml:mi>
+												</mml:mfrac>
+											<mml:mo>)</mml:mo></mml:mrow>
+											<mml:mn>12</mml:mn>
+										</mml:msup>
+										<mml:mo>-</mml:mo>
+										<mml:mi>n</mml:mi>
+										<mml:msup>
+											<mml:mfenced>
+												<mml:mfrac>
+													<mml:mi>&sigma;</mml:mi>
+													<mml:mi>r</mml:mi>
+												</mml:mfrac>
+											</mml:mfenced>
+											<mml:mn>6</mml:mn>
+										</mml:msup>
+									<mml:mo>)</mml:mo></mml:mrow>
 								</mml:mrow>
 							</mml:math>
 						</inlineequation>
 					</entry>
-					<entry>XXX</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&epsi;</mml:mi></mml:math></inlineequation>
+					</entry>
 				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&sigma;</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+					<entry>
+						1.0
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='2'>Inverse Power</entry>
+					<entry morerows='2'>inversepower</entry>
+					<entry morerows='2'>3 (2)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mi>&epsi;</mml:mi>
+									<mml:msup>
+										<mml:mrow><mml:mo>(</mml:mo>
+											<mml:mfrac>
+												<mml:mi>r</mml:mi>
+												<mml:msub>
+													<mml:mi>r</mml:mi>
+													<mml:mi>ij</mml:mi>
+												</mml:msub>
+											</mml:mfrac>
+										<mml:mo>)</mml:mo></mml:mrow>
+										<mml:mn>n</mml:mn>
+									</mml:msup>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&epsi;</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>r</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+					<entry>
+						1.0
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='1'>Lennard-Jones AB</entry>
+					<entry morerows='1'>ljab</entry>
+					<entry morerows='1'>2</entry>
+					<entry morerows='1'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mfrac>
+										<mml:mi>A</mml:mi>
+										<mml:msup>
+											<mml:mi>r</mml:mi>
+											<mml:mi>12</mml:mi>
+										</mml:msup>
+									</mml:mfrac>
+									<mml:mo>-</mml:mo>
+									<mml:mfrac>
+										<mml:mi>B</mml:mi>
+										<mml:msup>
+											<mml:mi>r</mml:mi>
+											<mml:mn>6</mml:mn>
+										</mml:msup>
+									</mml:mfrac>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>A</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>B</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+			
+				<row>
+					<entry morerows='2'>Buckingham exp6</entry>
+					<entry morerows='2'>buck</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mi>A</mml:mi>
+									<mml:mo>(</mml:mo>
+									<mml:mfrac>
+										<mml:mrow>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mi>ij</mml:mi>
+											</mml:msub>
+										</mml:mrow>
+										<mml:mi>B</mml:mi>
+									</mml:mfrac>
+									<mml:mo>)</mml:mo>
+									<mml:mo>-</mml:mo>
+									<mml:mfrac>
+										<mml:mi>C</mml:mi>
+										<mml:msubsup>
+											<mml:mi>r</mml:mi>
+											<mml:mn>ij</mml:mn>
+											<mml:mn>6</mml:mn>
+										</mml:msubsup>
+									</mml:mfrac>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>A</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>B</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>C</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry morerows='2'>Morse</entry>
+					<entry morerows='2'>morse</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msub>
+										<mml:mi>E</mml:mi>
+										<mml:mn>0</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									
+									<mml:msup>
+										<mml:mrow>
+											<mml:mo>(</mml:mo>
+											<mml:mn>1</mml:mn>
+											<mml:mo>-</mml:mo>
+											<mml:mo>exp</mml:mo>
+											<mml:mo>(</mml:mo>
+											<mml:mo>-</mml:mo>
+											<mml:mi>k</mml:mi>
+											<mml:mo>(</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mi>ij</mml:mi>
+											</mml:msub>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mn>0</mml:mn>
+											</mml:msub>
+											<mml:mo>)</mml:mo>
+											<mml:mo>)</mml:mo>
+											<mml:mo>)</mml:mo>
+										</mml:mrow>
+										<mml:mn>2</mml:mn>
+									</mml:msup>
+									
+									<mml:mo>-</mml:mo>
+									<mml:mn>1</mml:mn>
+									
+									<mml:mo>)</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>r</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>E</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
 			</tbody>
 		</tgroup>
 	</table>
 
 </section>
 
-<!--!!Lennard-Jones 12-6
-
-{CODE()}
-Keyword: lj
-NParams: 3 (2 required, 1 default)
-{CODE}
-
-::{img src=show_image.php?name=lj }::
-
-|| __Data[[] Index__ | __Parameter (Default Value)__
-1 | {img src=show_image.php?name=epsilon }
-2 | {img src=show_image.php?name=sigma }
-3 | {img src=show_image.php?name=n } (1.0)
-||
-
-
-</section>-->
-
 <!--
-!!Inverse Power
-
-{CODE()}
-Keyword: inversepower
-NParams: 3 (2 required, 1 default)
-{CODE}
-
-::{img src=show_image.php?name=inversepower }::
-
-|| __Data[[] Index__ | __Parameter (Default Value)__
-1 | {img src=show_image.php?name=epsilon }
-2 | {img src=show_image.php?name=r }
-3 | {img src=show_image.php?name=n } (1.0)
-||
-
-!!Lennard-Jones AB
-
-{CODE()}
-Keyword: ljab
-NParams: 2
-{CODE}
-
-::{img src=show_image.php?name=ljab }::
-
-|| __Data[[] Index__ | __Parameter (Default Value)__
-1 | {img src=show_image.php?name=A }
-2 | {img src=show_image.php?name=B }
-||
-
-!!Buckingham
-
-{CODE()}
-Keyword: buck
-NParams: 3 (3 required)
-{CODE}
-
-::{img src=show_image.php?name=buck }::
-
-|| __Data[[] Index__ | __Parameter (Default Value)__
-1 | {img src=show_image.php?name=A }
-2 | {img src=show_image.php?name=B }
-3 | {img src=show_image.php?name=C }
-||
-
+    
 !!Morse
 
 {CODE()}
@@ -127,4 +306,4 @@ NParams: 3 (3 required)
 3 | {img src=show_image.php?name=E0 }
 ||
 
--->
+-->-->

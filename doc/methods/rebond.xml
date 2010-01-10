@@ -1,0 +1,191 @@
+Date: Wed, 25 Nov. 2009 20:52:12 +00:00
+Mime-Version: 1.0 (Produced by Tiki)
+Content-Type: multipart/mixed;
+  boundary="=_multipart_boundary_93"
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=7;
+  lastmodified=1242296006;
+  author_id=143.117.90.31;
+  summary="";
+  hits=51;
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+!!#Overview
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+{img align=&quot;center&quot; src=show_image.php?id=116}
+
+The two ''sigma''s represent the radii of atoms ''i'' and ''j'' which have coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.
+
+Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with an orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''. A single loop over atoms is then performed to associate them to these subvolumes. Each atom belongs to at least one cuboid, determined by its absolute position in the system, and commonly belongs to one other cuboid, determined by adding half of the cuboids dimensions on to the atoms position. While a little counterintuitive, potentially adding atoms to a neighbouring cuboid along this diagonal vector allows the final calculation of distances between pairs of atoms to consider only eight 'neighbouring' (more correctly 'overlapping') subvolumes rather than the 26 needed if each atom belongs exclusively to only one cuboid. For atoms that exist in subvolumes along the edges of the whole volume, these are also added to the subvolume(s) on the opposite side(s) to account for minimum image effects in periodic systems.
+
+Once the effort has been made to assign atoms to cuboids, the final loops to calculate distances runs over a much reduced subset of atom pairs owing to the partitioning. A loop over cuboids is performed, first considering all atom pairs within the same cuboid, and then extending this to consider distances between a particular atom of this central cuboid and its eight 'overlapping' neighbours.
+
+!!#Notes
+There is some redundancy of atom pairs since the same pair may be considered twice when taking into account the overlapping cuboids. However, in the interests of facile book-keeping this is not checked for explicitly during the running of the algorithm.
+
+
+[[1] &quot;Covalent radii revisited&quot;, B. Cordero, V. Gómez, A. E. ))Platero-Prats((, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, ''Dalton Trans.'', __2008__ (DOI: [http://dx.doi.org/10.1039/b801115j])
+
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=6;
+  lastmodified=1242225508;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+
+!!#Overview
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+{img align=&quot;center&quot; src=show_image.php?id=116}
+
+The two ''sigma''s represent the radii of atoms ''i'' and ''j'' which have coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.
+
+Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with a orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''. A single loop over atoms is then performed to associate them to these subvolumes. Each atom belongs to at least one cuboid, determined by its absolute position in the system, and commonly belongs to one other cuboid, determined by adding half of the cuboids dimensions on to the atoms position. While a little counterintuitive, potentially adding atoms to a neighbouring cuboid along this diagonal vector allows the final calculation of distances between pairs of atoms to consider only eight 'neighbouring' (more correctly 'overlapping') subvolumes rather than the 26 needed if each atom belongs exclusively to only one cuboid. For atoms that exist in subvolumes along the edges of the whole volume, these are also added to the subvolume(s) on the opposite side(s) to account for minimum image effects in periodic systems.
+
+Once the effort has been made to assign atoms to cuboids, the final loops to calculate distances runs over a much reduced subset of atom pairs owing to the partitioning. A loop over cuboids is performed, first considering all atom pairs within the same cuboid, and then extending this to consider distances between a particular atom of this central cuboid and its eight 'overlapping' neighbours.
+
+!!#Notes
+There is some redundancy of atom pairs since the same pair may be considered twice when taking into account the overlapping cuboids. However, in the interests of facile book-keeping this is not checked for explicitly during the running of the algorithm.
+
+
+[[1] &quot;Covalent radii revisited&quot;, B. Cordero, V. Gómez, A. E. ))Platero-Prats((, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, ''Dalton Trans.'', __2008__ (DOI: [http://dx.doi.org/10.1039/b801115j])
+
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=5;
+  lastmodified=1242220678;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+
+!!#Overview
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+{img align=&quot;center&quot; src=show_image.php?id=116}
+
+The two ''sigma''s represent the radii of atoms ''i'' and ''j'' which have coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.
+
+Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with a orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''. A single loop over atoms is then performed to associate them to these subvolumes. Each atom belongs to at least one cuboid, determined by its absolute position in the system, and commonly belongs to one other cuboid, determined by adding half of the cuboids dimensions on to the atoms position. While a little counterintuitive, potentially adding atoms to a neighbouring cuboid along this diagonal vector allows the final calculation of distances between pairs of atoms to consider only eight 'neighbouring' (more correctly 'overlapping') subvolumes rather than the 26 needed if each atom belongs exclusively to only one cuboid. For atoms that exist in subvolumes along the edges of the whole volume, these are also added to the subvolume(s) on the opposite side(s) to account for minimum image effects in periodic systems.
+
+Once the effort has been made to assign atoms to cuboids, the final loops to calculate distances runs over a much reduced subset of atom pairs owing to the partitioning. A loop over cuboids is performed, first considering all atom pairs within the same cuboid, and then extending this to consider distances between a particular atom of this central cuboid and its eight 'overlapping' neighbours.
+
+!!#Notes
+There is some redundancy of atom pairs since the same pair may be considered twice when taking into account the overlapping cuboids. However, in the interests of facile book-keeping this is not checked for explicitly during the running of the algorithm.
+
+
+[[1] Covalent radii revisited, B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, ''Dalton Trans.'', __2008__ (DOI: [http://dx.doi.org/10.1039/b801115j])
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=4;
+  lastmodified=1242219652;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+PIC
+
+''ri'' and ''rj'' represent the radii of atoms ''i'' and ''j'' with coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.
+
+Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with a orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''. A single loop over atoms is then performed to associate them to these subvolumes. Each atom belongs to at least one cuboid, determined by its absolute position in the system, and commonly belongs to one other cuboid, determined by adding half of the cuboids dimensions on to the atoms position. While a little counterintuitive, potentially adding atoms to a neighbouring cuboid along this diagonal vector allows the final calculation of distances between pairs of atoms to consider only eight 'neighbouring' (more correctly 'overlapping') subvolumes rather than the 26 needed if each atom belonged to only one cuboid. For atoms that exist in subvolumes along the edges of the whole volume, these are also added to the subvolume(s) on the opposite side(s) to account for minimum image effects in periodic systems.
+
+
+[[1] Covalent radii revisited, B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, ''Dalton Trans.'', __2008__ (DOI: [http://dx.doi.org/10.1039/b801115j])
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=3;
+  lastmodified=1242218734;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+PIC
+
+''ri'' and ''rj'' represent the radii of atoms ''i'' and ''j'' with coordinates ''xi'', ''yi'', ''zi'' and ''xj'', ''yj'', ''zj''. The parameter ''alpha'' is an adjustable tolerance value to enable fine-tuning, and using Aten's set of built-in radii[[1] usually lays between 1.0 and 2.0. For molecules or periodic systems of modest size the method can be used as is, but for large systems of many atoms the use of a double loop over atoms results in a very slow algorithm.
+
+Aten overcomes this slowdown for larger systems by partitioning the system up into a series of overlapping ''cuboids''. For a system of N particles in a periodic box (or an isolated system with a orthorhombic pseudo-box determined by the extreme positions of atoms), the volume is partitioned into a number of subvolumes of some minimum size in each direction. The minimum size of any one of the subvolume's dimensions is chosen relative to the maximum bond length possible given the largest elemental radius and the current bond tolerance ''alpha''.
+
+
+[[1] Covalent radii revisited, B. Cordero, V. Gómez, A. E. Platero-Prats, M. Revés, J. Echeverría, E. Cremades, F. Barragán and S. Alvarez, ''Dalton Trans.'', __2008__ (DOI: [http://dx.doi.org/10.1039/b801115j])
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=2;
+  lastmodified=1242217386;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+{maketoc}
+
+!!Overview
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+
+
+--=_multipart_boundary_93
+Content-Type: application/x-tikiwiki;
+  pagename=Methods%3A%20Rebond;
+  flags="";
+  author=tris;
+  version=1;
+  lastmodified=1242216823;
+  author_id=143.117.90.31;
+  summary="";
+  description="";
+  charset=utf-8
+Content-Transfer-Encoding: binary
+
+
+{maketoc}
+
+!!Overview
+The most common means of determining connectivity between a collection of atoms is based on simple check of the actual distance between two atoms and the sum of their assigned radii:
+
+{CODE()}
+{CODE}
+
+--=_multipart_boundary_93--

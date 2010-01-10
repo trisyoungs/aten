@@ -1,0 +1,35 @@
+<section id="methods.literature"><title>Literature Methods</title>
+	<indexterm zone="methods.literature"><primary>methods</primary><secondary>literature</secondary></indexterm>
+	
+	<para>The following table lists common literature methods implemented in Aten, noting any implementation differences etc.</para>
+	
+	<table frame='all' pgwide='1' tocentry='0'><title>Literature Methods</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Name</entry>
+					<entry>Description / Notes</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>Ewald Sum</entry>
+					<entry>Electrostatic energy and forces for periodic systems. Implemented as described in: XXX</entry>
+				</row>
+				<row>
+					<entry>Conjugate Gradient</entry>
+					<entry></entry>
+				</row>
+				<row>
+					<entry>Marching Cubes</entry>
+					<entry>Isosurface generation from regular gridded data.  No pathological cases are accounted for. See implementation details in: XXX</entry>
+				</row>
+				<row>
+					<entry>Steepest Descent</entry>
+					<entry></entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>
