@@ -78,7 +78,7 @@ namespace AngleFunctions
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
-	enum Cos2Parameter { Cos2K, Cos2Eq, Cos2C0, Cos2C1, Cos2C2 };
+	enum Cos2Parameter { Cos2K, Cos2C0, Cos2C1, Cos2C2 };
 	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 	enum BondConstraintParameter { BondConstraintK, BondConstraintEq };
 }

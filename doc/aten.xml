@@ -61,6 +61,9 @@
 	<!ENTITY fftyping SYSTEM "ff/typing.xml">
 	<!ENTITY ffneta SYSTEM "ff/neta.xml">
 	<!ENTITY ffformsvdw SYSTEM "ff/forms-vdw.xml">
+	<!ENTITY ffformsbond SYSTEM "ff/forms-bond.xml">
+	<!ENTITY ffformsangle SYSTEM "ff/forms-angle.xml">
+	<!ENTITY ffformstorsion SYSTEM "ff/forms-torsion.xml">
 	<!-- Methods -->
 	<!ENTITY methodneta SYSTEM "methods/neta.xml">
 	<!ENTITY methodaugment SYSTEM "methods/augment.xml">
@@ -194,13 +197,10 @@
 		&fftyping;
 		&ffneta;
 		&ffformsvdw;
+		&ffformsbond;
+		&ffformsangle;
+		&ffformstorsion;
 	</chapter>
-<!-- 	* Functional Forms - All functional forms currently implemented in Aten -->
-<!-- 	** ((VDW Functional Forms)) - Short-range interatomic interactions -->
-<!-- 	** ((Bond Functional Forms)) - Bond (i-j) intramolecular interactions -->
-<!-- 	** ((Angle Functional Forms)) - Angle (i-j-k) intramolecular interactions -->
-<!-- 	** ((Torsion Functional Forms)) - Torsion/Dihedral (i-j-k-l) intramolecular interactions -->
-
 
 	<!-- Methods -->
 	<chapter id="methods"><title>Methods</title>
