@@ -71,7 +71,6 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 				case (AngleFunctions::Cos2):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
 					forcek = ffb->parameter(AngleFunctions::Cos2K);
-					eq = ffb->parameter(AngleFunctions::Cos2Eq) / DEGRAD;
 					c0 = ffb->parameter(AngleFunctions::Cos2C0);
 					c1 = ffb->parameter(AngleFunctions::Cos2C1);
 					c2 = ffb->parameter(AngleFunctions::Cos2C2);
@@ -160,7 +159,6 @@ void Pattern::angleForces(Model *srcmodel)
 				case (AngleFunctions::Cos2):
 					// dU/d(theta) = -forcek * (c1 * sin(theta) + 2 * c2 * sin(2*theta))
 					forcek = ffb->parameter(AngleFunctions::Cos2K);
-					eq = ffb->parameter(AngleFunctions::Cos2Eq) / DEGRAD;
 					c1 = ffb->parameter(AngleFunctions::Cos2C1);
 					c2 = ffb->parameter(AngleFunctions::Cos2C2);
 					du_dtheta = -forcek * (c1 * sin(theta) + 2.0 * c2 * sin(2.0 * theta));

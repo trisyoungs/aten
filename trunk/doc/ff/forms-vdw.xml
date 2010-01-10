@@ -215,6 +215,7 @@
 						<inlineequation><mml:math><mml:mi>C</mml:mi></mml:math></inlineequation>
 					</entry>
 				</row>
+
 				<row>
 					<entry morerows='2'>Morse</entry>
 					<entry morerows='2'>morse</entry>
@@ -288,22 +289,3 @@
 	</table>
 
 </section>
-
-<!--
-    
-!!Morse
-
-{CODE()}
-Keyword: morse
-NParams: 3 (3 required)
-{CODE}
-
-::{img src=show_image.php?name=morse }::
-
-|| __Data[[] Index__ | __Parameter (Default Value)__
-1 | {img src=show_image.php?name=k }
-2 | {img src=show_image.php?name=r0 }
-3 | {img src=show_image.php?name=E0 }
-||
-
--->-->
