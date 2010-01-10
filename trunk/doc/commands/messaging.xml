@@ -75,7 +75,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			verbose(&quot;Extra information for you.\n&quot);
+			verbose(&quot;Extra information for you.\n&quot;);
 		</synopsis>
 
 	</section>

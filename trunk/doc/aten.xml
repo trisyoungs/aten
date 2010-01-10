@@ -12,6 +12,7 @@
 	<!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
 	<!ENTITY installation SYSTEM "gettingstarted/installation.xml">
 	<!ENTITY faq SYSTEM "gettingstarted/faq.xml">
+	<!ENTITY reference SYSTEM "gettingstarted/reference.xml">
 	<!ENTITY cli SYSTEM "gettingstarted/cli.xml">
 	<!ENTITY gui SYSTEM "gettingstarted/gui.xml">
 	<!--Import / Export-->
@@ -60,6 +61,13 @@
 	<!ENTITY fftyping SYSTEM "ff/typing.xml">
 	<!ENTITY ffneta SYSTEM "ff/neta.xml">
 	<!ENTITY ffformsvdw SYSTEM "ff/forms-vdw.xml">
+	<!-- Methods -->
+	<!ENTITY methodneta SYSTEM "methods/neta.xml">
+	<!ENTITY methodaugment SYSTEM "methods/augment.xml">
+	<!ENTITY methodautoellipsoids SYSTEM "methods/autoellipsoids.xml">
+	<!ENTITY methodautopolyhedra SYSTEM "methods/autopolyhedra.xml">
+	<!ENTITY methodrebond SYSTEM "methods/rebond.xml">
+	<!ENTITY methodliterature SYSTEM "methods/literature.xml">
 	<!-- Enums -->
 	<!ENTITY bondtypes SYSTEM "enums/bondtypes.xml">
 	<!ENTITY celltypes SYSTEM "enums/celltypes.xml">
@@ -126,8 +134,9 @@
 		&compilation;
 		&installation;
 		&faq;
+		&reference;
 		&cli;
-		&gui;
+<!-- 		&gui; -->
 	</chapter>
 
 	<!-- IMPORT / EXPORT -->
@@ -191,7 +200,24 @@
 <!-- 	** ((Bond Functional Forms)) - Bond (i-j) intramolecular interactions -->
 <!-- 	** ((Angle Functional Forms)) - Angle (i-j-k) intramolecular interactions -->
 <!-- 	** ((Torsion Functional Forms)) - Torsion/Dihedral (i-j-k-l) intramolecular interactions -->
-<!-- 	* ((Methods: NETA|NETA)) - Describing atom types with the Nested English Typing Approach -->
+
+
+	<!-- Methods -->
+	<chapter id="methods"><title>Methods</title>
+		
+		<para>Some things in Aten are implemented from existing routines and algorithms. Some have been written from scratch, even when existing algorithms were available, either as an attempt to improve those existing algorithms or simply to learn more by working out how best to go about solving a given problem. A selection of algorithms are detailed in the following pages, grouped into those that were re-used from the literature, and those that were written specifically for Aten.</para>
+		
+		<para>It should be pointed out that, in the eventuality that somebody notices that one of Aten's 'custom' algorithms is actually a reproduction of an existing method, then fair enough - send me the reference and I'll be happy to move it to the 'literature' section.</para>
+		
+		<section><title>Custom Algorithms</title>
+			&methodneta;
+			&methodaugment;
+<!-- 			&methodautoellipsoids; -->
+<!-- 			&methodautopolyhedra; -->
+			&methodrebond;
+		</section>
+		&methodliterature;
+	</chapter>
 	
 	<!-- ENUMS -->
 	<chapter id="enums"><title>Enumerations</title>

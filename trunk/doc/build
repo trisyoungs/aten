@@ -14,12 +14,23 @@ echo "     version.h (ATENVERSION)  : $ATENVERSION"
 echo "     version.h (ATENDATE)     : $ATENDATE"
 echo "     version.h (ATENURL)      : $ATENURL"
 
-rm -rf aten aten-versioned.xml
+rm -rf aten-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
 
-#sgmltools -b html $a-versioned.xml
+# Generate Chunked HTML (with xsltproc)
+rm -rf html
+mkdir html
+xsltproc     --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./html/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 /usr/share/xml/docbook/stylesheet/nwalsh/1.73.2/xhtml/chunk.xsl aten.xml
+cp -r images html/
+mv html/ff.forms.vdw.html html/ff.forms.vdw.xhtml
 
-mkdir aten
-docbook2html --output aten aten-versioned.xml
-#docbook2pdf --output aten.pdf aten-versioned.xml
+#for a in html #pdf
+#do
+#  rm -rf aten.$a
+#  mkdir aten.$a
+#  cp -r images aten.$a
+#  docbook2$a --output aten.$a aten-versioned.xml
+#done
+
+# Tidy up
 rm aten-versioned.xml
