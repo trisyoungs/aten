@@ -215,7 +215,6 @@ Refitem<ForcefieldAtom,int> *NetaParser::createElementType(int eltype)
 	Refitem<ForcefieldAtom,int> *newitem = new Refitem<ForcefieldAtom,int>;
 	newitem->item = NULL;
 	newitem->data = eltype;
-// 	printf("Created an element type.\n");
 	msg.exit("NetaParser::createElementType");
 	return newitem;
 }
@@ -226,7 +225,7 @@ Refitem<ForcefieldAtom,int> *NetaParser::joinElementTypes(Refitem<ForcefieldAtom
 	msg.enter("NetaParser::joinElementTypes");
 	// Find tail of list begun by type1
 	Refitem<ForcefieldAtom,int> *tail = type1;
-	while (type1->next != NULL) type1 = type1->next;
+	while (tail->next != NULL) tail = tail->next;
 	// Append on type2
 	type2->prev = tail;
 	tail->next = type2;
