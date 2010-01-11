@@ -33,7 +33,7 @@ bool Pattern::createExpression(bool vdwOnly)
 	// NBonds can be calculated through a loop over all atoms
 	// NAngles can be calculated from atomic nBonds data.
 	// NTorsions can be calculated from the bond list and atomic nBonds data.
-	msg.enter("Pattern::initExpression");
+	msg.enter("Pattern::createExpression");
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0;
@@ -148,7 +148,7 @@ bool Pattern::createExpression(bool vdwOnly)
 				if (jj > endAtom_)
 				{
 					msg.print("!!! Found bond between molecules. Check pattern.\n");
-					msg.exit("Pattern::fillExpression");
+					msg.exit("Pattern::createExpression");
 					return FALSE;
 				}
 				if (jj > ii)
@@ -198,6 +198,7 @@ bool Pattern::createExpression(bool vdwOnly)
 			msg.print("...INTERNAL ERROR: expected %i bonds, found %i\n", nBonds, bonds_.nItems());
 			incomplete_ = TRUE;
 		}
+		else if (bonds_.nItems() == 0) msg.print("... No bonds in model.\n");
 		else if (ibonds == 0) msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
 		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
 		// Construct the angle list.
@@ -249,6 +250,7 @@ bool Pattern::createExpression(bool vdwOnly)
 			msg.print("...INTERNAL ERROR: expected %i angles, found %i\n", nAngles, angles_.nItems());
 			incomplete_ = TRUE;
 		}
+		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
 		else if (iangles == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
@@ -312,6 +314,7 @@ bool Pattern::createExpression(bool vdwOnly)
 			msg.print("...INTERNAL ERROR: expected %i torsions, found %i\n", nTorsions, torsions_.nItems());
 			incomplete_ = TRUE;
 		}
+		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
 		else if (itorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Construct improper torsions list
@@ -359,7 +362,7 @@ bool Pattern::createExpression(bool vdwOnly)
 	delete[] bonding;
 	// Print out a warning if the expression is incomplete.
 	if (incomplete_) msg.print("!!! Expression is incomplete.\n");
-	msg.exit("Pattern::fillExpression");
+	msg.exit("Pattern::createExpression");
 	return (incomplete_ ? FALSE : TRUE);
 }
 
