@@ -493,6 +493,7 @@ class Model
 	// Remove reference to names forcefield
 	void removeNamesForcefield();
 
+
 	/*
 	// Expression / Typing
 	*/
@@ -512,7 +513,7 @@ class Model
 
 	public:
 	// Set type of specified atom
-	void setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed);
+	void setAtomType(Atom *i, ForcefieldAtom *ffa, bool fixed);
 	// Determine hybridicities of atoms
 	void describeAtoms();
 	// Assign forcefield types to all atoms

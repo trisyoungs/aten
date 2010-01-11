@@ -114,9 +114,8 @@ Atom typing is performed in several steps.
 */
 
 // Set type of specified atom
-void Model::setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed)
+void Model::setAtomType(Atom *i, ForcefieldAtom *ffa, bool fixed)
 {
-	//static ForcefieldAtom *oldtype;
 	i->setType(ffa);
 	i->setTypeFixed(fixed);
 }
@@ -172,7 +171,7 @@ bool Model::typeAll()
 void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
 {
 	msg.enter("Pattern::selectionSetType");
-	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomtype(i, ffa, fixed);
+	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomType(i, ffa, fixed);
 	changeLog.add(Log::Coordinates);
 	msg.exit("Pattern::selectionSetType");
 }
@@ -182,6 +181,6 @@ void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
 	msg.enter("Model::removeTyping");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomtype(i, NULL, FALSE);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, FALSE);
 	msg.exit("Model::removeTyping");
 }

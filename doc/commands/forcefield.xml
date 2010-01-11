@@ -42,11 +42,12 @@
 	<section id="command.ref.clearmap"><title>clearmap</title>
 		<indexterm><primary>commands</primary><secondary>clearmap</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearmap ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearmap</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Clear any manual typemap definitions.</para>
 	
 		<para>For example:</para>
@@ -59,11 +60,12 @@
 	<section id="command.ref.clearexportmap"><title>clearexportmap</title>
 		<indexterm><primary>commands</primary><secondary>clearexportmap</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearexportmap ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearexportmap</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Clear any manual export typemap definitions.</para>
 	
 		<para>For example:</para>
@@ -76,11 +78,12 @@
 	<section id="command.ref.clearexpression"><title>clearexpression</title>
 		<indexterm><primary>commands</primary><secondary>clearexpression</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> clearexpression ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Removes any forcefield expression defined for the current model.</para>
 		
 		<para>For example:</para>
@@ -93,11 +96,12 @@
 	<section id="command.ref.createexpression"><title>createexpression</title>
 		<indexterm><primary>commands</primary><secondary>createexpression</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> createexpression ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>createexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Creates a suitable energy description for the current model.</para>
 		
 		<para>For example:</para>
@@ -110,11 +114,12 @@
 	<section id="command.ref.defaultff"><title>defaultff</title>
 		<indexterm><primary>commands</primary><secondary>defaultff</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> defaultff ( string|forcefield ff )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>defaultff</function></funcdef>
+				<paramdef>string|forcefield <parameter>ff</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Makes the supplied/named forcefield the default forcefield to use when none is associated.</para>
 		
 		<para>For example:</para>
@@ -127,11 +132,14 @@
 	<section id="command.ref.equivalents"><title>equivalents</title>
 		<indexterm><primary>commands</primary><secondary>equivalents</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> equivalents ( string name, string &quot;typenames...&quot; )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>equivalents</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>string <parameter>typename(s)</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See ((Forcefield Files|#equivalents)) for more information.</para>
 	
 	</section>
@@ -139,11 +147,12 @@
 	<section id="command.ref.exportmap"><title>exportmap</title>
 		<indexterm><primary>commands</primary><secondary>exportmap</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> exportmap ( string &quot;typename=newname,...&quot; )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>exportmap</function></funcdef>
+				<paramdef>string <parameter>maps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set up manual mappings that convert atomtype names when expression are exported. Works in the opposite way to the 'map' command.</para>
 		
 		<para>For example:</para>
@@ -153,27 +162,16 @@
 		<para>converts the atomtype names 'CT' and 'N3' so that they appear as 'Ctet' and 'N' in any expression files written out.</para>
 		
 	</section>
-	
-	<section id="command.ref.finaliseff"><title>finaliseff</title>
-		<indexterm><primary>commands</primary><secondary>finaliseff</secondary></indexterm>
-		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> finaliseff ( )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Perform necessary operations on the current forcefield once all data has been added. Must be called!</para>
-	
-	</section>
-	
+		
 	<section id="command.ref.ffmodel"><title>ffmodel</title>
 		<indexterm><primary>commands</primary><secondary>ffmodel</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> ffmodel ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>ffmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Associates current forcefield to the current model.</para>
 		
 		<para>For example:</para>
@@ -186,11 +184,20 @@
 	<section id="command.ref.ffpattern"><title>ffpattern</title>
 		<indexterm><primary>commands</primary><secondary>ffpattern</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> ffpattern ( string|int|pattern pattern )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>string <parameter>pattern</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>int <parameter>patternid</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>pattern <parameter>p</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Associates current forcefield to the current pattern, or one specified by either a reference, integer ID in the current model, or a pattern pointer.</para>
 		
 		<para>For example:</para>
@@ -205,17 +212,71 @@
 		
 	</section>
 	
+	<section id="command.ref.finaliseff"><title>finaliseff</title>
+		<indexterm><primary>commands</primary><secondary>finaliseff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>finaliseff</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform necessary operations on the current forcefield once all data has been added. Must be called!</para>
+		
+	</section>
+
+	<section id="command.ref.fixtype"><title>fixtype</title>
+		<indexterm><primary>commands</primary><secondary>fixtype</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>fixtype</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>atom|int <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the current atom selection, or the specified atom, to have the type id (in the current forcefield) specified. Types set in this manner will not be overwritten by tha typing routines, allowing specific types to be applied above the normal rules. Note that the type's NETA description is not checked, and so any (even types not matching the base element) may be applied in this way.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			typedef(99, "NX", N, "-C(n=4)");
+			select(C);
+			fixtype(99);
+		</synopsis>
+		<para>assigns newly-created type 99 (specific to nitrogen) to all carbons in the model.</para>
+	</section>
+
+	<section id="command.ref.freetype"><title>fixtype</title>
+		<indexterm><primary>commands</primary><secondary>freetype</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>freetype</function></funcdef>
+				<paramdef>atom|int <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>For the current atom selection, or the specified atom, free any previously-fixed types</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			freetype(14);
+		</synopsis>
+		<para>frees any previously-set type on atom 14.</para>
+	</section>
+
 	<section id="command.ref.getff"><title>getff</title>
 		<indexterm><primary>commands</primary><secondary>getff</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> forcefield getff ( string name )</para>
-			</listitem>
-			<listitem>
-				<para> forcefield getff ( int id )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>getff</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>forcefield <function>getff</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Select the named forcefield (or forcefield with the specified id) and make it current, returning a reference to it in the process.</para>
 		
 		<para>For example:</para>
@@ -229,23 +290,30 @@
 	<section id="command.ref.interdef"><title>interdef</title>
 		<indexterm><primary>commands</primary><secondary>interdef</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> interdef  ( string form, int typeid, double charge, double data1, ... )</para>
-			</listitem>
-		</itemizedlist>
-		<para>Add a new short-range data definition to a type in the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((VDW Functions)). Up to ten parameters for the VDW potential may be given.</para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>interdef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>double <parameter>charge</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a new short-range data definition to a type in the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.vdw">VDW functional forms</link>. Up to ten parameters for the VDW potential may be given.</para>
 	
 	</section>
 	
 	<section id="command.ref.loadff"><title>loadff</title>
 		<indexterm><primary>commands</primary><secondary>loadff</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> forcefield loadff ( string file, string name )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>loadff</function></funcdef>
+				<paramdef>string <parameter>file</parameter></paramdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Load a forcefield from <emphasis>file</emphasis> and reference it by <emphasis>name</emphasis>. Becomes the current forcefield.</para>
 		
 		<para>For example:</para>
@@ -259,11 +327,13 @@
 	<section id="command.ref.map"><title>map</title>
 		<indexterm><primary>commands</primary><secondary>map</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> map ( string &quot;name=element,...&quot; )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>map</function></funcdef>
+				<paramdef>string <parameter>map</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set up manual typename mappings for atom names that do not readily correspond to element symbols, forcefield types etc. All atoms that are subsequently created using <emphasis>name</emphasis> as the element are automatically converted to the corresponding element.</para>
 		
 		<para>For example:</para>
@@ -277,11 +347,12 @@
 	<section id="command.ref.newff"><title>newff</title>
 		<indexterm><primary>commands</primary><secondary>newff</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> forcefield newff ( string name )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>newff</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Create a new, empty forcefield with the given <emphasis>name</emphasis> and make it current. Returns a reference to the new forcefield.</para>
 		
 		<para>For example:</para>
@@ -294,11 +365,12 @@
 	<section id="command.ref.printsetup"><title>printsetup</title>
 		<indexterm><primary>commands</primary><secondary>printsetup</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> printsetup ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printsetup</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Prints the current expression setup.</para>
 		
 		<para>For example:</para>
@@ -311,11 +383,12 @@
 	<section id="command.ref.recreateexpression"><title>recreateexpression</title>
 		<indexterm><primary>commands</primary><secondary>recreateexpression</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> recreateexpression ( )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>recreateexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Delete and recreate a suitable energy description for the current model.</para>
 		
 		<para>For example:</para>
@@ -328,11 +401,12 @@
 	<section id="command.ref.rules"><title>rules</title>
 		<indexterm><primary>commands</primary><secondary>rules</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> rules ( string ruleset )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rules</function></funcdef>
+				<paramdef>string <parameter>ruleset</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Set rules set to use for parameter generation in the current forcefield. See ((Forcefield Files|#Rule-based Forcefields)).</para>
 		<para><emphasis>Note: The implementation of rule-based forcefields will change in a future release.</emphasis></para>
 	
@@ -341,11 +415,13 @@
 	<section id="command.ref.saveexpression"><title>saveexpression</title>
 		<indexterm><primary>commands</primary><secondary>saveexpression</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
-		<itemizedlist>
-			<listitem>
-				<para> int saveexpression ( string filter, string filename )</para>
-			</listitem>
-		</itemizedlist>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>saveexpression</function></funcdef>
+				<paramdef>string <parameter>filter</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
 		<para>Export the forcefield expression for the current model in the format determined by the <emphasis>filter</emphasis> nickname, to the <emphasis>filename</emphasis> specified. Return value is '1' for successful write, or '0' otherwise.</para>
 		
 		<para>For example:</para>
@@ -357,7 +433,6 @@
 	
 	<section id="command.ref.torsiondef"><title>torsiondef</title>
 		<indexterm><primary>commands</primary><secondary>torsiondef</secondary></indexterm>
-		
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
@@ -377,7 +452,7 @@
 	
 	<section id="command.ref.typedef"><title>typedef</title>
 		<indexterm><primary>commands</primary><secondary>typedef</secondary></indexterm>
-		
+
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>

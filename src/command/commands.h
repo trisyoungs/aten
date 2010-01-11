@@ -275,6 +275,8 @@ class Command
 		FFModel,
 		FFPattern,
 		FinaliseFF,
+		FreeType,
+		FixType,
 		GenConvert,
 		GeneratorData,
 		GetFF,
@@ -716,6 +718,8 @@ class Command
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
