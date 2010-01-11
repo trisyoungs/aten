@@ -151,6 +151,7 @@ bool Model::createExpression(bool vdwOnly)
 	forcefieldTorsions_.clear();
 	forcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
+	expressionPoint_ = -1;
 	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
 	else msg.print("Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]

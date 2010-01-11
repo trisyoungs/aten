@@ -205,7 +205,7 @@ bool Tree::execute(ReturnValue &rv)
 	// Perform any preparatory commands related to filter trees
 	if (isFilter())
 	{
-		// For all filters, store the current zmapping style in Prefs so wa can revert to it later
+		// For all filters, store the current zmapping style in Prefs so we can revert to it later
 		zm = prefs.zMapType();
 		switch (filter.type())
 		{
