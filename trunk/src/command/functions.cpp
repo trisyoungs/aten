@@ -233,6 +233,8 @@ void Command::initPointers()
 	pointers_[FFModel] = &Command::function_FFModel;
 	pointers_[FFPattern] = &Command::function_FFPattern;
 	pointers_[FinaliseFF] = &Command::function_FinaliseFF;
+	pointers_[FixType] = &Command::function_FixType;
+	pointers_[FreeType] = &Command::function_FreeType;
 	pointers_[GenConvert] = &Command::function_GenConvert;
 	pointers_[GeneratorData] = &Command::function_GeneratorData;
 	pointers_[GetFF] = &Command::function_GetFF;

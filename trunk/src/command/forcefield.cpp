@@ -261,6 +261,44 @@ bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Fix atom types
+bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
+	ForcefieldAtom *ffa = obj.ff->findType(c->argc(0));
+	if (ffa == NULL)
+	{
+		msg.print("Forcefield type ID %i not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
+		rv.reset();
+		return FALSE;
+	}
+	if (c->hasArg(1))
+	{
+		Atom *i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+		if (i == NULL) return FALSE;
+		obj.m->setAtomType(i, ffa, TRUE);
+	}
+	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->setAtomType(i, ffa, TRUE);
+	rv.reset();
+	return TRUE;
+}
+
+// Free atom types
+bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (c->hasArg(1))
+	{
+		Atom *i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+		if (i == NULL) return FALSE;
+		obj.m->setAtomType(i, i->type(), FALSE);
+	}
+	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->setAtomType(i, i->type(), TRUE);
+	rv.reset();
+	return TRUE;
+}
+
 // Set energetic parameters to convert in generator data
 bool Command::function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

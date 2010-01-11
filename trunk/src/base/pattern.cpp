@@ -1439,7 +1439,7 @@ bool Pattern::typeAtoms()
 		}
 		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, elements().symbol(i->element()));
 		bestmatch = 0;
-		parent_->setAtomtype(i, NULL, FALSE);
+		parent_->setAtomType(i, NULL, FALSE);
 		// Check for element 'XX' first
 		if (i->element() == 0)
 		{
