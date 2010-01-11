@@ -264,6 +264,7 @@ bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Fix atom types
 bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
+	printf("lsdjkflkjsdflkj\n");
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	ForcefieldAtom *ffa = obj.ff->findType(c->argc(0));
@@ -278,8 +279,14 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		Atom *i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, ffa, TRUE);
+		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
-	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->setAtomType(i, ffa, TRUE);
+	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected())
+	{
+		obj.m->setAtomType(i, ffa, TRUE);
+		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+	}
+	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;
 }
@@ -295,6 +302,7 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.m->setAtomType(i, i->type(), FALSE);
 	}
 	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->setAtomType(i, i->type(), TRUE);
+	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;
 }
