@@ -264,13 +264,13 @@ bool Command::function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Fix atom types
 bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	printf("lsdjkflkjsdflkj\n");
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	ForcefieldAtom *ffa = obj.ff->findType(c->argc(0));
+	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		msg.print("Forcefield type ID %i not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
+		if (c->argType(0) == VTypes::IntegerData) msg.print("Forcefield type ID %i not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
+		else if (c->argType(0) == VTypes::StringData) msg.print("Forcefield type '%s' not defined in forcefield '%s'.\n", c->argc(0), obj.ff->name());
 		rv.reset();
 		return FALSE;
 	}
@@ -286,6 +286,7 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.m->setAtomType(i, ffa, TRUE);
 		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
+	obj.m->changeLog.add(Log::Structure);
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;
