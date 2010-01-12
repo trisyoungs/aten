@@ -536,10 +536,11 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ForcefieldAtom *ffa = obj.ff->addType();
 	ffa->setTypeId(newffid);
 	ffa->setName(c->argc(1));
-	ffa->setEquivalent(c->argc(1));
-	ffa->neta()->setCharacterElement(c->argz(2));
-	ffa->setNeta(c->argc(3), obj.ff);
-	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
+	ffa->setEquivalent(c->argc(2));
+	ffa->setElement(c->argz(3));
+	ffa->neta()->setCharacterElement(c->argz(3));
+	ffa->setNeta(c->argc(4), obj.ff);
+	if (c->hasArg(5)) ffa->setDescription(c->argc(5));
 	rv.reset();
 	return TRUE;
 }
