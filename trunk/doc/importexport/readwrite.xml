@@ -142,8 +142,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Formatted input commands</title>
 		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-		<!-- <colspec colname='command'/> -->
-		<!-- <colspec colname='function'/> -->
 		<thead>
 		<row>
 		<entry>Command</entry>
@@ -216,8 +214,6 @@
 	
 		<table frame='all' pgwide='1' tocentry='0'><title>Escaped characters in format strings</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Escape Sequence</entry>

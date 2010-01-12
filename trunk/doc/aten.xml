@@ -8,7 +8,7 @@
 	<!ENTITY % mathml PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">
 	%mathml;
 
-	<!--GETTING STARTED-->
+	<!--Getting Started-->
 	<!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
 	<!ENTITY installation SYSTEM "gettingstarted/installation.xml">
 	<!ENTITY faq SYSTEM "gettingstarted/faq.xml">
@@ -58,6 +58,7 @@
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
 	<!ENTITY ffkeywords SYSTEM "ff/keywords.xml">
 	<!ENTITY ffrules SYSTEM "ff/rules.xml">
+	<!ENTITY ffpatterns SYSTEM "ff/patterns.xml">
 	<!ENTITY fftyping SYSTEM "ff/typing.xml">
 	<!ENTITY ffneta SYSTEM "ff/neta.xml">
 	<!ENTITY ffformsvdw SYSTEM "ff/forms-vdw.xml">
@@ -190,10 +191,12 @@
 		</section>
 	</chapter>
 
+	<!-- Forcefields -->
 	<chapter id="ff"><title>Forcefields and Typing</title>
 		&fffiles;
 		&ffkeywords;
 		&ffrules;
+		&ffpatterns;
 		&fftyping;
 		&ffneta;
 		&ffformsvdw;

@@ -5,7 +5,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para>((Trajectories)) for information on how trajectories are handled within Aten.</para>
+				<para><link linkend="readwrite.trajectories">Trajectories</link> for information on how trajectories are handled within Aten.</para>
 			</listitem>
 		</itemizedlist>
 	</note>

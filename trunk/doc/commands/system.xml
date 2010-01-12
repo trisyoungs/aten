@@ -12,7 +12,7 @@
 				<paramdef>string <parameter>type</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Toggles debug output from various parts of the code. A full list of valid types is given in ((Output Types)).</para>
+		<para>Toggles debug output from various parts of the code. A full list of valid types is given in <link linkend="enums.outputtypes">output types</link>.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -38,7 +38,7 @@
 			string s = getenv(&quot;HOSTNAME&quot;);
 		</synopsis>
 		<para>gets the name of the host Aten is running on (although what you would then usefully do with it I don't know).</para>
-		<para>Better example(s) can be found in the (([http://www.projectaten.net/tiki-view_articles.php?topic=2|Examples] section.</para>
+		<para>Better examples can be found in the <ulink url="http://www.projectaten.net/resources">resources</ulink> section of the website.</para>
 	
 	</section>
 	

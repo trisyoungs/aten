@@ -1,6 +1,6 @@
 <section id="command.groups.readwrite"><title>Read / Write Commands</title>
 	
-	<para>Methods of reading and writing data from / to files in import and export filters. Many commands here use ((Formatting Strings)) to provide formatted input and output. All reading and writing commands here work on input or output files as defined internally by the program.</para>
+	<para>Methods of reading and writing data from / to files in import and export filters. Many commands here use formatting strings to provide formatted input and output. All reading and writing commands here work on input or output files as defined internally by the program.</para>
 	
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
@@ -8,7 +8,7 @@
 				<para><link linkend="command.groups.messaging">Messaging Commands</link> for commands that write to the screen.</para>
 			</listitem>
 			<listitem>
-				<para>((Formatting Strings)) for details on the C-style formatting of data employed by some commands.</para>
+				<para><link linkend="readwrite.xxx">Formatting Strings</link> for details on the C-style formatting of data employed by some commands.</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="readwrite.delimited">Delimited Reading and Writing</link> for details on the parsing of delimited data, as employed by some commands.</para>
@@ -558,7 +558,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the ((Commands: Messaging|#printf|printf)) command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the <link linkend="command.printf">printf</link> command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

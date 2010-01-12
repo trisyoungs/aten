@@ -30,7 +30,7 @@
 			i = 64
 			i = 128
 		</synopsis>
-		<para>Note that the final value of <emphasis>i</emphasis> inside the loop is '128' (greater than 100) since the <emphasis>condition</emphasis> is only tested at the end of the execution of the <emphasis>commands</emphasis>. The '((Commands: Flow|#while|while))' loop works in the same way, save that the <emphasis>condition</emphasis> is tested at the beginning of the loop, before <emphasis>commands</emphasis> are executed, rather than at the end.</para>
+		<para>Note that the final value of <emphasis>i</emphasis> inside the loop is '128' (greater than 100) since the <emphasis>condition</emphasis> is only tested at the end of the execution of the <emphasis>commands</emphasis>. The <link linkend="command.while">while</link> loop works in the same way, save that the <emphasis>condition</emphasis> is tested at the beginning of the loop, before <emphasis>commands</emphasis> are executed, rather than at the end.</para>
 	
 	</section>
 	

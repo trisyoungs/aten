@@ -17,7 +17,7 @@
 			bob@pc:~> aten test1.xyz --nobond test2.xyz
 		</synopsis>
 		
-		<para>will only prevent recalculation of bonds for the second model. The reason for acting on switches and arguments in the order they are encountered on the command line is to allow for flexibility, especially when using Aten as a non-graphical processor (for examples of this type of usage, see ((Command Line Editing))).</para>
+		<para>will only prevent recalculation of bonds for the second model. The reason for acting on switches and arguments in the order they are encountered on the command line is to allow for flexibility, especially when using Aten as a non-graphical processor (for examples of this type of usage, see the <ulink url="http://www.projectaten.net/resources">resources</ulink> section of the website).</para>
 		
 		<para><emphasis>Note:</emphasis> The position of debug switches or those affecting the verbosity of the program has no bearing on the timeliness of their effect - they are dealt with first by Aten regardless of where they appear in the program's arguments.</para>
 	
@@ -233,7 +233,7 @@
 				<varlistentry id="cli.switches.i">
 					<term><indexterm><primary>command line switches</primary><secondary>-i, --interactive</secondary></indexterm>
 						-i, --interactive</term>
-					<listitem><para>Starts Aten in interactive mode, where commands are typed and immediately executed. The GUI is not started by default, but may be invoked. See the section on ((Interactive Mode)) for more information.</para></listitem>
+					<listitem><para>Starts Aten in interactive mode, where commands are typed and immediately executed. The GUI is not started by default, but may be invoked.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.int">
 					<term><indexterm><primary>command line switches</primary><secondary>--int</secondary></indexterm>
@@ -287,7 +287,7 @@
 				<varlistentry id="cli.switches.nobond">
 					<term><indexterm><primary>command line switches</primary><secondary>--nobond</secondary></indexterm>
 						--nobond</term>
-					<listitem><para>Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the '((Commands: Bonding|#rebond|rebond))' command, then specifying <link linkend="cli.switches.nobond">--nobond</link> will prevent it.</para></listitem>
+					<listitem><para>Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the <link linkend="command.rebond">rebond</link> command, then specifying <link linkend="cli.switches.nobond">--nobond</link> will prevent it.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.nocentre">
 					<term><indexterm><primary>command line switches</primary><secondary>--nocentre</secondary></indexterm>
@@ -336,7 +336,7 @@
 				<varlistentry id="cli.switches.s">
 					<term><indexterm><primary>command line switches</primary><secondary>-s, --script</secondary></indexterm>
 						-s &lt;file&gt;, --script &lt;file&gt;</term>
-					<listitem><para>Specifies that the script file is to be loaded and run before moving on to the next command-line argument. See the ((Scripting)) section for more information on scripts.</para></listitem>
+					<listitem><para>Specifies that the script file is to be loaded and run before moving on to the next command-line argument. See the <link linkend="scripting">scripting</link> section for more information on scripts.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.string">
 					<term><indexterm><primary>command line switches</primary><secondary>--string</secondary></indexterm>
@@ -389,7 +389,7 @@
 				<varlistentry id="cli.switches.z">
 					<term><indexterm><primary>command line switches</primary><secondary>-z, --zmap</secondary></indexterm>
 						-z &lt;maptype&gt;, --zmap &lt;maptype&gt;</term>
-					<listitem><para>Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see ((ZMapping Types)).</para></listitem>
+					<listitem><para>Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see <link linkend="enums.zmaptypes">ZMapping Types</link>.</para></listitem>
 				</varlistentry>
 			</variablelist>
 			
