@@ -63,7 +63,7 @@ neta:
 nodelist:
 	node						{ $$ = $1; }
 	| nodelist ',' node				{ $$ = netaparser.join(Neta::NetaAndLogic, $1, $3); }
-	| nodelist '|' node				{ $$ = netaparser.join(Neta::NetaOrLogic, $1, $3); }
+	| nodelist '|' nodelist				{ $$ = netaparser.join(Neta::NetaOrLogic, $1, $3); }
 	| '(' nodelist ')'				{ $$ = $2; }
 	;
 

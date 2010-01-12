@@ -279,8 +279,8 @@ types
 262	NZ		N	"-&261"					"N      benzonitrile"
 263	CA		C	"ring(size=6,-C(n=6)),-Cl"		"C(Cl)  chlorobenzene"
 264	Cl		Cl	"-&263"					"Cl     chlorobenzene"
-265	N		N	"-C(ring(size=6,-C(n=6))),-C(=O,-C),-H"	"N: N-phenylacetamide"
-266	CA		C	""	"ipso C in N-phenylacetamide"
+265	N		N	"-C(ring(size=6,-C(n=6),aromatic)),-C(=O,-C),-H"	"N: N-phenylacetamide"
+266	CA		C	"-&265,ring"				"ipso C in N-phenylacetamide"
 267	C		C	"-C,=O,-O(-H)"				"Co in CCOOH carboxylic acid"
 268	OH		O	"-&267,-H"				"Oh in CCOOH R in RCOOH is"
 269	O		O	"=&267"					"Oc in CCOOH neutral; use 135-140"
@@ -490,10 +490,10 @@ types
 467	OS		O	"-&465,-C"				"AA -OR: ester"
 468	CT		C	"nh=3,-&467"				"methoxy C in esters - see also 490-492"
 469	HC		H	"-C(nbonds=4,-&467)"			"alkoxy H's in esters"
-470	C		C	""	"Co in benzoic acid"
-471	C		C	""	"Co in methyl benzoate, aryl ester"
-472	CA		C	""	"Cipso phenyl ester"
-473	OS		O	""	"AA -OR phenyl ester"
+470	C		C	"-C(ring(size=6,-C(n=6),aromatic)),=O,-O(-H)"	"Co in benzoic acid"
+471	C		C	"(-C(ring(size=6,-C(n=6),aromatic)),=O,-O(-C)) | (=O,-C(noring),-O(-C(ring(size=6,-C(n=6),aromatic))))"	"Co in methyl benzoate, aryl ester"
+472	CA		C	"ring(size=6,-C(n=6),aromatic),-O(-C(noring,=O))"	"Cipso phenyl ester"
+473	OS		O	"-&471"					"AA -OR phenyl ester"
 474	SY		S	""	"S in sulfonamide"
 475	OY		O	""	"O in sulfonamide"
 476	CT		C	""	"CH3 attached to S of sulfonamide"
@@ -955,17 +955,17 @@ types
 1032	CA		C	""	"ipso C in benzoate ion"
 1033	N		N	""	"N: N-phenylurea"
 1034	CA		C	""	"ipso C in N-phenylurea"
-1035	C		C	""	"C: CeqO in tert amide.   Acyl R in amides"
-1036	O		O	""	"O: CeqO in tert amide.   is neutral - use"
-1037	NM		N	""	"N: tertiary amide"
-1038	CT		C	""	"C on N: tertiary amide CH3"
-1039	CT		C	""	"C on N: tertiary amide CH2R"
-1040	CT		C	""	"C on N: tertiary amide CHR2"
-1041	CT		C	""	"C on N: tertiary amide CR3"
-1042	HC		H	""	"H on CT:tertiary amide"
-1043	C		C	""	"C: CeqO in tert formamide."
-1044	O		O	""	"O: CeqO in tert formamide."
-1045	HC		H	""	"H on CO:  tert formamide"
+1035	C		C	"-&1037,=O"		"C: CeqO in tert amide.   Acyl R in amides"
+1036	O		O	"-&1035"		"O: CeqO in tert amide.   is neutral - use"
+1037	NM		N	"-C(=O),-C,-C"		"N: tertiary amide"
+1038	CT		C	"-&1037,nh=3"		"C on N: tertiary amide CH3"
+1039	CT		C	"-&1037,nh=2,-C"	"C on N: tertiary amide CH2R"
+1040	CT		C	"-&1037,nh=1,-C,-C"	"C on N: tertiary amide CHR2"
+1041	CT		C	"-&1037,nh=0,-C,-C,-C"	"C on N: tertiary amide CR3"
+1042	HC		H	"-[&1038,&1039,&1040]"	"H on CT:tertiary amide"
+1043	C		C	"-&1037,=O,-H"		"C: CeqO in tert formamide."
+1044	O		O	"=&1043"		"O: CeqO in tert formamide."
+1045	HC		H	"-&1043"		"H on CO:  tert formamide"
 #1046
 #1047
 #1048
@@ -4052,12 +4052,12 @@ HC	C	C	CT	0.8	-0.76	0.0	0.0		#dicarbonyls
 HC	C	C	HC	0.8	0.0	0.0	0.0		#dicarbonyls
 CT	C	C	CT	0.7	-1.5	0.0	0.0		#dicarbonyls
 C	C	CT	HC	0.0	0.0	0.085	0.0		#dicarbonyls
-N	C	C	O		0.0	0.0	0.0	0.0		#dicarbonyls
+N	C	C	O	0.0	0.0	0.0	0.0		#dicarbonyls
 N	C	C	HC	-0.9	0.3	0.0	0.0		#dicarbonyls
 N	C	C	CT	-0.5	0.2	0.0	0.0		#dicarbonyls
 C	C	N	CT	0.4	4.9	0.0	0.0		#dicarbonyls
-H	N	C	C		0.0	4.9	0.0	0.0		#dicarbonyls
-O	C	C	O		1.6	3.2	0.0	0.0		#dicarbonyls
+H	N	C	C	0.0	4.9	0.0	0.0		#dicarbonyls
+O	C	C	O	1.6	3.2	0.0	0.0		#dicarbonyls
 CT	C	N	OH	4.542	6.603	1.045	0.0		#hydroxamic
 O	C	N	OH	0.0	6.603	0.0	0.0		#hydroxamic
 C	N	OH	HO	5.519	-6.7	0.581	0.0		#hydroxamic
