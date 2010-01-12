@@ -22,7 +22,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para> ((Methods: Augment)) for a description of the rebonding algorithm implemented in Aten^</para>
+					<para><link linkend="methods.augment">Augment method</link> for a description of the rebonding algorithm implemented in Aten</para>
 				</listitem>
 			</itemizedlist>
 		</note>
@@ -43,7 +43,7 @@
 				<paramdef>double <parameter>tol</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise ((Patterns)) within models correctly. The current or new bond tolerance is returned.</para>
+		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise <link linkend="ff.patterns">patterns</link> within models correctly. The current or new bond tolerance is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -58,7 +58,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para> ((Methods: Rebond)) for a description of the rebonding algorithm implemented in Aten^</para>
+					<para><link linkend="methods.rebond">Rebond method</link> for a description of the rebonding algorithm implemented in Aten</para>
 				</listitem>
 			</itemizedlist>
 		</note>

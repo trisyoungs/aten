@@ -25,7 +25,7 @@
 	<section id="ff.typing.examples"><title>Language Examples</title>
 		<indexterm zone="ff.typing.examples"><primary>typing</primary><secondary>examples</secondary></indexterm>
 	
-		<para>Type descriptions in Aten use connectivity to other atoms as a basis, extending easily to rings (and the constituent atoms), lists of allowable elements in certain connections, atom hybridicities, and local atom geometries. Descriptions can be nested to arbitrary depth since the algorithm is recursive, and may be re-used in other atom's type descriptions to simplify their identification. Time to jump straight in with some examples. Note that these examples only serve to illustrate the concepts of describing chemical environment at different levels. They may not provide the most elegant descriptions to the problem at hand, don't take advantage of ((Type Descriptions|#Reusing Types|reusing types)), and certainly aren't the only ways of writing the descriptions. They're just plain 'ol examples of the language!</para>
+		<para>Type descriptions in Aten use connectivity to other atoms as a basis, extending easily to rings (and the constituent atoms), lists of allowable elements in certain connections, atom hybridicities, and local atom geometries. Descriptions can be nested to arbitrary depth since the algorithm is recursive, and may be re-used in other atom's type descriptions to simplify their identification. Time to jump straight in with some examples. Note that these examples only serve to illustrate the concepts of describing chemical environment at different levels. They may not provide the most elegant descriptions to the problem at hand, don't take advantage of <link linkend="ff.reusingtypes">reusing types</link>, and certainly aren't the only ways of writing the descriptions. They're just plain 'ol examples of the language!</para>
 	
 		<section id="ff.typing.language.example1"><title>Example 1 - Water</title>
 			<indexterm><primary>typing</primary><secondary>examples</secondary><tertiary>water</tertiary></indexterm>
@@ -177,7 +177,7 @@
 		
 	</section>
 	
-	<section id="ff.typing.scores"><title>Type Scoring</title>
+	<section id="ff.typing.scores"><title>Type Scores</title>
 		<indexterm><primary>typing</primary><secondary>scores</secondary></indexterm>
 	
 		<para>In a forcefield with many defined types, more than one type may match an atom in a molecule. In order to best assign types to atoms, Aten scores each type description according to the number of terms defined within it, one point for each term satisfied. Once a matching type for an atom is located in the forcefield it is assigned to that atom, but the search for a better-scoring type continues. If a match with a higher score is found it replaces the previously-assigned type. If a match with the same score is found, the previous type is <emphasis>not</emphasis> replaced.</para>

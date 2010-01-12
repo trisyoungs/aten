@@ -23,7 +23,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para>((Methods: Conjugate Gradient Minimiser)) for details on the conjugate gradient method as it is implemented in Aten.^</para>
+					<para><link linkend="methods.literature">Literature methods</link> for details on the conjugate gradient method as it is implemented in Aten.</para>
 				</listitem>
 			</itemizedlist>
 		</note>	
@@ -92,7 +92,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para>((Methods: Monte Carlo Minimiser)) for details on the Monte Carlo minimisation method as it is implemented in Aten.^</para>
+					<para><link linkend="methods.mcminimiser">Monte Carlo Minimiser method</link> for details on the Monte Carlo minimisation method as it is implemented in Aten.</para>
 				</listitem>
 			</itemizedlist>
 		</note>

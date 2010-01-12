@@ -88,7 +88,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Select atoms in the current model, keeping any previous selection of atoms. See the ((Commands: Selection|#deselect|deselect)) command for a full description of the syntax. The number of atoms added to the existing selection is returned.</para>
+		<para>Select atoms in the current model, keeping any previous selection of atoms. See the <link linkend="command.deselect">deselect</link> command for a full description of the syntax. The number of atoms added to the existing selection is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>

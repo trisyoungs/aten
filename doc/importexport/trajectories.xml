@@ -108,7 +108,7 @@
 				</listitem>
 			</itemizedlist>
 			
-			<para>The size of the cache can be adjusted either from the command line with the '((Command Line|#--cachelimit|--cachelimit))' switch or by the '((Commands: Prefs|#cachelimit|cachelimit))' command. No check is made of the new cache limit with respect to the memory available on the machine on which Aten is running, so use with care.</para>
+			<para>The size of the cache can be adjusted either from the command line with the <link linkend="cli.switches.cachelimit">--cachelimit</link> switch or by setting the 'cachelimit' member of the <link linkend="command.types.prefs">&amp;prefs</link>. No check is made of the new cache limit with respect to the memory available on the machine on which Aten is running, so use with care.</para>
 			
 			<para>In the current versions of Aten, the total trajectory size is determined from the size of the frame on disk, whereas it would be more appropriate to use the size of the frame in memory. This will change in a future release.</para>
 			

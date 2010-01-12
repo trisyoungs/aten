@@ -79,7 +79,7 @@
 		
 			<section><title>Autotools</title>
 			
-				<para>If you obtained the source via ((SVN)), at the top of the source tree run:</para>
+				<para>If you obtained the source via SVN, at the top of the source tree run:</para>
 				
 				<synopsis>
 				bob@pc~> ./autogen.sh

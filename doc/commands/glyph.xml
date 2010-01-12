@@ -43,7 +43,7 @@
 		<note><title>See also:</title>
 			<itemizedlist mark='opencircle'>
 				<listitem>
-					<para>((Methods: Autoellipsoids)) for a description of the process.^</para>
+					<para><link linkend="methods.autoellipsoids">Autoellipsoids method</link> for a description of the process.</para>
 				</listitem>
 			</itemizedlist>
 		</note>	
@@ -341,7 +341,7 @@
 				<paramdef>string <parameter>options = ""</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global ((Preferences)). Valid glyph styles are listed in the <link linkend="xxx.glyph">Glyphs</link> section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
+		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global <link linkend="command.types.prefs.">preferences</link>. Valid glyph styles are listed in the <link linkend="xxx.glyph">Glyphs</link> section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
 		
 		<para>One or more options may be given to the command. The list of possible options is:</para>
 		

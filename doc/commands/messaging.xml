@@ -1,11 +1,11 @@
 <section id="command.groups.messaging"><title>Messaging Commands</title>
 	
-	<para>Output messages from command lists / filters. All commands work like the C printf() command, and accept the same ((Formatting Strings|formatting tokens)). All output from these messaging commands is directed to either the GUI message box or stdout on the command line.</para>
+	<para>Output messages from command lists / filters. All commands work like the C printf() command, and accept the same fundamental format specifiers. All output from these messaging commands is directed to either the GUI message box or stdout on the command line.</para>
 	
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para>((Formatting Strings)) for in-depth explanations on the usage of C-style formatted output</para>
+				<para><link linkend="readwrite.xxx">Formatted Output</link> for in-depth explanations on the usage of C-style formatted output</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="command.groups.readwrite">Read/Write commands</link> for commands to read/write from/to files.</para>

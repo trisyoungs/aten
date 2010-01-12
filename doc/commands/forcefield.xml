@@ -17,7 +17,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Angle Functions)) names, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.angle">angle functional forms</link>, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
 	
@@ -35,7 +35,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Add a bond definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Bond Functions)) names, while the two <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+		<para>Add a bond definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.bond">bond functional forms</link>, while the two <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
 	
@@ -140,7 +140,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See ((Forcefield Files|#equivalents)) for more information.</para>
+		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See the <link linkend="ff.keywords.equivalents">equivalents</link> forcefield keyword for more information.</para>
 	
 	</section>
 	
@@ -407,7 +407,7 @@
 				<paramdef>string <parameter>ruleset</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set rules set to use for parameter generation in the current forcefield. See ((Forcefield Files|#Rule-based Forcefields)).</para>
+		<para>Set rules set to use for parameter generation in the current forcefield (see <link linkend="ff.rules">forcefield fules</link> for more info).</para>
 		<para><emphasis>Note: The implementation of rule-based forcefields will change in a future release.</emphasis></para>
 	
 	</section>
@@ -446,7 +446,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Add a torsion definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented ((Torsion Functions)), while the four <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
+		<para>Add a torsion definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.torsion">torsion functional forms</link>, while the four <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
 	
 	</section>
 	

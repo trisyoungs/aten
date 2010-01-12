@@ -1,6 +1,6 @@
 <section id="command.groups.building"><title>Building Commands</title>
 	
-	<para>Tools to build molecules from scratch, or finalise unfinished models. When creating atoms using the relevant ((Commands: Atoms)), if the coordinates of the new atom are not specified then it is placed at the current pen position. In addition, the reference frame of the pen position is represented as a set of three orthogonal vectors defining the pen's local coordinate system (set initially to the Cartesian axes) centred at an arbitrary origin (the pen position). Subsequent rotations operate on these coordinate axes. Think of it as a 3D version of the old-school turtle.</para>
+	<para>Tools to build molecules from scratch, or finalise unfinished models. When creating atoms using the relevant <link linkend="command.groups.build">building commands</link>, if the coordinates of the new atom are not specified then it is placed at the current pen position. In addition, the reference frame of the pen position is represented as a set of three orthogonal vectors defining the pen's local coordinate system (set initially to the Cartesian axes) centred at an arbitrary origin (the pen position). Subsequent rotations operate on these coordinate axes. Think of it as a 3D version of the old-school turtle.</para>
 
 	<section id="command.ref.addhydrogen"><title>addhydrogen</title>
 		<indexterm><primary>commands</primary><secondary>addhydrogen</secondary></indexterm>
@@ -273,7 +273,7 @@
 				<void/>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Adjust the ordering of atoms in the current selection such that atoms in bound fragments/molecules have successive IDs. Useful to recover 'molecularity' in order to apply a suitable ((Patterns|pattern)) to the system.</para>
+		<para>Adjust the ordering of atoms in the current selection such that atoms in bound fragments/molecules have successive IDs. Useful to recover 'molecularity' in order to apply a suitable <link linkend="ff.patterns">pattern description</link> to the system.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -457,3 +457,4 @@
 	</section>
 
 </section>
+
