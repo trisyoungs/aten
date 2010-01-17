@@ -1,5 +1,5 @@
 <section id="ff.rules"><title>Rule-Based Forcefields</title>
-	<indexterm id="idx.ff.rules" class="startofrange"><primary>forcefields</primary><secondary>rule-based</secondary></indexterm>
+	<indexterm zone="ff.rules"><primary>forcefields</primary><secondary>rule-based</secondary></indexterm>
 	
 	<!--
 	!!Rule-based Forcefields
@@ -36,5 +36,4 @@
 		
 		All of the following blocks refer to atom types by their type name (second column in the 'types' block). Alternatively, the names of any defined ((Forcefields|#Equivalents|equivalents)) may be used instead. Each of the block keywords takes a ''form'' parameter specifying the functional form of the subsequent terms. Consult the section on ((Functional Forms)) for a list of implemented functions, the relevant ''form'' keyword, and the ordering of parameters. If the forcefield contains, for example, bond definitions that are not all of the same functional form they should be specified in separate blocks, one for each functional form. As many blocks as are necessary may be defined in a single forcefield file, with any number of definitions in each.-->
 
-	<indexterm startref="idx.ff.rules" class="endofrange"></indexterm>
 </section>

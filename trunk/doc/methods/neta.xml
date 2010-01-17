@@ -51,7 +51,7 @@
 		</listitem>
 	</orderedlist>
 
-	<para>Now, working only with the representative molecule of each pattern, associated (or current) forcefield(s) are searched for types that match the contained atoms. Each NETA description whose character element is the same as a given atom is tested, and a score is obtained. If this score is non-zero and positive then the atomtype is a match and is assigned to the atom if it has no previous type, or if the score is higher than the previous one. See <link linkend="ff.neta.scores">atom type scoring</link> for more information.</para>
+	<para>Now, working only with the representative molecule of each pattern, associated (or current) forcefield(s) are searched for types that match the contained atoms. Each NETA description whose character element is the same as a given atom is tested, and a score is obtained. If this score is non-zero and positive then the atomtype is a match and is assigned to the atom if it has no previous type, or if the score is higher than the previous one. See <link linkend="ff.typing.scores">atom type scoring</link> for more information.</para>
 	
 	<para>[1] Pedretti, A.; Villa, L.; Vistoli, G. &quot;Theoretical Chemistry Accounts&quot;, <emphasis>109</emphasis>, 229-232 (2003).</para>
 

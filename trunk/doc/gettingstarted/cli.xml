@@ -287,7 +287,7 @@
 				<varlistentry id="cli.switches.nobond">
 					<term><indexterm><primary>command line switches</primary><secondary>--nobond</secondary></indexterm>
 						--nobond</term>
-					<listitem><para>Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the <link linkend="command.rebond">rebond</link> command, then specifying <link linkend="cli.switches.nobond">--nobond</link> will prevent it.</para></listitem>
+					<listitem><para>Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the <link linkend="command.ref.rebond">rebond</link> command, then specifying <link linkend="cli.switches.nobond">--nobond</link> will prevent it.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.nocentre">
 					<term><indexterm><primary>command line switches</primary><secondary>--nocentre</secondary></indexterm>

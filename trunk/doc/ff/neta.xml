@@ -25,7 +25,7 @@
 					</row>
 					<row>
 						<entry>~&amp;101</entry>
-						<entry>Any bond to an atom which matches type ID 101 (see <link linkend="ff.reusingtypes">reusing rypes</link>)</entry>
+						<entry>Any bond to an atom which matches type ID 101 (see <link linkend="ff.typing.reusing">reusing rypes</link>)</entry>
 					</row>
 					<row>
 						<entry>~[N,S,P]</entry>
@@ -57,7 +57,7 @@
 					</row>
 					<row>
 						<entry>-&amp;120</entry>
-						<entry>A single bond to an atom which matches type ID 120 (see <link linkend="ff.reusingtypes">reusing types</link>)</entry>
+						<entry>A single bond to an atom which matches type ID 120 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
 					</row>
 					<row>
 						<entry>-[C,N]</entry>
@@ -97,7 +97,7 @@
 					</row>
 					<row>
 						<entry>=&amp;4</entry>
-						<entry>A double bond to an atom which matches type ID 4 (see <link linkend="ff.reusingtypes">reusing types</link>)</entry>
+						<entry>A double bond to an atom which matches type ID 4 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
 					</row>
 				</tbody>
 			</tgroup>
@@ -130,7 +130,7 @@
 					</row>
 					<row>
 						<entry>~&amp;55(bond=triple)</entry>
-						<entry>A triple bond to an atom which matches type ID 55 (see <link linkend="ff.reusingtypes">reusing types</link>)</entry>
+						<entry>A triple bond to an atom which matches type ID 55 (see <link linkend="ff.typing.reusing">reusing types</link>)</entry>
 					</row>
 					<row>
 						<entry>~C(bond=single)</entry>

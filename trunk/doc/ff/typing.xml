@@ -25,7 +25,7 @@
 	<section id="ff.typing.examples"><title>Language Examples</title>
 		<indexterm zone="ff.typing.examples"><primary>typing</primary><secondary>examples</secondary></indexterm>
 	
-		<para>Type descriptions in Aten use connectivity to other atoms as a basis, extending easily to rings (and the constituent atoms), lists of allowable elements in certain connections, atom hybridicities, and local atom geometries. Descriptions can be nested to arbitrary depth since the algorithm is recursive, and may be re-used in other atom's type descriptions to simplify their identification. Time to jump straight in with some examples. Note that these examples only serve to illustrate the concepts of describing chemical environment at different levels. They may not provide the most elegant descriptions to the problem at hand, don't take advantage of <link linkend="ff.reusingtypes">reusing types</link>, and certainly aren't the only ways of writing the descriptions. They're just plain 'ol examples of the language!</para>
+		<para>Type descriptions in Aten use connectivity to other atoms as a basis, extending easily to rings (and the constituent atoms), lists of allowable elements in certain connections, atom hybridicities, and local atom geometries. Descriptions can be nested to arbitrary depth since the algorithm is recursive, and may be re-used in other atom's type descriptions to simplify their identification. Time to jump straight in with some examples. Note that these examples only serve to illustrate the concepts of describing chemical environment at different levels. They may not provide the most elegant descriptions to the problem at hand, don't take advantage of <link linkend="ff.types.reusing">reusing types</link>, and certainly aren't the only ways of writing the descriptions. They're just plain 'ol examples of the language!</para>
 	
 		<section id="ff.typing.language.example1"><title>Example 1 - Water</title>
 			<indexterm><primary>typing</primary><secondary>examples</secondary><tertiary>water</tertiary></indexterm>
@@ -218,6 +218,35 @@
 			
 		</section>
 
+	</section>
+	
+	<section id="ff.typing.reusing"><title>Reusing Types</title>
+		<indexterm><primary>typing</primary><secondary>reusing types</secondary></indexterm>
+		
+		<para>Once a complex NETA definition has been made for a given atom type, it is often useful to be able to reference this type in order to save repeating the same description for a closely-bound atom. The ampersand symbol allows you to do this, and specifies an integer type id to match rather than an element. As an example, consider the following definitions for trifluoroethanol from the OPLS-AA forcefield where the environment for each atom is described in full for each type:</para>
+		
+		<synopsis>
+			160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
+			161     CT      C       "-F(n=3),-C(nh=2,-O(-H))"           "CF3 in trifluoroethanol"
+			162     OH      O       "-H,-C(nh=2,-C(-F(n=3)))"           "OH in trifluoroethanol"
+			163     HO      H       "-O(-C(nh=2,-C(-F(n=3))))"          "HO in trifluoroethanol"
+			164     F       F       "-C(-F(n=3),-C(nh=2,-O(-H)))"       "F in trifluoroethanol"
+			165     HC      H       "-C(nh=2,-O(-H),-C(-F(n=3)))"       "H in trifluoroethanol"
+		</synopsis>
+
+		<para>For each atom type, the whole of the trifluoroethanol molecule is described, but each type tends to share a common chunk of NETA definitions with the other types. As an alternative, then, we can define one or two of the involved types explicitly as above, and then specify the rest of the types relative to this one:</para>
+		
+		<synopsis>
+			160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
+			161     CT      C       "-&amp;160"                              "CF3 in trifluoroethanol"
+			162     OH      O       "-&amp;160"                             "OH in trifluoroethanol"
+			163     HO      H       "-O(-&amp;160)"                         "HO in trifluoroethanol"
+			164     F       F       "-C(-&amp;160)"                         "F in trifluoroethanol"
+			165     HC      H       "-&amp;160"                             "H in trifluoroethanol"
+		</synopsis>
+		
+		<para>Much neater! Or should that be 'not much NETA'? Hmmm. Anyway, reusing types in this way is a powerful way to reduce the complexity of type descriptions required for a given molecule or fragment. Typically it is advisable to pick an atom that is fairly central to the molecule and bears a lot of connections, and provide an unambiguous type description.</para>
+			
 	</section>
 	
 </section>
