@@ -1,0 +1,50 @@
+<section id="enums.energyunits"><title>Energy Units</title>
+	
+	<para>A list of energy units supported by Aten</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Energy unit keywords</title>
+		<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+					<entry>Joule Equivalent</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>j</entry>
+					<entry>Joules per mole (J/mol)</entry>
+					<entry>1.0</entry>
+				</row>
+				<row>
+					<entry>kj</entry>
+					<entry>KiloJoules per mole (kJ/mol)</entry>
+					<entry>1000.0</entry>
+				</row>
+				<row>
+					<entry>cal</entry>
+					<entry>Calories per mole (cal/mol)</entry>
+					<entry>4.184</entry>
+				</row>
+				<row>
+					<entry>kcal</entry>
+					<entry>KiloCalories per mole (kcal/mol)</entry>
+					<entry>4184.0</entry>
+				</row>
+				<row>
+					<entry>ev</entry>
+					<entry>Electronvolts per mole (eV/mol)</entry>
+					<entry>96485.14925</entry>
+				</row>
+				<row>
+					<entry>ha</entry>
+					<entry>Hartrees per mole (Ha/mol)</entry>
+					<entry>2625494.616</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>
+

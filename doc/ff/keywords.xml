@@ -55,7 +55,7 @@
 		
 		<para>All lists of terms, types, and extraneous data are specified in the form of 'blocks'. Each keyword in this section marks the start of block, and must at some point be terminated by an 'end' keyword. In addition each keyword may take one or more (optional) values.</para>
 		
-		<section id="ff.ref.angles"><title>Angles</title>
+		<section id="ff.ref.angles"><title>angles</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>angles</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -88,7 +88,7 @@
 			
 		</section>
 
-		<section id="ff.ref.bonds"><title>Bonds</title>
+		<section id="ff.ref.bonds"><title>bonds</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>bonds</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>
@@ -120,7 +120,42 @@
 
 		</section>
 		
-		<section id="ff.ref.equivalents"><title>Equivalents</title>
+		<section id="ff.ref.defines"><title>defines</title>
+			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>defines</tertiary></indexterm>
+			
+			<para><emphasis>Syntax:</emphasis></para>
+			<itemizedlist>
+				<listitem>
+					<para>defines</para>
+				</listitem>
+			</itemizedlist>
+			
+			<para>The 'defines' block makes it possible to state commonly-used or lengthy chunks of NETA that do not belong to any specific atom type, and which can then be reused multiple times in many different atom type descriptions. Each definition in the block is given an identifying unique name which allows it to be referenced with the '$' symbol.</para>
+
+			<para>The format of lines within the 'defines' block is as follows:</para>
+			
+			<synopsis>
+				<emphasis>name</emphasis>  &quot;<emphasis>NETA</emphasis>&quot;
+			</synopsis>
+
+			<para>The NETA descriptions provided for each definition <emphasis>must</emphasis> be valid, or the forcefield will not be loaded. In subsequent NETA definitions for atom types the definitions may be inserted by stating '$name'. For example:</para>
+			
+			<synopsis>
+				defines
+				water_oxygen	"-O(nh=2,nbonds=2)"
+				end
+				
+				...
+				
+				types
+				1       HW2     H       "nbonds=1,$water_oxygen"              "Water hydrogen"
+				end
+			</synopsis>
+			
+			<para> 
+		</section>
+		
+		<section id="ff.ref.equivalents"><title>equivalents</title>
 			<indexterm><primary>forcefield</primary><secondary>keywords</secondary><tertiary>equivalents</tertiary></indexterm>
 			
 			<para><emphasis>Syntax:</emphasis></para>

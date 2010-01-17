@@ -1250,7 +1250,7 @@
 						<entry>atomstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawingstyles">Drawing Styles</link></entry>
+						<entry>The atom radii used for selection and rendering in the four <link linkend="enums.drawstyles">Drawing Styles</link></entry>
 					</row>
 					<row>
 						<entry>backcull</entry>
@@ -1274,7 +1274,7 @@
 						<entry>bondstyleradius</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawingstyles">Drawing Styles</link></entry>
+						<entry>The bond radii used for selection and rendering in the four <link linkend="enums.drawstyles">Drawing Styles</link></entry>
 					</row>
 					<row>
 						<entry>bondtolerance</entry>

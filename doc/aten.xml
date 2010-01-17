@@ -76,7 +76,8 @@
 	<!ENTITY bondtypes SYSTEM "enums/bondtypes.xml">
 	<!ENTITY celltypes SYSTEM "enums/celltypes.xml">
 	<!ENTITY colourschemes SYSTEM "enums/colourschemes.xml">
-	<!ENTITY drawingstyles SYSTEM "enums/drawingstyles.xml">
+	<!ENTITY drawstyles SYSTEM "enums/drawstyles.xml">
+	<!ENTITY energyunits SYSTEM "enums/energyunits.xml">
 	<!ENTITY glyphtypes SYSTEM "enums/glyphtypes.xml">
 	<!ENTITY labeltypes SYSTEM "enums/labeltypes.xml">
 	<!ENTITY outputtypes SYSTEM "enums/outputtypes.xml">
@@ -222,13 +223,14 @@
 		&methodliterature;
 	</chapter>
 	
-	<!-- ENUMS -->
+	<!-- Enums -->
 	<chapter id="enums"><title>Enumerations</title>
 		<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
 		&bondtypes;
 		&celltypes;
 		&colourschemes;
-		&drawingstyles;
+		&drawstyles;
+		&energyunits;
 		&glyphtypes;
 		&labeltypes;
 		&outputtypes;
@@ -238,7 +240,7 @@
 		&zmaptypes;
 	</chapter>
 
-	<!-- CHANGELOGS -->
+	<!-- Changelogs -->
 	<chapter id="changelogs"><title>Changelogs</title>
 		&changelog11;
 		&changelog12;
