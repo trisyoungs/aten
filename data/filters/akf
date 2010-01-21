@@ -15,7 +15,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 	# Read line
 	while (!eof())
 	{
-		readlinef("%s %r",keywd,line);
+		readlinef("%s%r",keywd,line);
 		if (keywd == "atom")
 		{
 			readvar(line,i,e,rx,ry,rz,q);
@@ -76,6 +76,21 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			else if (n == 4) measure(i,j,k,l);
 			else printf("Warning: Invalid measurement between %i atoms.\n", n);
 		}
+		else if (keywd == "distance")
+		{
+			readvar(line,i,j);
+			measure(i,j);
+		}
+		else if (keywd == "angle")
+		{
+			readvar(line,i,j,k);
+			measure(i,j,k);
+		}
+		else if (keywd == "torsion")
+		{
+			readvar(line,i,j,k,l);
+			measure(i,j,k,l);
+		}
 		else printf("Warning: Keyword '%s' not recognised.\n",keywd);
 	}
 	finalisemodel();
@@ -95,7 +110,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	if (m.cell.type != "none") writelinef("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
 
 	// Measurements
-	for (measurement g = m.distances; g; ++g) writelinef("geometry 2 %i %i\n", g.i.id, g.j.id);
-	for (measurement g = m.angles; g; ++g) writelinef("geometry 3 %i %i %i\n", g.i.id, g.j.id, g.k.id);
-	for (measurement g = m.torsions; g; ++g) writelinef("geometry 4 %i %i %i %i\n", g.i.id, g.j.id, g.k.id, g.l.id);
+	for (measurement g = m.distances; g; ++g) writelinef("geometry 2 %i %i\t# %f\n", g.i.id, g.j.id, g.value);
+	for (measurement g = m.angles; g; ++g) writelinef("geometry 3 %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.value);
+	for (measurement g = m.torsions; g; ++g) writelinef("geometry 4 %i %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.l.id, g.value);
 }

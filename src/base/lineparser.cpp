@@ -266,10 +266,21 @@ int LineParser::getLine()
 			return result;
 		}
 		// Search for '#' or '//' in the file to remove comments
-		char *c;
+		char *c, quotchar = '\0';
 		for (c = line_; *c != '\0'; c++)
 		{
-			if ((*c == '#') && (!escaped))
+			// Remember current quoting info...
+			if (*c == '"')
+			{
+				if (quotchar == '\0') quotchar = '"';
+				else if (quotchar == '"') quotchar = '\0';
+			}
+			if (*c == '\'')
+			{
+				if (quotchar == '\0') quotchar = '\'';
+				else if (quotchar == '\'') quotchar = '\0';
+			}
+			if ((*c == '#') && (!escaped) && (quotchar == '\0'))
 			{
 				*c = '\0';
 				break;
