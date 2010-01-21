@@ -33,11 +33,11 @@ uatypes
 end
 # 1-butyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
 types
-16	CR_b	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C-C-C(nbonds=1)))"
+16	CR_b	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1)),~N(chain(~C~C~C~C(nbonds=1)))"
 17	NAm_b	N	"~&16,-C(nbonds=1)"
 18	NAa_b	N	"~&16,chain(-C-C-C-C(nbonds=1))"
-19	CWm_b	C	"~N(-C(nbonds=1),~&16)"
-20	CWa_b	C	"~N(chain(-C-C-C-C(nbonds=1)),~&16),ring"
+19	CWm_b	C	"~C,~N(-C(nbonds=1),~&16)"
+20	CWa_b	C	"~C,~N(chain(-C-C-C-C(nbonds=1)),~&16),ring"
 21	H5_b	H	"-&16"
 22	H4m_b	H	"-&19"
 23	H4a_b	H	"-&20"
@@ -51,11 +51,11 @@ uatypes
 end
 # 1-ethyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
 types
-29	CR_e	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C(nbonds=1)))"
+29	CR_e	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1)),~N(chain(~C~C(nbonds=1)))"
 30	NAm_e	N	"~&29,-C(nbonds=1)"
 31	NAa_e	N	"~&29,chain(-C-C(nbonds=1))"
-32	CWm_e	C	"~N(-C(nbonds=1),~&29)"
-33	CWa_e	C	"~N(chain(-C-C(nbonds=1)),~&29),ring"
+32	CWm_e	C	"~N(-C(nbonds=1),~&29),~C"
+33	CWa_e	C	"~N(chain(-C(noring)-C(nbonds=1)),~&29),ring,~C"
 34	H5_e	H	"-&29"
 35	H4m_e	H	"-&32"
 36	H4a_e	H	"-&33"
@@ -67,9 +67,9 @@ uatypes
 end
 # 1,3-dimethyl imidazolium - PCCP, 2006, 8, 1096-1104.
 types
-40	CR	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1),n=2)"
+40	CR	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1),n=2)"
 41	NA	N	"~&40,-C(nbonds=1)"
-42	CW	C	"~N(-C(nbonds=1),~&40)"
+42	CW	C	"~C,~N(-C(nbonds=1),~&40)"
 43	H5	H	"-&40"
 44	H4	H	"-&42"
 end
