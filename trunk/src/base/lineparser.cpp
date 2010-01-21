@@ -285,7 +285,7 @@ int LineParser::getLine()
 				*c = '\0';
 				break;
 			}
-			else if ((*c == '/') && (!escaped))
+			else if ((*c == '/') && (!escaped) && (quotchar == '\0'))
 			{
 				char *c2 = c;
 				c2++;

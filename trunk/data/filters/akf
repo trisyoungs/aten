@@ -110,7 +110,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	if (m.cell.type != "none") writelinef("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
 
 	// Measurements
-	for (measurement g = m.distances; g; ++g) writelinef("geometry 2 %i %i\t# %f\n", g.i.id, g.j.id, g.value);
-	for (measurement g = m.angles; g; ++g) writelinef("geometry 3 %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.value);
-	for (measurement g = m.torsions; g; ++g) writelinef("geometry 4 %i %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.l.id, g.value);
+	for (measurement g = m.distances; g; ++g) writelinef("distance %i %i\t# %f\n", g.i.id, g.j.id, g.value);
+	for (measurement g = m.angles; g; ++g) writelinef("angle %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.value);
+	for (measurement g = m.torsions; g; ++g) writelinef("torsion %i %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.l.id, g.value);
 }
