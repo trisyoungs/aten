@@ -358,7 +358,7 @@ bool Forcefield::readData(const char *vars)
 		for (n=2; n<ffparser.nArgs(); ++n)
 		{
 			// If the parser argument is blank we've run out of arguments early
-			if (ffparser.isBlank(n))
+			if (ffparser.hasArg(n))
 			{
 				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
 				break;
@@ -691,8 +691,8 @@ bool Forcefield::readTorsions()
 		return FALSE;
 	}
 	// Have new scaling factors been provided?
-	if (ffparser.isBlank(2)) msg.print("   Electrostatic/VDW 1-4 scale factors not provided - defaults of %f and %f used instead.\n", escale, vscale);
-	else if (ffparser.isBlank(3))
+	if (!ffparser.hasArg(2)) msg.print("   Electrostatic/VDW 1-4 scale factors not provided - defaults of %f and %f used instead.\n", escale, vscale);
+	else if (!ffparser.hasArg(3))
 	{
 		msg.print("Error: Only electrostatic 1-4 scale factor was provided in torsion block header (line %i).\n",ffparser.lastLineNo());
 		return FALSE;

@@ -832,18 +832,7 @@ float LineParser::argf(int i)
 	return (float) argd(i);
 }
 
-// Returns whether the specified argument is empty
-bool LineParser::isBlank(int i)
-{
-	if ((i < 0) || (i >= nArgs()))
-	{
-		printf("Warning: Argument %i is out of range (for isBlank) - returning FALSE...\n", i);
-		return FALSE;
-	}
-	return (arguments_[i]->get()[0] == '\0' ? TRUE : FALSE);
-}
-
-// Returns whether the specified argument exists
+// Returns whether the specified argument exists (has been provided)
 bool LineParser::hasArg(int i)
 {
 	if ((i < 0) || (i >= nArgs())) return FALSE;

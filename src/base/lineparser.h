@@ -169,8 +169,6 @@ class LineParser
 	bool argb(int i);
 	// Returns the specified argument as a float
 	float argf(int i);
-	// Returns whether the specified argument is empty
-	bool isBlank(int i);
 	// Returns whether the specified argument exists
 	bool hasArg(int i);
 
