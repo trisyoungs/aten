@@ -384,17 +384,21 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 			}
 		}
 		# Constraint terms
-		writeline("constraints",nconstraints);
-		# ...proper bond constraints first
-		for (b=p.bonds; b; ++b)
+		if (nconstraints > 0)
 		{
-			if (b.form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+			writeline("constraints",nconstraints);
+			# ...proper bond constraints first
+			for (b=p.bonds; b; ++b)
+			{
+				if (b.form == "constraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[2],b.data[2]);
+			}
+			# ...and now angles that are of type 'bondconstraint'
+			for (b=p.angles; b; ++b)
+			{
+				if (b.form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
+			}
 		}
-		# ...and now angles that are of type 'bondconstraint'
-		for (b=p.angles; b; ++b)
-		{
-			if (b.form == "bondconstraint") writelinef("    %5i %5i  %10.4f\n",b.id[1],b.id[3],b.data[2]);
-		}
+
 		# Terminating line
 		writeline("finish");
 	}
