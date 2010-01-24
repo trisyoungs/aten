@@ -332,7 +332,10 @@
 	</section>
 	
 	<section id="readwrite.unformatted"><title>Unformatted Reading and Writing</title>
+
 		<para>TODO</para>
+		<indexterm><primary>TODO</primary><secondary>Unformatted r/w</secondary></indexterm>
+
 	</section>
 
 </section>

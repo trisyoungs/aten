@@ -140,7 +140,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See the <link linkend="ff.keywords.equivalents">equivalents</link> forcefield keyword for more information.</para>
+		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See the <link linkend="ff.ref.equivalents">equivalents</link> forcefield keyword for more information.</para>
 	
 	</section>
 	

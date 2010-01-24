@@ -43,7 +43,7 @@
 				<paramdef>double <parameter>tol</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise <link linkend="ff.patterns">patterns</link> within models correctly. The current or new bond tolerance is returned.</para>
+		<para>Adjust the bond calculation tolerance. It may often be necessary to tweak the bond tolerance in order to get Aten to recognise <link linkend="topics.patterns">patterns</link> within models correctly. The current or new bond tolerance is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>

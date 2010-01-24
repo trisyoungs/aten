@@ -36,6 +36,7 @@
 	<!ENTITY commandforcefield SYSTEM "commands/forcefield.xml">
 	<!ENTITY commandforce SYSTEM "commands/force.xml">
 	<!ENTITY commandglyph SYSTEM "commands/glyph.xml">
+	<!ENTITY commandgrid SYSTEM "commands/grid.xml">
 	<!ENTITY commandimage SYSTEM "commands/image.xml">
 	<!ENTITY commandlabel SYSTEM "commands/label.xml">
 	<!ENTITY commandmath SYSTEM "commands/math.xml">
@@ -54,11 +55,14 @@
 	<!ENTITY commandtrajectory SYSTEM "commands/trajectory.xml">
 	<!ENTITY commandtransform SYSTEM "commands/transform.xml">
 	<!ENTITY commandview SYSTEM "commands/view.xml">
+	<!-- Topics of Interest -->
+	<!ENTITY ffcolourscales SYSTEM "topics/colourscales.xml">
+	<!ENTITY ffpatterns SYSTEM "topics/patterns.xml">
 	<!-- Forcefields -->
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
+	<!ENTITY ffsupplied SYSTEM "ff/supplied.xml">
 	<!ENTITY ffkeywords SYSTEM "ff/keywords.xml">
 	<!ENTITY ffrules SYSTEM "ff/rules.xml">
-	<!ENTITY ffpatterns SYSTEM "ff/patterns.xml">
 	<!ENTITY fftyping SYSTEM "ff/typing.xml">
 	<!ENTITY ffneta SYSTEM "ff/neta.xml">
 	<!ENTITY ffformsvdw SYSTEM "ff/forms-vdw.xml">
@@ -171,6 +175,7 @@
 			&commandforcefield;
 			&commandforce;
 			&commandglyph;
+			&commandgrid;
 			&commandimage;
 			&commandlabel;
 			&commandmath;
@@ -195,9 +200,9 @@
 	<!-- Forcefields -->
 	<chapter id="ff"><title>Forcefields and Typing</title>
 		&fffiles;
+		&ffsupplied;
 		&ffkeywords;
 		&ffrules;
-		&ffpatterns;
 		&fftyping;
 		&ffneta;
 		&ffformsvdw;

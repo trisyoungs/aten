@@ -1,5 +1,5 @@
-<section id="ff.patterns"><title>Patterns</title>
-	<indexterm zone="ff.patterns"><primary>patterns</primary></indexterm>
+<section id="topics.patterns"><title>Patterns</title>
+	<indexterm zone="topics.patterns"><primary>patterns</primary></indexterm>
 
 	<para>Patterns in Aten represent collections of molecules of the same type, and are used primarily in the forcefield engine where they allow the construction of compact descriptions of systems where many similar molecules exist (e.g. liquids). A set of patterns describing the contents of a model is often referred to as a <emphasis>pattern description</emphasis>. Such a description is generated automatically as and when required by Aten, and so in most cases should not need to be defined manually by the user. When Aten fails to find a suitable pattern for a model this is often an indication that a bond is missing (perhaps the bond tolerance is too low?) or the atoms present in the system are not in exactly the order you think they are.</para>
 
@@ -7,7 +7,7 @@
 
 	<para>Patterns describe systems in terms of their constituent molecular units. For an N-component system (a single, isolated molecule is a 1-component system) there are N unique molecule types which are represented as, ideally, a set of N patterns. Forcefield sub-expressions can then be created for each pattern and applied to each molecule within it, allowing the expression for the entire system to be compact and efficient. Each pattern contains a list of intramolecular terms (bonds, angles etc.), atom types, and van der Waals parameters for a single molecule that can then be used to calculate the energy and forces of M copies of that molecule.</para>
 
-	<section id="ff.patterns.determination"><title>Determination of Patterns</title>
+	<section id="topics.patterns.determination"><title>Determination of Patterns</title>
 
 		<para>From the atoms and the connectivity between them Aten will automatically determine patterns for systems of arbitrary complexity. The ordering of atoms is important, however, and the atoms belonging to a single molecule must not be interspersed by those from others. In other words, the atoms belonging to one instance of a molecule must be listed consecutively in the model. There are also many ways to represent the same system of atoms, all of which (from the point of view of the program) are equivalent and will produce the same total energies and atomic forces.</para>
 
@@ -91,7 +91,7 @@
 
 	</section>
 	
-	<section id="ff.patterns.granularity"><title>Pattern Granularity</title>
+	<section id="topics.patterns.granularity"><title>Pattern Granularity</title>
 		
 		<para>Patterns work on the basis of bound fragments/molecules, and a molecule cannot be split up smaller than this - for instance in the examples above water cannot be represented by 'HO(1) H(1)' since this would 'neglect' a bond. However, there is nothing to stop a pattern 'crossing' individual molecules. Consider again the example 1) above. Three further (reiterating the point, equivalent) ways of writing the pattern description are:</para>
 		

@@ -26,7 +26,7 @@
 				<paramdef>string <parameter>option</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Controls aspects of file reading. See <link linkend="enums.readoptions">Read Options</link> for a list of possible <emphasis>options</emphasis>.</para>
+		<para>Controls aspects of file reading. See <link linkend="enums.parseoptions">Parse Options</link> for a list of possible <emphasis>options</emphasis>.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -454,7 +454,7 @@
 				<paramdef>string <parameter>option</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Removes a previously-set read option. See <link linkend="enums.readoptions">Read Options</link>  for a list of possible <emphasis>options</emphasis>.</para>
+		<para>Removes a previously-set read option. See <link linkend="enums.parseoptions">Parse Options</link>  for a list of possible <emphasis>options</emphasis>.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -558,7 +558,7 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the <link linkend="command.printf">printf</link> command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the <link linkend="command.ref.printf">printf</link> command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
 		
 		<para>For example:</para>
 		<synopsis>

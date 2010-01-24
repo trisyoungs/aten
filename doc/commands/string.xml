@@ -5,7 +5,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="command.variables">Variables</link> for information on using variables in Aten.</para>
+				<para><link linkend="command.overview.variables">Variables</link> for information on using variables in Aten.</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="command.types">Variable Types</link> for lists of properties available in reference variable types.</para>
