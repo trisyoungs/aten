@@ -117,14 +117,6 @@
 		</synopsis>
 		<para>minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.</para>
 		
-		<note><title>See also:</title>
-			<itemizedlist mark='opencircle'>
-				<listitem>
-					<para><link linkend="methods.sd">Steepest Descent Method</link> for details on the steepest descent minimisation method as it is implemented in Aten.</para>
-				</listitem>
-			</itemizedlist>
-		</note>
-		
 	</section>
 	
 </section>
