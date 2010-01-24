@@ -56,8 +56,8 @@
 	<!ENTITY commandtransform SYSTEM "commands/transform.xml">
 	<!ENTITY commandview SYSTEM "commands/view.xml">
 	<!-- Topics of Interest -->
-	<!ENTITY ffcolourscales SYSTEM "topics/colourscales.xml">
-	<!ENTITY ffpatterns SYSTEM "topics/patterns.xml">
+	<!ENTITY topicscolourscales SYSTEM "topics/colourscales.xml">
+	<!ENTITY topicspatterns SYSTEM "topics/patterns.xml">
 	<!-- Forcefields -->
 	<!ENTITY fffiles SYSTEM "ff/files.xml">
 	<!ENTITY ffsupplied SYSTEM "ff/supplied.xml">
@@ -87,6 +87,7 @@
 	<!ENTITY outputtypes SYSTEM "enums/outputtypes.xml">
 	<!ENTITY parseoptions SYSTEM "enums/parseoptions.xml">
 	<!ENTITY readsuccess SYSTEM "enums/readsuccess.xml">
+	<!ENTITY regionshapes SYSTEM "enums/regionshapes.xml">
 	<!ENTITY viewobjects SYSTEM "enums/viewobjects.xml">
 	<!ENTITY zmaptypes SYSTEM "enums/zmaptypes.xml">
 	<!-- Changelogs -->
@@ -197,6 +198,12 @@
 		</section>
 	</chapter>
 
+	<!-- Topics of Interest -->
+	<chapter id="topics"><title>Topics of Interest</title>
+		&topicscolourscales;
+		&topicspatterns;
+	</chapter>
+
 	<!-- Forcefields -->
 	<chapter id="ff"><title>Forcefields and Typing</title>
 		&fffiles;
@@ -221,8 +228,8 @@
 		<section><title>Custom Algorithms</title>
 			&methodneta;
 			&methodaugment;
-<!-- 			&methodautoellipsoids; -->
-<!-- 			&methodautopolyhedra; -->
+			&methodautoellipsoids;
+			&methodautopolyhedra;
 			&methodrebond;
 		</section>
 		&methodliterature;
@@ -241,6 +248,7 @@
 		&outputtypes;
 		&parseoptions;
 		&readsuccess;
+		&regionshapes;
 		&viewobjects;
 		&zmaptypes;
 	</chapter>
@@ -251,6 +259,9 @@
 		&changelog12;
 		&changelog13;
 	</chapter>
+
+	<!-- Index -->
+	<index/>
 
 </book>
 
