@@ -14,12 +14,14 @@
 	<!ENTITY faq SYSTEM "gettingstarted/faq.xml">
 	<!ENTITY reference SYSTEM "gettingstarted/reference.xml">
 	<!ENTITY cli SYSTEM "gettingstarted/cli.xml">
-	<!ENTITY gui SYSTEM "gettingstarted/gui.xml">
 	<!--Import / Export-->
 	<!ENTITY supportedformats SYSTEM "importexport/supportedformats.xml">
 	<!ENTITY filters SYSTEM "importexport/filters.xml">
 	<!ENTITY trajectories SYSTEM "importexport/trajectories.xml">
 	<!ENTITY readwrite SYSTEM "importexport/readwrite.xml">
+	<!-- GUI -->
+	<!ENTITY gui SYSTEM "gui/gui.xml">
+	<!ENTITY guimouse SYSTEM "gui/guimouse.xml">
 	<!--Commands-->
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
 	<!ENTITY commandtypes SYSTEM "commands/commandtypes.xml">
@@ -146,7 +148,6 @@
 		&faq;
 		&reference;
 		&cli;
-<!-- 		&gui; -->
 	</chapter>
 
 	<!-- IMPORT / EXPORT -->
@@ -157,6 +158,13 @@
 		&readwrite;
 	</chapter>
 	
+	<!-- GUI -->
+	<chapter id="gui"><title>The GUI</title>
+		<indexterm zone="gui"><primary>GUI</primary></indexterm>
+ 		&gui;
+ 		&guimouse;
+	</chapter>
+
 	<!-- COMMANDS -->
 	<chapter id="command"><title>Command Language</title>
 		&commandoverview;
