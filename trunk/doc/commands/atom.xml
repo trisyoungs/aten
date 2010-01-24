@@ -294,7 +294,7 @@
 				<paramdef>int <parameter>id</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set the temporary ID of the current (or specified) atom, useful for when parsing atoms from a file that are not in any useful order but have an id specified for the purposes of subsequent connectivity definitions, for example. Within filters, once loading is complete the <link linkend="command.finalisemodel">finalisemodel</link> command will reset all atom ids to internal numbering.</para>
+		<para>Set the temporary ID of the current (or specified) atom, useful for when parsing atoms from a file that are not in any useful order but have an id specified for the purposes of subsequent connectivity definitions, for example. Within filters, once loading is complete the <link linkend="command.ref.finalisemodel">finalisemodel</link> command will reset all atom ids to internal numbering.</para>
 	
 	</section>
 	

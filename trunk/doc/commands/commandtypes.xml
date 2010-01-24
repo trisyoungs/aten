@@ -476,8 +476,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -556,7 +554,61 @@
 				</tbody>
 			</tgroup>
 		</table>
-	
+
+		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>datad ( string <emphasis>varname</emphasis> )</entry>
+						<entry>double</entry>
+						<entry>Return the value of the defined data item <emphasis>varname</emphasis> as a double if it has been defined in a <link linkend="ff.ref.data">data</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+				<tbody>
+					<row>
+						<entry>datai ( string <emphasis>varname</emphasis> )</entry>
+						<entry>int</entry>
+						<entry>Return the value of the defined data item <emphasis>varname</emphasis> as an integer if it has been defined in a <link linkend="ff.ref.data">data</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+				<tbody>
+					<row>
+						<entry>datas ( string <emphasis>varname</emphasis> )</entry>
+						<entry>string</entry>
+						<entry>Return the value of the defined data item <emphasis>varname</emphasis> as a string if it has been defined in a <link linkend="ff.ref.data">data</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+				<tbody>
+					<row>
+						<entry>generatord ( string <emphasis>varname</emphasis> )</entry>
+						<entry>double</entry>
+						<entry>Return the value of the defined generator data <emphasis>varname</emphasis> as a double if it has been defined in a <link linkend="ff.ref.data">generator</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+				<tbody>
+					<row>
+						<entry>generatori ( string <emphasis>varname</emphasis> )</entry>
+						<entry>int</entry>
+						<entry>Return the value of the defined generator data <emphasis>varname</emphasis> as an integer if it has been defined in a <link linkend="ff.ref.data">generator</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+				<tbody>
+					<row>
+						<entry>generators ( string <emphasis>varname</emphasis> )</entry>
+						<entry>string</entry>
+						<entry>Return the value of the defined generator data <emphasis>varname</emphasis> as a string if it has been defined in a <link linkend="ff.ref.data">generator</link> block in its encompassing forcefield.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>
 	
 	<section id="command.types.ffbound"><title>FFBound</title>

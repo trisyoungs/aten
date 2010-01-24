@@ -12,7 +12,7 @@
 		
 		<para>The majority of data is contained within blocks in the file. Blocks begin with a specific keyword (e.g. <link linkend="ff.ref.inter">inter</link>), contain one or more lines of definitions, and are terminated by an 'end' keyword. Forcefield files may contain many blocks of the same type, permitting terms of the same type but with differing functional forms to be defined easily.</para>
 		
-		<para>More advanced forcefields may contain <link linkend="ff.generator">generator sections and functions</link> that enable them to either generate all their parameters on the fly from a basic set of data, or fill in missing terms that are not defined in any blocks.</para>
+		<para>More advanced forcefields may contain <link linkend="ff.rules">generator sections and functions</link> that enable them to either generate all their parameters on the fly from a basic set of data, or fill in missing terms that are not defined in any blocks.</para>
 	</section>
 	
 	<section id="ff.files.example"><title>Example - SPC Water</title>

@@ -30,8 +30,8 @@
 	
 	<section id="command.overview.variables"><title>Variables</title>
 	
-		<indexterm id="idx.command.variables1" class="startofrange"><primary>command language</primary><secondary>variables</secondary></indexterm>
-		<indexterm id="idx.command.variables2" class="startofrange"><primary>variables</primary><secondary>overview</secondary></indexterm>
+		<indexterm zone="command.overview.variables"><primary>command language</primary><secondary>variables</secondary></indexterm>
+		<indexterm zone="command.overview.variables"><primary>variables</primary><secondary>overview</secondary></indexterm>
 	
 		<para>There are several standard rules for variables within Aten:</para>
 		
@@ -74,9 +74,6 @@
 			double myvar=0.0, angle = 90.0;
 		</synopsis>
 		
-		<indexterm startref="idx.command.variables1" class="endofrange"></indexterm>
-		<indexterm startref="idx.command.variables2" class="endofrange"></indexterm>
-	
 	</section>
 	
 	<section id="command.overview.arrays"><title>Arrays</title>

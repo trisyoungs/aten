@@ -336,7 +336,7 @@
 				<varlistentry id="cli.switches.s">
 					<term><indexterm><primary>command line switches</primary><secondary>-s, --script</secondary></indexterm>
 						-s &lt;file&gt;, --script &lt;file&gt;</term>
-					<listitem><para>Specifies that the script file is to be loaded and run before moving on to the next command-line argument. See the <link linkend="scripting">scripting</link> section for more information on scripts.</para></listitem>
+					<listitem><para>Specifies that the script file is to be loaded and run before moving on to the next command-line argument. A script file is just a plain text file that contains sequence of commands to be executed, written in the <link linkend="command.overview">command language style</link>.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.string">
 					<term><indexterm><primary>command line switches</primary><secondary>--string</secondary></indexterm>
