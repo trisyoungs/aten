@@ -86,7 +86,7 @@ end
 # We will define the generator data for only the ethane types here...
 generator "double sigma, double eps, double k, double theta "
 10	CH3	3.25	0.2	1000.0	109.5
-#end
+end
 
 # When a vdw, bond, angle, or torsion parameter is required by the forcefield but is not defined in any lists, the relevant
 # generator function is called (if one exists). The functions themselves have strict declarations that must be followed.
