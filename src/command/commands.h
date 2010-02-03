@@ -394,6 +394,7 @@ class Command
 		// Model Commands
 		CreateAtoms,
 		CurrentModel,
+		DeleteModel,
 		FinaliseModel,
 		FirstModel,
 		GetModel,
@@ -521,6 +522,9 @@ class Command
 		// Transformation Commands
 		AxisRotate,
 		Centre,
+		FlipX,
+		FlipY,
+		FlipZ,
 		MatrixConvert,
 		MatrixTransform,
 		Mirror,
@@ -829,6 +833,7 @@ class Command
 	// Model Commands
 	static bool function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FirstModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -947,6 +952,9 @@ class Command
 	// Transform Commands
 	static bool function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FlipX(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FlipY(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_FlipZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv);

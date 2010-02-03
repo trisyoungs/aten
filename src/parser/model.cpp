@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "main/aten.h"
 
 /*
 // Variable
@@ -65,6 +66,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "filename",		VTypes::StringData,		0, TRUE },
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
+	{ "id",			VTypes::IntegerData,		0, TRUE },
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "nangles",		VTypes::IntegerData,		0, TRUE },
@@ -301,6 +303,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
+			break;
+		case (ModelVariable::Id):
+			rv.set(aten.modelIndex(ptr)+1);
 			break;
 		case (ModelVariable::Mass):
 			rv.set(ptr->mass());

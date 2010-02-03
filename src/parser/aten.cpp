@@ -92,6 +92,7 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 	{ "model",	VTypes::ModelData,		0, TRUE },
 	{ "models",	VTypes::ModelData,		-1, TRUE },
 	{ "nelements",	VTypes::IntegerData,		0, TRUE },
+	{ "nmodels",	VTypes::IntegerData,		0, TRUE },
 	{ "prefs",	VTypes::PreferencesData,	0, TRUE }
 };
 
@@ -224,6 +225,9 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (AtenVariable::NElements):
 			rv.set(elements().nElements());
+			break;
+		case (AtenVariable::NModels):
+			rv.set(aten.nModels());
 			break;
 		case (AtenVariable::Preferences):
 			rv.set(VTypes::PreferencesData, &prefs);

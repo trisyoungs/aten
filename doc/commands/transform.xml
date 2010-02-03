@@ -82,7 +82,64 @@
 		<para>centres the current selection at the coordinates (0 0 15).</para>
 		
 	</section>
-	
+
+	<section id="command.ref.flipx"><title>flipx</title>
+		<indexterm><primary>commands</primary><secondary>flipx</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>flipx</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Flip (negate) the x-coordinates of the current selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			flipx();
+		</synopsis>
+		
+	</section>
+
+	<section id="command.ref.flipy"><title>flipy</title>
+		<indexterm><primary>commands</primary><secondary>flipy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>flipy</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Flip (negate) the y-coordinates of the current selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			flipy();
+		</synopsis>
+		
+	</section>
+
+	<section id="command.ref.flipz"><title>flipz</title>
+		<indexterm><primary>commands</primary><secondary>flipz</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>flipz</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Flip (negate) the z-coordinates of the current selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			flipz();
+		</synopsis>
+		
+	</section>
+
 	<section id="command.ref.matrixconvert"><title>matrixconvert</title>
 		<indexterm><primary>commands</primary><secondary>matrixconvert</secondary></indexterm>
 		

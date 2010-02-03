@@ -352,6 +352,7 @@ void Command::initPointers()
 	// Model Commands
 	pointers_[CreateAtoms] = &Command::function_CreateAtoms;
 	pointers_[CurrentModel] = &Command::function_CurrentModel;
+	pointers_[DeleteModel] = &Command::function_DeleteModel;
 	pointers_[FinaliseModel] = &Command::function_FinaliseModel;
 	pointers_[FirstModel] = &Command::function_FirstModel;
 	pointers_[GetModel] = &Command::function_GetModel;
@@ -479,6 +480,9 @@ void Command::initPointers()
 	// Transform Commands
 	pointers_[AxisRotate] = &Command::function_AxisRotate;
 	pointers_[Centre] = &Command::function_Centre;
+	pointers_[FlipX] = &Command::function_FlipX;
+	pointers_[FlipY] = &Command::function_FlipY;
+	pointers_[FlipZ] = &Command::function_FlipZ;
 	pointers_[MatrixConvert] = &Command::function_MatrixConvert;
 	pointers_[MatrixTransform] = &Command::function_MatrixTransform;
 	pointers_[Mirror] = &Command::function_Mirror;

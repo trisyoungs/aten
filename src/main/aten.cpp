@@ -232,7 +232,7 @@ void Aten::removeModel(Model *xmodel)
 	msg.enter("Aten::removeModel");
 	Model *m;
 	// Unset the datamodel for the canvas
-	// Delete the current model, but don't allow there to be zero models_...
+	// Delete the current model, but don't allow there to be zero models...
 	// (if possible, set the active row to the next model, otherwise  the previous)
 	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
