@@ -64,6 +64,29 @@
 		<para>creates two models, storing references to each, and then re-selects the first one and makes it the current target again.</para>
 		
 	</section>
+
+	<section id="command.ref.deletemodel"><title>deletemodel</title>
+		<indexterm><primary>commands</primary><secondary>deletemodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void<function>deletemodel</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>deletemodel</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>deletemodel</function></funcdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		
+		<para>Deletes the current model (if no argument is given) or the supplied model.</para>
+		
+	</section>
 	
 	<section id="command.ref.firstmodel"><title>firstmodel</title>
 		<indexterm><primary>commands</primary><secondary>firstmodel</secondary></indexterm>

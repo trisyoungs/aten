@@ -93,6 +93,39 @@ bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Flip selection's x-coordinates
+bool Command::function_FlipX(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Flip x-coordinates of %i atom(s)", obj.rs->nSelected());
+	obj.rs->mirrorSelectionLocal(0);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Flip selection's y-coordinates
+bool Command::function_FlipY(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Flip y-coordinates of %i atom(s)", obj.rs->nSelected());
+	obj.rs->mirrorSelectionLocal(1);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Flip selection's z-coordinates
+bool Command::function_FlipZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Flip z-coordinates of %i atom(s)", obj.rs->nSelected());
+	obj.rs->mirrorSelectionLocal(2);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
 // Convert coordinates from one reference frame to another
 bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

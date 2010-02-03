@@ -75,6 +75,39 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 	return TRUE;
 }
 
+// Delete current or specified model
+bool Command::function_DeleteModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// If the argument is an integer, get by id. Otherwise, get by name
+	Model *m = NULL;
+	if (c->hasArg(0))
+	{
+		switch (c->argType(0))
+		{
+			case (VTypes::ModelData): m = (Model*) c->argp(0, VTypes::ModelData); break;
+			case (VTypes::IntegerData): m = aten.model(c->argi(0) - 1); break;
+			case (VTypes::StringData): m = aten.findModel(c->argc(0)); break;
+			default:
+				printf("Can't convert %s in to a Model.\n", VTypes::aDataType(c->argType(0)));
+				break;
+		}
+	}
+	else m = aten.currentModel();
+
+	if (m != NULL) 
+	{
+		// If the selected model 
+		aten.removeModel(m);
+		gui.update(FALSE, FALSE, FALSE);
+		return TRUE;
+	}
+	else
+	{
+		msg.print("No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0), c->argi(0));
+		return FALSE;
+	}
+}
+
 // Finalise current model
 bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

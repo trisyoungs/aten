@@ -78,6 +78,8 @@ Cli cliSwitches[] = {
 		"",		"Store atom (type)names given in files in a forcefield created for the model" },
 	{ Cli::KeepViewSwitch,		'k',"keepview",		0,
 		"",		"Keep (don't reset) view when GUI starts" },
+	{ Cli::LoadFromListSwitch,	'\0',"loadfromlist",	1,
+		"<file>",	"Assume that <file> is a textfile containing a list of filenames to be loaded as models" },
 	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
 	{ Cli::NewModelSwitch,		'n',"new",		0,
@@ -466,6 +468,19 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
 					prefs.setKeepView(TRUE);
+					break;
+				// Load models from list in file
+				case (Cli::LoadFromListSwitch):
+					if (!parser.openFile(argtext.get())) return -1;
+					while (!parser.eofOrBlank())
+					{
+						parser.getLine();
+						ntried ++;
+						if (modelfilter != NULL) f = modelfilter;
+						else f = aten.probeFile(parser.line(), FilterData::ModelImport);
+						if (f != NULL) f->executeRead(parser.line());
+						else return -1;
+					}
 					break;
 				// Set type mappings
 				case (Cli::MapSwitch):

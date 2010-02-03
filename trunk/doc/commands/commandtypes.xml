@@ -94,6 +94,12 @@
 						<entry>Number of chemical elements defined in the 'elements' array</entry>
 					</row>
 					<row>
+						<entry>nmodels</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of models (parent models, i.e. not including trajectory frames) currently loaded</entry>
+					</row>
+					<row>
 						<entry>prefs</entry>
 						<entry><link linkend="command.types.preferences">prefs</link></entry>
 						<entry>ro</entry>
@@ -871,8 +877,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='1'><title>Model type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -959,6 +963,12 @@
 						<entry><link linkend="command.types.model">model</link>[]</entry>
 						<entry>ro</entry>
 						<entry>Array of trajectory frame pointers (only if the trajectory is cached)</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>The index of the model in Aten's internal list of loaded models</entry>
 					</row>
 					<row>
 						<entry>mass</entry>
