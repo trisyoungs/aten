@@ -66,6 +66,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "filename",		VTypes::StringData,		0, TRUE },
 	{ "frame",		VTypes::ModelData,		0, TRUE },
 	{ "frames",		VTypes::ModelData,		-1, TRUE },
+	{ "glyphs",		VTypes::GlyphData,		-1, TRUE },
 	{ "id",			VTypes::IntegerData,		0, TRUE },
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
@@ -78,6 +79,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nfftorsions",	VTypes::IntegerData,		0, TRUE },
 	{ "nfftypes",		VTypes::IntegerData,		0, TRUE },
 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
+	{ "nglyphs",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
@@ -304,6 +306,19 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
 			break;
+		case (ModelVariable::Glyphs):
+			if (!hasArrayIndex)
+			{
+				if (ptr->glyphs() != NULL) rv.set(VTypes::GlyphData, ptr->glyphs());
+				else rv.set(VTypes::GlyphData, NULL);
+			}
+			else if (arrayIndex > ptr->nGlyphs())
+			{
+				msg.print("Glyph array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::GlyphData, ptr->glyph(arrayIndex-1));
+			break;
 		case (ModelVariable::Id):
 			rv.set(aten.modelIndex(ptr)+1);
 			break;
@@ -339,6 +354,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::NFrames):
 			rv.set(ptr->nFrames());
+			break;
+		case (ModelVariable::NGlyphs):
+			rv.set(ptr->nGlyphs());
 			break;
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());

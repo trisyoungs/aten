@@ -947,8 +947,12 @@ class Model
 	public:
 	// Create new glyph in this model
 	Glyph *addGlyph(Glyph::GlyphType gt);
-	// Return list of glyphs
+	// Return number of glyphs defined in model
+	int nGlyphs();
+	// Return first glyph in list (if any)
 	Glyph *glyphs();
+	// Return specific glyph
+	Glyph *glyph(int n);
 	// Return vector for data point in Glyph
 	Vec3<double> glyphVector(Glyph *g, int dataid);
 	// Automatically add polyhedra glyphs to current atom selection

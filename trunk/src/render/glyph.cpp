@@ -80,7 +80,7 @@ void Canvas::renderModelGlyphs()
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
-				  glCallList(g->isSolid() ? GLOB_UNITATOM : GLOB_WIREUNITATOM);
+				  glCallList(g->isSolid() ? list_[GLOB_UNITATOM] : list_[GLOB_WIREUNITATOM]);
 				glPopMatrix();
 				break;
 			// Cube - centre = data[0], scale = data[1]
@@ -92,7 +92,7 @@ void Canvas::renderModelGlyphs()
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
-				  glCallList(g->isSolid() ? GLOB_UNITCUBE : GLOB_WIREUNITCUBE);
+				  glCallList(g->isSolid() ? list_[GLOB_UNITCUBE] : list_[GLOB_WIREUNITCUBE]);
 				glPopMatrix();
 				break;
 			// Line - vertex 1 = data[0], vertex 2 = data[1]

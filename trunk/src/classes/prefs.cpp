@@ -197,7 +197,7 @@ Prefs::Prefs()
 	depthCue_ = FALSE;
 	lineAliasing_ = TRUE;
 	polygonAliasing_ = FALSE;
-	backfaceCulling_ = TRUE;
+	backfaceCulling_ = FALSE;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
