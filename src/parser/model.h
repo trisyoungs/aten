@@ -41,7 +41,7 @@ class ModelVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NPatterns, NSelected, NTorsions, NUnknown, Patterns, Region, Torsions, nAccessors };
+	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, Patterns, Region, Torsions, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

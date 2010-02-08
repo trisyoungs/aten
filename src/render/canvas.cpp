@@ -285,7 +285,7 @@ void Canvas::initGl()
 		}
 		else glDisable(GL_FOG);
 		// Configure face culling
-		glCullFace(GL_FRONT);
+		glCullFace(GL_BACK);
 		prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
 		// Test
 		glDisable(GL_DITHER);
@@ -359,7 +359,7 @@ void Canvas::createLists()
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);
-	  spherePrimitive(1.1, FALSE);
+	  spherePrimitive(1.0, FALSE);
 	glEndList();
 	/*
 	// Cylinders (bonds)
@@ -482,29 +482,40 @@ void Canvas::createLists()
 	glEndList();
 	// Unit Solid Cube (centred at origin)
 	glNewList(list_[GLOB_UNITCUBE],GL_COMPILE);
+	  glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 	  glBegin(GL_QUADS);
+	    // Back face, in plane z = -0.5
+	    glNormal3d(0.0,0.0,-1.0);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(0.5,-0.5,-0.5);
 	    glVertex3d(0.5,0.5,-0.5);
 	    glVertex3d(-0.5,0.5,-0.5);
+	    // Front face, in plane z = 0.5
+	    glNormal3d(0.0,0.0,1.0);
 	    glVertex3d(-0.5,-0.5,0.5);
 	    glVertex3d(0.5,-0.5,0.5);
 	    glVertex3d(0.5,0.5,0.5);
 	    glVertex3d(-0.5,0.5,0.5);
-
+	    // Bottom face, in plane y = -0.5
+	    glNormal3d(0.0,-1.0,0.0);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(-0.5,-0.5,0.5);
 	    glVertex3d(0.5,-0.5,0.5);
 	    glVertex3d(0.5,-0.5,-0.5);
+	    // Top face, in plane y = 0.5
+	    glNormal3d(0.0,1.0,0.0);
 	    glVertex3d(-0.5,0.5,-0.5);
 	    glVertex3d(-0.5,0.5,0.5);
 	    glVertex3d(0.5,0.5,0.5);
 	    glVertex3d(0.5,0.5,-0.5);
-
+	    // Left face, in plane x = -0.5
+	    glNormal3d(-1.0,0.0,0.0);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(-0.5,0.5,-0.5);
 	    glVertex3d(-0.5,0.5,0.5);
 	    glVertex3d(-0.5,-0.5,0.5);
+	    // Right face, in plane x = 0.5
+	    glNormal3d(1.0,0.0,0.0);
 	    glVertex3d(0.5,-0.5,-0.5);
 	    glVertex3d(0.5,0.5,-0.5);
 	    glVertex3d(0.5,0.5,0.5);

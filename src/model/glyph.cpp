@@ -32,10 +32,27 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 	return newglyph;
 }
 
+// Return number of defined glyphs
+int Model::nGlyphs()
+{
+	return glyphs_.nItems();
+}
+
 // Return list of glyphs
 Glyph *Model::glyphs()
 {
 	return glyphs_.first();
+}
+
+// Return specific glyph
+Glyph *Model::glyph(int n)
+{
+	if ((n < 0) || (n >= glyphs_.nItems()))
+	{
+		msg.print("Glyph index %i is out of range for list.\n", n);
+		return NULL;
+	}
+	return glyphs_[n];
 }
 
 // Return vector data for glyph
