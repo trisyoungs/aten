@@ -133,7 +133,7 @@ class Grid
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
 	// Get cell axes in suitable GL format
-	void axesForGl(double *glmat);
+	double *axesForGl();
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface

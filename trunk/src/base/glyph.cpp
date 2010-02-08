@@ -53,6 +53,8 @@ Glyph::Glyph()
 	visible_ = TRUE;
 	solid_ = TRUE;
 	lineWidth_ = 1.0f;
+	rotated_ = FALSE;
+	rotation_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -159,6 +161,55 @@ void Glyph::setLineWidth(GLfloat width)
 GLfloat Glyph::lineWidth()
 {
 	return lineWidth_;
+}
+
+// Return whether glyph has been rotated
+bool Glyph::rotated()
+{
+	return rotated_;
+}
+
+// Return rotation matrix suitable for GL
+double *Glyph::rotationForGl()
+{
+	if (rotation_ == NULL)
+	{
+		printf("Internal Error - Glyph has no rotation matrix to return for GL.\n");
+		return NULL;
+	}
+	else return rotation_->forGL();
+}
+
+// Return rotation matrix
+Mat3<double> *Glyph::rotation()
+{
+	return rotation_;
+}
+
+// Reset rotation matrix (and set rotated_ = FALSE)
+void Glyph::resetRotation()
+{
+	rotated_ = FALSE;
+	if (rotation_ != NULL) delete rotation_;
+	rotation_ = NULL;
+}
+
+// Rotate about X axis
+void Glyph::rotateX(double angle)
+{
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	rotation_->rotateX(angle);
+	rotated_ = TRUE;
+}
+
+// Rotate about Y axis
+void Glyph::rotateY(double angle)
+{
+}
+
+// Rotate about Z axis
+void Glyph::rotateZ(double angle)
+{
 }
 
 /*

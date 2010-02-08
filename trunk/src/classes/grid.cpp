@@ -503,10 +503,10 @@ void Grid::setAxes(const Mat3<double> m)
 	log_++;
 }
 
-// Get cell axes in suitaqble GL format
-void Grid::axesForGl(double *glmat)
+// Get cell axes in suitable GL format
+double *Grid::axesForGl()
 {
-	cell_.axesForGl(glmat);
+	return cell_.axesForGL();
 }
 
 // Set grid extent (and data[])

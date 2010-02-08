@@ -365,8 +365,6 @@ void Canvas::millerPlane(int h, int k, int l, int dir)
 	if ((h == 0) && (k == 0) && (l == 0)) return;
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	GLdouble glmat[16];
-	displayModel_->cell()->axesForGl(glmat);
 	// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
 	Vec3<int> hkl(h,k,l);
 	int n, i, j, anindex = -1, notanindex = -1, ncoords = 0;
@@ -403,7 +401,7 @@ void Canvas::millerPlane(int h, int k, int l, int dir)
 		ncoords = 4;
 	}
 	glPushMatrix();
-	  glMultMatrixd(glmat);
+	  glMultMatrixd( displayModel_->cell()->axesForGL() );
 	  if (ncoords == 3)
 	  {
 		glBegin(GL_TRIANGLES);
