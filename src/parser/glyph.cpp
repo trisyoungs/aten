@@ -53,6 +53,7 @@ GlyphVariable::~GlyphVariable()
 // Accessor data
 Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 	{ "data",	VTypes::GlyphDataData,	4, TRUE },
+	{ "rotation",	VTypes::DoubleData,	9, TRUE },
 	{ "solid",	VTypes::IntegerData,	0, FALSE },
 	{ "text",	VTypes::StringData,	0, FALSE },
 	{ "type",	VTypes::StringData,	0, FALSE },
@@ -61,7 +62,7 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "rotatex",	VTypes::NoData,		"N",	"double angle" }
 };
 
 // Search variable access list for provided accessor (call private static function)

@@ -233,12 +233,8 @@ void Canvas::renderModelCell()
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
-		//Mat4<double> mat = displayModel_->get_cell()->get_transpose_as_mat4();
-		//mat.get_column_major(glmat);
-		GLdouble glmat[16];
-		displayModel_->cell()->axesForGl(glmat);
 		glPushMatrix();
-		  glMultMatrixd(glmat);
+		  glMultMatrixd( displayModel_->cell()->axesForGL() );
 		  if (prefs.isVisibleOnScreen(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
 		  lengths = displayModel_->cell()->lengths();
 		  // Render cell axis arrows

@@ -47,6 +47,9 @@ template <class T> class Mat3
 	//	{ x.x x.y x.z } rows[0]	[0,1,2]
 	//	{ y.x y.y y.z } rows[1]	[3,4,5]
 	//	{ z.x z.y z.z } rows[2]	[6,7,8]
+	private:
+	// Array for returning matrix as 4x4 matrix suitable for OpenGL
+	double matrix[16];
 	public:
 	// Vectors of matrix
 	Vec3<T> rows[3];
@@ -109,6 +112,12 @@ template <class T> class Mat3
 	void createRotationY(double angle);
 	// Create rotation matrix about Z
 	void createRotationZ(double angle);
+	// Apply rotation around X axis to current matrix
+	void rotateX(double angle);
+	// Apply rotation around Y axis to current matrix
+	void rotateY(double angle);
+	// Apply rotation around Z axis to current matrix
+	void rotateZ(double angle);
 	// Calculate the determinant of the matrix.
 	double determinant();
 	// Invert the matrix
@@ -123,6 +132,8 @@ template <class T> class Mat3
 	Mat3<T> transpose() const;
 	// Set the zero matrix
 	void zero();
+	// Return matrix in suitable format for GL
+	double *forGL();
 };
 
 // Constructor
@@ -131,6 +142,22 @@ template <class T> Mat3<T>::Mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy,
 	rows[0].set(xx, xy, xz);
 	rows[1].set(yx, yy, yz);
 	rows[2].set(zx, zy, zz);
+	matrix[0] = 1.0;
+	matrix[1] = 0.0;
+	matrix[2] = 0.0;
+	matrix[3] = 0.0;
+	matrix[4] = 0.0;
+	matrix[5] = 1.0;
+	matrix[6] = 0.0;
+	matrix[7] = 0.0;
+	matrix[8] = 0.0;
+	matrix[9] = 0.0;
+	matrix[10] = 1.0;
+	matrix[11] = 0.0;
+	matrix[12] = 0.0;
+	matrix[13] = 0.0;
+	matrix[14] = 0.0;
+	matrix[15] = 1.0;
 }
 
 /*
@@ -400,6 +427,30 @@ template <class T> void Mat3<T>::createRotationZ(double angle)
 	set(2,0.0,0.0,1.0);
 }
 
+// Create rotation matrix about X
+template <class T> void Mat3<T>::rotateX(double angle)
+{
+	Mat3<T> rotmat;
+	rotmat.createRotationX(angle);
+	*this *= rotmat;
+}
+
+// Create rotation matrix about Y
+template <class T> void Mat3<T>::rotateY(double angle)
+{
+	Mat3<T> rotmat;
+	rotmat.createRotationY(angle);
+	*this *= rotmat;
+}
+
+// Create rotation matrix about Z
+template <class T> void Mat3<T>::rotateZ(double angle)
+{
+	Mat3<T> rotmat;
+	rotmat.createRotationZ(angle);
+	*this *= rotmat;
+}
+
 // Calculate determinant
 template <class T> double Mat3<T>::determinant()
 {
@@ -529,6 +580,30 @@ template <class T> Mat3<T> Mat3<T>::transpose() const
 	result.rows[2].y = rows[1].z;
 	result.rows[2].z = rows[2].z;
 	return result;
+}
+
+// Return matrix in form suitable for GL
+template <class T> double *Mat3<T>::forGL()
+{
+	matrix[0] = rows[0].x;
+	matrix[1] = rows[0].y;
+	matrix[2] = rows[0].z;
+	matrix[3] = 0.0;
+
+	matrix[4] = rows[1].x;
+	matrix[5] = rows[1].y;
+	matrix[6] = rows[1].z;
+	matrix[7] = 0.0;
+
+	matrix[8] = rows[2].x;
+	matrix[9] = rows[2].y;
+	matrix[10] = rows[2].z;
+	matrix[11] = 0.0;
+
+	matrix[12] = 0.0;
+	matrix[13] = 0.0;
+	matrix[14] = 0.0;
+	matrix[15] = 1.0;
 }
 
 #endif

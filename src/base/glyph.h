@@ -106,6 +106,10 @@ class Glyph
 	Model *parent_;
 	// Vector data for Glyph
 	List<GlyphData> data_;
+	// Whether a rotation for the glyph has been set
+	bool rotated_;
+	// Rotation matrix for the glyph (NULL if (!rotated))
+	Mat3<double> *rotation_;
 
 	public:
 	// Returns the number of data set for the Glyph
@@ -120,6 +124,20 @@ class Glyph
 	void setText(const char *s);
 	// Return text data
 	const char *text();
+	// Return whether glyph has been rotated
+	bool rotated();
+	// Return rotation matrix suitable for GL
+	double *rotationForGl();
+	// Return rotation matrix
+	Mat3<double> *rotation();
+	// Reset rotation matrix (and set rotated_ = FALSE)
+	void resetRotation();
+	// Rotate about X axis
+	void rotateX(double angle);
+	// Rotate about Y axis
+	void rotateY(double angle);
+	// Rotate about Z axis
+	void rotateZ(double angle);
 	// Set parent model
 	void setParent(Model *parent);
 	// Return parent model

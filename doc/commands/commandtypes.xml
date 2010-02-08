@@ -688,8 +688,6 @@
 	
 		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield type members3</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -730,8 +728,6 @@
 	
 		<table frame='all' pgwide='1' tocentry='1'><title>Glyph type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -746,6 +742,12 @@
 						<entry><link linkend="command.types.glyphdata">glyphdata</link></entry>
 						<entry>ro</entry>
 						<entry>Individual data for each vertex of the glyph</entry>
+					</row>
+					<row>
+						<entry>rotation</entry>
+						<entry>double[9]</entry>
+						<entry>rw</entry>
+						<entry>Rotation matrix for the glyph</entry>
 					</row>
 					<row>
 						<entry>solid</entry>
@@ -774,6 +776,25 @@
 				</tbody>
 			</tgroup>
 		</table>
+
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>rotatex ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by x degrees about its x axis</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
 	
 	</section>
 	
@@ -783,8 +804,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='1'><title>GlyphData type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
@@ -965,6 +984,12 @@
 						<entry>Array of trajectory frame pointers (only if the trajectory is cached)</entry>
 					</row>
 					<row>
+						<entry>glyphs</entry>
+						<entry><link linkend="command.types.glyph">glyph</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of glyphs owned by the model</entry>
+					</row>
+					<row>
 						<entry>id</entry>
 						<entry>int</entry>
 						<entry>ro</entry>
@@ -1035,6 +1060,12 @@
 						<entry>int</entry>
 						<entry>ro</entry>
 						<entry>Number of frames in associated trajectory</entry>
+					</row>
+					<row>
+						<entry>nglyphs</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of glyphs owned by the model</entry>
 					</row>
 					<row>
 						<entry>npatterns</entry>
@@ -1758,8 +1789,6 @@
 		
 		<table frame='all' pgwide='1' tocentry='1'><title>UnitCell type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>

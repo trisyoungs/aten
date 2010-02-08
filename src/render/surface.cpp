@@ -664,9 +664,8 @@ void Canvas::renderSurfaces()
 		  origin = g->origin();
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
-		  g->axesForGl(glmat);
 		  glMatrixMode(GL_MODELVIEW);
-		  glMultMatrixd(glmat);
+		  glMultMatrixd( g->axesForGl() );
 		  // Call the display list
 		  glCallList(list);
 		glPopMatrix();

@@ -218,27 +218,9 @@ Mat3<double> Cell::axes()
 }
 
 // Return the cell vector matrix as a 4x4 matrix
-void Cell::axesForGl(double *glmat)
+double *Cell::axesForGL()
 {
-	glmat[0] = axes_.rows[0].x;
-	glmat[1] = axes_.rows[0].y;
-	glmat[2] = axes_.rows[0].z;
-	glmat[3] = 0.0;
-
-	glmat[4] = axes_.rows[1].x;
-	glmat[5] = axes_.rows[1].y;
-	glmat[6] = axes_.rows[1].z;
-	glmat[7] = 0.0;
-
-	glmat[8] = axes_.rows[2].x;
-	glmat[9] = axes_.rows[2].y;
-	glmat[10] = axes_.rows[2].z;
-	glmat[11] = 0.0;
-
-	glmat[12] = 0.0;
-	glmat[13] = 0.0;
-	glmat[14] = 0.0;
-	glmat[15] = 1.0;
+	return axes_.forGL();
 }
 
 // Return a matrix of the reciprocal cell vectors

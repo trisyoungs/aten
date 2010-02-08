@@ -102,10 +102,10 @@ class Cell
 	CellType type() const;
 	// Return the cell vector matrix
 	Mat3<double> transpose();
-	// Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
+	// Return the cell vector matrix (individual axis vectors in rows[])
 	Mat3<double> axes();
-	// Copy cell axes vector matrix as a 4x4 matrix
-	void axesForGl(double *glmat);
+	// Get cell axes vector matrix as a 4x4 matrix
+	double *axesForGL();
 	// Return a matrix of the reciprocal cell vectors
 	Mat3<double> reciprocal();
 	// Return the axis lengths of the cell
