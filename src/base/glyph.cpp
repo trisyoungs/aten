@@ -170,7 +170,7 @@ bool Glyph::rotated()
 }
 
 // Return rotation matrix suitable for GL
-double *Glyph::rotationForGl()
+double *Glyph::rotationForGL()
 {
 	if (rotation_ == NULL)
 	{
@@ -205,11 +205,25 @@ void Glyph::rotateX(double angle)
 // Rotate about Y axis
 void Glyph::rotateY(double angle)
 {
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	rotation_->rotateY(angle);
+	rotated_ = TRUE;
 }
 
 // Rotate about Z axis
 void Glyph::rotateZ(double angle)
 {
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	rotation_->rotateZ(angle);
+	rotated_ = TRUE;
+}
+
+// Rotate about arbitrary axis
+void Glyph::rotate(double x, double y, double z, double angle)
+{
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	rotation_->rotate(x, y, z, angle);
+	rotated_ = TRUE;
 }
 
 /*

@@ -1,0 +1,158 @@
+	<section id="command.types.atom"><title>Atom</title>
+	
+		<indexterm zone="command.types.atom"><primary>types</primary><secondary>atom</secondary></indexterm>
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>Atom type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>fixed</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom's position is fixed (1) or not (0)</entry>
+					</row>
+					<row>
+						<entry>f</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Force vector</entry>
+					</row>
+					<row>
+						<entry>fx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Force x-component</entry>
+					</row>
+					<row>
+						<entry>fy</entry>
+						<entry>double</entry>
+						<entry> rw</entry>
+						<entry>Force y-component</entry>
+					</row>
+					<row>
+						<entry>fz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Force z-component</entry>
+					</row>
+					<row>
+						<entry>hidden</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom is hidden (1) or visible (0)</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Numerical ID of the atom within its parent model</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Atomic mass of the atom</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Element name of the atom</entry>
+					</row>
+					<row>
+						<entry>q</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Atomic charge associated to the atom</entry>
+					</row>
+					<row>
+						<entry>r</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Position vector</entry>
+					</row>
+					<row>
+						<entry>rx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position x-component</entry>
+					</row>
+					<row>
+						<entry>ry</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position y-component</entry>
+					</row>
+					<row>
+						<entry>rz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position z-component</entry>
+					</row>
+					<row>
+						<entry>selected</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the atom is selected (1) or unselected (0)</entry>
+					</row>
+					<row>
+						<entry>symbol</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Element symbol of the atom</entry>
+					</row>
+					<row>
+						<entry>type</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>rw</entry>
+						<entry>Forcefield type of the atom</entry>
+					</row>
+					<row>
+						<entry>v</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Velocity vector</entry>
+					</row>
+					<row>
+						<entry>vx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity x-component</entry>
+					</row>
+					<row>
+						<entry>vy</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity y-component</entry>
+					</row>
+					<row>
+						<entry>vz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Velocity z-component</entry>
+					</row>
+					<row>
+						<entry>z</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Atomic number of the atom</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

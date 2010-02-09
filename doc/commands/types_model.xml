@@ -1,0 +1,224 @@
+	<section id="command.types.model"><title>Model</title>
+		
+		<indexterm zone="command.types.model"><primary>types</primary><secondary>model</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Model type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>angles</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bond">bond</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of bonds defined in the model</entry>
+					</row>
+					<row>
+						<entry>cell</entry>
+						<entry><link linkend="command.types.unitcell">unitcell</link></entry>
+						<entry>rw</entry>
+						<entry>The model's unit cell</entry>
+					</row>
+					<row>
+						<entry>distances</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current distance measurements in the model</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
+						<entry>rw</entry>
+						<entry>Forcefield associated to the model (if any)</entry>
+					</row>
+					<row>
+						<entry>ffangles</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield angle terms in the model</entry>
+					</row>
+					<row>
+						<entry>ffbonds</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield bond terms in the model</entry>
+					</row>
+					<row>
+						<entry>fftorsions</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield torsion terms in the model</entry>
+					</row>
+					<row>
+						<entry>fftypes</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>ro</entry>
+						<entry>Array of unique atom types used in the model</entry>
+					</row>
+					<row>
+						<entry>frame</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current frame in the model's trajectory (if it has one)</entry>
+					</row>
+					<row>
+						<entry>frames</entry>
+						<entry><link linkend="command.types.model">model</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of trajectory frame pointers (only if the trajectory is cached)</entry>
+					</row>
+					<row>
+						<entry>glyphs</entry>
+						<entry><link linkend="command.types.glyph">glyph</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of glyphs owned by the model</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>The index of the model in Aten's internal list of loaded models</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Mass of the current model</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the model</entry>
+					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of bonds in the model</entry>
+					</row>
+					<row>
+						<entry>ndistances</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of distance measurements in the model</entry>
+					</row>
+					<row>
+						<entry>nffangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique angle terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nffbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique bond terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nfftorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique torsion terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nfftypes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique atom types used in the model</entry>
+					</row>
+					<row>
+						<entry>nframes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of frames in associated trajectory</entry>
+					</row>
+					<row>
+						<entry>nglyphs</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of glyphs owned by the model</entry>
+					</row>
+					<row>
+						<entry>npatterns</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of patterns defined for the model</entry>
+					</row>
+					<row>
+						<entry>nselected</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms selected in the model</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>nunknown</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model that are of unknown element</entry>
+					</row>
+					<row>
+						<entry>patterns</entry>
+						<entry><link linkend="command.types.pattern">pattern</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of patterns currently defined for the model</entry>
+					</row>
+					<row>
+						<entry>region</entry>
+						<entry><link linkend="command.types.region">region</link></entry>
+						<entry>ro</entry>
+						<entry>Region data for this model, used by the disordered builder</entry>
+					</row>
+					<row>
+						<entry>torsions</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current torsion angle measurements in the model</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

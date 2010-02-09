@@ -287,5 +287,5 @@ StepNode *VariableNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNo
 		printf("Internal Error: No variable stored in VariableNode to use for accessor search.\n");
 		return NULL;
 	}
-	return variable_->findAccessor(s, arrayindex);
+	return variable_->findAccessor(s, arrayindex, arglist);
 }
