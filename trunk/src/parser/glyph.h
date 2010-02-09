@@ -43,7 +43,7 @@ class GlyphVariable : public PointerVariable
 	// Accessor list
         enum Accessors { Data, Rotation, Solid, Text, Type, Visible, nAccessors };
 	// Function list
-	enum Functions { RotateX, nFunctions };
+	enum Functions { ResetRotation, Rotate, RotateX, RotateY, RotateZ, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors

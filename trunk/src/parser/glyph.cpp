@@ -62,7 +62,11 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
-	{ "rotatex",	VTypes::NoData,		"N",	"double angle" }
+	{ "resetrotation",	VTypes::NoData,		"",	"" },
+	{ "rotate",		VTypes::NoData,		"NNNN",	"double x, double y, double z, double angle" },
+	{ "rotatex",		VTypes::NoData,		"N",	"double angle" },
+	{ "rotatey",		VTypes::NoData,		"N",	"double angle" },
+	{ "rotatez",		VTypes::NoData,		"N",	"double angle" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -284,9 +288,29 @@ bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Glyph *ptr= (Glyph*) rv.asPointer(VTypes::GlyphData, result);
+	Glyph *ptr = (Glyph*) rv.asPointer(VTypes::GlyphData, result);
 	if (result) switch (i)
 	{
+		case (GlyphVariable::ResetRotation):
+			ptr->resetRotation();
+			rv.reset();
+			break;
+		case (GlyphVariable::Rotate):
+			ptr->rotate(node->argd(0), node->argd(1), node->argd(2), node->argd(3));
+			rv.reset();
+			break;
+		case (GlyphVariable::RotateX):
+			ptr->rotateX(node->argd(0));
+			rv.reset();
+			break;
+		case (GlyphVariable::RotateY):
+			ptr->rotateY(node->argd(0));
+			rv.reset();
+			break;
+		case (GlyphVariable::RotateZ):
+			ptr->rotateZ(node->argd(0));
+			rv.reset();
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in GlyphVariable.\n", functionData[i].name);
 			result = FALSE;

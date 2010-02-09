@@ -27,7 +27,7 @@
 void Canvas::renderModelGlyphs()
 {
 	msg.enter("Canvas::renderModelGlyphs");
-	static Vec3<double> vec[4], avg, normal;
+	static Vec3<double> vec[4], centroid, avg, normal;
 	static GLfloat colours[4][4];
 
 	glEnable(GL_LIGHTING);
@@ -79,8 +79,10 @@ void Canvas::renderModelGlyphs()
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
+				  if (g->rotated()) { glPushMatrix(); glMultMatrixd(g->rotationForGL()); }
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
 				  glCallList(g->isSolid() ? list_[GLOB_UNITATOM] : list_[GLOB_WIREUNITATOM]);
+				  if (g->rotated()) glPopMatrix();
 				glPopMatrix();
 				break;
 			// Cube - centre = data[0], scale = data[1]
@@ -91,8 +93,10 @@ void Canvas::renderModelGlyphs()
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
+				  if (g->rotated()) { glPushMatrix(); glMultMatrixd(g->rotationForGL()); }
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
 				  glCallList(g->isSolid() ? list_[GLOB_UNITCUBE] : list_[GLOB_WIREUNITCUBE]);
+				  if (g->rotated()) glPopMatrix();
 				glPopMatrix();
 				break;
 			// Line - vertex 1 = data[0], vertex 2 = data[1]
@@ -118,14 +122,35 @@ void Canvas::renderModelGlyphs()
 				g->data(1)->copyColour(colours[1]);
 				g->data(2)->copyColour(colours[2]);
 				glLineWidth(g->lineWidth());
-				glBegin(GL_TRIANGLES);
-				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
-				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
-				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
-				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
-				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[2]);
-				  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
-				glEnd();
+				if (g->rotated())
+				{
+					centroid = (vec[0] + vec[1] + vec[2]) / 3.0;
+					vec[0] -= centroid;
+					vec[1] -= centroid;
+					vec[2] -= centroid;
+					glPushMatrix();
+					glMultMatrixd(g->rotationForGL());
+					glBegin(GL_TRIANGLES);
+					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
+					  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
+					  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[2]);
+					  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
+					glEnd();
+					glPopMatrix();
+				}
+				else
+				{
+				  glBegin(GL_TRIANGLES);
+				    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
+				    glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+				    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
+				    glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+				    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[2]);
+				    glVertex3d(vec[2].x, vec[2].y, vec[2].z);
+				  glEnd();
+				}
 				break;
 			// Quad - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2], vertex 4 = data[3]
 			case (Glyph::QuadGlyph):
@@ -198,10 +223,6 @@ void Canvas::renderModelGlyphs()
 				glEnd();
 				break;
 		}
-
-			//case (119): 	// Ellipsoid - coords = coords, velocities = lookat, forces = scaling
-			//	gl_ellipsoid(i->r(),i->v(),i->f());
-			//	break;
 	}
 	msg.exit("Canvas::renderModelGlyphs");
 }

@@ -112,12 +112,16 @@ template <class T> class Mat3
 	void createRotationY(double angle);
 	// Create rotation matrix about Z
 	void createRotationZ(double angle);
+	// Create axis rotation quaternion
+	void createRotationAxis(double ax, double ay, double az, double angle);
 	// Apply rotation around X axis to current matrix
 	void rotateX(double angle);
 	// Apply rotation around Y axis to current matrix
 	void rotateY(double angle);
 	// Apply rotation around Z axis to current matrix
 	void rotateZ(double angle);
+	// Apply arbitrary rotation to current matrix
+	void rotate(double x, double y, double z, double angle);
 	// Calculate the determinant of the matrix.
 	double determinant();
 	// Invert the matrix
@@ -427,7 +431,22 @@ template <class T> void Mat3<T>::createRotationZ(double angle)
 	set(2,0.0,0.0,1.0);
 }
 
-// Create rotation matrix about X
+// Create axis rotation quaternion
+template <class T> void Mat3<T>::createRotationAxis(double ax, double ay, double az, double angle)
+{
+	double cosx, sinx, theta = angle/DEGRAD;
+	double mag = sqrt(ax*ax + ay*ay + az*az);
+	ax /= mag;
+	ay /= mag;
+	az /= mag;
+	cosx = cos(theta);
+	sinx = sin(theta);
+	set(0,ax*ax*(1.0-cosx) + cosx, ax*ay*(1.0-cosx) - az*sinx, ax*az*(1.0-cosx) + ay*sinx);
+	set(1,ax*ay*(1.0-cosx) + az*sinx, ay*ay*(1.0-cosx) + cosx, ay*az*(1.0-cosx) - ax*sinx);
+	set(2,ax*az*(1.0-cosx) - ay*sinx, ay*az*(1.0-cosx) + ax*sinx, az*az*(1.0-cosx) + cosx);
+}
+
+// Rotate current matrix about x axis
 template <class T> void Mat3<T>::rotateX(double angle)
 {
 	Mat3<T> rotmat;
@@ -435,7 +454,7 @@ template <class T> void Mat3<T>::rotateX(double angle)
 	*this *= rotmat;
 }
 
-// Create rotation matrix about Y
+// Rotate current matrix about y axis
 template <class T> void Mat3<T>::rotateY(double angle)
 {
 	Mat3<T> rotmat;
@@ -443,11 +462,19 @@ template <class T> void Mat3<T>::rotateY(double angle)
 	*this *= rotmat;
 }
 
-// Create rotation matrix about Z
+// Rotate current matrix about z axis
 template <class T> void Mat3<T>::rotateZ(double angle)
 {
 	Mat3<T> rotmat;
 	rotmat.createRotationZ(angle);
+	*this *= rotmat;
+}
+
+// Rotate current matrix about arbitrary axis
+template <class T> void Mat3<T>::rotate(double x, double y, double z, double angle)
+{
+	Mat3<T> rotmat;
+	rotmat.createRotationAxis(x, y, x, angle);
 	*this *= rotmat;
 }
 
@@ -604,6 +631,8 @@ template <class T> double *Mat3<T>::forGL()
 	matrix[13] = 0.0;
 	matrix[14] = 0.0;
 	matrix[15] = 1.0;
+
+	return matrix;
 }
 
 #endif

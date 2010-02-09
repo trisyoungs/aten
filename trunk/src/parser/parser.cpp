@@ -51,8 +51,9 @@ void CommandParser::printErrorInfo()
 {
 	if (source_ != CommandParser::StringSource) msg.print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.filename());
 	// QUICK'n'DIRTY!
-	char *temp = new char[stringLength_+32];
 	int i;
+	char *temp = new char[stringLength_+32];
+	for (i=0; i<stringLength_+32; ++i) temp[i] = '\0';
 	for (i=0; i<tokenStart_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
 	if (functionStart_ > -1) for (i=functionStart_; i<stringPos_; i++) if (temp[i] != '\t') temp[i] = '-';
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';

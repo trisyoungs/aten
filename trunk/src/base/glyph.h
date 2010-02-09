@@ -127,11 +127,13 @@ class Glyph
 	// Return whether glyph has been rotated
 	bool rotated();
 	// Return rotation matrix suitable for GL
-	double *rotationForGl();
+	double *rotationForGL();
 	// Return rotation matrix
 	Mat3<double> *rotation();
 	// Reset rotation matrix (and set rotated_ = FALSE)
 	void resetRotation();
+	// Rotate about arbitrary axis
+	void rotate(double x, double y, double z, double angle);
 	// Rotate about X axis
 	void rotateX(double angle);
 	// Rotate about Y axis
