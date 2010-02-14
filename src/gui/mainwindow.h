@@ -28,9 +28,6 @@
 #include "gui/ui_prefs.h"
 #include "templates/reflist.h"
 
-// Stack Pages (must be in order of pages in the stack)
-// enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
-
 #define MAXRECENTFILES 10
 
 // Forward Declarations
@@ -336,6 +333,7 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	void on_actionAtomlistWindow_triggered(bool checked);
+	void on_actionCommandWindow_triggered(bool checked);
 	void on_actionBuildWindow_triggered(bool checked);
 	void on_actionDisorderWindow_triggered(bool checked);
 	void on_actionForcefieldsWindow_triggered(bool checked);

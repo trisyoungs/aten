@@ -84,8 +84,8 @@ class Grid
 	void clear();
 	// Create voxel data
 	void create();
-	// Cutoff for isosurface generation
-	double cutoff_;
+	// Cutoffs for isosurface generation
+	double cutoff_, upperCutoff_;
 	// Minimum and maximum values stored in data[]
 	double minimum_, maximum_;
 	// Update minimum and maximum values
@@ -124,6 +124,10 @@ class Grid
 	void setCutoff(double d);
 	// Return isovalue cutoff for surface
 	double cutoff();
+	// Set isovalue cutoff for surface
+	void setUpperCutoff(double d);
+	// Return isovalue cutoff for surface
+	double upperCutoff();
 	// Return whether supplied number is within cutoff range
 	bool withinCutoff(double d);
 	// Return 3D data array

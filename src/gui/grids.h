@@ -56,6 +56,7 @@ class AtenGrids : public QDialog
 	void on_GridList_itemClicked(QListWidgetItem *item);
 	// Cutoff Page
 	void on_GridCutoffSpin_valueChanged(double d);
+	void on_GridUpperCutoffSpin_valueChanged(double d);
 	void on_GridSymmetricCheck_clicked(bool checked);
 	// Origin / Axes Page
 	void on_GridOriginXSpin_valueChanged(double d);

@@ -39,6 +39,7 @@
 #include "gui/forcefields.h"
 #include "gui/celldefine.h"
 #include "gui/celltransform.h"
+#include "gui/command.h"
 #include "gui/build.h"
 #include "gui/glyphs.h"
 #include "gui/minimiser.h"
@@ -95,6 +96,7 @@ GuiQt::GuiQt()
 	buildWindow = NULL;
 	cellDefineWindow = NULL;
 	cellTransformWindow = NULL;
+	commandWindow = NULL;
 	disorderWindow = NULL;
 	forcefieldsWindow = NULL;
 	glyphsWindow = NULL;
@@ -122,6 +124,7 @@ GuiQt::~GuiQt()
 // 	buildWindow = NULL;
 // 	cellDefineWindow = NULL;
 // 	cellTransformWindow = NULL;
+// 	commandWindow = NULL;
 // 	disorderWindow = NULL;
 // 	forcefieldsWindow = NULL;
 // 	glyphsWindow = NULL;
@@ -187,6 +190,7 @@ void GuiQt::run()
 	buildWindow = new AtenBuild(mainWindow, Qt::Window|Qt::Tool);
 	cellDefineWindow = new AtenCellDefine(mainWindow, Qt::Window|Qt::Tool);
 	cellTransformWindow = new AtenCellTransform(mainWindow, Qt::Window|Qt::Tool);
+	commandWindow = new AtenCommand(mainWindow, Qt::Window|Qt::Tool);
 	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
 	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
 	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
@@ -200,6 +204,7 @@ void GuiQt::run()
 	QObject::connect(buildWindow, SIGNAL(finished(int)), buildWindow, SLOT(dialogFinished(int)));
 	QObject::connect(cellDefineWindow, SIGNAL(finished(int)), cellDefineWindow, SLOT(dialogFinished(int)));
 	QObject::connect(cellTransformWindow, SIGNAL(finished(int)), cellTransformWindow, SLOT(dialogFinished(int)));
+	QObject::connect(commandWindow, SIGNAL(finished(int)), commandWindow, SLOT(dialogFinished(int)));
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
 	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));

@@ -6,14 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>951</width>
-    <height>802</height>
+    <width>2172</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>0</hsizetype>
-    <vsizetype>0</vsizetype>
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -22,7 +20,8 @@
    <string>Aten (VERSION)</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="icons.qrc" >:/program/icons/aten.png</iconset>
+   <iconset resource="icons.qrc" >
+    <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
   </property>
   <property name="autoFillBackground" >
    <bool>true</bool>
@@ -34,27 +33,33 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="MainWindowLayout" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>110</y>
+     <width>2132</width>
+     <height>465</height>
+    </rect>
+   </property>
    <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>2</number>
-    </property>
     <property name="spacing" >
      <number>4</number>
     </property>
+    <property name="margin" >
+     <number>2</number>
+    </property>
     <item>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>0</number>
       </property>
-      <property name="spacing" >
+      <property name="margin" >
        <number>0</number>
       </property>
       <item>
        <widget class="TTabBar" native="1" name="ModelTabs" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
           <horstretch>255</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -68,7 +73,7 @@
         </property>
         <widget class="QFrame" name="ViewFrame" >
          <property name="cursor" >
-          <cursor>2</cursor>
+          <cursorShape>CrossCursor</cursorShape>
          </property>
          <property name="frameShape" >
           <enum>QFrame::StyledPanel</enum>
@@ -79,9 +84,7 @@
         </widget>
         <widget class="QTextEdit" name="TextDisplay" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>3</vsizetype>
+          <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
            <horstretch>255</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -128,7 +131,7 @@
           <bool>false</bool>
          </property>
          <property name="textInteractionFlags" >
-          <enum>Qt::TextSelectableByMouse</enum>
+          <set>Qt::TextSelectableByMouse</set>
          </property>
         </widget>
        </widget>
@@ -142,7 +145,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>709</width>
+     <width>2172</width>
      <height>32</height>
     </rect>
    </property>
@@ -270,6 +273,7 @@
      </property>
      <addaction name="actionMeasureClearAll" />
      <addaction name="actionMeasureList" />
+     <addaction name="actionMeasureSaveToFile" />
     </widget>
     <addaction name="actionModelRename" />
     <addaction name="separator" />
@@ -348,8 +352,25 @@
    <addaction name="ToolsMenu" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="MainWindowStatusBar" />
+  <widget class="QStatusBar" name="MainWindowStatusBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>575</y>
+     <width>2172</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="FileToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>32</y>
+     <width>170</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>File / Model</string>
    </property>
@@ -366,7 +387,10 @@
     <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionFileNew" />
    <addaction name="actionFileOpen" />
@@ -375,6 +399,14 @@
    <addaction name="actionFileClose" />
   </widget>
   <widget class="QToolBar" name="StyleToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>170</x>
+     <y>32</y>
+     <width>170</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Draw Style</string>
    </property>
@@ -388,7 +420,10 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionStyleStick" />
    <addaction name="actionStyleTube" />
@@ -397,6 +432,14 @@
    <addaction name="actionStyleIndividual" />
   </widget>
   <widget class="QToolBar" name="EditToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>340</x>
+     <y>32</y>
+     <width>139</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Edit</string>
    </property>
@@ -410,7 +453,10 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionEditCopy" />
    <addaction name="actionEditCut" />
@@ -418,10 +464,16 @@
    <addaction name="actionEditDelete" />
   </widget>
   <widget class="QToolBar" name="TrajectoryToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>479</x>
+     <y>32</y>
+     <width>201</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="sizePolicy" >
-    <sizepolicy>
-     <hsizetype>1</hsizetype>
-     <vsizetype>7</vsizetype>
+    <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -439,7 +491,10 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionTrajectoryViewTrajectory" />
    <addaction name="actionTrajectoryFirstFrame" />
@@ -449,6 +504,14 @@
    <addaction name="actionTrajectoryLastFrame" />
   </widget>
   <widget class="QToolBar" name="CommandToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>680</x>
+     <y>32</y>
+     <width>15</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Command Prompt</string>
    </property>
@@ -462,10 +525,21 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QToolBar" name="MouseToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>695</x>
+     <y>32</y>
+     <width>108</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Mouse</string>
    </property>
@@ -479,13 +553,24 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionMouseInteract" />
    <addaction name="actionMouseRotate" />
    <addaction name="actionMouseTranslate" />
   </widget>
   <widget class="QToolBar" name="SelectToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>803</x>
+     <y>32</y>
+     <width>235</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Select</string>
    </property>
@@ -499,7 +584,10 @@
     </size>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionSelectAtoms" />
    <addaction name="actionSelectMolecules" />
@@ -511,6 +599,14 @@
    <addaction name="actionEditInvert" />
   </widget>
   <widget class="QToolBar" name="DrawToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>1038</x>
+     <y>32</y>
+     <width>528</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Build</string>
    </property>
@@ -518,7 +614,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionDrawAtom" />
    <addaction name="actionDrawChain" />
@@ -540,6 +639,14 @@
    <addaction name="actionDeleteBond" />
   </widget>
   <widget class="QToolBar" name="BondToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>1566</x>
+     <y>32</y>
+     <width>193</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Bonding</string>
    </property>
@@ -547,7 +654,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionCalculateBonding" />
    <addaction name="actionClearBonding" />
@@ -557,6 +667,14 @@
    <addaction name="actionAugmentBonding" />
   </widget>
   <widget class="QToolBar" name="MeasureToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>1759</x>
+     <y>32</y>
+     <width>413</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Measure</string>
    </property>
@@ -564,7 +682,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionMeasureDistance" />
    <addaction name="actionMeasureAngle" />
@@ -576,6 +697,14 @@
    <addaction name="actionMeasureClearAll" />
   </widget>
   <widget class="QToolBar" name="ForcefieldsToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>71</y>
+     <width>2172</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Forcefields</string>
    </property>
@@ -583,13 +712,24 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>true</bool>
    </attribute>
    <addaction name="actionMinimise" />
    <addaction name="actionCalculateEnergy" />
    <addaction name="actionCalculateForces" />
   </widget>
   <widget class="QToolBar" name="WindowToolbar" >
+   <property name="geometry" >
+    <rect>
+     <x>2132</x>
+     <y>110</y>
+     <width>40</width>
+     <height>465</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Tool WIndows</string>
    </property>
@@ -597,7 +737,10 @@
     <enum>Qt::Vertical</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>2</number>
+    <enum>RightToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="actionAtomlistWindow" />
    <addaction name="actionGridsWindow" />
@@ -612,10 +755,13 @@
    <addaction name="separator" />
    <addaction name="actionMinimiserWindow" />
    <addaction name="actionForcefieldsWindow" />
+   <addaction name="separator" />
+   <addaction name="actionCommandWindow" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open Model</string>
@@ -629,7 +775,8 @@
   </action>
   <action name="actionFileSave" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_save.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save Model</string>
@@ -643,7 +790,8 @@
   </action>
   <action name="actionFileNew" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_new.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_new.svg</normaloff>:/file/icons/file_new.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;New Model</string>
@@ -663,7 +811,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_stick.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
    </property>
    <property name="text" >
     <string>Stick</string>
@@ -677,7 +826,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_tube.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
    </property>
    <property name="text" >
     <string>Tube</string>
@@ -691,7 +841,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_sphere.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
    </property>
    <property name="text" >
     <string>Sphere</string>
@@ -705,7 +856,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_scaled.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
    </property>
    <property name="text" >
     <string>Scaled</string>
@@ -719,7 +871,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_individual.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
    </property>
    <property name="text" >
     <string>Individual</string>
@@ -730,7 +883,8 @@
   </action>
   <action name="actionFileSaveAs" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_saveas.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_saveas.svg</normaloff>:/file/icons/file_saveas.svg</iconset>
    </property>
    <property name="text" >
     <string>Save Model &amp;As</string>
@@ -741,7 +895,8 @@
   </action>
   <action name="actionEditCut" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_cut.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_cut.svg</normaloff>:/edit/icons/edit_cut.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Cut</string>
@@ -755,7 +910,8 @@
   </action>
   <action name="actionEditCopy" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_copy.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_copy.svg</normaloff>:/edit/icons/edit_copy.svg</iconset>
    </property>
    <property name="text" >
     <string>C&amp;opy</string>
@@ -769,7 +925,8 @@
   </action>
   <action name="actionEditPaste" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_paste.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_paste.svg</normaloff>:/edit/icons/edit_paste.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Paste</string>
@@ -783,7 +940,8 @@
   </action>
   <action name="actionEditDelete" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_delete.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_delete.svg</normaloff>:/edit/icons/edit_delete.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Delete</string>
@@ -797,7 +955,8 @@
   </action>
   <action name="actionEditInvert" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_invert.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Invert Selection</string>
@@ -811,7 +970,8 @@
   </action>
   <action name="actionEditSelectAll" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_all.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_all.svg</normaloff>:/select/icons/select_all.svg</iconset>
    </property>
    <property name="text" >
     <string>Select &amp;All</string>
@@ -825,7 +985,8 @@
   </action>
   <action name="actionEditSelectNone" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_none.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_none.svg</normaloff>:/select/icons/select_none.svg</iconset>
    </property>
    <property name="text" >
     <string>Select &amp;None</string>
@@ -839,7 +1000,8 @@
   </action>
   <action name="actionTrajectoryNextFrame" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_next.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_next.svg</normaloff>:/playback/icons/traj_next.svg</iconset>
    </property>
    <property name="text" >
     <string>Next Frame</string>
@@ -850,7 +1012,8 @@
   </action>
   <action name="actionTrajectoryPreviousFrame" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_prev.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_prev.svg</normaloff>:/playback/icons/traj_prev.svg</iconset>
    </property>
    <property name="text" >
     <string>Previous Frame</string>
@@ -864,7 +1027,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_playpause.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_playpause.svg</normaloff>:/playback/icons/traj_playpause.svg</iconset>
    </property>
    <property name="text" >
     <string>Play / Pause</string>
@@ -875,7 +1039,8 @@
   </action>
   <action name="actionTrajectoryFirstFrame" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_first.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_first.svg</normaloff>:/playback/icons/traj_first.svg</iconset>
    </property>
    <property name="text" >
     <string>First Frame</string>
@@ -886,7 +1051,8 @@
   </action>
   <action name="actionTrajectoryLastFrame" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_last.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_last.svg</normaloff>:/playback/icons/traj_last.svg</iconset>
    </property>
    <property name="text" >
     <string>Last Frame</string>
@@ -903,7 +1069,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_atoms.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_atoms.svg</normaloff>:/select/icons/select_atoms.svg</iconset>
    </property>
    <property name="text" >
     <string>Select Atoms</string>
@@ -914,7 +1081,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_molecules.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_molecules.svg</normaloff>:/select/icons/select_molecules.svg</iconset>
    </property>
    <property name="text" >
     <string>Select Molecules</string>
@@ -928,7 +1096,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_atom.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_atom.svg</normaloff>:/build/icons/build_atom.svg</iconset>
    </property>
    <property name="text" >
     <string>Draw Atoms</string>
@@ -939,7 +1108,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_chain.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_chain.svg</normaloff>:/build/icons/build_chain.svg</iconset>
    </property>
    <property name="text" >
     <string>Draw Chains</string>
@@ -950,7 +1120,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_element.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_element.svg</normaloff>:/select/icons/select_element.svg</iconset>
    </property>
    <property name="text" >
     <string>Select by Element</string>
@@ -961,7 +1132,8 @@
   </action>
   <action name="actionEditSelectExpand" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/select/icons/select_expand.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Expand Selection</string>
@@ -975,7 +1147,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_distance.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_distance.svg</normaloff>:/geometry/icons/measure_distance.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Distance</string>
@@ -986,7 +1159,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_angle.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_angle.svg</normaloff>:/geometry/icons/measure_angle.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Angle</string>
@@ -997,7 +1171,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_torsion.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Torsion</string>
@@ -1013,7 +1188,8 @@
   </action>
   <action name="actionViewZoomIn" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/view/icons/view_zoomin.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/view/icons/view_zoomin.svg</normaloff>:/view/icons/view_zoomin.svg</iconset>
    </property>
    <property name="text" >
     <string>Zoom In</string>
@@ -1024,7 +1200,8 @@
   </action>
   <action name="actionViewZoomOut" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/view/icons/view_zoomout.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
    </property>
    <property name="text" >
     <string>Zoom Out</string>
@@ -1091,7 +1268,8 @@
   </action>
   <action name="actionModelFoldAtoms" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/model/icons/model_foldatoms.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/model/icons/model_foldatoms.svg</normaloff>:/model/icons/model_foldatoms.svg</iconset>
    </property>
    <property name="text" >
     <string>Fold Atoms</string>
@@ -1102,7 +1280,8 @@
   </action>
   <action name="actionModelFoldMolecules" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/model/icons/model_foldmolecules.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/model/icons/model_foldmolecules.svg</normaloff>:/model/icons/model_foldmolecules.svg</iconset>
    </property>
    <property name="text" >
     <string>Fold Molecules</string>
@@ -1113,7 +1292,8 @@
   </action>
   <action name="actionModelNext" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/model/icons/model_next.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/model/icons/model_next.svg</normaloff>:/model/icons/model_next.svg</iconset>
    </property>
    <property name="text" >
     <string>Next</string>
@@ -1124,7 +1304,8 @@
   </action>
   <action name="actionModelPrevious" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/model/icons/model_prev.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/model/icons/model_prev.svg</normaloff>:/model/icons/model_prev.svg</iconset>
    </property>
    <property name="text" >
     <string>Previous</string>
@@ -1135,7 +1316,8 @@
   </action>
   <action name="actionFileClose" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_close.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_close.svg</normaloff>:/file/icons/file_close.svg</iconset>
    </property>
    <property name="text" >
     <string>Close Model</string>
@@ -1143,7 +1325,8 @@
   </action>
   <action name="actionAtomStyleStick" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_stick.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
    </property>
    <property name="text" >
     <string>Stick</string>
@@ -1151,7 +1334,8 @@
   </action>
   <action name="actionAtomStyleTube" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_tube.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
    </property>
    <property name="text" >
     <string>Tube</string>
@@ -1159,7 +1343,8 @@
   </action>
   <action name="actionAtomStyleSphere" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_sphere.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
    </property>
    <property name="text" >
     <string>Sphere</string>
@@ -1167,7 +1352,8 @@
   </action>
   <action name="actionAtomStyleScaled" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/draw_styles/icons/style_scaled.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
    </property>
    <property name="text" >
     <string>Scaled</string>
@@ -1238,7 +1424,8 @@
   </action>
   <action name="actionFileSaveImage" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_saveimage.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
    </property>
    <property name="text" >
     <string>Save &amp;Image</string>
@@ -1271,7 +1458,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/mouse/icons/mouse_interact.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/mouse/icons/mouse_interact.svg</normaloff>:/mouse/icons/mouse_interact.svg</iconset>
    </property>
    <property name="text" >
     <string>Interact</string>
@@ -1288,7 +1476,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/mouse/icons/mouse_rotate.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/mouse/icons/mouse_rotate.svg</normaloff>:/mouse/icons/mouse_rotate.svg</iconset>
    </property>
    <property name="text" >
     <string>Rotate</string>
@@ -1305,7 +1494,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/mouse/icons/mouse_translate.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/mouse/icons/mouse_translate.svg</normaloff>:/mouse/icons/mouse_translate.svg</iconset>
    </property>
    <property name="text" >
     <string>Translate</string>
@@ -1337,7 +1527,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_undo.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_undo.svg</normaloff>:/edit/icons/edit_undo.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
@@ -1348,7 +1539,8 @@
   </action>
   <action name="actionEditRedo" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/edit/icons/edit_redo.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/edit/icons/edit_redo.svg</normaloff>:/edit/icons/edit_redo.svg</iconset>
    </property>
    <property name="text" >
     <string>Redo</string>
@@ -1514,7 +1706,8 @@
   </action>
   <action name="actionLoadScript" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text" >
     <string>Load Script</string>
@@ -1522,7 +1715,8 @@
   </action>
   <action name="actionModelRename" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/model/icons/model_rename.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/model/icons/model_rename.svg</normaloff>:/model/icons/model_rename.svg</iconset>
    </property>
    <property name="text" >
     <string>Rename</string>
@@ -1530,7 +1724,8 @@
   </action>
   <action name="actionAtomProbe" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_probe.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_probe.svg</normaloff>:/build/icons/build_probe.svg</iconset>
    </property>
    <property name="text" >
     <string>Probe Atom</string>
@@ -1544,7 +1739,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_transmute.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_transmute.svg</normaloff>:/build/icons/build_transmute.svg</iconset>
    </property>
    <property name="text" >
     <string>Transmute atom</string>
@@ -1587,7 +1783,8 @@
   </action>
   <action name="actionAddHydrogen" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_addh.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_addh.svg</normaloff>:/build/icons/build_addh.svg</iconset>
    </property>
    <property name="text" >
     <string>Add Hydrogen</string>
@@ -1601,7 +1798,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_atomaddh.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_atomaddh.svg</normaloff>:/build/icons/build_atomaddh.svg</iconset>
    </property>
    <property name="text" >
     <string>Add Hydrogen</string>
@@ -1612,7 +1810,8 @@
   </action>
   <action name="actionCalculateBonding" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_calc.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
    </property>
    <property name="text" >
     <string>Calculate Bonding</string>
@@ -1623,7 +1822,8 @@
   </action>
   <action name="actionClearBonding" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_clear.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_clear.svg</normaloff>:/bond/icons/bond_clear.svg</iconset>
    </property>
    <property name="text" >
     <string>Clear Bonding</string>
@@ -1634,7 +1834,8 @@
   </action>
   <action name="actionCalculateBondingSelection" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_calcsel.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_calcsel.svg</normaloff>:/bond/icons/bond_calcsel.svg</iconset>
    </property>
    <property name="text" >
     <string>Calculate Bonding in selection</string>
@@ -1645,7 +1846,8 @@
   </action>
   <action name="actionClearBondingSelection" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_clearsel.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_clearsel.svg</normaloff>:/bond/icons/bond_clearsel.svg</iconset>
    </property>
    <property name="text" >
     <string>Clear Bonding in Selection</string>
@@ -1656,7 +1858,8 @@
   </action>
   <action name="actionMeasureDistanceSelection" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_distancesel.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_distancesel.svg</normaloff>:/geometry/icons/measure_distancesel.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Distances in Selection</string>
@@ -1667,7 +1870,8 @@
   </action>
   <action name="actionMeasureAngleSelection" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_anglesel.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_anglesel.svg</normaloff>:/geometry/icons/measure_anglesel.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Angles in Selection</string>
@@ -1678,7 +1882,8 @@
   </action>
   <action name="actionMeasureTorsionSelection" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_torsionsel.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_torsionsel.svg</normaloff>:/geometry/icons/measure_torsionsel.svg</iconset>
    </property>
    <property name="text" >
     <string>Measure Torsions in Selection</string>
@@ -1689,7 +1894,8 @@
   </action>
   <action name="actionMeasureClearAll" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_close.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_close.svg</normaloff>:/file/icons/file_close.svg</iconset>
    </property>
    <property name="text" >
     <string>Clear</string>
@@ -1697,7 +1903,8 @@
   </action>
   <action name="actionLoadForcefield" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text" >
     <string>Load</string>
@@ -1705,7 +1912,8 @@
   </action>
   <action name="actionSaveForcefield" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/file/icons/file_save.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text" >
     <string>Save</string>
@@ -1736,7 +1944,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_single.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_single.svg</normaloff>:/bond/icons/bond_single.svg</iconset>
    </property>
    <property name="text" >
     <string>Bond Single</string>
@@ -1747,7 +1956,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_double.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_double.svg</normaloff>:/bond/icons/bond_double.svg</iconset>
    </property>
    <property name="text" >
     <string>Bond Double</string>
@@ -1758,7 +1968,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_triple.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_triple.svg</normaloff>:/bond/icons/bond_triple.svg</iconset>
    </property>
    <property name="text" >
     <string>Bond Triple</string>
@@ -1769,7 +1980,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_delete.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_delete.svg</normaloff>:/bond/icons/bond_delete.svg</iconset>
    </property>
    <property name="text" >
     <string>Delete Bond</string>
@@ -1780,7 +1992,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_ff.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_ff.svg</normaloff>:/stackicons/icons/stack_ff.svg</iconset>
    </property>
    <property name="text" >
     <string>Forcefields</string>
@@ -1797,7 +2010,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_atomlist.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_atomlist.svg</normaloff>:/stackicons/icons/stack_atomlist.svg</iconset>
    </property>
    <property name="text" >
     <string>Atomlist</string>
@@ -1814,7 +2028,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
    </property>
    <property name="text" >
     <string>Cell Define</string>
@@ -1828,7 +2043,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_celledit.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_celledit.svg</normaloff>:/stackicons/icons/stack_celledit.svg</iconset>
    </property>
    <property name="text" >
     <string>Cell Transform</string>
@@ -1842,7 +2058,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_edit.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_edit.svg</normaloff>:/stackicons/icons/stack_edit.svg</iconset>
    </property>
    <property name="text" >
     <string>Build</string>
@@ -1856,7 +2073,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_surfaces.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_surfaces.svg</normaloff>:/stackicons/icons/stack_surfaces.svg</iconset>
    </property>
    <property name="text" >
     <string>Grids</string>
@@ -1870,7 +2088,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_transform.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_transform.svg</normaloff>:/stackicons/icons/stack_transform.svg</iconset>
    </property>
    <property name="text" >
     <string>Transform</string>
@@ -1884,7 +2103,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_position.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_position.svg</normaloff>:/stackicons/icons/stack_position.svg</iconset>
    </property>
    <property name="text" >
     <string>Position</string>
@@ -1898,7 +2118,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_minimiser.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_minimiser.svg</normaloff>:/stackicons/icons/stack_minimiser.svg</iconset>
    </property>
    <property name="text" >
     <string>Minimiser</string>
@@ -1912,7 +2133,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/stackicons/icons/stack_disorder.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
    </property>
    <property name="text" >
     <string>Disorder</string>
@@ -1926,7 +2148,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_delete.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_delete.svg</normaloff>:/build/icons/build_delete.svg</iconset>
    </property>
    <property name="text" >
     <string>Delete Atom</string>
@@ -1937,7 +2160,8 @@
   </action>
   <action name="actionAugmentBonding" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/bond/icons/bond_augment.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/bond/icons/bond_augment.svg</normaloff>:/bond/icons/bond_augment.svg</iconset>
    </property>
    <property name="text" >
     <string>Augment Bonding</string>
@@ -1945,7 +2169,8 @@
   </action>
   <action name="actionSelectCustomElement" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_ptable.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/build/icons/build_ptable.svg</normaloff>:/build/icons/build_ptable.svg</iconset>
    </property>
    <property name="text" >
     <string>Pick Custom Element</string>
@@ -1953,7 +2178,8 @@
   </action>
   <action name="actionMinimise" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_minimise.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/forcefield/icons/forcefield_minimise.svg</normaloff>:/forcefield/icons/forcefield_minimise.svg</iconset>
    </property>
    <property name="text" >
     <string>Minimise the current model</string>
@@ -1961,7 +2187,8 @@
   </action>
   <action name="actionCalculateEnergy" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_energy.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/forcefield/icons/forcefield_energy.svg</normaloff>:/forcefield/icons/forcefield_energy.svg</iconset>
    </property>
    <property name="text" >
     <string>Calculate total energy of the current model</string>
@@ -1969,7 +2196,8 @@
   </action>
   <action name="actionCalculateForces" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_forces.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/forcefield/icons/forcefield_forces.svg</normaloff>:/forcefield/icons/forcefield_forces.svg</iconset>
    </property>
    <property name="text" >
     <string>Calculate atomic forces in the current model</string>
@@ -2002,7 +2230,8 @@
   </action>
   <action name="actionMeasureList" >
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/geometry/icons/measure_list.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/geometry/icons/measure_list.svg</normaloff>:/geometry/icons/measure_list.svg</iconset>
    </property>
    <property name="text" >
     <string>List</string>
@@ -2034,7 +2263,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="icons.qrc" >:/playback/icons/traj_view.svg</iconset>
+    <iconset resource="icons.qrc" >
+     <normaloff>:/playback/icons/traj_view.svg</normaloff>:/playback/icons/traj_view.svg</iconset>
    </property>
    <property name="text" >
     <string>View Trajectory</string>
@@ -2053,6 +2283,27 @@
   <action name="actionAtomFreePosition" >
    <property name="text" >
     <string>Free Position</string>
+   </property>
+  </action>
+  <action name="actionMeasureSaveToFile" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Save To File</string>
+   </property>
+  </action>
+  <action name="actionCommandWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_atomlist.svg</normaloff>:/stackicons/icons/stack_atomlist.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Command Window</string>
    </property>
   </action>
  </widget>

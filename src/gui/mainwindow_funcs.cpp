@@ -28,6 +28,7 @@
 #include "gui/build.h"
 #include "gui/celltransform.h"
 #include "gui/celldefine.h"
+#include "gui/command.h"
 #include "gui/transform.h"
 #include "gui/position.h"
 #include "gui/atomlist.h"
@@ -625,6 +626,16 @@ void AtenForm::on_actionCellTransformWindow_triggered(bool checked)
 		gui.cellTransformWindow->refresh();
 	}
 	else gui.cellTransformWindow->hide();
+}
+
+void AtenForm::on_actionCommandWindow_triggered(bool checked)
+{
+	if (checked)
+	{
+		gui.commandWindow->showWindow();
+		gui.commandWindow->refresh();
+	}
+	else gui.commandWindow->hide();
 }
 
 void AtenForm::on_actionMinimiserWindow_triggered(bool checked)

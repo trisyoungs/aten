@@ -41,10 +41,24 @@ void Canvas::renderModelGlyphs()
 			// Arrow - tail = data[0], head = data[1]
 			case (Glyph::ArrowGlyph):
 				vec[0] = g->data(0)->vector();
+				vec[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colours[0]);
 				glLineWidth(g->lineWidth());
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
-				glArrow(vec[0], g->data(1)->vector() - vec[0] );
+				if (g->rotated())
+				{
+					centroid = (vec[0] + vec[1]) / 2.0;
+					vec[0] -= centroid;
+					vec[1] -= centroid;
+					glPushMatrix();
+					  glTranslated(centroid.x, centroid.y, centroid.z);
+					  glPushMatrix();
+					    glMultMatrixd(g->rotationForGL());
+					    glArrow(vec[0], g->data(1)->vector() - vec[0] );
+					  glPopMatrix();
+					glPopMatrix();
+				}
+				else glArrow(vec[0], g->data(1)->vector() - vec[0] );
 				break;
 			// Vector - centroid = data[0], direction = data[1]
 			case (Glyph::VectorGlyph):
@@ -53,7 +67,18 @@ void Canvas::renderModelGlyphs()
 				g->data(0)->copyColour(colours[0]);
 				glLineWidth(g->lineWidth());
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
-				glArrow( vec[0] - (vec[1] * 0.5), vec[1] );
+				if (g->rotated())
+				{
+					glPushMatrix();
+					  glTranslated(vec[0].x, vec[1].y, vec[2].z);
+					  vec[0].zero();
+					  glPushMatrix();
+					    glMultMatrixd(g->rotationForGL());
+					    glArrow( vec[0], vec[1] );
+					  glPopMatrix();
+					glPopMatrix();
+				}
+				else glArrow( vec[0] - (vec[1] * 0.5), vec[1] );
 				break;
 			// Sense Vector - end1 = data[0], direction = data[1], length = data[2].x
 			case (Glyph::SenseVectorGlyph):
@@ -106,12 +131,33 @@ void Canvas::renderModelGlyphs()
 				g->data(0)->copyColour(colours[0]);
 				g->data(1)->copyColour(colours[1]);
 				glLineWidth(g->lineWidth());
-				glBegin(GL_LINES);
-				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
-				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
-				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
-				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
-				glEnd();
+				if (g->rotated())
+				{
+					centroid = (vec[0] + vec[1]) / 2.0;
+					vec[0] -= centroid;
+					vec[1] -= centroid;
+					glPushMatrix();
+					  glTranslated(centroid.x, centroid.y, centroid.z);
+					  glPushMatrix();
+					    glMultMatrixd(g->rotationForGL());
+					    glBegin(GL_LINES);
+					      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
+					      glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+					      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
+					      glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+					    glEnd();
+					  glPopMatrix();
+					glPopMatrix();
+				}
+				else
+				{
+					  glBegin(GL_LINES);
+					    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
+					    glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+					    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
+					    glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+					  glEnd();
+				}
 				break;
 			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
 			case (Glyph::TriangleGlyph):
@@ -129,15 +175,18 @@ void Canvas::renderModelGlyphs()
 					vec[1] -= centroid;
 					vec[2] -= centroid;
 					glPushMatrix();
-					glMultMatrixd(g->rotationForGL());
-					glBegin(GL_TRIANGLES);
-					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
-					  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
-					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
-					  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
-					  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[2]);
-					  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
-					glEnd();
+					  glTranslated(centroid.x, centroid.y, centroid.z);
+					  glPushMatrix();
+					    glMultMatrixd(g->rotationForGL());
+					    glBegin(GL_TRIANGLES);
+					      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[0]);
+					      glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+					      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[1]);
+					      glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+					      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colours[2]);
+					      glVertex3d(vec[2].x, vec[2].y, vec[2].z);
+					    glEnd();
+					  glPopMatrix();
 					glPopMatrix();
 				}
 				else

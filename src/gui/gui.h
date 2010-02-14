@@ -39,6 +39,7 @@ class AtenAtomlist;
 class AtenBuild;
 class AtenCellDefine;
 class AtenCellTransform;
+class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
 class AtenGlyphs;
@@ -132,6 +133,8 @@ class GuiQt
 	AtenCellDefine *cellDefineWindow;
 	// Cell transform subwindow
 	AtenCellTransform *cellTransformWindow;
+	// Command subwindow
+	AtenCommand *commandWindow;
 	// Disordered builder window
 	AtenDisorder *disorderWindow;
 	// Forcefields window
