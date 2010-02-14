@@ -25,6 +25,7 @@ set(qtproject_SRCS
   celldefine_funcs.cpp
   celltransform_funcs.cpp
   contextmenu_funcs.cpp
+  command_funcs.cpp
   commandhelp_funcs.cpp
   disorder_funcs.cpp
   drawactions.cpp
@@ -70,6 +71,7 @@ SET(pro_MOC_HDRS
   build.h
   celldefine.h
   celltransform.h
+  command.h
   commandhelp.h
   disorder.h
   ffeditor.h
@@ -98,6 +100,7 @@ SET(pro_UIS
   build.ui
   celldefine.ui
   celltransform.ui
+  command.ui
   commandhelp.ui
   disorder.ui
   ffeditor.ui

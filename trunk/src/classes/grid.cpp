@@ -44,6 +44,7 @@ Grid::Grid()
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
 	cutoff_ = 0.0;
+	upperCutoff_ = 0.0;
 	log_ = -1;
 	style_ = Grid::SolidSurface;
 	displayList_ = 0;
@@ -86,6 +87,7 @@ void Grid::operator=(Grid &source)
 	minimum_ = source.minimum_;
 	maximum_ = source.maximum_;
 	cutoff_ = source.cutoff_;
+	upperCutoff_ = source.upperCutoff_;
 	log_ = 0;
 	style_ = source.style_;
 	displayList_ = 0;
@@ -217,11 +219,24 @@ double Grid::cutoff()
 	return cutoff_;
 }
 
+// Set isovalue cutoff for surface
+void Grid::setUpperCutoff(double d)
+{
+	upperCutoff_ = d;
+	log_++;
+}
+
+// Return isovalue cutoff for surface
+double Grid::upperCutoff()
+{
+	return upperCutoff_;
+}
+
 // Return whether supplied number is within cutoff range
 bool Grid::withinCutoff(double d)
 {
-	// TEST
-	if (d < cutoff_) return TRUE;
+	if ((d > cutoff_) && (d < upperCutoff_)) return TRUE;
+// 	if (d > cutoff_) return TRUE;
 	return FALSE;
 }
 
@@ -470,6 +485,7 @@ void Grid::clear()
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
 	cutoff_ = 0.0;
+	upperCutoff_ = 100.0;
 	currentPoint_.zero();
 	visible_ = TRUE;
 	deleteArrays();
@@ -528,6 +544,7 @@ void Grid::setLimits(double d)
 	if (d < minimum_) minimum_ = d;
 	else if (d > maximum_) maximum_ = d;
 	cutoff_ = (maximum_ - minimum_) * 0.5 + minimum_;
+	upperCutoff_ = maximum_;
 }
 
 // Set specific point in data array
@@ -568,7 +585,6 @@ void Grid::setNextData(double d)
 	// Set current point referenced by currentpoint and increase it
 	if (type_ == Grid::VolumetricData)
 	{
-		currentPoint_.print();
 		data3d_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
 		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
 		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))

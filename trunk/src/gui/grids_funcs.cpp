@@ -265,6 +265,9 @@ void AtenGrids::refreshGridInfo()
 	ui.GridCutoffSpin->setMinimum(g->minimum());
 	ui.GridCutoffSpin->setValue(g->cutoff());
 	ui.GridCutoffSpin->setMaximum(g->maximum());
+	ui.GridUpperCutoffSpin->setMinimum(g->minimum());
+	ui.GridUpperCutoffSpin->setValue(g->upperCutoff());
+	ui.GridUpperCutoffSpin->setMaximum(g->maximum());
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
 	// Set origin and axes
@@ -386,6 +389,17 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setCutoff(d);
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_GridUpperCutoffSpin_valueChanged(double d)
+{
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModelOrFrame();
+	Grid *g = m->grid(row);
+	g->setUpperCutoff(d);
 	gui.mainView.postRedisplay();
 }
 
