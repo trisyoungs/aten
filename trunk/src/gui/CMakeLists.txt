@@ -17,7 +17,6 @@ set(qtproject_SRCS
   ttreewidgetitem.h
   ttablewidgetitem.h
   tlistwidgetitem.h 
-  tcombobox.h
   about_funcs.cpp
   atomlist_funcs.cpp
   bondactions.cpp
@@ -60,6 +59,7 @@ set(qtproject_SRCS
   tlistwidgetitem_funcs.cpp
   trajectoryactions.cpp
   transform_funcs.cpp
+  tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
   viewactions.cpp
@@ -89,6 +89,7 @@ SET(pro_MOC_HDRS
   transform.h
   tcanvas.uih
   tcolourframe.uih
+  tprompt.uih
   ttabbar.uih
   ttreewidget.uih
 )
