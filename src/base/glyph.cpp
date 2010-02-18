@@ -186,6 +186,20 @@ Mat3<double> *Glyph::rotation()
 	return rotation_;
 }
 
+// Set element of rotation matrix
+void Glyph::setRotationElement(int el, double d)
+{
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	rotation_->set(el,d);
+}
+
+// Get element of rotation matrix
+double Glyph::getRotationElement(int el)
+{
+	if (rotation_ == NULL) rotation_ = new Mat3<double>;
+	return rotation_->element(el);
+}
+
 // Reset rotation matrix (and set rotated_ = FALSE)
 void Glyph::resetRotation()
 {

@@ -167,6 +167,14 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (hasArrayIndex) rv.set( VTypes::GlyphDataData, ptr->data(arrayIndex-1) );
 			else rv.set( VTypes::GlyphDataData, ptr->data(0) );
 			break;
+		case (GlyphVariable::Rotation):
+			if ((arrayIndex < 1) || (arrayIndex > 9))
+			{
+				msg.print("Array index [%i] is out of range for 'rotation' member.\n", arrayIndex);
+				result = FALSE;
+			}
+			else rv.set(ptr->getRotationElement(arrayIndex-1));
+			break;
 		case (GlyphVariable::Solid):
 			rv.set( ptr->isSolid() );
 			break;
@@ -257,6 +265,9 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	if (result) switch (acc)
 	{
+		case (GlyphVariable::Rotation):
+			ptr->setRotationElement( arrayIndex-1, newvalue.asDouble());
+			break;
 		case (GlyphVariable::Solid):
 			ptr->setSolid(newvalue.asBool());
 			break;

@@ -218,6 +218,7 @@ declaration:
 step:
 	STEPTOKEN pushstepname '[' expr ']' 		{ if (!cmdparser.expandPath(stepNameStack.last(), $4)) YYABORT; stepNameStack.removeLast(); }
 	| STEPTOKEN pushstepname '(' exprlist ')' 	{ if (!cmdparser.expandPath(stepNameStack.last(), NULL, $4)) YYABORT; stepNameStack.removeLast(); }
+	| STEPTOKEN pushstepname '(' ')' 		{ if (!cmdparser.expandPath(stepNameStack.last(), NULL, NULL)) YYABORT; stepNameStack.removeLast(); }
 	| STEPTOKEN pushstepname 			{ if (!cmdparser.expandPath($1)) YYABORT; stepNameStack.removeLast(); }
 	;
 
