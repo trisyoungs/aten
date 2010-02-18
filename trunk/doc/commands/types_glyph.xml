@@ -64,9 +64,24 @@
 				</thead>
 				<tbody>
 					<row>
+						<entry>resetrotation ()</entry>
+						<entry>void</entry>
+						<entry>Reset any rotation applied to the glyph</entry>
+					</row>
+					<row>
 						<entry>rotatex ( double <emphasis>angle</emphasis> )</entry>
 						<entry>void</entry>
-						<entry>Rotates the glyph by x degrees about its x axis</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its x axis</entry>
+					</row>
+					<row>
+						<entry>rotatey ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its y axis</entry>
+					</row>
+					<row>
+						<entry>rotatey ( double <emphasis>angle</emphasis> )</entry>
+						<entry>void</entry>
+						<entry>Rotates the glyph by <emphasis>angle</emphasis> degrees about its z axis</entry>
 					</row>
 				</tbody>
 			</tgroup>

@@ -130,6 +130,10 @@ class Glyph
 	double *rotationForGL();
 	// Return rotation matrix
 	Mat3<double> *rotation();
+	// Set element of rotation matrix
+	void setRotationElement(int el, double d);
+	// Get element of rotation matrix
+	double getRotationElement(int el);
 	// Reset rotation matrix (and set rotated_ = FALSE)
 	void resetRotation();
 	// Rotate about arbitrary axis

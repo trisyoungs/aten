@@ -65,15 +65,8 @@ const char *TPrompt::getText()
 	{
 		// Add the text we just saved to the list, unless it is a duplicate of an existing entry
 		QList<QListWidgetItem*> results = commandList_->findItems(text.get(), Qt::MatchFixedString);
-		if (results.size() == 0)
-		{
-			commandList_->addItem(text.get());
-			commandList_->setCurrentRow(commandList_->count()-1);
-		}
-		else
-		{
-			commandList_->setCurrentItem(results.first());
-		}
+		if (results.size() == 0) commandList_->addItem(text.get());
+		commandList_->setCurrentRow(-1);
 	}
 	return text.get();
 }
@@ -140,9 +133,21 @@ void TPrompt::promptTextEdited(QString text)
 
 void TPrompt::promptListSingleClicked(QListWidgetItem *item)
 {
+	if (item == NULL) return;
+	// Store current line edit text
+	lastPromptText_ = qPrintable(commandPrompt_->text());
+	// Take the text of the item and place it in the line edit
+	commandPrompt_->setText( item->text() );
+	commandPrompt_->setFocus();
 }
 
 void TPrompt::promptListDoubleClicked(QListWidgetItem *item)
 {
+	if (item == NULL) return;
+	// Store current line edit text
+	lastPromptText_ = qPrintable(commandPrompt_->text());
+	// Take the text of the item and place it in the line edit
+	commandPrompt_->setText( item->text() );
+	emit returnPressed();
 }
 
