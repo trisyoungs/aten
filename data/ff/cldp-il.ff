@@ -57,10 +57,10 @@ types
 # Bromide
 140	Br	Br	"unbound"					# Bromide ion
 # Triflate
-150	CTF	C	"nbonds=4,-F(n=3),-S(nbonds=3,-O(n=2))"		# Fluoroalkane carbon attached to sulphate
-151	FTF	F	"-C(-F)"
-152	STF	S	""
-153	OTF	O	""
+150	CTF	C	"nbonds=4,-F(n=3),-S(nbonds=4,~O(n=3))"		# Fluoroalkane carbon attached to sulphate
+151	FTF	F	"-&150"
+152	STF	S	"-&150"
+153	OTF	O	"~&152"
 # Bistrifylamide
 160	CBT	C	"nbonds=4,-F,-F,-F,-S"				
 161	FBT	F	"nbonds=1,-C(-F,-F,-S)"				
