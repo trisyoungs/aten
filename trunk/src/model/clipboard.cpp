@@ -137,22 +137,6 @@ void Clipboard::clear()
 	msg.exit("Clipboard::clear");
 }
 
-/* Replace pointers in bond list
-void Clipboard::setNewBondPointers(Clipatom *clipptr, Atom *newptr)
-{
-	msg.enter("Clipboard::setNewBondPointers");
-	// Go through bond list searching for clipatom in clipi or clipj. Set associated bondi/bondj to newptr.
-	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
-	{
-		if (b->atomI() == clipptr) b->setAtomI(newptr);
-		else if (b->atomJ() == clipptr) b->setAtomJ(newptr);
-	}
-	printf("Linkbonds List after setNewBondPointers:\n");
-	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
-		printf("   Bond %p  = original atom IDs %i and %i\n",b,b->atomI()->id(),b->atomJ()->id());
-	msg.exit("Clipboard::setNewBondPointers");
-} */
-
 // Copy bonds for atoms
 void Clipboard::copyBonds()
 {
@@ -219,7 +203,7 @@ void Clipboard::copyMarked(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	// Copy atoms
-	for (Atom *i = m->atoms(); i != NULL; i = i->next) if (i->isSelected(TRUE)) copyAtom(i);
+	for (Refitem<Atom,int> *ri = m->selection(TRUE); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	// Copy bonds
 	copyBonds();
 	msg.exit("Clipboard::copyMarked");

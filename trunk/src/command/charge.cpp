@@ -32,13 +32,13 @@ bool Command::function_Charge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(0))
 	{
 		obj.rs->beginUndoState("Charge selected atoms");
-		for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
+		for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.rs->chargeAtom(ri->item, c->argd(0));
 		obj.rs->endUndoState();
 	}
 	else
 	{
 		q = 0.0;
-		for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) q += i->charge();
+		for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) q += ri->item->charge();
 	}
 	rv.set(q);
 	return TRUE;

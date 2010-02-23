@@ -23,7 +23,7 @@
 		<synopsis>
 			adjustcell(&quot;c&quot;,-10.0);
 		</synopsis>
-		<para>decreases the cell length 'c' by 10 Angstroms.</para>
+		<para>decreases the cell length 'c' by 10 &#8491;.</para>
 	
 	</section>
 	
@@ -48,7 +48,7 @@
 		<synopsis>
 			cell(20.0, 10.0, 10.0, 90.0, 90.0, 90.0);
 		</synopsis>
-		<para>sets the model's cell to be orthorhombic with side lengths 20x10x10 Angstrom.</para>
+		<para>sets the model's cell to be orthorhombic with side lengths 20x10x10 &#8491;.</para>
 		
 	</section>
 	
@@ -76,7 +76,7 @@
 		<synopsis>
 			cellaxes(15, 0, 0, 0, 15, 0, 0, 0, 15);
 		</synopsis>
-		<para>sets the model's cell to be cubic with side length 15 Angstrom.</para>
+		<para>sets the model's cell to be cubic with side length 15 &#8491;.</para>
 	
 	</section>
 	
@@ -298,7 +298,7 @@
 		<synopsis>
 			setcell(&quot;a&quot;, 15.5);
 		</synopsis>
-		<para>sets the cell length 'a' to 15.5 Angstrom.</para>
+		<para>sets the cell length 'a' to 15.5 &#8491;.</para>
 		
 	</section>
 	

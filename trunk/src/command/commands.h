@@ -406,6 +406,7 @@ class Command
 		ModelTemplate,
 		NewModel,
 		NextModel,
+		ParentModel,
 		PrevModel,
 		SaveModel,
 		SaveSelection,
@@ -529,6 +530,9 @@ class Command
 		MatrixTransform,
 		Mirror,
 		Reorient,
+		SetAngle,
+		SetDistance,
+		SetTorsion,
 		Translate,
 		TranslateAtom,
 		TranslateCell,
@@ -845,6 +849,7 @@ class Command
 	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveSelection(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -959,6 +964,9 @@ class Command
 	static bool function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv);

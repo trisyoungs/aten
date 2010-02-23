@@ -204,7 +204,7 @@
 		<synopsis>
 			gridcubic(0.5);
 		</synopsis>
-		<para>sets up a cubic system of axes, each grid point 0.5 Angstroms apart in all directions.</para>
+		<para>sets up a cubic system of axes, each grid point 0.5 &#8491; apart in all directions.</para>
 		
 	</section>
 	
@@ -238,13 +238,13 @@
 				<paramdef>double <parameter>z</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Sets the origin of the grid data, in Angstroms.</para>
+		<para>Sets the origin of the grid data, in &#8491;.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			gridorigin(0, 10, 0);
 		</synopsis>
-		<para>sets the grid origin to be offset 10 Angstroms along the y-axis.</para>
+		<para>sets the grid origin to be offset 10 &#8491; along the y-axis.</para>
 		
 	</section>
 	

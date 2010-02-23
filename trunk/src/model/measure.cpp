@@ -279,12 +279,14 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 {
 	msg.enter("Model::addMeasurementsInSelection");
 	Atom *i, *j, *k, *l;
+	Refitem<Atom,int> *ri;
 	Refitem<Bond,int> *b1, *b2, *b3;
 	switch (gt)
 	{
 		case (Measurement::Distance):
-			for (i = firstSelected(); i != NULL; i = i->nextSelected())
+			for (ri = selection(); ri != NULL; ri = ri->next)
 			{
+				i = ri->item;
 				for (b1 = i->bonds(); b1 != NULL; b1 = b1->next)
 				{
 					j = b1->item->partner(i);
@@ -295,8 +297,9 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 			}
 			break;
 		case (Measurement::Angle):
-			for (j = firstSelected(); j != NULL; j = j->nextSelected())
+			for (ri = selection(); ri != NULL; ri = ri->next)
 			{
+				j = ri->item;
 				// Get bonds to this atom and loop over them again
 				for (b1 = j->bonds(); b1 != NULL; b1 = b1->next)
 				{
@@ -312,8 +315,9 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 			break;
 		case (Measurement::Torsion):
 			// Find bond j-k where both are selected
-			for (j = firstSelected(); j != NULL; j = j->nextSelected())
+			for (ri = selection(); ri != NULL; ri = ri->next)
 			{
+				j = ri->item;
 				for (b1 = j->bonds(); b1 != NULL; b1 = b1->next)
 				{
 					k = b1->item->partner(j);

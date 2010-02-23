@@ -267,11 +267,11 @@
 		<synopsis>
 			zoomview(10.0);
 		</synopsis>
-		<para>moves the camera 10 Angstroms forwards along the z-direction.</para>
+		<para>moves the camera 10 &#8491; forwards along the z-direction.</para>
 		<synopsis>
 			zoomview(-5);
 		</synopsis>
-		<para>moves the camera 5 Angstroms backwards along the z-direction.</para>
+		<para>moves the camera 5 &#8491; backwards along the z-direction.</para>
 
 	</section>
 	

@@ -193,13 +193,13 @@
 				<paramdef>double <parameter>dist = 0.2</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Select all atoms that are within a certain distance of another, or the default of 0.2 Angstroms if no argument is provided. The number of selected overlapping atoms is returned.</para>
+		<para>Select all atoms that are within a certain distance of another, or the default of 0.2 &#8491; if no argument is provided. The number of selected overlapping atoms is returned.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int noverlaps = selectoverlaps(&quot;0.1&quot;);
 		</synopsis>
-		<para>selects all atoms that are less than 0.1 Angstrom away from another.</para>
+		<para>selects all atoms that are less than 0.1 &#8491; away from another.</para>
 		
 	</section>
 	
@@ -240,13 +240,13 @@
 				<paramdef>double <parameter>r</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Select all atoms within <emphasis>r</emphasis> Angstroms of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
+		<para>Select all atoms within <emphasis>r</emphasis> &#8491; of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			int nclose = selectradial(10, 4.5);
 		</synopsis>
-		<para>selects all atoms within 4.5 Angstroms of atom 10, and returns the number selected.</para>
+		<para>selects all atoms within 4.5 &#8491; of atom 10, and returns the number selected.</para>
 		
 	</section>
 	

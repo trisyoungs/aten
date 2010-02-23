@@ -22,7 +22,7 @@
 		<synopsis>
 			ecut(15.0);
 		</synopsis>
-		<para>sets the electrostatic cutoff radius to 15.0 Angstroms.</para>
+		<para>sets the electrostatic cutoff radius to 15.0 &#8491;.</para>
 	
 	</section>
 	
@@ -248,7 +248,7 @@
 		<synopsis>
 			vcut(9.0);
 		</synopsis>
-		<para>sets the VDW cutoff radius to 9.0 Angstroms.</para>
+		<para>sets the VDW cutoff radius to 9.0 &#8491;.</para>
 
 	</section>
 

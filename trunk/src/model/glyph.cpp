@@ -102,11 +102,11 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 	Atom *i, *j;
 	Refitem<Atom,int> *ri, *rj, *rk;
 	Glyph *g;
-	while (nSelected_ > 0)
+	while (selection_.nItems() > 0)
 	{
 		// If 'centresonly' is true, for each selected atom use its bonds to determine the atom list
 		// If false, find individual fragments from the selection
-		i = firstSelected();
+		i = selection_.first()->item;
 		atoms.clear();
 		if (centresonly)
 		{
@@ -166,18 +166,18 @@ void Model::addEllipsoidGlyphs()
 	msg.enter("Model::addEllipsoidGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
-	Atom *i;
 	Vec3<double> centroid, v, extents;
 	Mat3<double> axes;
 	double mag, best = 0.0, angle, tolerance = 0.3, angletol = PI/4.0, minz, maxz;
 	Refitem<Atom,int> *ri, *rj;
+	Atom *i;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
 	Refitem<Atom, Vec3<double> > *rid;
 	Glyph *g;
-	while (nSelected_ > 0)
+	while (selection_.nItems() > 0)
 	{
 		// If false, find individual fragments from the selection
-		i = firstSelected();
+		i = selection_.first()->item;
 		atoms.clear();
 		fragmentFromSelection(i, atoms);
 		// Check that we have enough atoms
@@ -186,6 +186,7 @@ void Model::addEllipsoidGlyphs()
 		centroid.zero();
 		for (ri = atoms.first(); ri != NULL; ri = ri->next) centroid += cell_.mim(ri->item, atoms.first()->item);
 		centroid /= atoms.nItems();
+
 		/*
 		// 1) Determine the X-axis (choose this to be defined from the (set of) atom(s) farthest from the centroid)
 		// From the centroid, measure the distance of each atom. If it is less than a tolerance amount of the current

@@ -245,7 +245,7 @@ void Model::pack(Generator *gen)
 	Vec3<double> newr;
 	int oldnatoms;
 	// Ignore the identity operator, and leave if there are no atoms marked
-	if ((gen == 0) || (nMarked_ == 0))
+	if ((gen == 0) || (marked_.nItems() == 0))
 	{
 		msg.enter("Model::pack[generator]");
 		return;

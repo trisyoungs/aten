@@ -273,7 +273,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 			   with their current positions.
 			*/
 			oldPositions_.clear();
-			for (Atom *i = displayModel_->firstSelected(); i != NULL; i = i->nextSelected()) oldPositions_.add(i, i->r());
+			for (Refitem<Atom,int> *ri = displayModel_->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
 			displayModel_->prepareTransform();
 		}
 	}

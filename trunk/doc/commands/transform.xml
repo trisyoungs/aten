@@ -346,6 +346,30 @@
 		<para>Operates in exactly the same manner as <link linkend="command.ref.matrixtransform">matrixtransform</link> except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.</para>
 	
 	</section>
+
+	<section id="command.ref.setdistance"><title>setdistance</title>
+		<indexterm><primary>commands</primary><secondary>setdistance</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setdistance</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+				<paramdef>atom|int <parameter>j</parameter></paramdef>
+				<paramdef>double <parameter>dist</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Shifts the atom <emphasis>j</emphasis> and all its direct and indirectly-bound neighbours (except <emphasis>i</emphasis>) so that the distance between <emphasis>i</emphasis> and <emphasis>j</emphasis> is <emphasis>dist</emphasis>. The coordinates of atom <emphasis>i</emphasis> remain unaffected.</para>
+		
+		<para>This operation can only be performed for atoms which are not present in the same cyclic structure, e.g. trying to set the distance of two atoms in a benzene ring is not allowed. However, note that the two atoms <emphasis>i</emphasis> and <emphasis>j</emphasis> do not have to be bound, so it is possible to move separate fragments further apart by this method.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			setdistance(1,4,4.9);
+		</synopsis>
+		<para>sets the distance between atoms 1 and 4 to be 4.9 &#8491;.</para>
+		
+	</section>
 	
 	<section id="command.ref.translate"><title>translate</title>
 		<indexterm><primary>commands</primary><secondary>translate</secondary></indexterm>
@@ -365,7 +389,7 @@
 		<synopsis>
 			translate(1, 0, 0);
 		</synopsis>
-		<para>moves the current selection 1 Angstrom along the x axis.</para>
+		<para>moves the current selection 1 &#8491; along the x axis.</para>
 	
 	</section>
 	
@@ -387,7 +411,7 @@
 		<synopsis>
 			translateatom(1, 0, -1);
 		</synopsis>
-		<para>translates the current atom 1 Angstrom along x and -1 Angstrom along z.</para>
+		<para>translates the current atom 1 &#8491; along x and -1 &#8491; along z.</para>
 		
 	</section>
 	
@@ -425,13 +449,13 @@
 				<paramdef>double <parameter>dz</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Translates the current selection by the Angstrom amounts specified, with the XY plane parallel to the monitor screen.</para>
+		<para>Translates the current selection by the &#8491; amounts specified, with the XY plane parallel to the monitor screen.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			translateworld(0, 0, 10);
 		</synopsis>
-		<para>translates the current selection 10 Angstroms 'into' the screen.</para>
+		<para>translates the current selection 10 &#8491; 'into' the screen.</para>
 	
 	</section>
 	

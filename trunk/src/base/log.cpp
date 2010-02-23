@@ -66,16 +66,22 @@ int Log::log(Log::LogType cl) const
 	return logs_[cl];
 }
 
+// Return current 'save' point of the model (sum of specific logs)
+int Log::currentSavePoint() const
+{
+	return (logs_[Log::Structure] + logs_[Log::Coordinates] + logs_[Log::Misc]);
+}
+
 // Set the save point log for the model
 void Log::updateSavePoint()
 {
-	savePoint_ = logs_[Log::Structure] + logs_[Log::Coordinates];
+	savePoint_ = currentSavePoint();
 }
 
 // Return if the log has been modified since last being saved
 bool Log::isModified() const
 {
-	return (savePoint_ == (logs_[Log::Structure] + logs_[Log::Coordinates]) ? FALSE : TRUE);
+	return (savePoint_ == currentSavePoint() ? FALSE : TRUE);
 }
 
 // Print logs
