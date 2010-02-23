@@ -69,7 +69,7 @@
 		<synopsis>
 			mcmaxstep(&quot;translate&quot;, 5.0);
 		</synopsis>
-		<para>sets the maximum translation displacement to 5 Angstrom.</para>
+		<para>sets the maximum translation displacement to 5 &#8491;.</para>
 		<synopsis>
 			mcmaxstep(&quot;rotate&quot;, 30.0);
 		</synopsis>

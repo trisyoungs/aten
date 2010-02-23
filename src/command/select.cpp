@@ -317,7 +317,7 @@ bool Command::function_SelectInsideCell(CommandNode *c, Bundle &obj, ReturnValue
 bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs->selectionCog();
+	Vec3<double> v = obj.rs->selectionCentreOfGeometry();
 	rv.set(v);
 	return TRUE;
 }
@@ -326,7 +326,7 @@ bool Command::function_SelectionCog(CommandNode *c, Bundle &obj, ReturnValue &rv
 bool Command::function_SelectionCom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vec3<double> v = obj.rs->selectionCom();
+	Vec3<double> v = obj.rs->selectionCentreOfMass();
 	rv.set(v);
 	return TRUE;
 }

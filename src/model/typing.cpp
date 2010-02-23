@@ -171,7 +171,7 @@ bool Model::typeAll()
 void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
 {
 	msg.enter("Pattern::selectionSetType");
-	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomType(i, ffa, fixed);
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
 	changeLog.add(Log::Coordinates);
 	msg.exit("Pattern::selectionSetType");
 }

@@ -155,7 +155,7 @@
 						<entry>volume</entry>
 						<entry>double</entry>
 						<entry>ro</entry>
-						<entry>Volume of the cell in cubic Angstroms</entry>
+						<entry>Volume of the cell in cubic &#8491;</entry>
 					</row>
 				</tbody>
 			</tgroup>

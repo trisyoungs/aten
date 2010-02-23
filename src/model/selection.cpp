@@ -24,33 +24,6 @@
 #include "model/undostate.h"
 #include "base/elements.h"
 
-// Return the number of selected atoms
-int Model::nSelected()
-{
-	return nSelected_;
-}
-
-// Return the number of marked atoms
-int Model::nMarked()
-{
-	return nMarked_;
-}
-
-// Mark all atoms in model
-void Model::markAll()
-{
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->setSelected(TRUE,TRUE);
-	nMarked_ = atoms_.nItems();
-	msg.print(Messenger::Verbose, "All atoms marked.\n");
-}
-
-// Match marked atoms to current selection
-void Model::markSelectedAtoms()
-{
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->isSelected() ? selectAtom(i, TRUE) : deselectAtom(i, TRUE);
-	msg.print(Messenger::Verbose, "There are now %i atoms marked.\n", nMarked_);
-}
-
 // Move specified atom up in the list (to lower ID)
 void Model::shiftAtomUp(Atom *i)
 {
@@ -113,7 +86,7 @@ void Model::shiftAtomDown(Atom *i)
 void Model::shiftSelectionUp()
 {
 	msg.enter("Model::shiftSelectionUp");
-	if (nSelected_ == 0)
+	if (selection_.nItems() == 0)
 	{
 		msg.print("No atoms selected.");
 		msg.exit("Model::shiftSelectionUp");
@@ -136,14 +109,13 @@ void Model::shiftSelectionUp()
 void Model::shiftSelectionDown()
 {
 	msg.enter("Model::shiftSelectionDown");
-	if (nSelected_ == 0)
+	if (selection_.nItems() == 0)
 	{
 		msg.print("No atoms selected.");
 		msg.exit("Model::shiftSelectionDown");
 		return;
 	}
 	Atom *i, *next;
-	//for (n=0; n<atoms.nItems(); n++)
 	// For each selected atom in the model, shift it one place 'down' the atom list
 	i = atoms_.last()->prev;
 	while (i != NULL)
@@ -197,35 +169,35 @@ void Model::moveSelectionToEnd()
 }
 
 // Get selection cog
-Vec3<double> Model::selectionCog()
+Vec3<double> Model::selectionCentreOfGeometry()
 {
 	Vec3<double> result;
-	Atom *first = firstSelected();
-	if (first != NULL)
+	if (selection_.nItems() != 0)
 	{
-		for (Atom *i = first; i != NULL; i = i->nextSelected()) result += cell_.mim(i,first);
-		result /= nSelected_;
+		for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
+		result /= selection_.nItems();
 	}
 	return result;
 }
 
 // Get selection com
-Vec3<double> Model::selectionCom()
+Vec3<double> Model::selectionCentreOfMass()
 {
 	Vec3<double> result;
+	Atom *i;
 	double massnorm = 0.0;
-	Atom *first = firstSelected();
-	if (first != NULL)
+	if (selection_.nItems() != 0)
 	{
-		for (Atom *i = first->nextSelected(); i != NULL; i = i->nextSelected())
+		for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 		{
-			result += cell_.mim(i,first) * elements().atomicMass(i);
-			massnorm += elements().atomicMass(i);
+			i = ri->item;
+			result += cell_.mim(i, selection_.first()->item);
 			if (i->element() == 0)
 			{
 				msg.print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
 				massnorm += 1.0;
 			}
+			else massnorm += elements().atomicMass(i);
 		}
 		result /= massnorm;
 	}
@@ -235,7 +207,7 @@ Vec3<double> Model::selectionCom()
 // Set selection visibility
 void Model::selectionSetHidden(bool hidden)
 {
-	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setHidden(i, hidden);
+	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) setHidden(ri->item, hidden);
 	changeLog.add(Log::Visual);
 }
 
@@ -243,7 +215,7 @@ void Model::selectionSetHidden(bool hidden)
 void Model::selectionSetFixed(bool fixed)
 {
 	// Sets 'fixed' values to TRUE
-	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setFixed(i, fixed);
+	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) setFixed(ri->item, fixed);
 }
 
 // Select bound and selected atoms from the current atom
@@ -291,8 +263,9 @@ void Model::reorderSelectedAtoms()
 	Atom *i, *j;
 	Refitem<Bond,int> *rb;
 	int diff, n;
-	for (i = firstSelected(TRUE); i != NULL; i = i->nextSelected(TRUE))
+	for (Refitem<Atom,int> *ri = selection(TRUE); ri != NULL; ri = ri->next)
 	{
+		i = ri->item;
 		// Loop over bonds
 		for (rb = i->bonds(); rb != NULL; rb = rb->next)
 		{

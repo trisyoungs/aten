@@ -297,7 +297,7 @@ bool Command::function_SelectionAddHydrogen(CommandNode *c, Bundle &obj, ReturnV
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Add Hydrogens to selection");
-	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->next) obj.rs->hydrogenSatisfy(i);
+	for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.rs->hydrogenSatisfy(ri->item);
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
@@ -331,7 +331,7 @@ bool Command::function_Transmute(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	short int el = c->argz(0);
 	obj.rs->beginUndoState("Transmute selection");
-	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
+	for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.rs->transmuteAtom(ri->item,el);
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;

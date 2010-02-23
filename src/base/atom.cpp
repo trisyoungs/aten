@@ -240,18 +240,6 @@ bool Atom::isEnvironment(Atom::AtomEnvironment ae)
 	return (environment_ == ae ? TRUE : FALSE);
 }
 
-// Get next selected
-Atom *Atom::nextSelected(bool markonly)
-{
-	Atom *i;
-	if (markonly)
-	{
-		for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
-	}
-	else for (i = this->next; i != NULL; i = i->next) if (i->selected_) break;
-	return i;
-}
-
 // Reset data in structure
 void Atom::reset()
 {
@@ -275,6 +263,9 @@ void Atom::copy(Atom *source)
 	type_ = source->type_;
 	fixedType_ = source->fixedType_;
 	labels_ = source->labels_;
+	// Do NOT copy selection or marked state (set to FALSE)
+	selected_ = FALSE;
+	marked_ = FALSE;
 }
 
 // Copy atom style

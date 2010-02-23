@@ -303,10 +303,10 @@ class Model
 	// Selection / Marked Atoms
 	*/
 	private:
-	// Number of selected atoms
-	int nSelected_;
-	// Number of marked atoms
-	int nMarked_;
+	// Reflist of selected atoms
+	Reflist<Atom,int> selection_;
+	// Reflist of marked atoms
+	Reflist<Atom,int> marked_;
 
 	public:
 	// Select the specified atom
@@ -344,7 +344,7 @@ class Model
 	// Select all atoms within the rectangular boundary specified
 	void selectBox(double, double, double, double, bool deselect = FALSE);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom *i, bool markonly = FALSE, bool deselect = FALSE);
+	void selectTree(Atom *i, bool markonly = FALSE, bool deselect = FALSE, Bond *omitbond = NULL);
 	// Select all atoms of the same element as the specified atom
 	void selectElement(Atom *i, bool markonly = FALSE, bool deselect = FALSE);
 	// Select all atoms of the same element as the atom with the specified id
@@ -356,7 +356,7 @@ class Model
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
-	Atom *firstSelected(bool markonly = FALSE);
+	Refitem<Atom,int> *selection(bool markonly = FALSE);
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
 	// Select atoms (or molecule COGs) inside of the current unit cell
@@ -717,7 +717,7 @@ class Model
 	// Translate selection by the vector specified (in world coordinates)
 	void translateSelectionWorld(const Vec3<double>&);
 	// Rotate selection about specified vector
-	void rotateSelectionVector(Vec3<double>, Vec3<double>, double);
+	void rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markonly = FALSE);
 	// Mirror selection about specified axis
 	void mirrorSelectionLocal(int axis);
 	// Matrix transform current selection
@@ -930,9 +930,9 @@ class Model
 	// Return the empirical formula of the selected atoms
 	void selectionEmpirical(Dnchar&, bool markonly);
 	// Get selection's centre of geometry
-	Vec3<double> selectionCog();
+	Vec3<double> selectionCentreOfGeometry();
 	// Get selection's centre of mass
-	Vec3<double> selectionCom();
+	Vec3<double> selectionCentreOfMass();
 	// Reorder bound atoms/fragments within the selection so that they are consecutive
 	void reorderSelectedAtoms();
 

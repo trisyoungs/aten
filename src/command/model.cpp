@@ -295,6 +295,21 @@ bool Command::function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Select trajectory parent model as current model
+bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	// Check for parent frame
+	if (obj.rs->trajectoryParent() == NULL)
+	{
+		msg.print("This model doesn't have a trajectory parent.\n");
+		return FALSE;
+	}
+	obj.m->setRenderFromSelf();
+	aten.setCurrentModel(obj.m);
+	return TRUE;
+}
+
 // Skip to previous loaded model ('prevmodel')
 bool Command::function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

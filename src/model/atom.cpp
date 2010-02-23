@@ -143,7 +143,9 @@ void Model::removeAtom(Atom *xatom, bool noupdate)
 // 	if (!noupdate) calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
 	if (!noupdate) for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+	// Deselect and unmark if necessary
 	if (xatom->isSelected()) deselectAtom(xatom);
+	if (xatom->isSelected(TRUE)) deselectAtom(xatom, TRUE);
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)

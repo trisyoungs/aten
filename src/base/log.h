@@ -46,6 +46,8 @@ class Log
 	int logs_[Log::nLogTypes];
 	// Log point of the last save / point on load
 	int savePoint_;
+	// Return current 'save' point of the model (sum of specific logs)
+	int currentSavePoint() const;
 
 	public:
 	// Reset all logs to zero

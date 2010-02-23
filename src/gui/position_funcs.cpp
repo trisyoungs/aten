@@ -75,7 +75,7 @@ void AtenPosition::flipSelection(int axis)
 void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.CentreXSpin->setValue(centre.x);
 	ui.CentreYSpin->setValue(centre.y);
 	ui.CentreZSpin->setValue(centre.z);
@@ -236,7 +236,7 @@ void AtenPosition::on_RepositionSelectionButton_clicked(bool on)
 void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.RepositionReferenceXSpin->setValue(centre.x);
 	ui.RepositionReferenceYSpin->setValue(centre.y);
 	ui.RepositionReferenceZSpin->setValue(centre.z);
@@ -245,7 +245,7 @@ void AtenPosition::on_DefineRepositionReferenceButton_clicked(bool on)
 void AtenPosition::on_DefineRepositionTargetButton_clicked(bool on)
 {
 	// Get centre of current selection
-	Vec3<double> centre = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> centre = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	ui.RepositionTargetXSpin->setValue(centre.x);
 	ui.RepositionTargetYSpin->setValue(centre.y);
 	ui.RepositionTargetZSpin->setValue(centre.z);

@@ -305,16 +305,16 @@ void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
-			for (Atom *i = m->firstSelected(); i != NULL; i = i->nextSelected())
+			for (Refitem<Atom,int> *ri = m->selection(); ri != NULL; ri = ri->next)
 			{
 				// Get the pattern in which the atom exists
-				Pattern *p = m->pattern(i);
-				if (i->element() == at->characterElement())
+				Pattern *p = m->pattern(ri->item);
+				if (ri->item->element() == at->characterElement())
 				{
 // TGAYNETA					matchscore = at->matchAtom(i, p->ringList(), m, i);
-					msg.print("Atom %i (%s) matched type with score %i.\n", i->id()+1, elements().symbol(i), matchscore);
+					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, elements().symbol(ri->item), matchscore);
 				}
-				else msg.print("Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements().symbol(i));
+				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, elements().symbol(ri->item));
 			}
 		}
 	}

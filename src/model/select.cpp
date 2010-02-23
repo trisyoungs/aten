@@ -27,6 +27,33 @@
 #include "base/pattern.h"
 #include "gui/gui.h"
 
+// Return the number of selected atoms
+int Model::nSelected()
+{
+	return selection_.nItems();
+}
+
+// Return the number of marked atoms
+int Model::nMarked()
+{
+	return marked_.nItems();
+}
+
+// Mark all atoms in model
+void Model::markAll()
+{
+	selectAll(TRUE);
+	msg.print(Messenger::Verbose, "All atoms marked.\n");
+}
+
+// Match marked atoms to current selection
+void Model::markSelectedAtoms()
+{
+	selectNone(TRUE);
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, TRUE);
+	msg.print(Messenger::Verbose, "There are now %i atoms marked.\n", marked_.nItems());
+}
+
 // Select Atom
 void Model::selectAtom(Atom *i, bool markonly)
 {
@@ -35,7 +62,7 @@ void Model::selectAtom(Atom *i, bool markonly)
 		if (!i->isSelected(TRUE))
 		{
 			i->setSelected(TRUE, TRUE);
-			nMarked_ ++;
+			marked_.add(i);
 		}
 	}
 	else
@@ -43,7 +70,7 @@ void Model::selectAtom(Atom *i, bool markonly)
 		if (!i->isSelected())
 		{
 			i->setSelected(TRUE);
-			nSelected_ ++;
+			selection_.add(i);
 			changeLog.add(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
@@ -71,7 +98,7 @@ void Model::deselectAtom(Atom *i, bool markonly)
 		if (i->isSelected(TRUE))
 		{
 			i->setSelected(FALSE, TRUE);
-			nMarked_ --;
+			marked_.remove(i);
 		}
 	}
 	else
@@ -79,7 +106,7 @@ void Model::deselectAtom(Atom *i, bool markonly)
 		if (i->isSelected())
 		{
 			i->setSelected(FALSE);
-			nSelected_ --;
+			selection_.remove(i);
 			changeLog.add(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
@@ -193,8 +220,6 @@ void Model::selectNone(bool markonly)
 {
 	msg.enter("Model::selectNone");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected(markonly)) deselectAtom(i, markonly);
-	if (markonly) nMarked_ = 0;
-	else nSelected_ = 0;
 	msg.exit("Model::selectNone");
 }
 
@@ -269,7 +294,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 }
 
 // Tree Select
-void Model::selectTree(Atom *i, bool markonly, bool deselect)
+void Model::selectTree(Atom *i, bool markonly, bool deselect, Bond *omitbond)
 {
 	// The passed atom node is the starting point for the algorithm.
 	// From here, select all atoms that are bound - if they are already
@@ -278,10 +303,10 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect)
 	msg.enter("Model::selectTree");
 	bool status;
 	Atom *j;
-	Refitem<Bond,int> *bref = i->bonds();
 	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
-	while (bref != NULL)
+	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
+		if (bref->item == omitbond) continue;
 		j = bref->item->partner(i);
 		status = j->isSelected(markonly);
 		if (deselect) status = !status;
@@ -289,9 +314,8 @@ void Model::selectTree(Atom *i, bool markonly, bool deselect)
 		{
 			if (deselect) deselectAtom(j, markonly);
 			else selectAtom(j, markonly);
-			this->selectTree(j, markonly, deselect);
+			this->selectTree(j, markonly, deselect, omitbond);
 		}
-		bref = bref->next;
 	}
 	msg.exit("Model::selectTree");
 }
@@ -405,22 +429,10 @@ void Model::selectPattern(Pattern *p, bool markonly, bool deselect)
 }
 
 // Get first selected
-Atom *Model::firstSelected(bool markonly)
+Refitem<Atom,int> *Model::selection(bool markonly)
 {
-	msg.enter("Model::firstSelected");
-	Atom *result = NULL;
-	Atom *i = atoms_.first();
-	while (i != NULL)
-	{
-		if (i->isSelected(markonly))
-		{
-			result = i;
-			break;
-		}
-		i = i->next;
-	}
-	msg.exit("Model::firstSelected");
-	return result;
+	if (markonly) return marked_.first();
+	else return selection_.first();
 }
 
 // Select overlapping atoms

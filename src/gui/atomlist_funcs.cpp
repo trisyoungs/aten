@@ -210,6 +210,7 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
 	peekScrollBar();
 	CommandNode::run(Command::ShiftUp, "i", 1);
+	refresh();
 	pokeScrollBar();
 	gui.update(FALSE,FALSE,FALSE);
 }

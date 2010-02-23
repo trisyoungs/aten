@@ -353,7 +353,7 @@
 						<entry>spotlightposition</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>
-						<entry>Spotlight coordinates (in Angstroms)</entry>
+						<entry>Spotlight coordinates (in &#8491;)</entry>
 					</row>
 					<row>
 						<entry>spotlightspecular</entry>

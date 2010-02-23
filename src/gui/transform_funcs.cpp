@@ -60,7 +60,7 @@ void AtenTransform::on_RotateAnticlockwiseButton_clicked(bool on)
 void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	// Set widgets
 	ui.RotateOriginXSpin->setValue(v.x);
 	ui.RotateOriginYSpin->setValue(v.y);
@@ -71,7 +71,7 @@ void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
-	v = aten.currentModelOrFrame()->selectionCog();
+	v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
@@ -316,7 +316,7 @@ void AtenTransform::on_TransformOriginCellCentreButton_clicked(bool on)
 void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	// Set widgets
 	ui.TransformOriginXSpin->setValue(v.x);
 	ui.TransformOriginYSpin->setValue(v.y);
@@ -528,7 +528,7 @@ void AtenTransform::on_ConvertOriginCellCentreButton_clicked(bool on)
 void AtenTransform::on_ConvertDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = aten.currentModelOrFrame()->selectionCog();
+	Vec3<double> v = aten.currentModelOrFrame()->selectionCentreOfGeometry();
 	// Set widgets
 	ui.ConvertOriginXSpin->setValue(v.x);
 	ui.ConvertOriginYSpin->setValue(v.y);

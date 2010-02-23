@@ -36,8 +36,6 @@
 Model::Model()
 {
 	// Private variables
-	nSelected_ = 0;
-	nMarked_ = 0;
 	camera_.set(0.0,0.0,-10.0);
 	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
 	projectionPoint_ = -1;

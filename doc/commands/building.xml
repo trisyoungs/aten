@@ -41,14 +41,14 @@
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Converts the specified object(s) data to Angstroms, assuming that it is currently specified in Bohr.</para>
+		<para>Converts the specified object(s) data to &#8491;, assuming that it is currently specified in Bohr.</para>
 		
 		<para>For example:</para>
 		<synopsis>
 			atom i = aten.model.atoms[2];
 			bohr(i);
 		</synopsis>
-		<para>converts the coordinates of the supplied atom from Bohr to Angstrom.</para>
+		<para>converts the coordinates of the supplied atom from Bohr to &#8491;.</para>
 	
 	</section>
 	
@@ -131,7 +131,7 @@
 				<paramdef>double <parameter>z</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Sets the pen position to the coordinates specified (in Angstroms).</para>
+		<para>Sets the pen position to the coordinates specified (in &#8491;).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -153,7 +153,7 @@
 				<paramdef>double <parameter>z</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Moves the pen position by the amounts specified (in Angstroms).</para>
+		<para>Moves the pen position by the amounts specified (in &#8491;).</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -161,6 +161,44 @@
 		</synopsis>
 		<para>moves the pen +1 Angstrom in both the x and y directions.</para>
 	
+	</section>
+
+	<section id="command.ref.movetoend"><title>movetoend</title>
+		<indexterm><primary>commands</primary><secondary>movetoend</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetoend</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection to the end of the list. The relative order of atoms in the selection is preserved.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			movetoend();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.movetostart"><title>movetostart</title>
+		<indexterm><primary>commands</primary><secondary>movetostart</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetostart</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection to the start of the list. The relative order of the atoms in the selection is preserved.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			movetostart();
+		</synopsis>
+		
 	</section>
 	
 	<section id="command.ref.newatom"><title>newatom</title>
@@ -339,44 +377,6 @@
 			rotz(109.5);
 		</synopsis>
 		<para>rotates around the z axis by 109.5 degrees.</para>
-	
-	</section>
-	
-	<section id="command.ref.movetoend"><title>movetoend</title>
-		<indexterm><primary>commands</primary><secondary>movetoend</secondary></indexterm>
-		
-		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>void <function>movetoend</function></funcdef>
-				<void/>
-			</funcprototype>
-		</funcsynopsis>
-		<para>Move the current atom selection to the end of the list. The relative order of atoms in the selection is preserved.</para>
-		
-		<para>For example:</para>
-		<synopsis>
-			movetoend();
-		</synopsis>
-	
-	</section>
-	
-	<section id="command.ref.movetostart"><title>movetostart</title>
-		<indexterm><primary>commands</primary><secondary>movetostart</secondary></indexterm>
-		
-		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>void <function>movetostart</function></funcdef>
-				<void/>
-			</funcprototype>
-		</funcsynopsis>
-		<para>Move the current atom selection to the start of the list. The relative order of the atoms in the selection is preserved.</para>
-		
-		<para>For example:</para>
-		<synopsis>
-			movetostart();
-		</synopsis>
 	
 	</section>
 	

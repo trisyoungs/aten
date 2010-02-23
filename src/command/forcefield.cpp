@@ -281,12 +281,11 @@ bool Command::function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.m->setAtomType(i, ffa, TRUE);
 		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
-	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected())
+	else for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next)
 	{
-		obj.m->setAtomType(i, ffa, TRUE);
-		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+		obj.m->setAtomType(ri->item, ffa, TRUE);
+		msg.print("Atom type for atom id %i fixed to %i (%s/%s).\n", ri->item->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
-	obj.m->changeLog.add(Log::Structure);
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;
@@ -302,7 +301,7 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, i->type(), FALSE);
 	}
-	else for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->setAtomType(i, i->type(), TRUE);
+	else for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), TRUE);
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
 	return TRUE;

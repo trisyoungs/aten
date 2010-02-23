@@ -123,6 +123,9 @@ void Command::initPointers()
 	pointers_[RotY] = &Command::function_RotY;
 	pointers_[RotZ] = &Command::function_RotZ;
 	pointers_[SelectionAddHydrogen] = &Command::function_SelectionAddHydrogen;
+	pointers_[SetAngle] = &Command::function_SetAngle;
+	pointers_[SetDistance] = &Command::function_SetDistance;
+	pointers_[SetTorsion] = &Command::function_SetTorsion;
 	pointers_[ShiftDown] = &Command::function_ShiftDown;
 	pointers_[ShiftUp] = &Command::function_ShiftUp;
 	pointers_[Transmute] = &Command::function_Transmute;
@@ -363,6 +366,7 @@ void Command::initPointers()
 	pointers_[ModelTemplate] = &Command::function_ModelTemplate;
 	pointers_[NewModel] = &Command::function_NewModel;
 	pointers_[NextModel] = &Command::function_NextModel;
+	pointers_[ParentModel] = &Command::function_ParentModel;
 	pointers_[PrevModel] = &Command::function_PrevModel;
 	pointers_[Info] = &Command::function_Info;
 	pointers_[SaveModel] = &Command::function_SaveModel;

@@ -311,6 +311,146 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Alter angle between three specified atoms
+bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	if (i == NULL)
+	{
+		msg.print("Atom 'i' given to 'setangle' is NULL.\n");
+		return FALSE;
+	}
+	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	if (j == NULL)
+	{
+		msg.print("Atom 'j' given to 'setangle' is NULL.\n");
+		return FALSE;
+	}
+	Atom *k = c->argType(2) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
+	if (k == NULL)
+	{
+		msg.print("Atom 'k' given to 'setangle' is NULL.\n");
+		return FALSE;
+	}
+	// Clear any current marked selection
+	obj.rs->selectNone(TRUE);
+	// Find bond (if any) between i and j
+	Bond *b = i->findBond(j);
+	// Perform mark-only tree select on atom j, excluding any bond to atom i
+	obj.rs->selectTree(k, TRUE, FALSE, b);
+	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+	if (i->isSelected(TRUE))
+	{
+		msg.print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		return FALSE;
+	}
+	// Get current angle between the three atoms
+	double angle = obj.rs->angle(i,j,k)*DEGRAD;
+	// Get cross product of bond vectors to define rotation axis
+	Vec3<double> v = obj.rs->cell()->mimd(j,k) * obj.rs->cell()->mimd(j,i);
+	v.normalise();
+	double delta = c->argd(3) - angle;
+	obj.rs->beginUndoState("Set angle between atoms");
+	obj.rs->rotateSelectionVector(j->r(), v, delta, TRUE);
+	obj.rs->endUndoState();
+	return TRUE;
+}
+
+// Alter distance between two specified atoms
+bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	if (i == NULL)
+	{
+		msg.print("Atom 'i' given to 'setdistance' is NULL.\n");
+		return FALSE;
+	}
+	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	if (j == NULL)
+	{
+		msg.print("Atom 'j' given to 'setdistance' is NULL.\n");
+		return FALSE;
+	}
+	// Clear any current marked selection
+	obj.rs->selectNone(TRUE);
+	// Find bond (if any) between i and j
+	Bond *b = i->findBond(j);
+	// Perform mark-only tree select on atom j, excluding any bond to atom i
+	obj.rs->selectTree(j, TRUE, FALSE, b);
+	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+	if (i->isSelected(TRUE))
+	{
+		msg.print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		return FALSE;
+	}
+	// Grab the minimum image vector between the two atoms, and shift all those currently marked
+	Vec3<double> v = obj.rs->cell()->mimd(j,i);
+	double delta = c->argd(2) - v.magnitude();
+	v.normalise();
+	v *= delta;
+	obj.rs->beginUndoState("Set distance between atoms");
+	for (Refitem<Atom,int> *ri = obj.rs->selection(TRUE); ri != NULL; ri = ri->next) obj.rs->translateAtom(ri->item, v);
+	obj.rs->endUndoState();
+	return TRUE;
+}
+
+// Alter torsion between four specified atoms
+bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
+	Atom *i = c->argType(0) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
+	if (i == NULL)
+	{
+		msg.print("Atom 'i' given to 'settorsion' is NULL.\n");
+		return FALSE;
+	}
+	Atom *j = c->argType(1) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
+	if (j == NULL)
+	{
+		msg.print("Atom 'j' given to 'settorsion' is NULL.\n");
+		return FALSE;
+	}
+	Atom *k = c->argType(2) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
+	if (k == NULL)
+	{
+		msg.print("Atom 'k' given to 'settorsion' is NULL.\n");
+		return FALSE;
+	}
+	Atom *l = c->argType(3) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(3)-1) : (Atom*) c->argp(3, VTypes::AtomData);
+	if (l == NULL)
+	{
+		msg.print("Atom 'l' given to 'settorsion' is NULL.\n");
+		return FALSE;
+	}
+	// Clear any current marked selection
+	obj.rs->selectNone(TRUE);
+	// Find bond (if any) between j and k
+	Bond *b = k->findBond(l);
+	// Perform mark-only tree select on atom j, excluding any bond to atom i
+	obj.rs->selectTree(l, TRUE, FALSE, b);
+	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+	if (i->isSelected(TRUE))
+	{
+		msg.print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'l', or are unbound and within the same fragment.\n");
+		return FALSE;
+	}
+	// Get current angle between the three atoms
+	double angle = obj.rs->torsion(i,j,k,l)*DEGRAD;
+	// Rotation vector will be vector j->k
+	Vec3<double> v = obj.rs->cell()->mimd(j,k);
+	v.normalise();
+	double delta = c->argd(4) - angle;
+	obj.rs->beginUndoState("Set angle between atoms");
+	obj.rs->rotateSelectionVector(j->r(), v, delta, TRUE);
+	obj.rs->endUndoState();
+	return TRUE;
+}
+
 // Translate current selection in local coordinates ('translate dx dy dz')
 bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

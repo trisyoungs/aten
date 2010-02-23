@@ -191,7 +191,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	emp.createEmpty(1024);
 	Pattern *p;
 	Refitem<Bond,int> *rb;
-	Atom *i, *isel, *clipi;
+	Atom *i, *clipi;
+	Refitem<Atom,int> *isel;
 	// Check current pattern first...
 	if (arePatternsValid())
 	{
@@ -221,14 +222,14 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
-		atomid += nMarked_;
+		atomid += marked_.nItems();
 		//selectionGetEmpirical(emp);
-		for (n=0; n<nMarked_; n++)
+		for (n=0; n<marked_.nItems(); n++)
 		{
 			if (i->isSelected(TRUE)) nsel2 ++;
 			i = i->next;
 		}
-		if (nsel2 != nMarked_)
+		if (nsel2 != marked_.nItems())
 		{
 			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\n");
 			msg.print("Problem occurred in pattern %i whilst selecting from atom %i.\n", patterns_.nItems()+1, i->id()+1);
@@ -258,23 +259,23 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			// Compare clipboard contents with current selection
 			same = TRUE;
 			// Check number of atoms first....
-			if (nMarked_ != patclip.nAtoms()) same = FALSE;
+			if (marked_.nItems() != patclip.nAtoms()) same = FALSE;
 			else
 			{
 				/*
 				// Atoms
 				*/
 				clipi = patclip.atoms();
-				for (isel = firstSelected(TRUE); isel != NULL; isel = isel->nextSelected(TRUE))
+				for (isel = marked_.first(); isel != NULL; isel = isel->next)
 				{
 					// Element check
-					if (clipi->element() != isel->element())
+					if (clipi->element() != isel->item->element())
 					{
 						same = FALSE;
 						break;
 					}
 					// Fixed forcefield type check
-					if (clipi->hasFixedType() != isel->hasFixedType())
+					if (clipi->hasFixedType() != isel->item->hasFixedType())
 					{
 						same = FALSE;
 						break;
@@ -282,7 +283,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					else if (clipi->hasFixedType())
 					{
 						// Both have fixed type - make sure types are the same
-						if (clipi->type() != isel->type())
+						if (clipi->type() != isel->item->type())
 						{
 							same = FALSE;
 							break;
@@ -290,15 +291,15 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					}
 					clipi = clipi->next;
 				}
-				// Bonding between atoms_...
-				idoff = firstSelected(TRUE)->id();
-				if (same) for (isel = firstSelected(TRUE); isel != NULL; isel = isel->nextSelected(TRUE))
+				// Bonding between atoms...
+				idoff = selection(TRUE)->item->id();
+				if (same) for (isel = marked_.first(); isel != NULL; isel = isel->next)
 				{
 					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
-					idi = isel->id() - idoff;
-					for (rb = isel->bonds(); rb != NULL; rb = rb->next)
+					idi = isel->item->id() - idoff;
+					for (rb = isel->item->bonds(); rb != NULL; rb = rb->next)
 					{
-						idj = rb->item->partner(isel)->id() - idoff;
+						idj = rb->item->partner(isel->item)->id() - idoff;
 						if (idi < idj) continue;
 						if (!patclip.hasBond(idi,idj))
 						{
@@ -371,17 +372,19 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 {
 	msg.enter("Model::selectionAtomFingerprint");
 	target.clear();
-	Atom *i = firstSelected();
-	if (i == NULL)
+	if (selection_.first() == NULL)
 	{
 		msg.exit("Model::selectionAtomFingerprint");
 		return;
 	}
-	int lastel = i->element(), newel;
+	Refitem<Atom,int> *ri = selection_.first();
+	int lastel = ri->item->element(), newel;
 	int count = 1;
-	for (i = i->next; i != NULL; i = i->nextSelected())
+	Atom *i;
+	for (ri = ri->next; ri != NULL; ri = ri->next)
 	{
 		// Check this element against the last. If the last element is the same, increase the counter. If different, append to the string
+		i = ri->item;
 		newel = i->element();
 		if (newel == lastel) count ++;
 		else
