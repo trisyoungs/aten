@@ -1,0 +1,393 @@
+<section id="command.groups.glyph"><title>Glyph Commands</title>
+	
+	<para>Add glyphs to atoms in the model.</para>
+
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="XXX.glyphs">Glyphs</link> for information on glyph types and how they use vector data.</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="gui.windows.glyph">Glyph window</link> for management of glyphs in the GUI.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.autoellipsoids"><title>autoellipsoids</title>
+		<indexterm><primary>commands</primary><secondary>autoellipsoids</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>autoellipsoids</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		
+		<para><emphasis>Note: Experimental Feature!</emphasis></para>
+		
+		<para>Using the current atom selection, this command creates ellipsoid glyphs that cover (or represent) individual bound fragments within the selection. An ellipsoid glyph is added for each bound fragment within the selection, positioned at the geometric centre of the bound fragment, and scaled in an attempt to cover all atoms within the bound fragment. Such things are useful when wanting to represent molecules by simple geometric shapes, rather than by their fine-grained atomic positions.</para>
+		
+		<para>For instance, given a box full of benzene molecules:</para>
+		<synopsis>
+			selectall();
+			autoellipsoids();
+		</synopsis>
+		<para>will add on a flattened ellipsoid to each individual molecule. To do the same thing but using only the ring carbons to generate the ellipsoids:</para>
+		<synopsis>
+			select(&quot;C&quot;);
+			autoellipsoids();
+		</synopsis>
+		<para>Now the ellipsoids will cover the carbon atoms in each ring, leaving the hydrogens poking out.</para>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="methods.autoellipsoids">Autoellipsoids method</link> for a description of the process.</para>
+				</listitem>
+			</itemizedlist>
+		</note>	
+	
+	</section>
+
+	<section id="command.ref.autopolyhedra"><title>autopolyhedra</title>
+		<indexterm><primary>commands</primary><secondary>autopolyhedra</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>autopolyhedra</function></funcdef>
+				<paramdef>string <parameter>options = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	
+		<para><emphasis>Note: Very Experimental Feature!</emphasis></para>
+		
+		<para>In a similar way to the <link linkend="command.ref.autoellipsoids">autoellipsoids</link> command, 'autopolyhedra' adds triangle glyphs to the current selection in an attempt to enclose certain atoms within solid structures. There are two principal modes of operation. The first (the default) assumes that the current atom selection consists of individual atoms that should be enclosed in a polyhedron made up from triangles added between triplets of bound neighbours. The carbon atom at the centre of methane would make a good example. The alternative mode (requested with the 'fragments' option) assumes that atoms within individual bound fragments in the current selection should be used as the vertices to form an enclosed shell.</para>
+		
+		<para>Possible <emphasis>options</emphasis> are:</para>
+
+		<table frame='all' pgwide='1' tocentry='0'><title>Autopolyhedra options</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Option</entry>
+						<entry>Effect</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>centres</entry>
+						<entry>Assume that the current selection consists of individual atomic centres that should be enclosed (the default).</entry>
+					</row>
+					<row>
+						<entry>fragments</entry>
+						<entry>Use individual bound fragments instead of assuming individual centres.</entry>
+					</row>
+					<row>
+						<entry>nolink</entry>
+						<entry>Do not link the coordinates of generated glyphs to coordinates of the atoms (the default is to link glyph coordinates to atoms).</entry>
+					</row>
+					<row>
+						<entry>rcut=<emphasis>distance</emphasis></entry>
+						<entry>Specifies the maximum distance allowed between vertices of a triangle</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="methods.autopolyhedra">Autopolyhedra Method</link> for a description of the process.</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+	
+	</section>
+
+	<section id="command.ref.glyphatomf"><title>glyphatomf</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomf</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomf</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set current (or specified) atom's forces as data <emphasis>n</emphasis> in the current glyph.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphatomf(1);
+		</synopsis>
+		<para>links the current atoms forces to the first datum in the current glyph.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphatomr"><title>glyphatomr</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomr</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomr</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomr</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set current (or specified) atom's position as data <emphasis>n</emphasis> in the current glyph.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphatomr(3, 55);
+		</synopsis>
+		<para>links the 55th atom's position to the third datum in the current glyph.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphatomv"><title>glyphatomv</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomv</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomv</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>glyphatomv</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set current (or specified) atom's velocity as data <emphasis>n</emphasis> in the current glyph.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			atom i = newatom(&quot;H&quot;);
+			glyphatomv(2,i);
+		</synopsis>
+		<para>links the velocity of new atom <emphasis>i</emphasis> to the second datum in the current glyph.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphatomsf"><title>glyphatomsf</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomsf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsf</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the forces of the atoms / atom IDs provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphatomsf(1, 2, 3);
+		</synopsis>
+		<para>links the forces of atoms 1, 2, and 3 to the first three glyph data.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphatomsr"><title>glyphatomsr</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomsr</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsr</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the positions of the atoms / atom IDs provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphatomsr(3, 10);
+		</synopsis>
+		<para>links the positions of atoms 3 and 10 to the first two glyph data.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphatomsv"><title>glyphatomsv</title>
+		<indexterm><primary>commands</primary><secondary>glyphatomsv</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphatomsv</function></funcdef>
+				<paramdef>atom|int <parameter>sourceatom</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Accepts one or more atoms, setting consecutive data in the current glyph to the velocities of the atoms / atom IDs provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphatomsv(9, 11, 13);
+		</synopsis>
+		<para>links the velocities of atoms 9, 11, and 13 to first three glyph data.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphcolour"><title>glyphcolour</title>
+		<indexterm><primary>commands</primary><secondary>glyphcolour</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphcolour</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>alpha = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the colour of vertex <emphasis>n</emphasis> for the current glyph to the RGB(A) colour provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphcolour(1, 1.0, 0.0, 0.0);
+		</synopsis>
+		<para>sets the colour of the first vertex in the current glyph to red.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphdata"><title>glyphdata</title>
+		<indexterm><primary>commands</primary><secondary>glyphdata</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphdata</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set vector data <emphasis>n</emphasis> for the current glyph to the fixed values provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphdata(1, 0.0, 5.0, 2.4);
+		</synopsis>
+		<para>sets the first positional data in the glyph to {0.0, 5.0, 2.4}.</para>
+	
+	</section>
+	
+	<section id="command.ref.glyphsolid"><title>glyphsolid</title>
+		<indexterm><primary>commands</primary><secondary>glyphsolid</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphsolid</function></funcdef>
+				<paramdef>bool <parameter>issolid</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the drawing style of the current glyph to solid (true) or wireframe (false) (if the glyph style permits).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphsolid(&quot;true&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.glyphtext"><title>glyphtext</title>
+		<indexterm><primary>commands</primary><secondary>glyphtext</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>glyphtext</function></funcdef>
+				<paramdef>string <parameter>text</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the text data in the current glyph. For text-style glyphs, this is of course useful! For others, whether or not the text is used depends on the style of the glyph.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			glyphtext(&quot;Coordinate Origin&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.newglyph"><title>newglyph</title>
+		<indexterm><primary>commands</primary><secondary>newglyph</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>glyph <function>newglyph</function></funcdef>
+				<paramdef>string <parameter>style</parameter></paramdef>
+				<paramdef>string <parameter>options = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global <link linkend="command.types.preferences">preferences</link>. Valid glyph styles are listed in the <link linkend="xxx.glyph">Glyphs</link> section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
+		
+		<para>One or more options may be given to the command. The list of possible options is:</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Newglyph options</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Option</entry>
+						<entry>Effect</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>linewidth=<emphasis>width</emphasis></entry>
+						<entry>Set the linewidth used to draw the glyph to the (floating point) value provided.</entry>
+					</row>
+					<row>
+						<entry>solid</entry>
+						<entry>Render the glyph in solid mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid</link>(TRUE) after creation.</entry>
+					</row>
+					<row>
+						<entry>text=<emphasis>string</emphasis></entry>
+						<entry>Set the character data associated to the glyph to <emphasis>string</emphasis>. Currently, this has no effect for glyphs other than those that display text.</entry>
+					</row>
+					<row>
+						<entry>wire</entry>
+						<entry>Render the glyph in wireframe mode (if the glyph supports it). Same as calling <link linkend="command.ref.glyphsolid">glyphsolid</link>(FALSE) after creation.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<para>For example:</para>
+		<synopsis>
+			newglyph(&quot;cube&quot;);
+		</synopsis>
+		<para>creates a new cube in the model.</para>
+		<synopsis>
+			newglyph(&quot;text&quot;,&quot;text=\&quot;I am some text\&quot;&quot;);
+		</synopsis>
+		<para>creates a new text glyph in the model, reading 'I am some text'. Note the need to escape the quotes surrounding the text.</para>
+		<synopsis>
+			newglyph(&quot;tetrahedron&quot;, &quot;wire&quot;);
+		</synopsis>
+		<para>creates a new wireframe tetrahedron in the model.</para>
+
+	</section>
+	
+</section>

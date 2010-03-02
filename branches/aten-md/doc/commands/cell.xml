@@ -1,0 +1,329 @@
+<section id="command.groups.cell"><title>Cell Commands</title>
+	
+	<para>Create, remove, modify, pack, and replicate the model's unit cell.</para>
+
+	<section id="command.ref.adjustcell"><title>adjustcell</title>
+		<indexterm><primary>commands</primary><secondary>adjustcell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>adjustcell</function></funcdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adjust a single unit cell parameter (one of 'a', 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') by the given 'value'. This does not set the specified 'parameter' to the given 'value'; instead the supplied 'value' is added to the existing value of the parameter.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			adjustcell(&quot;alpha&quot;,5.0);
+		</synopsis>
+		<para>increases the cell angle 'alpha' by 5 degrees.</para>
+		<synopsis>
+			adjustcell(&quot;c&quot;,-10.0);
+		</synopsis>
+		<para>decreases the cell length 'c' by 10 &#8491;.</para>
+	
+	</section>
+	
+	<section id="command.ref.cell"><title>cell</title>
+		<indexterm><primary>commands</primary><secondary>cell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cell</function></funcdef>
+				<paramdef>double <parameter>a</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>c</parameter></paramdef>
+				<paramdef>double <parameter>alpha</parameter></paramdef>
+				<paramdef>double <parameter>beta</parameter></paramdef>
+				<paramdef>double <parameter>gamma</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set cell lengths and angles of current model. This command will modify an existing cell or add a new cell to a model currently without a unit cell specification.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			cell(20.0, 10.0, 10.0, 90.0, 90.0, 90.0);
+		</synopsis>
+		<para>sets the model's cell to be orthorhombic with side lengths 20x10x10 &#8491;.</para>
+		
+	</section>
+	
+	<section id="command.ref.cellaxes"><title>cellaxes</title>
+		<indexterm><primary>commands</primary><secondary>cellaxes</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cellaxes</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set cell axes of current model. This command will modify an existing cell or add a new cell to a model currently without a unit cell specification.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			cellaxes(15, 0, 0, 0, 15, 0, 0, 0, 15);
+		</synopsis>
+		<para>sets the model's cell to be cubic with side length 15 &#8491;.</para>
+	
+	</section>
+	
+	<section id="command.ref.fold"><title>fold</title>
+		<indexterm><primary>commands</primary><secondary>fold</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>fold</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Fold all atoms so they are within the boundaries of the unit cell.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			fold();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.foldmolecules"><title>foldmolecules</title>
+		<indexterm><primary>commands</primary><secondary>foldmolecules</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>foldmolecules</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Fold all pattern molecules so the are unbroken across cell boundaries.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			foldmolecules();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.millercut"><title>millercut</title>
+		<indexterm><primary>commands</primary><secondary>millercut</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>millercut</function></funcdef>
+				<paramdef>int <parameter>h</parameter></paramdef>
+				<paramdef>int <parameter>k</parameter></paramdef>
+				<paramdef>int <parameter>l</parameter></paramdef>
+				<paramdef>bool <parameter>inside = FALSE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Remove all atoms from the unit cell that lay 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is given as TRUE, then atoms 'inside' the bounding Miller plane(s) are selected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			millercut(1,2,1,TRUE);
+		</synopsis>
+		<para>removes all atoms inside the two enclosing (121) planes.</para>
+	
+	</section>
+	
+	<section id="command.ref.pack"><title>pack</title>
+		<indexterm><primary>commands</primary><secondary>pack</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>pack</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform spacegroup packing on the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			pack();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printcell"><title>printcell</title>
+		<indexterm><primary>commands</primary><secondary>printcell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printcell</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints the cell parameters of the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printcell();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.replicate"><title>replicate</title>
+		<indexterm><primary>commands</primary><secondary>replicate</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>replicate</function></funcdef>
+				<paramdef>double <parameter>negx</parameter></paramdef>
+				<paramdef>double <parameter>negy</parameter></paramdef>
+				<paramdef>double <parameter>negz</parameter></paramdef>
+				<paramdef>double <parameter>posx</parameter></paramdef>
+				<paramdef>double <parameter>posy</parameter></paramdef>
+				<paramdef>double <parameter>posz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The number of cells to replicate in each positive and negative direction are specified as 'additional' cells beyond the original. So:</para>
+		
+		<synopsis>
+			replicate(0, 0, 0, 0, 0, 0);
+		</synopsis>
+		<para>will do nothing at all to the model, while:</para>
+		<synopsis>	
+			replicate(-5, 0, 0, 5, 0, 0);
+		</synopsis>
+		<para>will result in a supercell that consists of eleven copies of the original cell along the 'x' axis direction. Similarly,</para>
+		<synopsis>
+			replicate(0, 0, 0, 4, 4, 4);
+			replicate(-2, -2, -2, 2, 2, 2);
+		</synopsis>
+		<para>will both create a 5x5x5 arrangement of the original cell.</para>
+	
+	</section>
+	
+	<section id="command.ref.removecell"><title>removecell</title>
+		<indexterm><primary>commands</primary><secondary>removecell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>removecell</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Clears any cell description (removes periodic boundary conditions) from the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			removecell();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.scale"><title>scale</title>
+		<indexterm><primary>commands</primary><secondary>scale</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>scale</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>bool <parameter>calcenergy = FALSE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Scale unit cell and its constituent atoms by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			scale(1.0, 2.0, 1.0);
+		</synopsis>
+		<para>doubles the length of the y-axis of the system. x- and z-axes remain unchanged.</para>
+		
+	</section>
+	
+	<section id="command.ref.scalemolecules"><title>scalemolecules</title>
+		<indexterm><primary>commands</primary><secondary>scalemolecules</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>scalemolecules</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>bool <parameter>calcenergy = FALSE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Scale unit cell and centres-of-geometry of molecules within it by the scale factors <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional <emphasis>calcenergy</emphasis> parameter calculates the energy difference resulting from the scaling operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			scalemolecules(0.5, 0.5, 0.5);
+		</synopsis>
+		<para>halves the lengths of all axes, scaling the positions of the molecules to reflect the new size.</para>
+	
+	</section>
+	
+	<section id="command.ref.setcell"><title>setcell</title>
+		<indexterm><primary>commands</primary><secondary>setcell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setcell</function></funcdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set a single unit cell parameter one of 'a'/, 'b', 'c', 'alpha', 'beta', 'gamma', or one of the matrix elements 'ax', 'ay', 'az', ..., 'cz') to the given <emphasis>value</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			setcell(&quot;beta&quot;, 101.0);
+		</synopsis>
+		<para>sets the cell angle 'beta' to 101 degrees.</para>
+		<synopsis>
+			setcell(&quot;a&quot;, 15.5);
+		</synopsis>
+		<para>sets the cell length 'a' to 15.5 &#8491;.</para>
+		
+	</section>
+	
+	<section id="command.ref.spacegroup"><title>spacegroup</title>
+		<indexterm><primary>commands</primary><secondary>spacegroup</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>spacegroup</function></funcdef>
+				<paramdef>int|string <parameter>sg</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the spacegroup of the model, used for crystal packing.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			spacegroup(12);
+		</synopsis>
+		<para>sets the model spacegroup to be C2/m (number 12).</para>
+		<synopsis>
+			spacegroup(&quot;P1/m&quot;);
+		</synopsis>
+		<para>sets the model spacegroup to P1/m.</para>
+	
+	</section>
+	
+</section>

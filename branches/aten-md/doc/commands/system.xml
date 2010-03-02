@@ -1,0 +1,172 @@
+<section id="command.groups.system"><title>System Commands</title>
+	
+	<para>System commands for controlling debug output, instantiation of the GUI, and exiting from the program.</para>
+
+	<section id="command.ref.debug"><title>debug</title>
+		<indexterm><primary>commands</primary><secondary>debug</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>debug</function></funcdef>
+				<paramdef>string <parameter>type</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Toggles debug output from various parts of the code. A full list of valid types is given in <link linkend="enums.outputtypes">output types</link>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			debug(&quot;parse&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.getenv"><title>getenv</title>
+		<indexterm><primary>commands</primary><secondary>getenv</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>getenv</function></funcdef>
+				<paramdef>string <parameter>variable</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Retrieves the contents of the named environment variable so that transfer of useful quantities can be made to Aten through a shell.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string s = getenv(&quot;HOSTNAME&quot;);
+		</synopsis>
+		<para>gets the name of the host Aten is running on (although what you would then usefully do with it I don't know).</para>
+		<para>Better examples can be found in the <ulink url="http://www.projectaten.net/resources">resources</ulink> section of the website.</para>
+	
+	</section>
+	
+	<section id="command.ref.getenvf"><title>getenvf</title>
+		<indexterm><primary>commands</primary><secondary>getenvf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>getenvf</function></funcdef>
+				<paramdef>string <parameter>variable</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Retrieves the contents of the named environment variable, converting it to a floating-point (double) value in the process.</para>
+			
+		<para>For example:</para>
+		<synopsis>
+			double d = getenvf(&quot;num&quot;);
+		</synopsis>
+		<para>gets the shell variable 'num' as a real number.</para>
+		
+	</section>
+	
+	<section id="command.ref.getenvi"><title>getenvi</title>
+		<indexterm><primary>commands</primary><secondary>getenvi</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>getenvi</function></funcdef>
+				<paramdef>string <parameter>variable</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Retrieves the contents of the named environment variable, converting it to an integer value in the process.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int i = getenvi(&quot;count&quot;);
+		</synopsis>
+		<para>gets the shell variable 'count' as an integer number.</para>
+		
+	</section>
+	
+	<section id="command.ref.gui"><title>gui</title>
+		<indexterm><primary>commands</primary><secondary>gui</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gui</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Starts the GUI (e.g. from a script), if it isn't already running.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gui();
+		</synopsis>
+
+	</section>
+	
+	<section id="command.ref.help"><title>help</title>
+		<indexterm><primary>commands</primary><secondary>help</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<synopsis>
+			help command
+		</synopsis>
+		<para>Provide short help on the supplied <emphasis>command</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			help cellaxes;
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.searchcommands"><title>searchcommands</title>
+		<indexterm><primary>commands</primary><secondary>searchcommands</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>searchcommands</function></funcdef>
+				<paramdef>string <parameter>search</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Search all available commands for the (partial) command name specified.</para>
+	
+	</section>
+	
+	<section id="command.ref.seed"><title>seed</title>
+		<indexterm><primary>commands</primary><secondary>seed</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>seed</function></funcdef>
+				<paramdef>int <parameter>i</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the random seed.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+			seed(3242638);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.quit"><title>quit</title>
+		<indexterm><primary>commands</primary><secondary>quit</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>quit</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Quits out of the program.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			quit();
+		</synopsis>
+		
+	</section>
+	
+</section>

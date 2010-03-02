@@ -1,0 +1,621 @@
+<section id="command.groups.readwrite"><title>Read / Write Commands</title>
+	
+	<para>Methods of reading and writing data from / to files in import and export filters. Many commands here use formatting strings to provide formatted input and output. All reading and writing commands here work on input or output files as defined internally by the program.</para>
+	
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.groups.messaging">Messaging Commands</link> for commands that write to the screen.</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="readwrite.xxx">Formatting Strings</link> for details on the C-style formatting of data employed by some commands.</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="readwrite.delimited">Delimited Reading and Writing</link> for details on the parsing of delimited data, as employed by some commands.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.addreadoption"><title>addreadoption</title>
+		<indexterm><primary>commands</primary><secondary>addreadoption</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addreadoption</function></funcdef>
+				<paramdef>string <parameter>option</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Controls aspects of file reading. See <link linkend="enums.parseoptions">Parse Options</link> for a list of possible <emphasis>options</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			addreadoption(&quot;stripbrackets&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.eof"><title>eof</title>
+		<indexterm><primary>commands</primary><secondary>eof</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>eof</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns 1 if at the end of the current input file, 0 otherwise.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string s;
+			while (!eof())
+			{
+				getline(s):
+				printf(&quot;%s\n&quot;, s);
+			} 
+		</synopsis>
+		<para>Reads in and prints out all lines in the current source file.</para>
+		
+	</section>
+	
+	<section id="command.ref.filterfilename"><title>filterfilename</title>
+		<indexterm><primary>commands</primary><secondary>filterfilename</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>filterfilename</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the name of the current input or output file (typically useful from within an import or export filter).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string filename = filterfilename();
+		</synopsis>
+		<para>Puts the current source/destination filename in the variable filename.</para>
+
+	</section>
+	
+	<section id="command.ref.find"><title>find</title>
+		<indexterm><primary>commands</primary><secondary>find</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>find</function></funcdef>
+				<paramdef>string <parameter>searchstring</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>find</function></funcdef>
+				<paramdef>string <parameter>searchstring</parameter></paramdef>
+				<paramdef>string <parameter>linevar</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Searches for the specified <emphasis>searchstring</emphasis> in the input file, returning 0 if <emphasis>searchstring</emphasis> is not found before the end of the file, and 1 if it is. The optional argument <emphasis>linevar</emphasis> is a character variable in which the matching line (if any) is put.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int iresult = find(&quot;Final Energy:&quot;);
+		</synopsis>
+		<para>searches for the string 'Final Energy' in the input file, placing the result of the search in the variable <emphasis>iresult</emphasis>.</para>
+		<synopsis>
+			string line;
+			int n = find(&quot;Optimised Geometry:&quot;, line);
+		</synopsis>
+		<para>searches for the string 'Optimised Geometry:' in the input file, placing the whole of the matching line from the input file in the variable <emphasis>line</emphasis>.</para>
+	
+	</section>
+	
+	<section id="command.ref.getline"><title>getline</title>
+		<indexterm><primary>commands</primary><secondary>getline</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>getline</function></funcdef>
+				<paramdef>string <parameter>destvar</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read an entire line from the input file, and put it in the character variable provided. The line also becomes the current target for <link linkend="command.ref.readnext">readnext</link>. The command returns a <link linkend="enums.readsuccess">Read Success</link>integer.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string nextline;
+			int n = getline(nextline);
+		</synopsis>
+		<para>gets the next line from the file and places it in the variable <emphasis>nextline</emphasis>.</para>
+	
+	</section>
+	
+	<section id="command.ref.nextarg"><title>nextarg</title>
+		<indexterm><primary>commands</primary><secondary>nextarg</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>nextarg</function></funcdef>
+				<paramdef>int <parameter>i</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>nextarg</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>nextarg</function></funcdef>
+				<paramdef>string <parameter>s</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read the next whitespace-delimited chunk of text from the current file and place it in the variable supplied. Note that this command reads directly from the file and not the last line read with <link linkend="command.ref.getline">getline</link> or <link linkend="command.ref.readline">readline</link> (see the <link linkend="command.ref.readnext">readnext</link> command to read the next delimited argument from the last read line). The command returns TRUE (1) if an argument was successfully read, or FALSE (0) otherwise (e.g. if the end of the file was found).</para>
+		<para>The command will accept a variable of any ordinary type - int, double, or string - as its argument. Conversion between the text in the file and the target variable type is performed automatically.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int i;
+			int success = nextarg(i);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.peekchar"><title>peekchar</title>
+		<indexterm><primary>commands</primary><secondary>peekchar</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>peekchar</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Peeks the next character that will be read from the source file, and returns it as a string. The actual file position for reading is unaffected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string char = peekchar();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.peekchari"><title>peekchari</title>
+		<indexterm><primary>commands</primary><secondary>peekchari</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>peekchari</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Peeks the next character that will be read from the source file, and returns it as an integer value representing the ASCII character code (see <ulink url="http://www.asciitable.com">http://www.asciitable.com</ulink>, for example). The actual file position for reading is unaffected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int char = peekchari();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.readchars"><title>readchars</title>
+		<indexterm><primary>commands</primary><secondary>readchars</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>readchars</function></funcdef>
+				<paramdef>int <parameter>nchars</parameter></paramdef>
+				<paramdef>bool <parameter>skipeol = TRUE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Reads and returns (as a string) a number of characters from the input file. If <emphasis>skipeol</emphasis> is true (the default) then the end-of-line markers '\n' and '\r' will be ignored and will not count towards <emphasis>nchars</emphasis> - this is of most use when reading formatted text files and you want to 'ignore' the fact that data is presented on many lines rather than one. If <emphasis>skipeol</emphasis> is false then '\n' and '\r' <emphasis>will</emphasis> count towards the total number of characters. Used on formatted text files, this might give you unexpected results.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string text = readchars(80);
+		</synopsis>
+		<para>reads the next 80 characters from the input file and puts it into the variable <emphasis>text</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readdouble"><title>readdouble</title>
+		<indexterm><primary>commands</primary><secondary>readdouble</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>readdouble</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>readdouble</function></funcdef>
+				<paramdef>int <parameter>nbytes</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read a floating point value (the size determined from the machines 'double' size) from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of double (e.g. long double)  on the machine this size is used instead.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double x = readdouble();
+		</synopsis>
+		<para>reads a floating point value into the variable <emphasis>x</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readdoublearray"><title>readdoublearray</title>
+		<indexterm><primary>commands</primary><secondary>readdoublearray</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readdoublearray</function></funcdef>
+				<paramdef>double <parameter>d[]</parameter></paramdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read <emphasis>n</emphasis> consecutive integer values (whose individual size is determined from the result of calling 'sizeof(double)') from an unformatted (binary) input file, placing in the array <emphasis>d</emphasis> provided. The size of the array provided must be at least <emphasis>n</emphasis>. The command returns a <link linkend="enums.readsuccess">Read Success</link> integer.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double data[45];
+			int success = readdoublearray(data, 45);
+		</synopsis>
+		<para>reads 45 double numbers into the array <emphasis>data</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readint"><title>readint</title>
+		<indexterm><primary>commands</primary><secondary>readint</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readint</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>readint</function></funcdef>
+				<paramdef>int <parameter>nbytes</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read an integer value (the size determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file. Alternatively, if a valid number of bytes is specified and corresponds to the size of another 'class' of int (e.g. long int) on the machine this size is used instead.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int i = readint();
+		</synopsis>
+		<para>reads an integer number into the variable <emphasis>i</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readintarray"><title>readintarray</title>
+		<indexterm><primary>commands</primary><secondary>readintarray</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readintarray</function></funcdef>
+				<paramdef>int <parameter>i[]</parameter></paramdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read <emphasis>n</emphasis> consecutive integer values (whose individual size is determined from the result of calling 'sizeof(int)') from an unformatted (binary) input file, placing in the array <emphasis>i</emphasis> provided. The size of the array provided must be at least <emphasis>n</emphasis>. The command returns a <link linkend="enums.readsuccess">Read Success</link> integer.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			int data[100];
+			int success = readintarray(data, 100);
+		</synopsis>
+		<para>reads 100 integer numbers into the array <emphasis>data</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readline"><title>readline</title>
+		<indexterm><primary>commands</primary><secondary>readline</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readline</function></funcdef>
+				<paramdef>int|double|string <parameter>var</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read a line of delimited items from the input file, placing them into the list of variable(s) provided. Conversion of data from the file into the types of the destination variables is performed automatically. The number of items parsed successfully is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double x,y,z;
+			int n = readline(x,y,z);
+		</synopsis>
+		<para>reads a line from the file and places the first three delimited items on the line into the variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>.</para>
+	
+	</section>
+	
+	<section id="command.ref.readlinef"><title>readlinef</title>
+		<indexterm><primary>commands</primary><secondary>readlinef</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readlinef</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read a line of data from the input file and separate them into the list of variable(s) provided, and according to the format provided. The number of items parsed successfully is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double x,y,z;
+			int n = readlinef(&quot;%8.6f %8.6f %8.6f&quot;,x,y,z);
+		</synopsis>
+		<para>reads a line from the file, assuming that the line contains three floating point values of 8 characters length, and separated by a space, into the three variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readnext"><title>readnext</title>
+		<indexterm><primary>commands</primary><secondary>readnext</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readnext</function></funcdef>
+				<paramdef>int <parameter>i</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>readnext</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>readnext</function></funcdef>
+				<paramdef>string <parameter>s</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Read the next delimited argument from the last line read with either <link linkend="command.ref.getline">getline</link> or <link linkend="command.ref.readline">readline</link> into the variable supplied. The command returns either TRUE for success or FALSE (e.g. if the end of file was reached without reading any non-whitespace characters, or an error was encountered).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double d;
+			int n = readnext(d);
+		</synopsis>
+		<para>read the next delimited argument into the double variable <emphasis>d</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.readvar"><title>readvar</title>
+		<indexterm><primary>commands</primary><secondary>readvar</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readvar</function></funcdef>
+				<paramdef>string <parameter>source</parameter></paramdef>
+				<paramdef>int|double|string <parameter>var</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Parse the contents of the supplied string <emphasis>source</emphasis> into the supplied variables, assuming delimited data items. Delimited items read from <emphasis>source</emphasis> are converted automatically to the type inferred by the target variable. The number of data items parsed successfully is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string data = &quot;rubbish ignore  Carbon  green  1.0 2.5 5.3&quot;;
+			string element, discard;
+			vector v;
+			int n = readvar(data,discard,discard,element,discard,v.x,v.y,v.z,discard);
+			printf(&quot;Element = %s, n = %i\n&quot;, element, n);
+		</synopsis>
+		<para>outputs</para>
+		<synopsis>
+			Element = Carbon, n = 7
+		</synopsis>
+		<para>The character string in the variable <emphasis>data</emphasis> is parsed, with delimited chunks placed into the supplied variables. Note the repeated use of the variable <emphasis>discard</emphasis>, used to get rid of unwanted data. Also, note that there are not enough items in <emphasis>data</emphasis> to satisfy the final occurrence of <emphasis>discard</emphasis>, and so the function returns a value of 7 (as opposed to the actual number of target variables supplied, 8).</para>
+		
+	</section>
+	
+	<section id="command.ref.readvarf"><title>readvarf</title>
+		<indexterm><primary>commands</primary><secondary>readvarf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>readvarf</function></funcdef>
+				<paramdef>string <parameter>source</parameter></paramdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>int|double|string <parameter>var</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Parse the contents of the supplied string <emphasis>source</emphasis> according to the supplied <emphasis>format</emphasis> string, placing in the supplied variables. The number of format specifiers successfully parsed (or, to look at it another way, the number of the supplied variables that were assigned values) is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string a, b, data = &quot;abc def123456.0&quot;;
+			double d; int i, n;
+			n = readvarf(data,&quot;%3s %3s%4i%4f%8*&quot;,a,b,i,d);
+			printf(&quot;a = %s, b = %s, d = %f, i = %i, n = %i\n&quot;, a, b, d, i, n);
+		</synopsis>
+		<para>outputs</para>
+		<synopsis>
+			a = abc, b = def, d = 56.000000, i = 1234, n = 4
+		</synopsis>
+		<para>The supplied format string contains a single space in between the two '%3s' specifiers, and is significant since it corresponds to actual (discarded) space when processing the format. Furthermore, the last specifier '%8*' (discard 8 characters) is not fulfilled by the <emphasis>data</emphasis> string, and so the number of arguments successfully parsed is 4, not 5.</para>
+		
+	</section>
+	
+	<section id="command.ref.removereadoption"><title>removereadoption</title>
+		<indexterm><primary>commands</primary><secondary>removereadoption</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>removereadoption</function></funcdef>
+				<paramdef>string <parameter>option</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Removes a previously-set read option. See <link linkend="enums.parseoptions">Parse Options</link>  for a list of possible <emphasis>options</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			removereadoption(&quot;skipblanks&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.rewind"><title>rewind</title>
+		<indexterm><primary>commands</primary><secondary>rewind</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rewind</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rewind the input file to the beginning of the file.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			rewind();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.skipchars"><title>skipchars</title>
+		<indexterm><primary>commands</primary><secondary>skipchars</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>skipchars</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Skips the next <emphasis>n</emphasis> characters in the input file.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			skipchars(15);
+		</synopsis>
+		<para>discards the next 15 characters from the input file.</para>
+		
+	</section>
+	
+	<section id="command.ref.skipline"><title>skipline</title>
+		<indexterm><primary>commands</primary><secondary>skipline</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>skiplin</function></funcdef>
+				<paramdef>int <parameter>n = 1</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Skips the next line in the file, or the next <emphasis>n</emphasis> lines if a number supplied.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			skipline();
+		</synopsis>
+		<para>skips the next line in the file.</para>
+		<synopsis>
+			skipline(5);
+		</synopsis>
+		<para>discards 5 lines from the file.</para>
+		
+	</section>
+	
+	<section id="command.ref.writeline"><title>writeline</title>
+		<indexterm><primary>commands</primary><secondary>writeline</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>writeline</function></funcdef>
+				<paramdef>int|double|string <parameter>var</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Write a line to the current output file that consists of the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			writeline(&quot;Number of atoms =&quot;, aten.model.natoms);
+		</synopsis>
+		<para>writes a line indicating the number of atoms in the model to the current output file.</para>
+		
+	</section>
+	
+	<section id="command.ref.writelinef"><title>writelinef</title>
+		<indexterm><primary>commands</primary><secondary>writelinef</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>writelinef</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Write a formatted line to the current output file, according to the supplied <emphasis>format</emphasis> and any supplied arguments. Usage is the same as for the <link linkend="command.ref.printf">printf</link> command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			writelinef(&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+		</synopsis>
+		<para>writes a line indicating the number of atoms in the model to the current output file, e.g.:</para>
+		<synopsis>
+			Number of atoms =        3
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.writevar"><title>writevar</title>
+		<indexterm><primary>commands</primary><secondary>writevar</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>writevar</function></funcdef>
+				<paramdef>string <parameter>dest</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Write to the supplied string variable <emphasis>dest</emphasis> the whitespace delimited contents of the supplied arguments. The contents of the arguments are formatted according to their type and suitable internal defaults. A newline character is appended automatically to the end of the written line.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string s;
+			writevar(s,&quot;Number of atoms =&quot;, aten.model.natoms);
+			writeline(s);
+		</synopsis>
+		<para>same result as the example for the 'writeline' command, except that the final string is written to a variable first, and then the file.</para>
+		
+	</section>
+	
+	<section id="command.ref.writevarf"><title>writevarf</title>
+		<indexterm><primary>commands</primary><secondary>writevarf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>writevarf</function></funcdef>
+				<paramdef>string <parameter>dest</parameter></paramdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Write to the supplied string variable <emphasis>dest</emphasis> the string resulting from the supplied <emphasis>format</emphasis> and any other supplied arguments. Apart from the mandatory first argument being the destination string variable, usage is otherwise the same as the <link linkend="command.ref.printf">printf</link> command. Note that a newline character is <emphasis>not</emphasis> automatically appended to the end of the written line, and one should be written explicitly using the escape sequence '\n'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			string s;
+			writevarf(s,&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+			writeline(s);
+		</synopsis>
+		<para>same result as the example for the 'writelinef' command, except that the final string is written to a variable first, and then the file.</para>
+
+	</section>
+	
+</section>

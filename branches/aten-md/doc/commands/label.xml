@@ -1,0 +1,64 @@
+<section id="command.groups.label"><title>Labeling Commands</title>
+	
+	<para>Add and remove atom labels.</para>
+
+	<section id="command.ref.clearlabels"><title>clearlabels</title>
+		<indexterm><primary>commands</primary><secondary>clearlabels</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearlabels</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Remove all atom labels in the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			clearlabels();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.label"><title>label</title>
+		<indexterm><primary>commands</primary><secondary>label</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>label</function></funcdef>
+				<paramdef>string <parameter>type</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adds the specified label to each atom in the current selection. Valid <emphasis>types</emphasis> are listed in <link linkend="enums.labeltypes">Label Types</link>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			label(&quot;element&quot;);
+		</synopsis>
+		<para>adds element labels to the current atom selection.</para>
+		
+	</section>
+	
+	<section id="command.ref.removelabel"><title>removelabel</title>
+		<indexterm><primary>commands</primary><secondary>removelabel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>removelabel</function></funcdef>
+				<paramdef>string <parameter>type</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Remove the specified label (if it exists) from each atom in the current selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			removelabel(&quot;equiv&quot;);
+		</synopsis>
+		<para>removes the forcefield equivalent type label from each atom in the current selection.</para>
+
+	</section>
+	
+</section>

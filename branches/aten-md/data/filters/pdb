@@ -1,0 +1,49 @@
+# Protein databank coordinates import (for v1.2+)
+# Created:	 14/04/2009
+# Last modified: 14/04/2009
+# ChangeLog:
+# Notes:
+#   Residue data etc. are ignored.
+
+filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", zmap="firstalpha", id=13)
+{
+	# Variable declarations
+	string keyword,line,e,name;
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma;
+	int n,id,i,bondatoms[4],found;
+
+	# Element names in PDB files are commonly 'appended' by a numeric id, which we don't want, hence zmap=firstalpha
+
+	# Create default model
+	newmodel("PDB Model");
+	found = 0;
+	while (!eof())
+	{
+		readlinef("%-6s%100s",keyword,line);
+		if (keyword == "HEADER")
+		{
+			found = 1;
+			setname(line);
+		}
+		else if (keyword == "CRYST1")
+		{
+			readvarf(line, "%9f%9f%9f%7f%7f%7f", ca,cb,cc,alpha,beta,gamma);
+			cell(ca,cb,cc,alpha,beta,gamma);
+		}
+		else if ((keyword == "HETATM") || (keyword == "ATOM"))
+		{
+			#readvar $line "*@5 $e@4 *@1 *@1 *@3 *@1 *@1 *@4 *@1 *@3 $rx@8 $ry@8 $rz@8 *@6 *@6 *@6 *@4 *@2 *@2"
+			readvarf(line, "%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
+			if (e == "") e = name;
+			newatom(e, rx, ry, rz);
+		}
+		else if (keyword == "CONECT")
+		{
+			bondatoms = 0;
+			readvar(line,i,bondatoms[1],bondatoms[2],bondatoms[3],bondatoms[4]);
+			for (n=1; n<=4; ++n) if (bondatoms[n] > 0) newbond(i,bondatoms[n]);
+		}	
+	}
+	if (found == 0) printf("Warning: No HEADER record found in file.");
+	finalisemodel();
+}

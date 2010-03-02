@@ -1,0 +1,119 @@
+<section id="command.groups.edit"><title>Edit Commands</title>
+	
+	<para>Standard editing commands.</para>
+
+	<section id="command.ref.copy"><title>copy</title>
+		<indexterm><primary>commands</primary><secondary>copy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>copy</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Copy the current atom selection to the clipboard, ready for <link linkend="command.ref.paste">pasting</link>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			copy();
+		</synopsis>
+		
+	</section>
+		
+		<section id="command.ref.cut"><title>cut</title>
+		<indexterm><primary>commands</primary><secondary>cut</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cut</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Cut the current atom selection to the clipboard.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			cut();
+		</synopsis>
+		
+	</section>
+
+	<section id="command.ref.delete"><title>delete</title>
+		<indexterm><primary>commands</primary><secondary>delete</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>delete</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Delete the current atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			delete();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.paste"><title>paste</title>
+		<indexterm><primary>commands</primary><secondary>paste</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>paste</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Paste the copied atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			paste();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.redo"><title>redo</title>
+		<indexterm><primary>commands</primary><secondary>redo</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>redo</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Redo the last 'undone' operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			redo();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.undo"><title>undo</title>
+		<indexterm><primary>commands</primary><secondary>undo</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>undo</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Undo the last operation.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			undo();
+		</synopsis>
+
+	</section>
+
+</section>

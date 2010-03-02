@@ -1,0 +1,341 @@
+<section id="readwrite"><title>Reading and Writing</title>
+	
+	<para>Formatted output in Aten is based largely on string formatting in C, so if you're familiar with C then this should be a breeze. If you're a Soldier of Fortran, then the principles are very similar. If you're familiar with neither, then now's the time to learn.</para>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="readwrite.delimited">Delimited Reading and Writing</link> for information on reading and writing data without formatting strings.</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="readwrite.unformatted">Unformatted Reading and Writing</link> for information on reading data from binary files.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="readwrite.formatted"><title>Formatted Output</title>
+	
+		<para>Formatted output corresponds to output to either the screen or to files, and is used in the following commands:</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Formatted output commands</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Function</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>error</entry>
+						<entry>Write a message to the screen and immediately terminate execution of the current script / filter / command structure</entry>
+					</row>
+					<row>
+						<entry>printf</entry>
+						<entry>Write a message to the screen</entry>
+					</row>
+					<row>
+						<entry>verbose</entry>
+						<entry>Write a message to the screen, provided verbose output mode is on</entry>
+					</row>
+					<row>
+						<entry>writelinef</entry>
+						<entry>Write a formatted line to the current output file</entry>
+					</row>
+					<row>
+						<entry>writevarf</entry>
+						<entry>Write a formatted string to a variable (equivalent to the C 'sprintf' command)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<para>Note that all are called the same as their ((Delimited Reading and Writing|delimited counterparts)), but with the addition of an 'f' at the end of the name.</para>
+	
+		<section id="readwrite.formatted.basic"><title>Basic Strings</title>
+		
+			<para>Formatting a string for output, as mentioned elsewhere on numerous occasions, works the same as for C. The C 'printf' command (equivalent to the command of the same name in Aten) takes a character string as its first argument, and at its simplest, this is all that is required:</para>
+			
+			<synopsis>
+			printf(&quot;Hello&quot;);
+			</synopsis>
+			
+			<para>This prints 'Hello' to the screen (minus the quotes). Importantly, however, a newline character is <emphasis>not</emphasis> printed, meaning that the next thing you try and <link linkend="command.ref.printf">printf</link> will appear on the same line. For instance:</para>
+			
+			<synopsis>
+			printf(&quot;Hello&quot;);
+			printf(&quot;There.&quot;);
+			</synopsis>
+			
+			<para>would output:</para>
+			
+			<synopsis>
+			HelloThere.
+			</synopsis>
+			
+			<para>The end of a character constant in the printf command does not implicitly mean 'and this is the end of the line' - you must indicate the end of the line yourself by placing '\n' at the point where you wish the line to end. So:</para>
+			
+			<synopsis>
+			printf(&quot;Hello\n&quot;);
+			printf(&quot;There.&quot;);
+			</synopsis>
+			
+			<para>would output:</para>
+			
+			<synopsis>
+			Hello
+			There.
+			</synopsis>
+			
+			<para>Newlines (\n) are an example of <link linkend="readwrite.escaped">escaped characters</link> - the backslash '\' indicates that the following character, in this case 'n', is not to be treated as a normal 'n', but instead will take on its alternative 'meaning', in this case a newline. There are one or two other escaped characters recognised - see <link linkend="readwrite.escaped">Escaped Characters</link> for a list. Note that the newline token can appear anywhere in the string, and any number of times. So:</para>
+			
+			<synopsis>
+			printf(&quot;Hello\nThere\n.&quot;);
+			</synopsis>
+			
+			<para>would output:</para>
+			
+			<synopsis>
+			Hello
+			There
+			.
+			</synopsis>
+			
+		</section>
+
+	</section>
+
+	<section id="readwrite.printingdata"><title>Printing Data</title>
+	
+		<para>Being able to print simple text strings is good, but not nearly enough. The first argument to the 'printf' command must always be a character string, but any number of additional arguments may be provided. Now, these additional arguments may be number constants, other character strings, variables, etc., and may be output in the resulting string by referencing them with 'specifiers' placed within the first example. One example of a specifier is '%i' which is shorthand for saying 'an integer value' - if used within the character string provided to printf, the command will expect an integer constant or variable to be provided as an additional argument. For example:</para>
+		
+		<synopsis>
+		printf(&quot;This number is %i.\n&quot;, 10);
+		</synopsis>
+		
+		<para>will print</para>
+		
+		<synopsis>
+		This number is 10.
+		</synopsis>
+		
+		<para>Similarly,</para>
+		
+		<synopsis>
+		int value = 1234;
+		printf(&quot;Constant is %i, variable is %i.\n&quot;, 10, value);
+		</synopsis>
+		
+		<para>will print</para>
+		
+		<synopsis>
+		Constant is 10, variable is 1234.
+		</synopsis>
+		
+		<para>There are other <link linkend="readwrite.specifiers">specifiers</link> suitable for different types of data. The way data is presented by the specifier in the final output can also be controlled (e.g. for numerical arguments the number of decimal places, presence of exponentiation, etc., can be defined).</para>
+	
+	</section>
+
+	<section id="readwrite.formattedinput"><title>Formatted Input</title>
+	
+		<para>Formatted input corresponds to input from either files or string variables, and is used in the following commands:</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Formatted input commands</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+		<thead>
+		<row>
+		<entry>Command</entry>
+		<entry>Function</entry>
+		</row>
+		</thead>
+		<tbody>
+		<row>
+		<entry>readlinef</entry>
+		<entry>Read a formatted line from the current input file</entry>
+		</row>
+		<row>
+		<entry>readvarf</entry>
+		<entry>Read a formatted string from a variable</entry>
+		</row>
+		</tbody>
+		</tgroup>
+		</table>
+		
+		<para>Note that the meaning of the formatting string changes slightly here - in essence, the type and formats of the specifiers are used to break up the supplied string into separate arguments, which are then placed in the provided corresponding variable arguments. When reading in string data, note that blank characters are significant and will be retained. To strip trailing blank characters (spaces and tabs) when reading a fixed-length string in a format, supply the length as a negative number.</para>
+		
+	</section>
+
+	<section id="readwrite.specifiers"><title>Specifiers</title>
+	
+		<para>The list of allowable variable specified corresponds more or less exactly to that found in C, with some small omissions and minor inclusions. For a full list see the reference page at <ulink url="http://www.cplusplus.com/reference/clibrary/cstdio/printf/">cplusplus.com</ulink> or <ulink url="http://www.cppreference.com/wiki/c/io/printf">cppreference.com</ulink>. The list of printf features that are not (currently) supported in Aten are as follows:</para>
+		
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para>The pointer specifier '%p' is not supported. To print out reference addresses, use '%li'.</para>
+			</listitem>
+			<listitem>
+				<para>The single-character specifier '%c' is not supported.</para>
+			</listitem>
+			<listitem>
+				<para>Output of long doubles by prefixing a specifier with 'L' (e.g. '%Le') is not supported.</para>
+			</listitem>
+		</itemizedlist>
+	
+	</section>
+	
+	<section id="readwrite.specifiers.extra"><title>Extra Specifiers Within Aten</title>
+	
+		<para>As well as the mostly complete standard set of specifiers provided by C, Aten also includes some other useful specifiers that may be used in formatted input and output.</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Extra read/write specifiers</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Specifier</entry>
+					<entry>Meaning</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>%*</entry>
+					<entry>Relevant to formatted input only. Discard the next item, regardless of its type. A corresponding variable argument need not be provided</entry>
+				</row>
+				<row>
+					<entry>%r</entry>
+					<entry>Read characters (starting from the next delimited argument) until the end of the input line is encountered (i.e. 'rest-of-line' specifier). A corresponding string variable should be provided</entry>
+				</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>
+
+	<section id="readwrite.escaped"><title>Escaped Characters</title>
+	
+		<table frame='all' pgwide='1' tocentry='0'><title>Escaped characters in format strings</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Escape Sequence</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>\n</entry>
+						<entry>Print newline (next character will appear on the next line)</entry>
+					</row>
+					<row>
+						<entry>\r</entry>
+						<entry>Carriage return</entry>
+					</row>
+					<row>
+						<entry>\t</entry>
+						<entry>Tab character</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>
+	
+	<section id="readwrite.delimited"><title>Delimited Reading and Writing</title>
+	
+		<para><link linkend="XXX.formattingstrings">Formatting strings</link> can be used to specify the layout of data items on a line when reading or writing data, but if the data are separated by whitespace characters such as spaces or tabs (or, alternatively, commas), such 'delimited' data can be read in more easily. In such cases, it is not necessary to know beforehand the number of characters taken up by each item on the line, since the delimiters separate adjacent data items. A simplified method for reading and writing can be employed in these cases.</para>
+		
+		<para>Commands providing delimited reading and writing are:</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Delimited read/write commands</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<!-- <colspec colname='escape sequence'/> -->
+				<!-- <colspec colname='meaning'/> -->
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Function</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry><link linkend="command.ref.readline">readline</link></entry>
+						<entry>Read delimited items from a source file, placing into the variables provided</entry>
+					</row>
+					<row>
+						<entry><link linkend="command.ref.readnext">readnext</link></entry>
+						<entry>Read the next delimited item from a source file, placing into the variable provided</entry>
+					</row>
+					<row>
+						<entry><link linkend="command.ref.readvar">readvar</link></entry>
+						<entry>Read delimited items from a source variable, placing into the variables provided</entry>
+					</row>
+					<row>
+						<entry><link linkend="command.ref.writeline">writeline</link></entry>
+						<entry>Write the supplied items to a single line in the output file, separating them with whitespace</entry>
+					</row>
+					<row>
+						<entry><link linkend="command.ref.writevar">writevar</link></entry>
+						<entry>Write the supplied items to a supplied string variable, separating them with whitespace</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<para>Note that all are called the same as their <link linkend="XXX.formattingstrings.formatted">formatted counterparts</link>, but minus the 'f' at the end of the name.</para>
+		
+		<section id="readwrite.delimited.example"><title>Delimited Data Example</title>
+		
+			<para>Consider this example datafile:</para>
+			
+			<synopsis>
+			Na      0.0     1.0     0.0
+			Cl      1.0     0.0     0.0
+			Na      0.0    -1.0     0.0
+			</synopsis>
+			
+			<para>Since the data items (element type and coordinates) are separated by whitespace, we need only provide the target variables to the relevant command - a formatting string, as is demanded by the <link linkend="command.ref.printf">printf</link> command, is not required. Using the <link linkend="command.ref.readline">readline</link> command, the following code will parse this data correctly:</para>
+			
+			<synopsis>
+				double x,y,z;
+				string el;
+				while (!eof()) { readline(el,x,y,z); newatom(el,x,y,z); }
+			</synopsis>
+			
+			<para>The variables <filename>el</filename>, <filename>x</filename>, <filename>y</filename>, and <filename>z</filename> will, at any one time, contain the element type and coordinates from one line of the file. In an analogous manner, the data may be written out again with the corresponding <link linkend="command.ref.writeline">writeline</link> command:</para>
+			
+			<synopsis>
+				for (atom i = aten.model.atoms; i; ++i) writeline(i.symbol,i,rx,i.ry,i.rz);
+			</synopsis>
+			
+			<para>Each line will have the individual data items separated by a single space.</para>
+			
+			<para>The <link linkend="command.ref.readnext">readnext</link> command reads in a single delimited item from a source file, preserving the remainder of the input line for subsequent operations. If there is no data left on the current line, a new line is read and the first delimited item is returned. The example above might be written in a slightly clunkier form as:</para>
+			
+			<synopsis>
+				double x,y,z;
+				string el;
+				while (!eof())
+				{
+					readnext(el);
+					readnext(x);
+					readnext(y);
+					readnext(z);
+					newatom(el,x,y,z);
+				}
+			</synopsis>
+			
+			<para>For all delimited reading operations, items of data read from the line are converted automatically into the type of the destination variable. So, the atom coordinates read in above, which are put into 'double'-type variables, could equally well be put into string variables. Standard C routines are used to convert data items in this way, and only some conversions make sense. For instance, attempting to read an item which is a proper character string (such as element symbol/name data) into a double or integer variable does not make sense. No error message will be raised, and the variables will likely be set to a value of zero (or whatever passes for 'zero' in the context of the type).</para>
+			
+			<para>For all delimited writing operations, a suitable standard format specifier is chosen with which to write out the data.</para>
+			
+		</section>
+		
+	</section>
+	
+	<section id="readwrite.unformatted"><title>Unformatted Reading and Writing</title>
+
+		<para>TODO</para>
+		<indexterm><primary>TODO</primary><secondary>Unformatted r/w</secondary></indexterm>
+
+	</section>
+
+</section>

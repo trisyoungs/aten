@@ -1,0 +1,36 @@
+<section id="enums.regionshapes"><title>Region Shapes</title>
+
+	<para>Allowable shapes of regions in the disordered Monte Carlo builder</para>
+
+	<para>In all cases the centre of the region is defined as the geometric centre of the region, rather than the lower left-hand corner.</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Region Shapes</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Keyword</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>cell</entry>
+					<entry>The whole cell may be used by the model</entry>
+				</row>
+				<row>
+					<entry>cuboid</entry>
+					<entry>A cubic or orthorhombic region</entry>
+				</row>
+				<row>
+					<entry>spheroid</entry>
+					<entry>A spherical or ellipsoidal region</entry>
+				</row>
+				<row>
+					<entry>cylinder</entry>
+					<entry>A cylindrical region</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>

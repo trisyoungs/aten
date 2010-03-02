@@ -1,0 +1,255 @@
+<section id="command.groups.energy"><title>Energy Commands</title>
+	
+	<para>Calculate energies for models and trajectory frames. All printing commands refer to the last energy calculated for either the model or a trajectory frame.</para>
+
+	<section id="command.ref.ecut"><title>ecut</title>
+		<indexterm><primary>commands</primary><secondary>ecut</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>ecut</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>ecut</function></funcdef>
+				<paramdef>double <parameter>cutoff</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return (or set and return) the cutoff radius used in calculation of the electrostatics for a system.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			ecut(15.0);
+		</synopsis>
+		<para>sets the electrostatic cutoff radius to 15.0 &#8491;.</para>
+	
+	</section>
+	
+	<section id="command.ref.elec"><title>elec</title>
+		<indexterm><primary>commands</primary><secondary>elec</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>elec</function></funcdef>
+				<paramdef>string <parameter>type = "none"</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>elec</function></funcdef>
+				<paramdef><parameter>"coulomb"</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>elec</function></funcdef>
+				<paramdef><parameter>"ewald"</parameter></paramdef>
+				<paramdef>double <parameter>alpha</parameter></paramdef>
+				<paramdef>int <parameter>kx</parameter></paramdef>
+				<paramdef>int <parameter>ky</parameter></paramdef>
+				<paramdef>int <parameter>kz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>elec</function></funcdef>
+				<paramdef><parameter>"ewaldauto"</parameter></paramdef>
+				<paramdef>double <parameter>precision</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the style of electrostatic energy calculation to use, either no electrostatics, coulombic (non-periodic) electrostatics, or Ewald-based electrostatics. For the latter, either the various parameters may be defined explicitly (when &quot;ewald&quot; is the chosen method) or may be estimated for the current system by using &quot;ewaldauto&quot;.</para>
+	
+	</section>
+	
+	<section id="command.ref.frameenergy"><title>frameenergy</title>
+		<indexterm><primary>commands</primary><secondary>frameenergy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>frameenergy</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Calculate energy of the current frame of the trajectory associated with the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double energy = frameenergy();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.modelenergy"><title>modelenergy</title>
+		<indexterm><primary>commands</primary><secondary>modelenergy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>modelenergy</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Calculate the energy of the current model, which can then be printed out (in whole or by parts) by the other subcommands.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			double e = modelenergy();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printelec"><title>printelec</title>
+		<indexterm><primary>commands</primary><secondary>printelec</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printelec</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints out the electrostatic energy decomposition matrix.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printelec();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printewald"><title>printewald</title>
+		<indexterm><primary>commands</primary><secondary>printewald</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printewald</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints the components of the Ewald sum energy.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printewald();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printinter"><title>printinter</title>
+		<indexterm><primary>commands</primary><secondary>printinter</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printinter</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints out the total inter-pattern energy decomposition matrix.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printinter();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.printintra"><title>printintra</title>
+		<indexterm><primary>commands</primary><secondary>printintra</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printintra</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints out the total intramolecular energy decomposition matrix.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printintra();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.printenergy"><title>printenergy</title>
+		<indexterm><primary>commands</primary><secondary>printenergy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printenergy</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints the elements of the calculated energy in a list.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printenergy();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printsummary"><title>printsummary</title>
+		<indexterm><primary>commands</primary><secondary>printsummary</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printsummary</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Print out a one-line summary of the calculated energy.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printsummary();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printvdw"><title>printvdw</title>
+		<indexterm><primary>commands</primary><secondary>printvdw</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printvdw</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints out the VDW energy decomposition matrix.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+			printvdw();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.vcut"><title>vcut</title>
+		<indexterm><primary>commands</primary><secondary>vcut</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>vcut</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>vcut</function></funcdef>
+				<paramdef>double <parameter>cutoff</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return (or set and return) the cutoff radius used in calculation of the VDW interactions for a system.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			vcut(9.0);
+		</synopsis>
+		<para>sets the VDW cutoff radius to 9.0 &#8491;.</para>
+
+	</section>
+
+</section>

@@ -1,0 +1,64 @@
+<section id="ff.forms.torsion"><title>Torsion Functional Forms</title>
+
+	<table frame='all' pgwide='1' tocentry='1'><title>Torsion Functional Forms</title>
+		<tgroup cols='5' align='center' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Name</entry>
+					<entry>Keyword</entry>
+					<entry>NParams (Req)</entry>
+					<entry>Form</entry>
+					<entry>Param</entry>
+					<entry>Default</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry morerows='2'>Name</entry>
+					<entry morerows='2'>keyword</entry>
+					<entry morerows='2'>3 (2)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msup>
+										<mml:mrow><mml:mo>(</mml:mo>
+											<mml:mfrac>
+												<mml:mi>&sigma;</mml:mi>
+												<mml:mi>r</mml:mi>
+											</mml:mfrac>
+										<mml:mo>)</mml:mo></mml:mrow>
+										<mml:mn>12</mml:mn>
+									</mml:msup>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&epsi;</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&sigma;</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+					<entry>
+						1.0
+					</entry>
+				</row>
+
+			</tbody>
+		</tgroup>
+	</table>
+
+</section>

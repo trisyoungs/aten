@@ -1,0 +1,394 @@
+<section id="command.groups.grid"><title>Grid Commands</title>
+	
+	<para>Add gridded data to the current model.</para>
+
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="gui.windows.grid">Grid window</link> for management of grids in the GUI.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.addgridpoint"><title>addgridpoint</title>
+		<indexterm><primary>commands</primary><secondary>addgridpoint</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addgridpoint</function></funcdef>
+				<paramdef>int <parameter>ix</parameter></paramdef>
+				<paramdef>int <parameter>iy</parameter></paramdef>
+				<paramdef>int <parameter>iz</parameter></paramdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set a specific data point in the current grid.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			addgridpoint(4, 1, 15, 4.123);
+		</synopsis>
+		<para>set the grid value at point { 4,1,15 } in the dataset to 4.123.</para>
+		
+	</section>
+	
+	<section id="command.ref.addnextgridpoint"><title>addnextgridpoint</title>
+		<indexterm><primary>commands</primary><secondary>addnextgridpoint</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addnextgridpoint</function></funcdef>
+				<paramdef>double <parameter>value</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add the next sequential grid point, starting at (1,1,1) and proceeding through dimensions as defined by the <link linkend="command.ref.gridlooporder">gridlooporder</link> command (default is x->y->z, i.e. {1,1,1} is set first, then {2,1,1}, {3,1,1} etc.).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			addnextgridpoint(20.0);
+		</synopsis>
+		<para>sets the next grid point value to be 20.0.</para>
+		
+	</section>
+	
+	<section id="command.ref.finalisegrid"><title>finalisegrid</title>
+		<indexterm><primary>commands</primary><secondary>finalisegrid</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>finalisegrid</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform internal post-load operations on the grid. Must be called for every new grid, after all data has been read in.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			finalisegrid();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.gridalpha"><title>gridalpha</title>
+		<indexterm><primary>commands</primary><secondary>gridalpha</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>gridalpha</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>gridalpha</function></funcdef>
+				<paramdef>double <parameter>newalpha</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the alpha value (transparency of the current surface), with 0.0 being fully opaque and 1.0 being fully transparent (i.e. invisible), or simply return the current alpha value if no new value is provided.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridalpha(0.5);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.gridaxes"><title>gridaxes</title>
+		<indexterm><primary>commands</primary><secondary>gridaxes</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridaxes</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the axes of the current grid, specified as three vectors.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridaxes(1, 0, 0, 0, 1, 0, 0, 0, 1);
+		</synopsis>
+		<para>sets a cubic system of axes for the current grid.</para>
+		<synopsis>
+			gridaxes(0.8, 0, 0, 0.1, 0.6, 0, 0, 0, 0.7);
+		</synopsis>
+		<para>sets a monoclinic system of axes for the current grid.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridcolour"><title>gridcolour</title>
+		<indexterm><primary>commands</primary><secondary>gridcolour</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcolour</function></funcdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the internal colour (of the positive sign if the 'symmetric' option is enabled for the grid) of the surface to the RGB(A) triplet.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridcolour(1.0, 1.0, 0.0);
+		</synopsis>
+		<para>sets the (positive) surface colour to yellow.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridcolournegative"><title>gridcolournegative</title>
+		<indexterm><primary>commands</primary><secondary>gridcolournegative</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcolournegative</function></funcdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+				<paramdef>double <parameter>g</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the internal colour of the negative sign of the surface to the RGB(A) triplet.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridcolournegative(0.9, 0.9, 0.9);
+		</synopsis>
+		<para>sets the negative surface colour to off-white.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridcolourscale"><title>gridcolourscale</title>
+		<indexterm><primary>commands</primary><secondary>gridcolourscale</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcolourscale</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the <link linkend="colourscales">colourscale</link> to use for the current grid to the colourscale ID specified, which should be in the range 1-10. If '0' is given as the argument, the internal colour of the grid data is used. Linking a <link linkend="colourscales">colourscale</link> to a grid will result in the minimum and maximum ranges of the grid being recalculated to ensure all points in the grid are covered by the scale, whose range is adjusted if necessary.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridcolourscale(4);
+		</synopsis>
+		<para>colours the grid data according to colourscale 4.</para>
+		<synopsis>
+			gridcolourscale(0);
+		</synopsis>
+		<para>uses the internal colour(s) specified for the grid.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridcubic"><title>gridcubic</title>
+		<indexterm><primary>commands</primary><secondary>gridcubic</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcubic</function></funcdef>
+				<paramdef>double <parameter>l</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets up a cubic system of axes for the current grid.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridcubic(0.5);
+		</synopsis>
+		<para>sets up a cubic system of axes, each grid point 0.5 &#8491; apart in all directions.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridlooporder"><title>gridlooporder</title>
+		<indexterm><primary>commands</primary><secondary>gridlooporder</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridlooporder</function></funcdef>
+				<paramdef>string <parameter>order</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the grid loop order to use with <link linkend="command.ref.addnextgridpoint">addnextgridpoint</link>, affecting in which order the dimensions of the data grid are filled. <emphasis>order</emphasis> should be given as a string of three characters, e.g. 'xyz' (equivalent to '123'), 'yxz' (equivalent to '213'), etc.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridlooporder("zyx");
+		</synopsis>
+		<para>sets the loop order to the reverse of the default, so that the z-index is filled first.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridorigin"><title>gridorigin</title>
+		<indexterm><primary>commands</primary><secondary>gridorigin</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridorigin</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the origin of the grid data, in &#8491;.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridorigin(0, 10, 0);
+		</synopsis>
+		<para>sets the grid origin to be offset 10 &#8491; along the y-axis.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridortho"><title>gridortho</title>
+		<indexterm><primary>commands</primary><secondary>gridortho</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridortho</function></funcdef>
+				<paramdef>double <parameter>a</parameter></paramdef>
+				<paramdef>double <parameter>b</parameter></paramdef>
+				<paramdef>double <parameter>c</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets up an orthorhombic system of axes for the grid data.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridortho(0.5, 0.5, 0.8);
+		</synopsis>
+		<para>sets up a system of axes elongated in the z-axis.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridsize"><title>gridsize</title>
+		<indexterm><primary>commands</primary><secondary>gridsize</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridsize</function></funcdef>
+				<paramdef>int <parameter>nx</parameter></paramdef>
+				<paramdef>int <parameter>ny</parameter></paramdef>
+				<paramdef>int <parameter>nz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the size of the grid data, and prepares the data array. This must be called before any calls to <link linkend="command.ref.addpoint">addpoint</link> or <link linkend="command.ref.addnextgridpoint">addnextgridpoint</link> are issued.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridsize(64, 128, 64);
+		</synopsis>
+		<para>initialises the current grid to hold a total of (gets calculator...) 524,288 points.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridstyle"><title>gridstyle</title>
+		<indexterm><primary>commands</primary><secondary>gridstyle</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridstyle</function></funcdef>
+				<paramdef>string <parameter>style</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Determines how the current grid data is drawn on-screen. Valid <emphasis>styles</emphasis> are listed in <link linkend="enums.gridstyles">Grid Styles</link>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridstyle("triangles");
+		</synopsis>
+		<para>draws the current grid as a triangle mesh.</para>
+		
+	</section>
+	
+	<section id="command.ref.gridusez"><title>gridusez</title>
+		<indexterm><primary>commands</primary><secondary>gridusez</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>gridusez</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>gridusez</function></funcdef>
+				<paramdef>bool <parameter>usez</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>For two-dimensional grid (i.e. surface) data this option controls whether the data value is used as the height (z) component of the surface, or if no data value is used and the surface is flat. If called with no arguments the current status of the option is returned (0 being 'off', and 1 being 'on').</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridusez("on");
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.gridvisible"><title>gridvisible</title>
+		<indexterm><primary>commands</primary><secondary>gridvisible</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>gridvisible</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>gridvisible</function></funcdef>
+				<paramdef>bool <parameter>visible</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the visibility of the current grid (i.e. whether it is drawn on screen).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			gridvisible(FALSE);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.loadgrid"><title>loadgrid</title>
+		<indexterm><primary>commands</primary><secondary>loadgrid</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>grid <function>loadgrid</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Load an existing grid from the specified file, and add it to the current model. If successfully loaded, a reference to the new grid is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			grid density = loadgrid("density.pdens");
+		</synopsis>
+		<para>loads a grid called 'density.pdens' into the current model.</para>
+		
+	</section>
+	
+	<section id="command.ref.newgrid"><title>newgrid</title>
+		<indexterm><primary>commands</primary><secondary>newgrid</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>grid <function>newgrid</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Creates a new, empty grid with the provided 'name' in the current model, and returns a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			grid g = newgrid("charlie");
+		</synopsis>
+		<para>creates a new grid called, for some reason, 'charlie'.</para>
+		
+	</section>
+
+</section>

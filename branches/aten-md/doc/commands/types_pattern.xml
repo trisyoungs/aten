@@ -1,0 +1,188 @@
+	<section id="command.types.pattern"><title>Pattern</title>
+		
+		<indexterm zone="command.types.pattern"><primary>types</primary><secondary>pattern</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Pattern type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>angles</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of angle interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of bond interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>cog</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of centres of mass of the molecules in the pattern</entry>
+					</row>
+					<row>
+						<entry>com</entry>
+						<entry><link linkend="command.types.vector">vector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of centres of geometry of the molecules in the pattern</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link>[]</entry>
+						<entry>rw</entry>
+						<entry>Reference to the forcefield associated to the pattern (if any)</entry>
+					</row>
+					<row>
+						<entry>ffangles</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield angle terms in the pattern</entry>
+					</row>
+					<row>
+						<entry>ffbonds</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield bond terms in the pattern</entry>
+					</row>
+					<row>
+						<entry>fftorsions</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield torsion terms in the pattern</entry>
+					</row>
+					<row>
+						<entry>fftypes</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>ro</entry>
+						<entry>Array of unique atom types used in the pattern</entry>
+					</row>
+					<row>
+						<entry>firstatom</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Reference to the first atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>firstatomid</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Atom ID of the first atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>fixed</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether the coordinates of all atoms in the pattern are fixed in MC routines</entry>
+					</row>
+					<row>
+						<entry>lastatom</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Reference to the last atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>lastatomid</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Atom ID of the last atom spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the pattern</entry>
+					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of angles in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Total number of atoms spanned by the pattern</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of bonds in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>nffangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique angle terms used in the pattern</entry>
+					</row>
+					<row>
+						<entry>nffbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique bond terms used in the pattern</entry>
+					</row>
+					<row>
+						<entry>nfftorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique torsion terms used in the pattern</entry>
+					</row>
+					<row>
+						<entry>nfftypes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique atom types used in the pattern</entry>
+					</row>
+					<row>
+						<entry>nmolatoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>nmols</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of molecules (repeat units) in the pattern</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion interactions in one molecule of the pattern</entry>
+					</row>
+					<row>
+						<entry>torsions</entry>
+						<entry><link linkend="command.types.bound">bound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of torsion interactions in one molecule of the pattern</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

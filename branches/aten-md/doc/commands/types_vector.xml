@@ -1,0 +1,44 @@
+	<section id="command.types.vector"><title>Vector</title>
+		
+		<indexterm zone="command.types.vector"><primary>types</primary><secondary>vector</secondary></indexterm>	
+	
+		<table frame='all' pgwide='1' tocentry='1'><title>Vector type members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>mag</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Magnitude of the vector. Setting this value rescales the vector</entry>
+					</row>
+					<row>
+						<entry>x</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The x component of the vector</entry>
+					</row>
+					<row>
+						<entry>y</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The y component of the vector</entry>
+					</row>
+					<row>
+						<entry>z</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The z component of the vector</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+	</section>

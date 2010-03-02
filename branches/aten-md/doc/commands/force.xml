@@ -1,0 +1,62 @@
+<section id="command.groups.forces"><title>Forces Commands</title>
+	
+	<para>Calculate forces for models and trajectory frames.</para>
+
+	<section id="command.ref.frameforces"><title>frameforces</title>
+		<indexterm><primary>commands</primary><secondary>frameforces</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>frameforces</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Calculate the atomic forces of the current frame of the trajectory associated with the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			frameforces();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.modelforces"><title>modelforces</title>
+		<indexterm><primary>commands</primary><secondary>modelforces</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>modelforces</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Calculate the atomic forces of the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			modelforces();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printforces"><title>printforces</title>
+		<indexterm><primary>commands</primary><secondary>printforces</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printforces</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Print out the forces of the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			printforces();
+		</synopsis>
+
+	</section>
+	
+</section>
