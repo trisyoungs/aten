@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2000</width>
+    <width>1711</width>
     <height>600</height>
    </rect>
   </property>
@@ -42,9 +42,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>91</y>
-     <width>1965</width>
-     <height>486</height>
+     <y>88</y>
+     <width>1683</width>
+     <height>491</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" >
@@ -151,8 +151,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2000</width>
-     <height>23</height>
+     <width>1711</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ToolsMenu" >
@@ -362,9 +362,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>577</y>
-     <width>2000</width>
-     <height>23</height>
+     <y>579</y>
+     <width>1711</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
@@ -372,8 +372,8 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>23</y>
-     <width>149</width>
+     <y>24</y>
+     <width>155</width>
      <height>34</height>
     </rect>
    </property>
@@ -407,9 +407,9 @@
   <widget class="QToolBar" name="StyleToolbar" >
    <property name="geometry" >
     <rect>
-     <x>149</x>
-     <y>23</y>
-     <width>149</width>
+     <x>155</x>
+     <y>24</y>
+     <width>155</width>
      <height>34</height>
     </rect>
    </property>
@@ -440,9 +440,9 @@
   <widget class="QToolBar" name="EditToolbar" >
    <property name="geometry" >
     <rect>
-     <x>298</x>
-     <y>23</y>
-     <width>122</width>
+     <x>310</x>
+     <y>24</y>
+     <width>126</width>
      <height>34</height>
     </rect>
    </property>
@@ -472,9 +472,9 @@
   <widget class="QToolBar" name="TrajectoryToolbar" >
    <property name="geometry" >
     <rect>
-     <x>420</x>
-     <y>23</y>
-     <width>176</width>
+     <x>436</x>
+     <y>24</y>
+     <width>184</width>
      <height>34</height>
     </rect>
    </property>
@@ -512,9 +512,9 @@
   <widget class="QToolBar" name="CommandToolbar" >
    <property name="geometry" >
     <rect>
-     <x>596</x>
-     <y>23</y>
-     <width>14</width>
+     <x>620</x>
+     <y>24</y>
+     <width>10</width>
      <height>34</height>
     </rect>
    </property>
@@ -540,9 +540,9 @@
   <widget class="QToolBar" name="MouseToolbar" >
    <property name="geometry" >
     <rect>
-     <x>610</x>
-     <y>23</y>
-     <width>95</width>
+     <x>630</x>
+     <y>24</y>
+     <width>97</width>
      <height>34</height>
     </rect>
    </property>
@@ -571,9 +571,9 @@
   <widget class="QToolBar" name="SelectToolbar" >
    <property name="geometry" >
     <rect>
-     <x>705</x>
-     <y>23</y>
-     <width>209</width>
+     <x>727</x>
+     <y>24</y>
+     <width>220</width>
      <height>34</height>
     </rect>
    </property>
@@ -607,9 +607,9 @@
   <widget class="QToolBar" name="DrawToolbar" >
    <property name="geometry" >
     <rect>
-     <x>914</x>
-     <y>23</y>
-     <width>472</width>
+     <x>947</x>
+     <y>24</y>
+     <width>402</width>
      <height>34</height>
     </rect>
    </property>
@@ -647,9 +647,9 @@
   <widget class="QToolBar" name="BondToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1386</x>
-     <y>23</y>
-     <width>175</width>
+     <x>1349</x>
+     <y>24</y>
+     <width>142</width>
      <height>34</height>
     </rect>
    </property>
@@ -675,9 +675,9 @@
   <widget class="QToolBar" name="MeasureToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1561</x>
-     <y>23</y>
-     <width>439</width>
+     <x>1491</x>
+     <y>24</y>
+     <width>220</width>
      <height>34</height>
     </rect>
    </property>
@@ -706,9 +706,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>57</y>
-     <width>2000</width>
-     <height>34</height>
+     <y>58</y>
+     <width>1711</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -730,10 +730,10 @@
   <widget class="QToolBar" name="WindowToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1965</x>
-     <y>91</y>
-     <width>35</width>
-     <height>486</height>
+     <x>1683</x>
+     <y>88</y>
+     <width>28</width>
+     <height>491</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -761,6 +761,7 @@
    <addaction name="separator" />
    <addaction name="actionMinimiserWindow" />
    <addaction name="actionForcefieldsWindow" />
+   <addaction name="actionMolecularDynamicsWindow" />
    <addaction name="separator" />
    <addaction name="actionCommandWindow" />
   </widget>
@@ -2310,6 +2311,18 @@
    </property>
    <property name="text" >
     <string>Command Window (beta)</string>
+   </property>
+  </action>
+  <action name="actionMolecularDynamicsWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_md.svg</normaloff>:/stackicons/icons/stack_md.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Molecular Dynamics</string>
    </property>
   </action>
  </widget>

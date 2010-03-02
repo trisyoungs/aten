@@ -40,6 +40,7 @@ set(qtproject_SRCS
   loadmodel_funcs.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
+  md_funcs.cpp
   measureactions.cpp
   minimiser_funcs.cpp
   modelactions.cpp
@@ -80,6 +81,7 @@ SET(pro_MOC_HDRS
   grids.h
   loadmodel.h
   mainwindow.h
+  md.h
   minimiser.h
   position.h
   prefs.h
@@ -110,6 +112,7 @@ SET(pro_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
+  md.ui
   minimiser.ui
   position.ui
   prefs.ui

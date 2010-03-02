@@ -42,6 +42,7 @@
 #include "gui/command.h"
 #include "gui/build.h"
 #include "gui/glyphs.h"
+#include "gui/md.h"
 #include "gui/minimiser.h"
 #include "gui/transform.h"
 #include "gui/position.h"
@@ -101,6 +102,7 @@ GuiQt::GuiQt()
 	forcefieldsWindow = NULL;
 	glyphsWindow = NULL;
 	gridsWindow = NULL;
+	mdWindow = NULL;
 	minimiserWindow = NULL;
 	positionWindow = NULL;
 	transformWindow = NULL;
@@ -128,6 +130,7 @@ GuiQt::~GuiQt()
 // 	disorderWindow = NULL;
 // 	forcefieldsWindow = NULL;
 // 	glyphsWindow = NULL;
+// 	mdWindow = NULL;
 // 	gridsWindow = NULL;
 // 	minimiserWindow = NULL;
 // 	positionWindow = NULL;
@@ -195,6 +198,7 @@ void GuiQt::run()
 	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
 	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
 	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
+	mdWindow = new AtenMD(mainWindow, Qt::Window|Qt::Tool);
 	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
 	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
 	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
@@ -209,6 +213,7 @@ void GuiQt::run()
 	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(mdWindow, SIGNAL(finished(int)), mdWindow, SLOT(dialogFinished(int)));
 	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
 	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
 	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
@@ -252,6 +257,7 @@ void GuiQt::run()
 	gridsWindow->refresh();
 	forcefieldsWindow->refresh();
 	disorderWindow->refresh();
+	mdWindow->refresh();
 	cellDefineWindow->refresh();
 	cellTransformWindow->refresh();
 	mainWindow->update();

@@ -111,6 +111,7 @@
   </qresource>
   <qresource prefix="/stackicons" >
     <file>icons/stack_command.svg</file>
+    <file>icons/stack_md.svg</file>
     <file>icons/stack_atomlist.svg</file>
     <file>icons/stack_celldefine.svg</file>
     <file>icons/stack_celledit.svg</file>
