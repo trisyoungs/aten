@@ -44,6 +44,7 @@ class AtenDisorder;
 class AtenForcefields;
 class AtenGlyphs;
 class AtenGrids;
+class AtenMD;
 class AtenMinimiser;
 class AtenPosition;
 class AtenTransform;
@@ -143,6 +144,8 @@ class GuiQt
 	AtenGlyphs *glyphsWindow;
 	// Grids window
 	AtenGrids *gridsWindow;
+	// MD window
+	AtenMD *mdWindow;
 	// Minimiser window
 	AtenMinimiser *minimiserWindow;
 	// Atom positioning window

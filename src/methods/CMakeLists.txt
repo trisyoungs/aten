@@ -3,6 +3,7 @@ calculable.h
 cg.h 
 linemin.h 
 mc.h 
+md.h 
 geometry.h 
 pdens.h 
 rdf.h 
@@ -11,6 +12,7 @@ calculable.cpp
 cg.cpp 
 linemin.cpp 
 mc.cpp 
+md.cpp 
 geometry.cpp 
 pdens.cpp 
 rdf.cpp 
