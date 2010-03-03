@@ -6,21 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2000</width>
+    <width>800</width>
     <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
+   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="maximumSize" >
    <size>
-    <width>2000</width>
-    <height>2000</height>
+    <width>10000</width>
+    <height>10000</height>
    </size>
+  </property>
+  <property name="focusPolicy" >
+   <enum>Qt::NoFocus</enum>
   </property>
   <property name="windowTitle" >
    <string>Aten (VERSION)</string>
@@ -42,9 +45,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>91</y>
-     <width>1965</width>
-     <height>486</height>
+     <y>125</y>
+     <width>765</width>
+     <height>452</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" >
@@ -151,7 +154,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2000</width>
+     <width>800</width>
      <height>23</height>
     </rect>
    </property>
@@ -363,7 +366,7 @@
     <rect>
      <x>0</x>
      <y>577</y>
-     <width>2000</width>
+     <width>800</width>
      <height>23</height>
     </rect>
    </property>
@@ -442,7 +445,7 @@
     <rect>
      <x>298</x>
      <y>23</y>
-     <width>122</width>
+     <width>129</width>
      <height>34</height>
     </rect>
    </property>
@@ -472,14 +475,14 @@
   <widget class="QToolBar" name="TrajectoryToolbar" >
    <property name="geometry" >
     <rect>
-     <x>420</x>
-     <y>23</y>
+     <x>0</x>
+     <y>91</y>
      <width>176</width>
      <height>34</height>
     </rect>
    </property>
    <property name="sizePolicy" >
-    <sizepolicy vsizetype="Expanding" hsizetype="Minimum" >
+    <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -500,7 +503,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak" >
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="actionTrajectoryViewTrajectory" />
    <addaction name="actionTrajectoryFirstFrame" />
@@ -512,8 +515,8 @@
   <widget class="QToolBar" name="CommandToolbar" >
    <property name="geometry" >
     <rect>
-     <x>596</x>
-     <y>23</y>
+     <x>176</x>
+     <y>91</y>
      <width>14</width>
      <height>34</height>
     </rect>
@@ -540,7 +543,7 @@
   <widget class="QToolBar" name="MouseToolbar" >
    <property name="geometry" >
     <rect>
-     <x>610</x>
+     <x>427</x>
      <y>23</y>
      <width>95</width>
      <height>34</height>
@@ -571,9 +574,9 @@
   <widget class="QToolBar" name="SelectToolbar" >
    <property name="geometry" >
     <rect>
-     <x>705</x>
-     <y>23</y>
-     <width>209</width>
+     <x>112</x>
+     <y>57</y>
+     <width>213</width>
      <height>34</height>
     </rect>
    </property>
@@ -607,9 +610,9 @@
   <widget class="QToolBar" name="DrawToolbar" >
    <property name="geometry" >
     <rect>
-     <x>914</x>
-     <y>23</y>
-     <width>472</width>
+     <x>190</x>
+     <y>91</y>
+     <width>610</width>
      <height>34</height>
     </rect>
    </property>
@@ -647,9 +650,9 @@
   <widget class="QToolBar" name="BondToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1386</x>
+     <x>522</x>
      <y>23</y>
-     <width>175</width>
+     <width>278</width>
      <height>34</height>
     </rect>
    </property>
@@ -675,9 +678,9 @@
   <widget class="QToolBar" name="MeasureToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1561</x>
-     <y>23</y>
-     <width>439</width>
+     <x>325</x>
+     <y>57</y>
+     <width>475</width>
      <height>34</height>
     </rect>
    </property>
@@ -707,7 +710,7 @@
     <rect>
      <x>0</x>
      <y>57</y>
-     <width>2000</width>
+     <width>112</width>
      <height>34</height>
     </rect>
    </property>
@@ -730,10 +733,10 @@
   <widget class="QToolBar" name="WindowToolbar" >
    <property name="geometry" >
     <rect>
-     <x>1965</x>
-     <y>91</y>
+     <x>765</x>
+     <y>125</y>
      <width>35</width>
-     <height>486</height>
+     <height>452</height>
     </rect>
    </property>
    <property name="windowTitle" >

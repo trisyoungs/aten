@@ -72,22 +72,45 @@ bool AtenForm::runSaveModelDialog()
 		currentDirectory_.setPath(filename);
 		// Grab file extension and search for it in our current lists...
 		Dnchar ext = afterLastChar(qPrintable(filename), '.');
-		// Does this extension uniquely identify a specific filter?
 		Reflist<Tree,int> filters;
-		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+		if (ext.isEmpty())
 		{
-			if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+			QFileInfo fileInfo( filename );
+			// Does this filename uniquely identify a specific filter?
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Name matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
+			}
 		}
-		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-		if (filters.nItems() == 1) filter = filters.first()->item;
-		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
 		else
 		{
-			filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
-			if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+			// Does this extension uniquely identify a specific filter?
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
-				if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() == 1) filter = filters.first()->item;
+			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches one or more model export filters.", &filters, aten.filterList(FilterData::ModelExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known model export filters.", NULL, aten.filterList(FilterData::ModelExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
 			}
 		}
 		saveModelFilter = filter;
@@ -279,24 +302,45 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		Dnchar ext = afterLastChar(qPrintable(filename), '.');
 		// Does this extension uniquely identify a specific filter?
 		Reflist<Tree,int> filters;
-		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+		if (ext.isEmpty())
 		{
-			if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
-		}
-		msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-
-		// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-		if (filters.nItems() == 1) filter = filters.first()->item;
-		else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
-		else
-		{
-			filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
-			if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+			QFileInfo fileInfo( filename );
+			// Does this filename uniquely identify a specific filter?
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
-				if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() != 0) filter = gui.selectFilterDialog->selectFilter("Exact name matches one or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Couldn't determine format to save expression in.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
 			}
 		}
-
+		else
+		{
+			for (Refitem<Tree,int> *ri = aten.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+			}
+			msg.print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() == 1) filter = filters.first()->item;
+			else if (filters.nItems() > 1) filter = gui.selectFilterDialog->selectFilter("Extension matches two or more known expression export filters.", &filters, aten.filterList(FilterData::ExpressionExport));
+			else
+			{
+				filter = gui.selectFilterDialog->selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten.filterList(FilterData::ExpressionExport), TRUE);
+				if ((filter != NULL) && gui.selectFilterDialog->appendExtension())
+				{
+					if (filter->filter.extensions() != NULL) filename += QString(".") + filter->filter.extensions()->get();
+				}
+			}
+		}
 		Model *m = aten.currentModelOrFrame();
 		if (filter == NULL) msg.print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
 		else if (filter->executeWrite(qPrintable(filename))) msg.print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());

@@ -39,7 +39,10 @@ class AtenSelectFilter : public QDialog
 	*/
 	private slots:
 	void on_FilterTable_doubleClicked(const QModelIndex &index);
+	void on_FilterTable_itemSelectionChanged();
 	void on_ShowAllCheck_clicked(bool checked);
+	void on_CancelButton_clicked(bool checked);
+	void on_OkButton_clicked(bool checked);
 
 	/*
 	// Private Data
@@ -58,6 +61,7 @@ class AtenSelectFilter : public QDialog
 	private:
 	// Update list
 	void update();
+
 	public:
 	// Select a filter from the list(s) provided
 	Tree *selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showExtCheck = FALSE);

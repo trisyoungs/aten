@@ -54,6 +54,16 @@ void AtenSelectFilter::on_FilterTable_doubleClicked(const QModelIndex &index)
 	accept();
 }
 
+// Select item in list
+void AtenSelectFilter::on_FilterTable_itemSelectionChanged()
+{
+	int row = ui.FilterTable->currentRow();
+	if (row == -1) selectedFilter_ = NULL;
+	else if (ui.ShowAllCheck->isChecked()) selectedFilter_ = (*fullList_)[row]->item;
+	else selectedFilter_ = (*partialList_)[row]->item;
+	if (row != -1) ui.OkButton->setDisabled(FALSE);
+}
+
 void AtenSelectFilter::on_ShowAllCheck_clicked(bool checked)
 {
 	update();
@@ -96,6 +106,9 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 	ui.ShowAllCheck->setChecked(partial == NULL);
 	ui.ShowAllCheck->setEnabled(partial != NULL);
 
+	// Disable 'OK' button until a filter is selected from the list
+	ui.OkButton->setDisabled(TRUE);
+
 	// Show/hide 'Append Extension' checkbox
 	ui.AppendExtensionCheck->setVisible(showextcheck);
 	
@@ -104,7 +117,7 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 	// Execute the dialog and check on the result
 	int result = exec();
 	appendExtension_ = ui.AppendExtensionCheck->isChecked();
-	return (result == 1 ? selectedFilter_ : NULL);
+	return selectedFilter_;
 }
 
 
@@ -112,4 +125,20 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 bool AtenSelectFilter::appendExtension()
 {
 	return appendExtension_;
+}
+
+void AtenSelectFilter::on_CancelButton_clicked(bool checked)
+{
+	selectedFilter_ = NULL;
+	reject();
+}
+
+void AtenSelectFilter::on_OkButton_clicked(bool checked)
+{
+	// Get the current selection again, just to be on the safe side
+	int row = ui.FilterTable->currentRow();
+	if (row == -1) selectedFilter_ = NULL;
+	else if (ui.ShowAllCheck->isChecked()) selectedFilter_ = (*fullList_)[row]->item;
+	else selectedFilter_ = (*partialList_)[row]->item;
+	accept();
 }
