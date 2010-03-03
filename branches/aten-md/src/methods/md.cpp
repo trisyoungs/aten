@@ -140,6 +140,17 @@ void MDEngine::run()
 	msg.print("Number of steps : %i\n", nSteps_);
 	msg.print("Ready to go!\n");
 
+	m->calculateForces(m);
+
+	for (int n=0; n<m->nAtoms(); ++n)
+	{
+		Atom *i = m->atom(n);
+		printf("Atom %i mass = %f\n", n, elements().atomicMass(i));
+		Vec3<double> pos = i->r();
+		printf("Atom %i position %f %f %f\n", n, pos.x, pos.y, pos.z);
+		Vec3<double> frc = i->f();
+		printf("Atom %i force %f %f %f\n", n, frc.x, frc.y, frc.z);
+	}
 
 	msg.exit("MDEngine::run");
 }
