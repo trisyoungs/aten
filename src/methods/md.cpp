@@ -138,6 +138,8 @@ void MDEngine::run()
 	msg.print("Pressure        : %e atm\n", pressure_);
 	msg.print("Timestep        : %e ps\n", timeStep());
 	msg.print("Number of steps : %i\n", nSteps_);
+	msg.print("Ready to go!\n");
+
 
 	msg.exit("MDEngine::run");
 }
