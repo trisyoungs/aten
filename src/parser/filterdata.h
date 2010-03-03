@@ -130,6 +130,8 @@ class FilterData
 	bool hasExtension();
 	// Return whether the supplied text matches any of the filter's possible extensions
 	bool doesExtensionMatch(const char *ext);
+	// Return whether the supplied text matches any of the filter's possible exact filenames
+	bool doesNameMatch(const char *name);
 	// Return the partner filter
 	Tree *partner();
 	// Return the file filter

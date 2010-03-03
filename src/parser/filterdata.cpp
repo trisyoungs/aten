@@ -138,6 +138,14 @@ bool FilterData::doesExtensionMatch(const char *ext)
 	return FALSE;
 }
 
+// Return whether the supplied text matches any of the filter's possible exact filenames
+bool FilterData::doesNameMatch(const char *name)
+{
+	Dnchar lcasename = lowerCase(name);
+	for (Dnchar *d = exactNames_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcasename.get()) == 0) return TRUE;
+	return FALSE;
+}
+
 // Set the partner filter
 void FilterData::setPartner(Tree *filter)
 {
