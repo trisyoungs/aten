@@ -22,7 +22,7 @@ rm -rf html
 mkdir html
 xsltproc     --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./html/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 /usr/share/xml/docbook/stylesheet/nwalsh/1.73.2/xhtml/chunk.xsl aten.xml
 cp -r images html/
-mv html/ff.forms.vdw.html html/ff.forms.vdw.xhtml
+mv html/ff.forms.torsion.html html/ff.forms.torsion.xhtml
 
 #for a in html #pdf
 #do
