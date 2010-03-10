@@ -14,46 +14,453 @@
 			</thead>
 			<tbody>
 				<row>
-					<entry morerows='2'>Name</entry>
-					<entry morerows='2'>keyword</entry>
-					<entry morerows='2'>3 (2)</entry>
-					<entry morerows='2'>
+					<entry morerows='3'>Cosine</entry>
+					<entry morerows='3'>cos</entry>
+					<entry morerows='3'>4 (3)</entry>
+					<entry morerows='3'>
 						<inlineequation>
 							<mml:math>
 								<mml:mrow>
 									<mml:msub>
 										<mml:mi>U</mml:mi>
-										<mml:mi>ij</mml:mi>
+										<mml:mi>&phi;</mml:mi>
 									</mml:msub>
 									<mml:mo>=</mml:mo>
-									<mml:msup>
-										<mml:mrow><mml:mo>(</mml:mo>
-											<mml:mfrac>
-												<mml:mi>&sigma;</mml:mi>
-												<mml:mi>r</mml:mi>
-											</mml:mfrac>
-										<mml:mo>)</mml:mo></mml:mrow>
-										<mml:mn>12</mml:mn>
-									</mml:msup>
+									<mml:mi>k</mml:mi>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mi>s</mml:mi>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>n</mml:mi>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>-</mml:mo>
+									<mml:msub>
+										<mml:mi>&phi;</mml:mi>
+										<mml:mi>eq</mml:mi>
+									</mml:msub>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
 								</mml:mrow>
 							</mml:math>
 						</inlineequation>
 					</entry>
 					<entry>
-						<inlineequation><mml:math><mml:mi>&epsi;</mml:mi></mml:math></inlineequation>
-					</entry>
-				</row>
-				<row>
-					<entry>
-						<inlineequation><mml:math><mml:mi>&sigma;</mml:mi></mml:math></inlineequation>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
 					</entry>
 				</row>
 				<row>
 					<entry>
 						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
 					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>&phi;</mml:mi><mml:mi>eq</mml:mi></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>s</mml:mi></mml:math></inlineequation>
+					</entry>
 					<entry>
 						1.0
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='2'>Triple Cosine</entry>
+					<entry morerows='2'>cos3</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>&phi;</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mfrac>
+										<mml:mn>1</mml:mn>
+										<mml:mn>2</mml:mn>
+									</mml:mfrac>
+									<mml:mo>[</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>1</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>2</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>2</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>3</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>3</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>]</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='3'>Quadruple Cosine</entry>
+					<entry morerows='3'>cos4</entry>
+					<entry morerows='3'>4 (4)</entry>
+					<entry morerows='3'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>&phi;</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mfrac>
+										<mml:mn>1</mml:mn>
+										<mml:mn>2</mml:mn>
+									</mml:mfrac>
+									<mml:mo>[</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>1</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>2</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>2</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>3</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>3</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>4</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>4</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>]</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>4</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='3'>Triple Cosine + Constant</entry>
+					<entry morerows='3'>cos3c</entry>
+					<entry morerows='3'>4 (4)</entry>
+					<entry morerows='3'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>&phi;</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>0</mml:mn>
+									</mml:msub>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:mfrac>
+										<mml:mn>1</mml:mn>
+										<mml:mn>2</mml:mn>
+									</mml:mfrac>
+									<mml:mo>[</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>1</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>2</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>2</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>+</mml:mo>
+									
+									<mml:msub>
+										<mml:mi>k</mml:mi>
+										<mml:mn>3</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>+</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mn>3</mml:mn>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>]</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>k</mml:mi><mml:mn>3</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+
+				<row>
+					<entry morerows='2'>Cosine Product</entry>
+					<entry morerows='2'>coscos</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>&phi;</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mfrac>
+										<mml:mn>1</mml:mn>
+										<mml:mn>2</mml:mn>
+									</mml:mfrac>
+									<mml:mi>k</mml:mi>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>n</mml:mi>
+									<mml:msub>
+										<mml:mi>&phi;</mml:mi>
+										<mml:mi>eq</mml:mi>
+									</mml:msub>
+									<mml:mo>)</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>n</mml:mi>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>)</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>&phi;</mml:mi><mml:mi>eq</mml:mi></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='2'>Dreiding Cosine</entry>
+					<entry morerows='2'>dreiding</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>&phi;</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:mfrac>
+										<mml:mn>1</mml:mn>
+										<mml:mn>2</mml:mn>
+									</mml:mfrac>
+									<mml:mi>k</mml:mi>
+									<mml:mo>(</mml:mo>
+									<mml:mn>1</mml:mn>
+									<mml:mo>-</mml:mo>
+									<mml:mo>cos</mml:mo>
+									<mml:mo>(</mml:mo>
+									<mml:mi>n</mml:mi>
+									<mml:mo>(</mml:mo>
+									<mml:mi>&phi;</mml:mi>
+									<mml:mo>-</mml:mo>
+									<mml:msub>
+										<mml:mi>&phi;</mml:mi>
+										<mml:mi>eq</mml:mi>
+									</mml:msub>
+									<mml:mo>)</mml:mo>
+									<mml:mo>)</mml:mo>
+									
+									<mml:mo>)</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>&phi;</mml:mi><mml:mi>eq</mml:mi></mml:msub></mml:math></inlineequation>
 					</entry>
 				</row>
 
@@ -62,3 +469,6 @@
 	</table>
 
 </section>
+
+
+

@@ -86,7 +86,7 @@ namespace AngleFunctions
 // Torsion potential forms
 namespace TorsionFunctions
 {
-	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, nTorsionFunctions };
+	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, Pol9, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
 	TorsionFunction torsionFunction(const char *s, bool reporterror = FALSE);
 	void printValid();
@@ -96,6 +96,7 @@ namespace TorsionFunctions
 	enum Cos3CParameter { Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3, Cos3CEScale, Cos3CVScale };
 	enum CosCosParameter { CosCosK, CosCosN, CosCosEq, CosCosNULL, CosCosEScale, CosCosVScale };
 	enum DreidingParameter { DreidingK, DreidingN, DreidingEq, DreidingNULL, DreidingEScale, DreidingVScale };
+	enum Pol9Parameter { Pol9K1, Pol9K2, Pol9K3, Pol9K4, Pol9K5, Pol9K6, Pol9K7, Pol9K8, Pol9K9 };
 }
 
 // Electostatic calculation methods

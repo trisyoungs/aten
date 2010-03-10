@@ -30,7 +30,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionEnergy");
 	int n,i,j,k,l,aoff,m1;
-	static double k0, k1, k2, k3, k4, eq, phi, energy, period, s;
+	static double k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, eq, phi, energy, period, s, chi;
 	PatternBound *pb;
 	ForcefieldBound *ffb;
 	Vec3<double> vecij, veckj;
@@ -99,6 +99,19 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					eq = ffb->parameter(TorsionFunctions::DreidingEq) / DEGRAD;
 					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
 					break;
+				case (TorsionFunctions::Pol9):
+					// U(chi) = sum_{i=0,8} k_i (cos(chi))^i
+					chi = PI - phi;
+					k1 = ffb->parameter(TorsionFunctions::Pol9K1);
+					k2 = ffb->parameter(TorsionFunctions::Pol9K2);
+					k3 = ffb->parameter(TorsionFunctions::Pol9K3);
+					k4 = ffb->parameter(TorsionFunctions::Pol9K4);
+					k5 = ffb->parameter(TorsionFunctions::Pol9K5);
+					k6 = ffb->parameter(TorsionFunctions::Pol9K6);
+					k7 = ffb->parameter(TorsionFunctions::Pol9K7);
+					k8 = ffb->parameter(TorsionFunctions::Pol9K8);
+					k9 = ffb->parameter(TorsionFunctions::Pol9K9);
+					energy += k1 + cos(chi)*(k2 + cos(chi)*(k3 + cos(chi)*(k4 + cos(chi)*(k5 + cos(chi)*(k6 + cos(chi)*(k7 + cos(chi)*(k8 + cos(chi)*k9)))))));
 				default:
 					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
 					break;

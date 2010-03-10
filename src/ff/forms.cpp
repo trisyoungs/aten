@@ -212,7 +212,11 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 	{ "Dreiding Cosine", "dreiding",
 		{ "Force K", "Periodicity", "Eq. Angle" },
 		{ "k", "n", "eq", "null" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } }
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
+	{ "Pol9", "pol9",
+		{ "K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9" },
+		{ "k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9" },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s, bool reporterror)
 {
