@@ -49,6 +49,10 @@ class AtenPosition : public QDialog
 	void on_FlipZButton_clicked(bool checked);
 	// Shift
 	void on_DefineVectorButton_clicked(bool checked);
+	void on_NormaliseVectorButton_clicked(bool checked);
+	void on_VectorShiftXSpin_valueChanged(double value);
+	void on_VectorShiftYSpin_valueChanged(double value);
+	void on_VectorShiftZSpin_valueChanged(double value);
 	void on_VectorShiftPositiveButton_clicked(bool checked);
 	void on_VectorShiftNegativeButton_clicked(bool checked);
 	// Translate

@@ -25,6 +25,7 @@
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenPosition::AtenPosition(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -175,6 +176,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 	gui.positionWindow->ui.VectorShiftXSpin->setValue(v.x);
 	gui.positionWindow->ui.VectorShiftYSpin->setValue(v.y);
 	gui.positionWindow->ui.VectorShiftZSpin->setValue(v.z);
+	gui.positionWindow->ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
 }
 
 void AtenPosition::on_DefineVectorButton_clicked(bool on)
@@ -183,13 +185,52 @@ void AtenPosition::on_DefineVectorButton_clicked(bool on)
 	gui.mainView.beginManualPick(2,&shiftPickAxisButton_callback);
 }
 
-void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
+void AtenPosition::on_NormaliseVectorButton_clicked(bool on)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
 	v.y = ui.VectorShiftYSpin->value();
 	v.z = ui.VectorShiftZSpin->value();
 	v.normalise();
+	ui.VectorShiftXSpin->setValue(v.x);
+	ui.VectorShiftYSpin->setValue(v.y);
+	ui.VectorShiftZSpin->setValue(v.z);
+	ui.VectorMagnitudeLabel->setText("1.0");
+}
+
+void AtenPosition::on_VectorShiftXSpin_valueChanged(double value)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
+	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+}
+
+void AtenPosition::on_VectorShiftYSpin_valueChanged(double value)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
+	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+}
+
+void AtenPosition::on_VectorShiftZSpin_valueChanged(double value)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
+	ui.VectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+}
+
+void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
 	v *= ui.VectorDeltaSpin->value();
 	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
@@ -205,7 +246,6 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	v.x = ui.VectorShiftXSpin->value();
 	v.y = ui.VectorShiftYSpin->value();
 	v.z = ui.VectorShiftZSpin->value();
-	v.normalise();
 	v *= -ui.VectorDeltaSpin->value();
 	Model *m = aten.currentModelOrFrame();
 	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);

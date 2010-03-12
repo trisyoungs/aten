@@ -382,7 +382,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	for (c = aten.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
-		if (c->nRequested() < 0) continue;
+		if (c->nRequested() <= 0) continue;
 		if (c == destmodel) continue;
 		// Warn if this model is periodic
 		if (c->cell()->type() != Cell::NoCell) msg.print("Warning: Component model '%s' is periodic but will still be added.\n", c->name());
@@ -711,6 +711,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 		if (c->nRequested() < 1) continue;
 		// Get model pointer
 		c = ri->item;
+		printf("Component pattern: = %p\n", c->componentPattern());
 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
 	}
 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
