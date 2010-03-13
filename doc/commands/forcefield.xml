@@ -52,7 +52,7 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			clearmap();
+clearmap();
 		</synopsis>
 	
 	</section>
@@ -70,7 +70,7 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			clearexportmap();
+clearexportmap();
 		</synopsis>
 		
 	</section>
@@ -88,7 +88,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			clearexpression();
+clearexpression();
 		</synopsis>
 		
 	</section>
@@ -106,7 +106,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			createexpression();
+createexpression();
 		</synopsis>
 		
 	</section>
@@ -124,7 +124,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			defaultff(&quot;oplsaa&quot;);
+defaultff(&quot;oplsaa&quot;);
 		</synopsis>
 	
 	</section>
@@ -157,7 +157,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			map(&quot;CT=Ctet,N3=N&quot;);
+map(&quot;CT=Ctet,N3=N&quot;);
 		</synopsis>
 		<para>converts the atomtype names 'CT' and 'N3' so that they appear as 'Ctet' and 'N' in any expression files written out.</para>
 		
@@ -176,7 +176,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			ffmodel();
+ffmodel();
 		</synopsis>
 		
 	</section>
@@ -202,11 +202,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			ffpattern();
+ffpattern();
 		</synopsis>
 		<para>associates the current forcefield to the current pattern.</para>
 		<synopsis>
-			ffpattern(&quot;bulk&quot;);
+ffpattern(&quot;bulk&quot;);
 		</synopsis>
 		<para>associates the current forcefield to a pattern named 'bulk' in the current model.</para>
 		
@@ -239,9 +239,9 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			typedef(99, "NX", "NX", N, "-C(n=4)");
-			select(C);
-			fixtype(99);
+typedef(99, "NX", "NX", N, "-C(n=4)");
+select(C);
+fixtype(99);
 		</synopsis>
 		<para>assigns newly-created type 99 (specific to nitrogen) to all carbons in the model.</para>
 	</section>
@@ -259,7 +259,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			freetype(14);
+freetype(14);
 		</synopsis>
 		<para>frees any previously-set type on atom 14.</para>
 	</section>
@@ -281,7 +281,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			forcefield uff = getff(&quot;uff&quot;);
+forcefield uff = getff(&quot;uff&quot;);
 		</synopsis>
 		<para>makes the loaded forcefield named 'uff' the current one, and stores a reference to it.</para>
 		
@@ -318,7 +318,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			loadff(&quot;/home/foo/complex.ff&quot;, &quot;waterff&quot;);
+loadff(&quot;/home/foo/complex.ff&quot;, &quot;waterff&quot;);
 		</synopsis>
 		<para>loads a forcefield called 'complex.ff' and names it 'waterff'.</para>
 	
@@ -338,7 +338,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			map(&quot;CT1=C,CT2=C&quot;);
+map(&quot;CT1=C,CT2=C&quot;);
 		</synopsis>
 		<para>converts atoms with names 'CT1' and 'CT2' to carbon.</para>
 		
@@ -357,7 +357,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			forcefield ff = newff(&quot;testff&quot;);
+forcefield ff = newff(&quot;testff&quot;);
 		</synopsis>
 	
 	</section>
@@ -375,7 +375,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			printsetup();
+printsetup();
 		</synopsis>
 		
 	</section>
@@ -393,7 +393,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			recreateexpression();
+recreateexpression();
 		</synopsis>
 		
 	</section>
@@ -426,7 +426,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			saveexpression(&quot;dlpoly&quot;, &quot;data.FIELD&quot;);
+saveexpression(&quot;dlpoly&quot;, &quot;data.FIELD&quot;);
 		</synopsis>
 		
 	</section>
@@ -469,7 +469,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			typedef(101, &quot;Ctet&quot;, C, &quot;nbonds=4&quot;, &quot;Standard tetrahedral carbon&quot;);
+typedef(101, &quot;Ctet&quot;, C, &quot;nbonds=4&quot;, &quot;Standard tetrahedral carbon&quot;);
 		</synopsis>
 		<para>creates a new simple type for a carbon atom with four bonds.</para>
 		
@@ -489,7 +489,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int success = typemodel();
+int success = typemodel();
 		</synopsis>
 	
 	</section>
@@ -509,7 +509,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int score = typetest(112,10);
+int score = typetest(112,10);
 		</synopsis>
 		<para>tests typeid 112 on the tenth atom in the model.</para>
 		
@@ -543,11 +543,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			vdw(&quot;off&quot;);
+vdw(&quot;off&quot;);
 		</synopsis>
 		<para>turns van der Waals energy / force calculation off.</para>
 		<synopsis>
-			vdw(TRUE);
+vdw(TRUE);
 		</synopsis>
 		<para>turns van der Waals energy / force calculation on.</para>
 

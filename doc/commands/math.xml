@@ -115,13 +115,13 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			vector v = { 1, 2, 3 };
-			double mag = normalise(v);
-			printf(&quot;Normalised vector is { %f, %f, %f }, old magnitude was %f\n&quot;, v.x, v.y, v.z, mag);
+vector v = { 1, 2, 3 };
+double mag = normalise(v);
+printf(&quot;Normalised vector is { %f, %f, %f }, old magnitude was %f\n&quot;, v.x, v.y, v.z, mag);
 		</synopsis>
 		<para>prints the following:</para>
 		<synopsis>
-			Normalised vector is { 0.267261, 0.534522, 0.801784 }, old magnitude was 3.741657
+Normalised vector is { 0.267261, 0.534522, 0.801784 }, old magnitude was 3.741657
 		</synopsis>
 	
 	</section>

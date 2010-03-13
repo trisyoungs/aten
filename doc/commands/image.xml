@@ -71,11 +71,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			savebitmap(&quot;bmp&quot;, &quot;test.bmp&quot;);
+savebitmap(&quot;bmp&quot;, &quot;test.bmp&quot;);
 		</synopsis>
 		<para>saves the current view to a file 'test.bmp'.</para>
 		<synopsis>
-			savebitmap(&quot;png&quot;, &quot;big.png&quot;, 5000, 5000, 10);
+savebitmap(&quot;png&quot;, &quot;big.png&quot;, 5000, 5000, 10);
 		</synopsis>
 		<para>saves an enormous, highly uncompressed png.</para>
 

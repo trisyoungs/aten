@@ -30,13 +30,13 @@
 		
 		<para>For instance, given a box full of benzene molecules:</para>
 		<synopsis>
-			selectall();
-			autoellipsoids();
+selectall();
+autoellipsoids();
 		</synopsis>
 		<para>will add on a flattened ellipsoid to each individual molecule. To do the same thing but using only the ring carbons to generate the ellipsoids:</para>
 		<synopsis>
-			select(&quot;C&quot;);
-			autoellipsoids();
+select(&quot;C&quot;);
+autoellipsoids();
 		</synopsis>
 		<para>Now the ellipsoids will cover the carbon atoms in each ring, leaving the hydrogens poking out.</para>
 		
@@ -125,7 +125,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphatomf(1);
+glyphatomf(1);
 		</synopsis>
 		<para>links the current atoms forces to the first datum in the current glyph.</para>
 	
@@ -150,7 +150,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphatomr(3, 55);
+glyphatomr(3, 55);
 		</synopsis>
 		<para>links the 55th atom's position to the third datum in the current glyph.</para>
 	
@@ -175,8 +175,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = newatom(&quot;H&quot;);
-			glyphatomv(2,i);
+atom i = newatom(&quot;H&quot;);
+glyphatomv(2,i);
 		</synopsis>
 		<para>links the velocity of new atom <emphasis>i</emphasis> to the second datum in the current glyph.</para>
 	
@@ -197,7 +197,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphatomsf(1, 2, 3);
+glyphatomsf(1, 2, 3);
 		</synopsis>
 		<para>links the forces of atoms 1, 2, and 3 to the first three glyph data.</para>
 	
@@ -218,7 +218,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphatomsr(3, 10);
+glyphatomsr(3, 10);
 		</synopsis>
 		<para>links the positions of atoms 3 and 10 to the first two glyph data.</para>
 	
@@ -239,7 +239,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphatomsv(9, 11, 13);
+glyphatomsv(9, 11, 13);
 		</synopsis>
 		<para>links the velocities of atoms 9, 11, and 13 to first three glyph data.</para>
 	
@@ -263,7 +263,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphcolour(1, 1.0, 0.0, 0.0);
+glyphcolour(1, 1.0, 0.0, 0.0);
 		</synopsis>
 		<para>sets the colour of the first vertex in the current glyph to red.</para>
 	
@@ -286,7 +286,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphdata(1, 0.0, 5.0, 2.4);
+glyphdata(1, 0.0, 5.0, 2.4);
 		</synopsis>
 		<para>sets the first positional data in the glyph to {0.0, 5.0, 2.4}.</para>
 	
@@ -306,7 +306,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphsolid(&quot;true&quot;);
+glyphsolid(&quot;true&quot;);
 		</synopsis>
 	
 	</section>
@@ -325,7 +325,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			glyphtext(&quot;Coordinate Origin&quot;);
+glyphtext(&quot;Coordinate Origin&quot;);
 		</synopsis>
 	
 	</section>
@@ -376,15 +376,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			newglyph(&quot;cube&quot;);
+newglyph(&quot;cube&quot;);
 		</synopsis>
 		<para>creates a new cube in the model.</para>
 		<synopsis>
-			newglyph(&quot;text&quot;,&quot;text=\&quot;I am some text\&quot;&quot;);
+newglyph(&quot;text&quot;,&quot;text=\&quot;I am some text\&quot;&quot;);
 		</synopsis>
 		<para>creates a new text glyph in the model, reading 'I am some text'. Note the need to escape the quotes surrounding the text.</para>
 		<synopsis>
-			newglyph(&quot;tetrahedron&quot;, &quot;wire&quot;);
+newglyph(&quot;tetrahedron&quot;, &quot;wire&quot;);
 		</synopsis>
 		<para>creates a new wireframe tetrahedron in the model.</para>
 

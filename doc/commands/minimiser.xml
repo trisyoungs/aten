@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			cgminimise(20);
+cgminimise(20);
 		</synopsis>
 		<para>runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.</para>
 		
@@ -45,7 +45,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			converge(1e-6, 1e-4);
+converge(1e-6, 1e-4);
 		</synopsis>
 		<para>sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.</para>
 	
@@ -65,7 +65,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			linetol(1e-5);
+linetol(1e-5);
 		</synopsis>
 		<para>sets the line tolerance to 1.0E-5.</para>
 
@@ -85,7 +85,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mcminimise(20);
+mcminimise(20);
 		</synopsis>
 		<para>runs a geometry optimisation for a maximum of 20 cycles.</para>
 		
@@ -113,7 +113,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			sdminimise(100);
+sdminimise(100);
 		</synopsis>
 		<para>minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.</para>
 		

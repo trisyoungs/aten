@@ -18,7 +18,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			getsite(&quot;carb1&quot;);
+getsite(&quot;carb1&quot;);
 		</synopsis>
 		<para>makes the site 'carb1' the current site.</para>
 	
@@ -38,7 +38,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			listsites();
+listsites();
 		</synopsis>
 		
 	</section>
@@ -58,11 +58,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			newsite(&quot;watercentre&quot;, &quot;h2o&quot;);
+newsite(&quot;watercentre&quot;, &quot;h2o&quot;);
 		</synopsis>
 		<para>adds a site called 'watercentre' based on the pattern called 'h2o' and located at the centre of geometry of all atoms.</para>
 		<synopsis>
-			newsite(&quot;oxy&quot;, &quot;methanol&quot;, &quot;5&quot;);
+newsite(&quot;oxy&quot;, &quot;methanol&quot;, &quot;5&quot;);
 		</synopsis>
 		<para>adds a site called 'oxy' based on the pattern called 'methanol' and located at the fifth atom in each molecule.</para>
 	
@@ -83,7 +83,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			siteaxes(&quot;1,2&quot;, &quot;6&quot;);
+siteaxes(&quot;1,2&quot;, &quot;6&quot;);
 		</synopsis>
 		<para>sets the x axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the y axis definition to be the vector between the site centre and the position of the sixth atom.</para>
 	

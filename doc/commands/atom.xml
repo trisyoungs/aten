@@ -16,6 +16,7 @@
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
+				<?dbhtml funcsynopsis-style='ansi'?>
 				<funcdef>void <function>atomstyle</function></funcdef>
 				<paramdef>string <parameter>style</parameter></paramdef>
 			</funcprototype>
@@ -24,7 +25,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atomstyle(&quot;tube&quot;)
+atomstyle(&quot;tube&quot;)
 		</synopsis>
 		<para>sets the current atom selection to be drawn in the 'tube' style.</para>
 		
@@ -56,7 +57,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = getatom(1);
+atom i = getatom(1);
 		</synopsis>
 		<para>makes the first atom in the current model the current atom, and returns a reference to it.</para>
 		
@@ -75,11 +76,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			fix();
+fix();
 		</synopsis>
 		<para>fixes the positions of all selected atoms.</para>
 		<synopsis>
-			for (int n=1; n&lt;=10; ++n) fix(n);
+for (int n=1; n&lt;=10; ++n) fix(n);
 		</synopsis>
 		<para>fixes the positions of the first 10 atoms in the current model.</para>
 	
@@ -99,7 +100,7 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			free(5);
+free(5);
 		</synopsis>
 		<para>allows the fifth atom in the current model to be moved again.</para>
 		
@@ -119,7 +120,7 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			atom i = getatom(3);
+atom i = getatom(3);
 		</synopsis>
 		<para>returns a reference to the third atom in the current model.</para>
 	
@@ -450,3 +451,4 @@
 	</section>
 		 
 </section>
+

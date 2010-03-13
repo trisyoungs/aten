@@ -36,18 +36,15 @@
 		
 			<para>Consider a water molecule. If you were describing it in terms of its structure to someone who understands the concept of atoms and bonds, but has no idea what the water molecule looks like, you might say:</para>
 	
-			<screen>
-				A water molecule contains an oxygen that is connected two hydrogen atoms by single bonds
-			</screen>
 			<synopsis>
-				A water molecule contains an oxygen that is connected two hydrogen atoms by single bonds
+A water molecule contains an oxygen that is connected two hydrogen atoms by single bonds
 			</synopsis>
 	
 			<para>...or even...</para>
 		
-			<screen>
-				It's an oxygen atom with two hydrogens on it
-			</screen>
+			<synopsis>
+It's an oxygen atom with two hydrogens on it
+			</synopsis>
 	
 			<para>Given this degree-level knowledge, to describe the individual oxygen and hydrogen atoms in the grand scheme of the water molecule exactly, you might say:</para>
 	
@@ -133,7 +130,7 @@
 			<para>At last, a proper problem - an asymmetric substituted pyridine. Lets assume that we need to distinguish between every non-hydrogen atom  - we'll skip describing the hydrogen atoms for now, but note that this is most easily achieved by specifying directly the atomtype that the H is bound to (see later on). Let's start with the pyridine nitrogen. We basically need to say that its in a 6-membered aromatic ring:</para>
 			
 			<synopsis>
-			13	N_py	N	&quot;ring(size=6,aromatic)&quot;			# Pyridine N
+13	N_py	N	&quot;ring(size=6,aromatic)&quot;			# Pyridine N
 			</synopsis>
 			
 			<para>TODO</para>
@@ -196,7 +193,7 @@
 			<para>A type description containing no terms has a maximum score of 1 (coming from a match of the element type). Hence:</para>
 				
 			<synopsis>
-				99	Cgen	C	&quot;&quot;			# Generic carbon
+99	Cgen	C	&quot;&quot;			# Generic carbon
 			</synopsis>
 				
 			<para>matches any carbon in any system, but will be replaced fairly easily by other types since it has such a low score.</para>
@@ -209,10 +206,10 @@
 			<para>For a type in which all terms are matched successfully, one point is scored for each individual term. All of the following types have a potential maximum score of 3 (don't forget, one point comes from matching the element):</para>
 			
 			<synopsis>
-				100	C1	C	&quot;nbonds=2,linear&quot;	# Carbon A
-				101	C2	C	&quot;-C,-C&quot;			# Carbon B
-				102	C3	C	&quot;-C(n=2)&quot;		# Carbon C
-				102	C4	C	&quot;=C&quot;			# Carbon D
+100	C1	C	&quot;nbonds=2,linear&quot;	# Carbon A
+101	C2	C	&quot;-C,-C&quot;			# Carbon B
+102	C3	C	&quot;-C(n=2)&quot;		# Carbon C
+102	C4	C	&quot;=C&quot;			# Carbon D
 			</synopsis>
 			
 			<para>Moreover, they all potentially match the same atom (for example the central carbon in 1,2-propadiene). Since they have the same score, the first type C1 will match and persist over the other three, since only types with higher (not equivalent) scores can replace it.</para>
@@ -227,23 +224,23 @@
 		<para>Once a complex NETA definition has been made for a given atom type, it is often useful to be able to reference this type in order to save repeating the same description for a closely-bound atom. The ampersand symbol allows you to do this, and specifies an integer type id to match rather than an element. As an example, consider the following definitions for trifluoroethanol from the OPLS-AA forcefield where the environment for each atom is described in full for each type:</para>
 		
 		<synopsis>
-			160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
-			161     CT      C       "-F(n=3),-C(nh=2,-O(-H))"           "CF3 in trifluoroethanol"
-			162     OH      O       "-H,-C(nh=2,-C(-F(n=3)))"           "OH in trifluoroethanol"
-			163     HO      H       "-O(-C(nh=2,-C(-F(n=3))))"          "HO in trifluoroethanol"
-			164     F       F       "-C(-F(n=3),-C(nh=2,-O(-H)))"       "F in trifluoroethanol"
-			165     HC      H       "-C(nh=2,-O(-H),-C(-F(n=3)))"       "H in trifluoroethanol"
+160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
+161     CT      C       "-F(n=3),-C(nh=2,-O(-H))"           "CF3 in trifluoroethanol"
+162     OH      O       "-H,-C(nh=2,-C(-F(n=3)))"           "OH in trifluoroethanol"
+163     HO      H       "-O(-C(nh=2,-C(-F(n=3))))"          "HO in trifluoroethanol"
+164     F       F       "-C(-F(n=3),-C(nh=2,-O(-H)))"       "F in trifluoroethanol"
+165     HC      H       "-C(nh=2,-O(-H),-C(-F(n=3)))"       "H in trifluoroethanol"
 		</synopsis>
 
 		<para>For each atom type, the whole of the trifluoroethanol molecule is described, but each type tends to share a common chunk of NETA definitions with the other types. As an alternative, then, we can define one or two of the involved types explicitly as above, and then specify the rest of the types relative to this one:</para>
 		
 		<synopsis>
-			160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
-			161     CT      C       "-&amp;160"                              "CF3 in trifluoroethanol"
-			162     OH      O       "-&amp;160"                             "OH in trifluoroethanol"
-			163     HO      H       "-O(-&amp;160)"                         "HO in trifluoroethanol"
-			164     F       F       "-C(-&amp;160)"                         "F in trifluoroethanol"
-			165     HC      H       "-&amp;160"                             "H in trifluoroethanol"
+160     CT      C       "-H,-H,-O(-H),-C(-F(n=3))"          "CH2 in trifluoroethanol"
+161     CT      C       "-&amp;160"                              "CF3 in trifluoroethanol"
+162     OH      O       "-&amp;160"                             "OH in trifluoroethanol"
+163     HO      H       "-O(-&amp;160)"                         "HO in trifluoroethanol"
+164     F       F       "-C(-&amp;160)"                         "F in trifluoroethanol"
+165     HC      H       "-&amp;160"                             "H in trifluoroethanol"
 		</synopsis>
 		
 		<para>Much neater! Or should that be 'not much NETA'? Hmmm. Anyway, reusing types in this way is a powerful way to reduce the complexity of type descriptions required for a given molecule or fragment. Typically it is advisable to pick an atom that is fairly central to the molecule and bears a lot of connections, and provide an unambiguous type description.</para>

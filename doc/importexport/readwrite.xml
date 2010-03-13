@@ -57,48 +57,48 @@
 			<para>Formatting a string for output, as mentioned elsewhere on numerous occasions, works the same as for C. The C 'printf' command (equivalent to the command of the same name in Aten) takes a character string as its first argument, and at its simplest, this is all that is required:</para>
 			
 			<synopsis>
-			printf(&quot;Hello&quot;);
+printf(&quot;Hello&quot;);
 			</synopsis>
 			
 			<para>This prints 'Hello' to the screen (minus the quotes). Importantly, however, a newline character is <emphasis>not</emphasis> printed, meaning that the next thing you try and <link linkend="command.ref.printf">printf</link> will appear on the same line. For instance:</para>
 			
 			<synopsis>
-			printf(&quot;Hello&quot;);
-			printf(&quot;There.&quot;);
+printf(&quot;Hello&quot;);
+printf(&quot;There.&quot;);
 			</synopsis>
 			
 			<para>would output:</para>
 			
 			<synopsis>
-			HelloThere.
+HelloThere.
 			</synopsis>
 			
 			<para>The end of a character constant in the printf command does not implicitly mean 'and this is the end of the line' - you must indicate the end of the line yourself by placing '\n' at the point where you wish the line to end. So:</para>
 			
 			<synopsis>
-			printf(&quot;Hello\n&quot;);
-			printf(&quot;There.&quot;);
+printf(&quot;Hello\n&quot;);
+printf(&quot;There.&quot;);
 			</synopsis>
 			
 			<para>would output:</para>
 			
 			<synopsis>
-			Hello
-			There.
+Hello
+There.
 			</synopsis>
 			
 			<para>Newlines (\n) are an example of <link linkend="readwrite.escaped">escaped characters</link> - the backslash '\' indicates that the following character, in this case 'n', is not to be treated as a normal 'n', but instead will take on its alternative 'meaning', in this case a newline. There are one or two other escaped characters recognised - see <link linkend="readwrite.escaped">Escaped Characters</link> for a list. Note that the newline token can appear anywhere in the string, and any number of times. So:</para>
 			
 			<synopsis>
-			printf(&quot;Hello\nThere\n.&quot;);
+printf(&quot;Hello\nThere\n.&quot;);
 			</synopsis>
 			
 			<para>would output:</para>
 			
 			<synopsis>
-			Hello
-			There
-			.
+Hello
+There
+.
 			</synopsis>
 			
 		</section>
@@ -110,26 +110,26 @@
 		<para>Being able to print simple text strings is good, but not nearly enough. The first argument to the 'printf' command must always be a character string, but any number of additional arguments may be provided. Now, these additional arguments may be number constants, other character strings, variables, etc., and may be output in the resulting string by referencing them with 'specifiers' placed within the first example. One example of a specifier is '%i' which is shorthand for saying 'an integer value' - if used within the character string provided to printf, the command will expect an integer constant or variable to be provided as an additional argument. For example:</para>
 		
 		<synopsis>
-		printf(&quot;This number is %i.\n&quot;, 10);
+printf(&quot;This number is %i.\n&quot;, 10);
 		</synopsis>
 		
 		<para>will print</para>
 		
 		<synopsis>
-		This number is 10.
+This number is 10.
 		</synopsis>
 		
 		<para>Similarly,</para>
 		
 		<synopsis>
-		int value = 1234;
-		printf(&quot;Constant is %i, variable is %i.\n&quot;, 10, value);
+int value = 1234;
+printf(&quot;Constant is %i, variable is %i.\n&quot;, 10, value);
 		</synopsis>
 		
 		<para>will print</para>
 		
 		<synopsis>
-		Constant is 10, variable is 1234.
+Constant is 10, variable is 1234.
 		</synopsis>
 		
 		<para>There are other <link linkend="readwrite.specifiers">specifiers</link> suitable for different types of data. The way data is presented by the specifier in the final output can also be controlled (e.g. for numerical arguments the number of decimal places, presence of exponentiation, etc., can be defined).</para>
@@ -287,23 +287,23 @@
 			<para>Consider this example datafile:</para>
 			
 			<synopsis>
-			Na      0.0     1.0     0.0
-			Cl      1.0     0.0     0.0
-			Na      0.0    -1.0     0.0
+Na      0.0     1.0     0.0
+Cl      1.0     0.0     0.0
+Na      0.0    -1.0     0.0
 			</synopsis>
 			
 			<para>Since the data items (element type and coordinates) are separated by whitespace, we need only provide the target variables to the relevant command - a formatting string, as is demanded by the <link linkend="command.ref.printf">printf</link> command, is not required. Using the <link linkend="command.ref.readline">readline</link> command, the following code will parse this data correctly:</para>
 			
 			<synopsis>
-				double x,y,z;
-				string el;
-				while (!eof()) { readline(el,x,y,z); newatom(el,x,y,z); }
+double x,y,z;
+string el;
+while (!eof()) { readline(el,x,y,z); newatom(el,x,y,z); }
 			</synopsis>
 			
 			<para>The variables <filename>el</filename>, <filename>x</filename>, <filename>y</filename>, and <filename>z</filename> will, at any one time, contain the element type and coordinates from one line of the file. In an analogous manner, the data may be written out again with the corresponding <link linkend="command.ref.writeline">writeline</link> command:</para>
 			
 			<synopsis>
-				for (atom i = aten.model.atoms; i; ++i) writeline(i.symbol,i,rx,i.ry,i.rz);
+for (atom i = aten.model.atoms; i; ++i) writeline(i.symbol,i,rx,i.ry,i.rz);
 			</synopsis>
 			
 			<para>Each line will have the individual data items separated by a single space.</para>
@@ -311,16 +311,16 @@
 			<para>The <link linkend="command.ref.readnext">readnext</link> command reads in a single delimited item from a source file, preserving the remainder of the input line for subsequent operations. If there is no data left on the current line, a new line is read and the first delimited item is returned. The example above might be written in a slightly clunkier form as:</para>
 			
 			<synopsis>
-				double x,y,z;
-				string el;
-				while (!eof())
-				{
-					readnext(el);
-					readnext(x);
-					readnext(y);
-					readnext(z);
-					newatom(el,x,y,z);
-				}
+double x,y,z;
+string el;
+while (!eof())
+{
+	readnext(el);
+	readnext(x);
+	readnext(y);
+	readnext(z);
+	newatom(el,x,y,z);
+}
 			</synopsis>
 			
 			<para>For all delimited reading operations, items of data read from the line are converted automatically into the type of the destination variable. So, the atom coordinates read in above, which are put into 'double'-type variables, could equally well be put into string variables. Standard C routines are used to convert data items in this way, and only some conversions make sense. For instance, attempting to read an item which is a proper character string (such as element symbol/name data) into a double or integer variable does not make sense. No error message will be raised, and the variables will likely be set to a value of zero (or whatever passes for 'zero' in the context of the type).</para>

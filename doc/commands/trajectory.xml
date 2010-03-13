@@ -28,7 +28,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			model m = addframe(&quot;new config&quot;);
+model m = addframe(&quot;new config&quot;);
 		</synopsis>
 	
 	</section>
@@ -47,7 +47,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			cleartrajectory();
+cleartrajectory();
 		</synopsis>
 		
 	</section>
@@ -66,7 +66,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			firstframe();
+fi	rstframe();
 		</synopsis>
 		
 	</section>
@@ -85,7 +85,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			lastframe();
+lastframe();
 		</synopsis>
 		
 	</section>
@@ -104,7 +104,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int success = loadtrajectory(&quot;/home/foo/md/water.HISf&quot;);
+int success = loadtrajectory(&quot;/home/foo/md/water.HISf&quot;);
 		</synopsis>
 		<para>opens and associated the formatted DL_POLY trajectory file 'water.HISf' with the current model.</para>
 		
@@ -124,7 +124,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			nextframe();
+nextframe();
 		</synopsis>
 		
 	</section>
@@ -143,7 +143,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			prevframe();
+prevframe();
 		</synopsis>
 		
 	</section>
@@ -162,7 +162,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			seekframe(10);
+seekframe(10);
 		</synopsis>
 		<para>seeks to the 10th frame of the current trajectory.</para>
 

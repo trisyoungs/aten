@@ -24,7 +24,6 @@
 	<!ENTITY guimouse SYSTEM "gui/mouse.xml">
 	<!--Commands-->
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
-	<!ENTITY types SYSTEM "commands/types.xml">
 	<!ENTITY typesaten SYSTEM "commands/types_aten.xml">
 	<!ENTITY typesatom SYSTEM "commands/types_atom.xml">
 	<!ENTITY typesbond SYSTEM "commands/types_bond.xml">
@@ -169,6 +168,7 @@
 
 	<!-- IMPORT / EXPORT -->
 	<chapter id="importexport"><title>Import / Export</title>
+		<indexterm zone="importexport"><primary>import/export</primary></indexterm>
 		&supportedformats;
 		&filters;
 		&trajectories;
@@ -182,29 +182,53 @@
  		&guimouse;
 	</chapter>
 
-	<!-- COMMANDS -->
+	<!-- Command Language -->
 	<chapter id="command"><title>Command Language</title>
-		&commandoverview;
-		<!-- 	* ((Command Index)) - Index of all available commands -->
+ 		&commandoverview; 
 		<section id="command.types"><title>Variable Types</title>
-			&types;
-&typesaten;
-&typesatom;
-&typesbond;
-&typesbound;
-&typeselement;
-&typesffatom;
-&typesffbound;
-&typesforcefield;
-&typesglyph;
-&typesglyphdata;
-&typesmeasurement;
-&typesmodel;
-&typespattern;
-&typespreferences;
-&typesregion;
-&typesunitcell;
-&typesvector;
+			<indexterm zone="command.types"><primary>variables</primary><secondary>types</secondary></indexterm>
+
+			<section id="command.types.overview"><title>Overview</title>
+				<indexterm zone="command.types.overview"><primary>variables</primary><secondary>types</secondary><tertiary>overview</tertiary></indexterm>
+	
+				<para>For variables in Aten that are of reference type (i.e. the non-standard types) various sub-variables and functions may be accessed in the same way class members are utilised in C++. Each non-standard variable type is listed here along with the types and descriptions of their available subvariables / members.</para>
+	
+				<para>In the same way that class members are accessed in C/C++, subvariables of reference types are accessed by use of the full stops '.' between member names. For instance, the <link linkend="command.types.atom">atom</link> type allows all the information of a given atom to be accessed. The following example illustrates the process of retrieving the third atom in the current model, finding its coordinates, and subsequently adjusting them:</para>
+	
+				<synopsis>
+atom a = aten.model.atoms[3];
+vector v = a.r;
+printf(&quot;Old coordinates are: %f %f %f\n&quot;, v.x, v.y, v.z);
+v.x += 4.0;
+a.r = v;
+printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
+				</synopsis>
+	
+				<para>Lots of paths are used here. Firstly, the global <link linkend="command.types.aten">aten</link> variable is used to get access to the current model and grab a reference to its third atom (aten.model.atoms[3]). Then, the coordinates of this atom are placed in a vector <emphasis>v</emphasis> by requesting the <emphasis>r</emphasis> subvariable from the stored <link linkend="command.types.atom">atom</link> reference. We then adjust the vector and store the new coordinates in the atom.</para>
+	
+				<para>All subvariables can be read, but not all can be written back to - these are read-only subvariables, and are indicated with 'ro' in the <emphasis>Access</emphasis> column in the following tables.</para>
+	
+				<para>Function members act in the same as subvariable members except that they take one or more arguments enclosed in parentheses immediately following the member name, just as command functions do.</para>
+
+			</section>
+	
+			&typesaten;
+			&typesatom;
+			&typesbond;
+			&typesbound;
+			&typeselement;
+			&typesffatom;
+			&typesffbound;
+			&typesforcefield;
+			&typesglyph;
+			&typesglyphdata;
+			&typesmeasurement;
+			&typesmodel;
+			&typespattern;
+			&typespreferences;
+			&typesregion;
+			&typesunitcell;
+			&typesvector;
 		</section>
 		<section id="command.ref"><title>Command Reference</title>
 			&commandatom;
@@ -276,7 +300,7 @@
 			&methodautopolyhedra;
 			&methodrebond;
 		</section>
-		&methodliterature;
+ 		&methodliterature; 
 	</chapter>
 	
 	<!-- Enums -->

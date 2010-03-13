@@ -33,7 +33,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			getview();
+getview();
 		</synopsis>
 	
 	</section>
@@ -52,7 +52,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			orthographic();
+orthographic();
 		</synopsis>
 	
 	</section>
@@ -71,7 +71,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			perspective();
+perspective();
 		</synopsis>
 	
 	</section>
@@ -90,7 +90,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			resetview();
+resetview();
 		</synopsis>
 		
 	</section>
@@ -110,7 +110,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			rotateview(10.0, 0.0);
+rotateview(10.0, 0.0);
 		</synopsis>
 		
 	</section>
@@ -156,7 +156,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			setview(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
+setview(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
 		</synopsis>
 		<para>sets a view with the z axis pointing up, and the y axis normal to the screen (i.e. rotated 90 degrees around the x axis)</para>
 	
@@ -176,11 +176,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			speedtest();
+speedtest();
 		</synopsis>
 		<para>spins the current model for the default of 100 rendering passes.</para>
 		<synopsis>
-			speedtest(2000);
+speedtest(2000);
 		</synopsis>
 		<para>spins the current model for 2000 rendering passes.</para>
 	
@@ -202,7 +202,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			translateview(0.0, 0.0, 1.0);
+translateview(0.0, 0.0, 1.0);
 		</synopsis>
 		
 	</section>
@@ -223,7 +223,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			viewalong(0, 0, -1);
+viewalong(0, 0, -1);
 		</synopsis>
 		<para>view the current model along the negative z-axis.</para>
 	
@@ -245,7 +245,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			viewalongcell(1, 0, 0);
+viewalongcell(1, 0, 0);
 		</synopsis>
 		<para>view the current model along the cell's x axis.</para>
 		
@@ -265,11 +265,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			zoomview(10.0);
+zoomview(10.0);
 		</synopsis>
 		<para>moves the camera 10 &#8491; forwards along the z-direction.</para>
 		<synopsis>
-			zoomview(-5);
+zoomview(-5);
 		</synopsis>
 		<para>moves the camera 5 &#8491; backwards along the z-direction.</para>
 

@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			copy();
+copy();
 		</synopsis>
 		
 	</section>
@@ -35,7 +35,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			cut();
+cut();
 		</synopsis>
 		
 	</section>
@@ -54,7 +54,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			delete();
+delete();
 		</synopsis>
 		
 	</section>
@@ -73,7 +73,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			paste();
+paste();
 		</synopsis>
 	
 	</section>
@@ -92,7 +92,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			redo();
+redo();
 		</synopsis>
 	
 	</section>
@@ -111,7 +111,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			undo();
+undo();
 		</synopsis>
 
 	</section>

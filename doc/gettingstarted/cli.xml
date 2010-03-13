@@ -8,13 +8,13 @@
 		<para>Two important things. Firstly, short options (e.g. '-b', '-d', etc.) may not be concatenated into one long specification of a short option (i.e. '-bd') - they must be given separately as '-b -d' or they will not be recognised. Secondly, the order of the given switches is important! Commonly, the actions of command-line switches and arguments do not depend on order, however in Aten this is not the case. For example:</para>
 		
 		<synopsis>
-			bob@pc:~> aten --nobond test1.xyz test2.xyz
+bob@pc:~> aten --nobond test1.xyz test2.xyz
 		</synopsis>
 		
 		<para>will load the models 'test1.xyz' and 'test2.xyz', preventing recalculation of bonds between atoms in both. However:</para>
 		
 		<synopsis>
-			bob@pc:~> aten test1.xyz --nobond test2.xyz
+bob@pc:~> aten test1.xyz --nobond test2.xyz
 		</synopsis>
 		
 		<para>will only prevent recalculation of bonds for the second model. The reason for acting on switches and arguments in the order they are encountered on the command line is to allow for flexibility, especially when using Aten as a non-graphical processor (for examples of this type of usage, see the <ulink url="http://www.projectaten.net/resources">resources</ulink> section of the website).</para>
@@ -55,7 +55,7 @@
 						<para>For example, to transmute all iron atoms into cobalt for a series of xyz files named 'complex_001.xyz', 'complex_002.xyz' etc.</para>
 						
 						<synopsis>
-							bob@pc: ~> aten --batch -c 'select(Fe); transmute(Co);'
+bob@pc: ~> aten --batch -c 'select(Fe); transmute(Co);'
 						</synopsis>
 					</listitem>
 				</varlistentry>
@@ -80,25 +80,25 @@
 						<para>For example, to start the GUI with a new model named 'cube' that has a cubic cell of 30 &#8491; side length:</para>
 						
 						<synopsis>
-							bob@pc:~> aten -c 'newmodel("cube"); cell(30,30,30,90,90,90);'
+bob@pc:~> aten -c 'newmodel("cube"); cell(30,30,30,90,90,90);'
 						</synopsis>
 						
 						<para>Similarly, to load a model and make a duplicate copy of the atoms (pasted into the same model):</para>
 						
 						<synopsis>
-							bob@pc:~> aten original.xyz -c 'selectall(); copy(); paste(10,10,10);'
+bob@pc:~> aten original.xyz -c 'selectall(); copy(); paste(10,10,10);'
 						</synopsis>
 						
 						<para>In both cases the GUI initialises itself without being told - this can be prevented with the <link linkend="command.ref.quit">quit</link> command. Consider the last example - to save the newly-expanded model and quit without ever launching the GUI:</para>
 						
 						<synopsis>
-							bob@pc:~> aten original.xyz -c 'selectall; copy; paste(10,10,10); savemodel(&quot;xyz&quot;, &quot;pasted.xyz&quot;); quit;'
+bob@pc:~> aten original.xyz -c 'selectall; copy; paste(10,10,10); savemodel(&quot;xyz&quot;, &quot;pasted.xyz&quot;); quit;'
 						</synopsis>
 						
 						<para>Multiple sets of commands may be given:</para>
 						
 						<synopsis>
-							bob@pc:~> aten source.xyz -c 'selectall; copy' target.xyz -c 'paste(10,10,10);'
+bob@pc:~> aten source.xyz -c 'selectall; copy' target.xyz -c 'paste(10,10,10);'
 						</synopsis>
 						
 						<para>Take care here - the commands provided act on the current model, i.e. the one that was most recently loaded. Of course, there are commands that select between the loaded models (see the list of <link linkend="command.groups.model">model commands</link>) but that would confuse this supposedly simple example, wouldn't it?</para>
@@ -134,7 +134,7 @@
 				
 					<para>For example, in a bash shell:</para>
 					<synopsis>
-						bob@pc:~> for num in 10.0 50.5 100.0; do aten --double d=$num -c 'printf("Value is %f\n", d); quit();' done
+bob@pc:~> for num in 10.0 50.5 100.0; do aten --double d=$num -c 'printf("Value is %f\n", d); quit();' done
 					</synopsis>
 					
 					</listitem>
@@ -154,7 +154,7 @@
 						
 						<para>For instance, to convert three DL_POLY CONFIG files and an xyz into mol2 format:</para>
 						<synopsis>
-							bob@pc:~> aten --export mol2 bio1.CONFIG bio2.CONFIG watercell.CONFIG random.xyz
+bob@pc:~> aten --export mol2 bio1.CONFIG bio2.CONFIG watercell.CONFIG random.xyz
 						</synopsis>
 						
 						<para>If specified in conjunction with the <link linkend="cli.switches.batch">--batch</link> switch, commands may be applied to each loaded model file before it is saved.</para>
@@ -166,7 +166,7 @@
 					<listitem>
 						<para>Manually map assigned atom typenames in an expression to the names defined here when expressions are written to a file. For example:</para>
 						<synopsis>
-							bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c 'saveexpression("dlpoly", "water.FIELD"); quit();'
+bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c 'saveexpression("dlpoly", "water.FIELD"); quit();'
 						</synopsis>
 						
 						<para>writes the water forcefield with the OW and HW atomtype names mapped to Ospc and Hspc respectively.</para>
@@ -271,7 +271,7 @@
 						<para>Manually map atom typenames occurring in model files to elements according to the rules defined here. For example:</para>
 						
 						<synopsis>
-							bob@pc:~> aten --map 'CX=C,N_=P'
+bob@pc:~> aten --map 'CX=C,N_=P'
 						</synopsis>
 						
 						<para>will result in atoms called 'CX' being mapped to carbon, and atoms called 'N_' mapped to phosphorus (for whatever reason). These mappings are attempted prior to any z-mapping scheme defined in the filter, and so will take precedence over standard typename-to-element conversions.</para>

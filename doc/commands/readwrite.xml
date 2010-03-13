@@ -30,7 +30,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			addreadoption(&quot;stripbrackets&quot;);
+addreadoption(&quot;stripbrackets&quot;);
 		</synopsis>
 	
 	</section>
@@ -49,12 +49,12 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string s;
-			while (!eof())
-			{
-				getline(s):
-				printf(&quot;%s\n&quot;, s);
-			} 
+string s;
+while (!eof())
+{
+	getline(s):
+	printf(&quot;%s\n&quot;, s);
+} 
 		</synopsis>
 		<para>Reads in and prints out all lines in the current source file.</para>
 		
@@ -74,7 +74,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string filename = filterfilename();
+string filename = filterfilename();
 		</synopsis>
 		<para>Puts the current source/destination filename in the variable filename.</para>
 
@@ -99,12 +99,12 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int iresult = find(&quot;Final Energy:&quot;);
+int iresult = find(&quot;Final Energy:&quot;);
 		</synopsis>
 		<para>searches for the string 'Final Energy' in the input file, placing the result of the search in the variable <emphasis>iresult</emphasis>.</para>
 		<synopsis>
-			string line;
-			int n = find(&quot;Optimised Geometry:&quot;, line);
+string line;
+int n = find(&quot;Optimised Geometry:&quot;, line);
 		</synopsis>
 		<para>searches for the string 'Optimised Geometry:' in the input file, placing the whole of the matching line from the input file in the variable <emphasis>line</emphasis>.</para>
 	
@@ -124,8 +124,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string nextline;
-			int n = getline(nextline);
+string nextline;
+int n = getline(nextline);
 		</synopsis>
 		<para>gets the next line from the file and places it in the variable <emphasis>nextline</emphasis>.</para>
 	
@@ -154,8 +154,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int i;
-			int success = nextarg(i);
+int i;
+int success = nextarg(i);
 		</synopsis>
 		
 	</section>
@@ -174,7 +174,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string char = peekchar();
+string char = peekchar();
 		</synopsis>
 		
 	</section>
@@ -193,7 +193,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int char = peekchari();
+int char = peekchari();
 		</synopsis>
 		
 	</section>
@@ -213,7 +213,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string text = readchars(80);
+string text = readchars(80);
 		</synopsis>
 		<para>reads the next 80 characters from the input file and puts it into the variable <emphasis>text</emphasis>.</para>
 		
@@ -237,7 +237,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double x = readdouble();
+double x = readdouble();
 		</synopsis>
 		<para>reads a floating point value into the variable <emphasis>x</emphasis>.</para>
 		
@@ -258,8 +258,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double data[45];
-			int success = readdoublearray(data, 45);
+double data[45];
+int success = readdoublearray(data, 45);
 		</synopsis>
 		<para>reads 45 double numbers into the array <emphasis>data</emphasis>.</para>
 		
@@ -283,7 +283,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int i = readint();
+int i = readint();
 		</synopsis>
 		<para>reads an integer number into the variable <emphasis>i</emphasis>.</para>
 		
@@ -304,8 +304,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int data[100];
-			int success = readintarray(data, 100);
+int data[100];
+int success = readintarray(data, 100);
 		</synopsis>
 		<para>reads 100 integer numbers into the array <emphasis>data</emphasis>.</para>
 		
@@ -326,8 +326,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double x,y,z;
-			int n = readline(x,y,z);
+double x,y,z;
+int n = readline(x,y,z);
 		</synopsis>
 		<para>reads a line from the file and places the first three delimited items on the line into the variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>.</para>
 	
@@ -348,8 +348,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double x,y,z;
-			int n = readlinef(&quot;%8.6f %8.6f %8.6f&quot;,x,y,z);
+double x,y,z;
+int n = readlinef(&quot;%8.6f %8.6f %8.6f&quot;,x,y,z);
 		</synopsis>
 		<para>reads a line from the file, assuming that the line contains three floating point values of 8 characters length, and separated by a space, into the three variables <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis>.</para>
 		
@@ -377,8 +377,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double d;
-			int n = readnext(d);
+double d;
+int n = readnext(d);
 		</synopsis>
 		<para>read the next delimited argument into the double variable <emphasis>d</emphasis>.</para>
 		
@@ -400,15 +400,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string data = &quot;rubbish ignore  Carbon  green  1.0 2.5 5.3&quot;;
-			string element, discard;
-			vector v;
-			int n = readvar(data,discard,discard,element,discard,v.x,v.y,v.z,discard);
-			printf(&quot;Element = %s, n = %i\n&quot;, element, n);
+string data = &quot;rubbish ignore  Carbon  green  1.0 2.5 5.3&quot;;
+string element, discard;
+vector v;
+int n = readvar(data,discard,discard,element,discard,v.x,v.y,v.z,discard);
+printf(&quot;Element = %s, n = %i\n&quot;, element, n);
 		</synopsis>
 		<para>outputs</para>
 		<synopsis>
-			Element = Carbon, n = 7
+Element = Carbon, n = 7
 		</synopsis>
 		<para>The character string in the variable <emphasis>data</emphasis> is parsed, with delimited chunks placed into the supplied variables. Note the repeated use of the variable <emphasis>discard</emphasis>, used to get rid of unwanted data. Also, note that there are not enough items in <emphasis>data</emphasis> to satisfy the final occurrence of <emphasis>discard</emphasis>, and so the function returns a value of 7 (as opposed to the actual number of target variables supplied, 8).</para>
 		
@@ -431,14 +431,14 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string a, b, data = &quot;abc def123456.0&quot;;
-			double d; int i, n;
-			n = readvarf(data,&quot;%3s %3s%4i%4f%8*&quot;,a,b,i,d);
-			printf(&quot;a = %s, b = %s, d = %f, i = %i, n = %i\n&quot;, a, b, d, i, n);
+string a, b, data = &quot;abc def123456.0&quot;;
+double d; int i, n;
+n = readvarf(data,&quot;%3s %3s%4i%4f%8*&quot;,a,b,i,d);
+printf(&quot;a = %s, b = %s, d = %f, i = %i, n = %i\n&quot;, a, b, d, i, n);
 		</synopsis>
 		<para>outputs</para>
 		<synopsis>
-			a = abc, b = def, d = 56.000000, i = 1234, n = 4
+a = abc, b = def, d = 56.000000, i = 1234, n = 4
 		</synopsis>
 		<para>The supplied format string contains a single space in between the two '%3s' specifiers, and is significant since it corresponds to actual (discarded) space when processing the format. Furthermore, the last specifier '%8*' (discard 8 characters) is not fulfilled by the <emphasis>data</emphasis> string, and so the number of arguments successfully parsed is 4, not 5.</para>
 		
@@ -458,7 +458,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			removereadoption(&quot;skipblanks&quot;);
+removereadoption(&quot;skipblanks&quot;);
 		</synopsis>
 	
 	</section>
@@ -477,7 +477,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			rewind();
+rewind();
 		</synopsis>
 		
 	</section>
@@ -496,7 +496,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			skipchars(15);
+skipchars(15);
 		</synopsis>
 		<para>discards the next 15 characters from the input file.</para>
 		
@@ -516,11 +516,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			skipline();
+skipline();
 		</synopsis>
 		<para>skips the next line in the file.</para>
 		<synopsis>
-			skipline(5);
+skipline(5);
 		</synopsis>
 		<para>discards 5 lines from the file.</para>
 		
@@ -541,7 +541,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			writeline(&quot;Number of atoms =&quot;, aten.model.natoms);
+writeline(&quot;Number of atoms =&quot;, aten.model.natoms);
 		</synopsis>
 		<para>writes a line indicating the number of atoms in the model to the current output file.</para>
 		
@@ -562,11 +562,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			writelinef(&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+writelinef(&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
 		</synopsis>
 		<para>writes a line indicating the number of atoms in the model to the current output file, e.g.:</para>
 		<synopsis>
-			Number of atoms =        3
+Number of atoms =        3
 		</synopsis>
 	
 	</section>
@@ -586,9 +586,9 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string s;
-			writevar(s,&quot;Number of atoms =&quot;, aten.model.natoms);
-			writeline(s);
+string s;
+writevar(s,&quot;Number of atoms =&quot;, aten.model.natoms);
+writeline(s);
 		</synopsis>
 		<para>same result as the example for the 'writeline' command, except that the final string is written to a variable first, and then the file.</para>
 		
@@ -610,9 +610,9 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string s;
-			writevarf(s,&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
-			writeline(s);
+string s;
+writevarf(s,&quot;%s = %8i\n&quot;, &quot;Number of atoms&quot;, aten.model.natoms);
+writeline(s);
 		</synopsis>
 		<para>same result as the example for the 'writelinef' command, except that the final string is written to a variable first, and then the file.</para>
 
