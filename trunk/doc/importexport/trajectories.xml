@@ -20,18 +20,18 @@
 			<para>An 'importtrajectory' filter is written in a slightly different way to other filter types. Since trajectory files may contain header data which is written once at the beginning of the file, preceeding the frame data, there are potentially two separate sets of data to read from trajectory files - header data and (individual) frame data. So, rather than putting the code to read this data directly in the main body of the filter, two functions should be defined instead, one for reading the header, and one for reading an individual frame. Note that, if a given trajectory format does not contain a header, the corresponding function may be left 'empty' (but must still be defined). The functions must be called 'readheader' and 'readframe' respectively, take no arguments, and must return an integer. A template for an 'importtrajectory' filter is thus:</para>
 
 			<synopsis>
-				filter(type='importtrajectory', name=&quot;Example Filter Template&quot;)
-				{
-				int readheader()
-				{
-					// Code to read header data goes here
-				}
-				
-				int readframe()
-				{
-					// Code to read frame data goes here
-				}
-				}
+filter(type='importtrajectory', name=&quot;Example Filter Template&quot;)
+{
+	int readheader()
+	{
+		// Code to read header data goes here
+	}
+	
+	int readframe()
+	{
+		// Code to read frame data goes here
+	}
+}
 			</synopsis>
 
 			<para>The functions must take responsibility for informing Aten when the desired data cannot be read. Both should return a value of '1' if the data was read successfully, and should return '0' if an error is encountered.</para>
@@ -43,19 +43,19 @@
 			<para>When opening a trajectory file with an 'importtrajectory' filter, the first thing Aten does is attempt to read any header information from the file by calling the 'readheader' function defined in the filter. Since a trajectory file may not contain a header, and consists simply of individual frames back to back, in these situations the readheader() function defined in the filter should not read any data. The filter definition then becomes simply:</para>
 
 			<synopsis>
-				filter(type='importtrajectory', name=&quot;Example Filter Template&quot;)
-				{
-					int readheader()
-					{
-						// No header, so just return
-						return 1;
-					}
-					
-					int readframe()
-					{
-						// Code to read frame data goes here
-					}
-				}
+filter(type='importtrajectory', name=&quot;Example Filter Template&quot;)
+{
+	int readheader()
+	{
+		// No header, so just return
+		return 1;
+	}
+	
+	int readframe()
+	{
+		// Code to read frame data goes here
+	}
+}
 			</synopsis>
 
 			<para>Here, the readheader() function always succeeds, so Aten always thinks it has successfully read a header, even if there isn't one.</para>

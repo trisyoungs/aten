@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			debug(&quot;parse&quot;);
+debug(&quot;parse&quot;);
 		</synopsis>
 	
 	</section>
@@ -35,7 +35,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string s = getenv(&quot;HOSTNAME&quot;);
+string s = getenv(&quot;HOSTNAME&quot;);
 		</synopsis>
 		<para>gets the name of the host Aten is running on (although what you would then usefully do with it I don't know).</para>
 		<para>Better examples can be found in the <ulink url="http://www.projectaten.net/resources">resources</ulink> section of the website.</para>
@@ -56,7 +56,7 @@
 			
 		<para>For example:</para>
 		<synopsis>
-			double d = getenvf(&quot;num&quot;);
+double d = getenvf(&quot;num&quot;);
 		</synopsis>
 		<para>gets the shell variable 'num' as a real number.</para>
 		
@@ -76,7 +76,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int i = getenvi(&quot;count&quot;);
+int i = getenvi(&quot;count&quot;);
 		</synopsis>
 		<para>gets the shell variable 'count' as an integer number.</para>
 		
@@ -96,7 +96,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gui();
+gui();
 		</synopsis>
 
 	</section>
@@ -106,13 +106,13 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			help command
+help command
 		</synopsis>
 		<para>Provide short help on the supplied <emphasis>command</emphasis>.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-			help cellaxes;
+help cellaxes;
 		</synopsis>
 	
 	</section>
@@ -145,7 +145,7 @@
 	
 		<para>For example:</para>
 		<synopsis>
-			seed(3242638);
+seed(3242638);
 		</synopsis>
 		
 	</section>
@@ -164,7 +164,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			quit();
+quit();
 		</synopsis>
 		
 	</section>

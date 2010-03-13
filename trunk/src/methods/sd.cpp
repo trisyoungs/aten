@@ -88,11 +88,14 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
 		else
 		{
+			srcmodel->calculateForces(srcmodel);
 			srcmodel->normaliseForces(5.0, TRUE);
 			newEnergy = lineMinimise(srcmodel);
 			deltaEnergy = newEnergy - currentEnergy;
 			srcmodel->calculateForces(srcmodel);
+			srcmodel->printForces();
 			newRms = srcmodel->rmsForce();
+			printf("RMSForce = %f\n", newRms);
 			// Check convergence criteria
 			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
 			currentEnergy = newEnergy;

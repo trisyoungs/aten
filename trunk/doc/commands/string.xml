@@ -28,14 +28,14 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string fullname = &quot;BobBobbinson&quot;;
-			string firstname = afterstr(name, &quot;Bob&quot;);
+string fullname = &quot;BobBobbinson&quot;;
+string firstname = afterstr(name, &quot;Bob&quot;);
 		</synopsis>
 		<para>sets the variable <emphasis>firstname</emphasis> to the value 'Bobbinson'.</para>
 		<synopsis>
-			string text1, text2;
-			text1 = &quot;No taxes on axes&quot;;
-			text2 = afterstr(text1, &quot;x&quot;);
+string text1, text2;
+text1 = &quot;No taxes on axes&quot;;
+text2 = afterstr(text1, &quot;x&quot;);
 		</synopsis>
 		<para>results in <emphasis>text2</emphasis> having a value of 'es on axes'.</para>
 	
@@ -55,7 +55,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			double x = atof(&quot;1.099d&quot;);
+double x = atof(&quot;1.099d&quot;);
 		</synopsis>
 		<para>would set <emphasis>x</emphasis> to the value '1.099'.</para>
 		
@@ -75,7 +75,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int i = atoi(&quot;000023&quot;);
+int i = atoi(&quot;000023&quot;);
 		</synopsis>
 		<para>would set <emphasis>i</emphasis> to the value '23'.</para>
 	
@@ -96,14 +96,14 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string source, target;
-			source = &quot;Engelbert&quot;;
-			target = beforestr(source, &quot;e&quot;);
+string source, target;
+source = &quot;Engelbert&quot;;
+target = beforestr(source, &quot;e&quot;);
 		</synopsis>
 		<para>places the text &quot;Eng&quot; in the variable <emphasis>target</emphasis>.</para>
 		<synopsis>
-			string text1 = &quot;No taxes on axes&quot;, text2;
-			text2 = beforestr(text1, &quot; ax&quot;);
+string text1 = &quot;No taxes on axes&quot;, text2;
+text2 = beforestr(text1, &quot; ax&quot;);
 		</synopsis>
 		<para>places the text &quot;No taxes on&quot; in the variable <emphasis>text2</emphasis>.</para>
 	
@@ -124,8 +124,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string poem = &quot;six sixes are thirty-six&quot;;
-			int count = contains(poem, &quot;six&quot;);
+string poem = &quot;six sixes are thirty-six&quot;;
+int count = contains(poem, &quot;six&quot;);
 		</synopsis>
 		<para>sets <emphasis>count</emphasis> to '3'.</para>
 	
@@ -151,7 +151,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string num = ftoa(100.001);
+string num = ftoa(100.001);
 		</synopsis>
 		<para>would set <emphasis>num</emphasis> to the value &quot;100.001&quot;.</para>
 		
@@ -171,7 +171,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string num = itoa(54);
+string num = itoa(54);
 		</synopsis>
 		<para>would set <emphasis>num</emphasis> to the value &quot;54&quot;.</para>
 		
@@ -192,13 +192,13 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			string abc = stripchars(&quot;Oodles of noodles&quot;, &quot;o&quot;);
+string abc = stripchars(&quot;Oodles of noodles&quot;, &quot;o&quot;);
 		</synopsis>
 		<para>places the text &quot;Odles f ndles&quot; in the variable <emphasis>abc</emphasis>.</para>
 		<synopsis>
-			string abc;
-			abc = &quot;Oodles of noodles&quot;;
-			abc = stripchars(abc, &quot;aeiou&quot;);
+string abc;
+abc = &quot;Oodles of noodles&quot;;
+abc = stripchars(abc, &quot;aeiou&quot;);
 		</synopsis>
 		<para>strips all vowels from the input string, placing the text &quot;Odls f ndls&quot; in the variable <emphasis>abc</emphasis>.</para>
 

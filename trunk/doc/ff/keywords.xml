@@ -17,7 +17,7 @@
 
 			<para>For example:</para>
 			<synopsis>
-				name "Test Forcefield"
+name "Test Forcefield"
 			</synopsis>
 			<para>sets the name of the forcefield to "Test Forcefield".</para>
 				
@@ -35,7 +35,7 @@
 			
 			<para>For example:</para>
 			<synopsis>
-				units kcal
+units kcal
 			</synopsis>
 			<para>indicates that any energetic values supplied in the forcefield are in kilocalories per mole.</para>
 				
@@ -72,7 +72,7 @@
 			<para>The format of lines within the 'angles' block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>typename_k</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
+<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>typename_k</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
 			</synopsis>
 <!-- 			<XXXX Does atomLabel need to still use power(2,n)?</XXXX> -->
 			
@@ -80,9 +80,9 @@
 			
 			<para>For example:</para>
 			<synopsis>
-				angles harmonic
-				HT  CT  HT   80.0   109.4
-				end
+angles harmonic
+HT  CT  HT   80.0   109.4
+end
 			</synopsis>
 			<para>provides parameters for an H-C-H angle using the harmonic potential.</para>
 			
@@ -105,16 +105,16 @@
 			<para>The format of lines within the 'bonds' block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
+<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
 			</synopsis>
 			
 			<para>The two ''typenames'' identify the particular bond to which the parameters are relevant. Note that typenames given for a bond ''i''-''j'' will also match a bond ''j''-''i''. Data parameters should be provided in the required order for the specified <link linkend="ff.forms.bond">form</link>.</para>
 			
 			<para>For example:</para>
 			<synopsis>
-				bonds constraint
-				HT  CT  4000.0  1.06
-				end
+bonds constraint
+HT  CT  4000.0  1.06
+end
 			</synopsis>
 			<para>provides parameters for an H-C bond using the constraint potential.</para>
 
@@ -135,17 +135,17 @@
 			<para>The format of individual lines within the block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>data1</emphasis>  [<emphasis>data2</emphasis> ...]
+<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>data1</emphasis>  [<emphasis>data2</emphasis> ...]
 			</synopsis>
 			
 			<para>Following the identifying <emphasis>typeid</emphasis> and <emphasis>typename</emphasis> data items are given one after the other and in the order they are declared in the block keyword argument.</para>
 
 			<para>For example:</para>
 			<synopsis>
-				data &quot;string dogtype, int bridge, int likespasta, double numtoes&quot;
-				1	OW	"redsetter"	1	0	9
-				2	HW	"dalmation"	1	1	64
-				end
+data &quot;string dogtype, int bridge, int likespasta, double numtoes&quot;
+1	OW	"redsetter"	1	0	9
+2	HW	"dalmation"	1	1	64
+end
 			</synopsis>
 			<para>This defines a quartet of extra data (random, odd data...) for each of the specified atom types.</para>
 
@@ -166,21 +166,21 @@
 			<para>The format of lines within the 'defines' block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>name</emphasis>  &quot;<emphasis>NETA</emphasis>&quot;
+<emphasis>name</emphasis>  &quot;<emphasis>NETA</emphasis>&quot;
 			</synopsis>
 
 			<para>The NETA descriptions provided for each definition <emphasis>must</emphasis> be valid, or the forcefield will not be loaded. In subsequent NETA definitions for atom types the definitions may be inserted by stating '$name'. For example:</para>
 			
 			<synopsis>
-				defines
-				water_oxygen	"-O(nh=2,nbonds=2)"
-				end
-				
-				...
-				
-				types
-				1       HW2     H       "nbonds=1,$water_oxygen"              "Water hydrogen"
-				end
+defines
+water_oxygen	"-O(nh=2,nbonds=2)"
+end
+
+...
+
+types
+1       HW2     H       "nbonds=1,$water_oxygen"              "Water hydrogen"
+end
 			</synopsis>
 			
 		</section>
@@ -202,15 +202,15 @@
 			<para>The format of individual lines in 'equivalents' block is:</para>
 			
 			<synopsis>
-				<emphasis>alias</emphasis>  <emphasis>typename</emphasis>  [<emphasis>typename ...</emphasis>]
+<emphasis>alias</emphasis>  <emphasis>typename</emphasis>  [<emphasis>typename ...</emphasis>]
 			</synopsis>
 			
 			<para>In the waffle above, aliasing the three hydrogens H1, H2, and H3 to a single typename 'H1' can be done as follows:</para>
 			
 			<synopsis>
-				equivalents
-				H1   H1  H2  H3
-				end
+equivalents
+H1   H1  H2  H3
+end
 			</synopsis>
 			<para>Note that the aliased name does not have to be an atomtype name already defined in the <link linkend="ff.ref.types">types</link> section.</para>
 		
@@ -228,8 +228,8 @@
 
 			<para>For example:</para>
 			<synopsis>
-				function
-				end
+function
+end
 			</synopsis>
 			<para>defines the function to be used when generation of a bond term is required. See the <link linkend="ff.rules.functions">functions</link> section in rule-based forcefields for more information and a list of valid function declarations that may be used.</para>
 
@@ -250,17 +250,17 @@
 			<para>The format of individual lines within the block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>data1</emphasis>  [<emphasis>data2</emphasis> ...]
+<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>data1</emphasis>  [<emphasis>data2</emphasis> ...]
 			</synopsis>
 			
 			<para>Following the identifying <emphasis>typeid</emphasis> and <emphasis>typename</emphasis> data items are given one after the other and in the order they are declared in the block keyword argument.</para>
 
 			<para>For example:</para>
 			<synopsis>
-				generator &quot;string altname, double radius, double p, int i&quot;
-				1	OW	"watero"	3.16	1.0	16
-				2	HW	"waterh"	0.0	0.0	1
-				end
+generator &quot;string altname, double radius, double p, int i&quot;
+1	OW	"watero"	3.16	1.0	16
+2	HW	"waterh"	0.0	0.0	1
+end
 			</synopsis>
 
 		</section>
@@ -280,7 +280,7 @@
 			<para>The format of individual lines within the block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>q</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis> ...]
+<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>q</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis> ...]
 			</synopsis>
 			
 			<para>The ''form'' parameter specified the form of short-range interaction potential to use for each of the following atomtypes. ''typeid'' and ''typename'' refer to a single type defined in the 'types' section, ''q'' is the atomic charge of this atomtype, and then follows the data describing the interaction. The order of the values given should correspond to the order of parameters expected for the specified <link linkend="ff.forms.vdw">functional form</link>.</para>
@@ -288,7 +288,7 @@
 			<para>For example, the Lennard-Jones potential takes two data ''epsilon'' and ''sigma'' in that order. For a chloride atomtype with ID 24, if ''epsilon'' = 0.5, ''sigma'' equals 3.0, and the charge on the atomtype is -1 ''e'', the corresponding entry in the 'inter' block will be:</para>
 			
 			<synopsis>
-				24   Cl    -1.0   0.5   3.0
+24   Cl    -1.0   0.5   3.0
 			</synopsis>
 			
 			<para>Some functional forms have default values for some parameters used in the functional form, and need not be specified (if there are any, these will be detailed in the <link linkend="ff.forms.vdw">functional form</link> chapter). For this reason, it is important not to add any unnecessary extra data to the entries in the 'inter' block, since this may overwrite a default parameter that results in literal chaos.</para>
@@ -312,23 +312,23 @@
 			<para>The format of lines within the 'torsions' block is as follows:</para>
 			
 			<synopsis>
-				<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>typename_k</emphasis>  <emphasis>typename_l</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
+<emphasis>typename_i</emphasis>  <emphasis>typename_j</emphasis>  <emphasis>typename_k</emphasis>  <emphasis>typename_l</emphasis>  <emphasis>data1</emphasis> [<emphasis>data2</emphasis>...]
 			</synopsis>
 			
 			<para>The four ''typenames'' identify the particular torsion to which the parameters are relevant. Note that typenames given for a torsion ''i''-''j''-''k''-''l'' will also match a torsion ''l''-''k''-''j''-''i''. Data parameters should be provided in the required order for the specified <link linkend="ff.forms.torsion">form</link>.</para>
 			
 			<para>For example:</para>
 			<synopsis>
-				torsions cos
-				HT  CT  OC  HO   3.0   5.0   0.0
-				end
+torsions cos
+HT  CT  OC  HO   3.0   5.0   0.0
+end
 			</synopsis>
 			<para>provides parameters for an H-C-O-H torsion using the cosine potential.</para>
 			<synopsis>
-				torsions cos3 0.8333333 0.25
-				CT  CT  CT  O1   1.0  -2.0   0.0
-				CT  CT  CT  O2   0.5  -1.4   1.0
-				end
+torsions cos3 0.8333333 0.25
+CT  CT  CT  O1   1.0  -2.0   0.0
+CT  CT  CT  O2   0.5  -1.4   1.0
+end
 			</synopsis>
 			<para>defines two C-C-C-O torsions of the triple cosine form, and with custom scale factors.</para>
 
@@ -346,16 +346,16 @@
 			
 			<para>The format of each line in the 'types' block is as follows:</para>
 			<synopsis>
-				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>element</emphasis>  <emphasis>NETA</emphasis>  [<emphasis>description</emphasis>]
+<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>element</emphasis>  <emphasis>NETA</emphasis>  [<emphasis>description</emphasis>]
 			</synopsis>
 			
 			<para>The ''id'' is an integer number used to identify the type. It should be positive, and must be unique amongst all those defined in a single forcefield. ''typename'' is the actual name of the atom type ('OW', 'C1', 'N_ar' etc.), and is referred to in the other sections of the forcefield file, and ''element'' is the type's element symbol as found in the periodic table ('O', 'C', 'N', etc.). The ''type description'' defining how Aten should recognise this particular type follows (in quotes if necessary), and then optionally a short text describing the type (which appears in lists within the program to help identify particular types). Atom types may be defined over multiple 'types' blocks within the same file if necessary, i.e. more than one 'types' block may exist, but all type IDs must be unique over all such blocks.</para>
 			
 			<para>For example:</para>
 			<synopsis>
-				types
-				35  CT  C  &quot;nbonds=4&quot;  &quot;Simple tetrahedral carbon&quot;
-				end
+types
+35  CT  C  &quot;nbonds=4&quot;  &quot;Simple tetrahedral carbon&quot;
+end
 			</synopsis>
 			<para>describes a bog-standard tetrahedral carbon called 'CT', and assigns it an ID of 35.</para>
 			
@@ -384,16 +384,16 @@
 			
 			<para>The format of each line in the 'uatypes' block is as follows:</para>
 			<synopsis>
-				<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>element</emphasis>  <emphasis>mass</emphasis>  <emphasis>NETA</emphasis>  [<emphasis>description</emphasis>]
+<emphasis>typeid</emphasis>  <emphasis>typename</emphasis>  <emphasis>element</emphasis>  <emphasis>mass</emphasis>  <emphasis>NETA</emphasis>  [<emphasis>description</emphasis>]
 			</synopsis>
 			
 			<para>The ''id'' is an integer number used to identify the type. It should be positive, and must be unique amongst all those defined in a single forcefield. ''typename'' is the actual name of the atom type ('OW', 'C1', 'N_ar' etc.), and is referred to in the other sections of the forcefield file, and ''element'' is the type's element symbol as found in the periodic table ('O', 'C', 'N', etc.). The ''type description'' defining how Aten should recognise this particular type follows in quotes, and then optionally a short text describing the type (which appears in lists within the program to help identify particular types). The ''mass'' is the united atom mass of the type (i.e. the sum of heavy and light atom masses). Atom types may be defined over multiple 'types' blocks within the same file if necessary, i.e. more than one 'types' block may exist, but all type IDs must be unique over all such blocks.</para>
 			
 			<para>For example:</para>
 			<synopsis>
-				uatypes
-				10  CH2  C  14.0265  &quot;nbonds=2,nh=0&quot;  &quot;United atom methylene carbon&quot;
-				end
+uatypes
+10  CH2  C  14.0265  &quot;nbonds=2,nh=0&quot;  &quot;United atom methylene carbon&quot;
+end
 			</synopsis>
 			<para>describes a united-atom methylene carbon, with mass of 14.0265 (C+2H).</para>
 			
@@ -422,18 +422,18 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			bonds harmonic
-			CT    H*    4184.0    1.06
-			end
+bonds harmonic
+CT    H*    4184.0    1.06
+end
 		</synopsis>
 		<para>will describe bonds between 'CT' and any other atom beginning with an 'H'.</para>
 		
 		<para>Using a '*' on its own will match any typename in that position. As an extreme example:</para>
 		
 		<synopsis>
-			angles harmonic
-			*     *     *     418.4      109.4
-			end
+angles harmonic
+*     *     *     418.4      109.4
+end
 		</synopsis>
 		<para>will match any angle. Be careful - when Aten is creating expressions and searching for specific interactions between atom types, as soon as an intramolecular definition is found that matches it is used, and no further searching is done. So, loose definitions involving wildcards should be put near to the end of the block in which they occur.</para>
 			

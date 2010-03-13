@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			clearpatterns();
+clearpatterns();
 		</synopsis>
 	
 	</section>
@@ -35,7 +35,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			createpatterns();
+createpatterns();
 		</synopsis>
 		
 	</section>
@@ -62,11 +62,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			pattern p = currentpattern(&quot;liquid&quot;);
+pattern p = currentpattern(&quot;liquid&quot;);
 		</synopsis>
 		<para>sets the pattern named 'liquid' in the current model to be the current pattern, setting its reference in the variable <emphasis>p</emphasis>.</para>
 		<synopsis>
-			pattern p = currentpattern();
+pattern p = currentpattern();
 		</synopsis>
 		<para>returns a reference to the current pattern.</para>
 			
@@ -90,11 +90,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			pattern p = getpattern(&quot;solid&quot;);
+pattern p = getpattern(&quot;solid&quot;);
 		</synopsis>
 		<para>gets the pattern named 'solid' in the current model, setting its reference in the variable <emphasis>p</emphasis>.</para>
 		<synopsis>
-			getpattern(3);
+getpattern(3);
 		</synopsis>
 		<para>gets the third pattern in the current model.</para>
 		
@@ -114,7 +114,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			listpatterns();
+listpatterns();
 		</synopsis>
 	
 	</section>
@@ -135,7 +135,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			pattern p = newpattern(&quot;water&quot;, 100, 3);
+pattern p = newpattern(&quot;water&quot;, 100, 3);
 		</synopsis>
 		<para>creates a new pattern description of 100 molecules of 3 atoms each named 'water' (i.e. 100 water molecules) in the current model, and returns its reference</para>
 	

@@ -1,4 +1,4 @@
-/*
+	/*
 	*** Qt select filter dialog declaration
 	*** src/gui/selectfilter.h
 	Copyright T. Youngs 2007-2009

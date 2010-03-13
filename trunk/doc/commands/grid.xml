@@ -26,7 +26,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			addgridpoint(4, 1, 15, 4.123);
+addgridpoint(4, 1, 15, 4.123);
 		</synopsis>
 		<para>set the grid value at point { 4,1,15 } in the dataset to 4.123.</para>
 		
@@ -45,7 +45,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			addnextgridpoint(20.0);
+addnextgridpoint(20.0);
 		</synopsis>
 		<para>sets the next grid point value to be 20.0.</para>
 		
@@ -64,7 +64,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			finalisegrid();
+finalisegrid();
 		</synopsis>
 		
 	</section>
@@ -86,7 +86,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridalpha(0.5);
+gridalpha(0.5);
 		</synopsis>
 		
 	</section>
@@ -112,11 +112,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridaxes(1, 0, 0, 0, 1, 0, 0, 0, 1);
+gridaxes(1, 0, 0, 0, 1, 0, 0, 0, 1);
 		</synopsis>
 		<para>sets a cubic system of axes for the current grid.</para>
 		<synopsis>
-			gridaxes(0.8, 0, 0, 0.1, 0.6, 0, 0, 0, 0.7);
+gridaxes(0.8, 0, 0, 0.1, 0.6, 0, 0, 0, 0.7);
 		</synopsis>
 		<para>sets a monoclinic system of axes for the current grid.</para>
 		
@@ -138,7 +138,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridcolour(1.0, 1.0, 0.0);
+gridcolour(1.0, 1.0, 0.0);
 		</synopsis>
 		<para>sets the (positive) surface colour to yellow.</para>
 		
@@ -160,7 +160,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridcolournegative(0.9, 0.9, 0.9);
+gridcolournegative(0.9, 0.9, 0.9);
 		</synopsis>
 		<para>sets the negative surface colour to off-white.</para>
 		
@@ -179,11 +179,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridcolourscale(4);
+gridcolourscale(4);
 		</synopsis>
 		<para>colours the grid data according to colourscale 4.</para>
 		<synopsis>
-			gridcolourscale(0);
+gridcolourscale(0);
 		</synopsis>
 		<para>uses the internal colour(s) specified for the grid.</para>
 		
@@ -202,7 +202,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridcubic(0.5);
+gridcubic(0.5);
 		</synopsis>
 		<para>sets up a cubic system of axes, each grid point 0.5 &#8491; apart in all directions.</para>
 		
@@ -221,7 +221,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridlooporder("zyx");
+gridlooporder("zyx");
 		</synopsis>
 		<para>sets the loop order to the reverse of the default, so that the z-index is filled first.</para>
 		
@@ -242,7 +242,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridorigin(0, 10, 0);
+gridorigin(0, 10, 0);
 		</synopsis>
 		<para>sets the grid origin to be offset 10 &#8491; along the y-axis.</para>
 		
@@ -263,7 +263,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridortho(0.5, 0.5, 0.8);
+gridortho(0.5, 0.5, 0.8);
 		</synopsis>
 		<para>sets up a system of axes elongated in the z-axis.</para>
 		
@@ -284,7 +284,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridsize(64, 128, 64);
+gridsize(64, 128, 64);
 		</synopsis>
 		<para>initialises the current grid to hold a total of (gets calculator...) 524,288 points.</para>
 		
@@ -303,7 +303,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridstyle("triangles");
+gridstyle("triangles");
 		</synopsis>
 		<para>draws the current grid as a triangle mesh.</para>
 		
@@ -326,7 +326,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridusez("on");
+gridusez("on");
 		</synopsis>
 		
 	</section>
@@ -348,7 +348,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			gridvisible(FALSE);
+gridvisible(FALSE);
 		</synopsis>
 		
 	</section>
@@ -366,7 +366,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			grid density = loadgrid("density.pdens");
+grid density = loadgrid("density.pdens");
 		</synopsis>
 		<para>loads a grid called 'density.pdens' into the current model.</para>
 		
@@ -385,7 +385,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			grid g = newgrid("charlie");
+grid g = newgrid("charlie");
 		</synopsis>
 		<para>creates a new grid called, for some reason, 'charlie'.</para>
 		

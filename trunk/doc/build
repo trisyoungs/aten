@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Check that a directory parameter was supplied
+TARGETDIR=$1
+if [ "$TARGETDIR" == "" ]
+then
+  echo "*********"
+  echo "********* Warning - Directory name for website not supplied."
+  echo "*********           Defaulting to 'Beta'"
+  echo "*********"
+fi
+
+echo $TARGETDIR
+
 # Fix MathML usage in sgmltools-lite
 #export SGML_CATALOG_FILES=~/.docbook/catalog.txt
 
@@ -14,23 +26,73 @@ echo "     version.h (ATENVERSION)  : $ATENVERSION"
 echo "     version.h (ATENDATE)     : $ATENDATE"
 echo "     version.h (ATENURL)      : $ATENURL"
 
-rm -rf aten-versioned.xml
+rm -rf aten-versioned.xml examples-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" examples.xml > examples-versioned.xml
 
-# Generate Chunked HTML (with xsltproc)
-rm -rf html
-mkdir html
-xsltproc     --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./html/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 /usr/share/xml/docbook/stylesheet/nwalsh/1.73.2/xhtml/chunk.xsl aten.xml
-cp -r images html/
-mv html/ff.forms.torsion.html html/ff.forms.torsion.xhtml
+#
+# Generate Chunked HTML Examples
+#
+rm -rf codeexamples
+mkdir codeexamples
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./codeexamples/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl examples-versioned.xml
+# Rewrite links
+cd codeexamples
+for a in *.html
+do
+  # Process files to
+  # 1) Rewrite links so they work in the website
+  # 2) Remove blank extraneous line from synopsis elements
+  sed -n '
+  1h
+  1!H
+  $ {
+	g
+	s/\n\t*<\/pre/<\/pre/g
+	s/\([a-z\.]*\)\.html/manual.php?id=Beta\&page=\1.xhtml/g
+	p
+  }' $a > ${a/.html/.xhtml}
+done
+rm *.html 
+cd ../
 
-#for a in html #pdf
-#do
-#  rm -rf aten.$a
-#  mkdir aten.$a
-#  cp -r images aten.$a
-#  docbook2$a --output aten.$a aten-versioned.xml
-#done
+#
+# Generate Chunked HTML Manual (with xsltproc)
+#
+rm -rf usermanual
+mkdir usermanual
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./usermanual/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl aten-versioned.xml
+cp -r images usermanual/
+# Rewrite links
+cd usermanual
+for a in *.html
+do
+  # Process files to
+  # 1) Rewrite links so they work in the website
+  # 2) Remove blank extraneous line from synopsis elements
+  sed -n '
+  1h
+  1!H
+  $ {
+	g
+	s/\n\t*<\/pre/<\/pre/g
+	s/\([a-z\.]*\)\.html/manual.php?id=Beta\&page=\1.xhtml/g
+	p
+  }' $a > ${a/.html/.xhtml}
+done
+rm *.html 
+cd ../
+
+#
+# Generate Single Page HTML Manual (with xsltproc)
+#
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc aten.xsl aten-versioned.xml > manual.html
 
 # Tidy up
-rm aten-versioned.xml
+rm aten-versioned.xml aten.xsl

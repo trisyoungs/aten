@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			disorder(50);
+disorder(50);
 		</synopsis>
 		<para>runs 50 cycles of the disordered builder.</para>
 	
@@ -36,7 +36,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			nmols(300);
+nmols(300);
 		</synopsis>
 		<para>requests that the current model, whatever it is, should be used in disordered building and that there should be 300 copies of the model in the new system.</para>
 	
@@ -56,7 +56,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			listcomponents();
+listcomponents();
 		</synopsis>
 		
 	</section>
@@ -77,7 +77,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			regioncentre(5.0, 7.0, 6.0);
+regioncentre(5.0, 7.0, 6.0);
 		</synopsis>
 		<para>sets the centre of the current model's region to {5.0, 7.0, 6.0}.</para>
 	
@@ -115,7 +115,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			regiongeometry(10.0, 10.0, 3.0);
+regiongeometry(10.0, 10.0, 3.0);
 		</synopsis>
 		<para>sets the geometry of the region for the current model. For example, if the region was of type 'sphere' this would create an elongated ellipsoid.</para>
 		
@@ -151,7 +151,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			regionoverlap(&quot;false&quot;);
+regionoverlap(&quot;false&quot;);
 		</synopsis>
 		<para>restricts the current model to the subspace of its defined region that does not overlap with any other region.</para>
 		
@@ -186,7 +186,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-		regionshape(&quot;sphere&quot;);
+regionshape(&quot;sphere&quot;);
 		</synopsis>
 		<para>restricts the current model to a spherical region of the cell.</para>
 		
@@ -210,11 +210,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			vdwscale(0.75);
+vdwscale(0.75);
 		</synopsis>
 		<para>scales all VDW radii by 0.75 in the calculation.</para>
 		<synopsis>
-			double currentscale = vdwscale();
+dosuble currentscale = vdwscale();
 		</synopsis>
 		<para>returns the current VDW scaling factor that will bbe applied.</para>
 		

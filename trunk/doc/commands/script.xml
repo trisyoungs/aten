@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			listscripts();
+listscripts();
 		</synopsis>
 	
 	</section>
@@ -40,7 +40,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			loadscript(&quot;scripts/liquid-water.txt&quot;, &quot;water&quot;);
+loadscript(&quot;scripts/liquid-water.txt&quot;, &quot;water&quot;);
 		</synopsis>
 		<para>loads the script from 'scripts/liquid-water.txt' and gives it the nickname 'water'.</para>
 	
@@ -60,7 +60,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			runscript(&quot;water&quot;);
+runscript(&quot;water&quot;);
 		</synopsis>
 		<para>executes the water script loaded in the previous example.</para>
 	

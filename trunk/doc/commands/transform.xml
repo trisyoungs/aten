@@ -44,15 +44,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			axisrotate(4, 5, 90.0);
+axisrotate(4, 5, 90.0);
 		</synopsis>
 		<para>rotates the current selection 90 degrees about the axis formed by the vector between atom ids 4 and 5 (4-&gt;5).</para>
 		<synopsis>
-			axisrotate(0, 1, 0, -52.0);
+axisrotate(0, 1, 0, -52.0);
 		</synopsis>
 		<para>rotates the current selection -52 degrees about the y-axis.</para>
 		<synopsis>
-			axisrotate(0, 1, 0, -52.0, 4.0, 4.0, 4.0);
+axisrotate(0, 1, 0, -52.0, 4.0, 4.0, 4.0);
 		</synopsis>
 		<para>rotates the current selection -52 degrees about the y-axis, but with the rotation centre at {4.0,4.0,4.0}.</para>
 	
@@ -77,7 +77,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			centre(0.0, 0.0, 15.0);
+centre(0.0, 0.0, 15.0);
 		</synopsis>
 		<para>centres the current selection at the coordinates (0 0 15).</para>
 		
@@ -97,7 +97,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			flipx();
+flipx();
 		</synopsis>
 		
 	</section>
@@ -116,7 +116,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			flipy();
+flipy();
 		</synopsis>
 		
 	</section>
@@ -135,7 +135,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			flipz();
+flipz();
 		</synopsis>
 		
 	</section>
@@ -229,11 +229,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			matrixconvert(1, 2, 1, 3, 1, 4, 10, 11, 12, 13, 14, 15);
+matrixconvert(1, 2, 1, 3, 1, 4, 10, 11, 12, 13, 14, 15);
 		</synopsis>
 		<para>defines a the current selection's frame of reference as (in terms of atom IDs) X=(1-&gt;2), Y=(1-&gt;3), and Z=(1-&gt;4), which will be rotated such that it corresponds to the new frame of reference (again defined by atom IDs) X=(10-&gt;11), Y=(12-&gt;13), and Z=(14-&gt;15).</para>
 		<synopsis>
-			matrixconvert -0.7348 -0.0192 -0.678 0.4979 0.6635 -0.5584 0.4606 -0.7479 -0.47801 1 0 0 0 1 0 0 0 1 
+matrixconvert -0.7348 -0.0192 -0.678 0.4979 0.6635 -0.5584 0.4606 -0.7479 -0.47801 1 0 0 0 1 0 0 0 1 
 		</synopsis>
 		<para>defines a the current selection's frame of reference as the vectors X={-0.7348, -0.0192, -0.678}, Y={0.4979, 0.6635, -0.5584}, and Z={0.4606, -0.7479, -0.47801}, which will be rotated into the standard reference frame.</para>
 
@@ -284,15 +284,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, 1);
+matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, 1);
 		</synopsis>
 		<para>does absolutely nothing (multiplying by the identity matrix).</para>
 		<synopsis>
-			matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, -1);
+matrixtransform(1, 0, 0, 0, 1, 0, 0, 0, -1);
 		</synopsis>
 		<para>mirrors the current selection in the xy plane.</para>
 		<synopsis>
-			matrixtransform(0.5, 0, 0, 0, 0.5, 0, 0, 0, -1);
+matrixtransform(0.5, 0, 0, 0, 0.5, 0, 0, 0, -1);
 		</synopsis>
 		<para>scales the x and y-coordinates of all selected atoms by 0.5, leaving the z coordinates intact.</para>
 	
@@ -365,7 +365,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			setdistance(1,4,4.9);
+setdistance(1,4,4.9);
 		</synopsis>
 		<para>sets the distance between atoms 1 and 4 to be 4.9 &#8491;.</para>
 		
@@ -387,7 +387,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			translate(1, 0, 0);
+translate(1, 0, 0);
 		</synopsis>
 		<para>moves the current selection 1 &#8491; along the x axis.</para>
 	
@@ -409,7 +409,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			translateatom(1, 0, -1);
+translateatom(1, 0, -1);
 		</synopsis>
 		<para>translates the current atom 1 &#8491; along x and -1 &#8491; along z.</para>
 		
@@ -431,7 +431,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			translatecell(0, 0.5, 0);
+translatecell(0, 0.5, 0);
 		</synopsis>
 		<para>translates the current selection by an amount equivalent to half of the current cell's B vector.</para>
 	
@@ -453,7 +453,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			translateworld(0, 0, 10);
+translateworld(0, 0, 10);
 		</synopsis>
 		<para>translates the current selection 10 &#8491; 'into' the screen.</para>
 	
@@ -473,7 +473,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mirror(&quot;y&quot;);
+mirror(&quot;y&quot;);
 		</synopsis>
 		<para>mirrors the current selection about the y axis.</para>
 

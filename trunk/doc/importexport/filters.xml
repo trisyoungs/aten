@@ -67,11 +67,11 @@
 		<para>Filter definitions are made in a filter file in a similar way to declaring a <link linkend="command.overview.userfunctions">user subroutine or function</link>. The 'filter' keyword marks the start of a filter definition, and contains a list of properties in parentheses that define the subsequent filter, its name, and how to recognise the files (from their filenames and/or contents) that it is designed for. The definition of the filter to import XYZ-style model data is as follows:</para>
 	
 		<synopsis>
-			filter(type=&quot;importmodel&quot;, name=&quot;XMol XYZ Coordinates&quot;, nickname=&quot;xyz&quot;, extension=&quot;xyz&quot;, glob=&quot;*.xyz&quot;, id=3)
-			{
-				<emphasis>commands</emphasis>
-				...
-			}
+filter(type=&quot;importmodel&quot;, name=&quot;XMol XYZ Coordinates&quot;, nickname=&quot;xyz&quot;, extension=&quot;xyz&quot;, glob=&quot;*.xyz&quot;, id=3)
+{
+	<emphasis>commands</emphasis>
+	...
+}
 		</synopsis>
 		
 		<indexterm zone="readwrite.filters.definitions"><primary>filters</primary><secondary>properties</secondary></indexterm>
@@ -138,11 +138,11 @@
 			
 			<para>For example:</para>
 			<synopsis>
-				exact=&quot;coords&quot;
+exact=&quot;coords&quot;
 			</synopsis>
 			<para>associates any file called 'coords' to this filter.</para>
 			<synopsis>
-				exact=&quot;results,output&quot;
+exact=&quot;results,output&quot;
 			</synopsis>
 			<para>associates any files called 'results' or 'output' to this filter.</para>
 			
@@ -155,11 +155,11 @@
 			
 			<para>For example:</para>
 			<synopsis>
-				extension=&quot;xyz&quot;
+extension=&quot;xyz&quot;
 			</synopsis>
 			<para>means that files with extension '.xyz' will be recognised by this filter.</para>
 			<synopsis>
-				extension=&quot;xyz,abc,foo&quot;
+extension=&quot;xyz,abc,foo&quot;
 			</synopsis>
 			<para>means that files with extensions '.xyz', '.abc', and '.foo' will be recognised by this filter.</para>
 	
@@ -172,7 +172,7 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				glob=&quot;*.doc&quot;
+glob=&quot;*.doc&quot;
 			</synopsis>
 			<para>filters any file matching '*.doc' in the relevant GUI file selector dialogs.</para>
 	
@@ -185,7 +185,7 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				id=13
+id	=13
 			</synopsis>
 			
 			<note><title>See Also:</title>
@@ -205,7 +205,7 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				name=&quot;SuperHartree Coordinates File&quot;
+name=&quot;SuperHartree Coordinates File&quot;
 			</synopsis>
 	
 		</section>
@@ -217,11 +217,11 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				nickname=&quot;shart&quot;
+nickname=&quot;shart&quot;
 			</synopsis>
 			<para>sets the nickname of the filter to 'shart'.</para>
 			<synopsis>
-				nickname=&quot;zyx&quot;
+nickname=&quot;zyx&quot;
 			</synopsis>
 			<para>sets the nickname of the filter to 'zyx'.</para>
 	
@@ -234,15 +234,15 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				search=&quot;UberCode Version 20.0&quot;
+search=&quot;UberCode Version 20.0&quot;
 			</synopsis>
 			<para>matches the filter to any file containing the string 'UberCode Version 20.0' within its first 10 lines (the default).</para>
 			<synopsis>
-				search=&quot;SIESTA&quot;
+search=&quot;SIESTA&quot;
 			</synopsis>
 			<para>searches the first 10 lines of the file for the string 'SIESTA'.</para>
 			<synopsis>
-				search=&quot;&quot;GAMESS VERSION = 11 APR 2008 (R1)&quot;
+search=&quot;&quot;GAMESS VERSION = 11 APR 2008 (R1)&quot;
 			</synopsis>
 			<para>attempts to identify output from a specific version of GAMESS-US.</para>
 	
@@ -300,10 +300,10 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				type=&quot;importgrid&quot;
+type=&quot;importgrid&quot;
 			</synopsis>
 			<synopsis>
-				type=&quot;exportmodel&quot;
+type=&quot;exportmodel&quot;
 			</synopsis>
 	
 		</section>
@@ -315,7 +315,7 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				within=50
+within=50
 			</synopsis>
 			<para>specifies that the first 50 lines should be searched for identifying strings.</para>
 	
@@ -328,7 +328,7 @@
 	
 			<para>For example:</para>
 			<synopsis>
-				zmap=&quot;numeric&quot;
+zmap=&quot;numeric&quot;
 			</synopsis>
 			<para>indicates that atomic numbers are provided in place of element names and no conversion should be performed.</para>
 			

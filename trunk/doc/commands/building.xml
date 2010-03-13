@@ -20,11 +20,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			addhydrogen();
+addhydrogen();
 		</synopsis>
 		<para>add hydrogens to all atoms in the current model.</para>
 		<synopsis>
-			addhydrogen(10);
+addhydrogen(10);
 		</synopsis>
 		<para>add hydrogens to atom 10 only.</para>
 	
@@ -45,8 +45,8 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = aten.model.atoms[2];
-			bohr(i);
+atom i = aten.model.atoms[2];
+bohr(i);
 		</synopsis>
 		<para>converts the coordinates of the supplied atom from Bohr to &#8491;.</para>
 	
@@ -86,15 +86,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = chain(&quot;C&quot;);
+atom i = chain(&quot;C&quot;);
 		</synopsis>
 		<para>places a carbon atom at the current pen coordinates, and creates a single bond with the last drawn atom.</para>
 		<synopsis>
-			atom i = chain(8, &quot;double&quot;);
+atom i = chain(8, &quot;double&quot;);
 		</synopsis>
 		<para>places an oxygen atom at the current pen coordinates, and creates a double bond with the last drawn atom.</para>
 		<synopsis>
-			atom i = chain(&quot;Cl&quot;, 4.0, 5.0, 6.0, &quot;single&quot;);
+atom i = chain(&quot;Cl&quot;, 4.0, 5.0, 6.0, &quot;single&quot;);
 		</synopsis>
 		<para>creates a chlorine at coordinates { 4.0, 5.0, 6.0 }, joined by a single bond to the last drawn atom.</para>
 	
@@ -114,7 +114,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			endchain();
+endchain();
 		</synopsis>
 	
 	</section>
@@ -135,7 +135,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			locate(0.0, 0.0, 0.0);
+locate(0.0, 0.0, 0.0);
 		</synopsis>
 		<para>moves the pen back to the coordinate origin.</para>
 	
@@ -157,7 +157,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			move(1.0, 1.0, 0.0);
+move(1.0, 1.0, 0.0);
 		</synopsis>
 		<para>moves the pen +1 Angstrom in both the x and y directions.</para>
 	
@@ -177,7 +177,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			movetoend();
+movetoend();
 		</synopsis>
 		
 	</section>
@@ -196,7 +196,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			movetostart();
+movetostart();
 		</synopsis>
 		
 	</section>
@@ -245,11 +245,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = newatom(&quot;N&quot;);
+atom i = newatom(&quot;N&quot;);
 		</synopsis>
 		<para>places a nitrogen atom at the current pen coordinates.</para>
 		<synopsis>
-			atom i = newatom(18, 5.2, 0, 0);
+atom i = newatom(18, 5.2, 0, 0);
 		</synopsis>
 		<para>places an argon atom at the coordinates { 5.2, 0.0, 0.0 }.</para>
 		
@@ -295,7 +295,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			atom i = newatomfrac(&quot;C&quot;, 0.5, 0.5, 0.5);
+atom i = newatomfrac(&quot;C&quot;, 0.5, 0.5, 0.5);
 		</synopsis>
 		<para>places a carbon atom at the centre of the model's cell.</para>
 	
@@ -315,7 +315,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			reorder();
+reorder();
 		</synopsis>
 	
 	</section>
@@ -334,7 +334,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			rotx(90.0);
+rotx(90.0);
 		</synopsis>
 		<para>rotates around the x axis by 90 degrees.</para>
 	
@@ -354,7 +354,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			roty(45.0);
+roty(45.0);
 		</synopsis>
 		<para>rotates around the y axis by 45 degrees.</para>
 	
@@ -374,7 +374,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			rotz(109.5);
+rotz(109.5);
 		</synopsis>
 		<para>rotates around the z axis by 109.5 degrees.</para>
 	
@@ -398,7 +398,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			shiftdown(4);
+shiftdown(4);
 		</synopsis>
 		<para>moves the current atom selection down four places.</para>
 	
@@ -422,7 +422,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			shiftup();
+shiftup();
 		</synopsis>
 		<para>moves the current atom selection up one place.</para>
 	
@@ -442,15 +442,15 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			transmute(&quot;F&quot;);
+transmute(&quot;F&quot;);
 		</synopsis>
 		<para>changes all atoms in the current selection to fluorine.</para>
 		<synopsis>
-			transmute(Cl);
+transmute(Cl);
 		</synopsis>
 		<para>changes all atoms in the current selection to chlorine.</para>
 		<synopsis>
-			transmute(6);
+transmute(6);
 		</synopsis>
 		<para>changes all atoms in the current selection to carbon</para>
 	

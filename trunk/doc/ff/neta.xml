@@ -109,7 +109,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			bond=<emphasis>type</emphasis>
+bond=<emphasis>type</emphasis>
 		</synopsis>
 		
 		<para>Defines the specific <emphasis>type</emphasis> of the connection (see <link linkend="enums.bondtypes">Bond Types</link>) required for a bound atom. The keyword should be used inside bracketed parts of bound atom descriptions. It is important to note that the 'bond' keyword should only be used in conjunction with the '~X' (any bond to) specifier, since the specific connection demanded by the '-X' and '=X' specifiers will override any 'bond' declarations.</para>
@@ -146,7 +146,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			chain( <emphasis>neta</emphasis> )
+chain( <emphasis>neta</emphasis> )
 		</synopsis>
 		
 		<para>The 'chain' command provides an easy was of specifying a linear sequence of atoms from the current atom forward. Within the bracketed part, a sequence of connections are listed in the order in which they are to appear. Atoms in the chain are specified in the same way as other connections (e.g. '-C(nbonds=2)') but should <emphasis>not</emphasis> be separated by commas. The repeat keyword <link linkend="ff.neta.ref.n">n</link> may also be specified at some point in the bracketed part to define that more than one of the defined chains is required. Note that, if all atoms specif ied for the chain are matched, but the actual chain in the model is longer, a positive match will be returned. Thus, it is usually a good idea to define the last atom in the chain more explicitly to prevent false matches.</para>
@@ -179,7 +179,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			n=<emphasis>nrepeat</emphasis>
+n=<emphasis>nrepeat</emphasis>
 		</synopsis>
 		
 		<para>The 'n' keyword, when placed in the bracketed parts of bound atom, ring, and chain descriptions requires that they are matched a number of times rather than just once.</para>
@@ -216,7 +216,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			nbonds=<emphasis>n</emphasis>
+nbonds=<emphasis>n</emphasis>
 		</synopsis>
 		
 		<para>Specifies the exact number of connections that an atom must possess.</para>
@@ -249,7 +249,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			nh=<emphasis>m</emphasis>
+nh=<emphasis>m</emphasis>
 		</synopsis>
 		
 		<para>The 'nh' keyword is shorthand for explicitly specifying the number of attached hydrogens to the target atom or a bound atom. It is equivalent to '-H(n=<emphasis>m</emphasis>)'.</para>
@@ -330,7 +330,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			ring ( <emphasis>neta</emphasis> )
+ring ( <emphasis>neta</emphasis> )
 		</synopsis>
 		
 		<para>Denotes that the target atom (if specified in the root of the description) or a bound atom (if used inside the associated bracketed part) should be present in a ring structure of some kind. The 'ring' keyword alone simply demands that the atom is present inside a ring of some size, but may take an optional bracketed part describing more fully the number of atoms in the ring, and the individual nature of each of these atoms. Within the bracketed part, bound atoms may be specified as usual in the contained <emphasis>neta</emphasis>, but the connection type is irrelevant as it is only the presence of those particular atoms within the ring that is considered important.</para>
@@ -365,7 +365,7 @@
 		
 		<para><emphasis>Syntax:</emphasis></para>
 		<synopsis>
-			size=<emphasis>n</emphasis>
+size=<emphasis>n</emphasis>
 		</synopsis>
 		
 		<para>Only relevant in the bracketed part of a <link linkend="ff.neta.ref.ring">ring</link> keyword, requests the exact number of atoms (<emphasis>n</emphasis>) comprising the cycle. Note that this may be used independently of the implicit size suggested by the number of atom descriptions supplied, or in conjunction with a partial list of atoms.</para>

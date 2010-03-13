@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			clearlabels();
+clearlabels();
 		</synopsis>
 	
 	</section>
@@ -35,7 +35,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			label(&quot;element&quot;);
+label(&quot;element&quot;);
 		</synopsis>
 		<para>adds element labels to the current atom selection.</para>
 		
@@ -55,7 +55,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			removelabel(&quot;equiv&quot;);
+removelabel(&quot;equiv&quot;);
 		</synopsis>
 		<para>removes the forcefield equivalent type label from each atom in the current selection.</para>
 

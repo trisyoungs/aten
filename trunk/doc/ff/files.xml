@@ -21,26 +21,26 @@
 		<para>The format is keyword-based and as simple as possible. Most input is enclosed within blocks, beginning with a keyword and terminated after several lines of data with and 'end' statement. As an example of the overall structure of a forcefield, consider the simple point charge (SPC) forcefield for water as is provided with Aten:</para>
 		
 		<synopsis>
-			name &quot;SPC Water&quot;
-			units kj
-			
-			types
-			1       HW      H       &quot;nbonds=1&quot;
-			2       OW      O       &quot;-H,-H&quot;
-			end
-			
-			inter  lj
-			1       HW      0.41    0.0     0.0
-			2       OW      -0.82   0.650   3.166
-			end
-			
-			bonds constraint
-			HW      OW      4184.0  1.000
-			end
-			
-			angles bondconstraint
-			HW      OW      HW      4184.0  1.62398
-			end
+name &quot;SPC Water&quot;
+units kj
+
+types
+1       HW      H       &quot;nbonds=1&quot;
+2       OW      O       &quot;-H,-H&quot;
+end
+
+inter  lj
+1       HW      0.41    0.0     0.0
+2       OW      -0.82   0.650   3.166
+end
+
+bonds constraint
+HW      OW      4184.0  1.000
+end
+
+angles bondconstraint
+HW      OW      HW      4184.0  1.62398
+end
 		</synopsis>
 		
 		<para>After giving the forcefield a name and defining the energy units used for the parameters, the two types of atom described by the forcefield (OW and HW) are listed. A unique id, type name, base element, and type description are provided, providing Aten with all it needs to be able to recognise and type these atoms within a model. For each of these types the van der Waals data are provided in the Lennard-Jones style ('inter lj') - again, the type id and type name are specified, followed by the atomic charge and the epsilon and sigma values. Finally, the single bond and angle within the molecule are defined. The type names involved in the interactions are given, followed by the necessary parameters for the functional form specified ('constraint' for the bond, and 'bondconstraint' for the angle). And that's it. Detailed explanations of each section follow.</para>

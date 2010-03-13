@@ -17,11 +17,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mcaccept(&quot;translate&quot;, 0.0);
+mcaccept(&quot;translate&quot;, 0.0);
 		</synopsis>
 		<para>requests that only translation moves that lower the overall energy will be accepted.</para>
 		<synopsis>
-			mcaccept(&quot;insert&quot;, 200.0);
+mcaccept(&quot;insert&quot;, 200.0);
 		</synopsis>
 		<para>requests that insertion moves will be accepted provided the total energy does not rise more than 200.0 units.</para>
 	
@@ -42,11 +42,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mcallow(&quot;translate&quot;, FALSE);
+mcallow(&quot;translate&quot;, FALSE);
 		</synopsis>
 		<para>disallows translation moves in Monte Carlo calculations.</para>
 		<synopsis>
-			mcallow(&quot;rotate&quot;, &quot;true&quot;);
+mcallow(&quot;rotate&quot;, &quot;true&quot;);
 		</synopsis>
 		<para>allows rotation moves in Monte Carlo calculations.</para>
 	
@@ -67,11 +67,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mcmaxstep(&quot;translate&quot;, 5.0);
+mcmaxstep(&quot;translate&quot;, 5.0);
 		</synopsis>
 		<para>sets the maximum translation displacement to 5 &#8491;.</para>
 		<synopsis>
-			mcmaxstep(&quot;rotate&quot;, 30.0);
+mcmaxstep(&quot;rotate&quot;, 30.0);
 		</synopsis>
 		<para>sets the maximum rotation to 30 degrees.</para>
 	
@@ -92,7 +92,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			mcntrials(&quot;insert&quot;, 50);
+mcntrials(&quot;insert&quot;, 50);
 		</synopsis>
 		<para>requests that there will be 50 insertion attempts per cycle per molecule type.</para>
 		
@@ -112,7 +112,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			printmc();
+printmc();
 		</synopsis>
 		
 	</section>

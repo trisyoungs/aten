@@ -20,7 +20,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			charge(1.0);
+charge(1.0);
 		</synopsis>
 		<para>gives each atom in the current model's selection a charge of 1.0.</para>
 		
@@ -40,7 +40,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			chargeff();
+chargeff();
 		</synopsis>
 	
 	</section>
@@ -59,7 +59,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			chargefrommodel();
+chargefrommodel();
 		</synopsis>
 	
 	</section>
@@ -79,7 +79,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			chargepatom(3, 0.1);
+chargepatom(3, 0.1);
 		</synopsis>
 		<para>assigns a charge of 0.1 to the third atom in each molecule of the current pattern.</para>
 	
@@ -100,7 +100,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			chargetype(&quot;OW&quot;,-0.8);
+chargetype(&quot;OW&quot;,-0.8);
 		</synopsis>
 		<para>gives a charge of -0.8 to every atom that has an assigned typename of 'OW'.</para>
 	
@@ -120,7 +120,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			clearcharges();
+clearcharges();
 		</synopsis>
 
 	</section>

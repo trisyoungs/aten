@@ -17,23 +17,23 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			deselect(5);
+deselect(5);
 		</synopsis>
 		<para>deselects the 5th atom.</para>
 		<synopsis>
-			deselect(&quot;1-10,N&quot;);
+deselect(&quot;1-10,N&quot;);
 		</synopsis>
 		<para>deselects the first ten atoms, and all nitrogen atoms.</para>
 		<synopsis>
-			int n = deselect(&quot;Sc-Zn&quot;);
+int n = deselect(&quot;Sc-Zn&quot;);
 		</synopsis>
 		<para>deselects the first transition series of elements, returning the number of atoms that were deselected in the process.</para>
 		<synopsis>
-			deselect(&quot;C+&quot;);
+deselect(&quot;C+&quot;);
 		</synopsis>
 		<para>deselects all elements carbon and above.</para>
 		<synopsis>
-			deselect(1, 2, 5, &quot;8+&quot;);
+deselect(1, 2, 5, &quot;8+&quot;);
 		</synopsis>
 		<para>deselects the first, second, and fifth atoms, as well as the eighth atom and all that occur after it.</para>
 	
@@ -53,7 +53,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			expand();
+expand();
 		</synopsis>
 		
 	</section>
@@ -72,7 +72,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			invert();
+invert();
 		</synopsis>
 		
 	</section>
@@ -92,11 +92,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			select(&quot;+5&quot;);
+select(&quot;+5&quot;);
 		</synopsis>
 		<para>selects the first five atoms.</para>
 		<synopsis>
-			int n = select(&quot;+5,H&quot;);
+int n = select(&quot;+5,H&quot;);
 		</synopsis>
 		<para>selects the first five atoms and all hydrogens.</para>
 		
@@ -116,7 +116,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			selectall();
+selectall();
 		</synopsis>
 		
 	</section>
@@ -135,7 +135,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			selecttype(&quot;CT&quot;);
+selecttype(&quot;CT&quot;);
 		</synopsis>
 		<para>selects all atoms that have been assigned the forcefield type 'CT'.</para>
 		
@@ -158,7 +158,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			selectmiller(1, 1, 1);
+selectmiller(1, 1, 1);
 		</synopsis>
 		<para>selects all atoms located beyond the (111) plane in the unit cell.</para>
 		
@@ -178,7 +178,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			selectnone();
+selectnone();
 		</synopsis>
 		
 	</section>
@@ -197,7 +197,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int noverlaps = selectoverlaps(&quot;0.1&quot;);
+int noverlaps = selectoverlaps(&quot;0.1&quot;);
 		</synopsis>
 		<para>selects all atoms that are less than 0.1 &#8491; away from another.</para>
 		
@@ -219,11 +219,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			selectpattern(2);
+selectpattern(2);
 		</synopsis>
 		<para>select all atoms in the second pattern of the current model.</para>
 		<synopsis>
-			selectpattern(&quot;bubble&quot;);
+selectpattern(&quot;bubble&quot;);
 		</synopsis>
 		<para>select all atoms in the pattern 'bubble' of the current model.</para>
 	
@@ -244,7 +244,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int nclose = selectradial(10, 4.5);
+int nclose = selectradial(10, 4.5);
 		</synopsis>
 		<para>selects all atoms within 4.5 &#8491; of atom 10, and returns the number selected.</para>
 		
@@ -265,7 +265,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int nch2 = selecttype(&quot;C&quot;, &quot;-H(n=2)&quot;);
+int nch2 = selecttype(&quot;C&quot;, &quot;-H(n=2)&quot;);
 		</synopsis>
 		<para>selects all carbon atoms that are bound to two hydrogens.</para>
 		

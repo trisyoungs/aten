@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			frameforces();
+frameforces();
 		</synopsis>
 		
 	</section>
@@ -35,7 +35,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			modelforces();
+modelforces();
 		</synopsis>
 	
 	</section>
@@ -54,7 +54,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			printforces();
+printforces();
 		</synopsis>
 
 	</section>

@@ -16,7 +16,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			createatoms();
+createatoms();
 		</synopsis>
 	
 	</section>
@@ -48,18 +48,18 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			currentmodel(4);
+currentmodel(4);
 		</synopsis>
 		<para>selects the fourth loaded model.</para>
 		<synopsis>
-			currentmodel(&quot;Protein coordinates&quot;)
+currentmodel(&quot;Protein coordinates&quot;)
 		</synopsis>
 		<para>selects the model named &quot;Protein coordinates&quot; (provided it exists)</para>
 		<synopsis>
-			model m1, m2;
-			m1 = newmodel(&quot;Test model 1&quot;);
-			m2 = newmodel(&quot;Test model 2&quot;);
-			currentmodel(m1);
+model m1, m2;
+m1 = newmodel(&quot;Test model 1&quot;);
+m2 = newmodel(&quot;Test model 2&quot;);
+currentmodel(m1);
 		</synopsis>
 		<para>creates two models, storing references to each, and then re-selects the first one and makes it the current target again.</para>
 		
@@ -102,7 +102,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			firstmodel();
+firstmodel();
 		</synopsis>
 		
 	</section>
@@ -121,7 +121,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			info();
+info();
 		</synopsis>
 	
 	</section>
@@ -140,7 +140,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			finalisemodel();
+finalisemodel();
 		</synopsis>
 	
 	</section>
@@ -167,11 +167,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			model alpha = getmodel(&quot;alpha2&quot;);
+model alpha = getmodel(&quot;alpha2&quot;);
 		</synopsis>
 		<para>grabs a reference to the model named 'alpha2'.</para>
 		<synopsis>
-			model m = getmodel(5);
+model m = getmodel(5);
 		</synopsis>
 		<para>gets a reference to the fifth loaded model.</para>
 	
@@ -191,7 +191,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			model final = lastmodel();
+model final = lastmodel();
 		</synopsis>
 	
 	</section>
@@ -210,7 +210,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			listmodels();
+listmodels();
 		</synopsis>
 		
 	</section>
@@ -234,7 +234,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			loadmodel(&quot;/home/foo/coords/test.xyz&quot;, &quot;mymodel&quot;);
+loadmodel(&quot;/home/foo/coords/test.xyz&quot;, &quot;mymodel&quot;);
 		</synopsis>
 		<para>loads a model called 'test.xyz' and gives it the new name 'mymodel'.</para>
 		
@@ -254,7 +254,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			modeltemplate();
+modeltemplate();
 		</synopsis>
 		
 	</section>
@@ -273,11 +273,11 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			newmodel(&quot;emptymodel&quot;);
+newmodel(&quot;emptymodel&quot;);
 		</synopsis>
 		<para>creates a new, empty model called 'emptymodel' and makes it current.</para>
 		<synopsis>
-			model c12 = newmodel(&quot;dodecane&quot;);
+model c12 = newmodel(&quot;dodecane&quot;);
 		</synopsis>
 		<para>creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable <emphasis>c12</emphasis>.</para>
 		
@@ -297,7 +297,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			model next = nextmodel();
+model next = nextmodel();
 		</synopsis>
 		
 	</section>
@@ -316,7 +316,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			parentmodel();
+parentmodel();
 		</synopsis>
 
 	</section>
@@ -335,7 +335,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			model prev = prevmodel();
+model prev = prevmodel();
 		</synopsis>
 		
 	</section>
@@ -355,7 +355,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			int success = savemodel(&quot;xyz&quot;, &quot;/home/foo/newcoords/test.config&quot;);
+int success = savemodel(&quot;xyz&quot;, &quot;/home/foo/newcoords/test.config&quot;);
 		</synopsis>
 		<para>saves the current model in xyz format to the filename given.</para>
 	
@@ -375,7 +375,7 @@
 		
 		<para>For example:</para>
 		<synopsis>
-			setname(&quot;panther)&quot;;
+setname(&quot;panther)&quot;;
 		</synopsis>
 		<para>gives the current model the cool-sounding name of 'panther'! Ahem.</para>
 
