@@ -495,6 +495,8 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						mult = 1.0;
 					}
 				}
+				if (cubetype == 0) continue;
+
 				// Get edges from list and draw triangles or points
 				faces = facetriples[cubetype];
 				for (n = 0; n<15; n++)
@@ -504,7 +506,8 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					a = vertex[edgevertices[faces[n]][0]];
 					b = vertex[edgevertices[faces[n]][1]];
 					ipol = ((mult*cutoff) - a) / (b-a);
-
+					if (ipol> 1.0) ipol = 1.0;
+					if (ipol < 0.0) ipol = 0.0;
 					v1 = vertexpos[edgevertices[faces[n]][0]];
 					v2 = vertexpos[edgevertices[faces[n]][1]];
 					r.set(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]);

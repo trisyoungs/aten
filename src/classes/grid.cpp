@@ -235,7 +235,7 @@ double Grid::upperCutoff()
 // Return whether supplied number is within cutoff range
 bool Grid::withinCutoff(double d)
 {
-	if ((d > cutoff_) && (d < upperCutoff_)) return TRUE;
+	if ((d > cutoff_) && (d <= upperCutoff_)) return TRUE;
 // 	if (d > cutoff_) return TRUE;
 	return FALSE;
 }
