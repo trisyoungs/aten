@@ -67,7 +67,7 @@ void AtenGrids::refresh()
 {
 	msg.enter("AtenGrids::refresh");
 	// Clear and refresh the grids list
-// 	refreshing_ = TRUE;
+	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
 	Model *m = aten.currentModelOrFrame();
@@ -81,7 +81,7 @@ void AtenGrids::refresh()
 	// Select the first item
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
-// 	refreshing_ = FALSE;
+	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
 }
 
@@ -263,11 +263,11 @@ void AtenGrids::refreshGridInfo()
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridCutoffSpin->setMinimum(g->minimum());
-	ui.GridCutoffSpin->setValue(g->cutoff());
 	ui.GridCutoffSpin->setMaximum(g->maximum());
+	ui.GridCutoffSpin->setValue(g->cutoff());
 	ui.GridUpperCutoffSpin->setMinimum(g->minimum());
-	ui.GridUpperCutoffSpin->setValue(g->upperCutoff());
 	ui.GridUpperCutoffSpin->setMaximum(g->maximum());
+	ui.GridUpperCutoffSpin->setValue(g->upperCutoff());
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
 	// Set origin and axes
@@ -332,12 +332,12 @@ void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
-// Item in forcefield list has changed?
+// Item in grid list has changed?
 void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 {
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
-	// Get forcefield associated to item
+	// Get grid associated to item
 	Grid *g = (Grid*) titem->pointer();
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
@@ -383,6 +383,7 @@ void AtenGrids::on_GridList_currentRowChanged(int row)
 
 void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
@@ -394,6 +395,7 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 
 void AtenGrids::on_GridUpperCutoffSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
