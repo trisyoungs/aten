@@ -41,6 +41,7 @@
 #include "gui/celltransform.h"
 #include "gui/command.h"
 #include "gui/build.h"
+#include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/minimiser.h"
 #include "gui/transform.h"
@@ -99,6 +100,7 @@ GuiQt::GuiQt()
 	commandWindow = NULL;
 	disorderWindow = NULL;
 	forcefieldsWindow = NULL;
+	geometryWindow = NULL;
 	glyphsWindow = NULL;
 	gridsWindow = NULL;
 	minimiserWindow = NULL;
@@ -193,6 +195,7 @@ void GuiQt::run()
 	commandWindow = new AtenCommand(mainWindow, Qt::Window|Qt::Tool);
 	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
 	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
+	geometryWindow = new AtenGeometry(mainWindow, Qt::Window|Qt::Tool);
 	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
 	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
 	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
@@ -207,6 +210,7 @@ void GuiQt::run()
 	QObject::connect(commandWindow, SIGNAL(finished(int)), commandWindow, SLOT(dialogFinished(int)));
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
 	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(geometryWindow, SIGNAL(finished(int)), geometryWindow, SLOT(dialogFinished(int)));
 	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
@@ -332,6 +336,10 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield)
 	}
 	// Update forcefields in the forcefield window
 	if (updateForcefield) forcefieldsWindow->refresh();
+	// Update context menu items
+	updateContextMenu();
+	// Update geometry page
+	geometryWindow->refresh();
 	// Request redraw of the main canvas
 	gui.mainView.postRedisplay();
 }
@@ -538,16 +546,17 @@ void GuiQt::setWindowsEnabled(bool b)
 	buildWindow->setEnabled(b);
 	cellDefineWindow->setEnabled(b);
 	cellTransformWindow->setEnabled(b);
+	commandWindow->setEnabled(b);
 	disorderWindow->setEnabled(b);
 	forcefieldsWindow->setEnabled(b);
+	geometryWindow->setEnabled(b);
 	glyphsWindow->setEnabled(b);
 	gridsWindow->setEnabled(b);
 	minimiserWindow->setEnabled(b);
 	positionWindow->setEnabled(b);
 	transformWindow->setEnabled(b);
 	mainWindow->ui.BondToolbar->setEnabled(b);
-	mainWindow->ui.CommandToolbar->setEnabled(b);
-	mainWindow->ui.DrawToolbar->setVisible(b);
+	mainWindow->ui.DrawToolbar->setEnabled(b);
 	mainWindow->ui.EditToolbar->setEnabled(b);
 	mainWindow->ui.FileToolbar->setEnabled(b);
 	mainWindow->ui.ForcefieldsToolbar->setEnabled(b);

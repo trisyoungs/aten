@@ -143,7 +143,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		Atom *tempi = gui.mainView.displayModel()->atomOnScreen(event->x(), event->y());
 		if (tempi != NULL)
 		{
-			gui.callAtomPopup(tempi, event->globalX(), event->globalY());
+			gui.callContextMenu(tempi, event->globalX(), event->globalY());
 			gui.mainView.postRedisplay();
 			msg.exit("TCanvas::mousePressEvent");
 			return;

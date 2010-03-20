@@ -309,7 +309,6 @@ Prefs::Prefs()
 	manualSwapBuffers_ = FALSE;
 	useFrameBuffer_ = FALSE;
 	maxUndoLevels_ = -1;
-	commandHistoryLimit_ = 25;
 	loadQtSettings_ = TRUE;
 	maxImproperDist_ = 5.0;
 }
@@ -1430,19 +1429,6 @@ void Prefs::setMaxUndoLevels(int n)
 int Prefs::maxUndoLevels()
 {
 	return maxUndoLevels_;
-}
-
-// Return maximum number of entries to remember in command toolbar autocomplete
-void Prefs::setCommandHistoryLimit(int i)
-{
-	if (i < 0) i = 0;
-	commandHistoryLimit_ = i;
-}
-
-// Return maximum number of entries to remember in command toolbar autocomplete
-int Prefs::commandHistoryLimit()
-{
-	return commandHistoryLimit_;
 }
 
 // Return whether to load Qt window/toolbar settings on startup

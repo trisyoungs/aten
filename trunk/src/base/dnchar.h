@@ -46,7 +46,7 @@ class Dnchar
 
 	public:
 	// Print string info
-	void print() const;
+	void info() const;
 	// Clear string but don't free
 	void clear();
 	// Set value
@@ -101,6 +101,8 @@ class Dnchar
 	const char *lower();
 	// Return the uppercase conversion of the string
 	const char *upper();
+	// Create formatted string
+	void print(const char *fmt ...);
 };
 
 #endif

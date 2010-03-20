@@ -41,9 +41,13 @@ class AtenCommand : public QDialog
 	void on_CommandPrompt_returnPressed();
 
 	/*
-	// Local variables
+	// Public Functions
 	*/
-	private:
+	public:
+	// Set list of commands in command tab
+	void setCommandList(QStringList cmds);
+	// Return list of commands stored in command tab
+	QStringList commandList();
 
 	/*
 	// Widgets

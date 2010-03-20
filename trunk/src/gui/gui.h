@@ -42,6 +42,7 @@ class AtenCellTransform;
 class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
+class AtenGeometry;
 class AtenGlyphs;
 class AtenGrids;
 class AtenMinimiser;
@@ -139,6 +140,8 @@ class GuiQt
 	AtenDisorder *disorderWindow;
 	// Forcefields window
 	AtenForcefields *forcefieldsWindow;
+	// Geometry window
+	AtenGeometry *geometryWindow;
 	// Glyphs window
 	AtenGlyphs *glyphsWindow;
 	// Grids window
@@ -179,8 +182,10 @@ class GuiQt
 	TCanvas *mainWidget;
 	// Main view canvas
 	Canvas mainView;
+	// Update context menu
+	void updateContextMenu();
 	// Call the atompopup menu
-	void callAtomPopup(Atom*, int, int);
+	void callContextMenu(Atom*, int, int);
 
 	/*
 	// Trajectory State

@@ -124,6 +124,9 @@ class AtenForm : public QMainWindow
 	void on_actionAtomProbe_triggered(bool checked);
 	void on_actionAtomFixPosition_triggered(bool checked);
 	void on_actionAtomFreePosition_triggered(bool checked);
+	void on_actionSetBondLength_triggered(bool checked);
+	void on_actionSetBondAngle_triggered(bool checked);
+	void on_actionSetTorsionAngle_triggered(bool checked);
 
 	/*
 	// Bonding Actions
@@ -137,16 +140,6 @@ class AtenForm : public QMainWindow
 	void on_actionClearBondingSelection_triggered(bool checked);
 	void on_actionAugmentBonding_triggered(bool checked);
 	void bondTolerance_valueChanged(double d);
-
-	/*
-	// Command Actions
-	*/
-	private:
-	QLineEdit *commandEdit_;
-	QCompleter *commandEditCompleter_;
-	QStringListModel *commandEditModel_;
-	private slots:
-	void executeCommand();
 
 	/*
 	// Draw Actions
@@ -339,6 +332,7 @@ class AtenForm : public QMainWindow
 	void on_actionForcefieldsWindow_triggered(bool checked);
 	void on_actionTransformWindow_triggered(bool checked);
 	void on_actionPositionWindow_triggered(bool checked);
+	void on_actionGeometryWindow_triggered(bool checked);
 	void on_actionGridsWindow_triggered(bool checked);
 // 	void on_actionGlyphsWindow_triggered(bool checked);
 	void on_actionMinimiserWindow_triggered(bool checked);
