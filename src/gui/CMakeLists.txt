@@ -33,6 +33,7 @@ set(qtproject_SRCS
   fileactions.cpp
   forcefieldactions.cpp
   forcefields_funcs.cpp
+  geometry_funcs.cpp
   glyphs_funcs.cpp
   grids_funcs.cpp
   gui.cpp
@@ -76,6 +77,7 @@ SET(pro_MOC_HDRS
   disorder.h
   ffeditor.h
   forcefields.h
+  geometry.h
   glyphs.h
   grids.h
   loadmodel.h
@@ -106,6 +108,7 @@ SET(pro_UIS
   disorder.ui
   ffeditor.ui
   forcefields.ui
+  geometry.ui
   glyphs.ui
   grids.ui
   loadmodel.ui

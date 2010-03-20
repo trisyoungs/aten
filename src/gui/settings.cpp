@@ -22,6 +22,7 @@
 #include "base/sysfunc.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/command.h"
 #include <QtCore/QSettings>
 
 // Load Qt Settings
@@ -41,13 +42,15 @@ void AtenForm::loadSettings()
 	if (prefs.loadQtSettings() && settings_.contains("MainWinPositions")) gui.mainWindow->restoreState( settings_.value("MainWinPositions").toByteArray());
 	// Command toolbar history
 	QStringList history;
-	for (n=0; n < prefs.commandHistoryLimit(); ++n)
+	n = 0;
+	do
 	{
 		key = "CommandHistory";
 		key += itoa(n);
 		if (settings_.contains(key)) history << settings_.value(key).toString();
-	}
-	commandEditModel_->setStringList(history);
+		++n;
+	} while (settings_.contains(key));
+	gui.commandWindow->setCommandList(history);
 }
 
 // Save Qt settings
@@ -67,12 +70,12 @@ void AtenForm::saveSettings()
 	// Toolbar visibility / position
 	settings_.setValue("MainWinPositions", gui.mainWindow->saveState() );
 	// Command toolbar history
-	QStringList history = commandEditModel_->stringList();
-	for (n=0; n < prefs.commandHistoryLimit(); ++n)
+	QStringList history = gui.commandWindow->commandList();
+	for (n=0; n < history.count(); ++n)
 	{
 		key = "CommandHistory";
 		key += itoa(n);
-		if (n < history.count()) settings_.setValue(key, history[n]);
+		settings_.setValue(key, history[n]);
 	}
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();

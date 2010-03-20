@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 // Constructors
 Dnchar::Dnchar()
@@ -81,7 +82,7 @@ Dnchar::Dnchar(const Dnchar &source)
 }
 
 // Print
-void Dnchar::print() const
+void Dnchar::info() const
 {
 	printf("DnChar len = %i, end = %i : '%s'\n",size_,endPosition_,data_);
 }
@@ -384,4 +385,20 @@ const char *Dnchar::upper()
 {
 	if (data_ == NULL) return "\0";
 	return upperCase(data_);
+}
+
+// Create formatted string
+void Dnchar::print(const char *fmt ...)
+{
+	// Print to the text view in the main window if it has been initialised.
+	// If program is in quiet mode, don't print anything to stdout
+	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	set(s);
+	va_end(arguments);
 }

@@ -362,6 +362,12 @@
 						<entry>The specular colour component of the spotlight</entry>
 					</row>
 					<row>
+						<entry>useframebuffer</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Whether to use the grabFrameBuffer() method of the main widget instead of the normal renderPixmap() method when saving bitmap images. If saving an image results in a completely black or corrupt bitmap, try setting this to TRUE.</entry>
+					</row>
+					<row>
 						<entry>usenicetext</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
@@ -378,6 +384,12 @@
 						<entry>double</entry>
 						<entry>rw</entry>
 						<entry>Scaling factor to use for short-range radii in energy/force calculation</entry>
+					</row>
+					<row>
+						<entry>warn1056</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Many changes to the typing language syntax were introduced in revision 1056, and a warning message was implemented.  This can be turned off by setting this variable to </entry>
 					</row>
 					<row>
 						<entry>zoomthrottle</entry>

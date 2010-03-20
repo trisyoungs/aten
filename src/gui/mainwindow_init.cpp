@@ -77,20 +77,9 @@ void AtenForm::finaliseUi()
 	// Hide some toolbars initially
 	ui.BondToolbar->setVisible(FALSE);
 	//ui.DrawToolbar->setVisible(FALSE);
-	ui.CommandToolbar->setVisible(FALSE);
 	ui.ForcefieldsToolbar->setVisible(FALSE);
 	ui.MeasureToolbar->setVisible(FALSE);
 	ui.TrajectoryToolbar->setVisible(FALSE);
-
-	// Add text edit to CommandToolBar
-	commandEdit_ = new QLineEdit(ui.CommandToolbar);
-	commandEditModel_ = new QStringListModel();
-	commandEditCompleter_ = new QCompleter(commandEditModel_, this);
-	commandEditCompleter_->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-	commandEdit_->setCompleter(commandEditCompleter_);
-	ui.CommandToolbar->addWidget(commandEdit_);
-	ui.CommandToolbar->setMinimumSize(128,16);
-	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
 
 	// Add combobox to ForcefieldsToolbar
 	forcefieldCombo_ = new QComboBox(ui.ForcefieldsToolbar);

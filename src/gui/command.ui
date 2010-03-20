@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CommandDialog</class>
- <widget class="QDialog" name="CommandDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="CommandDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,55 +10,39 @@
     <height>292</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Scripts/Command</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="icons.qrc" >
-    <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/stackicons/icons/stack_command.svg</normaloff>:/stackicons/icons/stack_command.svg</iconset>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2" >
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <widget class="QTabWidget" name="Prompt" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="Prompt">
+     <property name="currentIndex">
       <number>1</number>
      </property>
-     <widget class="QWidget" name="ScriptTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>435</width>
-        <height>244</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="ScriptTab">
+      <attribute name="title">
        <string>Scripts</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="PrompTab" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>435</width>
-        <height>244</height>
-       </rect>
-      </property>
-      <attribute name="title" >
+     <widget class="QWidget" name="PrompTab">
+      <attribute name="title">
        <string>Prompt</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout" >
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout" >
+          <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <spacer>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" stdset="0" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>238</width>
                <height>17</height>
@@ -66,11 +51,11 @@
             </spacer>
            </item>
            <item>
-            <widget class="QCheckBox" name="PromptForceUpdateCheck" >
-             <property name="toolTip" >
+            <widget class="QCheckBox" name="PromptForceUpdateCheck">
+             <property name="toolTip">
               <string>Force update of the GUI after every executed command</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>Force Update</string>
              </property>
             </widget>
@@ -78,7 +63,7 @@
           </layout>
          </item>
          <item>
-          <widget class="TPrompt" native="1" name="CommandPrompt" />
+          <widget class="TPrompt" name="CommandPrompt" native="true"/>
          </item>
         </layout>
        </item>
@@ -97,7 +82,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons.qrc" />
+  <include location="icons.qrc"/>
  </resources>
  <connections/>
 </ui>

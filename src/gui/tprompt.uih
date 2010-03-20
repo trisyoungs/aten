@@ -53,6 +53,11 @@ class TPrompt : public QWidget
 	void keyPressEvent(QKeyEvent *event);
 
 	public:
+	// Set list of commands in command tab
+	void setCommandList(QStringList cmds);
+	// Return list of commands stored in command tab
+	QStringList commandList();
+	// Return text in command edit
 	const char *getText();
 
 	signals:

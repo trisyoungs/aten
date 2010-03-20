@@ -54,6 +54,21 @@ void TPrompt::promptReturnPressed()
 	emit returnPressed();
 }
 
+// Set list of commands in command tab
+void TPrompt::setCommandList(QStringList cmds)
+{
+	commandList_->clear();
+	commandList_->insertItems(0, cmds);
+}
+
+// Return list of commands stored in command tab
+QStringList TPrompt::commandList()
+{
+	QStringList items;
+	for (int n=0; n<commandList_->count(); ++n) items << commandList_->item(n)->text();
+	return items;
+}
+
 const char *TPrompt::getText()
 {
 	// Grab string and add trailing semicolon if required

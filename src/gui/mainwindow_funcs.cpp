@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
+#include "gui/geometry.h"
 #include "gui/grids.h"
 #include "gui/glyphs.h"
 #include "gui/build.h"
@@ -58,7 +59,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	saveModelFilter = NULL;
 	customElement_ = 8;
 	forcefieldCombo_ = NULL;
-	commandEdit_ = NULL;
 	trajectoryToolbarRefreshing_ = FALSE;
 
 	// Public variables
@@ -352,32 +352,6 @@ void AtenForm::refreshModelTabs()
 	msg.exit("AtenForm::refreshModelTabs");
 }
 
-void AtenForm::executeCommand()
-{
-	// Clear old script commands and set current model variables
-	aten.tempScript.clear();
-	// Grab string and add trailing semicolon if required
-	char s[4096];
-	strcpy(s, qPrintable(commandEdit_->text()));
-	int linelen = strlen(s);
-	if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
-	// Grab the current text of the line edit
-	if (aten.tempScript.generateFromString(s))
-	{
-		ReturnValue result;
-		aten.tempScript.executeAll(result);
-	}
-	// Remember this command...
-// 	// Insert new row in the stringlistmodel (*AWFUL* way to do this - isn't there a better solution?) TODO
-	QStringList sl = commandEditModel_->stringList();
-	if (!sl.contains(commandEdit_->text())) sl.prepend(commandEdit_->text());
-	// Trim stringlist so it is the same size (or less) than the limit set in prefs
-	if (prefs.commandHistoryLimit() > 0) for (int n = sl.count(); n > prefs.commandHistoryLimit(); --n) sl.removeLast();
-	commandEditModel_->setStringList(sl);
-	commandEdit_->setText("");
-	gui.update();
-}
-
 // Cancel progress indicator
 void AtenForm::progressCancel()
 {
@@ -499,7 +473,6 @@ void AtenForm::updateUndoRedo()
 void AtenForm::setWidgetsEnabled(bool b)
 {
 	// Must manually enable all widgets added to toolbars by hand. Bug in Qt?
-	commandEdit_->setEnabled(b);
 	forcefieldCombo_->setEnabled(b);
 	trajectorySlider_->setEnabled(b);
 	trajectorySpin_->setEnabled(b);
@@ -658,6 +631,12 @@ void AtenForm::on_actionForcefieldsWindow_triggered(bool checked)
 		gui.forcefieldsWindow->refresh();
 	}
 	else gui.forcefieldsWindow->hide();
+}
+
+void AtenForm::on_actionGeometryWindow_triggered(bool checked)
+{
+	if (checked) gui.geometryWindow->showWindow();
+	else gui.geometryWindow->hide();
 }
 
 void AtenForm::on_actionGridsWindow_triggered(bool checked)

@@ -22,25 +22,40 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/geometry.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Local variables
 Atom *target = NULL;
 
+// Update context menu
+void GuiQt::updateContextMenu()
+{
+	Model *viewTarget = gui.mainView.displayModel();
+	// Enable bond, angle, and torsion editing
+	int nselected = viewTarget->nSelected();
+	mainWindow->ui.actionSetBondLength->setEnabled(FALSE);
+	mainWindow->ui.actionSetBondAngle->setEnabled(FALSE);
+	mainWindow->ui.actionSetTorsionAngle->setEnabled(FALSE);
+	if (nselected == 2) mainWindow->ui.actionSetBondLength->setEnabled(TRUE);
+	else if (nselected == 3) mainWindow->ui.actionSetBondAngle->setEnabled(TRUE);
+	else if (nselected == 4) mainWindow->ui.actionSetTorsionAngle->setEnabled(TRUE);
+}
+
 // Show the modelview context menu
-void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
+void GuiQt::callContextMenu(Atom *undermouse, int x, int y)
 {
 	// If there is no atom under the mouse, then exit
 	target = undermouse;
 	if (target == NULL) return;
 	// If the atom under the mouse is selected, just run the popup. If it is not selected, deselect everything else and select it
 	QPoint pos(x,y);
-// 	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
+//	printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
+	Model *viewTarget = gui.mainView.displayModel();
 	if (!target->isSelected())
 	{
-		Model *viewTarget = gui.mainView.displayModel();
-		viewTarget->beginUndoState("Context menu atom focus");
+		viewTarget->beginUndoState("Select atom (Context Menu)");
 		viewTarget->selectNone();
 		viewTarget->selectAtom(target);
 		viewTarget->endUndoState();
@@ -48,6 +63,8 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 		// Make sure context menu items are enabled, since nothing may have been selected beforehand
 		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
 	}
+	// Atom selection may have just changed, so update context menu
+	updateContextMenu();
 	// Run the popup
 	mainWindow->ui.AtomContextMenu->exec(pos);
 }
@@ -176,4 +193,22 @@ void AtenForm::on_actionAtomFreePosition_triggered(bool checked)
 	if ((target == NULL) || (gui.mainView.displayModel()->nSelected() > 1)) CommandNode::run(Command::Free, "");
 	else CommandNode::run(Command::Free, "i", target->id());
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionSetBondLength_triggered(bool checked)
+{
+	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
+	gui.geometryWindow->showWindow();
+}
+
+void AtenForm::on_actionSetBondAngle_triggered(bool checked)
+{
+	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
+	gui.geometryWindow->showWindow();
+}
+
+void AtenForm::on_actionSetTorsionAngle_triggered(bool checked)
+{
+	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
+	gui.geometryWindow->showWindow();
 }

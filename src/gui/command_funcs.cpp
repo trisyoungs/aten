@@ -54,6 +54,18 @@ void AtenCommand::dialogFinished(int result)
 	gui.mainWindow->ui.actionCommandWindow->setChecked(FALSE);
 }
 
+// Set list of commands in command tab
+void AtenCommand::setCommandList(QStringList cmds)
+{
+	ui.CommandPrompt->setCommandList(cmds);
+}
+
+// Return list of commands stored in command tab
+QStringList AtenCommand::commandList()
+{
+	return ui.CommandPrompt->commandList();
+}
+
 /*
 // Script Tab
 */

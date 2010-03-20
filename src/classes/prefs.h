@@ -521,8 +521,6 @@ class Prefs
 	int maxUndoLevels_;
 	// List of common drawing elements to put in SelectElement dialog
 	Dnchar commonElements_;
-	// Maximum number of entries to remember in command toolbar autocomplete
-	int commandHistoryLimit_;
 	// Whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
@@ -573,10 +571,6 @@ class Prefs
 	void setCommonElements(const char *s);
 	// Return list of common elements to use in SelectElement dialog
 	const char *commonElements();
-	// Return maximum number of entries to remember in command toolbar autocomplete
-	void setCommandHistoryLimit(int i);
-	// Return maximum number of entries to remember in command toolbar autocomplete
-	int commandHistoryLimit();
 	// Return whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings();
 	// set whether to load Qt window/toolbar settings on startup
