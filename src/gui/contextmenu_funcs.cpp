@@ -32,15 +32,17 @@ Atom *target = NULL;
 // Update context menu
 void GuiQt::updateContextMenu()
 {
+	msg.enter("GuiQt::updateContextMenu");
 	Model *viewTarget = gui.mainView.displayModel();
 	// Enable bond, angle, and torsion editing
-	int nselected = viewTarget->nSelected();
+	int nselected = (viewTarget == NULL ? 0 : viewTarget->nSelected());
 	mainWindow->ui.actionSetBondLength->setEnabled(FALSE);
 	mainWindow->ui.actionSetBondAngle->setEnabled(FALSE);
 	mainWindow->ui.actionSetTorsionAngle->setEnabled(FALSE);
 	if (nselected == 2) mainWindow->ui.actionSetBondLength->setEnabled(TRUE);
 	else if (nselected == 3) mainWindow->ui.actionSetBondAngle->setEnabled(TRUE);
 	else if (nselected == 4) mainWindow->ui.actionSetTorsionAngle->setEnabled(TRUE);
+	msg.exit("GuiQt::updateContextMenu");
 }
 
 // Show the modelview context menu
