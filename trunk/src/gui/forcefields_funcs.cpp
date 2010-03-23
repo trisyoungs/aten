@@ -80,12 +80,14 @@ void AtenForcefields::showWindow()
 // Update the list of loaded forcefields
 void AtenForcefields::refresh()
 {
+	msg.enter("AtenForcefields::refresh");
 	// Always refresh combo box in main window
 	gui.mainWindow->refreshForcefieldCombo();
 	// If the window is not visible, don't do anything
 	if (!gui.forcefieldsWindow->isVisible())
 	{
 		shouldRefresh_ = TRUE;
+		msg.exit("AtenForcefields::refresh");
 		return;
 	}
 	ui.ForcefieldList->clear();
@@ -125,6 +127,7 @@ void AtenForcefields::refresh()
 	// Refresh list of forcefields on Forcefields toolbar
 	gui.mainWindow->refreshForcefieldCombo();
 	shouldRefresh_ = FALSE;
+	msg.exit("AtenForcefields::refresh");
 }
 
 // Update list of forcefield types in typelist
