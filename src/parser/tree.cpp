@@ -1,7 +1,7 @@
 /*
 	*** Tree
 	*** src/parser/tree.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -407,7 +407,7 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
 	// Add argument list to node and set parent
-	leaf->addArgumentList(arglist);
+	leaf->reverseAddArgumentList(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
@@ -457,7 +457,7 @@ TreeNode *Tree::addUserFunction(Tree *func, TreeNode *arglist)
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added user function '%s' (%p)...\n", func->name(), leaf);
 	// Add argument list to node and set parent
-	leaf->addArgumentList(arglist);
+	leaf->reverseAddArgumentList(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(func->returnType());
@@ -476,7 +476,7 @@ TreeNode *Tree::addDeclarations(TreeNode *declist)
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added declarations node (%p)...\n", leaf);
 	// Add argument list to node and set parent
-	leaf->addArgumentList(declist);
+	leaf->reverseAddArgumentList(declist);
 	leaf->setParent(this);
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(aten.commands.data[Command::Declarations].arguments, aten.commands.data[Command::Declarations].keyword)) leaf = NULL;
@@ -729,7 +729,7 @@ TreeNode *Tree::addArrayConstant(TreeNode *values)
 	else dt = VTypes::IntegerData;
 	Variable *var = ri->item->variables.createArrayConstant(dt, nvalues);
 	var->setParent(this);
-	var->addArgumentList(values);
+	var->reverseAddArgumentList(values);
 	nodes_.own(var);
 	return var;
 }

@@ -1,7 +1,7 @@
 /*
 	*** Log Class
 	*** src/base/log.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

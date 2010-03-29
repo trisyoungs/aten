@@ -1,7 +1,7 @@
 /*
 	*** Qt forcefield editor window functions
 	*** src/gui/ffeditor_funcs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -33,25 +33,26 @@ namespace TypeColumn
 }
 namespace AtomColumn
 {
-	enum AtomColumn { Id, Name, Charge, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
+	enum AtomColumn { Id, Name, Charge, Form, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, nColumns };
 }
 namespace BondColumn
 {
-	enum BondColumn { Type1, Type2, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
+	enum BondColumn { Type1, Type2, Form, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, nColumns };
 }
 namespace AngleColumn
 {
-	enum AngleColumn { Type1, Type2, Type3, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
+	enum AngleColumn { Type1, Type2, Type3, Form, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, nColumns };
 }
 namespace TorsionColumn
 {
-	enum TorsionColumn { Type1, Type2, Type3, Type4, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
+	enum TorsionColumn { Type1, Type2, Type3, Type4, Form, ElecScale, VdwScale, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, nColumns };
 }
 
 // Constructor
 AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
+
 	// Private Variables
 	updating_ = FALSE;
 	targetForcefield_ = NULL;
@@ -122,7 +123,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Atoms List
 	count = 0;
 	ui.FFEditorAtomsTable->setRowCount(ff->nTypes()-1);
-	ui.FFEditorAtomsTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Charge" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorAtomsTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Charge" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10" );
 	slist.clear();
 	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::VdwFunctions[n].keyword;
 	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
@@ -141,7 +142,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setPointer(ffa);
 		ui.FFEditorAtomsTable->setCellWidget(count,AtomColumn::Form,combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(VdwFunctionChanged(int)));
-		for (int n=0; n<6; n++)
+		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
 			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorAtomsTable->setItem(count, AtomColumn::Data1+n, item);
@@ -154,7 +155,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Bonds List
 	count = 0;
 	ui.FFEditorBondsTable->setRowCount(ff->nBonds());
-	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
@@ -171,7 +172,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setPointer(ffb);
 		ui.FFEditorBondsTable->setCellWidget(count, BondColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
-		for (int n=0; n<6; n++)
+		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
 			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorBondsTable->setItem(count, BondColumn::Data1+n, item);
@@ -184,7 +185,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Angles List
 	count = 0;
 	ui.FFEditorAnglesTable->setRowCount(ff->nAngles());
-	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
@@ -203,7 +204,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setPointer(ffb);
 		ui.FFEditorAnglesTable->setCellWidget(count, AngleColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(AngleFunctionChanged(int)));
-		for (int n=0; n<6; n++)
+		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
 			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorAnglesTable->setItem(count, AngleColumn::Data1+n, item);
@@ -216,7 +217,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Torsions List
 	count = 0;
 	ui.FFEditorTorsionsTable->setRowCount(ff->nTorsions());
-	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
 	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
@@ -237,7 +238,11 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo->setPointer(ffb);
 		ui.FFEditorTorsionsTable->setCellWidget(count, TorsionColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
-		for (int n=0; n<6; n++)
+		item = new QTableWidgetItem(ffb->elecScale());
+		ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::ElecScale, item);
+		item = new QTableWidgetItem(ffb->vdwScale());
+		ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::VdwScale, item);
+		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
 			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::Data1+n, item);
@@ -512,6 +517,8 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 		case (TorsionColumn::Form):
 			// Handled by AtenForcefieldEditor::TorsionsTableComboChanged
 			break;
+		// Scaling factors
+
 		// Parameter data
 		case (TorsionColumn::Data1):
 		case (TorsionColumn::Data2):

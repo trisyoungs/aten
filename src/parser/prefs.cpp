@@ -1,7 +1,7 @@
 /*
 	*** Prefs Variable
 	*** src/parser/prefs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -156,7 +156,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::PreferencesData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'prefs&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
@@ -304,7 +304,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			else rv.setArray(ptr->ewaldKMax());
 			break;
 		case (PreferencesVariable::EwaldPrecision):
-			rv.set( ptr->ewaldPrecision() );
+			rv.set( ptr->ewaldPrecision().value() );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
@@ -616,7 +616,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			else for (n=0; n<3; ++n) ptr->setEwaldKMax(n, newvalue.asInteger(result));
 			break;
 		case (PreferencesVariable::EwaldPrecision):
-			ptr->setEwaldPrecision( newvalue.asDouble(result) );
+			ptr->ewaldPrecision().set( newvalue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newvalue.asBool() );

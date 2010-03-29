@@ -1,7 +1,7 @@
 /*
 	*** Specification for rule-based forcefields
 	*** src/ff/rules.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -29,6 +29,25 @@
 // DREIDING: A Generic Force Field for Molecular Simulations
 //	Stephen L. Mayo, Barry D. Olafson, and William A. Goddard III
 //	J. Phys. Chem. 1990, 94, 8897-8909
+
+// Returns the typing rules of the Forcefield
+Rules::ForcefieldRules Forcefield::rules()
+{
+	return rules_;
+}
+
+// Set conversion flag for energetic generator data
+void Forcefield::setEnergyGenerator(int n)
+{
+	if ((n < 0) || (n > MAXFFGENDATA)) msg.print("Index %i is out of range for generator data.\n", n);
+	else energyGenerators_[n] = TRUE;
+}
+
+// Return energy generator array
+bool *Forcefield::energyGenerators()
+{
+	return energyGenerators_;
+}
 
 // Generate VDW params
 void Forcefield::generateVdw(Atom *i)
@@ -411,8 +430,8 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			newtorsion->setParameter(TorsionFunctions::DreidingK, forcek);
 			newtorsion->setParameter(TorsionFunctions::DreidingN, n);
 			newtorsion->setParameter(TorsionFunctions::DreidingEq, eq);
-			newtorsion->setParameter(TorsionFunctions::DreidingEScale, 1.0);
-			newtorsion->setParameter(TorsionFunctions::DreidingVScale, 1.0);
+// 			newtorsion->setParameter(TorsionFunctions::DreidingEScale, 1.0);
+// 			newtorsion->setParameter(TorsionFunctions::DreidingVScale, 1.0);
 			msg.print(Messenger::Verbose,"Dreiding Torsion (dreiding) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 	}

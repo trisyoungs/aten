@@ -1,7 +1,7 @@
 /*
 	*** Molecular mechanics forcefield
 	*** src/ff/forcefield.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -23,6 +23,9 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 #include "base/sysfunc.h"
+
+// Static Singleton
+Forest Forcefield::combinationRules_;
 
 // Forcefield keywords
 const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
@@ -58,6 +61,10 @@ Forcefield::~Forcefield()
 {
 }
 
+/*
+// Specifications
+*/
+
 // Sets the name of the Forcefield
 void Forcefield::setName(const char *s)
 {
@@ -82,30 +89,15 @@ const char *Forcefield::filename()
 	return filename_.get();
 }
 
-// Returns the typing rules of the Forcefield
-Rules::ForcefieldRules Forcefield::rules()
-{
-	return rules_;
-}
-
-// Set conversion flag for energetic generator data
-void Forcefield::setEnergyGenerator(int n)
-{
-	if ((n < 0) || (n > MAXFFGENDATA)) msg.print("Index %i is out of range for generator data.\n", n);
-	else energyGenerators_[n] = TRUE;
-}
-
-// Return energy generator array
-bool *Forcefield::energyGenerators()
-{
-	return energyGenerators_;
-}
-
 // Set internal energy unit of forcefield
 void Forcefield::setEnergyUnit(Prefs::EnergyUnit eu)
 {
 	energyUnit_ = eu;
 }
+
+/*
+// Types
+*/
 
 // Returns the number of atom types specified in the Forcefield
 int Forcefield::nTypes()
@@ -137,140 +129,6 @@ ForcefieldAtom *Forcefield::type(int n)
 		return NULL;
 	}
 	return types_[n];
-}
-
-// Add bond term to the forcefield
-ForcefieldBound *Forcefield::addBond(BondFunctions::BondFunction form)
-{
-	ForcefieldBound *ffb = bonds_.add();
-	ffb->setType(ForcefieldBound::BondInteraction);
-	ffb->setBondStyle(form);
-	return ffb;
-}
-
-// Return number of terms defined in bonds list
-int Forcefield::nBonds()
-{
-	return bonds_.nItems();
-}
-
-// Returns the bond list
-ForcefieldBound *Forcefield::bonds()
-{
-	return bonds_.first();
-}
-
-// Returns nth defined bond
-ForcefieldBound *Forcefield::bond(int n)
-{
-	if ((n < 0) || (n > bonds_.nItems()))
-	{
-		printf("Index %i is out of range for Forcefield::bonds_\n",n);
-		return NULL;
-	}
-	return bonds_[n];
-}
-
-// Add angle term to the forcefield
-ForcefieldBound *Forcefield::addAngle(AngleFunctions::AngleFunction form)
-{
-	ForcefieldBound *ffb = angles_.add();
-	ffb->setType(ForcefieldBound::AngleInteraction);
-	ffb->setAngleStyle(form);
-	return ffb;
-}
-
-// Return number of terms defined in angles list
-int Forcefield::nAngles()
-{
-	return angles_.nItems();
-}
-
-// Returns the angle list
-ForcefieldBound *Forcefield::angles()
-{
-	return angles_.first();
-}
-
-// Returns nth defined angle
-ForcefieldBound *Forcefield::angle(int n)
-{
-	if ((n < 0) || (n > angles_.nItems()))
-	{
-		printf("Index %i is out of range for Forcefield::angles_\n",n);
-		return NULL;
-	}
-	return angles_[n];
-}
-
-// Add torsions term to the forcefield
-ForcefieldBound *Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
-{
-	ForcefieldBound *ffb = torsions_.add();
-	ffb->setType(ForcefieldBound::TorsionInteraction);
-	ffb->setTorsionStyle(form);
-	return ffb;
-}
-
-// Return number of terms defined in torsions list
-int Forcefield::nTorsions()
-{
-	return torsions_.nItems();
-}
-
-// Returns the torsion list
-ForcefieldBound *Forcefield::torsions()
-{
-	return torsions_.first();
-}
-
-// Returns nth defined torsion
-ForcefieldBound *Forcefield::torsion(int n)
-{
-	if ((n < 0) || (n > torsions_.nItems()))
-	{
-		printf("Index %i is out of range for Forcefield::torsions_\n",n);
-		return NULL;
-	}
-	return torsions_[n];
-}
-
-// Add torsions term to the forcefield
-ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
-{
-	ForcefieldBound *ffb = impropers_.add();
-	ffb->setType(ForcefieldBound::TorsionInteraction);
-	ffb->setTorsionStyle(form);
-	return ffb;
-}
-
-// Return number of improper torsion terms defined in list
-int Forcefield::nImpropers()
-{
-	return impropers_.nItems();
-}
-
-// Returns the improper torsion list
-ForcefieldBound *Forcefield::impropers()
-{
-	return impropers_.first();
-}
-
-// Returns nth defined improper torsion
-ForcefieldBound *Forcefield::improper(int n)
-{
-	if ((n < 0) || (n > impropers_.nItems()))
-	{
-		printf("Index %i is out of range for Forcefield::impropers_\n",n);
-		return NULL;
-	}
-	return impropers_[n];
-}
-
-// Character-match the atomtype names supplied
-int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
-{
-	return matchType(a.get(),b.get());
 }
 
 // Search FF for type ID
@@ -317,6 +175,300 @@ Neta *Forcefield::typeDefine(const char *name)
 	Neta *node;
 	for (node = typeDefines_.first(); node != NULL; node = node->next) if (strcmp(name,node->name()) == 0) break;
 	return node;
+}
+
+// Regenerate combination rule function trees
+bool Forcefield::regenerateCombinationRules()
+{
+	msg.enter("Forcefield::regenerateCombinationRules");
+	bool success = TRUE;
+	Prefs::CombinationRule cr;
+	List<Dnchar> eqns;
+	Dnchar *eqn;
+	combinationRules_.clear();
+	for (int n=0; n<Prefs::nCombinationRules; ++n)
+	{
+		cr = (Prefs::CombinationRule) n;
+		eqn = eqns.add();
+		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", prefs.combinationRule(cr), prefs.combinationRuleEquation(cr));
+	}
+	combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
+	combinationRules_.print();
+	msg.exit("Forcefield::regenerateCombinationRules");
+}
+
+// Execute combination rule with parameters specified
+double Forcefield::combineParameters(Prefs::CombinationRule cr, double a, double b)
+{
+	msg.enter("Forcefield::combineParameters");
+	ReturnValue rv;
+	if (!combinationRules_.executeGlobalFunction(Prefs::combinationRule(cr), rv, "dd", a, b))
+	{
+		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
+		msg.exit("Forcefield::combineParameters");
+		return 0.0;
+	}
+	msg.exit("Forcefield::combineParameters");
+	return rv.asDouble();
+}
+
+/*
+// Bonding Interactions
+*/
+
+// Add bond term to the forcefield
+ForcefieldBound *Forcefield::addBond(BondFunctions::BondFunction form)
+{
+	ForcefieldBound *ffb = bonds_.add();
+	ffb->setType(ForcefieldBound::BondInteraction);
+	ffb->setBondStyle(form);
+	return ffb;
+}
+
+// Return number of terms defined in bonds list
+int Forcefield::nBonds()
+{
+	return bonds_.nItems();
+}
+
+// Returns the bond list
+ForcefieldBound *Forcefield::bonds()
+{
+	return bonds_.first();
+}
+
+// Returns nth defined bond
+ForcefieldBound *Forcefield::bond(int n)
+{
+	if ((n < 0) || (n > bonds_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::bonds_\n",n);
+		return NULL;
+	}
+	return bonds_[n];
+}
+
+// Find bond type
+ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
+{
+	// Search the forcefield for the bond definition for the interaction of the atom types i-j
+	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
+	msg.enter("Forcefield::findBond");
+	ForcefieldBound *result = NULL;
+	int matchij, matchji, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *b = bonds_.first();
+	while (b != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the bond specification
+		matchij = matchTypes(ffi,ffj,b->typeName(0),b->typeName(1));
+		matchji = matchTypes(ffj,ffi,b->typeName(0),b->typeName(1));
+		if (matchji < matchij) matchij = matchji;	// Take the better (smaller) of the two results
+		if (matchij < 10)
+		{
+			if (matchij < bestmatch)	// Better match
+			{
+				result = b;
+				bestmatch = matchij;
+			}
+		}
+		if (bestmatch == 0) break;
+		b = b ->next;
+	}
+	msg.exit("Forcefield::findBond");
+	return result;
+}
+
+/*
+// Angle Interactions
+*/
+
+// Add angle term to the forcefield
+ForcefieldBound *Forcefield::addAngle(AngleFunctions::AngleFunction form)
+{
+	ForcefieldBound *ffb = angles_.add();
+	ffb->setType(ForcefieldBound::AngleInteraction);
+	ffb->setAngleStyle(form);
+	return ffb;
+}
+
+// Return number of terms defined in angles list
+int Forcefield::nAngles()
+{
+	return angles_.nItems();
+}
+
+// Returns the angle list
+ForcefieldBound *Forcefield::angles()
+{
+	return angles_.first();
+}
+
+// Returns nth defined angle
+ForcefieldBound *Forcefield::angle(int n)
+{
+	if ((n < 0) || (n > angles_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::angles_\n",n);
+		return NULL;
+	}
+	return angles_[n];
+}
+
+// Find angle type
+ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk)
+{
+	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findAngle");
+	ForcefieldBound *result = NULL;
+	int matchj, matchik, matchki, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *a = angles_.first();
+	while (a != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the angle specification
+		// Check the central atom of the angle first
+		matchj = matchType(ffj->equivalent(),a->typeName(1));
+		if (matchj != 10)
+		{
+			matchik = matchTypes(ffi,ffk,a->typeName(0),a->typeName(2));
+			matchki = matchTypes(ffk,ffi,a->typeName(0),a->typeName(2));
+			// Take the better of the two results
+			if (matchki < matchik) matchik = matchki;
+			// Add on the score from the central atom
+			matchik += matchj;
+			if (matchik < 10)
+			{
+				if (matchik < bestmatch)
+				{
+					result = a;
+					bestmatch = matchik;
+				}
+			}
+		}
+		if (bestmatch == 0) break;		// Early exit for an exact match
+		a = a ->next;
+	}
+	msg.exit("Forcefield::findAngle");
+	return result;
+}
+
+/*
+// Torsion Interactions
+*/
+
+// Add torsions term to the forcefield
+ForcefieldBound *Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
+{
+	ForcefieldBound *ffb = torsions_.add();
+	ffb->setType(ForcefieldBound::TorsionInteraction);
+	ffb->setTorsionStyle(form);
+	return ffb;
+}
+
+// Return number of terms defined in torsions list
+int Forcefield::nTorsions()
+{
+	return torsions_.nItems();
+}
+
+// Returns the torsion list
+ForcefieldBound *Forcefield::torsions()
+{
+	return torsions_.first();
+}
+
+// Returns nth defined torsion
+ForcefieldBound *Forcefield::torsion(int n)
+{
+	if ((n < 0) || (n > torsions_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::torsions_\n",n);
+		return NULL;
+	}
+	return torsions_[n];
+}
+
+// Find torsion type
+ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk, ForcefieldAtom *ffl)
+{
+	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findTorsion");
+	ForcefieldBound *result = NULL;
+	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *t = torsions_.first();
+	while (t != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the torsion specification
+		matchil = matchTypes(ffi,ffl,t->typeName(0),t->typeName(3));
+		matchli = matchTypes(ffl,ffi,t->typeName(0),t->typeName(3));
+		matchjk = matchTypes(ffj,ffk,t->typeName(1),t->typeName(2));
+		matchkj = matchTypes(ffk,ffj,t->typeName(1),t->typeName(2));
+		matchijkl = matchil + matchjk;
+		matchlkji = matchli + matchkj;
+		if (matchlkji < matchijkl) matchijkl = matchlkji;
+		if (matchijkl < 10)
+		{
+			if (matchijkl < bestmatch)
+			{
+				result = t;
+				bestmatch = matchijkl;
+			}
+		}
+		if (bestmatch == 0) break;
+		t = t->next;
+	}
+	msg.exit("Forcefield::findTorsion");
+	return result;
+}
+
+/*
+// Improper Torsion Interactions
+*/
+
+// Add torsions term to the forcefield
+ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
+{
+	ForcefieldBound *ffb = impropers_.add();
+	ffb->setType(ForcefieldBound::TorsionInteraction);
+	ffb->setTorsionStyle(form);
+	return ffb;
+}
+
+// Return number of improper torsion terms defined in list
+int Forcefield::nImpropers()
+{
+	return impropers_.nItems();
+}
+
+// Returns the improper torsion list
+ForcefieldBound *Forcefield::impropers()
+{
+	return impropers_.first();
+}
+
+// Returns nth defined improper torsion
+ForcefieldBound *Forcefield::improper(int n)
+{
+	if ((n < 0) || (n > impropers_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::impropers_\n",n);
+		return NULL;
+	}
+	return impropers_[n];
+}
+
+/*
+// Parameter Matching
+*/
+
+// Character-match the atomtype names supplied
+int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
+{
+	return matchType(a.get(),b.get());
 }
 
 // Match two forcefield type strings
@@ -374,110 +526,9 @@ int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char 
 //	1-9: Partial match with wildcards
 //	10+: One or more parameters did not match
 
-// Find bond type
-ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
-{
-	// Search the forcefield for the bond definition for the interaction of the atom types i-j
-	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
-	msg.enter("Forcefield::findBond");
-	ForcefieldBound *result = NULL;
-	int matchij, matchji, bestmatch;
-	bestmatch = 10;
-	ForcefieldBound *b = bonds_.first();
-	while (b != NULL)
-	{
-		// See how close the match is between the atom forcefield types and the bond specification
-		matchij = matchTypes(ffi,ffj,b->typeName(0),b->typeName(1));
-		matchji = matchTypes(ffj,ffi,b->typeName(0),b->typeName(1));
-		if (matchji < matchij) matchij = matchji;	// Take the better (smaller) of the two results
-		if (matchij < 10)
-		{
-			if (matchij < bestmatch)	// Better match
-			{
-				result = b;
-				bestmatch = matchij;
-			}
-		}
-		if (bestmatch == 0) break;
-		b = b ->next;
-	}
-	msg.exit("Forcefield::findBond");
-	return result;
-}
-
-// Find angle type
-ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk)
-{
-	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
-	// Return NULL is no match found.
-	msg.enter("Forcefield::findAngle");
-	ForcefieldBound *result = NULL;
-	int matchj, matchik, matchki, bestmatch;
-	bestmatch = 10;
-	ForcefieldBound *a = angles_.first();
-	while (a != NULL)
-	{
-		// See how close the match is between the atom forcefield types and the angle specification
-		// Check the central atom of the angle first
-		matchj = matchType(ffj->equivalent(),a->typeName(1));
-		if (matchj != 10)
-		{
-			matchik = matchTypes(ffi,ffk,a->typeName(0),a->typeName(2));
-			matchki = matchTypes(ffk,ffi,a->typeName(0),a->typeName(2));
-			// Take the better of the two results
-			if (matchki < matchik) matchik = matchki;
-			// Add on the score from the central atom
-			matchik += matchj;
-			if (matchik < 10)
-			{
-				if (matchik < bestmatch)
-				{
-					result = a;
-					bestmatch = matchik;
-				}
-			}
-		}
-		if (bestmatch == 0) break;		// Early exit for an exact match
-		a = a ->next;
-	}
-	msg.exit("Forcefield::findAngle");
-	return result;
-}
-
-// Find torsion type
-ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk, ForcefieldAtom *ffl)
-{
-	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
-	// Return NULL is no match found.
-	msg.enter("Forcefield::findTorsion");
-	ForcefieldBound *result = NULL;
-	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
-	bestmatch = 10;
-	ForcefieldBound *t = torsions_.first();
-	while (t != NULL)
-	{
-		// See how close the match is between the atom forcefield types and the torsion specification
-		matchil = matchTypes(ffi,ffl,t->typeName(0),t->typeName(3));
-		matchli = matchTypes(ffl,ffi,t->typeName(0),t->typeName(3));
-		matchjk = matchTypes(ffj,ffk,t->typeName(1),t->typeName(2));
-		matchkj = matchTypes(ffk,ffj,t->typeName(1),t->typeName(2));
-		matchijkl = matchil + matchjk;
-		matchlkji = matchli + matchkj;
-		if (matchlkji < matchijkl) matchijkl = matchlkji;
-		if (matchijkl < 10)
-		{
-			if (matchijkl < bestmatch)
-			{
-				result = t;
-				bestmatch = matchijkl;
-			}
-		}
-		if (bestmatch == 0) break;
-		t = t->next;
-	}
-	msg.exit("Forcefield::findTorsion");
-	return result;
-}
+/*
+// Misc
+*/
 
 void Forcefield::convertParameters()
 {

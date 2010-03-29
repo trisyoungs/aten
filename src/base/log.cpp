@@ -1,7 +1,7 @@
 /*
 	*** Log Class
 	*** src/base/log.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -87,5 +87,5 @@ bool Log::isModified() const
 // Print logs
 void Log::print() const
 {
-	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Camera], logs_[Log::Glyphs], logs_[Log::Total]); 
+	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Misc [%i], Total [%i]\n", logs_[Log::Structure], logs_[Log::Coordinates], logs_[Log::Visual], logs_[Log::Selection], logs_[Log::Camera], logs_[Log::Glyphs], logs_[Log::Misc], logs_[Log::Total]); 
 }

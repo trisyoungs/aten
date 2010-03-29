@@ -1,7 +1,7 @@
 /*
 	*** Qt context menu functions
 	*** src/gui/contextmenu_funcs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -213,4 +213,10 @@ void AtenForm::on_actionSetTorsionAngle_triggered(bool checked)
 {
 	gui.mainWindow->ui.actionGeometryWindow->setChecked(TRUE);
 	gui.geometryWindow->showWindow();
+}
+
+void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
+{
+	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
+	gui.update(FALSE,FALSE,FALSE);
 }

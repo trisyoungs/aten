@@ -1,7 +1,7 @@
 /*
 	*** Periodic cell definition
 	*** src/base/cell.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -142,8 +142,6 @@ class Cell
 	List<Generator> generators_;
 
 	public:
-	// Sets the spacegroup of the model
-	void setSpacegroup(const char *name);
 	// Return spacegroup name of the model
 	const char *spacegroup();
 	// Set the spacegroup to the spacegroup Id supplied

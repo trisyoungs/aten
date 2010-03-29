@@ -1,7 +1,7 @@
 /*
 	*** Energy Commands
 	*** src/command/energy.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -57,7 +57,7 @@ bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &
 				msg.print("Must supply the Ewald precision parameter to used this electrostatics option.\n");
 				return FALSE;
 			}
-			prefs.setEwaldPrecision(c->argd(1));
+			prefs.ewaldPrecision().set(c->argd(1));
 			break;
 	}
 	// Set method

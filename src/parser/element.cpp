@@ -1,7 +1,7 @@
 /*
 	*** Elements Variable
 	*** src/parser/element.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -91,7 +91,7 @@ StepNode *ElementVariable::accessorSearch(const char *s, TreeNode *arrayindex, T
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ElementData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'element&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

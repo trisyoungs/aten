@@ -1,7 +1,7 @@
 /*
 	*** Forest
 	*** src/parser/forest.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -60,9 +60,9 @@ class Forest
 	// Return associated filename (if any)
 	const char *filename();
 	// Generate forest from string 
-	bool generateFromString(const char *s, const char *name = NULL);
+	bool generateFromString(const char *s, const char *name = NULL, bool dontpushtree = FALSE);
 	// Generate forest from string list
-	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL);
+	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE);
 	// Generate forest from input file
 	bool generateFromFile(const char *filename, const char *name = NULL, bool isFilterFile = FALSE);
 	// Finalise forest
@@ -75,6 +75,8 @@ class Forest
 	Tree *addGlobalFunction(const char *name);
 	// Search for existing global function
 	Tree *findGlobalFunction(const char *s);
+	// Execute specified global function
+	bool executeGlobalFunction(const char *name, ReturnValue &rv, const char *arglist ...);
 	// Delete specified tree
 	void deleteTree(Tree *t);
 	// Return whether the Forest is being generated from a filterfile

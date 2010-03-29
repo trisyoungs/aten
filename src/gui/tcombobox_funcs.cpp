@@ -1,7 +1,7 @@
 /*
 	*** Qt TComboBox functions
 	*** src/gui/tcombobox_funcs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -26,6 +26,7 @@ TComboBox::TComboBox(QWidget *parent) : QComboBox(parent)
 {
 	// Private variables
 	pointer_ = NULL;
+	integer_ = 0;
 }
 
 // Set the data pointer in the widget
@@ -38,5 +39,17 @@ void TComboBox::setPointer(void *source)
 void *TComboBox::pointer()
 {
 	return pointer_;
+}
+
+// Set the data integer in the widget
+void TComboBox::setInteger(int i)
+{
+	integer_ = i;
+}
+
+// Return the integer in the widget
+int TComboBox::integer()
+{
+	return integer_;
 }
 

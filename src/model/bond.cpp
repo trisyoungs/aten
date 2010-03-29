@@ -1,7 +1,7 @@
 /*
 	*** Model bond functions
 	*** src/model/bond.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -180,7 +180,7 @@ void Model::initialiseBondingCuboids()
 	extentMax_ = -1e6;
 	do
 	{
-		cuboidSize_.set(5.0,5.0,5.0);
+		cuboidSize_.set(size,size,size);
 		nCuboids_ = 0;
 		if (atoms_.nItems() == 0) return;
 		// Determine the number of cuboids to partition our space into
@@ -218,7 +218,11 @@ void Model::initialiseBondingCuboids()
 			cuboidBoxes_.set(ilengths.x, ilengths.y, ilengths.z);
 		}
 		nCuboids_ = cuboidBoxes_.x * cuboidBoxes_.y * cuboidBoxes_.z;
-		size += 5.0;
+		if (cuboidBoxes_.max() > prefs.maxCuboids())
+		{
+			size += 1.0;
+			msg.print(Messenger::Verbose, "Too many cuboids (%ix%ix%i) - bonding cuboid size increased to %f.\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, size);
+		}
 	} while (cuboidBoxes_.max() > prefs.maxCuboids());
 	cuboidYZ_ = cuboidBoxes_.y * cuboidBoxes_.z;
 	freeBondingCuboids();

@@ -1,7 +1,7 @@
 /*
 	*** Aten's master structure
 	*** src/main/aten.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -218,6 +218,7 @@ Model *Aten::addModel()
 	char newname[16];
 	sprintf(newname,"Unnamed%03i", ++modelId_);
 	m->setName(newname);
+	m->changeLog.reset();
 	gui.addModel(m);
 	gui.disorderWindow->refresh();
 	setCurrentModel(m);

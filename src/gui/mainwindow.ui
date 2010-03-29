@@ -151,9 +151,9 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="ToolsMenu">
+   <widget class="QMenu" name="SettingsMenu">
     <property name="title">
-     <string>Settings</string>
+     <string>Se&amp;ttings</string>
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="separator"/>
@@ -260,7 +260,7 @@
    </widget>
    <widget class="QMenu" name="ScriptsMenu">
     <property name="title">
-     <string>Scripts</string>
+     <string>S&amp;cripts</string>
     </property>
     <addaction name="actionLoadScript"/>
     <addaction name="separator"/>
@@ -298,7 +298,7 @@
    </widget>
    <widget class="QMenu" name="AtomContextMenu">
     <property name="title">
-     <string>Se&amp;lection</string>
+     <string>&amp;Selection</string>
     </property>
     <widget class="QMenu" name="AtomLabelsMenu">
      <property name="title">
@@ -339,6 +339,8 @@
     <addaction name="actionSetBondLength"/>
     <addaction name="actionSetBondAngle"/>
     <addaction name="actionSetTorsionAngle"/>
+    <addaction name="separator"/>
+    <addaction name="actionCentreAtOrigin"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -355,7 +357,7 @@
    <addaction name="AtomContextMenu"/>
    <addaction name="ModelMenu"/>
    <addaction name="ScriptsMenu"/>
-   <addaction name="ToolsMenu"/>
+   <addaction name="SettingsMenu"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar"/>
@@ -2213,6 +2215,14 @@
    </property>
    <property name="text">
     <string>Geometry</string>
+   </property>
+  </action>
+  <action name="actionCentreAtOrigin">
+   <property name="text">
+    <string>Centre at Origin</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+C</string>
    </property>
   </action>
  </widget>

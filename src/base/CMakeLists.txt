@@ -6,6 +6,7 @@ bundle.cpp
 cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
+doubleexp.cpp
 elements.cpp
 glyph.cpp
 kvmap.cpp
@@ -24,6 +25,7 @@ cell.h
 colourscalepoint.h
 constants.h
 dnchar.h
+doubleexp.h
 elements.h
 glyph.h
 kvmap.h

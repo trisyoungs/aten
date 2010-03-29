@@ -1,7 +1,7 @@
 /*
 	*** Tree Node
 	*** src/parser/treenode.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -146,8 +146,14 @@ bool TreeNode::hasArg(int i)
 	return (i < args_.nItems());
 }
 
-// Add argument(s) to node
-void TreeNode::addArgumentList(TreeNode *leaf)
+// Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
+void TreeNode::addArguments(TreeNode *leaf)
+{
+	for (TreeNode *node = leaf; node != NULL; node = node->next) args_.add(node);
+}
+
+// Add list of arguments formed as a linked TreeNode list, beginning from supplied list tail
+void TreeNode::reverseAddArgumentList(TreeNode *leaf)
 {
 	/*
 	The supplied leaf may be a single node, or it may be a list of nodes.

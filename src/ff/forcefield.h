@@ -1,7 +1,7 @@
 /*
 	*** Molecular mechanics Forcefield
 	*** src/ff/forcefield.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -81,6 +81,8 @@ class Forcefield
 	List<Neta> typeDefines_;
 	// Atom type name and dispersion data array
 	List<ForcefieldAtom> types_;
+	// Static function trees for combination rule equations
+	static Forest combinationRules_;
 
 	public:
 	// Returns the number of atom types specified in the Forcefield
@@ -99,6 +101,10 @@ class Forcefield
 	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
 	// Find type define
 	Neta *typeDefine(const char *name);
+	// Regenerate combination rule function trees
+	static bool regenerateCombinationRules();
+	// Execute combination rule with parameters specified
+	static double combineParameters(Prefs::CombinationRule cr, double a, double b);
 
 
 	/*
@@ -220,6 +226,7 @@ class Forcefield
 	// Pointer to torsion generation function (if one is defined)
 	Tree *torsionGenerator_;
 	// END NEW
+
 
 	/*
 	// Parameter Matching

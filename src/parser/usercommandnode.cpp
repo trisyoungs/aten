@@ -1,7 +1,7 @@
 /*
 	*** User Command Node
 	*** src/parser/usercommandnode.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -160,3 +160,67 @@ bool UserCommandNode::initialise()
 	return FALSE;
 }
 
+// Create, run, and free a single command with simple argument list
+bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
+{
+	msg.enter("UserCommandNode::run");
+	// Local tree to contain usercommandnode and its arguments
+	Tree tree;
+
+	// Create our temporary node
+	UserCommandNode node(func);
+	node.parent_ = &tree;
+
+	// Set arguments from supplied list
+	const char *c;
+	double ttt;
+	va_list vars;
+	va_start(vars, arglist);
+	TreeNode *var = NULL;
+	for (c = &arglist[0]; *c != '\0'; c++)
+	{
+		switch (*c)
+		{
+			case ('i'):
+				var = tree.addConstant(va_arg(vars, int));
+				break;
+			case ('d'):
+				var = tree.addConstant(va_arg(vars, double));
+				break;
+			case ('c'):
+			case ('s'):
+				var = tree.addConstant(va_arg(vars, const char *));
+				break;
+			default:
+				printf("Invalid argument specifier '%c' in UserCommandNode::run.\n", *c);
+				var = NULL;
+				break;
+		}
+		node.addArgument(var);
+	}
+	va_end(vars);
+	// Now, run the command...
+	bool result = node.execute(rv);
+	msg.exit("UserCommandNode::run");
+	return result;
+}
+
+// Create, run, and free a single command with simple argument list
+bool UserCommandNode::run(Tree *func, ReturnValue &rv, TreeNode *arglisthead)
+{
+	msg.enter("UserCommandNode::run(arglist)");
+	// Local tree to contain usercommandnode and its arguments
+	Tree tree;
+
+	// Create our temporary node
+	UserCommandNode node(func);
+	node.parent_ = &tree;
+
+	// Set arguments from supplied list
+	node.addArguments(arglisthead);
+
+	// Now, run the command...
+	bool result = node.execute(rv);
+	msg.exit("UserCommandNode::run(arglist)");
+	return result;
+}

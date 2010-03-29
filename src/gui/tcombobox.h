@@ -1,7 +1,7 @@
 /*
 	*** Qt tablewidget item
 	*** src/gui/ttablewidgetitem.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -34,17 +34,23 @@ class TComboBox : public QComboBox
 	TComboBox(QWidget *parent);
 
 	/*
-	// Pointers
+	// Associated Data
 	*/
 	private:
+	// Pointer data
 	void *pointer_;
-	
+	// Integer data
+	int integer_;
 
 	public:
 	// Set the pointer in the widget
-	void setPointer(void *source);
+	void setPointer(void *ptr);
 	// Return the pointer in the widget
 	void *pointer();
+	// Set the integer value in the widget
+	void setInteger(int i);
+	// Return the integer value in the widget
+	int integer();
 };
 
 #endif

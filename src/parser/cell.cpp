@@ -1,7 +1,7 @@
 /*
 	*** Cell Variable and Array
 	*** src/parser/cell.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -72,7 +72,7 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "density",	VTypes::DoubleData,	0, TRUE },
 	{ "matrix", 	VTypes::DoubleData,	9, FALSE },
 	{ "sgid",	VTypes::IntegerData,	0, FALSE },
-	{ "sgname",	VTypes::StringData,	0, FALSE },
+	{ "sgname",	VTypes::StringData,	0, TRUE },
 	{ "type",	VTypes::StringData,	0, TRUE },
 	{ "volume",	VTypes::DoubleData,	0, TRUE },
 };
@@ -115,7 +115,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::CellData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'cell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
@@ -325,7 +325,6 @@ bool CellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			// Cast accessor into a CellParameter
 			ptr->parent()->setCell( (Cell::CellParameter) ((arrayIndex-1) + Cell::CellAX), newvalue.asDouble());
 			break;
-		case (CellVariable::SpacegroupName):
 		case (CellVariable::SpacegroupId):
 			ptr->parent()->setSpacegroup( newvalue.asString() );
 			break;

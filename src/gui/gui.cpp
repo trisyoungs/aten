@@ -1,7 +1,7 @@
 /*
 	*** Qt user interface functions
 	*** src/gui/gui.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -303,7 +303,7 @@ void GuiQt::run()
 	}
 
 	// Add GNU GPL message to statusbox
-	msg.print("Aten version %s (%s@%s) built on %s, Copyright (C) 2007-2009  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	msg.print("Aten version %s (%s@%s) built on %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
 	msg.print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
 	msg.print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
 	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");

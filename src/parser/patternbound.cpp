@@ -1,7 +1,7 @@
 /*
 	*** PatternBound Variable
 	*** src/parser/patternbound.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -92,7 +92,7 @@ StepNode *PatternBoundVariable::accessorSearch(const char *s, TreeNode *arrayind
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::PatternBoundData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'bound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

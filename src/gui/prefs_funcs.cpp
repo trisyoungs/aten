@@ -1,7 +1,7 @@
 /*
 	*** Qt prefs window functions
 	*** src/gui/prefs_funcs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/prefs.h"
 #include "gui/selectelement.h"
+#include "gui/tcombobox.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
 
@@ -124,6 +125,7 @@ void AtenPrefs::setControls()
 	ui.EnergyUnitCombo->setCurrentIndex(prefs.energyUnit());
 	ui.EnergyUpdateSpin->setValue(prefs.energyUpdate());
 	ui.HAddDistanceSpin->setValue(prefs.hydrogenDistance());
+	ui.MaxCuboidsSpin->setValue(prefs.maxCuboids());
 	ui.MaxRingsSpin->setValue(prefs.maxRings());
 	ui.MaxRingSizeSpin->setValue(prefs.maxRingSize());
 	ui.MaxUndoLevelsSpin->setValue(prefs.maxUndoLevels());
@@ -154,6 +156,27 @@ void AtenPrefs::setControls()
 		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
 	}
 	updateScalePointsList();
+
+	// Set controls in Energy/FF page
+	ui.CalculateIntraCheck->setChecked(prefs.calculateIntra());
+	ui.CalculateVdwCheck->setChecked(prefs.calculateVdw());
+	ui.CalculateElecCheck->setChecked(prefs.calculateElec());
+	ui.VdwCutoffSpin->setValue(prefs.vdwCutoff());
+	ui.ElecCutoffSpin->setValue(prefs.elecCutoff());
+	ui.EwaldPrecisionMantissaSpin->setValue(prefs.ewaldPrecision().mantissa());
+	ui.EwaldPrecisionExponentSpin->setValue(prefs.ewaldPrecision().exponent());
+	ui.EwaldManualAlphaSpin->setValue(prefs.ewaldAlpha());
+	ui.EwaldManualKXSpin->setValue(prefs.ewaldKMax().x);
+	ui.EwaldManualKYSpin->setValue(prefs.ewaldKMax().y);
+	ui.EwaldManualKZSpin->setValue(prefs.ewaldKMax().z);
+	ui.FunctionalFormList->clear();
+	QListWidgetItem *listitem;
+	for (int n=0; n<VdwFunctions::nVdwFunctions; ++n)
+	{
+		listitem = new QListWidgetItem(ui.FunctionalFormList);
+		listitem->setText(VdwFunctions::VdwFunctions[n].name);
+	}
+	ui.FunctionalFormList->setCurrentRow(0);
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -803,6 +826,11 @@ void AtenPrefs::on_HAddDistanceSpin_valueChanged(double value)
 	prefs.setHydrogenDistance(value);
 }
 
+void AtenPrefs::on_MaxCuboidsSpin_valueChanged(int value)
+{
+	prefs.setMaxCuboids(value);
+}
+
 void AtenPrefs::on_MaxRingsSpin_valueChanged(int value)
 {
 	prefs.setMaxRings(value);
@@ -821,4 +849,129 @@ void AtenPrefs::on_MaxUndoLevelsSpin_valueChanged(int value)
 void AtenPrefs::on_ModelUpdateSpin_valueChanged(int value)
 {
 	prefs.setModelUpdate(value);
+}
+
+/*
+// Energy / FF Page
+*/
+
+void AtenPrefs::updateParameterTable()
+{
+	msg.enter("AtenPrefs::updateParameterTable");
+	int row = ui.FunctionalFormList->currentRow();
+	if (row == -1)
+	{
+		ui.ParameterTable->setRowCount(0);
+		msg.exit("AtenPrefs::updateParameterTable");
+		return;
+	}
+	int n;
+	QStringList combrules;
+	TComboBox *combo;
+	QTableWidgetItem *item;
+	for (n=0; n<Prefs::nCombinationRules; ++n) combrules << Prefs::combinationRuleName( (Prefs::CombinationRule) n);
+	ui.ParameterTable->setColumnCount(2);
+	ui.ParameterTable->setRowCount(VdwFunctions::VdwFunctions[row].nParameters);
+	for (n=0; n<VdwFunctions::VdwFunctions[row].nParameters; ++n)
+	{
+		item = new QTableWidgetItem(VdwFunctions::VdwFunctions[row].parameters[n]);
+		ui.ParameterTable->setItem(n, 0, item);
+		combo = new TComboBox(this);
+		combo->setMinimumSize(78,24);
+		combo->addItems(combrules);
+		combo->setInteger(n);
+		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRule[n]);
+		ui.ParameterTable->setCellWidget(n, 1, combo);
+		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
+	}
+	msg.exit("AtenPrefs::updateParameterTable");
+}
+
+void AtenPrefs::on_CalculateIntraCheck_stateChanged(int state)
+{
+	prefs.setCalculateIntra(state);
+}
+
+void AtenPrefs::on_CalculateVdwCheck_stateChanged(int state)
+{
+	prefs.setCalculateVdw(state);
+}
+
+void AtenPrefs::on_CalculateElecCheck_stateChanged(int state)
+{
+	prefs.setCalculateElec(state);
+}
+
+void AtenPrefs::on_VdwCutoffSpin_valueChanged(double d)
+{
+	prefs.setVdwCutoff(d);
+}
+
+void AtenPrefs::on_ElecCutoffSpin_valueChanged(double d)
+{
+	prefs.setElecCutoff(d);
+}
+
+void AtenPrefs::on_EwaldPrecisionMantissaSpin_valueChanged(double d)
+{
+	prefs.ewaldPrecision().setMantissa(d);
+}
+
+void AtenPrefs::on_EwaldPrecisionExponentSpin_valueChanged(int i)
+{
+	prefs.ewaldPrecision().setExponent(i);
+}
+
+void AtenPrefs::on_EwaldManualAlphaSpin_valueChanged(double d)
+{
+	prefs.setEwaldAlpha(d);
+}
+
+void AtenPrefs::on_EwaldManualKXSpin_valueChanged(int i)
+{
+	prefs.setEwaldKMax(0,i);
+}
+
+void AtenPrefs::on_EwaldManualKYSpin_valueChanged(int i)
+{
+	prefs.setEwaldKMax(1,i);
+}
+
+void AtenPrefs::on_EwaldManualKZSpin_valueChanged(int i)
+{
+	prefs.setEwaldKMax(2,i);
+}
+
+void AtenPrefs::on_FunctionalFormList_currentRowChanged(int row)
+{
+	updateParameterTable();
+}
+
+void AtenPrefs::ParameterRuleChanged(int id)
+{
+	// Get current functional form highlighted
+	msg.enter("AtenPrefs::ParameterRuleChanged");
+	int row = ui.FunctionalFormList->currentRow();
+	if (row == -1)
+	{
+		msg.exit("AtenPrefs::ParameterRuleChanged");
+		return;
+	}
+	int n;
+	// Determine ID of sender
+	TComboBox *combo = (TComboBox*) sender();
+	if (!combo)
+	{
+		printf("AtenPrefs::ParameterRuleChanged - Sender could not be cast to a TComboBox.\n");
+		msg.exit("AtenPrefs::ParameterRuleChanged");
+		return;
+	}
+	VdwFunctions::VdwFunctions[row].combinationRule[combo->integer()] = id;
+// 	printf("SET %i %i %i\n", row, combo->integer(), id);
+	msg.exit("AtenPrefs::ParameterRuleChanged");
+}
+
+void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)
+{
+	// TGAY Do we need this?
 }
