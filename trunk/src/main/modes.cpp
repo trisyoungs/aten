@@ -1,7 +1,7 @@
 /*
 	*** Aten Program Modes (other than GUI)
 	*** src/main/modes.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

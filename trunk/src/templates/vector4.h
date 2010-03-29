@@ -1,7 +1,7 @@
 /*
 	*** 4-component vector class
 	*** src/templates/vector4.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

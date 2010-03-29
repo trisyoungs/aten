@@ -1,7 +1,7 @@
 /*
 	*** Key/Value map class
-	*** src/base/keyvaluemap.h
-	Copyright T. Youngs 2007-2009
+	*** src/base/kvmap.h
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

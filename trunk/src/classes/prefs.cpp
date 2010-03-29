@@ -1,7 +1,7 @@
 /*
 	*** Preferences storage
 	*** src/base/prefs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -25,10 +25,29 @@
 #include "base/lineparser.h"
 #include "main/aten.h"
 #include "parser/prefs.h"
+#include "ff/forcefield.h"
 #include "methods/mc.h"
 #include <iostream>
 
 Prefs prefs;
+
+// Combination rules
+const char *CombinationRuleKeywords[Prefs::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
+const char *CombinationRuleNames[Prefs::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]", "Custom Rule 1", "Custom Rule 2", "Custom Rule 3" };
+Prefs::CombinationRule Prefs::combinationRule(const char *s, bool reporterror)
+{
+	Prefs::CombinationRule cr = (Prefs::CombinationRule) enumSearch("combination rule",Prefs::nCombinationRules,CombinationRuleKeywords,s);
+	if ((cr == Prefs::nCombinationRules) && reporterror) enumPrintValid(Prefs::nCombinationRules,CombinationRuleKeywords);
+	return cr;
+}
+const char *Prefs::combinationRule(CombinationRule cr)
+{
+	return CombinationRuleKeywords[cr];
+}
+const char *Prefs::combinationRuleName(CombinationRule cr)
+{
+	return CombinationRuleNames[cr];
+}
 
 // Colour Schemes
 const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
@@ -294,11 +313,16 @@ Prefs::Prefs()
 	calculateElec_ = FALSE;
 	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
-	ewaldPrecision_ = 5.0E-6;
+	ewaldPrecision_.set(5.0, 6);
 	vdwCutoff_ = 10.0;
 	elecCutoff_ = 10.0;
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
+	combinationRuleEquations_[Prefs::ArithmeticRule] = "c = (a+b)*0.5";
+	combinationRuleEquations_[Prefs::GeometricRule] = "c = sqrt(a*b)";
+	combinationRuleEquations_[Prefs::CustomRule1] = "c = a+b";
+	combinationRuleEquations_[Prefs::CustomRule2] = "c = a+b";
+	combinationRuleEquations_[Prefs::CustomRule3] = "c = a+b";
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
@@ -1343,14 +1367,8 @@ Vec3<int> Prefs::ewaldKMax()
 	return ewaldKMax_;
 }
 
-// Sets the Ewald precision
-void Prefs::setEwaldPrecision(double d)
-{
-	ewaldPrecision_ = d;
-}
-
 // Return the Ewald precision
-double Prefs::ewaldPrecision()
+DoubleExp &Prefs::ewaldPrecision()
 {
 	return ewaldPrecision_;
 }
@@ -1413,6 +1431,19 @@ void Prefs::setVdwScale(double d)
 double Prefs::vdwScale()
 {
 	return vdwScale_;
+}
+
+// Set combination rule equation
+void Prefs::setCombinationRuleEquation(Prefs::CombinationRule cr, const char *s)
+{
+	combinationRuleEquations_[cr] = s;
+	Forcefield::regenerateCombinationRules();
+}
+
+// Return combination rule equation
+const char *Prefs::combinationRuleEquation(Prefs::CombinationRule cr)
+{
+	return combinationRuleEquations_[cr].get();
 }
 
 /*

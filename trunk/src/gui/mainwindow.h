@@ -1,7 +1,7 @@
 /*
 	*** Qt main window
 	*** src/gui/mainwindow.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -127,6 +127,7 @@ class AtenForm : public QMainWindow
 	void on_actionSetBondLength_triggered(bool checked);
 	void on_actionSetBondAngle_triggered(bool checked);
 	void on_actionSetTorsionAngle_triggered(bool checked);
+	void on_actionCentreAtOrigin_triggered(bool checked);
 
 	/*
 	// Bonding Actions

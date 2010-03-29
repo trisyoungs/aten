@@ -1,7 +1,7 @@
 /*
 	*** Fourier storage (reciprocal space vectors)
 	*** src/ff/fourier.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

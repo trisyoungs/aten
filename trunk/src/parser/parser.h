@@ -1,7 +1,7 @@
 /*
 	*** Command Parser
 	*** src/parser/parser.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -97,9 +97,9 @@ class CommandParser : public Tree
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target forest from specified character string
-	bool generateFromString(Forest *f, const char *s);
+	bool generateFromString(Forest *f, const char *s, bool dontpushtree = FALSE);
 	// Populate target forest from specified string list
-	bool generateFromStringList(Forest *f, Dnchar *stringListHead);
+	bool generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree = FALSE);
 	// Populate target forest from specified file(name)
 	bool generateFromFile(Forest *f, const char *filename);
 

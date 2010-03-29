@@ -1,7 +1,7 @@
 /*
 	*** Qt prefs window declaration
 	*** src/gui/prefs.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -127,6 +127,7 @@ class AtenPrefs : public QDialog
 	void on_EnergyUnitCombo_currentIndexChanged(int index);
 	void on_EnergyUpdateSpin_valueChanged(int value);
 	void on_HAddDistanceSpin_valueChanged(double value);
+	void on_MaxCuboidsSpin_valueChanged(int value);
 	void on_MaxRingsSpin_valueChanged(int value);
 	void on_MaxRingSizeSpin_valueChanged(int value);
 	void on_MaxUndoLevelsSpin_valueChanged(int value);
@@ -148,6 +149,27 @@ class AtenPrefs : public QDialog
 	void on_AddPointButton_clicked(bool checked);
 	void on_RemovePointButton_clicked(bool checked);
 	void on_ScaleList_itemClicked(QListWidgetItem *item);
+
+	/*
+	// Energy / FF Page
+	*/
+	private:
+	void updateParameterTable();
+	private slots:
+	void on_CalculateIntraCheck_stateChanged(int state);
+	void on_CalculateVdwCheck_stateChanged(int state);
+	void on_CalculateElecCheck_stateChanged(int state);
+	void on_VdwCutoffSpin_valueChanged(double d);
+	void on_ElecCutoffSpin_valueChanged(double d);
+	void on_EwaldPrecisionMantissaSpin_valueChanged(double d);
+	void on_EwaldPrecisionExponentSpin_valueChanged(int i);
+	void on_EwaldManualAlphaSpin_valueChanged(double d);
+	void on_EwaldManualKXSpin_valueChanged(int i);
+	void on_EwaldManualKYSpin_valueChanged(int i);
+	void on_EwaldManualKZSpin_valueChanged(int i);
+	void on_FunctionalFormList_currentRowChanged(int row);
+	void ParameterRuleChanged(int index);
+	void on_ParameterTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Local variables

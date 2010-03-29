@@ -1,7 +1,7 @@
 /*
 	*** Forcefield term functional forms
 	*** src/ff/forms.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -21,6 +21,7 @@
 
 #include <string.h>
 #include "ff/forms.h"
+#include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "base/messenger.h"
 
@@ -39,30 +40,35 @@ Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s, bool report
 
 // VDW potential forms
 FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
-	{ "None", "none",
+	{ "None", "none", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Inverse Power", "inversepower",
+	{ "Inverse Power", "inversepower", 3,
 		{ "Epsilon", "Radius", "Power" },
 		{ "epsilon", "r", "n" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 } },
-	{ "Lennard-Jones 12-6", "lj",
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
+		{ Prefs::GeometricRule, Prefs::ArithmeticRule, Prefs::ArithmeticRule } },
+	{ "Lennard-Jones 12-6", "lj", 3,
 		{ "Epsilon", "Sigma", "N" },
 		{ "epsilon", "sigma", "n" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 } },
-	{ "Lennard-Jones AB", "ljab",
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
+		{ Prefs::GeometricRule, Prefs::ArithmeticRule, Prefs::ArithmeticRule } },
+	{ "Lennard-Jones AB", "ljab", 2,
 		{ "A", "B" },
 		{ "a", "b" },
-		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Buckingham", "buck",
+		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+		{ Prefs::GeometricRule, Prefs::GeometricRule } },
+	{ "Buckingham", "buck", 3,
 		{ "A", "B", "C" },
 		{ "a", "b", "c" },
-		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Morse", "morse",
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+		{ Prefs::GeometricRule, Prefs::GeometricRule, Prefs::GeometricRule } },
+	{ "Morse", "morse", 3,
 		{ "K", "Eq. Dist", "D" },
 		{ "k", "eq", "d" },
-		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+		{ Prefs::GeometricRule, Prefs::ArithmeticRule, Prefs::GeometricRule } }
 };
 VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s, bool reporterror)
 {
@@ -85,27 +91,27 @@ void VdwFunctions::printValid()
 
 // Bond potential forms
 FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
-	{ "None", "none",
+	{ "None", "none", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Ignore", "ignore",
+	{ "Ignore", "ignore", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Constraint", "constraint",
+	{ "Constraint", "constraint", 2,
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Harmonic", "harmonic",
+	{ "Harmonic", "harmonic", 2,
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Morse", "morse",
+	{ "Morse", "morse", 3,
 		{ "Force K", "Eq. Distance", "E(Diss.)" },
 		{ "k", "eq", "d" },
 		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Morse2", "morse2",
+	{ "Morse2", "morse2", 3,
 		{ "Force K", "Eq. Distance", "E(Diss.)" },
 		{ "k", "eq", "d" },
 		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
@@ -131,31 +137,31 @@ void BondFunctions::printValid()
 
 // Angle potential forms
 FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
-	{ "None", "none",
+	{ "None", "none", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Ignore", "ignore",
+	{ "Ignore", "ignore", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Harmonic", "harmonic",
+	{ "Harmonic", "harmonic", 2,
 		{ "Force K", "Eq. Angle" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Cosine", "cos",
+	{ "Cosine", "cos", 4,
 		{ "Force K", "Periodicity", "Eq. Angle", "Sign" },
 		{ "k", "n", "eq", "s" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 } },
-	{ "Cosine 2-Term", "cos2",
+	{ "Cosine 2-Term", "cos2", 4,
 		{ "Force K", "Coeff. 0", "Coeff. 1", " Coeff. 2" },
 		{ "k", "c0", "c1", "c2" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Harmonic Cosine", "harmcos",
+	{ "Harmonic Cosine", "harmcos", 2,
 		{ "Force K", "Eq. Angle" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Constraint (1-3 Bond)", "bondconstraint",
+	{ "Constraint (1-3 Bond)", "bondconstraint", 2,
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
@@ -181,39 +187,39 @@ void AngleFunctions::printValid()
 
 // Torsion potential forms
 FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFunctions] = {
-	{ "None", "none",
+	{ "None", "none", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Ignore", "ignore",
+	{ "Ignore", "ignore", 0,
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Cosine", "cos",
+	{ "Cosine", "cos", 4,
 		{ "Force K", "Periodicity", "Eq. Angle", "Sign" },
 		{ "k", "n", "eq", "s" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 1.0 } },
-	{ "Triple Cosine", "cos3",
+	{ "Triple Cosine", "cos3", 3,
 		{ "Force K1", "Force K2", "Force K3" },
 		{ "k1", "k2", "k3" },
 		{ 1, 1, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
-	{ "Quadruple Cosine", "cos4",
+	{ "Quadruple Cosine", "cos4", 4,
 		{ "Force K1", "Force K2", "Force K3", "Force K4" },
 		{ "k1", "k2", "k3", "k4" },
 		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
-	{ "Triple Cosine + Constant", "cos3c",
+	{ "Triple Cosine + Constant", "cos3c", 4,
 		{ "Force K0", "Force K1", "Force K2", "Force K3" },
 		{ "k0", "k1", "k2", "k3" },
 		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
-	{ "Cosine Product", "coscos",
+	{ "Cosine Product", "coscos", 3,
 		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq", "null" },
+		{ "k", "n", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
-	{ "Dreiding Cosine", "dreiding",
+	{ "Dreiding Cosine", "dreiding", 3,
 		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq", "null" },
+		{ "k", "n", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0 } },
-	{ "Pol9", "pol9",
+	{ "Pol9", "pol9", 9,
 		{ "K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9" },
 		{ "k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9" },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }

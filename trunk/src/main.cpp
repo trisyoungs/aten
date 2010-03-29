@@ -1,7 +1,7 @@
 /*
 	*** Aten Main
 	*** src/main.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -27,13 +27,17 @@
 #include <ctime>
 #include <iostream>
 
+#include "ff/forcefield.h"
+
 int main(int argc, char *argv[])
 {
 	// Parse early command-line options
 	if (!aten.parseCliEarly(argc, argv)) return -1;
 
+// 	exit(0);
+
 	// Print GPL license information
-	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2009  T. Youngs.\n", ATENVERSION);
+	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
 	msg.print(Messenger::Verbose, "Built from %s@%s.\n", ATENURL, ATENREVISION);
 	msg.print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
 	msg.print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
@@ -52,6 +56,9 @@ int main(int argc, char *argv[])
 
 	// Initialise QApplication
 	gui.initialise(argc, argv);
+
+	// Reconstruct combination rule functions
+	Forcefield::regenerateCombinationRules();
 
 	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
 	aten.openFilters();

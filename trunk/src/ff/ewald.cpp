@@ -1,7 +1,7 @@
 /*
 	*** Ewald sum energy / force calculation
 	*** src/ff/ewald.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -41,14 +41,14 @@ void Prefs::estimateEwaldParameters(Cell *cell)
 		return;
 	}
         // Estimate ewaldAlpha - uses same method as in DL_POLY. No reference? Page 108 in v2.18 manual.
-        double tolerance = sqrt( fabs( log(ewaldPrecision_*elecCutoff_) ) );
-        ewaldAlpha_ = sqrt( fabs( log(ewaldPrecision_*elecCutoff_*tolerance) ) )/elecCutoff_;
+        double tolerance = sqrt( fabs( log(ewaldPrecision_.value()*elecCutoff_) ) );
+        ewaldAlpha_ = sqrt( fabs( log(ewaldPrecision_.value()*elecCutoff_*tolerance) ) )/elecCutoff_;
         // Estimate kmax
-        tolerance = sqrt( -log( ewaldPrecision_*elecCutoff_*( (2.0*tolerance*ewaldAlpha_)*(2.0*tolerance*ewaldAlpha_) ) ) );
+        tolerance = sqrt( -log( ewaldPrecision_.value()*elecCutoff_*( (2.0*tolerance*ewaldAlpha_)*(2.0*tolerance*ewaldAlpha_) ) ) );
 	ewaldKMax_.x = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
 	ewaldKMax_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
 	ewaldKMax_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
-	msg.print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.\n", ewaldAlpha_, ewaldKMax_.x, ewaldKMax_.y, ewaldKMax_.z, ewaldPrecision_);
+	msg.print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.\n", ewaldAlpha_, ewaldKMax_.x, ewaldKMax_.y, ewaldKMax_.z, ewaldPrecision_.value());
 	validEwaldAuto_ = TRUE;
 	msg.exit("Prefs::estimateEwaldParameters");
 }

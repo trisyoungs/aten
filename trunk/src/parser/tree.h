@@ -1,7 +1,7 @@
 /*
 	*** Tree
 	*** src/parser/tree.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -192,6 +192,7 @@ class Tree
 	Tree *findLocalFunction(const char *name);
 	// Add new local function
 	Tree *addLocalFunction(const char *name);
+
 
 	/*
 	// Filter Properties

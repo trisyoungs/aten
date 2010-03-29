@@ -1,7 +1,7 @@
 /*
 	*** GlyphData Variable and Array
 	*** src/parser/glyphdata.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -94,7 +94,7 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GlyphDataData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'glyphdata&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

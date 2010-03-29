@@ -1,7 +1,7 @@
 /*
 	*** Qt GUI: Forcefields window
 	*** src/gui/forcefield_funcs.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 

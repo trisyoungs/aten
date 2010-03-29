@@ -1,7 +1,7 @@
 /*
 	*** User-Defined Command Node
 	*** src/parser/usercommandnode.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -59,6 +59,9 @@ class UserCommandNode : public TreeNode
 	bool set(ReturnValue &rv);
 	// Initialise node
 	bool initialise();
+	// Create, run, and free a single function with simple arguments
+	static bool run(Tree *func, ReturnValue &rv, const char *arglist ...);
+	static bool run(Tree *func, ReturnValue &rv, TreeNode *arglisthead);
 };
 
 #endif

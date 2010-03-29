@@ -1,7 +1,7 @@
 /*
 	*** Glyph Variable and Array
 	*** src/parser/glyph.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -102,7 +102,7 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GlyphData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'glyph&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

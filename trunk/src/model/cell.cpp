@@ -1,7 +1,7 @@
 /*
 	*** Model cell functions
 	*** src/model/cell.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -216,7 +216,6 @@ void Model::setSpacegroup(const char *sg)
 		}
 	}
 	cell_.setSpacegroupId(tsgn->SgNumber);
-	cell_.setSpacegroup(tsgn->HallSymbol);	
 
 	// Initialize the SgInfo structure
 	InitSgInfo(&spacegroup_);

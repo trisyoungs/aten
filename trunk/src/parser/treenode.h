@@ -1,7 +1,7 @@
 /*
 	*** Tree Node
 	*** src/parser/treenode.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -78,8 +78,10 @@ class TreeNode
 	int nArgs();
 	// Return datatype of nth argument
 	VTypes::DataType argType(int i);
-	// Add reverse-sorted list of arguments
-	void addArgumentList(TreeNode *args);
+	// Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
+	void addArguments(TreeNode *leaf);
+	// Add list of arguments, beginning from supplied list tail
+	void reverseAddArgumentList(TreeNode *args);
 	// Add multiple arguments to node
 	void addArguments(int nargs, ...);
 	// Add multiple arguments to node

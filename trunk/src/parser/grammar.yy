@@ -72,7 +72,7 @@ programlist:
 	;
 
 program:
-	statementlist					{ if (!cmdparser.addStatement($1)) YYABORT; }
+	statementlist					{ if (($1 != NULL) && (!cmdparser.addStatement($1))) YYABORT; }
 	| filter					{ }
 	;
 
@@ -93,13 +93,15 @@ popscope:
 
 statementlist:
 	blockment					{ $$ = $1; }
-	| statementlist blockment 			{ $$ = cmdparser.joinCommands($1, $2); }
+	| statementlist blockment 			{ if (($1 != NULL) && ($2 != NULL)) $$ = cmdparser.joinCommands($1, $2); }
 	;
 
 blockment:
 	statement ';'					{ $$ = $1; }
 	| block						{ $$ = $1; }
 	| fstatement					{ $$ = $1; if ($$ == NULL) YYABORT; }
+	| userfuncdef					{ $$ = NULL; }
+	| userstatementdef				{ $$ = NULL; }
 	;
 
 /* Filter Definitions */
@@ -138,8 +140,6 @@ fstatement:
 	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment { $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
 	| WHILE pushscope '(' expr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
 	| DO pushscope blockment WHILE '(' expr ')'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
-	| userfuncdef					{ if (!cmdparser.addStatement($1)) YYABORT; }
-	| userstatementdef				{ if (!cmdparser.addStatement($1)) YYABORT; }
 	;
 
 /* Constants */
@@ -155,11 +155,11 @@ constant:
 /* User-defined function */
 
 userfuncdef:
-	VTYPE savetype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	VTYPE savetype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; cmdparser.popTree(); declaredType = VTypes::NoData; }
 	;
 
 userstatementdef:
-	DIOV cleartype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; $$ = cmdparser.addFunction(Command::NoFunction); cmdparser.popTree(); declaredType = VTypes::NoData; }
+	DIOV cleartype NEWTOKEN '(' pushfunc args ')' block { if (!cmdparser.addStatement($8)) YYABORT; cmdparser.popTree(); declaredType = VTypes::NoData; }
 	;
 
 args:

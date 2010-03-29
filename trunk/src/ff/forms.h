@@ -1,7 +1,7 @@
 /*
 	*** Forcefield term functional forms
 	*** src/ff/forms.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -32,6 +32,8 @@ class FunctionData
 	const char *name;
 	// Keyword name for the function
 	const char *keyword;
+	// Number of parameters used (including optional params)
+	int nParameters;
 	// Parameter names
 	const char *parameters[MAXFFPARAMDATA];
 	// Parameter keywords
@@ -40,6 +42,8 @@ class FunctionData
 	bool isEnergyParameter[MAXFFPARAMDATA];
 	// Default values for parameters
 	double defaultValues[MAXFFPARAMDATA];
+	// Combination rule to use (Vdw Functions only)
+	int combinationRule[MAXFFPARAMDATA];
 };
 
 // VDW Potential Functions
@@ -90,12 +94,12 @@ namespace TorsionFunctions
 	extern FunctionData TorsionFunctions[];
 	TorsionFunction torsionFunction(const char *s, bool reporterror = FALSE);
 	void printValid();
-	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS, CosineEScale, CosineVScale };
-	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3, Cos3NULL, Cos3EScale, Cos3VScale };
-	enum Cos4Parameter { Cos4K1, Cos4K2, Cos4K3, Cos4K4, Cos4EScale, Cos4VScale };
-	enum Cos3CParameter { Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3, Cos3CEScale, Cos3CVScale };
-	enum CosCosParameter { CosCosK, CosCosN, CosCosEq, CosCosNULL, CosCosEScale, CosCosVScale };
-	enum DreidingParameter { DreidingK, DreidingN, DreidingEq, DreidingNULL, DreidingEScale, DreidingVScale };
+	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
+	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3 };
+	enum Cos4Parameter { Cos4K1, Cos4K2, Cos4K3, Cos4K4 };
+	enum Cos3CParameter { Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3 };
+	enum CosCosParameter { CosCosK, CosCosN, CosCosEq };
+	enum DreidingParameter { DreidingK, DreidingN, DreidingEq };
 	enum Pol9Parameter { Pol9K1, Pol9K2, Pol9K3, Pol9K4, Pol9K5, Pol9K6, Pol9K7, Pol9K8, Pol9K9 };
 }
 

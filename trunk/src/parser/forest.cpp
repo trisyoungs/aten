@@ -1,7 +1,7 @@
 /*
 	*** Forest
 	*** src/parser/forest.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -21,6 +21,10 @@
 
 #include "parser/parser.h"
 #include "parser/forest.h"
+#include "parser/usercommandnode.h"
+#include "parser/integer.h"
+#include "parser/double.h"
+#include "parser/character.h"
 #include "main/aten.h"
 
 // Constructor
@@ -134,25 +138,73 @@ Tree *Forest::findGlobalFunction(const char *name)
 	return result;
 }
 
+// Execute specified global function
+bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const char *arglist ...)
+{
+	msg.enter("Forest::executeGlobalFunction");
+	// First, locate funciton with the name supplied
+	Tree *func = findGlobalFunction(funcname);
+	if (func == NULL)
+	{
+		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
+		msg.exit("Forest::executeGlobalFunction");
+		return FALSE;
+	}
+
+	// Construct list of arguments to pass to function
+	va_list vars;
+	va_start(vars, arglist);
+	List<TreeNode> args;
+	TreeNode *var;
+	for (const char *c = &arglist[0]; *c != '\0'; c++)
+	{
+		switch (*c)
+		{
+			case ('i'):
+				var = new IntegerVariable(va_arg(vars, int), TRUE);
+				break;
+			case ('d'):
+				var = new DoubleVariable(va_arg(vars, double), TRUE);
+				break;
+			case ('c'):
+			case ('s'):
+				var = new StringVariable(va_arg(vars, const char *), TRUE);
+				break;
+			default:
+				printf("Invalid argument specifier '%c' in Forest::executeGlobalFunctin.\n", *c);
+				var = NULL;
+				break;
+		}
+		args.own(var);
+	}
+	va_end(vars);
+
+	// Now, pass all the info on to the static 'run' command in UserCommandNode
+	bool success = UserCommandNode::run(func,rv,args.first());
+
+	msg.exit("Forest::executeGlobalFunction");
+	return success;
+}
+
 // Generate forest from string 
-bool Forest::generateFromString(const char *s, const char *name)
+bool Forest::generateFromString(const char *s, const char *name, bool dontpushtree)
 {
 	msg.enter("Forest::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
-	bool result = cmdparser.generateFromString(this, s);
+	bool result = cmdparser.generateFromString(this, s, dontpushtree);
 	finalise();
 	msg.exit("Forest::generateFromString");
 	return result;
 }
 
 // Generate forest from string list
-bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name)
+bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name, bool dontpushtree)
 {
 	msg.enter("Forest::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
-	bool result = cmdparser.generateFromStringList(this, stringListHead);
+	bool result = cmdparser.generateFromStringList(this, stringListHead, dontpushtree);
 	finalise();
 	msg.exit("Forest::generateFromStringList");
 	return result;
@@ -213,6 +265,10 @@ bool Forest::executeAll(ReturnValue &rv)
 // Print forest information
 void Forest::print()
 {
-	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), trees_.nItems(), functions_.nItems());	
+	printf("Forest '%s':\nContains:  %i trees and %i functions.\n", name_.get(), trees_.nItems(), functions_.nItems());
+	if (trees_.nItems() > 0) printf("  Trees:\n");
+	for (int n=0; n<trees_.nItems(); ++n) printf("     %-3i  %s\n", n+1, trees_[n]->name());
+	if (trees_.nItems() > 0) printf("  Functions:\n");
+	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, functions_[n]->name());
 }
 

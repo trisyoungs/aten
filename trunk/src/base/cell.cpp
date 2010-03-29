@@ -1,7 +1,7 @@
 /*
 	*** Periodic cell definition
 	*** src/base/cell.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -23,6 +23,7 @@
 #include "base/atom.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "base/spacegroup.h"
 using namespace std;
 
 // Cell types
@@ -302,17 +303,10 @@ int Cell::spacegroupId()
 	return spacegroupId_;
 }
 
-// Sets the spacegroup by text name
-void Cell::setSpacegroup(const char *s)
-{
-	printf("Oddly, setting spacegroups by name is not implemented yet.\n");
-	// TGAY
-}
-
 // Return the spacegroup name
 const char *Cell::spacegroup()
 {
-	return spacegroup_.get();
+	return Spacegroups[spacegroupId_].name;
 }
 
 // Add manual generator

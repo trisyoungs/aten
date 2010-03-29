@@ -1,7 +1,7 @@
 /*
 	*** Preferences storage
 	*** src/base/prefs.h
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -24,6 +24,7 @@
 
 #include "ff/forms.h"
 #include "base/atom.h"
+#include "base/doubleexp.h"
 #include "base/elements.h"
 #include "classes/colourscale.h"
 #include "base/dnchar.h"
@@ -75,6 +76,11 @@ class Prefs
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
+	// Combination rules
+	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
+	static CombinationRule combinationRule(const char *name, bool reporterror = 0);
+	static const char *combinationRule(CombinationRule cs);
+	static const char *combinationRuleName(CombinationRule cs);
 	// Filter override switches
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
@@ -271,6 +277,7 @@ class Prefs
 	void setUseFrameBuffer(bool on);
 	// Return whether to use framebuffer for image saving
 	bool useFrameBuffer();
+
 
 	/*
 	// GL Options
@@ -623,7 +630,7 @@ class Prefs
 
 
 	/*
-	// Expression (general parameters)
+	// Forcefield / Expression
 	*/
 	private:
 	// Method of electrostatic calculation
@@ -639,13 +646,16 @@ class Prefs
 	// Ewald sum gaussian width and (for auto option) precision
 	double ewaldAlpha_;
 	// Ewald sum precision for automatic parameter estimation
-	double ewaldPrecision_;
+	DoubleExp ewaldPrecision_;
 	// Cutoff distances for VDW and electrostatics
 	double vdwCutoff_, elecCutoff_;
 	// Scale factor for VDW radii (used in disorder build)
 	double vdwScale_;
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
+	// Combination rule equations
+	Dnchar combinationRuleEquations_[Prefs::nCombinationRules];
+
 
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
@@ -670,10 +680,8 @@ class Prefs
 	void setEwaldKMax(Vec3<int> v);
 	// Return the Ewald k-vector extents
 	Vec3<int> ewaldKMax();
-	// Sets the Ewald precision
-	void setEwaldPrecision(double d);
-	// Return the Ewald precision
-	double ewaldPrecision();
+	// Return the Ewald precision (structure)
+	DoubleExp &ewaldPrecision();
 	// Set the Gaussian width to use in the Ewald sum
 	void setEwaldAlpha(double d);
 	// Return the Ewald alpha value
@@ -698,6 +706,10 @@ class Prefs
 	void setVdwScale(double d);
 	// Return the VDW radius scaling factor
 	double vdwScale();
+	// Set combination rule equation
+	void setCombinationRuleEquation(Prefs::CombinationRule cr, const char *s);
+	// Return combination rule equation
+	const char *combinationRuleEquation(Prefs::CombinationRule cr);
 };
 
 extern Prefs prefs;

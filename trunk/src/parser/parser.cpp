@@ -1,7 +1,7 @@
 /*
 	*** Parser
 	*** src/parser/parser.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -173,7 +173,7 @@ bool CommandParser::generate()
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromString(Forest *f, const char *s)
+bool CommandParser::generateFromString(Forest *f, const char *s, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromString");
 	// Clear any data in the existing forest
@@ -185,7 +185,7 @@ bool CommandParser::generateFromString(Forest *f, const char *s)
 	}
 	forest_ = f;
 	forest_->clear();
-	pushTree();
+	if (!dontpushtree) pushTree();
 	// Store the source string
 	stringSource_ = s;
 	stringPos_ = 0;
@@ -198,7 +198,7 @@ bool CommandParser::generateFromString(Forest *f, const char *s)
 }
 
 // Populate target forest from specified string list
-bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead)
+bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromStringList");
 	// Clear any data in the existing forest
@@ -210,7 +210,7 @@ bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead)
 	}
 	forest_ = f;
 	forest_->clear();
-	pushTree();
+	if (!dontpushtree) pushTree();
 	// Store the source string
 	stringListSource_ = stringListHead;
 	stringPos_ = 0;

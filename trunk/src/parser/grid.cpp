@@ -1,7 +1,7 @@
 /*
 	*** Grid Variable and Array
 	*** src/parser/grid.cpp
-	Copyright T. Youngs 2007-2009
+	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
 
@@ -99,7 +99,7 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GridData, functionData[i].returnType);
-		result->addArgumentList(arglist);
+		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
