@@ -31,24 +31,6 @@
 
 Prefs prefs;
 
-// Combination rules
-const char *CombinationRuleKeywords[Prefs::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
-const char *CombinationRuleNames[Prefs::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]", "Custom Rule 1", "Custom Rule 2", "Custom Rule 3" };
-Prefs::CombinationRule Prefs::combinationRule(const char *s, bool reporterror)
-{
-	Prefs::CombinationRule cr = (Prefs::CombinationRule) enumSearch("combination rule",Prefs::nCombinationRules,CombinationRuleKeywords,s);
-	if ((cr == Prefs::nCombinationRules) && reporterror) enumPrintValid(Prefs::nCombinationRules,CombinationRuleKeywords);
-	return cr;
-}
-const char *Prefs::combinationRule(CombinationRule cr)
-{
-	return CombinationRuleKeywords[cr];
-}
-const char *Prefs::combinationRuleName(CombinationRule cr)
-{
-	return CombinationRuleNames[cr];
-}
-
 // Colour Schemes
 const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity" };
 Prefs::ColouringScheme Prefs::colouringScheme(const char *s, bool reporterror)
@@ -313,16 +295,16 @@ Prefs::Prefs()
 	calculateElec_ = FALSE;
 	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
-	ewaldPrecision_.set(5.0, 6);
+	ewaldPrecision_.set(5.0, -6);
 	vdwCutoff_ = 10.0;
 	elecCutoff_ = 10.0;
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
-	combinationRuleEquations_[Prefs::ArithmeticRule] = "c = (a+b)*0.5";
-	combinationRuleEquations_[Prefs::GeometricRule] = "c = sqrt(a*b)";
-	combinationRuleEquations_[Prefs::CustomRule1] = "c = a+b";
-	combinationRuleEquations_[Prefs::CustomRule2] = "c = a+b";
-	combinationRuleEquations_[Prefs::CustomRule3] = "c = a+b";
+	combinationRuleEquations_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
+	combinationRuleEquations_[Combine::GeometricRule] = "c = sqrt(a*b)";
+	combinationRuleEquations_[Combine::CustomRule1] = "c = a+b";
+	combinationRuleEquations_[Combine::CustomRule2] = "c = a+b";
+	combinationRuleEquations_[Combine::CustomRule3] = "c = a+b";
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
@@ -1434,14 +1416,14 @@ double Prefs::vdwScale()
 }
 
 // Set combination rule equation
-void Prefs::setCombinationRuleEquation(Prefs::CombinationRule cr, const char *s)
+void Prefs::setCombinationRuleEquation(Combine::CombinationRule cr, const char *s)
 {
 	combinationRuleEquations_[cr] = s;
-	Forcefield::regenerateCombinationRules();
+	Combine::regenerateEquations();
 }
 
 // Return combination rule equation
-const char *Prefs::combinationRuleEquation(Prefs::CombinationRule cr)
+const char *Prefs::combinationRuleEquation(Combine::CombinationRule cr)
 {
 	return combinationRuleEquations_[cr].get();
 }

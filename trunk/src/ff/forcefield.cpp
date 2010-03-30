@@ -24,9 +24,6 @@
 #include "classes/forcefieldbound.h"
 #include "base/sysfunc.h"
 
-// Static Singleton
-Forest Forcefield::combinationRules_;
-
 // Forcefield keywords
 const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "generator", "impropers", "inter", "message", "name", "rules", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
@@ -175,41 +172,6 @@ Neta *Forcefield::typeDefine(const char *name)
 	Neta *node;
 	for (node = typeDefines_.first(); node != NULL; node = node->next) if (strcmp(name,node->name()) == 0) break;
 	return node;
-}
-
-// Regenerate combination rule function trees
-bool Forcefield::regenerateCombinationRules()
-{
-	msg.enter("Forcefield::regenerateCombinationRules");
-	bool success = TRUE;
-	Prefs::CombinationRule cr;
-	List<Dnchar> eqns;
-	Dnchar *eqn;
-	combinationRules_.clear();
-	for (int n=0; n<Prefs::nCombinationRules; ++n)
-	{
-		cr = (Prefs::CombinationRule) n;
-		eqn = eqns.add();
-		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", prefs.combinationRule(cr), prefs.combinationRuleEquation(cr));
-	}
-	combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
-	combinationRules_.print();
-	msg.exit("Forcefield::regenerateCombinationRules");
-}
-
-// Execute combination rule with parameters specified
-double Forcefield::combineParameters(Prefs::CombinationRule cr, double a, double b)
-{
-	msg.enter("Forcefield::combineParameters");
-	ReturnValue rv;
-	if (!combinationRules_.executeGlobalFunction(Prefs::combinationRule(cr), rv, "dd", a, b))
-	{
-		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
-		msg.exit("Forcefield::combineParameters");
-		return 0.0;
-	}
-	msg.exit("Forcefield::combineParameters");
-	return rv.asDouble();
 }
 
 /*

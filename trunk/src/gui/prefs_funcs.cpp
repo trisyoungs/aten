@@ -869,7 +869,7 @@ void AtenPrefs::updateParameterTable()
 	QStringList combrules;
 	TComboBox *combo;
 	QTableWidgetItem *item;
-	for (n=0; n<Prefs::nCombinationRules; ++n) combrules << Prefs::combinationRuleName( (Prefs::CombinationRule) n);
+	for (n=0; n<Combine::nCombinationRules; ++n) combrules << Combine::combinationRuleName( (Combine::CombinationRule) n);
 	ui.ParameterTable->setColumnCount(2);
 	ui.ParameterTable->setRowCount(VdwFunctions::VdwFunctions[row].nParameters);
 	for (n=0; n<VdwFunctions::VdwFunctions[row].nParameters; ++n)
@@ -880,7 +880,7 @@ void AtenPrefs::updateParameterTable()
 		combo->setMinimumSize(78,24);
 		combo->addItems(combrules);
 		combo->setInteger(n);
-		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRule[n]);
+		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRules[n]);
 		ui.ParameterTable->setCellWidget(n, 1, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
 	}
@@ -966,7 +966,7 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		msg.exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	VdwFunctions::VdwFunctions[row].combinationRule[combo->integer()] = id;
+	VdwFunctions::VdwFunctions[row].combinationRules[combo->integer()] = (Combine::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
 	msg.exit("AtenPrefs::ParameterRuleChanged");
 }

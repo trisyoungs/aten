@@ -23,6 +23,29 @@
 #define ATEN_FORMS_H
 
 #include "base/constants.h"
+#include "parser/forest.h"
+
+// Combination Rule Data
+class Combine
+{
+	public:
+	// Combination rules
+	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
+	static CombinationRule combinationRule(const char *name, bool reporterror = 0);
+	static const char *combinationRule(CombinationRule cr);
+	static const char *combinationRuleName(CombinationRule cr);
+
+	/*
+	// Functions
+	*/
+	public:
+	// Regenerate combination rule function trees
+	static bool regenerateEquations();
+	// Execute combination rule with parameters specified
+	static double combine(CombinationRule cr, double a, double b);
+	// Static function trees for combination rule equations
+	static Forest combinationRules_;
+};
 
 // Function Definition
 class FunctionData
@@ -43,7 +66,7 @@ class FunctionData
 	// Default values for parameters
 	double defaultValues[MAXFFPARAMDATA];
 	// Combination rule to use (Vdw Functions only)
-	int combinationRule[MAXFFPARAMDATA];
+	Combine::CombinationRule combinationRules[MAXFFPARAMDATA];
 };
 
 // VDW Potential Functions

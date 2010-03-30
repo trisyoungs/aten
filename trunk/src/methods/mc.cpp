@@ -711,7 +711,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 		if (c->nRequested() < 1) continue;
 		// Get model pointer
 		c = ri->item;
-		printf("Component pattern: = %p\n", c->componentPattern());
 		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
 	}
 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)

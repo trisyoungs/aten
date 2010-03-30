@@ -76,11 +76,6 @@ class Prefs
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
-	// Combination rules
-	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
-	static CombinationRule combinationRule(const char *name, bool reporterror = 0);
-	static const char *combinationRule(CombinationRule cs);
-	static const char *combinationRuleName(CombinationRule cs);
 	// Filter override switches
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
@@ -654,7 +649,7 @@ class Prefs
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 	// Combination rule equations
-	Dnchar combinationRuleEquations_[Prefs::nCombinationRules];
+	Dnchar combinationRuleEquations_[Combine::nCombinationRules];
 
 
 	public:
@@ -707,9 +702,9 @@ class Prefs
 	// Return the VDW radius scaling factor
 	double vdwScale();
 	// Set combination rule equation
-	void setCombinationRuleEquation(Prefs::CombinationRule cr, const char *s);
+	void setCombinationRuleEquation(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
-	const char *combinationRuleEquation(Prefs::CombinationRule cr);
+	const char *combinationRuleEquation(Combine::CombinationRule cr);
 };
 
 extern Prefs prefs;
