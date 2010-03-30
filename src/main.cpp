@@ -27,14 +27,10 @@
 #include <ctime>
 #include <iostream>
 
-#include "ff/forcefield.h"
-
 int main(int argc, char *argv[])
 {
 	// Parse early command-line options
 	if (!aten.parseCliEarly(argc, argv)) return -1;
-
-// 	exit(0);
 
 	// Print GPL license information
 	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
@@ -58,7 +54,7 @@ int main(int argc, char *argv[])
 	gui.initialise(argc, argv);
 
 	// Reconstruct combination rule functions
-	Forcefield::regenerateCombinationRules();
+	Combine::regenerateEquations();
 
 	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
 	aten.openFilters();

@@ -23,12 +23,14 @@
 #include "classes/forcefieldatom.h"
 #include "classes/prefs.h"
 #include "ff/forms.h"
+#include "ff/forcefield.h"
 #include "base/pattern.h"
 
 // Calculate energy for specified interaction
 double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, double *paramsj, double scale, int i, int j)
 {
 	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
+	Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[type].combinationRules;
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -37,16 +39,16 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::InversePower):
 			// U = epsilon * (r / rij) ** n
-			epsilon = sqrt( paramsi[VdwFunctions::InversePowerEpsilon] * paramsj[VdwFunctions::InversePowerEpsilon] );
-			sigma = ( paramsi[VdwFunctions::InversePowerR] + paramsj[VdwFunctions::InversePowerR] ) * 0.5 * scale;
-			pwr = ( paramsi[VdwFunctions::InversePowerN] + paramsj[VdwFunctions::InversePowerN] ) * 0.5;
+			epsilon = Combine::combine( crflags[VdwFunctions::InversePowerEpsilon], paramsi[VdwFunctions::InversePowerEpsilon], paramsj[VdwFunctions::InversePowerEpsilon] );
+			sigma = Combine::combine( crflags[VdwFunctions::InversePowerR], paramsi[VdwFunctions::InversePowerR], paramsj[VdwFunctions::InversePowerR] ) * scale;
+			pwr = Combine::combine( crflags[VdwFunctions::InversePowerN], paramsi[VdwFunctions::InversePowerN], paramsj[VdwFunctions::InversePowerN] );
 			U = epsilon * pow(sigma / rij, pwr);
 			break;
 		case (VdwFunctions::Lj):
 			// U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
-			epsilon = sqrt( paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon] );
-			sigma = ( paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma] ) * 0.5 * scale;
-			a = ( paramsi[VdwFunctions::LjN] + paramsj[VdwFunctions::LjN] ) * 0.5;
+			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
+			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
+			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
 			sigmar2 = sigma / rij;
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -54,8 +56,8 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::LjAB):
 			// U = A/r**12 - B/r**6
-			a = sqrt( paramsi[VdwFunctions::LjA] * paramsj[VdwFunctions::LjA] );
-			b = sqrt( paramsi[VdwFunctions::LjB] * paramsj[VdwFunctions::LjB] );
+			a = Combine::combine( crflags[VdwFunctions::LjA], paramsi[VdwFunctions::LjA], paramsj[VdwFunctions::LjA] );
+			b = Combine::combine( crflags[VdwFunctions::LjB], paramsi[VdwFunctions::LjB], paramsj[VdwFunctions::LjB] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -64,18 +66,18 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::Buckingham):
 			// U = A * exp(-rij/B) - C/(rij**6)
-			a = sqrt( paramsi[VdwFunctions::BuckinghamA] * paramsj[VdwFunctions::BuckinghamA] );
-			b = sqrt( paramsi[VdwFunctions::BuckinghamB] * paramsj[VdwFunctions::BuckinghamB] );
-			c = sqrt( paramsi[VdwFunctions::BuckinghamC] * paramsj[VdwFunctions::BuckinghamC] );
+			a = Combine::combine( crflags[VdwFunctions::BuckinghamA], paramsi[VdwFunctions::BuckinghamA], paramsj[VdwFunctions::BuckinghamA] );
+			b = Combine::combine( crflags[VdwFunctions::BuckinghamB], paramsi[VdwFunctions::BuckinghamB], paramsj[VdwFunctions::BuckinghamB] );
+			c = Combine::combine( crflags[VdwFunctions::BuckinghamC], paramsi[VdwFunctions::BuckinghamC], paramsj[VdwFunctions::BuckinghamC] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			U = a * exp(-rij/b) - c/r6;
 			break;
 		case (VdwFunctions::Morse):
 			// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
-			d = sqrt( paramsi[VdwFunctions::MorseD] * paramsj[VdwFunctions::MorseD]);
-			forcek = sqrt( paramsi[VdwFunctions::MorseK] * paramsj[VdwFunctions::MorseK] );
-			eq = 0.5 * (paramsi[VdwFunctions::MorseEq] + paramsj[VdwFunctions::MorseEq]) * scale;
+			d = Combine::combine( crflags[VdwFunctions::MorseD], paramsi[VdwFunctions::MorseD], paramsj[VdwFunctions::MorseD]);
+			forcek = Combine::combine( crflags[VdwFunctions::MorseK], paramsi[VdwFunctions::MorseK], paramsj[VdwFunctions::MorseK] );
+			eq = Combine::combine( crflags[VdwFunctions::MorseEq], paramsi[VdwFunctions::MorseEq], paramsj[VdwFunctions::MorseEq]) * scale;
 			rij -= eq;
 			expo = 1.0 - exp( -forcek * rij );
 			U = d * ( expo*expo - 1.0);
@@ -89,6 +91,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
+	Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[type].combinationRules;
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -97,16 +100,16 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::InversePower):
 			// dU/dr = -n * epsilon * (sigma / r)**(n-1) * (sigma/ r**2)
-			epsilon = sqrt( paramsi[VdwFunctions::InversePowerEpsilon] * paramsj[VdwFunctions::InversePowerEpsilon] );
-			sigma = ( paramsi[VdwFunctions::InversePowerR] + paramsj[VdwFunctions::InversePowerR] ) * 0.5 * scale;
-			pwr = ( paramsi[VdwFunctions::InversePowerN] + paramsj[VdwFunctions::InversePowerN] ) * 0.5;
+			epsilon = Combine::combine( crflags[VdwFunctions::InversePowerEpsilon], paramsi[VdwFunctions::InversePowerEpsilon], paramsj[VdwFunctions::InversePowerEpsilon] );
+			sigma = Combine::combine( crflags[VdwFunctions::InversePowerR], paramsi[VdwFunctions::InversePowerR], paramsj[VdwFunctions::InversePowerR] ) * scale;
+			pwr = Combine::combine( crflags[VdwFunctions::InversePowerN], paramsi[VdwFunctions::InversePowerN], paramsj[VdwFunctions::InversePowerN] );
 			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
 			break;
 		case (VdwFunctions::Lj):
 			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
-			epsilon = sqrt( paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon] );
-			sigma = ( paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma] ) * 0.5 * scale;
-			a = ( paramsi[VdwFunctions::LjN] + paramsj[VdwFunctions::LjN] ) * 0.5;
+			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
+			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
+			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -114,8 +117,8 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::LjAB):
 			// dU/dr = 6*(B/r**7) - 12*(A/r**13)
-			a = sqrt( paramsi[VdwFunctions::LjA] * paramsj[VdwFunctions::LjA] );
-			b = sqrt( paramsi[VdwFunctions::LjB] * paramsj[VdwFunctions::LjB] );
+			a = Combine::combine( crflags[VdwFunctions::LjA], paramsi[VdwFunctions::LjA], paramsj[VdwFunctions::LjA] );
+			b = Combine::combine( crflags[VdwFunctions::LjB], paramsi[VdwFunctions::LjB], paramsj[VdwFunctions::LjB] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -133,9 +136,9 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::Morse):
 			// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
-			d = sqrt( paramsi[VdwFunctions::MorseD] * paramsj[VdwFunctions::MorseD] );
-			forcek = sqrt(paramsi[VdwFunctions::MorseK] * paramsj[VdwFunctions::MorseK] );
-			eq = 0.5 * (paramsi[VdwFunctions::MorseEq] + paramsj[VdwFunctions::MorseEq] ) * scale;
+			d = Combine::combine( crflags[VdwFunctions::MorseD], paramsi[VdwFunctions::MorseD], paramsj[VdwFunctions::MorseD]);
+			forcek = Combine::combine( crflags[VdwFunctions::MorseK], paramsi[VdwFunctions::MorseK], paramsj[VdwFunctions::MorseK] );
+			eq = Combine::combine( crflags[VdwFunctions::MorseEq], paramsi[VdwFunctions::MorseEq], paramsj[VdwFunctions::MorseEq]) * scale;
 			expo = exp( -forcek * (rij - eq) );
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
