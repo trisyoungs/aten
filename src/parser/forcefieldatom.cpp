@@ -65,12 +65,13 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 
 // Function data
 FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nFunctions] = {
-	{ "datad",		VTypes::DoubleData,	"S",	"string name" },
-	{ "datai",		VTypes::IntegerData,	"S",	"string name" },
-	{ "datas",		VTypes::StringData,	"S",	"string name" },
-	{ "generatord",		VTypes::DoubleData,	"S",	"string name" },
-	{ "generatori",		VTypes::IntegerData,	"S",	"string name" },
-	{ "generators",		VTypes::StringData,	"S",	"string name" }
+	{ "combine",		VTypes::DoubleData,	"ON",	"ffatom j, int param" },
+	{ "datad",		VTypes::DoubleData,	"C",	"string name" },
+	{ "datai",		VTypes::IntegerData,	"C",	"string name" },
+	{ "datas",		VTypes::StringData,	"C",	"string name" },
+	{ "generatord",		VTypes::DoubleData,	"C",	"string name" },
+	{ "generatori",		VTypes::IntegerData,	"C",	"string name" },
+	{ "generators",		VTypes::StringData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -334,11 +335,41 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
+	int param;
+	ForcefieldAtom *at2;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	Variable *v;
 	ReturnValue resultrv;
 	if (result) switch (i)
 	{
+		case (ForcefieldAtomVariable::Combine):
+			// Grab the two FFAtom variables
+			at2 = (ForcefieldAtom*) node->argp(0, VTypes::ForcefieldAtomData);
+			// Check for NULL pointers
+			if ((ptr == NULL) || (at2 == NULL))
+			{
+				result = FALSE;
+				msg.print("Error: NULL ForcefieldAtom (or target) passed to 'combine' function.\n");
+				break;
+			}
+			// Check functional forms
+			if (ptr->vdwForm() != at2->vdwForm())
+			{
+				result = FALSE;
+				msg.print("Error: ForcefieldAtom passed to 'combine' function has differing functional form ('%s' cf. '%s').\n", VdwFunctions::VdwFunctions[ptr->vdwForm()].name, VdwFunctions::VdwFunctions[at2->vdwForm()].name);
+				break;
+			}
+			// Check parameter ID
+			param = node->argi(1)-1;
+			if ((param < 0) || (param >= VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters))
+			{
+				result = FALSE;
+				msg.print("Error: Parameter ID is out of range for VDW functional form - asked for %i, valid parameter range is 1 - %i.\n", param, VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
+				break;
+			}
+			// Combine parameters
+			rv.set(Combine::combine(VdwFunctions::VdwFunctions[ptr->vdwForm()].combinationRules[param], ptr->parameter(param), at2->parameter(param)));
+			break;
 		case (ForcefieldAtomVariable::DataD):
 		case (ForcefieldAtomVariable::DataI):
 		case (ForcefieldAtomVariable::DataS):

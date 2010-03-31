@@ -435,6 +435,15 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 					result = FALSE;
 				}
 				break;
+			// FFAtom (ForcefieldAtomData)
+			case ('O'):
+				if (rtype != VTypes::ForcefieldAtomData)
+				{
+					if (altargs != NULL) { reset = TRUE; continue; }
+					msg.print("Argument %i to function '%s' must be an ffatom&.\n", count+1, funcname);
+					result = FALSE;
+				}
+				break;
 			// Pointer		(Any pointer (void*) object)
 			case ('X'):
 				if (rtype < VTypes::AtomData)

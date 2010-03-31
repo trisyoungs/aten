@@ -649,7 +649,7 @@ class Prefs
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 	// Combination rule equations
-	Dnchar combinationRuleEquations_[Combine::nCombinationRules];
+	Dnchar combinationRules_[Combine::nCombinationRules];
 
 
 	public:
@@ -702,9 +702,9 @@ class Prefs
 	// Return the VDW radius scaling factor
 	double vdwScale();
 	// Set combination rule equation
-	void setCombinationRuleEquation(Combine::CombinationRule cr, const char *s);
+	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
-	const char *combinationRuleEquation(Combine::CombinationRule cr);
+	const char *combinationRule(Combine::CombinationRule cr);
 };
 
 extern Prefs prefs;

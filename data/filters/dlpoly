@@ -299,7 +299,6 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 filter(type="exportexpression",name="DL_POLY Forcefield Specification", extension="FIELD", glob="*FIELD",exact="FIELD",nickname="dlpoly")
 {
 	# Variable declaration
-	double epsilon, sigma;
 	pattern p;
 	atom i;
 	bound b;
@@ -420,13 +419,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 				printf("Functional forms of fftypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
 				writelinef("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f %12.6f\n",at1.name,at2.name,at1.data[1],at1.data[2],at1.data[3],at1.data[4],at1.data[5],at1.data[6]);
 			}
-			else if (at1.form == "lj")
-			{
-				# LJ: use Lorentz-Berthelot combination rules
-				sigma = (at1.data[2] + at2.data[2]) * 0.5;
-				epsilon = sqrt(at1.data[1] * at2.data[1]);
-				writelinef("%-8s %-8s  lj  %12.6f  %12.6f\n",at1.name,at2.name,epsilon,sigma);
-			}
+			else if (at1.form == "lj") writelinef("%-8s %-8s  lj  %12.6f  %12.6f\n",at1.name,at2.name,at1.combine(at2,1),at1.combine(at2,2));
 			else if (at1.form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
 			else printf("Functional form of VDW term (%s) not accounted for in export filter.\n",at1.form);
 		}
