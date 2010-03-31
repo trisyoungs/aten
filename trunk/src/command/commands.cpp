@@ -42,6 +42,7 @@ Command commands;
 	M	Model/ID/Name	ModelData, StringData, IntegerData
 	F	Frcefld/ID/Name	ForcefieldData, IntegerData, StringData
 	P	Pattern/ID/Name	PatternData, StringData, IntegerData
+	O	FFAtom		ForcefieldAtomData
 	G	Grid/ID		GridData, StringData, IntegerData
 	X	Pointer		Any pointer object
 	V	Variable	Any simple variable (not path)
@@ -53,6 +54,8 @@ Command commands;
 	&	<Array>		Next token must be an array
 	/	<type Or>	Specifies an argument may be one of two types
 	2-9	<NRepeat>	Next argument should occur N times
+	
+	Current Usage List: ABCEFGIMNOPRSUVXZ*^[]|&/23456789
 */
 
 // Command action

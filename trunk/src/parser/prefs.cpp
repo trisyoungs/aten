@@ -65,6 +65,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "clipfar",		VTypes::DoubleData,	0, FALSE },
 	{ "clipnear",		VTypes::DoubleData,	0, FALSE },
 	{ "colourscheme",	VTypes::StringData,	0, FALSE },
+	{ "combinationrule",	VTypes::StringData,	Combine::nCombinationRules, FALSE },
 	{ "commonelements",	VTypes::StringData,	0, FALSE },
 	{ "densityunit",	VTypes::StringData,	0, FALSE },
 	{ "depthcue",		VTypes::IntegerData,	0, FALSE },
@@ -265,6 +266,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::ColourScheme):
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
+			break;
+		case (PreferencesVariable::CombinationRule):
+			if (hasArrayIndex) rv.set( ptr->combinationRule(arrayIndex-1) );
+			else rv.setArray( VTypes::StringData, &ptr->combinationRules_, Combine::nCombinationRules);
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());

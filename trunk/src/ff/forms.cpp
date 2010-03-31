@@ -75,7 +75,6 @@ bool Combine::regenerateEquations()
 		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRuleEquation(cr));
 	}
 	combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
-	combinationRules_.print();
 	msg.exit("Combine::regenerateEquations");
 }
 
@@ -109,7 +108,7 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 		{ "Epsilon", "Sigma", "N" },
 		{ "epsilon", "sigma", "n" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::GeometricRule, Combine::ArithmeticRule } },
+		{ Combine::GeometricRule, Combine::ArithmeticRule, Combine::ArithmeticRule } },
 	{ "Lennard-Jones AB", "ljab", 2,
 		{ "A", "B" },
 		{ "a", "b" },
