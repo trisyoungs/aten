@@ -300,11 +300,11 @@ Prefs::Prefs()
 	elecCutoff_ = 10.0;
 	vdwScale_ = 1.0;
 	validEwaldAuto_ = FALSE;
-	combinationRuleEquations_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
-	combinationRuleEquations_[Combine::GeometricRule] = "c = sqrt(a*b)";
-	combinationRuleEquations_[Combine::CustomRule1] = "c = a+b";
-	combinationRuleEquations_[Combine::CustomRule2] = "c = a+b";
-	combinationRuleEquations_[Combine::CustomRule3] = "c = a+b";
+	combinationRules_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
+	combinationRules_[Combine::GeometricRule] = "c = sqrt(a*b)";
+	combinationRules_[Combine::CustomRule1] = "c = a+b";
+	combinationRules_[Combine::CustomRule2] = "c = a+b";
+	combinationRules_[Combine::CustomRule3] = "c = a+b";
 
 	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
@@ -1416,16 +1416,15 @@ double Prefs::vdwScale()
 }
 
 // Set combination rule equation
-void Prefs::setCombinationRuleEquation(Combine::CombinationRule cr, const char *s)
+void Prefs::setCombinationRule(Combine::CombinationRule cr, const char *s)
 {
-	combinationRuleEquations_[cr] = s;
-	Combine::regenerateEquations();
+	combinationRules_[cr] = s;
 }
 
 // Return combination rule equation
-const char *Prefs::combinationRuleEquation(Combine::CombinationRule cr)
+const char *Prefs::combinationRule(Combine::CombinationRule cr)
 {
-	return combinationRuleEquations_[cr].get();
+	return combinationRules_[cr].get();
 }
 
 /*
