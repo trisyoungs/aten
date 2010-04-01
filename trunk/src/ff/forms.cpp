@@ -63,19 +63,20 @@ Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s, bool report
 bool Combine::regenerateEquations()
 {
 	msg.enter("Combine::regenerateEquations");
-	bool success = TRUE;
 	Combine::CombinationRule cr;
 	List<Dnchar> eqns;
 	Dnchar *eqn;
-	combinationRules_.clear();
 	for (int n=0; n<Combine::nCombinationRules; ++n)
 	{
 		cr = (Combine::CombinationRule) n;
 		eqn = eqns.add();
-		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRuleEquation(cr));
+		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
+		eqn->info();
 	}
-	combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
+	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
+	combinationRules_.print();
 	msg.exit("Combine::regenerateEquations");
+	return success;
 }
 
 // Execute combination rule with parameters specified

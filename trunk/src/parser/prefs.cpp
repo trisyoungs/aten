@@ -268,7 +268,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
 			break;
 		case (PreferencesVariable::CombinationRule):
-			if (hasArrayIndex) rv.set( ptr->combinationRule(arrayIndex-1) );
+			if (hasArrayIndex) rv.set( ptr->combinationRule( (Combine::CombinationRule) (arrayIndex-1)) );
 			else rv.setArray( VTypes::StringData, &ptr->combinationRules_, Combine::nCombinationRules);
 			break;
 		case (PreferencesVariable::CommonElements):
@@ -576,6 +576,19 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
 			else result = FALSE;
 			break;
+		case (PreferencesVariable::CombinationRule):
+			if (newvalue.arraySize() == Combine::nCombinationRules) for (n=0; n<Combine::nCombinationRules; ++n)
+			{
+				ptr->setCombinationRule( (Combine::CombinationRule) n, newvalue.asString(n, result));
+			}
+			else if (hasArrayIndex)
+			{
+				ptr->setCombinationRule( (Combine::CombinationRule) (arrayIndex-1), newvalue.asString(result));
+			}
+			else for (n=0; n<Combine::nCombinationRules; ++n) ptr->setCombinationRule((Combine::CombinationRule) n, newvalue.asString(result));
+			// Regenerate equations to check
+			if (!Combine::regenerateEquations()) result = FALSE;
+			break;
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newvalue.asString(result) );
 			break;
@@ -651,13 +664,13 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			}
 			else if (hasArrayIndex)
 			{
-				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				ka = Prefs::keyAction( newvalue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) (arrayIndex-1), ka);
 				else result = FALSE;
 			}
 			else
 			{
-				ka = Prefs::keyAction( newvalue.asString(n, result) );
+				ka = Prefs::keyAction( newvalue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) for (n=0; n<Prefs::nKeyActions; ++n) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
 				else { result = FALSE; break; }
 			}
@@ -695,13 +708,13 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			}
 			else if (hasArrayIndex)
 			{
-				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				ma = Prefs::mouseAction( newvalue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) (arrayIndex-1), ma);
 				else result = FALSE;
 			}
 			else
 			{
-				ma = Prefs::mouseAction( newvalue.asString(n, result) );
+				ma = Prefs::mouseAction( newvalue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
 				else { result = FALSE; break; }
 			}
