@@ -71,10 +71,8 @@ bool Combine::regenerateEquations()
 		cr = (Combine::CombinationRule) n;
 		eqn = eqns.add();
 		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
-		eqn->info();
 	}
 	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
-	combinationRules_.print();
 	msg.exit("Combine::regenerateEquations");
 	return success;
 }

@@ -48,12 +48,7 @@ LineParser::LineParser()
 LineParser::LineParser(const char *filename, bool outputstream)
 {
 	// Private variables
-	endOfLine_ = FALSE;
-	lineLength_ = 0;
-	linePos_ = 0;
-	optionMask_ = LineParser::Defaults;
-	lastLineNo_ = 0;
-	file_ = NULL;
+	reset();
 	// Open new file for reading or writing
 	openFile(filename, outputstream);
 }
@@ -62,6 +57,19 @@ LineParser::LineParser(const char *filename, bool outputstream)
 LineParser::~LineParser()
 {
 	if (file_ != NULL) delete file_;
+}
+
+// Reset data
+void LineParser::reset()
+{
+	filename_.clear();
+	endOfLine_ = FALSE;
+	lineLength_ = 0;
+	linePos_ = 0;
+	lastLineNo_ = 0;
+	file_ = NULL;
+	readOnly_ = FALSE;
+	optionMask_ = LineParser::Defaults;
 }
 
 /*

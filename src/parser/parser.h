@@ -46,6 +46,7 @@ class CommandParser : public Tree
 	// Friend declarations
 	friend class Forest;
 
+
 	/*
 	// Create / Execute
 	*/
@@ -66,6 +67,8 @@ class CommandParser : public Tree
 	bool expectPathStep_;
 
 	public:
+	// Reset structure ready for next source
+	void reset();
 	// Parser lexer, called by yylex()
 	int lex();
 	// Return current input source
@@ -153,7 +156,11 @@ class CommandParser : public Tree
 	// Pop the topmost scope node
 	bool popScope();
 
+
+	/*
 	// Variables / Constants
+	*/
+	public:
 	// Add constant value to tompost scope
 	TreeNode *addConstant(VTypes::DataType type, Dnchar *token);
 	// Add integer constant
@@ -175,7 +182,10 @@ class CommandParser : public Tree
 	// Wrap named variable (and array index)
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
+	/*
 	// Filters
+	*/
+	public:
 	// Set filter option
 	bool setFilterOption(Dnchar *name, TreeNode *value);
 

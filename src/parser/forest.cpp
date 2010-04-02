@@ -205,7 +205,6 @@ bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name, bo
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	bool result = cmdparser.generateFromStringList(this, stringListHead, dontpushtree);
-	print();
 	finalise();
 	msg.exit("Forest::generateFromStringList");
 	return result;
@@ -219,6 +218,7 @@ bool Forest::generateFromFile(const char *filename, const char *name, bool isFil
 	if (name != NULL) name_ = name;
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
+
 	bool result = cmdparser.generateFromFile(this, filename);
 // 	print();
 	finalise();
