@@ -30,20 +30,30 @@ int CommandParser_parse();
 CommandParser::CommandParser()
 {
 	// Private variables
-	source_ = StringSource;
-	stringListSource_ = NULL;
-	stringPos_ = -1;
-	tokenStart_ = 0;
-	functionStart_ = -1;
-	stringLength_ = 0;
-	lineNumber_ = 0;
-	expectPathStep_ = FALSE;
-	tree_ = NULL;
+	reset();
 }
 
 // Destructor
 CommandParser::~CommandParser()
 {
+}
+
+// Reset values in parser, ready for next source
+void CommandParser::reset()
+{
+	source_ = StringSource;
+	stringListSource_ = NULL;
+	stringPos_ = -1;
+	tokenStart_ = 0;
+	functionStart_ = -1;
+	stringSource_.clear();
+	stringLength_ = 0;
+	lineNumber_ = 0;
+	expectPathStep_ = FALSE;
+	forest_ = NULL;
+	tree_ = NULL;
+	parser_.reset();
+	stack_.clear();
 }
 
 // Print error information and location
@@ -193,6 +203,7 @@ bool CommandParser::generateFromString(Forest *f, const char *s, bool dontpushtr
 	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
 	source_ = CommandParser::StringSource;
 	bool result = generate();
+	reset();
 	msg.exit("CommandParser::generateFromString");
 	return result;
 }
@@ -220,6 +231,7 @@ bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead, bo
 	source_ = CommandParser::StringListSource;
 	bool result = generate();
 	stringListSource_ = NULL;
+	reset();
 	msg.exit("CommandParser::generateFromStringList");
 	return result;
 }
@@ -252,6 +264,7 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	source_ = CommandParser::FileSource;
 	bool result = generate();
 	source_ = CommandParser::StringSource;
+	reset();
 	msg.exit("CommandParser::generateFromFile");
 	return result;
 }

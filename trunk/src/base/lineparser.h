@@ -69,6 +69,8 @@ class LineParser
 	int optionMask_;
 
 	public:
+	// Reset data
+	void reset();
 	// Return filename of opened (or recently closed) file
 	const char *filename();
 	// Return pointer to start of current line
