@@ -110,6 +110,12 @@
 						<entry>The current <link linkend="enums.colourschemes">Colour Scheme</link> used to colour atoms and bonds</entry>
 					</row>
 					<row>
+						<entry>combinationrule</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Lennard-Jones parameter combination rule equations. See <link linkend="enums.combinationrules">Combination Rules</link> for a list of rules.</entry>
+					</row>
+					<row>
 						<entry>commonelements</entry>
 						<entry>string</entry>
 						<entry>rw</entry>

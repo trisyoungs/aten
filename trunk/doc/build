@@ -58,6 +58,8 @@ done
 rm *.html 
 cd ../
 
+exit
+
 #
 # Generate Chunked HTML Manual (with xsltproc)
 #

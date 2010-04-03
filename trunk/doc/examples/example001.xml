@@ -9,12 +9,12 @@ int natoms = aten.model.natoms;
 printf("NUmber of frames is %i\n", nframes);
 for (model f = aten.model.frames; f; ++f)
 {
-	for (int n=1; n<=natoms; ++n) xyz[n] += f.atoms[n].r;
+	for (int n=1; n&lt;=natoms; ++n) xyz[n] += f.atoms[n].r;
 }
-for (int n=1; n<=natoms; ++n) xyz[n] = xyz[n] / nframes;
+for (int n=1; n&lt;=natoms; ++n) xyz[n] = xyz[n] / nframes;
 model f = aten.model.frames;
 newmodel("Average");
-for (int n=1; n<= natoms; ++n) newatom(f.atoms[n].z, xyz[n].x, xyz[n].y, xyz[n].z);
+for (int n=1; n&lt;= natoms; ++n) newatom(f.atoms[n].z, xyz[n].x, xyz[n].y, xyz[n].z);
 	</codelisting>
 
 	<para>To run the example:</para>
