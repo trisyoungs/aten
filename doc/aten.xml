@@ -98,6 +98,7 @@
 	<!ENTITY bondtypes SYSTEM "enums/bondtypes.xml">
 	<!ENTITY celltypes SYSTEM "enums/celltypes.xml">
 	<!ENTITY colourschemes SYSTEM "enums/colourschemes.xml">
+	<!ENTITY combinationrules SYSTEM "enums/combinationrules.xml">
 	<!ENTITY drawstyles SYSTEM "enums/drawstyles.xml">
 	<!ENTITY energyunits SYSTEM "enums/energyunits.xml">
 	<!ENTITY glyphtypes SYSTEM "enums/glyphtypes.xml">
@@ -309,6 +310,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 		&bondtypes;
 		&celltypes;
 		&colourschemes;
+		&combinationrules;
 		&drawstyles;
 		&energyunits;
 		&glyphtypes;
