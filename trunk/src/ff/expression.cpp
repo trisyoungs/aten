@@ -275,6 +275,15 @@ bool Pattern::createExpression(bool vdwOnly)
 					aj = atoms_[jj]->atom();
 					ak = atoms_[kk]->atom();
 					al = atoms_[bonding[kk][ll]->data]->atom();
+
+					// Check for ii == ll (caused by three-membered rings)
+					if (ai->id() == al->id())
+					{
+						msg.print("... Excluded torsion %i-%i-%i-%i because terminal atoms are the same (three-membered ring?) - expected nTorsions reduced from %i to %i...\n", ai->id()+1, aj->id()+1, ak->id()+1, al->id()+1, nTorsions, nTorsions-1);
+						nTorsions --;
+						continue;
+					}
+
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
