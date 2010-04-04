@@ -146,12 +146,12 @@ int VdwFunctions::vdwParameter(VdwFunction form, const char *s, bool reporterror
 {
 	int i;
 	for (i=0; i < VdwFunctions::VdwFunctions[form].nParameters; i++)
-		if (strcmp(VdwFunctions::VdwFunctions[i].parameters[i],s) == 0) break;
-	if ((i == VdwFunctions::nVdwFunctions) && reporterror)
+		if (strcmp(VdwFunctions::VdwFunctions[form].parameterKeywords[i],s) == 0) break;
+	if ((i == VdwFunctions::VdwFunctions[form].nParameters) && reporterror)
 	{
 		msg.print("Invalid parameter '%s' for VDW functional form '%s'.\n", s, VdwFunctions::VdwFunctions[form].name);
 		msg.print("Valid parameters are:\n   ");
-		for (int n=1; n< VdwFunctions::VdwFunctions[form].nParameters; n++) msg.print("%s ",VdwFunctions::VdwFunctions[form].parameters[n]);
+		for (int n=0; n< VdwFunctions::VdwFunctions[form].nParameters; n++) msg.print("%s ",VdwFunctions::VdwFunctions[form].parameterKeywords[n]);
 		msg.print("\n");
 	}
 	return i;

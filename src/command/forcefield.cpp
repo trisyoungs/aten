@@ -342,10 +342,10 @@ bool Command::function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnVal
 	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), TRUE);
 	if (form == VdwFunctions::nVdwFunctions) return FALSE;
 	// Next, get functional form parameter
-	int param = VdwFunctions::vdwParameter(c->argc(1), TRUE);
+	int param = VdwFunctions::vdwParameter(form, c->argc(1), TRUE);
 	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
 	// Everything OK, so return combination rule in use
-	rv.set(Combine::combinationRule( VdwFunctions::VdwFunctions[form].combinationRule[param] ));
+	rv.set(Combine::combinationRule( VdwFunctions::VdwFunctions[form].combinationRules[param] ));
 	return TRUE;
 }
 
@@ -519,7 +519,7 @@ bool Command::function_SetCombinationRule(CommandNode *c, Bundle &obj, ReturnVal
 	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), TRUE);
 	if (form == VdwFunctions::nVdwFunctions) return FALSE;
 	// Next, get functional form parameter
-	VdwFunctions::VdwFunction param = VdwFunctions::vdwParameter(c->argc(1), TRUE);
+	int param = VdwFunctions::vdwParameter(form, c->argc(1), TRUE);
 	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
 	// Finally, search combination rule
 	Combine::CombinationRule cr = Combine::combinationRule(c->argc(2), TRUE);
