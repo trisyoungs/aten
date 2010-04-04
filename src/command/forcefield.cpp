@@ -334,6 +334,21 @@ bool Command::function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &r
 	return TRUE;
 }
 
+// Get combination rule in use for VDW parameter
+bool Command::function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.reset();
+	// First, get functional form
+	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), TRUE);
+	if (form == VdwFunctions::nVdwFunctions) return FALSE;
+	// Next, get functional form parameter
+	int param = VdwFunctions::vdwParameter(c->argc(1), TRUE);
+	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
+	// Everything OK, so return combination rule in use
+	rv.set(Combine::combinationRule( VdwFunctions::VdwFunctions[form].combinationRule[param] ));
+	return TRUE;
+}
+
 // Retrieve forcefield
 bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -493,6 +508,24 @@ bool Command::function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &
 		return FALSE;
 	}
 	rv.set( filter->executeWrite(c->argc(1)) );
+	return TRUE;
+}
+
+// Set combination rule in use for VDW parameter
+bool Command::function_SetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.reset();
+	// First, get functional form
+	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), TRUE);
+	if (form == VdwFunctions::nVdwFunctions) return FALSE;
+	// Next, get functional form parameter
+	VdwFunctions::VdwFunction param = VdwFunctions::vdwParameter(c->argc(1), TRUE);
+	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
+	// Finally, search combination rule
+	Combine::CombinationRule cr = Combine::combinationRule(c->argc(2), TRUE);
+	if (cr == Combine::nCombinationRules) return FALSE;
+	// Everything OK, so set data
+	VdwFunctions::VdwFunctions[form].combinationRules[param] = cr;
 	return TRUE;
 }
 

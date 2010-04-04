@@ -240,6 +240,7 @@ void Command::initPointers()
 	pointers_[FreeType] = &Command::function_FreeType;
 	pointers_[GenConvert] = &Command::function_GenConvert;
 	pointers_[GeneratorData] = &Command::function_GeneratorData;
+	pointers_[GetCombinationRule] = &Command::function_GetCombinationRule;
 	pointers_[GetFF] = &Command::function_GetFF;
 	pointers_[InterDef] = &Command::function_InterDef;
 	pointers_[LoadFF] = &Command::function_LoadFF;
@@ -250,6 +251,7 @@ void Command::initPointers()
 	pointers_[RecreateExpression] = &Command::function_RecreateExpression;
 	pointers_[Rules] = &Command::function_Rules;
 	pointers_[SaveExpression] = &Command::function_SaveExpression;
+	pointers_[SetCombinationRule] = &Command::function_SetCombinationRule;
 	pointers_[TorsionDef] = &Command::function_TorsionDef;
 	pointers_[TypeDef] = &Command::function_TypeDef;
 	pointers_[TypeModel] = &Command::function_TypeModel;

@@ -52,8 +52,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodSd::minimise");
 	int cycle, i;
-	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms;
-	Atom **modelAtoms;
+	double oldEnergy, newEnergy, deltaEnergy, oldRms, newRms, deltaRms;
 	bool lineDone, converged;
 	Dnchar etatext;
 
@@ -68,18 +67,16 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	}
 	
 	// Calculate initial reference energy and RMS force
-	modelAtoms = srcmodel->atomArray();
-	currentEnergy = srcmodel->totalEnergy(srcmodel);
-	srcmodel->calculateForces(srcmodel);
-	currentRms = srcmodel->rmsForce();
-	// srcmodel->printForces();
+	newEnergy = srcmodel->totalEnergy(srcmodel);
+	oldEnergy = 0.0;
+	oldRms = 0.0;
 	srcmodel->energy.print();
 
 	converged = FALSE;
 	lineDone = FALSE;
 
 	msg.print("Step         Energy          DeltaE          RMS Force\n");
-	msg.print("Init  %15.5e          ---      %15.5e\n", currentEnergy, currentRms);
+	msg.print("Init  %15.5e          ---         ---\n", newEnergy);
 	gui.progressCreate("Minimising (SD)", nCycles_);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -88,22 +85,27 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
 		else
 		{
-			srcmodel->calculateForces(srcmodel);
-			srcmodel->normaliseForces(5.0, TRUE);
-			newEnergy = lineMinimise(srcmodel);
-			deltaEnergy = newEnergy - currentEnergy;
-			srcmodel->calculateForces(srcmodel);
-			srcmodel->printForces();
-			newRms = srcmodel->rmsForce();
-			printf("RMSForce = %f\n", newRms);
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
-			currentEnergy = newEnergy;
-			currentRms = newRms;
+			deltaEnergy = newEnergy - oldEnergy;
+			deltaRms = newRms - oldRms;
+			if ((fabs(deltaEnergy) < econ) && (fabs(deltaRms) < fcon))
+			{
+				converged = TRUE;
+				break;
+			}
+
+			// Line minimise to get new energy
+			oldEnergy = newEnergy;
+			newEnergy = lineMinimise(srcmodel);
+
+			// Calculate forces at the new point
+			oldRms = newRms;
+			srcmodel->calculateForces(srcmodel);
+			newRms = srcmodel->rmsForce();
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,currentEnergy,deltaEnergy,currentRms,etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,newEnergy,deltaEnergy,deltaRms,etatext.get());
 
 		if (lineDone || converged) break;
 	}
@@ -112,7 +114,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
 	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);
 	msg.print("Final energy:\n");
-	currentEnergy = srcmodel->totalEnergy(srcmodel);
+	newEnergy = srcmodel->totalEnergy(srcmodel);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 // 	srcmodel->calculateForces(srcmodel);

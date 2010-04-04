@@ -142,6 +142,21 @@ void VdwFunctions::printValid()
 	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) msg.print("%s ",VdwFunctions::VdwFunctions[i].keyword);
 	msg.print("\n");
 }
+int VdwFunctions::vdwParameter(VdwFunction form, const char *s, bool reporterror)
+{
+	int i;
+	for (i=0; i < VdwFunctions::VdwFunctions[form].nParameters; i++)
+		if (strcmp(VdwFunctions::VdwFunctions[i].parameters[i],s) == 0) break;
+	if ((i == VdwFunctions::nVdwFunctions) && reporterror)
+	{
+		msg.print("Invalid parameter '%s' for VDW functional form '%s'.\n", s, VdwFunctions::VdwFunctions[form].name);
+		msg.print("Valid parameters are:\n   ");
+		for (int n=1; n< VdwFunctions::VdwFunctions[form].nParameters; n++) msg.print("%s ",VdwFunctions::VdwFunctions[form].parameters[n]);
+		msg.print("\n");
+	}
+	return i;
+}
+
 
 // Bond potential forms
 FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {

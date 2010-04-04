@@ -279,6 +279,7 @@ class Command
 		FreeType,
 		GenConvert,
 		GeneratorData,
+		GetCombinationRule,
 		GetFF,
 		InterDef,
 		LoadFF,
@@ -289,6 +290,7 @@ class Command
 		RecreateExpression,
 		Rules,
 		SaveExpression,
+		SetCombinationRule,
 		TorsionDef,
 		TypeDef,
 		TypeModel,
@@ -732,6 +734,7 @@ class Command
 	static bool function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LoadFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -742,6 +745,7 @@ class Command
 	static bool function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TypeModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
