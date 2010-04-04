@@ -26,8 +26,6 @@
 	<chapter id="examples"><title>Command Examples</title>
 	<para>A number of short, useful examples of applications of Aten's command language is provided here.</para>
 		&example001;
-		&example002;
-		&example003;
 	</chapter>
 
 	<!-- Index -->

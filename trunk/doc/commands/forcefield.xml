@@ -264,6 +264,25 @@ freetype(14);
 		<para>frees any previously-set type on atom 14.</para>
 	</section>
 
+	<section id="command.ref.getcombinationrule"><title>getcombinationrule</title>
+		<indexterm><primary>commands</primary><secondary>getcombinationrule</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>getcombinationrule</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the combination rule in use for the specifed parameter of the given functional form. The <emphasis>form</emphasis> and related <emphasis>parameter</emphasis> should correspond to those given in the <link linkend="ff.forms.vdw">VDW functional forms</link> table. A string corresponding to one of the available <link linkend="enums.combinationrules">combination rule</link> options is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+string cr = getcombinationrule(&quot;lj&quot;, &quot;epsilon&quot;);
+		</synopsis>
+
+	</section>
+
 	<section id="command.ref.getff"><title>getff</title>
 		<indexterm><primary>commands</primary><secondary>getff</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
@@ -429,6 +448,26 @@ recreateexpression();
 saveexpression(&quot;dlpoly&quot;, &quot;data.FIELD&quot;);
 		</synopsis>
 		
+	</section>
+
+	<section id="command.ref.setcombinationrule"><title>setcombinationrule</title>
+		<indexterm><primary>commands</primary><secondary>setcombinationrule</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setcombinationrule</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+				<paramdef>string <parameter>rule</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the combination rule to use for the specifed parameter of the given functional form. The <emphasis>form</emphasis> and related <emphasis>parameter</emphasis> should correspond to those given in the <link linkend="ff.forms.vdw">VDW functional forms</link> table, while <emphasis>rule</emphasis> should correspond to one of the available <link linkend="enums.combinationrules">combination rule</link> options.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+setcombinationrule(&quot;lj&quot;, &quot;sigma&quot;, &quot;geometric&quot;);
+		</synopsis>
+
 	</section>
 	
 	<section id="command.ref.torsiondef"><title>torsiondef</title>
