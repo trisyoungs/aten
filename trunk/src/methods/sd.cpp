@@ -66,10 +66,12 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	        return;
 	}
 	
-	// Calculate initial reference energy and RMS force
+	// Calculate initial reference energy and forces
 	newEnergy = srcmodel->totalEnergy(srcmodel);
+	srcmodel->calculateForces(srcmodel);
 	oldEnergy = 0.0;
-	oldRms = 0.0;
+	deltaEnergy = 100.0;
+	deltaRms = 100.0;
 	srcmodel->energy.print();
 
 	converged = FALSE;
@@ -86,8 +88,6 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		else
 		{
 			// Check convergence criteria
-			deltaEnergy = newEnergy - oldEnergy;
-			deltaRms = newRms - oldRms;
 			if ((fabs(deltaEnergy) < econ) && (fabs(deltaRms) < fcon))
 			{
 				converged = TRUE;
@@ -97,15 +97,17 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 			// Line minimise to get new energy
 			oldEnergy = newEnergy;
 			newEnergy = lineMinimise(srcmodel);
-
 			// Calculate forces at the new point
 			oldRms = newRms;
 			srcmodel->calculateForces(srcmodel);
 			newRms = srcmodel->rmsForce();
+
+			deltaEnergy = newEnergy - oldEnergy;
+			deltaRms = newRms - oldRms;
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,newEnergy,deltaEnergy,deltaRms,etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,newEnergy,deltaEnergy,newRms,etatext.get());
 
 		if (lineDone || converged) break;
 	}
