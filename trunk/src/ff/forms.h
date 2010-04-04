@@ -75,6 +75,7 @@ namespace VdwFunctions
 	enum VdwFunction { None, InversePower, Lj, LjAB, Buckingham, Morse, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
 	VdwFunction vdwFunction(const char *s, bool reporterror = FALSE);
+	int vdwParameter(VdwFunction, const char *s, bool reporterror = FALSE);
 	void printValid();
 	enum LjParameter { LjEpsilon, LjSigma, LjN };
 	enum LjABParameter { LjA, LjB };
