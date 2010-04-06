@@ -1,0 +1,65 @@
+<section id="examples.example2"><title>Self-Contained Liquid Chloroform Builder</title>
+
+	<para>This script (installed in the $ATENDATA/scripts directory) is an example of a completely self-contained script, depending on no external model files or forcefield terms. The chloroform model is built by hand, and the necessary forcefield is constructed in the script itself, before being used to create a box of liquid chloroform. Only the density of the liquid and the desired number of molecules are required in order to build the system, since the molecular volume is worked out from the density and the mass.</para>
+	
+	<codelisting><title>Liquid Chloroform (chloroform.txt)</title>
+# First, create chloroform model by modifying methane
+# Since C-Cl distances will then be too short, we lengthen them afterwards
+newatom(C);
+addhydrogen();
+select(3,4,5);
+transmute(Cl);
+for (int n=3; n&lt;6; ++n) setdistance(1,n,1.758);
+
+# Set density and number of molecules required
+double density = 1.483; # g/cc
+int n = 25;
+
+# Work out molecular and box volumes
+double mass = aten.model.mass;
+double mvol = (mass / density) * 1.0E24 / 6.02213E23;
+printf("Mass of model = %f g/mol\n", mass);
+printf("Density = %f g/cm3\n", density);
+printf("Molecular volume = %f A3/molecule\n", mvol);
+double l = (mvol*n)^(1.0/3.0) * 1.0;
+printf("Box length for %i molecules in cubic cell is %f\n", n, l);
+nmols(n);
+
+# Construct new forcefield (using AMBER params)
+newff("chloroformff");
+units("kj");
+# Taken from files at http://www.pharmacy.manchester.ac.uk/bryce/amber
+typedef(1,"CZ",C,"-Cl(n=3),-H","Chloroform carbon");
+typedef(2,"HZ",H,"-&amp;1","Chloroform hydrogen");
+typedef(3,"Cl",Cl,"-&amp;1","Chloroform chlorine");
+interdef("lj",1,-0.3659,4.184*0.1094, 1.9080*2.0/2.0^(1.0/6.0)); # CZ       1.9080     0.1094
+interdef("lj",2,0.2659,4.184*0.0157, 1.187*2.0/2.0^(1.0/6.0));    # HZ       1.1870     0.0157
+interdef("lj",3,0.0396,4.184*0.3250, 2.0*2.0/2.0^(1.0/6.0)); # CL       2.0000     0.3250
+bonddef("harmonic","CZ","HZ",2845.12,1.1);   # CZ-HZ  340.0    1.100
+bonddef("harmonic","CZ","Cl",1944.7232,1.758);  # CZ-CL  232.4    1.758
+angledef("harmonic","HZ","CZ","Cl",318.8208,107.68);  # HZ-CZ-CL    38.1      107.68
+angledef("harmonic","Cl","CZ","Cl",650.1936,111.3);   # CL-CZ-CL    77.7       111.3
+finaliseff();
+ffmodel();
+
+newmodel("box");
+cell(l,l,l,90,90,90);
+
+mcntrials("insert",1000);
+vdwscale(0.70);
+disorder(1000);
+mcminimise(10);
+cgminimise(30);
+
+savemodel("dlpoly", "chloroform.CONFIG");
+saveexpression("dlpoly", "chloroform.FIELD");
+quit();
+	</codelisting>
+
+	<para>To run the example:</para>
+
+	<synopsis>
+aten -s chloroform.txt
+	</synopsis>
+
+</section>

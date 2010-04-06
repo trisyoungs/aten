@@ -2,7 +2,7 @@
 
 	<para>This example takes the supplied water trajectory and determines the average coordinates of all the individual water molecules. Note that no accounting for the periodicity of the system is taken into account.</para>
 
-	<codelisting><title>testse</title>
+	<codelisting><title>Average Coordinates</title>
 vector xyz[aten.model.natoms];
 int nframes = aten.model.nframes;
 int natoms = aten.model.natoms;

@@ -395,7 +395,7 @@
 						<entry>warn1056</entry>
 						<entry>int</entry>
 						<entry>rw</entry>
-						<entry>Many changes to the typing language syntax were introduced in revision 1056, and a warning message was implemented.  This can be turned off by setting this variable to </entry>
+						<entry>Many changes to the typing language syntax were introduced in revision 1056, and a warning message was implemented.  This can be turned off by setting this variable to FALSE</entry>
 					</row>
 					<row>
 						<entry>zoomthrottle</entry>
