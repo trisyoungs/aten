@@ -158,7 +158,7 @@ types
 142	CM		C	"=C,-C,-H"				"alkene C (RH-C=) all atom"
 143	CM		C	"=C,-H,-H"				"alkene C (H2-C=) all atom"
 144	HC		H	"=C,-H"					"alkene H (H-C=)  all atom"
-145	CA		C	"ring(size=6,-C(n=6)),-[C,H],aromatic"	"Benzene C - 12 site JACS,112,4768-90"
+145	CA		C	"ring(size=6,-C(n=6)),-[C,H](noring),aromatic"	"Benzene C - 12 site JACS,112,4768-90"
 146	HA		H	"-C(ring(size=6,-C(n=6),aromatic))"	"Benzene H - 12 site (see 145)"
 147	CA		C	"ring(size=6,-C(n=6)),ring(size=6,=C(n=6))"		"Naphthalene fusion C (C9)"
 148	CT		C	"-H(n=3),-C(ring(size=6,-C(n=6),aromatic))"	"all-atom C: CH3, toluene"

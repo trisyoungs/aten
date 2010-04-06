@@ -1,14 +1,23 @@
 # Build chloroform system
 
-loadmodel("chloroform.xyz");
-double mass = aten.model.mass;
+# First, create chloroform model
+# Since C-Cl distances will then be too short, we lengthen them afterwards
+newatom(C);
+addhydrogen();
+select(3,4,5);
+transmute(Cl);
+for (int n=3; n<6; ++n) setdistance(1,n,1.758);
+
+# Set density and number of molecules required
 double density = 1.483; # g/cc
-double mvol = (mass / density) * 1.0E24 / 6.02213E23;
 int n = 25;
+
+# Work out molecular and box volumes
+double mass = aten.model.mass;
+double mvol = (mass / density) * 1.0E24 / 6.02213E23;
 printf("Mass of model = %f g/mol\n", mass);
 printf("Density = %f g/cm3\n", density);
 printf("Molecular volume = %f A3/molecule\n", mvol);
-
 double l = (mvol*n)^(1.0/3.0) * 1.0;
 printf("Box length for %i molecules in cubic cell is %f\n", n, l);
 
@@ -37,7 +46,7 @@ cell(l,l,l,90,90,90);
 mcntrials("insert",1000);
 vdwscale(0.70);
 disorder(1000);
-mcminimise(100);
+mcminimise(10);
 cgminimise(30);
 
 savemodel("dlpoly", "chloroform.CONFIG");

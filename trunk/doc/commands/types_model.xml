@@ -68,6 +68,12 @@
 						<entry>List of unique forcefield bond terms in the model</entry>
 					</row>
 					<row>
+						<entry>ffmass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Forcefield mass of the current model, which can differ from the actual mass if united-atom types have been assigned</entry>
+					</row>
+					<row>
 						<entry>fftorsions</entry>
 						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
 						<entry>ro</entry>

@@ -31,6 +31,10 @@
 						<entry>~[N,S,P]</entry>
 						<entry>Any connection to either nitrogen, sulfur, or phosphorous</entry>
 					</row>
+					<row>
+						<entry>!=O</entry>
+						<entry>Any bond to any atom, as long as its not a double bond to an oxygen</entry>
+					</row>
 				</tbody>
 			</tgroup>
 		</table>
@@ -325,6 +329,30 @@ nh=<emphasis>m</emphasis>
 		</table>
 	</section>
 
+	<section id="ff.neta.ref.planar"><title>planar</title>
+		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>planar</tertiary></indexterm>
+		
+		<para>Specifies that the atom target should be planar, which is to say no bond from the atom may be more than 15&deg; out of the plane formed by the first two bonds to the atom)</para>
+		
+		<para>For example:</para>
+		<table frame='all' pgwide='1' tocentry='0'><title>NETA keyword 'planar' examples</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Meaning</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>-C(planar)</entry>
+						<entry>Single bond to a carbon atom which is roughly planar</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	</section>
+	
 	<section id="ff.neta.ref.ring"><title>ring</title>
 		<indexterm><primary>neta</primary><secondary>keywords</secondary><tertiary>ring</tertiary></indexterm>
 		
