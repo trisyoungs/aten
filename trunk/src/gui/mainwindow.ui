@@ -1634,6 +1634,10 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/build/icons/build_h.svg</normaloff>:/build/icons/build_h.svg</iconset>
+   </property>
    <property name="text">
     <string>H</string>
    </property>
@@ -1645,6 +1649,10 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/build/icons/build_c.svg</normaloff>:/build/icons/build_c.svg</iconset>
+   </property>
    <property name="text">
     <string>C</string>
    </property>
@@ -1652,6 +1660,10 @@
   <action name="actionElementN">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/build/icons/build_n.svg</normaloff>:/build/icons/build_n.svg</iconset>
    </property>
    <property name="text">
     <string>N</string>

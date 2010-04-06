@@ -8,9 +8,12 @@ then
   echo "********* Warning - Directory name for website not supplied."
   echo "*********           Defaulting to 'Beta'"
   echo "*********"
+  TARGETDIR="Beta"
 fi
 
-echo $TARGETDIR
+echo ""
+echo "Target directory for user manual is : "$TARGETDIR
+echo ""
 
 # Fix MathML usage in sgmltools-lite
 #export SGML_CATALOG_FILES=~/.docbook/catalog.txt
@@ -30,9 +33,9 @@ rm -rf aten-versioned.xml examples-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" examples.xml > examples-versioned.xml
 
-#
-# Generate Chunked HTML Examples
-#
+echo "#"
+echo "# Generating Chunked HTML Examples"
+echo "#"
 rm -rf codeexamples
 mkdir codeexamples
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
@@ -51,22 +54,23 @@ do
   $ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z\.]*\)\.html/manual.php?id=Beta\&page=\1.xhtml/g
+	s/\([a-z0-9\.]*\)\.html/manual.php?id=Examples\&page=\1.xhtml/g
 	p
   }' $a > ${a/.html/.xhtml}
 done
 rm *.html 
 cd ../
 
-#
-# Generate Chunked HTML Manual (with xsltproc)
-#
+echo "#"
+echo "# Generating Chunked HTML Manual"
+echo "#"
 rm -rf usermanual
 mkdir usermanual
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./usermanual/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl aten-versioned.xml
 cp -r images usermanual/
+for a in `ls -1 ../src/gui/icons/*svg`; do b=${a/..\/*\//}; echo $b; inkscape $a -d 32 -e usermanual/images/${b/svg/png}; done
 # Rewrite links
 cd usermanual
 for a in *.html
@@ -74,25 +78,28 @@ do
   # Process files to
   # 1) Rewrite links so they work in the website
   # 2) Remove blank extraneous line from synopsis elements
-  sed -n '
+  sed -n "
   1h
   1!H
-  $ {
+  \$ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z\.]*\)\.html/manual.php?id=Beta\&page=\1.xhtml/g
+	s/\([a-z\.]*\)\.html/manual.php?id=$TARGETDIR\&page=\1.xhtml/g
+	s/img src=\"images/img src=\"manual\/$TARGETDIR\/images/g
 	p
-  }' $a > ${a/.html/.xhtml}
+  }" $a > ${a/.html/.xhtml}
 done
 rm *.html 
 cd ../
 
-#
-# Generate Single Page HTML Manual (with xsltproc)
-#
+echo "#"
+echo "# Generating Single Page HTML Manual"
+echo "#"
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc aten.xsl aten-versioned.xml > manual.html
+# Rewrite image links
+sed -e "s/img src=\"images/img src=\"manual\/$TARGETDIR\/images/g" manual.html > manual.xhtml
 
 # Tidy up
 rm aten-versioned.xml aten.xsl

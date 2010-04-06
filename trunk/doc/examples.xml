@@ -24,8 +24,11 @@
 	
 	<!-- EXAMPLES -->
 	<chapter id="examples"><title>Command Examples</title>
-	<para>A number of short, useful examples of applications of Aten's command language is provided here.</para>
+		<section><title>Introduction</title>
+			<para>A number of short, useful examples of applications of Aten's command language is provided here. Some are in the form of full scripts which can be pasted into a text file and run form there, and some are in the form of 'one-liners', controlling Aten directly from the command line.</para>
+		</section>
 		&example001;
+		&example002;
 	</chapter>
 
 	<!-- Index -->

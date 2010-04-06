@@ -22,6 +22,7 @@
 	<!-- GUI -->
 	<!ENTITY gui SYSTEM "gui/gui.xml">
 	<!ENTITY guimouse SYSTEM "gui/mouse.xml">
+	<!ENTITY guitoolbars SYSTEM "gui/toolbars.xml">
 	<!--Commands-->
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
 	<!ENTITY typesaten SYSTEM "commands/types_aten.xml">
@@ -181,6 +182,7 @@
 		<indexterm zone="gui"><primary>GUI</primary></indexterm>
  		&gui;
  		&guimouse;
+		&guitoolbars;
 	</chapter>
 
 	<!-- Command Language -->
