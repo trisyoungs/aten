@@ -1,0 +1,390 @@
+<section id="gui.toolbars"><title>Toolbars</title>
+	
+	<para>Many of Aten's commonly-used functions are accessible through individual toolbars. At the outset, several of these are visible at the top of the main window (as well as the tool window toolbar to the right), but may be repositioned around the main window as necessary. Right-clicking on a toolbar area brings up a list of all available toolbars, allowing them to be shown and hidden. The last state of the toolbars (positions and visibility) is restored the next time Aten is started.</para>
+	
+	<section id="gui.toolbars.bonding"><title>Bonding</title>
+		
+		<para>Bonds between atoms can be calculated and removed en masse with the bonding toolbar, encompassing either the whole model or just the current atom selection.  The bond tolerance used in the calculation of bonds can be set with the spin control. Automatic detection of multiple bonds can be performed with the augment tool.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Bonding Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/bonding_calc.png"/></entry>
+						<entry>Recalculate bonding in the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/bonding_clear.png"/></entry>
+						<entry>Clear bonding in the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/bonding_calcsel.png"/></entry>
+						<entry>Recalculate bonding in the current model, restricted to the current atom selection</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/bonding_clearsel.png"/></entry>
+						<entry>Clear all bonds between atoms in the current selection</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/bonding_augment.png"/></entry>
+						<entry>Based on the current connectivity, determine multiple bonds</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.build"><title>Build</title>
+		
+		<para>The primary function of the build toolbar is to allow for drawing, deletion, and transmuting of individual atoms and bonds using the mouse. Setting the type of bond requires pairs of atoms to be clicked sequentially after the tool is activated. Similarly, transmuting atoms to the currently selected element and removing atoms simply involve clicking on atoms in the main view.</para>
+
+		<para>
+			<inlinegraphic fileref="images/build_atom.png"/>
+			<inlinegraphic fileref="images/build_chain.png"/>
+			<inlinegraphic fileref="images/build_delete.png"/>
+			<inlinegraphic fileref="images/build_transmute.png"/>
+			<inlinegraphic fileref="images/build_addh.png"/>
+			<inlinegraphic fileref="images/build_atomaddh.png"/>
+			<inlinegraphic fileref="images/spacer.png"/>
+			<inlinegraphic fileref="images/build_h.png"/>
+			<inlinegraphic fileref="images/build_c.png"/>
+			<inlinegraphic fileref="images/build_n.png"/>
+			<inlinegraphic fileref="images/build_ptable.png"/>
+		</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Build Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					
+					<row>
+						<entry><inlinegraphic fileref="images/build_atom.png"/></entry>
+						<entry>Draw unbound atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_chain.png"/></entry>
+						<entry>Draw chains of atoms by clicking and dragging the mouse</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_delete.png"/></entry>
+						<entry>Delete individual atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_transmute.png"/></entry>
+						<entry>Change clicked atoms to the currently selected element</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_addh.png"/></entry>
+						<entry>Satisfy the natural valencies of all C, N, and O atoms by adding hydrogen atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_atomaddh.png"/></entry>
+						<entry>Add hydrogens to clicked atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_h.png"/></entry>
+						<entry>Set the current element to hydrogen</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_c.png"/></entry>
+						<entry>Set the current element to carbon</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_n.png"/></entry>
+						<entry>Set the current element to nitrogen</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_ptable.png"/></entry>
+						<entry>Select the current element from the periodic table</entry>
+					</row>
+					<row>
+						<entry>N/A</entry>
+						<entry>The current element set by the final button (which defaults to oxygen) is set from the last element chosen in the periodic table.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.drawstyle"><title>Draw Style</title>
+		
+		<para>The general drawing style for all atoms in all models is determined by the selection made on the Style toolbar. This does not clear any specific styles set for individual atoms, it only overrides them. The final 'Individual' style draws atoms in their associated styles (which defaults to 'Stick').</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Draw Style Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/style_stick.png"/></entry>
+						<entry>Atoms are not drawn unless they possess no bonds. Bonds are drawn using simple lines.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/style_tube.png"/></entry>
+						<entry>Atoms and bonds are drawn as tubes.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/style_sphere.png"/></entry>
+						<entry>Atoms are drawn as uniformly-sized spheres, with bonds drawn as tubes.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/style_scaled.png"/></entry>
+						<entry>Atoms are drawn as spheres whose size depends on their atomic radii. Bonds are drawn as tubes.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/style_individual.png"/></entry>
+						<entry>Each atom is drawn according to its own set style.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.edit"><title>Edit</title>
+		
+		<para>Standard Cut, Copy, Paste, and Delete functions that work on the atom selection of the current model. Only the last copied (or cut) selection of atoms is remembered. Pasted atoms are created with exactly the same coordinates as when they were copied - i.e. no translation of the pasted atoms is made to avoid other atoms in the target model. The newly pasted atoms become the current selection.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Edit Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/edit_copy.png"/></entry>
+						<entry>Copy the current atom selection to Aten's clipboard</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/edit_cut.png"/></entry>
+						<entry>Copy the current atom selection to Aten's clipboard and then delete it</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/edit_paste.png"/></entry>
+						<entry>Paste the contents of the clipboard to the current model at the original coordinates</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/edit_delete.png"/></entry>
+						<entry>Delete the current atom selection</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.file"><title>File</title>
+		
+		<para>Quick tools to load, save, and close models.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>File Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/file_new.png"/></entry>
+						<entry>Create a new, empty model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/file_open.png"/></entry>
+						<entry>Load an existing model into Aten</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/file_save.png"/></entry>
+						<entry>Save the current model under its original filename</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/file_saveas.png"/></entry>
+						<entry>Save the current model under a different filename</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/file_close.png"/></entry>
+						<entry>Close the current model (prompting to save first if changes have been made)</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.forcefields"><title>Forcefields</title>
+		
+		<para>The minimiser can be run quickly from here (using the current method and associated settings from the [[GUI:MinimiserWindow|minimiser window]]) and the total energy and forces of the current model calculated. A list of all loaded forcefields reflects the current default forcefield and allows selection of a new one.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/forcefield_minimise.png"/></entry>
+						<entry>Minimise the energy of the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/forcefield_energy.png"/></entry>
+						<entry>Calculate the total energy of the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/forcefield_energy.png"/></entry>
+						<entry>Calculate the atomic forces in the current model</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.mouse"><title>Mouse</title>
+		
+		<para>For multi-button mice each button can be assigned an invidual action (select, rotate model etc.). For those who use single-button rats, this toolbar changes the function of the first (or left) button between select / interact, rotate model, and translate model. Selecting these buttons overwrite the stored action for the left button in the Preferences.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Mouse Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/mouse_interact.png"/></entry>
+						<entry>The left button selects and interacts with atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/mouse_rotate.png"/></entry>
+						<entry>The left button rotates the view or selection</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/mouse_translate.png"/></entry>
+						<entry>The left button translates the view or selection</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.select"><title>Select</title>
+		
+		<para>The standard mode for whichever mouse button is the interactor (by default its the left button) is Box Select, where atoms or groups of atoms are selected by click-dragging a box on the main canvas. This and other selection types are available here.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Select Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/select_atoms.png"/></entry>
+						<entry>Atoms may be (de)selected by clicking on them individually, or selected en masse with a click-hold-drag</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_molecules.png"/></entry>
+						<entry>Bound fragments are selected by clicking on a single atom within that fragment</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_element.png"/></entry>
+						<entry>Clicking on a single atom selects all atoms of the same element</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_expand.png"/></entry>
+						<entry>The current selection is expanded by following bonds attached to any select atoms.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_all.png"/></entry>
+						<entry>Select all atoms in the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_none.png"/></entry>
+						<entry>Deselect all atoms in the current model</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/select_toggle.png"/></entry>
+						<entry>Toggle the selection state of all atoms</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.toolwindows"><title>Tool Windows</title>
+		
+		<para>Tool windows are shown and hidden through the buttons on this toolbar. See the ((Tool Windows)) section.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Tool Window Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_atomlist.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_grids.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_build.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_transform.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_position.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_geometry.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_celldefine.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_celltransform.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_disorder.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_minimiser.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_ff.png"/></entry>
+						<entry></entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_command.png"/></entry>
+						<entry></entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+	<section id="gui.toolbars.trajectory"><title>Trajectory</title>
+		
+		<para>If a trajectory is associated to the current model, the trajectory toolbar allows to skip through frames and playback the trajectory.</para>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Trajectory Toolbar Icons</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/trajectory_seekfirst.png"/></entry>
+						<entry>Return to the first frame in the trajectory</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/trajectory_previous.png"/></entry>
+						<entry>Go to the previous frame in the trajectory</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/trajectory_playpause.png"/></entry>
+						<entry>Start / stop sequential frame playback of the trajectory</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/trajectory_next.png"/></entry>
+						<entry>Go to the next frame in the trajectory</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/trajectory_seeklast.png"/></entry>
+						<entry>Skip to the last frame in the trajectory</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+	</section>
+	
+</section>
