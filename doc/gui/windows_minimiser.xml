@@ -1,0 +1,10 @@
+<section id="gui.toolwindows.minimiser"><title>Minimiser Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>minimiser</tertiary></indexterm>
+	
+	<figure><title><inlinegraphic fileref="images/stack_minimiser.png"/>Minimiser Window</title>
+		<graphic fileref="images/window_minimiser.png"/>
+	</figure>
+
+	<para>The Minimiser Window allows models to be energy-minimised w.r.t. their atomic coordinates. Several methods are available, listed in the drop-down list at the top-left. Each may have its own set of options, which are displayed in the panel underneath the convergence criterion for the energy and RMS force.</para>
+	
+</section>

@@ -1,0 +1,34 @@
+<section id="gui.toolwindows.transform"><title>Atom Transform Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>atom transform</tertiary></indexterm>
+	
+	<figure><title><inlinegraphic fileref="images/stack_transform.png"/>Atom Transform Window</title>
+		<graphic fileref="images/window_transform.png"/>
+	</figure>
+
+	<para>For a selection of atoms, rotational or matrix-based transformations can be applied through the Transform Window.</para>
+	
+	<section><title>Rotation About Arbitrary Axis</title>
+		
+		<figure><title>Atom Transform Window, Rotate Panel</title>
+			<graphic fileref="images/window_transform_rotate.png"/>
+		</figure>
+		
+		<para>The Rotate panel allows an origin and a rotation axis about this origin to be defined about which to rotate atom selections. The origin and axis may be entered manually, can be determined from  a current atom selection, or defined by the click-selection of two atoms. Defining the rotation axis from the current selection will set the axis to the vector between the currently-defined origin and the centre of geometry of the current atom selection. Rotations of atom selections about this axis/origin combination are then made by defining the angle of rotation (in degrees) and then applying the rotation either clockwise or anticlockwise.</para>
+		
+	</section>
+	
+	<section><title>Matrix Transformation</title>
+		
+		<figure><title>Atom Transform Window, Matrix Transform Panel</title>
+			<graphic fileref="images/window_transform_transform.png"/>
+		</figure>
+	</section>
+	
+	<section><title>Matrix Conversion</title>
+		
+		<figure><title>Atom Transform Window, Matrix Convert Panel</title>
+			<graphic fileref="images/window_transform_convert.png"/>
+		</figure>
+	</section>
+	
+</section>

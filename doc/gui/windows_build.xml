@@ -1,0 +1,19 @@
+<section id="gui.toolwindows.build"><title>Build Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>build</tertiary></indexterm>
+	
+	<figure><title><inlinegraphic fileref="images/stack_build.png"/>Build Window</title>
+		<graphic fileref="images/window_build.png"/>
+	</figure>
+
+	<para>More complex drawing tools, or those than cannot easily be presented in the form of a toolbar, can be found here. This window is more of a placeholder for future deatures, and doesn't contain much at present.</para>
+	
+	<sect5><title>Add Atom</title>
+		
+		<figure><title>Build Window, Add Atom Panel</title>
+			<graphic fileref="images/window_build_addatom.png"/>
+		</figure>
+		
+		<para>The Add Atom page allows atoms to be created at specific positions in the model. Coordinates are entered and the atom created (with element defined by the current selected element in the Build toolbar) by pressing the Add button. If the 'Frac' checkbox is ticked the coordinates are assumed to be fractional and are converted to cell coordinates as the atom is added. For example, setting coordinates to {0.5,0.5,0.5} will create an atom in the centre of the current unit cell.</para>
+	</sect5>
+
+</section>
