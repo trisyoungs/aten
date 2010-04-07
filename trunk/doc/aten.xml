@@ -23,6 +23,18 @@
 	<!ENTITY gui SYSTEM "gui/gui.xml">
 	<!ENTITY guimouse SYSTEM "gui/mouse.xml">
 	<!ENTITY guitoolbars SYSTEM "gui/toolbars.xml">
+	<!ENTITY guiwinatomlist SYSTEM "gui/windows_atomlist.xml">
+	<!ENTITY guiwinbuild SYSTEM "gui/windows_build.xml">
+	<!ENTITY guiwincelldefine SYSTEM "gui/windows_celldefine.xml">
+	<!ENTITY guiwincelledit SYSTEM "gui/windows_celledit.xml">
+	<!ENTITY guiwincommand SYSTEM "gui/windows_command.xml">
+	<!ENTITY guiwindisorder SYSTEM "gui/windows_disorder.xml">
+	<!ENTITY guiwinff SYSTEM "gui/windows_ff.xml">
+	<!ENTITY guiwingeometry SYSTEM "gui/windows_geometry.xml">
+	<!ENTITY guiwingrids SYSTEM "gui/windows_grids.xml">
+	<!ENTITY guiwinminimiser SYSTEM "gui/windows_minimiser.xml">
+	<!ENTITY guiwinposition SYSTEM "gui/windows_position.xml">
+	<!ENTITY guiwintransform SYSTEM "gui/windows_transform.xml">
 	<!--Commands-->
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
 	<!ENTITY typesaten SYSTEM "commands/types_aten.xml">
@@ -180,9 +192,28 @@
 	<!-- GUI -->
 	<chapter id="gui"><title>The GUI</title>
 		<indexterm zone="gui"><primary>GUI</primary></indexterm>
+		<section>
+			<para>Aside from a powerful command-line tool, Aten has a GUI which is able to control must of the functionality available within the code. It is written in a style similar to other editing programs - at its simplest it is just a visualiser, but models can also be created and edited interactively.</para>
+		</section>
  		&gui;
  		&guimouse;
 		&guitoolbars;
+		<section id="gui.toolwindows"><title>Tool Windows</title>
+			<indexterm zone="gui"><primary>GUI</primary><secondary>tool windows</secondary></indexterm>
+			<para>Most of Aten's functions in the GUI are accessed through the various tool windows. These can be shown/hidden through the toggle buttons in the <link linkend="gui.toolbars.stack">Tool Stack</link> toolbar, which appears on the right-hand side of the main canvas by default.</para>
+			&guiwinatomlist;
+			&guiwinbuild;
+			&guiwincelldefine;
+			&guiwincelledit;
+			&guiwincommand;
+			&guiwindisorder;
+			&guiwinff;
+			&guiwingeometry;
+			&guiwingrids;
+			&guiwinminimiser;
+			&guiwinposition;
+			&guiwintransform;
+		</section>
 	</chapter>
 
 	<!-- Command Language -->
