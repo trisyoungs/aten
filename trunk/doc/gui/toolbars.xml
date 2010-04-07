@@ -268,7 +268,7 @@
 			<inlinegraphic fileref="images/dotspacer.png"/>
 			<inlinegraphic fileref="images/forcefield_minimise.png"/>
 			<inlinegraphic fileref="images/forcefield_energy.png"/>
-			<inlinegraphic fileref="images/forcefield_energy.png"/>
+			<inlinegraphic fileref="images/forcefield_forces.png"/>
 		</para>
 		
 		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield Toolbar Icons</title>
@@ -283,7 +283,7 @@
 						<entry>Calculate the total energy of the current model</entry>
 					</row>
 					<row>
-						<entry><inlinegraphic fileref="images/forcefield_energy.png"/></entry>
+						<entry><inlinegraphic fileref="images/forcefield_forces.png"/></entry>
 						<entry>Calculate the atomic forces in the current model</entry>
 					</row>
 					<row>

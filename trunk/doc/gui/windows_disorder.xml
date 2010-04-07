@@ -1,8 +1,12 @@
 <section id="gui.toolwindows.disorder"><title>Disordered Builder Window</title>
 	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>disorder</tertiary></indexterm>
 	
+	<para>
+		<inlinegraphic fileref="images/stack_disorder.png"/>Disordered Builder Window
+	</para>
+	
 	<figure><title><inlinegraphic fileref="images/stack_disorder.png"/>Disordered Builder Window</title>
-		<graphic fileref="images/window_disorder.png"/>
+		<graphic fileref="images/window_disorder.png" align="center"/>
 	</figure>
 
 	<para>The Disordered builder page allows the creation of randomly-oriented collections of molecules in periodic cells (e.g. gases, liquids, mixtures etc.) from individual molecule components. The list at the top of the panel gives all the currently-loaded molecules that are suitable for use as components – the main criterion is that they do not themselves possess a unit cell. Next to the name of each model in the list is a number, which specifies the number of molecules that you want to be inserted into the target model, and two checkboxes that allow certain Monte Carlo move types to be prevented for individual molecules. The first checkbox, if unticked, prevents rotations (both on insertion and in standard Monte Carlo moves) of the model, while the second checkbox, if unticked, will prevent the standard Monte Carlo translation move from being used with this model. If the number is set to zero (the default for all components) then no insertions of that model will be attempted.</para>

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>299</width>
+    <width>336</width>
     <height>136</height>
    </rect>
   </property>
@@ -39,6 +39,12 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>New Distance</string>
            </property>
@@ -53,6 +59,12 @@
          </item>
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="NewDistanceSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -69,6 +81,12 @@
          </item>
          <item row="4" column="2">
           <widget class="QPushButton" name="SetNewDistanceButton">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Set</string>
            </property>
@@ -76,6 +94,12 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Nudge</string>
            </property>
@@ -83,6 +107,12 @@
          </item>
          <item row="5" column="1">
           <widget class="QDoubleSpinBox" name="NudgeDistanceSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -101,6 +131,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="QPushButton" name="NudgeDistanceMinusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -114,10 +150,22 @@
               <iconset resource="icons.qrc">
                <normaloff>:/basic/icons/basic_minus.svg</normaloff>:/basic/icons/basic_minus.svg</iconset>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="NudgeDistancePlusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -134,7 +182,7 @@
              <property name="iconSize">
               <size>
                <width>24</width>
-               <height>16</height>
+               <height>24</height>
               </size>
              </property>
             </widget>
@@ -143,6 +191,12 @@
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Current Distance</string>
            </property>
@@ -161,6 +215,12 @@
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Current Angle</string>
            </property>
@@ -175,6 +235,12 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>New Angle</string>
            </property>
@@ -189,6 +255,12 @@
          </item>
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="NewAngleSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -202,6 +274,12 @@
          </item>
          <item row="4" column="2">
           <widget class="QPushButton" name="SetNewAngleButton">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Set</string>
            </property>
@@ -209,6 +287,12 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>Nudge</string>
            </property>
@@ -216,6 +300,12 @@
          </item>
          <item row="5" column="1">
           <widget class="QDoubleSpinBox" name="NudgeAngleSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -231,6 +321,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QPushButton" name="NudgeAngleMinusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -244,10 +340,22 @@
               <iconset resource="icons.qrc">
                <normaloff>:/basic/icons/basic_minus.svg</normaloff>:/basic/icons/basic_minus.svg</iconset>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="NudgeAnglePlusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -264,7 +372,7 @@
              <property name="iconSize">
               <size>
                <width>24</width>
-               <height>16</height>
+               <height>24</height>
               </size>
              </property>
             </widget>
@@ -315,6 +423,12 @@
          </item>
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="NewTorsionSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -331,6 +445,12 @@
          </item>
          <item row="4" column="2">
           <widget class="QPushButton" name="SetNewTorsionButton">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="text">
             <string>Set</string>
            </property>
@@ -345,6 +465,12 @@
          </item>
          <item row="5" column="1">
           <widget class="QDoubleSpinBox" name="NudgeTorsionSpin">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="decimals">
             <number>5</number>
            </property>
@@ -363,6 +489,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QPushButton" name="NudgeTorsionMinusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -376,10 +508,22 @@
               <iconset resource="icons.qrc">
                <normaloff>:/basic/icons/basic_minus.svg</normaloff>:/basic/icons/basic_minus.svg</iconset>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="NudgeTorsionPlusButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>32</width>
@@ -396,7 +540,7 @@
              <property name="iconSize">
               <size>
                <width>24</width>
-               <height>16</height>
+               <height>24</height>
               </size>
              </property>
             </widget>

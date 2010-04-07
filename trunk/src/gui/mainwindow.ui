@@ -1,8 +1,9 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -10,65 +11,57 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="maximumSize" >
+  <property name="maximumSize">
    <size>
     <width>10000</width>
     <height>10000</height>
    </size>
   </property>
-  <property name="focusPolicy" >
+  <property name="focusPolicy">
    <enum>Qt::NoFocus</enum>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Aten (VERSION)</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="icons.qrc" >
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
     <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
   </property>
-  <property name="autoFillBackground" >
+  <property name="autoFillBackground">
    <bool>true</bool>
   </property>
-  <property name="toolButtonStyle" >
+  <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
   </property>
-  <property name="dockNestingEnabled" >
+  <property name="dockNestingEnabled">
    <bool>false</bool>
   </property>
-  <widget class="QWidget" name="MainWindowLayout" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>126</y>
-     <width>772</width>
-     <height>453</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <property name="spacing" >
+  <widget class="QWidget" name="MainWindowLayout">
+   <layout class="QHBoxLayout">
+    <property name="spacing">
      <number>4</number>
     </property>
-    <property name="margin" >
+    <property name="margin">
      <number>2</number>
     </property>
     <item>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>0</number>
       </property>
-      <property name="margin" >
+      <property name="margin">
        <number>0</number>
       </property>
       <item>
-       <widget class="TTabBar" native="1" name="ModelTabs" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <widget class="TTabBar" name="ModelTabs" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>255</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -76,70 +69,70 @@
        </widget>
       </item>
       <item>
-       <widget class="QSplitter" name="MainSplitter" >
-        <property name="orientation" >
+       <widget class="QSplitter" name="MainSplitter">
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QFrame" name="ViewFrame" >
-         <property name="cursor" >
+        <widget class="QFrame" name="ViewFrame">
+         <property name="cursor">
           <cursorShape>CrossCursor</cursorShape>
          </property>
-         <property name="frameShape" >
+         <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="frameShadow" >
+         <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
         </widget>
-        <widget class="QTextEdit" name="TextDisplay" >
-         <property name="sizePolicy" >
-          <sizepolicy vsizetype="MinimumExpanding" hsizetype="Expanding" >
+        <widget class="QTextEdit" name="TextDisplay">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
            <horstretch>255</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="minimumSize" >
+         <property name="minimumSize">
           <size>
            <width>0</width>
            <height>64</height>
           </size>
          </property>
-         <property name="maximumSize" >
+         <property name="maximumSize">
           <size>
            <width>16777215</width>
            <height>256</height>
           </size>
          </property>
-         <property name="font" >
+         <property name="font">
           <font>
            <family>Courier 10 Pitch</family>
           </font>
          </property>
-         <property name="mouseTracking" >
+         <property name="mouseTracking">
           <bool>true</bool>
          </property>
-         <property name="focusPolicy" >
+         <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>
-         <property name="contextMenuPolicy" >
+         <property name="contextMenuPolicy">
           <enum>Qt::DefaultContextMenu</enum>
          </property>
-         <property name="acceptDrops" >
+         <property name="acceptDrops">
           <bool>false</bool>
          </property>
-         <property name="horizontalScrollBarPolicy" >
+         <property name="horizontalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
-         <property name="undoRedoEnabled" >
+         <property name="undoRedoEnabled">
           <bool>false</bool>
          </property>
-         <property name="readOnly" >
+         <property name="readOnly">
           <bool>true</bool>
          </property>
-         <property name="acceptRichText" >
+         <property name="acceptRichText">
           <bool>false</bool>
          </property>
-         <property name="textInteractionFlags" >
+         <property name="textInteractionFlags">
           <set>Qt::TextSelectableByMouse</set>
          </property>
         </widget>
@@ -149,2224 +142,2134 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="MainWindowMenuBar" >
-   <property name="geometry" >
+  <widget class="QMenuBar" name="MainWindowMenuBar">
+   <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="SettingsMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="SettingsMenu">
+    <property name="title">
      <string>Se&amp;ttings</string>
     </property>
-    <addaction name="actionPreferences" />
-    <addaction name="separator" />
-    <addaction name="actionReloadFilters" />
+    <addaction name="actionPreferences"/>
+    <addaction name="separator"/>
+    <addaction name="actionReloadFilters"/>
    </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="FileMenu">
+    <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="RecentMenu">
+     <property name="title">
       <string>&amp;Recent Files</string>
      </property>
     </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="RecentMenu" />
-    <addaction name="separator" />
-    <addaction name="actionFileClose" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionFileSaveExpression" />
-    <addaction name="separator" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="separator" />
-    <addaction name="actionFileOpenForcefield" />
-    <addaction name="actionFileOpenGrid" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
+    <addaction name="actionFileNew"/>
+    <addaction name="actionFileOpen"/>
+    <addaction name="RecentMenu"/>
+    <addaction name="separator"/>
+    <addaction name="actionFileClose"/>
+    <addaction name="actionFileSave"/>
+    <addaction name="actionFileSaveAs"/>
+    <addaction name="actionFileSaveExpression"/>
+    <addaction name="separator"/>
+    <addaction name="actionFileAddTrajectory"/>
+    <addaction name="separator"/>
+    <addaction name="actionFileOpenForcefield"/>
+    <addaction name="actionFileOpenGrid"/>
+    <addaction name="separator"/>
+    <addaction name="actionFileSaveImage"/>
+    <addaction name="separator"/>
+    <addaction name="actionFileQuit"/>
    </widget>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="EditMenu">
+    <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
+    <addaction name="actionEditUndo"/>
+    <addaction name="actionEditRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditCut"/>
+    <addaction name="actionEditCopy"/>
+    <addaction name="actionEditPaste"/>
+    <addaction name="actionEditDelete"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditInvert"/>
+    <addaction name="actionEditSelectExpand"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditSelectAll"/>
+    <addaction name="actionEditSelectNone"/>
    </widget>
-   <widget class="QMenu" name="ViewMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="ViewMenu">
+    <property name="title">
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuSetView" >
-     <property name="title" >
+    <widget class="QMenu" name="menuSetView">
+     <property name="title">
       <string>Set View Along</string>
      </property>
-     <addaction name="actionViewSetCartesianPosX" />
-     <addaction name="actionViewSetCartesianPosY" />
-     <addaction name="actionViewSetCartesianPosZ" />
-     <addaction name="actionViewSetCartesianNegX" />
-     <addaction name="actionViewSetCartesianNegY" />
-     <addaction name="actionViewSetCartesianNegZ" />
-     <addaction name="separator" />
-     <addaction name="actionViewSetCellPosX" />
-     <addaction name="actionViewSetCellPosY" />
-     <addaction name="actionViewSetCellPosZ" />
-     <addaction name="actionViewSetCellNegX" />
-     <addaction name="actionViewSetCellNegY" />
-     <addaction name="actionViewSetCellNegZ" />
+     <addaction name="actionViewSetCartesianPosX"/>
+     <addaction name="actionViewSetCartesianPosY"/>
+     <addaction name="actionViewSetCartesianPosZ"/>
+     <addaction name="actionViewSetCartesianNegX"/>
+     <addaction name="actionViewSetCartesianNegY"/>
+     <addaction name="actionViewSetCartesianNegZ"/>
+     <addaction name="separator"/>
+     <addaction name="actionViewSetCellPosX"/>
+     <addaction name="actionViewSetCellPosY"/>
+     <addaction name="actionViewSetCellPosZ"/>
+     <addaction name="actionViewSetCellNegX"/>
+     <addaction name="actionViewSetCellNegY"/>
+     <addaction name="actionViewSetCellNegZ"/>
     </widget>
-    <widget class="QMenu" name="StyleMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="StyleMenu">
+     <property name="title">
       <string>Style</string>
      </property>
-     <addaction name="actionStyleStick" />
-     <addaction name="actionStyleTube" />
-     <addaction name="actionStyleSphere" />
-     <addaction name="actionStyleScaled" />
-     <addaction name="actionStyleIndividual" />
+     <addaction name="actionStyleStick"/>
+     <addaction name="actionStyleTube"/>
+     <addaction name="actionStyleSphere"/>
+     <addaction name="actionStyleScaled"/>
+     <addaction name="actionStyleIndividual"/>
     </widget>
-    <widget class="QMenu" name="SchemeMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="SchemeMenu">
+     <property name="title">
       <string>Colour Scheme</string>
      </property>
-     <addaction name="actionSchemeElement" />
-     <addaction name="actionSchemeCharge" />
-     <addaction name="actionSchemeForce" />
+     <addaction name="actionSchemeElement"/>
+     <addaction name="actionSchemeCharge"/>
+     <addaction name="actionSchemeForce"/>
     </widget>
-    <addaction name="actionViewReset" />
-    <addaction name="actionViewZoomIn" />
-    <addaction name="actionViewZoomOut" />
-    <addaction name="menuSetView" />
-    <addaction name="separator" />
-    <addaction name="actionViewPerspective" />
-    <addaction name="actionViewOrthographic" />
-    <addaction name="separator" />
-    <addaction name="StyleMenu" />
-    <addaction name="SchemeMenu" />
-    <addaction name="separator" />
-    <addaction name="actionViewModel" />
-    <addaction name="actionViewTrajectory" />
+    <addaction name="actionViewReset"/>
+    <addaction name="actionViewZoomIn"/>
+    <addaction name="actionViewZoomOut"/>
+    <addaction name="menuSetView"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewPerspective"/>
+    <addaction name="actionViewOrthographic"/>
+    <addaction name="separator"/>
+    <addaction name="StyleMenu"/>
+    <addaction name="SchemeMenu"/>
+    <addaction name="separator"/>
+    <addaction name="actionViewModel"/>
+    <addaction name="actionViewTrajectory"/>
    </widget>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="ScriptsMenu">
+    <property name="title">
      <string>S&amp;cripts</string>
     </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
+    <addaction name="actionLoadScript"/>
+    <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="ModelMenu">
+    <property name="title">
      <string>&amp;Model</string>
     </property>
-    <widget class="QMenu" name="menuMeasurements" >
-     <property name="title" >
+    <widget class="QMenu" name="menuMeasurements">
+     <property name="title">
       <string>Measurements</string>
      </property>
-     <addaction name="actionMeasureClearAll" />
-     <addaction name="actionMeasureList" />
-     <addaction name="actionMeasureSaveToFile" />
+     <addaction name="actionMeasureClearAll"/>
+     <addaction name="actionMeasureList"/>
+     <addaction name="actionMeasureSaveToFile"/>
     </widget>
-    <addaction name="actionModelRename" />
-    <addaction name="separator" />
-    <addaction name="actionModelCreatePatterns" />
-    <addaction name="actionModelRemovePatterns" />
-    <addaction name="actionModelListPatterns" />
-    <addaction name="separator" />
-    <addaction name="actionModelFFType" />
-    <addaction name="actionModelFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionModelFoldAtoms" />
-    <addaction name="actionModelFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-    <addaction name="separator" />
-    <addaction name="actionModelShowAll" />
-    <addaction name="separator" />
-    <addaction name="menuMeasurements" />
+    <addaction name="actionModelRename"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelCreatePatterns"/>
+    <addaction name="actionModelRemovePatterns"/>
+    <addaction name="actionModelListPatterns"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelFFType"/>
+    <addaction name="actionModelFFUntype"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelFoldAtoms"/>
+    <addaction name="actionModelFoldMolecules"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelNext"/>
+    <addaction name="actionModelPrevious"/>
+    <addaction name="separator"/>
+    <addaction name="actionModelShowAll"/>
+    <addaction name="separator"/>
+    <addaction name="menuMeasurements"/>
    </widget>
-   <widget class="QMenu" name="AtomContextMenu" >
-    <property name="title" >
+   <widget class="QMenu" name="AtomContextMenu">
+    <property name="title">
      <string>&amp;Selection</string>
     </property>
-    <widget class="QMenu" name="AtomLabelsMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="AtomLabelsMenu">
+     <property name="title">
       <string>Labels</string>
      </property>
-     <addaction name="actionAtomLabelID" />
-     <addaction name="actionAtomLabelCharge" />
-     <addaction name="actionAtomLabelElement" />
-     <addaction name="actionAtomLabelFFType" />
-     <addaction name="actionAtomLabelFFEquiv" />
-     <addaction name="separator" />
-     <addaction name="actionAtomLabelClear" />
-     <addaction name="actionAtomLabelClearAll" />
+     <addaction name="actionAtomLabelID"/>
+     <addaction name="actionAtomLabelCharge"/>
+     <addaction name="actionAtomLabelElement"/>
+     <addaction name="actionAtomLabelFFType"/>
+     <addaction name="actionAtomLabelFFEquiv"/>
+     <addaction name="separator"/>
+     <addaction name="actionAtomLabelClear"/>
+     <addaction name="actionAtomLabelClearAll"/>
     </widget>
-    <widget class="QMenu" name="AtomStyleMenu" >
-     <property name="title" >
+    <widget class="QMenu" name="AtomStyleMenu">
+     <property name="title">
       <string>Style</string>
      </property>
-     <addaction name="actionAtomStyleStick" />
-     <addaction name="actionAtomStyleTube" />
-     <addaction name="actionAtomStyleSphere" />
-     <addaction name="actionAtomStyleScaled" />
+     <addaction name="actionAtomStyleStick"/>
+     <addaction name="actionAtomStyleTube"/>
+     <addaction name="actionAtomStyleSphere"/>
+     <addaction name="actionAtomStyleScaled"/>
     </widget>
-    <addaction name="AtomStyleMenu" />
-    <addaction name="AtomLabelsMenu" />
-    <addaction name="separator" />
-    <addaction name="actionAtomFixPosition" />
-    <addaction name="actionAtomFreePosition" />
-    <addaction name="actionAtomHide" />
-    <addaction name="separator" />
-    <addaction name="actionAtomProbe" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionSetBondLength" />
-    <addaction name="actionSetBondAngle" />
-    <addaction name="actionSetTorsionAngle" />
-    <addaction name="separator" />
-    <addaction name="actionCentreAtOrigin" />
+    <addaction name="AtomStyleMenu"/>
+    <addaction name="AtomLabelsMenu"/>
+    <addaction name="separator"/>
+    <addaction name="actionAtomFixPosition"/>
+    <addaction name="actionAtomFreePosition"/>
+    <addaction name="actionAtomHide"/>
+    <addaction name="separator"/>
+    <addaction name="actionAtomProbe"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditCut"/>
+    <addaction name="actionEditCopy"/>
+    <addaction name="actionEditPaste"/>
+    <addaction name="actionEditDelete"/>
+    <addaction name="separator"/>
+    <addaction name="actionSetBondLength"/>
+    <addaction name="actionSetBondAngle"/>
+    <addaction name="actionSetTorsionAngle"/>
+    <addaction name="separator"/>
+    <addaction name="actionCentreAtOrigin"/>
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionAboutAten" />
-    <addaction name="actionAboutQt" />
-    <addaction name="separator" />
-    <addaction name="actionCommandHelp" />
+    <addaction name="actionAboutAten"/>
+    <addaction name="actionAboutQt"/>
+    <addaction name="separator"/>
+    <addaction name="actionCommandHelp"/>
    </widget>
-   <addaction name="FileMenu" />
-   <addaction name="EditMenu" />
-   <addaction name="ViewMenu" />
-   <addaction name="AtomContextMenu" />
-   <addaction name="ModelMenu" />
-   <addaction name="ScriptsMenu" />
-   <addaction name="SettingsMenu" />
-   <addaction name="menuHelp" />
+   <addaction name="FileMenu"/>
+   <addaction name="EditMenu"/>
+   <addaction name="ViewMenu"/>
+   <addaction name="AtomContextMenu"/>
+   <addaction name="ModelMenu"/>
+   <addaction name="ScriptsMenu"/>
+   <addaction name="SettingsMenu"/>
+   <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="MainWindowStatusBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>579</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="FileToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>24</y>
-     <width>155</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QStatusBar" name="MainWindowStatusBar"/>
+  <widget class="QToolBar" name="FileToolbar">
+   <property name="windowTitle">
     <string>File / Model</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <property name="toolButtonStyle" >
+   <property name="toolButtonStyle">
     <enum>Qt::ToolButtonIconOnly</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionFileNew" />
-   <addaction name="actionFileOpen" />
-   <addaction name="actionFileSave" />
-   <addaction name="actionFileSaveAs" />
-   <addaction name="actionFileClose" />
+   <addaction name="actionFileNew"/>
+   <addaction name="actionFileOpen"/>
+   <addaction name="actionFileSave"/>
+   <addaction name="actionFileSaveAs"/>
+   <addaction name="actionFileClose"/>
   </widget>
-  <widget class="QToolBar" name="StyleToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>155</x>
-     <y>24</y>
-     <width>155</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="StyleToolbar">
+   <property name="windowTitle">
     <string>Draw Style</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionStyleStick" />
-   <addaction name="actionStyleTube" />
-   <addaction name="actionStyleSphere" />
-   <addaction name="actionStyleScaled" />
-   <addaction name="actionStyleIndividual" />
+   <addaction name="actionStyleStick"/>
+   <addaction name="actionStyleTube"/>
+   <addaction name="actionStyleSphere"/>
+   <addaction name="actionStyleScaled"/>
+   <addaction name="actionStyleIndividual"/>
   </widget>
-  <widget class="QToolBar" name="EditToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>310</x>
-     <y>24</y>
-     <width>490</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="EditToolbar">
+   <property name="windowTitle">
     <string>Edit</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionEditCopy" />
-   <addaction name="actionEditCut" />
-   <addaction name="actionEditPaste" />
-   <addaction name="actionEditDelete" />
+   <addaction name="actionEditCopy"/>
+   <addaction name="actionEditCut"/>
+   <addaction name="actionEditPaste"/>
+   <addaction name="actionEditDelete"/>
   </widget>
-  <widget class="QToolBar" name="TrajectoryToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>58</y>
-     <width>184</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="sizePolicy" >
-    <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+  <widget class="QToolBar" name="TrajectoryToolbar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <property name="windowTitle" >
+   <property name="windowTitle">
     <string>Trajectory Playback</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="actionTrajectoryViewTrajectory" />
-   <addaction name="actionTrajectoryFirstFrame" />
-   <addaction name="actionTrajectoryPreviousFrame" />
-   <addaction name="actionTrajectoryPlayPause" />
-   <addaction name="actionTrajectoryNextFrame" />
-   <addaction name="actionTrajectoryLastFrame" />
+   <addaction name="actionTrajectoryViewTrajectory"/>
+   <addaction name="actionTrajectoryFirstFrame"/>
+   <addaction name="actionTrajectoryPreviousFrame"/>
+   <addaction name="actionTrajectoryPlayPause"/>
+   <addaction name="actionTrajectoryNextFrame"/>
+   <addaction name="actionTrajectoryLastFrame"/>
   </widget>
-  <widget class="QToolBar" name="MouseToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>184</x>
-     <y>58</y>
-     <width>97</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="MouseToolbar">
+   <property name="windowTitle">
     <string>Mouse</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionMouseInteract" />
-   <addaction name="actionMouseRotate" />
-   <addaction name="actionMouseTranslate" />
+   <addaction name="actionMouseInteract"/>
+   <addaction name="actionMouseRotate"/>
+   <addaction name="actionMouseTranslate"/>
   </widget>
-  <widget class="QToolBar" name="SelectToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>281</x>
-     <y>58</y>
-     <width>220</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="SelectToolbar">
+   <property name="windowTitle">
     <string>Select</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionSelectAtoms" />
-   <addaction name="actionSelectMolecules" />
-   <addaction name="actionSelectElement" />
-   <addaction name="separator" />
-   <addaction name="actionEditSelectExpand" />
-   <addaction name="actionEditSelectAll" />
-   <addaction name="actionEditSelectNone" />
-   <addaction name="actionEditInvert" />
+   <addaction name="actionSelectAtoms"/>
+   <addaction name="actionSelectMolecules"/>
+   <addaction name="actionSelectElement"/>
+   <addaction name="separator"/>
+   <addaction name="actionEditSelectExpand"/>
+   <addaction name="actionEditSelectAll"/>
+   <addaction name="actionEditSelectNone"/>
+   <addaction name="actionEditInvert"/>
   </widget>
-  <widget class="QToolBar" name="DrawToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>501</x>
-     <y>58</y>
-     <width>199</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="DrawToolbar">
+   <property name="windowTitle">
     <string>Build</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionDrawAtom" />
-   <addaction name="actionDrawChain" />
-   <addaction name="actionDeleteAtom" />
-   <addaction name="actionTransmuteAtom" />
-   <addaction name="separator" />
-   <addaction name="actionAddHydrogen" />
-   <addaction name="actionAddHydrogenAtom" />
-   <addaction name="separator" />
-   <addaction name="actionElementH" />
-   <addaction name="actionElementC" />
-   <addaction name="actionElementN" />
-   <addaction name="actionSelectCustomElement" />
-   <addaction name="actionElementCustom" />
-   <addaction name="separator" />
-   <addaction name="actionBondSingle" />
-   <addaction name="actionBondDouble" />
-   <addaction name="actionBondTriple" />
-   <addaction name="actionDeleteBond" />
+   <addaction name="actionDrawAtom"/>
+   <addaction name="actionDrawChain"/>
+   <addaction name="actionDeleteAtom"/>
+   <addaction name="actionTransmuteAtom"/>
+   <addaction name="separator"/>
+   <addaction name="actionAddHydrogen"/>
+   <addaction name="actionAddHydrogenAtom"/>
+   <addaction name="separator"/>
+   <addaction name="actionElementH"/>
+   <addaction name="actionElementC"/>
+   <addaction name="actionElementN"/>
+   <addaction name="actionSelectCustomElement"/>
+   <addaction name="actionElementCustom"/>
+   <addaction name="separator"/>
+   <addaction name="actionBondSingle"/>
+   <addaction name="actionBondDouble"/>
+   <addaction name="actionBondTriple"/>
+   <addaction name="actionDeleteBond"/>
   </widget>
-  <widget class="QToolBar" name="BondToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>700</x>
-     <y>58</y>
-     <width>50</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="BondToolbar">
+   <property name="windowTitle">
     <string>Bonding</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionCalculateBonding" />
-   <addaction name="actionClearBonding" />
-   <addaction name="actionCalculateBondingSelection" />
-   <addaction name="actionClearBondingSelection" />
-   <addaction name="separator" />
-   <addaction name="actionAugmentBonding" />
+   <addaction name="actionCalculateBonding"/>
+   <addaction name="actionClearBonding"/>
+   <addaction name="actionCalculateBondingSelection"/>
+   <addaction name="actionClearBondingSelection"/>
+   <addaction name="separator"/>
+   <addaction name="actionAugmentBonding"/>
   </widget>
-  <widget class="QToolBar" name="MeasureToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>750</x>
-     <y>58</y>
-     <width>50</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="MeasureToolbar">
+   <property name="windowTitle">
     <string>Measure</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionMeasureDistance" />
-   <addaction name="actionMeasureAngle" />
-   <addaction name="actionMeasureTorsion" />
-   <addaction name="separator" />
-   <addaction name="actionMeasureDistanceSelection" />
-   <addaction name="actionMeasureAngleSelection" />
-   <addaction name="actionMeasureTorsionSelection" />
-   <addaction name="actionMeasureClearAll" />
+   <addaction name="actionMeasureDistance"/>
+   <addaction name="actionMeasureAngle"/>
+   <addaction name="actionMeasureTorsion"/>
+   <addaction name="separator"/>
+   <addaction name="actionMeasureDistanceSelection"/>
+   <addaction name="actionMeasureAngleSelection"/>
+   <addaction name="actionMeasureTorsionSelection"/>
+   <addaction name="actionMeasureClearAll"/>
   </widget>
-  <widget class="QToolBar" name="ForcefieldsToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>92</y>
-     <width>800</width>
-     <height>34</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="ForcefieldsToolbar">
+   <property name="windowTitle">
     <string>Forcefields</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <property name="iconSize" >
+   <property name="iconSize">
     <size>
      <width>20</width>
      <height>20</height>
     </size>
    </property>
-   <attribute name="toolBarArea" >
+   <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
-   <addaction name="actionMinimise" />
-   <addaction name="actionCalculateEnergy" />
-   <addaction name="actionCalculateForces" />
+   <addaction name="actionMinimise"/>
+   <addaction name="actionCalculateEnergy"/>
+   <addaction name="actionCalculateForces"/>
   </widget>
-  <widget class="QToolBar" name="WindowToolbar" >
-   <property name="geometry" >
-    <rect>
-     <x>772</x>
-     <y>126</y>
-     <width>28</width>
-     <height>453</height>
-    </rect>
-   </property>
-   <property name="windowTitle" >
+  <widget class="QToolBar" name="WindowToolbar">
+   <property name="windowTitle">
     <string>Tool WIndows</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <attribute name="toolBarArea" >
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
     <enum>RightToolBarArea</enum>
    </attribute>
-   <attribute name="toolBarBreak" >
+   <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionAtomlistWindow" />
-   <addaction name="actionGridsWindow" />
-   <addaction name="separator" />
-   <addaction name="actionBuildWindow" />
-   <addaction name="actionTransformWindow" />
-   <addaction name="actionPositionWindow" />
-   <addaction name="actionGeometryWindow" />
-   <addaction name="separator" />
-   <addaction name="actionCellDefineWindow" />
-   <addaction name="actionCellTransformWindow" />
-   <addaction name="actionDisorderWindow" />
-   <addaction name="separator" />
-   <addaction name="actionMinimiserWindow" />
-   <addaction name="actionForcefieldsWindow" />
-   <addaction name="separator" />
-   <addaction name="actionCommandWindow" />
+   <addaction name="actionAtomlistWindow"/>
+   <addaction name="actionGridsWindow"/>
+   <addaction name="separator"/>
+   <addaction name="actionBuildWindow"/>
+   <addaction name="actionTransformWindow"/>
+   <addaction name="actionPositionWindow"/>
+   <addaction name="actionGeometryWindow"/>
+   <addaction name="separator"/>
+   <addaction name="actionCellDefineWindow"/>
+   <addaction name="actionCellTransformWindow"/>
+   <addaction name="actionDisorderWindow"/>
+   <addaction name="separator"/>
+   <addaction name="actionMinimiserWindow"/>
+   <addaction name="actionForcefieldsWindow"/>
+   <addaction name="separator"/>
+   <addaction name="actionCommandWindow"/>
   </widget>
-  <action name="actionFileOpen" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileOpen">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Open Model</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Open an existing model</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionFileSave" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileSave">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Save Model</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Save the current model</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionFileNew" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileNew">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_new.svg</normaloff>:/file/icons/file_new.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;New Model</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Create a new, empty model</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionStyleStick" >
-   <property name="checkable" >
+  <action name="actionStyleStick">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Stick</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+1</string>
    </property>
   </action>
-  <action name="actionStyleTube" >
-   <property name="checkable" >
+  <action name="actionStyleTube">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Tube</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+2</string>
    </property>
   </action>
-  <action name="actionStyleSphere" >
-   <property name="checkable" >
+  <action name="actionStyleSphere">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Sphere</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+3</string>
    </property>
   </action>
-  <action name="actionStyleScaled" >
-   <property name="checkable" >
+  <action name="actionStyleScaled">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Scaled</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+4</string>
    </property>
   </action>
-  <action name="actionStyleIndividual" >
-   <property name="checkable" >
+  <action name="actionStyleIndividual">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Individual</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+5</string>
    </property>
   </action>
-  <action name="actionFileSaveAs" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileSaveAs">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_saveas.svg</normaloff>:/file/icons/file_saveas.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save Model &amp;As</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Save the current model under a different filename</string>
    </property>
   </action>
-  <action name="actionEditCut" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditCut">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_cut.svg</normaloff>:/edit/icons/edit_cut.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Cut</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cut the current selection</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
   </action>
-  <action name="actionEditCopy" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditCopy">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_copy.svg</normaloff>:/edit/icons/edit_copy.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>C&amp;opy</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Copy the current selection</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="actionEditPaste" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditPaste">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_paste.svg</normaloff>:/edit/icons/edit_paste.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Paste</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Paste the contents of the clipboard to the current model</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="actionEditDelete" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditDelete">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_delete.svg</normaloff>:/edit/icons/edit_delete.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Delete</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Delete the current selection</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Del</string>
    </property>
   </action>
-  <action name="actionEditInvert" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditInvert">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Invert Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Invert the current selection</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+I</string>
    </property>
   </action>
-  <action name="actionEditSelectAll" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditSelectAll">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_all.svg</normaloff>:/select/icons/select_all.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select &amp;All</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select all atoms in the model</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+A</string>
    </property>
   </action>
-  <action name="actionEditSelectNone" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditSelectNone">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_none.svg</normaloff>:/select/icons/select_none.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select &amp;None</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Deselect all atoms</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+D</string>
    </property>
   </action>
-  <action name="actionTrajectoryNextFrame" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionTrajectoryNextFrame">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_next.svg</normaloff>:/playback/icons/traj_next.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Next Frame</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+.</string>
    </property>
   </action>
-  <action name="actionTrajectoryPreviousFrame" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionTrajectoryPreviousFrame">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_prev.svg</normaloff>:/playback/icons/traj_prev.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Previous Frame</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+,</string>
    </property>
   </action>
-  <action name="actionTrajectoryPlayPause" >
-   <property name="checkable" >
+  <action name="actionTrajectoryPlayPause">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_playpause.svg</normaloff>:/playback/icons/traj_playpause.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Play / Pause</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionTrajectoryFirstFrame" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionTrajectoryFirstFrame">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_first.svg</normaloff>:/playback/icons/traj_first.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>First Frame</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+&lt;</string>
    </property>
   </action>
-  <action name="actionTrajectoryLastFrame" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionTrajectoryLastFrame">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_last.svg</normaloff>:/playback/icons/traj_last.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Last Frame</string>
    </property>
-   <property name="shortcut" >
-    <string>Ctrl+Shift+></string>
+   <property name="shortcut">
+    <string>Ctrl+Shift+&gt;</string>
    </property>
   </action>
-  <action name="actionSelectAtoms" >
-   <property name="checkable" >
+  <action name="actionSelectAtoms">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_atoms.svg</normaloff>:/select/icons/select_atoms.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select Atoms</string>
    </property>
   </action>
-  <action name="actionSelectMolecules" >
-   <property name="checkable" >
+  <action name="actionSelectMolecules">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_molecules.svg</normaloff>:/select/icons/select_molecules.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select Molecules</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select bound fragments / molecules</string>
    </property>
   </action>
-  <action name="actionDrawAtom" >
-   <property name="checkable" >
+  <action name="actionDrawAtom">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_atom.svg</normaloff>:/build/icons/build_atom.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Draw Atoms</string>
    </property>
   </action>
-  <action name="actionDrawChain" >
-   <property name="checkable" >
+  <action name="actionDrawChain">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_chain.svg</normaloff>:/build/icons/build_chain.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Draw Chains</string>
    </property>
   </action>
-  <action name="actionSelectElement" >
-   <property name="checkable" >
+  <action name="actionSelectElement">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_element.svg</normaloff>:/select/icons/select_element.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Select by Element</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Select all atoms of selected element</string>
    </property>
   </action>
-  <action name="actionEditSelectExpand" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditSelectExpand">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Expand Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Expand current selection by one step along bonds</string>
    </property>
   </action>
-  <action name="actionMeasureDistance" >
-   <property name="checkable" >
+  <action name="actionMeasureDistance">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_distance.svg</normaloff>:/geometry/icons/measure_distance.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Distance</string>
    </property>
   </action>
-  <action name="actionMeasureAngle" >
-   <property name="checkable" >
+  <action name="actionMeasureAngle">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_angle.svg</normaloff>:/geometry/icons/measure_angle.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Angle</string>
    </property>
   </action>
-  <action name="actionMeasureTorsion" >
-   <property name="checkable" >
+  <action name="actionMeasureTorsion">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Torsion</string>
    </property>
   </action>
-  <action name="actionViewReset" >
-   <property name="text" >
+  <action name="actionViewReset">
+   <property name="text">
     <string>Reset View</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionViewZoomIn" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionViewZoomIn">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/view/icons/view_zoomin.svg</normaloff>:/view/icons/view_zoomin.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Zoom In</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+=</string>
    </property>
   </action>
-  <action name="actionViewZoomOut" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionViewZoomOut">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Zoom Out</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+-</string>
    </property>
   </action>
-  <action name="actionViewPerspective" >
-   <property name="checkable" >
+  <action name="actionViewPerspective">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Perspective</string>
    </property>
   </action>
-  <action name="actionViewOrthographic" >
-   <property name="checkable" >
+  <action name="actionViewOrthographic">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Orthographic</string>
    </property>
   </action>
-  <action name="actionSchemeElement" >
-   <property name="checkable" >
+  <action name="actionSchemeElement">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Element</string>
    </property>
   </action>
-  <action name="actionSchemeCharge" >
-   <property name="checkable" >
+  <action name="actionSchemeCharge">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Charge</string>
    </property>
   </action>
-  <action name="actionSchemeForce" >
-   <property name="checkable" >
+  <action name="actionSchemeForce">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Forces</string>
    </property>
   </action>
-  <action name="actionModelFFType" >
-   <property name="text" >
+  <action name="actionModelFFType">
+   <property name="text">
     <string>Perform Typing</string>
    </property>
   </action>
-  <action name="actionModelFFUntype" >
-   <property name="text" >
+  <action name="actionModelFFUntype">
+   <property name="text">
     <string>Remove Typing</string>
    </property>
   </action>
-  <action name="actionModelFoldAtoms" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionModelFoldAtoms">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/model/icons/model_foldatoms.svg</normaloff>:/model/icons/model_foldatoms.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Fold Atoms</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionModelFoldMolecules" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionModelFoldMolecules">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/model/icons/model_foldmolecules.svg</normaloff>:/model/icons/model_foldmolecules.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Fold Molecules</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+F</string>
    </property>
   </action>
-  <action name="actionModelNext" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionModelNext">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/model/icons/model_next.svg</normaloff>:/model/icons/model_next.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Next</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Right</string>
    </property>
   </action>
-  <action name="actionModelPrevious" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionModelPrevious">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/model/icons/model_prev.svg</normaloff>:/model/icons/model_prev.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Previous</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Left</string>
    </property>
   </action>
-  <action name="actionFileClose" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileClose">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_close.svg</normaloff>:/file/icons/file_close.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Close Model</string>
    </property>
   </action>
-  <action name="actionAtomStyleStick" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAtomStyleStick">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Stick</string>
    </property>
   </action>
-  <action name="actionAtomStyleTube" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAtomStyleTube">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Tube</string>
    </property>
   </action>
-  <action name="actionAtomStyleSphere" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAtomStyleSphere">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Sphere</string>
    </property>
   </action>
-  <action name="actionAtomStyleScaled" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAtomStyleScaled">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Scaled</string>
    </property>
   </action>
-  <action name="actionAtomLabelID" >
-   <property name="text" >
+  <action name="actionAtomLabelID">
+   <property name="text">
     <string>Atom ID</string>
    </property>
   </action>
-  <action name="actionAtomLabelCharge" >
-   <property name="text" >
+  <action name="actionAtomLabelCharge">
+   <property name="text">
     <string>Charge</string>
    </property>
   </action>
-  <action name="actionAtomLabelFFType" >
-   <property name="text" >
+  <action name="actionAtomLabelFFType">
+   <property name="text">
     <string>FF Type</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>FF Type</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>FF Type</string>
    </property>
   </action>
-  <action name="actionAtomLabelElement" >
-   <property name="text" >
+  <action name="actionAtomLabelElement">
+   <property name="text">
     <string>Element</string>
    </property>
   </action>
-  <action name="actionAtomLabelFFEquiv" >
-   <property name="text" >
+  <action name="actionAtomLabelFFEquiv">
+   <property name="text">
     <string>FF Equivalent</string>
    </property>
   </action>
-  <action name="actionViewModel" >
-   <property name="checkable" >
+  <action name="actionViewModel">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Model</string>
    </property>
   </action>
-  <action name="actionViewTrajectory" >
-   <property name="checkable" >
+  <action name="actionViewTrajectory">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="enabled" >
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Trajectory</string>
    </property>
   </action>
-  <action name="actionFileAddTrajectory" >
-   <property name="text" >
+  <action name="actionFileAddTrajectory">
+   <property name="text">
     <string>Add Trajectory</string>
    </property>
   </action>
-  <action name="actionFileQuit" >
-   <property name="text" >
+  <action name="actionFileQuit">
+   <property name="text">
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionFileSaveImage" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionFileSaveImage">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save &amp;Image</string>
    </property>
   </action>
-  <action name="actionPreferences" >
-   <property name="text" >
+  <action name="actionPreferences">
+   <property name="text">
     <string>Preferences</string>
    </property>
   </action>
-  <action name="actionAtomHide" >
-   <property name="text" >
+  <action name="actionAtomHide">
+   <property name="text">
     <string>Hide</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Hide</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Hide selected atoms</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="actionMouseInteract" >
-   <property name="checkable" >
+  <action name="actionMouseInteract">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/mouse/icons/mouse_interact.svg</normaloff>:/mouse/icons/mouse_interact.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Interact</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>F1</string>
    </property>
-   <property name="shortcutContext" >
+   <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
    </property>
   </action>
-  <action name="actionMouseRotate" >
-   <property name="checkable" >
+  <action name="actionMouseRotate">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/mouse/icons/mouse_rotate.svg</normaloff>:/mouse/icons/mouse_rotate.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Rotate</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>F2</string>
    </property>
-   <property name="shortcutContext" >
+   <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
    </property>
   </action>
-  <action name="actionMouseTranslate" >
-   <property name="checkable" >
+  <action name="actionMouseTranslate">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/mouse/icons/mouse_translate.svg</normaloff>:/mouse/icons/mouse_translate.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Translate</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>F3</string>
    </property>
-   <property name="shortcutContext" >
+   <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
    </property>
   </action>
-  <action name="actionMouseZRotate" >
-   <property name="text" >
+  <action name="actionMouseZRotate">
+   <property name="text">
     <string>ZRotate</string>
    </property>
   </action>
-  <action name="actionFileOpenForcefield" >
-   <property name="text" >
+  <action name="actionFileOpenForcefield">
+   <property name="text">
     <string>Open &amp;Forcefield</string>
    </property>
   </action>
-  <action name="actionFileOpenGrid" >
-   <property name="text" >
+  <action name="actionFileOpenGrid">
+   <property name="text">
     <string>Open &amp;Grid Data</string>
    </property>
   </action>
-  <action name="actionEditUndo" >
-   <property name="enabled" >
+  <action name="actionEditUndo">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_undo.svg</normaloff>:/edit/icons/edit_undo.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>&amp;Undo</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
   </action>
-  <action name="actionEditRedo" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionEditRedo">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/edit/icons/edit_redo.svg</normaloff>:/edit/icons/edit_redo.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Redo</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Y</string>
    </property>
   </action>
-  <action name="actionAtomLabelClear" >
-   <property name="text" >
+  <action name="actionAtomLabelClear">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+   </property>
+   <property name="text">
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionAtomLabelClearAll" >
-   <property name="text" >
+  <action name="actionAtomLabelClearAll">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+   </property>
+   <property name="text">
     <string>Clear all</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianPosX" >
-   <property name="text" >
+  <action name="actionViewSetCartesianPosX">
+   <property name="text">
     <string>Cartesian +X</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian +X</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian +X</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianPosY" >
-   <property name="text" >
+  <action name="actionViewSetCartesianPosY">
+   <property name="text">
     <string>Cartesian +Y</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian +Y</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian +Y</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianPosZ" >
-   <property name="text" >
+  <action name="actionViewSetCartesianPosZ">
+   <property name="text">
     <string>Cartesian +Z</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian +Z</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian +Z</string>
    </property>
   </action>
-  <action name="actionViewSetCellPosX" >
-   <property name="text" >
+  <action name="actionViewSetCellPosX">
+   <property name="text">
     <string>Cell +X</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell +X</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell +X</string>
    </property>
   </action>
-  <action name="actionViewSetCellPosY" >
-   <property name="text" >
+  <action name="actionViewSetCellPosY">
+   <property name="text">
     <string>Cell +Y</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell +Y</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell +Y</string>
    </property>
   </action>
-  <action name="actionViewSetCellPosZ" >
-   <property name="text" >
+  <action name="actionViewSetCellPosZ">
+   <property name="text">
     <string>Cell +Z</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell +Z</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell +Z</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianNegX" >
-   <property name="text" >
+  <action name="actionViewSetCartesianNegX">
+   <property name="text">
     <string>Cartesian -X</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian -X</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian -X</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianNegY" >
-   <property name="text" >
+  <action name="actionViewSetCartesianNegY">
+   <property name="text">
     <string>Cartesian -Y</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian -Y</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian -Y</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianNegZ" >
-   <property name="text" >
+  <action name="actionViewSetCartesianNegZ">
+   <property name="text">
     <string>Cartesian -Z</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cartesian -Z</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cartesian -Z</string>
    </property>
   </action>
-  <action name="actionViewSetCellNegX" >
-   <property name="text" >
+  <action name="actionViewSetCellNegX">
+   <property name="text">
     <string>Cell -X</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell -X</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell -X</string>
    </property>
   </action>
-  <action name="actionViewSetCellNegY" >
-   <property name="text" >
+  <action name="actionViewSetCellNegY">
+   <property name="text">
     <string>Cell -Y</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell -Y</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell -Y</string>
    </property>
   </action>
-  <action name="actionViewSetCellNegZ" >
-   <property name="text" >
+  <action name="actionViewSetCellNegZ">
+   <property name="text">
     <string>Cell -Z</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Cell -Z</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Cell -Z</string>
    </property>
   </action>
-  <action name="actionFileSaveExpression" >
-   <property name="text" >
+  <action name="actionFileSaveExpression">
+   <property name="text">
     <string>Save &amp;Expression</string>
    </property>
   </action>
-  <action name="actionModelShowAll" >
-   <property name="text" >
+  <action name="actionModelShowAll">
+   <property name="text">
     <string>Show All Atoms</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Shift+H</string>
    </property>
   </action>
-  <action name="actionLoadScript" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionLoadScript">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Load Script</string>
    </property>
   </action>
-  <action name="actionModelRename" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionModelRename">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/model/icons/model_rename.svg</normaloff>:/model/icons/model_rename.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Rename</string>
    </property>
   </action>
-  <action name="actionAtomProbe" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAtomProbe">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_probe.svg</normaloff>:/build/icons/build_probe.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Probe Atom</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Probe individual atoms</string>
    </property>
   </action>
-  <action name="actionTransmuteAtom" >
-   <property name="checkable" >
+  <action name="actionTransmuteAtom">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_transmute.svg</normaloff>:/build/icons/build_transmute.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Transmute atom</string>
    </property>
   </action>
-  <action name="actionElementH" >
-   <property name="checkable" >
+  <action name="actionElementH">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_h.svg</normaloff>:/build/icons/build_h.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>H</string>
    </property>
   </action>
-  <action name="actionElementC" >
-   <property name="checkable" >
+  <action name="actionElementC">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="checked" >
+   <property name="checked">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_c.svg</normaloff>:/build/icons/build_c.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>C</string>
    </property>
   </action>
-  <action name="actionElementN" >
-   <property name="checkable" >
+  <action name="actionElementN">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_n.svg</normaloff>:/build/icons/build_n.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>N</string>
    </property>
   </action>
-  <action name="actionElementCustom" >
-   <property name="checkable" >
+  <action name="actionElementCustom">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>O</string>
    </property>
   </action>
-  <action name="actionAddHydrogen" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAddHydrogen">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_addh.svg</normaloff>:/build/icons/build_addh.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Add Hydrogen</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Add hydrogens to all atoms</string>
    </property>
   </action>
-  <action name="actionAddHydrogenAtom" >
-   <property name="checkable" >
+  <action name="actionAddHydrogenAtom">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_atomaddh.svg</normaloff>:/build/icons/build_atomaddh.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Add Hydrogen</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Add hydrogen to specific atoms</string>
    </property>
   </action>
-  <action name="actionCalculateBonding" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionCalculateBonding">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Calculate Bonding</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Calculate bonding in the model</string>
    </property>
   </action>
-  <action name="actionClearBonding" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionClearBonding">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_clear.svg</normaloff>:/bond/icons/bond_clear.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Clear Bonding</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Clear bonding in the model</string>
    </property>
   </action>
-  <action name="actionCalculateBondingSelection" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionCalculateBondingSelection">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_calcsel.svg</normaloff>:/bond/icons/bond_calcsel.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Calculate Bonding in selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Calculate bonding in selection</string>
    </property>
   </action>
-  <action name="actionClearBondingSelection" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionClearBondingSelection">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_clearsel.svg</normaloff>:/bond/icons/bond_clearsel.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Clear Bonding in Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Clear bonding in current selection</string>
    </property>
   </action>
-  <action name="actionMeasureDistanceSelection" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMeasureDistanceSelection">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_distancesel.svg</normaloff>:/geometry/icons/measure_distancesel.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Distances in Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Measure all bond distances in selection</string>
    </property>
   </action>
-  <action name="actionMeasureAngleSelection" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMeasureAngleSelection">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_anglesel.svg</normaloff>:/geometry/icons/measure_anglesel.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Angles in Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Measure all bond angles in selection</string>
    </property>
   </action>
-  <action name="actionMeasureTorsionSelection" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMeasureTorsionSelection">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_torsionsel.svg</normaloff>:/geometry/icons/measure_torsionsel.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Measure Torsions in Selection</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Measure all torsion angles in selection</string>
    </property>
   </action>
-  <action name="actionMeasureClearAll" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
-     <normaloff>:/file/icons/file_close.svg</normaloff>:/file/icons/file_close.svg</iconset>
+  <action name="actionMeasureClearAll">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionLoadForcefield" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionLoadForcefield">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Load</string>
    </property>
   </action>
-  <action name="actionSaveForcefield" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionSaveForcefield">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="actionForcefieldAssociateModel" >
-   <property name="text" >
+  <action name="actionForcefieldAssociateModel">
+   <property name="text">
     <string>Associate Model</string>
    </property>
   </action>
-  <action name="actionForcefieldAssociateAll" >
-   <property name="text" >
+  <action name="actionForcefieldAssociateAll">
+   <property name="text">
     <string>Associate All</string>
    </property>
   </action>
-  <action name="actionForcefieldAssociatePattern" >
-   <property name="text" >
+  <action name="actionForcefieldAssociatePattern">
+   <property name="text">
     <string>Associate Pattern</string>
    </property>
   </action>
-  <action name="actionEditForcefield" >
-   <property name="text" >
+  <action name="actionEditForcefield">
+   <property name="text">
     <string>Edit</string>
    </property>
   </action>
-  <action name="actionBondSingle" >
-   <property name="checkable" >
+  <action name="actionBondSingle">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_single.svg</normaloff>:/bond/icons/bond_single.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Bond Single</string>
    </property>
   </action>
-  <action name="actionBondDouble" >
-   <property name="checkable" >
+  <action name="actionBondDouble">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_double.svg</normaloff>:/bond/icons/bond_double.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Bond Double</string>
    </property>
   </action>
-  <action name="actionBondTriple" >
-   <property name="checkable" >
+  <action name="actionBondTriple">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_triple.svg</normaloff>:/bond/icons/bond_triple.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Bond Triple</string>
    </property>
   </action>
-  <action name="actionDeleteBond" >
-   <property name="checkable" >
+  <action name="actionDeleteBond">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_delete.svg</normaloff>:/bond/icons/bond_delete.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Delete Bond</string>
    </property>
   </action>
-  <action name="actionForcefieldsWindow" >
-   <property name="checkable" >
+  <action name="actionForcefieldsWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_ff.svg</normaloff>:/stackicons/icons/stack_ff.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Forcefields</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Forcefields</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide forcefields window</string>
    </property>
   </action>
-  <action name="actionAtomlistWindow" >
-   <property name="checkable" >
+  <action name="actionAtomlistWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_atomlist.svg</normaloff>:/stackicons/icons/stack_atomlist.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Atomlist</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>Atomlist</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide atomlist window</string>
    </property>
   </action>
-  <action name="actionCellDefineWindow" >
-   <property name="checkable" >
+  <action name="actionCellDefineWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Cell Define</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide cell definition window</string>
    </property>
   </action>
-  <action name="actionCellTransformWindow" >
-   <property name="checkable" >
+  <action name="actionCellTransformWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_celledit.svg</normaloff>:/stackicons/icons/stack_celledit.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Cell Transform</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide cell transform window</string>
    </property>
   </action>
-  <action name="actionBuildWindow" >
-   <property name="checkable" >
+  <action name="actionBuildWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_edit.svg</normaloff>:/stackicons/icons/stack_edit.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Build</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide builder window</string>
    </property>
   </action>
-  <action name="actionGridsWindow" >
-   <property name="checkable" >
+  <action name="actionGridsWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_surfaces.svg</normaloff>:/stackicons/icons/stack_surfaces.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Grids</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide grids window</string>
    </property>
   </action>
-  <action name="actionTransformWindow" >
-   <property name="checkable" >
+  <action name="actionTransformWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_transform.svg</normaloff>:/stackicons/icons/stack_transform.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Transform</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide atom transform window</string>
    </property>
   </action>
-  <action name="actionPositionWindow" >
-   <property name="checkable" >
+  <action name="actionPositionWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_position.svg</normaloff>:/stackicons/icons/stack_position.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Position</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide atom position window</string>
    </property>
   </action>
-  <action name="actionMinimiserWindow" >
-   <property name="checkable" >
+  <action name="actionMinimiserWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_minimiser.svg</normaloff>:/stackicons/icons/stack_minimiser.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Minimiser</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide minimiser window</string>
    </property>
   </action>
-  <action name="actionDisorderWindow" >
-   <property name="checkable" >
+  <action name="actionDisorderWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Disorder</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Show / hide disordered builder window</string>
    </property>
   </action>
-  <action name="actionDeleteAtom" >
-   <property name="checkable" >
+  <action name="actionDeleteAtom">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_delete.svg</normaloff>:/build/icons/build_delete.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Delete Atom</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>Delete individual atoms</string>
    </property>
   </action>
-  <action name="actionAugmentBonding" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionAugmentBonding">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/bond/icons/bond_augment.svg</normaloff>:/bond/icons/bond_augment.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Augment Bonding</string>
    </property>
   </action>
-  <action name="actionSelectCustomElement" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionSelectCustomElement">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/build/icons/build_ptable.svg</normaloff>:/build/icons/build_ptable.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Pick Custom Element</string>
    </property>
   </action>
-  <action name="actionMinimise" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMinimise">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/forcefield/icons/forcefield_minimise.svg</normaloff>:/forcefield/icons/forcefield_minimise.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Minimise the current model</string>
    </property>
   </action>
-  <action name="actionCalculateEnergy" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionCalculateEnergy">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/forcefield/icons/forcefield_energy.svg</normaloff>:/forcefield/icons/forcefield_energy.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Calculate total energy of the current model</string>
    </property>
   </action>
-  <action name="actionCalculateForces" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionCalculateForces">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/forcefield/icons/forcefield_forces.svg</normaloff>:/forcefield/icons/forcefield_forces.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Calculate atomic forces in the current model</string>
    </property>
   </action>
-  <action name="actionAboutQt" >
-   <property name="text" >
+  <action name="actionAboutQt">
+   <property name="text">
     <string>About Qt</string>
    </property>
   </action>
-  <action name="actionAboutAten" >
-   <property name="text" >
+  <action name="actionAboutAten">
+   <property name="text">
     <string>About Aten</string>
    </property>
   </action>
-  <action name="actionReloadFilters" >
-   <property name="text" >
+  <action name="actionReloadFilters">
+   <property name="text">
     <string>Reload Filters</string>
    </property>
   </action>
-  <action name="action" >
-   <property name="text" >
-    <string>List</string>
-   </property>
-  </action>
-  <action name="actionClear" >
-   <property name="text" >
-    <string>Clear</string>
-   </property>
-  </action>
-  <action name="actionMeasureList" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMeasureList">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/geometry/icons/measure_list.svg</normaloff>:/geometry/icons/measure_list.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>List</string>
    </property>
-   <property name="iconText" >
+   <property name="iconText">
     <string>List Measurements</string>
    </property>
-   <property name="toolTip" >
+   <property name="toolTip">
     <string>List all measurements in the model</string>
    </property>
   </action>
-  <action name="actionModelCreatePatterns" >
-   <property name="text" >
+  <action name="actionModelCreatePatterns">
+   <property name="text">
     <string>Create Patterns</string>
    </property>
   </action>
-  <action name="actionModelRemovePatterns" >
-   <property name="text" >
+  <action name="actionModelRemovePatterns">
+   <property name="text">
     <string>Remove Patterns</string>
    </property>
   </action>
-  <action name="actionModelListPatterns" >
-   <property name="text" >
+  <action name="actionModelListPatterns">
+   <property name="text">
     <string>List Patterns</string>
    </property>
   </action>
-  <action name="actionTrajectoryViewTrajectory" >
-   <property name="checkable" >
+  <action name="actionTrajectoryViewTrajectory">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/playback/icons/traj_view.svg</normaloff>:/playback/icons/traj_view.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>View Trajectory</string>
    </property>
   </action>
-  <action name="actionCommandHelp" >
-   <property name="text" >
+  <action name="actionCommandHelp">
+   <property name="text">
     <string>Command Help</string>
    </property>
   </action>
-  <action name="actionAtomFixPosition" >
-   <property name="text" >
+  <action name="actionAtomFixPosition">
+   <property name="text">
     <string>Fix Position</string>
    </property>
   </action>
-  <action name="actionAtomFreePosition" >
-   <property name="text" >
+  <action name="actionAtomFreePosition">
+   <property name="text">
     <string>Free Position</string>
    </property>
   </action>
-  <action name="actionMeasureSaveToFile" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+  <action name="actionMeasureSaveToFile">
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Save To File</string>
    </property>
   </action>
-  <action name="actionCommandWindow" >
-   <property name="checkable" >
+  <action name="actionCommandWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_command.svg</normaloff>:/stackicons/icons/stack_command.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Command Window (beta)</string>
    </property>
   </action>
-  <action name="actionSetBondLength" >
-   <property name="text" >
+  <action name="actionSetBondLength">
+   <property name="text">
     <string>Set Bond Length</string>
    </property>
   </action>
-  <action name="actionSetBondAngle" >
-   <property name="text" >
+  <action name="actionSetBondAngle">
+   <property name="text">
     <string>Set Bond Angle</string>
    </property>
   </action>
-  <action name="actionSetTorsionAngle" >
-   <property name="text" >
+  <action name="actionSetTorsionAngle">
+   <property name="text">
     <string>Set Torsion Angle</string>
    </property>
   </action>
-  <action name="actionGeometryWindow" >
-   <property name="checkable" >
+  <action name="actionGeometryWindow">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="icon" >
-    <iconset resource="icons.qrc" >
+   <property name="icon">
+    <iconset resource="icons.qrc">
      <normaloff>:/stackicons/icons/stack_geometry.svg</normaloff>:/stackicons/icons/stack_geometry.svg</iconset>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Geometry</string>
    </property>
+   <property name="toolTip">
+    <string>Show / hide the atom geometry window</string>
+   </property>
   </action>
-  <action name="actionCentreAtOrigin" >
-   <property name="text" >
+  <action name="actionCentreAtOrigin">
+   <property name="text">
     <string>Centre at Origin</string>
    </property>
-   <property name="shortcut" >
+   <property name="shortcut">
     <string>Ctrl+Alt+C</string>
    </property>
   </action>
  </widget>
- <layoutdefault spacing="0" margin="0" />
+ <layoutdefault spacing="0" margin="0"/>
  <customwidgets>
   <customwidget>
    <class>TTabBar</class>
@@ -2375,7 +2278,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons.qrc" />
+  <include location="icons.qrc"/>
  </resources>
  <connections/>
 </ui>

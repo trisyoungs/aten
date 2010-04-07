@@ -5,7 +5,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="gui.windows.grid">Grid window</link> for management of grids in the GUI.</para>
+				<para><link linkend="gui.toolwindows.grids">Grid window</link> for management of grids in the GUI.</para>
 			</listitem>
 		</itemizedlist>
 	</note>

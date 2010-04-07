@@ -204,14 +204,14 @@
                 </property>
                 <property name="minimumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="toolTip" >
@@ -410,18 +410,18 @@
                 </property>
                 <property name="minimumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="toolTip" >
-                 <string>Define translation axis between current origin and centre of current selection</string>
+                 <string>Define rotation axis between current origin and centre of current selection</string>
                 </property>
                 <property name="text" >
                  <string/>
@@ -441,14 +441,14 @@
                <widget class="QPushButton" name="RotatePickAxisButton" >
                 <property name="minimumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>30</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="toolTip" >
@@ -545,14 +545,14 @@
            </property>
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -587,14 +587,14 @@
            </property>
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -644,14 +644,14 @@
           <widget class="QToolButton" name="TransformNormaliseAButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -661,7 +661,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -675,8 +675,8 @@
           <widget class="QToolButton" name="TransformDefineAButton" >
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -916,8 +916,8 @@
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -944,14 +944,14 @@
           <widget class="QToolButton" name="TransformOrthogonaliseAButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -961,7 +961,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -999,8 +999,8 @@
           <widget class="QToolButton" name="TransformDefineBButton" >
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1027,14 +1027,14 @@
           <widget class="QToolButton" name="TransformGenerateAButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1044,7 +1044,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1058,14 +1058,14 @@
           <widget class="QToolButton" name="TransformNormaliseBButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1075,7 +1075,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1089,14 +1089,14 @@
           <widget class="QToolButton" name="TransformNormaliseCButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1106,7 +1106,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1120,14 +1120,14 @@
           <widget class="QToolButton" name="TransformOrthogonaliseBButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1137,7 +1137,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1151,14 +1151,14 @@
           <widget class="QToolButton" name="TransformOrthogonaliseCButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1168,7 +1168,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1182,14 +1182,14 @@
           <widget class="QToolButton" name="TransformGenerateBButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1199,7 +1199,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1213,14 +1213,14 @@
           <widget class="QToolButton" name="TransformGenerateCButton" >
            <property name="minimumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>30</width>
-             <height>30</height>
+             <width>32</width>
+             <height>32</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -1230,7 +1230,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1262,8 +1262,8 @@
             <widget class="QToolButton" name="TransformDefineOriginButton" >
              <property name="maximumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="toolTip" >
@@ -1287,14 +1287,14 @@
             <widget class="QToolButton" name="TransformOriginCellCentreButton" >
              <property name="minimumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="maximumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="toolTip" >
@@ -1384,7 +1384,7 @@
            <property name="maximumSize" >
             <size>
              <width>16777215</width>
-             <height>30</height>
+             <height>32</height>
             </size>
            </property>
            <property name="font" >
@@ -1457,14 +1457,14 @@
               <widget class="QToolButton" name="ConvertSourceNormaliseAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1474,7 +1474,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1488,8 +1488,8 @@
               <widget class="QToolButton" name="ConvertSourceDefineAButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1729,8 +1729,8 @@
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1757,14 +1757,14 @@
               <widget class="QToolButton" name="ConvertSourceOrthogonaliseAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1774,7 +1774,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1812,8 +1812,8 @@
               <widget class="QToolButton" name="ConvertSourceDefineBButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1840,14 +1840,14 @@
               <widget class="QToolButton" name="ConvertSourceGenerateAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1857,7 +1857,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1871,14 +1871,14 @@
               <widget class="QToolButton" name="ConvertSourceNormaliseBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1888,7 +1888,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1902,14 +1902,14 @@
               <widget class="QToolButton" name="ConvertSourceNormaliseCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1919,7 +1919,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1933,14 +1933,14 @@
               <widget class="QToolButton" name="ConvertSourceOrthogonaliseBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1950,7 +1950,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1964,14 +1964,14 @@
               <widget class="QToolButton" name="ConvertSourceOrthogonaliseCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1981,7 +1981,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1995,14 +1995,14 @@
               <widget class="QToolButton" name="ConvertSourceGenerateBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2012,7 +2012,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2026,14 +2026,14 @@
               <widget class="QToolButton" name="ConvertSourceGenerateCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2043,7 +2043,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2080,14 +2080,14 @@
               <widget class="QToolButton" name="ConvertTargetNormaliseAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2097,7 +2097,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2111,8 +2111,8 @@
               <widget class="QToolButton" name="ConvertTargetDefineAButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2352,8 +2352,8 @@
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2380,14 +2380,14 @@
               <widget class="QToolButton" name="ConvertTargetOrthogonaliseAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2397,7 +2397,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2435,8 +2435,8 @@
               <widget class="QToolButton" name="ConvertTargetDefineBButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2463,14 +2463,14 @@
               <widget class="QToolButton" name="ConvertTargetGenerateAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2480,7 +2480,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2494,14 +2494,14 @@
               <widget class="QToolButton" name="ConvertTargetNormaliseBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2511,7 +2511,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2525,14 +2525,14 @@
               <widget class="QToolButton" name="ConvertTargetNormaliseCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2542,7 +2542,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2556,14 +2556,14 @@
               <widget class="QToolButton" name="ConvertTargetOrthogonaliseBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2573,7 +2573,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2587,14 +2587,14 @@
               <widget class="QToolButton" name="ConvertTargetOrthogonaliseCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2604,7 +2604,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2618,14 +2618,14 @@
               <widget class="QToolButton" name="ConvertTargetGenerateBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2635,7 +2635,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2649,14 +2649,14 @@
               <widget class="QToolButton" name="ConvertTargetGenerateCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>30</width>
-                 <height>30</height>
+                 <width>32</width>
+                 <height>32</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -2666,7 +2666,7 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2702,8 +2702,8 @@
             <widget class="QToolButton" name="ConvertDefineOriginButton" >
              <property name="maximumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="toolTip" >
@@ -2735,14 +2735,14 @@
              </property>
              <property name="minimumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="maximumSize" >
               <size>
-               <width>30</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="toolTip" >

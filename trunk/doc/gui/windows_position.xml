@@ -1,37 +1,37 @@
 <section id="gui.toolwindows.position"><title>Atom Position Window</title>
 	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>atom position</tertiary></indexterm>
 	
-	<figure><title><inlinegraphic fileref="images/stack_position.png"/>Atom Position Window</title>
-		<graphic fileref="images/window_position.png"/>
-	</figure>
+	<para>
+		<inlinegraphic fileref="images/stack_position.png"/>Atom Position Window
+	</para>
 	
 	<para>Tools for the absolute positioning of atoms are available here. All work on the current selection of atoms in the current model.</para>
 	
-	<sect5><title>Centre Atoms</title>
+	<section><title>Centre Atoms</title>
 		
 		<figure><title>Atom Position Window, Centre Panel</title>
-			<graphic fileref="images/window_position_centre.png"/>
+			<graphic fileref="images/window_position_centre.png" align="center"/>
 		</figure>
 		
-		<para>The Centre page allows the centre of geometry of the current selection to be positioned at absolute coordinates. The desired position is entered in the three input boxes, or can be defined from the geometric centre of a selection of atoms (prior to the positioning of a different set).</para>
+		<para>The Centre page allows the centre of geometry of the current selection to be positioned at absolute coordinates. The desired position is entered in the three input boxes, or can be defined from the geometric centre of a selection of atoms (prior to the positioning of a different set). Any (or all) of the Cartesian axes may be 'locked' preventing coordinate adjustment along parcitular directions.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/general_define.png"/></entry>
-						<entry>Define target coordinates from current atom selection</entry>
+						<entry>Define target coordinates from centre of geometry of current atom selection</entry>
 					</row>
 				</tbody>
 			</tgroup>
 		</table>
 		
-	</sect5>
+	</section>
 	
-	<sect5><title>Flip About Axis</title>
+	<section><title>Flip About Axis</title>
 		
 		<figure><title>Atom Position Window, Flip Panel</title>
-			<graphic fileref="images/window_position_flip.png"/>
+			<graphic fileref="images/window_position_flip.png" align="center"/>
 		</figure>
 		
 		<para>The Flip page mirrors the positions of atoms in the current selection through its centre of geometry in either the X, Y, or Z directions. Note that this tool currently works only along the Cartesian axes, and does not take into account the shape of any defined cell.</para>
@@ -55,21 +55,53 @@
 			</tgroup>
 		</table>
 		
-	</sect5>
+	</section>
 	
-	<sect5><title>Translate</title>
+	<section><title>Translate</title>
 		
 		<figure><title>Atom Position Window, Translate Panel</title>
-			<graphic fileref="images/window_position_translate.png"/>
+			<graphic fileref="images/window_position_translate.png" align="center"/>
 		</figure>
 		
 		<para>Translations of atoms within model (local), world (view) and cell frames of reference can be performed in the Translate page. The group of directional buttons move the selected atoms along the relevant axis within the selected frame of reference, and by the amount specified in the Shift control. For model and world reference frames the Shift control specified the number of Angstroms moved along the axis in each step. For the cell reference frame it defines the fractional cell distance moved in each direction.</para>
-	</sect5>
+		
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_right.png"/></entry>
+						<entry>Translate selection along the positive X axis of the current frame</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_left.png"/></entry>
+						<entry>Translate selection along the negative X axis of the current frame</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_up.png"/></entry>
+						<entry>Translate selection along the positive Y axis of the current frame</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_down.png"/></entry>
+						<entry>Translate selection along the negative Y axis of the current frame</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_in.png"/></entry>
+						<entry>Translate selection along the positive Z axis of the current frame</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/arrow_out.png"/></entry>
+						<entry>Translate selection along the negative Z axis of the current frame</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+	</section>
 	
-	<sect5><title>Shift (Along Axis)</title>
+	<section><title>Shift (Along Axis)</title>
 		
 		<figure><title>Atom Position Window, Shift Panel</title>
-			<graphic fileref="images/window_position_shift.png"/>
+			<graphic fileref="images/window_position_shift.png" align="center"/>
 		</figure>
 		
 		<para>The axis along which to move the current selection is define in the left half of the Shift page. Furthermore, the axis may be defined by two clicked atoms in the main window. The supplied vector need not be normalised, as this is done automatically. This also means that un-normalised vectors are always displayed, so defining the axis from two clicked atoms will use the actual positional difference of the two atoms as the shift vector. Since the axis is normalised prior to the shift taking place, the shift distance 'delta' is the actual distance the atoms are moved by.</para>
@@ -79,7 +111,11 @@
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/general_pick.png"/></entry>
-						<entry>Define axis from two selected atoms</entry>
+						<entry>Define vector from two selected atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/vector_normalise.png"/></entry>
+						<entry>Normalise the currently defined vector to 1.0</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/general_plus.png"/></entry>
@@ -92,6 +128,28 @@
 				</tbody>
 			</tgroup>
 		</table>
-	</sect5>
 	
+	</section>
+
+	<section><title>Reposition</title>
+		
+		<figure><title>Atom Position Window, Reposition Panel</title>
+			<graphic fileref="images/window_position_reposition.png" align="center"/>
+		</figure>
+		
+		<para>The reposition page allows the centre of geometry of a selection of atoms to be moved from a reference coordinate (defined by the 'Reference' box) to a destination coordinate (defined by the 'Target' box).</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/general_define.png"/></entry>
+						<entry>Define source or target coordinates from centre of geometry of current atom selection</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+	</section>
+
 </section>

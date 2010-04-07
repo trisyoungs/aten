@@ -1,8 +1,12 @@
 <section id="gui.toolwindows.celldefine"><title>Cell Definition Window</title>
 	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>cell define</tertiary></indexterm>
 	
-	<figure><title><inlinegraphic fileref="images/stack_celldefine.png"/>Cell Edit Window</title>
-		<graphic fileref="images/window_celldefine.png"/>
+	<para>
+		<inlinegraphic fileref="images/stack_celldefine.png"/>Cell Define Window
+	</para>
+	
+	<figure><title>Cell Definition Window</title>
+		<graphic fileref="images/window_celldefine.png" align="center"/>
 	</figure>
 
 	<para>Allows the user to edit the unit cell specification of the current model, assign a crystallographic spacegroup, and perform spacegroup packing according to the spacegroup.</para>
