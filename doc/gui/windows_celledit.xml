@@ -1,30 +1,30 @@
 <section id="gui.toolwindows.celltransform"><title>Cell Transform Window</title>
 	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>cell transform</tertiary></indexterm>
 	
-	<figure><title><inlinegraphic fileref="images/stack_celltransform.png"/>Cell Transform Window</title>
-		<graphic fileref="images/window_celltransform.png"/>
-	</figure>
+	<para>
+		<inlinegraphic fileref="images/stack_celltransform.png"/>Cell Transform Window
+	</para>
 
 	<para>Transformations of the unit cell and its contents can be made here, encompassing geometric scaling of the cell (and atoms contained within) and replication of the system in three dimensions.</para>
 
-	<sect5><title>Replicate</title>
+	<section><title>Replicate</title>
 		
 		<figure><title>Cell Transform Window, Replicate Panel</title>
-			<graphic fileref="images/window_celltransform_replicate.png"/>
+			<graphic fileref="images/window_celltransform_replicate.png" align="center"/>
 		</figure>
 
 		<para>The Replicate panel allows the current cell to be replicated along its three principal axes in both positive and negative directions. The six inputs represent negative and positive replication values for each direction -- most of the time its probably only useful to consider the positive (right-most) replication directions. Note that the numbers define the ''additional'' cells that will be created in addition to the original one. So, if all numbers are left at zero the original cell will remain untouched. Entering a value of 1 for each positive direction will give a 2x2x2 supercell of the original cell, and so on.</para>
 
 		<para>Atoms in the model are folded into the unit cell prior to replication, unless the Fold Atoms checkbox is unticked. Similarly, atoms that exist outside of the cell after replication are trimmed unless the Trim Atoms checkbox is unchecked.</para>
-	</sect5>
+	</section>
 	
-	<sect5><title>Scale</title>
+	<section><title>Scale</title>
 		
 		<figure><title>Cell Transform Window, Scale Panel</title>
 			<graphic fileref="images/window_celltransform_scale.png"/>
 		</figure>
 
 		<para>The Scale panel allows the principal axes of the current unit cell to be arbitrarily scaled, along with the cell's contents. If a valid pattern description exists for the model, then the positions of individual molecules or bound fragments within the cell are scaled relative to their centres of geometry - all intramolecular distances within molecules remains the same as before the scaling. If this is undesirable (or unintended) then performing the scaling with no pattern definition will scale the position of each atom separately.</para>
-	</sect5>
+	</section>
 	
 </section>

@@ -1,0 +1,29 @@
+<section id="gui.toolwindows.command"><title>Command Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>command</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_command.png"/>Command Window
+	</para>
+
+	<para>The command window allows commands or sequences of commands to be run, and also allows management of scripts.</para>
+	
+	<section><title>Scripts</title>
+		
+		<figure><title>Command Window, Scripts Panel</title>
+			<graphic fileref="images/window_command_scripts.png" align="center"/>
+		</figure>
+		
+		<para></para>
+	
+	</section>
+
+	<section><title>Command</title>
+		
+		<figure><title>Command Window, Prompt Panel</title>
+			<graphic fileref="images/window_command_prompt.png" align="center"/>
+		</figure>
+		
+		<para>Any command or compound command can be entered in the bottom editbox and will be executed immediately. This command will then be added to the list above, and can be single-clicked to return it to the editbox for tweaking or re-editing, or double-clicked to execute it again. The list of stored commands is saved when Aten exits.</para>
+	</section>
+
+</section>

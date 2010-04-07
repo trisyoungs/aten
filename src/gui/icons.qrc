@@ -12,6 +12,7 @@
     <file>icons/arrow_upline.svg</file>
   </qresource>
   <qresource prefix="/basic" >
+    <file>icons/basic_cross.svg</file>
     <file>icons/basic_colour.svg</file>
     <file>icons/basic_define.svg</file>
     <file>icons/basic_minus.svg</file>
@@ -130,9 +131,11 @@
     <file>icons/transform_flipx.svg</file>
     <file>icons/transform_flipy.svg</file>
     <file>icons/transform_flipz.svg</file>
-    <file>icons/transform_generatexp.svg</file>
-    <file>icons/transform_normalise.svg</file>
-    <file>icons/transform_orthogonalise.svg</file>
+  </qresource>
+  <qresource prefix="/vector" >
+    <file>icons/vector_generatexp.svg</file>
+    <file>icons/vector_normalise.svg</file>
+    <file>icons/vector_orthogonalise.svg</file>
   </qresource>
   <qresource prefix="/view" >
     <file>icons/view_zoomin.svg</file>
