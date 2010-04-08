@@ -1,3 +1,27 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"
+	[
+	<!ENTITY % MATHML.prefixed "INCLUDE">
+	<!ENTITY % MATHML.prefix "mml">
+	<!ENTITY % equation.content "(alt?, (graphic+|mediaobject+|mml:math))">
+	<!ENTITY % inlineequation.content "(alt?, (inlinegraphic+|inlinemediaobject+|mml:math))">
+	<!ENTITY % mathml PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">
+	%mathml;
+	<!ENTITY example001 SYSTEM "examples/example001.xml">
+	<!ENTITY example002 SYSTEM "examples/example002.xml">
+	<!ENTITY example003 SYSTEM "examples/example003.xml">
+]>
+
+<book>
+	<bookinfo>
+	<title>Aten vATENVERSION (rATENREVISION)</title>
+	<subtitle>Frequently Asked Questions</subtitle>
+	<author>
+		<firstname>Tristan</firstname>
+		<surname>Youngs</surname>
+	</author>
+	</bookinfo>
+	
 <section id="faq"><title>Frequently Asked Questions</title>
 	
 	<qandaset>
@@ -8,7 +32,8 @@
 				<para>Do I need to reference Aten in my work? Is there even a publication to reference?</para>
 			</question>
 			<answer>
-				<para>See the section on <link linkend="gettingstarted.reference">referencing Aten</link>.</para>
+				<para>I don't demand that you reference Aten, but if you wish to then I won't stop you! The full reference is:</para>
+				<para>&quot;Aten - An application for the creation, editing, and visualization of coordinates for glasses, liquids, crystals, and molecules&quot;, T. G. A. Youngs, J. Comp. Chem., <emphasis>31</emphasis>, 639-648, (2009).</para>
 			</answer>
 		</qandaentry>
 		
@@ -125,3 +150,4 @@
 
 </section>
 
+</book>
