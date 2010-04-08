@@ -11,7 +11,6 @@
 	<!--Getting Started-->
 	<!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
 	<!ENTITY installation SYSTEM "gettingstarted/installation.xml">
-	<!ENTITY faq SYSTEM "gettingstarted/faq.xml">
 	<!ENTITY reference SYSTEM "gettingstarted/reference.xml">
 	<!ENTITY cli SYSTEM "gettingstarted/cli.xml">
 	<!--Import / Export-->
@@ -176,7 +175,6 @@
 	<chapter id="gettingstarted"><title>Getting Started</title>
 		&compilation;
 		&installation;
-		&faq;
 		&reference;
 		&cli;
 	</chapter>

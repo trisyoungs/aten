@@ -32,6 +32,7 @@ echo "     version.h (ATENURL)      : $ATENURL"
 rm -rf aten-versioned.xml examples-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
 sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" examples.xml > examples-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" faq.xml > faq-versioned.xml
 
 echo "#"
 echo "# Generating Chunked HTML Examples"
@@ -103,5 +104,12 @@ xsltproc aten.xsl aten-versioned.xml > manual.html
 # Rewrite image links
 sed -e "s/img src=\"images/img src=\"manual\/$TARGETDIR\/images/g" manual.html > manual.xhtml
 
+echo "#"
+echo "# Generating Single Page FAQ"
+echo "#"
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc aten.xsl faq-versioned.xml > faq.html
+
 # Tidy up
-rm aten-versioned.xml aten.xsl
+rm aten-versioned.xml examples-versioned.xml faq-versioned.xml aten.xsl
