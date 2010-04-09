@@ -37,6 +37,7 @@
 #include "gui/disorder.h"
 #include "gui/atomlist.h"
 #include "gui/forcefields.h"
+#include "gui/fragment.h"
 #include "gui/celldefine.h"
 #include "gui/celltransform.h"
 #include "gui/command.h"
@@ -100,6 +101,7 @@ GuiQt::GuiQt()
 	commandWindow = NULL;
 	disorderWindow = NULL;
 	forcefieldsWindow = NULL;
+	fragmentWindow = NULL;
 	geometryWindow = NULL;
 	glyphsWindow = NULL;
 	gridsWindow = NULL;
@@ -195,6 +197,7 @@ void GuiQt::run()
 	commandWindow = new AtenCommand(mainWindow, Qt::Window|Qt::Tool);
 	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
 	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
+	fragmentWindow = new AtenFragment(mainWindow, Qt::Window|Qt::Tool);
 	geometryWindow = new AtenGeometry(mainWindow, Qt::Window|Qt::Tool);
 	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
 	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);

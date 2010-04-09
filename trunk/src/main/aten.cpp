@@ -65,6 +65,9 @@ Aten::Aten()
 	exportFilter_ = NULL;
 
 	// Fragments
+	// Add default fragment group...
+	FragmentGroup *fg = fragmentGroups_.add();
+	fg->setName("Ungrouped");
 	fragmentModelId_ = 0;
 }
 
@@ -621,7 +624,11 @@ void Aten::openFragments()
 	for (Model *m = fragmentModels_.first(); m != NULL; m = m->next)
 	{
 		Fragment *f = fragments_.add();
-		f->setModel(m);
+		if (!f->setModel(m))
+		{
+			fragments_.removeLast();
+			continue;
+		}
 
 		// Create bitmap image of fragment for display in GUI
 		int screenbits = prefs.screenObjects();
@@ -644,21 +651,12 @@ void Aten::openFragments()
 		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
 
 		f->pixmap().save("test.png", "png", 100);
-
-		}
-
-
+	}
 	msg.exit("Aten::openFragments");
 }
 
 // Return head of fragments list
-Fragment *Aten::fragments()
+FragmentGroup *Aten::fragmentGroups()
 {
-	return fragments_.first();
-}
-
-// Return specified fragment in list
-Fragment *Aten::fragment(int n)
-{
-	return fragments_[n];
+	return fragmentGroups_.first();
 }

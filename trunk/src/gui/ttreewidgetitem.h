@@ -34,6 +34,7 @@ enum twffa_column { TW_FFA_NAME=0, TW_FFA_DESCRIPTION };
 class Atom;
 class ForcefieldAtom;
 class Pattern;
+class Fragment;
 
 // Custom QTreeWidgetItem
 class TTreeWidgetItem : public QTreeWidgetItem
@@ -50,6 +51,7 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	Atom *atom_;
 	ForcefieldAtom *forcefieldAtom_;
 	Pattern *pattern_;
+	Fragment *fragment_;
 
 	public:
 	// Set the atom pointer in the widget
@@ -64,6 +66,10 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	void setPattern(Pattern *source);
 	// Return the pattern pointer in the widget
 	Pattern *pattern();
+	// Set the fragment pointer in the widget
+	void setFragment(Fragment *source);
+	// Return the model pointer in the widget
+	Fragment *fragment();
 
 	/*
 	// Set Data functions

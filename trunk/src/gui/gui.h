@@ -42,6 +42,7 @@ class AtenCellTransform;
 class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
+class AtenFragment;
 class AtenGeometry;
 class AtenGlyphs;
 class AtenGrids;
@@ -140,6 +141,8 @@ class GuiQt
 	AtenDisorder *disorderWindow;
 	// Forcefields window
 	AtenForcefields *forcefieldsWindow;
+	// Fragment Library window
+	AtenFragment *fragmentWindow;
 	// Geometry window
 	AtenGeometry *geometryWindow;
 	// Glyphs window

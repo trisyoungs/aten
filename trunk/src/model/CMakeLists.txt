@@ -1,5 +1,6 @@
 add_library(model
 clipboard.h
+fragment.h
 model.h
 undoevent.h
 undostate.h
@@ -11,6 +12,7 @@ clipboard.cpp
 component.cpp
 energy.cpp 
 expression.cpp 
+fragment.cpp
 glyph.cpp
 grid.cpp
 measure.cpp 

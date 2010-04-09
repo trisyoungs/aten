@@ -35,6 +35,7 @@ TTreeWidgetItem::TTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(pare
 	atom_ = NULL;
 	pattern_ = NULL;
 	forcefieldAtom_ = NULL;
+	fragment_ = NULL;
 }
 
 // Constructor

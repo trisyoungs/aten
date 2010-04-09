@@ -56,6 +56,7 @@
 			<inlinegraphic fileref="images/dotspacer.png"/>
 			<inlinegraphic fileref="images/build_atom.png"/>
 			<inlinegraphic fileref="images/build_chain.png"/>
+			<inlinegraphic fileref="images/build_fragment.png"/>
 			<inlinegraphic fileref="images/build_delete.png"/>
 			<inlinegraphic fileref="images/build_transmute.png"/>
 			<inlinegraphic fileref="images/spacer.png"/>
@@ -84,6 +85,10 @@
 					<row>
 						<entry><inlinegraphic fileref="images/build_chain.png"/></entry>
 						<entry>Draw chains of atoms by clicking and dragging the mouse</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_fragment.png"/></entry>
+						<entry>Add pre-defined molecular fragments to the model</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_delete.png"/></entry>
@@ -438,6 +443,7 @@
 			<inlinegraphic fileref="images/dotspacer.png"/>
 			<inlinegraphic fileref="images/stack_atomlist.png"/>
 			<inlinegraphic fileref="images/stack_surfaces.png"/>
+			<inlinegraphic fileref="images/stack_fragment.png"/>
 			<inlinegraphic fileref="images/spacer.png"/>
 			<inlinegraphic fileref="images/stack_build.png"/>
 			<inlinegraphic fileref="images/stack_transform.png"/>
@@ -464,6 +470,10 @@
 					<row>
 						<entry><inlinegraphic fileref="images/stack_surfaces.png"/></entry>
 						<entry>Show the surface/grid management window</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_fragment.png"/></entry>
+						<entry>Show the fragment library</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_build.png"/></entry>
