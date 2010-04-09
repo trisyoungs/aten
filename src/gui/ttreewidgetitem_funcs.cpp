@@ -83,6 +83,18 @@ Pattern *TTreeWidgetItem::pattern()
 	return pattern_;
 }
 
+// Set the pattern pointer in the widget
+void TTreeWidgetItem::setFragment(Fragment *source)
+{
+	fragment_ = source;
+}
+
+// Return the pattern pointer in the widget
+Fragment *TTreeWidgetItem::fragment()
+{
+	return fragment_;
+}
+
 // Set column data in item
 void TTreeWidgetItem::setAtomColumns()
 {
