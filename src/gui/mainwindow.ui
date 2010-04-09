@@ -762,6 +762,7 @@
    </attribute>
    <addaction name="actionAtomlistWindow" />
    <addaction name="actionGridsWindow" />
+   <addaction name="actionFragmentWindow" />
    <addaction name="separator" />
    <addaction name="actionBuildWindow" />
    <addaction name="actionTransformWindow" />
@@ -2383,6 +2384,21 @@
    </property>
    <property name="toolTip" >
     <string>Draw using fragments from the fragment library</string>
+   </property>
+  </action>
+  <action name="actionFragmentWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_fragment.svg</normaloff>:/stackicons/icons/stack_fragment.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>FragmentWindow</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide the Fragment Library</string>
    </property>
   </action>
  </widget>

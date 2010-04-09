@@ -1,6 +1,6 @@
 /*
 	*** Fragment Model Data
-	*** src/base/fragment.h
+	*** src/model/fragment.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -22,7 +22,9 @@
 #ifndef ATEN_FRAGMENTDATA_H
 #define ATEN_FRAGMENTDATA_H
 
+#include "base/dnchar.h"
 #include <QtGui/QPixmap>
+#include "templates/list.h"
 
 // Forward Declarations
 class Atom;
@@ -49,7 +51,7 @@ class Fragment
 
 	public:
 	// Set data from source model
-	void setModel(Model *m);
+	bool setModel(Model *m);
 	// Return model pointer
 	Model *model();
 	// Return link atom
@@ -58,6 +60,36 @@ class Fragment
 	Atom *linkPartner();
 	// Return pixmap
 	QPixmap &pixmap();
+};
+
+// Fragment Library
+class FragmentGroup
+{
+	public:
+	// Constructor
+	FragmentGroup();
+	// List pointers
+	FragmentGroup *prev, *next;
+
+	/*
+	// Data
+	*/
+	private:
+	// Name of the group
+	Dnchar name_;
+	// List of fragments in this group
+	List<Fragment> fragments_;
+
+	public:
+	// Set name of group
+	void setName(const char *s);
+	// Return name of group
+	const char *name();
+	// Return number of fragments in group
+	int nFragments();
+	// Return first fragment in group
+	Fragment *fragments();
+	
 };
 
 #endif

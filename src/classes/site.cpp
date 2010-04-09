@@ -22,7 +22,6 @@
 #include "classes/site.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
-// #include "model/model.h"
 
 // Site types
 const char *ST_strings[ST_NITEMS] = { "Molecule COM", "Molecule COG", "Atom(s) COM", "Atom(s) COG" };
