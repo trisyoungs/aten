@@ -35,6 +35,7 @@ AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	ui.setupUi(this);
 	
 	// Private variables
+	currentFragment_ = NULL;
 }
 
 // Destructor
@@ -45,6 +46,12 @@ AtenFragment::~AtenFragment()
 void AtenFragment::showWindow()
 {
 	show();
+}
+
+// Return current drawing fragment
+Fragment *AtenFragment::currentFragment()
+{
+	return currentFragment_;
 }
 
 // Refresh the atom list
@@ -65,14 +72,20 @@ void AtenFragment::refresh()
 		group = new TTreeWidgetItem(ui.FragmentTree);
 		ui.FragmentTree->setItemExpanded(group, TRUE);
 		group->setText(0, fg->name());
+		group->setFirstColumnSpanned(TRUE);
 
 		// Go through fragments in group and populate branch
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
 		{
 			item = new TTreeWidgetItem(group);
 			item->setFragment(f);
+			item->setIcon(1,f->icon());
 			item->setText(2,itoa(f->model()->nAtoms()));
 			item->setText(3,f->model()->name());
+
+			// If the currentFragment_ is NULL, set it as soon as possible
+			if (currentFragment_ == NULL) currentFragment_ = f;
+			if (currentFragment_ == f) item->setSelected(TRUE);
 		}
 	}
 	// Resize columns
@@ -83,4 +96,29 @@ void AtenFragment::refresh()
 void AtenFragment::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionFragmentWindow->setChecked(FALSE);
+}
+
+void AtenFragment::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+	if (current == NULL) currentFragment_ = NULL;
+	else
+	{
+		// Cast into TTreeWidgetItem
+		TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
+		if (twi == NULL) currentFragment_ = NULL;
+		else
+		{
+			// If this is a header item in the Tree, the fragment pointer will be NULL
+			currentFragment_ = twi->fragment();
+		}
+	}
+}
+
+void AtenFragment::on_FragmentFilterEdit_textChanged(QString &text)
+{
+	
+}
+
+void AtenFragment::on_FragmentShowAllButton_clicked(bool checked)
+{
 }

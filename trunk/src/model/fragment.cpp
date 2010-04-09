@@ -89,10 +89,16 @@ Atom *Fragment::linkPartner()
 	return linkPartner_;
 }
 
-// Return pixmap
-QPixmap &Fragment::pixmap()
+// Set icon (from pixmap)
+void Fragment::setIcon(QPixmap &pixmap)
 {
-	return pixmap_;
+	icon_ = pixmap;
+}
+
+// Return pixmap
+QIcon &Fragment::icon()
+{
+	return icon_;
 }
 
 /*
@@ -125,6 +131,18 @@ const char *FragmentGroup::name()
 int FragmentGroup::nFragments()
 {
 	return fragments_.nItems();
+}
+
+// Add new fragment
+Fragment *FragmentGroup::addFragment()
+{
+	return fragments_.add();
+}
+
+// Remove existing fragment
+void *FragmentGroup::removeFragment(Fragment *frag)
+{
+	fragments_.remove(frag);
 }
 
 // Return first fragment in group

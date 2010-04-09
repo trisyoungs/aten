@@ -34,6 +34,7 @@
 #include "gui/position.h"
 #include "gui/atomlist.h"
 #include "gui/forcefields.h"
+#include "gui/fragment.h"
 #include "gui/minimiser.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
@@ -631,6 +632,12 @@ void AtenForm::on_actionForcefieldsWindow_triggered(bool checked)
 		gui.forcefieldsWindow->refresh();
 	}
 	else gui.forcefieldsWindow->hide();
+}
+
+void AtenForm::on_actionFragmentWindow_triggered(bool checked)
+{
+	if (checked) gui.fragmentWindow->showWindow();
+	else gui.fragmentWindow->hide();
 }
 
 void AtenForm::on_actionGeometryWindow_triggered(bool checked)

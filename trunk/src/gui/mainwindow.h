@@ -151,6 +151,7 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_actionDrawAtom_triggered(bool checked);
 	void on_actionDrawChain_triggered(bool checked);
+	void on_actionDrawFragment_triggered(bool checked);
 	void on_actionDeleteAtom_triggered(bool checked);
 	void on_actionTransmuteAtom_triggered(bool checked);
 	void on_actionBondSingle_triggered(bool checked);
@@ -327,18 +328,19 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	void on_actionAtomlistWindow_triggered(bool checked);
-	void on_actionCommandWindow_triggered(bool checked);
 	void on_actionBuildWindow_triggered(bool checked);
-	void on_actionDisorderWindow_triggered(bool checked);
-	void on_actionForcefieldsWindow_triggered(bool checked);
-	void on_actionTransformWindow_triggered(bool checked);
-	void on_actionPositionWindow_triggered(bool checked);
-	void on_actionGeometryWindow_triggered(bool checked);
-	void on_actionGridsWindow_triggered(bool checked);
-// 	void on_actionGlyphsWindow_triggered(bool checked);
-	void on_actionMinimiserWindow_triggered(bool checked);
 	void on_actionCellDefineWindow_triggered(bool checked);
 	void on_actionCellTransformWindow_triggered(bool checked);
+	void on_actionCommandWindow_triggered(bool checked);
+	void on_actionDisorderWindow_triggered(bool checked);
+	void on_actionForcefieldsWindow_triggered(bool checked);
+	void on_actionFragmentWindow_triggered(bool checked);
+	void on_actionGeometryWindow_triggered(bool checked);
+// 	void on_actionGlyphsWindow_triggered(bool checked);
+	void on_actionGridsWindow_triggered(bool checked);
+	void on_actionMinimiserWindow_triggered(bool checked);
+	void on_actionPositionWindow_triggered(bool checked);
+	void on_actionTransformWindow_triggered(bool checked);
 
 	/*
 	// System Functions

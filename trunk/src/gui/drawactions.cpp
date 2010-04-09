@@ -36,6 +36,11 @@ void AtenForm::on_actionDrawChain_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::EditChainAction);
 }
 
+void AtenForm::on_actionDrawFragment_triggered(bool on)
+{
+	if (on) gui.mainView.setSelectedMode(Canvas::EditFragmentAction);
+}
+
 void AtenForm::on_actionDeleteAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteAction);

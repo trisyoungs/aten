@@ -26,6 +26,7 @@
 
 // Forward declarations
 class Model;
+class Fragment;
 class TTreeWidgetItem;
 
 // Atom list
@@ -41,12 +42,21 @@ class AtenFragment : public QDialog
 	void showWindow();
 	void refresh();
 	private slots:
+	void on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_FragmentFilterEdit_textChanged(QString &text);
+	void on_FragmentShowAllButton_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*
 	// Local variables
 	*/
 	private:
+	// Current drawing fragment
+	Fragment *currentFragment_;
+
+	public:
+	// Return current drawing fragment
+	Fragment *currentFragment();
 
 	/*
 	// Dialog

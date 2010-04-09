@@ -23,7 +23,7 @@
 #define ATEN_FRAGMENTDATA_H
 
 #include "base/dnchar.h"
-#include <QtGui/QPixmap>
+#include <QtGui/QIcon>
 #include "templates/list.h"
 
 // Forward Declarations
@@ -47,7 +47,7 @@ class Fragment
 	// Bond partner for link atom (if any)
 	Atom *linkPartner_;
 	// QPixmap containing miniature picture of fragment
-	QPixmap pixmap_;
+	QIcon icon_;
 
 	public:
 	// Set data from source model
@@ -58,8 +58,10 @@ class Fragment
 	Atom *linkAtom();
 	// Return link atom partner
 	Atom *linkPartner();
-	// Return pixmap
-	QPixmap &pixmap();
+	// Set icon for fragment
+	void setIcon(QPixmap &pixmap);
+	// Return icon
+	QIcon &icon();
 };
 
 // Fragment Library
@@ -87,6 +89,10 @@ class FragmentGroup
 	const char *name();
 	// Return number of fragments in group
 	int nFragments();
+	// Add new fragment
+	Fragment *addFragment();
+	// Remove existing fragment
+	void *removeFragment(Fragment *frag);
 	// Return first fragment in group
 	Fragment *fragments();
 	

@@ -347,10 +347,12 @@ class Aten
 	List<Model> fragmentModels_;
 	// Groups of fragments within the library
 	List<FragmentGroup> fragmentGroups_;
+	// Search for name fragment group
+	FragmentGroup *findFragmentGroup(const char *name);
 	// Internal count for naming new fragments
 	int fragmentModelId_;
 	// Parse fragment directory
-	int parseFragmentDir(const char *path);
+	bool parseFragmentDir(const char *path, const char *groupname);
 
 	public:
 	// Load fragment library

@@ -228,7 +228,6 @@ void GuiQt::run()
 	selectPatternDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
 	commandHelpDialog->setModal(TRUE);
-// 	atomlistWindow->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
@@ -250,6 +249,7 @@ void GuiQt::run()
 	loadModelDialog->setControls();
 	selectFilterDialog->setControls();
 	selectPatternDialog->setControls();
+	fragmentWindow->refresh();
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();

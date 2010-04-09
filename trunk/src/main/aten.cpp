@@ -65,9 +65,6 @@ Aten::Aten()
 	exportFilter_ = NULL;
 
 	// Fragments
-	// Add default fragment group...
-	FragmentGroup *fg = fragmentGroups_.add();
-	fg->setName("Ungrouped");
 	fragmentModelId_ = 0;
 }
 
@@ -560,33 +557,101 @@ Grid *Aten::gridClipboard()
 */
 
 // Parse fragment directory
-int Aten::parseFragmentDir(const char *path)
+bool Aten::parseFragmentDir(const char *path, const char *groupname)
 {
 	msg.enter("Aten::parseFragmentDir");
-	int i, nfailed = 0;
-	char s[8096], bit[128];
-	strcpy(s, "--> ");
+	int i;
+	Tree *t;
+	Fragment *f;
+	FragmentGroup *fg;
+	QPixmap pixmap;
+
 	// First check - does this directory actually exist
 	QDir fragmentdir(path);
 	if (!fragmentdir.exists())
 	{
 		msg.exit("Aten::parseFragmentDir");
-		return -1;
+		return FALSE;
 	}
+
 	// Filter the directory contents - show only files and exclude '.' and '..'
 	QStringList fragmentlist = fragmentdir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 	for (i=0; i<fragmentlist.size(); i++)
 	{
+		// Construct full filepath
 		QString filename(path);
 		filename += "/";
 		filename += fragmentlist.at(i);
-		Tree *f = aten.probeFile(qPrintable(filename), FilterData::ModelImport);
-		if (f == NULL) nfailed++;
-		else if (!f->executeRead(qPrintable(filename))) nfailed++;
+		t = aten.probeFile(qPrintable(filename), FilterData::ModelImport);
+		if (t == NULL) continue;
+		if (!t->executeRead(qPrintable(filename))) continue;
+
+		// Does the named fragment group already exist? If not, create new one
+		fg = findFragmentGroup(groupname);
+		if (fg == NULL)
+		{
+			// Add default fragment group...
+			fg = fragmentGroups_.add();
+			fg->setName(groupname);
+		}
+
+		// Store the last model on the list.
+		f = fg->addFragment();
+		if (!f->setModel(fragmentModels_.last())) fg->removeFragment(f);
+
+		// Store current rendering style so we can reset afterwards
+		Atom::DrawStyle ds = prefs.renderStyle();
+		prefs.setRenderStyle(Atom::SphereStyle);
+
+		// Centre model at 0,0,0 here...
+		f->model()->selectAll();
+		f->model()->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
+		f->model()->selectNone();
+
+		// Generate pixmap for fragment
+		int screenbits = prefs.screenObjects();
+		prefs.setScreenObjects(prefs.offScreenObjects());
+		setCurrentModel(f->model());
+		gui.mainView.postRedisplay();
+		gui.mainView.setOffScreenRendering(TRUE);
+	
+		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget->renderPixmap(100, 100, FALSE);
+		else
+		{
+			QImage image = gui.mainWidget->grabFrameBuffer();
+			pixmap = QPixmap::fromImage(image);
+		}
+	
+		gui.mainView.setOffScreenRendering(FALSE);
+		prefs.setScreenObjects(screenbits);
+	
+		// Reconfigure canvas to widget size (necessary if image size was changed)
+		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
+		setCurrentModel(NULL);
+
+		// Set icon in fragment data
+		f->setIcon(pixmap);
+
+		// Final tweaks to fragment model - put link atom at 0,0,0
+		f->model()->selectAll();
+		f->model()->translateSelectionLocal(-f->linkAtom()->r());
+		f->model()->selectNone();
+
 	}
-	setCurrentModel(NULL);
+
+	// Check for other directories
+	fragmentlist = fragmentdir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i<fragmentlist.size(); i++)
+	{
+		// Construct full filepath
+		QString filename(path);
+		filename += "/";
+		filename += fragmentlist.at(i);
+		parseFragmentDir(qPrintable(filename), qPrintable(fragmentlist.at(i)));
+	}
+
 	msg.exit("Aten::parseFragmentDir");
-	return nfailed;
+	return TRUE;
 }
 
 // Load fragment library
@@ -596,63 +661,36 @@ void Aten::openFragments()
 	char path[512];
 	bool found = FALSE;
 	int nfailed, ndefault;
+
 	// Redirect model creation to fragment list
 	targetModelList_ = Aten::FragmentLibraryList;
 
 	// Default search path should have already been set by openFilters()...
 	sprintf(path,"%s/fragments", dataDir_.get());
 	msg.print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path)));
-	nfailed = parseFragmentDir( path );
-
-	// Print out info
-	ndefault = fragments_.nItems();
-	msg.print("Loaded %i fragments from default stock.\n", ndefault);
+	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
 	sprintf(path,"%s%s", homeDir_.get(), "/.aten/fragments/");
 	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path);
-	nfailed = parseFragmentDir(path);
-	if (nfailed > 0) nFiltersFailed_ += nfailed;
-
-	// Print out info
-	msg.print("Loaded %i fragments from user stock.\n", fragments_.nItems() - ndefault);
+	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;
 
-	// Generate fragment data structures and pictures
-	for (Model *m = fragmentModels_.first(); m != NULL; m = m->next)
-	{
-		Fragment *f = fragments_.add();
-		if (!f->setModel(m))
-		{
-			fragments_.removeLast();
-			continue;
-		}
+	// Print out info
+	int nfragments = 0;
+	for (FragmentGroup *fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
+	msg.print("Loaded %i fragments into library.\n", nfragments);
 
-		// Create bitmap image of fragment for display in GUI
-		int screenbits = prefs.screenObjects();
-		prefs.setScreenObjects(prefs.offScreenObjects());
-		setCurrentModel(m);
-		gui.mainView.postRedisplay();
-		gui.mainView.setOffScreenRendering(TRUE);
-	
-		if (prefs.useFrameBuffer() == FALSE) f->pixmap() = gui.mainWidget->renderPixmap(100, 100, FALSE);
-		else
-		{
-			QImage image = gui.mainWidget->grabFrameBuffer();
-			f->pixmap() = QPixmap::fromImage(image);
-		}
-	
-		gui.mainView.setOffScreenRendering(FALSE);
-		prefs.setScreenObjects(screenbits);
-	
-		// Reconfigure canvas to widget size (necessary if image size was changed)
-		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
-
-		f->pixmap().save("test.png", "png", 100);
-	}
 	msg.exit("Aten::openFragments");
+}
+
+// Search for name fragment group
+FragmentGroup *Aten::findFragmentGroup(const char *name)
+{
+	for (FragmentGroup *fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) if (strcmp(name,fg->name()) == 0) return fg;
+	return NULL;
 }
 
 // Return head of fragments list
