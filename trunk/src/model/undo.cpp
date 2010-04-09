@@ -27,8 +27,15 @@
 // Flag that undo/redo should be enabled
 void Model::enableUndoRedo()
 {
-	msg.print(Messenger::Verbose, "Undo/redo has been enabled for this model.\n");
+	msg.print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.\n", name_.get());
 	undoRedoEnabled_ = TRUE;
+}
+
+// Flag that undo/redo should be disabled
+void Model::disableUndoRedo()
+{
+	msg.print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.\n", name_.get());
+	undoRedoEnabled_ = FALSE;
 }
 
 // Return the current undo level pointer

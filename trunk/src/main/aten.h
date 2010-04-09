@@ -47,6 +47,8 @@ class Aten
 	~Aten();
 	// Program mode enum
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, BatchProcessMode, ProcessAndExportMode, NoMode };
+	// Target list for model creation
+	enum TargetModelList { MainModelList, FragmentLibraryList };
 	// Remove all dynamic data
 	void clear();
 
@@ -67,6 +69,8 @@ class Aten
 	int modelId_;
 	// List of models
 	List<Model> models_;
+	// Current target list for new generation of models
+	Aten::TargetModelList targetModelList_;
 
 	public:
 	// Sets the current active model for editing
@@ -333,6 +337,25 @@ class Aten
 	Command commands;
 	// Preferences file commands
 	Forest prefsCommands;
+
+	/*
+	// Fragment Library
+	*/
+	private:
+	// Models making up fragment library
+	List<Model> fragments_;
+	// Internal count for naming new fragments
+	int fragmentId_;
+	// Parse fragment directory
+	int parseFragmentDir(const char *path);
+
+	public:
+	// Load fragment library
+	void openFragments();
+	// Return head of fragments list
+	Model *fragments();
+	// Return specified fragment in list
+	Model *fragment(int n);
 };
 
 extern Aten aten;

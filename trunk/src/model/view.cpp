@@ -46,12 +46,6 @@ Model *Model::renderSource()
 	return (renderFromSelf_ ? this : currentFrame_);
 }
 
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> Model::guideToModel(const Vec3<double> &v)
-{
-	return guideToModel(v.x, v.y);
-}
-
 // Set the current rotation matrix
 void Model::setRotationMatrix(Mat4<double> &rmat)
 {
@@ -428,9 +422,9 @@ Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 	return result;
 }
 
+// Project the supplied world coordinates into screen coordinates.
 Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 {
-	// Project the supplied world coordinates into screen coordinates.
 	// The returned vec4's 'w' component is the unit 'radius' at that point.
 	msg.enter("Model::worldToScreen");
 	static Vec4<double> modelr, screenr, worldr, result;
@@ -466,18 +460,23 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	return result;
 }
 
-Vec3<double> Model::guideToModel(double sx, double sy)
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> Model::guideToModel(const Vec3<double> &v, double drawdepth)
+{
+	return guideToModel(v.x, v.y, drawdepth);
+}
+Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
 {
 	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
 	msg.enter("Model::guideToModel");
 	static Vec4<double> guidepoint;
 	static Vec3<double> newpoint;
 	static Mat4<double> rotmat;
-	double radius, depth;
-	depth = -camera_.z - prefs.drawDepth();
-	//printf("DEPTH = %f, DRAWDEPTH = %f\n",depth, prefs.drawDepth());
+	double radius;
+	drawdepth = -camera_.z + drawdepth;
+// 	printf("DEPTH = %f, cameraZ= %f\n",drawdepth, camera_.z);
 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(camera_.x, camera_.y, depth);
+	newpoint.set(camera_.x, camera_.y, drawdepth);
 	//printf("newpoint1 "); newpoint.print();
 	rotmat = rotationMatrix_;
 	rotmat.invert();
@@ -490,11 +489,12 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	newpoint.x = sx - (gui.mainView.width() / 2.0 );
 	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
 	newpoint /= radius;
-	newpoint.z = -prefs.drawDepth();
+	newpoint.z = drawdepth + camera_.z;
 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
 	newpoint *= viewMatrixInverse_;
 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
 	newpoint += cell_.centre();
+// 	newpoint.print();
 	msg.exit("Model::guideToModel");
 	return newpoint;
 }
@@ -537,10 +537,10 @@ void Model::viewAlongCell(double x, double y, double z)
 }
 
 // Calculate and return drawing pixel width
-double Model::drawPixelWidth()
+double Model::drawPixelWidth(double drawdepth)
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
 	static Vec3<double> r;
-	r = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2) - guideToModel(gui.mainView.width()/2, gui.mainView.height()/2);
+	r = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2, drawdepth) - guideToModel(gui.mainView.width()/2, gui.mainView.height()/2, drawdepth);
 	return r.magnitude();
 }

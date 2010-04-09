@@ -1,7 +1,8 @@
 # Aten 'Custom' file format (for v1.2+)
 # Created:	 14/05/2009
-# Last modified: 14/05/2009
+# Last modified: 09/04/2010
 # ChangeLog:
+# 	09/04/2010: Added 'title' keyword
 
 filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
@@ -31,6 +32,10 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 		{
 			readvar(line,lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
 			cell(lengths[1],lengths[2],lengths[3],angs[1],angs[2],angs[3]);
+		}
+		else if (keywd == "title")
+		{
+			setname(line);
 		}
 		else if (keywd == "arrow")
 		{
@@ -99,6 +104,9 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
 	model m = aten.frame;
+
+	// Title
+	writelinef("title  %s\n", m.name);
 
 	// Atom data
 	for (atom i = m.atoms; i; ++i) writelinef("atom   %i %s %f %f %f %f\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q);

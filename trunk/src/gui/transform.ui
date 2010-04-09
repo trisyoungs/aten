@@ -5,22 +5,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
-    <height>214</height>
+    <width>363</width>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Transform</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="icons.qrc" >:/stackicons/icons/stack_transform.svg</iconset>
+   <iconset resource="icons.qrc" >
+    <normaloff>:/stackicons/icons/stack_transform.svg</normaloff>:/stackicons/icons/stack_transform.svg</iconset>
   </property>
   <layout class="QHBoxLayout" >
-   <property name="margin" >
-    <number>2</number>
-   </property>
    <property name="spacing" >
     <number>4</number>
+   </property>
+   <property name="margin" >
+    <number>2</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget" >
@@ -28,30 +29,36 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="RotateTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>347</width>
+        <height>189</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Axis Rotate</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>2</number>
-       </property>
        <property name="spacing" >
         <number>4</number>
        </property>
+       <property name="margin" >
+        <number>2</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <widget class="QGroupBox" name="RotateOriginGroup" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>1</hsizetype>
-             <vsizetype>1</vsizetype>
+            <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -60,11 +67,11 @@
             <string>Origin</string>
            </property>
            <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>2</number>
-            </property>
             <property name="spacing" >
              <number>4</number>
+            </property>
+            <property name="margin" >
+             <number>2</number>
             </property>
             <item>
              <layout class="QGridLayout" >
@@ -77,9 +84,7 @@
               <item row="0" column="0" >
                <widget class="QLabel" name="label" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -92,9 +97,7 @@
               <item row="0" column="1" >
                <widget class="QDoubleSpinBox" name="RotateOriginXSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -102,20 +105,18 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                </widget>
               </item>
               <item row="1" column="1" >
                <widget class="QDoubleSpinBox" name="RotateOriginYSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -123,20 +124,18 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                </widget>
               </item>
               <item row="2" column="0" >
                <widget class="QLabel" name="label_3" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -149,9 +148,7 @@
               <item row="1" column="0" >
                <widget class="QLabel" name="label_2" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -164,9 +161,7 @@
               <item row="2" column="1" >
                <widget class="QDoubleSpinBox" name="RotateOriginZSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -174,11 +169,11 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -186,18 +181,16 @@
             </item>
             <item>
              <layout class="QVBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
               <property name="spacing" >
                <number>6</number>
+              </property>
+              <property name="margin" >
+               <number>0</number>
               </property>
               <item>
                <widget class="QPushButton" name="RotateDefineOriginButton" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -221,7 +214,8 @@
                  <string/>
                 </property>
                 <property name="icon" >
-                 <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+                 <iconset resource="icons.qrc" >
+                  <normaloff>:/basic/icons/basic_define.svg</normaloff>:/basic/icons/basic_define.svg</iconset>
                 </property>
                 <property name="iconSize" >
                  <size>
@@ -236,7 +230,7 @@
                 <property name="orientation" >
                  <enum>Qt::Vertical</enum>
                 </property>
-                <property name="sizeHint" >
+                <property name="sizeHint" stdset="0" >
                  <size>
                   <width>20</width>
                   <height>40</height>
@@ -252,9 +246,7 @@
          <item>
           <widget class="QGroupBox" name="RotateOriginGroup_2" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>1</hsizetype>
-             <vsizetype>5</vsizetype>
+            <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -263,11 +255,11 @@
             <string>Axis</string>
            </property>
            <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>2</number>
-            </property>
             <property name="spacing" >
              <number>4</number>
+            </property>
+            <property name="margin" >
+             <number>2</number>
             </property>
             <item>
              <layout class="QGridLayout" >
@@ -280,9 +272,7 @@
               <item row="0" column="1" >
                <widget class="QDoubleSpinBox" name="RotateAxisXSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -290,11 +280,11 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                 <property name="value" >
                  <double>0.000000000000000</double>
@@ -304,9 +294,7 @@
               <item row="1" column="1" >
                <widget class="QDoubleSpinBox" name="RotateAxisYSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -314,20 +302,18 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                </widget>
               </item>
               <item row="1" column="0" >
                <widget class="QLabel" name="label_5" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -340,9 +326,7 @@
               <item row="2" column="0" >
                <widget class="QLabel" name="label_6" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -355,9 +339,7 @@
               <item row="0" column="0" >
                <widget class="QLabel" name="label_4" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>0</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -370,9 +352,7 @@
               <item row="2" column="1" >
                <widget class="QDoubleSpinBox" name="RotateAxisZSpin" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -380,11 +360,11 @@
                 <property name="decimals" >
                  <number>5</number>
                 </property>
-                <property name="maximum" >
-                 <double>10000.000000000000000</double>
-                </property>
                 <property name="minimum" >
                  <double>-10000.000000000000000</double>
+                </property>
+                <property name="maximum" >
+                 <double>10000.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -392,18 +372,16 @@
             </item>
             <item>
              <layout class="QVBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
               <property name="spacing" >
                <number>6</number>
+              </property>
+              <property name="margin" >
+               <number>0</number>
               </property>
               <item>
                <widget class="QPushButton" name="RotateDefineAxisButton" >
                 <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                 <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -427,7 +405,8 @@
                  <string/>
                 </property>
                 <property name="icon" >
-                 <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+                 <iconset resource="icons.qrc" >
+                  <normaloff>:/basic/icons/basic_define.svg</normaloff>:/basic/icons/basic_define.svg</iconset>
                 </property>
                 <property name="iconSize" >
                  <size>
@@ -458,7 +437,8 @@
                  <string/>
                 </property>
                 <property name="icon" >
-                 <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                 <iconset resource="icons.qrc" >
+                  <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                 </property>
                 <property name="iconSize" >
                  <size>
@@ -476,7 +456,7 @@
                 <property name="orientation" >
                  <enum>Qt::Vertical</enum>
                 </property>
-                <property name="sizeHint" >
+                <property name="sizeHint" stdset="0" >
                  <size>
                   <width>20</width>
                   <height>40</height>
@@ -493,11 +473,11 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>4</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <widget class="QLabel" name="label_8" >
@@ -509,9 +489,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="RotateAngleSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -522,11 +500,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>360.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>0.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>360.000000000000000</double>
            </property>
            <property name="value" >
             <double>60.000000000000000</double>
@@ -536,9 +514,7 @@
          <item>
           <widget class="QPushButton" name="RotateAnticlockwiseButton" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>0</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -562,7 +538,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/arrows/icons/arrow_anticlockwise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/arrows/icons/arrow_anticlockwise.svg</normaloff>:/arrows/icons/arrow_anticlockwise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -578,9 +555,7 @@
          <item>
           <widget class="QPushButton" name="RotateClockwiseButton" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>0</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -604,7 +579,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/arrows/icons/arrow_clockwise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/arrows/icons/arrow_clockwise.svg</normaloff>:/arrows/icons/arrow_clockwise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -622,15 +598,23 @@
       </layout>
      </widget>
      <widget class="QWidget" name="MatrixTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>347</width>
+        <height>189</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Matrix Transform</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>2</number>
-       </property>
        <property name="spacing" >
         <number>4</number>
+       </property>
+       <property name="margin" >
+        <number>2</number>
        </property>
        <item>
         <layout class="QGridLayout" >
@@ -661,7 +645,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -686,7 +671,8 @@
             <string>...</string>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -702,9 +688,7 @@
          <item row="1" column="3" >
           <widget class="QDoubleSpinBox" name="TransformMatrixBZSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -712,11 +696,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -726,9 +710,7 @@
          <item row="0" column="3" >
           <widget class="QDoubleSpinBox" name="TransformMatrixAZSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -736,11 +718,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -753,9 +735,7 @@
             <bool>true</bool>
            </property>
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -763,11 +743,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -780,9 +760,7 @@
             <bool>true</bool>
            </property>
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -790,11 +768,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -804,9 +782,7 @@
          <item row="1" column="2" >
           <widget class="QDoubleSpinBox" name="TransformMatrixBYSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -814,11 +790,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -834,9 +810,7 @@
             <bool>true</bool>
            </property>
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -844,11 +818,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -861,9 +835,7 @@
          <item row="0" column="1" >
           <widget class="QDoubleSpinBox" name="TransformMatrixAXSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -871,11 +843,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -888,9 +860,7 @@
          <item row="0" column="2" >
           <widget class="QDoubleSpinBox" name="TransformMatrixAYSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -898,11 +868,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -927,7 +897,8 @@
             <string>...</string>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -961,7 +932,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -974,9 +946,7 @@
          <item row="1" column="1" >
           <widget class="QDoubleSpinBox" name="TransformMatrixBXSpin" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -984,11 +954,11 @@
            <property name="decimals" >
             <number>5</number>
            </property>
-           <property name="maximum" >
-            <double>10.000000000000000</double>
-           </property>
            <property name="minimum" >
             <double>-10.000000000000000</double>
+           </property>
+           <property name="maximum" >
+            <double>10.000000000000000</double>
            </property>
            <property name="singleStep" >
             <double>0.100000000000000</double>
@@ -1010,7 +980,8 @@
             <string>...</string>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1044,7 +1015,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1075,7 +1047,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1106,7 +1079,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1137,7 +1111,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1168,7 +1143,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1199,7 +1175,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1230,7 +1207,8 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+            <iconset resource="icons.qrc" >
+             <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
            </property>
            <property name="iconSize" >
             <size>
@@ -1244,19 +1222,19 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
          </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
          <item>
           <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
            <property name="spacing" >
             <number>6</number>
+           </property>
+           <property name="margin" >
+            <number>0</number>
            </property>
            <item>
             <widget class="QToolButton" name="TransformDefineOriginButton" >
@@ -1273,7 +1251,8 @@
               <string>...</string>
              </property>
              <property name="icon" >
-              <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              <iconset resource="icons.qrc" >
+               <normaloff>:/basic/icons/basic_define.svg</normaloff>:/basic/icons/basic_define.svg</iconset>
              </property>
              <property name="iconSize" >
               <size>
@@ -1304,7 +1283,8 @@
               <string>...</string>
              </property>
              <property name="icon" >
-              <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+              <iconset resource="icons.qrc" >
+               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
              </property>
              <property name="iconSize" >
               <size>
@@ -1317,9 +1297,7 @@
            <item>
             <widget class="QDoubleSpinBox" name="TransformOriginXSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1327,20 +1305,18 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="TransformOriginYSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1348,20 +1324,18 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="TransformOriginZSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1369,11 +1343,11 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1408,7 +1382,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -1419,15 +1393,23 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>347</width>
+        <height>189</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Matrix Convert</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>2</number>
-       </property>
        <property name="spacing" >
         <number>4</number>
+       </property>
+       <property name="margin" >
+        <number>2</number>
        </property>
        <item>
         <widget class="QTabWidget" name="tabWidget_3" >
@@ -1435,15 +1417,23 @@
           <number>0</number>
          </property>
          <widget class="QWidget" name="SourceTab_2" >
+          <property name="geometry" >
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>331</width>
+            <height>104</height>
+           </rect>
+          </property>
           <attribute name="title" >
            <string>Source</string>
           </attribute>
           <layout class="QVBoxLayout" >
-           <property name="margin" >
-            <number>2</number>
-           </property>
            <property name="spacing" >
             <number>4</number>
+           </property>
+           <property name="margin" >
+            <number>2</number>
            </property>
            <item>
             <layout class="QGridLayout" >
@@ -1474,7 +1464,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1499,7 +1490,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1515,9 +1507,7 @@
              <item row="1" column="3" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixBZSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1525,11 +1515,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1539,9 +1529,7 @@
              <item row="0" column="3" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixAZSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1549,11 +1537,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1566,9 +1554,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1576,11 +1562,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1593,9 +1579,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1603,11 +1587,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1617,9 +1601,7 @@
              <item row="1" column="2" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixBYSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1627,11 +1609,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1647,9 +1629,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1657,11 +1637,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1674,9 +1654,7 @@
              <item row="0" column="1" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixAXSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1684,11 +1662,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1701,9 +1679,7 @@
              <item row="0" column="2" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixAYSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1711,11 +1687,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1740,7 +1716,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1774,7 +1751,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1787,9 +1765,7 @@
              <item row="1" column="1" >
               <widget class="QDoubleSpinBox" name="ConvertSourceMatrixBXSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -1797,11 +1773,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -1823,7 +1799,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1857,7 +1834,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1888,7 +1866,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1919,7 +1898,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1950,7 +1930,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -1981,7 +1962,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2012,7 +1994,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2043,7 +2026,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2058,15 +2042,23 @@
           </layout>
          </widget>
          <widget class="QWidget" name="DestinationTab_2" >
+          <property name="geometry" >
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>331</width>
+            <height>104</height>
+           </rect>
+          </property>
           <attribute name="title" >
            <string>Target</string>
           </attribute>
           <layout class="QVBoxLayout" >
-           <property name="margin" >
-            <number>2</number>
-           </property>
            <property name="spacing" >
             <number>4</number>
+           </property>
+           <property name="margin" >
+            <number>2</number>
            </property>
            <item>
             <layout class="QGridLayout" >
@@ -2097,7 +2089,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2122,7 +2115,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2138,9 +2132,7 @@
              <item row="1" column="3" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixBZSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2148,11 +2140,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2162,9 +2154,7 @@
              <item row="0" column="3" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixAZSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2172,11 +2162,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2189,9 +2179,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2199,11 +2187,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2216,9 +2204,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2226,11 +2212,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2240,9 +2226,7 @@
              <item row="1" column="2" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixBYSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2250,11 +2234,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2270,9 +2254,7 @@
                 <bool>true</bool>
                </property>
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2280,11 +2262,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2297,9 +2279,7 @@
              <item row="0" column="1" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixAXSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2307,11 +2287,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2324,9 +2304,7 @@
              <item row="0" column="2" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixAYSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2334,11 +2312,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2363,7 +2341,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2397,7 +2376,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2410,9 +2390,7 @@
              <item row="1" column="1" >
               <widget class="QDoubleSpinBox" name="ConvertTargetMatrixBXSpin" >
                <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
+                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -2420,11 +2398,11 @@
                <property name="decimals" >
                 <number>5</number>
                </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
                <property name="minimum" >
                 <double>-10.000000000000000</double>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
@@ -2446,7 +2424,8 @@
                 <string>...</string>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/basic/icons/basic_pick.svg</normaloff>:/basic/icons/basic_pick.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2480,7 +2459,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2511,7 +2491,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2542,7 +2523,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_normalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_normalise.svg</normaloff>:/vector/icons/vector_normalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2573,7 +2555,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2604,7 +2587,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_orthogonalise.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_orthogonalise.svg</normaloff>:/vector/icons/vector_orthogonalise.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2635,7 +2619,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2666,7 +2651,8 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/transform/icons/vector_generatexp.svg</iconset>
+                <iconset resource="icons.qrc" >
+                 <normaloff>:/vector/icons/vector_generatexp.svg</normaloff>:/vector/icons/vector_generatexp.svg</iconset>
                </property>
                <property name="iconSize" >
                 <size>
@@ -2684,19 +2670,19 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
          </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
          <item>
           <layout class="QHBoxLayout" >
-           <property name="margin" >
-            <number>0</number>
-           </property>
            <property name="spacing" >
             <number>6</number>
+           </property>
+           <property name="margin" >
+            <number>0</number>
            </property>
            <item>
             <widget class="QToolButton" name="ConvertDefineOriginButton" >
@@ -2713,7 +2699,8 @@
               <string>...</string>
              </property>
              <property name="icon" >
-              <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              <iconset resource="icons.qrc" >
+               <normaloff>:/basic/icons/basic_define.svg</normaloff>:/basic/icons/basic_define.svg</iconset>
              </property>
              <property name="iconSize" >
               <size>
@@ -2726,9 +2713,7 @@
            <item>
             <widget class="QPushButton" name="ConvertOriginCellCentreButton" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>1</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2752,7 +2737,8 @@
               <string/>
              </property>
              <property name="icon" >
-              <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+              <iconset resource="icons.qrc" >
+               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
              </property>
              <property name="iconSize" >
               <size>
@@ -2765,9 +2751,7 @@
            <item>
             <widget class="QDoubleSpinBox" name="ConvertOriginXSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2775,20 +2759,18 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="ConvertOriginYSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2796,20 +2778,18 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="ConvertOriginZSpin" >
              <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+              <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -2817,11 +2797,11 @@
              <property name="decimals" >
               <number>5</number>
              </property>
-             <property name="maximum" >
-              <double>1000000.000000000000000</double>
-             </property>
              <property name="minimum" >
               <double>-1000000.000000000000000</double>
+             </property>
+             <property name="maximum" >
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -2856,7 +2836,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
