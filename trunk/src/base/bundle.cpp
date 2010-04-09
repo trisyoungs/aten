@@ -20,12 +20,17 @@
 */
 
 #include "base/bundle.h"
-//#include "model/model.h"
 #include "base/constants.h"
 #include <stdio.h>
 
 // Constructor
 Bundle::Bundle()
+{
+	clear();
+}
+
+// Clear pointers
+void Bundle::clear()
 {
 	m = 0;
 	rs = 0;

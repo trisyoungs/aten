@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/gui.h"
+#include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/grids.h"
@@ -64,7 +65,7 @@ Aten::Aten()
 	exportFilter_ = NULL;
 
 	// Fragments
-	fragmentId_ = 0;
+	fragmentModelId_ = 0;
 }
 
 // Destructor
@@ -141,6 +142,12 @@ const char *Aten::typeExportConvert(const char *oldname)
 void Aten::setCurrentModel(Model *m)
 {
 	msg.enter("Aten::setCurrentModel");
+	if (m == NULL)
+	{
+		current.clear();
+		msg.exit("Aten::setCurrentModel");
+		return;
+	}
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
 	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
@@ -233,8 +240,8 @@ Model *Aten::addModel()
 			setCurrentModel(m);
 			break;
 		case (Aten::FragmentLibraryList):
-			m = fragments_.add();
-			sprintf(newname,"Fragment%03i", ++fragmentId_);
+			m = fragmentModels_.add();
+			sprintf(newname,"Fragment%03i", ++fragmentModelId_);
 			m->setName(newname);
 			m->changeLog.reset();
 			m->disableUndoRedo();
@@ -560,7 +567,7 @@ int Aten::parseFragmentDir(const char *path)
 	QDir fragmentdir(path);
 	if (!fragmentdir.exists())
 	{
-		msg.enter("Aten::parseFragmentDir");
+		msg.exit("Aten::parseFragmentDir");
 		return -1;
 	}
 	// Filter the directory contents - show only files and exclude '.' and '..'
@@ -574,6 +581,7 @@ int Aten::parseFragmentDir(const char *path)
 		if (f == NULL) nfailed++;
 		else if (!f->executeRead(qPrintable(filename))) nfailed++;
 	}
+	setCurrentModel(NULL);
 	msg.exit("Aten::parseFragmentDir");
 	return nfailed;
 }
@@ -600,7 +608,7 @@ void Aten::openFragments()
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
 	sprintf(path,"%s%s", homeDir_.get(), "/.aten/fragments/");
 	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path);
-	nfailed = parseFilterDir(path);
+	nfailed = parseFragmentDir(path);
 	if (nfailed > 0) nFiltersFailed_ += nfailed;
 
 	// Print out info
@@ -609,17 +617,48 @@ void Aten::openFragments()
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;
 
+	// Generate fragment data structures and pictures
+	for (Model *m = fragmentModels_.first(); m != NULL; m = m->next)
+	{
+		Fragment *f = fragments_.add();
+		f->setModel(m);
+
+		// Create bitmap image of fragment for display in GUI
+		int screenbits = prefs.screenObjects();
+		prefs.setScreenObjects(prefs.offScreenObjects());
+		setCurrentModel(m);
+		gui.mainView.postRedisplay();
+		gui.mainView.setOffScreenRendering(TRUE);
+	
+		if (prefs.useFrameBuffer() == FALSE) f->pixmap() = gui.mainWidget->renderPixmap(100, 100, FALSE);
+		else
+		{
+			QImage image = gui.mainWidget->grabFrameBuffer();
+			f->pixmap() = QPixmap::fromImage(image);
+		}
+	
+		gui.mainView.setOffScreenRendering(FALSE);
+		prefs.setScreenObjects(screenbits);
+	
+		// Reconfigure canvas to widget size (necessary if image size was changed)
+		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
+
+		f->pixmap().save("test.png", "png", 100);
+
+		}
+
+
 	msg.exit("Aten::openFragments");
 }
 
 // Return head of fragments list
-Model *Aten::fragments()
+Fragment *Aten::fragments()
 {
 	return fragments_.first();
 }
 
 // Return specified fragment in list
-Model *Aten::fragment(int n)
+Fragment *Aten::fragment(int n)
 {
 	return fragments_[n];
 }
