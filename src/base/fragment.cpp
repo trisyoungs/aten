@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Fragment Model Data
+	*** src/base/fragment.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -11,7 +11,7 @@
 	(at your option) any later version.
 
 	Aten is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	but WITHOUE ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
@@ -19,12 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "base/fragment.h"
+#include "base/messenger.h"
 
-#define ATENVERSION "1.5"
-#define ATENREVISION "1151"
-#define ATENDATE "Fri 09 Apr - 17:10"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+// Constructor
+Fragment::Fragment()
+{
+	// Private variables
+	linkAtom_ = NULL;
+	linkPartner_ = NULL;
 
-#endif
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+

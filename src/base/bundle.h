@@ -63,6 +63,8 @@ class Bundle
 	// Member Functions
 	*/
 	public:
+	// Clear pointers
+	void clear();
 	// Check for null pointers
 	bool isNull(int);
 	// Check and notify of null pointers

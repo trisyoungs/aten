@@ -23,6 +23,7 @@
 #define ATEN_ATEN_H
 
 #include "base/bundle.h"
+#include "base/fragment.h"
 #include "base/kvmap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
@@ -343,19 +344,21 @@ class Aten
 	*/
 	private:
 	// Models making up fragment library
-	List<Model> fragments_;
+	List<Model> fragmentModels_;
+	// Reflist linking fragment models to fragment data
+	List<Fragment> fragments_;
 	// Internal count for naming new fragments
-	int fragmentId_;
+	int fragmentModelId_;
 	// Parse fragment directory
 	int parseFragmentDir(const char *path);
 
 	public:
 	// Load fragment library
 	void openFragments();
-	// Return head of fragments list
-	Model *fragments();
-	// Return specified fragment in list
-	Model *fragment(int n);
+	// Return head of fragmentdata list
+	Fragment *fragments();
+	// Return specified fragment data in list
+	Fragment *fragment(int n);
 };
 
 extern Aten aten;

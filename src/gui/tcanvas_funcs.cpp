@@ -78,18 +78,21 @@ void TCanvas::paintGL()
 		// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 		// so here it is done in the 'wrong' order.
 
-		// Draw OpenGL objects (with OpenGL)
-		canvas_->renderScene(aten.currentModel()->renderSource());
-
-		// Initialise QPainter
-		QPainter painter(this);
-
-		// Draw on text objects (with QPainter)
-		font.setPointSize(prefs.labelSize());
-		painter.setFont(font);
-		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-		painter.setRenderHint(QPainter::Antialiasing);
-		canvas_->renderText(painter);
+		if (aten.currentModel() != NULL)
+		{
+			// Draw OpenGL objects (with OpenGL)
+			canvas_->renderScene(aten.currentModel()->renderSource());
+	
+			// Initialise QPainter
+			QPainter painter(this);
+	
+			// Draw on text objects (with QPainter)
+			font.setPointSize(prefs.labelSize());
+			painter.setFont(font);
+			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+			painter.setRenderHint(QPainter::Antialiasing);
+			canvas_->renderText(painter);
+		}
 	}
 	else printf("NO CANVAS SET PAINT\n");
 }

@@ -8,6 +8,7 @@ colourscalepoint.cpp
 dnchar.cpp
 doubleexp.cpp
 elements.cpp
+fragment.cpp
 glyph.cpp
 kvmap.cpp
 lineparser.cpp
@@ -27,6 +28,7 @@ constants.h
 dnchar.h
 doubleexp.h
 elements.h
+fragment.h
 glyph.h
 kvmap.h
 lineparser.h
