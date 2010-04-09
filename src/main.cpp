@@ -57,7 +57,11 @@ int main(int argc, char *argv[])
 	Combine::regenerateEquations();
 
 	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
+	// This will also set dataDir_ to a valid value (provided one could be found in a default search location)
 	aten.openFilters();
+
+	// Load in fragments
+	aten.openFragments();
 
 	// Load in user preferences
 	char filename[512];

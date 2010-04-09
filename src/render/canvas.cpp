@@ -58,6 +58,7 @@ Canvas::Canvas()
 	actionBeforePick_ = NULL;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
+	currentDrawDepth_ = 0.0;
 }
 
 // Set the internal name of the canvas

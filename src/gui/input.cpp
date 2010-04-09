@@ -243,11 +243,13 @@ void Canvas::beginMode(Prefs::MouseButton button)
 						if (atomHover_ == NULL)
 						{
 							displayModel_->beginUndoState("Draw Chain");
-							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+							currentDrawDepth_ = prefs.drawDepth();
+							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, currentDrawDepth_));
 							displayModel_->endUndoState();
 							displayModel_->projectAtom(i);
 							atomHover_ = i;
 						}
+						else currentDrawDepth_ = atomHover_->rWorld().z;
 						break;
 				}
 				break;
@@ -390,7 +392,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomHover_ == NULL)
 			{
 				displayModel_->beginUndoState("Draw Atom");
-				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, -prefs.drawDepth()));
 				displayModel_->endUndoState();
 				displayModel_->projectAtom(i);
 			}
@@ -404,8 +406,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->beginUndoState("Draw Chain");
 			if (i == NULL)
 			{
-				// No atom under the mouse, so draw an atom
-				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_));
+				// No atom under the mouse, so draw an atom at previous draw depth
+				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_, currentDrawDepth_));
 				displayModel_->projectAtom(i);
 			}
 			// Now bond the atoms, unless atomHover_ and i are the same (i.e. the button was clicked and not moved)

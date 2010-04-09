@@ -439,7 +439,7 @@ class Model
 	// Return the camera position vector
 	Vec3<double> camera();
 	// Calculate and return drawing pixel width
-	double drawPixelWidth();
+	double drawPixelWidth(double drawdepth);
 
 
 	/*
@@ -823,8 +823,8 @@ class Model
 	*/
 	public:
 	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> guideToModel(const Vec3<double> &v);
-	Vec3<double> guideToModel(double x, double y);
+	Vec3<double> guideToModel(const Vec3<double> &v, double drawdepth);
+	Vec3<double> guideToModel(double x, double y, double drawdepth);
 	// Convert from Bohr to Angstrom
 	void bohrToAngstrom();
 	// Convert from Angstrom to Bohr
@@ -977,6 +977,8 @@ class Model
 	public:
 	// Flag that undo/redo should be enabled for the model
 	void enableUndoRedo();
+	// Flag that undo/redo should be disabled for the model
+	void disableUndoRedo();
 	// Return the current undo level pointer
 	UndoState *currentUndoState();
 	// Return the current redo level pointer

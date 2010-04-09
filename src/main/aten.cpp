@@ -41,6 +41,7 @@ Aten::Aten()
 {
 	// Models
 	modelId_ = 0;
+	targetModelList_ = Aten::MainModelList;
 
 	// Default program mode
 	programMode_ = Aten::GuiMode;
@@ -61,6 +62,9 @@ Aten::Aten()
 
 	// Single-shot mode variables
 	exportFilter_ = NULL;
+
+	// Fragments
+	fragmentId_ = 0;
 }
 
 // Destructor
@@ -214,14 +218,30 @@ int Aten::nModels() const
 Model *Aten::addModel()
 {
 	msg.enter("Aten::addModel");
-	Model *m = models_.add();
-	char newname[16];
-	sprintf(newname,"Unnamed%03i", ++modelId_);
-	m->setName(newname);
-	m->changeLog.reset();
-	gui.addModel(m);
-	gui.disorderWindow->refresh();
-	setCurrentModel(m);
+	char newname[32];
+	Model *m;
+	// Check current list target for model creation
+	switch (targetModelList_)
+	{
+		case (Aten::MainModelList):
+			m = models_.add();
+			sprintf(newname,"Unnamed%03i", ++modelId_);
+			m->setName(newname);
+			m->changeLog.reset();
+			gui.addModel(m);
+			gui.disorderWindow->refresh();
+			setCurrentModel(m);
+			break;
+		case (Aten::FragmentLibraryList):
+			m = fragments_.add();
+			sprintf(newname,"Fragment%03i", ++fragmentId_);
+			m->setName(newname);
+			m->changeLog.reset();
+			m->disableUndoRedo();
+			break;
+		default:
+			printf("Internal Error: No target list set for model creation.\n");
+	}
 	msg.exit("Aten::addModel");
 	return m;
 }
@@ -525,3 +545,81 @@ Grid *Aten::gridClipboard()
 	return gridClipboard_;
 }
 
+/*
+// Fragment Library
+*/
+
+// Parse fragment directory
+int Aten::parseFragmentDir(const char *path)
+{
+	msg.enter("Aten::parseFragmentDir");
+	int i, nfailed = 0;
+	char s[8096], bit[128];
+	strcpy(s, "--> ");
+	// First check - does this directory actually exist
+	QDir fragmentdir(path);
+	if (!fragmentdir.exists())
+	{
+		msg.enter("Aten::parseFragmentDir");
+		return -1;
+	}
+	// Filter the directory contents - show only files and exclude '.' and '..'
+	QStringList fragmentlist = fragmentdir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i<fragmentlist.size(); i++)
+	{
+		QString filename(path);
+		filename += "/";
+		filename += fragmentlist.at(i);
+		Tree *f = aten.probeFile(qPrintable(filename), FilterData::ModelImport);
+		if (f == NULL) nfailed++;
+		else if (!f->executeRead(qPrintable(filename))) nfailed++;
+	}
+	msg.exit("Aten::parseFragmentDir");
+	return nfailed;
+}
+
+// Load fragment library
+void Aten::openFragments()
+{
+	msg.enter("Aten::openFragments");
+	char path[512];
+	bool found = FALSE;
+	int nfailed, ndefault;
+	// Redirect model creation to fragment list
+	targetModelList_ = Aten::FragmentLibraryList;
+
+	// Default search path should have already been set by openFilters()...
+	sprintf(path,"%s/fragments", dataDir_.get());
+	msg.print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path)));
+	nfailed = parseFragmentDir( path );
+
+	// Print out info
+	ndefault = fragments_.nItems();
+	msg.print("Loaded %i fragments from default stock.\n", ndefault);
+
+	// Try to load user fragments - we don't mind if the directory doesn't exist...
+	sprintf(path,"%s%s", homeDir_.get(), "/.aten/fragments/");
+	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path);
+	nfailed = parseFilterDir(path);
+	if (nfailed > 0) nFiltersFailed_ += nfailed;
+
+	// Print out info
+	msg.print("Loaded %i fragments from user stock.\n", fragments_.nItems() - ndefault);
+
+	// Return model creation to main list
+	targetModelList_ = Aten::MainModelList;
+
+	msg.exit("Aten::openFragments");
+}
+
+// Return head of fragments list
+Model *Aten::fragments()
+{
+	return fragments_.first();
+}
+
+// Return specified fragment in list
+Model *Aten::fragment(int n)
+{
+	return fragments_[n];
+}

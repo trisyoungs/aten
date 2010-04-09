@@ -62,7 +62,7 @@ void Aten::openFilters()
 
 	if (!found)
 	{
-		msg.print(Messenger::Error, "No filters found in any known locations.\n");
+		msg.print(Messenger::Error, "No filters found in any known default locations.\n");
 		msg.print(Messenger::Error, "Probable solutions:\n");
 		msg.print(Messenger::Error, "  1) Set the environment variable ATENDATA to point to the installed location of the filters\n");
 		msg.print(Messenger::Error, "         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'\n");
@@ -75,7 +75,7 @@ void Aten::openFilters()
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
 	sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-	msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
+	msg.print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path);
 	nfailed = parseFilterDir(path);
 	if (nfailed > 0) nFiltersFailed_ += nfailed;
 

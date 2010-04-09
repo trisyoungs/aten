@@ -322,6 +322,8 @@ class Canvas
 	void endMode(Prefs::MouseButton);
 	// Whether the mouse has moved between begin_mode() and end_mode() calls
 	bool hasMoved_;
+	// Current drawing depth for certain tools
+	double currentDrawDepth_;
 
 	public:
 	// Set the active mode to the current user mode

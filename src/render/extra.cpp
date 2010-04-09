@@ -67,7 +67,7 @@ void Canvas::renderExtra3d()
 			r = atomHover_->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
-			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_);
+			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_, currentDrawDepth_);
 			else mouse = i->r();
 			textpos = mouse;
 			mouse -= r;
@@ -166,7 +166,7 @@ void Canvas::renderExtra2d()
 		case (Canvas::EditDrawAction):
 		case (Canvas::EditChainAction):
 			// Get angstrom length
-			dx = 1.0 / displayModel_->drawPixelWidth();
+			dx = 1.0 / displayModel_->drawPixelWidth(currentDrawDepth_);
 			halfw = width_ / 2.0;
 			i = int( halfw / dx);
 			//if (i < 2) break;
