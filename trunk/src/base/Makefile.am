@@ -2,7 +2,7 @@ noinst_LIBRARIES = libbase.a libmath.a libsg.a
 
 libmath_a_SOURCES = mathfunc.cpp
 
-libbase_a_SOURCES = atomaddress.cpp atom.cpp bond.cpp bundle.cpp cell.cpp colourscalepoint.cpp dnchar.cpp doubleexp.cpp elements.cpp glyph.cpp kvmap.cpp log.cpp mathfunc.cpp measurement.cpp messenger.cpp lineparser.cpp pattern.cpp region.cpp sysfunc.cpp
+libbase_a_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp bond.cpp bundle.cpp cell.cpp colourscalepoint.cpp dnchar.cpp doubleexp.cpp elements.cpp glyph.cpp kvmap.cpp log.cpp mathfunc.cpp measurement.cpp messenger.cpp lineparser.cpp pattern.cpp region.cpp sysfunc.cpp
 
 libsg_a_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegroup.cpp
 

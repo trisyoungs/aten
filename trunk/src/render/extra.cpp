@@ -89,7 +89,6 @@ void Canvas::renderExtra3d()
 			  }
 			  else
 			  {
-// 				radius = prefs.renderStyle() == Atom::TubeStyle ? prefs.atomStyleRadius(Atom::TubeStyle) : prefs.bondRadius();
 				radius = prefs.bondStyleRadius(prefs.renderStyle());
 				glCylinder(mouse, mouse.magnitude(), 3, radius);
 				glTranslated(mouse.x, mouse.y, mouse.z);
@@ -113,7 +112,6 @@ void Canvas::renderExtra3d()
 			break;
 		// Draw on fragment (as long as mode is selected)
 		case (Canvas::DrawFragmentAction):
-	printf("Current Fragment = %p\n", gui.fragmentWindow->currentFragment());
 			if (gui.fragmentWindow->currentFragment() == NULL) break;
 			Fragment *frag = gui.fragmentWindow->currentFragment();
 			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
@@ -122,15 +120,18 @@ void Canvas::renderExtra3d()
 				// Atom is now fragment anchor point
 				if (atomClicked_ != NULL) i = atomClicked_;
 				r = i->r();
-				
+				Model *m = frag->anchoredModel(i);
+
+				glPushMatrix();
+				  glTranslated(r.x, r.y, r.z);
+				  renderModelAtoms(m);
+				glPopMatrix();
 			}
 			else
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-printf("Here we are:\n");
 				mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
-	mouse.print();
 				glPushMatrix();
 				  glTranslated(mouse.x, mouse.y, mouse.z);
 				  renderModelAtoms(frag->masterModel());

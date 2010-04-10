@@ -64,7 +64,7 @@ const char *ElementMap::zMapType(ElementMap::ZMapType zm)
 // Lutetium and Lawrencium are assigned to group 3, with Lanthanum and Actinium the first elements in the lanthanide and actinide series.
 */
 
-//	  Z	Mass  	Name         		Symbol			Group	Radius  Vlncy	AmbientRGBA		DiffuseRGBA
+//	  Z	Mass  		Name         		Symbol			Group	Radius  Vlncy	AmbientRGBA		DiffuseRGBA
 Element ElementMap::el[] = {
 	{ 0,	0.000,		"Dummy","DUMMY",	"XX","XX",		0,	0.00,	0.5,0.5,0.5,1.0,		0.375,0.375,0.375,1.0,
 		0,0,0,0,0,0,0,0,0,	0,0,0,0,0,0,0,0,0 },

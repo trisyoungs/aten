@@ -1,6 +1,7 @@
 add_library(base
 atomaddress.cpp
 atom.cpp
+atom_geometry.cpp
 bond.cpp
 bundle.cpp
 cell.cpp

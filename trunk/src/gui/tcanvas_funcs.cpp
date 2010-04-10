@@ -207,6 +207,7 @@ void TCanvas::mouseMoveEvent(QMouseEvent *event)
 	// Mouse motion handler.
 	// Tell the main canvas that the mouse has moved
 	gui.mainView.informMouseMove(event->x(),event->y());
+	setFocus();
 	gui.updateStatusBar();
 }
 

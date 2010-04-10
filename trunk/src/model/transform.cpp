@@ -131,14 +131,11 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		msg.exit("Model::rotateSelectionVector");
 		return;
 	}
-	Refitem<Atom,int> *ri = selection(markonly);
-	// Generate target coordinate system, defined from xaxis == v and orthogonal vectors from first atom
+	
+	// Generate target coordinate system, with X equal to rotation axis
 	vector.normalise();
 	u.rows[0] = vector;
-	tempv = ri->item->r() - origin;
-	tempv.normalise();
-	u.rows[1] = tempv - vector * tempv.dp(vector);
-	u.rows[1].normalise();
+	u.rows[1] = vector.orthogonal();
 	u.rows[2] = vector * u.rows[1];
 	u.rows[2].normalise();
 	ut = u.transpose();
@@ -152,13 +149,12 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	Igr = Igr - gr;
 
 	// Loop over selected atoms
-	while (ri != NULL)
+	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		tempv = gr * ri->item->r();
 		tempv += Igr * origin;
 		positionAtom(ri->item, tempv);
 		//i->r() = tempv;
-		ri = ri->next;
 	}
 
 	// Update model measurements
