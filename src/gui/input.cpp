@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/gui.h"
+#include "gui/fragment.h"
 #include "render/canvas.h"
 #include "model/model.h"
 
@@ -130,6 +131,21 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 		case (Canvas::DownKey):
 			displayModel_->rotateView(0.0, shiftkey ? 1.0 : 10.0);
 			postRedisplay();
+			break;
+	}
+	
+	// Mode-specific
+	switch (selectedMode_)
+	{
+		case (Canvas::DrawFragmentAction):
+			// Cycle link atom....
+			if (keyModifier_[Prefs::AltKey])
+			{
+				Fragment *frag = gui.fragmentWindow->currentFragment();
+				if (frag == NULL) break;
+				frag->cycleLinkAtom();
+				gui.mainView.postRedisplay();
+			}
 			break;
 	}
 }
@@ -425,6 +441,29 @@ void Canvas::endMode(Prefs::MouseButton button)
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
+			break;
+		// Draw framents
+		case (Canvas::DrawFragmentAction):
+// 			if (gui.fragmentWindow->currentFragment() == NULL) break;
+// 			Fragment *frag = gui.fragmentWindow->currentFragment();
+			if (atomClicked_ != NULL)
+			{
+/*				// Atom is now fragment anchor point
+				if (atomClicked_ != NULL) i = atomClicked_;
+				r = i->r();
+				Model *m = frag->anchoredModel(i);
+
+				glPushMatrix();
+				  glTranslated(r.x, r.y, r.z);
+				  renderModelAtoms(m);
+				glPopMatrix();*/
+			}
+			else
+			{
+				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
+// 				mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
+// 				frag->pasteToModel(displayModel_, mouse);
+			}
 			break;
 		case (Canvas::DrawTransmuteAction):
 			displayModel_->beginUndoState("Transmute");

@@ -209,7 +209,7 @@ void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, 
 	  glPushMatrix();
 	    // Special case where the bond is exactly in the XY plane.
 	    if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
-	    else glRotated(phi, -v.y/rij , v.x/rij ,0.0f);
+	    else glRotated(phi, -v.y/rij , v.x/rij ,0.0);
 	    glScaled(1.0,1.0,rij);
 	    glCallList(list_[GLOB_TUBEARROW]);
 	  glPopMatrix();

@@ -81,6 +81,7 @@ class Atom
 	// Return parent model
 	Model *parent();
 
+
 	/*
 	// Coordinates
 	*/
@@ -88,6 +89,7 @@ class Atom
 	Vec3<double> r_;
 	public:
 	Vec3<double> &r();
+
 
 	/*
 	// Forces
@@ -104,6 +106,7 @@ class Atom
 	Vec3<double> v_;
 	public:
 	Vec3<double> &v();
+
 
 	/*
 	// Character
@@ -160,9 +163,16 @@ class Atom
 	// Return whether the atom's position is fixed
 	bool isPositionFixed();
 
+
 	/*
 	// Bonds / Bonding
 	*/
+	private:
+	// Return new atom vector for specified bond patterns / angles
+	Vec3<double> oneBondVector(Bond *b, double angle);
+	Vec3<double> twoBondVector(Bond *b1, Bond *b2, double angle);
+	Vec3<double> threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, Atom::AtomGeometry reqgeom);
+
 	protected:
 	// Bond list for atom
 	Reflist<Bond,int> bonds_;
@@ -192,6 +202,9 @@ class Atom
 	Bond *findBond(Atom *j);
 	// Determine bond plane
 	Vec3<double> findBondPlane(Atom*, Bond*, const Vec3<double>&);
+	// Return next bext vector for addition of new atom
+	Vec3<double> nextBondVector();
+
 
 	/*
 	// Selection
@@ -214,6 +227,7 @@ class Atom
 	// Return whether the atom is hidden
 	bool isHidden();
 
+
 	/*
 	// Identity
 	*/
@@ -230,6 +244,7 @@ class Atom
 	void decreaseId();
 	// Return the id of the atom
 	int id();
+
 
 	/*
 	// Rendering Coordinates
@@ -251,6 +266,7 @@ class Atom
 	void setScreenRadius(double radius);
 	// Return the screen radius of the atom
 	double screenRadius();
+
 
 	/*
 	// Rendering

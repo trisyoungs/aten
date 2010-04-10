@@ -37,10 +37,25 @@ Fragment::Fragment()
 	masterModel_ = NULL;
 	masterLinkAtom_ = NULL;
 	masterLinkPartner_ = NULL;
+	anchorRotation_ = 0.0;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Set link partner
+void Fragment::setLinkPartner()
+{
+	if (masterLinkAtom_ == NULL)
+	{
+		printf("Internal Error: No link atom set, so can't set link partner for fragment.\n");
+		masterLinkPartner_ = NULL;
+		return;
+	}
+	if (masterLinkAtom_->nBonds() == 1) masterLinkPartner_ = masterLinkAtom_->bonds()->item->partner(masterLinkAtom_);
+	else if (masterLinkAtom_ == masterModel_->atoms()) masterLinkPartner_ = masterLinkAtom_->next;
+	else masterLinkPartner_ = masterModel_->atoms();
 }
 
 // Set data from source model
@@ -49,29 +64,16 @@ bool Fragment::setMasterModel(Model *m)
 	msg.enter("Fragment::setMasterModel");
 	masterModel_ = m;
 
-	// Define link (anchor) atom
+	// Define initial link (anchor) atom as first non-element (XX) atom in model (if there is one)
 	if (masterModel_->nUnknownAtoms() == 0)
 	{
-		msg.print(" ... Warning - Fragment model has no defined anchor point. Assuming first atom.\n");
+		msg.print(" ... Warning - Fragment model '%s' has no defined anchor point. Assuming first atom.\n", masterModel_->name());
 		masterLinkAtom_ = masterModel_->atoms();
 	}
-	else if (masterModel_->nUnknownAtoms() > 1)
-	{
-		msg.print(" ... Warning - Fragment model has multiple anchor points. Using lowest ID.\n");
-		for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
-	}
 	else for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
-	if (masterLinkAtom_ == NULL)
-	{
-		msg.print(" ... Error: No link atom defined for fragment '%s'. Fragment will be removed from list.\n", masterModel_->name());
-		msg.exit("Fragment::setMasterModel");
-		return FALSE;
-	}
 
 	// Find link partner
-	if (masterLinkAtom_->nBonds() != 1) masterLinkPartner_ = masterLinkAtom_->bonds()->item->partner(masterLinkAtom_);
-	else if (masterLinkAtom_ == masterModel_->atoms()) masterLinkPartner_ = masterLinkAtom_->next;
-	else masterLinkPartner_ = masterModel_->atoms();
+	setLinkPartner();
 
 	// Create icon
 	// Store current rendering style so we can reset afterwards
@@ -90,14 +92,19 @@ bool Fragment::setMasterModel(Model *m)
 	gui.offscreenView.postRedisplay();
 	gui.offscreenView.setOffScreenRendering(TRUE);
 
-	/*if (prefs.useFrameBuffer() == FALSE) icon_ = gui.offscreenWidget->renderPixmap(100, 100, FALSE);
-	else icon_ = */QPixmap::fromImage(gui.offscreenWidget->grabFrameBuffer());
+	if (prefs.useFrameBuffer() == FALSE) icon_ = gui.offscreenWidget->renderPixmap(100, 100, FALSE);
+	else icon_ = QPixmap::fromImage(gui.offscreenWidget->grabFrameBuffer());
 
 	prefs.setScreenObjects(screenbits);
 
 	// Reconfigure canvas to widget size (necessary if image size was changed)
 	gui.offscreenView.configure(gui.offscreenWidget->width(), gui.offscreenWidget->height());
 	gui.offscreenWidget->setRenderSource(NULL);
+
+	// Final tweaks to fragment model - put link atom at 0,0,0
+	masterModel_->selectAll();
+	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
+	masterModel_->selectNone();
 
 	msg.exit("Fragment::setMasterModel");
 	return TRUE;
@@ -107,17 +114,6 @@ bool Fragment::setMasterModel(Model *m)
 Model *Fragment::masterModel()
 {
 	return masterModel_;
-}
-
-// Finalise structure, preparing master model for use
-void Fragment::finalise()
-{
-	msg.enter("Fragment::finalise");
-	// Final tweaks to fragment model - put link atom at 0,0,0
-		masterModel_->selectAll();
-		masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
-		masterModel_->selectNone();
-	msg.exit("Fragment::finalise");
 }
 
 // Set icon (from pixmap)
@@ -130,6 +126,70 @@ void Fragment::setIcon(QPixmap &pixmap)
 QIcon &Fragment::icon()
 {
 	return icon_;
+}
+
+// Cycle link atom
+void Fragment::cycleLinkAtom()
+{
+	masterLinkAtom_ = masterLinkAtom_->next;
+	if (masterLinkAtom_ == NULL) masterLinkAtom_ = masterModel_->atoms();
+	setLinkPartner();
+	// Re-translate model so new link atom is at the origin
+	masterModel_->selectAll();
+	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
+	masterModel_->selectNone();
+}
+
+// Reset oriented model
+void Fragment::resetOrientedModel()
+{
+	// Copy masterModel_ over to orientedModel_
+	orientedModel_.copy(masterModel_);
+}
+
+// Rotate oriented model according to screen delta
+void Fragment::rotateOrientedModel()
+{
+}
+
+// Return oriented model pointer
+Model *Fragment::orientedModel()
+{
+}
+
+// Adjust anchored model rotation (from mouse delta)
+void Fragment::rotateAnchoredModel(double dx, double dy)
+{
+}
+
+// Return anchored model, oriented to attach to specified atom
+Model *Fragment::anchoredModel(Atom *anchorpoint)
+{
+	msg.enter("Fragment::anchoredModel");
+	// Determine vector along which our reference vector should point
+	Vec3<double> orientation = anchorpoint->nextBondVector();
+
+	// Calculate reference vector in fragment
+	Vec3<double> ref = masterModel_->cell()->mimd(masterLinkPartner_, masterLinkAtom_);
+	ref.normalise();
+
+	// Calculate cross product to get rotation axis, and dot product to get rotation angle
+	Vec3<double> xp = ref * orientation;
+	double angle = acos(ref.dp(orientation)) * DEGRAD;
+	
+	// Copy original model and reorient
+	anchoredModel_.copy(masterModel_);
+	anchoredModel_.selectAll();
+	anchoredModel_.rotateSelectionVector(Vec3<double>(), xp, -angle);
+	anchoredModel_.selectNone();
+
+	msg.exit("Fragment::anchoredModel");
+	return &anchoredModel_;	
+}
+
+// Paste anchored model to target model
+void Fragment::pasteAnchoredModel(Atom *anchorpoint, Model *model)
+{
 }
 
 /*

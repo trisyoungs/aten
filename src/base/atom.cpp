@@ -370,14 +370,12 @@ Bond *Atom::findBond(Atom *j)
 	msg.enter("Atom::findBond");
 	Bond *result = NULL;
 	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next)
-// 	while (bref != NULL)
 	{
 		if (bref->item->partner(this) == j)
 		{
 			result = bref->item;
 			break;
 		}
-// 		bref = bref->next;
 	}
 	msg.exit("Atom::findBond");
 	return result;
