@@ -24,6 +24,7 @@
 #include "render/canvas.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
+#include "gui/fragment.h"
 #include "base/sysfunc.h"
 
 // Local variables
@@ -41,30 +42,34 @@ void Canvas::renderExtra3d()
 	static Atom *i;
 	// Draw on the selection highlights (for atoms in canvas.subsel)
 	glSubsel3d();
-	// Other modes
-	switch (activeMode_)
+	// What we draw depends on two variables - selectedMode_ and activeMode_
+	// If we only wish to draw something when the mouse button is down, use activeMode_
+	// If we wish to draw something when the mode is selected and regardless of mouse status, use selectedMode_
+	switch (selectedMode_)
 	{
-		// Draw on the bounding sphere of a radial selection
+		// Draw on the bounding sphere of a radial selection (if mode is active)
 		case (Canvas::SelectRadialAction):
-			if (atomHover_ == NULL) break;
+			if (activeMode_ != Canvas::SelectRadialAction) break;
+			if (atomClicked_ == NULL) break;
 			// Work out the radius of the sphere
 			tempv = rMouseDown_ - rMouseUp_;
 			radius = tempv.x * tempv.y;
-			radius /= atomHover_->screenRadius();
+			radius /= atomClicked_->screenRadius();
 			// Convert the pixel radius into model coordinate radius. We will have the selection 'hotspot'
 			// radius of the atom from its screen projection, which itself depends on the drawing style...
-			radius *= prefs.screenRadius(atomHover_);
-			r = atomHover_->rWorld();
+			radius *= prefs.screenRadius(atomClicked_);
+			r = atomClicked_->rWorld();
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
 			  glCallList(list_[GLOB_SELSPHEREATOM]);
 			glPopMatrix();
 			break;
-		// Draw on bond and new atom for chain drawing
-		case (Canvas::EditChainAction):
-			if (atomHover_ == NULL) break;
-			r = atomHover_->r();
+		// Draw on bond and new atom for chain drawing (if mode is active)
+		case (Canvas::DrawChainAction):
+			if (activeMode_ != Canvas::DrawChainAction) break;
+			if (atomClicked_ == NULL) break;
+			r = atomClicked_->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
 			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_, currentDrawDepth_);
@@ -76,7 +81,7 @@ void Canvas::renderExtra3d()
 			  // Determine how we'll draw the new bond / atom
 			  if (prefs.renderStyle() == Atom::StickStyle)
 			  {
-				// Simple - draw line from atomHover_ to mouse position
+				// Simple - draw line from atomClicked_ to mouse position
 				glBegin(GL_LINES);
 				  glVertex3d(0.0,0.0,0.0);
 				  glVertex3d(mouse.x,mouse.y,mouse.z);
@@ -105,6 +110,32 @@ void Canvas::renderExtra3d()
 			// Draw text showing distance
 			sprintf(s," l = %f A",mouse.magnitude());
 			glText(textpos,s);
+			break;
+		// Draw on fragment (as long as mode is selected)
+		case (Canvas::DrawFragmentAction):
+	printf("Current Fragment = %p\n", gui.fragmentWindow->currentFragment());
+			if (gui.fragmentWindow->currentFragment() == NULL) break;
+			Fragment *frag = gui.fragmentWindow->currentFragment();
+			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
+			if ((atomClicked_ != NULL) || (i != NULL))
+			{
+				// Atom is now fragment anchor point
+				if (atomClicked_ != NULL) i = atomClicked_;
+				r = i->r();
+				
+			}
+			else
+			{
+				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
+				// Get drawing point origin, translate to it, and render the stored model
+printf("Here we are:\n");
+				mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
+	mouse.print();
+				glPushMatrix();
+				  glTranslated(mouse.x, mouse.y, mouse.z);
+				  renderModelAtoms(frag->masterModel());
+				glPopMatrix();
+			}
 			break;
 	}
 	// Draw on extra stuff based on the visibility of any tool windows
@@ -163,8 +194,8 @@ void Canvas::renderExtra2d()
 	switch (selectedMode_)
 	{
 		// Draw on distance ruler for drawing modes
-		case (Canvas::EditDrawAction):
-		case (Canvas::EditChainAction):
+		case (Canvas::DrawAtomAction):
+		case (Canvas::DrawChainAction):
 			// Get angstrom length
 			dx = 1.0 / displayModel_->drawPixelWidth(currentDrawDepth_);
 			halfw = width_ / 2.0;

@@ -142,6 +142,7 @@ void AtenForm::finaliseUi()
 	// Draw Toolbar
 	uaGroup->addAction(ui.actionDrawAtom);
 	uaGroup->addAction(ui.actionDrawChain);
+	uaGroup->addAction(ui.actionDrawFragment);
 	uaGroup->addAction(ui.actionDeleteAtom);
 	uaGroup->addAction(ui.actionTransmuteAtom);
 	uaGroup->addAction(ui.actionBondSingle);

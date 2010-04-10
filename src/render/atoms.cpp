@@ -24,7 +24,7 @@
 #include "render/canvas.h"
 
 // Render model atoms and bonds
-void Canvas::renderModelAtoms()
+void Canvas::renderModelAtoms(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;
@@ -36,16 +36,24 @@ void Canvas::renderModelAtoms()
 	static Refitem<Bond,int> *bref;
 	static Cell *cell;
 
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelAtoms\n");
+		msg.exit("Canvas::renderModelAtoms");
+		return;
+	}
+
 	renderstyle = prefs.renderStyle();
 	scheme = prefs.colourScheme();
-	cell = displayModel_->cell();
+	cell = sourceModel->cell();
 	
 	// Set polygon fill mode and specular reflection
 	prefs.copyColour(Prefs::SpecularColour, specular);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
-	for (i = displayModel_->atoms(); i != NULL; i = i->next)
+	for (i = sourceModel->atoms(); i != NULL; i = i->next)
 	{
 		// If the atom is hidden then move on to the next
 		if (i->isHidden()) continue;
@@ -214,7 +222,7 @@ void Canvas::renderModelAtoms()
 	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glEnable(GL_BLEND);
 	// Make sure lighting is on
 	glEnable(GL_LIGHTING);
-	for (i = displayModel_->atoms(); i != NULL; i = i->next)
+	for (i = sourceModel->atoms(); i != NULL; i = i->next)
 	{
 		// Grab atom style and toggle lighting state if Atom::IndividualStyle is the main drawing style
 		renderstyle == Atom::IndividualStyle ? style_i = i->style() : style_i = renderstyle;

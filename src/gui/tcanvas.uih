@@ -27,6 +27,7 @@
 
 // Forward Declarations
 class Canvas;
+class Model;
 
 class TCanvas : public QGLWidget
 {
@@ -38,10 +39,16 @@ class TCanvas : public QGLWidget
 	private:
 	// Canvas object used by the widget
 	Canvas *canvas_;
+	// Flag whether to use Aten's current model as rendering source (the default)
+	bool useCurrentModel_;
+	// Model to render if we are not using the current model in Aten
+	Model *renderSource_;
 
 	public:
 	// Set the widgetcanvas for the display
 	void setCanvas(Canvas *wc);
+	// Set the rendering source to the supplied model (cancels useCurrentModel_ if it is enabled)
+	void setRenderSource(Model *source);
 	// Probe widget/context/format features
 	void probeFeatures();
 

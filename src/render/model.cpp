@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // Render atom labels
-void Canvas::renderModelLabels()
+void Canvas::renderModelLabels(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelLabels");
 	// Annotate the model with 2D labels
@@ -35,9 +35,16 @@ void Canvas::renderModelLabels()
 	static int labels;
 	static ForcefieldAtom *ffa;
 	static Vec3<double> cellCentre;
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelLabels\n");
+		msg.exit("Canvas::renderModelLabels");
+		return;
+	}
 	// If we have a unit cell we must account for the origin translation
-	cellCentre = displayModel_->cell()->centre();
-	for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
+	cellCentre = sourceModel->cell()->centre();
+	for (Atom *i = sourceModel->atoms(); i != NULL; i = i->next)
 	{
 		// Check if atom has labels and is visible
 		if ((!i->hasLabels()) || (i->isHidden())) continue;
@@ -82,7 +89,7 @@ void Canvas::renderModelLabels()
 		}
 		//glText(i->r() - cellCentre, text);
 		// Add text object to list
-		displayModel_->projectAtom(i);
+		sourceModel->projectAtom(i);
 		if (i->rScreen().z < 1.0)
 		{
 			TextObject *to = new TextObject((int)i->rScreen().x, int(height_ - i->rScreen().y), FALSE, text);
@@ -93,7 +100,7 @@ void Canvas::renderModelLabels()
 }
 
 // Render measurements
-void Canvas::renderModelMeasurements()
+void Canvas::renderModelMeasurements(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelMeasurements");
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
@@ -103,12 +110,19 @@ void Canvas::renderModelMeasurements()
 	bool rightalign;
 	static char text[256];
 	static Atom **atoms;
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelMeasurements\n");
+		msg.exit("Canvas::renderModelMeasurements");
+		return;
+	}
 	// Grab cell origin to get correct positioning
-	cellCentre = -displayModel_->cell()->centre();
+	cellCentre = -sourceModel->cell()->centre();
 	glPushMatrix();
 	  glTranslated(cellCentre.x, cellCentre.y, cellCentre.z);
 	  // Distances
-	  for (Measurement *m = displayModel_->distances(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->distances(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -122,7 +136,7 @@ void Canvas::renderModelMeasurements()
 		glEnd();
 		sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
 		// Add text object to list
-		pos1 = displayModel_->modelToScreen(labpos);
+		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
 		{
 			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), FALSE, text);
@@ -130,7 +144,7 @@ void Canvas::renderModelMeasurements()
 		}
 	  }
 	  // Angles
-	  for (Measurement *m = displayModel_->angles(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->angles(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -163,12 +177,12 @@ void Canvas::renderModelMeasurements()
 		glEnd();
 		// Determine orientation of text
 		labpos = (rji + rjk) * 0.2 + rj;
-		pos1 = displayModel_->modelToScreen(labpos);
-		pos2 = displayModel_->modelToScreen(rj);
+		pos1 = sourceModel->modelToScreen(labpos);
+		pos2 = sourceModel->modelToScreen(rj);
 		rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
 		sprintf(text,"%f %s", m->value(), prefs.angleLabel());
 		// Add text object to list
-		pos1 = displayModel_->modelToScreen(labpos);
+		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
 		{
 			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), rightalign, text);
@@ -176,7 +190,7 @@ void Canvas::renderModelMeasurements()
 		}
 	  }
 	  // Torsions
-	  for (Measurement *m = displayModel_->torsions(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->torsions(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -194,7 +208,7 @@ void Canvas::renderModelMeasurements()
 		labpos = (rj + rk) * 0.5;
 		sprintf(text,"%f Deg", m->value());
 		// Add text object to list
-		pos1 = displayModel_->modelToScreen(labpos);
+		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
 		{
 			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), FALSE, text);
@@ -218,7 +232,7 @@ void Canvas::renderModelForceArrows()
 }
 
 // Render model cell
-void Canvas::renderModelCell()
+void Canvas::renderModelCell(Model *sourceModel)
 {
 	// Draw the unit cell of the model
 	GLfloat fgcol[4];
@@ -228,15 +242,22 @@ void Canvas::renderModelCell()
 	glLineWidth(1.0f);
 	static Vec3<double> cellCentre, lengths;
 	static Mat4<double> matrix;
-	Cell *cell = displayModel_->cell();
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelCell\n");
+		msg.exit("Canvas::renderModelCell");
+		return;
+	}
+	Cell *cell = sourceModel->cell();
 	if (cell->type() != Cell::NoCell)
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
 		glPushMatrix();
-		  glMultMatrixd( displayModel_->cell()->axesForGL() );
+		  glMultMatrixd( sourceModel->cell()->axesForGL() );
 		  if (prefs.isVisibleOnScreen(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
-		  lengths = displayModel_->cell()->lengths();
+		  lengths = sourceModel->cell()->lengths();
 		  // Render cell axis arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewCellAxes))
 		  {

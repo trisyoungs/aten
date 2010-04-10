@@ -23,12 +23,12 @@
 #define ATEN_FRAGMENTDATA_H
 
 #include "base/dnchar.h"
+#include "model/model.h"
 #include <QtGui/QIcon>
 #include "templates/list.h"
 
 // Forward Declarations
 class Atom;
-class Model;
 
 // Fragment Model data
 class Fragment
@@ -39,25 +39,30 @@ class Fragment
 	// List pointers
 	Fragment *prev, *next;
 
+	/*
+	// Fragment Model Data
+	*/
 	private:
-	// Model to which the data is relevant
-	Model *model_;
+	// Pointer to master model, containing fragment in original rotation
+	Model *masterModel_;
 	// Link atom, which acts as connection point for fragment
-	Atom *linkAtom_;
+	Atom *masterLinkAtom_;
 	// Bond partner for link atom (if any)
-	Atom *linkPartner_;
+	Atom *masterLinkPartner_;
+	// Fragment oriented by user
+	Model orientedModel_;
+	// Fragment oriented to anchor point
+	Model anchoredModel_;
 	// QPixmap containing miniature picture of fragment
 	QIcon icon_;
 
 	public:
 	// Set data from source model
-	bool setModel(Model *m);
+	bool setMasterModel(Model *m);
 	// Return model pointer
-	Model *model();
-	// Return link atom
-	Atom *linkAtom();
-	// Return link atom partner
-	Atom *linkPartner();
+	Model *masterModel();
+	// Finalise structure, preparing master model for use
+	void finalise();
 	// Set icon for fragment
 	void setIcon(QPixmap &pixmap);
 	// Return icon

@@ -43,6 +43,7 @@ Canvas::Canvas()
 	renderOffScreen_ = FALSE;
 	displayModel_ = NULL;
 	displayFrameId_ = -1;
+	atomClicked_ = NULL;
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;
@@ -644,9 +645,9 @@ void Canvas::setValid(bool b)
 */
 
 // Returns the atom currently under the mouse
-Atom *Canvas::atomHover()
+Atom *Canvas::atomClicked()
 {
-	return atomHover_;
+	return atomClicked_;
 }
 
 // Clears the list of picked atoms

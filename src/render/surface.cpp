@@ -626,7 +626,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 }
 
 // Render surfaces
-void Canvas::renderSurfaces()
+void Canvas::renderSurfaces(Model *sourceModel)
 {
 	msg.enter("Canvas::renderSurfaces");
 	// Loop over surfaces held by the model, rendering those that are visible.
@@ -635,8 +635,17 @@ void Canvas::renderSurfaces()
 	static Vec3<double> origin;
 	static double glmat[16];
 	static Mat4<double> mat;
+
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderSurfaces\n");
+		msg.exit("Canvas::renderSurfaces");
+		return;
+	}
+
 	glDisable(GL_CULL_FACE);
-	for (Grid *g = displayModel_->grids(); g != NULL; g = g->next)
+	for (Grid *g = sourceModel->grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
 		if (!g->isVisible()) continue;

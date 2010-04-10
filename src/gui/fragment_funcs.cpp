@@ -80,8 +80,8 @@ void AtenFragment::refresh()
 			item = new TTreeWidgetItem(group);
 			item->setFragment(f);
 			item->setIcon(1,f->icon());
-			item->setText(2,itoa(f->model()->nAtoms()));
-			item->setText(3,f->model()->name());
+			item->setText(2,itoa(f->masterModel()->nAtoms()));
+			item->setText(3,f->masterModel()->name());
 
 			// If the currentFragment_ is NULL, set it as soon as possible
 			if (currentFragment_ == NULL) currentFragment_ = f;

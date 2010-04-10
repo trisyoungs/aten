@@ -597,46 +597,7 @@ bool Aten::parseFragmentDir(const char *path, const char *groupname)
 
 		// Store the last model on the list.
 		f = fg->addFragment();
-		if (!f->setModel(fragmentModels_.last())) fg->removeFragment(f);
-
-		// Store current rendering style so we can reset afterwards
-		Atom::DrawStyle ds = prefs.renderStyle();
-		prefs.setRenderStyle(Atom::SphereStyle);
-
-		// Centre model at 0,0,0 here...
-		f->model()->selectAll();
-		f->model()->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
-		f->model()->selectNone();
-
-		// Generate pixmap for fragment
-		int screenbits = prefs.screenObjects();
-		prefs.setScreenObjects(prefs.offScreenObjects());
-		setCurrentModel(f->model());
-		gui.mainView.postRedisplay();
-		gui.mainView.setOffScreenRendering(TRUE);
-	
-		if (prefs.useFrameBuffer() == FALSE) pixmap = gui.mainWidget->renderPixmap(100, 100, FALSE);
-		else
-		{
-			QImage image = gui.mainWidget->grabFrameBuffer();
-			pixmap = QPixmap::fromImage(image);
-		}
-	
-		gui.mainView.setOffScreenRendering(FALSE);
-		prefs.setScreenObjects(screenbits);
-	
-		// Reconfigure canvas to widget size (necessary if image size was changed)
-		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
-		setCurrentModel(NULL);
-
-		// Set icon in fragment data
-		f->setIcon(pixmap);
-
-		// Final tweaks to fragment model - put link atom at 0,0,0
-		f->model()->selectAll();
-		f->model()->translateSelectionLocal(-f->linkAtom()->r());
-		f->model()->selectNone();
-
+		if (!f->setMasterModel(fragmentModels_.last())) fg->removeFragment(f);
 	}
 
 	// Check for other directories

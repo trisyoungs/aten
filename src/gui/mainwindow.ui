@@ -2375,6 +2375,9 @@
    </property>
   </action>
   <action name="actionDrawFragment" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >
      <normaloff>:/build/icons/build_fragment.svg</normaloff>:/build/icons/build_fragment.svg</iconset>
