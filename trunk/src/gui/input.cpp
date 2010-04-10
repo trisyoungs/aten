@@ -34,17 +34,17 @@ void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y, bool
 	keyModifier_[Prefs::CtrlKey] = ctrlkey;
 	keyModifier_[Prefs::AltKey] = altkey;
 	// Determine if there is an atom under the mouse
-	atomHover_ = displayModel_->atomOnScreen(x,y);
+	atomClicked_ = displayModel_->atomOnScreen(x,y);
 	// Perform atom picking before entering mode (if required)
-	if (pickEnabled_ && (atomHover_ != NULL))
+	if (pickEnabled_ && (atomClicked_ != NULL))
 	{
 		// Don't add the same atom more than once
-		if (pickedAtoms_.search(atomHover_) == NULL)
+		if (pickedAtoms_.search(atomClicked_) == NULL)
 		{
-			pickedAtoms_.add(atomHover_);
-			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomHover_);
+			pickedAtoms_.add(atomClicked_);
+			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomClicked_);
 		}
-		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomHover_);
+		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomClicked_);
 	}
 	// Activate mode...
 	beginMode(button);
@@ -60,14 +60,14 @@ void Canvas::informMouseUp(Prefs::MouseButton button, double x, double y)
 		// Deactivate mode...
 		endMode(button);
 	}
-	atomHover_ = NULL;
+	atomClicked_ = NULL;
 }
 
 // Inform mouse move
 void Canvas::informMouseMove(double x, double y)
 {
 	// Perform action associated with mode (if any)
-	if (activeMode_ != Canvas::NoAction) modeMotion(x,y);
+	if ((activeMode_ != Canvas::NoAction) || (selectedMode_ == Canvas::DrawFragmentAction)) modeMotion(x,y);
 	rMouseLast_.set(x,y,0.0);
 }
 
@@ -171,10 +171,10 @@ void Canvas::setSelectedMode(UserAction ua)
 		case (Canvas::MeasureDistanceAction):
 		case (Canvas::MeasureAngleAction):
 		case (Canvas::MeasureTorsionAction):
-		case (Canvas::EditBondSingleAction):
-		case (Canvas::EditBondDoubleAction):
-		case (Canvas::EditBondTripleAction):
-		case (Canvas::EditDeleteBondAction):
+		case (Canvas::DrawBondSingleAction):
+		case (Canvas::DrawBondDoubleAction):
+		case (Canvas::DrawBondTripleAction):
+		case (Canvas::DrawDeleteBondAction):
 			pickEnabled_ = TRUE;
 			pickedAtoms_.clear();
 			break;
@@ -238,18 +238,18 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				// Some modes require actions to be done when the button is first depressed
 				switch (activeMode_)
 				{
-					case (Canvas::EditChainAction):
+					case (Canvas::DrawChainAction):
 						// If there is currently no atom under the mouse, draw one...
-						if (atomHover_ == NULL)
+						if (atomClicked_ == NULL)
 						{
 							displayModel_->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
 							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, currentDrawDepth_));
 							displayModel_->endUndoState();
 							displayModel_->projectAtom(i);
-							atomHover_ = i;
+							atomClicked_ = i;
 						}
-						else currentDrawDepth_ = atomHover_->rWorld().z;
+						else currentDrawDepth_ = atomClicked_->rWorld().z;
 						break;
 				}
 				break;
@@ -319,11 +319,11 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (!modded) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
 			if (area > 50.0) displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y, ctrled);
-			else if (atomHover_ != NULL)
+			else if (atomClicked_ != NULL)
 			{
-				if (shifted) displayModel_->selectionToggle(atomHover_);
-				else if (ctrled) displayModel_->deselectAtom(atomHover_);
-				else displayModel_->selectAtom(atomHover_);
+				if (shifted) displayModel_->selectionToggle(atomClicked_);
+				else if (ctrled) displayModel_->deselectAtom(atomClicked_);
+				else displayModel_->selectAtom(atomClicked_);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
@@ -332,25 +332,25 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::SelectMoleculeAction):
 			displayModel_->beginUndoState("Select Molecule");
 			if (!modded) displayModel_->selectNone();
-			if (atomHover_ != NULL)	displayModel_->selectTree(atomHover_, FALSE, ctrled);
+			if (atomClicked_ != NULL)	displayModel_->selectTree(atomClicked_, FALSE, ctrled);
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectElementAction):
 			displayModel_->beginUndoState("Select Element");
 			if (!modded) displayModel_->selectNone();
-			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_, FALSE, ctrled);
+			if (atomClicked_ != NULL) displayModel_->selectElement(atomClicked_, FALSE, ctrled);
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
 			break;
 		case (Canvas::SelectRadialAction):
 			displayModel_->beginUndoState("Select Radial");
 			if (!modded) displayModel_->selectNone();
-			if (atomHover_ != NULL)
+			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				radius /= atomHover_->screenRadius() * prefs.screenRadius(atomHover_);
-				displayModel_->selectRadial(atomHover_,radius);
+				radius /= atomClicked_->screenRadius() * prefs.screenRadius(atomClicked_);
+				displayModel_->selectRadial(atomClicked_,radius);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,FALSE);
@@ -387,9 +387,9 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Draw single atom
-		case (Canvas::EditDrawAction):
+		case (Canvas::DrawAtomAction):
 			// Make sure we don't draw on top of an existing atom
-			if (atomHover_ == NULL)
+			if (atomClicked_ == NULL)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, -prefs.drawDepth()));
@@ -399,10 +399,10 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.update(TRUE,FALSE,TRUE);
 			break;
 		// Draw chains of atoms
-		case (Canvas::EditChainAction):
+		case (Canvas::DrawChainAction):
 			// If there is no atom under the mouse we draw one
 			i = displayModel_->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
-			if ((atomHover_ == i) && (i != NULL)) break;
+			if ((atomClicked_ == i) && (i != NULL)) break;
 			displayModel_->beginUndoState("Draw Chain");
 			if (i == NULL)
 			{
@@ -410,41 +410,53 @@ void Canvas::endMode(Prefs::MouseButton button)
 				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_, currentDrawDepth_));
 				displayModel_->projectAtom(i);
 			}
-			// Now bond the atoms, unless atomHover_ and i are the same (i.e. the button was clicked and not moved)
-			if (atomHover_ != i)
+			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
+			if (atomClicked_ != i)
 			{
 				// Search for existing bond between atoms
-				b = i->findBond(atomHover_);
+				b = i->findBond(atomClicked_);
 				if (b == NULL) bt = Bond::Single;
 				else
 				{
 					bt = Bond::increase(b->type());
-					displayModel_->unbondAtoms(i,atomHover_);
+					displayModel_->unbondAtoms(i,atomClicked_);
 				}
-				displayModel_->bondAtoms(i,atomHover_,bt);
+				displayModel_->bondAtoms(i,atomClicked_,bt);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-		case (Canvas::EditTransmuteAction):
+		case (Canvas::DrawTransmuteAction):
 			displayModel_->beginUndoState("Transmute");
-			displayModel_->transmuteAtom(atomHover_, aten.sketchElement());
+			displayModel_->transmuteAtom(atomClicked_, aten.sketchElement());
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-		case (Canvas::EditDeleteAction):
-			displayModel_->beginUndoState("Delete Atom");
-			displayModel_->deleteAtom(atomHover_);
-			displayModel_->endUndoState();
+		case (Canvas::DrawDeleteAction):
+			if (shifted)
+			{
+				displayModel_->beginUndoState("Delete Bonds to Atom");
+				while (atomClicked_->bonds() != NULL)
+				{
+					displayModel_->unbondAtoms(atomClicked_, atomClicked_->bonds()->item->partner(atomClicked_));
+				}
+				displayModel_->endUndoState();
+			}
+			else
+			{
+				displayModel_->beginUndoState("Delete Atom");
+				displayModel_->deleteAtom(atomClicked_);
+				displayModel_->endUndoState();
+			}
 			gui.update(TRUE,FALSE,TRUE);
 			break;
-		case (Canvas::EditProbeAction):
-			if (atomHover_ != NULL) atomHover_->print();
+		case (Canvas::DrawProbeAction):
+			if (atomClicked_ != NULL) atomClicked_->print();
 			break;
 		// Bonding
-		case (Canvas::EditBondSingleAction):
-		case (Canvas::EditBondDoubleAction):
-		case (Canvas::EditBondTripleAction):
+		case (Canvas::DrawBondSingleAction):
+		case (Canvas::DrawBondDoubleAction):
+		case (Canvas::DrawBondTripleAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
 			pickedAtoms_.fillArray(2,atoms);
@@ -452,20 +464,20 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (b == NULL)
 			{
 				displayModel_->beginUndoState("Bond Atoms");
-				displayModel_->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-Canvas::EditBondSingleAction+1));
+				displayModel_->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-Canvas::DrawBondSingleAction+1));
 				displayModel_->endUndoState();
 			}
 			else
 			{
 				displayModel_->beginUndoState("Change Bond");
-				displayModel_->changeBond(b,Bond::BondType(endingMode-Canvas::EditBondSingleAction+1));
+				displayModel_->changeBond(b,Bond::BondType(endingMode-Canvas::DrawBondSingleAction+1));
 				displayModel_->endUndoState();
 			}
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Delete bond
-		case (Canvas::EditDeleteBondAction):
+		case (Canvas::DrawDeleteBondAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
 			pickedAtoms_.fillArray(2,atoms);
@@ -479,11 +491,11 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.update(FALSE,FALSE,FALSE);
 			break;
 		// Misc
-		case (Canvas::EditAddHydrogenAction):
-			if (atomHover_ != NULL)
+		case (Canvas::DrawAddHydrogenAction):
+			if (atomClicked_ != NULL)
 			{
 				displayModel_->beginUndoState("Add Hydrogen to Atom");
-				displayModel_->hydrogenSatisfy(atomHover_);
+				displayModel_->hydrogenSatisfy(atomClicked_);
 				displayModel_->endUndoState();
 				gui.update(TRUE,FALSE,TRUE);
 			}

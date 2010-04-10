@@ -81,7 +81,7 @@ class Canvas
 	Canvas();
 
 	// Actions
-	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditFragmentAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
+	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
 	
 	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
@@ -234,25 +234,25 @@ class Canvas
 	// Add extra 3D objects
 	void renderExtra3d();
 	// Render the model specified
-	void renderModelAtoms();
+	void renderModelAtoms(Model *source);
 	// Render model cell
-	void renderModelCell();
+	void renderModelCell(Model *source);
 	// Draw model force arrows		// TODO Defunct now glyphs are available?
 	void renderModelForceArrows();
 	// Render glyphs in the current model
-	void renderModelGlyphs();
+	void renderModelGlyphs(Model *source);
 	// Add labels to the model
-	void renderModelLabels();
+	void renderModelLabels(Model *source);
 	// Add geometry measurements to the model
-	void renderModelMeasurements();
+	void renderModelMeasurements(Model *source);
 	// Render text glyphs in the current model
-	void renderModelTextGlyphs();
+	void renderModelTextGlyphs(Model *source);
 	// Draw regions specified for MC insertion
 	void renderRegions();
 	// Render the rotation globe
 	void renderRotationGlobe(double *rotmat, double camrot);
-	// Render surfaces
-	void renderSurfaces();
+	// Render model surfaces
+	void renderSurfaces(Model *source);
 
 	public:
 	// Render a scene based on the specified model
@@ -274,16 +274,16 @@ class Canvas
 	Reflist<Atom,int> pickedAtoms_;
 	// Pointer to callback function when PickAtomsAction exits
 	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
-	// Atom that the mouse pointer is currently hovering over
-	Atom *atomHover_;
+	// Atom that was clicked at the start of a mouse press event
+	Atom *atomClicked_;
 	// Whether we are selecting atoms and placing them in the subsel list	
 	bool pickEnabled_;
 	// Reflist of selected atoms and their positions so manipulations may be un-done
 	Reflist< Atom,Vec3<double> > oldPositions_;
 
 	public:
-	// Returns the atom currently under the mouse
-	Atom *atomHover();
+	// Returns the clicked atom within a mouse click event
+	Atom *atomClicked();
 	// Clears the subsel of atoms
 	void clearPicked();
 	// Manually enter picking mode to select N atoms

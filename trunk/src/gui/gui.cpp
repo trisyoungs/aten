@@ -153,7 +153,8 @@ void GuiQt::initialise(int &argc, char **argv)
 {
 	// Create the QApplication
 	app = new QApplication(argc, argv);
-	// Create the QGLWidget
+
+	// Create the main QGLWidget
 	mainWidget = new TCanvas(NULL);
 	mainWidget->probeFeatures();
 	mainWidget->setGeometry(0,0,800,600);
@@ -161,6 +162,16 @@ void GuiQt::initialise(int &argc, char **argv)
 	mainView.setWidget(mainWidget);
 	mainWidget->setCanvas(&mainView);
 	mainView.enableDrawing();
+
+	// Create the offscreen QGLWidget
+	offscreenWidget = new TCanvas(NULL);
+	offscreenWidget->probeFeatures();
+	offscreenWidget->setGeometry(0,0,800,600);
+	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
+	offscreenView.setWidget(offscreenWidget);
+	offscreenWidget->setCanvas(&offscreenView);
+	offscreenView.enableDrawing();
+	offscreenView.setOffScreenRendering(TRUE);
 }
 
 // Initialise and create GUI

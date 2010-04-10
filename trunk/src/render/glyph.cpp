@@ -24,15 +24,23 @@
 #include "base/glyph.h"
 
 // Render model glyphs
-void Canvas::renderModelGlyphs()
+void Canvas::renderModelGlyphs(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelGlyphs");
 	static Vec3<double> vec[4], centroid, avg, normal;
 	static GLfloat colours[4][4];
 
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelGlyphs\n");
+		msg.exit("Canvas::renderModelGlyphs");
+		return;
+	}
+
 	glEnable(GL_LIGHTING);
 	// Render other elemental objects in the model
-	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
+	for (Glyph *g = sourceModel->glyphs(); g != NULL; g = g->next)
 	{
 		// Set relevant polygon mode
 		glPolygonMode(GL_FRONT_AND_BACK, (g->isSolid() ? GL_FILL : GL_LINE));
@@ -277,15 +285,23 @@ void Canvas::renderModelGlyphs()
 }
 
 // Render model text glyphs
-void Canvas::renderModelTextGlyphs()
+void Canvas::renderModelTextGlyphs(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelTextGlyphs");
 	static Vec3<double> vec[2], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
 	TextObject *to;
 
+	// Check for valid model
+	if (sourceModel == NULL)
+	{
+		printf("NULL Model passed to Canvas::renderModelTextGlyphs\n");
+		msg.exit("Canvas::renderModelTextGlyphs");
+		return;
+	}
+
 	// Render other elemental objects in the model
-	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
+	for (Glyph *g = sourceModel->glyphs(); g != NULL; g = g->next)
 	{
 		// Set relevant polygon mode
 		glPolygonMode(GL_FRONT_AND_BACK, (g->isSolid() ? GL_FILL : GL_LINE));
@@ -303,7 +319,7 @@ void Canvas::renderModelTextGlyphs()
 			case (Glyph::TextGlyph3D):
 				vec[0] = g->data(0)->vector();
 				// Add text object to list
-				vec[1] = displayModel_->modelToScreen(vec[0]);
+				vec[1] = sourceModel->modelToScreen(vec[0]);
 				if (vec[1].z < 1.0)
 				{
 					to = new TextObject((int)vec[1].x, int(height_ - vec[1].y), FALSE, g->text());

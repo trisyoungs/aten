@@ -151,15 +151,15 @@ void Canvas::renderScene(Model *source)
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  checkGlError();
 		  msg.print(Messenger::GL, " --> ...rendering model cell\n");
-		  renderModelCell();
+		  renderModelCell(displayModel_);
 		  // Draw the model's atoms, bonds, and selection
 		  checkGlError();
 		  msg.print(Messenger::GL, " --> ...rendering model atoms\n");
-		  if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) renderModelAtoms();
+		  if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) renderModelAtoms(displayModel_);
 		  // Render glyphs associated with the model
 		  checkGlError();
 		  msg.print(Messenger::GL, " --> ...rendering model glyphs\n");
-		  renderModelGlyphs();
+		  renderModelGlyphs(displayModel_);
 		  // Render force arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
@@ -169,7 +169,7 @@ void Canvas::renderScene(Model *source)
 	  // Render surfaces
 	  checkGlError();
 	  msg.print(Messenger::GL, " --> ...rendering model surfaces\n");
-	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
+	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces(displayModel_);
 	  // Render MC regions
 	  checkGlError();
 	  msg.print(Messenger::GL, " --> ...rendering regions\n");
@@ -229,13 +229,13 @@ void Canvas::renderScene(Model *source)
 	checkGlError();
 	msg.print(Messenger::GL, " --> Rendering text glyphs\n");
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	renderModelTextGlyphs();
+	renderModelTextGlyphs(displayModel_);
 	checkGlError();
 	msg.print(Messenger::GL, " --> Rendering model labels\n");
-	if (prefs.isVisibleOnScreen(Prefs::ViewLabels)) renderModelLabels();
+	if (prefs.isVisibleOnScreen(Prefs::ViewLabels)) renderModelLabels(displayModel_);
 	checkGlError();
 	msg.print(Messenger::GL, " --> Rendering model measurements\n");
-	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements)) renderModelMeasurements();
+	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements)) renderModelMeasurements(displayModel_);
 
 	checkGlError();
 	msg.print(Messenger::GL, " --> Rendering extra 2D\n");

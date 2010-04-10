@@ -19,9 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/messenger.h"
+#include "classes/prefs.h"
 #include "model/fragment.h"
 #include "model/model.h"
-#include "base/messenger.h"
+#include "gui/gui.h"
+#include "gui/tcanvas.uih"
 
 /*
 // Fragment
@@ -31,9 +34,9 @@
 Fragment::Fragment()
 {
 	// Private variables
-	model_ = NULL;
-	linkAtom_ = NULL;
-	linkPartner_ = NULL;
+	masterModel_ = NULL;
+	masterLinkAtom_ = NULL;
+	masterLinkPartner_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -41,52 +44,80 @@ Fragment::Fragment()
 }
 
 // Set data from source model
-bool Fragment::setModel(Model *m)
+bool Fragment::setMasterModel(Model *m)
 {
-	msg.enter("Fragment::setModel");
-	model_ = m;
+	msg.enter("Fragment::setMasterModel");
+	masterModel_ = m;
+
 	// Define link (anchor) atom
-	if (model_->nUnknownAtoms() == 0)
+	if (masterModel_->nUnknownAtoms() == 0)
 	{
 		msg.print(" ... Warning - Fragment model has no defined anchor point. Assuming first atom.\n");
-		linkAtom_ = model_->atoms();
+		masterLinkAtom_ = masterModel_->atoms();
 	}
-	else if (model_->nUnknownAtoms() > 1)
+	else if (masterModel_->nUnknownAtoms() > 1)
 	{
 		msg.print(" ... Warning - Fragment model has multiple anchor points. Using lowest ID.\n");
-		for (linkAtom_ = model_->atoms(); linkAtom_ != NULL; linkAtom_ = linkAtom_->next) if (linkAtom_->element() == 0) break;
+		for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
 	}
-	else for (linkAtom_ = model_->atoms(); linkAtom_ != NULL; linkAtom_ = linkAtom_->next) if (linkAtom_->element() == 0) break;
-	if (linkAtom_ == NULL)
+	else for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
+	if (masterLinkAtom_ == NULL)
 	{
-		msg.print(" ... Error: No link atom defined for fragment '%s'. Fragment will be removed from list.\n", model_->name());
-		msg.exit("Fragment::setModel");
+		msg.print(" ... Error: No link atom defined for fragment '%s'. Fragment will be removed from list.\n", masterModel_->name());
+		msg.exit("Fragment::setMasterModel");
 		return FALSE;
 	}
+
 	// Find link partner
-	if (linkAtom_->nBonds() != 1) linkPartner_ = linkAtom_->bonds()->item->partner(linkAtom_);
-	else if (linkAtom_ == model_->atoms()) linkPartner_ = linkAtom_->next;
-	else linkPartner_ = model_->atoms();
-	msg.exit("Fragment::setModel");
+	if (masterLinkAtom_->nBonds() != 1) masterLinkPartner_ = masterLinkAtom_->bonds()->item->partner(masterLinkAtom_);
+	else if (masterLinkAtom_ == masterModel_->atoms()) masterLinkPartner_ = masterLinkAtom_->next;
+	else masterLinkPartner_ = masterModel_->atoms();
+
+	// Create icon
+	// Store current rendering style so we can reset afterwards
+	Atom::DrawStyle ds = prefs.renderStyle();
+	prefs.setRenderStyle(Atom::SphereStyle);
+
+	// Centre model at 0,0,0 here...
+	masterModel_->selectAll();
+	masterModel_->centre(0.0,0.0,0.0,FALSE,FALSE,FALSE);
+	masterModel_->selectNone();
+
+	// Generate pixmap for fragment
+	int screenbits = prefs.screenObjects();
+	prefs.setScreenObjects(prefs.offScreenObjects());
+	gui.offscreenWidget->setRenderSource(masterModel_);
+	gui.offscreenView.postRedisplay();
+	gui.offscreenView.setOffScreenRendering(TRUE);
+
+	/*if (prefs.useFrameBuffer() == FALSE) icon_ = gui.offscreenWidget->renderPixmap(100, 100, FALSE);
+	else icon_ = */QPixmap::fromImage(gui.offscreenWidget->grabFrameBuffer());
+
+	prefs.setScreenObjects(screenbits);
+
+	// Reconfigure canvas to widget size (necessary if image size was changed)
+	gui.offscreenView.configure(gui.offscreenWidget->width(), gui.offscreenWidget->height());
+	gui.offscreenWidget->setRenderSource(NULL);
+
+	msg.exit("Fragment::setMasterModel");
 	return TRUE;
 }
 
 // Return model pointer
-Model *Fragment::model()
+Model *Fragment::masterModel()
 {
-	return model_;
+	return masterModel_;
 }
 
-// Return link atom
-Atom *Fragment::linkAtom()
+// Finalise structure, preparing master model for use
+void Fragment::finalise()
 {
-	return linkAtom_;
-}
-
-// Return link atom partner
-Atom *Fragment::linkPartner()
-{
-	return linkPartner_;
+	msg.enter("Fragment::finalise");
+	// Final tweaks to fragment model - put link atom at 0,0,0
+		masterModel_->selectAll();
+		masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
+		masterModel_->selectNone();
+	msg.exit("Fragment::finalise");
 }
 
 // Set icon (from pixmap)

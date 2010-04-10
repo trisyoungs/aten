@@ -28,47 +28,47 @@
 
 void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditDrawAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawAtomAction);
 }
 
 void AtenForm::on_actionDrawChain_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditChainAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawChainAction);
 }
 
 void AtenForm::on_actionDrawFragment_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditFragmentAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawFragmentAction);
 }
 
 void AtenForm::on_actionDeleteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteAction);
 }
 
 void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditTransmuteAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawTransmuteAction);
 }
 
 void AtenForm::on_actionBondSingle_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditBondSingleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondSingleAction);
 }
 
 void AtenForm::on_actionBondDouble_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditBondDoubleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondDoubleAction);
 }
 
 void AtenForm::on_actionBondTriple_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditBondTripleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondTripleAction);
 }
 
 void AtenForm::on_actionDeleteBond_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteBondAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteBondAction);
 }
 
 void AtenForm::on_actionElementH_triggered(bool on)
@@ -108,12 +108,12 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::EditAddHydrogenAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::DrawAddHydrogenAction);
 }
 
 //void AtenForm::on_actionProbeAtom_triggered(bool on)
 //{
-//	if (on) gui.mainView.setSelectedMode(Canvas::EditProbeAction);
+//	if (on) gui.mainView.setSelectedMode(Canvas::DrawProbeAction);
 //}
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)

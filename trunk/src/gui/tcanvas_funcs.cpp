@@ -32,6 +32,8 @@ TCanvas::TCanvas(QWidget *parent) : QGLWidget(parent)
 {
 	// Private variables
 	canvas_ = NULL;
+	useCurrentModel_ = TRUE;
+	renderSource_ = NULL;
 
 	setAutoFillBackground(FALSE);
 }
@@ -40,6 +42,13 @@ TCanvas::TCanvas(QWidget *parent) : QGLWidget(parent)
 void TCanvas::setCanvas(Canvas *wc)
 {
 	canvas_ = wc;
+}
+
+// Set the rendering source to the supplied model (cancels useCurrentModel_ if it is enabled)
+void TCanvas::setRenderSource(Model *source)
+{
+	useCurrentModel_ = FALSE;
+	renderSource_ = source;
 }
 
 // Probe features
@@ -78,10 +87,14 @@ void TCanvas::paintGL()
 		// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
 		// so here it is done in the 'wrong' order.
 
-		if (aten.currentModel() != NULL)
+		Model *source;
+		if (useCurrentModel_) source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSource();
+		else source = renderSource_;
+
+		if (source != NULL)
 		{
 			// Draw OpenGL objects (with OpenGL)
-			canvas_->renderScene(aten.currentModel()->renderSource());
+			canvas_->renderScene(source);
 	
 			// Initialise QPainter
 			QPainter painter(this);
@@ -155,7 +168,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
 	if ((button == Prefs::LeftButton) && (event->type() == QEvent::MouseButtonDblClick))
 	{
-		Atom *tempi = canvas_->atomHover();
+		Atom *tempi = canvas_->atomClicked();
 		if (tempi != NULL)
 		{
 			printf("gui::dblclick show atom list not done.\n");
