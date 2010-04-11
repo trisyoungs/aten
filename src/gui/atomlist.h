@@ -34,6 +34,10 @@ class AtenAtomlist : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	public:
+	// Atom data columns
+	enum DataColumns { IdData=1, ElementData, RxData, RyData, RzData };
+
 	/*
 	// Window Functions
 	*/
@@ -43,6 +47,7 @@ class AtenAtomlist : public QDialog
 	private:
 	void peekScrollBar();
 	void pokeScrollBar();
+	void setColumns(TTreeWidgetItem *twi);
 	TTreeWidgetItem *itemUnderMouse(const QPoint &pos);
 	void toggleItem(TTreeWidgetItem *twi);
 	void selectItem(TTreeWidgetItem *twi);

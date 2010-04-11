@@ -308,6 +308,12 @@ int AtenForm::addModelTab(Model *m)
 	return tabid;
 }
 
+// Cancel any current mode and return to select
+void AtenForm::cancelCurrentMode()
+{
+	ui.actionSelectAtoms->trigger();
+}
+
 /*
 // Model Navigation / Management
 */

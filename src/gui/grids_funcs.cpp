@@ -76,7 +76,7 @@ void AtenGrids::refresh()
 		item = new TListWidgetItem(ui.GridList);
 		item->setText(g->name());
 		item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
-		item->setPointer(g);
+		item->data.set(VTypes::GridData, g);
 	}
 	// Select the first item
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
@@ -338,7 +338,7 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
 	// Get grid associated to item
-	Grid *g = (Grid*) titem->pointer();
+	Grid *g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
 	gui.mainView.postRedisplay();

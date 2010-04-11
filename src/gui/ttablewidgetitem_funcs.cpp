@@ -25,18 +25,4 @@
 TTableWidgetItem::TTableWidgetItem() : QTableWidgetItem()
 {
 	// Private variables
-	model_ = NULL;
 }
-
-// Set the model pointer in the widget
-void TTableWidgetItem::setModel(Model *source)
-{
-	model_ = source;
-}
-
-// Return the grid pointer in the widget
-Model *TTableWidgetItem::model()
-{
-	return model_;
-}
-

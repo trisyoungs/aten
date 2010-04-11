@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 #include "gui/fragment.h"
 #include "render/canvas.h"
 #include "model/model.h"
@@ -130,6 +131,10 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 			break;
 		case (Canvas::DownKey):
 			displayModel_->rotateView(0.0, shiftkey ? 1.0 : 10.0);
+			postRedisplay();
+			break;
+		case (Canvas::EscapeKey):
+			gui.mainWindow->cancelCurrentMode();
 			postRedisplay();
 			break;
 	}

@@ -23,6 +23,7 @@
 #define ATEN_TLISTWIDGETATOM_H
 
 #include <QtGui/QListWidgetItem>
+#include "parser/returnvalue.h"
 
 class TListWidgetItem : public QListWidgetItem
 {
@@ -31,16 +32,11 @@ class TListWidgetItem : public QListWidgetItem
 	TListWidgetItem(QListWidget *parent = 0);
 
 	/*
-	// Pointer
+	// Associated Data
 	*/
-	private:
-	void *pointer_;	
-
 	public:
-	// Set the pointer in the widget
-	void setPointer(void *source);
-	// Return the pointer in the widget
-	void *pointer();
+	// Associated data item
+	ReturnValue data;
 };
 
 #endif

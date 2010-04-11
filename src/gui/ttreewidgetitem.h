@@ -19,22 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TTREEWIDGETATOM_H
-#define ATEN_TTREEWIDGETATOM_H
+#ifndef ATEN_TTREEWIDGETITEM_H
+#define ATEN_TTREEWIDGETITEM_H
 
 #include <QtGui/QTreeWidget>
-
-// Atom data columns
-enum twa_column { TW_A_ID=1, TW_A_ELEMENT, TW_A_RX, TW_A_RY, TW_A_RZ };
-
-// FFAtom data columns
-enum twffa_column { TW_FFA_NAME=0, TW_FFA_DESCRIPTION };
-
-// Forward Declarations
-class Atom;
-class ForcefieldAtom;
-class Pattern;
-class Fragment;
+#include "parser/returnvalue.h"
 
 // Custom QTreeWidgetItem
 class TTreeWidgetItem : public QTreeWidgetItem
@@ -45,40 +34,11 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	TTreeWidgetItem(QTreeWidget *parent);
 
 	/*
-	// Pointers
-	*/
-	private:
-	Atom *atom_;
-	ForcefieldAtom *forcefieldAtom_;
-	Pattern *pattern_;
-	Fragment *fragment_;
-
-	public:
-	// Set the atom pointer in the widget
-	void setAtom(Atom *source);
-	// Return the atom pointer in the widget
-	Atom *atom();
-	// Set the ForcefieldAtom pointer in the widget
-	void setForcefieldAtom(ForcefieldAtom *source);
-	// Return the ForcefieldAtom pointer in the widget
-	ForcefieldAtom *forcefieldAtom();
-	// Set the pattern pointer in the widget
-	void setPattern(Pattern *source);
-	// Return the pattern pointer in the widget
-	Pattern *pattern();
-	// Set the fragment pointer in the widget
-	void setFragment(Fragment *source);
-	// Return the model pointer in the widget
-	Fragment *fragment();
-
-	/*
-	// Set Data functions
+	// Associated Data
 	*/
 	public:
-	// Set column data from atom pointer
-	void setAtomColumns();
-	// Set column data from ForcefieldAtom pointer
-	void setForcefieldAtomColumns();
+	// Associated data item
+	ReturnValue data;
 };
 
 #endif

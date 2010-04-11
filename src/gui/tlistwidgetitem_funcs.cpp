@@ -25,17 +25,4 @@
 TListWidgetItem::TListWidgetItem(QListWidget *parent) : QListWidgetItem(parent)
 {
 	// Private variables
-	pointer_ = NULL;
-}
-
-// Set the pointer in the widget
-void TListWidgetItem::setPointer(void *source)
-{
-	pointer_ = source;
-}
-
-// Return the pointer in the widget
-void *TListWidgetItem::pointer()
-{
-	return pointer_;
 }

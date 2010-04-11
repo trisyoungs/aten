@@ -128,6 +128,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->calculateMass();
 	obj.m->selectNone();
 	// Print out some useful info on the model that we've just read in
+	msg.print("Model  : %s\n",obj.m->name());
 	msg.print("Atoms  : %i\n",obj.m->nAtoms());
 	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
