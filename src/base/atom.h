@@ -162,6 +162,8 @@ class Atom
 	void setPositionFixed(bool b);
 	// Return whether the atom's position is fixed
 	bool isPositionFixed();
+	// Return number of attached hydrogens
+	int nHydrogens();
 
 
 	/*

@@ -62,7 +62,7 @@ void Canvas::renderExtra3d()
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
-			  glCallList(list_[GLOB_SELSPHEREATOM]);
+			  glCallList(list_[SelectedSphereAtomGlob]);
 			glPopMatrix();
 			break;
 		// Draw on bond and new atom for chain drawing (if mode is active)
@@ -95,13 +95,13 @@ void Canvas::renderExtra3d()
 				switch (prefs.renderStyle())
 				{
 					case (Atom::TubeStyle):
-						glCallList(list_[GLOB_WIRETUBEATOM]);
+						glCallList(list_[WireTubeAtomGlob]);
 						break;
 					case (Atom::SphereStyle):
-						glCallList(list_[GLOB_WIRESPHEREATOM]);
+						glCallList(list_[WireSphereAtomGlob]);
 						break;
 					case (Atom::ScaledStyle):
-						glCallList(list_[GLOB_WIRESPHEREATOM]);
+						glCallList(list_[WireSphereAtomGlob]);
 						break;
 				}
 			  }
@@ -120,21 +120,34 @@ void Canvas::renderExtra3d()
 				// Atom is now fragment anchor point
 				if (atomClicked_ != NULL) i = atomClicked_;
 				r = i->r();
-				Model *m = frag->anchoredModel(i);
+				Model *m = frag->anchoredModel(i, keyModifier_[Prefs::ShiftKey]);
 
-				glPushMatrix();
-				  glTranslated(r.x, r.y, r.z);
-				  renderModelAtoms(m);
-				glPopMatrix();
+				// Did we find a valid anchor point?
+				if (m != NULL)
+				{
+					glPushMatrix();
+					  glTranslated(r.x, r.y, r.z);
+					  renderModelAtoms(m);
+					glPopMatrix();
+				}
+				else
+				{
+					glPushMatrix();
+					  glTranslated(r.x, r.y, r.z);
+					  glColor3d(1.0,0.0,0.0);
+					  glCallList(list_[CrossedUnitCubeGlob]);
+					glPopMatrix();
+				}
 			}
 			else
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-				mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
+				if (activeMode_ == Canvas::DrawFragmentAction) mouse = displayModel_->guideToModel(rMouseDown_, prefs.drawDepth());
+				else mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
 				glPushMatrix();
 				  glTranslated(mouse.x, mouse.y, mouse.z);
-				  renderModelAtoms(frag->masterModel());
+				  renderModelAtoms(frag->orientedModel());
 				glPopMatrix();
 			}
 			break;
@@ -276,11 +289,11 @@ void Canvas::renderRegions()
 				break;
 			case (ComponentRegion::CuboidRegion):
 				glScaled(geometry.x,geometry.y,geometry.z);
-				glCallList(list_[GLOB_UNITCUBE]);
+				glCallList(list_[UnitCubeGlob]);
 				break;
 			case (ComponentRegion::SpheroidRegion):
 				glScaled(geometry.x,geometry.y,geometry.z);
-				glCallList(list_[GLOB_UNITATOM]);
+				glCallList(list_[UnitAtomGlob]);
 				break;
 			case (ComponentRegion::CylinderRegion):
 				glTranslated(0.0,0.0,-0.5*geometry.z);

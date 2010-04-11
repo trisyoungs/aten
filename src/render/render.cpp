@@ -128,7 +128,7 @@ void Canvas::renderScene(Model *source)
 	if (prefs.isGuideVisible())
 	{
 		glTranslated(0.0,0.0,-prefs.drawDepth());
-		glCallList(list_[GLOB_GUIDE]);
+		glCallList(list_[GuideGlob]);
 		glTranslated(0.0,0.0,prefs.drawDepth());
 	}
 
@@ -142,12 +142,12 @@ void Canvas::renderScene(Model *source)
 	checkGlError();
 	msg.print(Messenger::GL, " --> Drawing model\n");
 	glPushMatrix();
-	  if ((renderPoint_ == displayModel_->changeLog) && (lastDisplayed_ == source)) glCallList(list_[GLOB_MODEL]);
+	  if ((renderPoint_ == displayModel_->changeLog) && (lastDisplayed_ == source)) glCallList(list_[ModelGlob]);
 	  else
 	  {
 		msg.print(Messenger::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
-		//glDeleteLists(list_[GLOB_MODEL],1);
-		glNewList(list_[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
+		//glDeleteLists(list_[ModelGlob],1);
+		glNewList(list_[ModelGlob],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  checkGlError();
 		  msg.print(Messenger::GL, " --> ...rendering model cell\n");
@@ -204,7 +204,7 @@ void Canvas::renderScene(Model *source)
 					if ((i == 0) && (j == 0) && (k == 0)) continue;
 					glPushMatrix();
 					  glTranslated(k*cz.x,k*cz.y,k*cz.z);
-					  glCallList(list_[GLOB_MODEL]);
+					  glCallList(list_[ModelGlob]);
 					glPopMatrix();
 				}
 				glPopMatrix();

@@ -75,24 +75,22 @@ class Fragment
 	Model orientedModel_;
 	// Fragment oriented to anchor point
 	Model anchoredModel_;
-	// Rotation of anchored model around link bond
-	double anchorRotation_;
 
 	public:
 	// Reset oriented model
 	void resetOrientedModel();
 	// Rotate oriented model according to screen delta
-	void rotateOrientedModel();
+	void rotateOrientedModel(double dx, double dy);
 	// Return oriented model pointer
 	Model *orientedModel();
 	// Paste oriented model to target model
-	void pasteOrientedModel(Atom *anchorpoint, Model *model);
+	void pasteOrientedModel(Vec3<double> origin, Model *model);
 	// Adjust anchored model rotation (from mouse delta)
 	void rotateAnchoredModel(double dx, double dy);
 	// Return anchored model, oriented to attach to specified atom
-	Model *anchoredModel(Atom *anchorpoint);
+	Model *anchoredModel(Atom *anchorpoint, bool replacehydrogen);
 	// Paste anchored model to target model
-	void pasteAnchoredModel(Atom *anchorpoint, Model *model);
+	void pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model *model);
 };
 
 // Fragment Library

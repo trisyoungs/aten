@@ -110,7 +110,7 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 		  {
 			glColor3fv(ambient);
 			i->isSelected() ? glLineWidth(3.0) : glLineWidth(1.0);
-			if (i->nBonds() == 0) glCallList(list_[GLOB_STICKATOM]); 
+			if (i->nBonds() == 0) glCallList(list_[StickAtomGlob]); 
 		  }
 		  else
 		  {
@@ -120,10 +120,10 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 				//radius = prefs.screenRadius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
-				  glCallList(list_[GLOB_UNITATOM]); 
+				  glCallList(list_[UnitAtomGlob]); 
 				glPopMatrix();
 			}
-			else style_i == Atom::SphereStyle ? glCallList(list_[GLOB_SPHEREATOM]) : glCallList(list_[GLOB_TUBEATOM]);
+			else style_i == Atom::SphereStyle ? glCallList(list_[SphereAtomGlob]) : glCallList(list_[TubeAtomGlob]);
 		  }
 		  /*
 		  // Draw the bonds.
@@ -268,10 +268,10 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 			radius = prefs.screenRadius(i);
 			glPushMatrix();
 			  glScalef(radius,radius,radius);
-			  glCallList(list_[GLOB_SELUNITATOM]);
+			  glCallList(list_[SelectedUnitAtomGlob]);
 			glPopMatrix();
 		  }
-		  else style_i == Atom::SphereStyle ? glCallList(list_[GLOB_SELSPHEREATOM]) : glCallList(list_[GLOB_SELTUBEATOM]);
+		  else style_i == Atom::SphereStyle ? glCallList(list_[SelectedSphereAtomGlob]) : glCallList(list_[SelectedTubeAtomGlob]);
 		  for (bref = i->bonds(); bref != NULL; bref = bref->next)
 		  {
 			j = bref->item->partner(i);

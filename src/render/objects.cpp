@@ -67,7 +67,7 @@ void Canvas::circlePrimitive(double x, double y, double r)
 	glPushMatrix();
 	  glTranslated(x,y,0.0);
 	  glScalef(r,r,r);
-	  glCallList(list_[GLOB_CIRCLE]);
+	  glCallList(list_[CircleGlob]);
 	glPopMatrix();
 }
 
@@ -211,7 +211,7 @@ void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, 
 	    if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
 	    else glRotated(phi, -v.y/rij , v.x/rij ,0.0);
 	    glScaled(1.0,1.0,rij);
-	    glCallList(list_[GLOB_TUBEARROW]);
+	    glCallList(list_[TubeArrowGlob]);
 	  glPopMatrix();
 	glPopMatrix();
 }
@@ -236,19 +236,19 @@ void Canvas::glSubsel3d()
 		  switch (style_i)
 		  {
 			case (Atom::StickStyle):
-				glCallList(list_[GLOB_WIRETUBEATOM]);
+				glCallList(list_[WireTubeAtomGlob]);
 				break;
 			case (Atom::TubeStyle):
-				glCallList(list_[GLOB_WIRETUBEATOM]);
+				glCallList(list_[WireTubeAtomGlob]);
 				break;
 			case (Atom::SphereStyle):
-				glCallList(list_[GLOB_WIRESPHEREATOM]);
+				glCallList(list_[WireSphereAtomGlob]);
 				break;
 			case (Atom::ScaledStyle): 
 				radius = prefs.screenRadius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
-				  glCallList(list_[GLOB_WIREUNITATOM]);
+				  glCallList(list_[WireUnitAtomGlob]);
 				glPopMatrix();
 				break;
 		  }
@@ -284,7 +284,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	glMultMatrixd(rmat);
 	glLineWidth(1.0);
 	glDisable(GL_LIGHTING);
-	glCallList(list_[GLOB_GLOBE]);
+	glCallList(list_[GlobeGlob]);
 	// Reset the viewport back to the entire canvas
 	glViewport(0, 0, width_, height_);
 }
@@ -307,10 +307,10 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double ra
 	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
 	  glScaled(radius,radius,rij);
 	  // Draw cylinder (bond)
-	  if (style == 0) glCallList(list_[GLOB_CYLINDER]);
-	  else if (style == 1) glCallList(list_[GLOB_SELCYLINDER]);
-	  else if (style == 2) glCallList(list_[GLOB_SELWIRECYLINDER]);
-	  else if (style == 3) glCallList(list_[GLOB_WIRECYLINDER]);
+	  if (style == 0) glCallList(list_[CylinderGlob]);
+	  else if (style == 1) glCallList(list_[SelectedCylinderGlob]);
+	  else if (style == 2) glCallList(list_[SelectedWireCylindedGlob]);
+	  else if (style == 3) glCallList(list_[WireCylinderGlob]);
 	glPopMatrix();
 }
 
@@ -334,7 +334,7 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, con
 	  glPushMatrix();
 	    rotmat.copyRowMajor(r);
 	    glMultMatrixd(r);
-	    glCallList(list_[GLOB_UNITATOM]);
+	    glCallList(list_[UnitAtomGlob]);
 	  glPopMatrix();
 	glPopMatrix();
 }
@@ -354,7 +354,7 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, cons
 	  glPushMatrix();
 	    rotmat.copyRowMajor(r);
 	    glMultMatrixd(r);
-	    glCallList(list_[GLOB_UNITATOM]);
+	    glCallList(list_[UnitAtomGlob]);
 	  glPopMatrix();
 	glPopMatrix();
 }

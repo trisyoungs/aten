@@ -256,14 +256,14 @@ void Canvas::renderModelCell(Model *sourceModel)
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
 		glPushMatrix();
 		  glMultMatrixd( sourceModel->cell()->axesForGL() );
-		  if (prefs.isVisibleOnScreen(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
+		  if (prefs.isVisibleOnScreen(Prefs::ViewCell)) glCallList(list_[WireUnitCubeGlob]);
 		  lengths = sourceModel->cell()->lengths();
 		  // Render cell axis arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewCellAxes))
 		  {
 			glTranslated(-0.5,-0.5,-0.5);
 			glScaled(1.0/lengths.x,1.0/lengths.y,1.0/lengths.z);
-			glCallList(list_[GLOB_CELLAXES]);
+			glCallList(list_[CellAxesGlob]);
 		  }
 		glPopMatrix();
 		// Here, translate the initial drawing position to be 0,0,0 in cell coordinates
