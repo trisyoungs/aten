@@ -23,6 +23,7 @@
 #include "classes/prefs.h"
 #include "model/fragment.h"
 #include "model/model.h"
+#include "model/clipboard.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 
@@ -37,7 +38,6 @@ Fragment::Fragment()
 	masterModel_ = NULL;
 	masterLinkAtom_ = NULL;
 	masterLinkPartner_ = NULL;
-	anchorRotation_ = 0.0;
 
 	// Public variables
 	prev = NULL;
@@ -53,9 +53,8 @@ void Fragment::setLinkPartner()
 		masterLinkPartner_ = NULL;
 		return;
 	}
-	if (masterLinkAtom_->nBonds() == 1) masterLinkPartner_ = masterLinkAtom_->bonds()->item->partner(masterLinkAtom_);
-	else if (masterLinkAtom_ == masterModel_->atoms()) masterLinkPartner_ = masterLinkAtom_->next;
-	else masterLinkPartner_ = masterModel_->atoms();
+	if (masterLinkAtom_->nBonds() == 0) masterLinkPartner_ = NULL;
+	else masterLinkPartner_ = masterLinkAtom_->bonds()->item->partner(masterLinkAtom_);
 }
 
 // Set data from source model
@@ -106,6 +105,10 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
 	masterModel_->selectNone();
 
+	// Copy master model to orientedModel_ and anchoredModel_
+	orientedModel_.copy(masterModel_);
+	anchoredModel_.copy(masterModel_);
+
 	msg.exit("Fragment::setMasterModel");
 	return TRUE;
 }
@@ -134,10 +137,18 @@ void Fragment::cycleLinkAtom()
 	masterLinkAtom_ = masterLinkAtom_->next;
 	if (masterLinkAtom_ == NULL) masterLinkAtom_ = masterModel_->atoms();
 	setLinkPartner();
-	// Re-translate model so new link atom is at the origin
+	// Re-translate masterModel_, orientedModel_, and anchoredModel_ so new link atom is at the origin
 	masterModel_->selectAll();
 	masterModel_->translateSelectionLocal(-masterLinkAtom_->r());
 	masterModel_->selectNone();
+	Atom *i = anchoredModel_.atom(masterLinkAtom_->id());
+	anchoredModel_.selectAll();
+	anchoredModel_.translateSelectionLocal(-i->r());
+	anchoredModel_.selectNone();
+	i = orientedModel_.atom(masterLinkAtom_->id());
+	orientedModel_.selectAll();
+	orientedModel_.translateSelectionLocal(-i->r());
+	orientedModel_.selectNone();
 }
 
 // Reset oriented model
@@ -145,42 +156,118 @@ void Fragment::resetOrientedModel()
 {
 	// Copy masterModel_ over to orientedModel_
 	orientedModel_.copy(masterModel_);
+	Atom *i = orientedModel_.atom(masterLinkAtom_->id());
+	orientedModel_.selectAll();
+	orientedModel_.translateSelectionLocal(-i->r());
+	orientedModel_.selectNone();
 }
 
 // Rotate oriented model according to screen delta
-void Fragment::rotateOrientedModel()
+void Fragment::rotateOrientedModel(double dx, double dy)
 {
+	orientedModel_.selectAll();
+	orientedModel_.rotateSelectionWorld(dx,dy);
+	orientedModel_.selectNone();
 }
 
 // Return oriented model pointer
 Model *Fragment::orientedModel()
 {
+	return &orientedModel_;
+}
+
+// Paste oriented model to target model
+void Fragment::pasteOrientedModel(Vec3<double> origin, Model *target)
+{
+	msg.enter("Fragment::pasteOrientedModel");
+
+	// Select all atoms and translate model to correct origin
+	orientedModel_.selectAll();
+	orientedModel_.translateSelectionLocal(origin);
+
+	// Deselect any anchor atoms
+	orientedModel_.deselectElement(0);
+
+	// Paste to the target model, bonding the anchor and linkPartners if a bond was there before
+	Clipboard clip;
+	clip.copySelection(&orientedModel_);
+	clip.pasteToModel(target, FALSE);
+
+	// Translate orientedModel_ back to its previous position
+	orientedModel_.selectAll();
+	orientedModel_.translateSelectionLocal(-origin);
+	orientedModel_.selectNone();
+
+	msg.exit("Fragment::pasteOrientedModel");
 }
 
 // Adjust anchored model rotation (from mouse delta)
 void Fragment::rotateAnchoredModel(double dx, double dy)
 {
+	msg.enter("Fragment::rotateAnchoredModel");
+
+	// If a link partner exists, adjust axis rotation value. Otherwise, free rotate model
+	if (masterLinkPartner_ != NULL)
+	{
+		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
+		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+		Vec3<double> ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
+		ref.normalise();
+		anchoredModel_.selectAll();
+		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy);
+		anchoredModel_.selectNone();
+	}
+	else
+	{
+		anchoredModel_.selectAll();
+		anchoredModel_.rotateSelectionWorld(dx,dy);
+		anchoredModel_.selectNone();
+	}
+	msg.exit("Fragment::rotateAnchoredModel");
 }
 
 // Return anchored model, oriented to attach to specified atom
-Model *Fragment::anchoredModel(Atom *anchorpoint)
+Model *Fragment::anchoredModel(Atom *anchorpoint, bool replacehydrogen)
 {
 	msg.enter("Fragment::anchoredModel");
-	// Determine vector along which our reference vector should point
-	Vec3<double> orientation = anchorpoint->nextBondVector();
 
-	// Calculate reference vector in fragment
-	Vec3<double> ref = masterModel_->cell()->mimd(masterLinkPartner_, masterLinkAtom_);
-	ref.normalise();
+	// Determine vector along which our reference vector should point
+	Vec3<double> orientation;
+	if ((!replacehydrogen) || (anchorpoint->nHydrogens()) == 0) orientation = anchorpoint->nextBondVector();
+	else
+	{
+		// Find first hydrogen attached to anchorpoint
+		Refitem<Bond,int> *ri;
+		for (ri = anchorpoint->bonds(); ri != NULL; ri = ri->next) if (ri->item->partner(anchorpoint)->element() == 1) break;
+		orientation = anchorpoint->parent()->cell()->mimd(ri->item->partner(anchorpoint), anchorpoint);
+		orientation.normalise();
+	}
+
+	// Have we a valid attachment point?
+	if (orientation.magnitude() < 0.1)
+	{
+		msg.exit("Fragment::anchoredModel");
+		return NULL;
+	}
+
+	// Calculate reference vector in fragment, if a linkPartner is specified
+	Vec3<double> ref;
+	if (masterLinkPartner_ != NULL)
+	{
+		Atom *linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
+		Atom *linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+		ref = anchoredModel_.cell()->mimd(linkPartner, linkAtom);
+		ref.normalise();
+	}
+	else ref.zero();
 
 	// Calculate cross product to get rotation axis, and dot product to get rotation angle
 	Vec3<double> xp = ref * orientation;
 	double angle = acos(ref.dp(orientation)) * DEGRAD;
-	
+
 	// Copy original model and reorient
-	anchoredModel_.copy(masterModel_);
 	anchoredModel_.selectAll();
-	anchoredModel_.rotateSelectionVector(Vec3<double>(), xp, -angle);
+	if (xp.magnitude() > 0.001) anchoredModel_.rotateSelectionVector(Vec3<double>(), xp, -angle);
 	anchoredModel_.selectNone();
 
 	msg.exit("Fragment::anchoredModel");
@@ -188,8 +275,57 @@ Model *Fragment::anchoredModel(Atom *anchorpoint)
 }
 
 // Paste anchored model to target model
-void Fragment::pasteAnchoredModel(Atom *anchorpoint, Model *model)
+void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model *target)
 {
+	msg.enter("Fragment::pasteAnchoredModel");
+
+	// Set up anchored model in correct geometry - have we a valid attachment point?
+	if (!anchoredModel(anchorpoint, replacehydrogen))
+	{
+		msg.exit("Fragment::pasteAnchoredModel");
+		return;
+	}
+
+	// Get pointers to link and partner atoms, determine if there was a bond there, and then delete link atom
+	Bond::BondType bt = Bond::nBondTypes;
+	Atom *linkPartner, *linkAtom;
+	if (masterLinkPartner_ != NULL)
+	{
+		linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
+		bt = (masterLinkAtom_->findBond(masterLinkPartner_) == NULL ? Bond::nBondTypes : masterLinkAtom_->findBond(masterLinkPartner_)->type());
+	}
+	linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+	anchoredModel_.deleteAtom(linkAtom);
+
+	// Remove any other anchorpoints, and translate model to correct position relative to anchor
+	anchoredModel_.selectElement(0);
+	anchoredModel_.selectionDelete();
+	anchoredModel_.selectAll();
+	anchoredModel_.translateSelectionLocal(anchorpoint->r());
+
+	// If we are to replace a hydrogen in the target model, delete it first
+	if (replacehydrogen && (anchorpoint->nHydrogens() != 0))
+	{
+		// Find first hydrogen attached to anchorpoint (this is what we have assumed in orienting the fragment)
+		Refitem<Bond,int> *ri;
+		for (ri = anchorpoint->bonds(); ri != NULL; ri = ri->next) if (ri->item->partner(anchorpoint)->element() == 1) break;
+		target->deleteAtom(ri->item->partner(anchorpoint));
+	}
+
+	// Paste to the target model, bonding the anchor and linkPartners if a bond was there before
+	Clipboard clip;
+	clip.copyAll(&anchoredModel_);
+	clip.pasteToModel(target, FALSE);
+	if (bt != Bond::nBondTypes) target->bondAtoms(anchorpoint->id(), target->nAtoms() - anchoredModel_.nAtoms() + linkPartner->id(), bt);
+
+	// Since we've physically altered anchoredModel_, re-copy it
+	anchoredModel_.copy(masterModel_);
+	linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
+	anchoredModel_.selectAll();
+	anchoredModel_.translateSelectionLocal(-linkAtom->r());
+	anchoredModel_.selectNone();
+
+	msg.exit("Fragment::pasteAnchoredModel");
 }
 
 /*

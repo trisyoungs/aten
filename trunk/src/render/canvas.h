@@ -28,7 +28,7 @@
 #include "base/log.h"
 
 // GL Objects
-enum GlObject { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_SELCYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_TUBEARROW, GLOB_MODEL, GLOB_NITEMS };
+enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, CylinderGlob, SelectedCylinderGlob, WireCylinderGlob, SelectedWireCylindedGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, TubeArrowGlob, ModelGlob, nGlobs };
 
 // Forward declarations
 class Atom;
@@ -146,7 +146,7 @@ class Canvas
 	*/
 	private:
 	// Display list ID's
-	GLuint list_[GLOB_NITEMS];
+	GLuint list_[nGlobs];
 
 	public:
 	// Create globs for rendering

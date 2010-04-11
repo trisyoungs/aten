@@ -25,7 +25,6 @@
 #include "classes/forcefieldatom.h"
 #include "model/model.h"
 #include "base/elements.h"
-// #include "base/messenger.h"
 
 // Atom drawing styles
 const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
@@ -214,6 +213,14 @@ void Atom::setPositionFixed(bool b)
 bool Atom::isPositionFixed()
 {
 	return fixedPosition_;
+}
+
+// Return number of attached hydrogens
+int Atom::nHydrogens()
+{
+	int nh = 0;
+	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next) if (bref->item->partner(this)->element() == 1) nh++;
+	return nh;
 }
 
 // Check the ff type of the atom against the supplied value

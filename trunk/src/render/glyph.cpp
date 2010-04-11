@@ -114,7 +114,7 @@ void Canvas::renderModelGlyphs(Model *sourceModel)
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  if (g->rotated()) { glPushMatrix(); glMultMatrixd(g->rotationForGL()); }
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
-				  glCallList(g->isSolid() ? list_[GLOB_UNITATOM] : list_[GLOB_WIREUNITATOM]);
+				  glCallList(g->isSolid() ? list_[UnitAtomGlob] : list_[WireUnitAtomGlob]);
 				  if (g->rotated()) glPopMatrix();
 				glPopMatrix();
 				break;
@@ -128,7 +128,7 @@ void Canvas::renderModelGlyphs(Model *sourceModel)
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  if (g->rotated()) { glPushMatrix(); glMultMatrixd(g->rotationForGL()); }
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
-				  glCallList(g->isSolid() ? list_[GLOB_UNITCUBE] : list_[GLOB_WIREUNITCUBE]);
+				  glCallList(g->isSolid() ? list_[UnitCubeGlob] : list_[WireUnitCubeGlob]);
 				  if (g->rotated()) glPopMatrix();
 				glPopMatrix();
 				break;

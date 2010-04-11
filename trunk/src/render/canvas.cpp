@@ -224,9 +224,9 @@ void Canvas::initGl()
 		// Create lists for globs if this is the first call to init_gl()
 		if (list_[0] == 0)
 		{
-			list_[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
-			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", list_[GLOB_STICKATOM]);
-			for (int n=1; n<GLOB_NITEMS; n++) list_[n] = list_[GLOB_STICKATOM]+n;
+			list_[StickAtomGlob] = glGenLists(nGlobs);
+			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", list_[StickAtomGlob]);
+			for (int n=1; n<nGlobs; n++) list_[n] = list_[StickAtomGlob]+n;
 		}
 		createLists();
 
@@ -316,15 +316,15 @@ void Canvas::createLists()
 	// Selected Atoms
 	*/
 	// Enlarged sphere (for selections with DS_TUBE)
-	glNewList(list_[GLOB_SELTUBEATOM],GL_COMPILE);
+	glNewList(list_[SelectedTubeAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
-	glNewList(list_[GLOB_SELSPHEREATOM],GL_COMPILE);
+	glNewList(list_[SelectedSphereAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
-	glNewList(list_[GLOB_SELUNITATOM],GL_COMPILE);
+	glNewList(list_[SelectedUnitAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.selectionScale(), TRUE);
 	glEndList();
 
@@ -332,7 +332,7 @@ void Canvas::createLists()
 	// Atoms
 	*/
 	// Stick Atom (for DS_STICK)
-	glNewList(list_[GLOB_STICKATOM],GL_COMPILE);
+	glNewList(list_[StickAtomGlob],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    glVertex3d(-0.5,0.0,0.0); glVertex3d(0.5,0.0,0.0);
 	    glVertex3d(0.0,-0.5,0.0); glVertex3d(0.0,0.5,0.0);
@@ -340,53 +340,53 @@ void Canvas::createLists()
 	  glEnd();
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
-	glNewList(list_[GLOB_TUBEATOM],GL_COMPILE);
+	glNewList(list_[TubeAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle), TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
-	glNewList(list_[GLOB_SPHEREATOM],GL_COMPILE);
+	glNewList(list_[SphereAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle), TRUE);
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)
-	glNewList(list_[GLOB_UNITATOM],GL_COMPILE);
+	glNewList(list_[UnitAtomGlob],GL_COMPILE);
 	  spherePrimitive(1.0, TRUE);
 	glEndList();
 	// Wire Atom Sphere (for DS_TUBE)
-	glNewList(list_[GLOB_WIRETUBEATOM],GL_COMPILE);
+	glNewList(list_[WireTubeAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle), FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
-	glNewList(list_[GLOB_WIRESPHEREATOM],GL_COMPILE);
+	glNewList(list_[WireSphereAtomGlob],GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle), FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
-	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);
+	glNewList(list_[WireUnitAtomGlob],GL_COMPILE);
 	  spherePrimitive(1.0, FALSE);
 	glEndList();
 	/*
 	// Cylinders (bonds)
 	*/
 	// Solid cylinder of radius 1
-	glNewList(list_[GLOB_CYLINDER],GL_COMPILE);
+	glNewList(list_[CylinderGlob],GL_COMPILE);
 	  cylinderPrimitive(1.0, 1.0, TRUE);
 	glEndList();
 	// Solid selected cylinder
-	glNewList(list_[GLOB_SELCYLINDER],GL_COMPILE);
+	glNewList(list_[SelectedCylinderGlob],GL_COMPILE);
 	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), TRUE);
 	glEndList();
 	// Wireframe cylinder
-	glNewList(list_[GLOB_WIRECYLINDER],GL_COMPILE);
+	glNewList(list_[WireCylinderGlob],GL_COMPILE);
 	  cylinderPrimitive(1.0, 1.0, FALSE);
 	glEndList();
 	// Selected wireframe cylinder
-	glNewList(list_[GLOB_SELWIRECYLINDER],GL_COMPILE);
+	glNewList(list_[SelectedWireCylindedGlob],GL_COMPILE);
 	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), FALSE);
 	glEndList();
 	/*
 	// Objects
 	*/
 	// Cylinder Arrow
-	glNewList(list_[GLOB_TUBEARROW],GL_COMPILE);
+	glNewList(list_[TubeArrowGlob],GL_COMPILE);
 	  glPushMatrix();
 	    glScaled(1.0,1.0,0.6);
 	    cylinderPrimitive(0.1, 0.1, TRUE);
@@ -398,7 +398,7 @@ void Canvas::createLists()
 	  glPopMatrix();
 	glEndList();
 	// View axes
-	glNewList(list_[GLOB_GLOBE],GL_COMPILE);
+	glNewList(list_[GlobeGlob],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    // X
 	    glVertex3f(0.6f,0.0f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
@@ -421,7 +421,7 @@ void Canvas::createLists()
 	delta = extent * spacing;
 	tickdelta = spacing / ticks;
 	tickheight = spacing * 0.05;
-	glNewList(list_[GLOB_GUIDE],GL_COMPILE);
+	glNewList(list_[GuideGlob],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    for (n=-extent; n<=extent; n++)
 	    {
@@ -450,7 +450,7 @@ void Canvas::createLists()
 	// Unit Circle
 	int nsegs = 36;
 	double degInRad;
-	glNewList(list_[GLOB_CIRCLE],GL_COMPILE);
+	glNewList(list_[CircleGlob],GL_COMPILE);
 	  glBegin(GL_LINE_LOOP);
 	    for (int i=0; i < nsegs; i++)
 	    {
@@ -460,7 +460,7 @@ void Canvas::createLists()
 	  glEnd();
 	glEndList();
 	// Unit Wire Cube (centred at origin)
-	glNewList(list_[GLOB_WIREUNITCUBE],GL_COMPILE);
+	glNewList(list_[WireUnitCubeGlob],GL_COMPILE);
 	  glBegin(GL_LINE_LOOP);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(0.5,-0.5,-0.5);
@@ -483,7 +483,7 @@ void Canvas::createLists()
 	  glEnd();
 	glEndList();
 	// Unit Solid Cube (centred at origin)
-	glNewList(list_[GLOB_UNITCUBE],GL_COMPILE);
+	glNewList(list_[UnitCubeGlob],GL_COMPILE);
 	  glPolygonMode(GL_FRONT_AND_BACK, GL_POLYGON);
 	  glBegin(GL_QUADS);
 	    // Back face, in plane z = -0.5
@@ -524,8 +524,58 @@ void Canvas::createLists()
 	    glVertex3d(0.5,-0.5,0.5);
 	  glEnd();
 	glEndList();
+	// Unit cube with crosses on each face
+	glNewList(list_[CrossedUnitCubeGlob], GL_COMPILE);
+	  glBegin(GL_LINE_LOOP);
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	  glEnd();
+	  glBegin(GL_LINES);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	  glEnd();
+	  // Crosses
+	  glBegin(GL_LINES);
+	    glVertex3d(0.25,0.25,0.5);
+	    glVertex3d(-0.25,-0.25,0.5);
+	    glVertex3d(0.25,0.25,-0.5);
+	    glVertex3d(-0.25,-0.25,-0.5);
+	    glVertex3d(0.5,0.25,0.25);
+	    glVertex3d(0.5,-0.25,-0.25);
+	    glVertex3d(-0.5,0.25,0.25);
+	    glVertex3d(-0.5,-0.25,-0.25);
+	    glVertex3d(0.25,0.5,0.25);
+	    glVertex3d(-0.25,0.5,-0.25);
+	    glVertex3d(0.25,-0.5,0.25);
+	    glVertex3d(-0.25,-0.5,-0.25);
+	    glVertex3d(0.25,-0.25,0.5);
+	    glVertex3d(-0.25,0.25,0.5);
+	    glVertex3d(0.25,-0.25,-0.5);
+	    glVertex3d(-0.25,0.25,-0.5);
+	    glVertex3d(0.5,-0.25,0.25);
+	    glVertex3d(0.5,0.25,-0.25);
+	    glVertex3d(-0.5,-0.25,0.25);
+	    glVertex3d(-0.5,0.25,-0.25);
+	    glVertex3d(-0.25,0.5,0.25);
+	    glVertex3d(0.25,0.5,-0.25);
+	    glVertex3d(-0.25,-0.5,0.25);
+	    glVertex3d(0.25,-0.5,-0.25);
+	  glEnd();
+	glEndList();
 	// Cell Axis Arrows
-	glNewList(list_[GLOB_CELLAXES],GL_COMPILE);
+	glNewList(list_[CellAxesGlob],GL_COMPILE);
 	  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	  double asize = 0.5, awidth = 0.2, posoffset = 0.5;
 	  for (int i=0; i<3; i++)
@@ -536,7 +586,7 @@ void Canvas::createLists()
 		  glPushMatrix();
 		    glScaled(0.5,awidth,awidth);
 		    glTranslated(0.5,0.0,0.0);
-		    glCallList(list_[GLOB_UNITCUBE]);
+		    glCallList(list_[UnitCubeGlob]);
 		  glPopMatrix();
 		  glTranslated(posoffset,0.0,0.0);
 		  glBegin(GL_TRIANGLE_FAN);

@@ -146,6 +146,8 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 				frag->cycleLinkAtom();
 				gui.mainView.postRedisplay();
 			}
+			// Refresh if Shift status has changed
+			if (keyModifier_[Prefs::ShiftKey]) gui.mainView.postRedisplay();
 			break;
 	}
 }
@@ -153,8 +155,36 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 // Inform key up
 void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool altkey)
 {
-	switch (key)
+	// Set keystates
+	bool oldshift = keyModifier_[Prefs::ShiftKey];
+	bool oldctrl = keyModifier_[Prefs::CtrlKey];
+	bool oldalt = keyModifier_[Prefs::AltKey];
+	keyModifier_[Prefs::ShiftKey] = shiftkey;
+	keyModifier_[Prefs::CtrlKey] = ctrlkey;
+	keyModifier_[Prefs::AltKey] = altkey;
+
+	// Set some useful flags...
+	bool manipulate = FALSE;
+	for (int n=0; n<3; n++)
 	{
+		if (keyModifier_[n])
+		{
+			switch (prefs.keyAction(Prefs::ModifierKey(n)))
+			{
+				case (Prefs::ManipulateKeyAction):
+					manipulate = TRUE;
+					break;
+			}
+		}
+	}
+
+	// Mode-specific
+	switch (selectedMode_)
+	{
+		case (Canvas::DrawFragmentAction):
+			// Refresh if Shift status has changed
+			if (keyModifier_[Prefs::ShiftKey] != oldshift) gui.mainView.postRedisplay();
+			break;
 	}
 }
 
@@ -299,6 +329,70 @@ void Canvas::beginMode(Prefs::MouseButton button)
 	msg.exit("Canvas::beginMode");
 }
 
+void Canvas::modeMotion(double x, double y)
+{
+	// Actively update variables when moving the mouse (possibly while performing a given action)
+	msg.enter("Canvas::modeMotion");
+	static Vec3<double> delta;
+	//static Model *viewtarget;
+	if (displayModel_ == NULL)
+	{
+		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
+		msg.exit("Canvas::modeMotion");
+		return;
+	}
+	// Calculate new delta.
+	delta.set(x,y,0.0);
+	delta = delta - rMouseLast_;
+	// Use activeMode_ to determine what needs to be performed
+	switch (activeMode_)
+	{
+		case (Canvas::NoAction):
+			break;
+		case (Canvas::RotateXYAction):
+			displayModel_->rotateView(delta.x/2.0,delta.y/2.0);
+			break;
+		case (Canvas::RotateZAction):
+			displayModel_->zRotateView(delta.x/2.0);
+			break;
+		case (Canvas::TranslateAction):
+			delta.y = -delta.y;
+			displayModel_->adjustCamera(delta/15.0,0.0);
+			break;
+		case (Canvas::ZoomAction):
+			displayModel_->adjustZoom(delta.y < 0.0);
+			break;
+		case (Canvas::DrawFragmentAction):
+			if (gui.fragmentWindow->currentFragment() != NULL)
+			{
+				if (atomClicked_ == NULL) gui.fragmentWindow->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+				else gui.fragmentWindow->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+			}
+			break;
+		case (Canvas::TransformRotateXYAction):
+			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
+			displayModel_->updateMeasurements();
+			hasMoved_ = TRUE;
+			break;
+		case (Canvas::TransformRotateZAction):
+			displayModel_->rotateSelectionZaxis(delta.x/2.0);
+			displayModel_->updateMeasurements();
+			hasMoved_ = TRUE;
+			break;
+		case (Canvas::TransformTranslateAction):
+			delta.y = -delta.y;
+			delta /= displayModel_->translateScale() * 2.0;
+			displayModel_->translateSelectionWorld(delta);
+			displayModel_->updateMeasurements();
+			hasMoved_ = TRUE;
+			break;
+		default:
+			break;
+	}
+	postRedisplay();
+	msg.exit("Canvas::modeMotion");
+}
+
 // End Mode
 void Canvas::endMode(Prefs::MouseButton button)
 {
@@ -308,6 +402,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 	Atom *atoms[4], *i;
 	Bond *b;
 	Bond::BondType bt;
+	Fragment *frag;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::endMode - datamodel == NULL.\n");
@@ -408,7 +503,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ == NULL)
 			{
 				displayModel_->beginUndoState("Draw Atom");
-				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, -prefs.drawDepth()));
+				currentDrawDepth_ = prefs.drawDepth();
+				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, currentDrawDepth_));
 				displayModel_->endUndoState();
 				displayModel_->projectAtom(i);
 			}
@@ -444,26 +540,21 @@ void Canvas::endMode(Prefs::MouseButton button)
 			break;
 		// Draw framents
 		case (Canvas::DrawFragmentAction):
-// 			if (gui.fragmentWindow->currentFragment() == NULL) break;
-// 			Fragment *frag = gui.fragmentWindow->currentFragment();
+			frag = gui.fragmentWindow->currentFragment();
+			if (frag == NULL) break;
 			if (atomClicked_ != NULL)
 			{
-/*				// Atom is now fragment anchor point
-				if (atomClicked_ != NULL) i = atomClicked_;
-				r = i->r();
-				Model *m = frag->anchoredModel(i);
-
-				glPushMatrix();
-				  glTranslated(r.x, r.y, r.z);
-				  renderModelAtoms(m);
-				glPopMatrix();*/
+				displayModel_->beginUndoState("Draw Attached Fragment");
+				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], displayModel_);
 			}
 			else
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
-// 				mouse = displayModel_->guideToModel(rMouseLast_, prefs.drawDepth());
-// 				frag->pasteToModel(displayModel_, mouse);
+				displayModel_->beginUndoState("Draw Fragment");
+				frag->pasteOrientedModel(displayModel_->guideToModel(rMouseDown_, prefs.drawDepth()), displayModel_);
 			}
+			displayModel_->endUndoState();
+			gui.update(TRUE,FALSE,TRUE);
 			break;
 		case (Canvas::DrawTransmuteAction):
 			displayModel_->beginUndoState("Transmute");
@@ -566,66 +657,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 			break;
 	}
 	msg.exit("Canvas::endMode");
-}
-
-void Canvas::modeMotion(double x, double y)
-{
-	// Actively update variables when moving the mouse (possibly while performing a given action)
-	msg.enter("Canvas::modeMotion");
-	static Vec3<double> delta;
-	//static Model *viewtarget;
-	if (displayModel_ == NULL)
-	{
-		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
-		msg.exit("Canvas::modeMotion");
-		return;
-	}
-	// For view operations when we have a trajectory, apply all movement to the parent model
-	//viewtarget = displayModel_->trajectoryParent();
-	//if (viewtarget == NULL) viewtarget = displayModel_;
-	// Calculate new delta.
-	delta.set(x,y,0.0);
-	delta = delta - rMouseLast_;
-	// Use activeMode_ to determine what needs to be performed
-	switch (activeMode_)
-	{
-		case (Canvas::NoAction):
-			break;
-		case (Canvas::RotateXYAction):
-			displayModel_->rotateView(delta.x/2.0,delta.y/2.0);
-			break;
-		case (Canvas::RotateZAction):
-			displayModel_->zRotateView(delta.x/2.0);
-			break;
-		case (Canvas::TranslateAction):
-			delta.y = -delta.y;
-			displayModel_->adjustCamera(delta/15.0,0.0);
-			break;
-		case (Canvas::ZoomAction):
-			displayModel_->adjustZoom(delta.y < 0.0);
-			break;
-		case (Canvas::TransformRotateXYAction):
-			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		case (Canvas::TransformRotateZAction):
-			displayModel_->rotateSelectionZaxis(delta.x/2.0);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		case (Canvas::TransformTranslateAction):
-			delta.y = -delta.y;
-			delta /= displayModel_->translateScale() * 2.0;
-			displayModel_->translateSelectionWorld(delta);
-			displayModel_->updateMeasurements();
-			hasMoved_ = TRUE;
-			break;
-		default:
-			break;
-	}
-	postRedisplay();
-	msg.exit("Canvas::modeMotion");
 }
 
 void Canvas::modeScroll(bool scrollup)
