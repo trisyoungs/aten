@@ -436,6 +436,9 @@ Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
 		case (Qt::Key_Alt):
 			result = Canvas::LeftAltKey;
 			break;
+		case (Qt::Key_Escape):
+			result = Canvas::EscapeKey;
+			break;
 	}
 	return result;
 }

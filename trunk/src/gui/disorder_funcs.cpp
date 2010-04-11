@@ -133,22 +133,22 @@ void AtenDisorder::refresh()
 		item = new TTableWidgetItem();
 		if (count == 0) firstitem = item;
 		item->setText(itoa(m->nRequested()));
-		item->setModel(m);
+		item->data.set(VTypes::ModelData, m);
 		ui.ComponentTable->setItem(count, 0, item);
 		// Rotation allowed
 		item = new TTableWidgetItem();
 		item->setCheckState(m->isMoveAllowed(MonteCarlo::Rotate) ? Qt::Checked : Qt::Unchecked);
-		item->setModel(m);
+		item->data.set(VTypes::ModelData, m);
 		ui.ComponentTable->setItem(count, 1, item);
 		// Translate allowed
 		item = new TTableWidgetItem();
 		item->setCheckState(m->isMoveAllowed(MonteCarlo::Translate) ? Qt::Checked : Qt::Unchecked);
-		item->setModel(m);
+		item->data.set(VTypes::ModelData, m);
 		ui.ComponentTable->setItem(count, 2, item);
 		// Model name
 		item = new TTableWidgetItem();
 		item->setText(m->name());
-		item->setModel(m);
+		item->data.set(VTypes::ModelData, m);
 		ui.ComponentTable->setItem(count, 3, item);
 		count ++;
 	}
@@ -239,8 +239,8 @@ void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 {
 	if (!gui.exists() || refreshing_) return;
 	int column = ui.ComponentTable->column(item);
-	Model *m;
-	m = ((TTableWidgetItem*) item)->model();
+	TTableWidgetItem *twi = (TTableWidgetItem*) item;
+	Model *m = (Model*) twi->data.asPointer(VTypes::ModelData);
 	switch (column)
 	{
 		// NRequested

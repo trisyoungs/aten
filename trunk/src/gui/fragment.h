@@ -43,8 +43,11 @@ class AtenFragment : public QDialog
 	void refresh();
 	private slots:
 	void on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 	void on_FragmentFilterEdit_textChanged(QString &text);
 	void on_FragmentShowAllButton_clicked(bool checked);
+	void on_ViewAsListCheck_clicked(bool checked);
+	void on_ViewAsGridCheck_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*

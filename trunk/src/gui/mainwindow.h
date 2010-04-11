@@ -90,6 +90,8 @@ class AtenForm : public QMainWindow
 	void updateTrajectoryToolbar();
 	// Set active status of some trajectory toolbar controls
 	void setTrajectoryToolbarActive(bool active);
+	// Cancel any current mode and return to select
+	void cancelCurrentMode();
 
 
 	/*

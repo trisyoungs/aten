@@ -20,6 +20,7 @@
 */
 
 #include "base/pattern.h"
+#include "base/sysfunc.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/atomlist.h"
@@ -68,15 +69,34 @@ void AtenAtomlist::updateSelection()
 {
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
+	Atom *i;
 	gui.mainView.disableDrawing();
 	Model *m = aten.currentModelOrFrame();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
 		ti = (TTreeWidgetItem*) item;
-		if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+		i = (Atom*) ti->data.asPointer(VTypes::AtomData);
+		if (i != NULL) item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
 	gui.mainView.enableDrawing();
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+// Set column data for specified item
+void AtenAtomlist::setColumns(TTreeWidgetItem *twi)
+{
+	static Vec3<double> r;
+	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
+	if (i == NULL) printf("AtenAtomlist::setColumns <<<< NULL atom pointer found >>>>\n");
+	else
+	{
+		twi->setText(AtenAtomlist::IdData, itoa(i->id()+1));
+		twi->setText(AtenAtomlist::ElementData, elements().symbol(i));
+		r = i->r();
+		twi->setText(AtenAtomlist::RxData, ftoa(r.x));
+		twi->setText(AtenAtomlist::RyData, ftoa(r.y));
+		twi->setText(AtenAtomlist::RzData, ftoa(r.z));
+	}
 }
 
 // Refresh the atom list
@@ -116,12 +136,11 @@ void AtenAtomlist::refresh(bool forceupdate)
 			{
 				// Add the atom
 				item = ui.AtomTree->addTreeItem(ui.AtomTree);
-				item->setAtom(i);
-				item->setAtomColumns();
+				item->data.set(VTypes::AtomData, i);
+				setColumns(item);
 				// Set the row selection property here.
 				item->setSelected(i->isSelected());
 			}
-
 		}
 		else
 		{
@@ -134,7 +153,7 @@ void AtenAtomlist::refresh(bool forceupdate)
 				TTreeWidgetItem *pat = new TTreeWidgetItem(ui.AtomTree);
 				ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->name());
-				pat->setPattern(p);
+				pat->data.set(VTypes::PatternData, p);
 				// Get first atom
 				i = p->firstAtom();
 				count = p->firstAtom()->id();
@@ -143,9 +162,8 @@ void AtenAtomlist::refresh(bool forceupdate)
 				{
 					// Create atom in the pattern root node
 					item = ui.AtomTree->addTreeItem(pat);
-					item->setAtom(i);
-					item->setPattern(p);
-					item->setAtomColumns();
+					item->data.set(VTypes::AtomData, i);
+					setColumns(item);
 					if (i->isSelected()) item->setSelected(TRUE);
 					// Check related atoms in other molecules for selection state
 					for (mol = 1; mol<p->nMolecules(); mol++)
@@ -173,8 +191,8 @@ void AtenAtomlist::refresh(bool forceupdate)
 		{
 			for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
 			{
-				i = ri->item->atom();
-				ri->item->setSelected(i->isSelected());
+				i = (Atom*) ri->item->data.asPointer(VTypes::AtomData);
+				if (i != NULL) ri->item->setSelected(i->isSelected());
 			}
 		}
 		else refresh(TRUE);
@@ -264,10 +282,11 @@ void AtenAtomlist::toggleItem(TTreeWidgetItem *twi)
 {
 	// Check for no item or header item
 	if (twi == NULL) return;
-	if (twi->atom() == NULL) return;
+	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
+	if (i == NULL) return;
 	bool state = twi->isSelected();
 	twi->setSelected(!state);
-	state ? listLastModel_->deselectAtom(twi->atom()) : listLastModel_->selectAtom(twi->atom());
+	state ? listLastModel_->deselectAtom(i) : listLastModel_->selectAtom(i);
 }
 
 // Select tree widget item *and* model atom, provided the tree widget item is not selected already
@@ -276,7 +295,8 @@ void AtenAtomlist::selectItem(TTreeWidgetItem *twi)
 	if (twi == NULL) return;
 	if (twi->isSelected()) return;
 	twi->setSelected(TRUE);
-	listLastModel_->selectAtom(twi->atom());
+	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
+	listLastModel_->selectAtom(i);
 }
 
 // Deselect tree widget item *and* model atom, provided the tree widget item is not deselected already
@@ -285,7 +305,8 @@ void AtenAtomlist::deselectItem(TTreeWidgetItem *twi)
 	if (twi == NULL) return;
 	if (!twi->isSelected()) return;
 	twi->setSelected(FALSE);
-	listLastModel_->deselectAtom(twi->atom());
+	Atom *i = (Atom*) twi->data.asPointer(VTypes::AtomData);
+	listLastModel_->deselectAtom(i);
 }
 
 void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
@@ -297,8 +318,9 @@ void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
 	// Check for header items to we can (un)collapse them or select all atoms within them
 	if (lastClicked_ != NULL)
 	{
-		if (lastClicked_->atom() != NULL) toggleItem(lastClicked_);
-		else if (lastClicked_->pattern() != NULL)
+		// If the clicked item contains a pattern pointer, its a collapsible list item root node
+		if (lastClicked_->data.type() == VTypes::AtomData) toggleItem(lastClicked_);
+		else if (lastClicked_->data.type() == VTypes::PatternData)
 		{
 			// If the x-coordinate is less than 15, change the collapsed state of the item
 			if (event->x() < 15) lastClicked_->setExpanded(!lastClicked_->isExpanded());
@@ -309,6 +331,7 @@ void AtenAtomlist::treeMousePressEvent(QMouseEvent *event)
 				else for (int n=0; n < lastClicked_->childCount(); n++) selectItem((TTreeWidgetItem*) lastClicked_->child(n));
 			}
 		}
+		else printf("Internal Error: Atomlist item contains an unrecognised pointer type.\n");
 	}
 	lastHovered_ = lastClicked_;
 }

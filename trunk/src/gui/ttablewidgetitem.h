@@ -23,9 +23,7 @@
 #define ATEN_TTABLEWIDGETATOM_H
 
 #include <QtGui/QTableWidgetItem>
-
-// Forward Declarations
-class Model;
+#include "parser/returnvalue.h"
 
 class TTableWidgetItem : public QTableWidgetItem
 {
@@ -34,17 +32,11 @@ class TTableWidgetItem : public QTableWidgetItem
 	TTableWidgetItem();
 
 	/*
-	// Pointers
+	// Associated Data
 	*/
-	private:
-	Model *model_;
-	
-
 	public:
-	// Set the model pointer in the widget
-	void setModel(Model *source);
-	// Return the grid pointer in the widget
-	Model *model();
+	// Associated data item
+	ReturnValue data;
 };
 
 #endif

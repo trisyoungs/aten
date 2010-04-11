@@ -66,7 +66,7 @@ bool Fragment::setMasterModel(Model *m)
 	// Define initial link (anchor) atom as first non-element (XX) atom in model (if there is one)
 	if (masterModel_->nUnknownAtoms() == 0)
 	{
-		msg.print(" ... Warning - Fragment model '%s' has no defined anchor point. Assuming first atom.\n", masterModel_->name());
+		msg.print(Messenger::Verbose, " ... Fragment model '%s' has no defined anchor point. Assuming first atom.\n", masterModel_->name());
 		masterLinkAtom_ = masterModel_->atoms();
 	}
 	else for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
