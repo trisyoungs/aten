@@ -29,6 +29,7 @@
 	<!ENTITY guiwincommand SYSTEM "gui/windows_command.xml">
 	<!ENTITY guiwindisorder SYSTEM "gui/windows_disorder.xml">
 	<!ENTITY guiwinff SYSTEM "gui/windows_ff.xml">
+	<!ENTITY guiwinfragment SYSTEM "gui/windows_fragment.xml">
 	<!ENTITY guiwingeometry SYSTEM "gui/windows_geometry.xml">
 	<!ENTITY guiwingrids SYSTEM "gui/windows_grids.xml">
 	<!ENTITY guiwinminimiser SYSTEM "gui/windows_minimiser.xml">
@@ -207,6 +208,7 @@
 			&guiwincommand;
 			&guiwindisorder;
 			&guiwinff;
+			&guiwinfragment;
 			&guiwingeometry;
 			&guiwingrids;
 			&guiwinminimiser;

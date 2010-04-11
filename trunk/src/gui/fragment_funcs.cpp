@@ -68,7 +68,7 @@ void AtenFragment::refresh()
 
 	int row = 0, nperrow = 5, column;
 
-	ui.FragmentTable->setColumnCount(nperrow+1);
+	ui.FragmentTable->setColumnCount(nperrow);
 	ui.FragmentTable->setRowCount(1);
 
 	// Go through all available fragment groups
