@@ -1175,11 +1175,13 @@ int Pattern::totalBondOrderPenalty()
 void Pattern::augment()
 {
 	msg.enter("Pattern::augment");
-	Atom *i;
+	Atom *i, *j;
 	Refitem<Bond,Bond::BondType> *rb;
-	Refitem<Bond,int> *bref, *heavybond;
+	Refitem<Bond,int> *bref, *heavybond, *bestref;
 	Refitem<Atom,int> *aref;
+	Reflist<Bond,int> bondlist;
 	Bond *b1, *b2, *b3;
+	Bond::BondType bt;
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty;
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
@@ -1209,12 +1211,41 @@ void Pattern::augment()
 		i = i->next;
 	}
 	// Stage 2 - Augmenting all remaining atoms
+//  	i = firstAtom_;
+// 	for (n=0; n<nAtoms_; n++)
+// 	{
+// 		for (bref = i->bonds(); bref != NULL; bref = bref->next)
+// 			parent_->changeBond(bref->item, bref->item->augmented());
+// 		i = i->next;
+// 	}
+	// Construct a bond list for us to work from
  	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		for (bref = i->bonds(); bref != NULL; bref = bref->next)
-			parent_->changeBond(bref->item, bref->item->augmented());
+		for (bref = i->bonds(); bref != NULL; bref = bref->next) bondlist.addUnique(bref->item);
 		i = i->next;
+	}
+	// Now we work with the bondlist. Repeatedly make the best move we possible can from all available bonds, until no more good moves are available
+	if (bondlist.nItems() > 1) while (1)
+	{
+		for (bref = bondlist.first(); bref != NULL; bref = bref->next)
+		{
+			b1 = bref->item;
+			i = b1->atomI();
+			j = b1->atomJ();
+			// Store original bond type and get augmented 'best' penalty
+			bt = b1->type();
+			b1->setType(b1->augmented());
+			bref->data = elements().bondOrderPenalty(i, i->totalBondOrder()/2) + elements().bondOrderPenalty(j, j->totalBondOrder()/2);
+			// Reset back to original bond type and subtract orginal bond order penalty
+			b1->setType(bt);
+			bref->data -= (elements().bondOrderPenalty(i, i->totalBondOrder()/2) + elements().bondOrderPenalty(j, j->totalBondOrder()/2));
+		}
+		// Find lowest score (i.e. best move to make)
+		bestref = bondlist.first();
+		for (bref = bondlist.first(); bref != NULL; bref = bref->next) if (bref->data < bestref->data) bestref = bref;
+		if (bestref->data >= 0) break;
+		else parent_->changeBond(bestref->item, bestref->item->augmented());
 	}
 	// Stage 3 - Attempt to fix any problems, mostly with (poly)cyclic systems
 	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
