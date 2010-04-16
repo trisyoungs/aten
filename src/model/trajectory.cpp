@@ -161,6 +161,7 @@ bool Model::initialiseTrajectory(const char *fname, Tree *f)
 	// Read first frame
 	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
+	printf("INteger result = %i\n", rv.asInteger());
 		msg.print("Error testing frame read from trajectory.\n");
 		clearTrajectory();
 		setRenderFromSelf();

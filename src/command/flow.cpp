@@ -78,10 +78,19 @@ bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		result = c->arg(0, rv);
 		if (!result)
 		{
+			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(Command::NoFunction);
-			if (af == Command::Break) break;
-			else if (af != Command::Continue) return FALSE;
+			if (af == Command::Break)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				return TRUE;
+			}
+			else if (af == Command::Continue)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				break;
+			}
+			else if (af != Command::NoFunction) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(1, test)) return FALSE;
@@ -110,10 +119,19 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		result = c->arg(3, rv);
 		if (!result)
 		{
+			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(Command::NoFunction);
-			if (af == Command::Break) break;
-			else if (af != Command::Continue) return FALSE;
+			if (af == Command::Break)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				return TRUE;
+			}
+			else if (af == Command::Continue)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				break;
+			}
+			else if (af != Command::NoFunction) return FALSE;
 		}
 		// Loop 'increment' statement
 		if (!c->arg(2, rv)) return FALSE;
@@ -155,10 +173,19 @@ bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		result = c->arg(1, rv);
 		if (!result)
 		{
+			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
-			c->parent()->setAcceptedFail(Command::NoFunction);
-			if (af == Command::Break) break;
-			else if (af != Command::Continue) return FALSE;
+			if (af == Command::Break)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				return TRUE;
+			}
+			else if (af == Command::Continue)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				break;
+			}
+			else if (af != Command::NoFunction) return FALSE;
 		}
 		// Perform test of condition
 		if (!c->arg(0, test)) return FALSE;
