@@ -98,7 +98,7 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "findelement",	VTypes::ElementData,	"S",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -327,9 +327,15 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
+	int el;
 	Aten *ptr= (Aten*) rv.asPointer(VTypes::AtenData, result);
 	if (result) switch (i)
 	{
+		case (AtenVariable::FindElement):
+			el = elements().find(node->argc(0));
+			if (el != 0) rv.set(VTypes::ElementData, &elements().el[el]);
+			else rv.set(VTypes::ElementData, NULL);
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in AtenVariable.\n", functionData[i].name);
 			result = FALSE;

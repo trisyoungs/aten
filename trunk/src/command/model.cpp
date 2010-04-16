@@ -128,9 +128,9 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	obj.m->calculateMass();
 	obj.m->selectNone();
 	// Print out some useful info on the model that we've just read in
-	msg.print("Model  : %s\n",obj.m->name());
-	msg.print("Atoms  : %i\n",obj.m->nAtoms());
-	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
+	msg.print(Messenger::Verbose, "Model  : %s\n",obj.m->name());
+	msg.print(Messenger::Verbose, "Atoms  : %i\n",obj.m->nAtoms());
+	msg.print(Messenger::Verbose, "Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nFrames() > 0) obj.m->setRenderFromFrames();

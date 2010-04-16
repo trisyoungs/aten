@@ -4,8 +4,6 @@
 	
 		<table frame='all' pgwide='1' tocentry='1'><title>Bond type members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Member</entry>
