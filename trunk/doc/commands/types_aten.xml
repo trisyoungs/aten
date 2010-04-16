@@ -80,7 +80,7 @@
 					<row>
 						<entry>findelement ( string <emphasis>name</emphasis> )</entry>
 						<entry><link linkend="command.types.element">element</link></entry>
-						<entry>Convert the string specified into an element, according to the current <link linkend-"enums.zmaptypes">zmapping type</link>.</entry>
+						<entry>Convert the string specified into an element, according to the current <link linkend="enums.zmaptypes">zmapping type</link>.</entry>
 					</row>
 				</tbody>
 			</tgroup>
