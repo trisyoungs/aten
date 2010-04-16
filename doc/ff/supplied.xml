@@ -1,7 +1,7 @@
 <section id="ff.supplied"><title>Supplied Forcefields</title>
 	<indexterm zone="ff.supplied"><primary>forcefields</primary><secondary>supplied</secondary></indexterm>
 
-	<para>A handful of forcefields ready-formatted for import into Aten are provided with the code and are listed here. It should be a relatively straightforward process to convert others, unless the functional forms used are not yet implemented (but sure, if you ask then I will add them).</para>
+	<para>A handful of forcefields ready-formatted for import into Aten are provided with the code and are listed here. It should be a relatively straightforward process to convert others, unless the functional forms used are not yet implemented (but sure, if you ask then I will add them). If you export an expression from Aten, <emphasis>please</emphasis> check the parameters in the file are what you actually want. Aten is designed to ease the pain of setting up a simulation in this manner, but is <emphasis>not</emphasis> intended as a black box.</para>
 	
 	<section id="ff.supplied.cldp"><title>Canongia-Lopes &amp; Padua Ionic Liquids (cldp-il.ff)</title>
 		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>ionic liquids</tertiary></indexterm>

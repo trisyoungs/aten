@@ -563,7 +563,7 @@ bool Forcefield::readInter()
 			count ++;
 		}
 	} while (!done);
-	msg.print("\t: Read in %i atomic VDW parameters\n",count);
+	msg.print("\t: Read in %i atomic VDW parameters (%s)\n", count, VdwFunctions::VdwFunctions[vdwstyle].name);
 	msg.exit("Forcefield::readInter");
 	return TRUE;
 }

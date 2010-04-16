@@ -62,7 +62,15 @@ void Model::selectAtom(Atom *i, bool markonly)
 		if (!i->isSelected(TRUE))
 		{
 			i->setSelected(TRUE, TRUE);
-			marked_.add(i);
+			// Add at correct position in list
+			Refitem<Atom,int> *ri = marked_.first();
+			if (ri == NULL) marked_.add(i);
+			else if (ri->item->id() > i->id()) marked_.addStart(i);
+			else
+			{
+				for (ri = marked_.last(); ri != NULL; ri = ri->prev) if (ri->item->id() < i->id()) break;
+				marked_.addAfter(ri,i);
+			}
 		}
 	}
 	else

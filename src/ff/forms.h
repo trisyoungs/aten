@@ -72,7 +72,7 @@ class FunctionData
 // VDW Potential Functions
 namespace VdwFunctions
 {
-	enum VdwFunction { None, InversePower, Lj, LjAB, Buckingham, Morse, nVdwFunctions };
+	enum VdwFunction { None, InversePower, Lj, LjGeometric, LjAB, Buckingham, Morse, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
 	VdwFunction vdwFunction(const char *s, bool reporterror = FALSE);
 	int vdwParameter(VdwFunction, const char *s, bool reporterror = FALSE);

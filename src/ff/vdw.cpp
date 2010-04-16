@@ -45,6 +45,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			U = epsilon * pow(sigma / rij, pwr);
 			break;
 		case (VdwFunctions::Lj):
+		case (VdwFunctions::LjGeometric):
 			// U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
 			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
 			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
@@ -106,6 +107,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
 			break;
 		case (VdwFunctions::Lj):
+		case (VdwFunctions::LjGeometric):
 			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
 			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
 			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
@@ -460,6 +462,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 						continue;
 					}
 					paramsj = paj->data()->parameters();
+					Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
@@ -467,9 +470,11 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 							du_dr = 0.0;
 							break;
 						case (VdwFunctions::Lj):
+						case (VdwFunctions::LjGeometric):
 							// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
-							epsilon = sqrt(paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon]);
-							sigma = 0.5 * (paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma]) * vrs;
+							epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
+							sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * vrs;
+				// 			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
 							sigmar9 = sigma / cutoff;
 							sigmar3 = sigmar9 * sigmar9 * sigmar9;
 							sigmar9 = sigmar3 * sigmar3 * sigmar3;
