@@ -305,7 +305,7 @@ class Model
 	private:
 	// Reflist of selected atoms
 	Reflist<Atom,int> selection_;
-	// Reflist of marked atoms
+	// Reflist of marked atoms, always in ID order
 	Reflist<Atom,int> marked_;
 
 	public:

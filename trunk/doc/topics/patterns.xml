@@ -27,7 +27,7 @@
 					<row>
 						<entry>1</entry>
 						<entry>
-							<figure><title>System 1</title>
+							<figure><title>Pattern Example, System 1</title>
 								<graphic fileref="images/pattern1.png"/>
 							</figure>
 						</entry>
@@ -37,7 +37,7 @@
 					<row>
 						<entry>2</entry>
 						<entry>
-							<figure><title>System 2</title>
+							<figure><title>Pattern Example, System 2</title>
 								<graphic fileref="images/pattern2.png"/>
 							</figure>
 						</entry>
@@ -47,7 +47,7 @@
 					<row>
 						<entry>3</entry>
 						<entry>
-							<figure><title>System 3</title>
+							<figure><title>Pattern Example, System 3</title>
 								<graphic fileref="images/pattern3.png"/>
 							</figure>
 						</entry>
@@ -57,7 +57,7 @@
 					<row>
 						<entry>4</entry>
 						<entry>
-							<figure><title>System 4</title>
+							<figure><title>Pattern Example, System 4</title>
 								<graphic fileref="images/pattern4.png"/>
 							</figure>
 						</entry>

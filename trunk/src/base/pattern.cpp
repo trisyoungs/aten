@@ -1222,11 +1222,21 @@ void Pattern::augment()
  	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		for (bref = i->bonds(); bref != NULL; bref = bref->next) bondlist.addUnique(bref->item);
+		if ((i->element() == 1) || (elements().bondOrderPenalty(i, i->totalBondOrder()/2) == 0))
+		{
+			i = i->next;
+			continue;
+		}
+		for (bref = i->bonds(); bref != NULL; bref = bref->next)
+		{
+			j = bref->item->partner(i);
+			if (i->id() > j->id()) continue;
+			bondlist.addUnique(bref->item);
+		}
 		i = i->next;
 	}
 	// Now we work with the bondlist. Repeatedly make the best move we possible can from all available bonds, until no more good moves are available
-	if (bondlist.nItems() > 1) while (1)
+	if (bondlist.nItems() > 0) while (1)
 	{
 		for (bref = bondlist.first(); bref != NULL; bref = bref->next)
 		{
@@ -1240,6 +1250,7 @@ void Pattern::augment()
 			// Reset back to original bond type and subtract orginal bond order penalty
 			b1->setType(bt);
 			bref->data -= (elements().bondOrderPenalty(i, i->totalBondOrder()/2) + elements().bondOrderPenalty(j, j->totalBondOrder()/2));
+// 			printf("Option: for bond %i-%i change from %s to %s gives delta of %i\n", i->id()+1, j->id()+1, Bond::bondType(bt), Bond::bondType(b1->augmented()), bref->data);
 		}
 		// Find lowest score (i.e. best move to make)
 		bestref = bondlist.first();

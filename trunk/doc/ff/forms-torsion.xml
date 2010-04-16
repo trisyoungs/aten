@@ -1,5 +1,10 @@
 <section id="ff.forms.torsion"><title>Torsion Functional Forms</title>
-
+	<indexterm zone="ff.forms.torsion"><primary>forcefields</primary><secondary>functional forms</secondary><tertiary>torsions</tertiary></indexterm>
+	<indexterm zone="ff.forms.torsion"><primary>forcefields</primary><secondary>functional forms</secondary><tertiary>dihedrals</tertiary></indexterm>
+	<indexterm zone="ff.forms.torsion"><primary>torsional twist</primary></indexterm>
+	<indexterm zone="ff.forms.torsion"><primary>dihedral angles</primary></indexterm>
+	<indexterm zone="ff.forms.torsion"><primary>intramolecular terms</primary></indexterm>
+	
 	<table frame='all' pgwide='1' tocentry='1'><title>Torsion Functional Forms</title>
 		<tgroup cols='5' align='center' colsep='1' rowsep='1'>
 			<thead>

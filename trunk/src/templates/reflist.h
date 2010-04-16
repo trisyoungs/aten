@@ -71,13 +71,15 @@ template <class T, class D> class Reflist
 	// Add reference to the list with extra data
 	Refitem<T,D> *add(T* item, D extradata);
 	// Add reference to the beginning of the list
-	void addStart(T *item);
+	Refitem<T,D> *addStart(T *item);
+	// Add reference after the specified item
+	Refitem<T,D> *addAfter(Refitem<T,D> *target, T *item);
 	// Add reference to the beginning of the list with extra data
-	void addStart(T *item, D extradata);
+	Refitem<T,D> *addStart(T *item, D extradata);
 	// Add reference to list, unless already there
-	void addUnique(T *item);
+	Refitem<T,D> *addUnique(T *item);
 	// Add reference to list, unless already there
-	void addUnique(T *, D extradata);
+	Refitem<T,D> *addUnique(T *, D extradata);
 	// Add an orphaned item into this list
 	void own(Refitem<T,D> *item);
 	// Delete the reference from the list
@@ -102,6 +104,8 @@ template <class T, class D> class Reflist
 	void createFromList(T *listhead);
 	// Fills the supplied array with 'n' pointer values to the reference items
 	void fillArray(int nitems, T **itemarray);
+	// Swap the two items specified
+	void swap(T *item1, T *item2);
 };
 
 // Constructors
@@ -156,67 +160,91 @@ template <class T, class D> int Reflist<T,D>::nItems() const
 }
 
 // Add item to list
-template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* target)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* item)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the list
 	listHead_ == NULL ? listHead_ = newitem : listTail_->next = newitem;
 	newitem->prev = listTail_;
 	listTail_ = newitem;
-	newitem->item = target;
+	newitem->item = item;
 	nItems_ ++;
 	return newitem;
 }
 
 // Add item to list with extra data
-template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* target, D extradata)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* item, D extradata)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the list
 	listHead_ == NULL ? listHead_ = newitem : listTail_->next = newitem;
 	newitem->prev = listTail_;
 	listTail_ = newitem;
-	newitem->item = target;
+	newitem->item = item;
 	newitem->data = extradata;
 	nItems_ ++;
 	return newitem;
 }
 
 // Add item to start of list
-template <class T, class D> void Reflist<T,D>::addStart(T* target)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the beginning of the list
 	newitem->next = listHead_;
 	listHead_ == NULL ? listHead_ = newitem : listHead_->prev = newitem;
 	listHead_ = newitem;
-	newitem->item = target;
+	newitem->item = item;
 	nItems_ ++;
+	return newitem;
+}
+
+// Add reference after the specified item
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::addAfter(Refitem<T,D> *target, T *item)
+{
+	if (target == NULL) return add(item);
+	else
+	{
+		Refitem<T,D> *newitem = new Refitem<T,D>;
+		newitem->prev = target;
+		newitem->next = target->next;
+		if (target->next != NULL) target->next->prev = newitem;
+		target->next = newitem;
+		if (target == listTail_) listTail_ = newitem;
+		newitem->item = item;
+		nItems_ ++;
+		return newitem;
+	}
 }
 
 // Add item to start of list with extra data
-template <class T, class D> void Reflist<T,D>::addStart(T* target, D extradata)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item, D extradata)
 {
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the beginning of the list
 	newitem->next = listHead_;
 	listHead_ == NULL ? listHead_ = newitem : listHead_->prev = newitem;
 	listHead_ = newitem;
-	newitem->item = target;
+	newitem->item = item;
 	newitem->data = extradata;
 	nItems_ ++;
+	return newitem;
 }
 
 // Add unique item to list
-template <class T, class D> void Reflist<T,D>::addUnique(T* target)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::addUnique(T* item)
 {
-	if (search(target) == NULL) add(target);
+	Refitem<T,D> *srch = search(item);
+	if (srch == NULL) return add(item);
+	else return srch;
 }
 
 // Add unique item to list
-template <class T, class D> void Reflist<T,D>::addUnique(T* target, D extradata)
+template <class T, class D> Refitem<T,D> *Reflist<T,D>::addUnique(T* item, D extradata)
 {
-	if (search(target) == NULL) add(target, extradata);
+	Refitem<T,D> *srch = search(item);
+	if (srch == NULL) return add(item, extradata);
+	else return srch;
 }
 
 // Own an existing item
@@ -335,8 +363,18 @@ template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 		count ++;
 		if (count == n) break;
 		ri = ri->next;
-		if (ri == NULL) printf("reflist::fill_array <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
+		if (ri == NULL) printf("Reflist::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
 	}
+}
+
+// Swap the two items specified
+template <class T, class D> void Reflist<T,D>::swap(T *item1, T *item2)
+{
+	T *prev1 = item1->prev, *next1 = item1->next;
+	item1->prev = item2->prev;
+	item1->next = item2->next;
+	item2->prev = prev1;
+	item2->next = next1;
 }
 
 #endif
