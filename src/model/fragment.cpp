@@ -109,6 +109,9 @@ bool Fragment::setMasterModel(Model *m)
 	orientedModel_.copy(masterModel_);
 	anchoredModel_.copy(masterModel_);
 
+	// Reset rendering style
+	prefs.setRenderStyle(ds);
+
 	msg.exit("Fragment::setMasterModel");
 	return TRUE;
 }
@@ -367,7 +370,7 @@ Fragment *FragmentGroup::addFragment()
 }
 
 // Remove existing fragment
-void *FragmentGroup::removeFragment(Fragment *frag)
+void FragmentGroup::removeFragment(Fragment *frag)
 {
 	fragments_.remove(frag);
 }
@@ -377,3 +380,4 @@ Fragment *FragmentGroup::fragments()
 {
 	return fragments_.first();
 }
+

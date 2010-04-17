@@ -1267,7 +1267,6 @@ void Pattern::augment()
 		msg.print("...Augmentation second pass...\n");
 		// Construct bond reference list for the first molecule, storing current bond type in extradata for our base reference
 		Reflist<Bond,Bond::BondType> bondlist;
-		Refitem<Bond,Bond::BondType> *bi;
 		i = firstAtom_;
 		for (n=0; n<nAtoms_; n++)
 		{

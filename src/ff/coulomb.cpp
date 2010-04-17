@@ -29,12 +29,11 @@
 void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemolecule)
 {
 	msg.enter("Pattern::coulombIntraPatternEnergy");
-	static int n,i,j,aoff,m1,start1, finish1, con;;
+	static int i,j,aoff,m1,start1, finish1, con;;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy_intra, energy, cutoff;
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
-	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	energy_inter = 0.0;
@@ -101,7 +100,7 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int lon
 void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Energy *estore, int molId)
 {
 	msg.enter("Pattern::coulombInterPatternEnergy");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
+	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy, cutoff;
 	PatternAtom *pai, *paj;
@@ -226,12 +225,11 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, 
 void Pattern::coulombIntraPatternForces(Model *srcmodel)
 {
 	msg.enter("Pattern::coulombIntraPatternForces");
-	static int n, i, j, aoff, m1, con;
+	static int i, j, aoff, m1, con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
 	PatternAtom *pai, *paj;
 	cutoff = prefs.elecCutoff();
-	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
@@ -303,7 +301,7 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 {
 	msg.enter("Pattern::coulombInterPatternForces");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,a1,a2;
+	static int i,j,aoff1,aoff2,m1,m2,start,finish;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
 	PatternAtom *pai, *paj;

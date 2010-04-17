@@ -127,8 +127,6 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
-	Forcefield *f;
-	ForcefieldAtom *ffa;
 	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
 	// Get and check requested ID
@@ -195,7 +193,6 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine element (based on type of variable provided)
-	Forcefield *f;
 	short int el = c->argz(0);
 	obj.rs->beginUndoState("Draw Atom");
 	if (c->hasArg(9)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), c->arg3d(4), c->arg3d(7));

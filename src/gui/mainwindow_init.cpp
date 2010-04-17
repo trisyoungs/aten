@@ -119,11 +119,23 @@ void AtenForm::finaliseUi()
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
-		case (Atom::StickStyle): ui.actionStyleStick->setChecked(true); break;
-		case (Atom::TubeStyle): ui.actionStyleTube->setChecked(true); break;
-		case (Atom::SphereStyle): ui.actionStyleSphere->setChecked(true); break;
-		case (Atom::ScaledStyle): ui.actionStyleScaled->setChecked(true); break;
-		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(true); break;
+		case (Atom::StickStyle):
+			ui.actionStyleStick->setChecked(true);
+			break;
+		case (Atom::TubeStyle):
+			ui.actionStyleTube->setChecked(true);
+			break;
+		case (Atom::SphereStyle):
+			ui.actionStyleSphere->setChecked(true);
+			break;
+		case (Atom::ScaledStyle):
+			ui.actionStyleScaled->setChecked(true);
+			break;
+		case (Atom::IndividualStyle):
+			ui.actionStyleIndividual->setChecked(true);
+			break;
+		default:
+			break;
 	}
 
 	// Add bond tolerance spinbox to Bond Toolbar
@@ -306,7 +318,6 @@ void AtenForm::createDialogFilters()
 	loadScriptFilters.clear();
 	loadScriptFilters += "All files (*)";
 
-
 	msg.exit("AtenForm::createDialogFilters");
 }
 
@@ -317,11 +328,23 @@ void AtenForm::setControls()
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
-		case (Atom::StickStyle): ui.actionStyleStick->setChecked(TRUE); break;
-		case (Atom::TubeStyle): ui.actionStyleTube->setChecked(TRUE); break;
-		case (Atom::SphereStyle): ui.actionStyleSphere->setChecked(TRUE); break;
-		case (Atom::ScaledStyle): ui.actionStyleScaled->setChecked(TRUE); break;
-		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(TRUE); break;
+		case (Atom::StickStyle):
+			ui.actionStyleStick->setChecked(TRUE);
+			break;
+		case (Atom::TubeStyle):
+			ui.actionStyleTube->setChecked(TRUE);
+			break;
+		case (Atom::SphereStyle):
+			ui.actionStyleSphere->setChecked(TRUE);
+			break;
+		case (Atom::ScaledStyle):
+			ui.actionStyleScaled->setChecked(TRUE);
+			break;
+		case (Atom::IndividualStyle):
+			ui.actionStyleIndividual->setChecked(TRUE);
+			break;
+		default:
+			break;
 	}
 	// Set some menu items
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
@@ -332,6 +355,8 @@ void AtenForm::setControls()
 		case (Prefs::ChargeScheme): ui.actionSchemeCharge->setChecked(TRUE); break;
 		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
 		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
+		default:
+			break;
 	}
 	// Set controls on Bond toolbar 
 	bondToleranceSpin_->setValue(prefs.bondTolerance());

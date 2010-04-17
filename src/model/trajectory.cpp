@@ -286,7 +286,6 @@ void Model::seekNextFrame()
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
-	bool success;
 	if (frameIndex_ == nFrames()-1)
 	{
 		msg.print("Already at end of trajectory (frame %i).\n", frameIndex_+1);

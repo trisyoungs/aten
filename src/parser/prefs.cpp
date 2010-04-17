@@ -216,7 +216,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::PreferencesData));
 		result = FALSE;
 	}
-	Model *m;
 	if (result) switch (acc)
 	{
 		case (PreferencesVariable::AngleLabel):
@@ -515,9 +514,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	Prefs::DensityUnit du;
 	Prefs::EnergyUnit eu;
 	Electrostatics::ElecMethod em;
-	Prefs::ModifierKey mk;
+//	Prefs::ModifierKey mk;
 	Prefs::KeyAction ka;
-	Prefs::MouseButton mb;
+//	Prefs::MouseButton mb;
 	Prefs::MouseAction ma;
 	Atom::DrawStyle ds;
 	ElementMap::ZMapType zm;

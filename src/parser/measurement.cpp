@@ -250,7 +250,6 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	VdwFunctions::VdwFunction vf;
 	Measurement *ptr= (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
 	if (result && (ptr == NULL))
 	{

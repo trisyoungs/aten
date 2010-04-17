@@ -95,6 +95,8 @@ int main(int argc, char *argv[])
 			aten.processModels();
 			aten.exportModels();
 			break;
+		default:
+			break;
 	}
 
 	delete gui.app;

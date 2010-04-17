@@ -40,7 +40,7 @@ ScopeNode::~ScopeNode()
 void ScopeNode::createGlobalVariables()
 {
 	// Add the global Aten variable
-	Variable *v = variables.create(VTypes::AtenData, "aten");
+	variables.create(VTypes::AtenData, "aten");
 }
 
 // Execute command

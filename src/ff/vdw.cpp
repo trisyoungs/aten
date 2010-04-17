@@ -83,6 +83,9 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			expo = 1.0 - exp( -forcek * rij );
 			U = d * ( expo*expo - 1.0);
 			break;
+		default:
+			msg.print("Internal Error: Energy calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
+			break;
 	}
 	return U;
 }
@@ -144,6 +147,9 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			expo = exp( -forcek * (rij - eq) );
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
+		default:
+			msg.print("Internal Error: Force calculation for VDW form '%s' not present.\n", VdwFunctions::VdwFunctions[type].keyword);
+			break;
 	}
 	// Calculate final forces (vecij contains dx, dy, dz between target atoms)
 	return -(vecij * du_dr / rij);
@@ -155,11 +161,10 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
 	msg.enter("Pattern::vdwIntraPatternEnergy");
-	static int n,aoff,m1,i,j, start1, finish1, con;
+	static int aoff,m1,i,j, start1, finish1, con;
 	static Vec3<double> mim_i;
 	static double U, rij, energy_inter, energy_intra, cutoff, vrs;
 	PatternAtom *pai, *paj;
-	PatternBound *pb;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -212,7 +217,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	msg.enter("Pattern::vdwInterPatternEnergy");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
+	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, cutoff, vrs, U;
 	PatternAtom *pai, *paj;
@@ -306,11 +311,10 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
 	msg.enter("Pattern::vdwIntraPatternForces");
-	static int n,i,j,aoff,m1,con;
+	static int i,j,aoff,m1,con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double cutoff, vrs, rij;
 	PatternAtom *pai, *paj;
-	PatternBound *pb;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -362,9 +366,9 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
 	msg.enter("Pattern::vdwInterPatternForces");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
+	static int i,j,aoff1,aoff2,m1,m2,start,finish;
 	static Vec3<double> mim_i, f_i, tempf;
-	static double rij, factor, cutoff, vrs;
+	static double rij, cutoff, vrs;
 	PatternAtom *pai, *paj;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();

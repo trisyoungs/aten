@@ -39,7 +39,7 @@ bool Pattern::createExpression(bool vdwOnly)
 	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0;
 	Atom *ai, *aj, *ak, *al;
 	ForcefieldBound *ffb;
-	PatternAtom *pa, *ipa[4];
+	PatternAtom *ipa[4];
 	PatternBound *pb;
 	// Counters for incomplete aspects of the expression
 	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;

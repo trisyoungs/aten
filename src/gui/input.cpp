@@ -100,6 +100,8 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 				case (Prefs::ManipulateKeyAction):
 					manipulate = TRUE;
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -137,6 +139,8 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 			gui.mainWindow->cancelCurrentMode();
 			postRedisplay();
 			break;
+		default:
+			break;
 	}
 	
 	// Mode-specific
@@ -154,6 +158,8 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 			// Refresh if Shift status has changed
 			if (keyModifier_[Prefs::ShiftKey]) gui.mainView.postRedisplay();
 			break;
+		default:
+			break;
 	}
 }
 
@@ -162,8 +168,8 @@ void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool 
 {
 	// Set keystates
 	bool oldshift = keyModifier_[Prefs::ShiftKey];
-	bool oldctrl = keyModifier_[Prefs::CtrlKey];
-	bool oldalt = keyModifier_[Prefs::AltKey];
+	//bool oldctrl = keyModifier_[Prefs::CtrlKey];
+	//bool oldalt = keyModifier_[Prefs::AltKey];
 	keyModifier_[Prefs::ShiftKey] = shiftkey;
 	keyModifier_[Prefs::CtrlKey] = ctrlkey;
 	keyModifier_[Prefs::AltKey] = altkey;
@@ -179,6 +185,8 @@ void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool 
 				case (Prefs::ManipulateKeyAction):
 					manipulate = TRUE;
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -189,6 +197,8 @@ void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool 
 		case (Canvas::DrawFragmentAction):
 			// Refresh if Shift status has changed
 			if (keyModifier_[Prefs::ShiftKey] != oldshift) gui.mainView.postRedisplay();
+			break;
+		default:
 			break;
 	}
 }
@@ -275,6 +285,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				case (Prefs::ZrotateKeyAction):
 					zrotate = TRUE;
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -302,6 +314,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 						}
 						else currentDrawDepth_ = atomClicked_->rWorld().z;
 						break;
+					default:
+						break;
 				}
 				break;
 			case (Prefs::RotateAction):
@@ -316,6 +330,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				break;
 			case (Prefs::TranslateAction):
 				activeMode_ = (manipulate ? Canvas::TransformTranslateAction : Canvas::TranslateAction);
+				break;
+			default:
 				break;
 		}
 		// If we're manipulating, prepare the transform
@@ -689,6 +705,8 @@ void Canvas::modeScroll(bool scrollup)
 			break;
 		case (Prefs::ZoomAction):
 			displayModel_->adjustZoom(scrollup);
+			break;
+		default:
 			break;
 	}
 	postRedisplay();

@@ -170,7 +170,6 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 {
-	int sg;
 	static char s[64];
 	// Grab the current text of the line edit and determine spacegroup
 	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));

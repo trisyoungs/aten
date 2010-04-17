@@ -124,6 +124,9 @@ void Energy::add(EnergyType et, double energy, int id1, int id2)
 		case (Energy::EwaldMolecularEnergy):
 			ewaldMolCorrect_[id1] += energy;
 			break;
+		default:
+			printf("Internal Error: Summation of energy type %i missed.\n", et);
+			break;
 	}
 	msg.exit("Energy::add");
 }

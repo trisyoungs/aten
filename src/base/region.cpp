@@ -250,7 +250,6 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 	msg.enter("ComponentRegion::randomCoords");
 	static Vec3<double> v, tempv, geometry;
 	static int nAttempts;
-	double x;
 	bool done = FALSE;
 	nAttempts = 0;
 	// Generate random coords inside this region...

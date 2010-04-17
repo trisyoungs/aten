@@ -220,8 +220,7 @@ void Model::createForcefieldLists()
 	forcefieldTorsions_.clear();
 	forcefieldTypes_.clear();
 
-	Refitem<ForcefieldAtom,int> *ffa1, *ffa2;
-	Refitem<ForcefieldBound,int> *ffb;
+	Refitem<ForcefieldAtom,int> *ffa2;
 
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)

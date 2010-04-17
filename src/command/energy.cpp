@@ -59,6 +59,8 @@ bool Command::function_Electrostatics(CommandNode *c, Bundle &obj, ReturnValue &
 			}
 			prefs.ewaldPrecision().set(c->argd(1));
 			break;
+		default:
+			break;
 	}
 	// Set method
 	prefs.setElectrostaticsMethod(em);

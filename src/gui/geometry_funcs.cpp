@@ -163,7 +163,6 @@ void AtenGeometry::on_SetNewAngleButton_clicked(bool checked)
 	i = ri->item;
 	j = ri->next->item;
 	k = ri->next->next->item;
-	double value = m->angle(i,j,k) + 
 	CommandNode::run(Command::SetAngle, "iiid", i->id()+1, j->id()+1, k->id()+1, ui.NewAngleSpin->value());
 	gui.update(TRUE, FALSE, FALSE);
 }

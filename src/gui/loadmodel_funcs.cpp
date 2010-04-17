@@ -64,7 +64,6 @@ void AtenLoadModel::on_LoadModelEdit_returnPressed()
 void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten.workDir());
-	Refitem<Tree,int> *ri;
 	static char s[512], *c;
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), gui.mainWindow->loadModelFilters, &selFilter));

@@ -196,7 +196,6 @@ void CellEvent::set(Vec3<double> oldlengths, Vec3<double> oldangles, Vec3<double
 void CellEvent::undo(Model *m)
 {
 	msg.enter("CellEvent::undo");
-	Atom *i, **modelatoms = m->atomArray();
 	// Cell change - from newLengths/Angles to oldLengths/Angles (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{

@@ -164,6 +164,8 @@ void Model::removeMeasurement(Measurement *me)
 			case (Measurement::Torsion):
 				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
+			default:
+				break;
 		}
 		recordingState_->addEvent(newchange);
 	}
@@ -177,6 +179,8 @@ void Model::removeMeasurement(Measurement *me)
 			break;
 		case (Measurement::Torsion):
 			torsions_.remove(me);
+			break;
+		default:
 			break;
 	}
 	msg.exit("Model::removeMeasurement");
@@ -267,6 +271,8 @@ Measurement *Model::addMeasurement(Measurement::MeasurementType gt, ...)
 			case (Measurement::Torsion):
 				newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
+			default:
+				break;
 		}
 		recordingState_->addEvent(newchange);
 	}
@@ -347,6 +353,8 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 					}
 				}
 			}
+			break;
+		default:
 			break;
 	}
 	msg.exit("Model::addMeasurementsInSelection");

@@ -37,28 +37,27 @@ ReturnValue::ReturnValue()
 {
 	// Private variables
 	type_ = VTypes::NoData;
-	arraySize_ = -1;
 	valueI_ = 0;
 	valueD_ = 0.0;
-	valueI_ = 0;
 	valueP_ = NULL;
 	valueRefitem_ = NULL;
+	arraySize_ = -1;
 	arrayI_ = NULL;
 	arrayD_ = NULL;
 	arrayS_ = NULL;
 	arrayV_ = NULL;
 	arrayP_ = NULL;
 }
-ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), valueI_(i), arraySize_(-1)
+ReturnValue::ReturnValue(int i) : type_(VTypes::IntegerData), arraySize_(-1), valueI_(i)
 {
 }
-ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), valueD_(d), arraySize_(-1)
+ReturnValue::ReturnValue(double d) : type_(VTypes::DoubleData), arraySize_(-1), valueD_(d)
 {
 }
-ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), valueS_(s), arraySize_(-1)
+ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(-1), valueS_(s)
 {
 }
-ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), valueV_(v), arraySize_(-1)
+ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
 {
 }
 
@@ -127,7 +126,7 @@ void ReturnValue::clearArrayData()
 	else if (type_ == VTypes::StringData) { delete[] arrayS_; arrayS_ = NULL; }
 	else if (type_ == VTypes::VectorData) { delete[] arrayV_; arrayV_ = NULL; }
 	else { if (arrayP_ != NULL) delete[] arrayP_; arrayP_ = NULL; }
-	arraySize_ == -1;
+	arraySize_ = -1;
 }
 
 // Return type of the stored data
@@ -441,6 +440,8 @@ const char *ReturnValue::asString(bool &success)
 					valueS_ += '"';
 					valueS_.cat(arrayS_[i].get());
 					valueS_ += '"';
+					break;
+				default:
 					break;
 			}
 		}

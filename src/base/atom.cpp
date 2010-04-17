@@ -436,7 +436,7 @@ Atom::AtomGeometry Atom::geometry()
 			b2 = bonds()->next->item;
 			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle> 170.0) result = Atom::LinearGeometry;
-			else if ((angle > 100.0) && (angle < 115.0)) Atom::TetrahedralGeometry;
+			else if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
 			break;
 		case (3):
 			bref1 = bonds();
@@ -473,7 +473,7 @@ Atom::AtomGeometry Atom::geometry()
 			}
 			angle /= 6.0;
 			if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
-			else if ((angle >= 115.0) && (angle < 125.0)) Atom::SquarePlanarGeometry;
+			else if ((angle >= 115.0) && (angle < 125.0)) result = Atom::SquarePlanarGeometry;
 			break;
 	}
 	msg.exit("Atom::geometry");

@@ -275,8 +275,8 @@ void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)
 void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 {
 	// Get position of changed item
-	int row = ui.FFEditorTypesTable->row(w);
-	int column = ui.FFEditorTypesTable->column(w);
+	ui.FFEditorTypesTable->row(w);
+	ui.FFEditorTypesTable->column(w);
 }
 
 /*

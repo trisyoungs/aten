@@ -51,7 +51,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodSd::minimise");
-	int cycle, i;
+	int cycle;
 	double oldEnergy, newEnergy, deltaEnergy, oldRms, newRms, deltaRms;
 	bool lineDone, converged;
 	Dnchar etatext;

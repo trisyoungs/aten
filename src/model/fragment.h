@@ -121,7 +121,7 @@ class FragmentGroup
 	// Add new fragment
 	Fragment *addFragment();
 	// Remove existing fragment
-	void *removeFragment(Fragment *frag);
+	void removeFragment(Fragment *frag);
 	// Return first fragment in group
 	Fragment *fragments();
 	

@@ -119,8 +119,7 @@ void Aten::registerFilter(Tree *filter, FilterData::FilterType ft)
 int Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
-	char indexfile[512], path[512], filename[128], message[512];
-	ifstream *file;
+	char path[512];
 	msg.print("Clearing current filters....\n");
 	filters_[FilterData::ModelImport].clear();
 	filters_[FilterData::ModelExport].clear();

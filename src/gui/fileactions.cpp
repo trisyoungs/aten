@@ -251,9 +251,9 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// If we didn't recognise the extension, complain and quit
 		if (bf == GuiQt::nBitmapFormats) 
 		{
-			char text[512];
-			sprintf(text, "Bitmap format not recognised - '%s'.\n", ext.get());
-			int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
+			Dnchar text;
+			text.print("Bitmap format not recognised - '%s'.\n", ext.get());
+			QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Ok);
 		}
 		else if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
 	}

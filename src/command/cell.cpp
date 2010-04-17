@@ -274,7 +274,7 @@ bool Command::function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	and - if not already set - find the entry in the internal
 	table of space group symbols
 	*/
-	int i = CompleteSgInfo(&sg);
+	CompleteSgInfo(&sg);
 
 	ListSgInfo(&sg, 1, 0, stdout);
 	

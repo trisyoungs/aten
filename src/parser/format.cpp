@@ -118,7 +118,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 	bool isformatter = FALSE, isdiscarder, restofline;
 	Refitem<TreeNode,int> *arg = firstarg;
 	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
-	int length = 0, n;
+	int length = 0;
 	do
 	{
 		// If we find a '%' store any previous characters as a plain-text chunk and begin a formatted chunk

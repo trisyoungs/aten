@@ -251,6 +251,8 @@ void Canvas::glSubsel3d()
 				  glCallList(list_[WireUnitAtomGlob]);
 				glPopMatrix();
 				break;
+			default:
+				break;
 		  }
 		glPopMatrix();
 		// Draw line between this and last atom (if there was one)
@@ -316,7 +318,7 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double ra
 
 void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, const Vec3<double> &v2)
 {
-	static double phi, mag1, mag2, r[16], t[16];
+	static double r[16];
 	static Mat4<double> rotmat;
 	static Vec3<double> v3;
 	// Extremely slow but working ellipsoid drawing. Make a matrix consisting of the two 'axes' defined
@@ -341,7 +343,7 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, con
 
 void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z)
 {
-	static double phi, mag1, mag2, r[16], t[16];
+	static double r[16];
 	static Mat4<double> rotmat;
 	// Extremely slow but working ellipsoid drawing. Make a matrix consisting of the two 'axes' defined
 	// by vec1 and vec2, and a third orthogonal to these.

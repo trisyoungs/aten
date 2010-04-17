@@ -66,7 +66,7 @@ bool Command::function_GlyphAtomF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'glyphatomf' (%i) is out of range.\n", d);
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -91,7 +91,7 @@ bool Command::function_GlyphAtomR(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'glyphatomr' (%i) is out of range.\n", d);
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -116,7 +116,7 @@ bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'glyphatomv' (%i) is out of range.\n", d);
 		return FALSE;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -124,8 +124,10 @@ bool Command::function_GlyphAtomV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(1))
 	{
 		if (c->argType(1) == VTypes::AtomData) obj.gl->data(d)->setAtom((Atom*) c->argp(1, VTypes::AtomData), GlyphData::VelocityData);
-		else obj.gl->data(d)->setAtom(obj.rs->atom(c->argi(1)-1), GlyphData::VelocityData); 
+		else target = obj.rs->atom(c->argi(1) - 1);
 	}
+	obj.gl->data(d)->setAtom(target, GlyphData::VelocityData); 
+	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
 	rv.reset();
 	return TRUE;
 }

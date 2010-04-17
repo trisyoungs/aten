@@ -98,7 +98,8 @@ bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Dnchar newstr(1024);
 	const char *s = c->argc(0), *srch;
-	int replacelen = strlen(c->argc(2)), searchlen = strlen(c->argc(1));
+//	int replacelen = strlen(c->argc(2)), 
+	int searchlen = strlen(c->argc(1));
 // 	printf("Original [%s], search [%s], replace [%s]\n", s, c->argc(1), c->argc(2));
 // 	printf("Strlen = %i\n", replacelen);
 	while (s != NULL)

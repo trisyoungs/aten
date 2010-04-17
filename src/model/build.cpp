@@ -180,7 +180,7 @@ Mat3<double> Model::penOrientation()
 void Model::rotatePenAxis(int axis, double degrees)
 {
 	Mat3<double> rotmat;
-	double theta = degrees / DEGRAD, c, s, t;
+	double theta = degrees / DEGRAD;
 	Vec3<double> v = penOrientation_.rows[axis];
 	// Define quaternion components
 	Vec4<double> q;

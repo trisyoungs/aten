@@ -245,7 +245,7 @@ void Ring::detectType()
 		else
 		{
 			// Get total number of pi electrons now...
-			int npi = (nhetero + ndouble) * 2;
+			int npi = (nhetero + ndouble) * 2;	//TODO
 			type_ = Ring::AromaticRing;	
 		}
 	}
@@ -307,12 +307,7 @@ void Ring::copy(Ring *source)
 {
 	// Copy the data in source to the current ring.
 	atoms_.clear();
-	Refitem<Atom,int> *ra = source->atoms_.first();
-	while (ra != NULL)
-	{
-		bool success = addAtom(ra->item);
-		ra = ra->next;
-	}
+	for (Refitem<Atom,int> *ra = source->atoms_.first(); ra != NULL; ra= ra->next) addAtom(ra->item);
 }
 
 // Print

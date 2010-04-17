@@ -161,10 +161,10 @@ void Pattern::torsionForces(Model *srcmodel)
 	int n,i,j,k,l,aoff,m1;
 	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
-	static double cosphi, phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
+	static double phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
 	ForcefieldBound *ffb;
-	static double k0, k1, k2, k3, k4, s;
+	static double k1, k2, k3, k4, s;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();

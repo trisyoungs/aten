@@ -92,7 +92,7 @@ void AtenSelectFilter::update()
 	for (count=0; count<3; count++) ui.FilterTable->resizeColumnToContents(count);
 }
 
-// Select a pattern from the specified model
+// Select a filter from the list supplied
 Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partial, Reflist<Tree,int> *full, bool showextcheck)
 {
 	// Set source structures
@@ -115,7 +115,7 @@ Tree *AtenSelectFilter::selectFilter(const char *text, Reflist<Tree,int> *partia
 	update();
 
 	// Execute the dialog and check on the result
-	int result = exec();
+	exec();
 	appendExtension_ = ui.AppendExtensionCheck->isChecked();
 	return selectedFilter_;
 }

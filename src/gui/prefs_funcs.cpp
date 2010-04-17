@@ -957,7 +957,6 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		msg.exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	int n;
 	// Determine ID of sender
 	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)

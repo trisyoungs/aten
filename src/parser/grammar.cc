@@ -106,8 +106,8 @@
      LEQ = 287,
      GEQ = 288,
      UMINUS = 289,
-     MM = 290,
-     PP = 291
+     MINUSMINUS = 290,
+     PLUSPLUS = 291
    };
 #endif
 /* Tokens.  */
@@ -143,8 +143,8 @@
 #define LEQ 287
 #define GEQ 288
 #define UMINUS 289
-#define MM 290
-#define PP 291
+#define MINUSMINUS 290
+#define PLUSPLUS 291
 
 
 
@@ -583,7 +583,7 @@ static const char *const yytname[] =
   "FUNCCALL", "USERFUNCCALL", "VTYPE", "DO", "WHILE", "FOR", "IF",
   "RETURN", "FILTERBLOCK", "HELP", "DIOV", "DUMMY", "ELSE", "OR", "AND",
   "'='", "DEQ", "TEQ", "MEQ", "PEQ", "'>'", "'<'", "NEQ", "EQ", "LEQ",
-  "GEQ", "'+'", "'-'", "'*'", "'/'", "'%'", "UMINUS", "MM", "PP", "'!'",
+  "GEQ", "'+'", "'-'", "'*'", "'/'", "'%'", "UMINUS", "MINUSMINUS", "PLUSPLUS", "'!'",
   "'^'", "'{'", "'}'", "';'", "','", "'('", "')'", "'['", "']'", "'.'",
   "$accept", "programlist", "program", "block", "pushscope", "popscope",
   "statementlist", "blockment", "optlist", "filter", "pushfilter",

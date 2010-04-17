@@ -49,8 +49,8 @@ int NetaParser::lex()
 	}
 
 	int length, n;
-	bool done, integer, hasexp;
-	static char token[256], quotechar, c;
+	bool done;
+	static char token[256], c;
 	static Dnchar name;
 	length = 0;
 	token[0] = '\0';
