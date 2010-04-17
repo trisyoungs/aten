@@ -94,6 +94,9 @@ bool Neta::netaValueCompare(int lhsvalue, NetaValueComparison nvc, int rhsvalue)
 		case (LessThanEqualTo):
 			result = (lhsvalue <= rhsvalue);
 			break;
+		default:
+			printf("Internal Error: Unrecognised operator in Neta::netaValueCompare.\n");
+			break;
 	}
 	return result;
 }
@@ -454,6 +457,9 @@ int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 				if (score2 == -1) totalscore = score1;
 			}
 			break;
+		default:
+			printf("Internal Error: Unrecognised logic in Neta::score.\n");
+			break;
 	}
 	// Check for reverse logic
 	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
@@ -494,6 +500,9 @@ void NetaLogicNode::netaPrint(Dnchar &neta)
 			break;
 		case (Neta::NetaAndNotLogic):
 			neta.cat("&!");
+			break;
+		default:
+			printf("Internal Error: Unrecognised logic in Neta::netaPrint.\n");
 			break;
 	}
 	argument2_->netaPrint(neta);
@@ -705,7 +714,6 @@ int NetaBoundNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 	msg.enter("NetaBoundNode::score");
 	int totalscore = -1, n, boundscore;
 	Refitem<Atom,int> *ri;
-	Refitem<ForcefieldAtom,int> *eltype;
 	Reflist< Refitem<Atom,int>, int > scores;
 	Refitem< Refitem<Atom,int>, int > *si;
 	// Pointer check
@@ -998,6 +1006,8 @@ int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 					if (Neta::netaValueCompare(n, netaComparison_, value_)) totalscore = 1;
 					else totalscore = -1;
 					break;
+				default:
+					break;
 			}
 			break;
 		default:
@@ -1132,7 +1142,6 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 	Reflist<Atom,int> atomCheckList;
 	Reflist< Refitem<Ring,int>, int > scores;
 	Refitem< Refitem<Ring,int>, int > *si;
-	Ring *r;
 	// Pointer check
 	if (rings == NULL)
 	{
@@ -1268,7 +1277,6 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 	msg.enter("NetaChainNode::score(private)");
 	int totalscore = -1, atomscore = -1;
 	Atom *i, *j;
-	Refitem<Atom,int> *ri, *rj, *rk;
 	// The target atom we're passed is the last atom in the current chain (or the originating atomic centre).
 	// The neighbours list should contain a single bound atom reference that we are interested in checking at this point in the chain.
 	// So, determine if the current chain node matches the target/nbrs combination.

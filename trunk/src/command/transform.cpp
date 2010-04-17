@@ -258,7 +258,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Determine which data has been supplied
 	Mat3<double> source, target;
 	Vec3<double> o, v;
-	bool sourcenoz = FALSE, targetnoz = FALSE;
+	bool sourcenoz = FALSE;
 	int n;
 	Atom *i, *j;
 

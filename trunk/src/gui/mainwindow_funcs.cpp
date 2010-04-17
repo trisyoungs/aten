@@ -196,6 +196,8 @@ void AtenForm::update()
 			case (Prefs::AtomsPerAngstrom):
 				s += " atoms &#8491;<sup>-3</sup>";
 				break;
+			default:
+				break;
 		}
 	}
 	else s = "Non-periodic";

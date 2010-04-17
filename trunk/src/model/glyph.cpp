@@ -169,7 +169,7 @@ void Model::addEllipsoidGlyphs()
 	Vec3<double> centroid, v, extents;
 	Mat3<double> axes;
 	double mag, best = 0.0, angle, tolerance = 0.3, angletol = PI/4.0, minz, maxz;
-	Refitem<Atom,int> *ri, *rj;
+	Refitem<Atom,int> *ri;
 	Atom *i;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
 	Refitem<Atom, Vec3<double> > *rid;

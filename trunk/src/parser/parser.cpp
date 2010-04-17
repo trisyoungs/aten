@@ -110,6 +110,8 @@ char CommandParser::getChar()
 			case (CommandParser::StringSource):
 				return 0;
 				break;
+			default:
+				break;
 		}
 	}
 	// Return current char
@@ -138,6 +140,8 @@ char CommandParser::peekChar()
 		case (CommandParser::StringSource):
 			c = (stringPos_ == stringLength_ ? 0 : stringSource_[stringPos_]);
 			break;
+		default:
+			break;
 	}
 	return c;
 }
@@ -157,6 +161,8 @@ void CommandParser::unGetChar()
 			break;
 		case (CommandParser::StringSource):
 			stringPos_ --;
+			break;
+		default:
 			break;
 	}
 }

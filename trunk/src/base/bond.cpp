@@ -124,6 +124,8 @@ double Bond::order()
 			return 3.0;
 		case (Bond::Aromatic):
 			return 1.5;
+		default:
+			return 0.0;
 	}
 	return 0.0;
 }

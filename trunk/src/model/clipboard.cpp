@@ -177,7 +177,6 @@ void Clipboard::copySelection(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	// Copy atoms
-	int count = 0;
 	aten.initialiseProgress("Copying atoms to clipboard", m->nAtoms());
 	for (Atom *i = m->atoms(); i != NULL; i = i->next)
 	{

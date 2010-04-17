@@ -209,7 +209,6 @@ void Model::calculateForces(Model *srcmodel)
 	}
 	// Calculate RMS force
 	rmsForce_ = 0.0;
-	double f;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) rmsForce_ += i->f().magnitudeSq();
 	rmsForce_ /= atoms_.nItems();
 	rmsForce_ = sqrt(rmsForce_);

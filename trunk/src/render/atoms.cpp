@@ -85,6 +85,8 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 				prefs.colourScale[2].colour(cval, ambient);
 				prefs.colourScale[2].colour(cval, diffuse);
 				break;
+			default:
+				break;
 		  }
 		  glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 		  glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
@@ -171,6 +173,8 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 						glCylinder(rj,rij,0,bondradius);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
+					default:
+						break;
 				}
 			}
 			else
@@ -211,6 +215,8 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 						  glVertex3d(-ijk.x,-ijk.y,-ijk.z);
 						  glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
 						glEnd();
+						break;
+					default:
 						break;
 				}
 			}
@@ -253,6 +259,8 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 			case (Prefs::ForceScheme):
 				prefs.colourScale[2].colour(i->charge(), ambient);
 				prefs.colourScale[2].colour(i->charge(), diffuse);
+				break;
+			default:
 				break;
 		}
 		ambient[3] = ambient[3] / 2.0f;
@@ -310,6 +318,8 @@ void Canvas::renderModelAtoms(Model *sourceModel)
 					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
 					glCylinder(rj,rij,1,bondradius);
 					glTranslated(ijk.x,ijk.y,ijk.z);
+					break;
+				default:
 					break;
 			}
 		  }

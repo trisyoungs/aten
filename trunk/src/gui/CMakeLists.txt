@@ -111,6 +111,7 @@ SET(pro_UIS
   ffeditor.ui
   forcefields.ui
   fragment.ui
+  geometry.ui
   glyphs.ui
   grids.ui
   loadmodel.ui

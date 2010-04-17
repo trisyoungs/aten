@@ -95,6 +95,8 @@ bool CommandNode::prepFunction()
 				}
 			}
 			break;
+		default:
+			break;
 	}
 	return result;
 }

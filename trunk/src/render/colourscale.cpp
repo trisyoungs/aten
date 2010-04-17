@@ -30,9 +30,8 @@ void Canvas::renderColourscales()
 
 	// For now, draw in a stack at the bottom of the canvas.
 	double leftx, x, y, width, height = 20.0, start, scalestart;
-	double range, deltaw, cstep;
+	double range, deltaw;
 	char label[128];
-	int halfslices = 5;
 	width = width_ * 0.6;
 	leftx = (width_ - width) * 0.50;
 	y = 5.0;

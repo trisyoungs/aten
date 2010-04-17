@@ -31,7 +31,6 @@ bool Forcefield::load(const char *filename)
 {
 	msg.enter("Forcefield::load");
 	bool done, okay;
-	double impropermaxdist;
 	int success, n;
 	Prefs::EnergyUnit ffunit;
 	// Open file for reading

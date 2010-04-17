@@ -324,9 +324,9 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("LineParser::getNextArg");
-	int arglen, readresult;
+	int arglen;
 	bool done, hadquotes, failed;
-	char c, quotechar, d;
+	char c, quotechar;
 	failed = FALSE;
 	done = FALSE;
 	hadquotes = FALSE;

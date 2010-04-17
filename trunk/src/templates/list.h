@@ -438,7 +438,6 @@ template <class T> void List<T>::moveToEnd(T* item)
 {
 	// If the item is already at the tail, exit
 	if (listTail_ == item) return;
-	T* oldtail = listTail_;
 	cut(item);
 	item->prev = listTail_;
 	item->next = NULL;
@@ -452,7 +451,6 @@ template <class T> void List<T>::moveToStart(T* item)
 {
 	// If the item is already at the head, exit
 	if (listHead_ == item) return;
-	T* oldhead = listHead_;
 	cut(item);
 	item->prev = NULL;
 	item->next = listHead_;

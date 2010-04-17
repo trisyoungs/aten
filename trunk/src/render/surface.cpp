@@ -391,6 +391,8 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBegin(GL_TRIANGLES);
 			break;
+		default:
+			break;
 	}
 
 	// Set colour / transparency for surface
@@ -557,6 +559,8 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBegin(GL_QUADS);
 			break;
+		default:
+			break;
 	}
 	// Set colour / transparency for surface
 	prefs.copyColour(Prefs::SpecularColour, colour);
@@ -633,7 +637,6 @@ void Canvas::renderSurfaces(Model *sourceModel)
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
 	static Vec3<double> origin;
-	static double glmat[16];
 	static Mat4<double> mat;
 
 	// Check for valid model

@@ -295,7 +295,7 @@ void GuiQt::run()
 	// Display message box warning if there was a filter load error
 	if (aten.nFiltersFailed() == -1)
 	{
-		int ret = QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
 	}
 	else if (aten.nFiltersFailed() > 0)
 	{
@@ -307,13 +307,13 @@ void GuiQt::run()
 			text += d->get();
 			if (d->next != NULL) text += "\n";
 		}
-		int ret = QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
+		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
 	// Display message for 1056
 	if (prefs.warning1056())
 	{
-		int ret = QMessageBox::information(NULL, "Aten", "Note that v1.5 (revision 1056) introduced a rewrite of the typing language, along with some subtle changes to the syntax.\nYour own forcefield files may need to be checked in order to ensure consistency.\n(Disable this warning with 'aten.prefs.warn1056 = FALSE;' in your prefs file)", QMessageBox::Ok, QMessageBox::Ok);
+		QMessageBox::information(NULL, "Aten", "Note that v1.5 (revision 1056) introduced a rewrite of the typing language, along with some subtle changes to the syntax.\nYour own forcefield files may need to be checked in order to ensure consistency.\n(Disable this warning with 'aten.prefs.warn1056 = FALSE;' in your prefs file)", QMessageBox::Ok, QMessageBox::Ok);
 	}
 
 	// Add GNU GPL message to statusbox
@@ -324,7 +324,7 @@ void GuiQt::run()
 	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	// Enter main message processing loop
-	int n = app->exec();
+	app->exec();
 
 	msg.exit("GuiQt::run");
 }

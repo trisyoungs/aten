@@ -40,6 +40,7 @@ void Canvas::renderExtra3d()
 	static Vec3<double> r, mouse, textpos;
 	static Vec3<double> tempv;
 	static Atom *i;
+	Fragment *frag;
 	// Draw on the selection highlights (for atoms in canvas.subsel)
 	glSubsel3d();
 	// What we draw depends on two variables - selectedMode_ and activeMode_
@@ -103,6 +104,8 @@ void Canvas::renderExtra3d()
 					case (Atom::ScaledStyle):
 						glCallList(list_[WireSphereAtomGlob]);
 						break;
+					default:
+						break;
 				}
 			  }
 			glPopMatrix();
@@ -113,7 +116,7 @@ void Canvas::renderExtra3d()
 		// Draw on fragment (as long as mode is selected)
 		case (Canvas::DrawFragmentAction):
 			if (gui.fragmentWindow->currentFragment() == NULL) break;
-			Fragment *frag = gui.fragmentWindow->currentFragment();
+			frag = gui.fragmentWindow->currentFragment();
 			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
 			if ((atomClicked_ != NULL) || (i != NULL))
 			{
@@ -151,6 +154,8 @@ void Canvas::renderExtra3d()
 				glPopMatrix();
 			}
 			break;
+		default:
+			break;
 	}
 	// Draw on extra stuff based on the visibility of any tool windows
 	if (gui.exists() && gui.cellTransformWindow->isVisible())
@@ -176,7 +181,7 @@ void Canvas::renderExtra2d()
 	msg.enter("Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i, skip;
-	static double dx, dy, halfw;
+	static double dx, halfw;
 	// First set up a 2D drawing area.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -202,6 +207,8 @@ void Canvas::renderExtra2d()
 		case (Canvas::MeasureDistanceAction):
 		case (Canvas::MeasureAngleAction):
 		case (Canvas::MeasureTorsionAction):
+			break;
+		default:
 			break;
 	}
 	// ...and those for selected modes (whether the button is down or not).
@@ -238,14 +245,8 @@ void Canvas::renderExtra2d()
 				glText(halfw + n*dx - (n < 0 ? 8 : 3), height_, itoa(n));
 			}
 			break;
-	}
-	// Add text
-	//glText(1.0,height_-12.0,displayModel_->name());
-	// Draw on colour scale if necessary
-	if (prefs.colourScheme() != Prefs::ElementScheme)
-	{
-		float midy = height_ / 2;
-		//glBegin(
+		default:
+			break;
 	}
 	msg.exit("Canvas::renderExtra2d");
 }

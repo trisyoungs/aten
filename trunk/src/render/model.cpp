@@ -31,7 +31,6 @@ void Canvas::renderModelLabels(Model *sourceModel)
 	msg.enter("Canvas::renderModelLabels");
 	// Annotate the model with 2D labels
 	static char text[64];
-	static Atom *i;
 	static int labels;
 	static ForcefieldAtom *ffa;
 	static Vec3<double> cellCentre;
@@ -106,7 +105,6 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
 	static Vec3<double> pos1, pos2;
 	double gamma, t;
-	int i;
 	bool rightalign;
 	static char text[256];
 	static Atom **atoms;

@@ -223,6 +223,8 @@ bool Tree::execute(ReturnValue &rv)
 				// Turn on export type mapping
 				if (aten.typeExportMap.nPairs() != 0) aten.setTypeExportMapping(TRUE);
 				break;
+			default:
+				break;
 		}
 	}
 	for (Refitem<TreeNode,int> *ri = statements_.first(); ri != NULL; ri = ri->next)
@@ -255,6 +257,8 @@ bool Tree::execute(ReturnValue &rv)
 			case (FilterData::ModelExport):
 				// Turn off export type mapping
 				aten.setTypeExportMapping(FALSE);
+				break;
+			default:
 				break;
 		}
 	}

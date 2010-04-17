@@ -85,6 +85,8 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 			// Always works, and always returns an integer
 			result = VTypes::IntegerData;
 			break;
+		default:
+			break;
 	}
 	// Print error message if necessary
 	if (result == VTypes::NoData) msg.print("Error: Unary operator %s cannot act on %s.\n", Command::data[func].keyword, VTypes::aDataType(type));
@@ -298,6 +300,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					returnsarray = TRUE;
 					break;
 			}
+			break;
+		default:
 			break;
 	}
 	// Print error message

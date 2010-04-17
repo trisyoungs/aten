@@ -445,6 +445,8 @@ void Cell::calculateReciprocal()
 			reciprocal_.rows[2] = reciprocal_.rows[2] / reciprocalVolume_;
 			reciprocalVolume_ = 1.0 / reciprocalVolume_;
 			break;
+		default:
+			break;
 	}
 	msg.exit("Cell::calculateReciprocal");
 }

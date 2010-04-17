@@ -53,7 +53,7 @@ VTypes::DataType declaredType;
 %left '+' '-'
 %left '*' '/' '%'
 %right UMINUS
-%left PP MM
+%left PLUSPLUS MINUSMINUS
 %right '!'
 %right '^'
 
@@ -266,10 +266,10 @@ rawexpr:
 	| var TEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentMultiply,$1,$3); }
 	| var DEQ expr					{ $$ = cmdparser.addOperator(Command::OperatorAssignmentDivide,$1,$3); }
 	| '-' expr %prec UMINUS				{ $$ = cmdparser.addOperator(Command::OperatorNegate, $2); }
-	| var PP					{ $$ = cmdparser.addOperator(Command::OperatorPostfixIncrease, $1);  }
-	| var MM					{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); }
-	| PP var					{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); }
-	| MM var					{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); }
+	| var PLUSPLUS					{ $$ = cmdparser.addOperator(Command::OperatorPostfixIncrease, $1);  }
+	| var MINUSMINUS				{ $$ = cmdparser.addOperator(Command::OperatorPostfixDecrease, $1); }
+	| PLUSPLUS var					{ $$ = cmdparser.addOperator(Command::OperatorPrefixIncrease, $2); }
+	| MINUSMINUS var				{ $$ = cmdparser.addOperator(Command::OperatorPrefixDecrease, $2); }
 	| var						{ $$ = $1; }
 	| expr '+' expr					{ $$ = cmdparser.addOperator(Command::OperatorAdd, $1, $3); }
 	| expr '-' expr					{ $$ = cmdparser.addOperator(Command::OperatorSubtract, $1, $3); }

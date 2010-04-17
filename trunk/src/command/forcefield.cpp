@@ -131,6 +131,9 @@ bool Command::function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			case (VTypes::ForcefieldData):
 				ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
 				break;
+			default:
+				msg.print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+				break;
 		}
 		if (ff == NULL)	return FALSE;
 		aten.setCurrentForcefield(ff);
@@ -178,8 +181,6 @@ bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Get each argument and parse it internally
-	int el;
-	NameMap<Dnchar> *nm;
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
@@ -228,6 +229,9 @@ bool Command::function_FFPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				break;
 			case (VTypes::PatternData):
 				p = (Pattern*) c->argp(0, VTypes::ModelData);
+				break;
+			default:
+				msg.print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
 				break;
 		}
 		if (p == NULL)
@@ -363,6 +367,9 @@ bool Command::function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 		case (VTypes::ForcefieldData):
 			ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
+			break;
+		default:
+			msg.print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
 			break;
 	}
 	if (ff == NULL)	return FALSE;

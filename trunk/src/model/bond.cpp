@@ -374,15 +374,12 @@ void Model::rebond()
 void Model::calculateBonding(bool augment)
 {
 	msg.enter("Model::calculateBonding");
-	Atom *i, *j;
-	double dist, radsum;
-	double tolerance = prefs.bondTolerance();
-	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
+	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...", prefs.bondTolerance());
 	clearBonding();
 	// Create cuboid lists
 	initialiseBondingCuboids();
 	// Add all atoms to cuboid list
-	for (i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
 	// Rebond within the cuboids
 	rebond();
 	// Free bonding cuboids
@@ -478,13 +475,10 @@ void Model::patternCalculateBonding(bool augment)
 void Model::selectionCalculateBonding(bool augment)
 {
 	msg.enter("Model::selectionCalculateBonding");
-	double tolerance = prefs.bondTolerance();
-	double radsum, dist;
-	Atom *i, *j;
 	// Create cuboid lists
 	initialiseBondingCuboids();
 	// Add all atoms to cuboid list
-	for (i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addAtomToCuboid(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addAtomToCuboid(i);
 	// Rebond within the cuboids
 	rebond();
 	// Free bonding cuboids

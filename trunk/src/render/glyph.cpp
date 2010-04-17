@@ -279,6 +279,9 @@ void Canvas::renderModelGlyphs(Model *sourceModel)
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
 				break;
+			default:
+				msg.print("Internal Error: Don't know how to draw glyph type %i\n", g->type());
+				break;
 		}
 	}
 	msg.exit("Canvas::renderModelGlyphs");
@@ -325,6 +328,8 @@ void Canvas::renderModelTextGlyphs(Model *sourceModel)
 					to = new TextObject((int)vec[1].x, int(height_ - vec[1].y), FALSE, g->text());
 					textObjects_.own(to);
 				}
+				break;
+			default:
 				break;
 		}
 	}

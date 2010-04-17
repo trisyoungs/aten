@@ -123,7 +123,7 @@ void AtenAtomlist::refresh(bool forceupdate)
 	TTreeWidgetItem *item;
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
-	int mol, n, count, endatom;
+	int mol, n, count;
 	if (forceupdate || (gui.atomlistWindow->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))))
 	{
 		// Clear the current list

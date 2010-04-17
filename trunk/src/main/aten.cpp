@@ -620,8 +620,7 @@ void Aten::openFragments()
 {
 	msg.enter("Aten::openFragments");
 	char path[512];
-	bool found = FALSE;
-	int nfailed, ndefault;
+	int nfailed;
 
 	// Redirect model creation to fragment list
 	targetModelList_ = Aten::FragmentLibraryList;

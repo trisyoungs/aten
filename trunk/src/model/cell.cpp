@@ -229,7 +229,7 @@ void Model::setSpacegroup(const char *sg)
 	and - if not already set - find the entry in the internal
 	table of space group symbols
 	*/
-	int i = CompleteSgInfo(&spacegroup_);
+	CompleteSgInfo(&spacegroup_);
 
 	msg.print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
 
@@ -286,7 +286,7 @@ void Model::pack()
 		msg.print("Packing cell from previous spacegroup definition.\n");
 		Generator gen;
 		// Code copied verbatim from http://cci.lbl.gov/sginfo/sginfo_loop_symops.html and modified slightly to use Aten's classes
-		int iList, f, i, nTrV, iTrV, nLoopInv, iLoopInv;
+		int iList, f, nTrV, iTrV, nLoopInv, iLoopInv;
 		const int *TrV;
 		const T_RTMx *lsmx;
 		
@@ -582,6 +582,8 @@ void Model::calculateDensity()
 				break;
 			case (Prefs::AtomsPerAngstrom):
 				density_ = atoms_.nItems() / cell_.volume();
+				break;
+			default:
 				break;
 		}
 	}

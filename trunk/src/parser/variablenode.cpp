@@ -254,7 +254,7 @@ bool VariableNode::set(ReturnValue &setrv)
 				Refitem<TreeNode,int> *ri = args_.last()->prev;
 				if ((ri != NULL) && (ri->item->returnType() == VTypes::VectorData))
 				{
-					StepNode *step = (StepNode*) ri->item;
+//					StepNode *step = (StepNode*) ri->item;
 // 					printf("Previous step type = %s.\n", VTypes::dataType(step->returnType()));
 					// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
 					result = ((StepNode*) ri->item)->set(lastresult,executerv);

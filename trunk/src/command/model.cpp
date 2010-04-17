@@ -58,6 +58,9 @@ bool Command::function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv
 			case (VTypes::ModelData):
 				m = (Model*) c->argp(0, VTypes::ModelData);
 				break;
+			default:
+				msg.print("Can't convert a variable of type '%s' to a Model.\n", VTypes::dataType(c->argType(0)));
+				break;
 		}
 		if (m == NULL)
 		{

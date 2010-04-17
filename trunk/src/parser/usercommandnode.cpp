@@ -173,7 +173,6 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, const char *arglist ...)
 
 	// Set arguments from supplied list
 	const char *c;
-	double ttt;
 	va_list vars;
 	va_start(vars, arglist);
 	TreeNode *var = NULL;

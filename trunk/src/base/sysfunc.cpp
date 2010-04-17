@@ -248,7 +248,6 @@ const char *stripChars(const char *s, const char *charstostrip)
 int countChars(const char *s, const char *chars, int offset)
 {
 	int total = 0, n, count = 0;
-	const char *c;
 	while (*s != '\0')
 	{
 		if (count >= offset)

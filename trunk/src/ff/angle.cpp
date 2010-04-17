@@ -28,7 +28,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	msg.enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
-	static double forcek, n, s, eq, rij, theta, dp, energy, c0, c1, c2;
+	static double forcek, n, s, eq, rij, theta, energy, c0, c1, c2;
 	static double coseq, delta;
 	static ForcefieldBound *ffb;
 	static PatternBound *pb;
@@ -109,7 +109,7 @@ void Pattern::angleForces(Model *srcmodel)
 	msg.enter("Pattern::angleForcess");
 	static int i,j,k,aoff,m1;
 	static Vec3<double> vec_ij, vec_kj, fi, fk, mim_ik;
-	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx, rij;
+	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c1, c2, cosx, rij;
 	static double du_dtheta, dtheta_dcostheta;
 	static ForcefieldBound *ffb;
 	static PatternBound *pb;

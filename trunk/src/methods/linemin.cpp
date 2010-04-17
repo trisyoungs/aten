@@ -47,7 +47,6 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	double enew, ecurrent, bound[3], energy[3], newmin, a, b, b10, b12;
 	Model destmodel;
 	bool failed, leftbound;
-	Atom **modelatoms = srcmodel->atomArray();
 
 	// Brent-style line minimiser with parabolic interpolation and Golden Search backup.
 	// We assume that the energy expression for the source model is correct.
