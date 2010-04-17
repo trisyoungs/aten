@@ -32,14 +32,19 @@ AC_PROG_YACC
 # Additional Configuration Options
 #
 
-# QTDIR
-QTDIR=""
-AC_ARG_WITH([qtdir],[AC_HELP_STRING([--with-qtdir=<dir>],
-    [Specify location of Qt4 developer tools (moc, uic, and rcc) [default=""]])], ,
-    [with_qtdir=])
-if test "x$with_qtdir" != "x"; then
-  QTDIR="$with_qtdir/"
-fi
+# QT Tools
+QTMOC="moc"
+QTRCC="rcc"
+QTUIC="uic"
+AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
+    [Specify Qt4 Meta-Object Compiler tool (moc) [default="moc"]])], ,
+    [with_qtmoc="moc"])
+AC_ARG_WITH([qtuic],[AC_HELP_STRING([--with-qtuic=<executable>],
+    [Specify Qt4 User Interface Compiler tool (uic) [default="uic"]])], ,
+    [with_qtuic="uic"])
+AC_ARG_WITH([qtrcc],[AC_HELP_STRING([--with-qtrcc=<executable],
+    [Specify Qt4 Resource Compiler tool (rcc) [default="rcc"]])], ,
+    [with_qtrcc="rcc"])
 
 # Readline include dir
 RLINCDIR=""
@@ -112,7 +117,9 @@ VERSION=ATEN_VERSION
 # Perform Makefile substitutions
 AC_SUBST(GUI_LDLIBS)
 AC_SUBST(GUI_CFLAGS)
-AC_SUBST(QTDIR)
+AC_SUBST(QTMOC)
+AC_SUBST(QTUIC)
+AC_SUBST(QTRCC)
 AC_SUBST(BUILDDIR)
 AC_SUBST(INSTALLDIR)
 AC_SUBST(VERSION)

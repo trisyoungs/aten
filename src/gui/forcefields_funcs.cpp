@@ -314,7 +314,7 @@ void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 				Pattern *p = m->pattern(ri->item);
 				if (ri->item->element() == at->characterElement())
 				{
-// TGAYNETA					matchscore = at->matchAtom(i, p->ringList(), m, i);
+					matchscore = at->matchAtom(ri->item, p->ringList(), m);
 					msg.print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, elements().symbol(ri->item), matchscore);
 				}
 				else msg.print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, elements().symbol(ri->item));
