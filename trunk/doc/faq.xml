@@ -78,11 +78,16 @@
 				<para>Error: 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.x.x)'</para>
 			</question>
 			<answer>
-				<para>This error can occur when both the Qt3 and Qt4 development packages are installed The $PATH is sometimes set so that the Qt3 binaries are found first, so the Meta-object compiler from Qt3 is called, and then the generated source includes the Qt4 headers. Running 'which moc' will tell you which binary is being used - you can then run this binary with the -v option to check the version. If its version 3.x.x then you will need to reconfigure the build with
+				<para>This error can occur when both the Qt3 and Qt4 development packages are installed The $PATH is sometimes set so that the Qt3 binaries are found first, so the Meta-object compiler from Qt3 is called, and then the generated source includes the Qt4 headers. Running 'which moc' will tell you which binary is being used - you can then run this binary with the -v option to check the version. If its version 3.x.x then you will need to reconfigure the build.</para>
+				<para>Each of the three Qt4 utilities needed to compile Aten - moc, rcc, and uic - can be specified explicitly with three configure options:</para>
 					
+					{CODE()}bob@pc:~&gt; ./configure --with-qtmoc=&lt;executable&gt; --with-qtuic=&lt;executable&gt; --with-qtrcc=&lt;executable&gt;{CODE}
+					
+				<para>For older versions of Aten (pre v1.5 r1164), only a single configure option is available:</para>
+
 					{CODE()}bob@pc:~&gt; ./configure --with-qtdir=&lt;path&gt; {CODE}
-					
-					...where &lt;path&gt; is the location of the Qt4 binaries (moc, uic, and rcc). Typically, the Qt3 binaries are located in /usr/lib/qt3/bin while the Qt4 binaries are in /usr/bin, but this may not be the case on your particular system.</para>
+
+				<para>...where &lt;path&gt; is the location of the Qt4 binaries (moc, uic, and rcc). Typically, the Qt3 binaries are located in /usr/lib/qt3/bin while the Qt4 binaries are in /usr/bin, but this may not be the case on your particular system.</para>
 			</answer>
 		</qandaentry>
 		

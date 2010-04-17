@@ -9,6 +9,7 @@
 	%mathml;
 
 	<!--Getting Started-->
+	<!ENTITY usage SYSTEM "gettingstarted/usage.xml">
 	<!ENTITY compilation SYSTEM "gettingstarted/compilation.xml">
 	<!ENTITY installation SYSTEM "gettingstarted/installation.xml">
 	<!ENTITY reference SYSTEM "gettingstarted/reference.xml">
@@ -174,6 +175,7 @@
 	
 	<!-- GETTING STARTED -->
 	<chapter id="gettingstarted"><title>Getting Started</title>
+		&usage;
 		&compilation;
 		&installation;
 		&reference;

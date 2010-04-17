@@ -19,7 +19,7 @@ SUFFIXES: .ui .uih .qrc
 	rm $*.cpp
 
 clean:
-	rm *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp ttabbar.cpp tcolourframe.cpp
+	rm -f *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp ttabbar.cpp tcolourframe.cpp
 
 SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui minimiser.ui position.ui transform.ui
 SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp
