@@ -3,21 +3,23 @@ noinst_LIBRARIES = libgui.a
 SUFFIXES: .ui .uih .qrc
 
 .ui.o:
-	$(QTDIR)uic -o ui_$*.h $<
-	$(QTDIR)moc -o moc_$*.cpp $(top_srcdir)/src/gui/$*.h
+	$(QTUIC) -o ui_$*.h $<
+	$(QTMOC) -o moc_$*.cpp $(top_srcdir)/src/gui/$*.h
 	$(CXX) -I$(top_srcdir)/src -I$(top_srcdir)/src/gui/ -I../ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ moc_$*.cpp
 	rm moc_$*.cpp
 
 .uih.o:
-	$(QTDIR)moc -o $*.cpp -f$< $<
+	$(QTMOC) -o $*.cpp -f$< $<
 	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ $*.cpp
 	rm $*.cpp
 
 .qrc.o:
-	$(QTDIR)rcc -o $*.cpp -name $* $<
+	$(QTRCC) -o $*.cpp -name $* $<
 	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ $*.cpp
 	rm $*.cpp
 
+clean:
+	rm *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp ttabbar.cpp tcolourframe.cpp
 
 SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui minimiser.ui position.ui transform.ui
 SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp
