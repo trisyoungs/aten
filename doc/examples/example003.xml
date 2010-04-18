@@ -1,0 +1,15 @@
+<section id="examples.example3"><title>Generating Images Without the GUI<title>
+
+	<para>Sometimes it's useful to quickly generate images for a system from the command line, either because the system is prepared from the command line, or because generating hundreds of images through the GUI is insanely repetetive. To quickly save a picture of a system in it's 'standard' view orientation (i.s. as you would see it if you loaded it into the GUI) you can do the following:</para>
+	
+	<synopsis>
+aten data/test/cellulose.cif -c 'savebitmap("png", "cellulose.png"); quit();'
+	</synopsis>
+
+	<para>Doing this will load the cellulose model, save an image of it, and then quit without ever starting the GUI. By default, the size of a saved image is 800x600, but optional arguments to the 'savebitmap' command allow this to be set explicitly. It is often worth increasing the quality of the rendered atoms and bonds in the model whtn saving images. The following example saves a much better-looking picture:</para>
+
+	<synopsis>
+aten data/test/cellulose.cif -c 'aten.prefs.renderstyle = "sphere"; aten.prefs.atomquality = 50; aten.prefs.bondquality = 50; savebitmap("png", "cellulose.png"); quit();'
+	</synopsis>
+
+</section>
