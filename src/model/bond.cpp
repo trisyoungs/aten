@@ -197,9 +197,9 @@ void Model::initialiseBondingCuboids()
 				if (r.z > extentMax_.z) extentMax_.z = r.z;
 			}
 			extentRange_ = extentMax_ - extentMin_;
-			cuboidBoxes_.x = (extentRange_.x / cuboidSize_.x) + 1;
-			cuboidBoxes_.y = (extentRange_.y / cuboidSize_.y) + 1;
-			cuboidBoxes_.z = (extentRange_.z / cuboidSize_.z) + 1;
+			cuboidBoxes_.x = int(extentRange_.x / cuboidSize_.x) + 1;
+			cuboidBoxes_.y = int(extentRange_.y / cuboidSize_.y) + 1;
+			cuboidBoxes_.z = int(extentRange_.z / cuboidSize_.z) + 1;
 		}
 		else
 		{
