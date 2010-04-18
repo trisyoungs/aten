@@ -35,7 +35,7 @@ DoubleExp::DoubleExp(double mantissa, int exponent)
 // Recalculate value
 void DoubleExp::recalculate()
 {
-	value_ = mantissa_ * pow(10,exponent_);
+	value_ = mantissa_ * pow(10.0,exponent_);
 }
 
 // Retrieve full, real value
