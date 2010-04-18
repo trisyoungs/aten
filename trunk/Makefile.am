@@ -5,7 +5,7 @@ SUFFIXES: .dt
 .dt.desktop:
 	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
-EXTRA_DIST = src/gui/icons/*.* data/ff/* data/filters/* data/test/* data/scripts/* data/fragments/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/*
+EXTRA_DIST = src/gui/icons/*.* data/ff/* data/filters/* data/test/* data/scripts/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt extra/* data/fragments/*
 
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
@@ -23,7 +23,7 @@ scriptsdir = $(atendir)/scripts
 scripts_DATA = data/scripts/*
 
 fragmentsdir = $(atendir)/fragments
-fragments_DATA = data/fragments/*
+fragments_DATA = data/fragments/rings/* data/fragments/alkyl/* data/fragments/aromatics/*
 
 desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = Aten.desktop
