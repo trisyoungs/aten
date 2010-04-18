@@ -4,7 +4,7 @@
 # Name, brief description, and version 
 Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
-Version: 1.5.1169
+Version: 1.5.1167
 Release: 1
 License: GPL
 %define fullname %{name}-%{version}
@@ -89,12 +89,7 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
     ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=moc-qt4 --with-qtrcc=rcc-qt4 --with-qtuic=uic-qt4
 %endif
 
-%if 0%{?mandriva_version}
-    %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
-    %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
-    %endif
+%if 0%{?mandrive_version}
 %endif
 
 make
