@@ -92,10 +92,7 @@ fi
 # Check for other dependencies
 AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for readline.])])
 
-
 # Set up compilation for Qt GUI
-#AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
-AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
 if test "$with_qt" = "framework"; then
   QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
   QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
@@ -110,7 +107,7 @@ if test "$with_qt" = "fink"; then
 fi
 if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
+  #PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
