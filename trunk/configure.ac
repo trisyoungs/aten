@@ -107,7 +107,7 @@ if test "$with_qt" = "fink"; then
 fi
 if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-  #PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
+  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
