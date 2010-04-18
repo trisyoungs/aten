@@ -259,7 +259,7 @@
           <number>0</number>
          </property>
          <item>
-          <spacer>
+          <spacer name="leftspacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
