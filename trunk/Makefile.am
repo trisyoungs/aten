@@ -29,8 +29,8 @@ desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = Aten.desktop
 
 install-data-hook:
-	mkdir $(atendir)/fragments
-	cp -r data/fragments/* $(atendir)/fragments/
+	mkdir $(DESTDIR)$(atendir)/fragments
+	cp -r data/fragments/* $(DESTDIR)$(atendir)/fragments/
 
 uninstall-hook:
 	rm -rf $(atendir)/fragments
