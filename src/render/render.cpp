@@ -148,8 +148,6 @@ void Canvas::renderScene(Model *source)
 		msg.print(Messenger::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
 		//glDeleteLists(glob(ModelGlob),1);
 		glNewList(glob(ModelGlob),GL_COMPILE_AND_EXECUTE);
-			static int count = 0;
-		printf("NEWLIST count = %i, glob(ModelGlob) = %i, glIsList = %i\n", ++count, glob(ModelGlob), glIsList(glob(ModelGlob)));
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  checkGlError();
 		  msg.print(Messenger::GL, " --> ...rendering model cell\n");

@@ -85,7 +85,6 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->selectNone();
 
 	// Generate pixmap for fragment
-	printf("Generating fragment bitmap\n");
 	int screenbits = prefs.screenObjects();
 	prefs.setScreenObjects(prefs.offScreenObjects());
 	gui.offscreenWidget->setRenderSource(masterModel_);
