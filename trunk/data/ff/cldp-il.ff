@@ -45,10 +45,10 @@ types
 #
 # Tetrafluoroborate
 100	B	B	"nbonds=4,-F(n=4)"				# Boron with four fluorines attached
-101	FB	F	"nbonds=1,-B(-F(n=3))"				# Fluorine attached to boron in BF4
+101	FB	F	"nbonds=1,-B(-F(n=4))"				# Fluorine attached to boron in BF4
 # Hexafluorophosphate - Perkin 2, p2365 (1999)
 110	P	P	"nbonds=6,-F(n=6)"				# Phosphorus with six fluorines attahed
-111	F	F	"nbonds=1,-P(-F(n=5))"				# Fluorine attached to phosphorus in PF6
+111	F	F	"nbonds=1,-P(-F(n=6))"				# Fluorine attached to phosphorus in PF6
 # Nitrate - JPCb 108, p2038 (2004)
 120	ON	O	"nbonds=1,-N(-O,-O)"				# Oxygen attached to N in NO3
 121	NN	N	"nbonds=3,-O(n=3)"				# Nitrogen with three oxygens attached

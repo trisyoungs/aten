@@ -73,6 +73,7 @@ void TCanvas::probeFeatures()
 void TCanvas::initializeGL()
 {
 	// Call the realize method of the associated canvas_.
+	printf("IN INITIALISEGL\n");
 	if (canvas_ != NULL) canvas_->realize();
 	else printf("NO CANVAS SET INIT\n");
 }

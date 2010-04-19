@@ -63,7 +63,7 @@ void Canvas::renderExtra3d()
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
-			  glCallList(list_[SelectedSphereAtomGlob]);
+			  glCallList(glob(SelectedSphereAtomGlob));
 			glPopMatrix();
 			break;
 		// Draw on bond and new atom for chain drawing (if mode is active)
@@ -96,13 +96,13 @@ void Canvas::renderExtra3d()
 				switch (prefs.renderStyle())
 				{
 					case (Atom::TubeStyle):
-						glCallList(list_[WireTubeAtomGlob]);
+						glCallList(glob(WireTubeAtomGlob));
 						break;
 					case (Atom::SphereStyle):
-						glCallList(list_[WireSphereAtomGlob]);
+						glCallList(glob(WireSphereAtomGlob));
 						break;
 					case (Atom::ScaledStyle):
-						glCallList(list_[WireSphereAtomGlob]);
+						glCallList(glob(WireSphereAtomGlob));
 						break;
 					default:
 						break;
@@ -138,7 +138,7 @@ void Canvas::renderExtra3d()
 					glPushMatrix();
 					  glTranslated(r.x, r.y, r.z);
 					  glColor3d(1.0,0.0,0.0);
-					  glCallList(list_[CrossedUnitCubeGlob]);
+					  glCallList(glob(CrossedUnitCubeGlob));
 					glPopMatrix();
 				}
 			}
@@ -290,11 +290,11 @@ void Canvas::renderRegions()
 				break;
 			case (ComponentRegion::CuboidRegion):
 				glScaled(geometry.x,geometry.y,geometry.z);
-				glCallList(list_[UnitCubeGlob]);
+				glCallList(glob(UnitCubeGlob));
 				break;
 			case (ComponentRegion::SpheroidRegion):
 				glScaled(geometry.x,geometry.y,geometry.z);
-				glCallList(list_[UnitAtomGlob]);
+				glCallList(glob(UnitAtomGlob));
 				break;
 			case (ComponentRegion::CylinderRegion):
 				glTranslated(0.0,0.0,-0.5*geometry.z);
