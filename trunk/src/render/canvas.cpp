@@ -47,7 +47,7 @@ Canvas::Canvas()
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	temporaryGlobList_[0] = 0;
-	globList_[0];
+	globList_[0] = 0;
 	contextWidget_ = NULL;
 	pickEnabled_ = FALSE;
 	for (int i=0; i<3; i++)
@@ -223,10 +223,7 @@ Model *Canvas::displayModel()
 // Set GL options
 void Canvas::initGl()
 {
-	printf("Attempting to INITGL for canvas %p\n", this);
-	if (!valid_) printf("NOT VALID, so returning\n");
 	if (!valid_) return;
-	printf("Oka.......\n");
 	msg.enter("Canvas::initGl");
 	if (beginGl())
 	{
@@ -239,8 +236,7 @@ void Canvas::initGl()
 		else if (globList_[0] == 0)
 		{
 			globList_[StickAtomGlob] = glGenLists(Canvas::nGlobs);
-			msg.print("Beginning of GL display list is %d\n", globList_[Canvas::StickAtomGlob]);
-// 			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", glob(StickAtomGlob));
+			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", glob(StickAtomGlob));
 			for (int n=1; n<Canvas::nGlobs; n++) globList_[n] = globList_[Canvas::StickAtomGlob]+n;
 		}
 		createLists();
