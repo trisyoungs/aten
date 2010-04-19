@@ -85,11 +85,7 @@ bool Command::function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				c->parent()->setAcceptedFail(Command::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue)
-			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
-				break;
-			}
+			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
 			else if (af != Command::NoFunction) return FALSE;
 		}
 		// Perform test of condition
@@ -126,11 +122,7 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				c->parent()->setAcceptedFail(Command::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue)
-			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
-				break;
-			}
+			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
 			else if (af != Command::NoFunction) return FALSE;
 		}
 		// Loop 'increment' statement
@@ -175,18 +167,16 @@ bool Command::function_While(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
 			af = c->parent()->acceptedFail();
+	printf("Accepted Fail in While structure is %s\n", Command::data[af].keyword);
 			if (af == Command::Break)
 			{
 				c->parent()->setAcceptedFail(Command::NoFunction);
 				return TRUE;
 			}
-			else if (af == Command::Continue)
-			{
-				c->parent()->setAcceptedFail(Command::NoFunction);
-				break;
-			}
+			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
 			else if (af != Command::NoFunction) return FALSE;
 		}
+	printf("Now we're here....\n");
 		// Perform test of condition
 		if (!c->arg(0, test)) return FALSE;
 	}
