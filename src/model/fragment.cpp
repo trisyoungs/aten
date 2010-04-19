@@ -85,6 +85,7 @@ bool Fragment::setMasterModel(Model *m)
 	masterModel_->selectNone();
 
 	// Generate pixmap for fragment
+	printf("Generating fragment bitmap\n");
 	int screenbits = prefs.screenObjects();
 	prefs.setScreenObjects(prefs.offScreenObjects());
 	gui.offscreenWidget->setRenderSource(masterModel_);
@@ -99,6 +100,8 @@ bool Fragment::setMasterModel(Model *m)
 	// Reconfigure canvas to widget size (necessary if image size was changed)
 	gui.offscreenView.configure(gui.offscreenWidget->width(), gui.offscreenWidget->height());
 	gui.offscreenWidget->setRenderSource(NULL);
+
+	gui.offscreenView.setOffScreenRendering(FALSE);
 
 	// Final tweaks to fragment model - put link atom at 0,0,0
 	masterModel_->selectAll();

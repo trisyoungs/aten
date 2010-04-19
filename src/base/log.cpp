@@ -29,10 +29,17 @@ Log::Log()
 	reset();
 }
 
-// Operator == (test equivalence of all log values except Total)
+// Operator == (test equivalence of all log values we care about)
 bool Log::operator==(Log &l) const
 {
-	for (int n=0; n<Log::Total; ++n) if (logs_[n] != l.logs_[n]) return FALSE;
+	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return FALSE;
+	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return FALSE;
+	if (logs_[Log::Visual] != l.logs_[Log::Visual]) return FALSE;
+	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return FALSE;
+// 	if (logs_[Log::Camera] != l.logs_[Log::Camera]) return FALSE;
+	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return FALSE;
+// 	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return FALSE;
+// 	if (logs_[Log::Total] != l.logs_[Log::Total]) return FALSE;
 	return TRUE;
 }
 

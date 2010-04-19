@@ -27,9 +27,6 @@
 #include "classes/prefs.h"
 #include "base/log.h"
 
-// GL Objects
-enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, CylinderGlob, SelectedCylinderGlob, WireCylinderGlob, SelectedWireCylindedGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, TubeArrowGlob, ModelGlob, nGlobs };
-
 // Forward declarations
 class Atom;
 class Bond;
@@ -85,6 +82,9 @@ class Canvas
 	
 	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
+
+	// GL Objects
+	enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, CylinderGlob, SelectedCylinderGlob, WireCylinderGlob, SelectedWireCylindedGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, TubeArrowGlob, ModelGlob, nGlobs };
 
 	/*
 	// Base rendering context
@@ -145,8 +145,10 @@ class Canvas
 	// Rendering display lists
 	*/
 	private:
-	// Display list ID's
-	GLuint list_[nGlobs];
+	// Display list ID's for normal and temporary rendering contexts
+	GLuint globList_[nGlobs], temporaryGlobList_[nGlobs];
+	// Function to return glob integer id
+	GLuint glob(Canvas::GlObject ob);
 
 	public:
 	// Create globs for rendering
