@@ -1059,7 +1059,7 @@ void Pattern::findRings()
 {
 	msg.enter("Pattern::findRings");
 	int n, rsize;
-	bool okay;
+	bool okay = FALSE;
 	Atom *i;
 	Ring path;
 	// Loop over atoms, searching for rings on each
@@ -1177,7 +1177,7 @@ void Pattern::augment()
 	msg.enter("Pattern::augment");
 	Atom *i, *j;
 	Refitem<Bond,Bond::BondType> *rb;
-	Refitem<Bond,int> *bref, *heavybond, *bestref;
+	Refitem<Bond,int> *bref, *heavybond = NULL, *bestref;
 	Refitem<Atom,int> *aref;
 	Reflist<Bond,int> bondlist;
 	Bond *b1, *b2, *b3;

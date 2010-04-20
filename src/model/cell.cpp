@@ -151,7 +151,7 @@ void Model::foldAllMolecules()
 {
 	msg.enter("Model::foldAllMolecules");
 	int n,m;
-	Atom *i, *first;
+	Atom *i, *first = NULL;
 	Pattern *p;
 	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
 	if (!autocreatePatterns(FALSE))
@@ -335,7 +335,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	Vec3<double> oldcog, newcog, newpos;
 	Cell newcell;
 	Mat3<double> newaxes;
-	double olde, newe;
+	double olde = 0.0, newe;
 	int n,m;
 	Atom *i;
 	// First, make sure we have a cell and a valid pattern (if using cog)

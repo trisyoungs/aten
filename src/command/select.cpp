@@ -32,7 +32,7 @@
 bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
 	static char from[32], to[32], text[512];
-	int i, j, n, plus;
+	int i, j, n, plus = 0;
 	bool range;
 	// Execute argument to get result
 	ReturnValue value;

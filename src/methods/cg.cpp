@@ -39,7 +39,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodCg::minimise");
 	int cycle, i;
-	double enew, ecurrent, edelta, rmscurrent, rmsnew, g_old_sq, gamma, g_current_sq;
+	double enew, ecurrent, edelta = 0.0, rmscurrent, rmsnew, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;
 	Atom **modelatoms;

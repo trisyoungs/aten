@@ -66,7 +66,7 @@ void AtenFragment::refresh()
 	ui.FragmentTree->clear();
 	ui.FragmentTable->clear();
 
-	int row = 0, nperrow = 5, column;
+	int row = 0, nperrow = 5, column = 0		;
 
 	ui.FragmentTable->setColumnCount(nperrow);
 	ui.FragmentTable->setRowCount(1);

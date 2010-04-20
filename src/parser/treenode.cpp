@@ -187,11 +187,11 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 {
 	msg.enter("TreeNode::checkArguments");
 	msg.print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), funcname);
-	const char *c, *altargs = arglist;
+	const char *c = NULL, *altargs = arglist;
 	msg.print(Messenger::Parse, "...argument list is [%s]\n", altargs);
 	char upc;
 	int count = 0, ngroup = -1, repeat = 0;
-	bool optional, requirevar, result, cluster = FALSE, array, reset = TRUE;
+	bool optional, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
 	VTypes::DataType rtype;
 	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
 	if (*altargs == '_')

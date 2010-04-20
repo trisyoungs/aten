@@ -248,7 +248,7 @@ Measurement *Model::addMeasurement(Measurement::MeasurementType gt, ...)
 		}
 	}
 	va_end(vars);
-	Measurement *newm;
+	Measurement *newm = NULL;
 	if (gt == Measurement::Distance) newm = distances_.add();
 	else if (gt == Measurement::Angle) newm = angles_.add();
 	else if (gt == Measurement::Torsion) newm = torsions_.add();

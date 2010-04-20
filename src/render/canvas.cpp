@@ -232,6 +232,7 @@ void Canvas::initGl()
 		{
 			temporaryGlobList_[Canvas::StickAtomGlob] = glGenLists(Canvas::nGlobs);
 			for (int n=1; n<Canvas::nGlobs; n++) temporaryGlobList_[n] = temporaryGlobList_[Canvas::StickAtomGlob]+n;
+			//printf("Model glob id = %i\n", list_[ModelGlob]);
 		}
 		else if (globList_[0] == 0)
 		{
@@ -358,7 +359,7 @@ void Canvas::createLists()
 	glNewList(glob(SphereAtomGlob),GL_COMPILE);
 	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle), TRUE);
 	glEndList();
-	// Unit Atom Sphere (for DS_SCALED)
+	// Unit Atom Sphere (for DSƒ_SCALED)
 	glNewList(glob(UnitAtomGlob),GL_COMPILE);
 	  spherePrimitive(1.0, TRUE);
 	glEndList();

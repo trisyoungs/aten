@@ -293,7 +293,7 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model
 
 	// Get pointers to link and partner atoms, determine if there was a bond there, and then delete link atom
 	Bond::BondType bt = Bond::nBondTypes;
-	Atom *linkPartner, *linkAtom;
+	Atom *linkPartner = NULL, *linkAtom;
 	if (masterLinkPartner_ != NULL)
 	{
 		linkPartner = anchoredModel_.atom(masterLinkPartner_->id());

@@ -114,7 +114,7 @@ Format *CommandNode::createFormat(int fmtargid, int firstargid)
 	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
-	bool result;
+	bool result = FALSE;
 	Refitem<TreeNode,int> *firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
 	if (format_ == NULL)
 	{
