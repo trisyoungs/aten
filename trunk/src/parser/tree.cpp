@@ -198,7 +198,7 @@ Command::Function Tree::acceptedFail()
 bool Tree::execute(ReturnValue &rv)
 {
 	msg.enter("Tree::execute");
-	bool result;
+	bool result = FALSE;
 	rv.reset();
 	ElementMap::ZMapType zm;
 	acceptedFail_ = Command::NoFunction;

@@ -606,8 +606,8 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 const char *LineParser::getChars(int nchars, bool skipeol)
 {
 	char c;
-	int i;
 	// Check number of characters requested
+	int i=0;
 	if (nchars == 0) return NULL;
 	else if (nchars > MAXLINELENGTH)
 	{

@@ -549,7 +549,7 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	if (!ok) return;
 	// Store new colour
 	prefs.setSpotlightColour(sc, newcol.redF(), newcol.greenF(), newcol.blueF());
-	TColourFrame *colframe;
+	TColourFrame *colframe = NULL;
 	if (sc == Prefs::AmbientComponent) colframe = ui.SpotlightAmbientColourFrame;
 	else if (sc == Prefs::DiffuseComponent) colframe = ui.SpotlightDiffuseColourFrame;
 	else if (sc == Prefs::SpecularComponent) colframe = ui.SpotlightSpecularColourFrame;	

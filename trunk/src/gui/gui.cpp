@@ -279,7 +279,7 @@ void GuiQt::run()
 	// Add loaded models to tabbar (and reset the view while we're here)
 	// Must remember the current model, since adding the tabs will change it (in the currentChanged callback)
 	Model *currentm = aten.currentModel();
-	int tabid, currenttab;
+	int tabid, currenttab = 0;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->addModelTab(m);

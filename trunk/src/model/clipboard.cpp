@@ -267,7 +267,7 @@ void Clipboard::pasteToPattern(Model *m, Pattern *p)
 	// An optional pattern is supplied, indicating atoms should be pasted into its local list. Otherwise, use the model.
 	// Deselect all atoms of the model, and select the pasted atoms_.
 	msg.enter("Clipboard::pasteToPattern");
-	Atom *pastedi;
+	Atom *pastedi = NULL;
 	m->selectNone();
 	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())
 	{

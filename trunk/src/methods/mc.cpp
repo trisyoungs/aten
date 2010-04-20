@@ -341,7 +341,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	Refitem<Model,int> *ri;
 	Model *c;
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
-	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
+	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy = 0.0, referenceVdwEnergy = 0.0, referenceElecEnergy = 0.0;
 	double penalty;
 	bool done, endearly = FALSE;
 	Cell *cell;

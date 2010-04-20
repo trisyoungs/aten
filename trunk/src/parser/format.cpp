@@ -406,7 +406,7 @@ bool Format::writeToString()
 	char bit[4096];
 	createdString_[0] = '\0';
 	ReturnValue rv;
-	bool result;
+	bool result = FALSE;
 	// Cycle through the list of FormatChunks
 	for (FormatChunk *chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{

@@ -260,7 +260,7 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Vec3<double> o, v;
 	bool sourcenoz = FALSE;
 	int n;
-	Atom *i, *j;
+	Atom *i = NULL, *j = NULL;
 
 	// Determine source matrix
 	for (n=0; n<5; n+=2)

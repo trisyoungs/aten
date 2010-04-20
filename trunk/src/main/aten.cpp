@@ -226,7 +226,7 @@ Model *Aten::addModel()
 {
 	msg.enter("Aten::addModel");
 	char newname[32];
-	Model *m;
+	Model *m = NULL;
 	// Check current list target for model creation
 	switch (targetModelList_)
 	{

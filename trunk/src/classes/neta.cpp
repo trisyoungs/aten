@@ -73,7 +73,7 @@ const char *Neta::netaValueComparison(Neta::NetaValueComparison nvc)
 }
 bool Neta::netaValueCompare(int lhsvalue, NetaValueComparison nvc, int rhsvalue)
 {
-	bool result;
+	bool result = FALSE;
 	switch (nvc)
 	{
 		case (EqualTo):

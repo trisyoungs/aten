@@ -29,7 +29,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionEnergy");
-	int n,i,j,k,l,aoff,m1;
+	int i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, k5, k6, k7, k8, k9, eq, phi, energy, period, s, chi;
 	PatternBound *pb;
 	ForcefieldBound *ffb;
@@ -97,7 +97,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					k1 = ffb->parameter(TorsionFunctions::DreidingK);
 					period = ffb->parameter(TorsionFunctions::DreidingN);
 					eq = ffb->parameter(TorsionFunctions::DreidingEq) / DEGRAD;
-					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
+					energy += 0.5 * k1 * (1.0 - cos(period*(phi - eq)));
 					break;
 				case (TorsionFunctions::Pol9):
 					// U(chi) = sum_{i=0,8} k_i (cos(chi))^i
@@ -158,7 +158,7 @@ void Pattern::torsionForces(Model *srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
 	msg.enter("Pattern::torsionForces");
-	int n,i,j,k,l,aoff,m1;
+	int i,j,k,l,aoff,m1;
 	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
 	static double phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
@@ -282,7 +282,7 @@ void Pattern::torsionForces(Model *srcmodel)
 					k1 = ffb->parameter(TorsionFunctions::DreidingK);
 					period = ffb->parameter(TorsionFunctions::DreidingN);
 					eq = ffb->parameter(TorsionFunctions::DreidingEq) / DEGRAD;
-					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
+					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(period*(phi - eq));
 					break;
 				default:
 					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
