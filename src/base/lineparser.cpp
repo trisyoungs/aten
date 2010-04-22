@@ -235,7 +235,11 @@ int LineParser::readLine()
 {
 	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
-	if (file_ == NULL) return 1;
+	if (file_ == NULL)
+	{
+		printf("Attempted to readLine from a NULL file in LineParser.\n");
+		return 1;
+	}
 	file_->getline(line_, MAXLINELENGTH-1);
 	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 	if (file_->eof())

@@ -307,3 +307,11 @@ Reflist<Tree,int> *Aten::filterList(FilterData::FilterType ft)
 {
 	return &filters_[ft];
 }
+
+// Print list of valid filter nicknames
+void Aten::printValidNicknames(FilterData::FilterType ft)
+{
+	msg.print("Valid %s nicknames are:\n", FilterData::filterType(ft));
+	for (Refitem<Tree,int> *ri = filters_[ft].first(); ri != NULL; ri = ri->next)
+		msg.print("  %-15s %s\n", ri->item->filter.nickname(), ri->item->filter.name());
+}
