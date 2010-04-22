@@ -337,9 +337,8 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
-		msg.print("Valid model export nicknames are:\n");
-		for (Refitem<Tree,int> *ri = aten.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-			msg.print("  %-15s %s\n", ri->item->filter.nickname(), ri->item->filter.name());
+		// Print list of valid filter nicknames
+		aten.printValidNicknames(FilterData::ModelExport);
 		msg.print("Not saved.\n");
 		return FALSE;
 	}

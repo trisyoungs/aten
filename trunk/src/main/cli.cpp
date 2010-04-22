@@ -385,7 +385,12 @@ int Aten::parseCli(int argc, char *argv[])
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
 					f = aten.findFilter(FilterData::ModelExport, argtext.get());
-					if (f == NULL) return -1;
+					if (f == NULL)
+					{
+						// Print list of valid filter nicknames
+						aten.printValidNicknames(FilterData::ModelExport);
+						return -1;
+					}
 					aten.setExportFilter(f);
 					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
 					else aten.setProgramMode(Aten::BatchExportMode);
@@ -417,7 +422,12 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set forced model load format
 				case (Cli::FormatSwitch):
 					modelfilter = aten.findFilter(FilterData::ModelImport, argtext.get());
-					if (modelfilter == NULL) return -1;
+					if (modelfilter == NULL)
+					{
+						// Print list of valid filter nicknames
+						aten.printValidNicknames(FilterData::ModelImport);
+						return -1;
+					}
 					break;
 				// Load surface
 				case (Cli::GridSwitch):

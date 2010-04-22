@@ -142,6 +142,8 @@ class Aten
 	int nFilters(FilterData::FilterType ft) const;
 	// Return pointer to list of filters of given type
 	Reflist<Tree,int> *filterList(FilterData::FilterType ft);
+	// Print list of valid filter nicknames
+	void printValidNicknames(FilterData::FilterType ft);
 
 
 	/*
