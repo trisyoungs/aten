@@ -35,8 +35,9 @@ class Model;
 class UndoEvent
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	UndoEvent();
+	virtual ~UndoEvent();
 	// List pointers
 	UndoEvent *prev, *next;
 	// State change directions
@@ -66,6 +67,11 @@ class UndoEvent
 // Atom (Creation/Deletion) Event
 class AtomEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	AtomEvent();
+	~AtomEvent();
+	
 	private:
 	// Change data
 	Atom atomData_;
@@ -82,6 +88,11 @@ class AtomEvent : public UndoEvent
 // Bond (Creation/Deletion) Event
 class BondEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	BondEvent();
+	~BondEvent();
+
 	private:
 	// Change data
 	int targetId1_, targetId2_;
@@ -99,6 +110,11 @@ class BondEvent : public UndoEvent
 // Bond Type Event
 class BondTypeEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	BondTypeEvent();
+	~BondTypeEvent();
+	
 	private:
 	// Change data
 	int targetId1_, targetId2_;
@@ -116,6 +132,11 @@ class BondTypeEvent : public UndoEvent
 // Cell Change Event
 class CellEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	CellEvent();
+	~CellEvent();
+	
 	private:
 	// Change data
 	Vec3<double> oldAngles_, oldLengths_, newAngles_, newLengths_;
@@ -133,6 +154,11 @@ class CellEvent : public UndoEvent
 // Charge Event
 class ChargeEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	ChargeEvent();
+	~ChargeEvent();
+
 	private:
 	// Change data
 	int targetId_;
@@ -150,6 +176,11 @@ class ChargeEvent : public UndoEvent
 // Fix/Free Event
 class FixFreeEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	FixFreeEvent();
+	~FixFreeEvent();
+
 	private:
 	// Change data
 	int targetId_;
@@ -166,6 +197,11 @@ class FixFreeEvent : public UndoEvent
 // Glyph (Creation/Deletion) Event
 class GlyphEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	GlyphEvent();
+	~GlyphEvent();
+	
 	private:
 	// Change data
 	Glyph glyphData_;
@@ -182,6 +218,11 @@ class GlyphEvent : public UndoEvent
 // Hide/Show Event
 class HideEvent : public UndoEvent
 {
+public:
+	// Constructor / Destructor
+	HideEvent();
+	~HideEvent();
+	
 	private:
 	// Change data
 	int targetId_;
@@ -198,6 +239,11 @@ class HideEvent : public UndoEvent
 // Atom ID Shift Event
 class IdShiftEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	IdShiftEvent();
+	~IdShiftEvent();
+	
 	private:
 	// Change data
 	int targetId_, delta_;
@@ -214,6 +260,11 @@ class IdShiftEvent : public UndoEvent
 // Label Event
 class LabelEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	LabelEvent();
+	~LabelEvent();
+	
 	private:
 	// Change data
 	int targetId_, oldLabels_, newLabels_;
@@ -230,6 +281,11 @@ class LabelEvent : public UndoEvent
 // Measurement (Creation/Deletion) Event
 class MeasurementEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	MeasurementEvent();
+	~MeasurementEvent();
+	
 	private:
 	// Change data
 	Measurement::MeasurementType type_;
@@ -247,6 +303,11 @@ class MeasurementEvent : public UndoEvent
 // Model Rename Event
 class ModelRenameEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	ModelRenameEvent();
+	~ModelRenameEvent();
+	
 	private:
 	// Change data
 	Dnchar oldName_, newName_;
@@ -263,6 +324,11 @@ class ModelRenameEvent : public UndoEvent
 // Select/Deselect Event
 class SelectEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	SelectEvent();
+	~SelectEvent();	
+
 	private:
 	// Change data
 	int targetId_;
@@ -279,6 +345,11 @@ class SelectEvent : public UndoEvent
 // Atom Translation Event
 class TranslateEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	TranslateEvent();
+	~TranslateEvent();
+	
 	private:
 	// Change data
 	int targetId_;
@@ -296,6 +367,11 @@ class TranslateEvent : public UndoEvent
 // Atom Style Change
 class StyleEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	StyleEvent();
+	~StyleEvent();
+	
 	private:
 	// Change data
 	int targetId_;
@@ -313,6 +389,11 @@ class StyleEvent : public UndoEvent
 // Atom Transmute Change
 class TransmuteEvent : public UndoEvent
 {
+	public:
+	// Constructor / Destructor
+	TransmuteEvent();
+	~TransmuteEvent();
+	
 	private:
 	// Change data
 	int targetId_, oldEl_, newEl_;

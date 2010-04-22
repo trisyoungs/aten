@@ -222,7 +222,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( ptr->angleLabel() );
 			break;
 		case (PreferencesVariable::AtomDetail):
-			rv.set( ptr->atomDetail() );
+			rv.set( (int) ptr->atomDetail() );
 			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -236,7 +236,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::BackgroundColour), 4);
 			break;
 		case (PreferencesVariable::BondDetail):
-			rv.set( ptr->bondDetail() );
+			rv.set( (int) ptr->bondDetail() );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -280,10 +280,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( ptr->depthCue() );
 			break;
 		case (PreferencesVariable::DepthFar):
-			rv.set(ptr->depthFar());
+			rv.set( (int) ptr->depthFar());
 			break;
 		case (PreferencesVariable::DepthNear):
-			rv.set(ptr->depthNear());
+			rv.set( (int) ptr->depthNear());
 			break;
 		case (PreferencesVariable::DistanceLabel):
 			rv.set( ptr->distanceLabel() );
@@ -387,7 +387,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			rv.set( ptr->selectionScale() );
 			break;
 		case (PreferencesVariable::Shininess):
-			rv.set( ptr->shininess() );
+			rv.set( (int) ptr->shininess() );
 			break;
 		case (PreferencesVariable::SpecularColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::SpecularColour)[arrayIndex-1] );

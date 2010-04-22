@@ -544,7 +544,7 @@ void Prefs::setAtomDetail(int n)
 }
 
 // Return the current detail of atom quadrics
-int Prefs::atomDetail()
+GLint Prefs::atomDetail()
 {
 	return atomDetail_;
 }
@@ -556,7 +556,7 @@ void Prefs::setBondDetail(int n)
 }
 
 // Return the current detail of bond quadrics
-int Prefs::bondDetail()
+GLint Prefs::bondDetail()
 {
 	return bondDetail_;
 }

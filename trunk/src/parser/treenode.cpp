@@ -191,7 +191,7 @@ bool TreeNode::checkArguments(const char *arglist, const char *funcname)
 	msg.print(Messenger::Parse, "...argument list is [%s]\n", altargs);
 	char upc;
 	int count = 0, ngroup = -1, repeat = 0;
-	bool optional, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
+	bool optional = FALSE, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
 	VTypes::DataType rtype;
 	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
 	if (*altargs == '_')

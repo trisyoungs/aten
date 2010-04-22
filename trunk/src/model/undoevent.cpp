@@ -33,9 +33,24 @@ UndoEvent::UndoEvent()
 	next = NULL;
 }
 
+// Destructor
+UndoEvent::~UndoEvent()
+{
+}
+
 /*
 // AtomEvent
 */
+
+// Constructor
+AtomEvent::AtomEvent()
+{
+}
+
+// Destructor
+AtomEvent::~AtomEvent()
+{
+}
 
 // Set change 
 void AtomEvent::set(bool creation, Atom *i)
@@ -90,6 +105,16 @@ void AtomEvent::print()
 // Bond Event
 */
 
+// Constructor
+BondEvent::BondEvent()
+{
+}
+
+// Destructor
+BondEvent::~BondEvent()
+{
+}
+
 // Set change 
 void BondEvent::set(bool creation, int id1, int id2, Bond::BondType bondtype)
 {
@@ -135,6 +160,16 @@ void BondEvent::print()
 // BondType Event
 */
 
+// Constructor
+BondTypeEvent::BondTypeEvent()
+{
+}
+
+// Destructor
+BondTypeEvent::~BondTypeEvent()
+{
+}
+
 // Set change 
 void BondTypeEvent::set(int id1, int id2, Bond::BondType oldbondtype, Bond::BondType newbondtype)
 {
@@ -178,6 +213,16 @@ void BondTypeEvent::print()
 /*
 // Cell Event
 */
+
+// Constructor
+CellEvent::CellEvent()
+{
+}
+
+// Destructor
+CellEvent::~CellEvent()
+{
+}
 
 // Set change 
 void CellEvent::set(Vec3<double> oldlengths, Vec3<double> oldangles, Vec3<double> newlengths, Vec3<double> newangles, bool ohs, bool nhs)
@@ -223,6 +268,16 @@ void CellEvent::print()
 // Charge Event
 */
 
+// Constructor
+ChargeEvent::ChargeEvent()
+{
+}
+
+// Destructor
+ChargeEvent::~ChargeEvent()
+{
+}
+
 // Set change 
 void ChargeEvent::set(int id, double oldcharge, double newcharge)
 {
@@ -264,6 +319,16 @@ void ChargeEvent::print()
 // Glyph Event
 */
 
+// Constructor
+GlyphEvent::GlyphEvent()
+{
+}
+
+// Destructor
+GlyphEvent::~GlyphEvent()
+{
+}
+
 // Set change 
 void GlyphEvent::set(bool creation, Glyph *g)
 {
@@ -288,6 +353,16 @@ void GlyphEvent::print()
 /*
 // Fix/Free Event
 */
+
+// Constructor
+FixFreeEvent::FixFreeEvent()
+{
+}
+
+// Destructor
+FixFreeEvent::~FixFreeEvent()
+{
+}
 
 // Set change 
 void FixFreeEvent::set(bool fix, int id)
@@ -329,6 +404,16 @@ void FixFreeEvent::print()
 // Hide Event
 */
 
+// Constructor
+HideEvent::HideEvent()
+{
+}
+
+// Destructor
+HideEvent::~HideEvent()
+{
+}
+
 // Set change 
 void HideEvent::set(bool hide, int id)
 {
@@ -369,6 +454,16 @@ void HideEvent::print()
 // IdShift Event
 */
 
+// Constructor
+IdShiftEvent::IdShiftEvent()
+{
+}
+
+// Destructor
+IdShiftEvent::~IdShiftEvent()
+{
+}
+
 // Set change 
 void IdShiftEvent::set(int id, int delta)
 {
@@ -407,6 +502,16 @@ void IdShiftEvent::print()
 /*
 // Label Event
 */
+
+// Constructor
+LabelEvent::LabelEvent()
+{
+}
+
+// Destructor
+LabelEvent::~LabelEvent()
+{
+}
 
 // Set change 
 void LabelEvent::set(int id, int oldlabels, int newlabels)
@@ -448,6 +553,16 @@ void LabelEvent::print()
 /*
 // Measurement Event
 */
+
+// Constructor
+MeasurementEvent::MeasurementEvent()
+{
+}
+
+// Destructor
+MeasurementEvent::~MeasurementEvent()
+{
+}
 
 // Set change 
 void MeasurementEvent::set(bool creation, Measurement::MeasurementType mt, int id1, int id2, int id3, int id4)
@@ -501,6 +616,16 @@ void MeasurementEvent::print()
 // Model Rename Event
 */
 
+// Constructor
+ModelRenameEvent::ModelRenameEvent()
+{
+}
+
+// Destructor
+ModelRenameEvent::~ModelRenameEvent()
+{
+}
+
 // Set change 
 void ModelRenameEvent::set(const char *oldname, const char *newname)
 {
@@ -536,6 +661,16 @@ void ModelRenameEvent::print()
 /*
 // Selection Event
 */
+
+// Constructor
+SelectEvent::SelectEvent()
+{
+}
+
+// Destructor
+SelectEvent::~SelectEvent()
+{
+}
 
 // Set change 
 void SelectEvent::set(bool select, int id)
@@ -577,6 +712,16 @@ void SelectEvent::print()
 // Translate Event
 */
 
+// Constructor
+TranslateEvent::TranslateEvent()
+{
+}
+
+// Destructor
+TranslateEvent::~TranslateEvent()
+{
+}
+
 // Set change 
 void TranslateEvent::set(int id, Vec3<double> delta)
 {
@@ -616,6 +761,16 @@ void TranslateEvent::print()
 /*
 // Style Event
 */
+
+// Constructor
+StyleEvent::StyleEvent()
+{
+}
+
+// Destructor
+StyleEvent::~StyleEvent()
+{
+}
 
 // Set change 
 void StyleEvent::set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle)
@@ -657,6 +812,16 @@ void StyleEvent::print()
 /*
 // Transmute Event
 */
+
+// Constructor
+TransmuteEvent::TransmuteEvent()
+{
+}
+
+// Destructor
+TransmuteEvent::~TransmuteEvent()
+{
+}
 
 // Set change 
 void TransmuteEvent::set(int id, int oldel, int newel)
