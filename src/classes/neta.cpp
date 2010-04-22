@@ -307,6 +307,11 @@ NetaNode::NetaNode()
 	nextNode = NULL;
 }
 
+//Destructor
+NetaNode::~NetaNode()
+{
+}
+
 // Return node type
 NetaNode::NetaNodeType NetaNode::nodeType()
 {
@@ -373,6 +378,11 @@ NetaContextNode::NetaContextNode()
 	linearNeta_ = NULL;
 }
 
+//Destructor
+NetaContextNode::~NetaContextNode()
+{
+}
+
 // Set repeat specifier
 void NetaContextNode::setRepeat(int n)
 {
@@ -424,6 +434,12 @@ NetaLogicNode::NetaLogicNode(Neta::NetaLogicType nt, NetaNode *arg1, NetaNode *a
 	argument1_ = arg1;
 	argument2_ = arg2;
 };
+
+//Destructor
+NetaLogicNode::~NetaLogicNode()
+{
+}
+
 
 // Validation function (virtual)
 int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
@@ -533,6 +549,11 @@ NetaBoundNode::NetaBoundNode()
 {
 	// Private variables
 	nodeType_ = NetaNode::BoundNode;
+}
+
+//Destructor
+NetaBoundNode::~NetaBoundNode()
+{
 }
 
 // Print node contents
@@ -802,6 +823,11 @@ NetaKeywordNode::NetaKeywordNode(Neta::NetaKeyword nk)
 	nodeType_ = NetaNode::KeywordNode;
 }
 
+//Destructor
+NetaKeywordNode::~NetaKeywordNode()
+{
+}
+
 // Validation function (virtual)
 int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
 {
@@ -900,6 +926,11 @@ NetaGeometryNode::NetaGeometryNode(Atom::AtomGeometry ag)
 	nodeType_ = NetaNode::GeometryNode;
 }
 
+//Destructor
+NetaGeometryNode::~NetaGeometryNode()
+{
+}
+
 // Validation function (virtual)
 int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
 {
@@ -963,6 +994,11 @@ NetaValueNode::NetaValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, 
 	netaComparison_ = nvc;
 	value_ = value;
 	nodeType_ = NetaNode::ValueNode;
+}
+
+//Destructor
+NetaValueNode::~NetaValueNode()
+{
 }
 
 // Validation function (virtual)
@@ -1071,6 +1107,11 @@ NetaRootNode::NetaRootNode()
 	nodeType_ = NetaNode::RootNode;
 }
 
+//Destructor
+NetaRootNode::~NetaRootNode()
+{
+}
+
 // Validation function (virtual)
 int NetaRootNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level)
 {
@@ -1125,6 +1166,11 @@ NetaRingNode::NetaRingNode()
 {
 	// Private variables
 	nodeType_ = NetaNode::RingNode;
+}
+
+//Destructor
+NetaRingNode::~NetaRingNode()
+{
 }
 
 // Retrieve current ring under consideration
@@ -1269,6 +1315,11 @@ NetaChainNode::NetaChainNode()
 {
 	// Private variables
 	nodeType_ = NetaNode::ChainNode;
+}
+
+//Destructor
+NetaChainNode::~NetaChainNode()
+{
 }
 
 // Private (recursive) scoring function

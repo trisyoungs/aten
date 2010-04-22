@@ -34,8 +34,9 @@ class Calculable
 	// Calculable Quantity
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	Calculable();
+	virtual ~Calculable();
 	// List pointers
 	Calculable *prev, *next;
 

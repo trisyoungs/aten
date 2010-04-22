@@ -113,9 +113,9 @@ class Canvas
 	// Set the internal name of the canvas
 	void setName(const char *s);
 	// Return the current height of the drawing area
-	int height();
+	GLsizei height();
 	// Return the current width of the drawing area
-	int width();
+	GLsizei width();
 	// Return whether the canvas is currently drawing
 	bool isDrawing();
 	// Return if the canvas is valid

@@ -200,7 +200,7 @@ bool Tree::execute(ReturnValue &rv)
 	msg.enter("Tree::execute");
 	bool result = FALSE;
 	rv.reset();
-	ElementMap::ZMapType zm;
+	ElementMap::ZMapType zm = ElementMap::nZMapTypes;
 	acceptedFail_ = Command::NoFunction;
 	// Perform any preparatory commands related to filter trees
 	if (isFilter())

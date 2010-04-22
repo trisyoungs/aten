@@ -150,6 +150,7 @@ class NetaNode
 	public:
 	// Constructor / Destructor
 	NetaNode();
+	virtual ~NetaNode();
 	// List pointers
 	NetaNode *prev, *next;
 	// Linear node pointers
@@ -194,8 +195,9 @@ class NetaNode
 class NetaContextNode : public NetaNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaContextNode();
+	~NetaContextNode();
 
 	protected:
 	// Repetition specifier
@@ -226,9 +228,10 @@ class NetaContextNode : public NetaNode
 class NetaLogicNode : public NetaNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaLogicNode(Neta::NetaLogicType nt, NetaNode *arg1, NetaNode *arg2);
-
+	~NetaLogicNode();
+	
 	private:
 	// Logic type
 	Neta::NetaLogicType netaLogic_;
@@ -250,8 +253,9 @@ class NetaLogicNode : public NetaNode
 class NetaBoundNode : public NetaContextNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaBoundNode();
+	~NetaBoundNode();
 
 	private:
 	// List of elements/types that the current context atom may be
@@ -282,9 +286,10 @@ class NetaBoundNode : public NetaContextNode
 class NetaKeywordNode : public NetaNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaKeywordNode(Neta::NetaKeyword nv);
-
+	~NetaKeywordNode();
+	
 	private:
 	// Keyword
 	Neta::NetaKeyword netaKeyword_;
@@ -304,9 +309,10 @@ class NetaKeywordNode : public NetaNode
 class NetaGeometryNode : public NetaNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaGeometryNode(Atom::AtomGeometry ag);
-
+	~NetaGeometryNode();
+	
 	private:
 	// Keyword
 	Atom::AtomGeometry geometry_;
@@ -326,9 +332,10 @@ class NetaGeometryNode : public NetaNode
 class NetaValueNode : public NetaNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
-
+	~NetaValueNode();
+	
 	private:
 	// Value to check
 	Neta::NetaValue netaValue_;
@@ -352,9 +359,10 @@ class NetaValueNode : public NetaNode
 class NetaRootNode : public NetaContextNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaRootNode();
-
+	~NetaRootNode();
+	
 	public:
 	// Validation function (virtual)
 	int score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int> *rings, NetaContextNode *context, Atom *prevTarget, int level);
@@ -370,8 +378,9 @@ class NetaRootNode : public NetaContextNode
 class NetaRingNode : public NetaContextNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaRingNode();
+	~NetaRingNode();
 
 	private:
 	// Current ring under consideration
@@ -394,8 +403,9 @@ class NetaRingNode : public NetaContextNode
 class NetaChainNode : public NetaContextNode
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	NetaChainNode();
+	~NetaChainNode();
 
 	private:
 	// Current chain of matched atoms

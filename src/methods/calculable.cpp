@@ -29,6 +29,11 @@ Calculable::Calculable()
 	next = NULL;
 }
 
+// Destructor
+Calculable::~Calculable()
+{
+}
+
 // Set identifiable name of the quantity
 void Calculable::setName(const char *s)
 {
