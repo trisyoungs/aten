@@ -121,17 +121,13 @@ class Canvas
 	// Return if the canvas is valid
 	bool isValid();
 	// Set the validity of the canvas
-	void setValid(bool);
+	void setValid(bool valid);
 	// Set up widget for OpenGL drawing
 	bool setWidget(TCanvas*);
 	// Update Canvas
 	void postRedisplay();
-	// Called when context is initialised and ready
-	void realize();
 	// Called when context has changed size etc.
 	void configure(int w, int h);
-	// Called when context needs to be redrawn
-	void expose();
 	// Enable rendering
 	void enableDrawing();
 	// Disable rendering
