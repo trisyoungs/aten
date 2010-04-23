@@ -143,26 +143,8 @@ bool Canvas::setWidget(TCanvas *w)
 	return TRUE;
 }
 
-// Widget realize
-void Canvas::realize()
-{
-	// Sets the canvas to use a widget for output.
-	msg.enter("Canvas::realize");
-	valid_ = TRUE;
-	initGl();
-	msg.exit("Canvas::realize");
-}
-
 // Invalidate
 void Canvas::postRedisplay()
-{
-	if (!valid_) return;
-	contextWidget_->updateGL();
-	if (prefs.manualSwapBuffers()) contextWidget_->swapBuffers();
-}
-
-// Widget Expose
-void Canvas::expose()
 {
 	if (!valid_) return;
 	contextWidget_->updateGL();
@@ -223,6 +205,7 @@ Model *Canvas::displayModel()
 // Set GL options
 void Canvas::initGl()
 {
+	if (!valid_) printf("Not valid in initgl, returning.....\n");
 	if (!valid_) return;
 	msg.enter("Canvas::initGl");
 	if (beginGl())

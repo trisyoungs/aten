@@ -44,11 +44,19 @@ void TCanvas::setCanvas(Canvas *wc)
 	canvas_ = wc;
 }
 
-// Set the rendering source to the supplied model (cancels useCurrentModel_ if it is enabled)
+// Set the rendering source to the supplied model (uses useCurrentModel_ ifa NULL pointer is supplied)
 void TCanvas::setRenderSource(Model *source)
 {
-	useCurrentModel_ = FALSE;
-	renderSource_ = source;
+	if (source == NULL)
+	{
+		useCurrentModel_ = TRUE;
+		renderSource_ = NULL ;
+	}
+	else
+	{
+		useCurrentModel_ = FALSE;
+		renderSource_ = source;
+	}
 }
 
 // Probe features
@@ -72,9 +80,13 @@ void TCanvas::probeFeatures()
 
 void TCanvas::initializeGL()
 {
-	// Call the realize method of the associated canvas_.
-	if (canvas_ != NULL) canvas_->realize();
-	else printf("NO CANVAS SET INIT\n");
+	// Initialize GL
+	if (canvas_ != NULL)
+	{
+		canvas_->setValid(TRUE);
+		canvas_->initGl();
+	}
+	else printf("NO CANVAS SET IN TCANVAS::INITIALIZEGL!!!\n");
 }
 
 void TCanvas::paintGL()

@@ -181,10 +181,10 @@ class GuiQt
 	// Canvas
 	*/
 	public:
-	// Main view Widget and offscreen widget
-	TCanvas *mainWidget, *offscreenWidget;
-	// Main view canvas and offscreen canvas
-	Canvas mainView, offscreenView;
+	// Main view Widget
+	TCanvas *mainWidget;
+	// Main view canvas
+	Canvas mainView;
 	// Update context menu
 	void updateContextMenu();
 	// Call the atompopup menu
