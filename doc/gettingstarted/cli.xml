@@ -284,6 +284,11 @@ bob@pc:~> aten --map 'CX=C,N_=P'
 		<section id="cli.switches.groups.n"><title>N</title>
 			
 			<variablelist>
+				<varlistentry id="cli.switches.n">
+					<term><indexterm><primary>command line switches</primary><secondary>-n</secondary></indexterm>
+						-n</term>
+					<listitem><para>Create a new, empty model.</para></listitem>
+				</varlistentry>
 				<varlistentry id="cli.switches.nobond">
 					<term><indexterm><primary>command line switches</primary><secondary>--nobond</secondary></indexterm>
 						--nobond</term>
@@ -299,10 +304,15 @@ bob@pc:~> aten --map 'CX=C,N_=P'
 						--nofold</term>
 					<listitem><para>Prevent initial folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, overriding the use of the <link linkend="command.ref.fold">fold</link> command in the corresponding filters.</para></listitem>
 				</varlistentry>
-				<varlistentry id="cli.switches.n">
-					<term><indexterm><primary>command line switches</primary><secondary>-n</secondary></indexterm>
-						-n</term>
-					<listitem><para>Create a new, empty model.</para></listitem>
+				<varlistentry id="cli.switches.nofragments">
+					<term><indexterm><primary>command line switches</primary><secondary>--nofragments</secondary></indexterm>
+						--nofragments</term>
+					<listitem><para>Prevent loading of fragments from both standard ans user locations on startup.</para></listitem>
+				</varlistentry>
+				<varlistentry id="cli.switches.nofragmenticons">
+					<term><indexterm><primary>command line switches</primary><secondary>--nofragmenticons</secondary></indexterm>
+						--nofragmenticons</term>
+					<listitem><para>Prevent generation of fragment icons, used in the <link linkend="gui.toolwindows.fragment">Fragment Library Window</link>.</para></listitem>
 				</varlistentry>
 				<varlistentry id="cli.switches.nopack">
 					<term><indexterm><primary>command line switches</primary><secondary>--nopack</secondary></indexterm>

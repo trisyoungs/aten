@@ -202,8 +202,10 @@ class Canvas
 	int displayFrameId_;
 
 	public:
-	// Configure OpenGL
+	// Configure OpenGL, generating display lists
 	void initGl();
+	// Set OpenGL options ready for drawing
+	void prepGl();
 	// Begin construct for any OpenGL commands
 	bool beginGl();
 	// Finish OpenGL commands
