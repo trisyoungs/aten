@@ -533,6 +533,10 @@ class Prefs
 	bool forceRhombohedral_;
 	// Display warning for version 1.5 (r1056) newness
 	bool warning1056_;
+	// Whether to load fragments on startup
+	bool loadFragments_;
+	// Whether to generate icons for loaded fragments
+	bool generateFragmentIcons_;
 
 	public:
 	// Set the model update frequency
@@ -593,6 +597,14 @@ class Prefs
 	bool warning1056();
 	// Set whether to display warning for version 1.5 (r1056) newness
 	void setWarning1056(bool b);
+	// Whether to load fragments on startup
+	bool loadFragments();
+	// Set whether to load fragments on startup
+	void setLoadFragments(bool b);
+	// Whether to generate icons for loaded fragments
+	bool generateFragmentIcons();
+	// Set whether to generate icons for loaded fragments
+	void setGenerateFragmentIcons(bool b);
 
 
 	/*

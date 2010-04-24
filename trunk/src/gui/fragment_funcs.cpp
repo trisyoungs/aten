@@ -155,6 +155,11 @@ void AtenFragment::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, 
 	}
 }
 
+void AtenFragment::on_FragmentTree_doubleClicked(const QModelIndex &index)
+{
+	gui.mainWindow->ui.actionDrawFragment->trigger();
+}
+
 void AtenFragment::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
 {
 	if (current == NULL) currentFragment_ = NULL;
@@ -171,6 +176,12 @@ void AtenFragment::on_FragmentTable_currentItemChanged(QTableWidgetItem *current
 		}
 	}
 }
+
+void AtenFragment::on_FragmentTable_doubleClicked(const QModelIndex &index)
+{
+	gui.mainWindow->ui.actionDrawFragment->trigger();
+}
+
 
 void AtenFragment::on_FragmentFilterEdit_textChanged(QString &text)
 {

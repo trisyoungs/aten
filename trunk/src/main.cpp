@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 	aten.openFilters();
 
 	// Load in fragments
-	aten.openFragments();
+	if (prefs.loadFragments()) aten.openFragments();
 
 	// Load in user preferences
 	char filename[512];

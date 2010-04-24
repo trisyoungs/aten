@@ -205,7 +205,6 @@ Model *Canvas::displayModel()
 // Set GL options
 void Canvas::initGl()
 {
-	if (!valid_) printf("Not valid in initgl, returning.....\n");
 	if (!valid_) return;
 	msg.enter("Canvas::initGl");
 	if (beginGl())
@@ -224,7 +223,18 @@ void Canvas::initGl()
 			for (int n=1; n<Canvas::nGlobs; n++) globList_[n] = globList_[Canvas::StickAtomGlob]+n;
 		}
 		createLists();
+		endGl();
+	}
+	else printf("Failed to set-up OpenGL on canvas.\n");
+	msg.exit("Canvas::initGl");
+}
 
+// Set OpenGL options ready for drawing
+void Canvas::prepGl()
+{
+	msg.enter("Canvas::prepGl");
+	if (beginGl())
+	{
 		// Clear colour
 		GLfloat col[4];
 		prefs.copyColour(Prefs::BackgroundColour, col);
@@ -290,8 +300,8 @@ void Canvas::initGl()
 		// End Test
 		endGl();
 	}
-	else printf("Failed to set-up OpenGL on canvas.\n");
-	msg.exit("Canvas::initGl");
+	else printf("Failed to prepare OpenGL on canvas.\n");
+	msg.exit("Canvas::prepGl");
 }
 
 // Create display lists

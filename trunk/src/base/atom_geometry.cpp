@@ -72,7 +72,7 @@ Vec3<double> Atom::twoBondVector(Bond *b1, Bond *b2, double angle)
 Vec3<double> Atom::threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, Atom::AtomGeometry expgeom)
 {
 	// Work out the three angles between the bonds
-	Vec3<double> result;
+	Vec3<double> result, v1;
 	Atom *a1 = b1->partner(this);
 	Atom *a2 = b2->partner(this);
 	Atom *a3 = b3->partner(this);
@@ -96,7 +96,14 @@ Vec3<double> Atom::threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, A
 	}
 	else
 	{
-		result = parent_->cell()->mimd(a1,this) + parent_->cell()->mimd(a2,this) + parent_->cell()->mimd(a3,this);
+		result = parent_->cell()->mimd(a1,this);
+		result.normalise();
+		v1 = parent_->cell()->mimd(a2,this);
+		v1.normalise();
+		result += v1;
+		v1 = parent_->cell()->mimd(a3,this);
+		v1.normalise();
+		result += v1;
 		result *= -1.0;
 		result.normalise();
 	}
@@ -157,6 +164,23 @@ Vec3<double> Atom::nextBondVector()
 				case (3):
 					// Still allow one more bond, even though it would give a charged nitrogen
 					if (nsingle == 3) vector = threeBondVector(bonds_[0]->item, bonds_[1]->item, bonds_[2]->item, 109.5, Atom::TetrahedralGeometry);
+					break;
+			}
+			break;
+		// Oxygen
+		case (8):
+			switch (nBonds())
+			{
+				case (0):
+					vector.set(1.0,0.0,0.0);
+					break;
+				case (1):
+					if (ndouble == 1) vector = oneBondVector(bonds()->item, 120.0);
+					else vector = oneBondVector(bonds()->item, 109.5);
+					break;
+				case (2):
+					if (ndouble == 1) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 120.0);
+					else if (nsingle == 2) vector = twoBondVector(bonds_[0]->item, bonds_[1]->item, 109.5);
 					break;
 			}
 			break;

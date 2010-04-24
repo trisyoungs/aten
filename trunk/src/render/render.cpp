@@ -79,6 +79,11 @@ void Canvas::renderScene(Model *source)
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 
+	// Prep for drawing
+	msg.print(Messenger::GL, " --> Preparing lights, shading, aliasing, etc.\n");
+	prepGl();
+	checkGlError();
+
 	// Clear colour and depth buffers
 	checkGlError();
 	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");

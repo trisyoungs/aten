@@ -264,6 +264,8 @@ Prefs::Prefs()
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
 	warning1056_ = TRUE;
+	loadFragments_ = TRUE;
+	generateFragmentIcons_ = TRUE;
 
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
@@ -1275,6 +1277,30 @@ bool Prefs::warning1056()
 void Prefs::setWarning1056(bool b)
 {
 	warning1056_ = b;
+}
+
+// Whether to load fragments on startup
+bool Prefs::loadFragments()
+{
+	return loadFragments_;
+}
+
+// Set whether to load fragments on startup
+void Prefs::setLoadFragments(bool b)
+{
+	loadFragments_ = b;
+}
+
+// Whether to generate icons for loaded fragments
+bool Prefs::generateFragmentIcons()
+{
+	return generateFragmentIcons_;
+}
+
+// Set whether to generate icons for loaded fragments
+void Prefs::setGenerateFragmentIcons(bool b)
+{
+	generateFragmentIcons_ = b;
 }
 
 /*
