@@ -29,6 +29,7 @@
 #include "model/model.h"
 #include "model/fragment.h"
 #include "main/aten.h"
+#include <string.h>
 
 // Constructor
 AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
