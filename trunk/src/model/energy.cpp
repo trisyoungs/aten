@@ -49,7 +49,7 @@ double Model::totalEnergy(Model *srcmodel, bool &success)
 		{
 			success = FALSE;
 			msg.exit("Model::totalEnergy");
-			return 0.0
+			return 0.0;
 		}
 	}
 	// Prepare Ewald (if necessary)

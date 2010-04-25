@@ -51,6 +51,50 @@ filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extensio
 	finalisemodel();
 }
 
+filter(type="exportmodel",name="Protein Databank PDB gromacs compatible", extension="pdb", glob="*.pdb", nickname="pdb", id=13)
+{
+	# Variable declaration
+	model m = aten.frame;
+	pattern p;
+	atom i;
+	int k,j,l,n;
+
+	#should make sure there is at least one pattern here
+	if (p = m.patterns)
+	{
+	printf("a pattern exists\n");
+	}
+	else
+	{
+	printf("noone here but us chickens\n");
+	p = newpattern("NUN", 1, m.natoms);
+	}
+
+	# Loop over patterns (molecule types)
+	k=0;
+	writeline("REMARK   Aten-created PDB file for compatibility with Gromacs rtp output filter");
+	writelinef("REMARK   Model %s\n",m.name);
+
+	i=m.atoms;
+	
+	# Loop over patterns (molecule types)
+	for (p = m.patterns; p; ++p)
+	{
+
+	k++;
+
+		for(j=1; j<= p.nmols; ++j) {
+
+			for (l=1; l<=p.nmolatoms; ++l) {
+			writelinef("ATOM  %-4i %3s%-2i MOL%i      %i   %6.3f  %6.3f  %6.3f  1.00  0.00           %4s\n",i.id,i.symbol,l,k,k,i.rx,i.ry,i.rz,i.symbol);
+			++i;
+			}
+		}	
+	
+	}
+	writeline("TER");
+}
+
 filter(type="importtrajectory",name="Multiple Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", id=13)
 {
 	int readheader()
@@ -91,7 +135,6 @@ filter(type="importtrajectory",name="Multiple Protein Databank PDB", nickname="p
 			}
 			else if (keyword == "END") return TRUE;
 		}
-	printf("ljsadflkjdskl\n");
 	}
 }
 
