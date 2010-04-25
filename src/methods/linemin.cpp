@@ -46,7 +46,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	msg.enter("LineMinimiser::lineMinimise");
 	double enew, ecurrent, bound[3], energy[3], newmin, a, b, b10, b12;
 	Model destmodel;
-	bool failed, leftbound;
+	bool failed, leftbound, success;
 
 	// Brent-style line minimiser with parabolic interpolation and Golden Search backup.
 	// We assume that the energy expression for the source model is correct.
@@ -59,13 +59,18 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 
 	// Set initial bounding values
 	bound[1] = 0.0;
-	energy[1] = srcmodel->totalEnergy(&destmodel);
+	energy[1] = srcmodel->totalEnergy(&destmodel, success);
+	if (!success)
+	{
+		msg.exit("LineMinimiser::lineMinimise");
+		return 0.0;
+	}
 	bound[0] = 0.25;
 	gradientMove(srcmodel, &destmodel, bound[0]);
-	energy[0] = srcmodel->totalEnergy(&destmodel);
+	energy[0] = srcmodel->totalEnergy(&destmodel, success);
 	bound[2] = 0.5;
 	gradientMove(srcmodel, &destmodel, bound[2]);
-	energy[2] = srcmodel->totalEnergy(&destmodel);
+	energy[2] = srcmodel->totalEnergy(&destmodel, success);
 
 	// Sort w.r.t. energy so that the minimum is in the central point.
 	if (energy[1] > energy[0])
@@ -108,7 +113,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 
 		// Compute energy of new point and check that it went down...
 		gradientMove(srcmodel, &destmodel, newmin);
-		enew = srcmodel->totalEnergy(&destmodel);
+		enew = srcmodel->totalEnergy(&destmodel, success);
 
 // 		printf("PARABOLIC point gives energy %f @ %f\n",enew,newmin);
 		if (enew < energy[1])
@@ -151,7 +156,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 				if (leftbound) newmin = bound[1] + 0.3819660 * (bound[1] - bound[0]);
 				else newmin = bound[1] + 0.3819660 * (bound[2] - bound[1]);
 				gradientMove(srcmodel, &destmodel, newmin);
-				enew = srcmodel->totalEnergy(&destmodel);
+				enew = srcmodel->totalEnergy(&destmodel, success);
 				//printf("GOLD point is %f @ %f \n",enew,newmin);
 				if (enew < energy[1])
 				{

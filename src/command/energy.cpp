@@ -73,10 +73,11 @@ bool Command::function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
+	bool success;
 	if (obj.m->createExpression()) return FALSE;
-	energy = obj.m->totalEnergy(obj.rs);
+	energy = obj.m->totalEnergy(obj.rs, success);
 	rv.set(energy);
-	return TRUE;
+	return success;
 }
 
 // Calculate energy of current model contents ('modelenergy')
@@ -84,10 +85,11 @@ bool Command::function_ModelEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
+	bool success;
 	if (!obj.m->createExpression()) return FALSE;
-	energy = obj.m->totalEnergy(obj.m);
+	energy = obj.m->totalEnergy(obj.m, success);
 	rv.set(energy);
-	return TRUE;
+	return success;
 }
 
 // Print out electrostatic decomposition matrix ('printelec')

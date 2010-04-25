@@ -53,7 +53,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	msg.enter("MethodSd::minimise");
 	int cycle;
 	double oldEnergy, newEnergy, deltaEnergy, oldRms, newRms, deltaRms;
-	bool lineDone, converged;
+	bool lineDone, converged, success;
 	Dnchar etatext;
 
 	/*
@@ -67,7 +67,13 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	}
 	
 	// Calculate initial reference energy and forces
-	newEnergy = srcmodel->totalEnergy(srcmodel);
+	newEnergy = srcmodel->totalEnergy(srcmodel, success);
+	if (!success)
+	{
+	        msg.exit("MethodSd::minimise");
+	        return;
+	}
+
 	srcmodel->calculateForces(srcmodel);
 	oldEnergy = 0.0;
 	deltaEnergy = 100.0;
@@ -116,7 +122,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
 	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);
 	msg.print("Final energy:\n");
-	newEnergy = srcmodel->totalEnergy(srcmodel);
+	newEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 // 	srcmodel->calculateForces(srcmodel);

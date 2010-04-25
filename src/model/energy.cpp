@@ -26,13 +26,14 @@
 #include "classes/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)
-double Model::totalEnergy(Model *srcmodel)
+double Model::totalEnergy(Model *srcmodel, bool &success)
 {
 	msg.enter("Model::totalEnergy");
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
 		msg.print("Model::totalEnergy - No valid energy expression defined for model.\n");
+		success = FALSE;
 		msg.exit("Model::totalEnergy");
 		return 0.0;
 	}
@@ -42,7 +43,15 @@ double Model::totalEnergy(Model *srcmodel)
 	Pattern *p, *p2;
 	p = patterns_.first();
 	// Calculate VDW correction
-	if (prefs.calculateVdw() && (cell_.type() != Cell::NoCell)) p->vdwCorrectEnergy(&cell_, &energy);
+	if (prefs.calculateVdw() && (cell_.type() != Cell::NoCell))
+	{
+		if (!p->vdwCorrectEnergy(&cell_, &energy))
+		{
+			success = FALSE;
+			msg.exit("Model::totalEnergy");
+			return 0.0
+		}
+	}
 	// Prepare Ewald (if necessary)
 	Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
@@ -63,9 +72,21 @@ double Model::totalEnergy(Model *srcmodel)
 		// Van der Waals Interactions
 		if (prefs.calculateVdw())
 		{
-			p->vdwIntraPatternEnergy(srcmodel, &energy);
+			if (!p->vdwIntraPatternEnergy(srcmodel, &energy))
+			{
+				success = FALSE;
+				msg.exit("Model::totalEnergy");
+				return 0.0;
+			}
 			for (p2 = p; p2 != NULL; p2 = p2->next)
-				p->vdwInterPatternEnergy(srcmodel, p2, &energy);
+			{
+				if (!p->vdwInterPatternEnergy(srcmodel, p2, &energy))
+				{
+					success = FALSE;
+					msg.exit("Model::totalEnergy");
+					return 0.0;
+				}
+			}
 		}
 		// Electrostatic Interactions
 		if (prefs.calculateElec())
@@ -92,12 +113,13 @@ double Model::totalEnergy(Model *srcmodel)
 		p = p->next;
 	}
 	energy.totalise();
+	success = TRUE;
 	msg.exit("Model::totalEnergy");
 	return energy.total();
 }
 
 // Calculate total interaction energy of specified molecule with remainder of model
-double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
+double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule, bool &success)
 {
 	msg.enter("Model::moleculeEnergy");
 	// Check the expression validity
@@ -105,6 +127,7 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	{
 		msg.print("Model::moleculeEnergy - No valid energy expression defined for model.\n");
 		msg.exit("Model::moleculeEnergy");
+		success = FALSE;
 		return 0.0;
 	}
 	// Clear the energy store
@@ -120,7 +143,14 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	}
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	for (p = patterns_.first(); p != NULL; p = p->next)
-		molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule);
+	{
+		if (!molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule))
+		{
+			success = FALSE;
+			msg.exit("Model::moleculeEnergy");
+			return 0.0;
+		}
+	}
 	// Electrostatic Interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	if (prefs.calculateElec())
 	{
@@ -141,12 +171,13 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 		}
 	}
 	energy.totalise();
+	success = TRUE;
 	msg.exit("Model::moleculeEnergy");
 	return energy.total();
 }
 
 // Calculate forces from specified config
-void Model::calculateForces(Model *srcmodel)
+bool Model::calculateForces(Model *srcmodel)
 {
 	// Calculate the forces for the atoms of 'srcmodel' from the expression defined in the *this model
 	msg.enter("Model::calculateForces");
@@ -155,7 +186,7 @@ void Model::calculateForces(Model *srcmodel)
 	{
 		msg.print("calculateForces : No valid energy expression defined for model.\n");
 		msg.exit("Model::calculateForces");
-		return;
+		return FALSE;
 	}
 	srcmodel->zeroForces();
 	// Cycle through patterns, calculate the intrapattern forces for each
@@ -181,8 +212,19 @@ void Model::calculateForces(Model *srcmodel)
 		// VDW
 		if (prefs.calculateVdw())
 		{
-			p->vdwIntraPatternForces(srcmodel);
-			for (p2 = p; p2 != NULL; p2 = p2->next)	p->vdwInterPatternForces(srcmodel,p2);
+			if (!p->vdwIntraPatternForces(srcmodel))
+			{
+				msg.exit("Model::calculateForces");
+				return FALSE;
+			}
+			for (p2 = p; p2 != NULL; p2 = p2->next)
+			{
+				if (!p->vdwInterPatternForces(srcmodel,p2))
+				{
+				msg.exit("Model::calculateForces");
+				return FALSE;
+				}
+			}
 		}
 		// Electrostatics
 		if (prefs.calculateElec())
@@ -213,5 +255,6 @@ void Model::calculateForces(Model *srcmodel)
 	rmsForce_ /= atoms_.nItems();
 	rmsForce_ = sqrt(rmsForce_);
 	msg.exit("Model::calculateForces");
+	return TRUE;
 }
 

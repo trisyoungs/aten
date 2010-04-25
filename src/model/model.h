@@ -571,11 +571,11 @@ class Model
 	// Storage for energy
 	Energy energy;
 	// Calculate (and return) the total energy of the specified model configuration
-	double totalEnergy(Model *config);
+	double totalEnergy(Model *config, bool &success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
-	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule);
+	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule, bool &success);
 	// Calculate forces in the specified model configuration
-	void calculateForces(Model*);
+	bool calculateForces(Model *config);
 	// Prints out atomic forces
 	void printForces();
 	// Return RMS of last calculated forces

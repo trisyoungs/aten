@@ -344,11 +344,11 @@ class Pattern
 	// Calculate torsion energy (including impropers) of pattern (or specific molecule)
 	void torsionEnergy(Model*, Energy*, int molecule = -1);
 	// Calculate intrapattern Vdw energy (or for specific molecule)
-	void vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	bool vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
 	// Calculate interpattern Vdw energy (or for specific molecule)
-	void vdwInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	bool vdwInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
 	// Calculate Vdw correction energy for pattern
-	void vdwCorrectEnergy(Cell*, Energy*);
+	bool vdwCorrectEnergy(Cell*, Energy*);
 	// Calculate intrapattern coulomb energy (or for specific molecule)
 	void coulombIntraPatternEnergy(Model*, Energy*, int molecule = -1);
 	// Calculate interpattern coulomb energy (or for specific molecule)
@@ -368,9 +368,9 @@ class Pattern
 	// Calculate torsion forces (including impropers) in pattern
 	void torsionForces(Model*);
 	// Calculate Vdw intrapattern forces
-	void vdwIntraPatternForces(Model*);
+	bool vdwIntraPatternForces(Model*);
 	// Calculate Vdw interpattern forces
-	void vdwInterPatternForces(Model*, Pattern*);
+	bool vdwInterPatternForces(Model*, Pattern*);
 	// Calculate Coulomb intrapattern forces
 	void coulombIntraPatternForces(Model*);
 	// Calculate Coulomb interpattern forces
