@@ -180,6 +180,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	Vec3<double> v;
 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
 	Dnchar etatext;
+	bool success;
 
 	/*
 	// Prepare the calculation
@@ -203,7 +204,12 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	msg.print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
-	ecurrent = srcmodel->totalEnergy(srcmodel);
+	ecurrent = srcmodel->totalEnergy(srcmodel, success);
+	if (!success)
+	{
+		msg.exit("MonteCarlo::minimise");
+		return FALSE;
+	}
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.elec();
 	elast = ecurrent;
@@ -244,7 +250,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				if (p->nMolecules() != 0) bakmodel.copyAtomData(srcmodel, Atom::PositionData, p->offset(mol),p->nAtoms());
 
 				// Calculate reference energy (before move)
-				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol);
+				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol, success);
 				referenceVdwEnergy = srcmodel->energy.vdw();
 				referenceElecEnergy = srcmodel->energy.elec();
 
@@ -270,7 +276,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				}
 
 				// Get the energy of this new configuration.
-				enew = srcmodel->moleculeEnergy(srcmodel, p, mol);
+				enew = srcmodel->moleculeEnergy(srcmodel, p, mol, success);
 
 				// If the energy has gone up, undo the move.
 				deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
@@ -320,7 +326,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	if (gui.exists()) gui.progressTerminate();
 
 	// Print final energy
-	enew = srcmodel->totalEnergy(srcmodel);
+	enew = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 
 	// Finalise
@@ -343,7 +349,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy = 0.0, referenceVdwEnergy = 0.0, referenceElecEnergy = 0.0;
 	double penalty;
-	bool done, endearly = FALSE;
+	bool done, endearly = FALSE, success;
 	Cell *cell;
 	Pattern *p;
 	ComponentRegion *r;
@@ -429,6 +435,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	if (!destmodel->createExpression(TRUE))
 	{
 		msg.print("Couldn't create master expression for destination model.\n");
+		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 
@@ -472,7 +479,12 @@ bool MonteCarlo::disorder(Model *destmodel)
 	msg.print("Beginning Monte Carlo insertion...\n\n");
 	msg.print(" Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
-	ecurrent = destmodel->totalEnergy(destmodel);
+	ecurrent = destmodel->totalEnergy(destmodel, success);
+	if (!success)
+	{
+		msg.exit("MonteCarlo::disorder");
+		return FALSE;
+	}
 	currentVdwEnergy = destmodel->energy.vdw();
 	currentElecEnergy = destmodel->energy.elec();
 
@@ -561,7 +573,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and move
 							mol = csRandomi(patternNMols-1);
-							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
+							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
@@ -579,7 +591,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and rotate
 							mol = csRandomi(patternNMols-1);
-							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
+							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
@@ -592,7 +604,12 @@ bool MonteCarlo::disorder(Model *destmodel)
 					}
 
 					// Get the energy of this new configuration.
-					enew = destmodel->moleculeEnergy(destmodel, p, mol);
+					enew = destmodel->moleculeEnergy(destmodel, p, mol, success);
+					if (!success)
+					{
+						endearly = TRUE;
+						break;
+					}
 					// Add on any penalty value
 					enew += penalty;
 					// If the energy has gone up, undo the move.
@@ -635,9 +652,11 @@ bool MonteCarlo::disorder(Model *destmodel)
 				}
 				// Get acceptance ratio percentages
 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
+				if (endearly) break;
 			}
 			// Check to see if this component has the required number of molecules
 			if (c->nRequested() != p->nMolecules()) done = FALSE;
+			if (endearly) break;
 		}
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
@@ -682,7 +701,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	gui.progressTerminate();
 	
 	// Print out final energy and data
-	enew = destmodel->totalEnergy(destmodel);
+	enew = destmodel->totalEnergy(destmodel, success);
 	destmodel->energy.print();
 	// Print out pattern list info here
 	msg.print("Final populations for model '%s':\n",destmodel->name());

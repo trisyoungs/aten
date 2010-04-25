@@ -336,6 +336,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	Cell newcell;
 	Mat3<double> newaxes;
 	double olde = 0.0, newe;
+	bool success;
 	int n,m;
 	Atom *i;
 	// First, make sure we have a cell and a valid pattern (if using cog)
@@ -363,7 +364,11 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	newcell.set(newaxes);
 	// We need a working configuration (for COG calculations)
 	foldAllAtoms();
-	if (calcenergy) olde = totalEnergy(this);
+	if (calcenergy)
+	{
+		olde = totalEnergy(this, success);
+		if (!success) msg.print("Energy will not be calculated...\n");
+	}
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
 	if (usecog)
@@ -398,9 +403,9 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	}
 
 	// Calculate new energy before leaving...
-	if (calcenergy)
+	if (calcenergy && success)
 	{
-		newe = totalEnergy(this);
+		newe = totalEnergy(this, success);
 		msg.print("Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
 	}
 

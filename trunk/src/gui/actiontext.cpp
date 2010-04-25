@@ -25,7 +25,7 @@
 UserActionText UserActionTexts[] = {
 	{ "", "", "", "", "" },
 	{ "Select", 	"Click or click-drag to select",
-		"toggle (click) or to add to selection (click-drag)",
+		"toggle (left click) or add area to selection (left click-drag) or translate (middle click-drag) or rotate in local frame (right click-drag)",
 		"remove from selection",
 		"" },
 	{ "Select Molecule", "Click atom to select bound fragment",

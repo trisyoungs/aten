@@ -43,7 +43,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	double *g_old;
 	Vec3<double> f;
 	Atom **modelatoms;
-	bool linedone, converged;
+	bool linedone, converged, success;
 	Dnchar etatext;
 
 	/*
@@ -59,7 +59,13 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Calculate initial reference energy and RMS force
 	modelatoms = srcmodel->atomArray();
 	g_old = new double[srcmodel->nAtoms()*3];
-	ecurrent = srcmodel->totalEnergy(srcmodel);
+	ecurrent = srcmodel->totalEnergy(srcmodel, success);
+	if (!success)
+	{
+	        msg.exit("MethodCg::minimise");
+	        return;
+	}
+
 	srcmodel->calculateForces(srcmodel);
 	rmscurrent = srcmodel->rmsForce();
 	srcmodel->energy.print();
@@ -141,7 +147,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	if (converged) msg.print("Conjugate gradient converged in %i steps.\n",cycle+1);
 	else msg.print("Conjugate gradient did not converge within %i steps.\n",nCycles_);
 	msg.print("Final energy:\n");
-	ecurrent = srcmodel->totalEnergy(srcmodel);
+	ecurrent = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);

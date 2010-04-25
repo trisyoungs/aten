@@ -28,9 +28,9 @@ bool Command::function_FrameForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
-	obj.m->calculateForces(obj.rs);
+	bool success = obj.m->calculateForces(obj.rs);
 	rv.reset();
-	return TRUE;
+	return success;
 }
 
 // Calculate atomic forces of model ('modelforces')
@@ -38,9 +38,9 @@ bool Command::function_ModelForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->createExpression()) return FALSE;
-	obj.m->calculateForces(obj.m);
+	bool success = obj.m->calculateForces(obj.m);
 	rv.reset();
-	return TRUE;
+	return success;
 }
 
 // Print forces of model ('printforces')
