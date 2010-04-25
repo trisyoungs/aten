@@ -1,6 +1,6 @@
 Format: 1.0
 Source: aten
-Version: 1.5
+Version: 1.6
 Binary: aten
 Maintainer: Tristan Youngs <tris@projectaten.net>
 Architecture: any
