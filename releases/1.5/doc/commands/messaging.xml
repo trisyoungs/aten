@@ -1,0 +1,83 @@
+<section id="command.groups.messaging"><title>Messaging Commands</title>
+	
+	<para>Output messages from command lists / filters. All commands work like the C printf() command, and accept the same fundamental format specifiers. All output from these messaging commands is directed to either the GUI message box or stdout on the command line.</para>
+	
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="readwrite.xxx">Formatted Output</link> for in-depth explanations on the usage of C-style formatted output</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="command.groups.readwrite">Read/Write commands</link> for commands to read/write from/to files.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.error"><title>error</title>
+		<indexterm><primary>commands</primary><secondary>error</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>error</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Print a message to screen and immediately exit the current command structure / filter.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int err=23;
+error(&quot;Filter failed badly - error = %i.\n&quot;, err);
+		</synopsis>
+		<para>notifies the user that something bad probably happened, provided the error code, and promptly exits.</para>
+	
+	</section>
+	
+	<section id="command.ref.printf"><title>printf</title>
+		<indexterm><primary>commands</primary><secondary>printf</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printf</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Standard printing command.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+printf(&quot;Loading data...\n&quot;);
+		</synopsis>
+		<para>prints the string &quot;Loading data...&quot; to the screen.</para>
+		<synopsis>
+printf(&quot;Number of atoms = %i\n&quot;, natoms);
+		</synopsis>
+		<para>prints the contents of the variable <emphasis>natoms</emphasis> to the screen.</para>
+		
+	</section>
+	
+	<section id="command.ref.verbose"><title>verbose</title>
+		<indexterm><primary>commands</primary><secondary>verbose</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>verbose</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints a message, but only when verbose output is enabled (with the -v command-line switch).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+verbose(&quot;Extra information for you.\n&quot;);
+		</synopsis>
+
+	</section>
+	
+</section>

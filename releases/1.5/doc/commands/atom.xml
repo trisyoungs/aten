@@ -1,0 +1,454 @@
+<section id="command.groups.atom"><title>Atom Commands</title>
+	
+	<para>Define and set properties of atoms.</para>
+
+	<note><title>See also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.groups.building">Building commands</link> for methods to create atoms in the first place.</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+	
+	<section id="command.ref.atomstyle"><title>atomstyle</title>
+		<indexterm><primary>commands</primary><secondary>atomstyle</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<?dbhtml funcsynopsis-style='ansi'?>
+				<funcdef>void <function>atomstyle</function></funcdef>
+				<paramdef>string <parameter>style</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the individual drawing <emphasis>style</emphasis> for the current atom selection, used when the global drawing style is 'individual'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atomstyle(&quot;tube&quot;)
+		</synopsis>
+		<para>sets the current atom selection to be drawn in the 'tube' style.</para>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="enums.drawstyles">Drawing Styles</link> for a list of available styles</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+	
+	</section>
+	
+	<section id="command.ref.currentatom"><title>currentatom</title>
+		<indexterm><primary>commands</primary><secondary>currentatom</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>atom <function>currentatom</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>currentatom</function></funcdef>
+				<paramdef>atom|id <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return a reference to the current atom. If a new atom/id is provided the current atom is set before being returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atom i = getatom(1);
+		</synopsis>
+		<para>makes the first atom in the current model the current atom, and returns a reference to it.</para>
+		
+	</section>
+	
+	<section id="command.ref.fix"><title>fix</title>
+		<indexterm><primary>commands</primary><secondary>fix</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>fix</function></funcdef>
+				<paramdef>atom|id <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Fix the positions of the current atom selection (or individual atom specified) so that they remain in the same position following various methods (e.g. minimisations).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+fix();
+		</synopsis>
+		<para>fixes the positions of all selected atoms.</para>
+		<synopsis>
+for (int n=1; n&lt;=10; ++n) fix(n);
+		</synopsis>
+		<para>fixes the positions of the first 10 atoms in the current model.</para>
+	
+	</section>
+	
+	<section id="command.ref.free"><title>free</title>
+		<indexterm><primary>commands</primary><secondary>free</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>free</function></funcdef>
+				<paramdef>atom|id <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Free the positions of previously fixed atoms in the current selection (or the individual atom specified).</para>
+	
+		<para>For example:</para>
+		<synopsis>
+free(5);
+		</synopsis>
+		<para>allows the fifth atom in the current model to be moved again.</para>
+		
+	</section>
+	
+	<section id="command.ref.getatom"><title>getatom</title>
+		<indexterm><primary>commands</primary><secondary>getatom</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>atom <function>getatom</function></funcdef>
+				<paramdef>atom|id <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return a reference to the atom specified.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+atom i = getatom(3);
+		</synopsis>
+		<para>returns a reference to the third atom in the current model.</para>
+	
+	</section>
+	
+	<section id="command.ref.hide"><title>hide</title>
+		<indexterm><primary>commands</primary><secondary>hide</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>hide</function></funcdef>
+				<paramdef>atom|id <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Hides the current selection of atoms (or the supplied atom) from view, meaning they cannot be selected by direct clicking/highlighting in the GUI. They are still subject to transformation if they are selected by other means.</para>
+	
+	</section>
+	
+	<section id="command.ref.setcharge"><title>setcharge</title>
+		<indexterm><primary>commands</primary><secondary>setcharge</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setcharge</function></funcdef>
+				<paramdef>double <parameter>q</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setcharge</function></funcdef>
+				<paramdef>double <parameter>q</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the atomic charge of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setcoords"><title>setcoords</title>
+		<indexterm><primary>commands</primary><secondary>setcoords</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setcoords</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setcoords</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the coordinates of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setelement"><title>setelement</title>
+		<indexterm><primary>commands</primary><secondary>setelement</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setelement</function></funcdef>
+				<paramdef>string|int <parameter>element</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setelement</function></funcdef>
+				<paramdef>string|int <parameter>element</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the element of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setforces"><title>setforces</title>
+		<indexterm><primary>commands</primary><secondary>setforces</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setforces</function></funcdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setforces</function></funcdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the forces of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setfx"><title>setfx</title>
+		<indexterm><primary>commands</primary><secondary>setfx</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setfx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setfx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the x force of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setfy"><title>setfy</title>
+		<indexterm><primary>commands</primary><secondary>setfy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setfy</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setfy</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the y force of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setfz"><title>setfz</title>
+		<indexterm><primary>commands</primary><secondary>setfz</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setfz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setfz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the z force of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setid"><title>setid</title>
+		<indexterm><primary>commands</primary><secondary>setid</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setid</function></funcdef>
+				<paramdef>int <parameter>newid</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setid</function></funcdef>
+				<paramdef>int <parameter>newid</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the temporary ID of the current (or specified) atom, useful for when parsing atoms from a file that are not in any useful order but have an id specified for the purposes of subsequent connectivity definitions, for example. Within filters, once loading is complete the <link linkend="command.ref.finalisemodel">finalisemodel</link> command will reset all atom ids to internal numbering.</para>
+	
+	</section>
+	
+	<section id="command.ref.setrx"><title>setrx</title>
+		<indexterm><primary>commands</primary><secondary>setrx</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setrx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setrx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the x coordinate of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setry"><title>setry</title>
+		<indexterm><primary>commands</primary><secondary>setry</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setry</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setry</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the y coordinate of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setrz"><title>setrz</title>
+		<indexterm><primary>commands</primary><secondary>setrz</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setrz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setrz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the z coordinate of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setvelocities"><title>setvelocities</title>
+		<indexterm><primary>commands</primary><secondary>setvelocities</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setvelocities</function></funcdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setvelocities</function></funcdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the velocity components of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setvx"><title>setvx</title>
+		<indexterm><primary>commands</primary><secondary>setvx</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setvx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setvx</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the x velocity of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setvy"><title>setvy</title>
+		<indexterm><primary>commands</primary><secondary>setvy</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setvy</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setvy</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the y velocity of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.setvz"><title>setvz</title>
+		<indexterm><primary>commands</primary><secondary>setvz</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setvz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setvz</function></funcdef>
+				<paramdef>double <parameter>d</parameter></paramdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the z velocity of the current (or specified) atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.show"><title>show</title>
+		<indexterm><primary>commands</primary><secondary>show</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>show</function></funcdef>
+				<paramdef>atom|int <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Makes the current selection of atoms (or the supplied atom) visible again if they were previously hidden.</para>
+
+	</section>
+		 
+</section>
+

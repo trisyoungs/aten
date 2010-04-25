@@ -1,0 +1,250 @@
+<section id="ff.forms.bond"><title>Bond Functional Forms</title>
+	<indexterm zone="ff.forms.bond"><primary>forcefields</primary><secondary>functional forms</secondary><tertiary>bonds</tertiary></indexterm>
+	<indexterm zone="ff.forms.bond"><primary>bond stretch</primary></indexterm>
+	<indexterm zone="ff.forms.bond"><primary>intramolecular terms</primary></indexterm>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Bond Functional Forms</title>
+		<tgroup cols='5' align='center' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Name</entry>
+					<entry>Keyword</entry>
+					<entry>NParams (Req)</entry>
+					<entry>Form</entry>
+					<entry>Param</entry>
+					<entry>Default</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>Ignore</entry>
+					<entry>ignore</entry>
+					<entry>0 (0)</entry>
+				</row>
+
+				<row>
+					<entry morerows='1'>Constraint</entry>
+					<entry morerows='1'>constraint</entry>
+					<entry morerows='1'>2 (2)</entry>
+					<entry morerows='1'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:frac>
+										<mml:mi>k</mml:mi>
+										<mml:mn>2</mml:mn>
+									</mml:frac>
+									<mml:msup>
+										<mml:mrow>
+										<mml:mo>(</mml:mo>
+											<mml:mi>r</mml:mi>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mn>0</mml:mn>
+											</mml:msub>
+											<mml:mo>)</mml:mo>
+										</mml:mrow>
+										<mml:mn>2</mml:mn>
+									</mml:msup>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>r</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='1'>Harmonic</entry>
+					<entry morerows='1'>harmonic</entry>
+					<entry morerows='1'>2 (2)</entry>
+					<entry morerows='1'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:frac>
+										<mml:mi>k</mml:mi>
+										<mml:mn>2</mml:mn>
+									</mml:frac>
+									<mml:msup>
+										<mml:mrow>
+										<mml:mo>(</mml:mo>
+											<mml:mi>r</mml:mi>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mn>0</mml:mn>
+											</mml:msub>
+											<mml:mo>)</mml:mo>
+										</mml:mrow>
+										<mml:mn>2</mml:mn>
+									</mml:msup>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>r</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='2'>Morse</entry>
+					<entry morerows='2'>morse</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msub>
+										<mml:mi>E</mml:mi>
+										<mml:mn>0</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									
+									<mml:msup>
+										<mml:mrow>
+											<mml:mo>(</mml:mo>
+											<mml:mn>1</mml:mn>
+											<mml:mo>-</mml:mo>
+											<mml:mo>exp</mml:mo>
+											<mml:mo>(</mml:mo>
+											<mml:mo>-</mml:mo>
+											<mml:mi>k</mml:mi>
+											<mml:mo>(</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mi>ij</mml:mi>
+											</mml:msub>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mn>0</mml:mn>
+											</mml:msub>
+											<mml:mo>)</mml:mo>
+											<mml:mo>)</mml:mo>
+											<mml:mo>)</mml:mo>
+										</mml:mrow>
+										<mml:mn>2</mml:mn>
+									</mml:msup>
+									
+									<mml:mo>-</mml:mo>
+									<mml:mn>1</mml:mn>
+									
+									<mml:mo>)</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>r</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>E</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+				<row>
+					<entry morerows='2'>Morse (Alternative)</entry>
+					<entry morerows='2'>morse2</entry>
+					<entry morerows='2'>3 (3)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msub>
+										<mml:mi>E</mml:mi>
+										<mml:mn>0</mml:mn>
+									</mml:msub>
+									<mml:mo>(</mml:mo>
+									
+									<mml:msup>
+										<mml:mrow>
+											<mml:mo>(</mml:mo>
+											<mml:mo>exp</mml:mo>
+											<mml:mo>(</mml:mo>
+											<mml:mo>-</mml:mo>
+											<mml:mi>k</mml:mi>
+											<mml:mo>(</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mi>ij</mml:mi>
+											</mml:msub>
+											<mml:mo>-</mml:mo>
+											<mml:msub>
+												<mml:mi>r</mml:mi>
+												<mml:mn>0</mml:mn>
+											</mml:msub>
+											<mml:mo>)</mml:mo>
+											<mml:mo>)</mml:mo>
+											<mml:mo>-</mml:mo>
+											<mml:mn>1</mml:mn>
+											<mml:mo>)</mml:mo>
+										</mml:mrow>
+										<mml:mn>2</mml:mn>
+									</mml:msup>
+									
+									<mml:mo>)</mml:mo>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:mi>k</mml:mi></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>r</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>E</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inlineequation>
+					</entry>
+				</row>
+
+			</tbody>
+		</tgroup>
+	</table>
+
+</section>

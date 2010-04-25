@@ -1,0 +1,71 @@
+# XMol-style XYZ coordinates files (for v1.2+)
+# Created:	 25/03/2009
+# Last modified: 10/04/2009
+# ChangeLog:
+
+filter(type="importmodel",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
+{
+	# Variable declaration
+	int natoms,n,m;
+	string e,title;
+	double rx,ry,rz,q;
+	atom i;
+
+	# Read data
+	while (!eof())
+	{
+		readline(natoms);
+		getline(title);
+		newmodel(title);
+		for (n=1; n<=natoms; ++n)
+		{
+			readline(e,rx,ry,rz,q);
+			i = newatom(e, rx, ry, rz);
+			i.q = q;
+		}
+		rebond();
+		finalisemodel();
+	}
+}
+
+filter(type="exportmodel",name="XMol XYZ Coordinates", extension="xyz", glob="*.xyz", nickname="xyz", id=3)
+{
+	# Variable declaration
+	model m = aten.frame;
+
+	writeline(m.natoms);
+	writeline(m.name);
+	for (atom i=m.atoms; i != 0; ++i) writelinef("%-8s  %12.6f %12.6f %12.6f %12.6f\n",i.symbol,i.rx,i.ry,i.rz,i.q);
+}
+
+filter(type="importtrajectory",name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
+{
+	int readheader()
+	{
+		return TRUE;
+	}
+
+	int readframe()
+	{
+
+		# Variable declaration
+		int natoms,n;
+		string e,title;
+		double rx,ry,rz,q;
+		atom i;
+
+		# Read frame
+		if (readline(natoms) == 0) return FALSE;
+		getline(title);
+		for (n=1; n<=natoms; ++n)
+		{
+			readline(e,rx,ry,rz,q);
+			i = newatom(e, rx, ry, rz);
+			i.q = q;
+		}
+		rebond();
+		return TRUE;
+	}
+
+}
+

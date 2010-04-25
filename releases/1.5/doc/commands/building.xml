@@ -1,0 +1,460 @@
+<section id="command.groups.building"><title>Building Commands</title>
+	
+	<para>Tools to build molecules from scratch, or finalise unfinished models. When creating atoms using the commands listed below, if the coordinates of the new atom are not specified then it is placed at the current pen position. In addition, the reference frame of the pen position is represented as a set of three orthogonal vectors defining the pen's local coordinate system (set initially to the Cartesian axes) centred at an arbitrary origin (the pen position). Subsequent rotations operate on these coordinate axes. Think of it as a 3D version of the old-school turtle.</para>
+
+	<section id="command.ref.addhydrogen"><title>addhydrogen</title>
+		<indexterm><primary>commands</primary><secondary>addhydrogen</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>addhydrogen</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>addhydrogen</function></funcdef>
+				<paramdef>atom|int <parameter>i</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Satisfy the valencies of all atoms in the current model by adding hydrogens to heavy atoms. If an integer id or atom reference is provided as the argument then the addition of hydrogen is restricted to the specified atom.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+addhydrogen();
+		</synopsis>
+		<para>add hydrogens to all atoms in the current model.</para>
+		<synopsis>
+addhydrogen(10);
+		</synopsis>
+		<para>add hydrogens to atom 10 only.</para>
+	
+	</section>
+	
+	<section id="command.ref.bohr"><title>bohr</title>
+		<indexterm><primary>commands</primary><secondary>bohr</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>bohr</function></funcdef>
+				<paramdef>object <parameter>x</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Converts the specified object(s) data to &#8491;, assuming that it is currently specified in Bohr.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atom i = aten.model.atoms[2];
+bohr(i);
+		</synopsis>
+		<para>converts the coordinates of the supplied atom from Bohr to &#8491;.</para>
+	
+	</section>
+	
+	<section id="command.ref.chain"><title>chain</title>
+		<indexterm><primary>commands</primary><secondary>chain</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>int|string <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>atom <function>chain</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>int|string <parameter>bondtype</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type <emphasis>bondtype</emphasis> if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atom i = chain(&quot;C&quot;);
+		</synopsis>
+		<para>places a carbon atom at the current pen coordinates, and creates a single bond with the last drawn atom.</para>
+		<synopsis>
+atom i = chain(8, &quot;double&quot;);
+		</synopsis>
+		<para>places an oxygen atom at the current pen coordinates, and creates a double bond with the last drawn atom.</para>
+		<synopsis>
+atom i = chain(&quot;Cl&quot;, 4.0, 5.0, 6.0, &quot;single&quot;);
+		</synopsis>
+		<para>creates a chlorine at coordinates { 4.0, 5.0, 6.0 }, joined by a single bond to the last drawn atom.</para>
+	
+	</section>
+	
+	<section id="command.ref.endchain"><title>endchain</title>
+		<indexterm><primary>commands</primary><secondary>endchain</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>endchain</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Ends the current chain (so that the next atom drawn with 'chain' will be unbound).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+endchain();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.locate"><title>locate</title>
+		<indexterm><primary>commands</primary><secondary>locate</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>locate</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the pen position to the coordinates specified (in &#8491;).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+locate(0.0, 0.0, 0.0);
+		</synopsis>
+		<para>moves the pen back to the coordinate origin.</para>
+	
+	</section>
+	
+	<section id="command.ref.move"><title>move</title>
+		<indexterm><primary>commands</primary><secondary>move</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>move</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Moves the pen position by the amounts specified (in &#8491;).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+move(1.0, 1.0, 0.0);
+		</synopsis>
+		<para>moves the pen +1 Angstrom in both the x and y directions.</para>
+	
+	</section>
+
+	<section id="command.ref.movetoend"><title>movetoend</title>
+		<indexterm><primary>commands</primary><secondary>movetoend</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetoend</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection to the end of the list. The relative order of atoms in the selection is preserved.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+movetoend();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.movetostart"><title>movetostart</title>
+		<indexterm><primary>commands</primary><secondary>movetostart</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>movetostart</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection to the start of the list. The relative order of the atoms in the selection is preserved.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+movetostart();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.newatom"><title>newatom</title>
+		<indexterm><primary>commands</primary><secondary>newatom</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatom</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the current pen position or, if provided, the specified coordinates (and optional velocities or velocities and forces). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atom i = newatom(&quot;N&quot;);
+		</synopsis>
+		<para>places a nitrogen atom at the current pen coordinates.</para>
+		<synopsis>
+atom i = newatom(18, 5.2, 0, 0);
+		</synopsis>
+		<para>places an argon atom at the coordinates { 5.2, 0.0, 0.0 }.</para>
+		
+	</section>
+	
+	<section id="command.ref.newatomfrac"><title>newatomfrac</title>
+		<indexterm><primary>commands</primary><secondary>newatomfrac</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>newatomfrac</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>vx</parameter></paramdef>
+				<paramdef>double <parameter>vy</parameter></paramdef>
+				<paramdef>double <parameter>vz</parameter></paramdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new atom of element <emphasis>el</emphasis> at the specified fractional coordinates (velocities and forces are optional). Either the integer atomic number or the symbol/name of the element may be used to identify the desired element. A reference to the new atom is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+atom i = newatomfrac(&quot;C&quot;, 0.5, 0.5, 0.5);
+		</synopsis>
+		<para>places a carbon atom at the centre of the model's cell.</para>
+	
+	</section>
+	
+	<section id="command.ref.reorder"><title>reorder</title>
+		<indexterm><primary>commands</primary><secondary>reorder</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>reorder</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adjust the ordering of atoms in the current selection such that atoms in bound fragments/molecules have successive IDs. Useful to recover 'molecularity' in order to apply a suitable <link linkend="topics.patterns">pattern description</link> to the system.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+reorder();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.rotx"><title>rotx</title>
+		<indexterm><primary>commands</primary><secondary>rotx</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rotx</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rotates the reference coordinate system about the x axis by <emphasis>angle</emphasis> degrees.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+rotx(90.0);
+		</synopsis>
+		<para>rotates around the x axis by 90 degrees.</para>
+	
+	</section>
+	
+	<section id="command.ref.roty"><title>roty</title>
+		<indexterm><primary>commands</primary><secondary>roty</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>roty</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rotates the reference coordinate system about the y axis by <emphasis>angle</emphasis> degrees.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+roty(45.0);
+		</synopsis>
+		<para>rotates around the y axis by 45 degrees.</para>
+	
+	</section>
+	
+	<section id="command.ref.rotz"><title>rotz</title>
+		<indexterm><primary>commands</primary><secondary>rotz</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rotz</function></funcdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rotates the reference coordinate system about the z axis by <emphasis>angle</emphasis> degrees.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+rotz(109.5);
+		</synopsis>
+		<para>rotates around the z axis by 109.5 degrees.</para>
+	
+	</section>
+	
+	<section id="command.ref.shiftdown"><title>shiftdown</title>
+		<indexterm><primary>commands</primary><secondary>shiftdown</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>shiftdown</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>shiftdown</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection one (or <emphasis>n</emphasis>) places down in the atom list (i.e. towards higher IDs).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+shiftdown(4);
+		</synopsis>
+		<para>moves the current atom selection down four places.</para>
+	
+	</section>
+	
+	<section id="command.ref.shiftup"><title>shiftup</title>
+		<indexterm><primary>commands</primary><secondary>shiftup</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>shiftup</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>shiftup</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Move the current atom selection one (or <emphasis>n</emphasis>) places up in the atom list (i.e. towards lower IDs).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+shiftup();
+		</synopsis>
+		<para>moves the current atom selection up one place.</para>
+	
+	</section>
+	
+	<section id="command.ref.transmute"><title>transmute</title>
+		<indexterm><primary>commands</primary><secondary>transmute</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>transmute</function></funcdef>
+				<paramdef>int|string <parameter>el</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Transmute the current atom selection to the specified element.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+transmute(&quot;F&quot;);
+		</synopsis>
+		<para>changes all atoms in the current selection to fluorine.</para>
+		<synopsis>
+transmute(Cl);
+		</synopsis>
+		<para>changes all atoms in the current selection to chlorine.</para>
+		<synopsis>
+transmute(6);
+		</synopsis>
+		<para>changes all atoms in the current selection to carbon</para>
+	
+	</section>
+
+</section>
+

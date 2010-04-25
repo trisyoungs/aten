@@ -1,0 +1,595 @@
+<section id="command.groups.forcefield"><title>Forcefield Commands</title>
+	
+	<para>Forcefield management and manual term creation.</para>
+
+	<section id="command.ref.angledef"><title>angledef</title>
+		<indexterm><primary>commands</primary><secondary>angledef</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>angledef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>string <parameter>type_k</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.angle">angle functional forms</link>, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+	
+	</section>
+	
+	<section id="command.ref.bonddef"><title>bonddef</title>
+		<indexterm><primary>commands</primary><secondary>bonddef</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>bonddef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a bond definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.bond">bond functional forms</link>, while the two <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
+	
+	</section>
+	
+	<section id="command.ref.clearmap"><title>clearmap</title>
+		<indexterm><primary>commands</primary><secondary>clearmap</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearmap</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Clear any manual typemap definitions.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+clearmap();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.clearexportmap"><title>clearexportmap</title>
+		<indexterm><primary>commands</primary><secondary>clearexportmap</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearexportmap</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Clear any manual export typemap definitions.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+clearexportmap();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.clearexpression"><title>clearexpression</title>
+		<indexterm><primary>commands</primary><secondary>clearexpression</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>clearexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Removes any forcefield expression defined for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+clearexpression();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.createexpression"><title>createexpression</title>
+		<indexterm><primary>commands</primary><secondary>createexpression</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>createexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Creates a suitable energy description for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+createexpression();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.defaultff"><title>defaultff</title>
+		<indexterm><primary>commands</primary><secondary>defaultff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>defaultff</function></funcdef>
+				<paramdef>string|forcefield <parameter>ff</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Makes the supplied/named forcefield the default forcefield to use when none is associated.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+defaultff(&quot;oplsaa&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.equivalents"><title>equivalents</title>
+		<indexterm><primary>commands</primary><secondary>equivalents</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>equivalents</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>string <parameter>typename(s)</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Define equivalent terms in the current forcefield. <emphasis>name</emphasis> is the new typename to which the list of quoted <emphasis>typenames</emphasis> are linked, for subsequent use in intramolecular term definitions. See the <link linkend="ff.ref.equivalents">equivalents</link> forcefield keyword for more information.</para>
+	
+	</section>
+	
+	<section id="command.ref.exportmap"><title>exportmap</title>
+		<indexterm><primary>commands</primary><secondary>exportmap</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>exportmap</function></funcdef>
+				<paramdef>string <parameter>maps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set up manual mappings that convert atomtype names when expression are exported. Works in the opposite way to the 'map' command.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+map(&quot;CT=Ctet,N3=N&quot;);
+		</synopsis>
+		<para>converts the atomtype names 'CT' and 'N3' so that they appear as 'Ctet' and 'N' in any expression files written out.</para>
+		
+	</section>
+		
+	<section id="command.ref.ffmodel"><title>ffmodel</title>
+		<indexterm><primary>commands</primary><secondary>ffmodel</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>ffmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Associates current forcefield to the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+ffmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.ffpattern"><title>ffpattern</title>
+		<indexterm><primary>commands</primary><secondary>ffpattern</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>string <parameter>pattern</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>int <parameter>patternid</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>ffpattern</function></funcdef>
+				<paramdef>pattern <parameter>p</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Associates current forcefield to the current pattern, or one specified by either a reference, integer ID in the current model, or a pattern pointer.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+ffpattern();
+		</synopsis>
+		<para>associates the current forcefield to the current pattern.</para>
+		<synopsis>
+ffpattern(&quot;bulk&quot;);
+		</synopsis>
+		<para>associates the current forcefield to a pattern named 'bulk' in the current model.</para>
+		
+	</section>
+	
+	<section id="command.ref.finaliseff"><title>finaliseff</title>
+		<indexterm><primary>commands</primary><secondary>finaliseff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>finaliseff</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform necessary operations on the current forcefield once all data has been added. Must be called!</para>
+		
+	</section>
+
+	<section id="command.ref.fixtype"><title>fixtype</title>
+		<indexterm><primary>commands</primary><secondary>fixtype</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>fixtype</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>atom|int <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the current atom selection, or the specified atom, to have the type id (in the current forcefield) specified. Types set in this manner will not be overwritten by tha typing routines, allowing specific types to be applied above the normal rules. Note that the type's NETA description is not checked, and so any (even types not matching the base element) may be applied in this way.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+typedef(99, "NX", "NX", N, "-C(n=4)");
+select(C);
+fixtype(99);
+		</synopsis>
+		<para>assigns newly-created type 99 (specific to nitrogen) to all carbons in the model.</para>
+	</section>
+
+	<section id="command.ref.freetype"><title>fixtype</title>
+		<indexterm><primary>commands</primary><secondary>freetype</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>freetype</function></funcdef>
+				<paramdef>atom|int <parameter>id = 0</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>For the current atom selection, or the specified atom, free any previously-fixed types</para>
+		
+		<para>For example:</para>
+		<synopsis>
+freetype(14);
+		</synopsis>
+		<para>frees any previously-set type on atom 14.</para>
+	</section>
+
+	<section id="command.ref.getcombinationrule"><title>getcombinationrule</title>
+		<indexterm><primary>commands</primary><secondary>getcombinationrule</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>getcombinationrule</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the combination rule in use for the specifed parameter of the given functional form. The <emphasis>form</emphasis> and related <emphasis>parameter</emphasis> should correspond to those given in the <link linkend="ff.forms.vdw">VDW functional forms</link> table. A string corresponding to one of the available <link linkend="enums.combinationrules">combination rule</link> options is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+string cr = getcombinationrule(&quot;lj&quot;, &quot;epsilon&quot;);
+		</synopsis>
+
+	</section>
+
+	<section id="command.ref.getff"><title>getff</title>
+		<indexterm><primary>commands</primary><secondary>getff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>getff</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>forcefield <function>getff</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select the named forcefield (or forcefield with the specified id) and make it current, returning a reference to it in the process.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+forcefield uff = getff(&quot;uff&quot;);
+		</synopsis>
+		<para>makes the loaded forcefield named 'uff' the current one, and stores a reference to it.</para>
+		
+	</section>
+	
+	<section id="command.ref.interdef"><title>interdef</title>
+		<indexterm><primary>commands</primary><secondary>interdef</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>interdef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>double <parameter>charge</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a new short-range data definition to a type in the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.vdw">VDW functional forms</link>. Up to ten parameters for the VDW potential may be given.</para>
+	
+	</section>
+	
+	<section id="command.ref.loadff"><title>loadff</title>
+		<indexterm><primary>commands</primary><secondary>loadff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>loadff</function></funcdef>
+				<paramdef>string <parameter>file</parameter></paramdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Load a forcefield from <emphasis>file</emphasis> and reference it by <emphasis>name</emphasis>. Becomes the current forcefield.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+loadff(&quot;/home/foo/complex.ff&quot;, &quot;waterff&quot;);
+		</synopsis>
+		<para>loads a forcefield called 'complex.ff' and names it 'waterff'.</para>
+	
+	</section>
+	
+	<section id="command.ref.map"><title>map</title>
+		<indexterm><primary>commands</primary><secondary>map</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>map</function></funcdef>
+				<paramdef>string <parameter>map</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set up manual typename mappings for atom names that do not readily correspond to element symbols, forcefield types etc. All atoms that are subsequently created using <emphasis>name</emphasis> as the element are automatically converted to the corresponding element.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+map(&quot;CT1=C,CT2=C&quot;);
+		</synopsis>
+		<para>converts atoms with names 'CT1' and 'CT2' to carbon.</para>
+		
+	</section>
+	
+	<section id="command.ref.newff"><title>newff</title>
+		<indexterm><primary>commands</primary><secondary>newff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>forcefield <function>newff</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new, empty forcefield with the given <emphasis>name</emphasis> and make it current. Returns a reference to the new forcefield.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+forcefield ff = newff(&quot;testff&quot;);
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.printsetup"><title>printsetup</title>
+		<indexterm><primary>commands</primary><secondary>printsetup</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printsetup</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints the current expression setup.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+printsetup();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.recreateexpression"><title>recreateexpression</title>
+		<indexterm><primary>commands</primary><secondary>recreateexpression</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>recreateexpression</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Delete and recreate a suitable energy description for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+recreateexpression();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.rules"><title>rules</title>
+		<indexterm><primary>commands</primary><secondary>rules</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rules</function></funcdef>
+				<paramdef>string <parameter>ruleset</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set rules set to use for parameter generation in the current forcefield (see <link linkend="ff.rules">forcefield fules</link> for more info).</para>
+		<para><emphasis>Note: The implementation of rule-based forcefields will change in a future release.</emphasis></para>
+	
+	</section>
+	
+	<section id="command.ref.saveexpression"><title>saveexpression</title>
+		<indexterm><primary>commands</primary><secondary>saveexpression</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>saveexpression</function></funcdef>
+				<paramdef>string <parameter>filter</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Export the forcefield expression for the current model in the format determined by the <emphasis>filter</emphasis> nickname, to the <emphasis>filename</emphasis> specified. Return value is '1' for successful write, or '0' otherwise.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+saveexpression(&quot;dlpoly&quot;, &quot;data.FIELD&quot;);
+		</synopsis>
+		
+	</section>
+
+	<section id="command.ref.setcombinationrule"><title>setcombinationrule</title>
+		<indexterm><primary>commands</primary><secondary>setcombinationrule</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setcombinationrule</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>parameter</parameter></paramdef>
+				<paramdef>string <parameter>rule</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the combination rule to use for the specifed parameter of the given functional form. The <emphasis>form</emphasis> and related <emphasis>parameter</emphasis> should correspond to those given in the <link linkend="ff.forms.vdw">VDW functional forms</link> table, while <emphasis>rule</emphasis> should correspond to one of the available <link linkend="enums.combinationrules">combination rule</link> options.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+setcombinationrule(&quot;lj&quot;, &quot;sigma&quot;, &quot;geometric&quot;);
+		</synopsis>
+
+	</section>
+	
+	<section id="command.ref.torsiondef"><title>torsiondef</title>
+		<indexterm><primary>commands</primary><secondary>torsiondef</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>torsiondef</function></funcdef>
+				<paramdef>string <parameter>form</parameter></paramdef>
+				<paramdef>string <parameter>type_i</parameter></paramdef>
+				<paramdef>string <parameter>type_j</parameter></paramdef>
+				<paramdef>string <parameter>type_k</parameter></paramdef>
+				<paramdef>string <parameter>type_l</parameter></paramdef>
+				<paramdef>double <parameter>data1</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a torsion definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.torsion">torsion functional forms</link>, while the four <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten real-valued parameter values for the function may be provided.</para>
+	
+	</section>
+	
+	<section id="command.ref.typedef"><title>typedef</title>
+		<indexterm><primary>commands</primary><secondary>typedef</secondary></indexterm>
+
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typedef</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>string <parameter>equiv</parameter></paramdef>
+				<paramdef>string|int <parameter>element</parameter></paramdef>
+				<paramdef>string <parameter>neta</parameter></paramdef>
+				<paramdef>string <parameter>description = ""</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Add a new atom type definition to the current forcefield, with the identifying <emphasis>typeid</emphasis> and called <emphasis>name</emphasis>, with the equivalent typename <emphasis>equiv</emphasis>. The basic element of the new type is given as <emphasis>element</emphasis>, and <emphasis>neta</emphasis> is the <link linkend="ff.neta.ref">NETA</link> definition of the type. An optional string describing the type in more detail can be given in <emphasis>description</emphasis>. The command returns '1' if the model was typed successfully or '0' otherwise.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+typedef(101, &quot;Ctet&quot;, C, &quot;nbonds=4&quot;, &quot;Standard tetrahedral carbon&quot;);
+		</synopsis>
+		<para>creates a new simple type for a carbon atom with four bonds.</para>
+		
+	</section>
+	
+	<section id="command.ref.typemodel"><title>typemodel</title>
+		<indexterm><primary>commands</primary><secondary>typemodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typemodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Perform atom typing on the current model. Returns '1' if atom typing was performed successfully or '0' otherwise.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int success = typemodel();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.typetest"><title>typetest</title>
+		<indexterm><primary>commands</primary><secondary>typetest</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>typetest</function></funcdef>
+				<paramdef>int <parameter>typeid</parameter></paramdef>
+				<paramdef>atom|int <parameter>id</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Test the current forcefield's atomtype <emphasis>typeid</emphasis> on the atom specified, returning the type score of the match (zero indicating no match).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int score = typetest(112,10);
+		</synopsis>
+		<para>tests typeid 112 on the tenth atom in the model.</para>
+		
+	</section>
+	
+	<section id="command.ref.units"><title>units</title>
+		<indexterm><primary>commands</primary><secondary>units</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>units</function></funcdef>
+				<paramdef>string <parameter>unit</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the units in which energetic parameters are given for the current forcefield. For a list of available units see <link linkend="enums.energyunits">energy units</link>.</para>
+	
+	</section>
+	
+	<section id="command.ref.vdw"><title>vdw</title>
+		<indexterm><primary>commands</primary><secondary>vdw</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>vdw</function></funcdef>
+				<paramdef>bool <parameter>calculate</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Controls calculation of van der Waals terms in energy / force calculations (on by default).</para>
+		
+		<para>For example:</para>
+		<synopsis>
+vdw(&quot;off&quot;);
+		</synopsis>
+		<para>turns van der Waals energy / force calculation off.</para>
+		<synopsis>
+vdw(TRUE);
+		</synopsis>
+		<para>turns van der Waals energy / force calculation on.</para>
+
+	</section>
+	
+</section>

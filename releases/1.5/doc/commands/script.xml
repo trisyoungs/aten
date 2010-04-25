@@ -1,0 +1,69 @@
+<section id="command.groups.script"><title>Script Commands</title>
+	
+	<para>Commands to load and run scripts.</para>
+
+	<section id="command.ref.listscripts"><title>listscripts</title>
+		<indexterm><primary>commands</primary><secondary>listscripts</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listscripts</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Lists all loaded scripts.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+listscripts();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.loadscript"><title>loadscript</title>
+		<indexterm><primary>commands</primary><secondary>loadscript</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>loadscript</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>loadscript</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+				<paramdef>string <parameter>nickname</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Loads a script from the <emphasis>filename</emphasis> specified, giving it the optional <emphasis>nickname</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+loadscript(&quot;scripts/liquid-water.txt&quot;, &quot;water&quot;);
+		</synopsis>
+		<para>loads the script from 'scripts/liquid-water.txt' and gives it the nickname 'water'.</para>
+	
+	</section>
+	
+	<section id="command.ref.runscript"><title>runscript</title>
+		<indexterm><primary>commands</primary><secondary>runscript</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>runscript</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Executes the specified script.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+runscript(&quot;water&quot;);
+		</synopsis>
+		<para>executes the water script loaded in the previous example.</para>
+	
+	</section>
+	
+</section>

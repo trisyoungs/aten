@@ -1,0 +1,39 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd"
+	[
+	<!ENTITY % MATHML.prefixed "INCLUDE">
+	<!ENTITY % MATHML.prefix "mml">
+	<!ENTITY % equation.content "(alt?, (graphic+|mediaobject+|mml:math))">
+	<!ENTITY % inlineequation.content "(alt?, (inlinegraphic+|inlinemediaobject+|mml:math))">
+	<!ENTITY % mathml PUBLIC "-//W3C//DTD MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd">
+	%mathml;
+	<!ENTITY example001 SYSTEM "examples/example001.xml">
+	<!ENTITY example002 SYSTEM "examples/example002.xml">
+	<!ENTITY example003 SYSTEM "examples/example003.xml">
+]>
+
+<book>
+	<bookinfo>
+	<title>Aten vATENVERSION (rATENREVISION)</title>
+	<subtitle>Command Examples</subtitle>
+	<author>
+		<firstname>Tristan</firstname>
+		<surname>Youngs</surname>
+	</author>
+	</bookinfo>
+	
+	<!-- EXAMPLES -->
+	<chapter id="examples"><title>Command Examples</title>
+		<section><title>Introduction</title>
+			<para>A number of short, useful examples of applications of Aten's command language is provided here. Some are in the form of full scripts which can be pasted into a text file and run form there, and some are in the form of 'one-liners', controlling Aten directly from the command line.</para>
+		</section>
+		&example001;
+		&example002;
+		&example003;
+	</chapter>
+
+	<!-- Index -->
+	<index/>
+
+</book>
+

@@ -1,0 +1,61 @@
+# Gaussian Cube Format (for v1.2+)
+# Created:	 16/04/2009
+# Last modified: 16/04/2009
+# ChangeLog:
+# Notes:
+
+filter(type="importgrid", name="Gaussian CUBE", nickname="cube", extension="cube", glob="*.cube", zmap="numeric", id=1)
+{
+	# Variable declaration
+	string e,title;
+	int natoms,nx,ny,nz,i,j,k;
+	vector origin, x,y,z;
+	double rx,ry,rz,data;
+
+	# Since we must create the model first, and then set all grid date afterwards,
+	# store all grid-related values for later until we've finalised the model.
+
+	# Lines 1-2: Comments (use first as title)
+	getline(title);
+	skipline();
+
+	# Line 3: Number of atoms and coordinate origin of surface
+	readline(natoms, origin.x, origin.y, origin.z);
+
+	# Lines 4-6: Number of voxels and axis vector
+	readline(nx, x.x, x.y, x.z);
+	readline(ny, y.x, y.y, y.z);
+	readline(nz, z.x, z.y, z.z);
+
+	# Lines 7-(7+natoms) Molecule Definition
+	newmodel(title);
+	for (i=0; i<natoms; ++i)
+	{
+		readlinef("%s%*%f%f%f", e, rx ,ry ,rz);
+		newatom(e, rx, ry, rz);
+	}
+	finalisemodel();
+	rebond();
+
+	# Create a grid associated to this model, and set it up with data we read previously
+	newgrid(title);
+	printf("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
+	gridorigin(origin.x, origin.y, origin.z);
+	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
+	gridsize(nx,ny,nz);
+	gridaxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
+
+	# Volumetric data (five points per line)
+	for (i=1; i<=nx; ++i)
+	{
+		for (j=1; j<=ny; ++j)
+		{
+			for (k=1; k<=nz; ++k)
+			{
+				if (!nextarg(data)) error("Error reading point {%i,%i,%i} from file.\n", i,j,k);
+				addgridpoint(i, j, k, data);
+			}
+		}
+	}
+	finalisegrid();
+}

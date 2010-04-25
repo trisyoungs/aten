@@ -1,0 +1,285 @@
+name "Liu, Wu and Wang United Atom Ionic Liquids"
+
+message "This forcefield covers two papers encompassing:"
+message "  dmim, emim, bmim, hmim alkylimidazolium cations"
+message "  BF4, PF6, FAP (or FEP) anions"
+message "Converted for use in Aten by T. Youngs."
+message "NOTE: Some torsions appeared to be missing or named incorrectly, and have been filled in/corrected by hand."
+
+units kj
+
+#
+# Cations
+#
+# 1-hexyl-3-methyl imidazolium - JPCb, 2009, 113, 7591-7598.
+types
+1	CR_h	C	"ring(size=5,-C(n=3),-N(n=2)),-H,-N(-C(nbonds=1)),-N(chain(-C-C-C-C-C-C(nbonds=1)))"
+2	NAm_h	N	"~&1,-C(nbonds=1)"
+3	NAa_h	N	"~&1,chain(-C-C-C-C-C-C(nbonds=1))"
+4	CWm_h	C	"~C,~N(-C(nbonds=1),~&1)"
+5	CWa_h	C	"~C,~N(chain(-C-C-C-C-C-C(nbonds=1)),~&1),ring"
+6	H5_h	H	"-&1"
+7	H4m_h	H	"-&4"
+8	H4a_h	H	"-&5"
+end
+uatypes
+9	CN3_h	C	15.0455	"-&2,noring"
+10	CN2_h	C	14.0265	"-&3,noring"
+11	CT2_2_h	C	14.0265	"-&10"
+12	CT2_3_h	C	14.0265	"chain(-&11-&10)"
+13	CT2_4_h	C	14.0265	"chain(-&12-&11-&10)"
+14	CT2_5_h	C	14.0265	"chain(-&13-&12-&11-&10)"
+15	CT3_h	C	15.0455	"chain(-&14-&13-&12-&11-&10),nbonds=1"
+end
+# 1-butyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
+16	CR_b	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1)),~N(chain(~C~C~C~C(nbonds=1)))"
+17	NAm_b	N	"~&16,-C(nbonds=1)"
+18	NAa_b	N	"~&16,chain(-C-C-C-C(nbonds=1))"
+19	CWm_b	C	"~C,~N(-C(nbonds=1),~&16)"
+20	CWa_b	C	"~C,~N(chain(-C-C-C-C(nbonds=1)),~&16),ring"
+21	H5_b	H	"-&16"
+22	H4m_b	H	"-&19"
+23	H4a_b	H	"-&20"
+end
+uatypes
+24	CN3_b	C	15.0455	"-&17,noring"
+25	CN2_b	C	14.0265	"-&18,noring"
+26	CT2_2_b	C	14.0265	"-&25"
+27	CT2_3_b	C	14.0265	"chain(-&26-&25)"
+28	CT2_4_b	C	15.0455	"chain(-&27-&26-&25),nbonds=1"
+end
+# 1-ethyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
+29	CR_e	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1)),~N(chain(~C~C(nbonds=1)))"
+30	NAm_e	N	"~&29,-C(nbonds=1)"
+31	NAa_e	N	"~&29,chain(-C-C(nbonds=1))"
+32	CWm_e	C	"~N(-C(nbonds=1),~&29),~C"
+33	CWa_e	C	"~N(chain(-C(noring)-C(nbonds=1)),~&29),ring,~C"
+34	H5_e	H	"-&29"
+35	H4m_e	H	"-&32"
+36	H4a_e	H	"-&33"
+end
+uatypes
+37	CN3_e	C	15.0455	"-&30,noring"
+38	CN2_e	C	14.0265	"-&31,noring"
+39	CT2_2_e	C	15.0455	"-&38"
+end
+# 1,3-dimethyl imidazolium - PCCP, 2006, 8, 1096-1104.
+types
+40	CR	C	"ring(size=5,-C(n=3),-N(n=2)),-H,~N(~C(nbonds=1),n=2)"
+41	NA	N	"~&40,-C(nbonds=1)"
+42	CW	C	"~C,~N(-C(nbonds=1),~&40)"
+43	H5	H	"-&40"
+44	H4	H	"-&42"
+end
+uatypes
+45	CN3	C	15.0455	"-&41,noring"
+end
+
+#
+# Anions
+#
+types
+# Tetrafluoroborate - PCCP, 2006, 8, 1096-1104.
+100	B	B	"-F(n=4)"
+101	FB	F	"-&100"
+# Hexafluorophosphate - PCCP, 2006, 8, 1096-1104.
+102	P	P	"-F(n=6)"
+103	FP	F	"-&102"
+end
+# Tris(pentafluoroethyl)trifluorophosphate ('FEP' or 'FAP') - JPCb, 2009, 113, 7591-7598.
+types
+104	P_fap	P	"-F(n=3),chain(-C-C(nbonds=1),n=3)"
+105	F_fap	F	"-&104"
+end
+uatypes
+106	CF2	C	50.0075	"-&104"
+107	CF3	C	69.0059 "-&106,nbonds=1"
+end
+
+inter lj
+# 1-hexyl-3-methyl imidazolium - JPCb, 2009, 113, 7591-7598.
+1	CR_h	-0.0794	0.3598	3.4
+2	NAm_h	-0.0067	0.7113	3.25
+3	NAa_h	0.0454	0.7113	3.25
+4	CWm_h	-0.1384	0.3598	3.4
+5	CWa_h	-0.2072	0.3598	3.4
+6	H5_h	0.2512	0.0628	1.782
+7	H4m_h	0.2295	0.0628	2.511
+8	H4a_h	0.2544	0.0628	2.511
+9	CN3_h	0.3235	0.79	3.813
+10	CN2_h	0.2519	0.6	3.822
+11	CT2_2_h	-0.0034	0.558	3.947
+12	CT2_3_h	0.0406	0.558	3.947
+13	CT2_4_h	0.0386	0.558	3.947
+14	CT2_5_h	0.0	0.558	3.947
+15	CT3_h	0.0	0.7728	3.902
+# 1-butyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+16	CR_b	-0.0794	0.3598	3.4	
+17	NAm_b	-0.0067	0.7113	3.25
+18	NAa_b	0.0454	0.7113	3.25
+19	CWm_b	-0.1384	0.3598	3.4
+20	CWa_b	-0.2072	0.3598	3.4
+21	H5_b	0.2512	0.0628	2.511
+22	H4m_b	0.2295	0.0628	1.782
+23	H4a_b	0.2544	0.0628	1.782
+24	CN3_b	0.3235	0.7894	3.813
+25	CN2_b	0.2519	0.5962	3.822
+26	CT2_2_b	-0.0034	0.5580	3.947
+27	CT2_3_b	0.0406	0.5580	3.947
+28	CT2_4_b	0.0386	0.7728	3.902
+# 1-ethyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+29	CR_e	-0.0574	0.3598	3.4	
+30	NAm_e	0.0039	0.7113	3.25
+31	NAa_e	-0.0212	0.7113	3.25
+32	CWm_e	-0.1289	0.3598	3.4
+33	CWa_e	-0.2097	0.3598	3.4
+34	H5_e	0.2448	0.0628	2.511
+35	H4m_e	0.2268	0.0628	1.782
+36	H4a_e	0.2578	0.0628	1.782
+37	CN3_e	0.3242	0.7894	3.813
+38	CN2_e	0.2995	0.5962	3.822
+39	CT2_2_e	0.0602	0.5580	3.947
+# 1,3-dimethyl imidazolium - PCCP, 2006, 8, 1096-1104.
+40	CR	-0.0945	0.3598	3.4	
+41	NA	0.0109	0.7113	3.25
+42	CW	-0.1657	0.3598	3.4
+43	H5	0.2632	0.0628	2.511
+44	H4	0.2416	0.0628	1.782
+45	CN3	0.3289	0.7894	3.813
+# Tetrafluoroborate - PCCP, 2006, 8, 1096-1104.
+100	B	1.1504	0.3957	3.581
+101	FB	-0.5376	0.2552	3.118
+# Hexafluorophosphate - PCCP, 2006, 8, 1096-1104.
+102	P	0.7562	0.8368	3.742
+103	FP	-0.2927	0.2552	3.118
+# Tris(pentafluoroethyl)trifluorophosphate ('FEP' or 'FAP') - JPCb, 2009, 113, 7591-7598.
+104	P_fap	0.3281	0.8368	3.742
+105	F_fap	-0.1206	0.2552	3.118
+106	CF2	-0.2463	0.46	4.78
+107	CF3	-0.0758	0.89	4.57
+end
+
+# Many different atomtypes that share the same intramolecular parameters, so define equivalents
+equivalents
+# 1-hexyl-3-methyl imidazolium
+CR	CR_h
+NA	NAm_h NAa_h
+CW	CWm_h CWa_h
+H5	H5_h
+H4	H4m_h H4a_h
+CN3	CN3_h
+CN2	CN2_h
+CT2	CT2_2_h CT2_3_h CT2_4_h CT2_5_h
+CT3	CT3_h
+# 1-butyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+CR	CR_b
+NA	NAm_b NAa_b
+CW	CWm_b CWa_b
+H5	H5_b
+H4	H4m_b H4a_b
+CN3	CN3_b
+CN2	CN2_b
+CT2	CT2_2_b CT2_3_b CT2_4_b
+# 1-ethyl-3-methyl imidazolium - PCCP, 2006, 8, 1096-1104.
+CR	CR_e
+NA	NAm_e NAa_e
+CW	CWm_e CWa_e
+H5	H5_e
+H4	H4m_e H4a_e
+CN3	CN3_e
+CN2	CN2_e
+CT2	CT2_2_e
+# Tetrafluoroborate and hexafluorophosphate
+F	FB FP
+# Tris(pentafluoroethyl)trifluorophosphate ('FEP' or 'FAP') - JPCb, 2009, 113, 7591-7598.
+P	P_fap
+F	F_fap
+end
+
+bonds harmonic
+# PCCP, 2006, 8, 1096-1104.
+CW	H4	3222	1.070
+CR	H5	3180	1.070
+CR	NA	3348	1.325
+CW	NA	3012	1.378
+CW	CW	3430	1.343
+CN2	NA	2818	1.472
+CN2	CT2	2174	1.526
+CT2	CT2	2174	1.526
+CT2	CT3	2174	1.526
+CN3	NA	2818	1.472
+F	B	2426	1.390
+#F	P	1590	1.600	# PCCP, 2006, 8, 1096-1104.
+F	P	2180	1.620	# Morrow and Maginn, JPCb, 2002, 106, 3546.
+# JPCb, 2009, 113, 7591-7598.
+CF2	P	2510	1.957
+CF3	CF2	4518	1.545
+end
+
+angles harmonic
+# PCCP, 2006, 8, 1096-1104.
+NA	CN2	CT2	586	112.2
+CR	NA	CW	1004	108.0
+CN2	CT2	CT2	526	109.5
+NA	CR	NA	1004	109.9
+CT2	CT2	CT3	526	109.5
+H4	CW	NA	252	122.1
+CW	NA	CN3	418	125.7
+H5	CR	NA	252	125.7
+CR	NA	CN3	418	126.3
+CW	CW	H4	252	130.7
+CW	NA	CN2	418	125.7
+CR	NA	CN2	418	126.3
+CW	CW	NA	1004	107.1
+F	B	F	209.2	109.5
+#F	P	F	334.7	90.0
+# JPCb, 2009, 113, 7591-7598.
+P	CF2	CF3	1254	120.0
+F	P	CF2	1634	90.0
+CF2	P	CF2	1634	90.0
+F	P	F	1634	90.0
+F	P	F	1634	90.0
+# Estimated HMIM params not present in any ref
+CT2	CT2	CT2	526	109.5
+end
+
+torsions cos 0.83333333 0.5
+# PCCP, 2006, 8, 1096-1104.
+# Some torsions appear to be labelled incorrectly in Table 1 in the above ref, with CT3 and CT2 used instead of CN2 and CN3.
+NA	CR	NA	CW	50.21	180	2
+H4	CW	NA	CN3	6.276	180	2	# CT3 -> CN3
+NA	CR	NA	CN3	8.368	180	2	# CT3 -> CN3
+H4	CW	NA	CN2	6.276	180	2	# CT2 -> CN2
+NA	CR	NA	CN2	8.368	180	2	# CT2 -> CN2
+NA	CW	CW	H4	6.276	180	2
+H5	CR	NA	CW	6.276	180	2
+NA	CW	CW	NA	50.21	180	2
+H5	CR	NA	CN3	6.276	180	2	# CT3 -> CN3
+H4	CW	CW	H4	6.276	180	2
+H5	CR	NA	CN2	6.276	180	2	# CT2 -> CN2
+CN2	CT2	CT2	CT3	4.180	0	3
+CW	CW	NA	CR	50.21	180	2
+CT2	CT2	CT2	CT3	4.180	0	3
+CW	CW	NA	CN3	8.368	180	2	# CT3 -> CN3
+NA	CN2	CT2	CT2	4.180	0	3
+CW	CW	NA	CN2	8.368	180	2	# CT2 -> CN2
+CT2	CN2	NA	CW	-0.745	0	1
+H4	CW	NA	CR	8.368	180	2
+CT2	CN2	NA	CR	-0.987	0	1
+# JPCb, 2009, 113, 7591-7598.
+CF2	P	CF2	CF3	3.345	180	2
+F	P	CF2	CF3	14.83	0	1
+# Following torsions are missing from above ref, so are set to the same for bmim's CN
+CN2	CT2	CT2	CT2	4.180	0	3
+CT2	CT2	CT2	CT2	4.180	0	3
+end
+
+impropers cos
+# PCCP, 2006, 8, 1096-1104.
+NA	NA	CR	H5	4.602	180	2	
+CR	CW	NA	CN3	4.184	180	2
+CW	NA	CW	H4	4.602	180	2	
+CR	CW	NA	CN2	4.184	180	2
+end

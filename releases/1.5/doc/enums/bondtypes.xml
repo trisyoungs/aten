@@ -1,0 +1,38 @@
+<section id="enums.bondtypes"><title>Bond Types</title>
+	
+	<para>A bond between atoms is of one of the following types:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Bond type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>any</entry>
+					<entry>Special case, never assigned to an actual bond but used in bond-matching functions</entry>
+				</row>
+				<row>
+					<entry>single</entry>
+					<entry>A single bond</entry>
+				</row>
+				<row>
+					<entry>double</entry>
+					<entry>A double bond</entry>
+				</row>
+				<row>
+					<entry>triple</entry>
+					<entry>A triple bond</entry>
+				</row>
+				<row>
+					<entry>aromatic</entry>
+					<entry>An aromatic bond, assigned automatically by the atom typing routines</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+</section>
