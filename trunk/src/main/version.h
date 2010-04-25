@@ -22,9 +22,9 @@
 #ifndef ATEN_VERSION_H
 #define ATEN_VERSION_H
 
-#define ATENVERSION "1.5"
-#define ATENREVISION "1191"
-#define ATENDATE "Sun 25 Apr - 12:17"
+#define ATENVERSION "1.6"
+#define ATENREVISION "1194"
+#define ATENDATE "Sun 25 Apr - 12:37"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 #endif
