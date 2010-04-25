@@ -65,9 +65,9 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
 %endif
 
-%if 0%{?mandriva_version} > 2006
+%if 0%{?mandriva_version}
     %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
+        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
     %else
         ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
     %endif
@@ -90,14 +90,6 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 %endif
 
 %if 0%{?centos_version}
-    %ifarch x86_64
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
-    %else
-        ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib/qt4/bin/moc --with-qtrcc=/usr/lib/qt4/bin/rcc --with-qtuic=/usr/lib/qt4/bin/uic
-    %endif
-%endif
-
-%if 0%{?mandriva_version}
     %ifarch x86_64
         ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtmoc=/usr/lib64/qt4/bin/moc --with-qtrcc=/usr/lib64/qt4/bin/rcc --with-qtuic=/usr/lib64/qt4/bin/uic
     %else
@@ -129,6 +121,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/aten/
 
 %changelog
+* Sun Apr 25 2010 Tristan Youngs <tris@projectaten.net> 
+- more tweaks to build dependencies etc.
 * Wed Apr 02 2008 Tristan Youngs <tris@projectaten.net> 
 - added checks to build on different distros with the SuSE build service.
 * Tue Apr 01 2008 Tristan Youngs <tris@projectaten.net>

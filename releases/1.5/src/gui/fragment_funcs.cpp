@@ -96,7 +96,7 @@ void AtenFragment::refresh()
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
 		{
 			// Filter?
-			if (!filterText_.isEmpty() && (strcmp(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
+			if (!filterText_.isEmpty() && (strstr(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
 			// Add item to TTreeWidget
 			item = new TTreeWidgetItem(group);
 			item->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
