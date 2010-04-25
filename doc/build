@@ -42,22 +42,22 @@ mkdir codeexamples
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./codeexamples/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl examples-versioned.xml
-# Rewrite links
+# Process files to
+# 1) Rewrite links so they work in the website
+# 2) Remove blank extraneous line from synopsis elements
 cd codeexamples
-for a in *.html
-do
-  # Process files to
-  # 1) Rewrite links so they work in the website
-  # 2) Remove blank extraneous line from synopsis elements
-  sed -n '
-  1h
-  1!H
-  $ {
+sed -i -n '
+1h
+1!H
+$ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z0-9\.]*\)\.html/doc.php?id=Examples\&page=\1.xhtml/g
+	s/\([a-z0-9\.]*\)\.html/\/doc\/Examples\/\1.xhtml/g
 	p
-  }' $a > ${a/.html/.xhtml}
+}' *.html
+for a in *html
+do
+  grep -v "<?xml" $a > ${a/.html/.xhtml}
 done
 rm *.html 
 cd ../
@@ -74,23 +74,23 @@ xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Tran
 mkdir usermanual/images
 cp images/*png usermanual/images
 for a in `ls -1 ../src/gui/icons/*svg`; do b=${a/..\/*\//}; echo $b; inkscape $a -d 29 -e usermanual/images/${b/svg/png}; done
-# Rewrite links
+# Process files to
+# 1) Rewrite links so they work in the website
+# 2) Remove blank extraneous line from synopsis elements
 cd usermanual
-for a in *.html
-do
-  # Process files to
-  # 1) Rewrite links so they work in the website
-  # 2) Remove blank extraneous line from synopsis elements
-  sed -n "
-  1h
-  1!H
-  \$ {
+sed -i -n "
+1h
+1!H
+\$ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
-	s/\([a-z\.]*\)\.html/doc.php?id=$TARGETDIR\&page=\1.xhtml/g
-	s/img src=\"images/img src=\"doc\/$TARGETDIR\/images/g
+	s/\([a-z\.]*\)\.html/\/doc\/$TARGETDIR\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
 	p
-  }" $a > ${a/.html/.xhtml}
+}" *html
+for a in *html
+do
+  grep -v "<?xml" $a > ${a/.html/.xhtml}
 done
 rm *.html 
 cd ../
@@ -102,7 +102,7 @@ CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl |
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc aten.xsl aten-versioned.xml > manual.html
 # Rewrite image links
-sed -e "s/img src=\"images/img src=\"doc\/$TARGETDIR\/images/g" manual.html > manual.xhtml
+sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" manual.html > manual.xhtml
 
 echo "#"
 echo "# Generating Single Page FAQ"

@@ -1,4 +1,4 @@
-<section id="examples.example3"><title>Generating Images Without the GUI<title>
+<section id="examples.example3"><title>Generating Images Without the GUI</title>
 
 	<para>Sometimes it's useful to quickly generate images for a system from the command line, either because the system is prepared from the command line, or because generating hundreds of images through the GUI is insanely repetetive. To quickly save a picture of a system in it's 'standard' view orientation (i.s. as you would see it if you loaded it into the GUI) you can do the following:</para>
 	

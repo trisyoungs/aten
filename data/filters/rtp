@@ -1,0 +1,103 @@
+##########################################
+filter(type="exportexpression",name="Gromacs .rtp file Specification", extension="rtp", glob="*.rtp",nickname="rtp")
+{
+	# Variable declaration
+        pattern p;
+	atom a;
+	bound b;
+	ffatom at1, at2;
+	int nvdw, n, nc, n2, nconstraints, i,j,k,l,f;
+	
+	# Get current model
+	model m = aten.frame;
+	
+	typemodel();
+
+	#should make sure there is at least one pattern here
+	if (p = m.patterns)
+	{
+	printf("a pattern exists\n");
+	}
+	else
+	{
+	printf("noone here but us chickens\n");
+	p = newpattern("NUN", 1, m.natoms);
+	}
+     
+	# Loop over patterns (molecule types)
+	k=0;
+	for (p = m.patterns; p; ++p)
+	{
+		nconstraints = 0;
+
+		k++;
+
+		if (p.name) # actually want if p.name is 4 chars in length and/or not the same as another potential p.name
+		{
+		writelinef("[ %4s ]\n", p.name);
+		} 
+		else  
+		{
+		writelinef("[ MOL%i ]\n", k);
+		}
+
+	writeline(" [ atoms ]");
+	a = p.firstatom;
+		for (n=1; n<=p.nmolatoms; ++n)
+		{
+
+			printf("Using : %s\n", a.type.ff.name);
+			if(a.type.ff.name == "Canongia Lopes & Padua Ionic Liquids (version 01/06/2006)"){
+			writelinef("   %3s%-4i    cldp_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			}
+			else {
+			writelinef("   %3s%-4i    opls_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			}
+
+
+			++a;
+		}
+
+    	# Bonds in pattern
+	writelinef(" [ bonds ]\n");
+	nc = 0;
+		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
+
+		for (n=1; n<=p.nbonds; ++n)
+		{
+			# Grab bound pointer
+			b = p.bonds[n];
+			if (b.form == "constraint") nconstraints++;
+			else 
+			{
+			i=b.id[1];
+			j=b.id[2];
+
+#			writelinef("   %5s%i %5s%i\n",p.atoms[i].type.name,i,p.atoms[j].type.name,j);
+			writelinef("   %5s%i %5s%i\n",p.atoms[i].symbol,i,p.atoms[j].symbol,j);
+
+
+			}
+                   }
+
+    	# Torsions in pattern
+	writelinef("\n  [dihedrals]\n");
+		# Grab bound pointer
+		for (b = p.torsions; b; ++b)
+		{
+			i=b.id[1];
+			j=b.id[2];
+			k=b.id[3];
+			l=b.id[4];			
+#			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].type.name,i,p.atoms[j].type.name,j,p.atoms[k].type.name,k,p.atoms[l].type.name,l);
+			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].symbol,i,p.atoms[j].symbol,j,p.atoms[k].symbol,k,p.atoms[l].symbol,l);
+
+
+		}
+
+
+          }
+}
+
+
+##########################################

@@ -66,7 +66,7 @@ void AtenFragment::refresh()
 	ui.FragmentTree->clear();
 	ui.FragmentTable->clear();
 
-	int row = 0, nperrow = 5, column = 0		;
+	int row = 0, nperrow = 5, column = 0;
 
 	ui.FragmentTable->setColumnCount(nperrow);
 	ui.FragmentTable->setRowCount(1);
@@ -95,6 +95,8 @@ void AtenFragment::refresh()
 		// Go through fragments in group
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
 		{
+			// Filter?
+			if (!filterText_.isEmpty() && (strcasestr(f->masterModel()->name(), filterText_.get()) == 0)) continue;
 			// Add item to TTreeWidget
 			item = new TTreeWidgetItem(group);
 			item->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
@@ -183,13 +185,17 @@ void AtenFragment::on_FragmentTable_doubleClicked(const QModelIndex &index)
 }
 
 
-void AtenFragment::on_FragmentFilterEdit_textChanged(QString &text)
+void AtenFragment::on_FragmentFilterEdit_textChanged(const QString &text)
 {
-	
+	filterText_ = qPrintable(text);
+	refresh();
 }
 
 void AtenFragment::on_FragmentShowAllButton_clicked(bool checked)
 {
+	ui.FragmentFilterEdit->setText("");
+	filterText_.clear();
+	refresh();
 }
 
 void AtenFragment::on_ViewAsListCheck_clicked(bool checked)

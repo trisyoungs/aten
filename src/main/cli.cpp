@@ -116,10 +116,13 @@ Cli cliSwitches[] = {
 		"Prevent centering of atomic coordinates at zero" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
-			"Prevent folding of atoms in periodic systems" },
-	{ Cli::NoFragmentsSwitch,	'\0',"nofold",		0,
-		"",
 		"Prevent folding of atoms in periodic systems" },
+	{ Cli::NoFragmentsSwitch,	'\0',"nofragments",	0,
+		"",
+		"Prevent loading of fragments on startup" },
+	{ Cli::NoFragmentIconsSwitch,	'\0',"nofragmenticons",	0,
+		"",
+		"Prevent generation of fragment icons" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",
 		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
@@ -211,6 +214,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			{
 				arg = &argv[argn][1];
 				argtext.clear();
+				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
+				{
+					printf("Don't combine short options into one group - e.g. specify '-d -v -n' and not '-dvn'.\n");
+					return FALSE;
+				}
 			}
 			else
 			{
@@ -332,6 +340,11 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				arg = &argv[argn][1];
 				argtext.clear();
+				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
+				{
+					printf("Don't combine short options into one group - e.g. specify '-d -v -n' and not '-dvn'.\n");
+					return -1;
+				}
 			}
 			else
 			{
@@ -344,7 +357,7 @@ int Aten::parseCli(int argc, char *argv[])
 			if (opt == Cli::nSwitchItems)
 			{
 				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", arg.get());
-				return FALSE;
+				return -1;
 			}
 			// Check if an argument to the switch has been supplied...
 			if (argtext != "") hasArg = TRUE;
@@ -366,7 +379,7 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
 						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
-						return FALSE;
+						return -1;
 					}
 					break;
 				// Optional argument

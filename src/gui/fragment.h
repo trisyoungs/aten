@@ -23,6 +23,7 @@
 #define ATEN_FRAGMENTWINDOW_H
 
 #include "gui/ui_fragment.h"
+#include "base/dnchar.h"
 
 // Forward declarations
 class Model;
@@ -46,7 +47,7 @@ class AtenFragment : public QDialog
 	void on_FragmentTree_doubleClicked(const QModelIndex &index);
 	void on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 	void on_FragmentTable_doubleClicked(const QModelIndex &index);
-	void on_FragmentFilterEdit_textChanged(QString &text);
+	void on_FragmentFilterEdit_textChanged(const QString &text);
 	void on_FragmentShowAllButton_clicked(bool checked);
 	void on_ViewAsListCheck_clicked(bool checked);
 	void on_ViewAsGridCheck_clicked(bool checked);
@@ -58,6 +59,8 @@ class AtenFragment : public QDialog
 	private:
 	// Current drawing fragment
 	Fragment *currentFragment_;
+	// Text string to filter fragments by
+	Dnchar filterText_;
 
 	public:
 	// Return current drawing fragment

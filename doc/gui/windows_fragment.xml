@@ -20,7 +20,7 @@
 	</section>
 
 	<section><title>Placing Fragments in Free Space</title>
-		<para>Single-clicking in free space (i.e. not over an existing atom) places a copy of the current fragment in the current orientation in the current model. Click-dragging allows the fragment to be freely rotated about the anchor point before the placement is final. On placement, the anchor atom is pasted too <emphasis>unless</emphasis> it is os unknown element (see above).</para>
+		<para>Single-clicking in free space (i.e. not over an existing atom) places a copy of the current fragment in the current orientation in the current model. Click-dragging allows the fragment to be freely rotated about the anchor point before the placement is final. On placement, the anchor atom is pasted too <emphasis>unless</emphasis> it is of unknown element (see above).</para>
 	</section>
 
 	<section><title>Attaching to Existing Atoms</title>
