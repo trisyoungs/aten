@@ -29,7 +29,6 @@
 #include "model/model.h"
 #include "model/fragment.h"
 #include "main/aten.h"
-#include <string.h>
 
 // Constructor
 AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -97,7 +96,7 @@ void AtenFragment::refresh()
 		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
 		{
 			// Filter?
-			if (!filterText_.isEmpty() && (strcasestr(f->masterModel()->name(), filterText_.get()) == 0)) continue;
+			if (!filterText_.isEmpty() && (strcmp(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
 			// Add item to TTreeWidget
 			item = new TTreeWidgetItem(group);
 			item->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
@@ -188,7 +187,7 @@ void AtenFragment::on_FragmentTable_doubleClicked(const QModelIndex &index)
 
 void AtenFragment::on_FragmentFilterEdit_textChanged(const QString &text)
 {
-	filterText_ = qPrintable(text);
+	filterText_ = lowerCase(qPrintable(text));
 	refresh();
 }
 
