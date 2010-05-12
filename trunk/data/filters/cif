@@ -25,17 +25,12 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 
 	inloop = 0;
 
-	printf("BEGINNING!!\n");
 	while (!eof())
 	{
-		printf("STARTING\n");
 		# Read an entire line
 		getline(line);
-printf("LKJLKJKL [%s]\n", line);
 		# Check the first item as a keyword
 		readvar(line, keywd, data1);
-printf("AJSDLJASLKDJLKAS\n");
-		printf("asdasdasd = %s\n", keywd);
 		if (keywd == "") continue;
 		readvarf(keywd, "%1s", char);
 

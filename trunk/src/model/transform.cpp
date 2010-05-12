@@ -49,6 +49,9 @@ void Model::prepareTransform()
 	}
 	// Reference point for mim will be the updating cog
 	transformCOG = selectionCentreOfGeometry();
+	transformCOG.zero();
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) transformCOG += ri->item->rWorld();
+	transformCOG /= selection_.nItems();
 	// Calculate a unit radius for the centre of geometry
 	Vec4<double> pvec = worldToScreen(transformCOG);
 	translateScale_ = pvec.w;
@@ -85,14 +88,14 @@ void Model::rotateSelectionWorld(double dx, double dy)
 {
 	// Rotate the selection about the calculated centre of geometry.
 	// We are passed the 2D-movement of the mouse, which we use to generate a rotation matrix.
-	// We then apply this to the stored *world* coordinates of 
+	// We then apply this to the stored *world* coordinates of
 	// the selected atoms, which we then unproject to get the new model coordinates.
 	msg.enter("Model::rotateSelectionWorld");
 	static double rotx, roty, cosx, cosy, sinx, siny;
 	static Vec3<double> newr;
 	static Mat4<double> rotmat;
-	rotx = dy / 10.0;
-	roty = dx / 10.0;
+	rotx = dy / 20.0;
+	roty = dx / 20.0;
 	cosx = cos(rotx);
 	cosy = cos(roty);
 	sinx = sin(rotx);
@@ -101,13 +104,12 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	rotmat.set(1,-sinx*-siny,cosx,-sinx*cosy,0.0);
 	rotmat.set(2,cosx*-siny,sinx,cosx*cosy,0.0);
 	rotmat.set(3,0.0,0.0,0.0,1.0);
-	// Transform out rotation matrix into the local view orientation
-	rotmat *= rotationMatrix_;
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
-		newr = ri->item->r() - transformCOG;
-		ri->item->r() = (rotmat * newr) + transformCOG;
+		newr = (rotmat * (ri->item->rWorld() - transformCOG)) + transformCOG;
+		newr *= viewMatrixInverse_;
+		ri->item->r() = newr;
 	}
 
 	// Update model measurements
