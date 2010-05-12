@@ -59,7 +59,7 @@
 						<entry>GAMESS-US Output (Log)</entry>
 						<entry>*.log</entry>
 						<entry>gamuslog</entry>
-						<entry>10</entry>
+						<entry>11</entry>
 						<entry>yes</entry>
 						<entry>no</entry>
 						<entry></entry>
@@ -72,6 +72,15 @@
 						<entry>yes</entry>
 						<entry>yes</entry>
 						<entry>Cartesian coordinates only.</entry>
+					</row>
+					<row>
+						<entry>Gromacs Configuration</entry>
+						<entry>*.gro</entry>
+						<entry>gro</entry>
+						<entry>14</entry>
+						<entry>yes</entry>
+						<entry>yes</entry>
+						<entry></entry>
 					</row>
 					<row>
 						<entry>Mopac Control File </entry>
@@ -163,6 +172,12 @@
 						<entry></entry>
 					</row>
 					<row>
+						<entry>PDB Trajectory (Multiple PDB file)</entry>
+						<entry>*.pdb</entry>
+						<entry>pdb</entry>
+						<entry></entry>
+					</row>
+					<row>
 						<entry>XYZ Trajectory (Multiple XYZ file)</entry>
 						<entry>*.xyz</entry>
 						<entry>xyz</entry>
@@ -239,6 +254,15 @@
 						<entry>no</entry>
 						<entry>yes</entry>
 						<entry></entry>
+					</row>
+					<row>
+						<entry>Gromacs RTP file</entry>
+						<entry>*.rtp</entry>
+						<entry>rtp</entry>
+						<entry>14</entry>
+						<entry>no</entry>
+						<entry>yes</entry>
+						<entry>Preliminary version.</entry>
 					</row>
 				</tbody>
 			</tgroup>
