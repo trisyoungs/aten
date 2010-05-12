@@ -376,6 +376,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 			# Convert functional form to be recognised by DL_POLY
 			if (b.form == "cos") writelinef("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
 			else if (b.form == "cos3") writelinef("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
+			else if (b.form == "cos3c") writelinef("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.data[4]);
 			else
 			{
 				printf("Functional form of torsion term (%s) not accounted for in export filter.\n",b.form);

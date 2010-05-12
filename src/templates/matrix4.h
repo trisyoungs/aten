@@ -278,7 +278,7 @@ template <class T> Mat4<T> &Mat4<T>::operator*=(const double d)
 	rows[0] *= d;
 	rows[1] *= d;
 	rows[2] *= d;
-	rows[4] *= d;
+	rows[3] *= d;
 	return *this;
 }
 
