@@ -1,5 +1,57 @@
-##########################################
-filter(type="exportexpression",name="Gromacs .rtp file Specification", extension="rtp", glob="*.rtp",nickname="rtp")
+# Gromacs Configuration and Expression Files
+# Created:	 25/05/2010
+# Last modified: 10/05/2010
+# ChangeLog:
+
+filter(type="importmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
+{
+
+	# Variable declaration
+	int natoms,n,m,resno;
+	string e,title,res;
+	double rx,ry,rz,a,b,c;
+	atom i;
+	aten.prefs.zmap = "singlealpha";
+
+	# Read data
+	getline(title);
+	newmodel(title);
+	readline(natoms);
+	for (n=1; n<=natoms; ++n)
+	{
+		readlinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f",resno,res,e,m,rx,ry,rz);
+		i = newatom(e, rx*10.0, ry*10.0, rz*10.0);
+	}
+	readline(a,b,c);
+	if ((a < 0.0001) || (b < 0.0001) || (c < 0.0001)) printf("No valid cell found.\n");
+	else cell(a*10.0,b*10.0,c*10.0,90,90,90);
+	rebond(FALSE);
+	finalisemodel();
+}
+
+filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
+{
+
+	# Variable declaration
+	int n;
+	model m = aten.frame;
+
+	# Write data
+	writeline(m.name);
+	writeline(m.natoms);
+
+	n = 1;
+	for (atom i=m.atoms; i; ++i)
+	{
+		if (i.type == 0) writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.symbol,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+		else writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.type.name,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+		++n;
+	}
+	if (m.cell.type == "none") writelinef("%9.5f%9.5f%9.5f\n",0.0,0.0,0.0);
+	else writelinef("%9.5f%9.5f%9.5f\n",m.cell.a/10.0,m.cell.b/10.0,m.cell.c/10.0);
+}
+
+filter(type="exportexpression",name="Gromacs .rtp file Specification", extension="rtp", glob="*.rtp",nickname="rtp", id=14)
 {
 	# Variable declaration
         pattern p;
@@ -99,5 +151,3 @@ filter(type="exportexpression",name="Gromacs .rtp file Specification", extension
           }
 }
 
-
-##########################################
