@@ -216,8 +216,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				argtext.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
-					printf("Don't combine short options into one group - e.g. specify '-d -v -n' and not '-dvn'.\n");
-					return FALSE;
+					isShort = FALSE;
+					arg = beforeChar(&argv[argn][1], '=');
+					argtext = afterChar(&argv[argn][1], '=');
 				}
 			}
 			else
@@ -283,6 +284,14 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					printUsage();
 					return FALSE;
 					break;
+				// Restrict fragment loading on startup
+				case (Cli::NoFragmentsSwitch):
+					prefs.setLoadFragments(FALSE);
+					break;
+				// Restrict fragment icon generation
+				case (Cli::NoFragmentIconsSwitch):
+					prefs.setGenerateFragmentIcons(FALSE);
+					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
 					msg.setQuiet(TRUE);
@@ -342,8 +351,9 @@ int Aten::parseCli(int argc, char *argv[])
 				argtext.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
-					printf("Don't combine short options into one group - e.g. specify '-d -v -n' and not '-dvn'.\n");
-					return -1;
+					isShort = FALSE;
+					arg = beforeChar(&argv[argn][1], '=');
+					argtext = afterChar(&argv[argn][1], '=');
 				}
 			}
 			else
@@ -393,6 +403,8 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::AtenDataSwitch):
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
+				case (Cli::NoFragmentsSwitch):
+				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
@@ -581,14 +593,6 @@ int Aten::parseCli(int argc, char *argv[])
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
 					prefs.setFoldOnLoad(Prefs::SwitchOff);
-					break;
-				// Restrict fragment loading on startup
-				case (Cli::NoFragmentsSwitch):
-					prefs.setLoadFragments(FALSE);
-					break;
-				// Restrict fragment icon generation
-				case (Cli::NoFragmentIconsSwitch):
-					prefs.setGenerateFragmentIcons(FALSE);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
