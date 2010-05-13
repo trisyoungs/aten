@@ -110,6 +110,7 @@ echo "#"
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc aten.xsl faq-versioned.xml > faq.html
+sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" faq.html > faq.xhtml
 
 # Tidy up
 rm aten-versioned.xml examples-versioned.xml faq-versioned.xml aten.xsl
