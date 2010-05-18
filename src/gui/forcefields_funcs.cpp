@@ -161,7 +161,7 @@ void AtenForcefields::refreshTypes()
 // Load forcefield (public function)
 void AtenForcefields::loadForcefield()
 {
-	static QDir currentDirectory_(aten.workDir());
+	static QDir currentDirectory_(aten.dataDir());
 	QString filename = QFileDialog::getOpenFileName(this, "Select Forcefield", currentDirectory_.path());
 	if (!filename.isEmpty())
 	{

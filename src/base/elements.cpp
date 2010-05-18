@@ -567,7 +567,17 @@ int ElementMap::numberToZ(const char *s)
 			isnumber = FALSE;
 			break;
 		}
-	if (isnumber) return atoi(s);
+	if (isnumber)
+	{
+		// Check range of number before returning
+		int i = atoi(s);
+		if ((i < 0) || (i > nElements_))
+		{
+			msg.print("Warning: Converted element number is out of range (%i)\n", i);
+			i = 0;
+		}
+		return i;
+	}
 	else return -1;
 }
 
