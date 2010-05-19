@@ -32,7 +32,7 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (ds == Atom::nDrawStyles) return FALSE;
 	if (c->hasArg(1))
 	{
-		Atom *i = obj.rs->atom(c->argi(1)-1);
+		Atom *i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Style individual atom");
 		obj.rs->styleAtom(i, ds);
@@ -52,7 +52,7 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = obj.rs->atom(c->argi(0)-1);
+	Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
 	// Set atom information
 	obj.i = i;
@@ -86,7 +86,7 @@ bool Command::function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Atom *i = obj.rs->atom(c->argi(0)-1);
+	Atom *i = c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0,VTypes::AtomData) : obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return FALSE;
 	rv.set(VTypes::AtomData, i);
 	return TRUE;
@@ -107,7 +107,7 @@ bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->setCharge(c->argd(0));
 	rv.reset();
@@ -118,7 +118,7 @@ bool Command::function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs->atom(c->argi(3)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.rs->positionAtom(obj.i, c->arg3d(0));
 	rv.reset();
@@ -129,7 +129,7 @@ bool Command::function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->setElement(c->argz(0));
 	rv.reset();
@@ -140,7 +140,7 @@ bool Command::function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs->atom(c->argi(3)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f() = c->arg3d(0);
 	rv.reset();
@@ -151,7 +151,7 @@ bool Command::function_SetForces(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(0,c->argd(0));
 	rv.reset();
@@ -162,7 +162,7 @@ bool Command::function_SetFX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(1,c->argd(0));
 	rv.reset();
@@ -173,7 +173,7 @@ bool Command::function_SetFY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->f().set(2,c->argd(0));
 	rv.reset();
@@ -184,7 +184,7 @@ bool Command::function_SetFZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->setId(c->argi(0));
 	rv.reset();
@@ -195,7 +195,7 @@ bool Command::function_SetId(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(0,c->argd(0));
 	rv.reset();
@@ -206,7 +206,7 @@ bool Command::function_SetRX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(1,c->argd(0));
 	rv.reset();
@@ -217,7 +217,7 @@ bool Command::function_SetRY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->r().set(2,c->argd(0));
 	rv.reset();
@@ -228,7 +228,7 @@ bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v() = c->arg3d(0);
 	rv.reset();
@@ -239,7 +239,7 @@ bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(0,c->argd(0));
 	rv.reset();
@@ -250,7 +250,7 @@ bool Command::function_SetVX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(1,c->argd(0));
 	rv.reset();
@@ -261,7 +261,7 @@ bool Command::function_SetVY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetVZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v().set(2,c->argd(0));
 	rv.reset();
