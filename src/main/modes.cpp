@@ -57,12 +57,13 @@ void Aten::exportModels()
 		// Make sure that the new filename is not the same as the old filename
 		if (strcmp(filename, m->filename()) == 0)
 		{
-			msg.print("Export filename generated is identical to the original - not converted.\n");
+			msg.print("Export filename generated is identical to the original (%s) - not converted.\n", filename);
 			continue;
 		}
 		m->setFilter(exportFilter_);
 		m->setFilename(filename);
-		exportFilter_->executeWrite(filename);
+		if (exportFilter_->executeWrite(filename)) msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename, exportFilter_->filter.name());
+		else msg.print("Failed to save model '%s'.\n", m->name());
 	}
 	msg.exit("Aten::exportModels");
 }
