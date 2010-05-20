@@ -1081,7 +1081,7 @@ void Pattern::findRings()
 		i = i->next;
 		if (!okay) break;
 	}
-	if (!okay) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
+	if ((!okay) && (rings_.nItems() == prefs.maxRings())) msg.print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
 	msg.print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	msg.exit("Pattern::findRings");
 }
