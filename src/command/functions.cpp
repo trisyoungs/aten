@@ -457,6 +457,7 @@ void Command::initPointers()
 	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
 	pointers_[ReplaceStr] = &Command::function_ReplaceStr;
 	pointers_[RemoveStr] = &Command::function_RemoveStr;
+	pointers_[SPrintF] = &Command::function_SPrintF;
 	pointers_[StripChars] = &Command::function_StripChars;
 	pointers_[ToA] = &Command::function_ToA;
 

@@ -496,6 +496,7 @@ class Command
 		ReplaceChars,
 		ReplaceStr,
 		RemoveStr,
+		SPrintF,
 		StripChars,
 		ToA,
 
@@ -935,6 +936,7 @@ class Command
 	static bool function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SPrintF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
