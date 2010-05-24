@@ -151,6 +151,12 @@ bool Command::function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Print to string
+bool Command::function_SPrintF(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	return function_WriteVariableFormatted(c, obj, rv);
+}
+
 // Strip characters from supplied string
 bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
