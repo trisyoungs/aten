@@ -48,7 +48,6 @@ void Model::prepareTransform()
 		return;
 	}
 	// Reference point for mim will be the updating cog
-	transformCOG = selectionCentreOfGeometry();
 	transformCOG.zero();
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) transformCOG += ri->item->rWorld();
 	transformCOG /= selection_.nItems();
@@ -109,7 +108,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (ri->item->rWorld() - transformCOG)) + transformCOG;
 		newr *= viewMatrixInverse_;
-		ri->item->r() = newr;
+		ri->item->r() = newr + cell_.centre();
 	}
 
 	// Update model measurements
