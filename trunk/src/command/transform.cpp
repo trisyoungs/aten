@@ -230,6 +230,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 			if (c->nArgs() == 12) o.set(c->argd(9), c->argd(10), c->argd(11));
 			break;
 		default:
+			printf("Internal Error: 'matrixtransform' was passed a strange (%i) number of arguments.\n", c->nArgs());
 			return FALSE;
 	}
 	// Perform transformation
