@@ -1034,6 +1034,7 @@ void Prefs::setZMapType(ElementMap::ZMapType i)
 {
 	if (fixedZMapType_) msg.print("Ignored change of ZMapping type to '%s' since it is currently fixed to '%s'.\n", ElementMap::zMapType(i), ElementMap::zMapType(zMapType_));
 	else zMapType_ = i;
+	printf("ZMapping type is now %s\n", ElementMap::zMapType(zMapType_));
 }
 
 
