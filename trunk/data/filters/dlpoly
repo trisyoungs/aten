@@ -13,7 +13,7 @@ filter(type="importmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	double ax,ay,az,bx,by,bz,cx,cy,cz;
 	double rx,ry,rz,vx,vy,vz,fx,fy,fz;
 
-	aten.prefs.zmap = "ff";
+	#aten.prefs.zmap = "ff";
 
 	# Title section
 	getline(title);
