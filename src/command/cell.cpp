@@ -84,7 +84,7 @@ bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!c->parent()->isFilter())
+	if (c->parent()->parser() == NULL)
 	{
 		obj.rs->beginUndoState("Fold Atoms");
 		obj.rs->foldAllAtoms();

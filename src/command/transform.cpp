@@ -79,7 +79,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!c->parent()->isFilter())
+	if (c->parent()->parser() == NULL)
 	{
 		Vec3<double> centre = c->arg3d(0);
 		Vec3<int> lock(0,0,0);
