@@ -131,7 +131,7 @@ bool Command::function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If we're reading from a file (via a filter) check for prefs override
-	if (!c->parent()->isFilter())
+	if (c->parent()->parser() == NULL)
 	{
 		obj.rs->beginUndoState("Calculate Bonding");
 		obj.rs->clearBonding();
