@@ -66,6 +66,7 @@ Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
 	{ "cx",		VTypes::DoubleData,	0, FALSE },
 	{ "cy",		VTypes::DoubleData,	0, FALSE },
 	{ "cz",		VTypes::DoubleData,	0, FALSE },
+	{ "centre",	VTypes::VectorData,	0, TRUE },
 	{ "centrex",	VTypes::DoubleData,	0, TRUE },
 	{ "centrey",	VTypes::DoubleData,	0, TRUE },
 	{ "centrez",	VTypes::DoubleData,	0, TRUE },
@@ -196,6 +197,9 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (CellVariable::CY):
 		case (CellVariable::CZ):
 			rv.set(ptr->axes().element(acc - CellVariable::AX));
+			break;
+		case (CellVariable::Centre):
+			rv.set(ptr->centre());
 			break;
 		case (CellVariable::CentreX):
 		case (CellVariable::CentreY):

@@ -41,7 +41,7 @@ class CellVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, Type, Volume, nAccessors };
+	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, Centre, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, Type, Volume, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

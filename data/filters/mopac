@@ -3,6 +3,7 @@
 # Last modified: 07/12/2009
 # ChangeLog:
 #	07/12/2009 - Fixed (uncommented) 'newatom' line in importmodel filter, which had been taken out for some reason. Tweaked '+' and '&' detection.
+#	18/06/2010 - Fixed 'arc' import filter for big systems with atom coordinates 1000 or greater
 # Notes:
 #   Cartesian coordinate format is assumed
 
@@ -86,9 +87,10 @@ filter(type="exportmodel", name="Mopac Control File", nickname="mopac", extensio
 filter(type="importmodel", name="Mopac Archive File", nickname="mopacarc", extension="arc", glob="*.arc", id=99)
 {
 	# Variable declaration
-	int natoms,n,cellcount = 0,fx,fy,fz,ntitle=2, morekeywords, lesstitle;
+	int natoms,n,cellcount = 0,ntitle=2, morekeywords, lesstitle;
 	string e,line,title;
-	double rx,ry,rz;
+	double rx,ry,rz,q;
+	atom i;
 	vector v[3];
 
 	# Search for geometry data in file...
@@ -113,9 +115,9 @@ filter(type="importmodel", name="Mopac Archive File", nickname="mopacarc", exten
 	# All remaining lines make up the geometry
 	while (!eof())
 	{
-		readline(e,rx,fx,ry,fy,rz,fy);
+		readlinef("%3s  %13f   %13f   %13f   %f",e,rx,ry,rz,q);
 		# If the element is 'Tv' its part of the cell specification
-		if (e == "Tv")
+		if (e == " Tv")
 		{
 			++cellcount;
 			if (cellcount < 4)
@@ -126,7 +128,11 @@ filter(type="importmodel", name="Mopac Archive File", nickname="mopacarc", exten
 			}
 			else printf("Extra translation vector data found - ignored...\n");
 		}
-		else newatom(e,rx,ry,rz);
+		else
+		{
+			i = newatom(e,rx,ry,rz);
+			i.q = q;
+		}
 	}
 
 	# Were we supplied with a full cell description?
