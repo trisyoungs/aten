@@ -444,6 +444,7 @@ bool Format::writeToString()
 				break;
 			case (FormatChunk::PlainTextChunk):
 				strcat(createdString_, chunk->cFormat());
+				result = TRUE;
 				break;
 			case (FormatChunk::DelimitedChunk):
 				result = chunk->arg()->execute(rv);

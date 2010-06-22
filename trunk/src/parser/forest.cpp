@@ -211,15 +211,14 @@ bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name, bo
 }
 
 // Generate forest from input file
-bool Forest::generateFromFile(const char *filename, const char *name, bool isFilterFile)
+bool Forest::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool isFilterFile)
 {
 	msg.enter("Forest::generateFromFile");
 	filename_ = filename;
 	if (name != NULL) name_ = name;
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
-
-	bool result = cmdparser.generateFromFile(this, filename);
+	bool result = cmdparser.generateFromFile(this, filename, dontpushtree);
 // 	print();
 	finalise();
 	msg.exit("Forest::generateFromFile");

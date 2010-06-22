@@ -104,7 +104,7 @@ class CommandParser : public Tree
 	// Populate target forest from specified string list
 	bool generateFromStringList(Forest *f, Dnchar *stringListHead, bool dontpushtree = FALSE);
 	// Populate target forest from specified file(name)
-	bool generateFromFile(Forest *f, const char *filename);
+	bool generateFromFile(Forest *f, const char *filename, bool dontpushtree = FALSE);
 
 	public:
 	// Push tree

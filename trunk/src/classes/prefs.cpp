@@ -333,7 +333,7 @@ bool Prefs::load(const char *filename)
 		return TRUE;
 	}
 	ReturnValue rv;
-	bool result = aten.prefsCommands.generateFromFile(filename, "User Preferences", FALSE);
+	bool result = aten.prefsCommands.generateFromFile(filename, "User Preferences");
 	if (result) result = aten.prefsCommands.executeAll(rv);
 	msg.exit("Prefs::load");
 	return result;

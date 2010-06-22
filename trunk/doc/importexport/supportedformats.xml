@@ -119,6 +119,15 @@
 						<entry></entry>
 					</row>
 					<row>
+						<entry>Quantum Espresso</entry>
+						<entry>*.in</entry>
+						<entry>in</entry>
+						<entry>15</entry>
+						<entry>yes</entry>
+						<entry>yes</entry>
+						<entry>Assumes ibrav=0</entry>
+					</row>
+					<row>
 						<entry>SIESTA Flexible Data Format</entry>
 						<entry>*.fdf</entry>
 						<entry>siesta</entry>
