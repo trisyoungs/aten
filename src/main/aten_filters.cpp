@@ -97,7 +97,7 @@ bool Aten::openFilter(const char *filename)
 	msg.enter("Aten::openFilter");
 	// Construct Forest...
 	Forest *f = filterForests_.add();
-	if (!f->generateFromFile(filename, filename, TRUE))
+	if (!f->generateFromFile(filename, filename, TRUE, TRUE))
 	{
 		msg.print("Failed to load filters from '%s'...\n", filename);
 		failedFilters_.add()->set( filename );
@@ -183,7 +183,7 @@ int Aten::parseFilterDir(const char *path)
 		QString filename(path);
 		filename += "/";
 		filename += filterlist.at(i);
-		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE))
+		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE, TRUE))
 		{
 			msg.print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
 			failedFilters_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );

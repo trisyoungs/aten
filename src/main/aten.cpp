@@ -637,6 +637,7 @@ void Aten::openFragments()
 
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;
+	aten.setCurrentModel(NULL);
 
 	// Print out info
 	int nfragments = 0;

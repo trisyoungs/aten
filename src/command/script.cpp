@@ -38,7 +38,7 @@ bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Forest *f = aten.scripts.add();
-	if (!f->generateFromFile(c->argc(0)))
+	if (!f->generateFromFile(c->argc(0), "ScriptFile"))
 	{
 		aten.scripts.remove(f);
 		return FALSE;

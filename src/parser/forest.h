@@ -64,7 +64,7 @@ class Forest
 	// Generate forest from string list
 	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE);
 	// Generate forest from input file
-	bool generateFromFile(const char *filename, const char *name = NULL, bool isFilterFile = FALSE);
+	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool isFilterFile = FALSE);
 	// Finalise forest
 	void finalise();
 	// Return number of trees in forest

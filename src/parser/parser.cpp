@@ -243,7 +243,7 @@ bool CommandParser::generateFromStringList(Forest *f, Dnchar *stringListHead, bo
 }
 
 // Fill target forest from specified character string
-bool CommandParser::generateFromFile(Forest *f, const char *filename)
+bool CommandParser::generateFromFile(Forest *f, const char *filename, bool dontpushtree)
 {
 	msg.enter("CommandParser::generateFromFile");
 	// Clear any data in the existing forest
@@ -255,7 +255,7 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename)
 	}
 	forest_ = f;
 	forest_->clear();
-	pushTree();
+	if (!dontpushtree) pushTree();
 	// Open the file
 	parser_.openFile(filename);
 	if (!parser_.isFileGood())
@@ -287,6 +287,7 @@ void CommandParser::pushTree(bool isfilter)
 void CommandParser::pushFunction(const char *name, VTypes::DataType returntype)
 {
 	// If there is no current tree target then we add a Forest-global function...
+	if (tree_ != NULL) msg.print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
 	if (tree_ == NULL) tree_ = forest_->addGlobalFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
@@ -305,7 +306,7 @@ void CommandParser::popTree()
 		// Can use the 'isFilter' member function to check for the lack of a proper type
 		if (!ri->item->isFilter()) msg.print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
 	}
-	msg.print(Messenger::Parse, "Removing tree %p from stack.\n", ri->item);
+	msg.print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack
 	ri = stack_.last();

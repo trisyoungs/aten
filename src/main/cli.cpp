@@ -609,7 +609,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-					if (script->generateFromFile(argtext.get()))
+					if (script->generateFromFile(argtext.get(), "CliScript"))
 					{
 						aten.setProgramMode(Aten::CommandMode);
 						if (!script->executeAll(rv)) aten.setProgramMode(Aten::NoMode);
