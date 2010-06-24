@@ -117,6 +117,7 @@
 	<!ENTITY energyunits SYSTEM "enums/energyunits.xml">
 	<!ENTITY glyphtypes SYSTEM "enums/glyphtypes.xml">
 	<!ENTITY gridstyles SYSTEM "enums/gridstyles.xml">
+	<!ENTITY gridtypes SYSTEM "enums/gridtypes.xml">
 	<!ENTITY labeltypes SYSTEM "enums/labeltypes.xml">
 	<!ENTITY outputtypes SYSTEM "enums/outputtypes.xml">
 	<!ENTITY parseoptions SYSTEM "enums/parseoptions.xml">
@@ -351,6 +352,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 		&energyunits;
 		&glyphtypes;
 		&gridstyles;
+		&gridtypes;
 		&labeltypes;
 		&outputtypes;
 		&parseoptions;

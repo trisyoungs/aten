@@ -66,6 +66,8 @@ template <class T> class Mat4
 	void set(int row, int col, T value);
 	// Set whole row of matrix
 	void set(int row, T x, T y, T z, T w);
+	// Set whole row of matrix
+	void set(int row, Vec3<T> r, T w);
 	// Set the matrix from a 1D array of values
 	void setFromColumnMajor(T*);
 	// Reset the matrix to the identity
@@ -178,6 +180,12 @@ template <class T> void Mat4<T>::set(int row, int col, T d)
 template <class T> void Mat4<T>::set(int row, T x, T y, T z, T w)
 {
 	rows[row].set(x, y, z, w);
+}
+
+// Set whole row of matrix
+template <class T> void Mat4<T>::set(int row, Vec3<T> v, T w)
+{
+	rows[row].set(v, w);
 }
 
 // Set (T[])

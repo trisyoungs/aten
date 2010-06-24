@@ -1,7 +1,8 @@
 # Gaussian Cube Format (for v1.2+)
 # Created:	 16/04/2009
-# Last modified: 16/04/2009
+# Last modified: 03/05/2010
 # ChangeLog:
+#	03/05/2010 - Adjusted to use modified grid commands
 # Notes:
 
 filter(type="importgrid", name="Gaussian CUBE", nickname="cube", extension="cube", glob="*.cube", zmap="numeric", id=1)
@@ -39,10 +40,10 @@ filter(type="importgrid", name="Gaussian CUBE", nickname="cube", extension="cube
 
 	# Create a grid associated to this model, and set it up with data we read previously
 	newgrid(title);
+	initgrid("regularxyz",nx,ny,nz);
+	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
 	printf("Grid origin is : {%f,%f,%f}\n", origin.x, origin.y, origin.z);
 	gridorigin(origin.x, origin.y, origin.z);
-	printf("Grid size (points) is : {%i,%i,%i}\n", nx, ny, nz);
-	gridsize(nx,ny,nz);
 	gridaxes(x.x, x.y, x.z, y.x, y.y, y.z, z.x, z.y, z.z);
 
 	# Volumetric data (five points per line)

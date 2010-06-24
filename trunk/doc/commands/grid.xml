@@ -268,28 +268,7 @@ gridortho(0.5, 0.5, 0.8);
 		<para>sets up a system of axes elongated in the z-axis.</para>
 		
 	</section>
-	
-	<section id="command.ref.gridsize"><title>gridsize</title>
-		<indexterm><primary>commands</primary><secondary>gridsize</secondary></indexterm>
-		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>void <function>gridsize</function></funcdef>
-				<paramdef>int <parameter>nx</parameter></paramdef>
-				<paramdef>int <parameter>ny</parameter></paramdef>
-				<paramdef>int <parameter>nz</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-		<para>Sets the size of the grid data, and prepares the data array. This must be called before any calls to <link linkend="command.ref.addpoint">addpoint</link> or <link linkend="command.ref.addnextgridpoint">addnextgridpoint</link> are issued.</para>
 		
-		<para>For example:</para>
-		<synopsis>
-gridsize(64, 128, 64);
-		</synopsis>
-		<para>initialises the current grid to hold a total of (gets calculator...) 524,288 points.</para>
-		
-	</section>
-	
 	<section id="command.ref.gridstyle"><title>gridstyle</title>
 		<indexterm><primary>commands</primary><secondary>gridstyle</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
@@ -352,7 +331,29 @@ gridvisible(FALSE);
 		</synopsis>
 		
 	</section>
-	
+
+	<section id="command.ref.initgrid"><title>initgrid</title>
+		<indexterm><primary>commands</primary><secondary>initgrid</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridsize</function></funcdef>
+				<paramdef>string <parameter>type</parameter></paramdef>
+				<paramdef>int <parameter>nx</parameter></paramdef>
+				<paramdef>int <parameter>ny</parameter></paramdef>
+				<paramdef>int <parameter>nz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Initialises the current grid to be of the specified <link linkend="enums.gridtypes">grid type</link> and with the dimensions specified (if the <emphasis>type</emphasis> requires it). This must be called before any calls to <link linkend="command.ref.addpoint">addpoint</link> or <link linkend="command.ref.addnextgridpoint">addnextgridpoint</link> are issued.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+			initgrid("regularxyz", 64, 128, 64);
+		</synopsis>
+		<para>initialises the current grid to be a regularly-spaced and hold a total of (gets calculator...) 524,288 points.</para>
+		
+	</section>
+
 	<section id="command.ref.loadgrid"><title>loadgrid</title>
 		<indexterm><primary>commands</primary><secondary>loadgrid</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
