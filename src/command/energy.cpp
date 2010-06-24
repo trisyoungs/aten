@@ -74,7 +74,7 @@ bool Command::function_FrameEnergy(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
 	bool success;
-	if (obj.m->createExpression()) return FALSE;
+	if (!obj.m->createExpression()) return FALSE;
 	energy = obj.m->totalEnergy(obj.rs, success);
 	rv.set(energy);
 	return success;

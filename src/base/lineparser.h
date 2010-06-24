@@ -43,7 +43,7 @@ class LineParser
 	LineParser(const char *ifilename, bool outputstream = FALSE);
 	~LineParser();
 	// Parse Options
-	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, nParseOptions=5};
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseBraces=32, nParseOptions=6 };
 	static ParseOption parseOption(const char*);
 
 
@@ -104,6 +104,7 @@ class LineParser
 	// Return whether the end of the file has been reached (or only whitespace remains)
 	bool eofOrBlank();
 
+
 	/*
 	// Read/Write Routines
 	*/
@@ -146,6 +147,7 @@ class LineParser
 	int getDoubleArray(double *array, int count);
 	// Write line to file
 	bool writeLine(const char *s);
+
 
 	/*
 	// Argument Data

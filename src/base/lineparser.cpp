@@ -27,7 +27,7 @@
 #include <string.h>
 
 // Parse options
-const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes" };
+const char *ParseOptionKeywords[LineParser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies" };
 LineParser::ParseOption LineParser::parseOption(const char *s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
@@ -379,7 +379,34 @@ bool LineParser::getNextArg(Dnchar *destarg, int flags)
 					arglen ++;
 				}
 				break;
-			// Brackets
+			// Curly brackets - treat in the same way as quotes
+			case ('{'):
+			case ('}'):
+				if (!(optionMask_&LineParser::UseBraces))
+				{
+					// Just add as normal character
+					tempArg_[arglen] = c;
+					arglen ++;
+				}
+				else
+				{
+					// If the quotechar is a left brace and we have a right brace, stop quoting
+					if ((quotechar == '{') && (c == '}'))
+					{
+						quotechar = '\0';
+						break;
+					}
+					// If we are already quoting by some other means, add character and exit
+					if (quotechar != '\0')
+					{
+						tempArg_[arglen] = c;
+						arglen ++;
+					}
+					// No previous quoting, so begin quoting if '{'
+					if (c == '{') quotechar = '{';
+				}
+				break;
+			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask_&LineParser::StripBrackets) break;

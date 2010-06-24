@@ -268,6 +268,7 @@ void Command::initPointers()
 	pointers_[GlyphAtomsR] = &Command::function_GlyphAtomsR;
 	pointers_[GlyphAtomsV] = &Command::function_GlyphAtomsV;
 	pointers_[GlyphColour] = &Command::function_GlyphColour;
+	pointers_[GlyphColours] = &Command::function_GlyphColours;
 	pointers_[GlyphData] = &Command::function_GlyphData;
 	pointers_[GlyphSolid] = &Command::function_GlyphSolid;
 	pointers_[GlyphText] = &Command::function_GlyphText;
