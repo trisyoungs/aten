@@ -96,6 +96,10 @@ class Glyph
 	static const char *glyphType(GlyphType gt);
 	static GlyphType glyphType(const char *name, bool reporterror = 0);
 	static int nGlyphData(GlyphType gt);
+	// Glyph options
+	enum GlyphOption { GlyphColourOption, GlyphLineWidthOption, GlyphSolidOption, GlyphTextOption, GlyphWireOption, nGlyphOptions };
+	static const char *glyphOption(GlyphOption gt);
+	static GlyphOption glyphOption(const char *name, bool reporterror = 0);
 
 	private:
 	// Style of Glyph

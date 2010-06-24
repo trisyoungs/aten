@@ -684,7 +684,10 @@ CommandData Command::data[Command::nCommands] = {
 		"Set all atom velocities data in current glyph" },
 	{ "glyphcolour",	"NNNNn",	VTypes::NoData,
 		"int n, double r, double g, double b, double a = 1.0",
-		"Set colour data <n, in current glyph" },
+		"Set n'th colour data in current glyph" },
+	{ "glyphcolours",	"NNNn",		VTypes::NoData,
+		"double r, double g, double b, double a = 1.0",
+		"Set colour of all data points in current glyph" },
 	{ "glyphdata",		"NNnn",		VTypes::NoData,
 		"int n, double x, double y = 0.0, double z = 0.0",
 		"Set vector data <n, in current glyph" },
@@ -695,8 +698,8 @@ CommandData Command::data[Command::nCommands] = {
 		"string text",
 		"Set text data in current glyph" },
 	{ "newglyph",		"Cc",		VTypes::GlyphData,
-		"string style, string option ...",
-		"Add a glyph with the specified style to the current model" },
+		"string style, string options = \"<none>\"",
+		"Add a glyph of the specified style to the current model, and with any specified options" },
 
 	// Grid commands
 	{ "addgridpoint",	"NNNN",		VTypes::NoData,

@@ -27,9 +27,9 @@
 // Glyph styles
 const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "quad", "triangle", "line", "ellipsoid", "ellipsoidxyz", "tetrahedron", "text", "text3d" };
 int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 2, 2, 4, 3, 2, 3, 4, 4, 1, 1 };
-const char *Glyph::glyphType(Glyph::GlyphType gs)
+const char *Glyph::glyphType(Glyph::GlyphType gt)
 {
-	return GlyphTypeKeywords[gs];
+	return GlyphTypeKeywords[gt];
 }
 Glyph::GlyphType Glyph::glyphType(const char *s, bool reporterror)
 {
@@ -40,6 +40,19 @@ Glyph::GlyphType Glyph::glyphType(const char *s, bool reporterror)
 int Glyph::nGlyphData(Glyph::GlyphType gt)
 {
 	return GlyphTypeNData[gt];
+}
+
+// Glyph options
+const char *GlyphOptionKeywords[Glyph::nGlyphOptions] = { "colour", "linewidth", "solid", "text", "wire" };
+const char *Glyph::glyphOption(Glyph::GlyphOption go)
+{
+	return GlyphOptionKeywords[go];
+}
+Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reporterror)
+{
+	Glyph::GlyphOption go = (Glyph::GlyphOption) enumSearch("glyph option", Glyph::nGlyphOptions, GlyphOptionKeywords, s);
+	if ((go == Glyph::nGlyphOptions) && reporterror) enumPrintValid(Glyph::nGlyphOptions,GlyphOptionKeywords);
+	return go;
 }
 
 /*

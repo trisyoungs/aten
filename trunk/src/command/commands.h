@@ -307,6 +307,7 @@ class Command
 		GlyphAtomsR,
 		GlyphAtomsV,
 		GlyphColour,
+		GlyphColours,
 		GlyphData,
 		GlyphSolid,
 		GlyphText,
@@ -762,6 +763,7 @@ class Command
 	static bool function_GlyphAtomsR(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GlyphColours(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GlyphSolid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GlyphText(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -186,13 +186,28 @@ bool Command::function_GlyphAtomsV(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Store colour data in current glyph
+// Set n'th colour data in current glyph
 bool Command::function_GlyphColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	obj.gl->data(d)->setColour(c->argGLf(1), c->argGLf(2), c->argGLf(3), c->hasArg(4) ? c->argGLf(4) : 1.0f);
+	bool result = TRUE;
+	if ((d < 0) || (d >= obj.gl->nData()))
+	{
+		msg.print("Data index %i is out of range for current glyph.\n", c->argi(0));
+		result = FALSE;
+	}
+	else obj.gl->data(d)->setColour(c->argGLf(1), c->argGLf(2), c->argGLf(3), c->hasArg(4) ? c->argGLf(4) : 1.0f);
+	rv.reset();
+	return result;
+}
+
+// Set all colour data in current glyph
+bool Command::function_GlyphColours(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	for (int d = 0; d<obj.gl->nData(); ++d) obj.gl->data(d)->setColour(c->argGLf(0), c->argGLf(1), c->argGLf(2), c->hasArg(3) ? c->argGLf(3) : 1.0f);
 	rv.reset();
 	return TRUE;
 }
@@ -203,9 +218,15 @@ bool Command::function_GlyphData(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
+	bool result = TRUE;
+	if ((d < 0) || (d >= obj.gl->nData()))
+	{
+		msg.print("Data index %i is out of range for current glyph.\n", c->argi(0));
+		result = FALSE;
+	}
 	obj.gl->data(d)->setVector(c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
 	rv.reset();
-	return TRUE;
+	return result;
 }
 
 // Set 'solid' property of current glyph
@@ -237,20 +258,50 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	obj.gl = obj.rs->addGlyph(gt);
+	rv.set(VTypes::GlyphData, obj.gl);
 	// Parse extra options
-	Dnchar keywd, value;
+	Dnchar value;
+	Glyph::GlyphOption gopt;
+	Vec4<double> rgba;
+	LineParser lp, lp2;
+	if (c->hasArg(1)) lp.getArgsDelim(c->argc(1), LineParser::UseBraces);
 	for (int i=1; i < c->nArgs(); i++)
 	{
 		// Split argument into keyword and value
-		keywd = beforeChar(c->argc(i), '=');
+		gopt = Glyph::glyphOption(beforeChar(c->argc(i), '='));
 		value = afterChar(c->argc(i), '=');
-		if (keywd == "text") obj.gl->setText(value.get());
-		else if (keywd == "solid") obj.gl->setSolid(TRUE);
-		else if (keywd == "wire") obj.gl->setSolid(FALSE);
-		else if (keywd == "linewidth") obj.gl->setLineWidth((GLfloat) atof(value.get()));
-		else msg.print("Unknown option '%s' given to 'newglyph'.\n", keywd.get());
+		switch (gopt)
+		{
+			case (Glyph::GlyphColourOption):
+				// Colour should have been supplied as a hex value
+				// Break up the value argument into three (four) RGB(A) values
+				lp2.getArgsDelim(value.get(), LineParser::Defaults);
+				if (lp.nArgs() == 3) rgba.set(lp.argd(0), lp.argd(1), lp.argd(2), 1.0);
+				else if (lp.nArgs() == 4) rgba.set(lp.argd(0), lp.argd(1), lp.argd(2), lp.argd(3));
+				else
+				{
+					msg.print("Mangled RGB(A) specification for glyph 'colour' option ['%s']\n", value.get());
+					return FALSE;
+				}
+				for (int d = 0; d<obj.gl->nData(); ++d) obj.gl->data(d)->setColour(rgba.x, rgba.y, rgba.z, rgba.w);
+				break;
+			case (Glyph::GlyphLineWidthOption):
+				obj.gl->setLineWidth((GLfloat) atof(value.get()));
+				break;
+			case (Glyph::GlyphSolidOption):
+				obj.gl->setSolid(TRUE);
+				break;
+			case (Glyph::GlyphTextOption):
+				obj.gl->setText(value.get());
+				break;
+			case (Glyph::GlyphWireOption):
+				obj.gl->setSolid(FALSE);
+				break;
+			default:
+				msg.print("Unknown option '%s' given to 'newglyph'.\n", beforeChar(c->argc(i), '='));
+				return FALSE;
+		}
 	}
-	rv.set(VTypes::GlyphData, obj.gl);
 	return TRUE;
 }
 
