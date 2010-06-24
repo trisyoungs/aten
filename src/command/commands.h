@@ -314,6 +314,7 @@ class Command
 		NewGlyph,
 	
 		// Grid Commands
+		AddFreePoint,
 		AddGridPoint,
 		AddNextGridPoint,
 		CurrentGrid,
@@ -329,11 +330,11 @@ class Command
 		GridLoopOrder,
 		GridOrigin,
 		GridOrtho,
-		GridSize,
 		GridStyle,
 		GridSymmetric,
 		GridUseZ,
 		GridVisible,
+		InitialiseGrid,
 		LoadGrid,
 		NewGrid,
 	
@@ -770,6 +771,7 @@ class Command
 	static bool function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Grid Commands
 	static bool function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AddFreePoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -784,11 +786,11 @@ class Command
 	static bool function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GridSize(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Image Commands

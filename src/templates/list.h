@@ -72,6 +72,8 @@ template <class T> class List
 	T *insert(T* before);
 	// Add the item into this list
 	void own(T*);
+	// Disown the item, but do not delete it
+	void disown(T*);
 	// Remove an item from the list
 	void remove(T*);
 	// Remove last item from the list
@@ -211,6 +213,17 @@ template <class T> void List<T>::own(T* olditem)
 	olditem->next = NULL;
 	listTail_ = olditem;
 	nItems_ ++;
+	regenerate_ = 1;
+}
+
+// Disown the item, but do not delete it
+template <class T> void List<T>::disown(T* xitem)
+{
+	xitem->prev == NULL ? listHead_ = (T*) xitem->next : xitem->prev->next = (T*) xitem->next;
+	xitem->next == NULL ? listTail_ = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
+	xitem->next = NULL;
+	xitem->prev = NULL;
+	--nItems_;
 	regenerate_ = 1;
 }
 

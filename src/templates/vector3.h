@@ -50,13 +50,15 @@ template <class T> class Vec3
 	// Set the vector to 0,0,0
 	void zero();
 	// Set the specific element to value
-	void set(int, T);
+	void set(int index, T d);
 	// Set all three components simultaneously
-	void set(T, T, T);
+	void set(T x, T y, T z);
+	// Set all three components simultaneously, converting supplied spherical coordinates to cartesian
+	void setFromSpherical(T r, T phi, T theta);
 	// Add value to single component
-	void add(int, T);
+	void add(int index, T delta);
 	// Add values to all three components simultaneously
-	void add(T, T, T);
+	void add(T dx, T dy, T dz);
 	// Returns the value of the specified element
 	T get(int) const;
 
@@ -178,6 +180,15 @@ template <class T> void Vec3<T>::set(T a, T b, T c)
 	x = a;
 	y = b;
 	z = c;
+}
+
+// Set all three components simultaneously, converting supplied spherical coordinates to cartesian
+template <class T> void Vec3<T>::setFromSpherical(T r, T phi, T theta)
+{
+	x = r;
+	y = phi;
+	z = theta;
+	toCartesian();
 }
 
 // Adjust element
@@ -589,8 +600,10 @@ template <class T> void Vec3<T>::rotate(double angx, double angy)
 // Convert to cartesian
 template <class T> void Vec3<T>::toCartesian()
 {
-	// x = rho, y = phi, z = theta
+	// x = rho, y = theta (inclination), z = phi (azimuthal angle), assuming that phi and theta are in degrees
 	T newx,newy,newz;
+	y /= DEGRAD;
+	z /= DEGRAD;
 	newx = x * sin(y) * cos(z);
 	newy = x * sin(y) * sin(z);
 	newz = x * cos(y);
@@ -602,11 +615,9 @@ template <class T> void Vec3<T>::toSpherical()
 {
 	T rho, s, phi, theta;
 	rho = magnitude();
-	s = sqrt(x*x + y*y);
-	phi = acos(z / rho);
-	if (s < 1e-7) theta = 0.0;
-	else theta = (x < 0 ? PI - asin(y / s) : asin(y / s));
-	set(rho,phi,theta);
+	theta = acos(z/rho);
+	phi = atan2(y,x);
+	set(rho,phi*DEGRAD,theta*DEGRAD);
 }
 
 #endif

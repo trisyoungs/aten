@@ -27,6 +27,15 @@
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
 
+// Add free grid point data at specified coordinates
+bool Command::function_AddFreePoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	obj.g->addFreePoint(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
+	rv.reset();
+	return TRUE;
+}
+
 // Add grid point data at specified indices
 bool Command::function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -233,15 +242,6 @@ bool Command::function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set extent of grid (number of points in each direction)
-bool Command::function_GridSize(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	obj.g->setNPoints(c->arg3i(0));
-	rv.reset();
-	return TRUE;
-}
-
 // Set drawing style of grid
 bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -277,6 +277,16 @@ bool Command::function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(0)) obj.g->setVisible(c->argb(0));
 	rv.set(obj.g->isVisible());
+	return TRUE;
+}
+
+// Initialise grid, setting extent of grid (number of points in each direction)
+bool Command::function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	Grid::GridType gt = Grid::gridType(c->argc(0), TRUE);
+	if (gt == Grid::nGridTypes) return FALSE;
+	rv.set(obj.g->initialise(gt, c->arg3i(0)));
 	return TRUE;
 }
 

@@ -22,6 +22,7 @@
 #include "render/canvas.h"
 #include "model/model.h"
 #include "classes/grid.h"
+#include "methods/delaunay.h"
 
 /*
 	Marching Cube vertex and [edge] numbering
@@ -325,7 +326,7 @@ void renderSurfaceGrid(Grid *g)
 	data2d = g->data2d();
 	cutoff = g->cutoff();
 	glBegin(GL_POINTS);
-	  if (g->type() == Grid::VolumetricData)
+	  if (g->type() == Grid::RegularXYZData)
 	  {
 		for (i=0; i<npoints.x; i++)
 		{
@@ -666,7 +667,37 @@ void Canvas::renderSurfaces(Model *sourceModel)
 					renderSurfaceGrid(g);
 					break;
 				default:
-					if (g->type() == Grid::VolumetricData) cubeIt(g, g->style());
+					if (g->type() == Grid::RegularXYZData) cubeIt(g, g->style());
+					else if (g->type() == Grid::FreeXYZData)
+					{
+						// Construct the Delaunay triangulization of the surface
+						DelaunaySurface D(g);
+						glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+					
+						// Render triangles
+						Vec3<double> v1, v2, v3;
+						for (DelaunayTriangle *dt = D.triangles(); dt != NULL; dt = dt->next)
+						{
+							v1 = dt->vertex(0)->r();
+							v2 = dt->vertex(1)->r();
+							v3 = dt->vertex(2)->r();
+							glBegin(GL_TRIANGLES);
+							glVertex3d( v1.x, v1.y, v1.z);
+							glVertex3d( v2.x, v2.y, v2.z);
+							glVertex3d( v3.x, v3.y, v3.z);
+							glEnd();
+						}
+						for (DelaunayTetrahedron *tet = D.tetrahedra(); tet != NULL; tet = tet->next)
+						{
+							v1 = tet->circumCentre();
+							glPushMatrix();
+							  glTranslated(v1.x, v1.y, v1.z);
+							  glScaled(tet->radius(), tet->radius(), tet->radius());
+							  glCallList(glob(WireUnitAtomGlob));
+							glPopMatrix();
+						}
+
+					}
 					else squareIt(g, g->style());
 					break;
 			  }
@@ -680,7 +711,7 @@ void Canvas::renderSurfaces(Model *sourceModel)
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
 		  glMatrixMode(GL_MODELVIEW);
-		  glMultMatrixd( g->axesForGl() );
+// 		  glMultMatrixd( g->axesForGl() );
 		  // Call the display list
 		  glCallList(list);
 		glPopMatrix();

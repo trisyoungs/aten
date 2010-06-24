@@ -28,6 +28,38 @@
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
+// GridPoint class
+class GridPoint
+{
+	public:
+	// Constructor / Destructor
+	GridPoint();
+	~GridPoint();
+	// List pointers
+	GridPoint *prev, *next;
+
+	// Data
+	private:
+	// Coordinates of point
+	Vec3<double> r_;
+	// Value at point
+	double value_;
+	// Associated flag
+	int flag_;
+
+	public:
+	// Return coordinates of point
+	Vec3<double> &r();
+	// Return value at point
+	double value();
+	// Set value at point
+	void setValue(double v);
+	// Retrieve flag status
+	int flag();
+	// Set flag status
+	void setFlag(int i);
+};
+
 // Grid Data Class
 class Grid
 {
@@ -38,7 +70,9 @@ class Grid
 	// List pointers
 	Grid *prev, *next;
 	// Grid type
-	enum GridType { NoData, VolumetricData, SurfaceData, nGridTypes };
+	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
+	static GridType gridType(const char *s, bool reporterror);
+	static const char *gridType(Grid::GridType gt);
 	// Surface rendering styles
 	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
 	static SurfaceStyle surfaceStyle(const char *s);
@@ -59,8 +93,8 @@ class Grid
 	void setName(const char *s);
 	// Return name of Grid data
 	const char *name();
-	// Set type of Grid data
-	void setType(GridType);
+	// Initialise grid to specified type and size
+	bool initialise(GridType type, Vec3<int> npoints);
 	// Return type of Grid data
 	GridType type();
 
@@ -78,14 +112,20 @@ class Grid
 	double ***data3d_;
 	// Surface values
 	double **data2d_;
+	// Free grid data
+	List<GridPoint> gridPoints_;
 	// Clear array data only
 	void deleteArrays();
 	// Clear all data
 	void clear();
-	// Create voxel data
-	void create();
+	// Allocate grid arrays
+	bool allocateArrays();
 	// Cutoffs for isosurface generation
 	double cutoff_, upperCutoff_;
+	// Bounds (enclosing rhombohedral volume) for grid data
+	Vec3<double> lowerLeftCorner_, upperRightCorner_;
+	// Logpoint for last bounds calculation
+	int boundsLog_;
 	// Minimum and maximum values stored in data[]
 	double minimum_, maximum_;
 	// Update minimum and maximum values
@@ -94,6 +134,10 @@ class Grid
 	Vec3<int> loopOrder_;
 	// Use data value for z-component of 2D surface
 	bool useDataForZ_;
+
+	private:
+	// Calculate bounding lower-left and upper-right corners
+	void calculateBounds();
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -112,14 +156,16 @@ class Grid
 	void setOrigin(const Vec3<double> v);
 	// Return the origin of the Grid data
 	Vec3<double> origin();
-	// Set number of points in data series (creates data[])
-	void setNPoints(Vec3<int>);
-	// Return number of points in data series
+	// Return number of points in regular gridded data (if it exists)
 	Vec3<int> nPoints();
 	// Return minimum value in data[]
 	double minimum();
 	// Return maximum value in data[]
 	double maximum();
+	// Return LLC bounding values, calculating first if necessary
+	Vec3<double> lowerLeftCorner();
+	// Return URC bounding values, calculating first if necessary
+	Vec3<double> upperRightCorner();
 	// Set isovalue cutoff for surface
 	void setCutoff(double d);
 	// Return isovalue cutoff for surface
@@ -134,6 +180,8 @@ class Grid
 	double ***data3d();
 	// Return 2D data array
 	double **data2d();
+	// Return head of gridpoints array
+	GridPoint *gridPoints();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
 	// Get cell axes in suitable GL format
@@ -157,6 +205,8 @@ class Grid
 	void setData(int x, int y, int z, double d);
 	// Set 'next' point in data array
 	void setNextData(double d);
+	// Add free data point
+	void addFreePoint(double x, double y, double z, double value);
 	
 	/*
 	// Visuals

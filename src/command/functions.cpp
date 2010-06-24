@@ -275,6 +275,7 @@ void Command::initPointers()
 	pointers_[NewGlyph] = &Command::function_NewGlyph;
 
 	// Grid Commands
+	pointers_[AddFreePoint] = &Command::function_AddFreePoint;
 	pointers_[AddGridPoint] = &Command::function_AddGridPoint;
 	pointers_[AddNextGridPoint] = &Command::function_AddNextGridPoint;
 	pointers_[CurrentGrid] = &Command::function_CurrentGrid;
@@ -290,7 +291,7 @@ void Command::initPointers()
 	pointers_[GridLoopOrder] = &Command::function_GridLoopOrder;
 	pointers_[GridOrigin] = &Command::function_GridOrigin;
 	pointers_[GridOrtho] = &Command::function_GridOrtho;
-	pointers_[GridSize] = &Command::function_GridSize;
+	pointers_[InitialiseGrid] = &Command::function_InitialiseGrid;
 	pointers_[GridStyle] = &Command::function_GridStyle;
 	pointers_[GridSymmetric] = &Command::function_GridSymmetric;
 	pointers_[GridUseZ] = &Command::function_GridUseZ;

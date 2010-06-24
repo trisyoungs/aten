@@ -26,12 +26,80 @@
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
+// Grid data types
+const char *GridTypeKeywords[Grid::nGridTypes] = { "none", "regularxy", "regularxyz", "freexyz" };
+Grid::GridType Grid::gridType(const char *s, bool reporterror)
+{
+	Grid::GridType gt = (Grid::GridType) enumSearch("grid type", Grid::nGridTypes, GridTypeKeywords, s, reporterror);
+	if ((gt == Grid::nGridTypes) && reporterror) enumPrintValid(Grid::nGridTypes,GridTypeKeywords);
+	return gt;
+}
+const char *Grid::gridType(Grid::GridType i)
+{
+	return GridTypeKeywords[i];
+}
+
 // Surface rendering styles
 const char *SurfaceStyleKeywords[] = { "grid", "points", "triangles", "solid" };
 Grid::SurfaceStyle Grid::surfaceStyle(const char *s)
 {
 	return (Grid::SurfaceStyle) enumSearch("surface style", Grid::nSurfaceStyles, SurfaceStyleKeywords, s);
 }
+
+/*
+// GridPoint class
+*/
+
+// Constructor
+GridPoint::GridPoint()
+{
+	// Private variables
+	flag_ = 0;
+	value_ = 0.0;
+
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+// Destructor
+GridPoint::~GridPoint()
+{
+}
+
+// Return coordinates of point
+Vec3<double> &GridPoint::r()
+{
+	return r_;
+}
+
+// Return value at point
+double GridPoint::value()
+{
+	return value_;
+}
+
+// Set value at point
+void GridPoint::setValue(double v)
+{
+	value_ = v;
+}
+
+// Retrieve flag status
+int GridPoint::flag()
+{
+	return flag_;
+}
+
+// Set flag status
+void GridPoint::setFlag(int i)
+{
+	flag_ = i;
+}
+
+/*
+// Grid Class
+*/
 
 // Constructor
 Grid::Grid()
@@ -46,6 +114,7 @@ Grid::Grid()
 	cutoff_ = 0.0;
 	upperCutoff_ = 0.0;
 	log_ = -1;
+	boundsLog_ = -1;
 	style_ = Grid::SolidSurface;
 	displayList_ = 0;
 	offScreenDisplayList_ = 0;
@@ -109,10 +178,10 @@ void Grid::operator=(Grid &source)
 	// Delete any existing 2D or 3D array in this Grid
 	deleteArrays();
 	// Create new data structure
-	create();
+	allocateArrays();
 	// Copy data from source structure
 	int x,y,z;
-	if (type_ == Grid::VolumetricData)
+	if (type_ == Grid::RegularXYZData)
 	{
 		for (x=0; x<nPoints_.x; x++)
 		{
@@ -148,10 +217,32 @@ const char *Grid::name()
 	return name_.get();
 }
 
-// Set type of Grid data
-void Grid::setType(GridType gt)
+// Initialise grid of specified type and size (if relevant)
+bool Grid::initialise(GridType gt, Vec3<int> npoints)
 {
+	msg.enter("Grid::initialise");
 	type_ = gt;
+	bool result = TRUE;
+	clear();
+	switch (type_)
+	{
+		case (Grid::RegularXYData):
+			nPoints_ = npoints;
+			result = allocateArrays();
+			if (result) msg.print("Initialised grid structure for regular 2D XY data, %i points total.\n", nPoints_.x*nPoints_.y*nPoints_.z);
+			break;
+		case (Grid::RegularXYZData):
+			nPoints_ = npoints;
+			result = allocateArrays();
+			if (result) msg.print("Initialised grid structure for regular 3D XY data, %i points total.\n", nPoints_.x*nPoints_.y*nPoints_.z);
+			break;
+		case (Grid::FreeXYZData):
+			msg.print("Initialised grid structure for free 3D XYZ data.\n");
+			break;
+	}
+	log_ ++;
+	msg.exit("Grid::initialise");
+	return result;
 }
 
 // Return type of Grid data
@@ -206,6 +297,66 @@ double Grid::maximum()
 	return maximum_;
 }
 
+// Return LLC bounding values, calculating first if necessary
+Vec3<double> Grid::lowerLeftCorner()
+{
+	if (boundsLog_ != log_) calculateBounds();
+	return lowerLeftCorner_;
+}
+
+// Return URC bounding values, calculating first if necessary
+Vec3<double> Grid::upperRightCorner()
+{
+	if (boundsLog_ != log_) calculateBounds();
+	return upperRightCorner_;
+}
+
+// Calculate bounding lower-left and upper-right corners
+void Grid::calculateBounds()
+{
+	msg.enter("Grid::calculateBounds");
+	// How we calculate bounds depends on grid type
+	Vec3<double> v;
+	switch (type_)
+	{
+		case (Grid::RegularXYData):
+		case (Grid::RegularXYZData):
+			// Determine resulting coordinates for points at each corner of unit cube
+			lowerLeftCorner_.zero();
+			upperRightCorner_.zero();
+			for (int n=0; n<8; ++n)
+			{
+				v.set( n&1, n&2, n&4 );
+				v *= cell_.axes();
+				for (int m=0; m<3; ++m)
+				{
+					if (v.get(m) < lowerLeftCorner_.get(m)) lowerLeftCorner_.set(m,v.get(m));
+					if (v.get(m) > upperRightCorner_.get(m)) upperRightCorner_.set(m,v.get(m));
+				}
+			}
+			break;
+		case (Grid::FreeXYZData):
+			// Search through all gridpoint data to find limits
+			lowerLeftCorner_.zero();
+			upperRightCorner_.zero();
+			for (GridPoint *gp = gridPoints_.first(); gp != NULL; gp = gp->next)
+			{
+				v = gp->r();
+				for (int m=0; m<3; ++m)
+				{
+					if (v.get(m) < lowerLeftCorner_.get(m)) lowerLeftCorner_.set(m,v.get(m));
+					if (v.get(m) > upperRightCorner_.get(m)) upperRightCorner_.set(m,v.get(m));
+				}
+			}
+			break;
+		default:
+			printf("Internal Error : Don't know how to calculate bounds for grid data type %i\n", type_);
+			break;
+	}
+	boundsLog_ = log_;
+	msg.exit("Grid::calculateBounds");
+}
+
 // Set isovalue cutoff for surface
 void Grid::setCutoff(double d)
 {
@@ -250,6 +401,12 @@ double ***Grid::data3d()
 double **Grid::data2d()
 {
 	return data2d_;
+}
+
+// Return first gridpoint in list
+GridPoint *Grid::gridPoints()
+{
+	return gridPoints_.first();
 }
 
 // Set loop ordering
@@ -372,7 +529,7 @@ void Grid::setColourScale(int id)
 	int i, j, k;
 	double **data2, *data1;
 	// Adjust the colour scale to encompass all grid values...
-	if (type_ == Grid::VolumetricData)
+	if (type_ == Grid::RegularXYZData)
 	{
 		for (i = 0; i < nPoints_.x; i++)
 		{
@@ -384,7 +541,7 @@ void Grid::setColourScale(int id)
 			}
 		}
 	}
-	else if (type_ == Grid::SurfaceData)
+	else if (type_ == Grid::RegularXYData)
 	{
 		for (i = 0; i < nPoints_.x; i++)
 		{
@@ -427,27 +584,47 @@ bool Grid::useDataForZ()
 }
 
 // Create data array (from npoints vector)
-void Grid::create()
+bool Grid::allocateArrays()
 {
-	msg.enter("Grid::create");
+	msg.enter("Grid::allocateArrays");
 	int i, j;
-	if (type_ == Grid::VolumetricData)
+	switch (type_)
 	{
-		if (data3d_ != NULL) clear();
-		data3d_ = new double**[nPoints_.x];
-		for (i = 0; i<nPoints_.x; i++)
-		{
-			data3d_[i] = new double*[nPoints_.y];
-			for (j = 0; j<nPoints_.y; j++) data3d_[i][j] = new double[nPoints_.z];
-		}
+		case (Grid::RegularXYZData):
+			if (data3d_ != NULL) clear();
+			// Check point limits (negative only)
+			if (nPoints_.minElement() < 1)
+			{
+				msg.print("Can't allocate 3D grid array - One or more grid limits are negative (%i,%i,%i).\n", nPoints_.x, nPoints_.y, nPoints_.z);
+				msg.exit("Grid::allocateArrays");
+				return FALSE;
+			}
+			data3d_ = new double**[nPoints_.x];
+			for (i = 0; i<nPoints_.x; i++)
+			{
+				data3d_[i] = new double*[nPoints_.y];
+				for (j = 0; j<nPoints_.y; j++) data3d_[i][j] = new double[nPoints_.z];
+			}
+			break;
+		case (Grid::RegularXYData):
+			if (data2d_ != NULL) clear();
+			// Check point limits (negative only)
+			if ((nPoints_.x < 1) || (nPoints_.y < 1))
+			{
+				msg.print("Can't allocate 2D grid array - One or more grid limits are negative (%i,%i).\n", nPoints_.x, nPoints_.y);
+				msg.exit("Grid::allocateArrays");
+				return FALSE;
+			}
+			data2d_ = new double*[nPoints_.x];
+			for (i = 0; i<nPoints_.x; i++) data2d_[i] = new double[nPoints_.y];
+		case (Grid::FreeXYZData):
+			break;
+		default:
+			printf("Internal Error: Don't know how to allocate arrays for grid type '%s'\n", Grid::gridType(type_));
+			break;
 	}
-	else if (type_ == Grid::SurfaceData)
-	{
-		if (data2d_ != NULL) clear();
-		data2d_ = new double*[nPoints_.x];
-		for (i = 0; i<nPoints_.x; i++) data2d_[i] = new double[nPoints_.y];
-	}
-	msg.exit("Grid::create");
+	msg.exit("Grid::allocateArrays");
+	return TRUE;
 }
 
 // Clear array data only
@@ -474,6 +651,7 @@ void Grid::deleteArrays()
 		delete[] data2d_;
 		data2d_ = NULL;
 	}
+	gridPoints_.clear();
 	msg.exit("Grid::deleteArrays");
 }
 
@@ -525,19 +703,6 @@ double *Grid::axesForGl()
 	return cell_.axesForGL();
 }
 
-// Set grid extent (and data[])
-void Grid::setNPoints(Vec3<int> v)
-{
-	msg.enter("Grid::setNPoints");
-	nPoints_ = v;
-	// If nPoints_.z is zero, its a 2D array
-	if (nPoints_.z == 0) type_ = Grid::SurfaceData;
-	else type_ = Grid::VolumetricData;
-	log_ ++;
-	create();
-	msg.exit("Grid::setNPoints");
-}
-
 // Update minimum / maximum based on supplied value
 void Grid::setLimits(double d)
 {
@@ -561,13 +726,13 @@ void Grid::setData(int x, int y, int z, double d)
 		msg.print("Y index %i is outside array bounds (0 to %i) for grid data.\n", y, nPoints_.y-1);
 		return;
 	}
-	else if ((type_ == Grid::SurfaceData) && ((z < 0) || (z >= nPoints_.z)))
+	else if ((type_ == Grid::RegularXYData) && ((z < 0) || (z >= nPoints_.z)))
 	{
 		msg.print("Z index %i is outside array bounds (0 to %i) for grid data.\n", z, nPoints_.z-1);
 		return;
 	}
 	// Okay, so store data
-	if (type_ == Grid::VolumetricData) data3d_[x][y][z] = d;
+	if (type_ == Grid::RegularXYZData) data3d_[x][y][z] = d;
 	else data2d_[x][y] = d;
 	// Set new minimum / maximum
 	setLimits(d);
@@ -583,7 +748,7 @@ void Grid::setNextData(double d)
 		return;
 	}
 	// Set current point referenced by currentpoint and increase it
-	if (type_ == Grid::VolumetricData)
+	if (type_ == Grid::RegularXYZData)
 	{
 		data3d_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
 		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
@@ -612,6 +777,16 @@ void Grid::setNextData(double d)
 	}
 	// Set new minimum / maximum
 	setLimits(d);
+}
+
+// Add free data point
+void Grid::addFreePoint(double x, double y, double z, double value)
+{
+	GridPoint *gp = gridPoints_.add();
+	gp->r().set(x, y, z);
+	gp->setValue(value);
+	log_++;
+	type_ = Grid::FreeXYZData;
 }
 
 void Grid::setPositiveColour(double r, double g, double b, double a)

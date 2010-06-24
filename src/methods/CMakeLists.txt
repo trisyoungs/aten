@@ -1,6 +1,7 @@
 add_library(methods
 calculable.h 
 cg.h 
+delaunay.h
 linemin.h 
 mc.h 
 geometry.h 
@@ -9,6 +10,7 @@ rdf.h
 sd.h
 calculable.cpp 
 cg.cpp 
+delaunay.cpp
 linemin.cpp 
 mc.cpp 
 geometry.cpp 
