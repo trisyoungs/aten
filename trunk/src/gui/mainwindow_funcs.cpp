@@ -660,11 +660,11 @@ void AtenForm::on_actionGridsWindow_triggered(bool checked)
 	else gui.gridsWindow->hide();
 }
 
-// void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
-// {
-// 	if (checked) gui.glyphsWindow->showWindow();
-// 	else gui.glyphsWindow->hide();
-// }
+void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
+{
+	if (checked) gui.glyphsWindow->showWindow();
+	else gui.glyphsWindow->hide();
+}
 
 // void AtenForm::on_actionAnalyseWindow_triggered(bool checked)
 // {

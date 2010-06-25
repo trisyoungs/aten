@@ -86,7 +86,7 @@ Tree *Aten::probeFile(const char *filename, FilterData::FilterType probetype)
 				}
 				if (done) break;
 			}
-			probefile.close();
+			parser.closeFile();
 		}
 		if (result != NULL) break;
 		// Try to match file extension

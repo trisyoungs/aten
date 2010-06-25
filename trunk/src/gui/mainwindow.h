@@ -338,7 +338,7 @@ class AtenForm : public QMainWindow
 	void on_actionForcefieldsWindow_triggered(bool checked);
 	void on_actionFragmentWindow_triggered(bool checked);
 	void on_actionGeometryWindow_triggered(bool checked);
-// 	void on_actionGlyphsWindow_triggered(bool checked);
+	void on_actionGlyphsWindow_triggered(bool checked);
 	void on_actionGridsWindow_triggered(bool checked);
 	void on_actionMinimiserWindow_triggered(bool checked);
 	void on_actionPositionWindow_triggered(bool checked);

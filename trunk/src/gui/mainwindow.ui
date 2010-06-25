@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>951</width>
     <height>600</height>
    </rect>
   </property>
@@ -45,9 +45,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>126</y>
-     <width>768</width>
-     <height>453</height>
+     <y>113</y>
+     <width>920</width>
+     <height>464</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" >
@@ -154,8 +154,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>24</height>
+     <width>951</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu" >
@@ -371,9 +371,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>579</y>
-     <width>800</width>
-     <height>21</height>
+     <y>577</y>
+     <width>951</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -381,9 +381,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>24</y>
-     <width>155</width>
-     <height>34</height>
+     <y>23</y>
+     <width>149</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -416,10 +416,10 @@
   <widget class="QToolBar" name="StyleToolbar" >
    <property name="geometry" >
     <rect>
-     <x>155</x>
-     <y>24</y>
-     <width>155</width>
-     <height>34</height>
+     <x>149</x>
+     <y>23</y>
+     <width>149</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -449,10 +449,10 @@
   <widget class="QToolBar" name="EditToolbar" >
    <property name="geometry" >
     <rect>
-     <x>310</x>
-     <y>24</y>
-     <width>490</width>
-     <height>34</height>
+     <x>298</x>
+     <y>23</y>
+     <width>653</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -482,9 +482,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>58</y>
-     <width>184</width>
-     <height>34</height>
+     <y>53</y>
+     <width>176</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -521,10 +521,10 @@
   <widget class="QToolBar" name="MouseToolbar" >
    <property name="geometry" >
     <rect>
-     <x>184</x>
-     <y>58</y>
-     <width>97</width>
-     <height>34</height>
+     <x>176</x>
+     <y>53</y>
+     <width>95</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -552,10 +552,10 @@
   <widget class="QToolBar" name="SelectToolbar" >
    <property name="geometry" >
     <rect>
-     <x>281</x>
-     <y>58</y>
-     <width>220</width>
-     <height>34</height>
+     <x>271</x>
+     <y>53</y>
+     <width>209</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -588,10 +588,10 @@
   <widget class="QToolBar" name="DrawToolbar" >
    <property name="geometry" >
     <rect>
-     <x>501</x>
-     <y>58</y>
-     <width>199</width>
-     <height>34</height>
+     <x>480</x>
+     <y>53</y>
+     <width>365</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -635,10 +635,10 @@
   <widget class="QToolBar" name="BondToolbar" >
    <property name="geometry" >
     <rect>
-     <x>700</x>
-     <y>58</y>
-     <width>50</width>
-     <height>34</height>
+     <x>845</x>
+     <y>53</y>
+     <width>53</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -669,10 +669,10 @@
   <widget class="QToolBar" name="MeasureToolbar" >
    <property name="geometry" >
     <rect>
-     <x>750</x>
-     <y>58</y>
-     <width>50</width>
-     <height>34</height>
+     <x>898</x>
+     <y>53</y>
+     <width>53</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -706,9 +706,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>92</y>
-     <width>800</width>
-     <height>34</height>
+     <y>83</y>
+     <width>951</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -736,10 +736,10 @@
   <widget class="QToolBar" name="WindowToolbar" >
    <property name="geometry" >
     <rect>
-     <x>768</x>
-     <y>126</y>
-     <width>32</width>
-     <height>453</height>
+     <x>920</x>
+     <y>113</y>
+     <width>31</width>
+     <height>464</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -763,6 +763,7 @@
    <addaction name="actionAtomlistWindow" />
    <addaction name="actionGridsWindow" />
    <addaction name="actionFragmentWindow" />
+   <addaction name="actionGlyphsWindow" />
    <addaction name="separator" />
    <addaction name="actionBuildWindow" />
    <addaction name="actionTransformWindow" />
@@ -2402,6 +2403,21 @@
    </property>
    <property name="toolTip" >
     <string>Show / hide the Fragment Library</string>
+   </property>
+  </action>
+  <action name="actionGlyphsWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_glyphs.svg</normaloff>:/stackicons/icons/stack_glyphs.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>GlyphsWindow</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide the glyphs window</string>
    </property>
   </action>
  </widget>
