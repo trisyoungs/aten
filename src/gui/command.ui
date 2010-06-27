@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CommandDialog</class>
  <widget class="QDialog" name="CommandDialog">
@@ -56,6 +57,9 @@
              </property>
              <property name="text">
               <string>Force Update</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>

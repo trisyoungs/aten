@@ -143,9 +143,12 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 					g = addGlyph(Glyph::TriangleGlyph);
 					if (linkatoms)
 					{
-						g->data(0)->setAtom(ri->item, GlyphData::PositionData);
-						g->data(1)->setAtom(rj->item, GlyphData::PositionData);
-						g->data(2)->setAtom(rk->item, GlyphData::PositionData);
+						g->data(0)->setAtom(ri->item);
+						g->data(1)->setAtom(rj->item);
+						g->data(2)->setAtom(rk->item);
+						g->data(0)->setAtomData(GlyphData::PositionData);
+						g->data(1)->setAtomData(GlyphData::PositionData);
+						g->data(2)->setAtomData(GlyphData::PositionData);
 					}
 					else
 					{

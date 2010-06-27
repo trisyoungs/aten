@@ -20,6 +20,18 @@
 						<entry>Individual data for each vertex of the glyph</entry>
 					</row>
 					<row>
+						<entry>ndata</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>How many data points (vertices) are associated with this glyph's type</entry>
+					</row>
+					<row>
+						<entry>rotated</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag to indicate whether the glyph's rotation matrix has been modified (i.e. the glyph has been rotated). Setting this to '0' resets (and removes) any current rotation matrix (same as calling member function 'resetrotation').</entry>
+					</row>
+					<row>
 						<entry>rotation</entry>
 						<entry>double[9]</entry>
 						<entry>rw</entry>
@@ -63,6 +75,11 @@
 					</row>
 				</thead>
 				<tbody>
+					<row>
+						<entry>recolour ( double <emphasis>r</emphasis>, double <emphasis>g</emphasis>, double <emphasis>b</emphasis>, double <emphasis>a</emphasis> = 1.0 )</entry>
+						<entry>void</entry>
+						<entry>Recolour all data vertices of the glyph to the specified RGB(a) value</entry>
+					</row>
 					<row>
 						<entry>resetrotation ()</entry>
 						<entry>void</entry>

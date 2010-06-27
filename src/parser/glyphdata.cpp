@@ -52,6 +52,8 @@ GlyphDataVariable::~GlyphDataVariable()
 
 // Accessor data
 Accessor GlyphDataVariable::accessorData[GlyphDataVariable::nAccessors] = {
+	{ "atom",	VTypes::AtomData,	0, FALSE },
+	{ "atomdata",	VTypes::IntegerData,	0, FALSE },
 	{ "colour",	VTypes::DoubleData,	4, FALSE },
 	{ "vector",	VTypes::VectorData,	0, FALSE }
 };
@@ -155,6 +157,12 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 	}
 	if (result) switch (acc)
 	{
+		case (GlyphDataVariable::Atom_Ptr):
+			rv.set( VTypes::AtomData, ptr->atom() );
+			break;
+		case (GlyphDataVariable::AtomData):
+			rv.set( ptr->atomData() );
+			break;
 		case (GlyphDataVariable::Colour):
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
@@ -241,6 +249,12 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 	int n;
 	if (result) switch (acc)
 	{
+		case (GlyphDataVariable::Atom_Ptr):
+			ptr->setAtom( (Atom*) newvalue.asPointer(VTypes::AtomData, result) );
+			break;
+		case (GlyphDataVariable::AtomData):
+			ptr->setAtomData( (GlyphData::GlyphDataType) newvalue.asInteger() );
+			break;
 		case (GlyphDataVariable::Colour):
 			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));

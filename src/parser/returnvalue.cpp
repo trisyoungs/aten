@@ -919,6 +919,16 @@ bool ReturnValue::increase()
 			}
 			else valueP_ = ((ForcefieldBound*) valueP_)->next;
 			break;
+		case (VTypes::GlyphData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((Glyph*) valueP_)->next;
+			break;
 		case (VTypes::GridData):
 			if (valueP_ == NULL) result = FALSE;
 			else if (valueRefitem_ != NULL)
@@ -1056,6 +1066,16 @@ bool ReturnValue::decrease()
 				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
 			}
 			else valueP_ = ((Grid*) valueP_)->prev;
+			break;
+		case (VTypes::GlyphData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((Glyph*) valueP_)->prev;
 			break;
 		case (VTypes::MeasurementData):
 			if (valueP_ == NULL) result = FALSE;

@@ -53,7 +53,9 @@ GlyphVariable::~GlyphVariable()
 // Accessor data
 Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 	{ "data",	VTypes::GlyphDataData,	4, TRUE },
-	{ "rotation",	VTypes::DoubleData,	9, TRUE },
+	{ "ndata",	VTypes::IntegerData,	0, TRUE },
+	{ "rotated",	VTypes::IntegerData,	0, FALSE },
+	{ "rotation",	VTypes::DoubleData,	9, FALSE },
 	{ "solid",	VTypes::IntegerData,	0, FALSE },
 	{ "text",	VTypes::StringData,	0, FALSE },
 	{ "type",	VTypes::StringData,	0, FALSE },
@@ -62,6 +64,7 @@ Accessor GlyphVariable::accessorData[GlyphVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor GlyphVariable::functionData[GlyphVariable::nFunctions] = {
+	{ "recolour",		VTypes::NoData,		"NNNn",	"double r, double g, double b, double a = 1.0" },
 	{ "resetrotation",	VTypes::NoData,		"",	"" },
 	{ "rotate",		VTypes::NoData,		"NNNN",	"double x, double y, double z, double angle" },
 	{ "rotatex",		VTypes::NoData,		"N",	"double angle" },
@@ -167,6 +170,12 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (hasArrayIndex) rv.set( VTypes::GlyphDataData, ptr->data(arrayIndex-1) );
 			else rv.set( VTypes::GlyphDataData, ptr->data(0) );
 			break;
+		case (GlyphVariable::NData):
+			rv.set( Glyph::nGlyphData(ptr->type()) );
+			break;
+		case (GlyphVariable::Rotated):
+			rv.set( ptr->rotated() );
+			break;
 		case (GlyphVariable::Rotation):
 			if ((arrayIndex < 1) || (arrayIndex > 9))
 			{
@@ -265,6 +274,9 @@ bool GlyphVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	}
 	if (result) switch (acc)
 	{
+		case (GlyphVariable::Rotated):
+			if (newvalue.asInteger() == 0) ptr->resetRotation();
+			break;
 		case (GlyphVariable::Rotation):
 			ptr->setRotationElement( arrayIndex-1, newvalue.asDouble());
 			break;
@@ -302,6 +314,9 @@ bool GlyphVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	Glyph *ptr = (Glyph*) rv.asPointer(VTypes::GlyphData, result);
 	if (result) switch (i)
 	{
+		case (GlyphVariable::Recolour):
+			ptr->setColour(node->argd(0), node->argd(1), node->argd(2), node->hasArg(3) ? node->argd(3) : 1.0);
+			break;
 		case (GlyphVariable::ResetRotation):
 			ptr->resetRotation();
 			rv.reset();

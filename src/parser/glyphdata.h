@@ -41,7 +41,7 @@ class GlyphDataVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Colour, Vector, nAccessors };
+        enum Accessors { Atom_Ptr, AtomData, Colour, Vector, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

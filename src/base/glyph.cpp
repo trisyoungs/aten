@@ -25,8 +25,8 @@
 #include "model/model.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "quad", "triangle", "line", "ellipsoid", "ellipsoidxyz", "tetrahedron", "text", "text3d" };
-int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 2, 2, 4, 3, 2, 3, 4, 4, 1, 1 };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "vector" };
+int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2 };
 const char *Glyph::glyphType(Glyph::GlyphType gt)
 {
 	return GlyphTypeKeywords[gt];
@@ -66,7 +66,6 @@ Glyph::Glyph()
 	visible_ = TRUE;
 	solid_ = TRUE;
 	lineWidth_ = 1.0f;
-	rotated_ = FALSE;
 	rotation_ = NULL;
 
 	// Public variables
@@ -140,6 +139,12 @@ const char *Glyph::text()
 	return text_.get();
 }
 
+// Set colour
+void Glyph::setColour(double r, double g, double b, double a)
+{
+	for (GlyphData *gd = data_.first(); gd != NULL; gd = gd->next) gd->setColour(r, g, b, a);
+}
+
 // Set whether the Glyph is visible
 void Glyph::setVisible(bool isvisible)
 {
@@ -179,7 +184,7 @@ GLfloat Glyph::lineWidth()
 // Return whether glyph has been rotated
 bool Glyph::rotated()
 {
-	return rotated_;
+	return (rotation_ != NULL);
 }
 
 // Return rotation matrix suitable for GL
@@ -213,10 +218,9 @@ double Glyph::getRotationElement(int el)
 	return rotation_->element(el);
 }
 
-// Reset rotation matrix (and set rotated_ = FALSE)
+// Reset (delete) current rotation matrix
 void Glyph::resetRotation()
 {
-	rotated_ = FALSE;
 	if (rotation_ != NULL) delete rotation_;
 	rotation_ = NULL;
 }
@@ -226,7 +230,6 @@ void Glyph::rotateX(double angle)
 {
 	if (rotation_ == NULL) rotation_ = new Mat3<double>;
 	rotation_->rotateX(angle);
-	rotated_ = TRUE;
 }
 
 // Rotate about Y axis
@@ -234,7 +237,6 @@ void Glyph::rotateY(double angle)
 {
 	if (rotation_ == NULL) rotation_ = new Mat3<double>;
 	rotation_->rotateY(angle);
-	rotated_ = TRUE;
 }
 
 // Rotate about Z axis
@@ -242,7 +244,6 @@ void Glyph::rotateZ(double angle)
 {
 	if (rotation_ == NULL) rotation_ = new Mat3<double>;
 	rotation_->rotateZ(angle);
-	rotated_ = TRUE;
 }
 
 // Rotate about arbitrary axis
@@ -250,7 +251,6 @@ void Glyph::rotate(double x, double y, double z, double angle)
 {
 	if (rotation_ == NULL) rotation_ = new Mat3<double>;
 	rotation_->rotate(x, y, z, angle);
-	rotated_ = TRUE;
 }
 
 /*
@@ -298,13 +298,29 @@ void GlyphData::setVector(int i, double d)
 }
 
 // Set atom data
-void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
+void GlyphData::setAtom(Atom *atom)
 {
 	atom_ = atom;
-	atomData_ = av;
 	set_ = TRUE;
-	atomSetLast_ = TRUE;
-	if (atom_ == NULL) msg.print("Warning - NULL atom pointer stored in data.\n");
+	if (atom_ == NULL)
+	{
+		msg.print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
+		atomSetLast_ = FALSE;
+	}
+	else atomSetLast_ = TRUE;
+}
+
+// Set atom data type for datapoint
+void GlyphData::setAtomData(GlyphData::GlyphDataType av)
+{
+	atomData_ = av;
+}
+
+	// Set atom pointer and datatype for datapoint
+void GlyphData::setAtom(Atom *atom, GlyphData::GlyphDataType av)
+{
+	setAtom(atom);
+	setAtomData(av);
 }
 
 // Return the atom pointer
@@ -330,6 +346,7 @@ Vec3<double> GlyphData::vector()
 {
 	if (!atomSetLast_) return vector_;
 	else if (atom_ != NULL) return atom_->r();
+	msg.print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
 	return Vec3<double>();
 }
 
