@@ -14,6 +14,18 @@
 				</thead>
 				<tbody>
 					<row>
+						<entry>atom</entry>
+						<entry><link linkend="command.types.atom">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Atom (if any) from which positional data is retrieved</entry>
+					</row>
+					<row>
+						<entry>atomdata</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Type of data to retrieve from specified atom (if any) - 0 = position, 1 = force, 2 = velocity</entry>
+					</row>
+					<row>
 						<entry>colour</entry>
 						<entry>double[4]</entry>
 						<entry>rw</entry>

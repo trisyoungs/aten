@@ -47,7 +47,7 @@ class GlyphData
 	private:
 	// Position or direction vector
 	Vec3<double> vector_;
-	// Integer atom id in the parent model from which to get r, f, or v
+	// Integer atom in the parent model from which to get r, f, or v
 	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
@@ -63,9 +63,13 @@ class GlyphData
 	void setVector(Vec3<double> vec);
 	void setVector(double x, double y, double z);
 	void setVector(int i, double d);
-	// Set atom data for datapoint
+	// Set atom pointer for datapoint
+	void setAtom(Atom *atom);
+	// Set atom data type for datapoint
+	void setAtomData(GlyphData::GlyphDataType av);
+	// Set atom pointer and datatype for datapoint
 	void setAtom(Atom *atom, GlyphData::GlyphDataType av);
-	// Returns the atom id of the datapoint
+	// Returns the atom associated to the datapoint (if any)
 	Atom *atom();
 	// Returns whether the atom was set last
 	bool atomSetLast();
@@ -92,7 +96,7 @@ class Glyph
 	// List pointers
 	Glyph *prev, *next;
 	// Glyph style
-	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, QuadGlyph, TriangleGlyph, LineGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, VectorGlyph, nGlyphTypes };
 	static const char *glyphType(GlyphType gt);
 	static GlyphType glyphType(const char *name, bool reporterror = 0);
 	static int nGlyphData(GlyphType gt);
@@ -110,9 +114,7 @@ class Glyph
 	Model *parent_;
 	// Vector data for Glyph
 	List<GlyphData> data_;
-	// Whether a rotation for the glyph has been set
-	bool rotated_;
-	// Rotation matrix for the glyph (NULL if (!rotated))
+	// Rotation matrix for the glyph (NULL if not rotated)
 	Mat3<double> *rotation_;
 
 	public:
@@ -128,7 +130,9 @@ class Glyph
 	void setText(const char *s);
 	// Return text data
 	const char *text();
-	// Return whether glyph has been rotated
+	// Set colour of all datapoints
+	void setColour(double r, double g, double b, double a = 1.0f);
+	// Return whether glyph has been rotated (whether a rotation matrix exists)
 	bool rotated();
 	// Return rotation matrix suitable for GL
 	double *rotationForGL();

@@ -319,7 +319,7 @@ void Canvas::renderModelTextGlyphs(Model *sourceModel)
 				textObjects_.own(to);
 				break;
 			// Text in 3D coordinates - left-hand origin = data[0]
-			case (Glyph::TextGlyph3D):
+			case (Glyph::Text3DGlyph):
 				vec[0] = g->data(0)->vector();
 				// Add text object to list
 				vec[1] = sourceModel->modelToScreen(vec[0]);

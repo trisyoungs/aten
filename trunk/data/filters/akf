@@ -1,15 +1,18 @@
 # Aten 'Custom' file format (for v1.2+)
 # Created:	 14/05/2009
-# Last modified: 09/04/2010
+# Last modified: 27/06/2010
 # ChangeLog:
+# 	27/06/2010: Added glyph support
 # 	09/04/2010: Added 'title' keyword
 
 filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension="akf", glob="*.akf", id=1)
 {
 	# Variable declaration
-	int n,i,j,k,l;
-	string e,keywd,line;
-	double rx,ry,rz, lengths[3], angs[3], q;
+	int n,i,j,k,l,ndata,atomdata;
+	string e,keywd,line,type;
+	double rx,ry,rz, lengths[3], angs[3], q, colour[4];
+	glyph g;
+	vector v;
 
 	newmodel(filterfilename());
 
@@ -37,41 +40,26 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 		{
 			setname(line);
 		}
-		else if (keywd == "arrow")
+		else if (keywd == "glyph")
 		{
-			readvar(line,i,j);
-			newglyph("arrow");
-			glyphatomr(1,i);
-			glyphatomr(2,j);
-		}
-		else if (keywd == "vector")
-		{
-			readvar(line,i,j);
-			newglyph("vector");
-			glyphatomr(1,i);
-			glyphatomr(2,j);
-		}
-		else if (keywd == "sphere")
-		{
-			readvar(line,i,rx,ry,rz);
-			newglyph("sphere");
-			glyphatomr(1,i);
-			glyphdata(2,rx,ry,rz);
-		}
-		else if (keywd == "cube")
-		{
-			readvar(line,i,j);
-			newglyph("cube");
-			glyphatomr(1,i);
-			glyphdata(2,rx,ry,rz);
-		}
-		else if (keywd == "tet")
-		{
-			readvar(line,i,j,k);
-			newglyph("tetrahedron");
-			glyphatomr(1,i);
-			glyphatomr(2,j);
-			glyphatomr(3,k);
+			readvar(line,type,ndata);
+			g = newglyph(type);
+			# First 'n' lines are the 'n' data points for the glyph
+			for (int n=1; n<=ndata; ++n)
+			{
+				readline(l,i,atomdata,v.x,v.y,v.z,g.data[1].colour[1],g.data[l].colour[2],g.data[l].colour[3],g.data[l].colour[4]);
+				if (i < 0) g.data[l].vector = v;
+				else g.data[l].atom = aten.model.atoms[i];
+				g.data[l].atomdata = atomdata;
+			}
+			# Additional data now...
+			readlinef("%s%r",keywd,line);
+			while(keywd != "endglyph")
+			{
+				if (keywd == "rotation") readvarf(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
+				else if (keywd == "invisible") g.visible = FALSE;
+				else if (keywd == "text") readvar(line,g.text);
+			}
 		}
 		else if (keywd == "geometry")
 		{
@@ -121,4 +109,21 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	for (measurement g = m.distances; g; ++g) writelinef("distance %i %i\t# %f\n", g.i.id, g.j.id, g.value);
 	for (measurement g = m.angles; g; ++g) writelinef("angle %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.value);
 	for (measurement g = m.torsions; g; ++g) writelinef("torsion %i %i %i %i\t# %f\n", g.i.id, g.j.id, g.k.id, g.l.id, g.value);
+
+	// Glyphs
+	for (glyph g = m.glyphs; g; ++g)
+	{
+		writelinef("glyph  %s  %i\n", g.type, g.ndata);
+		# First 'n' lines are the 'n' data points for the glyph
+		for (int n=1; n<=g.ndata; ++n)
+		{
+			if (g.data[n].atom) writelinef("  %i  %i  %i  0.0 0.0 0.0  %f %f %f %f\n", n, g.data[n].atom.id, g.data[n].atomdata, g.data[n].colour[1], g.data[n].colour[2], g.data[n].colour[3], g.data[n].colour[4]);
+			else writelinef("  %i  -1  -1  %f %f %f  %f %f %f %f\n", n, g.data[n].vector.x, g.data[n].vector.y, g.data[n].vector.z, g.data[n].colour[1], g.data[n].colour[2], g.data[n].colour[3], g.data[n].colour[4]);
+		}
+		# Additional data now...
+		if (g.rotated) writelinef("  rotation  %f %f %f %f %f %f %f %f %f\n", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
+		if (!g.visible) writelinef("  invisible\n");
+		if (g.text != "") writelinef("  text  '%s'\n", g.text);
+		writelinef("endglyph\n");
+	}
 }
