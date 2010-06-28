@@ -947,6 +947,8 @@ class Model
 	public:
 	// Create new glyph in this model
 	Glyph *addGlyph(Glyph::GlyphType gt);
+	// Remove specified glyph from model
+	void removeGlyph(Glyph *g);
 	// Return number of glyphs defined in model
 	int nGlyphs();
 	// Return first glyph in list (if any)

@@ -32,6 +32,11 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 	return newglyph;
 }
 
+// Remove specified glyph from model
+void Model::removeGlyph(Glyph *g)
+{
+}
+
 // Return number of defined glyphs
 int Model::nGlyphs()
 {

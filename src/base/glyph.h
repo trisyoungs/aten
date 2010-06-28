@@ -98,6 +98,7 @@ class Glyph
 	// Glyph style
 	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, VectorGlyph, nGlyphTypes };
 	static const char *glyphType(GlyphType gt);
+	static const char *glyphTypeName(GlyphType gt);
 	static GlyphType glyphType(const char *name, bool reporterror = 0);
 	static int nGlyphData(GlyphType gt);
 	// Glyph options

@@ -229,6 +229,15 @@ void AtenForm::finaliseUi()
 	progressIndicator->setVisible(FALSE);
 	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,0);
 
+	// Create glyph actions for Selection (atom context) menu
+	QMenu *menu = new QMenu(this);
+	for (int n=0; n<Glyph::nGlyphTypes; ++n)
+	{
+		createGlyphActions[n] = menu->addAction(Glyph::glyphTypeName( (Glyph::GlyphType) n));
+		QObject::connect(createGlyphActions[n], SIGNAL(triggered()), this, SLOT(createGlyph()));
+	}
+	ui.actionCreateGlyph->setMenu(menu);
+
 	// Populate scripts menu
 	refreshScriptsMenu();
 
