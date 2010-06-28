@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +14,7 @@
    height="100"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docname="basic_colour.svg"
    sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
@@ -30,7 +30,7 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:window-height="714"
+     inkscape:window-height="780"
      inkscape:window-width="1024"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -45,22 +45,11 @@
      inkscape:cx="45.45102"
      inkscape:cy="52.596517"
      inkscape:window-x="0"
-     inkscape:window-y="6"
-     inkscape:current-layer="svg2" />
+     inkscape:window-y="0"
+     inkscape:current-layer="svg2"
+     showgrid="false" />
   <defs
-     id="defs4">
-    <linearGradient
-       id="linearGradient3197">
-      <stop
-         style="stop-color:#e4e1e1;stop-opacity:1;"
-         offset="0"
-         id="stop3199" />
-      <stop
-         style="stop-color:#14af00;stop-opacity:1;"
-         offset="1"
-         id="stop3201" />
-    </linearGradient>
-  </defs>
+     id="defs4" />
   <path
      sodipodi:type="arc"
      style="fill:#dee0de;fill-opacity:1;fill-rule:evenodd;stroke:#dedad7;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"

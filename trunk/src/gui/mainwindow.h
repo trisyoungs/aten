@@ -27,6 +27,7 @@
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "templates/reflist.h"
+#include "base/glyph.h"
 
 #define MAXRECENTFILES 10
 
@@ -105,11 +106,14 @@ class AtenForm : public QMainWindow
 	/*
 	// Atom Context Menu Actions
 	*/
+	public:
+	void activateGlyphActions(int n);
 	private:
 	void setAtomStyle(Atom::DrawStyle ds);
 	void setAtomLabel(Atom::AtomLabel al);
 	void removeAtomLabels(bool all);
 	void setAtomHidden(bool hidden);
+	QAction *createGlyphActions[Glyph::nGlyphTypes];
 	private slots:
 	void on_actionAtomStyleStick_triggered(bool checked);
 	void on_actionAtomStyleTube_triggered(bool checked);
@@ -130,6 +134,7 @@ class AtenForm : public QMainWindow
 	void on_actionSetBondAngle_triggered(bool checked);
 	void on_actionSetTorsionAngle_triggered(bool checked);
 	void on_actionCentreAtOrigin_triggered(bool checked);
+	void createGlyph();
 
 	/*
 	// Bonding Actions

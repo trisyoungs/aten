@@ -52,3 +52,8 @@ void TColourFrame::setColour(double *col)
 	brush_.setColor(rgb);
 }
 
+// Return current colour
+QColor TColourFrame::colour()
+{
+	return brush_.color();
+}

@@ -232,6 +232,7 @@ void GuiQt::run()
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
+	glyphsWindow->finaliseUi();
 	prefsDialog->finaliseUi();
 	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
@@ -324,13 +325,15 @@ void GuiQt::run()
 */
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's functinn)
-void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield)
+void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs)
 {
 	if (!doesExist_) return;
 	// Refresh aspects of main window
 	mainWindow->update();
 	// Update contents of the atom list
 	if (updateAtoms) atomlistWindow->refresh();
+	// Update contents of the glyph list
+	if (updateGlyphs) glyphsWindow->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{

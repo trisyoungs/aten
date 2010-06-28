@@ -70,4 +70,7 @@
 #define MAXFFPARAMDATA 10
 #define MAXFFBOUNDTYPES 4
 
+// Maximum number of glyph data for a single glyph
+#define MAXGLYPHDATA 4
+
 #endif

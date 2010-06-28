@@ -44,6 +44,8 @@ class TColourFrame : public QFrame
 	void setColour(QColor &c);
 	// Set colour to be displayed in frame (from double*)
 	void setColour(double *col);
+	// Return current colour
+	QColor colour();
 };
 
 #endif

@@ -42,7 +42,15 @@ void GuiQt::updateContextMenu()
 	if (nselected == 2) mainWindow->ui.actionSetBondLength->setEnabled(TRUE);
 	else if (nselected == 3) mainWindow->ui.actionSetBondAngle->setEnabled(TRUE);
 	else if (nselected == 4) mainWindow->ui.actionSetTorsionAngle->setEnabled(TRUE);
+	// (De)Activate glyph menu items based on number of atoms selected
+	mainWindow->activateGlyphActions(nselected);
 	msg.exit("GuiQt::updateContextMenu");
+}
+
+// Activate glyph actions 
+void AtenForm::activateGlyphActions(int n)
+{
+	for (int gt=0; gt<Glyph::nGlyphTypes; ++gt) createGlyphActions[gt]->setEnabled( Glyph::nGlyphData( (Glyph::GlyphType) gt) == n);
 }
 
 // Show the modelview context menu
@@ -219,4 +227,25 @@ void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 {
 	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+void AtenForm::createGlyph()
+{
+	// Cast sending QAction and grab filename
+	QAction *action = qobject_cast<QAction*> (sender());
+	if (!action)
+	{
+		printf("AtenForm::loadRecent - Sender was not a QAction.\n");
+		return;
+	}
+	// Which action was it?
+	int n;
+	for (n=0; n<Glyph::nGlyphTypes; ++n) if (createGlyphActions[n] == action) break;
+	if (n == Glyph::nGlyphTypes)
+	{
+		printf("Internal Error - Failed to 'cast' action into glyph type.\n");
+		return;
+	}
+	Glyph::GlyphType gt = (Glyph::GlyphType) n;
+	
 }

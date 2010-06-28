@@ -23,6 +23,10 @@
 #define ATEN_GLYPHSWINDOW_H
 
 #include "gui/ui_glyphs.h"
+#include "base/constants.h"
+
+// Forward Declarations
+class Glyph;
 
 // Glyphs window
 class AtenGlyphs : public QDialog
@@ -34,16 +38,80 @@ class AtenGlyphs : public QDialog
 	// Window Functions
 	*/
 	public:
+	// Finalise widgets (things that we couldn't do in Qt Designer)
+	void finaliseUi();
+	// Show the window
 	void showWindow();
+	// Update window
+	void refresh();
+
 	private slots:
 	void dialogFinished(int result);
+	void on_GlyphList_currentRowChanged(int row);
+	void on_GlyphAddButton_clicked(bool checked);
+	void on_GlyphDeleteSelectedButton_clicked(bool checked);
+	void on_GlyphSelectAllButton_clicked(bool checked);
+	void on_GlyphSelectNoneButton_clicked(bool checked);
+	void on_GlyphInvertSelectionButton_clicked(bool checked);
+	void on_GlyphHideAllButton_clicked(bool checked);
+	void on_GlyphHideNoneButton_clicked(bool checked);
+	void on_GlyphHideSelectedButton_clicked(bool checked);
+	void on_Data1AtomIdSpin_valueChanged(int i);
+	void on_Data2AtomIdSpin_valueChanged(int i);
+	void on_Data3AtomIdSpin_valueChanged(int i);
+	void on_Data4AtomIdSpin_valueChanged(int i);
+	void on_Data1AtomRadio_clicked(bool checked);
+	void on_Data2AtomRadio_clicked(bool checked);
+	void on_Data3AtomRadio_clicked(bool checked);
+	void on_Data4AtomRadio_clicked(bool checked);
+	void on_Data1ValueRadio_clicked(bool checked);
+	void on_Data2ValueRadio_clicked(bool checked);
+	void on_Data3ValueRadio_clicked(bool checked);
+	void on_Data4ValueRadio_clicked(bool checked);
+	void on_Data1ValueXSpin_valueChanged(double d);
+	void on_Data2ValueXSpin_valueChanged(double d);
+	void on_Data3ValueXSpin_valueChanged(double d);
+	void on_Data4ValueXSpin_valueChanged(double d);
+	void on_Data1ValueYSpin_valueChanged(double d);
+	void on_Data2ValueYSpin_valueChanged(double d);
+	void on_Data3ValueYSpin_valueChanged(double d);
+	void on_Data4ValueYSpin_valueChanged(double d);
+	void on_Data1ValueZSpin_valueChanged(double d);
+	void on_Data2ValueZSpin_valueChanged(double d);
+	void on_Data3ValueZSpin_valueChanged(double d);
+	void on_Data4ValueZSpin_valueChanged(double d);
+	void on_Data1ColourButton_clicked(bool checked);
+	void on_Data2ColourButton_clicked(bool checked);
+	void on_Data3ColourButton_clicked(bool checked);
+	void on_Data4ColourButton_clicked(bool checked);
+	private:
+	// Add item to list
+	void addItemToList(Glyph *g);
+	void dataAtomIdChanged(int id, int value);
+	void dataValueChanged(int id, int component, double value);
+	void dataValueChanged(int id, double x, double y, double z);
+	void dataColourChanged(int id);
 
 	/*
-	// Local variables
+	// Local variables and functions
 	*/
 	private:
+	// Local widget pointers
+	QRadioButton *dataAtomRadio[MAXGLYPHDATA], *dataValueRadio[MAXGLYPHDATA];
+	QSpinBox *dataAtomIdSpin[MAXGLYPHDATA];
+	QComboBox *dataAtomDataCombo[MAXGLYPHDATA];
+	QDoubleSpinBox *dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
+	TColourFrame *dataColourFrame[MAXGLYPHDATA];
+	QGroupBox *dataGroupBox[MAXGLYPHDATA];
+	QWidget *dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];
+	// Whether the widget should refresh when it is next shown
+	bool shouldRefresh_;
 	// Whether widget is refreshing
 	bool refreshing_;
+	// Update current glyph data
+	void updateData(Glyph *g);
+	// Update controls (i.e. enable/disable widgets in data groups)
+	void updateControls(Glyph *g);
 
 	/*
 	// Dialog
