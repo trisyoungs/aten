@@ -247,5 +247,15 @@ void AtenForm::createGlyph()
 		return;
 	}
 	Glyph::GlyphType gt = (Glyph::GlyphType) n;
-	
+	// Create glyph in model
+	CommandNode::run(Command::NewGlyph, "c", Glyph::glyphType(gt));
+	// Set data to atom selection
+	Model *viewTarget = gui.mainView.displayModel();
+	n = 1;
+	for (Refitem<Atom,int> *ri = viewTarget->selection(); ri != NULL; ri = ri->next)
+	{
+		CommandNode::run(Command::GlyphAtomR, "ii", n, ri->item->id()+1);
+		n++;
+	}
+	gui.update(FALSE,FALSE,FALSE,TRUE);
 }

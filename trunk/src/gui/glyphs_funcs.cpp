@@ -194,6 +194,10 @@ void AtenGlyphs::updateControls(Glyph *g)
 	}
 }
 
+void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
+{
+}
+
 void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
