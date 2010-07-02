@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>255</width>
-        <height>90</height>
+        <width>263</width>
+        <height>99</height>
        </rect>
       </property>
       <attribute name="title" >
@@ -209,6 +209,9 @@
            </property>
            <property name="text" >
             <string>Add</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>

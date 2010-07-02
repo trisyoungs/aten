@@ -259,6 +259,8 @@ bool Command::function_NewGlyph(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	obj.gl = obj.rs->addGlyph(gt);
 	rv.set(VTypes::GlyphData, obj.gl);
+	// Set default text for text glyphs
+	if ((gt == Glyph::TextGlyph) || (gt == Glyph::Text3DGlyph)) obj.gl->setText("NewGlyph");
 	// Parse extra options
 	Dnchar value;
 	Glyph::GlyphOption gopt;

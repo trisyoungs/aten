@@ -29,9 +29,9 @@ filter(type="exportmodel", name="Quantum Espresso Input", nickname="espresso", e
 	writeline("/");
 	writeline("&system");
 	writeline("   ibrav=0,");
-	if (m.cell.type != "none") writeline("   A=%f, B=%f, C=%f, cosAB=%f, cosAC=%f, cosBC=%f,",m.cell.a,m.cell.b,m.cell.c,cos(m.cell.alpha),cos(m.cell.beta),cos(m.cell.gamma));
-	writeline("   nat=%i,",m.natoms);
-	writeline("   ntyp=%i,",nspecies);
+	if (m.cell.type != "none") writelinef("   A=%f, B=%f, C=%f, cosAB=%f, cosAC=%f, cosBC=%f,\n",m.cell.a,m.cell.b,m.cell.c,cos(m.cell.alpha),cos(m.cell.beta),cos(m.cell.gamma));
+	writelinef("   nat=%i,\n",m.natoms);
+	writelinef("   ntyp=%i,\n",nspecies);
 	writeline("   ecutwfc=50.0,");
 	writeline("   ecutrho=200.0,");
 	writeline(" /");

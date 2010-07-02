@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
+    <width>364</width>
     <height>230</height>
    </rect>
   </property>
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>347</width>
-        <height>189</height>
+        <width>356</width>
+        <height>198</height>
        </rect>
       </property>
       <attribute name="title" >
@@ -222,6 +222,9 @@
                   <width>24</width>
                   <height>24</height>
                  </size>
+                </property>
+                <property name="autoDefault" >
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -414,6 +417,9 @@
                   <height>24</height>
                  </size>
                 </property>
+                <property name="autoDefault" >
+                 <bool>false</bool>
+                </property>
                </widget>
               </item>
               <item>
@@ -448,6 +454,9 @@
                 </property>
                 <property name="checkable" >
                  <bool>true</bool>
+                </property>
+                <property name="autoDefault" >
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -550,6 +559,9 @@
            <property name="checkable" >
             <bool>false</bool>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -591,6 +603,9 @@
            <property name="checkable" >
             <bool>false</bool>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -602,8 +617,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>347</width>
-        <height>189</height>
+        <width>356</width>
+        <height>198</height>
        </rect>
       </property>
       <attribute name="title" >
@@ -1373,6 +1388,9 @@
            <property name="text" >
             <string>Apply</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -1397,8 +1415,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>347</width>
-        <height>189</height>
+        <width>356</width>
+        <height>198</height>
        </rect>
       </property>
       <attribute name="title" >
@@ -1421,8 +1439,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>331</width>
-            <height>104</height>
+            <width>348</width>
+            <height>108</height>
            </rect>
           </property>
           <attribute name="title" >
@@ -2046,8 +2064,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>331</width>
-            <height>104</height>
+            <width>348</width>
+            <height>108</height>
            </rect>
           </property>
           <attribute name="title" >
@@ -2826,6 +2844,9 @@
            </property>
            <property name="text" >
             <string>Rotate</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>

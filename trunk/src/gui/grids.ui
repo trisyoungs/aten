@@ -66,7 +66,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget" >
        <property name="currentIndex" >
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="DataCutoff" >
         <property name="geometry" >
@@ -74,7 +74,7 @@
           <x>0</x>
           <y>0</y>
           <width>282</width>
-          <height>231</height>
+          <height>233</height>
          </rect>
         </property>
         <attribute name="title" >
@@ -266,7 +266,7 @@
           <x>0</x>
           <y>0</y>
           <width>282</width>
-          <height>231</height>
+          <height>233</height>
          </rect>
         </property>
         <attribute name="title" >
@@ -654,7 +654,7 @@
           <x>0</x>
           <y>0</y>
           <width>282</width>
-          <height>231</height>
+          <height>233</height>
          </rect>
         </property>
         <attribute name="title" >
@@ -869,6 +869,9 @@
                    <iconset resource="icons.qrc" >
                     <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
                   </property>
+                  <property name="autoDefault" >
+                   <bool>false</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="0" >
@@ -948,6 +951,9 @@
                   <property name="icon" >
                    <iconset resource="icons.qrc" >
                     <normaloff>:/basic/icons/basic_colour.svg</normaloff>:/basic/icons/basic_colour.svg</iconset>
+                  </property>
+                  <property name="autoDefault" >
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>

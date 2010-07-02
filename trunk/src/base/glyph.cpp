@@ -154,6 +154,7 @@ void Glyph::setColour(double r, double g, double b, double a)
 void Glyph::setVisible(bool isvisible)
 {
 	visible_ = isvisible;
+	parent_->changeLog.add(Log::Glyphs);
 }
 
 // Return whether the Glyph is visible

@@ -279,6 +279,10 @@ void Canvas::renderModelGlyphs(Model *sourceModel)
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
 				break;
+			// Text Glyphs - handled in Canvas::renderModelTextGlyphs()
+			case (Glyph::TextGlyph):
+			case (Glyph::Text3DGlyph):
+				break;
 			default:
 				msg.print("Internal Error: Don't know how to draw glyph type %i\n", g->type());
 				break;

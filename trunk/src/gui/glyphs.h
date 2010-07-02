@@ -48,6 +48,10 @@ class AtenGlyphs : public QDialog
 	private slots:
 	void dialogFinished(int result);
 	void on_GlyphList_currentRowChanged(int row);
+	void on_GlyphList_itemSelectionChanged();
+	void on_GlyphTypeCombo_currentIndexChanged(int row);
+	void on_GlyphLineEdit_returnPressed();
+	void on_GlyphVisibleCheck_clicked(bool checked);
 	void on_GlyphAddButton_clicked(bool checked);
 	void on_GlyphDeleteSelectedButton_clicked(bool checked);
 	void on_GlyphSelectAllButton_clicked(bool checked);
