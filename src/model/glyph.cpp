@@ -25,6 +25,7 @@
 // Create new glyph in this model
 Glyph *Model::addGlyph(Glyph::GlyphType gt)
 {
+	changeLog.add(Log::Glyphs);
 	changeLog.add(Log::Visual);
 	Glyph *newglyph = glyphs_.add();
 	newglyph->setParent(this);
@@ -35,6 +36,9 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 // Remove specified glyph from model
 void Model::removeGlyph(Glyph *g)
 {
+	glyphs_.remove(g);
+	changeLog.add(Log::Glyphs);
+	changeLog.add(Log::Visual);	
 }
 
 // Return number of defined glyphs

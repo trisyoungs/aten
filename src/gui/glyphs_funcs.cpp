@@ -45,7 +45,9 @@ AtenGlyphs::~AtenGlyphs()
 void AtenGlyphs::finaliseUi()
 {
 	// Set allowable glyph types in combo box
+	refreshing_ = TRUE;
 	for (int n=0; n<Glyph::nGlyphTypes; ++n) ui.GlyphTypeCombo->addItem( Glyph::glyphTypeName( (Glyph::GlyphType) n) );
+	refreshing_ = FALSE;
 	// Grab pointers to controls for ease of use later on
 	dataAtomRadio[0] = ui.Data1AtomRadio;
 	dataAtomRadio[1] = ui.Data2AtomRadio;
@@ -91,6 +93,7 @@ void AtenGlyphs::finaliseUi()
 	dataValueWidget[1] = ui.Data2ValueGroup;
 	dataValueWidget[2] = ui.Data3ValueGroup;
 	dataValueWidget[3] = ui.Data4ValueGroup;
+
 }
 
 // Show window
@@ -148,6 +151,25 @@ void AtenGlyphs::updateData(Glyph *g)
 	if (g == NULL) return;
 	// Set data in widgets
 	ui.GlyphTypeCombo->setCurrentIndex(g->type());
+	// Set individual data groups
+	for (int n=0; n<g->nData(); ++n)
+	{
+		GlyphData *gd = g->data(n);
+		if (gd->atomSetLast())
+		{
+			dataAtomIdSpin[n]->setValue(gd->atom() == NULL ? 0 : gd->atom()->id()+1);
+			dataAtomDataCombo[n]->setCurrentIndex(gd->atomData());
+		}
+		else
+		{
+			dataValueXSpin[n]->setValue(gd->vector().x);
+			dataValueYSpin[n]->setValue(gd->vector().y);
+			dataValueZSpin[n]->setValue(gd->vector().z);
+		}
+		dataColourFrame[n]->setColour(gd->colour());
+		dataColourFrame[n]->update();
+		ui.GlyphLineEdit->setText(g->text());
+	}
 }
 
 // Update controls (i.e. enable/disable widgets in data groups)
@@ -161,8 +183,6 @@ void AtenGlyphs::updateControls(Glyph *g)
 	else
 	{
 		ui.PropertiesBox->setEnabled(TRUE);
-		// Set glyph type
-		ui.GlyphTypeCombo->setCurrentIndex(g->type());
 		// Set individual data groups
 		for (int n=0; n<g->nData(); ++n)
 		{
@@ -174,8 +194,6 @@ void AtenGlyphs::updateControls(Glyph *g)
 				dataValueWidget[n]->setEnabled(FALSE);
 				dataAtomRadio[n]->setChecked(TRUE);
 				dataValueRadio[n]->setChecked(FALSE);
-				dataAtomIdSpin[n]->setValue(gd->atom() == NULL ? 0 : gd->atom()->id()+1);
-				dataAtomDataCombo[n]->setCurrentIndex(gd->atomData());
 			}
 			else
 			{
@@ -183,12 +201,9 @@ void AtenGlyphs::updateControls(Glyph *g)
 				dataValueWidget[n]->setEnabled(TRUE);
 				dataValueRadio[n]->setChecked(TRUE);
 				dataAtomRadio[n]->setChecked(FALSE);
-				dataValueXSpin[n]->setValue(gd->vector().x);
-				dataValueYSpin[n]->setValue(gd->vector().y);
-				dataValueZSpin[n]->setValue(gd->vector().z);
 			}
-			dataColourFrame[n]->setColour(gd->colour());
-			dataColourFrame[n]->update();
+// 			dataColourFrame[n]->setColour(gd->colour());
+// 			dataColourFrame[n]->update();
 		}
 		for (int n=g->nData(); n<MAXGLYPHDATA; ++n) dataGroupBox[n]->setEnabled(FALSE);
 	}
@@ -196,6 +211,23 @@ void AtenGlyphs::updateControls(Glyph *g)
 
 void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 {
+	Glyph *g = (row == -1 ? NULL : aten.currentModelOrFrame()->glyph(row));
+	refreshing_ = TRUE;
+	updateData(g);
+	updateControls(g);
+	refreshing_ = FALSE;
+}
+
+void AtenGlyphs::on_GlyphList_itemSelectionChanged()
+{
+	// Extra check to deactivate controls when no glyph in the list is selected
+	if (ui.GlyphList->selectedItems().size() == 0)
+	{
+		refreshing_ = TRUE;
+		updateData(NULL);
+		updateControls(NULL);
+		refreshing_ = FALSE;
+	}
 }
 
 void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
@@ -204,14 +236,20 @@ void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
 	if (m == NULL) return;
 	Glyph *g = m->addGlyph(Glyph::ArrowGlyph);
 	addItemToList(g);
-	ui.GlyphList->setCurrentRow(ui.GlyphList->count());
-	updateData(g);
-	updateControls(g);
+	// Deselect any previously-selected items - easiest way is to temporarily change selection mode
+	ui.GlyphList->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui.GlyphList->setCurrentRow(ui.GlyphList->count()-1);
+	ui.GlyphList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	refreshing_ = TRUE;
+	updateData(NULL);
+	updateControls(NULL);
+	refreshing_ = FALSE;
 }
 
 void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
 {
 	// Loop over list of selected items and set new colour
+	int row = ui.GlyphList->currentRow();
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	Model *m = aten.currentModelOrFrame();
 	Glyph *g;
@@ -222,24 +260,32 @@ void AtenGlyphs::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	}
 	// Refresh list
 	refresh();
-	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	// Reselect item now at the previous selection position
+	ui.GlyphList->setCurrentRow(row < ui.GlyphList->count() ? row : ui.GlyphList->count()-1);
 	gui.mainView.postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphSelectAllButton_clicked(bool checked)
 {
+	for (int i = 0; i<ui.GlyphList->count(); ++i) ui.GlyphList->item(i)->setSelected(TRUE);
 }
 
 void AtenGlyphs::on_GlyphSelectNoneButton_clicked(bool checked)
 {
+	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
+	for (int i = items.size()-1; i>=0; --i) items.at(i)->setSelected(FALSE);
 }
 
 void AtenGlyphs::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
+	for (int i = 0; i<ui.GlyphList->count(); ++i) ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? FALSE : TRUE );
 }
 
 void AtenGlyphs::on_GlyphHideAllButton_clicked(bool checked)
 {
+	Model *m = aten.currentModelOrFrame();
+	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
+	gui.mainView.postRedisplay();
 }
 
 void AtenGlyphs::on_GlyphHideNoneButton_clicked(bool checked)
@@ -248,6 +294,56 @@ void AtenGlyphs::on_GlyphHideNoneButton_clicked(bool checked)
 
 void AtenGlyphs::on_GlyphHideSelectedButton_clicked(bool checked)
 {
+}
+
+void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
+{
+	if (refreshing_) return;
+	// Loop over list of selected items and set new atom id
+	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
+	Glyph *g;
+	Glyph::GlyphType gt = (Glyph::GlyphType) row;
+	for (int i = 0; i < items.size(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g->setType(gt);
+	}
+	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	gui.mainView.postRedisplay();
+	refreshing_ = TRUE;
+	updateData(NULL);
+	updateControls(NULL);
+	refreshing_ = FALSE;
+}
+
+void AtenGlyphs::on_GlyphLineEdit_returnPressed()
+{
+	if (refreshing_) return;
+	// Loop over list of selected items and set new atom id
+	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
+	Glyph *g;
+	for (int i = 0; i < items.size(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g->setText(qPrintable(ui.GlyphLineEdit->text()));
+	}
+	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	gui.mainView.postRedisplay();
+}
+
+void AtenGlyphs::on_GlyphVisibleCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	// Loop over list of selected items and set new atom id
+	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
+	Glyph *g;
+	for (int i = 0; i < items.size(); ++i)
+	{
+		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g->setVisible(checked);
+	}
+	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	gui.mainView.postRedisplay();
 }
 
 void AtenGlyphs::on_Data1AtomIdSpin_valueChanged(int i)

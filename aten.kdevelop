@@ -10,8 +10,8 @@
     <projectname>aten</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
@@ -19,10 +19,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram></mainprogram>
+      <mainprogram/>
       <programargs>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</programargs>
       <globaldebugarguments>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</globaldebugarguments>
-      <globalcwd></globalcwd>
+      <globalcwd/>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -60,17 +60,17 @@
       <runmultiplejobs>true</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
-      <makebin></makebin>
+      <makebin/>
       <prio>4</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -179,7 +179,7 @@
       <includeTypedefs>false</includeTypedefs>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>

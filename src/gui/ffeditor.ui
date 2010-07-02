@@ -13,14 +13,15 @@
    <string>Forcefield Editor</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="icons.qrc" >:/program/icons/aten.png</iconset>
+   <iconset resource="icons.qrc" >
+    <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>2</number>
-   </property>
    <property name="spacing" >
     <number>4</number>
+   </property>
+   <property name="margin" >
+    <number>2</number>
    </property>
    <item>
     <widget class="QGroupBox" name="ForcefieldInfoGroup" >
@@ -53,7 +54,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -66,7 +67,7 @@
         <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" >
+        <property name="sizeHint" stdset="0" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -83,6 +84,14 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="FFETypesTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Types</string>
       </attribute>
@@ -90,11 +99,11 @@
        <string>Atomtype definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="margin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QTableWidget" name="FFEditorTypesTable" >
@@ -132,18 +141,18 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -155,6 +164,9 @@
           <widget class="QPushButton" name="RemoveTypeButton" >
            <property name="text" >
             <string>Remove</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -173,6 +185,9 @@
            <property name="text" >
             <string>Test</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="0" column="2" >
@@ -180,7 +195,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>184</width>
              <height>29</height>
@@ -227,6 +242,9 @@
            <property name="text" >
             <string>Create...</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="0" column="4" >
@@ -248,6 +266,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="FFEAtomsTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Atoms</string>
       </attribute>
@@ -255,11 +281,11 @@
        <string>Intermolecular definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="margin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QTableWidget" name="FFEditorAtomsTable" >
@@ -321,11 +347,11 @@
           <string>Function Information</string>
          </property>
          <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>2</number>
-          </property>
           <property name="spacing" >
            <number>4</number>
+          </property>
+          <property name="margin" >
+           <number>2</number>
           </property>
           <item>
            <layout class="QGridLayout" >
@@ -354,7 +380,7 @@
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>40</width>
                 <height>20</height>
@@ -367,7 +393,7 @@
               <property name="orientation" >
                <enum>Qt::Horizontal</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>40</width>
                 <height>20</height>
@@ -383,6 +409,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="FFEBondsTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Bonds</string>
       </attribute>
@@ -390,11 +424,11 @@
        <string>Bond term definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="margin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QTableWidget" name="FFEditorBondsTable" >
@@ -447,18 +481,18 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -471,12 +505,18 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddBondButton" >
            <property name="text" >
             <string>Add</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -485,6 +525,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="FFEAnglesTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Angles</string>
       </attribute>
@@ -492,11 +540,11 @@
        <string>Angle term definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="margin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QTableWidget" name="FFEditorAnglesTable" >
@@ -554,18 +602,18 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -578,12 +626,18 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddAngleButton" >
            <property name="text" >
             <string>Add</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -592,6 +646,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="FFETorsionsTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Torsions</string>
       </attribute>
@@ -599,11 +661,11 @@
        <string>Torsional term definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="margin" >
+        <number>9</number>
        </property>
        <item>
         <widget class="QTableWidget" name="FFEditorTorsionsTable" >
@@ -666,18 +728,18 @@
        </item>
        <item>
         <layout class="QHBoxLayout" >
-         <property name="margin" >
-          <number>0</number>
-         </property>
          <property name="spacing" >
           <number>6</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
          </property>
          <item>
           <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -690,12 +752,18 @@
            <property name="text" >
             <string>Remove</string>
            </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="AddTorsionButton" >
            <property name="text" >
             <string>Add</string>
+           </property>
+           <property name="autoDefault" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -704,6 +772,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="FFEInfoTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Information</string>
       </attribute>
@@ -712,6 +788,14 @@
       </attribute>
      </widget>
      <widget class="QWidget" name="FFEGenerateTab" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>491</width>
+        <height>282</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Generate</string>
       </attribute>
@@ -731,34 +815,37 @@
         <string>Generate From Model</string>
        </property>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="margin" >
+         <number>9</number>
+        </property>
         <item>
          <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
           <property name="spacing" >
            <number>6</number>
+          </property>
+          <property name="margin" >
+           <number>0</number>
           </property>
           <item>
            <widget class="QPushButton" name="FFEditorGenerateTypeButton" >
             <property name="text" >
              <string>For Selection</string>
             </property>
+            <property name="autoDefault" >
+             <bool>false</bool>
+            </property>
            </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
             <property name="spacing" >
              <number>6</number>
+            </property>
+            <property name="margin" >
+             <number>0</number>
             </property>
             <item>
              <widget class="QLabel" name="label_3" >

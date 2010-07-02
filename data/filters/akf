@@ -53,9 +53,9 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 				g.data[l].atomdata = atomdata;
 			}
 			# Additional data now...
-			readlinef("%s%r",keywd,line);
-			while(keywd != "endglyph")
+			while (keywd != "endglyph")
 			{
+				readlinef("%s%r",keywd,line);
 				if (keywd == "rotation") readvarf(line,"%f %f %f %f %f %f %f %f %f", g.rotation[1], g.rotation[2], g.rotation[3], g.rotation[4], g.rotation[5], g.rotation[6], g.rotation[7], g.rotation[8], g.rotation[9]);
 				else if (keywd == "invisible") g.visible = FALSE;
 				else if (keywd == "text") readvar(line,g.text);
