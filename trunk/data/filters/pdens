@@ -18,6 +18,7 @@ filter(type="importgrid", name="Probability Density", nickname="pdens", extensio
 
 	# First line contains number of gridpoints in each direction x,y,z
 	readline(nx, ny, nz);
+	printf("GridXYZ from file = %i %i %i\n", nx, ny, nz);
 	initgrid("regularxyz",nx,ny,nz);
 
 	# Second line contains axis system
