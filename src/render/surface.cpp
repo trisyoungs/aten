@@ -711,7 +711,7 @@ void Canvas::renderSurfaces(Model *sourceModel)
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
 		  glMatrixMode(GL_MODELVIEW);
-// 		  glMultMatrixd( g->axesForGl() );
+		  glMultMatrixd( g->axesForGl() );
 		  // Call the display list
 		  glCallList(list);
 		glPopMatrix();

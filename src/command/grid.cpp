@@ -286,7 +286,7 @@ bool Command::function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Grid::GridType gt = Grid::gridType(c->argc(0), TRUE);
 	if (gt == Grid::nGridTypes) return FALSE;
-	rv.set(obj.g->initialise(gt, c->arg3i(0)));
+	rv.set(obj.g->initialise(gt, c->arg3i(1)));
 	return TRUE;
 }
 

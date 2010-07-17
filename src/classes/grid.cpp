@@ -593,7 +593,7 @@ bool Grid::allocateArrays()
 		case (Grid::RegularXYZData):
 			if (data3d_ != NULL) clear();
 			// Check point limits (negative only)
-			if (nPoints_.minElement() < 1)
+			if (nPoints_.min() < 1)
 			{
 				msg.print("Can't allocate 3D grid array - One or more grid limits are negative (%i,%i,%i).\n", nPoints_.x, nPoints_.y, nPoints_.z);
 				msg.exit("Grid::allocateArrays");

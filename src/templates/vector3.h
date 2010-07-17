@@ -51,13 +51,13 @@ template <class T> class Vec3
 	void zero();
 	// Set the specific element to value
 	void set(int index, T d);
-	// Set all three components simultaneously
+	// Set all three values simultaneously
 	void set(T x, T y, T z);
-	// Set all three components simultaneously, converting supplied spherical coordinates to cartesian
+	// Set all three values simultaneously, converting supplied spherical coordinates to cartesian
 	void setFromSpherical(T r, T phi, T theta);
-	// Add value to single component
+	// Add value to single value
 	void add(int index, T delta);
-	// Add values to all three components simultaneously
+	// Add values to all three values simultaneously
 	void add(T dx, T dy, T dz);
 	// Returns the value of the specified element
 	T get(int) const;
@@ -100,13 +100,13 @@ template <class T> class Vec3
 	// Methods
 	*/
 	public:
-	// Returns the largest absolute component of the vector
+	// Returns the largest absolute value of the vector
 	T absMax() const;
-	// Returns the maximum absolute-valued element in the vector
+	// Returns the index of the maximum absolute-valued element in the vector
 	int absMaxElement() const;
-	// Returns the smallest absolute component of the vector
+	// Returns the smallest absolute value of the vector
 	T absMin() const;
-	// Returns the minimum absolute-valued element in the vector
+	// Returns the index of the minimum absolute-valued element in the vector
 	int absMinElement() const;
 	// Dot product between this and supplied vector
 	double dp(const Vec3<T> &v) const;
@@ -116,11 +116,11 @@ template <class T> class Vec3
 	inline double magnitude() const;
 	// Calculate square of vector magnitude
 	inline double magnitudeSq() const;
-	// Returns the largest component of the vector
+	// Returns the largest value of the vector
 	T max() const;
 	// Returns the maximum valued element in the vector
 	int maxElement() const;
-	// Returns the smallest component of the vector
+	// Returns the smallest value of the vector
 	T min() const;
 	// Returns the minimum valued element in the vector
 	int minElement() const;
@@ -182,7 +182,7 @@ template <class T> void Vec3<T>::set(T a, T b, T c)
 	z = c;
 }
 
-// Set all three components simultaneously, converting supplied spherical coordinates to cartesian
+// Set all three values simultaneously, converting supplied spherical coordinates to cartesian
 template <class T> void Vec3<T>::setFromSpherical(T r, T phi, T theta)
 {
 	x = r;
