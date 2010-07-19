@@ -108,3 +108,4 @@ void DoubleExp::operator=(double d)
 {
 	set(d);
 }
+

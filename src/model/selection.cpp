@@ -279,3 +279,4 @@ void Model::reorderSelectedAtoms()
 	}
 	msg.exit("Model::reorderSelectedAtoms");
 }
+
