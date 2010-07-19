@@ -89,7 +89,7 @@ void AtenFragment::refresh()
 		group->setFlags(Qt::ItemIsEnabled);
 		ui.FragmentTree->setItemExpanded(group, TRUE);
 		group->setText(0, fg->name());
-		group->setFirstColumnSpanned(TRUE);
+		//group->setFirstColumnSpanned(TRUE);	// Removed, since not present in Qt4.2
 
 		column = 0;
 		// Go through fragments in group
