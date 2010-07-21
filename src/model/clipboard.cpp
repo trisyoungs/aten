@@ -365,3 +365,9 @@ bool Clipboard::hasBond(int ii, int jj)
 	}
 	return FALSE;
 }
+
+// Return number of bonds stored in clipboard
+int Clipboard::nBonds()
+{
+	return bonds_.nItems();
+}

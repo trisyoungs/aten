@@ -121,7 +121,9 @@ class Clipboard
 
 	public:
 	// Check for presence of bond in list
-	bool hasBond(int ii, int jj); 
+	bool hasBond(int ii, int jj);
+	// Return number of bonds stored in clipboard
+	int nBonds();
 
 	/*
 	// Model

@@ -73,4 +73,7 @@
 // Maximum number of glyph data for a single glyph
 #define MAXGLYPHDATA 4
 
+// Maximum number of elements in periodic table
+#define MAXELEMENTS 120
+
 #endif
