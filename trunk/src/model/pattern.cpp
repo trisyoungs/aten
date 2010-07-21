@@ -184,9 +184,9 @@ bool Model::autocreatePatterns(bool acceptDefault)
 {
 	// Determine the pattern (molecule) layout of the model
 	msg.enter("Model::autocreatePatterns");
-	int n, atomid, nsel2, nmols, idi, idj, idoff;
+	int n, atomid, nsel2, nmols, idi, idj, idoff, count;
 	bool same, defaultpattern = FALSE;
-	static Dnchar emp;
+	Dnchar emp;
 	Clipboard patclip;
 	emp.createEmpty(1024);
 	Pattern *p;
@@ -268,6 +268,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 				clipi = patclip.atoms();
 				for (isel = marked_.first(); isel != NULL; isel = isel->next)
 				{
+					count++;
 					// Element check
 					if (clipi->element() != isel->item->element())
 					{
@@ -291,9 +292,11 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					}
 					clipi = clipi->next;
 				}
+				if (!same) break;
 				// Bonding between atoms...
 				idoff = selection(TRUE)->item->id();
-				if (same) for (isel = marked_.first(); isel != NULL; isel = isel->next)
+				count = 0;
+				for (isel = marked_.first(); isel != NULL; isel = isel->next)
 				{
 					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
 					idi = isel->item->id() - idoff;
@@ -301,6 +304,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					{
 						idj = rb->item->partner(isel->item)->id() - idoff;
 						if (idi < idj) continue;
+						count++;
 						if (!patclip.hasBond(idi,idj))
 						{
 							same = FALSE;
@@ -309,6 +313,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					}
 					if (!same) break;
 				}
+				// Check for difference between number of bonds between marked atoms and clipboard atoms
+				if (count != patclip.nBonds()) same = FALSE;
 			}
 			// If we get to here with same == TRUE then we increase nmols. Otherwise, we create a new pattern.
 			if (same) nmols ++;
@@ -345,11 +351,10 @@ bool Model::autocreatePatterns(bool acceptDefault)
 void Model::selectionEmpirical(Dnchar &target, bool markonly)
 {
 	msg.enter("Model::selectionEmpirical");
-	int n, *elcount;
+	int n, elcount[MAXELEMENTS];
 	target.clear();
-	elcount = new int[elements().nElements()];
 	// Reset element counters
-	for (n=0; n<elements().nElements(); n++) elcount[n] = 0;
+	for (n=0; n<MAXELEMENTS; n++) elcount[n] = 0;
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
@@ -357,13 +362,12 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly)
 		i = i->next;
 	}
 	// Construct element string
-	for (n=elements().nElements()-1; n>0; n--)
-		if (elcount[n] != 0) 
+	for (n=MAXELEMENTS-1; n>0; n--)
+		if (elcount[n] != 0)
 		{
 			target.cat(elements().symbol(n));
 			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
 		}
-	delete[] elcount;
 	msg.exit("Model::selectionEmpirical");
 }
 

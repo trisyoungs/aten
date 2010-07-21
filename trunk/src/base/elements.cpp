@@ -358,8 +358,9 @@ void Element::copyDiffuseColour(GLfloat *v)
 // Constructor
 ElementMap::ElementMap()
 {
-	// Determine number of defined elements
+	// Determine number of defined elements, and double-check against MAXELEMENTS constant
 	nElements_ = sizeof(el) / sizeof(el[0]);
+	if (nElements_ > MAXELEMENTS) printf("Warning - Number of internally-defined elements exceeds MAXELEMENTS constant.\n");
 	// Copy default element data to backup storage
 	defaultEl = new Element[nElements_];
 	int n,i;
