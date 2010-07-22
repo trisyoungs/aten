@@ -38,7 +38,7 @@ void UndoState::setDescription(const char *s)
 }
 
 // Return the current text associated with the state
-const char *UndoState::description()
+const char *UndoState::description() const
 {
 	return description_.get();
 }
@@ -50,7 +50,7 @@ void UndoState::addEvent(UndoEvent *ue)
 }
 
 // Return number of changes in list
-int UndoState::nChanges()
+int UndoState::nChanges() const
 {
 	return events_.nItems();
 }
@@ -62,7 +62,7 @@ void UndoState::setStartLogs(Log source)
 }
 
 // Get structure log point at start of state
-int UndoState::startLog(Log::LogType log)
+int UndoState::startLog(Log::LogType log) const
 {
 	return startLogs_.log(log);
 }
@@ -74,7 +74,7 @@ void UndoState::setEndLogs(Log source)
 }
 
 // Get structure log point at end of state
-int UndoState::endLog(Log::LogType log)
+int UndoState::endLog(Log::LogType log) const
 {
 	return endLogs_.log(log);
 }
@@ -101,7 +101,7 @@ void UndoState::redo(Model *m)
 }
 
 // Check differences between logs for start/end points
-bool UndoState::doLogsDiffer()
+bool UndoState::doLogsDiffer() const
 {
 	if (startLogs_.log(Log::Structure) != endLogs_.log(Log::Structure)) return TRUE;
 	if (startLogs_.log(Log::Coordinates) != endLogs_.log(Log::Coordinates)) return TRUE;
@@ -110,7 +110,7 @@ bool UndoState::doLogsDiffer()
 }
 
 // Print changes in state
-void UndoState::print()
+void UndoState::print() const
 {
 	for (UndoEvent* u = events_.first(); u != NULL; u = u->prev) u->print();
 }

@@ -57,27 +57,27 @@ class UndoState
 	// Add event to state
 	void addEvent(UndoEvent *ue);
 	// Return number of changes in list
-	int nChanges();
+	int nChanges() const;
 	// Set logs at start of state
 	void setStartLogs(Log source);
 	// Get structure log point at start of state
-	int startLog(Log::LogType log);
+	int startLog(Log::LogType log) const;
 	// Set logs at end of state
 	void setEndLogs(Log source);
 	// Get structure log point at end of state
-	int endLog(Log::LogType log);
+	int endLog(Log::LogType log) const;
 	// Check difference between Change::StructureLog and Change::CoordinateLog between start/end points
-	bool doLogsDiffer();
+	bool doLogsDiffer() const;
 	// Set the text associated with the current undo state
 	void setDescription(const char *s);
 	// Return the current text associated with the state
-	const char *description();
+	const char *description() const;
 	// Undo the changes specified in the state
 	void undo(Model *m);
 	// Redo the changes specified in the state
 	void redo(Model *m);
 	// Print changes captured in state
-	void print();
+	void print() const;
 };
 
 #endif
