@@ -37,7 +37,7 @@ void ColourScale::setName(const char *s)
 }
 
 // Return the name of the colourscale
-const char *ColourScale::name()
+const char *ColourScale::name() const
 {
 	return name_.get();
 }
@@ -49,7 +49,7 @@ void ColourScale::setVisible(bool v)
 }
 
 // Return whether the colourscale is visible
-bool ColourScale::visible()
+bool ColourScale::visible() const
 {
 	return visible_;
 }
@@ -61,7 +61,7 @@ void ColourScale::setInterpolated(bool b)
 }
 
 // Return whether the colourscale is interpolated
-bool ColourScale::interpolated()
+bool ColourScale::interpolated() const
 {
 	return interpolated_;
 }
@@ -199,10 +199,11 @@ void ColourScale::colour(double v, GLfloat *target)
 // Adjust range of scale to encompass point supplied
 void ColourScale::adjustRange(double value)
 {
+
 }
 
 // Return number of points in colourscale
-int ColourScale::nPoints()
+int ColourScale::nPoints() const
 {
 	return points_.nItems();
 }
@@ -245,7 +246,7 @@ void ColourScale::refreshObjects()
 }
 
 // Return number of objects linked to this colourscale
-int ColourScale::nLinks()
+int ColourScale::nLinks() const
 {
 	return grids_.nItems();
 }

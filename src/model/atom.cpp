@@ -525,7 +525,7 @@ void Model::calculateMass()
 }
 
 // Return number of unknown atoms in the model
-int Model::nUnknownAtoms()
+int Model::nUnknownAtoms() const
 {
 	return nUnknownAtoms_;
 }

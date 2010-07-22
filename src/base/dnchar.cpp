@@ -300,7 +300,7 @@ void Dnchar::cat(const char *s, int charcount)
 }
 
 // Find character
-int Dnchar::find(char search)
+int Dnchar::find(char search) const
 {
 	int result = 0;
 	char *c;
@@ -374,14 +374,14 @@ bool Dnchar::isNumeric() const
 }
 
 // Return the lowercase conversion of the string
-const char *Dnchar::lower()
+const char *Dnchar::lower() const
 {
 	if (data_ == NULL) return "\0";
 	return lowerCase(data_);
 }
 
 // Return the uppercase conversion of the string
-const char *Dnchar::upper()
+const char *Dnchar::upper() const
 {
 	if (data_ == NULL) return "\0";
 	return upperCase(data_);

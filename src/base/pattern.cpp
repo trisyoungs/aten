@@ -117,7 +117,7 @@ Atom *PatternAtom::atom()
 }
 
 // Return integer index of unique atom data reference
-int PatternAtom::forcefieldDataId()
+int PatternAtom::forcefieldDataId() const
 {
 	return forcefieldDataId_;
 }
@@ -139,7 +139,7 @@ void PatternBound::setAtomId(int n, int i)
 }
 
 // Return atom id
-int PatternBound::atomId(int n)
+int PatternBound::atomId(int n) const
 {
 	return atomIds_[n];
 }
@@ -157,7 +157,7 @@ ForcefieldBound *PatternBound::data()
 }
 
 // Return integer index of unique bound data reference
-int PatternBound::forcefieldDataId()
+int PatternBound::forcefieldDataId() const
 {
 	return forcefieldDataId_;
 }
@@ -246,7 +246,7 @@ void Pattern::setId(int i)
 }
 
 // Returns then numerical ID of the pattern
-int Pattern::id()
+int Pattern::id() const
 {
 	return id_;
 }
@@ -276,31 +276,31 @@ void Pattern::setLastAtom(Atom* i)
 }
 
 // Calculate the global atom number offset of the first atom of the molecule
-int Pattern::offset(int mol)
+int Pattern::offset(int mol) const
 {
 	return startAtom_ + mol*nAtoms_;
 }
 
 // Returns the number of atoms in one molecule of the pattern
-int Pattern::nAtoms()
+int Pattern::nAtoms() const
 {
 	return nAtoms_;
 }
 
 // Return number of bonds in one molecule of the pattern
-int Pattern::nBonds()
+int Pattern::nBonds() const
 {
 	return bonds_.nItems();
 }
 
 // Return number of angles in one molecule of the pattern
-int Pattern::nAngles()
+int Pattern::nAngles() const
 {
 	return angles_.nItems();
 }
 
 // Return number of torsions in one molecule of the pattern
-int Pattern::nTorsions()
+int Pattern::nTorsions() const
 {
 	return torsions_.nItems();
 }
@@ -342,25 +342,25 @@ PatternBound *Pattern::torsion(int i)
 }
 
 // Return number of forcefield bonds used in the pattern
-int Pattern::nForcefieldBonds()
+int Pattern::nForcefieldBonds() const
 {
 	return forcefieldBonds_.nItems();
 }
 
 // Return number of forcefield angles used in the pattern
-int Pattern::nForcefieldAngles()
+int Pattern::nForcefieldAngles() const
 {
 	return forcefieldAngles_.nItems();
 }
 
 // Return number of forcefield torsions used in the pattern
-int Pattern::nForcefieldTorsions()
+int Pattern::nForcefieldTorsions() const
 {
 	return forcefieldTorsions_.nItems();
 }
 
 // Return number of forcefield types used in the pattern
-int Pattern::nForcefieldTypes()
+int Pattern::nForcefieldTypes() const
 {
 	return forcefieldTypes_.nItems();
 }
@@ -414,7 +414,7 @@ Refitem<ForcefieldAtom,int> *Pattern::forcefieldType(int i)
 }
 
 // Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
-bool Pattern::areAtomsFixed()
+bool Pattern::areAtomsFixed() const
 {
 	return atomsFixed_;
 }
@@ -432,7 +432,7 @@ void Pattern::setStartAtom(int n)
 }
 
 // Returns the starting atom id of the pattern
-int Pattern::startAtom()
+int Pattern::startAtom() const
 {
 	return startAtom_;
 }
@@ -444,7 +444,7 @@ void Pattern::setEndAtom(int n)
 }
 
 // Returns the ending atom id of the pattern
-int Pattern::endAtom()
+int Pattern::endAtom() const
 {
 	return endAtom_;
 }
@@ -456,7 +456,7 @@ void Pattern::calcTotalAtoms()
 }
 
 // Returns the total number of atoms in the pattern
-int Pattern::totalAtoms()
+int Pattern::totalAtoms() const
 {
 	return totalAtoms_;
 }
@@ -468,7 +468,7 @@ void Pattern::setNMolecules(int n)
 }
 
 // Returns the number of molecules in the pattern
-int Pattern::nMolecules()
+int Pattern::nMolecules() const
 {
 	return nMolecules_;
 }
@@ -480,7 +480,7 @@ void Pattern::setNExpectedMolecules(int n)
 }
 
 // Returns the expected number of molecules in the pattern
-int Pattern::nExpectedMolecules()
+int Pattern::nExpectedMolecules() const
 {
 	return nExpectedMols_;
 }
@@ -504,7 +504,7 @@ void Pattern::setFixed(bool b)
 }
 
 // Returns whether the pattern is fixed
-bool Pattern::isFixed()
+bool Pattern::isFixed() const
 {
 	return fixed_;
 }
@@ -516,7 +516,7 @@ void Pattern::setName(const char *s)
 }
 
 // Returns the pattern name
-const char *Pattern::name()
+const char *Pattern::name() const
 {
 	return name_.get();
 }
@@ -534,19 +534,19 @@ Forcefield *Pattern::forcefield()
 }
 
 // Returns whether the atomlimit in the pattern is valid
-bool Pattern::isAtomLimitOk()
+bool Pattern::isAtomLimitOk() const
 {
 	return testAtomLimit_;
 }
 
 // Returns whether the element composition in the pattern molecules is uniform
-bool Pattern::areElementsOk()
+bool Pattern::areElementsOk() const
 {
 	return testElement_;
 }
 
 // Returns whether the bonding in the pattern molecules is uniform
-bool Pattern::isBondingOk()
+bool Pattern::isBondingOk() const
 {
 	return testBonding_;
 }

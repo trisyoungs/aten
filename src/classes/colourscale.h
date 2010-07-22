@@ -56,15 +56,15 @@ class ColourScale
 	// Set the name of the colourscale
 	void setName(const char *s);
 	// Return the name of the colourscale
-	const char *name();
+	const char *name() const;
 	// Set whether the colourscale is visible
 	void setVisible(bool b);
 	// Return whether the colourscale is visible
-	bool visible();
+	bool visible() const;
 	// Set whether the colourscale is interpolated
 	void setInterpolated(bool b);
 	// Return whether the colourscale is interpolated
-	bool interpolated();
+	bool interpolated() const;
 
 	/*
 	// Data and data range
@@ -79,7 +79,7 @@ class ColourScale
 
 	public:
 	// Return number of points in colourscale
-	int nPoints();
+	int nPoints() const;
 	// Return first point in colourscale
 	ColourScalePoint *firstPoint();
 	// Return last point in colourscale
@@ -118,7 +118,7 @@ class ColourScale
 
 	public:
 	// Return number of objects linked to this colourscale
-	int nLinks();
+	int nLinks() const;
 	// Link grid with colourscale
 	void addLink(Grid *g);
 	// Break link between grid and colourscale

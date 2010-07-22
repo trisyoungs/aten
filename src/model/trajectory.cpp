@@ -32,7 +32,7 @@ void Model::setTrajectoryParent(Model *m)
 }
 
 // Return parent model of trajectory
-Model *Model::trajectoryParent()
+Model *Model::trajectoryParent() const
 {
 	return trajectoryParent_;
 }
@@ -44,20 +44,20 @@ void Model::setTrajectoryFilter(Tree *f)
 }
 
 // Return whether a trajectory for this model exists
-bool Model::hasTrajectory()
+bool Model::hasTrajectory() const
 {
 	if (framesAreCached_) return (frames_.nItems() != 0);
 	else return (nFileFrames_ != 0);
 }
 
 // Return whether the trajectory is cached (if there is one)
-bool Model::trajectoryIsCached()
+bool Model::trajectoryIsCached() const
 {
 	return framesAreCached_;
 }
 
 // Return the current frame pointer
-Model *Model::currentFrame()
+Model *Model::currentFrame() const
 {
 	return currentFrame_;
 }
@@ -76,13 +76,13 @@ Model *Model::frame(int n)
 }
 
 // Return the total number of frames in the trajectory (file or cached)
-int Model::nFrames()
+int Model::nFrames() const
 {
 	return (framesAreCached_ ? frames_.nItems() : nFileFrames_);
 }
 
 // Return the current integer frame position
-int Model::frameIndex()
+int Model::frameIndex() const
 {
 	return frameIndex_;
 }

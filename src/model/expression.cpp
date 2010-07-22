@@ -41,7 +41,7 @@ void Model::createNamesForcefield()
 }
 
 // Return the forcefield containing original atom names for the model
-Forcefield *Model::namesForcefield()
+Forcefield *Model::namesForcefield() const
 {
 	return namesForcefield_;
 }

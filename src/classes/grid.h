@@ -51,11 +51,11 @@ class GridPoint
 	// Return coordinates of point
 	Vec3<double> &r();
 	// Return value at point
-	double value();
+	double value() const;
 	// Set value at point
 	void setValue(double v);
 	// Retrieve flag status
-	int flag();
+	int flag() const;
 	// Set flag status
 	void setFlag(int i);
 };
@@ -92,11 +92,11 @@ class Grid
 	// Set name of Grid data
 	void setName(const char *s);
 	// Return name of Grid data
-	const char *name();
+	const char *name() const;
 	// Initialise grid to specified type and size
 	bool initialise(GridType type, Vec3<int> npoints);
 	// Return type of Grid data
-	GridType type();
+	GridType type() const;
 
 	/*
 	// Gridded Data
@@ -149,19 +149,19 @@ class Grid
 	// Set spacing for a parallelepiped Grid
 	void setAxes(const Mat3<double> axes);
 	// Return the Grid axes
-	Mat3<double> axes();
+	Mat3<double> axes() const;
 	// Return lengths of cell axes
-	Vec3<double> lengths();
+	Vec3<double> lengths() const;
 	// Set data origin
 	void setOrigin(const Vec3<double> v);
 	// Return the origin of the Grid data
-	Vec3<double> origin();
+	Vec3<double> origin() const;
 	// Return number of points in regular gridded data (if it exists)
-	Vec3<int> nPoints();
+	Vec3<int> nPoints() const;
 	// Return minimum value in data[]
-	double minimum();
+	double minimum() const;
 	// Return maximum value in data[]
-	double maximum();
+	double maximum() const;
 	// Return LLC bounding values, calculating first if necessary
 	Vec3<double> lowerLeftCorner();
 	// Return URC bounding values, calculating first if necessary
@@ -169,13 +169,13 @@ class Grid
 	// Set isovalue cutoff for surface
 	void setCutoff(double d);
 	// Return isovalue cutoff for surface
-	double cutoff();
+	double cutoff() const;
 	// Set isovalue cutoff for surface
 	void setUpperCutoff(double d);
 	// Return isovalue cutoff for surface
-	double upperCutoff();
+	double upperCutoff() const;
 	// Return whether supplied number is within cutoff range
-	bool withinCutoff(double d);
+	bool withinCutoff(double d) const;
 	// Return 3D data array
 	double ***data3d();
 	// Return 2D data array
@@ -189,7 +189,7 @@ class Grid
 	// Set whether to use data2d_ values for the z-component of the 2D surface
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface
-	bool useDataForZ();
+	bool useDataForZ() const;
 
 	/*
 	// Data Interface
@@ -237,7 +237,7 @@ class Grid
 	// Return the surface display list
 	GLuint displayList(bool offscreenlist = FALSE);
 	// Return whether re-rendering is necessary
-	bool shouldRerender();
+	bool shouldRerender() const;
 	// Update the log point of the surface
 	void updateRenderPoint();
 	// Request rerendering of the surface (update log)
@@ -245,11 +245,11 @@ class Grid
 	// Set whether the surface is visible
 	void setVisible(bool v);
 	// Return whether the surface is visible
-	bool isVisible();
+	bool isVisible() const;
 	// Set the rendering style of the surface
 	void setStyle(SurfaceStyle ss);
 	// Return the rendering style of the surface
-	SurfaceStyle style();
+	SurfaceStyle style() const;
 	// Set the positive colour of the surface
 	void setPositiveColour(double r, double g, double b, double a = -1);
 	// Set the negative colour of the surface
@@ -257,7 +257,7 @@ class Grid
 	// Set alpha value of the surface
 	void setAlpha(double a);
 	// Return the alpha value of the surface
-	double alpha();
+	double alpha() const;
 	// Return the positive colour of the surface
 	double *positiveColour();
 	// Copy the positive colour of the surface
@@ -269,15 +269,15 @@ class Grid
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
-	int colourScale();
+	int colourScale() const;
 	// Whether the surface uses the defined colour scale or not
-	bool useColourScale();
+	bool useColourScale() const;
 	// Set whether the surface should be rendered with an associated colourscale
 	void setUseColourScale(bool b);
 	// Set whether to use both signs of a symmetric isovalue distribution
 	void setSymmetric(bool b);
 	// Returns whether to use both signs of a symmetric isovalue distribution
-	bool isSymmetric();
+	bool isSymmetric() const;
 
 	/*
 	// Transformations

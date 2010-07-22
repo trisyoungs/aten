@@ -42,13 +42,13 @@ void Model::removeGlyph(Glyph *g)
 }
 
 // Return number of defined glyphs
-int Model::nGlyphs()
+int Model::nGlyphs() const
 {
 	return glyphs_.nItems();
 }
 
 // Return list of glyphs
-Glyph *Model::glyphs()
+Glyph *Model::glyphs() const
 {
 	return glyphs_.first();
 }
@@ -65,7 +65,7 @@ Glyph *Model::glyph(int n)
 }
 
 // Return vector data for glyph
-Vec3<double> Model::glyphVector(Glyph *g, int dataid)
+Vec3<double> Model::glyphVector(Glyph *g, int dataid) const
 {
 	Atom *i;
 	if ((dataid < 0) || (dataid >= g->nData())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());

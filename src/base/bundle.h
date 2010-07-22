@@ -66,9 +66,9 @@ class Bundle
 	// Clear pointers
 	void clear();
 	// Check for null pointers
-	bool isNull(int);
+	bool isNull(int) const;
 	// Check and notify of null pointers
-	bool notifyNull(int);
+	bool notifyNull(int) const;
 };
 
 #endif

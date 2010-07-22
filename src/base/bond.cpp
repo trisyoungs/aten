@@ -104,13 +104,13 @@ void Bond::setType(Bond::BondType bt)
 }
 
 // Return order of bond
-Bond::BondType Bond::type()
+Bond::BondType Bond::type() const
 {
 	return type_;
 }
 
 // Return real-valued bond order
-double Bond::order()
+double Bond::order() const
 {
 	switch (type_)
 	{
@@ -149,7 +149,7 @@ Atom *Bond::partner(Atom *i)
 }
 
 // Return bond type that best satisfies the valencies of the atoms involved
-Bond::BondType Bond::augmented()
+Bond::BondType Bond::augmented() const
 {
 	msg.enter("Bond::augmented");
 	// If the bond type is aromatic, we never change it here since it has been set from another source

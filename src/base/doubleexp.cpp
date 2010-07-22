@@ -39,7 +39,7 @@ void DoubleExp::recalculate()
 }
 
 // Retrieve full, real value
-double DoubleExp::value()
+double DoubleExp::value() const
 {
 	return value_;
 }
@@ -85,7 +85,7 @@ void DoubleExp::setMantissa(double mantissa)
 }
 
 // Return mantissa
-double DoubleExp::mantissa()
+double DoubleExp::mantissa() const
 {
 	return mantissa_;
 }
@@ -98,7 +98,7 @@ void DoubleExp::setExponent(int exponent)
 }
 
 // Return exponent
-int DoubleExp::exponent()
+int DoubleExp::exponent() const
 {
 	return exponent_;
 }

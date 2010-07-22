@@ -70,25 +70,25 @@ void Canvas::setName(const char *s)
 }
 
 // Return the current height of the drawing area
-GLsizei Canvas::height()
+GLsizei Canvas::height() const
 {
 	return height_;
 }
 
 // Return the current width of the drawing area
-GLsizei Canvas::width()
+GLsizei Canvas::width() const
 {
 	return width_;
 }
 
 // Return whether the canvas is currently drawing
-bool Canvas::isDrawing()
+bool Canvas::isDrawing() const
 {
 	return drawing_;
 }
 
 // Return if the canvas is valid
-bool Canvas::isValid()
+bool Canvas::isValid() const
 {
 	return valid_;
 }
@@ -182,7 +182,7 @@ void Canvas::setOffScreenRendering(bool b)
 }
 
 // Return whether offscreen rendering is being performed
-bool Canvas::offScreenRendering()
+bool Canvas::offScreenRendering() const
 {
 	return renderOffScreen_;
 }
@@ -191,13 +191,13 @@ bool Canvas::offScreenRendering()
 // Rendering
 */
 
-GLuint Canvas::glob(Canvas::GlObject ob)
+GLuint Canvas::glob(Canvas::GlObject ob) const
 {
 	return (renderOffScreen_ ? temporaryGlobList_[ob] : globList_[ob]);
 }
 
 // Return the current display model
-Model *Canvas::displayModel()
+Model *Canvas::displayModel() const
 {
 	return displayModel_;
 }
@@ -718,7 +718,7 @@ void Canvas::useSelectedMode()
 }
 
 // Return the currently selected mode
-Canvas::UserAction Canvas::selectedMode()
+Canvas::UserAction Canvas::selectedMode() const
 {
 	return selectedMode_;
 }

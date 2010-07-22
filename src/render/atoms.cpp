@@ -24,7 +24,7 @@
 #include "render/canvas.h"
 
 // Render model atoms and bonds
-void Canvas::renderModelAtoms(Model *sourceModel)
+void Canvas::renderModelAtoms(Model *sourceModel) const
 {
 	msg.enter("Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;

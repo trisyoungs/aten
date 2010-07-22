@@ -53,21 +53,21 @@ class Measurement
 	// Set type of Measurement
 	void setType(MeasurementType gt);
 	// Return type of Measurement
-	MeasurementType type();
+	MeasurementType type() const;
 	// Calculate Measurement value
 	void calculate(Cell *cell);
 	// Return value of the Measurement
-	double value();
+	double value() const;
 	// Set atom
 	void setAtom(int n, Atom *i);
 	// Return whether the specified atom is used in this measurement
-	bool involvesAtom(Atom *i);
+	bool involvesAtom(Atom *i) const;
 	// Return specific atom
 	Atom *atom(int index);
 	// Return atoms array
 	Atom **atoms();
 	// Print
-	void print();
+	void print() const;
 };
 
 #endif

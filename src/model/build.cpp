@@ -171,7 +171,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 }
 
 // Return the pen orientation matrix
-Mat3<double> Model::penOrientation()
+Mat3<double> Model::penOrientation() const
 {
 	return penOrientation_;
 }
@@ -227,7 +227,7 @@ void Model::resetPenOrientation()
 }
 
 // Return the current pen position
-Vec3<double> Model::penPosition()
+Vec3<double> Model::penPosition() const
 {
 	return penPosition_;
 }

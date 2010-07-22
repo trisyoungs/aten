@@ -56,15 +56,15 @@ class ForcefieldBound
 	// Set the type of bound interaction
 	void setType(BoundType fc);
 	// Return the type of bound interaction
-	BoundType type();
+	BoundType type() const;
 	// Return functional form text
-	const char *formText();
+	const char *formText() const;
 	// Return the functional form (cast as a bond style)
-	BondFunctions::BondFunction bondStyle();
+	BondFunctions::BondFunction bondStyle() const;
 	// Return the functional form (cast as a angle style)
-	AngleFunctions::AngleFunction angleStyle();
+	AngleFunctions::AngleFunction angleStyle() const;
 	// Return the functional form (cast as a torsion style)
-	TorsionFunctions::TorsionFunction torsionStyle();
+	TorsionFunctions::TorsionFunction torsionStyle() const;
 	// Set the bond functional form
 	void setBondStyle(BondFunctions::BondFunction bf);
 	// Set the angle functional form
@@ -74,11 +74,11 @@ class ForcefieldBound
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified
-	double parameter(int i);
+	double parameter(int i) const;
 	// Return pointer to parameter array
 	double *parameters();
 	// Return the atom type 'n'
-	const char *typeName(int n);
+	const char *typeName(int n) const;
 	// Return the atom type array
 	Dnchar *typeNames();
 	// Set the atom type 'n'
@@ -86,9 +86,9 @@ class ForcefieldBound
 	// Set 1-4 scale factors
 	void setScaleFactors(double escale, double vscale);
 	// Return electrostatic scale factor (if torsion)
-	double elecScale();
+	double elecScale() const;
 	// Return VDW scale factor (if torsion)
-	double vdwScale();
+	double vdwScale() const;
 };
 
 #endif

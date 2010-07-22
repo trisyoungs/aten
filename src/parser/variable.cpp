@@ -52,7 +52,7 @@ void Variable::setName(const char* s)
 }
 
 // Get name of variable
-const char *Variable::name()
+const char *Variable::name() const
 {
 	return name_.get();
 }
@@ -115,7 +115,7 @@ bool Variable::setInitialValue(TreeNode *node)
 }
 
 // Return TreeNode corresponding to initial value
-TreeNode *Variable::initialValue()
+TreeNode *Variable::initialValue() const
 {
 	return initialValue_;
 }
@@ -161,7 +161,7 @@ ArrayVariable::~ArrayVariable()
 }
 
 // Return current array size
-int ArrayVariable::arraySize()
+int ArrayVariable::arraySize() const
 {
 	return arraySize_;
 }

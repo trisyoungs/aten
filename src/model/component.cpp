@@ -34,7 +34,7 @@ void Model::setComponentPattern(Pattern *p)
 }
 
 // Return the Component's pattern
-Pattern *Model::componentPattern()
+Pattern *Model::componentPattern() const
 {
         return componentPattern_;
 }
@@ -46,7 +46,7 @@ void Model::setNRequested(int i)
 }
 
 // Return the requested number of molecules
-int Model::nRequested()
+int Model::nRequested() const
 {
         return nRequested_;
 }
@@ -58,7 +58,7 @@ void Model::setMoveAllowed(MonteCarlo::MoveType m, bool b)
 }
 
 // Set whether the Component may be translated
-bool Model::isMoveAllowed(MonteCarlo::MoveType m)
+bool Model::isMoveAllowed(MonteCarlo::MoveType m) const
 {
         return moveAllowed_[m];
 }

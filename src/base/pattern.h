@@ -70,7 +70,7 @@ class PatternAtom
 	// Get pointer to atom in first molecule
 	Atom *atom();
 	// Return integer index of unique atom data reference
-	int forcefieldDataId();
+	int forcefieldDataId() const;
 	// Set integer index of unique atom data reference
 	void setForcefieldDataId(int id);
 };
@@ -100,13 +100,13 @@ class PatternBound
 	// Set atom id
 	void setAtomId(int n, int i);
 	// Return atom id
-	int atomId(int n);
+	int atomId(int n) const;
 	// Set function data
 	void setData(ForcefieldBound *ffb);
 	// Get function data
 	ForcefieldBound *data();
 	// Return integer index of unique bound data reference
-	int forcefieldDataId();
+	int forcefieldDataId() const;
 	// Set integer index of unique bound data reference
 	void setForcefieldDataId(int id);
 };
@@ -170,7 +170,7 @@ class Pattern
 	// Sets the ID of the pattern
 	void setId(int i);
 	// Returns then numerical ID of the pattern
-	int id();
+	int id() const;
 	// Returns head of the atom list for this pattern (located in main model list)
 	Atom *firstAtom();
 	// Sets pointer to the first atom in this pattern (located in main model list)
@@ -180,31 +180,31 @@ class Pattern
 	// Sets pointer to the last atom in this pattern (located in main model list)
 	void setLastAtom(Atom* i);
 	// Calculate the global atom number offset of the first atom of the molecule
-	int offset(int mol);
+	int offset(int mol) const;
 	// Returns the number of atoms in one molecule of the pattern
-	int nAtoms();
+	int nAtoms() const;
 	// Sets the starting atom of the model
 	void setStartAtom(int n);
 	// Returns the starting atom id of the pattern
-	int startAtom();
+	int startAtom() const;
 	// Sets the end atom of the model
 	void setEndAtom(int n);
 	// Returns the ending atom id of the pattern
-	int endAtom();
+	int endAtom() const;
 	// (Re)Calculate totalatoms
 	void calcTotalAtoms();
 	// Returns the total number of atoms in the pattern
-	int totalAtoms();
+	int totalAtoms() const;
 	// Resets the 'tempi' variables of all atoms in the pattern to the given integer
 	void resetTempI(int);
 	// Sets the number of molecules in the pattern
 	void setNMolecules(int n);
 	// Returns the number of molecules in the pattern
-	int nMolecules();
+	int nMolecules() const;
 	// Sets the expected number of molecules in the pattern
 	void setNExpectedMolecules(int n);
 	// Returns the expected number of molecules in the pattern
-	int nExpectedMolecules();
+	int nExpectedMolecules() const;
 	// Sets the parent model
 	void setParent(Model *m);
 	// Returns the model for which the pattern was created
@@ -212,21 +212,21 @@ class Pattern
 	// Sets the 'fixed' property of the pattern
 	void setFixed(bool b);
 	// Returns whether the pattern is fixed
-	bool isFixed();
+	bool isFixed() const;
 	// Sets the name of the pattern 
 	void setName(const char *s);
 	// Returns the pattern name
-	const char *name();
+	const char *name() const;
 	// Sets the forcefield to use in the pattern
 	void setForcefield(Forcefield *newff);
 	// Gets the forcefield associated with the pattern
 	Forcefield *forcefield();
 	// Returns whether the atomlimit in the pattern is valid
-	bool isAtomLimitOk();
+	bool isAtomLimitOk() const;
 	// Returns whether the element composition in the pattern molecules is uniform
-	bool areElementsOk();
+	bool areElementsOk() const;
 	// Returns whether the bonding in the pattern molecules is uniform
-	bool isBondingOk();
+	bool isBondingOk() const;
 	// Sets variables to reflect an empty pattern (no atoms are physically deleted)
 	void empty();
 	// Sets startatom, nmols, and natoms (and calculates totalatoms)
@@ -286,11 +286,11 @@ class Pattern
 	// Update scaling matrices
 	void updateScaleMatrices();
 	// Return number of bonds in one molecule of the pattern
-	int nBonds();
+	int nBonds() const;
 	// Return number of angles in one molecule of the pattern
-	int nAngles();
+	int nAngles() const;
 	// Return number of torsions in one molecule of the pattern
-	int nTorsions();
+	int nTorsions() const;
 	// Return first bond of the pattern
 	PatternBound *bonds();
 	// Return first angle of the pattern
@@ -304,13 +304,13 @@ class Pattern
 	// Return selected torsion of the pattern
 	PatternBound *torsion(int i);
 	// Return number of unique bonds used in the pattern
-	int nForcefieldBonds();
+	int nForcefieldBonds() const;
 	// Return number of forcefield angles used in the pattern
-	int nForcefieldAngles();
+	int nForcefieldAngles() const;
 	// Return number of forcefield torsions used in the pattern
-	int nForcefieldTorsions();
+	int nForcefieldTorsions() const;
 	// Return number of forcefield types used in the pattern
-	int nForcefieldTypes();
+	int nForcefieldTypes() const;
 	// Return first forcefield bond of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldBonds();
 	// Return first forcefield angle of the pattern
@@ -328,7 +328,7 @@ class Pattern
 	// Return selected forcefield type of the pattern
 	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
-	bool areAtomsFixed();
+	bool areAtomsFixed() const;
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	void setAtomsFixed(bool b);
 

@@ -88,17 +88,17 @@ class ElementMap
 
 	private:
 	// Convert string from Z to element number
-	int numberToZ(const char*);
+	int numberToZ(const char*) const;
 	// Convert string from alpha to element number
-	int alphaToZ(const char*);
+	int alphaToZ(const char*) const;
 	// Convert string from alpha (up to non-AZ inc 09) to element number
-	int firstAlphaToZ(const char*);
+	int firstAlphaToZ(const char*) const;
 	// Convert string from first alpha (up to non-AZ inc 09) to element number
-	int singleAlphaToZ(const char*);
+	int singleAlphaToZ(const char*) const;
 	// Convert string from name to element number
-	int nameToZ(const char*);
+	int nameToZ(const char*) const;
 	// Convert string from fftype to element number
-	int ffToZ(const char*);
+	int ffToZ(const char*) const;
 	// Number of defined elements
 	int nElements_;
 	// Storage for copy of element data
@@ -113,45 +113,44 @@ class ElementMap
 	void backupData();
 	// Restore default element values
 	void restoreData();
-	
 	// Return atomic number of element in string
-	int find(const char*);
+	int find(const char*) const;
 	// Return atomic number of element in string, specifying algorithm
-	int find(const char*, ElementMap::ZMapType);
+	int find(const char*, ElementMap::ZMapType) const;
 	// Return atomic number of element provided using standard Alpha mapping
-	int findAlpha(const char *);
+	int findAlpha(const char *) const;
 	// Return number of defined elements
-	int nElements();
+	int nElements() const;
 
 	/*
 	// Data by Z
 	*/
 	public:
 	// Return periodic table group number
-	int group(int i);
+	int group(int i) const;
 	// Return atomic mass of atomic number 'i'
-	double atomicMass(int i);
+	double atomicMass(int i) const;
 	// Return name of atomic number 'i'
-	const char *name(int i);
+	const char *name(int i) const;
 	// Return symbol of atomic number 'i'
-	const char *symbol(int i);
+	const char *symbol(int i) const;
 	// Set radius of atomic number 'i'
 	void setAtomicRadius(int i, double r);
 	// Return effective radius of atomic number 'i'
-	double atomicRadius(int i);
+	double atomicRadius(int i) const;
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
-	int bondOrderPenalty(int i, int bo);
+	int bondOrderPenalty(int i, int bo) const;
 	// Return the ambient colour of the element
 	double *ambientColour(int i);
 	// Copy the ambient colour of the element into the array provided
-	void copyAmbientColour(int i, GLfloat *v);
+	void copyAmbientColour(int i, GLfloat *v) const;
 	// Set ambient colour component of element
 	void setAmbientColour(int i, int rgb, double value);
 	void setAmbientColour(int i, double r, double g, double b);
 	// Return the diffuse colour of the element
 	double *diffuseColour(int i);
 	// Copy the diffuse colour of the element into the array provided
-	void copyDiffuseColour(int i, GLfloat *v);
+	void copyDiffuseColour(int i, GLfloat *v) const;
 	// Set diffuse colour component of element
 	void setDiffuseColour(int i, int rgb, double value);
 	void setDiffuseColour(int i, double r, double g, double b);

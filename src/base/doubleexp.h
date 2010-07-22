@@ -49,7 +49,7 @@ class DoubleExp
 
 	public:
 	// Retrieve full, real value
-	double value();
+	double value() const;
 	// Set mantissa and exponent
 	void set(double mantissa, int exponent);
 	// Set from normal value
@@ -57,11 +57,11 @@ class DoubleExp
 	// Set mantissa
 	void setMantissa(double mantissa);
 	// Return mantissa
-	double mantissa();
+	double mantissa() const;
 	// Set exponent
 	void setExponent(int exponent);
 	// Return exponent
-	int exponent();
+	int exponent() const;
 	// Operator =
 	void operator=(double d);
 };

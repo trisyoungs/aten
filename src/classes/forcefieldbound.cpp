@@ -56,12 +56,12 @@ void ForcefieldBound::setType(BoundType fc)
 }
 
 // Return the type of bound interaction
-ForcefieldBound::BoundType ForcefieldBound::type()
+ForcefieldBound::BoundType ForcefieldBound::type() const
 {
 	return type_;
 }
 // Return the form text for the bound interaction
-const char *ForcefieldBound::formText()
+const char *ForcefieldBound::formText() const
 {
 	switch (type_)
 	{
@@ -82,19 +82,19 @@ const char *ForcefieldBound::formText()
 }
 
 // Return the functional form (cast as a bond style)
-BondFunctions::BondFunction ForcefieldBound::bondStyle()
+BondFunctions::BondFunction ForcefieldBound::bondStyle() const
 {
 	return (BondFunctions::BondFunction) functionalForm_;
 }
 
 // Return the functional form (cast as a angle style)
-AngleFunctions::AngleFunction ForcefieldBound::angleStyle()
+AngleFunctions::AngleFunction ForcefieldBound::angleStyle() const
 {
 	return (AngleFunctions::AngleFunction) functionalForm_;
 }
 
 // Return the functional form (cast as a torsion style)
-TorsionFunctions::TorsionFunction ForcefieldBound::torsionStyle()
+TorsionFunctions::TorsionFunction ForcefieldBound::torsionStyle() const
 {
 	return (TorsionFunctions::TorsionFunction) functionalForm_;
 }
@@ -131,7 +131,7 @@ void ForcefieldBound::setParameter(int i, double d)
 }
 
 // Return parameter data specified
-double ForcefieldBound::parameter(int i)
+double ForcefieldBound::parameter(int i) const
 {
 	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::parameter (%i) is out of bounds.\n", i);
 	else return params_[i];
@@ -145,7 +145,7 @@ double *ForcefieldBound::parameters()
 }
 
 // Return the atom type 'n'
-const char *ForcefieldBound::typeName(int n)
+const char *ForcefieldBound::typeName(int n) const
 {
 	return (n < MAXFFBOUNDTYPES ? typeNames_[n].get() : "OUTOFRANGE");
 }
@@ -172,13 +172,13 @@ void ForcefieldBound::setScaleFactors(double escale, double vscale)
 }
 
 // Return electrostatic scale factor (if torsion)
-double ForcefieldBound::elecScale()
+double ForcefieldBound::elecScale() const
 {
 	return elecScale_;
 }
 
 // Return VDW scale factor (if torsion)
-double ForcefieldBound::vdwScale()
+double ForcefieldBound::vdwScale() const
 {
 	return vdwScale_;
 }

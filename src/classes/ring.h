@@ -84,7 +84,7 @@ class Ring
 	// Detect ring type based on atom hybridicities and bonds
 	void detectType();
 	// Return type of ring
-	RingType type();
+	RingType type() const;
 
 
 	/*

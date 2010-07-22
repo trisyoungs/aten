@@ -109,41 +109,41 @@ class FilterData
 	*/
 	public:
 	// Return the ID of the filter
-	int id();
+	int id() const;
 	// Return the descriptive name of the filter
-	const char *name();
+	const char *name() const;
 	// Return the short nickname of the filter
-	const char *nickname();
+	const char *nickname() const;
 	// Return the first file extension
-	Dnchar *extensions();
+	Dnchar *extensions() const;
 	// Return a comma-separated list of file extensions
-	const char *extensionList();
+	const char *extensionList() const;
 	// Return the first alias
-	Dnchar *exactNames();
+	Dnchar *exactNames() const;
 	// Return the number of identifying strings defined
-	int nIdStrings();
+	int nIdStrings() const;
 	// Return the number of lines to search for the identifying strings
-	int nLinesToSearch();
+	int nLinesToSearch() const;
 	// Return the first identifying search string
-	Dnchar *searchStrings();
+	Dnchar *searchStrings() const;
 	// Return whether filter has an extension
-	bool hasExtension();
+	bool hasExtension() const;
 	// Return whether the supplied text matches any of the filter's possible extensions
-	bool doesExtensionMatch(const char *ext);
+	bool doesExtensionMatch(const char *ext) const;
 	// Return whether the supplied text matches any of the filter's possible exact filenames
-	bool doesNameMatch(const char *name);
+	bool doesNameMatch(const char *name) const;
 	// Return the partner filter
-	Tree *partner();
+	Tree *partner() const;
 	// Return the file filter
-	const char *glob();
+	const char *glob() const;
 	// Return the type of filter
-	FilterType type();
-	// Return the long description of the filter (including glob)
+	FilterType type() const;
+	// Return (after creation if it is needed) the long description of the filter (including glob)
 	const char *description();
 	// Return trajectory header function
-	Tree *trajectoryHeaderFunction();
+	Tree *trajectoryHeaderFunction() const;
 	// Return trajectory frame function
-	Tree *trajectoryFrameFunction();
+	Tree *trajectoryFrameFunction() const;
 };
 
 #endif

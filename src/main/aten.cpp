@@ -93,7 +93,7 @@ void Aten::setProgramMode(ProgramMode pm)
 }
 
 // Return the current program mode
-Aten::ProgramMode Aten::programMode()
+Aten::ProgramMode Aten::programMode() const
 {
 	return programMode_;
 }
@@ -109,7 +109,7 @@ void Aten::setSketchElement(short int el)
 }
 
 // Return current drawing element
-short int Aten::sketchElement()
+short int Aten::sketchElement() const
 {
 	return sketchElement_;
 }
@@ -121,13 +121,13 @@ void Aten::setTypeExportMapping(bool b)
 }
 
 // Return whether type export conversion is enabled
-bool Aten::typeExportMapping()
+bool Aten::typeExportMapping() const
 {
 	return typeExportMapping_;
 }
 
 // Convert supplied type name according to export type map
-const char *Aten::typeExportConvert(const char *oldname)
+const char *Aten::typeExportConvert(const char *oldname) const
 {
 	if (!typeExportMapping_) return oldname;
 	KVPair *kvp = aten.typeExportMap.search(oldname);
@@ -198,7 +198,7 @@ Model *Aten::model(int n)
 }
 
 // Return pointer to the actual model list
-List<Model> *Aten::modelList()
+const List<Model> *Aten::modelList() const
 {
 	return &models_;
 }
@@ -471,7 +471,7 @@ void Aten::setHomeDir(const char *path)
 }
 
 // Return the home directory path
-const char *Aten::homeDir()
+const char *Aten::homeDir() const
 {
 	return homeDir_.get();
 }
@@ -483,7 +483,7 @@ void Aten::setWorkDir(const char *path)
 }
 
 // Return the working directory path
-const char *Aten::workDir()
+const char *Aten::workDir() const
 {
 	return workDir_.get();
 }
@@ -496,13 +496,13 @@ void Aten::setDataDir(const char *path)
 }
 
 // Return the data directory path
-const char *Aten::dataDir()
+const char *Aten::dataDir() const
 {
 	return dataDir_.get();
 }
 
 // Return whether the data dir has already been set
-bool Aten::dataDirSet()
+bool Aten::dataDirSet() const
 {
 	return dataDirSet_;
 }

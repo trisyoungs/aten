@@ -41,7 +41,7 @@ void Calculable::setName(const char *s)
 }
 
 // Return name of the quantity
-const char *Calculable::name()
+const char *Calculable::name() const
 {
 	return name_.get();
 }
@@ -53,7 +53,7 @@ void Calculable::setFilename(const char *s)
 }
 
 // Return filename of the quantity
-const char *Calculable::filename()
+const char *Calculable::filename() const
 {
 	return filename_.get();
 }

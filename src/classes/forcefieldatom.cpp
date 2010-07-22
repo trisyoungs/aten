@@ -75,7 +75,7 @@ void ForcefieldAtom::setVdwForm(VdwFunctions::VdwFunction vf)
 }
 
 // Returns the funcional VDW form
-VdwFunctions::VdwFunction ForcefieldAtom::vdwForm()
+VdwFunctions::VdwFunction ForcefieldAtom::vdwForm() const
 {
 	return vdwForm_;
 }
@@ -87,7 +87,7 @@ void ForcefieldAtom::setTypeId(int i)
 }
 
 // Returns the type id
-int ForcefieldAtom::typeId()
+int ForcefieldAtom::typeId() const
 {
 	return typeId_;
 }
@@ -99,7 +99,7 @@ void ForcefieldAtom::setCharge(double q)
 }
 
 // Returns the charge of the type
-double ForcefieldAtom::charge()
+double ForcefieldAtom::charge() const
 {
 	return charge_;
 }
@@ -111,7 +111,7 @@ void ForcefieldAtom::setName(const char *s)
 }
 
 // Returns the name of the type
-const char *ForcefieldAtom::name()
+const char *ForcefieldAtom::name() const
 {
 	return name_.get();
 }
@@ -123,7 +123,7 @@ void ForcefieldAtom::setEquivalent(const char *s)
 }
 
 // Returns the equivalent name of the type
-const char *ForcefieldAtom::equivalent()
+const char *ForcefieldAtom::equivalent() const
 {
 	return equivalent_.get();
 }
@@ -135,7 +135,7 @@ void ForcefieldAtom::setDescription(const char *s)
 }
 
 // Returns the description of the type
-const char *ForcefieldAtom::description()
+const char *ForcefieldAtom::description() const
 {
 	return description_.get();
 }
@@ -154,7 +154,7 @@ bool ForcefieldAtom::setNeta(const char *s, Forcefield *parent)
 }
 
 // Return original typestring
-const char *ForcefieldAtom::netaString()
+const char *ForcefieldAtom::netaString() const
 {
 	return netaString_.get();
 }
@@ -173,7 +173,7 @@ void ForcefieldAtom::setParameter(int i, double d)
 }
 
 // Return parameter data specified
-double ForcefieldAtom::parameter(int i)
+double ForcefieldAtom::parameter(int i) const
 {
 	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::parameter (%i) is out of bounds.\n", i);
 	else return params_[i];
@@ -208,7 +208,7 @@ double *ForcefieldAtom::generator()
 }
 
 // Return single generator value
-double ForcefieldAtom::generator(int i)
+double ForcefieldAtom::generator(int i) const
 {
 	// Check the limit of the position provided
 	if ((i < 0) || (i > MAXFFGENDATA)) printf("generator() - index %i is out of range.\n", i);
@@ -223,7 +223,7 @@ void ForcefieldAtom::setElement(int n)
 }
 
 // Return the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
-int ForcefieldAtom::element()
+int ForcefieldAtom::element() const
 {
 	return element_;
 }
@@ -235,7 +235,7 @@ void ForcefieldAtom::setElementMass(double d)
 }
 
 // Custom 'element' mass (or natural element mass)
-double ForcefieldAtom::elementMass()
+double ForcefieldAtom::elementMass() const
 {
 	return (element_ == -1 ? elementMass_ : elements().atomicMass(element_));
 }

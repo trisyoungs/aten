@@ -74,7 +74,7 @@ Vec3<double> &GridPoint::r()
 }
 
 // Return value at point
-double GridPoint::value()
+double GridPoint::value() const
 {
 	return value_;
 }
@@ -86,7 +86,7 @@ void GridPoint::setValue(double v)
 }
 
 // Retrieve flag status
-int GridPoint::flag()
+int GridPoint::flag() const
 {
 	return flag_;
 }
@@ -212,7 +212,7 @@ void Grid::setName(const char *s)
 }
 
 // Return name of Grid data
-const char *Grid::name()
+const char *Grid::name() const
 {
 	return name_.get();
 }
@@ -246,7 +246,7 @@ bool Grid::initialise(GridType gt, Vec3<int> npoints)
 }
 
 // Return type of Grid data
-Grid::GridType Grid::type()
+Grid::GridType Grid::type() const
 {
 	return type_;
 }
@@ -256,13 +256,13 @@ Grid::GridType Grid::type()
 */
 
 // Return the Grid axes
-Mat3<double> Grid::axes()
+Mat3<double> Grid::axes() const
 {
 	return cell_.axes();
 }
 
 // Return lengths of cell axes
-Vec3<double> Grid::lengths()
+Vec3<double> Grid::lengths() const
 {
 	return cell_.lengths();
 }
@@ -274,25 +274,25 @@ void Grid::setOrigin(const Vec3<double> v)
 }
 
 // Return the origin of the Grid data
-Vec3<double> Grid::origin()
+Vec3<double> Grid::origin() const
 {
 	return origin_;
 }
 
 // Return number of points in data series
-Vec3<int> Grid::nPoints()
+Vec3<int> Grid::nPoints() const
 {
 	return nPoints_;
 }
 
 // Return minimum value in data[]
-double Grid::minimum()
+double Grid::minimum() const
 {
 	return minimum_;
 }
 
 // Return maximum value in data[]
-double Grid::maximum()
+double Grid::maximum() const
 {
 	return maximum_;
 }
@@ -365,7 +365,7 @@ void Grid::setCutoff(double d)
 }
 
 // Return isovalue cutoff for surface
-double Grid::cutoff()
+double Grid::cutoff() const
 {
 	return cutoff_;
 }
@@ -378,13 +378,13 @@ void Grid::setUpperCutoff(double d)
 }
 
 // Return isovalue cutoff for surface
-double Grid::upperCutoff()
+double Grid::upperCutoff() const
 {
 	return upperCutoff_;
 }
 
 // Return whether supplied number is within cutoff range
-bool Grid::withinCutoff(double d)
+bool Grid::withinCutoff(double d) const
 {
 	if ((d > cutoff_) && (d <= upperCutoff_)) return TRUE;
 // 	if (d > cutoff_) return TRUE;
@@ -416,7 +416,7 @@ void Grid::setLoopOrder(int n, int xyz)
 }
 
 // Return whether re-rendering is necessary
-bool Grid::shouldRerender()
+bool Grid::shouldRerender() const
 {
 	return (renderPoint_ == log_ ? FALSE : TRUE);
 }
@@ -440,7 +440,7 @@ void Grid::setVisible(bool v)
 }
 
 // Return whether the surface is visible
-bool Grid::isVisible()
+bool Grid::isVisible() const
 {
 	return visible_;
 }
@@ -453,7 +453,7 @@ void Grid::setStyle(Grid::SurfaceStyle ss)
 }
 
 // Return the rendering style of the surface
-Grid::SurfaceStyle Grid::style()
+Grid::SurfaceStyle Grid::style() const
 {
 	return style_;
 }
@@ -467,7 +467,7 @@ void Grid::setAlpha(double a)
 }
 
 // Return alpha value of the grid's surface
-double Grid::alpha()
+double Grid::alpha() const
 {
 	return positiveColour_[3];
 }
@@ -552,7 +552,7 @@ void Grid::setColourScale(int id)
 }
 
 // Return the colourscale associated with the data
-int Grid::colourScale()
+int Grid::colourScale() const
 {
 	return colourScale_;
 }
@@ -565,7 +565,7 @@ void Grid::setUseColourScale(bool b)
 }
 
 // Whether the surface uses the defined colour scale or not
-bool Grid::useColourScale()
+bool Grid::useColourScale() const
 {
 	return useColourScale_;
 }
@@ -578,7 +578,7 @@ void Grid::setUseDataForZ(bool b)
 }
 
 // Whether to use data2d_ value sfor z-component of 2D surface
-bool Grid::useDataForZ()
+bool Grid::useDataForZ() const
 {
 	return useDataForZ_;
 }
@@ -844,7 +844,7 @@ void Grid::setSymmetric(bool b)
 }
 
 // Returns whether to use both signs of a symmetric isovalue distribution
-bool Grid::isSymmetric()
+bool Grid::isSymmetric() const
 {
 	return symmetric_;
 }

@@ -169,7 +169,7 @@ void Model::moveSelectionToEnd()
 }
 
 // Get selection cog
-Vec3<double> Model::selectionCentreOfGeometry()
+Vec3<double> Model::selectionCentreOfGeometry() const
 {
 	Vec3<double> result;
 	if (selection_.nItems() != 0)
@@ -181,7 +181,7 @@ Vec3<double> Model::selectionCentreOfGeometry()
 }
 
 // Get selection com
-Vec3<double> Model::selectionCentreOfMass()
+Vec3<double> Model::selectionCentreOfMass() const
 {
 	Vec3<double> result;
 	Atom *i;

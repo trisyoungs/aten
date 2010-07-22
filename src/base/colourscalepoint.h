@@ -52,11 +52,11 @@ class ColourScalePoint
 	// Set value for scalepoint
 	void setValue(double d);
 	// Return value for scalepoint
-	double value();
+	double value() const;
 	// Set colour
 	void setColour(double r, double g, double b, double a = 1.0);
 	// Copy colour
-	void copyColour(GLfloat *target);
+	void copyColour(GLfloat *target) const;
 	// Return pointer to colour array
 	double *colour();
 };
@@ -82,15 +82,15 @@ class ColourScaleDelta
 
 	public:
 	// Check whether the delta 'contains' the supplied value
-	bool containsValue(double d);
+	bool containsValue(double d) const;
 	// Create delta from two existing colours
 	void set(ColourScalePoint *point1, ColourScalePoint *point2);
 	// Get colour for value, assuming that v is within the range 0 -> value_
-	void colour(double v, GLfloat *target);
+	void colour(double v, GLfloat *target) const;
 	// Return the starting value of the range
-	double start();
+	double start() const;
 	// Return the range of the delta
-	double delta();
+	double delta() const;
 };
 
 #endif

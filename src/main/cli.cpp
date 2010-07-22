@@ -729,7 +729,7 @@ bool Aten::addPassedValue(VTypes::DataType type, const char *name, const char *v
 }
 
 // Find passed value
-Variable *Aten::findPassedValue(const char *name)
+Variable *Aten::findPassedValue(const char *name) const
 {
 	return passedValues_.find(name);
 }

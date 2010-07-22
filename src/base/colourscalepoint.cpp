@@ -35,7 +35,7 @@ ColourScalePoint::ColourScalePoint()
 }
 
 // Return value of scale point
-double ColourScalePoint::value()
+double ColourScalePoint::value() const
 {
 	return value_;
 }
@@ -56,7 +56,7 @@ void ColourScalePoint::setColour(double r, double g, double b, double a)
 }
 
 // Copy colour
-void ColourScalePoint::copyColour(GLfloat *target)
+void ColourScalePoint::copyColour(GLfloat *target) const
 {
 	target[0] = (GLfloat) colour_[0];
 	target[1] = (GLfloat) colour_[1];
@@ -87,7 +87,7 @@ ColourScaleDelta::ColourScaleDelta()
 }
 
 // Check whether the delta 'contains' the supplied value
-bool ColourScaleDelta::containsValue(double d)
+bool ColourScaleDelta::containsValue(double d) const
 {
 	if (d < start_) return FALSE;
 	if (d > (start_ + delta_)) return FALSE;
@@ -111,7 +111,7 @@ void ColourScaleDelta::set(ColourScalePoint *point1, ColourScalePoint *point2)
 }
 
 // Get colour for value v
-void ColourScaleDelta::colour(double v, GLfloat *target)
+void ColourScaleDelta::colour(double v, GLfloat *target) const
 {
 	// Clamp 'v' to range 0.0 - 1.0 to span range of delta
 	double clampv = (v - start_) / delta_;
@@ -124,13 +124,13 @@ void ColourScaleDelta::colour(double v, GLfloat *target)
 }
 
 // Return the starting value of the range
-double ColourScaleDelta::start()
+double ColourScaleDelta::start() const
 {
 	return start_;
 }
 
 // Return the range of the delta
-double ColourScaleDelta::delta()
+double ColourScaleDelta::delta() const
 {
 	return delta_;
 }

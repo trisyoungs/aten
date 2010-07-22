@@ -75,7 +75,7 @@ void ComponentRegion::setShape(ComponentRegion::RegionShape r)
 }
 
 // Returns the region defined for the component
-ComponentRegion::RegionShape ComponentRegion::shape()
+ComponentRegion::RegionShape ComponentRegion::shape() const
 {
 	return shape_;
 }
@@ -95,13 +95,13 @@ void ComponentRegion::setCentreFrac(Vec3<double> v)
 }
 
 // Returns the centre of the defined region
-Vec3<double> ComponentRegion::centre()
+Vec3<double> ComponentRegion::centre() const
 {
 	return centre_;
 }
 
 // Returns whether the centre was set in real or fractional coordinates
-bool ComponentRegion::isCentreFrac()
+bool ComponentRegion::isCentreFrac() const
 {
 	return centreFrac_;
 }
@@ -121,13 +121,13 @@ void ComponentRegion::setGeometryFrac(Vec3<double> v)
 }
 
 // Returns the geometry of the defined region
-Vec3<double> ComponentRegion::geometry()
+Vec3<double> ComponentRegion::geometry() const
 {
 	return geometry_;
 }
 
 // Returns whether the geometry of the region was set in real or fractional coordinates
-bool ComponentRegion::isGeometryFrac()
+bool ComponentRegion::isGeometryFrac() const
 {
 	return geometryFrac_;
 }
@@ -143,13 +143,13 @@ void ComponentRegion::setRotations(Vec3<double> v)
 }
 
 // Returns the rotations of the defined region
-Vec3<double> ComponentRegion::rotations()
+Vec3<double> ComponentRegion::rotations() const
 {
 	return rotations_;
 }
 
 // Returns whether the region should be rotated
-bool ComponentRegion::rotateRegion()
+bool ComponentRegion::rotateRegion() const
 {
 	return rotateRegion_;
 }
@@ -167,13 +167,13 @@ void ComponentRegion::setAllowOverlap(bool b)
 }
 
 // Returns whether to allow overlap over other regions when inserting
-bool ComponentRegion::allowOverlap()
+bool ComponentRegion::allowOverlap() const
 {
 	return allowOverlap_;
 }
 
 // Overlap check
-bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<Model,int> &components)
+bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<Model,int> &components) const
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
 	msg.enter("ComponentRegion::pointOverlaps");
@@ -195,7 +195,7 @@ bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<M
 }
 
 // Check that specified coordinates are inside this region
-bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell)
+bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell) const
 {
 	msg.enter("ComponentRegion::coordsInRegion");
 	if (shape_ == ComponentRegion::WholeCell)
@@ -245,7 +245,7 @@ bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell)
 }
 
 // Random coordinate in region
-Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &components)
+Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &components) const
 {
 	msg.enter("ComponentRegion::randomCoords");
 	static Vec3<double> v, tempv, geometry;

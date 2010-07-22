@@ -77,6 +77,7 @@ class Canvas
 	// Constructor
 	Canvas();
 
+
 	// Actions
 	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
 	
@@ -85,6 +86,7 @@ class Canvas
 
 	// GL Objects
 	enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, CylinderGlob, SelectedCylinderGlob, WireCylinderGlob, SelectedWireCylindedGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, TubeArrowGlob, ModelGlob, nGlobs };
+
 
 	/*
 	// Base rendering context
@@ -113,13 +115,13 @@ class Canvas
 	// Set the internal name of the canvas
 	void setName(const char *s);
 	// Return the current height of the drawing area
-	GLsizei height();
+	GLsizei height() const;
 	// Return the current width of the drawing area
-	GLsizei width();
+	GLsizei width() const;
 	// Return whether the canvas is currently drawing
-	bool isDrawing();
+	bool isDrawing() const;
 	// Return if the canvas is valid
-	bool isValid();
+	bool isValid() const;
 	// Set the validity of the canvas
 	void setValid(bool valid);
 	// Set up widget for OpenGL drawing
@@ -135,7 +137,8 @@ class Canvas
 	// Set whether offscreen rendering is being performed
 	void setOffScreenRendering(bool b);
 	// Return whether offscreen renderinf is being performed
-	bool offScreenRendering();
+	bool offScreenRendering() const;
+
 
 	/*
 	// Rendering display lists
@@ -144,53 +147,56 @@ class Canvas
 	// Display list ID's for normal and temporary rendering contexts
 	GLuint globList_[nGlobs], temporaryGlobList_[nGlobs];
 	// Function to return glob integer id
-	GLuint glob(Canvas::GlObject ob);
+	GLuint glob(Canvas::GlObject ob) const;
 
 	public:
 	// Create globs for rendering
 	void createLists();
+
 
 	/*
 	// Rendering Primitives
 	*/
 	private:
 	// Draw a diamond
-	void diamondPrimitive(double xcenter, double ycentre, double size);
+	void diamondPrimitive(double xcenter, double ycentre, double size) const;
 	// Draw a square
-	void squarePrimitive(double xcentre, double ycentre, double size);
+	void squarePrimitive(double xcentre, double ycentre, double size) const;
 	// Draw a rectangle
-	void rectanglePrimitive(double l, double t, double r, double b);
+	void rectanglePrimitive(double l, double t, double r, double b) const;
 	// Draw a circle
-	void circlePrimitive(double xcentre, double ycenter, double radius);
+	void circlePrimitive(double xcentre, double ycenter, double radius) const;
 	// Manually draw a unit sphere
-	void spherePrimitive(double radius, bool filled, int nslices = -1, int nstacks = -1);
+	void spherePrimitive(double radius, bool filled, int nslices = -1, int nstacks = -1) const;
 	// Manually draw unit cylinder
-	void cylinderPrimitive(double startradius, double endradius, bool filled, int nslices = -1, int nstacks = -1);
+	void cylinderPrimitive(double startradius, double endradius, bool filled, int nslices = -1, int nstacks = -1) const;
+
 
 	/*
 	// Rendering Objects
 	*/
 	private:
 	// Render text string at specific coordinates
-	void glText(double, double, const char*);
+	void glText(double x, double y, const char *text) const;
 	// Render text string at atom's screen coordinates
-	void glText(const Vec3<double>, const char*);
+	void glText(const Vec3<double> v, const char *text) const;
 	// Draw 3d marks for the atoms in the subselection
-	void glSubsel3d();
+	void glSubsel3d() const;
 	// Draw a cylinder along vector supplied
-	void glCylinder(const Vec3<double> &vec, double length, int style, double radius);
+	void glCylinder(const Vec3<double> &vec, double length, int style, double radius) const;
 	// Draw ellipsoid (construct third vector from the tqo supplied)
-	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y);
+	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y) const;
 	// Draw ellipsoid in the supplied axis sytem
-	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z);
+	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z) const;
 	// Draw the unit cell of the model
-	void glCell(Cell*);
+	void glCell(Cell *cell) const;
 	// Draw a line arrow
-	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
+	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE) const;
 	// Draw a cylinder arrow
-	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
+	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE) const;
 	// Draw the specified Miller plane (and directional arrow)
-	void millerPlane(int h, int k, int l, int dir);
+	void millerPlane(int h, int k, int l, int dir) const;
+
 
 	/*
 	// General Rendering Calle
@@ -219,7 +225,8 @@ class Canvas
 	// Viewport matrix for canvas
 	GLint VMAT[4];
 	// Return the current display model
-	Model *displayModel();
+	Model *displayModel() const;
+
 
 	/*
 	// Scene Rendering
@@ -228,17 +235,17 @@ class Canvas
 	// List of text nuggets to render
 	List<TextObject> textObjects_;
 	// Render colourscales
-	void renderColourscales();
+	void renderColourscales() const;
 	// Add extra 2D objects
-	void renderExtra2d();
+	void renderExtra2d() const;
 	// Add extra 3D objects
-	void renderExtra3d();
+	void renderExtra3d() const;
 	// Render the model specified
-	void renderModelAtoms(Model *source);
+	void renderModelAtoms(Model *source) const;
 	// Render model cell
-	void renderModelCell(Model *source);
+	void renderModelCell(Model *source) const;
 	// Draw model force arrows		// TODO Defunct now glyphs are available?
-	void renderModelForceArrows();
+	void renderModelForceArrows() const;
 	// Render glyphs in the current model
 	void renderModelGlyphs(Model *source);
 	// Add labels to the model
@@ -248,11 +255,11 @@ class Canvas
 	// Render text glyphs in the current model
 	void renderModelTextGlyphs(Model *source);
 	// Draw regions specified for MC insertion
-	void renderRegions();
+	void renderRegions() const;
 	// Render the rotation globe
-	void renderRotationGlobe(double *rotmat, double camrot);
+	void renderRotationGlobe(double *rotmat, double camrot) const;
 	// Render model surfaces
-	void renderSurfaces(Model *source);
+	void renderSurfaces(Model *source) const;
 
 	public:
 	// Render a scene based on the specified model
@@ -261,6 +268,7 @@ class Canvas
 	void renderText(QPainter&);
 	// Save scene as vector image
 	//void saveVector(Model *source, vector_format vf, const char *filename);
+
 
 	/*
 	// Selection
@@ -291,6 +299,7 @@ class Canvas
 	// End manual picking
 	void endManualPick(bool resetaction);
 
+
 	/*
 	// Mouse
 	*/
@@ -299,6 +308,7 @@ class Canvas
 	Vec3<double> rMouseUp_, rMouseDown_;
 	// Canvas coordinates of mouse cursor
 	Vec3<double> rMouseLast_;
+
 
 	/*
 	// Interaction
@@ -331,7 +341,7 @@ class Canvas
 	// Sets the currently selected interact mode
 	void setSelectedMode(UserAction);
 	// Return the currently selected mode
-	UserAction selectedMode();
+	UserAction selectedMode() const;
 	// Inform the canvas of a mouse down event
 	void informMouseDown(Prefs::MouseButton, double x, double y, bool shiftkey, bool ctrlkey, bool altkey);
 	// Inform the canvas of a mouse up event
@@ -345,7 +355,7 @@ class Canvas
 	// Inform the canvas of a keydown event
 	void informKeyUp(KeyCode kc, bool shiftkey, bool ctrlkey, bool altkey);
 	// Return modifier status
-	bool modifierOn(Prefs::ModifierKey);
+	bool modifierOn(Prefs::ModifierKey) const;
 };
 
 #endif

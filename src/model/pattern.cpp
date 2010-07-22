@@ -28,25 +28,25 @@
 #include "base/elements.h"
 
 // Number of nodes in pattern
-int Model::nPatterns()
+int Model::nPatterns() const
 {
 	return patterns_.nItems();
 }
 
 // Return the first pattern node of the model
-Pattern *Model::patterns()
+Pattern *Model::patterns() const
 {
 	return patterns_.first();
 }
 
 // Return the last pattern node of the model
-Pattern *Model::lastPattern()
+Pattern *Model::lastPattern() const
 {
 	return patterns_.last();
 }
 
 // Return whether the patterns are valid
-bool Model::arePatternsValid()
+bool Model::arePatternsValid() const
 {
 	return (patternsPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
 }
@@ -348,7 +348,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 }
 
 // Get empirical formula of selection
-void Model::selectionEmpirical(Dnchar &target, bool markonly)
+void Model::selectionEmpirical(Dnchar &target, bool markonly) const
 {
 	msg.enter("Model::selectionEmpirical");
 	int n, elcount[MAXELEMENTS];
@@ -443,7 +443,7 @@ void Model::selectionBondFingerprint(Dnchar &target)
 }
 
 // Find pattern by name
-Pattern *Model::findPattern(const char *s)
+Pattern *Model::findPattern(const char *s) const
 {
 	msg.enter("Model::findPattern");
 	Pattern *p = NULL;
@@ -486,7 +486,7 @@ Pattern *Model::pattern(Atom *i)
 }
 
 // Print patterns
-void Model::printPatterns()
+void Model::printPatterns() const
 {
 	msg.enter("Model::printPatterns");
 	Pattern *p = patterns_.first();

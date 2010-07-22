@@ -51,13 +51,13 @@ void Measurement::setType(Measurement::MeasurementType gt)
 }
 
 // Return type of Measurement
-Measurement::MeasurementType Measurement::type()
+Measurement::MeasurementType Measurement::type() const
 {
 	return type_;
 }
 
 // Return value of the Measurement
-double Measurement::value()
+double Measurement::value() const
 {
 	return value_;
 }
@@ -69,7 +69,7 @@ void Measurement::setAtom(int n, Atom *i)
 }
 
 // Return whether the specified atom is used in this measurement
-bool Measurement::involvesAtom(Atom *i)
+bool Measurement::involvesAtom(Atom *i) const
 {
 	for (int n=0; n<4; ++n) if (atoms_[n] == i) return TRUE;
 	return FALSE;
@@ -110,7 +110,7 @@ void Measurement::calculate(Cell *cell)
 }
 
 // Print
-void Measurement::print()
+void Measurement::print() const
 {
 	switch (type_)
 	{

@@ -97,10 +97,11 @@ Model::~Model()
 	clearBonding();
 	grids_.clear();
 	atoms_.clear();
+	bonds_.clear();
 	patterns_.clear();
-	distances_.clear();
-	angles_.clear();
-	torsions_.clear();
+	distanceMeasurements_.clear();
+	angleMeasurements_.clear();
+	torsionMeasurements_.clear();
 	// Delete sginfo arrays
 	delete[] spacegroup_.ListSeitzMx;
 	delete[] spacegroup_.ListRotMxInfo;
@@ -287,7 +288,7 @@ void Model::clearCharges()
 }
 
 // Print
-void Model::print()
+void Model::print() const
 {
 	msg.enter("Model::print");
 	msg.print("   Name : %s\n", name_.get());
@@ -314,7 +315,7 @@ void Model::print()
 }
 
 // Print points information
-void Model::printLogs()
+void Model::printLogs()  const
 {
 	msg.print("Logs for model '%s':\n",name_.get());
 	changeLog.print();
@@ -324,7 +325,7 @@ void Model::printLogs()
 }
 
 // Print Forces
-void Model::printForces()
+void Model::printForces() const
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -414,7 +415,7 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 }
 
 // Return RMS of last calculated atomic forces
-double Model::rmsForce()
+double Model::rmsForce() const
 {
 	return rmsForce_;
 }

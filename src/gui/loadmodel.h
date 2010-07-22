@@ -40,27 +40,29 @@ class AtenLoadModel : public QDialog
 	// Widget Functions
 	*/
 	private slots:
-	void on_LoadModelBrowseButton_clicked(bool checked);
-	void on_LoadModelEdit_editingFinished();
-	void on_LoadModelEdit_returnPressed();
-	void on_LoadModelRebondCombo_activated(int index);
-	void on_LoadModelFoldCombo_activated(int index);
-	void on_LoadModelPackCombo_activated(int index);
-	void on_LoadModelCentreCombo_activated(int index);
-	void on_LoadModelZMappingCombo_activated(int index);
+	void on_BrowseButton_clicked(bool checked);
+	void on_FilenameEdit_editingFinished();
+	void on_FilenameEdit_returnPressed();
+	void on_RebondCombo_activated(int index);
+	void on_FoldCombo_activated(int index);
+	void on_PackCombo_activated(int index);
+	void on_CentreCombo_activated(int index);
+	void on_ZMappingCombo_activated(int index);
+	void on_BohrCheck_clicked(bool checked);
+	void on_KeepNamesCheck_clicked(bool checked);
 
 	/*
 	// Data
 	*/
 	private:
-	// Selected filter
-	Tree *selectedFilter_;
+	// Whether the window is currently refreshing its controls
+	bool refreshing_;
 	// Filename in edit box
 	Dnchar selectedFilename_;
 
 	public:
-	// Return the selected filter
-	Tree *selectedFilter();
+	// Return the selected format (if any)
+	Tree *selectedFormat();
 	// Return filename
 	const char *selectedFilename();
 

@@ -207,13 +207,13 @@ Cell::CellType Cell::type() const
 }
 
 // Return the cell vector matrix
-Mat3<double> Cell::transpose()
+Mat3<double> Cell::transpose() const
 {
 	return transpose_;
 }
 
 // Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
-Mat3<double> Cell::axes()
+Mat3<double> Cell::axes() const
 {
 	return axes_;
 }
@@ -225,25 +225,25 @@ double *Cell::axesForGL()
 }
 
 // Return a matrix of the reciprocal cell vectors
-Mat3<double> Cell::reciprocal()
+Mat3<double> Cell::reciprocal() const
 {
 	return reciprocal_;
 }
 
 // Return the axis lengths of the cell
-Vec3<double> Cell::lengths()
+Vec3<double> Cell::lengths() const
 {
 	return lengths_;
 }
 
 // Return the angles the cell
-Vec3<double> Cell::angles()
+Vec3<double> Cell::angles() const
 {
 	return angles_;
 }
 
 // Return the origin the cell
-Vec3<double> Cell::centre()
+Vec3<double> Cell::centre() const
 {
 	return centre_;
 }
@@ -261,7 +261,7 @@ void Cell::reciprocalColumn(double* m)
 }
 
 // Return a inverse transpose matrix of cell axes
-Mat3<double> Cell::inverseTranspose()
+Mat3<double> Cell::inverseTranspose() const
 {
 	return itranspose_;
 }
@@ -298,13 +298,13 @@ void Cell::setSpacegroupId(int i)
 }
 
 // Return the spacegroup Id
-int Cell::spacegroupId()
+int Cell::spacegroupId() const
 {
 	return spacegroupId_;
 }
 
 // Return the spacegroup name
-const char *Cell::spacegroup()
+const char *Cell::spacegroup() const
 {
 	return Spacegroups[spacegroupId_].name;
 }
@@ -316,7 +316,7 @@ Generator *Cell::addGenerator()
 }
 
 // Return number of manual generators defined
-int Cell::nGenerators()
+int Cell::nGenerators() const
 {
 	return generators_.nItems();
 }

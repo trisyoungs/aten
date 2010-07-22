@@ -35,7 +35,7 @@ void Model::setRenderFromFrames()
 }
 
 // Return whether rendering from self
-bool Model::renderFromSelf()
+bool Model::renderFromSelf() const
 {
 	return renderFromSelf_;
 }
@@ -58,7 +58,7 @@ void Model::setRotationMatrix(Mat4<double> &rmat)
 }
 
 // Return the current rotation matrix
-Mat4<double> Model::rotationMatrix()
+Mat4<double> Model::rotationMatrix() const
 {
 	return (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
 }
@@ -89,7 +89,7 @@ void Model::setCameraRotation(double r)
 }
 
 // Return the current camera z-rotation
-double Model::cameraRotation()
+double Model::cameraRotation() const
 {
 	return (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
 }
@@ -500,7 +500,7 @@ Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
 }
 
 // Return the camera position vector
-Vec3<double> Model::camera()
+Vec3<double> Model::camera() const
 {
 	return (trajectoryParent_ == NULL ? camera_ : trajectoryParent_->camera_);
 }

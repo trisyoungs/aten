@@ -591,9 +591,9 @@ void MeasurementEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing measurement - type = %i\n", type_);
-		if (type_ == Measurement::Distance) me = m->findDistance(i, j);
-		if (type_ == Measurement::Angle) me = m->findAngle(i, j, k);
-		if (type_ == Measurement::Torsion) me = m->findTorsion(i, j, k, l);
+		if (type_ == Measurement::Distance) me = m->findDistanceMeasurement(i, j);
+		if (type_ == Measurement::Angle) me = m->findAngleMeasurement(i, j, k);
+		if (type_ == Measurement::Torsion) me = m->findTorsionMeasurement(i, j, k, l);
 		if (me != NULL) m->removeMeasurement(me);
 		else printf("Couldn't find measurement in UndoEvent.\n");
 	}

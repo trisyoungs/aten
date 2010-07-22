@@ -54,7 +54,7 @@ class Generator
 	// Set translation column
 	void setTranslation(double tx, double ty, double tz, double divisor);
 	// Return text 'name' of generator
-	const char *name();
+	const char *name() const;
 	// Return operator matrix of generator
 	Mat4<double> &matrix();
 };

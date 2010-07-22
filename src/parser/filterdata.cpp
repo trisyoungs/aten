@@ -70,31 +70,31 @@ FilterData::~FilterData()
 }
 
 // Return the ID of the filter
-int FilterData::id()
+int FilterData::id() const
 {
 	return id_;
 }
 
 // Return the descriptive name of the filter
-const char *FilterData::name()
+const char *FilterData::name() const
 {
 	return name_.get();
 }
 
 // Return the short nickname of the filter
-const char *FilterData::nickname()
+const char *FilterData::nickname() const
 {
 	return nickname_.get();
 }
 
 // Return the first file extension
-Dnchar *FilterData::extensions()
+Dnchar *FilterData::extensions() const
 {
 	return extensions_.first();
 }
 
 // Return a comma-separated list of file extensions
-const char *FilterData::extensionList()
+const char *FilterData::extensionList() const
 {
 	static Dnchar extlist(128);
 	extlist.clear();
@@ -107,31 +107,31 @@ const char *FilterData::extensionList()
 }
 
 // Return the first alias
-Dnchar *FilterData::exactNames()
+Dnchar *FilterData::exactNames() const
 {
 	return exactNames_.first();
 }
 
 // Return the number of lines to search for defining strings
-int FilterData::nLinesToSearch()
+int FilterData::nLinesToSearch() const
 {
 	return nLinesToSearch_;
 }
 
 // Return the first identifying text string
-Dnchar *FilterData::searchStrings()
+Dnchar *FilterData::searchStrings() const
 {
 	return searchStrings_.first();
 }
 
 // Return whether filter has an extension
-bool FilterData::hasExtension()
+bool FilterData::hasExtension() const
 {
 	return hasExtension_;
 }
 
 // Return whether the supplied text matches any of the filter's possible extensions
-bool FilterData::doesExtensionMatch(const char *ext)
+bool FilterData::doesExtensionMatch(const char *ext) const
 {
 	Dnchar lcaseext = lowerCase(ext);
 	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcaseext.get()) == 0) return TRUE;
@@ -139,7 +139,7 @@ bool FilterData::doesExtensionMatch(const char *ext)
 }
 
 // Return whether the supplied text matches any of the filter's possible exact filenames
-bool FilterData::doesNameMatch(const char *name)
+bool FilterData::doesNameMatch(const char *name) const
 {
 	Dnchar lcasename = lowerCase(name);
 	for (Dnchar *d = exactNames_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcasename.get()) == 0) return TRUE;
@@ -153,13 +153,13 @@ void FilterData::setPartner(Tree *filter)
 }
 
 // Return the partner filter
-Tree *FilterData::partner()
+Tree *FilterData::partner() const
 {
 	return partner_;
 }
 
 // Return the file filter
-const char *FilterData::glob()
+const char *FilterData::glob() const
 {
 	return glob_.get();
 }
@@ -171,7 +171,7 @@ void FilterData::setType(FilterType ft)
 }
 
 // Return the type of filter
-FilterData::FilterType FilterData::type()
+FilterData::FilterType FilterData::type() const
 {
 	return type_;
 }
@@ -273,7 +273,7 @@ const char *FilterData::description()
 	{
 		int size = name_.length() + glob_.length() + 10;
 		char *longname = new char[size];
-		// Generate the filter desciption string
+		// Generate the filter desciption string`
 		sprintf(longname,"%s (%s)",name_.get(),glob_.get());
 		description_ = longname;
 		delete[] longname;
@@ -294,13 +294,13 @@ void FilterData::setTrajectoryFrameFunction(Tree *func)
 }
 
 // Set trajectory header function
-Tree *FilterData::trajectoryHeaderFunction()
+Tree *FilterData::trajectoryHeaderFunction() const
 {
 	return headerFunction_;
 }
 
 // Set trajectory frame function
-Tree *FilterData::trajectoryFrameFunction()
+Tree *FilterData::trajectoryFrameFunction() const
 {
 	return frameFunction_;
 }

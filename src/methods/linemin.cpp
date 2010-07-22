@@ -28,6 +28,18 @@ LineMinimiser::LineMinimiser()
 	tolerance_ = 0.00001;
 }
 
+// Set the tolerance
+void LineMinimiser::setTolerance(double t)
+{
+	tolerance_ = t;
+}
+
+// Return current tolerance
+double LineMinimiser::tolerance() const
+{
+	return tolerance_;
+}
+
 // Perform gradient move
 void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta)
 {

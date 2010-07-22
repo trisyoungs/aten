@@ -79,7 +79,7 @@ Glyph::Glyph()
 }
 
 // Returns the number of data set for the Glyph
-int Glyph::nData()
+int Glyph::nData() const
 {
 	return data_.nItems();
 }
@@ -105,7 +105,7 @@ Model *Glyph::parent()
 }
 
 // Return style of Glyph
-Glyph::GlyphType Glyph::type()
+Glyph::GlyphType Glyph::type() const
 {
 	return type_;
 }
@@ -139,7 +139,7 @@ void Glyph::setText(const char *s)
 }
 
 // Return text data
-const char *Glyph::text()
+const char *Glyph::text() const
 {
 	return text_.get();
 }
@@ -158,7 +158,7 @@ void Glyph::setVisible(bool isvisible)
 }
 
 // Return whether the Glyph is visible
-bool Glyph::isVisible()
+bool Glyph::isVisible() const
 {
 	return visible_;
 }
@@ -170,7 +170,7 @@ void Glyph::setSolid(bool issolid)
 }
 
 // Return whether the Glyph should be drawn as a solid
-bool Glyph::isSolid()
+bool Glyph::isSolid() const
 {
 	return solid_;
 }
@@ -182,13 +182,13 @@ void Glyph::setLineWidth(GLfloat width)
 }
 
 // Return the linewidth of the glyph
-GLfloat Glyph::lineWidth()
+GLfloat Glyph::lineWidth() const
 {
 	return lineWidth_;
 }
 
 // Return whether glyph has been rotated
-bool Glyph::rotated()
+bool Glyph::rotated() const
 {
 	return (rotation_ != NULL);
 }
@@ -336,19 +336,19 @@ Atom *GlyphData::atom()
 }
 
 // Return whether the atom was set last
-bool GlyphData::atomSetLast()
+bool GlyphData::atomSetLast() const
 {
 	return atomSetLast_;
 }
 
 // Return the data type 
-GlyphData::GlyphDataType GlyphData::atomData()
+GlyphData::GlyphDataType GlyphData::atomData() const
 {
 	return atomData_;
 }
 
 // Return the position
-Vec3<double> GlyphData::vector()
+Vec3<double> GlyphData::vector() const
 {
 	if (!atomSetLast_) return vector_;
 	else if (atom_ != NULL) return atom_->r();
@@ -379,7 +379,7 @@ double *GlyphData::colour()
 }
 
 // Return i'th colour for glyph
-void GlyphData::copyColour(GLfloat *col)
+void GlyphData::copyColour(GLfloat *col) const
 {
 	 col[0] = (GLfloat) colour_[0];
 	 col[1] = (GLfloat) colour_[1];

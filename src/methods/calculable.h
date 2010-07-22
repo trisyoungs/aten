@@ -53,11 +53,11 @@ class Calculable
 	// Set identifiable name of the quantity
 	void setName(const char *s);
 	// Return name of the quantity
-	const char *name();
+	const char *name() const;
 	// Set filename of the quantity
 	void setFilename(const char *s);
 	// Return filename of the quantity
-	const char *filename();
+	const char *filename() const;
 
 	/*
 	// Methods
