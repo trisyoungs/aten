@@ -45,13 +45,13 @@ Pdens::~Pdens()
 }
 
 // Get stepsize
-double Pdens::stepSize()
+double Pdens::stepSize() const
 {
 	return stepSize_;
 }
 
 // Get number of bins
-int Pdens::nSteps()
+int Pdens::nSteps() const
 {
 	return nSteps_;
 }

@@ -55,7 +55,7 @@ void VariableList::take(Variable *v, bool forcevariable)
 }
 
 // Retrieve a named variable from the list
-Variable *VariableList::find(const char *name)
+Variable *VariableList::find(const char *name) const
 {
 	Variable *result = NULL;
 	for (result = variables_.first(); result != NULL; result = (Variable*) result->next) if (strcmp(name,result->name()) == 0) break;
@@ -255,13 +255,13 @@ Variable *VariableList::createArrayConstant(VTypes::DataType type, int size)
 }
 
 // Return the number of variables (not constants) contained in the list
-int VariableList::nVariables()
+int VariableList::nVariables() const
 {
 	return variables_.nItems();
 }
 
 // Return first variable in the list
-Variable *VariableList::first()
+Variable *VariableList::first() const
 {
 	return variables_.first();
 }
@@ -280,7 +280,7 @@ void VariableList::clear()
 }
 
 // Print list of variables and their values
-void VariableList::print()
+void VariableList::print() const
 {
 	for (Variable *v = variables_.first(); v != NULL; v = (Variable*) v->next) v->nodePrint(0,"");
 }

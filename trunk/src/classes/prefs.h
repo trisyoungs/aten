@@ -119,31 +119,31 @@ class Prefs
 	// Return whether the specified object is visible (i.e. should be rendered) offscreen
 	bool isVisibleOffScreen(ViewObject vo);
 	// Return screenobjects bitvector
-	int screenObjects();
+	int screenObjects() const;
 	// Set screenobjects bitvector
 	void setScreenObjects(int i);
 	// Return screenobjects bitvector
-	int offScreenObjects();
+	int offScreenObjects() const;
 	// Set imageobjects bitvector
 	void setOffScreenObjects(int i);
 	// Return the radius of an atom calculated from the element and draw style
-	double screenRadius(Atom*);
+	double screenRadius(Atom*) const;
 	// Set the drawing style of models
 	void setRenderStyle(Atom::DrawStyle ds);
 	// Return the current drawing style of models
-	Atom::DrawStyle renderStyle();
+	Atom::DrawStyle renderStyle() const;
 	// Return the current rotation globe size in pixels
-	int globeSize();
+	int globeSize() const;
 	// Set the current rotation globe size in pixels
 	void setGlobeSize(int i);
 	// Set positive repeat cell value
 	void setRepeatCellsPos(int i, int r);
 	// Get positive repeat cell value
-	int repeatCellsPos(int i);
+	int repeatCellsPos(int i) const;
 	// Set negative repeat cell value
 	void setRepeatCellsNeg(int i, int r);
 	// Get negative repeat cell value
-	int repeatCellsNeg(int i);
+	int repeatCellsNeg(int i) const;
 
 
 	/*
@@ -177,35 +177,35 @@ class Prefs
 	// Sets the specified atom size to the given value
 	void setAtomStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the specified atom radius
-	GLdouble atomStyleRadius(Atom::DrawStyle ds);
+	GLdouble atomStyleRadius(Atom::DrawStyle ds) const;
 	// Sets the bond radius used in Scaled and Sphere styles
 	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
-	GLdouble bondStyleRadius(Atom::DrawStyle ds);
+	GLdouble bondStyleRadius(Atom::DrawStyle ds) const;
 	// Sets the detail for atom quadrics
 	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics
-	GLint atomDetail();
+	GLint atomDetail() const;
 	// Sets the detail for bond quadrics
 	void setBondDetail(int n);
 	// Return the current detail of bond quadrics
-	GLint bondDetail();
+	GLint bondDetail() const;
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms
-	GLdouble selectionScale();
+	GLdouble selectionScale() const;
 	// Return whether perspective viewing is enabled
-	bool hasPerspective();
+	bool hasPerspective() const;
 	// Sets perspective viewing on/off
 	void setPerspective(bool b);
 	// Set the perspective field of view angle
 	void setPerspectiveFov(double fov);
 	// Return the perspective field of view angle
-	double perspectiveFov();
+	double perspectiveFov() const;
 	// Set status of spotlight
 	void setSpotlightActive(bool status);
 	// Return status of spotlight
-	bool spotlightActive();
+	bool spotlightActive() const;
 	// Set spotlight colour component
 	void setSpotlightColour(ColourComponent sc, int i, double value);
 	void setSpotlightColour(ColourComponent sc, double r, double g, double b);
@@ -223,11 +223,11 @@ class Prefs
 	// Set atom colour scheme
 	void setColourScheme(Prefs::ColouringScheme sc);
 	// Return atom colour scheme
-	Prefs::ColouringScheme colourScheme();
+	Prefs::ColouringScheme colourScheme() const;
 	// Set number of segments in colour scale
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
-	int nScaleSegments();
+	int nScaleSegments() const;
 
 
 	/*
@@ -251,27 +251,27 @@ class Prefs
 	// Set the postfix distance label
 	void setDistanceLabel(const char *s);
 	// Return the postfix distance label
-	const char *distanceLabel();
+	const char *distanceLabel() const;
 	// Set the postfix angle label
 	void setAngleLabel(const char *s);
 	// Return the postfix angle label
-	const char *angleLabel();
+	const char *angleLabel() const;
 	// Set the pointsize of labels in the model
 	void setLabelSize(int size);
 	// Return the current label pointsize
-	int labelSize();
+	int labelSize() const;
 	// Set whether to use nice text rendering
 	void setUseNiceText(bool b);
 	// Return whether to use nice text rendering
-	bool useNiceText();
+	bool useNiceText() const;
 	// Set manual swapbuffers
 	void setManualSwapBuffers(bool on);
 	// Return whether manual buffer swapping is enabled
-	bool manualSwapBuffers();
+	bool manualSwapBuffers() const;
 	// Set usage of framebuffer in image saving
 	void setUseFrameBuffer(bool on);
 	// Return whether to use framebuffer for image saving
-	bool useFrameBuffer();
+	bool useFrameBuffer() const;
 
 
 	/*
@@ -297,39 +297,39 @@ class Prefs
 	// Set status of fog (depth cueing)
 	void setDepthCue(bool status);
 	// Return status of depth cueing
-	bool depthCue();
+	bool depthCue() const;
 	// Sets the start depth of depth cueing
 	void setDepthNear(int i);
 	// Return depth cue start depth
-	GLint depthNear();
+	GLint depthNear() const;
 	// Sets the end depth of depth cueing
 	void setDepthFar(int i);
 	// Return depth cue end depth
-	GLint depthFar();
+	GLint depthFar() const;
 	// Set status of line aliasing
 	void setLineAliasing(bool status);
 	// Return status of line aliasing
-	bool lineAliasing();
+	bool lineAliasing() const;
 	// Set status of polygon aliasing
 	void setPolygonAliasing(bool status);
 	// Return status of polygon aliasing
-	bool polygonAliasing();
+	bool polygonAliasing() const;
 	// Set status of backface culling
 	void setBackfaceCulling(bool status);
 	// Return status of backface culling
-	bool backfaceCulling();
+	bool backfaceCulling() const;
 	// Return the Z depth of the near clipping plane
-	GLdouble clipNear();
+	GLdouble clipNear() const;
 	// Set the Z-depth of the near clipping plane
 	void setClipNear(double d);
 	// Return the Z depth of the far clipping plane
-	GLdouble clipFar();
+	GLdouble clipFar() const;
 	// Set the Z-depth of the far clipping plane
 	void setClipFar(double d);
 	// Sets the shininess of GL objects
 	void setShininess(int n);
 	// Return the current shininess of GL objects
-	GLint shininess();
+	GLint shininess() const;
 
 
 	/*
@@ -345,7 +345,7 @@ class Prefs
 	// Set the supplied element of the specified colour
 	void setColour(PenColour c, int i, double value);
 	// Copy the specified colour
-	void copyColour(PenColour c, GLfloat*);
+	void copyColour(PenColour c, GLfloat *col) const;
 	// Return a pointer to the specified colour
 	double *colour(PenColour c);
 	// User-definable colour scales
@@ -383,40 +383,40 @@ class Prefs
 	// Sets whether to calculate bonding on model load
 	void setBondOnLoad(FilterSwitch s);
 	// Whether bonding should be recalculated on model load
-	FilterSwitch bondOnLoad();
+	FilterSwitch bondOnLoad() const;
 	// Sets whether to centre molecule on load
 	void setCentreOnLoad(FilterSwitch s);
 	// Whether molecule should be centred on model load
-	FilterSwitch centreOnLoad();
+	FilterSwitch centreOnLoad() const;
 	// Sets whether to fold atomic positions after model load
 	void setFoldOnLoad(FilterSwitch s);
 	// Whether atoms should be folded after model load
-	FilterSwitch foldOnLoad();
+	FilterSwitch foldOnLoad() const;
 	// Sets whether to apply symmetry operators (pack) on load
 	void setPackOnLoad(FilterSwitch s);
 	// Whether atoms should be packed (with symmetry operations) after model load
-	FilterSwitch packOnLoad();
+	FilterSwitch packOnLoad() const;
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files
-	int cacheLimit();
+	int cacheLimit() const;
 	// Sets the style of element conversion to use
 	void setZMapType(ElementMap::ZMapType i);
 	void setZMapType(ElementMap::ZMapType i, bool fixed);
 	// Return the style of element conversion in use
-	ElementMap::ZMapType zMapType();
+	ElementMap::ZMapType zMapType() const;
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
-	bool coordsInBohr();
+	bool coordsInBohr() const;
 	// Set whether to keep file type names on load
 	void setKeepNames(bool b);
 	// Return whether to keep file type names on load
-	bool keepNames();
+	bool keepNames() const;
 	// Set whether to keep view on GUI start
 	void setKeepView(bool b);
 	// Return whether to keep view on GUI start
-	bool keepView();
+	bool keepView() const;
 
 
 	/*
@@ -444,35 +444,35 @@ class Prefs
 	// Sets the bonding tolerance
 	void setBondTolerance(double v);
 	// Return the bonding tolerance for automatic calculation
-	double bondTolerance();
+	double bondTolerance() const;
 	// Sets the position of the drawing guide
 	void setDrawDepth(double v);
 	// Return the current position of the drawing guide
-	double drawDepth();
+	double drawDepth() const;
 	// Spacing of grid on drawing guide
 	void setGuideSpacing(double spacing);
 	// Spacing of grid on drawing guide
-	double guideSpacing();
+	double guideSpacing() const;
 	// Extent (+- guide_spacing in xy plane) of drawing guide 
 	void setGuideExtent(int extent);
 	// Return extent (+- guide_spacing in xy plane) of drawing guide 
-	int guideExtent();
+	int guideExtent() const;
 	// Number of ticks between gridpoints of guide
 	void setGuideTicks(int nticks);
 	// Number of ticks between gridpoints of guide
-	int guideTicks();
+	int guideTicks() const;
 	// Sets the visibility of the drawing guide
 	void setGuideVisible(bool b);
 	// Return whether the draw guide is visible
-	bool isGuideVisible();
+	bool isGuideVisible() const;
 	// Sets the shape of the drawing guide
 	void setGuideShape(Prefs::GuideGeometry g);
 	// Return guide shape
-	Prefs::GuideGeometry guideShape();
+	Prefs::GuideGeometry guideShape() const;
 	// Set hydrogen add distance
 	void setHydrogenDistance(double d);
 	// Return hydrogen add distance
-	double hydrogenDistance();
+	double hydrogenDistance() const;
 
 
 	/*
@@ -492,15 +492,15 @@ class Prefs
 	// Sets the action for the specified mouse button
 	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
-	MouseAction mouseAction(MouseButton mb);
+	MouseAction mouseAction(MouseButton mb) const;
 	// Sets the modifier key for the specified action
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
-	KeyAction keyAction(ModifierKey mk);
+	KeyAction keyAction(ModifierKey mk) const;
 	// Sets the zoom throttle
 	void setZoomThrottle(double throtvalue);
 	// Returns the zoom throttle
-	double zoomThrottle();
+	double zoomThrottle() const;
 
 
 	/*
@@ -542,67 +542,67 @@ class Prefs
 	// Set the model update frequency
 	void setModelUpdate(int n);
 	// Return the model update frequency
-	int modelUpdate();
+	int modelUpdate() const;
 	// Set the energy update frequency
 	void setEnergyUpdate(int n);
 	// Return the energy update frequency
-	int energyUpdate();
+	int energyUpdate() const;
 	// Return whether to update the energy, given the cycle number
 	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
-	int maxRingSize();
+	int maxRingSize() const;
 	// Set the maximum ring size allowed
 	void setMaxRingSize(int i);
 	// Return the maximum number of rings to detect per pattern
-	int maxRings();
+	int maxRings() const;
 	// Set the maximum number of rings to detect per pattern
 	void setMaxRings(int i);
 	// Return maximum number of bonding cuboids in each direction
-	int maxCuboids();
+	int maxCuboids() const;
 	// Set maximum number of bonding cuboids in each direction
 	void setMaxCuboids(int i);
 	// Set whether to fold atoms before replication
 	void setReplicateFold(bool b);
 	// Return whether to fold atoms before replication
-	bool replicateFold();
+	bool replicateFold() const;
 	// Set whether to trim atoms after replication
 	void setReplicateTrim(bool b);
 	// Return whether to trim atoms after replication
-	bool replicateTrim();
+	bool replicateTrim() const;
 	// Set the maximum number of undo levels allowed
 	void setMaxUndoLevels(int n);
 	// Return the maximum number of undo levels allowed
-	int maxUndoLevels();
+	int maxUndoLevels() const;
 	// Set list of common elements in SelectElement dialog
 	void setCommonElements(const char *s);
 	// Return list of common elements to use in SelectElement dialog
-	const char *commonElements();
+	const char *commonElements() const;
 	// Return whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings();
 	// set whether to load Qt window/toolbar settings on startup
 	void setLoadQtSettings(bool b);
 	// Return maximum distance allowed between consecutive improper torsion atoms
-	double maxImproperDist();
+	double maxImproperDist() const;
 	// Set maximum distance allowed between consecutive improper torsion atoms
 	void setMaxImproperDist(double r);
 	// Return whether to augment when rebonding
-	bool augmentAfterRebond();
+	bool augmentAfterRebond() const;
 	// Set whether to augment when rebonding
 	void setAugmentAfterRebond(bool b);
 	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral();
+	bool forceRhombohedral() const;
 	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
 	void setForceRhombohedral(bool b);
 	// Whether to display warning for version 1.5 (r1056) newness
-	bool warning1056();
+	bool warning1056() const;
 	// Set whether to display warning for version 1.5 (r1056) newness
 	void setWarning1056(bool b);
 	// Whether to load fragments on startup
-	bool loadFragments();
+	bool loadFragments() const;
 	// Set whether to load fragments on startup
 	void setLoadFragments(bool b);
 	// Whether to generate icons for loaded fragments
-	bool generateFragmentIcons();
+	bool generateFragmentIcons() const;
 	// Set whether to generate icons for loaded fragments
 	void setGenerateFragmentIcons(bool b);
 
@@ -611,6 +611,7 @@ class Prefs
 	// Units and Conversion
 	*/
 	private:
+	// Internal density units to use
 	DensityUnit densityUnit_;
 	// Internal energy units to use for forcefield storage, energy calculation etc.
 	EnergyUnit energyUnit_;
@@ -621,19 +622,19 @@ class Prefs
 
 	public:
 	// Sets the current internal energy unit
-	void setEnergyUnit(EnergyUnit eu);
+	void setEnergyUnit(Prefs::EnergyUnit eu);
 	// Return the working energy units
-	EnergyUnit energyUnit();
+	EnergyUnit energyUnit() const;
 	// Set the density unit to use
-	void setDensityUnit(DensityUnit du);
+	void setDensityUnit(Prefs::DensityUnit du);
 	// Return the current density units to use
-	DensityUnit densityUnit();
+	DensityUnit densityUnit() const;
 	// Convert the units of the given quantity
-	double convertEnergy(double energy, EnergyUnit);
+	double convertEnergy(double energy, Prefs::EnergyUnit eu) const;
 	// Return the electrostastic energy conversion factor
-	double elecConvert();
+	double elecConvert() const;
 	// Return the gas constant in the current unit of energy
-	double gasConstant();
+	double gasConstant() const;
 
 
 	/*
@@ -668,55 +669,55 @@ class Prefs
 	// Sets the electrostatic model to use in energy/force calculation
 	void setElectrostaticsMethod(Electrostatics::ElecMethod em);
 	// Return the type of electrostatic treatment to use
-	Electrostatics::ElecMethod electrostaticsMethod();
+	Electrostatics::ElecMethod electrostaticsMethod() const;
 	// Sets whether to calculate intramolecular interactions
 	void setCalculateIntra(bool b);
 	// Return whether to calculate intramolocular interactions
-	bool calculateIntra();
+	bool calculateIntra() const;
 	// Sets whether to calculate VDW interactions
 	void setCalculateVdw(bool b);
 	// Return whether to calculate VDW interactions
-	bool calculateVdw();
+	bool calculateVdw() const;
 	// Sets whether to calculate electrostatic interactions
 	void setCalculateElec(bool b);
 	// Return whether to calculate electrostatic interactions
-	bool calculateElec();
+	bool calculateElec() const;
 	// Sets the Ewald k-vector extents
 	void setEwaldKMax(int element, int i);
 	void setEwaldKMax(int a, int b, int c);
 	void setEwaldKMax(Vec3<int> v);
 	// Return the Ewald k-vector extents
-	Vec3<int> ewaldKMax();
+	Vec3<int> ewaldKMax() const;
 	// Return the Ewald precision (structure)
 	DoubleExp &ewaldPrecision();
 	// Set the Gaussian width to use in the Ewald sum
 	void setEwaldAlpha(double d);
 	// Return the Ewald alpha value
-	double ewaldAlpha();
+	double ewaldAlpha() const;
 	// Set the short-range and electrostatic cutoffs
 	void setCutoffs(double vcut, double ecut);
 	// Estimate Ewald sum parameters for the current unit cell
 	void estimateEwaldParameters(Cell*);
 	// Return the validity of automatic Ewald params (invalidated on cell change)
-	bool hasValidEwaldAuto();
+	bool hasValidEwaldAuto() const;
 	// Flag the Ewald auto params as invalid
 	void invalidateEwaldAuto();
 	// Sets the VDW cutoff radius to use
 	void setVdwCutoff(double d);
 	// Return the VDW cutoff radius
-	double vdwCutoff();
+	double vdwCutoff() const;
 	// Sets the electrostatic cutoff radius to use
 	void setElecCutoff(double d);
 	// Return the electrostatic cutoff radius
-	double elecCutoff();
+	double elecCutoff() const;
 	// Sets the vdw radius scaling factor
 	void setVdwScale(double d);
 	// Return the VDW radius scaling factor
-	double vdwScale();
+	double vdwScale() const;
 	// Set combination rule equation
 	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
-	const char *combinationRule(Combine::CombinationRule cr);
+	const char *combinationRule(Combine::CombinationRule cr) const;
 };
 
 extern Prefs prefs;

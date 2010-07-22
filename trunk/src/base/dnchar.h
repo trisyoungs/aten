@@ -68,7 +68,7 @@ class Dnchar
 	// Erase 'n' characters from end of string
 	void eraseEnd(int);
 	// Find position of first occurrence of character 'c'
-	int find(char);
+	int find(char) const;
 	// Cut n characters from start of string and place in other
 	void cutStart(int, Dnchar&);
 	// Concatenate supplied string on to end of this string
@@ -98,9 +98,9 @@ class Dnchar
 	// Returns true if the string contains a number
 	bool isNumeric() const;
 	// Return the lowercase conversion of the string
-	const char *lower();
+	const char *lower() const;
 	// Return the uppercase conversion of the string
-	const char *upper();
+	const char *upper() const;
 	// Create formatted string
 	void print(const char *fmt ...);
 };

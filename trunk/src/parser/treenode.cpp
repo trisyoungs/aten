@@ -51,7 +51,7 @@ TreeNode::~TreeNode()
 }
 
 // Retrieve node type
-TreeNode::NodeType TreeNode::nodeType()
+TreeNode::NodeType TreeNode::nodeType() const
 {
 	return nodeType_;
 }
@@ -63,7 +63,7 @@ void TreeNode::setParent(Tree *parent)
 }
 
 // Retrieve parent
-Tree *TreeNode::parent()
+Tree *TreeNode::parent() const
 {
 	return parent_;
 }
@@ -75,13 +75,13 @@ void TreeNode::setReturnType(VTypes::DataType dt)
 }
 
 // Returns content type of the variable
-VTypes::DataType TreeNode::returnType()
+VTypes::DataType TreeNode::returnType() const
 {
 	return returnType_;
 }
 
 // Return readonly status
-bool TreeNode::readOnly()
+bool TreeNode::readOnly() const
 {
 	return readOnly_;
 }
@@ -99,13 +99,13 @@ void TreeNode::setReturnsArray(bool b)
 }
 
 // Return whether an array of values is returned
-bool TreeNode::returnsArray()
+bool TreeNode::returnsArray() const
 {
 	return returnsArray_;
 }
 
 // Return number of arguments currently assigned to node
-int TreeNode::nArgs()
+int TreeNode::nArgs() const
 {
 	return args_.nItems();
 }

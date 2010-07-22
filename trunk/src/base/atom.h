@@ -73,9 +73,9 @@ class Atom
 	// Copy style data (no q, r, f, or v) from supplied atom
 	void copyStyle(Atom*);
 	// Print out all info about the atom
-	void print();
+	void print() const;
 	// One-line atom summary
-	void printSummary();
+	void printSummary() const;
 	// Set parent model
 	void setParent(Model *m);
 	// Return parent model
@@ -131,37 +131,37 @@ class Atom
 	// Sets the atom charge
 	void setCharge(double d);
 	// Return the atom charge
-	double charge();
+	double charge() const;
 	// Set the element type of the atom
 	void setElement(short int newel);
 	// Return the element of the atom
-	short int element();
+	short int element() const;
 	// Check element against the supplied value
-	bool isElement(short int n);
+	bool isElement(short int n) const;
 	// Check oxidation state against supplied value
-	bool isOs(short int n);
+	bool isOs(short int n) const;
 	// Return the oxidation state of the atom
-	short int os();
+	short int os() const;
 	// Set the forcefield type of the atom
 	void setType(ForcefieldAtom *ffa);
 	// Return the forcefield type of the atom
-	ForcefieldAtom *type();
+	ForcefieldAtom *type() const;
 	// Set the fixed status of the assigned atom type
 	void setTypeFixed(bool b);
 	// Return the fixed status of the assigned atom type
-	bool hasFixedType();
+	bool hasFixedType() const;
 	// Check the ff type of the atom against the supplied value
-	bool typeIs(ForcefieldAtom *type);
+	bool typeIs(ForcefieldAtom *type) const;
 	// Set the environment of the atom
 	void setEnvironment(Atom::AtomEnvironment ae);
 	// Return the environment of the atom
-	Atom::AtomEnvironment environment();
+	Atom::AtomEnvironment environment() const;
 	// Check the environment of the atom against the supplied value
-	bool isEnvironment(Atom::AtomEnvironment ae);
+	bool isEnvironment(Atom::AtomEnvironment ae) const;
 	// Set whether the atom's position is fixed
 	void setPositionFixed(bool b);
 	// Return whether the atom's position is fixed
-	bool isPositionFixed();
+	bool isPositionFixed() const;
 	// Return number of attached hydrogens
 	int nHydrogens();
 
@@ -181,13 +181,13 @@ class Atom
 
 	public:
 	// Return the number of bonds to the atom
-	int nBonds();
+	int nBonds() const;
 	// Return the current bond list
 	Refitem<Bond,int> *bonds();
 	// Return nth bond in the list
 	Refitem<Bond,int> *bond(int index);
 	// Check the number of bonds against the supplied value
-	bool isNBonds(int n);
+	bool isNBonds(int n) const;
 	// Accept the specified bond to the atom's local reference list
 	void acceptBond(Bond *b);
 	// Delete the specified bond from the atom's local reference list
@@ -204,7 +204,7 @@ class Atom
 	Bond *findBond(Atom *j);
 	// Determine bond plane
 	Vec3<double> findBondPlane(Atom*, Bond*, const Vec3<double>&);
-	// Return next bext vector for addition of new atom
+	// Return next best vector for addition of new atom
 	Vec3<double> nextBondVector();
 
 
@@ -223,11 +223,11 @@ class Atom
 	// Sets the selected (or marked) flag of the atom
 	void setSelected(bool b, bool markonly = FALSE);
 	// Returns the current selection state of the atom
-	bool isSelected(bool markonly = FALSE);
+	bool isSelected(bool markonly = FALSE) const;
 	// Sets the hidden flag of the atom
 	void setHidden(bool b);
 	// Return whether the atom is hidden
-	bool isHidden();
+	bool isHidden() const;
 
 
 	/*
@@ -245,7 +245,7 @@ class Atom
 	// Decreases the id of the atom by 1
 	void decreaseId();
 	// Return the id of the atom
-	int id();
+	int id() const;
 
 
 	/*
@@ -267,7 +267,7 @@ class Atom
 	// Set the screen radius of the atom
 	void setScreenRadius(double radius);
 	// Return the screen radius of the atom
-	double screenRadius();
+	double screenRadius() const;
 
 
 	/*
@@ -283,13 +283,13 @@ class Atom
 	// Sets the drawing style of the atom
 	void setStyle(Atom::DrawStyle style);
 	// Returns the drawing style of the atom
-	Atom::DrawStyle style();
+	Atom::DrawStyle style() const;
 	// Returns TRUE id the atom has at least one label specified
-	bool hasLabels();
+	bool hasLabels() const;
 	// Set label bitvector to specified value
 	void setLabels(short int l);
 	// Returns the label bitmask of the atom
-	short int labels();
+	short int labels() const;
 	// Set the bit for the specified label (if it is not set already)
 	void addLabel(Atom::AtomLabel label);
 	// Unsets the bit for the specified label (if it is not unset already)

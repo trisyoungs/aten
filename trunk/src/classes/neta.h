@@ -103,17 +103,17 @@ class Neta
 	// Set character element
 	void setCharacterElement(int el);
 	// Return character element
-	int characterElement();
+	int characterElement() const;
 	// Take ownership of selected node
 	void ownNode(NetaNode *node);
 	// Return reference name (if a define)
-	const char *name();
+	const char *name() const;
 	// Set reference name (if a define)
 	void setName(const char *s);
 	// Return top of description nodelist
 	NetaRootNode *description();
 	// Print
-	void print();
+	void print() const;
 
 
 	/*
@@ -172,7 +172,7 @@ class NetaNode
 	// Return node type
 	NetaNodeType nodeType();
 	// Return whether to use reverse logic when returning the final value
-	bool reverseLogic();
+	bool reverseLogic() const;
 	// Set node to use reverse logic
 	void setReverseLogic();
 	// Return parent NETA structure
@@ -213,7 +213,7 @@ class NetaContextNode : public NetaNode
 	// Set repetition specifier
 	void setRepeat(int n);
 	// Return repetition specified
-	int repeat();
+	int repeat() const;
 	// Set value comparison
 	void setRepeatComparison(Neta::NetaValueComparison nvc);
 	// Set inner neta description

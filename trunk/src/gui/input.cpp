@@ -204,7 +204,7 @@ void Canvas::informKeyUp(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, bool 
 }
 
 // Return modifier status
-bool Canvas::modifierOn(Prefs::ModifierKey mk)
+bool Canvas::modifierOn(Prefs::ModifierKey mk) const
 {
 	return keyModifier_[mk];
 }
@@ -493,7 +493,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (pickedAtoms_.nItems() != 2) break;
 			displayModel_->beginUndoState("Measure Distance");
 			pickedAtoms_.fillArray(2,atoms);
-			displayModel_->measureDistance(atoms[0],atoms[1]);
+			displayModel_->addDistanceMeasurement(atoms[0],atoms[1]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
@@ -503,7 +503,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (pickedAtoms_.nItems() != 3) break;
 			displayModel_->beginUndoState("Measure Angle");
 			pickedAtoms_.fillArray(3,atoms);
-			displayModel_->measureAngle(atoms[0],atoms[1],atoms[2]);
+			displayModel_->addAngleMeasurement(atoms[0],atoms[1],atoms[2]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);
@@ -513,7 +513,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (pickedAtoms_.nItems() != 4) break;
 			displayModel_->beginUndoState("Measure Torsion");
 			pickedAtoms_.fillArray(4,atoms);
-			displayModel_->measureTorsion(atoms[0],atoms[1],atoms[2],atoms[3]);
+			displayModel_->addTorsionMeasurement(atoms[0],atoms[1],atoms[2],atoms[3]);
 			displayModel_->endUndoState();
 			pickedAtoms_.clear();
 			gui.update(FALSE,FALSE,FALSE);

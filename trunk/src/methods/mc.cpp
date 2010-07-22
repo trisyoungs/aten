@@ -87,7 +87,7 @@ void MonteCarlo::setMaxStep(MonteCarlo::MoveType m, double d)
 }
 
 // Get maximum stepsize for MC move
-double MonteCarlo::maxStep(MonteCarlo::MoveType m)
+double MonteCarlo::maxStep(MonteCarlo::MoveType m) const
 {
 	return maxStep_[m];
 }
@@ -99,7 +99,7 @@ void MonteCarlo::setNTrials(MonteCarlo::MoveType m, int i)
 }
 
 // Get nTrials_ for MC move
-int MonteCarlo::nTrials(MonteCarlo::MoveType m)
+int MonteCarlo::nTrials(MonteCarlo::MoveType m) const
 {
 	return nTrials_[m];
 }
@@ -111,7 +111,7 @@ void MonteCarlo::setMoveAllowed(MonteCarlo::MoveType m, bool b)
 }
 
 // Get moveAllowed_ flag for MC move
-bool MonteCarlo::isMoveAllowed(MonteCarlo::MoveType m)
+bool MonteCarlo::isMoveAllowed(MonteCarlo::MoveType m) const
 {
 	return moveAllowed_[m];
 }
@@ -123,7 +123,7 @@ void MonteCarlo::setAcceptanceEnergy(MonteCarlo::MoveType m, double d)
 }
 
 // Get acceptanceEnergy_ limit for MC move
-double MonteCarlo::acceptanceEnergy(MonteCarlo::MoveType m)
+double MonteCarlo::acceptanceEnergy(MonteCarlo::MoveType m) const
 {
 	return acceptanceEnergy_[m];
 }
@@ -135,7 +135,7 @@ void MonteCarlo::setNCycles(int i)
 }
 
 // Get nTrials_ for MC move
-int MonteCarlo::nCycles()
+int MonteCarlo::nCycles() const
 {
 	return nCycles_;
 }
@@ -147,13 +147,14 @@ void MonteCarlo::setVdwScale(double d)
 }
 
 // Return the VDW radius scale
-double MonteCarlo::vdwScale()
+double MonteCarlo::vdwScale() const
 {
 	return vdwScale_;
 }
 
 // Create ratio acceptance array
-void MonteCarlo::createRatioArray(int newsize) {
+void MonteCarlo::createRatioArray(int newsize)
+{
 	int n, m;
 	if (acceptanceRatio_ != NULL)
 	{

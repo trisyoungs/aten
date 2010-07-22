@@ -28,7 +28,7 @@
 */
 
 // Draw a diamond at the point specified, with 'radius' r.
-void Canvas::diamondPrimitive(double x, double y, double r)
+void Canvas::diamondPrimitive(double x, double y, double r) const
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x,y+r);
@@ -39,7 +39,7 @@ void Canvas::diamondPrimitive(double x, double y, double r)
 }
 
 // Draw a box centred at x,y with diameter r
-void Canvas::squarePrimitive(double x, double y, double r)
+void Canvas::squarePrimitive(double x, double y, double r) const
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x+r,y+r);
@@ -50,7 +50,7 @@ void Canvas::squarePrimitive(double x, double y, double r)
 }
 
 // Draw a box from top-left x1,y1 to bottom-right x2,y2
-void Canvas::rectanglePrimitive(double x1, double y1, double x2, double y2)
+void Canvas::rectanglePrimitive(double x1, double y1, double x2, double y2) const
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x1,y1);
@@ -61,7 +61,7 @@ void Canvas::rectanglePrimitive(double x1, double y1, double x2, double y2)
 }
 
 // Draw a circle of (pixel) radius 'r' centred at x,y
-void Canvas::circlePrimitive(double x, double y, double r)
+void Canvas::circlePrimitive(double x, double y, double r) const
 {
 	//r += aten.lineardelta;
 	glPushMatrix();
@@ -72,7 +72,7 @@ void Canvas::circlePrimitive(double x, double y, double r)
 }
 
 // Draw a sphere
-void Canvas::spherePrimitive(double radius, bool filled, int nslices, int nstacks)
+void Canvas::spherePrimitive(double radius, bool filled, int nslices, int nstacks) const
 {
 	// Don't use this to render objects to the view - create a display list first!
 	int i, j;
@@ -106,7 +106,7 @@ void Canvas::spherePrimitive(double radius, bool filled, int nslices, int nstack
 }
 
 // Draw a cylinder
-void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled, int nslices, int nstacks)
+void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled, int nslices, int nstacks) const
 {
 	int n, m;
 	double d, rdelta, radius1, radius2, rnstacks;
@@ -136,19 +136,19 @@ void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled
 */
 
 // Render text at 2D coordinates
-void Canvas::glText(double x, double y, const char *s)
+void Canvas::glText(double x, double y, const char *s) const
 {
 	contextWidget_->renderText((int)x, (int)y, s);
 }
 
 // Render text at 3D coordinates
-void Canvas::glText(const Vec3<double> r, const char *s)
+void Canvas::glText(const Vec3<double> r, const char *s) const
 {
 	contextWidget_->renderText(r.x, r.y, r.z, s);
 }
 
 // Draw an arrow from origin along vector v
-void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead)
+void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead) const
 {
 	//static Vec3<double> perp, v2, v3, perp2;
 	static Vec3<double> orth1, orth2, arrowstart, arrowend, pos;
@@ -196,7 +196,7 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swa
 }
 
 // Draw a cylinder arrow from origin along vector v
-void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead)
+void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead) const
 {
 	// Determine spherical coordinates
 	static double phi, rij;
@@ -216,7 +216,7 @@ void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, 
 	glPopMatrix();
 }
 
-void Canvas::glSubsel3d()
+void Canvas::glSubsel3d() const
 {
 	// 3D atom highlights on atoms defined in subselection provided.
 	static Vec3<double> ir;
@@ -269,7 +269,7 @@ void Canvas::glSubsel3d()
 	}
 }
 
-void Canvas::renderRotationGlobe(double *rmat, double camrot)
+void Canvas::renderRotationGlobe(double *rmat, double camrot) const
 {
 	// Draw the coordinate axes at the bottom right of the screen.
 	// First set up the small viewport and apply our stored projection matrix.
@@ -291,7 +291,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	glViewport(0, 0, width_, height_);
 }
 
-void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double radius)
+void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double radius) const
 {
 	/* Styles are:
 		0 = solid
@@ -316,7 +316,7 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double ra
 	glPopMatrix();
 }
 
-void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, const Vec3<double> &v2)
+void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, const Vec3<double> &v2) const
 {
 	static double r[16];
 	static Mat4<double> rotmat;
@@ -341,7 +341,7 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, con
 	glPopMatrix();
 }
 
-void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z)
+void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z) const
 {
 	static double r[16];
 	static Mat4<double> rotmat;
@@ -361,7 +361,7 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, cons
 	glPopMatrix();
 }
 
-void Canvas::millerPlane(int h, int k, int l, int dir)
+void Canvas::millerPlane(int h, int k, int l, int dir) const
 {
 	if (displayModel_->cell()->type() == Cell::NoCell) return;
 	if ((h == 0) && (k == 0) && (l == 0)) return;

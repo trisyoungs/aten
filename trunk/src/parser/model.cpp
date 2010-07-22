@@ -189,13 +189,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Angles):
-			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->angles());
-			else if (arrayIndex > ptr->nAngles())
+			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->angleMeasurements());
+			else if (arrayIndex > ptr->nAngleMeasurements())
 			{
 				msg.print("Angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::MeasurementData, ptr->angle(arrayIndex-1));
+			else rv.set(VTypes::MeasurementData, ptr->angleMeasurement(arrayIndex-1));
 			break;
 		case (ModelVariable::Atoms):
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
@@ -219,13 +219,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
 		case (ModelVariable::Distances):
-			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distances());
-			else if (arrayIndex > ptr->nDistances())
+			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
+			else if (arrayIndex > ptr->nDistanceMeasurements())
 			{
 				msg.print("Distance array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::MeasurementData, ptr->distance(arrayIndex-1));
+			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
 			break;
 		case (ModelVariable::FFAngles):
 			if (!hasArrayIndex)
@@ -329,7 +329,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->name());
 			break;
  		case (ModelVariable::NAngles):
-			rv.set(ptr->nAngles());
+			rv.set(ptr->nAngleMeasurements());
 			break;
 		case (ModelVariable::NAtoms):
 			rv.set(ptr->nAtoms());
@@ -338,7 +338,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->nBonds());
 			break;
  		case (ModelVariable::NDistances):
-			rv.set(ptr->nDistances());
+			rv.set(ptr->nDistanceMeasurements());
 			break;
 		case (ModelVariable::NFFAngles):
 			rv.set(ptr->nForcefieldAngles());
@@ -365,7 +365,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->nSelected());
 			break;
  		case (ModelVariable::NTorsions):
-			rv.set(ptr->nTorsions());
+			rv.set(ptr->nTorsionMeasurements());
 			break;
  		case (ModelVariable::NUnknown):
 			rv.set(ptr->nUnknownAtoms());
@@ -383,13 +383,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(VTypes::RegionData, ptr->region());
 			break;
 		case (ModelVariable::Torsions):
-			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsions());
-			else if (arrayIndex > ptr->nTorsions())
+			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsionMeasurements());
+			else if (arrayIndex > ptr->nTorsionMeasurements())
 			{
 				msg.print("Torsions array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::MeasurementData, ptr->torsion(arrayIndex-1));
+			else rv.set(VTypes::MeasurementData, ptr->torsionMeasurement(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);

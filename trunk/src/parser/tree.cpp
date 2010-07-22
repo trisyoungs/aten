@@ -71,7 +71,7 @@ void Tree::setParent(Forest *f)
 }
 
 // Return parent
-Forest *Tree::parent()
+Forest *Tree::parent() const
 {
 	return parent_;
 }
@@ -83,7 +83,7 @@ void Tree::setType(Tree::TreeType type)
 }
 
 // Return type
-Tree::TreeType Tree::type()
+Tree::TreeType Tree::type() const
 {
 	return type_;
 }
@@ -95,7 +95,7 @@ void Tree::setName(const char *s)
 }
 
 // Return name of tree
-const char *Tree::name()
+const char *Tree::name() const
 {
 	return name_.get();
 }
@@ -107,13 +107,13 @@ void Tree::setReturnType(VTypes::DataType dt)
 }
 
 // Return return-type of tree
-VTypes::DataType Tree::returnType()
+VTypes::DataType Tree::returnType() const
 {
 	return returnType_;
 }
 
 // Return whether this tree is a filter
-bool Tree::isFilter()
+bool Tree::isFilter() const
 {
 	return (filter.type() != FilterData::nFilterTypes);
 }
@@ -135,7 +135,7 @@ void Tree::removeReadOption(LineParser::ParseOption po)
 }
 
 // Return read options
-int Tree::readOptions()
+int Tree::readOptions() const
 {
 	return readOptions_;
 }
@@ -147,13 +147,13 @@ LineParser *Tree::parser()
 }
 
 // Return whether the LineParser is ready for file reading
-bool Tree::isFileGoodForReading()
+bool Tree::isFileGoodForReading() const
 {
 	return (parser_ == NULL ? FALSE : parser_->isFileGoodForReading());
 }
 
 // Return whether the LineParser is ready for file writing
-bool Tree::isFileGoodForWriting()
+bool Tree::isFileGoodForWriting() const
 {
 	return (parser_ == NULL ? FALSE : parser_->isFileGoodForWriting());
 }
@@ -189,7 +189,7 @@ void Tree::setAcceptedFail(Command::Function func)
 }
 
 // Clear accepted fail bit
-Command::Function Tree::acceptedFail()
+Command::Function Tree::acceptedFail() const
 {
 	return acceptedFail_;
 }
@@ -865,13 +865,13 @@ bool Tree::expandPath(Dnchar *name, TreeNode *arrayindex, TreeNode *arglist)
 }
 
 // Return number of arguments defined (for function)
-int Tree::nArgs()
+int Tree::nArgs() const
 {
 	return arguments_.nItems();
 }
 
 // Return first argument defined (for function)
-TreeNode *Tree::args()
+TreeNode *Tree::args() const
 {
 	return arguments_.first();
 }
@@ -891,7 +891,7 @@ Tree *Tree::addLocalFunction(const char *funcname)
 }
 
 // Search for existing local function
-Tree *Tree::findLocalFunction(const char *funcname)
+Tree *Tree::findLocalFunction(const char *funcname) const
 {
 	Tree *result;
 	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;

@@ -44,7 +44,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 	Tree *filter;
 	if (gui.loadModelDialog->exec() == 1)
 	{
-		filter = gui.loadModelDialog->selectedFilter();
+		filter = gui.loadModelDialog->selectedFormat();
 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
 		if (filter == NULL) filter = aten.probeFile(gui.loadModelDialog->selectedFilename(), FilterData::ModelImport);
 		if (filter != NULL)

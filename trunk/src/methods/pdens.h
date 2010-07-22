@@ -77,9 +77,9 @@ class Pdens : public Calculable
 	// Set distribution data
 	void setRange(double, int);
 	// Get stepsize
-	double stepSize();
+	double stepSize() const;
 	// Get number of bins
-	int nSteps();
+	int nSteps() const;
 
 	/*
 	// Data

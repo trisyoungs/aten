@@ -71,19 +71,19 @@ class Tree
 	// Set parent
 	void setParent(Forest *f);
 	// Return parent
-	Forest *parent();
+	Forest *parent() const;
 	// Set type
 	void setType(Tree::TreeType type);
 	// Return type
-	Tree::TreeType type();
+	Tree::TreeType type() const;
 	// Set name of tree
 	void setName(const char *s);
 	// Return name of tree
-	const char *name();
+	const char *name() const;
 	// Set return type of tree
 	void setReturnType(VTypes::DataType dt);
 	// Return return-type of tree
-	VTypes::DataType returnType();
+	VTypes::DataType returnType() const;
 
 
 	/*
@@ -119,9 +119,9 @@ class Tree
 	// Finalise and remove the topmost path on the stack
 	virtual TreeNode *finalisePath();
 	// Return number of arguments defined (for function)
-	int nArgs();
+	int nArgs() const;
 	// Return first argument defined (for function)
-	TreeNode *args();
+	TreeNode *args() const;
 
 
 	/*
@@ -189,7 +189,7 @@ class Tree
 
 	public:
 	// Search for existing local function
-	Tree *findLocalFunction(const char *name);
+	Tree *findLocalFunction(const char *name) const;
 	// Add new local function
 	Tree *addLocalFunction(const char *name);
 
@@ -201,7 +201,7 @@ class Tree
 	// Filter data
 	FilterData filter;
 	// Return whether this tree is a filter
-	bool isFilter();
+	bool isFilter() const;
 
 
 	/*
@@ -221,17 +221,17 @@ class Tree
 	// Remove read option
 	void removeReadOption(LineParser::ParseOption po);
 	// Return read options
-	int readOptions();
+	int readOptions() const;
 	// Return the current LineParser pointer
 	LineParser *parser();
 	// Return whether the LineParser is ready for file reading
-	bool isFileGoodForReading();
+	bool isFileGoodForReading() const;
 	// Return whether the LineParser is ready for file writing
-	bool isFileGoodForWriting();
+	bool isFileGoodForWriting() const;
 	// Set function for accepted fail
 	void setAcceptedFail(Command::Function func);
 	// Return function for accepted fail
-	Command::Function acceptedFail();
+	Command::Function acceptedFail() const;
 	// Execute
 	bool execute(ReturnValue &rv);
 	// Execute, using specified parser as input/output source

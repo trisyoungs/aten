@@ -46,11 +46,11 @@ class KVPair
 
 	public:
 	// Retrieve key associated to pair
-	const char *key();
+	const char *key() const;
 	// Set value associated to pair
 	void setValue(const char *value);
 	// Retrieve value associated to pair
-	const char *value();
+	const char *value() const;
 };
 
 // Simple string key/value list class
@@ -71,13 +71,13 @@ class KVMap
 	// Clear pairs
 	void clear();
 	// Return number of pairs defined
-	int nPairs();
+	int nPairs() const;
 	// Set (existing) key/value pair
 	void add(const char *key, const char *value);
 	// Search to see if specific key is in the table
-	KVPair *search(const char *key) const;
+	KVPair *search(const char *key);
 	// Retrieve value associated to key
-	const char *value(const char *key) const;
+	const char *value(const char *key);
 };
 
 #endif

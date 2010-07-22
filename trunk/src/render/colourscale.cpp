@@ -23,7 +23,7 @@
 #include "render/canvas.h"
 
 // Render colourscales
-void Canvas::renderColourscales()
+void Canvas::renderColourscales() const
 {
 	msg.enter("Canvas::renderColourscales");
 	GLfloat col[4];

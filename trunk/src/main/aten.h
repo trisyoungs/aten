@@ -85,7 +85,7 @@ class Aten
 	// Return nth item in the model list
 	Model *model(int n);
 	// Return pointer to model list
-	List<Model> *modelList();
+	const List<Model> *modelList() const;
 	// Return the current model's index in the model list
 	int currentModelId() const;
 	// Return index of specified model
@@ -125,9 +125,9 @@ class Aten
 	// Register a filter of a given type
 	void registerFilter(Tree *filter, FilterData::FilterType ft);
 	// Whether filters loaded succesfully on startup
-	int nFiltersFailed();
+	int nFiltersFailed() const;
 	// Return first item in failed filter list
-	Dnchar *failedFilters();
+	Dnchar *failedFilters() const;
 	// Reload filters
 	int reloadFilters();
 	// Probe file for its format
@@ -138,6 +138,8 @@ class Aten
 	Tree *findFilterByDescription(FilterData::FilterType ft, const char *description) const;
 	// Return first filter in list (of a given type)
 	Refitem<Tree,int> *filters(FilterData::FilterType ft) const;
+	// Return nth filter in list (of a given type)
+	Refitem<Tree,int> *filter(FilterData::FilterType ft, int index);
 	// Return number of filters of a given type
 	int nFilters(FilterData::FilterType ft) const;
 	// Return pointer to list of filters of given type
@@ -219,17 +221,17 @@ class Aten
 	// Set location of users's home directory
 	void setHomeDir(const char *path);
 	// Return the current home directory location
-	const char *homeDir();
+	const char *homeDir() const;
 	// Set working directory
 	void setWorkDir(const char *path);
 	// Return the current working directory
-	const char *workDir();
+	const char *workDir() const;
 	// Set data directory
 	void setDataDir(const char *path);
 	// Return the data directory path
-	const char *dataDir();
+	const char *dataDir() const;
 	// Return whether the data dir has already been set
-	bool dataDirSet();
+	bool dataDirSet() const;
 
 
 	/*
@@ -243,7 +245,7 @@ class Aten
 	// Sets the current program mode
 	void setProgramMode(ProgramMode pm);
 	// Return the current program mode
-	ProgramMode programMode();
+	ProgramMode programMode() const;
 	// Cached scripts
 	List<Forest> scripts;
 	// Script to store temporary typed commands
@@ -265,7 +267,7 @@ class Aten
 	// Set current drawing element
 	void setSketchElement(short int el);
 	// Return current drawing element
-	short int sketchElement();
+	short int sketchElement() const;
 	// Element map name conversions to apply on load
 	List< NameMap<int> > typeImportMap;
 	// Type map name conversions to apply on save
@@ -273,9 +275,9 @@ class Aten
 	// Set whether type export conversion is enabled
 	void setTypeExportMapping(bool b);
 	// Return whether type export conversion is enabled
-	bool typeExportMapping();
+	bool typeExportMapping() const;
 	// Convert supplied type name according to export type map
-	const char *typeExportConvert(const char *s);
+	const char *typeExportConvert(const char *s) const;
 
 
 	/*
@@ -307,7 +309,7 @@ class Aten
 	// Parse command line options (after filter / prefs load
 	int parseCli(int, char**);
 	// Find passed value
-	Variable *findPassedValue(const char *name);
+	Variable *findPassedValue(const char *name) const;
 
 
 	/*

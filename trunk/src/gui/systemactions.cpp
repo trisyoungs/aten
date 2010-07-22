@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "gui/loadmodel.h"
 
 void AtenForm::on_actionPreferences_triggered(bool checked)
 {
@@ -37,4 +38,5 @@ void AtenForm::on_actionReloadFilters_triggered(bool checked)
 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
 	}
 	createDialogFilters();
+	gui.loadModelDialog->setControls();
 }

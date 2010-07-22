@@ -163,7 +163,7 @@ void Neta::setCharacterElement(int el)
 }
 
 // Return character element
-int Neta::characterElement()
+int Neta::characterElement() const
 {
 	return characterElement_;
 }
@@ -175,7 +175,7 @@ void Neta::ownNode(NetaNode *node)
 }
 
 // Return reference name (if a define)
-const char *Neta::name()
+const char *Neta::name() const
 {
 	return name_.get();
 }
@@ -193,7 +193,7 @@ NetaRootNode *Neta::description()
 }
 
 // Print Atom Type data
-void Neta::print()
+void Neta::print() const
 {
 	printf("Character element is %i\n", characterElement_);
 	Dnchar neta(1024);
@@ -325,7 +325,7 @@ void NetaNode::setReverseLogic()
 }
 
 // Return whether to use reverse logic when returning the final value
-bool NetaNode::reverseLogic()
+bool NetaNode::reverseLogic() const
 {
 	return reverseLogic_;
 }
@@ -390,7 +390,7 @@ void NetaContextNode::setRepeat(int n)
 }
 
 // Return repetition specified
-int NetaContextNode::repeat()
+int NetaContextNode::repeat() const
 {
 	return repeat_;
 }

@@ -120,7 +120,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 	glPushMatrix();
 	  glTranslated(cellCentre.x, cellCentre.y, cellCentre.z);
 	  // Distances
-	  for (Measurement *m = sourceModel->distances(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->distanceMeasurements(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -142,7 +142,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		}
 	  }
 	  // Angles
-	  for (Measurement *m = sourceModel->angles(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->angleMeasurements(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -188,7 +188,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		}
 	  }
 	  // Torsions
-	  for (Measurement *m = sourceModel->torsions(); m != NULL; m = m->next)
+	  for (Measurement *m = sourceModel->torsionMeasurements(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
@@ -218,7 +218,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 }
 
 // Render force arrows
-void Canvas::renderModelForceArrows()
+void Canvas::renderModelForceArrows() const
 {
 	msg.enter("Canvas::renderModelForceArrows");
 	for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
@@ -230,7 +230,7 @@ void Canvas::renderModelForceArrows()
 }
 
 // Render model cell
-void Canvas::renderModelCell(Model *sourceModel)
+void Canvas::renderModelCell(Model *sourceModel) const
 {
 	// Draw the unit cell of the model
 	GLfloat fgcol[4];

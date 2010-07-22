@@ -40,9 +40,9 @@ class MethodCg : public LineMinimiser
 
 	public:
 	// Set maximum number of cycles to perform
-	void setNCycles(int i) { nCycles_ = i; }
+	void setNCycles(int i);
 	// Get maximum number of cycles
-	int nCycles() { return nCycles_; }
+	int nCycles() const;
 	// Minimise the specified model
 	void minimise(Model *source, double econ, double fcon);
 };

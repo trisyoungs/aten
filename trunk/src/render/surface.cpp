@@ -631,7 +631,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 }
 
 // Render surfaces
-void Canvas::renderSurfaces(Model *sourceModel)
+void Canvas::renderSurfaces(Model *sourceModel) const
 {
 	msg.enter("Canvas::renderSurfaces");
 	// Loop over surfaces held by the model, rendering those that are visible.

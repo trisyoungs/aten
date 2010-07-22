@@ -87,9 +87,9 @@ class Model
 	// Clear all data in model
 	void clear();
 	// Print information about the model (inc atoms)
-	void print();
+	void print() const;
 	// Print log information for the current model
-	void printLogs();
+	void printLogs() const;
 	// Copy all information from another model
 	void copy(Model *source);
 	// Copy all atom data from specified model
@@ -196,7 +196,7 @@ class Model
 	// Calculate and return the forcefield mass of the model
 	double forcefieldMass() const;
 	// Return number of unknown atoms in the model
-	int nUnknownAtoms();
+	int nUnknownAtoms() const;
 
 
 	/*
@@ -274,7 +274,7 @@ class Model
 	// Return first bond in the model
 	Bond *bonds();
 	// Return number of bonds in the model
-	int nBonds();
+	int nBonds() const;
 	// Return the nth bond in the model
 	Bond *bond(int n);
 	// Add bond of specified type between atoms
@@ -324,9 +324,9 @@ class Model
 	// Select no atoms
 	void selectNone(bool markonly = FALSE);
 	// Return the number of selected atoms
-	int nSelected();
+	int nSelected() const;
 	// Return the number of marked atoms
-	int nMarked();
+	int nMarked() const;
 	// Mark all atoms
 	void markAll();
 	// Match marked atoms to current selection
@@ -356,7 +356,7 @@ class Model
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
-	Refitem<Atom,int> *selection(bool markonly = FALSE);
+	Refitem<Atom,int> *selection(bool markonly = FALSE) const;
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
 	// Select atoms (or molecule COGs) inside of the current unit cell
@@ -398,7 +398,7 @@ class Model
 	// Set the current rotation matrix
 	void setRotationMatrix(Mat4<double> &rmat);
 	// Return the current rotation matrix
-	Mat4<double> rotationMatrix();
+	Mat4<double> rotationMatrix() const;
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyRotationMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure
@@ -406,7 +406,7 @@ class Model
 	// Set the camera z-rotation
 	void setCameraRotation(double r);
 	// Return the current camera z-rotation
-	double cameraRotation();
+	double cameraRotation() const;
 	// Set model rotation to exact values
 	void setRotation(double rotx, double roty);
 	// Set view to be along the specified cartesian axis
@@ -437,7 +437,7 @@ class Model
 	// Project the model coordinates of selected atoms
 	void projectSelection();
 	// Return the camera position vector
-	Vec3<double> camera();
+	Vec3<double> camera() const;
 	// Calculate and return drawing pixel width
 	double drawPixelWidth(double drawdepth);
 
@@ -487,7 +487,7 @@ class Model
 	// Reset all model charges to zero
 	void clearCharges();
 	// Return the forcefield containing original atom names for the model
-	Forcefield *namesForcefield();
+	Forcefield *namesForcefield() const;
 	// Add name to names forcefield
 	ForcefieldAtom *addAtomName(int el, const char *name);
 	// Remove reference to names forcefield
@@ -577,9 +577,9 @@ class Model
 	// Calculate forces in the specified model configuration
 	bool calculateForces(Model *config);
 	// Prints out atomic forces
-	void printForces();
+	void printForces() const;
 	// Return RMS of last calculated forces
-	double rmsForce();
+	double rmsForce() const;
 	// Normalise all atomic forces to the value provided
 	void normaliseForces(double norm, bool tolargest);
 	// Zero forces on all atoms
@@ -605,17 +605,17 @@ class Model
 	// Own the specified pattern (bool = whether to set ownermodel)
 	void ownPattern(Pattern*, bool);
 	// Number of nodes in pattern
-	int nPatterns();
+	int nPatterns() const;
 	// Return the first pattern node of the model
-	Pattern *patterns();
+	Pattern *patterns() const;
 	// Return the pattern with the ID specified
 	Pattern *pattern(int id);
 	// Return the pattern that the specified atom is in
 	Pattern *pattern(Atom *i);
 	// Return the last pattern node of the model
-	Pattern *lastPattern();
+	Pattern *lastPattern() const;
 	// Find pattern by name
-	Pattern *findPattern(const char*);
+	Pattern *findPattern(const char *name) const;
 	// Autocreate patterns for the model
 	bool autocreatePatterns(bool acceptDefault = TRUE);
 	// Validate current pattern definition
@@ -623,7 +623,7 @@ class Model
 	// Clear the current pattern definition
 	void clearPatterns();
 	// Return whether the patterns are valid
-	bool arePatternsValid();
+	bool arePatternsValid() const;
 	// Sets the 'fixed' property of all current patterns
 	void setPatternsFixed(int);
 	// Calculates the atom locality of the supplied atom
@@ -645,7 +645,7 @@ class Model
 	// Set the hidden flag on atoms of the specified molecule
 	void hideMolecule(Pattern*, int, bool);
 	// Print patterns
-	void printPatterns();
+	void printPatterns() const;
 
 
 	/*
@@ -663,13 +663,13 @@ class Model
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom *target = NULL);
 	// Return the pen orientation matrix
-	Mat3<double> penOrientation();
+	Mat3<double> penOrientation() const;
 	// Rotate the pen orientation matrix about the specified axis
 	void rotatePenAxis(int axis, double degrees);
 	// Reset the pen axis system
 	void resetPenOrientation();
 	// Return the current pen position
-	Vec3<double> penPosition();
+	Vec3<double> penPosition() const;
 	// Move the pen (in its current axis system)
 	void movePenPosition(Vec3<double> v);
 	// Set the pen position absolutely
@@ -702,7 +702,7 @@ class Model
 	// Prepare for atom manipulation
 	void prepareTransform();
 	// Return the translation scale
-	double translateScale();
+	double translateScale() const;
 	// Finalize atom transform
 	void finalizeTransform(Reflist< Atom,Vec3<double> >&, const char *statetitle);
 	// Rotate the atom selection
@@ -765,13 +765,13 @@ class Model
 	// Add frame to trajectory
 	Model *addFrame();
 	// Return whether a trajectory for this model exists
-	bool hasTrajectory();
+	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
-	bool trajectoryIsCached();
+	bool trajectoryIsCached() const;
 	// Set parent model of trajectory
 	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory
-	Model *trajectoryParent();
+	Model *trajectoryParent() const;
 	// Initialise trajectory from file specified
 	bool initialiseTrajectory(const char*, Tree*);
 	// Reinitialise (clear) the associated trajectory
@@ -781,13 +781,13 @@ class Model
 	// Return the trajectory file pointer
 	ifstream *trajectoryFile();
 	// Return the current frame pointer
-	Model *currentFrame();
+	Model *currentFrame() const;
 	// Return pointer to specified frame number
 	Model *frame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
-	int nFrames();
+	int nFrames() const;
 	// Return the current integer frame position
-	int frameIndex();
+	int frameIndex() const;
 	// Seek to first frame
 	void seekFirstFrame();
 	// Seek to last frame
@@ -811,7 +811,7 @@ class Model
 	// Render from self
 	void setRenderFromSelf();
 	// Return whether rendering from self
-	bool renderFromSelf();
+	bool renderFromSelf() const;
 	// Render from trajectory
 	void setRenderFromFrames();
 	// Return the current rendering source for the model
@@ -838,39 +838,39 @@ class Model
 	*/
 	private:
 	// List of distance measurements
-	List<Measurement> distances_;
+	List<Measurement> distanceMeasurements_;
 	// List of distance measurements
-	List<Measurement> angles_;
+	List<Measurement> angleMeasurements_;
 	// List of distance measurements
-	List<Measurement> torsions_;
+	List<Measurement> torsionMeasurements_;
 
 	public:
 	// Return number of measurements in the angles list
-	int nAngles();
+	int nAngleMeasurements() const;
 	// Return number of measurements in the distances list
-	int nDistances();
+	int nDistanceMeasurements() const;
 	// Return number of measurements in the torsions list
-	int nTorsions();
+	int nTorsionMeasurements() const;
 	// Return first measurement in the angles list
-	Measurement *angles();
+	Measurement *angleMeasurements() const;
 	// Return first measurement in the distances list
-	Measurement *distances();
+	Measurement *distanceMeasurements() const;
 	// Return first measurement in the torsions list
-	Measurement *torsions();
+	Measurement *torsionMeasurements() const;
 	// Return nth measurement in the angles list
-	Measurement *angle(int index);
+	Measurement *angleMeasurement(int index);
 	// Return nth measurement in the distances list
-	Measurement *distance(int index);
+	Measurement *distanceMeasurement(int index);
 	// Return nth measurement in the torsions list
-	Measurement *torsion(int index);
+	Measurement *torsionMeasurement(int index);
 	// Clear all measurements
 	void clearMeasurements();
 	// Find specific distance
-	Measurement *findDistance(Atom *i, Atom *j);
+	Measurement *findDistanceMeasurement(Atom *i, Atom *j) const;
 	// Find specific angle
-	Measurement *findAngle(Atom *i, Atom *j, Atom *k);
+	Measurement *findAngleMeasurement(Atom *i, Atom *j, Atom *k) const;
 	// Find specific torsion
-	Measurement *findTorsion(Atom *i, Atom *j, Atom *k, Atom *l);
+	Measurement *findTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l) const;
 	// Clear specific type of measurements
 	void removeMeasurements(Measurement::MeasurementType);
 	// Delete specific measurement
@@ -881,22 +881,22 @@ class Model
 	Measurement *addMeasurement(Measurement::MeasurementType ...);
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
-	// Measure distances between atoms
-	double measureDistance(Atom*, Atom*);
-	// Measure distances between atom ids
-	double measureDistance(int i, int j);
-	// Measure angles between atoms
-	double measureAngle(Atom*, Atom*, Atom*);
-	// Measure angles between atom ids
-	double measureAngle(int i, int j, int k);
-	// Measure torsions between atoms
-	double measureTorsion(Atom*, Atom*, Atom*, Atom*);
-	// Measure torsions between atom ids
-	double measureTorsion(int i, int j, int k, int l);
+	// Add distance measurement between atoms
+	double addDistanceMeasurement(Atom *i, Atom *j);
+	// Add distance measurement between atom ids
+	double addDistanceMeasurement(int i, int j);
+	// Add angle measurement between atoms
+	double addAngleMeasurement(Atom *i, Atom *j, Atom *k);
+	// Add angle measurement between atom ids
+	double addAngleMeasurement(int i, int j, int k);
+	// Add torsion measurement between atoms
+	double addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l);
+	// Add torsion measurement between atom ids
+	double addTorsionMeasurement(int i, int j, int k, int l);
 	// Update stored measurements
 	void updateMeasurements();
 	// List stored measurements
-	void listMeasurements();
+	void listMeasurements() const;
 
 
 	/*
@@ -928,11 +928,11 @@ class Model
 	*/
 	public:
 	// Return the empirical formula of the selected atoms
-	void selectionEmpirical(Dnchar&, bool markonly);
+	void selectionEmpirical(Dnchar&, bool markonly) const;
 	// Get selection's centre of geometry
-	Vec3<double> selectionCentreOfGeometry();
+	Vec3<double> selectionCentreOfGeometry() const;
 	// Get selection's centre of mass
-	Vec3<double> selectionCentreOfMass();
+	Vec3<double> selectionCentreOfMass() const;
 	// Reorder bound atoms/fragments within the selection so that they are consecutive
 	void reorderSelectedAtoms();
 
@@ -950,13 +950,13 @@ class Model
 	// Remove specified glyph from model
 	void removeGlyph(Glyph *g);
 	// Return number of glyphs defined in model
-	int nGlyphs();
+	int nGlyphs() const;
 	// Return first glyph in list (if any)
-	Glyph *glyphs();
+	Glyph *glyphs() const;
 	// Return specific glyph
 	Glyph *glyph(int n);
 	// Return vector for data point in Glyph
-	Vec3<double> glyphVector(Glyph *g, int dataid);
+	Vec3<double> glyphVector(Glyph *g, int dataid) const;
 	// Automatically add polyhedra glyphs to current atom selection
 	void addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut);
 	// Automatically add ellipsoids to current atom selection
@@ -1016,15 +1016,15 @@ class Model
 	// Set the Component's pattern
 	void setComponentPattern(Pattern *p);
 	// Return the Component's pattern
-	Pattern *componentPattern();
+	Pattern *componentPattern() const;
 	// Set the requested number of molecules
 	void setNRequested(int i);
 	// Return the requested number of molecules
-	int nRequested();
+	int nRequested() const;
 	// Set a specific move type for the Component
 	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
 	// Set whether the Component may be translated
-	bool isMoveAllowed(MonteCarlo::MoveType m);
+	bool isMoveAllowed(MonteCarlo::MoveType m) const;
 
 
 	/*

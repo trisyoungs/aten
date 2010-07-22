@@ -87,37 +87,37 @@ class ForcefieldAtom
 	// Set functional form of VDW
 	void setVdwForm(VdwFunctions::VdwFunction vf);
 	// Returns the funcional VDW form
-	VdwFunctions::VdwFunction vdwForm();
+	VdwFunctions::VdwFunction vdwForm() const;
 	// Set the type id
 	void setTypeId(int i);
 	// Returns the type id
-	int typeId();
+	int typeId() const;
 	// Set the charge of the type
 	void setCharge(double q);
 	// Returns the charge of the type
-	double charge();
+	double charge() const;
 	// Set the name of the type
 	void setName(const char *s);
 	// Returns the name of the type
-	const char *name();
+	const char *name() const;
 	// Set the equivalent name of the type
 	void setEquivalent(const char *s);
 	// Returns the equivalent name of the type
-	const char *equivalent();
+	const char *equivalent() const;
 	// Set the description of the type
 	void setDescription(const char *s);
 	// Returns the description of the type
-	const char *description();
+	const char *description() const;
 	// Returns the atomtype description
 	Neta *neta();
 	// Set the NETA string (and calculate new atomtype)
 	bool setNeta(const char *s, Forcefield *parent);
 	// Returns the original atomtype string
-	const char *netaString();
+	const char *netaString() const;
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified
-	double parameter(int i);
+	double parameter(int i) const;
 	// Returns parameter array pointer
 	double *parameters();
 	// Set generator data
@@ -127,15 +127,15 @@ class ForcefieldAtom
 	// Return generator data array
 	double *generator();
 	// Return single generator value
-	double generator(int i);
+	double generator(int i) const;
 	// Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
 	void setElement(int n);
 	// Return the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)
-	int element();
+	int element() const;
 	// Set custom 'element' mass
 	void setElementMass(double d);
 	// Custom 'element' mass (or natural element name)
-	double elementMass();
+	double elementMass() const;
 	// Add associated data
 	void addData(const char *name, double d);
 	void addData(const char *name, int i);

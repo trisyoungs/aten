@@ -58,6 +58,10 @@ template <class T, class D> class Reflist
 	Refitem<T,D> *listHead_, *listTail_;
 	// Number of items in list
 	int nItems_;
+	// Static array of items
+	Refitem<T,D> **items_;
+	// Array regeneration flag
+	bool regenerate_;
 
 	public:
 	// Returns the head of the atom list
@@ -106,6 +110,8 @@ template <class T, class D> class Reflist
 	void fillArray(int nitems, T **itemarray);
 	// Swap the two items specified
 	void swap(T *item1, T *item2);
+	// Return array of items
+	Refitem<T,D> **array();
 };
 
 // Constructors
@@ -120,6 +126,8 @@ template <class T, class D> Reflist<T,D>::Reflist()
 {
 	listHead_ = NULL;
 	listTail_ = NULL;
+	items_ = NULL;
+	regenerate_ = 1;
 	nItems_ = 0;
 }
 
@@ -169,6 +177,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* item)
 	listTail_ = newitem;
 	newitem->item = item;
 	nItems_ ++;
+	regenerate_ = 1;
 	return newitem;
 }
 
@@ -183,6 +192,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::add(T* item, D extradata
 	newitem->item = item;
 	newitem->data = extradata;
 	nItems_ ++;
+	regenerate_ = 1;
 	return newitem;
 }
 
@@ -196,6 +206,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item)
 	listHead_ = newitem;
 	newitem->item = item;
 	nItems_ ++;
+	regenerate_ = 1;
 	return newitem;
 }
 
@@ -213,6 +224,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addAfter(Refitem<T,D> *t
 		if (target == listTail_) listTail_ = newitem;
 		newitem->item = item;
 		nItems_ ++;
+		regenerate_ = 1;
 		return newitem;
 	}
 }
@@ -228,6 +240,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item, D extr
 	newitem->item = item;
 	newitem->data = extradata;
 	nItems_ ++;
+	regenerate_ = 1;
 	return newitem;
 }
 
@@ -261,6 +274,7 @@ template <class T, class D> void Reflist<T,D>::own(Refitem<T,D> *olditem)
 	olditem->next = NULL;
 	listTail_ = olditem;
 	nItems_ ++;
+	regenerate_ = 1;
 }
 
 // Remove Refitem from list
@@ -271,18 +285,21 @@ template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 	xitem->next == NULL ? listTail_ = xitem->prev : xitem->next->prev = xitem->prev;
 	delete xitem;
 	nItems_ --;
+	regenerate_ = 1;
 }
 
 // Remove first item from list
 template <class T, class D> void Reflist<T,D>::removeFirst()
 {
 	remove(listHead_);
+	regenerate_ = 1;
 }
 
 // Remove last item from list
 template <class T, class D> void Reflist<T,D>::removeLast()
 {
 	remove(listTail_);
+	regenerate_ = 1;
 }
 
 // Remove item from list
@@ -301,10 +318,8 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 		printf("reflist::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
 		return NULL;
 	}
-	// Scan through for element number 'index' in the list and return it
-	Refitem<T,D> *result = listHead_;
-	for (int i=0; i<index; i++) result = result->next;
-	return result;
+	// Use array() function to return item
+	return array()[index];
 }
 
 // Search for item
@@ -329,6 +344,10 @@ template <class T, class D> void Reflist<T,D>::clear()
 	listHead_ = NULL;
 	listTail_ = NULL;
 	nItems_ = 0;
+	// Delete static items array if its there
+	if (items_ != NULL) delete[] items_;
+	items_ = NULL;
+	regenerate_ = 1;
 }
 
 // Move head to tail
@@ -365,6 +384,7 @@ template <class T, class D> void Reflist<T,D>::fillArray(int n, T **data)
 		ri = ri->next;
 		if (ri == NULL) printf("Reflist::fillArray <<<< Not enough items in list - requested %i, had %i >>>>\n",n,nItems_);
 	}
+	regenerate_ = 1;
 }
 
 // Swap the two items specified
@@ -375,6 +395,22 @@ template <class T, class D> void Reflist<T,D>::swap(T *item1, T *item2)
 	item1->next = item2->next;
 	item2->prev = prev1;
 	item2->next = next1;
+	regenerate_ = 1;
+}
+
+// Create (or just return) the item array
+template <class T, class D> Refitem<T,D> **Reflist<T,D>::array()
+{
+	if (regenerate_ == 0) return items_;
+	// Delete old atom list (if there is one)
+	if (items_ != NULL) delete[] items_;
+	// Create new list
+	items_ = new Refitem<T,D>*[nItems_];
+	// Fill in pointers
+	int count = 0;
+	for (Refitem<T,D> *ri = listHead_; ri != NULL; ri = ri->next) items_[count++] = ri;
+	regenerate_ = 0;
+	return items_;
 }
 
 #endif

@@ -100,26 +100,26 @@ class Cell
 	void setParameter(Cell::CellParameter cp, double value, bool adjust = FALSE);
 	// Return the type of cell
 	CellType type() const;
-	// Return the cell vector matrix
-	Mat3<double> transpose();
+	// Return the transpose of the cell vector matrix
+	Mat3<double> transpose() const;
 	// Return the cell vector matrix (individual axis vectors in rows[])
-	Mat3<double> axes();
+	Mat3<double> axes() const;
 	// Get cell axes vector matrix as a 4x4 matrix
 	double *axesForGL();
 	// Return a matrix of the reciprocal cell vectors
-	Mat3<double> reciprocal();
+	Mat3<double> reciprocal() const;
 	// Return the axis lengths of the cell
-	Vec3<double> lengths();
+	Vec3<double> lengths() const;
 	// Return the angles the cell
-	Vec3<double> angles();
+	Vec3<double> angles() const;
 	// Return the centre the cell
-	Vec3<double> centre();
+	Vec3<double> centre() const;
 	// Return the cell vectors as a column-major matrix in a 1D array
 	void transposeColumn(double* m);
 	// Return the reciprocal vectors as a column-major matrix in a 1D array
 	void reciprocalColumn(double* m);
 	// Return a inverse transpose matrix of cell axes
-	Mat3<double> inverseTranspose();
+	Mat3<double> inverseTranspose() const;
 	// Return the inverse of the cell vectors as a column-major matrix in a 1D array
 	void inverseTransposeColumn(double *m);
 	// Return the volume of the cell
@@ -143,15 +143,15 @@ class Cell
 
 	public:
 	// Return spacegroup name of the model
-	const char *spacegroup();
+	const char *spacegroup() const;
 	// Set the spacegroup to the spacegroup Id supplied
 	void setSpacegroupId(int i);
 	// Return the spacegroup of the model
-	int spacegroupId();
+	int spacegroupId() const;
 	// Add manual generator
 	Generator *addGenerator();
 	// Return number of manual generators defined
-	int nGenerators();
+	int nGenerators() const;
 	// Return first in reflist of manually-defined generators
 	Generator *generators();
 

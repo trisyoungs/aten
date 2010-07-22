@@ -310,7 +310,7 @@ template <class T> void List<T>::clear()
 		remove(xitem);
 		xitem = listHead_;
 	}
-	// Delete static atoms array if its there
+	// Delete static items array if its there
 	if (items_ != NULL) delete[] items_;
 	items_ = NULL;
 	regenerate_ = 1;
@@ -357,11 +357,7 @@ template <class T> T **List<T>::array()
 	items_ = new T*[nItems_];
 	// Fill in pointers
 	int count = 0;
-	for (T *i = listHead_; i != NULL; i = i->next)
-	{
-		items_[count] = i;
-		count ++;
-	}
+	for (T *i = listHead_; i != NULL; i = i->next) items_[count++] = i;
 	regenerate_ = 0;
 	return items_;
 }

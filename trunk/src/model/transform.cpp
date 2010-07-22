@@ -27,7 +27,7 @@
 Vec3<double> transformCOG;
 
 // Return the translation scale
-double Model::translateScale()
+double Model::translateScale() const
 {
 	return translateScale_;
 }

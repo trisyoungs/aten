@@ -27,18 +27,24 @@
 // Constructor
 AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 {
+	refreshing_ = FALSE;
 	ui.setupUi(this);
-	selectedFilter_ = NULL;
 }
 
 // Set controls
 void AtenLoadModel::setControls()
 {
-	ui.LoadModelRebondCombo->setCurrentIndex( prefs.bondOnLoad() );
-	ui.LoadModelCentreCombo->setCurrentIndex( prefs.centreOnLoad() );
-	ui.LoadModelFoldCombo->setCurrentIndex( prefs.foldOnLoad() );
-	ui.LoadModelPackCombo->setCurrentIndex( prefs.packOnLoad() );
-	ui.LoadModelZMappingCombo->setCurrentIndex( prefs.zMapType() );
+	refreshing_ = TRUE;
+	ui.RebondCombo->setCurrentIndex( prefs.bondOnLoad() );
+	ui.CentreCombo->setCurrentIndex( prefs.centreOnLoad() );
+	ui.FoldCombo->setCurrentIndex( prefs.foldOnLoad() );
+	ui.PackCombo->setCurrentIndex( prefs.packOnLoad() );
+	ui.ZMappingCombo->setCurrentIndex( prefs.zMapType() );
+	ui.FormatCombo->clear();
+	ui.FormatCombo->addItem("<Auto Detect>");
+	Refitem<Tree,int> *ri;
+	for (ri = aten.filters(FilterData::ModelImport); ri != NULL; ri = ri->next) 	ui.FormatCombo->addItem(ri->item->filter.description());
+	refreshing_ = FALSE;
 }
 
 // Finalise GUI
@@ -47,21 +53,20 @@ void AtenLoadModel::finaliseUi()
 }
 
 // Edit box finished editing
-void AtenLoadModel::on_LoadModelEdit_editingFinished()
+void AtenLoadModel::on_FilenameEdit_editingFinished()
 {
-	selectedFilename_ = qPrintable(ui.LoadModelEdit->text());
+	selectedFilename_ = qPrintable(ui.FilenameEdit->text());
 }
 
 // Edit box finished editing
-void AtenLoadModel::on_LoadModelEdit_returnPressed()
+void AtenLoadModel::on_FilenameEdit_returnPressed()
 {
-	selectedFilename_ = qPrintable(ui.LoadModelEdit->text());
-	selectedFilter_ = NULL;
+	selectedFilename_ = qPrintable(ui.FilenameEdit->text());
 	this->accept();
 }
 
 // Call a file dialog
-void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
+void AtenLoadModel::on_BrowseButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten.workDir());
 	static char s[512], *c;
@@ -72,15 +77,16 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	if (c == NULL) s[0] = '\0';
 	else *c = '\0';
 	currentDirectory_ = s;
-	ui.LoadModelEdit->setText(selectedFilename_.get());
-	// Find the corresponding Aten filter that was selected
-	selectedFilter_ = aten.findFilterByDescription(FilterData::ModelImport, qPrintable(selFilter));
+	ui.FilenameEdit->setText(selectedFilename_.get());
 }
 
 // Return the selected filter
-Tree *AtenLoadModel::selectedFilter()
+Tree *AtenLoadModel::selectedFormat()
 {
-	return selectedFilter_;
+	// Return the filter selected in the combo (or NULL if <Auto Detect> was selected)
+	int i = ui.FormatCombo->currentIndex();
+	Refitem<Tree,int> *filter = (i == 0 ? NULL : aten.filter(FilterData::ModelImport, i-1));
+	return (filter != NULL ? filter->item : NULL);
 }
 
 // Return filename
@@ -89,27 +95,44 @@ const char *AtenLoadModel::selectedFilename()
 	return selectedFilename_.get();
 }
 
-void AtenLoadModel::on_LoadModelRebondCombo_activated(int index)
+void AtenLoadModel::on_RebondCombo_activated(int index)
 {
+	if (refreshing_) return;
 	prefs.setBondOnLoad( (Prefs::FilterSwitch) index );
 }
 
-void AtenLoadModel::on_LoadModelFoldCombo_activated(int index)
+void AtenLoadModel::on_FoldCombo_activated(int index)
 {
+	if (refreshing_) return;
 	prefs.setFoldOnLoad( (Prefs::FilterSwitch) index );
 }
 
-void AtenLoadModel::on_LoadModelPackCombo_activated(int index)
+void AtenLoadModel::on_PackCombo_activated(int index)
 {
+	if (refreshing_) return;
 	prefs.setPackOnLoad( (Prefs::FilterSwitch) index );
 }
 
-void AtenLoadModel::on_LoadModelCentreCombo_activated(int index)
+void AtenLoadModel::on_CentreCombo_activated(int index)
 {
+	if (refreshing_) return;
 	prefs.setCentreOnLoad( (Prefs::FilterSwitch) index );
 }
 
-void AtenLoadModel::on_LoadModelZMappingCombo_activated(int index)
+void AtenLoadModel::on_ZMappingCombo_activated(int index)
 {
+	if (refreshing_) return;
 	prefs.setZMapType( (ElementMap::ZMapType) index );
+}
+
+void AtenLoadModel::on_BohrCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	prefs.setCoordsInBohr(checked);
+}
+
+void AtenLoadModel::on_KeepNamesCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	prefs.setKeepNames(checked);
 }

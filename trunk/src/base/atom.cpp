@@ -144,9 +144,9 @@ void Atom::setCharge(double d)
 }
 
 // Return the atom charge
-double Atom::charge()
+double Atom::charge() const
 {
-	return charge_; 
+	return charge_;
 }
 
 // Set the element type of the atom
@@ -156,25 +156,25 @@ void Atom::setElement(short int newel)
 }
 
 // Return the element of the atom
-short int Atom::element()
+short int Atom::element() const
 {
 	return el_;
 }
 
 // Check element against the supplied value
-bool Atom::isElement(short int n)
+bool Atom::isElement(short int n) const
 {
 	return (n == el_ ? TRUE : FALSE);
 }
 
 // Check oxidation state against supplied value
-bool Atom::isOs(short int n)
+bool Atom::isOs(short int n) const
 {
 	return (n == os_ ? TRUE : FALSE);
 }
 
 // Return the oxidation state of the atom
-short int Atom::os()
+short int Atom::os() const
 {
 	return os_;
 }
@@ -186,7 +186,7 @@ void Atom::setType(ForcefieldAtom *ffa)
 }
 
 // Return the forcefield type of the atom
-ForcefieldAtom *Atom::type()
+ForcefieldAtom *Atom::type() const
 {
 	return type_;
 }
@@ -198,7 +198,7 @@ void Atom::setTypeFixed(bool b)
 }
 
 // Return the fixed status of the assigned atom type
-bool Atom::hasFixedType()
+bool Atom::hasFixedType() const
 {
 	return fixedType_;
 }
@@ -210,7 +210,7 @@ void Atom::setPositionFixed(bool b)
 }
 
 // Return whether the atom's position is fixed
-bool Atom::isPositionFixed()
+bool Atom::isPositionFixed() const
 {
 	return fixedPosition_;
 }
@@ -224,7 +224,7 @@ int Atom::nHydrogens()
 }
 
 // Check the ff type of the atom against the supplied value
-bool Atom::typeIs(ForcefieldAtom *type)
+bool Atom::typeIs(ForcefieldAtom *type) const
 {
 	return (type == type ? TRUE : FALSE);
 }
@@ -236,13 +236,13 @@ void Atom::setEnvironment(Atom::AtomEnvironment ae)
 }
 
 // Return the environment of the atom
-Atom::AtomEnvironment Atom::environment()
+Atom::AtomEnvironment Atom::environment() const
 {
 	return environment_;
 }
 
 // Check the environment of the atom against the supplied value
-bool Atom::isEnvironment(Atom::AtomEnvironment ae)
+bool Atom::isEnvironment(Atom::AtomEnvironment ae) const
 {
 	return (environment_ == ae ? TRUE : FALSE);
 }
@@ -283,10 +283,10 @@ void Atom::copyStyle(Atom *source)
 }
 
 // Print
-void Atom::print()
+void Atom::print() const
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(this));
+	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(el_));
 	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
 	msg.print(" Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg.print(" World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
@@ -301,12 +301,12 @@ void Atom::print()
 }
 
 // Print summary
-void Atom::printSummary()
+void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q        S  \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
 	char s[128];
-	sprintf(s," %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements().symbol(this), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
+	sprintf(s," %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements().symbol(el_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
 	msg.print(s);
 }
 
@@ -315,7 +315,7 @@ void Atom::printSummary()
 */
 
 // Return the number of bonds to the atom
-int Atom::nBonds()
+int Atom::nBonds() const
 {
 	return bonds_.nItems();
 }
@@ -335,7 +335,7 @@ Refitem<Bond,int> *Atom::bond(int index)
 }
 
 // Check the number of bonds against the supplied value
-bool Atom::isNBonds(int n)
+bool Atom::isNBonds(int n) const
 {
 	return (bonds_.nItems() == n ? TRUE : FALSE);
 }
@@ -409,10 +409,10 @@ double Atom::bondOrder(Atom *j)
 Atom::AtomGeometry Atom::geometry()
 {
 	msg.enter("Atom::geometry");
-	static Atom::AtomGeometry result;
-	static double angle, largest;
-	static Bond *b1, *b2;
-	static Refitem<Bond,int> *bref1, *bref2;
+	Atom::AtomGeometry result = Atom::UnboundGeometry;
+	double angle, largest;
+	Bond *b1, *b2;
+	Refitem<Bond,int> *bref1, *bref2;
 	result = Atom::NoGeometry;
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
@@ -565,7 +565,7 @@ void Atom::setSelected(bool b, bool markonly)
 }
 
 // Returns the current selection state of the atom
-bool Atom::isSelected(bool markonly)
+bool Atom::isSelected(bool markonly) const
 {
 	return (markonly ? marked_ : selected_);
 }
@@ -577,7 +577,7 @@ void Atom::setHidden(bool b)
 }
 
 // Return whether the atom is hidden
-bool Atom::isHidden()
+bool Atom::isHidden() const
 {
 	return hidden_;
 }
@@ -599,7 +599,7 @@ void Atom::decreaseId()
 }
 
 // Return the id of the atom
-int Atom::id()
+int Atom::id() const
 {
 	return id_;
 }
@@ -627,7 +627,7 @@ void Atom::setScreenRadius(double radius)
 }
 
 // Return the screen radius of the atom
-double Atom::screenRadius()
+double Atom::screenRadius() const
 {
 	return screenRadius_;
 }
@@ -643,13 +643,13 @@ void Atom::setStyle(Atom::DrawStyle style)
 }
 
 // Returns the drawing style of the atom
-Atom::DrawStyle Atom::style()
+Atom::DrawStyle Atom::style() const
 {
 	return style_;
 }
 
 // Returns TRUE id the atom has at least one label specified
-bool Atom::hasLabels()
+bool Atom::hasLabels() const
 {
 	return (labels_ == 0 ? FALSE : TRUE);
 }
@@ -661,7 +661,7 @@ void Atom::setLabels(short int l)
 }
 
 // Returns the label bitmask of the atom
-short int Atom::labels()
+short int Atom::labels() const
 {
 	return labels_;
 }

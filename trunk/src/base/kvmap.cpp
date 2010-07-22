@@ -39,7 +39,7 @@ KVPair::KVPair(const char *key, const char *value)
 }
 
 // Retrieve key associated to pair
-const char *KVPair::key()
+const char *KVPair::key() const
 {
 	return key_.get();
 }
@@ -51,7 +51,7 @@ void KVPair::setValue(const char *newvalue)
 }
 
 // Retrieve value associated to key
-const char *KVPair::value()
+const char *KVPair::value() const
 {
 	return value_.get();
 }
@@ -72,7 +72,7 @@ void KVMap::clear()
 }
 
 // Return number of pairs defined
-int KVMap::nPairs()
+int KVMap::nPairs() const
 {
 	return pairs_.nItems();
 }
@@ -92,7 +92,7 @@ void KVMap::add(const char *key, const char *value)
 }
 
 // Search map for specified key
-KVPair *KVMap::search(const char *key) const
+KVPair *KVMap::search(const char *key)
 {
 	// Search for existing value...
 	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp;
@@ -100,7 +100,7 @@ KVPair *KVMap::search(const char *key) const
 }
 
 // Retrieve value associated to key
-const char *KVMap::value(const char *key) const
+const char *KVMap::value(const char *key)
 {
 	// Search for existing value...
 	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp->value();

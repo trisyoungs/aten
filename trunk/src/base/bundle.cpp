@@ -43,7 +43,7 @@ void Bundle::clear()
 }
 
 // Check for non-null pointers
-bool Bundle::isNull(int ptrs)
+bool Bundle::isNull(int ptrs) const
 {
 	if ((ptrs&Bundle::AtomPointer) && (i == 0)) return TRUE;
 	if ((ptrs&Bundle::PatternPointer) && (p == 0)) return TRUE;
@@ -56,7 +56,7 @@ bool Bundle::isNull(int ptrs)
 }
 
 // Notify of non-null pointers
-bool Bundle::notifyNull(int ptrs)
+bool Bundle::notifyNull(int ptrs) const
 {
 	if ((ptrs&Bundle::AtomPointer) && (i == 0))
 	{

@@ -59,11 +59,11 @@ class TreeNode
 
 	public:
 	// Retrieve node type
-	NodeType nodeType();
+	NodeType nodeType() const;
 	// Set parent 
 	void setParent(Tree *parent);
 	// Retrieve parent
-	Tree *parent();
+	Tree *parent() const;
 
 
 	/*
@@ -75,7 +75,7 @@ class TreeNode
 
 	public:
 	// Return number of arguments currently assigned to node
-	int nArgs();
+	int nArgs() const;
 	// Return datatype of nth argument
 	VTypes::DataType argType(int i);
 	// Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
@@ -135,15 +135,15 @@ class TreeNode
 	// Sets the content type of the variable
 	void setReturnType(VTypes::DataType dt);
 	// Returns content type of the variable
-	VTypes::DataType returnType();
+	VTypes::DataType returnType() const;
 	// Set the readonly status of the node to TRUE
 	void setReadOnly();
 	// Return the readonly status of the node
-	bool readOnly();
+	bool readOnly() const;
 	// Set whether an array of values is returned
 	void setReturnsArray(bool b);
 	// Return whether an array of values is returned
-	bool returnsArray();
+	bool returnsArray() const;
 
 
 	/*

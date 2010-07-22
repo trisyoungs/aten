@@ -432,7 +432,7 @@ bool Prefs::isVisibleOffScreen(ViewObject vo)
 }
 
 // Return screenobjects bitvector
-int Prefs::screenObjects()
+int Prefs::screenObjects() const
 {
 	return screenObjects_;
 }
@@ -444,7 +444,7 @@ void Prefs::setScreenObjects(int i)
 }
 
 // Return offscreenobjects bitvector
-int Prefs::offScreenObjects()
+int Prefs::offScreenObjects() const
 {
 	return offScreenObjects_;
 }
@@ -462,13 +462,13 @@ void Prefs::setRenderStyle(Atom::DrawStyle ds)
 }
 
 // Return the current drawing style of models
-Atom::DrawStyle Prefs::renderStyle()
+Atom::DrawStyle Prefs::renderStyle() const
 {
 	return renderStyle_;
 }
 
 // Return the current rotation globe size in pixels
-int Prefs::globeSize()
+int Prefs::globeSize() const
 {
 	return globeSize_;
 }
@@ -486,7 +486,7 @@ void Prefs::setRepeatCellsPos(int i, int r)
 }
 
 // Get positive repeat cell value
-int Prefs::repeatCellsPos(int i)
+int Prefs::repeatCellsPos(int i) const
 {
 	return repeatCellsPos_.get(i);
 }
@@ -498,12 +498,12 @@ void Prefs::setRepeatCellsNeg(int i, int r)
 }
 
 // Get negative repeat cell value
-int Prefs::repeatCellsNeg(int i)
+int Prefs::repeatCellsNeg(int i) const
 {
 	return repeatCellsNeg_.get(i);
 }
 
-double Prefs::screenRadius(Atom *i)
+double Prefs::screenRadius(Atom *i) const
 {
 	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	Atom::DrawStyle dstyle;
@@ -522,7 +522,7 @@ void Prefs::setAtomStyleRadius(Atom::DrawStyle ds, double f)
 }
 
 // Return the specified atom size
-GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds)
+GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds) const
 {
 	return atomStyleRadius_[(int)ds];
 }
@@ -534,7 +534,7 @@ void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 }
 
 // Return bond radius for the specified style
-GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds)
+GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds) const
 {
 	return bondStyleRadius_[ds];
 }
@@ -546,7 +546,7 @@ void Prefs::setAtomDetail(int n)
 }
 
 // Return the current detail of atom quadrics
-GLint Prefs::atomDetail()
+GLint Prefs::atomDetail() const
 {
 	return atomDetail_;
 }
@@ -558,7 +558,7 @@ void Prefs::setBondDetail(int n)
 }
 
 // Return the current detail of bond quadrics
-GLint Prefs::bondDetail()
+GLint Prefs::bondDetail() const
 {
 	return bondDetail_;
 }
@@ -570,13 +570,13 @@ void Prefs::setSelectionScale(double f)
 }
 
 // Return the scale of selected atoms
-GLdouble Prefs::selectionScale()
+GLdouble Prefs::selectionScale() const
 {
 	return selectionScale_;
 }
 
 // Return whether perspective viewing is enabled
-bool Prefs::hasPerspective()
+bool Prefs::hasPerspective() const
 {
 	return perspective_;
 }
@@ -594,7 +594,7 @@ void Prefs::setPerspectiveFov(double fov)
 }
 
 // Return the perspective field of view angle
-double Prefs::perspectiveFov()
+double Prefs::perspectiveFov() const
 {
 	return perspectiveFov_;
 }
@@ -606,7 +606,7 @@ void Prefs::setSpotlightActive(bool status)
 }
 
 // Return status of spotlight
-bool Prefs::spotlightActive()
+bool Prefs::spotlightActive() const
 {
 	return spotlightActive_;
 }
@@ -676,7 +676,7 @@ void Prefs::setColourScheme(Prefs::ColouringScheme cs)
 }
 
 // Return atom colour scheme
-Prefs::ColouringScheme Prefs::colourScheme()
+Prefs::ColouringScheme Prefs::colourScheme() const
 {
 	return colourScheme_;
 }
@@ -692,7 +692,7 @@ void Prefs::setDepthCue(bool status)
 }
 
 // Return status of depth cueing
-bool Prefs::depthCue()
+bool Prefs::depthCue() const
 {
 	return depthCue_;
 }
@@ -704,7 +704,7 @@ void Prefs::setDepthNear(int i)
 }
 
 // Return depth cue start depth
-GLint Prefs::depthNear()
+GLint Prefs::depthNear() const
 {
 	return depthNear_;
 }
@@ -716,7 +716,7 @@ void Prefs::setDepthFar(int i)
 }
 
 // Return depth cue end depth
-GLint Prefs::depthFar()
+GLint Prefs::depthFar() const
 {
 	return depthFar_;
 }
@@ -728,7 +728,7 @@ void Prefs::setLineAliasing(bool status)
 }
 
 // Return status of line aliasing
-bool Prefs::lineAliasing()
+bool Prefs::lineAliasing() const
 {
 	return lineAliasing_;
 }
@@ -740,7 +740,7 @@ void Prefs::setPolygonAliasing(bool status)
 }
 
 // Return status of polygon aliasing
-bool Prefs::polygonAliasing()
+bool Prefs::polygonAliasing() const
 {
 	return polygonAliasing_;
 }
@@ -752,13 +752,13 @@ void Prefs::setBackfaceCulling(bool status)
 }
 
 // Return status of depth cueing
-bool Prefs::backfaceCulling()
+bool Prefs::backfaceCulling() const
 {
 	return backfaceCulling_;
 }
 
 // Return the Z depth of the near clipping plane
-GLdouble Prefs::clipNear()
+GLdouble Prefs::clipNear() const
 {
 	return clipNear_;
 }
@@ -770,7 +770,7 @@ void Prefs::setClipNear(double d)
 }
 
 // Return the Z depth of the far clipping plane
-GLdouble Prefs::clipFar()
+GLdouble Prefs::clipFar() const
 {
 	return clipFar_;
 }
@@ -789,7 +789,7 @@ void Prefs::setShininess(int n)
 }
 
 // Return the current shininess of GL objects
-GLint Prefs::shininess()
+GLint Prefs::shininess() const
 {
 	return shininess_;
 }
@@ -805,7 +805,7 @@ double *Prefs::colour(PenColour c)
 }
 
 // Copy the specified colour
-void Prefs::copyColour(PenColour c, GLfloat *target)
+void Prefs::copyColour(PenColour c, GLfloat *target) const
 {
 	target[0] = (GLfloat) colours_[c][0];
 	target[1] = (GLfloat) colours_[c][1];
@@ -834,7 +834,7 @@ void Prefs::setColour(PenColour c, int i, double value)
 */
 
 // Return the bonding tolerance for automatic calculation
-double Prefs::bondTolerance()
+double Prefs::bondTolerance() const
 {
 	return bondTolerance_;
 }
@@ -852,7 +852,7 @@ void Prefs::setDrawDepth ( double v )
 }
 
 // Return the current position of the drawing guide
-double Prefs::drawDepth()
+double Prefs::drawDepth() const
 {
 	return drawDepth_;
 }
@@ -864,7 +864,7 @@ void Prefs::setGuideSpacing(double spacing)
 }
 
 // Spacing of grid on drawing guide
-double Prefs::guideSpacing()
+double Prefs::guideSpacing() const
 {
 	return guideSpacing_;
 }
@@ -876,7 +876,7 @@ void Prefs::setGuideExtent(int extent)
 }
 
 // Extent (+- guide_spacing in xy plane) of drawing guide 
-int Prefs::guideExtent()
+int Prefs::guideExtent() const
 {
 	return guideExtent_;
 }
@@ -888,7 +888,7 @@ void Prefs::setGuideTicks(int nticks)
 }
 
 // Number of ticks between gridpoints of guide
-int Prefs::guideTicks()
+int Prefs::guideTicks() const
 {
 	return guideTicks_;
 }
@@ -900,7 +900,7 @@ void Prefs::setGuideVisible ( bool b )
 }
 
 //Return whether the draw guide is visible
-bool Prefs::isGuideVisible()
+bool Prefs::isGuideVisible() const
 {
 	return showGuide_;
 }
@@ -918,7 +918,7 @@ void Prefs::setHydrogenDistance(double d)
 }
 
 // Return hydrogen add distance
-double Prefs::hydrogenDistance()
+double Prefs::hydrogenDistance() const
 {
 	return hydrogenDistance_;
 }
@@ -935,7 +935,7 @@ void Prefs::setMouseAction(Prefs::MouseButton mb, Prefs::MouseAction ma)
 }
 
 // Return the action associated with the specified mouse button
-Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb)
+Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb) const
 {
 	return mouseAction_[mb];
 }
@@ -948,7 +948,7 @@ void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 }
 
 // Return the action associated with the specified keymod button
-Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk)
+Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk) const
 {
 	return keyAction_[mk];
 }
@@ -960,7 +960,7 @@ void Prefs::setZoomThrottle(double throtvalue)
 }
 
 // Returns the zoom throttle
-double Prefs::zoomThrottle()
+double Prefs::zoomThrottle() const
 {
 	return zoomThrottle_;
 }
@@ -976,7 +976,7 @@ void Prefs::setBondOnLoad(FilterSwitch s)
 }
 
 // Whether bonding should be recalculated on model load
-Prefs::FilterSwitch Prefs::bondOnLoad()
+Prefs::FilterSwitch Prefs::bondOnLoad() const
 {
 	return bondOnLoad_;
 }
@@ -988,7 +988,7 @@ void Prefs::setCentreOnLoad(Prefs::FilterSwitch s)
 }
 
 // Whether molecule should be centred on model load
-Prefs::FilterSwitch Prefs::centreOnLoad()
+Prefs::FilterSwitch Prefs::centreOnLoad() const
 {
 	return centreOnLoad_;
 }
@@ -1000,7 +1000,7 @@ void Prefs::setFoldOnLoad(Prefs::FilterSwitch s)
 }
 
 // Whether atoms should be folded after model load
-Prefs::FilterSwitch Prefs::foldOnLoad()
+Prefs::FilterSwitch Prefs::foldOnLoad() const
 {
 	return foldOnLoad_;
 }
@@ -1012,7 +1012,7 @@ void Prefs::setPackOnLoad(Prefs::FilterSwitch s)
 }
 
 // Whether atoms should be packed (with symmetry operations) after model load
-Prefs::FilterSwitch Prefs::packOnLoad()
+Prefs::FilterSwitch Prefs::packOnLoad() const
 {
 	return packOnLoad_;
 }
@@ -1024,7 +1024,7 @@ void Prefs::setCacheLimit(int i)
 }
 
 // Return the cache limit for trajectory files
-int Prefs::cacheLimit()
+int Prefs::cacheLimit() const
 {
 	return cacheLimit_;
 }
@@ -1046,7 +1046,7 @@ void Prefs::setZMapType(ElementMap::ZMapType i, bool fixed)
 }
 
 // Return the style of element conversion in use
-ElementMap::ZMapType Prefs::zMapType()
+ElementMap::ZMapType Prefs::zMapType() const
 {
 	return zMapType_;
 }
@@ -1058,7 +1058,7 @@ void Prefs::setCoordsInBohr(bool b)
 }
 
 // Whether coordinates should be converted from Bohr to Angstrom
-bool Prefs::coordsInBohr()
+bool Prefs::coordsInBohr() const
 {
 	return coordsInBohr_;
 }
@@ -1070,7 +1070,7 @@ void Prefs::setKeepNames(bool b)
 }
 
 // Return whether to keep file type names on load
-bool Prefs::keepNames()
+bool Prefs::keepNames() const
 {
 	return keepNames_;
 }
@@ -1082,7 +1082,7 @@ void Prefs::setKeepView(bool b)
 }
 
 // Return whether to keep view on GUI start
-bool Prefs::keepView()
+bool Prefs::keepView() const
 {
 	return keepView_;
 }
@@ -1092,7 +1092,7 @@ bool Prefs::keepView()
 */
 
 // Return the working energy units
-Prefs::EnergyUnit Prefs::energyUnit()
+Prefs::EnergyUnit Prefs::energyUnit() const
 {
 	return energyUnit_;
 }
@@ -1104,19 +1104,19 @@ void Prefs::setDensityUnit(Prefs::DensityUnit du)
 }
 
 // Return the current density units to use
-Prefs::DensityUnit Prefs::densityUnit()
+Prefs::DensityUnit Prefs::densityUnit() const
 {
 	return densityUnit_;
 }
 
 // Return the electrostastic energy conversion factor
-double Prefs::elecConvert()
+double Prefs::elecConvert() const
 {
 	return elecConvert_;
 }
 
 // Return the gas constant in the current unit of energy
-double Prefs::gasConstant()
+double Prefs::gasConstant() const
 {
 	return 8.314472 / energyConversions_[energyUnit_];
 }
@@ -1139,9 +1139,9 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 }
 
 // Convert energy from specified unit to current internal unit
-double Prefs::convertEnergy(double energy, EnergyUnit from)
+double Prefs::convertEnergy(double energy, EnergyUnit from) const
 {
-	static double result;
+	double result;
 	// Convert supplied value to units of J/mol
 	result = energy * energyConversions_[from];
 	// Then, convert to internal units
@@ -1160,7 +1160,7 @@ void Prefs::setModelUpdate(int n)
 }
 
 // Return the model update frequency
-int Prefs::modelUpdate()
+int Prefs::modelUpdate() const
 {
 	return modelUpdate_;
 }
@@ -1172,7 +1172,7 @@ void Prefs::setEnergyUpdate(int n)
 }
 
 // Return the energy update frequency
-int Prefs::energyUpdate()
+int Prefs::energyUpdate() const
 {
 	return energyUpdate_;
 }
@@ -1184,7 +1184,7 @@ bool Prefs::shouldUpdateEnergy(int n)
 }
 
 // Return the maximum ring size allowed
-int Prefs::maxRingSize()
+int Prefs::maxRingSize() const
 {
 	return maxRingSize_;
 }
@@ -1197,7 +1197,7 @@ void Prefs::setMaxRingSize(int i)
 }
 
 // Return the maximum number of rings to detect per pattern
-int Prefs::maxRings()
+int Prefs::maxRings() const
 {
 	return maxRings_;
 }
@@ -1209,7 +1209,7 @@ void Prefs::setMaxRings(int i)
 }
 
 // Return maximum number of bonding cuboids in each direction
-int Prefs::maxCuboids()
+int Prefs::maxCuboids() const
 {
 	return maxCuboids_;
 }
@@ -1227,7 +1227,7 @@ void Prefs::setReplicateFold(bool b)
 }
 
 // Return whether to fold atoms before replication
-bool Prefs::replicateFold()
+bool Prefs::replicateFold() const
 {
 	return replicateFold_;
 }
@@ -1239,13 +1239,13 @@ void Prefs::setReplicateTrim(bool b)
 }
 
 // Return whether to trim atoms after replication
-bool Prefs::replicateTrim()
+bool Prefs::replicateTrim() const
 {
 	return replicateTrim_;
 }
 
 // Return whether to augment when rebonding
-bool Prefs::augmentAfterRebond()
+bool Prefs::augmentAfterRebond() const
 {
 	return augmentAfterRebond_;
 }
@@ -1263,13 +1263,13 @@ void Prefs::setForceRhombohedral(bool b)
 }
 
 // Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-bool Prefs::forceRhombohedral()
+bool Prefs::forceRhombohedral() const
 {
 	return forceRhombohedral_;
 }
 
 // Whether to display warning for version 1.5 (r1056) newness
-bool Prefs::warning1056()
+bool Prefs::warning1056() const
 {
 	return warning1056_;
 }
@@ -1281,7 +1281,7 @@ void Prefs::setWarning1056(bool b)
 }
 
 // Whether to load fragments on startup
-bool Prefs::loadFragments()
+bool Prefs::loadFragments() const
 {
 	return loadFragments_;
 }
@@ -1293,7 +1293,7 @@ void Prefs::setLoadFragments(bool b)
 }
 
 // Whether to generate icons for loaded fragments
-bool Prefs::generateFragmentIcons()
+bool Prefs::generateFragmentIcons() const
 {
 	return generateFragmentIcons_;
 }
@@ -1315,7 +1315,7 @@ void Prefs::setElectrostaticsMethod(Electrostatics::ElecMethod em)
 }
 
 // Return the type of electrostatic treatment to use
-Electrostatics::ElecMethod Prefs::electrostaticsMethod()
+Electrostatics::ElecMethod Prefs::electrostaticsMethod() const
 {
 	return electrostaticsMethod_;
 }
@@ -1327,7 +1327,7 @@ void Prefs::setCalculateIntra(bool b)
 }
 
 // Return whether to calculate intramolocular interactions
-bool Prefs::calculateIntra()
+bool Prefs::calculateIntra() const
 {
 	return calculateIntra_;
 }
@@ -1339,7 +1339,7 @@ void Prefs::setCalculateVdw(bool b)
 }
 
 // Return whether to calculate VDW interactions
-bool Prefs::calculateVdw()
+bool Prefs::calculateVdw() const
 {
 	return calculateVdw_;
 }
@@ -1351,7 +1351,7 @@ void Prefs::setCalculateElec(bool b)
 }
 
 // Return whether to calculate electrostatic interactions
-bool Prefs::calculateElec()
+bool Prefs::calculateElec() const
 {
 	return calculateElec_;
 }
@@ -1371,7 +1371,7 @@ void Prefs::setEwaldKMax(Vec3<int> v)
 }
 
 // Return the Ewald k-vector extents
-Vec3<int> Prefs::ewaldKMax()
+Vec3<int> Prefs::ewaldKMax() const
 {
 	return ewaldKMax_;
 }
@@ -1389,13 +1389,13 @@ void Prefs::setEwaldAlpha(double d)
 }
 
 // Return the Ewald alpha value
-double Prefs::ewaldAlpha()
+double Prefs::ewaldAlpha() const
 {
 	return ewaldAlpha_;
 }
 
 // Flag to indicate validity of automatic Ewald params (invalidated on cell change)
-bool Prefs::hasValidEwaldAuto()
+bool Prefs::hasValidEwaldAuto() const
 {
 	return validEwaldAuto_;
 }
@@ -1413,7 +1413,7 @@ void Prefs::setVdwCutoff(double d)
 }
 
 // Return the VDW cutoff radius
-double Prefs::vdwCutoff()
+double Prefs::vdwCutoff() const
 {
 	return vdwCutoff_;
 }
@@ -1425,7 +1425,7 @@ void Prefs::setElecCutoff(double d)
 }
 
 // Return the electrostatic cutoff radius
-double Prefs::elecCutoff()
+double Prefs::elecCutoff() const
 {
 	return elecCutoff_;
 }
@@ -1437,7 +1437,7 @@ void Prefs::setVdwScale(double d)
 }
 
 // Return the VDW radius scaling factor
-double Prefs::vdwScale()
+double Prefs::vdwScale() const
 {
 	return vdwScale_;
 }
@@ -1449,7 +1449,7 @@ void Prefs::setCombinationRule(Combine::CombinationRule cr, const char *s)
 }
 
 // Return combination rule equation
-const char *Prefs::combinationRule(Combine::CombinationRule cr)
+const char *Prefs::combinationRule(Combine::CombinationRule cr) const
 {
 	return combinationRules_[cr].get();
 }
@@ -1465,7 +1465,7 @@ void Prefs::setMaxUndoLevels(int n)
 }
 
 // Return the maximum number of undo levels allowed
-int Prefs::maxUndoLevels()
+int Prefs::maxUndoLevels() const
 {
 	return maxUndoLevels_;
 }
@@ -1483,7 +1483,7 @@ void Prefs::setLoadQtSettings(bool b)
 }
 
 // Return maximum distance allowed between consecutive improper torsion atoms
-double Prefs::maxImproperDist()
+double Prefs::maxImproperDist() const
 {
 	return maxImproperDist_;
 }
@@ -1505,7 +1505,7 @@ void Prefs::setLabelSize(int size)
 }
 
 // Return the current label scale
-int Prefs::labelSize()
+int Prefs::labelSize() const
 {
 	return labelSize_;
 }
@@ -1517,7 +1517,7 @@ void Prefs::setDistanceLabel(const char *s)
 }
 
 // Return the postfix distance label
-const char *Prefs::distanceLabel()
+const char *Prefs::distanceLabel() const
 {
 	return distanceLabel_.get();
 }
@@ -1529,7 +1529,7 @@ void Prefs::setAngleLabel(const char *s)
 }
 
 // Return the postfix angle label
-const char *Prefs::angleLabel()
+const char *Prefs::angleLabel() const
 {
 	return angleLabel_.get();
 }
@@ -1541,7 +1541,7 @@ void Prefs::setUseNiceText(bool b)
 }
 
 // Return whether to use nice text rendering
-bool Prefs::useNiceText()
+bool Prefs::useNiceText() const
 {
 	return useNiceText_;
 }
@@ -1553,7 +1553,7 @@ void Prefs::setManualSwapBuffers(bool on)
 }
 
 // Return whether manual buffer swapping is enabled
-bool Prefs::useFrameBuffer()
+bool Prefs::useFrameBuffer() const
 {
 	return useFrameBuffer_;
 }
@@ -1565,7 +1565,7 @@ void Prefs::setUseFrameBuffer(bool on)
 }
 
 // Return whether manual buffer swapping is enabled
-bool Prefs::manualSwapBuffers()
+bool Prefs::manualSwapBuffers() const
 {
 	return manualSwapBuffers_;
 }
@@ -1577,7 +1577,7 @@ void Prefs::setCommonElements(const char *s)
 }
 
 // Return list of common elements to use in SelectElement dialog
-const char *Prefs::commonElements()
+const char *Prefs::commonElements() const
 {
 	return commonElements_.get();
 }

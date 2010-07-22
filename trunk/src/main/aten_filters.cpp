@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 
 // Load filters
 void Aten::openFilters()
@@ -144,18 +145,19 @@ int Aten::reloadFilters()
 	msg.print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
 	msg.print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
 	msg.print("Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
+
 	msg.exit("Aten::reloadFilters");
 	return result;
 }
 
 // Return status of filter load on startup
-int Aten::nFiltersFailed()
+int Aten::nFiltersFailed() const
 {
 	return nFiltersFailed_;
 }
 
 // Return status of filter load on startup
-Dnchar *Aten::failedFilters()
+Dnchar *Aten::failedFilters() const
 {
 	return failedFilters_.first();
 }
@@ -296,7 +298,18 @@ Refitem<Tree,int> *Aten::filters(FilterData::FilterType ft) const
 	return filters_[ft].first();
 }
 
-	// Return number of filters of a given type
+// Return nth filter in list (of a given type)
+Refitem<Tree,int> *Aten::filter(FilterData::FilterType ft, int index)
+{
+	if ((index < 0) || (index >= filters_[ft].nItems()))
+	{
+		printf("Internal Error : Index %i is out of range for '%s' filter list.\n", index, FilterData::filterType(ft));
+		return NULL;
+	}
+	return filters_[ft][index];
+}
+
+// Return number of filters of a given type
 int Aten::nFilters(FilterData::FilterType ft) const
 {
 	return filters_[ft].nItems();

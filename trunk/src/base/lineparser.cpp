@@ -77,13 +77,13 @@ void LineParser::reset()
 */
 
 // Return filename of opened (or recently closed) file
-const char *LineParser::filename()
+const char *LineParser::filename() const
 {
 	return filename_.get();
 }
 
 // Return pointer to current line
-const char *LineParser::line()
+const char *LineParser::line() const
 {
 	return line_;
 }
@@ -97,13 +97,13 @@ void LineParser::setLine(const char *s)
 }
 
 // Return integer line number of last read line
-int LineParser::lastLineNo()
+int LineParser::lastLineNo() const
 {
 	return lastLineNo_;
 }
 
 // Return read-only status of file
-bool LineParser::isFileReadOnly()
+bool LineParser::isFileReadOnly() const
 {
 	return readOnly_;
 }
@@ -150,14 +150,14 @@ void LineParser::closeFile()
 }
 
 // Return whether current file source is good for reading/writing
-bool LineParser::isFileGood()
+bool LineParser::isFileGood() const
 {
 	if (file_ == NULL) return FALSE;
 	return file_->is_open();
 }
 
 // Return whether current file source is good for reading
-bool LineParser::isFileGoodForReading()
+bool LineParser::isFileGoodForReading() const
 {
 	if (file_ == NULL) return FALSE;
 	if (!file_->is_open()) return FALSE;
@@ -165,7 +165,7 @@ bool LineParser::isFileGoodForReading()
 }
 
 // Return whether current file source is good for writing
-bool LineParser::isFileGoodForWriting()
+bool LineParser::isFileGoodForWriting() const
 {
 	if (file_ == NULL) return FALSE;
 	if (!file_->is_open()) return FALSE;
@@ -173,14 +173,14 @@ bool LineParser::isFileGoodForWriting()
 }
 
 // Peek next character in file
-char LineParser::peek()
+char LineParser::peek() const
 {
 	if (file_ == NULL) return '\0';
 	return file_->peek();
 }
 
 // Tell current position of file stream
-streampos LineParser::tellg()
+streampos LineParser::tellg() const
 {
 	streampos result = 0;
 	if (file_ != NULL) result = file_->tellg();
@@ -210,7 +210,7 @@ void LineParser::rewind()
 }
 
 // Return whether the end of the file has been reached (or only whitespace remains)
-bool LineParser::eofOrBlank()
+bool LineParser::eofOrBlank() const
 {
 	if (file_ == NULL) return TRUE;
 	// Simple check first - is this the end of the file?
@@ -811,7 +811,7 @@ int LineParser::skipLines(int nlines)
 */
 
 // Returns number of arguments grabbed from last parse
-int LineParser::nArgs()
+int LineParser::nArgs() const
 {
 	return arguments_.nItems();
 }
@@ -872,7 +872,7 @@ float LineParser::argf(int i)
 }
 
 // Returns whether the specified argument exists (has been provided)
-bool LineParser::hasArg(int i)
+bool LineParser::hasArg(int i) const
 {
 	if ((i < 0) || (i >= nArgs())) return FALSE;
 	return TRUE;

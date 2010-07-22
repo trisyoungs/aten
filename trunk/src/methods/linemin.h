@@ -38,9 +38,9 @@ class LineMinimiser
 
 	public:
 	// Set the tolerance
-	void setTolerance(double t) { tolerance_ = t; }
+	void setTolerance(double t);
 	// Return current tolerance
-	double tolerance() { return tolerance_; }
+	double tolerance() const;
 	// Generate a new config following the supplied gradient vector
 	void gradientMove(Model *source, Model *dest, double delta);
 	// Minimise the specified model (srcmodel should already contain desired forces (i.e. gradient vector)) along which to minimise)

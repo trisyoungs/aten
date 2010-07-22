@@ -86,31 +86,31 @@ class MonteCarlo
 	// Set maximum stepsize for MC move
 	void setMaxStep(MoveType m, double d);
 	// Get maximum stepsize for MC move
-	double maxStep(MoveType m);
+	double maxStep(MoveType m) const;
 	// Set ntrials for MC move
 	void setNTrials(MoveType m, int i);
 	// Get ntrials for MC move
-	int nTrials(MoveType m);
+	int nTrials(MoveType m) const;
 	// Set allowed flag for MC move
 	void setMoveAllowed(MoveType m, bool b);
 	// Get allowed flag for MC move
-	bool isMoveAllowed(MoveType m);
+	bool isMoveAllowed(MoveType m) const;
 	// Set eaccept limit for MC move
 	void setAcceptanceEnergy(MoveType m, double d);
 	// Get eaccept limit for MC move
-	double acceptanceEnergy(MoveType m);
+	double acceptanceEnergy(MoveType m) const;
 	// Set number of MC cycles to perform
 	void setNCycles(int i);
 	// Get ntrials for MC move
-	int nCycles();
+	int nCycles() const;
 	// Sets the vDW radius scale
 	void setVdwScale(double d);
 	// Return current vdw radius scale
-	double vdwScale();
+	double vdwScale() const;
 	// Set MC temperature for Boltzmann probabilities
 	void setTemperature(double t);
 	// Return current MC temperature
-	double temperature();
+	double temperature() const;
 };
 
 // Static Singleton

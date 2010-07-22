@@ -77,41 +77,41 @@ class ComponentRegion
 	// Sets the shape of the ComponentRegion for the component
 	void setShape(RegionShape r);
 	// Returns the ComponentRegion defined for the component
-	RegionShape shape();
+	RegionShape shape() const;
 	// Sets the centre of the defined ComponentRegion
 	void setCentre(Vec3<double> v);
 	// Sets the centre of the defined ComponentRegion in fractional coordinates
 	void setCentreFrac(Vec3<double> v);
 	// Returns the centre of the defined ComponentRegion (fractional or real)
-	Vec3<double> centre();
+	Vec3<double> centre() const;
 	// Returns whether the centre was set in real or fractional coordinates
-	bool isCentreFrac();
+	bool isCentreFrac() const;
 	// Sets the geometry of the defined ComponentRegion
 	void setGeometry(Vec3<double> v);
 	// Sets the geometry of the defined ComponentRegion in fractional coordinates
 	void setGeometryFrac(Vec3<double> v);
 	// Returns the geometry of the defined ComponentRegion
-	Vec3<double> geometry();
+	Vec3<double> geometry() const;
 	// Returns whether the size of the region was set in real or fractional coordinates
-	bool isGeometryFrac();
+	bool isGeometryFrac() const;
 	// Sets the rotations of the defined ComponentRegion
 	void setRotations(Vec3<double> v);
 	// Returns the rotations of the defined ComponentRegion
-	Vec3<double> rotations();
+	Vec3<double> rotations() const;
 	// Return whether to rotate the region
-	bool rotateRegion();
+	bool rotateRegion() const;
 	// Set wheter to rotate the region
 	void setRotateRegion(bool b);
 	// Sets whether to allow overlap with other ComponentRegions
 	void setAllowOverlap(bool b);
 	// Returns whether to allow overlap over other ComponentRegions when inserting
-	bool allowOverlap();
+	bool allowOverlap() const;
 	// Determines whether the supplied coordinates are within the ComponentRegion defined
-	bool coordsInRegion(const Vec3<double> &point, Cell *cell);
+	bool coordsInRegion(const Vec3<double> &point, Cell *cell) const;
 	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
-	bool pointOverlaps(const Vec3<double> &point, Cell *cell, Reflist<Model,int> &components);
+	bool pointOverlaps(const Vec3<double> &point, Cell *cell, Reflist<Model,int> &components) const;
 	// Generate a random coordinate inside the ComponentRegion
-	Vec3<double> randomCoords(Cell *cell, Reflist<Model,int> &components);
+	Vec3<double> randomCoords(Cell *cell, Reflist<Model,int> &components) const;
 };
 
 #endif

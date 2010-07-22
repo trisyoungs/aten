@@ -31,7 +31,7 @@
 double editChainDistance = 0.0;
 
 // Render other 3D objects
-void Canvas::renderExtra3d()
+void Canvas::renderExtra3d() const
 {
 	msg.enter("Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
@@ -176,7 +176,7 @@ void Canvas::renderExtra3d()
 }
 
 // Render 2D objects
-void Canvas::renderExtra2d()
+void Canvas::renderExtra2d() const
 {
 	msg.enter("Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
@@ -252,7 +252,7 @@ void Canvas::renderExtra2d()
 }
 
 // Render disordered insertion regions
-void Canvas::renderRegions()
+void Canvas::renderRegions() const
 {
 	msg.enter("Canvas::renderRegions");
 	static Vec3<double> centre, geometry, rotations;

@@ -33,6 +33,18 @@ MethodCg::MethodCg()
 	nCycles_ = 100;
 }
 
+// Set maximum number of cycles to perform
+void MethodCg::setNCycles(int i)
+{
+	nCycles_ = i;
+}
+
+// Get maximum number of cycles
+int MethodCg::nCycles() const
+{
+	return nCycles_;
+}
+
 // Minimise Energy w.r.t. coordinates by Conjugate Gradient
 void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 {

@@ -33,7 +33,7 @@ Bond *Model::bonds()
 }
 
 // Return number of bonds in the model
-int Model::nBonds()
+int Model::nBonds() const
 {
 	return bonds_.nItems();
 }

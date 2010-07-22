@@ -48,11 +48,11 @@ class Variable : public TreeNode
 	// Set name of variable
 	void setName(const char* s);
 	// Get name of variable
-	const char *name();
+	const char *name() const;
 	// Set initial value expression
 	bool setInitialValue(TreeNode *node);
 	// Return TreeNode corresponding to initial value
-	TreeNode *initialValue();
+	TreeNode *initialValue() const;
 	// Execute as an array
 	virtual bool executeAsArray(ReturnValue &rv, int arrayindex);
 	// Set as an array
@@ -86,7 +86,7 @@ class ArrayVariable : public Variable
 
 	public:
 	// Return current array size
-	int arraySize();
+	int arraySize() const;
 };
 
 

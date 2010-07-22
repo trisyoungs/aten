@@ -255,7 +255,7 @@ void Ring::detectType()
 }
 
 // Return type of ring
-Ring::RingType Ring::type()
+Ring::RingType Ring::type() const
 {
 	return type_;
 }

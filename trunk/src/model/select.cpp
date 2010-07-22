@@ -28,13 +28,13 @@
 #include "gui/gui.h"
 
 // Return the number of selected atoms
-int Model::nSelected()
+int Model::nSelected() const
 {
 	return selection_.nItems();
 }
 
 // Return the number of marked atoms
-int Model::nMarked()
+int Model::nMarked() const
 {
 	return marked_.nItems();
 }
@@ -437,7 +437,7 @@ void Model::selectPattern(Pattern *p, bool markonly, bool deselect)
 }
 
 // Get first selected
-Refitem<Atom,int> *Model::selection(bool markonly)
+Refitem<Atom,int> *Model::selection(bool markonly) const
 {
 	if (markonly) return marked_.first();
 	else return selection_.first();

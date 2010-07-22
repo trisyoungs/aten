@@ -69,7 +69,7 @@ void Messenger::removeOutputType(Messenger::OutputType dm)
 }
 
 // Returns whether the specified debug level is set
-bool Messenger::isOutputActive(Messenger::OutputType dm)
+bool Messenger::isOutputActive(Messenger::OutputType dm) const
 {
 	return ((outputTypes_&(1 << dm)) ? TRUE : FALSE);
 }
@@ -81,13 +81,13 @@ void Messenger::setQuiet(bool b)
 }
 
 // Return status of quiet mode
-bool Messenger::isQuiet()
+bool Messenger::isQuiet() const
 {
 	return quiet_;
 }
 
 // Standard message
-void Messenger::print(const char *fmt ...)
+void Messenger::print(const char *fmt ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
 	// If program is in quiet mode, don't print anything to stdout
@@ -104,7 +104,7 @@ void Messenger::print(const char *fmt ...)
 }
 
 // Standard message in specific output level
-void Messenger::print(Messenger::OutputType ot, const char *fmt ...)
+void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 {
 	// Print to the text view in the main window if it has been initialised.
 	// If program is in quiet mode, don't print anything except Messenger::Error calls

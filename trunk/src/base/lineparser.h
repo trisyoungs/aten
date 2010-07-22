@@ -72,29 +72,29 @@ class LineParser
 	// Reset data
 	void reset();
 	// Return filename of opened (or recently closed) file
-	const char *filename();
+	const char *filename() const;
 	// Return pointer to start of current line
-	const char *line();
+	const char *line() const;
 	// Set line target
 	void setLine(const char *s);
 	// Return integer line number of last read line
-	int lastLineNo();
+	int lastLineNo() const;
 	// Return read-only status of file
-	bool isFileReadOnly();
+	bool isFileReadOnly() const;
 	// Open new file for parsing or writing
 	bool openFile(const char *filename, bool outputstream = FALSE);
 	// Close file(s)
 	void closeFile();
 	// Return whether current file source is good for reading/writing
-	bool isFileGood();
+	bool isFileGood() const;
 	// Return whether current file source is good for reading
-	bool isFileGoodForReading();
+	bool isFileGoodForReading() const;
 	// Return whether current file source is good for writing
-	bool isFileGoodForWriting();
+	bool isFileGoodForWriting() const;
 	// Tell current position of file stream
-	streampos tellg();
+	streampos tellg() const;
 	// Peek next character in file
-	char peek();
+	char peek() const;
 	// Seek position in file
 	void seekg(streampos pos);
 	// Seek n bytes in specified direction
@@ -102,7 +102,7 @@ class LineParser
 	// Rewind file to start
 	void rewind();
 	// Return whether the end of the file has been reached (or only whitespace remains)
-	bool eofOrBlank();
+	bool eofOrBlank() const;
 
 
 	/*
@@ -162,7 +162,7 @@ class LineParser
 
 	public:
 	// Returns number of arguments grabbed from last parse
-	int nArgs();
+	int nArgs() const;
 	// Returns the specified argument as a character string
 	const char *argc(int i);
 	// Returns the specified argument as an integer
@@ -174,7 +174,7 @@ class LineParser
 	// Returns the specified argument as a float
 	float argf(int i);
 	// Returns whether the specified argument exists
-	bool hasArg(int i);
+	bool hasArg(int i) const;
 
 
 	/*

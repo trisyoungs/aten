@@ -128,7 +128,7 @@ void Generator::setTranslation(double tx, double ty, double tz, double divisor)
 }
 
 // Return name of generator
-const char *Generator::name()
+const char *Generator::name() const
 {
 	return name_.get();
 }

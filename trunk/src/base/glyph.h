@@ -72,11 +72,11 @@ class GlyphData
 	// Returns the atom associated to the datapoint (if any)
 	Atom *atom();
 	// Returns whether the atom was set last
-	bool atomSetLast();
+	bool atomSetLast() const;
 	// Return the atom data type
-	GlyphData::GlyphDataType atomData();
+	GlyphData::GlyphDataType atomData() const;
 	// Return vector data for datapoint
-	Vec3<double> vector();
+	Vec3<double> vector() const;
 	// Set colour of datapoint
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Set n'th component of colour in datapoint
@@ -84,7 +84,7 @@ class GlyphData
 	// Return i'th colour
 	double *colour();
 	// Copy colour for datapoint
-	void copyColour(GLfloat *c);
+	void copyColour(GLfloat *c) const;
 };
 
 // Glyph
@@ -120,21 +120,21 @@ class Glyph
 
 	public:
 	// Returns the number of data set for the Glyph
-	int nData();
+	int nData() const;
 	// Return the n'th datapoint of the glyph
 	GlyphData *data(int i);
 	// Set style of Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph
-	GlyphType type();
+	GlyphType type() const;
 	// Set text data
 	void setText(const char *s);
 	// Return text data
-	const char *text();
+	const char *text() const;
 	// Set colour of all datapoints
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Return whether glyph has been rotated (whether a rotation matrix exists)
-	bool rotated();
+	bool rotated() const;
 	// Return rotation matrix suitable for GL
 	double *rotationForGL();
 	// Return rotation matrix
@@ -173,15 +173,15 @@ class Glyph
 	// Set whether the Glyph is visible
 	void setVisible(bool isvisible);
 	// Return whether the Glyph is visible
-	bool isVisible();
+	bool isVisible() const;
 	// Set whether the Glyph is solid or not
 	void setSolid(bool issolid);
 	// Return whether the Glyph should be drawn as a solid
-	bool isSolid();
+	bool isSolid() const;
 	// Set the linewidth of the glyph
 	void setLineWidth(GLfloat width);
 	// Return the linewidth of the glyph
-	GLfloat lineWidth();
+	GLfloat lineWidth() const;
 };
 
 #endif

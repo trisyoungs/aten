@@ -66,13 +66,13 @@ class Bond
 	// Set bond type
 	void setType(BondType bt);
 	// Return type of bond
-	BondType type();
+	BondType type() const;
 	// Return real-valued bond order
-	double order();
+	double order() const;
 	// Returns the partner of the specified atom in the bond structure
 	Atom *partner(Atom *i);
 	// Return bond type that best satisfies the involved atoms valencies
-	Bond::BondType augmented();
+	Bond::BondType augmented() const;
 };
 
 #endif

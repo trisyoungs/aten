@@ -463,31 +463,31 @@ double *ElementMap::diffuseColour(Atom *i)
 }
 
 // Return number of defined elements
-int ElementMap::nElements()
+int ElementMap::nElements() const
 {
 	return nElements_;
 }
 
 // Return group number of atomic number 'i'
-int ElementMap::group(int i)
+int ElementMap::group(int i) const
 {
 	return el[i].group;
 }
 
 // Return atomic mass of atomic number 'i'
-double ElementMap::atomicMass(int i)
+double ElementMap::atomicMass(int i) const
 {
 	return el[i].atomicMass;
 }
 
 // Return name of atomic number 'i'
-const char *ElementMap::name(int i)
+const char *ElementMap::name(int i) const
 {
 	return el[i].name;
 }
 
 // Return symbol of atomic number 'i'
-const char *ElementMap::symbol(int i)
+const char *ElementMap::symbol(int i) const
 {
 	return el[i].symbol;
 }
@@ -499,13 +499,13 @@ void ElementMap::setAtomicRadius(int i, double r)
 }
 
 // Return effective radius of atomic number 'i'
-double ElementMap::atomicRadius(int i)
+double ElementMap::atomicRadius(int i) const
 {
 	return el[i].atomicRadius;
 }
 
 // Return bond order penalty for TBO 'bo' of atomic number 'i'
-int ElementMap::bondOrderPenalty(int i, int bo)
+int ElementMap::bondOrderPenalty(int i, int bo) const
 {
 	return el[i].bondOrderPenalty[bo];
 }
@@ -546,19 +546,19 @@ void ElementMap::setDiffuseColour(int i, double r, double g, double b)
 }
 
 // Return ambient colour in supplied vector
-void ElementMap::copyAmbientColour(int i, GLfloat *v)
+void ElementMap::copyAmbientColour(int i, GLfloat *v) const
 {
 	el[i].copyAmbientColour(v);
 }
 
 // Return diffuse colour in supplied vector
-void ElementMap::copyDiffuseColour(int i, GLfloat *v)
+void ElementMap::copyDiffuseColour(int i, GLfloat *v) const
 {
 	el[i].copyDiffuseColour(v);
 }
 
 // Convert string from Z to element number
-int ElementMap::numberToZ(const char *s)
+int ElementMap::numberToZ(const char *s) const
 {
 	// Check that the string is entirely numerical
 	bool isnumber = TRUE;
@@ -583,7 +583,7 @@ int ElementMap::numberToZ(const char *s)
 }
 
 // Convert string from alpha to element number
-int ElementMap::alphaToZ(const char *s)
+int ElementMap::alphaToZ(const char *s) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static char cleaned[32];
@@ -612,7 +612,7 @@ int ElementMap::alphaToZ(const char *s)
 }
 
 // Convert string from first alpha part to element number
-int ElementMap::firstAlphaToZ(const char *s)
+int ElementMap::firstAlphaToZ(const char *s) const
 {
 	// Convert up to non-alpha character.
 	static char cleaned[32];
@@ -641,7 +641,7 @@ int ElementMap::firstAlphaToZ(const char *s)
 }
 
 // Convert string from first alpha character to element number
-int ElementMap::singleAlphaToZ(const char *s)
+int ElementMap::singleAlphaToZ(const char *s) const
 {
 	// Convert first alpha character.
 	char cleaned[2];
@@ -666,7 +666,7 @@ int ElementMap::singleAlphaToZ(const char *s)
 }
 
 // Convert string from name to element number
-int ElementMap::nameToZ(const char *s)
+int ElementMap::nameToZ(const char *s) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static char cleaned[32];
@@ -694,7 +694,7 @@ int ElementMap::nameToZ(const char *s)
 }
 
 // Convert string from fftype to element number
-int ElementMap::ffToZ(const char *s)
+int ElementMap::ffToZ(const char *s) const
 {
 	ForcefieldAtom *ffa;
 	int result = -1;
@@ -709,7 +709,7 @@ int ElementMap::ffToZ(const char *s)
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(const char *query)
+int ElementMap::find(const char *query) const
 {
 	// Get the element number from the element name provided.
 	msg.enter("ElementMap::find");
@@ -771,7 +771,7 @@ int ElementMap::find(const char *query)
 }
 
 // Search for element named 'query' in the list of known elements, using the specified algorithm
-int ElementMap::find(const char *query, ElementMap::ZMapType zmt)
+int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 {
 	// Store the old zmapping type, and temporarily set a new one
 	ElementMap::ZMapType last = prefs.zMapType();
@@ -782,7 +782,7 @@ int ElementMap::find(const char *query, ElementMap::ZMapType zmt)
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::findAlpha(const char *query)
+int ElementMap::findAlpha(const char *query) const
 {
 	return find(query, ElementMap::AlphaZMap);
 }
