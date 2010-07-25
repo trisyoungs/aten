@@ -42,9 +42,13 @@ mkdir codeexamples
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./codeexamples/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl examples-versioned.xml
+# Copy images
+mkdir usermanual/images
+cp images/*png usermanual/images
 # Process files to
 # 1) Rewrite links so they work in the website
 # 2) Remove blank extraneous line from synopsis elements
+# 3) Rewrite image locations to point to the *user manual* directory, so we can use the pre-existing GUI images
 cd codeexamples
 sed -i -n '
 1h
@@ -53,6 +57,7 @@ $ {
 	g
 	s/\n\t*<\/pre/<\/pre/g
 	s/\([a-z0-9\.]*\)\.html/\/doc\/Examples\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
 	p
 }' *.html
 for a in *html

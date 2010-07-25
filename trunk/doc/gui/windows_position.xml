@@ -40,15 +40,15 @@
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<tbody>
 					<row>
-						<entry><inlinegraphic fileref="images/transform_flipx.png"/></entry>
+						<entry><inlinegraphic fileref="images/position_flipx.png"/></entry>
 						<entry>Flip coordinates in the X direction</entry>
 					</row>
 					<row>
-						<entry><inlinegraphic fileref="images/transform_flipy.png"/></entry>
+						<entry><inlinegraphic fileref="images/position_flipy.png"/></entry>
 						<entry>Flip coordinates in the Y direction</entry>
 					</row>
 					<row>
-						<entry><inlinegraphic fileref="images/transform_flipz.png"/></entry>
+						<entry><inlinegraphic fileref="images/position_flipz.png"/></entry>
 						<entry>Flip coordinates in the Z direction</entry>
 					</row>
 				</tbody>

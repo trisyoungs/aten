@@ -292,29 +292,31 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					}
 					clipi = clipi->next;
 				}
-				if (!same) break;
-				// Bonding between atoms...
-				idoff = selection(TRUE)->item->id();
-				count = 0;
-				for (isel = marked_.first(); isel != NULL; isel = isel->next)
+				// Bonding between atoms (but only if atoms themselves check out)...
+				if (same)
 				{
-					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
-					idi = isel->item->id() - idoff;
-					for (rb = isel->item->bonds(); rb != NULL; rb = rb->next)
+					idoff = selection(TRUE)->item->id();
+					count = 0;
+					for (isel = marked_.first(); isel != NULL; isel = isel->next)
 					{
-						idj = rb->item->partner(isel->item)->id() - idoff;
-						if (idi < idj) continue;
-						count++;
-						if (!patclip.hasBond(idi,idj))
+						// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
+						idi = isel->item->id() - idoff;
+						for (rb = isel->item->bonds(); rb != NULL; rb = rb->next)
 						{
-							same = FALSE;
-							break;
+							idj = rb->item->partner(isel->item)->id() - idoff;
+							if (idi < idj) continue;
+							count++;
+							if (!patclip.hasBond(idi,idj))
+							{
+								same = FALSE;
+								break;
+							}
 						}
+						if (!same) break;
 					}
-					if (!same) break;
+					// Check for difference between number of bonds between marked atoms and clipboard atoms
+					if (count != patclip.nBonds()) same = FALSE;
 				}
-				// Check for difference between number of bonds between marked atoms and clipboard atoms
-				if (count != patclip.nBonds()) same = FALSE;
 			}
 			// If we get to here with same == TRUE then we increase nmols. Otherwise, we create a new pattern.
 			if (same) nmols ++;

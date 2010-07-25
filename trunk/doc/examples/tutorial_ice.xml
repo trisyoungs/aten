@@ -1,0 +1,163 @@
+<section id="tutorials.ice"><title>Building Hexagonal Ice from Crystal Information</title>
+	<indexterm><primary>building</primary></indexterm>
+	<indexterm><primary>ice</primary></indexterm>
+	<indexterm><primary>crystals</primary></indexterm>
+	<indexterm><primary>cell manipulation</primary></indexterm>
+
+	<para>Similar in spirit to the <link linkend="tutorials.alumina">alumina</link> example, here we create a single ice Ih crystal from the crystal information, and then replicate it to form a larger supercell. The crystal information used below is from Leadbetter et al., <emphasis>J. Chem. Phys.</emphasis>, vol 82, p424-428 (1985), Table II (Structural parameters of ice at 5 K).</para>
+
+	<sect5><title>1. Create the Unit Cell</title>
+	
+		<para>First, we create the unit cell, which from the paper is orthorhombic with side lengths <emphasis>A</emphasis> = 4.5019, <emphasis>B</emphasis> = 7.7978, and <emphasis>C</emphasis> = 7.328 &#197;. The view may need adjusting in order to see the whole cell.</para>
+
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
+						<entry>Open the Cell Edit window</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>Add a unit cell to the model by checking the 'Has Cell?' checkbox.</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>Set the cell lengths <emphasis>A</emphasis>, <emphasis>B</emphasis>, and <emphasis>C</emphasis> to 4.5019, 7.7978, and 7.328 respectively.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
+		<figure><title>Generation of initial unit cell</title>
+			<graphic fileref="images/tutorials_ice1.png" align="center"/>
+		</figure>
+		
+	</sect5>
+
+	<sect5><title>2. Add the Unique Atoms</title>
+		
+		<para>There a five symmetry-unique atoms to add into the cell. This might seem odd given that this doesn't add up to a whole number of water molecules, but one of the water molecules lays with its oxygen on a mirror plane, and so only needs one hydrogen to be specified. Atom positions in the paper are given in fractional coordinates - we will create the atoms using these coordinates which will be converted by Aten into their real (cell) coordinates automatically.</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><emphasis>Build Toolbar</emphasis></entry>
+						<entry>On the Build toolbar change the active element to oxygen by clicking the <inlinegraphic fileref="images/build_element.png"/> button and selecing it in the periodic table.</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_build.png"/></entry>
+						<entry>Open the Build window</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>
+							<para>On the Add Atom page select the fractional coordinates ('Frac?') checkbox and create atoms at the following positions:</para>
+							<para>x = 0.0, y = 0.6648, z = 0.0631</para>
+							<para>x = 0.5, y = 0.8255, z = -0.0631</para>
+						</entry>
+					</row>
+					<row>
+						<entry><emphasis>Build Toolbar</emphasis></entry>
+						<entry>On the Build toolbar change the active element to hydrogen by clicking the <inlinegraphic fileref="images/build_h.png"/> button in the Build toolbar or the <inlinegraphic fileref="images/build_element.png"/> button and selecting it in the periodic table.</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>
+							<para>Enter the following sets of coordinates in the Build window, clicking 'Add' after each set:</para>
+							<para>x = 0.0, y = 0.6636, z = 0.1963</para>
+							<para>x = 0.0, y = 0.5363, z = 0.0183</para>
+							<para>x = 0.6766, y = -0.2252, z = -0.0183</para>
+						</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<figure><title>Addition of symmetry-unique atoms</title>
+			<graphic fileref="images/tutorials_ice2.png" align="center"/>
+		</figure>
+		
+	</sect5>
+
+	<sect5><title>3. Set the Spacegroup and Pack</title>
+		
+		<para>To complete the model the spacegroup of the crystal must be set, so that generation of the symmetry-related atoms can be performed. On the cell page, enter the spacegroup as either 'Cmc21' or '36', then select Pack to generate the symmetry-related atoms from the current cell contents using the specified spacegroup's generator definitions. In the image shown below, the atoms have also been folded into the unit cell (Ctrl-F).</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
+						<entry>Open the Cell Edit window again</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>Enter the spacegroup as "Cmc21" or "36" and press 'Set' to assign the spacegroup to the model</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>Generate symmetry equivalent atoms by pressing the 'Pack' button</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<figure><title>Generation of complete cell contents</title>
+			<graphic fileref="images/tutorials_ice3.png" align="center"/>
+		</figure>
+		
+	</sect5>	
+
+	<sect5><title>4. Replicate Cell and Calculate Bonds</title>
+		
+		<para>The basic cell of ice Ih isn't particularly interesting, so we will replicate the cell to create a larger supercell of the ice crystal, and then calculate bonds in the new model so that the hexagonal structure is clear to see.</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<tbody>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_celltransform.png"/></entry>
+						<entry>Open the Cell Transform window</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>On the Replicate page set each positive replication direction to 3 or 4</entry>
+					</row>
+					<row>
+						<entry></entry>
+						<entry>Generate the supercell by pressing the 'Replicate' button</entry>
+					</row>
+					<row>
+						<entry><emphasis>Bonding Toolbar</emphasis></entry>
+						<entry>On the Bonding toolbar recalculate bonds with <inlinegraphic fileref="images/bond_calc.png"/></entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<figure><title>Replicated and rebonded superlattice</title>
+			<graphic fileref="images/tutorials_ice4.png" align="center"/>
+		</figure>
+		
+	</sect5>
+	
+	<sect5><title>Script</title>
+		
+		<programlisting>
+newmodel("ice");
+cell(4.5019,7.7978,7.3280,90,90,90);
+newatomfrac(O,0,0.6648,0.0631);
+newatomfrac(O,0.5,0.8255,-0.0631);
+newatomfrac(H,0,0.6636,0.1963);
+newatomfrac(H,0,0.5363,0.0183);
+newatomfrac(H,0.6766,-0.2252,-0.0183);
+spacegroup("Cmc21");
+pack();
+replicate(0,0,0,4,4,4);
+rebond();
+		</programlisting>
+	</sect5>
+	
+</section>
