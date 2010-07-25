@@ -101,6 +101,11 @@
     <file>icons/traj_prev.svg</file>
     <file>icons/traj_view.svg</file>
   </qresource>
+  <qresource prefix="position" >
+    <file>icons/position_flipx.svg</file>
+    <file>icons/position_flipy.svg</file>
+    <file>icons/position_flipz.svg</file>
+  </qresource>
   <qresource prefix="/prefs" />
   <qresource prefix="/program" >
     <file>icons/aten.png</file>
@@ -129,11 +134,6 @@
     <file>icons/stack_position.svg</file>
     <file>icons/stack_surfaces.svg</file>
     <file>icons/stack_transform.svg</file>
-  </qresource>
-  <qresource prefix="/transform" >
-    <file>icons/transform_flipx.svg</file>
-    <file>icons/transform_flipy.svg</file>
-    <file>icons/transform_flipz.svg</file>
   </qresource>
   <qresource prefix="/vector" >
     <file>icons/vector_generatexp.svg</file>

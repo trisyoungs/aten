@@ -1,0 +1,155 @@
+<section id="tutorials.water"><title>Bulk Water</title>
+	<indexterm><primary>building</primary></indexterm>
+	<indexterm><primary>salt</primary></indexterm>
+	<indexterm><primary>liquids</primary></indexterm>	
+	<indexterm><primary>disordered systems</primary></indexterm>
+	
+	<para>Bulk systems are the staple diet of the molecular dynamicist, particularly systems that are isotropic. This example illustrates how to generate a simple bulk configuration of liquid water.</para>
+	
+
+  <div class="paragraph">
+    <b><emphasis>1. Make Water!</emphasis></b> 
+    <p>We need a water molecule. We <emphasis>could</emphasis> load one in, but its marginally more interesting to build one from scratch. So, we'll place an oxygen atom down somewhere and automatically add hydrogens to it.</p>
+
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td>
+        <td>On the Build page change the current element to oxygen with</td><td><img src="images/build_element.png" alt="buildelement"/></td>
+      </tr>
+    </table>
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td>
+	<td>Select Draw Atom</td><td><img src="images/build_draw.png" alt="draw"/></td><td>and click once somewhere on the main view.</td>
+      </tr>
+    </table>
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td>
+	<td>Add hydrogens to the atom with</td><td><img src="images/build_addh.png" alt="addh"/></td>
+      </tr>
+    </table>
+    <div class="tutshot"><img src="images/water_1.png" alt="water1"/></div>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>2. Create a New Model with an Empty Cell</emphasis></b> 
+    <p>The Disordered Builder works on an existing model with a unit cell that we provide (after all, it can't know everything). This means we predetermine the size and shape of the cell before the Disorded Builder begins -- for this example a simple cubic cell will suffice. How big a system you want (and how long you're prepared to wait for it) will determine the size of the cell. For example, a side length <emphasis>l</emphasis> of 10 &#197; will hold 33 water molecules (at a density of 1 g / cm3), while a side length <emphasis>l</emphasis> of 20 &#197; holds around 300. The choice of either of these, or something entirely different (even non-cubic) is yours.</p>
+
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td><td>Create a new model with</td>
+        <td><img src="images/file_new.png" alt="newmodel"/></td>
+      </tr>
+    </table>
+    <table class="tutsteps">
+      <tr>
+	<td><img src="images/stack_celledit.png" alt="celledit"/></td><td class="tutarrow"></td>
+        <td>Add a unit cell to the model by checking</td><td><img src="images/cell_hascell.png" alt="hascell"/></td>
+      </tr>
+    </table>
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td><td>Set the cell to the desired shape and size</td>
+      </tr>
+    </table>
+    <div class="tutshot"><img src="images/water_2.png" alt="water2"/></div>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>3. Load a Suitable Forcefield</emphasis></b> 
+    <p>Now, water isn't the most complicated of molecules so many of the supplied forcefields will do. We must load one in so that Aten can generate an energy expression for the water and target models.</p>
+
+    <table class="tutsteps">
+      <tr>
+	<td><img src="images/stack_ff.png" alt="forcefields"/></td>
+        <td class="tutarrow"></td><td>Load in the forcefield with </td>
+        <td><img src="images/file_open.png" alt="openfile"/></td>
+      </tr>
+    </table>
+    <table class="tutsteps">
+      <tr>
+	<td class="tutspacer"></td><td class="tutarrow"></td><td>If its the first forcefield to be loaded then it will automatically become the default. Otherwise, you must check the arrow next to it to persuade Aten to use it when a forcefield is required.</td>
+      </tr>
+    </table>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>4. Build the Disordered System</emphasis></b> 
+    <p>All loaded models that are non-periodic are listed in the Disordered Builder window, since they are all viable candidates for inclusion into new models. Since the only non-periodic model currently loaded is the water model we created earlier, this is the only one in the list.</p>
+    <p>Each model listed has a number ('0' by default) and two checkboxes associated with it. The number represents the requested number of copies to insert into the target model, while the checkboxes allow rotation and translation Monte Carlo moves to be restricted.<a class="tutcallout" href="#restrictions">What are restrictions?</a> for specific models. The size of cell you created in Step 2 will determine the number that you type in here - alternatively you could just put in a huge number and see how many will fit.</p>
+    <p>Note that the number(s) you request here may not be the final molecule populations that you end up with.<a class="tutcallout" href="#requests">Why not?</a></p>
+
+    <div class="tutshot"><img src="images/water_3.png" alt="water3"/></div>
+    <div class="tutextrainfo"></div>
+    <div class="tutextra">
+      <p><emphasis><a name="restrictions">Restricting Moves</a></emphasis> - By default, inserted molecules are placed in random positions and random orientations. Unchecking the R(otate) checkbox will prevent this initial rotation <b>and</b> all plain Monte Carlo rotation moves. The T(ranslate) checkbox only affects plain Monte Carlo translation moves - it has no effect on the insertion of molecules.</p>
+      <p><emphasis><a name="requests">Requested Numbers</a></emphasis> - The requested numbers represent the maximum number of copies of a given model that may be inserted into the model. The nature of the beast means that, should you choose exactly the number that corresponds to the experimental density for a given cell volume, you'll most likely find that you don't get the number you wanted. Two options are available: either you can increase the size of the cell and then reduce the volume afterwards somehow, or you can play with the van der Waals scaling factor option (which decreases the effective radii of atoms allowing more to fit into the same volume). The latter method is probably preferable, but some extra minimisation of the final system might be required.</p>
+    </div>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>5. Further Actions</emphasis></b> 
+    <p>Energy minimise the model a little with one of the minimisers? Add a few more waters by running the Disordered Builder again on the same cell? Your choice.</p>
+    <p>Save the coordinates and a forcefield specification of the system from the File menu? Why not!</p>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>6. Script</emphasis></b> 
+    <p>This script uses a larger cubic box to hold more waters, and also minimises the system a little before saving out coordinates and a forcefield expression for DL_POLY.</p>
+    <div class="script">
+      newmodel water<br/>
+      newatom O<br/>
+      addhydrogen<br/>
+      nmols 267<br/>
+
+      loadff data/ff/water.ff wff<br/>
+      defaultff wff<br/>
+
+      newmodel box<br/>
+      cell 20 20 20 90 90 90<br/>
+
+      disorder 20<br/>
+
+      mcminimise 20<br/>
+
+      savefield dlpoly water.FIELD<br/>
+      savemodel dlpoly water.CONFIG<br/>
+
+      quit
+    </div>
+  <hr/></div>
+
+
+  <div class="paragraph">
+    <b><emphasis>7. One-Liner</emphasis></b> 
+    <div class="script">
+      aten -c "newmodel water; newatom O; addhydrogen; nmols 267; loadff data/ff/water.ff wff; defaultff wff; newmodel box; cell 20 20 20 90 90 90; disorder 20; mcminimise 20; savefield dlpoly water.FIELD; savemodel dlpoly water.CONFIG; quit"
+    </div>
+  <hr/></div>
+
+</div>
+
+<div id="footer">
+  Copyright T. Youngs 2008
+</div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-3946453-3");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+</body>
+
+</html>
+
+</section>

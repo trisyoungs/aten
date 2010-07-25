@@ -10,12 +10,16 @@
 	<!ENTITY example001 SYSTEM "examples/example001.xml">
 	<!ENTITY example002 SYSTEM "examples/example002.xml">
 	<!ENTITY example003 SYSTEM "examples/example003.xml">
+	<!ENTITY tutorial001 SYSTEM "examples/tutorial_ice.xml">
+	<!ENTITY tutorial002 SYSTEM "examples/tutorial_alumina.xml">
+	<!ENTITY tutorial003 SYSTEM "examples/tutorial_saltwater.xml">
+	<!ENTITY tutorial004 SYSTEM "examples/tutorial_buikwater.xml">
 ]>
 
 <book>
 	<bookinfo>
 	<title>Aten vATENVERSION (rATENREVISION)</title>
-	<subtitle>Command Examples</subtitle>
+	<subtitle>Command Examples and Tutorials</subtitle>
 	<author>
 		<firstname>Tristan</firstname>
 		<surname>Youngs</surname>
@@ -23,13 +27,24 @@
 	</bookinfo>
 	
 	<!-- EXAMPLES -->
-	<chapter id="examples"><title>Command Examples</title>
-		<section><title>Introduction</title>
+	<chapter id="examples"><title>Short Examples</title>
+		<section><title>Overview</title>
 			<para>A number of short, useful examples of applications of Aten's command language is provided here. Some are in the form of full scripts which can be pasted into a text file and run form there, and some are in the form of 'one-liners', controlling Aten directly from the command line.</para>
 		</section>
 		&example001;
 		&example002;
 		&example003;
+	</chapter>
+	
+	<!-- TUTORIALAS -->
+	<chapter id="tutorials"><title>Tutorialss</title>
+		<section><title>Overview</title>
+			<para>Some longer tutorials using the GUI are given here, and are intended to give overviews of key features and topics.</para>
+		</section>
+		&tutorial001;
+		&tutorial002;
+		&tutorial003;
+<!-- 		&tutorial004; -->
 	</chapter>
 
 	<!-- Index -->
