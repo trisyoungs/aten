@@ -100,6 +100,12 @@ class Energy
 	void add(EnergyType, double, int, int=-1);
 	// Returns the total energy in the store
 	double total();
+	// Returns the total bond energy in the store
+	double bond();
+	// Returns the total angle energy in the store
+	double angle();
+	// Returns the total torsion energy in the store
+	double torsion();
 	// Returns the VDW part of the model's energy
 	double vdw();
 	// Returns the electrostatic part of the model's energy

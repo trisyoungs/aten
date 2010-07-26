@@ -27,10 +27,9 @@
 #include "base/pattern.h"
 
 // Calculate energy for specified interaction
-double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, double *paramsj, double scale, int i, int j)
+double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, double scale, int i, int j)
 {
 	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
-	Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[type].combinationRules;
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -39,17 +38,17 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::InversePower):
 			// U = epsilon * (r / rij) ** n
-			epsilon = Combine::combine( crflags[VdwFunctions::InversePowerEpsilon], paramsi[VdwFunctions::InversePowerEpsilon], paramsj[VdwFunctions::InversePowerEpsilon] );
-			sigma = Combine::combine( crflags[VdwFunctions::InversePowerR], paramsi[VdwFunctions::InversePowerR], paramsj[VdwFunctions::InversePowerR] ) * scale;
-			pwr = Combine::combine( crflags[VdwFunctions::InversePowerN], paramsi[VdwFunctions::InversePowerN], paramsj[VdwFunctions::InversePowerN] );
+			epsilon = params[VdwFunctions::InversePowerEpsilon];
+			sigma = params[VdwFunctions::InversePowerR] * scale;
+			pwr = params[VdwFunctions::InversePowerN];
 			U = epsilon * pow(sigma / rij, pwr);
 			break;
 		case (VdwFunctions::Lj):
 		case (VdwFunctions::LjGeometric):
 			// U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
-			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
-			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
-			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
+			epsilon = params[VdwFunctions::LjEpsilon];
+			sigma = params[VdwFunctions::LjSigma] * scale;
+			a = params[VdwFunctions::LjN];
 			sigmar2 = sigma / rij;
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -57,8 +56,8 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::LjAB):
 			// U = A/r**12 - B/r**6
-			a = Combine::combine( crflags[VdwFunctions::LjA], paramsi[VdwFunctions::LjA], paramsj[VdwFunctions::LjA] );
-			b = Combine::combine( crflags[VdwFunctions::LjB], paramsi[VdwFunctions::LjB], paramsj[VdwFunctions::LjB] );
+			a = params[VdwFunctions::LjA];
+			b = params[VdwFunctions::LjB];
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -67,18 +66,18 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 			break;
 		case (VdwFunctions::Buckingham):
 			// U = A * exp(-rij/B) - C/(rij**6)
-			a = Combine::combine( crflags[VdwFunctions::BuckinghamA], paramsi[VdwFunctions::BuckinghamA], paramsj[VdwFunctions::BuckinghamA] );
-			b = Combine::combine( crflags[VdwFunctions::BuckinghamB], paramsi[VdwFunctions::BuckinghamB], paramsj[VdwFunctions::BuckinghamB] );
-			c = Combine::combine( crflags[VdwFunctions::BuckinghamC], paramsi[VdwFunctions::BuckinghamC], paramsj[VdwFunctions::BuckinghamC] );
+			a = params[VdwFunctions::BuckinghamA];
+			b = params[VdwFunctions::BuckinghamB];
+			c = params[VdwFunctions::BuckinghamC];
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			U = a * exp(-rij/b) - c/r6;
 			break;
 		case (VdwFunctions::Morse):
 			// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
-			d = Combine::combine( crflags[VdwFunctions::MorseD], paramsi[VdwFunctions::MorseD], paramsj[VdwFunctions::MorseD]);
-			forcek = Combine::combine( crflags[VdwFunctions::MorseK], paramsi[VdwFunctions::MorseK], paramsj[VdwFunctions::MorseK] );
-			eq = Combine::combine( crflags[VdwFunctions::MorseEq], paramsi[VdwFunctions::MorseEq], paramsj[VdwFunctions::MorseEq]) * scale;
+			d = params[VdwFunctions::MorseD];
+			forcek = params[VdwFunctions::MorseK];
+			eq = params[VdwFunctions::MorseEq] * scale;
 			rij -= eq;
 			expo = 1.0 - exp( -forcek * rij );
 			U = d * ( expo*expo - 1.0);
@@ -91,11 +90,10 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, do
 }
 
 // Calculate forces for specified interaction (return force on atom i)
-Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *paramsi, double *paramsj, double scale, int i, int j)
+Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *params, double scale, int i, int j)
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
-	Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[type].combinationRules;
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -104,17 +102,17 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::InversePower):
 			// dU/dr = -n * epsilon * (sigma / r)**(n-1) * (sigma/ r**2)
-			epsilon = Combine::combine( crflags[VdwFunctions::InversePowerEpsilon], paramsi[VdwFunctions::InversePowerEpsilon], paramsj[VdwFunctions::InversePowerEpsilon] );
-			sigma = Combine::combine( crflags[VdwFunctions::InversePowerR], paramsi[VdwFunctions::InversePowerR], paramsj[VdwFunctions::InversePowerR] ) * scale;
-			pwr = Combine::combine( crflags[VdwFunctions::InversePowerN], paramsi[VdwFunctions::InversePowerN], paramsj[VdwFunctions::InversePowerN] );
+			epsilon = params[VdwFunctions::InversePowerEpsilon];
+			sigma = params[VdwFunctions::InversePowerR] * scale;
+			pwr = params[VdwFunctions::InversePowerN];
 			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
 			break;
 		case (VdwFunctions::Lj):
 		case (VdwFunctions::LjGeometric):
 			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
-			epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
-			sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * scale;
-			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
+			epsilon = params[VdwFunctions::LjEpsilon];
+			sigma = params[VdwFunctions::LjSigma] * scale;
+			a = params[VdwFunctions::LjN];
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -122,8 +120,8 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::LjAB):
 			// dU/dr = 6*(B/r**7) - 12*(A/r**13)
-			a = Combine::combine( crflags[VdwFunctions::LjA], paramsi[VdwFunctions::LjA], paramsj[VdwFunctions::LjA] );
-			b = Combine::combine( crflags[VdwFunctions::LjB], paramsi[VdwFunctions::LjB], paramsj[VdwFunctions::LjB] );
+			a = params[VdwFunctions::LjA];
+			b = params[VdwFunctions::LjB];
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -132,18 +130,18 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::Buckingham):
 			// dU/dr = A * exp(-rij/B) / B + 6.0 * C/(rij**7)
-			a = sqrt( paramsi[VdwFunctions::BuckinghamA] * paramsj[VdwFunctions::BuckinghamA] );
-			b = sqrt( paramsi[VdwFunctions::BuckinghamB] * paramsj[VdwFunctions::BuckinghamB] );
-			c = sqrt( paramsi[VdwFunctions::BuckinghamC] * paramsj[VdwFunctions::BuckinghamC] );
+			a = params[VdwFunctions::BuckinghamA];
+			b = params[VdwFunctions::BuckinghamB];
+			c = params[VdwFunctions::BuckinghamC];
 			r2 = rij * rij;
 			r6 = r2 * r2 * r2;
 			du_dr = a * b * exp(-rij/b) / b + 6.0 * c/(r6 * rij);
 			break;
 		case (VdwFunctions::Morse):
 			// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
-			d = Combine::combine( crflags[VdwFunctions::MorseD], paramsi[VdwFunctions::MorseD], paramsj[VdwFunctions::MorseD]);
-			forcek = Combine::combine( crflags[VdwFunctions::MorseK], paramsi[VdwFunctions::MorseK], paramsj[VdwFunctions::MorseK] );
-			eq = Combine::combine( crflags[VdwFunctions::MorseEq], paramsi[VdwFunctions::MorseEq], paramsj[VdwFunctions::MorseEq]) * scale;
+			d = params[VdwFunctions::MorseD];
+			forcek = params[VdwFunctions::MorseK];
+			eq = params[VdwFunctions::MorseEq] * scale;
 			expo = exp( -forcek * (rij - eq) );
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
@@ -161,10 +159,11 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
 	msg.enter("Pattern::vdwIntraPatternEnergy");
-	static int aoff,m1,i,j, start1, finish1, con;
-	static Vec3<double> mim_i;
-	static double U, rij, energy_inter, energy_intra, cutoff, vrs;
+	int aoff, m1, i, j, start1, finish1, con;
+	Vec3<double> mim_i;
+	double U, rij, energy_inter, energy_intra, cutoff, vrs;
 	PatternAtom *pai, *paj;
+	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -189,18 +188,15 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
+					// Check distance
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					// Check for conflicting VDW types
-					if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
-					{
-						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i+1, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j+1, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
-						msg.exit("Pattern::vdwIntraPatternEnergy");
-						return FALSE;
-					}
-					// Calculate the enrgy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->parameters(), atoms_[j]->data()->parameters(), vrs, i, j);
+					// Find relevant (pre-combined) parameters
+					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					if (pp == NULL) break;
+					// Calculate the energy contribution
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), vrs, i, j);
 					con == 0 ? energy_inter += U : energy_intra += (con == 3 ? U * vdwScaleMatrix_[i][j] : U);
 				}
 			}
@@ -223,6 +219,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, cutoff, vrs, U;
 	PatternAtom *pai, *paj;
+	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -285,15 +282,11 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					// Check for conflicting VDW types
-					if (atoms_[i]->data()->vdwForm() != otherPattern->atoms_[j]->data()->vdwForm())
-					{
-						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i+1, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j+1, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
-						msg.exit("Pattern::vdwInterPatternEnergy");
-						return FALSE;
-					}
-					// Calculate the enrgy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->parameters(), otherPattern->atoms_[j]->data()->parameters(), vrs, i, j);
+					// Find relevant (pre-combined) parameters
+					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					if (pp == NULL) break;
+					// Calculate the energy contribution
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), vrs, i, j);
 					energy_inter += U;;
 				}
 			}
@@ -315,10 +308,11 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
 	msg.enter("Pattern::vdwIntraPatternForces");
-	static int i,j,aoff,m1,con;
-	static Vec3<double> mim_i, f_i, tempf;
-	static double cutoff, vrs, rij;
+	int i,j,aoff,m1,con;
+	Vec3<double> mim_i, f_i, tempf;
+	double cutoff, vrs, rij;
 	PatternAtom *pai, *paj;
+	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -340,18 +334,17 @@ bool Pattern::vdwIntraPatternForces(Model *srcmodel)
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
+					// Check distance
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					// Check for conflicting VDW types
-					if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
-					{
-						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i+1, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j+1, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
-						msg.exit("Pattern::vdwIntraPatternForces");
-						return TRUE;
-					}
+
+					// Find relevant (pre-combined) parameters
+					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					if (pp == NULL) break;
+
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->parameters(), paj->data()->parameters(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), vrs, i, j);
 					if (con == 3) tempf *= vdwScaleMatrix_[i][j];
 					f_i -= tempf;
 					modelatoms[j+aoff]->f() += tempf;
@@ -372,10 +365,11 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
 	msg.enter("Pattern::vdwInterPatternForces");
-	static int i,j,aoff1,aoff2,m1,m2,start,finish;
-	static Vec3<double> mim_i, f_i, tempf;
-	static double rij, cutoff, vrs;
+	int i,j,aoff1,aoff2,m1,m2,start,finish;
+	Vec3<double> mim_i, f_i, tempf;
+	double rij, cutoff, vrs;
 	PatternAtom *pai, *paj;
+	PointerPair<ForcefieldAtom,double> *pp;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	Atom **modelatoms = srcmodel->atomArray();
@@ -401,18 +395,17 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
+					// .Check distance
 					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					// Check for conflicting VDW types
-					if (atoms_[i]->data()->vdwForm() != otherPattern->atoms_[j]->data()->vdwForm())
-					{
-						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i+1, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j+1, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
-						msg.exit("Pattern::vdwInterPatternForces");
-						return FALSE;
-					}
+
+					// Find relevant (pre-combined) parameters
+					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					if (pp == NULL) break;
+
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->parameters(), paj->data()->parameters(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pp->data(), vrs, i, j);
 					f_i -= tempf;
 					modelatoms[j+aoff2]->f() += tempf;
 				}
@@ -467,13 +460,6 @@ bool Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 				for (paj = p2->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
-					// Check for conflicting VDW types
-					if (p1->atoms_[i]->data()->vdwForm() != p2->atoms_[j]->data()->vdwForm())
-					{
-						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i+1, VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name, j+1, VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].name);
-						msg.exit("Pattern::vdwCorrectEnergy");
-						return FALSE;
-					}
 					paramsj = paj->data()->parameters();
 					Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
 					switch (p2->atoms_[j]->data()->vdwForm())

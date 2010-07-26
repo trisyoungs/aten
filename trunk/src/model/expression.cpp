@@ -202,8 +202,44 @@ bool Model::createExpression(bool vdwOnly)
 	}
 	// 4) Create master (Model) forcefield term lists
 	createForcefieldLists();
-	// Lastly, assign charges to atoms
-	if (!assignForcefieldCharges()) return FALSE;
+	// 5) Assign charges to atoms
+	if (!assignForcefieldCharges())
+	{
+		msg.exit("Model::createExpression");
+		return FALSE;
+	}
+	// 6) Create VDW lookup table of combined parameters
+	combinationTable_.clear();
+	PointerPair<ForcefieldAtom,double> *pp;
+	ForcefieldAtom *ffa, *ffb;
+	Combine::CombinationRule *crflags;
+	int i;
+	for (Refitem<ForcefieldAtom,int> *rfa = forcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
+	{
+		ffa = rfa->item;
+		for (Refitem<ForcefieldAtom,int> *rfb = rfa; rfb != NULL; rfb = rfb->next)
+		{
+			ffb = rfb->item;
+			// Check for compatible interaction types between atoms
+			if (ffa->vdwForm() != ffb->vdwForm())
+			{
+				msg.print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.\n", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
+				msg.print("Expression for model cannot be completed.\n");
+				msg.exit("Model::createExpression");
+				return FALSE;
+			}
+			// Create item in table
+			pp = combinationTable_.add(rfa->item, rfb->item, VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters);
+			// Combine parameters
+			crflags = VdwFunctions::VdwFunctions[ffa->vdwForm()].combinationRules;
+			for (i=0; i<VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters; ++i)
+			{
+				pp->setData(i, Combine::combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
+// 	printf("combined Parameter is %f, original = %f,%f\n", Combine::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));
+			}
+
+		}
+	}
 	expressionPoint_ = changeLog.log(Log::Structure);
 	msg.exit("Model::createExpression");
 	return TRUE;
@@ -258,4 +294,17 @@ void Model::createForcefieldLists()
 	msg.print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
 	msg.exit("Model::createForcefieldLists");
+}
+
+// Return specified pair data from combination table
+PointerPair<ForcefieldAtom,double> *Model::combinedParameters(ForcefieldAtom *at1, ForcefieldAtom *at2)
+{
+	if ((at1 == NULL) || (at2 == NULL))
+	{
+		printf("Warning - NULL atom type(s) passed to Model::combineParameters...\n");
+		return NULL;
+	}
+	PointerPair<ForcefieldAtom,double> *pp = combinationTable_.find(at1, at2);
+	if (pp == NULL) printf("Internal Error : Couldn't find combined parameters for atom types '%s' and '%s'.\n", at1->name(), at2->name());
+	return pp;
 }

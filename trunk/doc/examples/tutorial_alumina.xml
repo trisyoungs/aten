@@ -64,7 +64,7 @@
 		</table>
 		
 		<figure><title>Addition of symmetry-unique atoms</title>
-			<graphic fileref="images/tutorials_alumina1.png" align="center"/>
+			<graphic fileref="images/tutorial_alumina1.png" align="center"/>
 		</figure>
 
 	</sect5>
@@ -93,7 +93,7 @@
 		</table>
 		
 		<figure><title>Fully-packed crystal</title>
-			<graphic fileref="images/tutorials_alumina2.png" align="center"/>
+			<graphic fileref="images/tutorial_alumina2.png" align="center"/>
 		</figure>
 
 	</sect5>
@@ -126,7 +126,7 @@
 		</table>
 		
 		<figure><title>Replicated and rebonded superlattice</title>
-			<graphic fileref="images/tutorials_alumina3.png" align="center"/>
+			<graphic fileref="images/tutorial_alumina3.png" align="center"/>
 		</figure>
 		
 	</sect5>

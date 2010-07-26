@@ -58,6 +58,24 @@ double Energy::total()
 	return total_;
 }
 
+// Returns the total bond energy in the store
+double Energy::bond()
+{
+	return totBond_;
+}
+
+// Returns the total angle energy in the store
+double Energy::angle()
+{
+	return totAngle_;
+}
+
+// Returns the total torsion energy in the store
+double Energy::torsion()
+{
+	return totTorsion_;
+}
+
 // Returns the VDW part of the model's energy
 double Energy::vdw()
 {

@@ -42,9 +42,6 @@ mkdir codeexamples
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./codeexamples/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl examples-versioned.xml
-# Copy images
-mkdir usermanual/images
-cp images/*png usermanual/images
 # Process files to
 # 1) Rewrite links so they work in the website
 # 2) Remove blank extraneous line from synopsis elements
@@ -75,8 +72,9 @@ mkdir usermanual
 CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
 sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
 xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./usermanual/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl aten-versioned.xml
-# Copy images
+# Copy images from usermanual dir (also from examples/images)
 mkdir usermanual/images
+cp images/*png usermanual/images
 cp images/*png usermanual/images
 for a in `ls -1 ../src/gui/icons/*svg`; do b=${a/..\/*\//}; echo $b; inkscape $a -d 29 -e usermanual/images/${b/svg/png}; done
 # Process files to
