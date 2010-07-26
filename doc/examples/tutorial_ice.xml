@@ -11,7 +11,7 @@
 		<para>First, we create the unit cell, which from the paper is orthorhombic with side lengths <emphasis>A</emphasis> = 4.5019, <emphasis>B</emphasis> = 7.7978, and <emphasis>C</emphasis> = 7.328 &#197;. The view may need adjusting in order to see the whole cell.</para>
 
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
@@ -40,7 +40,7 @@
 		<para>There a five symmetry-unique atoms to add into the cell. This might seem odd given that this doesn't add up to a whole number of water molecules, but one of the water molecules lays with its oxygen on a mirror plane, and so only needs one hydrogen to be specified. Atom positions in the paper are given in fractional coordinates - we will create the atoms using these coordinates which will be converted by Aten into their real (cell) coordinates automatically.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><emphasis>Build Toolbar</emphasis></entry>
@@ -86,7 +86,7 @@
 		<para>To complete the model the spacegroup of the crystal must be set, so that generation of the symmetry-related atoms can be performed. On the cell page, enter the spacegroup as either 'Cmc21' or '36', then select Pack to generate the symmetry-related atoms from the current cell contents using the specified spacegroup's generator definitions. In the image shown below, the atoms have also been folded into the unit cell (Ctrl-F).</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
@@ -115,7 +115,7 @@
 		<para>The basic cell of ice Ih isn't particularly interesting, so we will replicate the cell to create a larger supercell of the ice crystal, and then calculate bonds in the new model so that the hexagonal structure is clear to see.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celltransform.png"/></entry>

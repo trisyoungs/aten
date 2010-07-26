@@ -128,8 +128,8 @@
     <file>icons/stack_celldefine.svg</file>
     <file>icons/stack_celledit.svg</file>
     <file>icons/stack_disorder.svg</file>
-    <file>icons/stack_edit.svg</file>
     <file>icons/stack_ff.svg</file>
+    <file>icons/stack_build.svg</file>
     <file>icons/stack_minimiser.svg</file>
     <file>icons/stack_position.svg</file>
     <file>icons/stack_surfaces.svg</file>

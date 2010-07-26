@@ -14,7 +14,7 @@
 		<para>First off, we will create a basic FCC template model which has a unit cell of exactly 1 &#197;, with four sodium atoms at {0,0,0}, {0.5,0.5,0}, {0.0,0.5,0.5}, and {0.5,0.0,0.5}, representing the basic positions of atoms in a face-centred cubic lattice.</para>
 
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
@@ -61,7 +61,7 @@
 		<para>Since the sodium and chlorine atoms in NaCl lay on their own interpenetrating FCC lattices, we can create the chlorine atoms by manipulating the four sodium atoms. We can copy and paste the current atoms, and then flip them about their centre's x-axis to get them in the correct position. Then, they can be transmuted into chlorines.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><emphasis>Edit Menu</emphasis></entry>
@@ -110,7 +110,7 @@
 		<para>For this example, we'll replicate by four additional whole cell units in x and z and one in y. Note that the values given in the Replicate page represent the <emphasis>total</emphasis> size which we require, so input values (negative/positive) of {0,0,0} and {1,1,1} will result in an unchaged cell. Also, feel free to ignore these suggested numbers and put in really large ones to cripple your machine!</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celltransform.png"/></entry>
@@ -147,7 +147,7 @@
 		<para>It's a simple job to create an interface from the current system - all we need do is increase the cell dimension along the y direction (the cell's <emphasis>B</emphasis> length). In the example below, the <emphasis>B</emphasis> length is changed to 28.14 &#197; in order to correspond to the <emphasis>A</emphasis> and <emphasis>C</emphasis> lengths and give a cubic system, but any value will do. However, remember that the next step (adding the water) will take longer the larger the volume of the cell.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celledit.png"/></entry>
@@ -172,7 +172,7 @@
 		<para>We will now create a water molecule in a separate model so we can add it in to the NaCl cell using the Disordered Builder.</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><emphasis>File Toolbar</emphasis></entry>
@@ -205,7 +205,7 @@
 		<para>We now return to the original NaCl model, since the current model is the target of the Disordered Builder. We require a forcefield in order to provide the energetic description of the whole system, both the NaCl cell and the water model, and the combination of the two. Both models are quite simple, and the OPLS-AA forcefield will provide all the terms necessary.</para>
 			
 		<table frame='all' pgwide='1' tocentry='0'>
-			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 				<tbody>
 					<row>
 						<entry><emphasis>Main Window</emphasis></entry>
