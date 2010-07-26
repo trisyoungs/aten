@@ -478,7 +478,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
 	msg.print("Beginning Monte Carlo insertion...\n\n");
-	msg.print(" Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
+	msg.print(" Step     Energy        Delta          VDW          Elec         Model       N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
 	ecurrent = destmodel->totalEnergy(destmodel, success);
 	if (!success)

@@ -543,6 +543,8 @@ class Prefs
 	void setModelUpdate(int n);
 	// Return the model update frequency
 	int modelUpdate() const;
+	// Return whether to update the model, given the cycle number
+	bool shouldUpdateModel(int n);
 	// Set the energy update frequency
 	void setEnergyUpdate(int n);
 	// Return the energy update frequency

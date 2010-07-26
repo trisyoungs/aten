@@ -13,7 +13,7 @@
 	<!ENTITY tutorial001 SYSTEM "examples/tutorial_ice.xml">
 	<!ENTITY tutorial002 SYSTEM "examples/tutorial_alumina.xml">
 	<!ENTITY tutorial003 SYSTEM "examples/tutorial_saltwater.xml">
-	<!ENTITY tutorial004 SYSTEM "examples/tutorial_buikwater.xml">
+	<!ENTITY tutorial004 SYSTEM "examples/tutorial_bulkwater.xml">
 ]>
 
 <book>
@@ -44,7 +44,7 @@
 		&tutorial001;
 		&tutorial002;
 		&tutorial003;
-<!-- 		&tutorial004; -->
+		&tutorial004;
 	</chapter>
 
 	<!-- Index -->

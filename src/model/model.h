@@ -22,6 +22,7 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
+#include "templates/pointerpair.h"
 #include "ff/energystore.h"
 #include "base/cell.h"
 #include "base/log.h"
@@ -510,6 +511,8 @@ class Model
 	Reflist<ForcefieldBound,int> forcefieldTorsions_;
 	// List containing references to atom types in used in model (useful in expression export)
 	Reflist<ForcefieldAtom,int> forcefieldTypes_;
+	// Combination table, containing pre-combined VDW parameters
+	PairTable<ForcefieldAtom,double> combinationTable_;
 
 	public:
 	// Set type of specified atom
@@ -558,6 +561,8 @@ class Model
 	void invalidateExpression();
 	// Generate parameters for total energy function
 	void fillExpression(int);
+	// Return specified pair data from combination table
+	PointerPair<ForcefieldAtom,double> *combinedParameters(ForcefieldAtom *at1, ForcefieldAtom *at2);
 
 
 	/*

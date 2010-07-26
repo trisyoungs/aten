@@ -30,7 +30,7 @@
 		</table>
 
 		<figure><title>Generation of initial unit cell</title>
-			<graphic fileref="images/tutorials_ice1.png" align="center"/>
+			<graphic fileref="images/tutorial_ice1.png" align="center"/>
 		</figure>
 		
 	</sect5>
@@ -76,7 +76,7 @@
 		</table>
 		
 		<figure><title>Addition of symmetry-unique atoms</title>
-			<graphic fileref="images/tutorials_ice2.png" align="center"/>
+			<graphic fileref="images/tutorial_ice2.png" align="center"/>
 		</figure>
 		
 	</sect5>
@@ -105,7 +105,7 @@
 		</table>
 		
 		<figure><title>Generation of complete cell contents</title>
-			<graphic fileref="images/tutorials_ice3.png" align="center"/>
+			<graphic fileref="images/tutorial_ice3.png" align="center"/>
 		</figure>
 		
 	</sect5>	
@@ -138,7 +138,7 @@
 		</table>
 		
 		<figure><title>Replicated and rebonded superlattice</title>
-			<graphic fileref="images/tutorials_ice4.png" align="center"/>
+			<graphic fileref="images/tutorial_ice4.png" align="center"/>
 		</figure>
 		
 	</sect5>

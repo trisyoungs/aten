@@ -87,7 +87,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					// U = 0.5 * forcek * (r - eq)**2
 					forcek = fabs(ffb->parameter(AngleFunctions::BondConstraintK));
 					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
-					rij = srcmodel->distance(i, j) - eq;
+					rij = srcmodel->distance(i, k) - eq;
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				default:
@@ -107,12 +107,12 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 void Pattern::angleForces(Model *srcmodel)
 {
 	msg.enter("Pattern::angleForcess");
-	static int i,j,k,aoff,m1;
-	static Vec3<double> vec_ij, vec_kj, fi, fk, mim_ik;
-	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c1, c2, cosx, rij;
-	static double du_dtheta, dtheta_dcostheta;
-	static ForcefieldBound *ffb;
-	static PatternBound *pb;
+	int i,j,k,aoff,m1;
+	Vec3<double> vec_ij, vec_kj, fi, fj, fk, mim_ik;
+	double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c1, c2, cosx, rij;
+	double du_dtheta, dtheta_dcostheta;
+	ForcefieldBound *ffb;
+	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
@@ -175,7 +175,7 @@ void Pattern::angleForces(Model *srcmodel)
 					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
 					mim_ik = cell->mimd(modelatoms[k]->r(), modelatoms[i]->r());
 					rij = mim_ik.magnitude();
-					du_dtheta = forcek * (rij - eq);
+					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
 					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
@@ -185,8 +185,9 @@ void Pattern::angleForces(Model *srcmodel)
 			// Exception for BondConstraint term...
 			if (pb->data()->angleStyle() == AngleFunctions::BondConstraint)
 			{
-				fk = (mim_ik / rij) * -du_dtheta;
-				fi = -fk;
+				fi = (mim_ik / rij) * du_dtheta;
+				fj = 0.0;
+				fk = -fi;
 			}
 			else
 			{
@@ -197,10 +198,12 @@ void Pattern::angleForces(Model *srcmodel)
 				fi *= -du_dtheta / mag_ij;
 				fk = vec_ij - vec_kj * dp;
 				fk *= -du_dtheta / mag_kj;
+				fj = fi + fk;
 			}
+
 			// Add contributions into force arrays
 			modelatoms[i]->f() += fi;
-			modelatoms[j]->f() -= fi + fk;
+			modelatoms[j]->f() -= fj;
 			modelatoms[k]->f() += fk;
 		}
 		aoff += nAtoms_;

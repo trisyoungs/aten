@@ -83,8 +83,8 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	converged = FALSE;
 	lineDone = FALSE;
 
-	msg.print("Step         Energy          DeltaE          RMS Force\n");
-	msg.print("Init  %15.5e          ---         ---\n", newEnergy);
+	msg.print("Step      Energy       DeltaE       RMS Force      E(Bond)      E(Angle)      E(Torsion)\n");
+	msg.print("Init  %12.5e          ---         ---\n", newEnergy);
 	gui.progressCreate("Minimising (SD)", nCycles_);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -93,13 +93,6 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
 		else
 		{
-			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (fabs(deltaRms) < fcon))
-			{
-				converged = TRUE;
-				break;
-			}
-
 			// Line minimise to get new energy
 			oldEnergy = newEnergy;
 			newEnergy = lineMinimise(srcmodel);
@@ -107,13 +100,24 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 			oldRms = newRms;
 			srcmodel->calculateForces(srcmodel);
 			newRms = srcmodel->rmsForce();
+			srcmodel->normaliseForces(1.0, TRUE);
 
 			deltaEnergy = newEnergy - oldEnergy;
 			deltaRms = newRms - oldRms;
+
+			// Check convergence criteria
+			if ((fabs(deltaEnergy) < econ) && (fabs(newRms) < fcon))
+			{
+				converged = TRUE;
+				break;
+			}
+
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,newEnergy,deltaEnergy,newRms,etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1,newEnergy,deltaEnergy,newRms, srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
 
 		if (lineDone || converged) break;
 	}

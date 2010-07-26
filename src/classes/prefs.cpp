@@ -255,7 +255,7 @@ Prefs::Prefs()
 
 	// General Prefs / Methods
 	modelUpdate_ = 5;
-	energyUpdate_ = 1;
+	energyUpdate_ = 5;
 	maxRingSize_ = 6;
 	maxRings_ = 20;
 	maxCuboids_ = 100;
@@ -1164,6 +1164,13 @@ int Prefs::modelUpdate() const
 {
 	return modelUpdate_;
 }
+
+// Return whether to update the energy, given the cycle number
+bool Prefs::shouldUpdateModel(int n)
+{
+	return (n%modelUpdate_ == 0 ? TRUE : FALSE);
+}
+
 
 // Set the energy update frequency
 void Prefs::setEnergyUpdate(int n)

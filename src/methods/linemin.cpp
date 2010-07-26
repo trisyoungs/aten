@@ -77,10 +77,10 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		msg.exit("LineMinimiser::lineMinimise");
 		return 0.0;
 	}
-	bound[0] = 0.25;
+	bound[0] = 0.1;
 	gradientMove(srcmodel, &destmodel, bound[0]);
 	energy[0] = srcmodel->totalEnergy(&destmodel, success);
-	bound[2] = 0.5;
+	bound[2] = 0.2;
 	gradientMove(srcmodel, &destmodel, bound[2]);
 	energy[2] = srcmodel->totalEnergy(&destmodel, success);
 
