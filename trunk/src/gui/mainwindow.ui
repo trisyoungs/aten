@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -1997,7 +1998,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_edit.svg</normaloff>:/stackicons/icons/stack_edit.svg</iconset>
+     <normaloff>:/stackicons/icons/stack_build.svg</normaloff>:/stackicons/icons/stack_build.svg</iconset>
    </property>
    <property name="text">
     <string>Build</string>

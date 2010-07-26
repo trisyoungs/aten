@@ -10,7 +10,7 @@
 	<para>We need a water molecule. We <emphasis>could</emphasis> load one in, but its marginally more interesting to build one from scratch. So, we'll place an oxygen atom down somewhere and automatically add hydrogens to it.</para>
 
 	<table frame='all' pgwide='1' tocentry='0'>
-		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 			<tbody>
 				<row>
 					<entry><emphasis>File Toolbar</emphasis></entry>
@@ -43,7 +43,7 @@
 	<para>The Disordered Builder adds molecules into a single target model, which must have a unit cell definition. This means we predetermine the size and shape of the cell before the Disorded Builder begins -- for this example a simple cubic cell will suffice. How big a system you want (and how long you're prepared to wait for it) will determine the size of the cell. For example, a side length <emphasis>l</emphasis> of 10 &#197; will hold 33 water molecules (at a density of 1 g / cm3), while a side length <emphasis>l</emphasis> of 20 &#197; holds around 300. The choice of either of these, or something entirely different (even non-cubic) is yours.</para>
 
 	<table frame='all' pgwide='1' tocentry='0'>
-		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 			<tbody>
 				<row>
 					<entry><emphasis>File Toolbar</emphasis></entry>
@@ -72,7 +72,7 @@
 	<para>Now, water isn't the most complicated of molecules so many of the supplied forcefields will do. We must load one in so that Aten can generate an energy expression for the water and target models.</para>
 
 	<table frame='all' pgwide='1' tocentry='0'>
-		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 			<tbody>
 				<row>
 					<entry><inlinegraphic fileref="image/stack_ff.png"/></entry>
@@ -97,7 +97,7 @@
 	<para>Note that the number(s) you request here may not be the final molecule populations that you end up with, as a result of the Monte Carlo insertion method. The requested numbers represent the maximum number of copies of a given model that may be inserted into the model. The nature of the beast means that, should you choose exactly the number that corresponds to the experimental density for a given cell volume, you'll most likely find that you don't get the number you wanted. Two options are available: either you can increase the size of the cell and then reduce the volume afterwards somehow, or you can play with the van der Waals scaling factor option (which decreases the effective radii of atoms allowing more to fit into the same volume). The latter method is probably preferable, but some extra minimisation of the final system might be required.</para>
 	
 	<table frame='all' pgwide='1' tocentry='0'>
-		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+		<tgroup cols='2' align='left' colsep='0' rowsep='0'>
 			<tbody>
 				<row>
 					<entry><inlinegraphic fileref="images/stack_disorder.png"/></entry>
