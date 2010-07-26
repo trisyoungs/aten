@@ -50,7 +50,7 @@ cp images/*png usermanual/images
 # 2) Remove blank extraneous line from synopsis elements
 # 3) Rewrite image locations to point to the *user manual* directory, so we can use the pre-existing GUI images
 cd codeexamples
-sed -i -n '
+sed -i -n "
 1h
 1!H
 $ {
@@ -59,7 +59,7 @@ $ {
 	s/\([a-z0-9\.]*\)\.html/\/doc\/Examples\/\1.xhtml/g
 	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
 	p
-}' *.html
+}" *.html
 for a in *html
 do
   grep -v "<?xml" $a > ${a/.html/.xhtml}
