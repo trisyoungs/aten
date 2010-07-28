@@ -69,6 +69,8 @@ class Forcefield
 	void setFilename(const char *s);
 	// Return filename
 	const char *filename();
+	// Return internal energy unit of forcefield
+	Prefs::EnergyUnit energyUnit();
 	// Set internal energy unit of forcefield
 	void setEnergyUnit(Prefs::EnergyUnit eu);
 

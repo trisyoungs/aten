@@ -37,6 +37,12 @@ CommandNode::CommandNode(Command::Function func) : function_(func)
 	format_ = NULL;
 }
 
+CommandNode::CommandNode(TreeNode *source)
+{
+	format_ = NULL;
+	copy(source);	
+}
+
 // Destructor
 CommandNode::~CommandNode()
 {

@@ -37,8 +37,9 @@ class Tree;
 class CommandNode : public TreeNode
 {
 	public:
-	// Constructor / Destructor
+	// Constructors / Destructor
 	CommandNode(Command::Function func = Command::NoFunction);
+	CommandNode(TreeNode *source);
 	~CommandNode();
 
 	/*

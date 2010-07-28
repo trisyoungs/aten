@@ -36,8 +36,14 @@ class Glyph;
 class Bundle
 {
 	public:
-	// Constructor
+	// Constructors
 	Bundle();
+	Bundle(Forcefield *ptr);
+	Bundle(Model *ptr);
+	Bundle(Pattern *ptr);
+	Bundle(Atom *ptr);
+	Bundle(Grid *ptr);
+	Bundle(Glyph *ptr);
 	// Bundle Pointer Types
 	enum BundlePointer { AtomPointer=1, PatternPointer=2, ModelPointer=4, ForcefieldPointer=8, GridPointer=16, SitePointer=32, GlyphPointer=64 };
 

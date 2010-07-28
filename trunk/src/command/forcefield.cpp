@@ -44,13 +44,14 @@ bool Command::function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			msg.print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
-	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));	rv.reset();
+	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	rv.reset();
 	return TRUE;
 }
 
@@ -551,7 +552,7 @@ bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			msg.print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addTorsion(torsionstyle);

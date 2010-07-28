@@ -51,7 +51,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodCg::minimise");
 	int cycle, i;
-	double enew, ecurrent, edelta = 0.0, rmscurrent, rmsnew, g_old_sq, gamma, g_current_sq;
+	double newEnergy, oldEnergy, deltaEnergy = 0.0, oldRms, newRms, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;
 	Atom **modelatoms;
@@ -71,7 +71,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// Calculate initial reference energy and RMS force
 	modelatoms = srcmodel->atomArray();
 	g_old = new double[srcmodel->nAtoms()*3];
-	ecurrent = srcmodel->totalEnergy(srcmodel, success);
+	newEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
 	        msg.exit("MethodCg::minimise");
@@ -79,17 +79,21 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	}
 
 	srcmodel->calculateForces(srcmodel);
-	rmscurrent = srcmodel->rmsForce();
+	newEnergy = srcmodel->rmsForce();
 	srcmodel->energy.print();
 
 	converged = FALSE;
 	linedone = FALSE;
 
-	msg.print("Step         Energy          DeltaE          RMS Force\n");
-	msg.print("Init  %15.5e          ---      %15.5e\n",ecurrent,rmscurrent);
+	// Initialise the line minimiser
+	initialise(srcmodel);
+
+	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
+	msg.print("Init  %12.5e  %12.5e        ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+
 	gui.progressCreate("Minimising (CG)", nCycles_);
 
-	srcmodel->normaliseForces(5.0, TRUE);
+	srcmodel->normaliseForces(1.0, TRUE);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
@@ -97,17 +101,17 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		if (!gui.progressUpdate(cycle, &etatext)) linedone = TRUE;
 		else
 		{
-			enew = lineMinimise(srcmodel);
-			edelta = enew - ecurrent;
-			rmsnew = srcmodel->rmsForce();
+			newEnergy = oldEnergy;
+			newRms = oldRms;
+			newEnergy = lineMinimise(srcmodel);
+			deltaEnergy = oldEnergy - newEnergy;
+			newRms = srcmodel->rmsForce();
 			// Check convergence criteria
-			if ((fabs(edelta) < econ) && (rmsnew < fcon)) converged = TRUE;
-			ecurrent = enew;
-			rmscurrent = rmsnew;
+			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e %s\n",cycle+1,ecurrent,edelta,rmscurrent, etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
 		if (linedone || converged) break;
 
@@ -120,7 +124,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 			g_old[i+2] = f.z;
 		}
 		srcmodel->calculateForces(srcmodel);
-		srcmodel->normaliseForces(5.0, TRUE);
+		srcmodel->normaliseForces(1.0, TRUE);
 
 		// Calculate new conjugate gradient vector, if this isn't the first cycle
 		if (cycle != 0)
@@ -159,7 +163,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	if (converged) msg.print("Conjugate gradient converged in %i steps.\n",cycle+1);
 	else msg.print("Conjugate gradient did not converge within %i steps.\n",nCycles_);
 	msg.print("Final energy:\n");
-	ecurrent = srcmodel->totalEnergy(srcmodel, success);
+	newEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);

@@ -50,6 +50,17 @@ TreeNode::~TreeNode()
 {
 }
 
+// Copy data
+void TreeNode::copy(TreeNode *source)
+{
+	nodeType_ = source->nodeType_;
+	parent_ = source->parent_;
+	args_ = source->args_;
+	returnType_ = source->returnType_;
+	readOnly_ = source->readOnly_;
+	returnsArray_ = source->returnsArray_;
+}
+
 // Retrieve node type
 TreeNode::NodeType TreeNode::nodeType() const
 {

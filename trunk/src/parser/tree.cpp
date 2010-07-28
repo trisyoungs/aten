@@ -391,7 +391,7 @@ TreeNode *Tree::addOperator(Command::Function func, TreeNode *arg1, TreeNode *ar
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added operator '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added operator '%s' (%p)...\n", Command::data[func].keyword, leaf);
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
 	leaf->setParent(this);
@@ -409,14 +409,14 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", Command::data[func].keyword, leaf);
 	// Add argument list to node and set parent
 	leaf->reverseAddArgumentList(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten.commands.data[func].arguments, aten.commands.data[func].keyword))
+	if (!leaf->checkArguments(Command::data[func].arguments, Command::data[func].keyword))
 	{
 		msg.print("Error: Function syntax is '%s(%s)'.\n", Command::data[func].keyword, Command::data[func].argText);
 		leaf = NULL;
@@ -433,7 +433,7 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 	// Create new command node
 	CommandNode *leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", aten.commands.data[func].keyword, leaf);
+	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", Command::data[func].keyword, leaf);
 	if (a1 != NULL) leaf->addArgument(a1);
 	if (a2 != NULL) leaf->addArgument(a2);
 	if (a3 != NULL) leaf->addArgument(a3);
@@ -442,7 +442,7 @@ TreeNode *Tree::addFunction(Command::Function func, TreeNode *a1, TreeNode *a2, 
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten.commands.data[func].arguments, aten.commands.data[func].keyword))
+	if (!leaf->checkArguments(Command::data[func].arguments, Command::data[func].keyword))
 	{
 		msg.print("Error: Function syntax is '%s(%s)'.\n", Command::data[func].keyword, Command::data[func].argText);
 		leaf = NULL;
@@ -483,7 +483,7 @@ TreeNode *Tree::addDeclarations(TreeNode *declist)
 	leaf->reverseAddArgumentList(declist);
 	leaf->setParent(this);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten.commands.data[Command::Declarations].arguments, aten.commands.data[Command::Declarations].keyword)) leaf = NULL;
+	if (!leaf->checkArguments(Command::data[Command::Declarations].arguments, Command::data[Command::Declarations].keyword)) leaf = NULL;
 	msg.exit("Tree::addDeclarations");
 	return leaf;
 }

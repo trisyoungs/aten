@@ -30,6 +30,7 @@ class CommandList;
 class CommandNode;
 class CommandData;
 class Command;
+class TreeNode;
 
 // Function pointer typedef and call #define
 typedef bool (*CommandFunction)(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -1036,6 +1037,8 @@ class Command
 	void initPointers();
 	// Execute specified command
 	bool call(Command::Function cf, CommandNode *node, ReturnValue &rv);
+	// Execute specified TreeNode command with specified bundle
+	bool call(Command::Function cf, TreeNode *node, ReturnValue &rv, Bundle &bundle);
 };
 
 // External declaration
