@@ -301,28 +301,46 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 {
 	msg.enter("Pattern::coulombInterPatternForces");
-	static int i,j,aoff1,aoff2,m1,m2,start,finish;
-	static Vec3<double> mim_i, f_i, tempf;
-	static double rij, factor, cutoff;
+	int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
+	Vec3<double> mim_i, f_i, tempf;
+	double rij, energy_inter, energy, cutoff, factor;
 	PatternAtom *pai, *paj;
+	cutoff = prefs.elecCutoff();
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
-	cutoff = prefs.elecCutoff();
+	energy_inter = 0.0;
 
-	// TODO Move loops so that we can load temporary forces for i then calculate all other forces on it in one go.
-	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == otherPattern ? finish = nMolecules_ - 1 : finish = nMolecules_;
-	for (m1=0; m1<finish; m1++)
+	// Outer loop over molecules in *this* pattern
+	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
+	start1 = 0;
+	finish1 = (this == otherPattern ? nMolecules_ - 1 : nMolecules_);
+	aoff1 = startAtom_ + start1 * nAtoms_;
+	for (m1=start1; m1<finish1; m1++)
 	{
-		this == otherPattern ? start = m1 + 1 : start = 0;
-		aoff2 = otherPattern->startAtom_ + start*nAtoms_;
-		for (m2=start; m2<otherPattern->nMolecules_; m2++)
+		// Inner loop - over *all* molecules in 'otherPattern'
+		if (this == otherPattern)
 		{
+			// Same pattern - if a specific molecule was given then we loop over all molecules.
+			start2 = m1 + 1;
+			finish2 = nMolecules_;
+		}
+		else
+		{
+			// Simple - go over all molecules in the dissimilar pattern
+			start2 = 0;
+			finish2 = otherPattern->nMolecules_;
+		}
+
+		//if (m1 == 0) printf("IPE - finish1 = %i, start2 = %i, finish2 = %i\n",finish1,start2,finish2);
+		aoff2 = otherPattern->startAtom_ + start2*otherPattern->nAtoms_;
+		//printf("  VDWINTER2 %i %i %i\n",start2,finish2,aoff2);
+		for (m2=start2; m2<finish2; m2++)
+		{
+			//printf("      m1/m2=%i/%i  aoff1/aoff2=%i/%i \n",m1,m2,aoff1,aoff2);
 			i = -1;
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
 				i++;
-				f_i = modelatoms[i+aoff1]->f();
 				j = -1;
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
@@ -336,13 +354,46 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					f_i -= tempf;
 					modelatoms[j+aoff2]->f() += tempf;
 				}
-				// Store temporary force array back into main force array
-				modelatoms[i+aoff1]->f() = f_i;
 			}
 			aoff2 += otherPattern->nAtoms_;
 		}
 		aoff1 += nAtoms_;
 	}
+
+// 	// TODO Move loops so that we can load temporary forces for i then calculate all other forces on it in one go.
+// 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
+//         this == otherPattern ? finish = nMolecules_ - 1 : finish = nMolecules_;
+// 	for (m1=0; m1<finish; m1++)
+// 	{
+// 		this == otherPattern ? start = m1 + 1 : start = 0;
+// 		aoff2 = otherPattern->startAtom_ + start*nAtoms_;
+// 		for (m2=start; m2<otherPattern->nMolecules_; m2++)
+// 		{
+// 			i = -1;
+// 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
+// 			{
+// 				i++;
+// 				f_i = modelatoms[i+aoff1]->f();
+// 				j = -1;
+// 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
+// 				{
+// 					j++;
+// 					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+// 					rij = mim_i.magnitude();
+// 					if (rij > cutoff) continue;
+// 					// Calculate force contribution
+// 					factor = (modelatoms[i+aoff1]->charge() * modelatoms[j+aoff2]->charge()) / (rij*rij);
+// 					tempf = mim_i * factor;
+// 					f_i -= tempf;
+// 					modelatoms[j+aoff2]->f() += tempf;
+// 				}
+// 				// Store temporary force array back into main force array
+// 				modelatoms[i+aoff1]->f() = f_i;
+// 			}
+// 			aoff2 += otherPattern->nAtoms_;
+// 		}
+// 		aoff1 += nAtoms_;
+// 	}
 
 /*	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"

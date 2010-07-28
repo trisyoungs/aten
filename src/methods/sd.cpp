@@ -47,12 +47,12 @@ int MethodSd::nCycles() const
 }
 
 // Minimise Energy w.r.t. coordinates by Steepest Descent
-void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
+void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	msg.enter("MethodSd::minimise");
-	int cycle;
-	double oldEnergy, newEnergy, deltaEnergy, oldRms, newRms, deltaRms;
+	int cycle, nattempts;
+	double oldEnergy, newEnergy, deltaEnergy, oldRms, newRms, deltaRms, stepsize;
 	bool lineDone, converged, success;
 	Dnchar etatext;
 
@@ -73,35 +73,56 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	        msg.exit("MethodSd::minimise");
 	        return;
 	}
-
-	srcmodel->calculateForces(srcmodel);
-	oldEnergy = 0.0;
-	deltaEnergy = 100.0;
-	deltaRms = 100.0;
 	srcmodel->energy.print();
 
 	converged = FALSE;
 	lineDone = FALSE;
 
-	msg.print("Step      Energy       DeltaE       RMS Force      E(Bond)      E(Angle)      E(Torsion)\n");
-	msg.print("Init  %12.5e          ---         ---\n", newEnergy);
+	// Initialise the line minimiser
+	initialise(srcmodel);
+
+	// Calculate initial forces and corresponding rms
+	srcmodel->calculateForces(srcmodel);
+	newRms = srcmodel->rmsForce();
+
+	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
+	msg.print("Init  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 	gui.progressCreate("Minimising (SD)", nCycles_);
 
+	stepsize = 1.0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
 		if (!gui.progressUpdate(cycle, &etatext)) lineDone = TRUE;
 		else
 		{
-			// Line minimise to get new energy
+			// Simple method begins here
 			oldEnergy = newEnergy;
-			newEnergy = lineMinimise(srcmodel);
-			// Calculate forces at the new point
 			oldRms = newRms;
+
+			// Minimise along gradient vector
+			srcmodel->normaliseForces(1.0, TRUE);
+			if (simple)
+			{
+				// Step along gradient (with reducing step size until energy decreases)
+				nattempts = 0;
+				do
+				{
+					++nattempts;
+					gradientMove(srcmodel, stepsize);
+					newEnergy = srcmodel->totalEnergy(&tempModel_, success);
+					if (newEnergy > oldEnergy) stepsize *= 0.5;
+				} while (newEnergy > oldEnergy);
+				// If the very first attempt was successful, increase the stepsize again
+				if (nattempts == 1) stepsize *= 1.5;
+			}
+			else newEnergy = lineMinimise(srcmodel);
+
+			srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
+
+			// Calculate forces ready for next cycle
 			srcmodel->calculateForces(srcmodel);
 			newRms = srcmodel->rmsForce();
-			srcmodel->normaliseForces(1.0, TRUE);
-
 			deltaEnergy = newEnergy - oldEnergy;
 			deltaRms = newRms - oldRms;
 
@@ -115,9 +136,9 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1,newEnergy,deltaEnergy,newRms, srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
-		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
+		if (prefs.shouldUpdateModel(cycle)) gui.update(FALSE, FALSE, FALSE, FALSE);
 
 		if (lineDone || converged) break;
 	}

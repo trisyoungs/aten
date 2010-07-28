@@ -25,6 +25,7 @@
 #include "base/constants.h"
 #include "base/elements.h"
 #include "ff/forcefield.h"
+#include "main/aten.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,12 +56,18 @@ ForcefieldVariable::~ForcefieldVariable()
 Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "filename",		VTypes::StringData,		0, TRUE },
-	{ "name",		VTypes::StringData,		0, FALSE }
+	{ "name",		VTypes::StringData,		0, FALSE },
+	{ "units",		VTypes::StringData,		0, FALSE }
 };
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "addangle",	VTypes::NoData,	Command::data[Command::AngleDef].arguments,	Command::data[Command::AngleDef].syntax },
+	{ "addbond",	VTypes::NoData,	Command::data[Command::BondDef].arguments,	Command::data[Command::BondDef].syntax },
+	{ "addinter",	VTypes::NoData,	Command::data[Command::InterDef].arguments,	Command::data[Command::InterDef].syntax },
+	{ "addtorsion",	VTypes::NoData,	Command::data[Command::TorsionDef].arguments,	Command::data[Command::TorsionDef].syntax },
+	{ "addtype",	VTypes::NoData,	Command::data[Command::TypeDef].arguments,	Command::data[Command::TypeDef].syntax },
+	{ "finalise",	VTypes::NoData, Command::data[Command::Finalise].arguments,	Command::data[Command::Finalise].syntax }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -166,6 +173,9 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 		case (Name):
 			rv.set( ptr->name() );
 			break;
+		case (Units):
+			rv.set ( Prefs::energyUnit(ptr->energyUnit()) );
+			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldVariable.\n", accessorData[i].name);
 			result = FALSE;
@@ -242,10 +252,16 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;
 	}
+	Prefs::EnergyUnit eu;
 	if (result) switch (acc)
 	{
 		case (Name):
 			ptr->setName( newvalue.asString() );
+			break;
+		case (Units):
+			eu = Prefs::energyUnit(newvalue.asString(), TRUE);
+			if (eu == Prefs::nEnergyUnits) result = FALSE;
+			else ptr->setEnergyUnit(eu);
 			break;
 		default:
 			printf("ForcefieldVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -270,8 +286,29 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	// Construct temporary bundle object containing our forcefield pointer
+	Bundle bundle(ptr);
+	ReturnValue temprv;
 	if (result) switch (i)
 	{
+		case (AddAngle):
+			result = aten.commands.call(Command::AngleDef, node, temprv, bundle);
+			break;
+		case (AddBond):
+			result = aten.commands.call(Command::BondDef, node, temprv, bundle);
+			break;
+		case (AddInter):
+			result = aten.commands.call(Command::InterDef, node, temprv, bundle);
+			break;
+		case (AddTorsion):
+			result = aten.commands.call(Command::TorsionDef, node, temprv, bundle);
+			break;
+		case (AddType):
+			result = aten.commands.call(Command::TypeDef, node, temprv, bundle);
+			break;
+		case (Finalise):
+			result = aten.commands.call(Command::FinaliseFF, node, temprv, bundle);
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);
 			result = FALSE;

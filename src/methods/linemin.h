@@ -22,8 +22,7 @@
 #ifndef ATEN_LINEMIN_H
 #define ATEN_LINEMIN_H
 
-// Forward declarations
-class Model;
+#include "model/model.h"
 
 // Line Minimiser
 class LineMinimiser
@@ -32,17 +31,33 @@ class LineMinimiser
 	// Constructor
 	LineMinimiser();
 
-	private:
+	/*
+	// Variables
+	*/
+	protected:
 	// Tolerance for root finding
 	double tolerance_;
+	// Local, temporary model foor storing coordinates after gradient moves
+	Model tempModel_;
 
 	public:
 	// Set the tolerance
 	void setTolerance(double t);
 	// Return current tolerance
 	double tolerance() const;
-	// Generate a new config following the supplied gradient vector
-	void gradientMove(Model *source, Model *dest, double delta);
+	// Initialise temporary model
+	void initialise(Model *srcmodel);
+
+	/*
+	// Minimisation Methods
+	*/
+	protected:
+	// Generate a new config in tempModel_ following the supplied gradient vector
+	void gradientMove(Model *source, double delta);
+	// Perform Golden Search within specified bounds
+	void goldenSearch(Model *source, double *bounds, double *energies);
+
+	public:
 	// Minimise the specified model (srcmodel should already contain desired forces (i.e. gradient vector)) along which to minimise)
 	double lineMinimise(Model *source);
 };

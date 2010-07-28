@@ -307,7 +307,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MonteCarlo::nMoveTypes; n++)
 			{
 				sprintf(t," %3i", int(acceptanceRatio_[0][n]*100.0));
@@ -317,7 +317,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			strcat(s, etatext.get());
 			strcat(s,"\n");
 			msg.print(s);
-			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
 			//msg.print("\n");
 		}
@@ -478,7 +478,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
 	msg.print("Beginning Monte Carlo insertion...\n\n");
-	msg.print(" Step     Energy        Delta          VDW          Elec         Model       N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
+	msg.print(" Step     Energy        Delta          VDW          Elec         Model        N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
 	ecurrent = destmodel->totalEnergy(destmodel, success);
 	if (!success)
@@ -490,7 +490,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	currentElecEnergy = destmodel->energy.elec();
 
 	elast = ecurrent;
-	msg.print(" %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
+	msg.print(" Init  %13.6e %13s %13.6e %13.6e \n", ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
 	gui.progressCreate("Building disordered system", nCycles_ * components.nItems());
@@ -659,7 +659,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 			if (c->nRequested() != p->nMolecules()) done = FALSE;
 			if (endearly) break;
 		}
-		if (prefs.shouldUpdateEnergy(cycle))
+		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
 			// Print start of first line (current energy and difference)
 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);

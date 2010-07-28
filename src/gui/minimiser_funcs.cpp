@@ -30,7 +30,7 @@
 #include "parser/commandnode.h"
 
 // Minimisation algorithms
-enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
+enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };
 
 // Constructor
 AtenMinimiser::AtenMinimiser(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -69,20 +69,24 @@ void AtenMinimiser::doMinimisation()
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
-		case (MM_STEEPEST):
+		case (SimpleSteepestMethod):
 			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
-			CommandNode::run(Command::SDMinimise, "i", maxcycles);
+			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 1);
 			break;
-		case (MM_CONJUGATE):
+		case (SteepestMethod):
+			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			CommandNode::run(Command::SDMinimise, "ii", maxcycles, 0);
+			break;
+		case (ConjugateMethod):
 			CommandNode::run(Command::LineTolerance, "d", pow(10.0,ui.SDLineToleranceSpin->value()));
 			CommandNode::run(Command::CGMinimise, "i", maxcycles);
 			break;
-		case (MM_MONTECARLO):
+		case (MonteCarloMethod):
 			CommandNode::run(Command::MCMinimise, "i", maxcycles);
 			break;
-		case (MM_SIMPLEX):
-			msg.print("Simplex minimiser not yet written!\n");
-			break;
+// 		case (MM_SIMPLEX):
+// 			msg.print("Simplex minimiser not yet written!\n");
+// 			break;
 	}
 	// Update the view
 	gui.update(FALSE,FALSE,FALSE);

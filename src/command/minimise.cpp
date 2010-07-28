@@ -86,7 +86,7 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	sd.minimise(obj.rs, econverge, fconverge);
+	sd.minimise(obj.rs, econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)");
 	rv.reset();

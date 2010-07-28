@@ -908,9 +908,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "mcminimise",		"n",		VTypes::NoData,
 		"int maxsteps = 100",
 		"Run Monte Carlo minimiser on the current model" },
-	{ "sdminimise",		"n",		VTypes::NoData,
-		"int maxsteps = 100",
-		"Run steepest descent minimiser on the current model" },
+	{ "sdminimise",		"nb",		VTypes::NoData,
+		"int maxsteps = 100, bool simple = FALSE",
+		"Run steepest descent minimiser on the current model (using either simplistic or line-minimised methods)" },
 	{ "simplexminimise",	"",		VTypes::NoData,
 		"",
 		"Run the Simplex minimiser on the current model" },
@@ -944,7 +944,7 @@ CommandData Command::data[Command::nCommands] = {
 		"",
 		"List the currently-loaded models" },
 	{ "loadmodel",		"Cc",		VTypes::IntegerData,
-		"string filename [string name]",
+		"string filename, string name = <automatic>",
 		"Load a model from file" },
 	{ "loginfo",		"",		VTypes::NoData,
 		"",
@@ -1387,9 +1387,16 @@ bool CommandData::hasArguments()
 }
 
 // Execute command
-bool Command::call(Command::Function cf, CommandNode *c, ReturnValue &rv)
+bool Command::call(Command::Function cf, CommandNode *node, ReturnValue &rv)
 {
-	msg.print(Messenger::Commands, "Calling command '%s' (node is %p)...\n", data[cf].keyword, c);
-	return (this->pointers_[cf])(c, aten.current, rv);
+	msg.print(Messenger::Commands, "Calling command '%s' (node is %p)...\n", data[cf].keyword, node);
+	return (this->pointers_[cf])(node, aten.current, rv);
 }
 
+// Execute specified command with specified bundle
+bool Command::call(Command::Function cf, TreeNode *node, ReturnValue &rv, Bundle &bundle)
+{
+	msg.print(Messenger::Commands, "Calling command '%s' (treenode is %p) with custom bundle...\n", data[cf].keyword, node);
+	CommandNode cmdnode(node);
+	return (this->pointers_[cf])(&cmdnode, bundle, rv);
+}

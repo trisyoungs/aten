@@ -46,6 +46,8 @@ class TreeNode
 	TreeNode *nextArgument, *prevArgument;
 	// Node Types
 	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, ArrayConstantNode, UserCmdNode, nNodeTypes };
+	// Copy data
+	void copy(TreeNode *source);
 
 
 	/*

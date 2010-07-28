@@ -29,6 +29,42 @@ Bundle::Bundle()
 	clear();
 }
 
+Bundle::Bundle(Forcefield *ptr)
+{
+	clear();
+	ff = ptr;
+}
+
+Bundle::Bundle(Model *ptr)
+{
+	clear();
+	m = ptr;
+}
+
+Bundle::Bundle(Pattern *ptr)
+{
+	clear();
+	p = ptr;
+}
+
+Bundle::Bundle(Atom *ptr)
+{
+	clear();
+	i = ptr;
+}
+
+Bundle::Bundle(Grid *ptr)
+{
+	clear();
+	g = ptr;
+}
+
+Bundle::Bundle(Glyph *ptr)
+{
+	clear();
+	gl = ptr;
+}
+
 // Clear pointers
 void Bundle::clear()
 {

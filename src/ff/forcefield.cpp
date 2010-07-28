@@ -86,6 +86,12 @@ const char *Forcefield::filename()
 	return filename_.get();
 }
 
+// Return internal energy unit of forcefield
+Prefs::EnergyUnit Forcefield::energyUnit()
+{
+	return energyUnit_;
+}
+
 // Set internal energy unit of forcefield
 void Forcefield::setEnergyUnit(Prefs::EnergyUnit eu)
 {
