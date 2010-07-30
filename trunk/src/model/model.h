@@ -34,6 +34,7 @@
 #define SGCOREDEF__
 #include "base/sginfo.h"
 #include "methods/mc.h"
+#include "classes/zmatrix.h"
 
 // Forward Declarations
 class Forcefield;
@@ -499,7 +500,7 @@ class Model
 	// Expression / Typing
 	*/
 	private:
-	// Atom changeid at which the expression was/is valid
+	// Log value at which the expression was valid
 	int expressionPoint_;
 	// Whether the last succesfully created expression was VDW-only
 	bool expressionVdwOnly_;
@@ -599,7 +600,7 @@ class Model
 	private:
 	// Pattern nodes for the model
 	List<Pattern> patterns_;
-	// Flag to indicate a valid pattern for the model
+	// Log value at which current pattern was valid
 	int patternsPoint_;
 
 	public:
@@ -1052,6 +1053,19 @@ class Model
 	void removeGrid(Grid *s);
 	// Request rerendering of all grid data
 	void rerenderGrids();
+
+	/*
+	// ZMatrix
+	*/
+	private:
+	// Zmatrix definition of model
+	ZMatrix zMatrix_;
+	// Log point at which the zmatrix was valid
+	int zMatrixPoint_;
+
+	public:
+	// Retrieve (creating or updating as necessary) the zmatrix for the model
+	ZMatrix *zMatrix();
 };
 
 #endif

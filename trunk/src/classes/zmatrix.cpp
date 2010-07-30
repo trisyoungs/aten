@@ -187,3 +187,20 @@ void ZMatrix::create(Model *source, bool usebonds)
 	msg.exit("ZMatrix::create");
 }
 
+// Return number of defined elements
+int ZMatrix::nElements() const
+{
+	return elements_.nItems();
+}
+
+// Return specified element
+ZMatrixElement *ZMatrix::elements() const
+{
+	return elements_.first();
+}
+
+// Return specified element
+ZMatrixElement *ZMatrix::element(int index)
+{
+	return elements_[index];
+}

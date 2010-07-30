@@ -28,7 +28,6 @@
 AtenZMatrix::AtenZMatrix(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
-	shouldRefresh_ = TRUE;
 }
 
 // Destructor
@@ -38,7 +37,7 @@ AtenZMatrix::~AtenZMatrix()
 
 void AtenZMatrix::showWindow()
 {
-	if (shouldRefresh_) refresh();
+	refresh();
 	show();
 }
 
@@ -46,13 +45,60 @@ void AtenZMatrix::showWindow()
 void AtenZMatrix::refresh(bool forceupdate)
 {
 	msg.enter("AtenZMatrix::refresh");
-	// If the atom list page is not visible, don't do anything
-	if (!gui.zmatrixWindow->isVisible())
-	{
-		shouldRefresh_ = TRUE;
-		msg.exit("AtenZMatrix::refresh");
-		return;
-	}
 	Model *m = aten.currentModelOrFrame();
+	// Grab (and create) zmatrix for current model
+	ZMatrix *zmat = m->zMatrix();
+printf("HJASJDLKASJDLK\n");
+	// ZMatrix 'Connectivity' Table
+	int count = 0;
+	QTableWidgetItem *item;
+	Atom *i;
+	ui.ZMatrixTable->setRowCount(zmat->nElements());
+// 	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
+// 	ui.ZMatrixTable->setVerticalHeaderLabels("1");
+	for (ZMatrixElement *zel = zmat->elements(); zel != NULL; zel = zel->next)
+	{
+		// First atom (the creation target)
+		i = zel->atom(0);
+		item = new QTableWidgetItem(elements().symbol(i));
+		ui.ZMatrixTable->setItem(count, AtenZMatrix::SymbolColumn, item);
+		// Second atom (distance specifier)
+		i = zel->atom(1);
+		if (i != NULL)
+		{
+			item = new QTableWidgetItem(i->id()+1);
+			ui.ZMatrixTable->setItem(count, AtenZMatrix::DistanceAtomColumn, item);
+			item = new QTableWidgetItem(zel->distance()->name());
+			ui.ZMatrixTable->setItem(count, AtenZMatrix::DistanceColumn, item);
+			
+			// Third atom (angle specifier)
+			i = zel->atom(2);
+			if (i != NULL)
+			{
+				item = new QTableWidgetItem(i->id()+1);
+				ui.ZMatrixTable->setItem(count, AtenZMatrix::AngleAtomColumn, item);
+				item = new QTableWidgetItem(zel->angle()->name());
+				ui.ZMatrixTable->setItem(count, AtenZMatrix::AngleColumn, item);
+
+				// Fourth atom (torsion specifier)
+				i = zel->atom(3);
+				if (i != NULL)
+				{
+					item = new QTableWidgetItem(i->id()+1);
+					ui.ZMatrixTable->setItem(count, AtenZMatrix::TorsionAtomColumn, item);
+					item = new QTableWidgetItem(zel->torsion()->name());
+					ui.ZMatrixTable->setItem(count, AtenZMatrix::TorsionColumn, item);
+				}
+			}
+		}
+		count ++;
+	}
+	for (count=0; count<AtenZMatrix::nColumns; count++) ui.ZMatrixTable->resizeColumnToContents(count);
+
 	msg.exit("AtenZMatrix::refresh");
+}
+
+void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
+{
+	printf("Row, Column = %i, %i\n", row, column);
 }

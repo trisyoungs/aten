@@ -98,8 +98,12 @@ class ZMatrix
 	public:
 	// Create for specified model
 	void create(Model *source, bool usebonds);
+	// Return number of defined elements
+	int nElements() const;
 	// Return start of defined elements
-	ZMatrixElement *elements();
+	ZMatrixElement *elements() const;
+	// Return specified element
+	ZMatrixElement *element(int index);
 	// Retrieve named variable
 	Variable *data(const char *s);
 	// Return variable list
