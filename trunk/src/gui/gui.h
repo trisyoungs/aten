@@ -46,9 +46,11 @@ class AtenFragment;
 class AtenGeometry;
 class AtenGlyphs;
 class AtenGrids;
+class AtenMD;
 class AtenMinimiser;
 class AtenPosition;
 class AtenTransform;
+class AtenZMatrix;
 class Atom;
 class Model;
 class Forcefield;
@@ -149,12 +151,16 @@ class GuiQt
 	AtenGlyphs *glyphsWindow;
 	// Grids window
 	AtenGrids *gridsWindow;
+	// MD window
+	AtenMD *mdWindow;
 	// Minimiser window
 	AtenMinimiser *minimiserWindow;
 	// Atom positioning window
 	AtenPosition *positionWindow;
 	// Atom transformation window
 	AtenTransform *transformWindow;
+	// Zmatrix window
+	AtenZMatrix *zmatrixWindow;
 
 	/*
 	// Dialogs

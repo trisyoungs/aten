@@ -4,6 +4,7 @@ cg.h
 delaunay.h
 linemin.h 
 mc.h 
+md.h 
 geometry.h 
 pdens.h 
 rdf.h 
@@ -13,6 +14,7 @@ cg.cpp
 delaunay.cpp
 linemin.cpp 
 mc.cpp 
+md.cpp 
 geometry.cpp 
 pdens.cpp 
 rdf.cpp 

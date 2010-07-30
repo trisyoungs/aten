@@ -35,7 +35,9 @@
 #include "gui/atomlist.h"
 #include "gui/forcefields.h"
 #include "gui/fragment.h"
+#include "gui/md.h"
 #include "gui/minimiser.h"
+#include "gui/zmatrix.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
@@ -113,6 +115,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 		delete gui.forcefieldsWindow;
 		delete gui.glyphsWindow;
 		delete gui.gridsWindow;
+		delete gui.mdWindow;
 		delete gui.minimiserWindow;
 		delete gui.positionWindow;
 		delete gui.transformWindow;
@@ -666,11 +669,23 @@ void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
 	else gui.glyphsWindow->hide();
 }
 
+void AtenForm::on_actionMolecularDynamicsWindow_triggered(bool checked)
+{
+	if (checked) gui.mdWindow->showWindow();
+	else gui.mdWindow->hide();
+}
+
 // void AtenForm::on_actionAnalyseWindow_triggered(bool checked)
 // {
 //	if (checked) gui.analyseWindow->showWindow();
 //	else gui.analyseWindow->hide();
 // }
+
+void AtenForm::on_actionZMatrixEditorWindow_triggered(bool checked)
+{
+	if (checked) gui.zmatrixWindow->showWindow();
+	else gui.zmatrixWindow->hide();
+}
 
 void AtenForm::on_actionAboutAten_triggered(bool checked)
 {

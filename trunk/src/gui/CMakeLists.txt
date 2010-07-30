@@ -42,6 +42,7 @@ set(qtproject_SRCS
   loadmodel_funcs.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
+  md_funcs.cpp
   measureactions.cpp
   minimiser_funcs.cpp
   modelactions.cpp
@@ -65,6 +66,7 @@ set(qtproject_SRCS
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
   viewactions.cpp
+  zmatrix_funcs.cpp
 )
 
 SET(pro_MOC_HDRS
@@ -84,6 +86,7 @@ SET(pro_MOC_HDRS
   grids.h
   loadmodel.h
   mainwindow.h
+  md.h
   minimiser.h
   position.h
   prefs.h
@@ -91,6 +94,7 @@ SET(pro_MOC_HDRS
   selectfilter.h
   selectpattern.h
   transform.h
+  zmatrix.h
   tcanvas.uih
   tcolourframe.uih
   tprompt.uih
@@ -116,6 +120,7 @@ SET(pro_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
+  md.ui
   minimiser.ui
   position.ui
   prefs.ui
@@ -123,6 +128,7 @@ SET(pro_UIS
   selectfilter.ui
   selectpattern.ui
   transform.ui
+  zmatrix.ui
 )
 QT4_WRAP_UI(pro_UIS_H ${pro_UIS})
 

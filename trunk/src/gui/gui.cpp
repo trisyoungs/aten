@@ -44,9 +44,11 @@
 #include "gui/build.h"
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
+#include "gui/md.h"
 #include "gui/minimiser.h"
 #include "gui/transform.h"
 #include "gui/position.h"
+#include "gui/zmatrix.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
 #include <QtGui/QMessageBox>
@@ -105,9 +107,11 @@ GuiQt::GuiQt()
 	geometryWindow = NULL;
 	glyphsWindow = NULL;
 	gridsWindow = NULL;
+	mdWindow = NULL;
 	minimiserWindow = NULL;
 	positionWindow = NULL;
 	transformWindow = NULL;
+	zmatrixWindow = NULL;
 }
 
 // Destructor
@@ -132,6 +136,7 @@ GuiQt::~GuiQt()
 // 	disorderWindow = NULL;
 // 	forcefieldsWindow = NULL;
 // 	glyphsWindow = NULL;
+// 	mdWindow = NULL;
 // 	gridsWindow = NULL;
 // 	minimiserWindow = NULL;
 // 	positionWindow = NULL;
@@ -202,9 +207,11 @@ void GuiQt::run()
 	geometryWindow = new AtenGeometry(mainWindow, Qt::Window|Qt::Tool);
 	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
 	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
+	mdWindow = new AtenMD(mainWindow, Qt::Window|Qt::Tool);
 	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
 	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
 	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
+	zmatrixWindow = new AtenZMatrix(mainWindow, Qt::Window|Qt::Tool);
 
 	// Connect Finished signal of tool windows to finished slots in structure
 	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));
@@ -214,12 +221,15 @@ void GuiQt::run()
 	QObject::connect(commandWindow, SIGNAL(finished(int)), commandWindow, SLOT(dialogFinished(int)));
 	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
 	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(fragmentWindow, SIGNAL(finished(int)), fragmentWindow, SLOT(dialogFinished(int)));
 	QObject::connect(geometryWindow, SIGNAL(finished(int)), geometryWindow, SLOT(dialogFinished(int)));
 	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(mdWindow, SIGNAL(finished(int)), mdWindow, SLOT(dialogFinished(int)));
 	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
 	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
 	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
+	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));
 
 	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
@@ -261,6 +271,7 @@ void GuiQt::run()
 	gridsWindow->refresh();
 	forcefieldsWindow->refresh();
 	disorderWindow->refresh();
+	mdWindow->refresh();
 	cellDefineWindow->refresh();
 	cellTransformWindow->refresh();
 	mainWindow->update();

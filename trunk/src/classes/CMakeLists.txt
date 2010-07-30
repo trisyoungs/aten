@@ -10,6 +10,7 @@ prefs.h
 restraint.h
 ring.h
 site.h
+zmatrix.h
 colourscale.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp
@@ -22,6 +23,7 @@ prefs.cpp
 restraint.cpp
 ring.cpp
 site.cpp
+zmatrix.cpp
 )
 
 include_directories(

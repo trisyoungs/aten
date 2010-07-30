@@ -21,8 +21,8 @@ SUFFIXES: .ui .uih .qrc
 clean:
 	rm -f *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp ttabbar.cpp tcolourframe.cpp
 
-SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui minimiser.ui position.ui transform.ui
-SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp
+SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui md.ui minimiser.ui position.ui transform.ui zmatrix.ui
+SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp md_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp zmatrix_funcs.cpp
 
 MAINWINDOW_UI = icons.qrc ffeditor.ui loadmodel.ui prefs.ui selectelement.ui selectfilter.ui selectpattern.ui mainwindow.ui
 MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp settings.cpp
@@ -35,7 +35,6 @@ CANVAS_FUNCS = actiontext.cpp input.cpp
 
 libgui_a_SOURCES = $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(CANVAS_FUNCS) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(MAINWINDOW_ACTIONS) $(SUBWINDOW_FUNCS)
 
-
-noinst_HEADERS = about.h actiontext.h atomlist.h build.h celldefine.h celltransform.h command.h commandhelp.h disorder.h ffeditor.h forcefields.h fragment.h geometry.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h minimiser.h position.h prefs.h selectelement.h selectfilter.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h
+noinst_HEADERS = about.h actiontext.h atomlist.h build.h celldefine.h celltransform.h command.h commandhelp.h disorder.h ffeditor.h forcefields.h fragment.h geometry.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h md.h minimiser.h position.h prefs.h selectelement.h selectfilter.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@
