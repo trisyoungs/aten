@@ -36,10 +36,14 @@
 Model::Model()
 {
 	// Private variables
+	// Camera / View
 	camera_.set(0.0,0.0,-10.0);
 	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
+
+	// Properties
+	name_ = "NewModel";
 	mass_ = 0.0;
 	density_ = 0.0;
 	nUnknownAtoms_ = 0;
@@ -49,11 +53,18 @@ Model::Model()
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	expressionVdwOnly_ = FALSE;
+	cell_.setParent(this);
+	rmsForce_ = 0.0;
+	zMatrixPoint_ = -1;
+
+	// File / Undo
 	filter_ = NULL;
 	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
-	name_ = "NewModel";
+	undoRedoEnabled_ = FALSE;
+
+	// Trajectory
 	trajectoryParent_ = NULL;
 	trajectoryFilter_ = NULL;
 	trajectoryHeaderFunction_ = NULL;
@@ -67,6 +78,8 @@ Model::Model()
 	frameIndex_ = -1;
 	trajectoryPlaying_ = FALSE;
 	currentFrame_ = NULL;
+
+	// Disordered builder
 	componentPattern_ = NULL;
 	nRequested_ = 0;
 	region_.setParent(this);
@@ -75,12 +88,12 @@ Model::Model()
 	moveAllowed_[MonteCarlo::Translate] = TRUE;
 	moveAllowed_[MonteCarlo::Rotate] = TRUE;
 	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
-	undoRedoEnabled_ = FALSE;
-	cell_.setParent(this);
+
+	// Misc Function Data
 	bondingCuboids_ = NULL;
 	bondingOverlays_ = NULL;
 	nCuboids_ = 0;
-	rmsForce_ = 0.0;
+
 	// Allocate SGInfo Seitz matrix arrays
 	spacegroup_.MaxList = 192;
 	spacegroup_.ListSeitzMx = new T_RTMx[192];
@@ -163,6 +176,7 @@ void Model::clear()
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	projectionPoint_ = -1;
+	zMatrixPoint_ = -1;
 }
 
 
@@ -418,4 +432,12 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 double Model::rmsForce() const
 {
 	return rmsForce_;
+}
+
+// Retrieve (creating or updating as necessary) the zmatrix for the model
+ZMatrix *Model::zMatrix()
+{
+	// Update if necessary
+	if (zMatrixPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure))) zMatrix_.create(this, FALSE);
+	return &zMatrix_;
 }

@@ -34,8 +34,8 @@ class AtenZMatrix : public QDialog
 	Q_OBJECT
 
 	public:
-	// Data columns
-	enum DataColumns { IdData=1, ElementData, RxData, RyData, RzData };
+	// Column columns
+	enum TableColumns { SymbolColumn=1, DistanceAtomColumn, DistanceColumn, AngleAtomColumn, AngleColumn, TorsionAtomColumn, TorsionColumn, nColumns };
 
 	/*
 	// Window Functions
@@ -43,7 +43,8 @@ class AtenZMatrix : public QDialog
 	public:
 	void showWindow();
 	void refresh(bool forceupdate = FALSE);
-	private:
+	private slots:
+	void on_ZMatrixTable_cellDoubleClicked(int row, int column);
 
 	/*
 	// Local variables
