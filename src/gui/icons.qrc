@@ -106,7 +106,6 @@
     <file>icons/position_flipy.svg</file>
     <file>icons/position_flipz.svg</file>
   </qresource>
-  <qresource prefix="/prefs" />
   <qresource prefix="/program" >
     <file>icons/aten.png</file>
   </qresource>
@@ -120,6 +119,8 @@
     <file>icons/select_none.svg</file>
   </qresource>
   <qresource prefix="/stackicons" >
+    <file>icons/stack_zmatrix.svg</file>
+    <file>icons/stack_md.svg</file>
     <file>icons/stack_glyphs.svg</file>
     <file>icons/stack_fragment.svg</file>
     <file>icons/stack_command.svg</file>

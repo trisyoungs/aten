@@ -1,0 +1,57 @@
+<ui version="4.0" >
+ <class>ZMatrixDialog</class>
+ <widget class="QDialog" name="ZMatrixDialog" >
+  <property name="windowModality" >
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>233</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Z-Matrix Editor</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >
+    <normaloff>:/stackicons/icons/stack_zmatrix.svg</normaloff>:/stackicons/icons/stack_zmatrix.svg</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QTableWidget" name="ZMatrixTable" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="ActionsGroup" >
+     <property name="title" >
+      <string>Actions</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <property name="margin" >
+       <number>2</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
+ <connections/>
+</ui>
