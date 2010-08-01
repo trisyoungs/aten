@@ -29,6 +29,7 @@ undo.cpp
 undoevent.cpp
 undostate.cpp
 view.cpp
+zmatrix.cpp
 )
 
 include_directories(

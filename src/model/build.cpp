@@ -23,10 +23,6 @@
 #include "classes/prefs.h"
 #include "base/elements.h"
 
-/*
-// Sketching functions
-*/
-
 // Add hydrogens to model
 void Model::hydrogenSatisfy(Atom *target)
 {
@@ -242,4 +238,71 @@ void Model::movePenPosition(Vec3<double> v)
 void Model::setPenPosition(Vec3<double> v)
 {
 	penPosition_ = v;
+}
+
+// Set distance between atoms, moving atom j
+void Model::setAtomicDistance(Atom *i, Atom *j, double newdistance)
+{
+	Vec3<double> v = cell_.mimd(j, i);
+	double delta = newdistance - v.magnitude();
+	v.normalise();
+	v *= delta;
+	translateAtom(j, v);
+}
+
+// Set angle between atoms
+void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
+{
+	static Mat3<double> r, u, ut, gr, Igr;
+	double ang = angle(k,j,i);
+
+	// Get cross product of bond vectors to define rotation axis
+	Vec3<double> v = cell_.mimd(j,k) * cell_.mimd(j,i);
+	v.normalise();
+	double delta = newangle - ang;
+	u.rows[0] = v;
+	u.rows[1] = v.orthogonal();
+	u.rows[2] = v * u.rows[1];
+	u.rows[2].normalise();
+	ut = u.transpose();
+
+	// Create rotation matrix
+	r.createRotationX(delta);
+
+	// Create grand rotation matrix
+	gr = ut * r * u;
+	Igr.setIdentity();
+	Igr = Igr - gr;
+
+	Vec3<double> tempv = gr * k->r();
+	tempv += Igr * j->r();
+	positionAtom(k, tempv);
+}
+
+// Set torsionx between atoms
+void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion)
+{
+	static Mat3<double> r, u, ut, gr, Igr;
+	double ang = torsion(l,k,j,i);
+	// Rotation vector will be vector j->k
+	Vec3<double> v = cell_.mimd(j,k);
+	v.normalise();
+	double delta = newtorsion - ang;
+	u.rows[0] = v;
+	u.rows[1] = v.orthogonal();
+	u.rows[2] = v * u.rows[1];
+	u.rows[2].normalise();
+	ut = u.transpose();
+
+	// Create rotation matrix
+	r.createRotationX(delta);
+
+	// Create grand rotation matrix
+	gr = ut * r * u;
+	Igr.setIdentity();
+	Igr = Igr - gr;
+
+	Vec3<double> tempv = gr * k->r();
+	tempv += Igr * j->r();
+	positionAtom(k, tempv);
 }

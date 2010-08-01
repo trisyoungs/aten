@@ -680,9 +680,11 @@ void Pattern::createMatrices()
 	elecScaleMatrix_ = new double*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 
+	msg.print("Connectivity matrix.....initialising....");
 	for (n=0; n<nAtoms_; n++)
 		for (m=0; m<nAtoms_; m++) conMatrix_[n][m] = 0;
 
+	msg.print("seeding.....");
 	// First, build up the bond matrix
 	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 	{
@@ -698,6 +700,7 @@ void Pattern::createMatrices()
 		printf("\n");
 	} */
 
+	msg.print("transforming.....");
 	// Now, transform into the connectivity matrix.
 	for (a1=0; a1<nAtoms_; a1++)
 	{
@@ -726,6 +729,7 @@ void Pattern::createMatrices()
 			}
 		}
 	}
+	msg.print("done.\n");
 
 /*	printf("Connectivity Matrix\n");
 	for (n=0; n<nAtoms_; n++)

@@ -87,7 +87,7 @@ StepNode *RegionVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'region&' has no member or function named '%s'.\n", s);
 			printAccessors();
 			msg.exit("RegionVariable::accessorSearch");
 			return NULL;
@@ -95,7 +95,7 @@ StepNode *RegionVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'grid&' function '%s'.\n", s);
+			msg.print("Error: Array index given to 'region&' function '%s'.\n", s);
 			msg.exit("RegionVariable::accessorSearch");
 			return NULL;
 		}
@@ -104,7 +104,7 @@ StepNode *RegionVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		result->reverseAddArgumentList(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'region&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}

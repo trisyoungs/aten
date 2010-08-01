@@ -28,6 +28,7 @@
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
 #include "gui/selectpattern.h"
+#include "gui/selectvariable.h"
 #include "gui/selectelement.h"
 #include "gui/commandhelp.h"
 #include "gui/about.h"
@@ -94,6 +95,7 @@ GuiQt::GuiQt()
 	loadModelDialog = NULL;
 	selectFilterDialog = NULL;
 	selectPatternDialog = NULL;
+	selectVariableDialog = NULL;
 	selectElementDialog = NULL;
 	aboutDialog = NULL;
 	atomlistWindow = NULL;
@@ -124,6 +126,7 @@ GuiQt::~GuiQt()
 // 	loadModelDialog = NULL;
 // 	selectFilterDialog = NULL;
 // 	selectPatternDialog = NULL;
+// 	selectVariableDialog = NULL;
 // 	selectElementDialog = NULL;
 // 	commandHelpDialog = NULL;
 // 	aboutDialog = NULL;
@@ -192,6 +195,7 @@ void GuiQt::run()
 	loadModelDialog = new AtenLoadModel(mainWindow);
 	selectFilterDialog = new AtenSelectFilter(mainWindow);
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
+	selectVariableDialog = new AtenSelectVariable(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
 	commandHelpDialog = new AtenCommandHelp(mainWindow);
 	aboutDialog = new AtenAbout(mainWindow);
@@ -211,7 +215,7 @@ void GuiQt::run()
 	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
 	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
 	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
-	zmatrixWindow = new AtenZMatrix(mainWindow, Qt::Window|Qt::Tool);
+	zmatrixWindow = new AtenZMatrix(mainWindow);	// Modal dialog
 
 	// Connect Finished signal of tool windows to finished slots in structure
 	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));
@@ -237,6 +241,7 @@ void GuiQt::run()
 	loadModelDialog->setModal(TRUE);
 	selectFilterDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
+	selectVariableDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
 	commandHelpDialog->setModal(TRUE);
 
@@ -248,6 +253,7 @@ void GuiQt::run()
 	loadModelDialog->finaliseUi();
 	selectFilterDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
+	selectVariableDialog->finaliseUi();
 	selectElementDialog->finaliseUi();
 	commandHelpDialog->finaliseUi();
 
@@ -261,6 +267,7 @@ void GuiQt::run()
 	loadModelDialog->setControls();
 	selectFilterDialog->setControls();
 	selectPatternDialog->setControls();
+	selectVariableDialog->setControls();
 	fragmentWindow->refresh();
 
 	// Show the widgets in the GUI and flag it as existing

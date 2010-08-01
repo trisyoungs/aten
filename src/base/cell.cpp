@@ -639,10 +639,8 @@ void Cell::fold(Atom *i, Model *parent) const
 double Cell::distance(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
 	// Calculate the distance between atoms i and j
-	msg.enter("Cell::distance");
 	static Vec3<double> mimi;
 	mimi = mimd(r1,r2);
-	msg.exit("Cell::distance");
 	return mimi.magnitude();
 }
 
@@ -654,8 +652,6 @@ double Cell::distance(Atom *i, Atom *j) const
 double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3) const
 {
 	// Calculate the angle formed between atoms i, j, and k
-	// Result is returned in radians.
-	msg.enter("Cell::angle");
 	static Vec3<double> vecij, veckj;
 	static double dp, a;
 	vecij = mimd(r1,r2);
@@ -665,8 +661,7 @@ double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<do
 	veckj.normalise();
 	dp = vecij.dp(veckj);
 	a = acos(dp);
-	msg.exit("Cell::angle");
-	return a;
+	return a * DEGRAD;
 }
 
 double Cell::angle(Atom *i, Atom *j, Atom *k) const
@@ -677,8 +672,6 @@ double Cell::angle(Atom *i, Atom *j, Atom *k) const
 double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<double> &k, const Vec3<double> &l) const
 {
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
-	// Return result is in radians.
-	msg.enter("Cell::torsion");
 	static Vec3<double> vecji, veckl, vecjk, veckj, mim_k, xpj, xpk;
 	static double dp, angle;
 	// Vector j->i (minimum image of i w.r.t. j)
@@ -702,8 +695,7 @@ double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<do
 	// Calculate sign of torsion
 	dp = xpj.dp(veckl);
 	if (dp > 0) angle = -angle;
-	msg.exit("Cell::torsion");
-	return angle;
+	return angle * DEGRAD;
 }
 
 double Cell::torsion(Atom *i, Atom *j, Atom *k, Atom *l) const

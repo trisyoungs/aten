@@ -38,6 +38,8 @@ variablelist.h
 variablenode.h
 vector.h
 vtypes.h
+zmatrix.h
+zmatrixelement.h
 aten.cpp
 atom.cpp
 bond.cpp
@@ -79,6 +81,8 @@ variablelist.cpp
 variablenode.cpp
 vector.cpp
 vtypes.cpp
+zmatrix.cpp
+zmatrixelement.cpp
 )
 
 include_directories(

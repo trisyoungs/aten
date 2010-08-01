@@ -43,7 +43,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
 			k = pb->atomId(2) + aoff;
-			theta = srcmodel->angle(i,j,k);
+			theta = srcmodel->angle(i,j,k) / DEGRAD;
 			// Grab pointer to function data
 			ffb = pb->data();
 			// Calculate energy contribution

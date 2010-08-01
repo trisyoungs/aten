@@ -38,7 +38,10 @@
 #include "parser/model.h"
 #include "parser/pattern.h"
 #include "parser/patternbound.h"
+#include "parser/region.h"
 #include "parser/vector.h"
+#include "parser/zmatrix.h"
+#include "parser/zmatrixelement.h"
 #include <string.h>
 
 // Constructor
@@ -128,6 +131,15 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::PatternBoundData):
 			v = (Variable*) new PatternBoundVariable(NULL, FALSE);
 			break;
+		case (VTypes::RegionData):
+			v = (Variable*) new RegionVariable(NULL, FALSE);
+			break;
+		case (VTypes::ZMatrixData):
+			v = (Variable*) new ZMatrixVariable(NULL, FALSE);
+			break;
+		case (VTypes::ZMatrixElementData):
+			v = (Variable*) new ZMatrixElementVariable(NULL, FALSE);
+			break;
 		default:
 			printf("Don't know how to create a variable of type %s.\n", VTypes::dataType(type));
 			break;
@@ -201,6 +213,12 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 		case (VTypes::VectorData):
 			var = new VectorArrayVariable(sizeexpr);
 			break;
+		case (VTypes::ZMatrixData):
+			var = new ZMatrixArrayVariable(sizeexpr);
+			break;
+		case (VTypes::ZMatrixElementData):
+			var = new ZMatrixElementArrayVariable(sizeexpr);
+			break;
 		default:
 			printf("Internal Error: Don't know how to create an array of type %s.\n", VTypes::dataType(type));
 			break;
@@ -261,9 +279,24 @@ int VariableList::nVariables() const
 }
 
 // Return first variable in the list
-Variable *VariableList::first() const
+Variable *VariableList::variables() const
 {
 	return variables_.first();
+}
+
+// Return specified variable in the list (slow)
+Variable *VariableList::variable(int index)
+{
+	if ((index < 0) || (index >= variables_.nItems())) printf("Array index %i is out of bounds for VariableList::variable()\n", index);
+	else
+	{
+		// Since the Variable class uses next/prev pointers from the base TreeNode class, the List<T> template array-access function cannot be used, since it will try to cast the TreeNode* next pointer into a Variable*, which won't work...
+		Variable *result;
+		int count = 0;
+		for (result = variables_.first(); result != NULL; result = (Variable*) result->next) if (count++ == index) break;
+		return result;
+	}
+	return NULL;
 }
 
 // Initialise/reset all variables

@@ -423,7 +423,7 @@ double Model::angle(Atom *i, Atom *j, Atom *k)
 	return cell_.angle(i,j,k);
 }
 
-// Calculate angle (radians)
+// Calculate angle
 double Model::angle(int i, int j, int k)
 {
 	// Make sure we have a staticatoms array

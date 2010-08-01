@@ -86,12 +86,43 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
-	{ "torsions",		VTypes::MeasurementData,	-1, TRUE }
+	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
+	{ "zmatrix",		VTypes::ZMatrixData,		0, TRUE }
 };
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::syntax(Command::AddHydrogen) },
+	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::syntax(Command::Augment) },
+	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::syntax(Command::Charge) },
+	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::syntax(Command::ClearBonds) },
+	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::syntax(Command::ClearCharges) },
+	{ "clearselectedbonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::syntax(Command::ClearSelectedBonds) },
+	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::syntax(Command::Copy) },
+	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::syntax(Command::Cut) },
+	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::syntax(Command::Delete) },
+	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::syntax(Command::Finalise) },
+	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::syntax(Command::MoveToEnd) },
+	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::syntax(Command::MoveToStart) },
+	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::syntax(Command::NewAtom) },
+	{ "newatomfrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::syntax(Command::NewAtomFrac) },
+	{ "newbond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::syntax(Command::NewBond) },
+	{ "newbondid",		VTypes::BondData,	Command::arguments(Command::NewBondId),		Command::syntax(Command::NewBondId) },
+	{ "newglyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::syntax(Command::NewGlyph) },
+	{ "newgrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::syntax(Command::NewGrid) },
+	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::syntax(Command::Paste) },
+	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::syntax(Command::ReBond) },
+	{ "rebondpatterns",	VTypes::NoData,		Command::arguments(Command::ReBondPatterns),	Command::syntax(Command::ReBondPatterns) },
+	{ "rebondselection",	VTypes::NoData,		Command::arguments(Command::ReBondSelection),	Command::syntax(Command::ReBondSelection) },
+	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::syntax(Command::Redo) },
+	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::syntax(Command::ReOrder) },
+	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::syntax(Command::SaveBitmap) },
+	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::syntax(Command::SelectionAddHydrogen) },
+	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::syntax(Command::ShiftDown) },
+	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::syntax(Command::ShiftUp) },
+	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::syntax(Command::ShowAll) },
+	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::syntax(Command::Transmute) },
+	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::syntax(Command::Undo) }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -390,6 +421,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->torsionMeasurement(arrayIndex-1));
+			break;
+		case (ModelVariable::ZMatrix):
+			rv.set(VTypes::ZMatrixData, ptr->zMatrix());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);

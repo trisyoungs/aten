@@ -76,9 +76,9 @@ Vec3<double> Atom::threeBondVector(Bond *b1, Bond *b2, Bond *b3, double angle, A
 	Atom *a1 = b1->partner(this);
 	Atom *a2 = b2->partner(this);
 	Atom *a3 = b3->partner(this);
-	double angle1 = parent_->cell()->angle(a1,this,a3);
-	double angle2 = parent_->cell()->angle(a2,this,a3);
-	double angle3 = parent_->cell()->angle(a1,this,a2);
+	double angle1 = parent_->angle(a1,this,a3);
+	double angle2 = parent_->angle(a2,this,a3);
+	double angle3 = parent_->angle(a1,this,a2);
 	double avg = (angle1+angle2+angle3) / 3.0;
 	if (fabs(avg-90.0) < 10.0)
 	{

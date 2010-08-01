@@ -80,7 +80,7 @@ void ScopeNode::nodePrint(int offset, const char *prefix)
 	// Output node data
 	printf("[SN]%s (Scoped Node) (%i variables)\n", tab, variables.nVariables());
 	int n = 1;
-	for (TreeNode *tn = variables.first(); tn != NULL; tn = tn->next)
+	for (TreeNode *tn = variables.variables(); tn != NULL; tn = tn->next)
 	{
 		Variable *v = (Variable*) tn;
 		printf("%s --> %3i: %s (%s)\n", tab, n++, v->name(), VTypes::dataType(v->returnType()));

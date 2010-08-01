@@ -98,10 +98,10 @@ void Measurement::calculate(Cell *cell)
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
 		case (Measurement::Angle):
-			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]) * DEGRAD;
+			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]);
 			break;
 		case (Measurement::Torsion):
-			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]) * DEGRAD;
+			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]);
 			break;
 		default:
 			printf("Measurement::calculate <<<< Unrecognised geometry type >>>>\n");

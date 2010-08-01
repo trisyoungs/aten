@@ -45,7 +45,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			j = pb->atomId(1) + aoff;
 			k = pb->atomId(2) + aoff;
 			l = pb->atomId(3) + aoff;
-			phi = srcmodel->torsion(i,j,k,l);
+			phi = srcmodel->torsion(i,j,k,l) / DEGRAD;
 			ffb = pb->data();
 			// Calculate energy
 			switch (pb->data()->torsionStyle())

@@ -202,7 +202,7 @@ class Cell
 	void fold(Atom *i, Model *parent) const;
 
 	/*
-	// Geometry calculation (takes fractional coords, and returns Angstroms / degrees)
+	// Geometry calculation
 	*/
 	public:
 	double distance(const Vec3<double>&, const Vec3<double>&) const;

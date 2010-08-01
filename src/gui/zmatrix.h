@@ -26,6 +26,7 @@
 
 // Forward declarations
 class Model;
+class ZMatrix;
 
 // ZMatrix Window
 class AtenZMatrix : public QDialog
@@ -35,7 +36,7 @@ class AtenZMatrix : public QDialog
 
 	public:
 	// Column columns
-	enum TableColumns { SymbolColumn=1, DistanceAtomColumn, DistanceColumn, AngleAtomColumn, AngleColumn, TorsionAtomColumn, TorsionColumn, nColumns };
+	enum TableColumns { SymbolColumn, DistanceAtomColumn, DistanceColumn, AngleAtomColumn, AngleColumn, TorsionAtomColumn, TorsionColumn, nColumns };
 
 	/*
 	// Window Functions
@@ -44,14 +45,22 @@ class AtenZMatrix : public QDialog
 	void showWindow();
 	void refresh(bool forceupdate = FALSE);
 	private slots:
+	void dialogFinished(int result);
 	void on_ZMatrixTable_cellDoubleClicked(int row, int column);
+	void on_VariablesTable_itemChanged(QTableWidgetItem *w);
+	void on_ShiftUpButton_clicked(bool checked);
+	void on_ShiftDownButton_clicked(bool checked);
+	void on_MoveToStartButton_clicked(bool checked);
+	void on_MoveToEndButton_clicked(bool checked);
 
 	/*
 	// Local variables
 	*/
 	private:
-	// Whether the widget should refresh when it is next shown
-	bool shouldRefresh_;
+	// Whether the widget is currently refreshing
+	bool refreshing_;
+	// ZMatrix target
+	ZMatrix *zMatrix_;
 
 	/*
 	// Dialog

@@ -34,5 +34,49 @@
 				</tbody>
 			</tgroup>
 		</table>
-	
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>addangle ( string <emphasis>form</emphasis>, string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis>, double <emphasis>data1</emphasis>, <emphasis>...</emphasis> ) </entry>
+						<entry>--</entry>
+						<entry>Create a new angle definition in the forcefield. See the <link linkend="command.ref.angledef">angledef</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>addbond ( string <emphasis>form</emphasis>, string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, double <emphasis>data1</emphasis>, <emphasis>...</emphasis> ) </entry>
+						<entry>--</entry>
+						<entry>Create a new bond definition in the forcefield. See the <link linkend="command.ref.bonddef">bonddef</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>addinter ( string <emphasis>form</emphasis>, int <emphasis>typeid</emphasis>, double <emphasis>charge</emphasis>, double <emphasis>data1</emphasis>, <emphasis>...</emphasis> ) </entry>
+						<entry>--</entry>
+						<entry>Create a new interatomic definition in the forcefield. See the <link linkend="command.ref.interdef">interdef</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>addtorsion ( string <emphasis>form</emphasis>, string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis>, string <emphasis>type_l</emphasis>, double <emphasis>data1</emphasis>, <emphasis>...</emphasis> ) </entry>
+						<entry>--</entry>
+						<entry>Create a new torsion definition in the forcefield. See the <link linkend="command.ref.torsiondef">torsiondef</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>addtype ( int <emphasis>typeid</emphasis>, string <emphasis>name</emphasis>, string <emphasis>equiv</emphasis>, string|int <emphasis>element</emphasis>, string <emphasis>neta</emphasis>, string <emphasis>description = ""</emphasis> ) </entry>
+						<entry>int</entry>
+						<entry>Create a new type definition in the forcefield. See the <link linkend="command.ref.typedef">typedef</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>finalise ( ) </entry>
+						<entry>--</entry>
+						<entry>Finalise the forcefield. See the <link linkend="command.ref.finaliseff">finaliseff</link> command for a full description.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>

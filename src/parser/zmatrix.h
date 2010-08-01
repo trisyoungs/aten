@@ -1,6 +1,6 @@
 /*
-	*** Model Variable and Array
-	*** src/parser/model.h
+	*** ZMatrix Variable and Array
+	*** src/parser/zmatrix.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,32 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELVARIABLE_H
-#define ATEN_MODELVARIABLE_H
+#ifndef ATEN_ZMATRIXVARIABLE_H
+#define ATEN_ZMATRIXVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Model;
+class ZMatrix;
 
-// Model Variable
-class ModelVariable : public PointerVariable
+// ZMatrix Variable
+class ZMatrixVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
-	~ModelVariable();
+	ZMatrixVariable(ZMatrix *ptr = NULL, bool constant = FALSE);
+	~ZMatrixVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, Patterns, Region, Torsions, ZMatrix, nAccessors };
+        enum Accessors { AngleNames, Angles, DistanceNames, Distances, Elements, NAngles, NDistances, NElements, NTorsions, TorsionNames, Torsions, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBond, NewBondId, NewGlyph, NewGrid, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, Transmute, Undo, nFunctions };
-
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
@@ -63,12 +62,12 @@ class ModelVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Model Array Variable
-class ModelArrayVariable : public PointerArrayVariable
+// ZMatrix Array Variable
+class ZMatrixArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	ZMatrixArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals
@@ -79,3 +78,4 @@ class ModelArrayVariable : public PointerArrayVariable
 };
 
 #endif
+

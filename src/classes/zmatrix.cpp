@@ -39,13 +39,14 @@ ZMatrixElement::ZMatrixElement()
 	next = NULL;
 
 	// Private variables
+	parent_ = NULL;
 	for (int i=0; i<4; ++i)
 	{
 		atoms_[i] = NULL;
 		if (i<3)
 		{
 			values_[i] = NULL;
-			negate_[i] = FALSE;
+			negated_[i] = FALSE;
 		}
 	}
 }
@@ -53,6 +54,12 @@ ZMatrixElement::ZMatrixElement()
 // Destructor
 ZMatrixElement::~ZMatrixElement()
 {
+}
+
+// Set parent
+void ZMatrixElement::setParent(ZMatrix *parent)
+{
+	parent_ = parent;
 }
 
 // Set n'th atom datum
@@ -70,40 +77,185 @@ Atom *ZMatrixElement::atom(int id)
 	return NULL;
 }
 
+// Set n'th negate flag
+void ZMatrixElement::setNegated(int id, bool b)
+{
+	if ((id < 0) || (id > 2)) printf("Internal Error: Id for ZMatrixElement::setNegate is out of range (%i)\n", id);
+	else
+	{
+		negated_[id] = b;
+		Model *m = parent_->parent();
+		if (m != NULL) m->recalculateFromZMatrix();
+	}
+}
+
+// Retrieve n'th negate flag
+bool ZMatrixElement::negated(int id)
+{
+	if ((id < 0) || (id > 2)) printf("Internal Error: Id for ZMatrixElement::negate is out of range (%i)\n", id);
+	else return negated_[id];
+	return FALSE;
+}
 // Set distance (geometry variable 0)
-void ZMatrixElement::setDistance(Variable *v)
+void ZMatrixElement::setDistanceVariable(Variable *v)
 {
 	values_[0] = v;
 }
 
-// Retrieve distance (geometry variable 0)
-Variable *ZMatrixElement::distance()
+// Retrieve distance variable (geometry variable 0)
+Variable *ZMatrixElement::distanceVariable()
 {
 	return values_[0];
 }
 
+// Set distance variable name (geometry variable 0)
+void ZMatrixElement::setDistanceName(const char *name)
+{
+	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement, so can't set its name.\n");
+	else values_[0]->setName(name);
+}
+
+// Retrieve distance variable name (geometry variable 0)
+const char *ZMatrixElement::distanceName()
+{
+	static char name[32];
+	name[0] = '\0';
+	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		if (negated_[0]) strcpy(name, "-");
+		strcat(name, values_[0]->name());
+	}
+	return name;
+}
+
+// Set distance value
+void ZMatrixElement::setDistance(double value)
+{
+	// Set variable value for distance, and recalculate model
+	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement to set.\n");
+	else parent_->setVariable(values_[0], value);
+}
+
+// Retrieve distance (geometry variable 0)
+double ZMatrixElement::distance()
+{
+	static ReturnValue rv;
+	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		values_[0]->execute(rv);
+		return (negated_[0] ? -rv.asDouble() : rv.asDouble());
+	}
+	return 0.0;
+}
+
 // Set angle (geometry variable 1)
-void ZMatrixElement::setAngle(Variable *v)
+void ZMatrixElement::setAngleVariable(Variable *v)
 {
 	values_[1] = v;
 }
 
-// Retrieve angle (geometry variable 1)
-Variable *ZMatrixElement::angle()
+// Retrieve angle variable (geometry variable 1)
+Variable *ZMatrixElement::angleVariable()
 {
 	return values_[1];
 }
 
+// Set angle variable name (geometry variable 1)
+void ZMatrixElement::setAngleName(const char *name)
+{
+	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement, so can't set its name.\n");
+	else values_[1]->setName(name);
+}
+
+// Retrieve angle variable name (geometry variable 0)
+const char *ZMatrixElement::angleName()
+{
+	static char name[32];
+	name[0] = '\0';
+	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		if (negated_[1]) strcpy(name, "-");
+		strcat(name, values_[1]->name());
+	}
+	return name;
+}
+
+// Set angle value
+void ZMatrixElement::setAngle(double value)
+{
+	// Set variable value for angle, and recalculate model
+	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement to set.\n");
+	else parent_->setVariable(values_[1], value);
+}
+
+// Retrieve angle (geometry variable 1)
+double ZMatrixElement::angle()
+{
+	static ReturnValue rv;
+	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		values_[1]->execute(rv);
+		return (negated_[1] ? -rv.asDouble() : rv.asDouble());
+	}
+	return 0.0;
+}
+
 // Set torsion (geometry variable 2)
-void ZMatrixElement::setTorsion(Variable *v)
+void ZMatrixElement::setTorsionVariable(Variable *v)
 {
 	values_[2] = v;
 }
 
-// Retrieve torsion (geometry variable 2)
-Variable *ZMatrixElement::torsion()
+// Retrieve torsion variable (geometry variable 2)
+Variable *ZMatrixElement::torsionVariable()
 {
 	return values_[2];
+}
+
+// Set torsion variable name (geometry variable 2)
+void ZMatrixElement::setTorsionName(const char *name)
+{
+	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement, so can't set its name.\n");
+	else values_[2]->setName(name);
+}
+
+// Retrieve torsion variable name (geometry variable 0)
+const char *ZMatrixElement::torsionName()
+{
+	static char name[32];
+	name[0] = '\0';
+	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		if (negated_[2]) strcpy(name, "-");
+		strcat(name, values_[2]->name());
+	}
+	return name;
+}
+
+// Set torsion value
+void ZMatrixElement::setTorsion(double value)
+{
+	// Set variable value for torsion, and recalculate model
+	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement to set.\n");
+	else parent_->setVariable(values_[2], value);
+}
+
+// Retrieve torsion (geometry variable 2)
+double ZMatrixElement::torsion()
+{
+	static ReturnValue rv;
+	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
+	else
+	{
+		values_[2]->execute(rv);
+		return (negated_[2] ? -rv.asDouble() : rv.asDouble());
+	}
+	return 0.0;
 }
 
 /*
@@ -122,6 +274,24 @@ ZMatrix::~ZMatrix()
 {
 }
 
+// Return parent model
+Model *ZMatrix::parent()
+{
+	return parent_;
+}
+
+// Return coordinate origin
+Vec3<double> ZMatrix::origin()
+{
+	return origin_;
+}
+
+// Return total number of defined variables
+int ZMatrix::nVariables()
+{
+	return (distances_.nVariables() + angles_.nVariables() + torsions_.nVariables());
+}
+
 // Add single definition to list
 ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 {
@@ -129,10 +299,14 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	int i;
 	char name[32];
 	DoubleVariable *v;
-	// Create a new element structure, and store atoms from list in the element's array
+	// Create a new element structure, and store a maximum of 4 atoms from list in the element's array
 	ZMatrixElement *zel = elements_.add();
 	i = 0;
-	for (Refitem<Atom,int> *ri = atoms.first(); ri != NULL; ri = ri->next) zel->setAtom(++i, ri->item);
+	for (Refitem<Atom,int> *ri = atoms.first(); ri != NULL; ri = ri->next)
+	{
+		zel->setAtom(i++, ri->item);
+		if (i == 4) break;
+	}
 	// Variable 'i' now contains the number of atoms we have in this element
 	if ((i < 1) || (i > 4))
 	{
@@ -148,19 +322,48 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 		strcpy(name,"d");
 		strcat(name, itoa(distances_.nVariables()));
 		v->setName(name);
-		zel->setDistance(v);
+		zel->setDistanceVariable(v);
 	}
 	if (i > 2)
 	{
 		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
 		angles_.take(v);
-		strcpy(name,"d");
-		strcat(name, itoa(distances_.nVariables()));
+		strcpy(name,"a");
+		strcat(name, itoa(angles_.nVariables()));
 		v->setName(name);
+		zel->setAngleVariable(v);
 	}
-
+	if (i > 3)
+	{
+		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
+		torsions_.take(v);
+		strcpy(name,"t");
+		strcat(name, itoa(torsions_.nVariables()));
+		v->setName(name);
+		zel->setTorsionVariable(v);
+	}
 	msg.exit("ZMatrix::addElement");
 	return zel;
+}
+
+// Create (recursively) along bonds in the model wherever possible
+void ZMatrix::createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist)
+{
+	msg.enter("ZMatrix::createAlongBonds");
+	// Add the current atom to the list and create an element for it
+	atomlist.addStart(target);
+	ZMatrixElement *zel = addElement(atomlist);
+	// Mark this atom so it won't be added again
+	parent_->selectAtom(target, TRUE);
+	// Cycle over bonds, progressing along each connected atom
+	Atom *i;
+	for (Refitem<Bond,int> *ri = target->bonds(); ri != NULL; ri = ri->next)
+	{
+		i = ri->item->partner(target);
+		if (i->isSelected(TRUE)) continue;
+		createAlongBonds(i, atomlist);
+	}
+	msg.exit("ZMatrix::createAlongBonds");
 }
 
 // Create from specified model
@@ -176,13 +379,30 @@ void ZMatrix::create(Model *source, bool usebonds)
 	// List of previous atoms
 	Reflist<Atom,int> atomlist;
 	ZMatrixElement *zel;
-	// Step through atoms in order, creating elements as we go...
-	for (Atom *i = parent_->atoms(); i != NULL; i = i->next)
+	if (parent_->nAtoms() == 0)
 	{
-		// Check current size of atomlist
-		if (atomlist.nItems() == 4) atomlist.removeFirst();
-		// Add current atom to the reflist
-		zel = addElement(atomlist);
+		msg.exit("ZMatrix::create");
+		return;
+	}
+	// Create the elements
+	origin_ = parent_->atoms()->r();
+	if (TRUE)
+	{
+		parent_->selectNone(TRUE);
+		createAlongBonds(parent_->atoms(), atomlist);
+	}
+	else
+	{
+		// Step through atoms in order, creating elements as we go...
+		for (Atom *i = parent_->atoms(); i != NULL; i = i->next)
+		{
+			// Check current size of atomlist
+			if (atomlist.nItems() == 4) atomlist.removeLast();
+			// Add current atom to the reflist
+			atomlist.addStart(i);
+			// Create element
+			zel = addElement(atomlist);
+		}
 	}
 	msg.exit("ZMatrix::create");
 }
@@ -203,4 +423,89 @@ ZMatrixElement *ZMatrix::elements() const
 ZMatrixElement *ZMatrix::element(int index)
 {
 	return elements_[index];
+}
+
+// Return number of defined angle variables
+int ZMatrix::nAngles()
+{
+	return angles_.nVariables();
+}
+
+// Return start of angles list
+Variable *ZMatrix::angles()
+{
+	return angles_.variables();
+}
+
+// Return specified angle variable
+Variable *ZMatrix::angle(int index)
+{
+	if ((index < 0) || (index >= angles_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::angles\n", index);
+	else return angles_.variable(index);
+	return NULL;
+}
+
+// Return number of defined distance variables
+int ZMatrix::nDistances()
+{
+	return distances_.nVariables();
+}
+
+// Return start of distances list
+Variable *ZMatrix::distances()
+{
+	return distances_.variables();
+}
+
+// Return specified distance variable
+Variable *ZMatrix::distance(int index)
+{
+	if ((index < 0) || (index >= distances_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::distances\n", index);
+	else return distances_.variable(index);
+	return NULL;
+}
+
+// Return number of defined torsion variables
+int ZMatrix::nTorsions()
+{
+	return torsions_.nVariables();
+}
+
+// Return start of torsions list
+Variable *ZMatrix::torsions()
+{
+	return torsions_.variables();
+}
+
+// Return specified torsion variable
+Variable *ZMatrix::torsion(int index)
+{
+	if ((index < 0) || (index >= torsions_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::torsions\n", index);
+	else return torsions_.variable(index);
+	return NULL;
+}
+
+// Set variable value and update
+void ZMatrix::setVariable(Variable *v, double value)
+{
+	msg.enter("ZMatrix::setVariable");
+	// Check for NULL pointer
+	if (v == NULL)
+	{
+		printf("Internal Error: NULL variable pointer passed to ZMatrix::setVariable\n");
+		msg.exit("ZMatrix::setVariable");
+		return;
+	}
+	// Set the new value of the specified variable
+	ReturnValue newvalue(value);
+	v->set( newvalue );
+	updateModel();
+	msg.exit("ZMatrix::setVariable");
+}
+
+// Recalculate atom positions in model
+void ZMatrix::updateModel()
+{
+	// Reposition the model atoms to match
+	parent_->recalculateFromZMatrix();
 }

@@ -1,6 +1,6 @@
 /*
 	*** Region Variable and Array
-	*** src/parser/grid.h
+	*** src/parser/region.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
