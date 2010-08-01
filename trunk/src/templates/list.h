@@ -511,7 +511,6 @@ template <class T> void List<T>::operator=(List<T> &source)
 	}
 	// Don't deep-copy the static list, just flag that it must be regenerated if required.
 	regenerate_ = 1;
-	items_ = NULL;
 }
 
 // Element access operator
@@ -522,7 +521,6 @@ template <class T> T *List<T>::operator[](int index)
 		printf("list::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
 		return NULL;
 	}
-	// Scan through for element number 'index' in the list and return it
 	return array()[index];
 }
 

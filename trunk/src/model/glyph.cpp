@@ -180,7 +180,7 @@ void Model::addEllipsoidGlyphs()
 	Reflist<Atom,int> atoms;
 	Vec3<double> centroid, v, extents;
 	Mat3<double> axes;
-	double mag, best = 0.0, angle, tolerance = 0.3, angletol = PI/4.0, minz, maxz;
+	double mag, best = 0.0, ang, tolerance = 0.3, angletol = PI/4.0, minz, maxz;
 	Refitem<Atom,int> *ri;
 	Atom *i;
 	Reflist<Atom, Vec3<double> > xaxisatoms;
@@ -217,8 +217,8 @@ void Model::addEllipsoidGlyphs()
 			if (fabs(extents.x - mag) < tolerance)
 			{
 				// This atom is at a distance close to the current maximal point, so check the angle it makes with the current axis
-				angle = cell_.angle(ri->item->r(), centroid, centroid + axes.x());
-				if (angle < angletol)
+				ang = cell_.angle(ri->item->r(), centroid, centroid + axes.x()) / DEGRAD;
+				if (ang < angletol)
 				{
 					// Reconstruct xaxis and add to list of atoms
 					axes.x() = v;
@@ -254,15 +254,15 @@ void Model::addEllipsoidGlyphs()
 			v = cell_.mimd(centroid, ri->item->r());
 			mag = v.magnitude();
 			//angle = fabs(cell_.angle(xi->r(), centroid, ri->item->r()));
-			angle = cell_.angle(axes.x() + centroid, centroid, ri->item->r());
-			if (angle < HALFPI) angle = HALFPI + (HALFPI - angle);
+			ang = cell_.angle(axes.x() + centroid, centroid, ri->item->r()) / DEGRAD;
+			if (ang < HALFPI) ang = HALFPI + (HALFPI - ang);
 			// Magnitudinalise (!) w.r.t. distance as well.
-			angle /= mag;
+			ang /= mag;
 			//printf("Anglemag for atom %i is %f\n", ri->item->id(), angle);
-			if (angle < best)
+			if (ang < best)
 			{
 				axes.y() = v;
-				best = angle;
+				best = ang;
 				extents.y = mag;
 			}
 		}

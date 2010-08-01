@@ -434,7 +434,7 @@ Atom::AtomGeometry Atom::geometry()
 		case (2):
 			b1 = bonds()->item;
 			b2 = bonds()->next->item;
-			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
 			if (angle> 170.0) result = Atom::LinearGeometry;
 			else if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
 			break;
@@ -443,13 +443,13 @@ Atom::AtomGeometry Atom::geometry()
 			bref2 = bonds()->next;
 			b1 = bref1->item;
 			b2 = bref2->item;
-			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
 			largest = angle;
 			b2 = bref2->next->item;
-			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
 			if (angle > largest) largest = angle;
 			b1 = bref1->next->item;
-			angle = parent_->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
 			if (angle > largest) largest = angle;
 			if (largest > 170.0) result = Atom::TShapeGeometry;
 			else if ((largest > 115.0) && (largest < 125.0)) result = Atom::TrigPlanarGeometry;
@@ -465,7 +465,7 @@ Atom::AtomGeometry Atom::geometry()
 				bref2 = bref1->next;
 				while (bref2 != NULL)
 				{
-					angle += parent_->angle(bref1->item->partner(this),this,bref2->item->partner(this)) * DEGRAD;
+					angle += parent_->angle(bref1->item->partner(this),this,bref2->item->partner(this));
 					//printf("Case 4: added an angle.\n");
 					bref2 = bref2->next;
 				}

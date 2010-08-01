@@ -37,6 +37,8 @@
 #include "parser/patternbound.h"
 #include "parser/prefs.h"
 #include "parser/vector.h"
+#include "parser/zmatrix.h"
+#include "parser/zmatrixelement.h"
 #include <string.h>
 
 // Constructors
@@ -186,6 +188,14 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = VectorVariable::performFunction(accessor_, rv, this);
 			else result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::ZMatrixData):
+			if (functionAccessor_) result = ZMatrixVariable::performFunction(accessor_, rv, this);
+			else result = ZMatrixVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::ZMatrixElementData):
+			if (functionAccessor_) result = ZMatrixElementVariable::performFunction(accessor_, rv, this);
+			else result = ZMatrixElementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		default:
 			printf("Internal Error: StepNode doesn't recognise this type (%s)\n", VTypes::dataType(previousType_));
 			break;
@@ -250,6 +260,12 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::VectorData):
 			printf("%s", VectorVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ZMatrixData):
+			printf("%s", ZMatrixVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::ZMatrixElementData):
+			printf("%s", ZMatrixElementVariable::accessorData[accessor_].name);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to print a member from type (%s)\n", VTypes::dataType(previousType_));
@@ -342,6 +358,12 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::VectorData):
 			result = VectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::ZMatrixData):
+			result = ZMatrixVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::ZMatrixElementData):
+			result = ZMatrixElementVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		default:
 			printf("Internal Error: StepNode doesn't recognise this type (%s) (set)\n", VTypes::dataType(previousType_));
 			break;
@@ -422,6 +444,12 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::ZMatrixData):
+			result = ZMatrixVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::ZMatrixElementData):
+			result = ZMatrixElementVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", VTypes::dataType(returnType_));

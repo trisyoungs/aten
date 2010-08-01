@@ -68,8 +68,8 @@ class Command
 	~Command();
 
 	// Command list
-	enum Function {
-
+	enum Function
+	{
 		// Operators
 		OperatorAdd,
 		OperatorAnd,
@@ -1033,6 +1033,16 @@ class Command
 	public:
 	// Function data
 	static CommandData data[Command::nCommands];
+	// Return specified command keyword
+	static const char *keyword(Command::Function func);
+	// Return specified command arguments
+	static const char *arguments(Command::Function func);
+	// Return specified return-value datatype
+	static VTypes::DataType returnType(Command::Function func);
+	// Return specified command argument names
+	static const char *argText(Command::Function func);
+	// Return specified command syntax
+	static const char *syntax(Command::Function func);
 	// Initialise function pointers
 	void initPointers();
 	// Execute specified command

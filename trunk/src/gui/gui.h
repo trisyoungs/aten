@@ -34,6 +34,7 @@ class AtenLoadModel;
 class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
+class AtenSelectVariable;
 class AtenCommandHelp;
 class AtenAtomlist;
 class AtenBuild;
@@ -178,6 +179,8 @@ class GuiQt
 	AtenSelectFilter *selectFilterDialog;
 	// Select pattern dialog
 	AtenSelectPattern *selectPatternDialog;
+	// Select variable dialog
+	AtenSelectVariable *selectVariableDialog;
 	// Select element dialog
 	AtenSelectElement *selectElementDialog;
 	// Command help dialog

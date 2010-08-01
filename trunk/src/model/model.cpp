@@ -433,11 +433,3 @@ double Model::rmsForce() const
 {
 	return rmsForce_;
 }
-
-// Retrieve (creating or updating as necessary) the zmatrix for the model
-ZMatrix *Model::zMatrix()
-{
-	// Update if necessary
-	if (zMatrixPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure))) zMatrix_.create(this, FALSE);
-	return &zMatrix_;
-}

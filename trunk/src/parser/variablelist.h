@@ -28,7 +28,6 @@
 
 // Forward Declarations
 class IntegerVariable;
-class NuCharacterVariable;
 class DoubleVariable;
 
 // Variable list
@@ -67,7 +66,9 @@ class VariableList
 	// Return the number of variables (not constants) contained in the list
 	int nVariables() const;
 	// Return first variable in the list
-	Variable *first() const;
+	Variable *variables() const;
+	// Return specified variable in the list
+	Variable *variable(int index);
 	// Reset all variable values
 	bool initialise();
 	// Clear all variables and constants

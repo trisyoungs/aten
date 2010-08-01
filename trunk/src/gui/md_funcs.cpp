@@ -54,8 +54,8 @@ void AtenMD::refresh()
 	ui.TemperatureSpin->setValue( md.temperature() );
 	ui.PressureSpin->setValue( md.pressure() );
 	ui.NStepsSpin->setValue( md.nSteps() );
-	ui.TimeStepMantissaSpin->setValue( md.timeStepMantissa() );
-	ui.TimeStepExponentSpin->setValue( md.timeStepExponent() );
+	ui.TimeStepMantissaSpin->setValue( md.timeStep().mantissa() );
+	ui.TimeStepExponentSpin->setValue( md.timeStep().exponent() );
 	refreshing_ = FALSE;
 }
 
@@ -84,13 +84,13 @@ void AtenMD::on_NStepsSpin_valueChanged(int value)
 void AtenMD::on_TimeStepMantissaSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
-	md.setTimeStep(value, md.timeStepExponent());
+	md.timeStep().setMantissa(value);
 }
 
 void AtenMD::on_TimeStepExponentSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
-	md.setTimeStep(md.timeStepMantissa(), value);
+	md.timeStep().setExponent(value);
 }
 
 void AtenMD::on_RunMDButton_clicked(bool checked)

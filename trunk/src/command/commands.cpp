@@ -1380,6 +1380,36 @@ Command::~Command()
 {
 }
 
+// Return specified command keyword
+const char *Command::keyword(Command::Function func)
+{
+	return Command::data[func].keyword;
+}
+
+// Return specified command arguments
+const char *Command::arguments(Command::Function func)
+{
+	return Command::data[func].arguments;
+}
+
+// Return specified return-value datatype
+VTypes::DataType Command::returnType(Command::Function func)
+{
+	return Command::data[func].returnType;
+}
+
+// Return specified command argument names
+const char *Command::argText(Command::Function func)
+{
+	return Command::data[func].argText;
+}
+
+// Return specified command syntax
+const char *Command::syntax(Command::Function func)
+{
+	return Command::data[func].syntax;
+}
+
 // Return whether command accepts any arguments
 bool CommandData::hasArguments()
 {

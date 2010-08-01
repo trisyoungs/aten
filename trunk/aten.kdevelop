@@ -19,10 +19,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram/>
+      <mainprogram>/home/tris/src/aten</mainprogram>
       <programargs>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</programargs>
       <globaldebugarguments>-c 'vector v; $v = 1.0; print &quot;$v.x&quot;; quit'</globaldebugarguments>
-      <globalcwd/>
+      <globalcwd>/home/tris/src/aten</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -57,7 +57,7 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>true</abortonerror>
-      <runmultiplejobs>true</runmultiplejobs>
+      <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
       <makebin/>

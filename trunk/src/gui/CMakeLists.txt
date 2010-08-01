@@ -53,6 +53,7 @@ set(qtproject_SRCS
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
+  selectvariable_funcs.cpp
   settings.cpp
   styleactions.cpp
   systemactions.cpp
@@ -93,6 +94,7 @@ SET(pro_MOC_HDRS
   selectelement.h
   selectfilter.h
   selectpattern.h
+  selectvariable.h
   transform.h
   zmatrix.h
   tcanvas.uih
@@ -127,6 +129,7 @@ SET(pro_UIS
   selectelement.ui
   selectfilter.ui
   selectpattern.ui
+  selectvariable.ui
   transform.ui
   zmatrix.ui
 )

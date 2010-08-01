@@ -27,6 +27,7 @@
 // Forward declarations
 class Atom;
 class Model;
+class ZMatrix;
 
 // Element of ZMatrix
 class ZMatrixElement
@@ -42,30 +43,62 @@ class ZMatrixElement
 	// Data
 	*/
 	private:
+	// Parent ZMatrix
+	ZMatrix *parent_;
 	// Atom pointers (first = target, second-fourth = distance, angle, torsion specifiers)
 	Atom *atoms_[4];
 	// Variables holding defined distance, angle, and torsion values
 	Variable *values_[3];
 	// Flags stating whether the negative of the variable value should be used instead
-	bool negate_[3];
+	bool negated_[3];
 
 	public:
+	// Set parent
+	void setParent(ZMatrix *parent);
 	// Set n'th atom datum
 	void setAtom(int id, Atom *i);
 	// Retrieve n'th atom datum
 	Atom *atom(int id);
+	// Set n'th negate flag
+	void setNegated(int id, bool b);
+	// Retrieve n'th negate flag
+	bool negated(int id);
 	// Set distance (geometry variable 0)
-	void setDistance(Variable *v);
-	// Retrieve distance (geometry variable 0)
-	Variable *distance();
+	void setDistanceVariable(Variable *v);
+	// Retrieve distance variable (geometry variable 0)
+	Variable *distanceVariable();
+	// Set distance variable name (geometry variable 0)
+	void setDistanceName(const char *name);
+	// Retrieve distance variable name (geometry variable 0)
+	const char *distanceName();
+	// Set distance value
+	void setDistance(double value);
+	// Retrieve distance value (geometry variable 0)
+	double distance();
 	// Set angle (geometry variable 1)
-	void setAngle(Variable *v);
-	// Retrieve angle (geometry variable 1)
-	Variable *angle();
+	void setAngleVariable(Variable *v);
+	// Retrieve angle variable (geometry variable 1)
+	Variable *angleVariable();
+	// Set angle variable name (geometry variable 1)
+	void setAngleName(const char *name);
+	// Retrieve angle variable name (geometry variable 1)
+	const char *angleName();
+	// Set angle value
+	void setAngle(double value);
+	// Retrieve angle value (geometry variable 1)
+	double angle();
 	// Set torsion (geometry variable 2)
-	void setTorsion(Variable *v);
-	// Retrieve torsion (geometry variable 2)
-	Variable *torsion();
+	void setTorsionVariable(Variable *v);
+	// Retrieve torsion variable (geometry variable 2)
+	Variable *torsionVariable();
+	// Set torsion variable name (geometry variable 2)
+	void setTorsionName(const char *name);
+	// Retrieve torsion variable name (geometry variable 2)
+	const char *torsionName();
+	// Set torsion value
+	void setTorsion(double value);
+	// Retrieve torsion value (geometry variable 2)
+	double torsion();
 };
 
 // ZMatrix
@@ -82,10 +115,44 @@ class ZMatrix
 	private:
 	// Parent model for which the zmatrix has been created
 	Model *parent_;
+	// Coordinate origin of first atom
+	Vec3<double> origin_;
 	// List of ZMatrix elements, one per atom
 	List<ZMatrixElement> elements_;
 	// Variable lists of various data items
 	VariableList distances_, angles_, torsions_;
+
+	public:
+	// Return parent model
+	Model *parent();
+	// Return coordinate origin
+	Vec3<double> origin();
+	// Return number of defined elements
+	int nElements() const;
+	// Return start of defined elements
+	ZMatrixElement *elements() const;
+	// Return specified element
+	ZMatrixElement *element(int index);
+	// Return total number of defined variables
+	int nVariables();
+	// Return number of defined angle variables
+	int nAngles();
+	// Return start of angles list
+	Variable *angles();
+	// Return specified angle variable
+	Variable *angle(int index);
+	// Return number of defined distance variables
+	int nDistances();
+	// Return start of distances list
+	Variable *distances();
+	// Return specified distance variable
+	Variable *distance(int index);
+	// Return number of defined torsion variables
+	int nTorsions();
+	// Return start of torsions list
+	Variable *torsions();
+	// Return specified torsion variable
+	Variable *torsion(int index);
 
 
 	/*
@@ -93,21 +160,17 @@ class ZMatrix
 	*/
 	private:
 	// Add single definition to list
-	ZMatrixElement *addElement(Reflist<Atom,int> &atoms);
+	ZMatrixElement *addElement(Reflist<Atom,int> &atomlist);
+	// Create zmatrix recursively along bonds
+	void createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist);
 
 	public:
 	// Create for specified model
 	void create(Model *source, bool usebonds);
-	// Return number of defined elements
-	int nElements() const;
-	// Return start of defined elements
-	ZMatrixElement *elements() const;
-	// Return specified element
-	ZMatrixElement *element(int index);
-	// Retrieve named variable
-	Variable *data(const char *s);
-	// Return variable list
-	VariableList *data();
+	// Set variable value and recalculate atom positions in model
+	void setVariable(Variable *v, double value);
+	// Recalculate atom positions in model
+	void updateModel();
 };
 
 #endif

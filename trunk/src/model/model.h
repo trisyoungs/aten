@@ -680,6 +680,12 @@ class Model
 	void movePenPosition(Vec3<double> v);
 	// Set the pen position absolutely
 	void setPenPosition(Vec3<double> v);
+	// Set distance between atoms, moving atom j
+	void setAtomicDistance(Atom *i, Atom *j, double newdistance);
+	// Set angle between atoms, moving atom k
+	void setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle);
+	// Set torsionx between atoms, moving atom l
+	void setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion);
 
 
 	/*
@@ -1066,6 +1072,8 @@ class Model
 	public:
 	// Retrieve (creating or updating as necessary) the zmatrix for the model
 	ZMatrix *zMatrix();
+	// Recalculate model atom posions from ZMatrix definition
+	void recalculateFromZMatrix();
 };
 
 #endif

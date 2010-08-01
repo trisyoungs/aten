@@ -62,12 +62,12 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",	VTypes::NoData,	Command::data[Command::AngleDef].arguments,	Command::data[Command::AngleDef].syntax },
-	{ "addbond",	VTypes::NoData,	Command::data[Command::BondDef].arguments,	Command::data[Command::BondDef].syntax },
-	{ "addinter",	VTypes::NoData,	Command::data[Command::InterDef].arguments,	Command::data[Command::InterDef].syntax },
-	{ "addtorsion",	VTypes::NoData,	Command::data[Command::TorsionDef].arguments,	Command::data[Command::TorsionDef].syntax },
-	{ "addtype",	VTypes::NoData,	Command::data[Command::TypeDef].arguments,	Command::data[Command::TypeDef].syntax },
-	{ "finalise",	VTypes::NoData, Command::data[Command::Finalise].arguments,	Command::data[Command::Finalise].syntax }
+	{ "addangle",	VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::syntax(Command::AngleDef) },
+	{ "addbond",	VTypes::NoData,	Command::arguments(Command::BondDef),	Command::syntax(Command::BondDef) },
+	{ "addinter",	VTypes::NoData,	Command::arguments(Command::InterDef),	Command::syntax(Command::InterDef) },
+	{ "addtorsion",	VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::syntax(Command::TorsionDef) },
+	{ "addtype",	VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::syntax(Command::TypeDef) },
+	{ "finalise",	VTypes::NoData, Command::arguments(Command::Finalise),	Command::syntax(Command::Finalise) }
 };
 
 // Search variable access list for provided accessor (call private static function)

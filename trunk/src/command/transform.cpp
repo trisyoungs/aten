@@ -348,7 +348,7 @@ bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	// Get current angle between the three atoms
-	double angle = obj.rs->angle(i,j,k)*DEGRAD;
+	double angle = obj.rs->angle(i,j,k);
 	// Get cross product of bond vectors to define rotation axis
 	Vec3<double> v = obj.rs->cell()->mimd(j,k) * obj.rs->cell()->mimd(j,i);
 	v.normalise();
@@ -440,13 +440,13 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'l', or are unbound and within the same fragment.\n");
 		return FALSE;
 	}
-	// Get current angle between the three atoms
-	double angle = obj.rs->torsion(i,j,k,l)*DEGRAD;
+	// Get current torsion between the four atoms
+	double angle = obj.rs->torsion(i,j,k,l);
 	// Rotation vector will be vector j->k
 	Vec3<double> v = obj.rs->cell()->mimd(j,k);
 	v.normalise();
 	double delta = c->argd(4) - angle;
-	obj.rs->beginUndoState("Set angle between atoms");
+	obj.rs->beginUndoState("Set torsion between atoms");
 	obj.rs->rotateSelectionVector(j->r(), v, delta, TRUE);
 	obj.rs->endUndoState();
 	return TRUE;

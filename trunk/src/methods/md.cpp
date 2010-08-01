@@ -34,8 +34,7 @@ MDEngine::MDEngine()
 	temperature_ = 298.15;
 	pressure_ = 1.0;
 	nSteps_ = 100;
-	timeStepMantissa_ = 5.0;
-	timeStepExponent_ = -4;
+	timeStep_.set(5.0, -4);
 }
 
 // Destructor
@@ -71,29 +70,10 @@ double MDEngine::pressure()
 	return pressure_;
 }
 
-// Set simulation timestep (mantissa/exponent)
-void MDEngine::setTimeStep(double mantissa, int exponent)
-{
-	timeStepMantissa_ = mantissa;
-	timeStepExponent_ = exponent;
-}
-
-// Return simulation timestep mantissa
-double MDEngine::timeStepMantissa()
-{
-	return timeStepMantissa_;
-}
-
-// Return simulation timestep exponent
-int MDEngine::timeStepExponent()
-{
-	return timeStepExponent_;
-}
-
 // Return simulation timestep as simple real number
-double MDEngine::timeStep()
+DoubleExp &MDEngine::timeStep()
 {
-	return timeStepMantissa_ * pow(10, timeStepExponent_);
+	return timeStep_;
 }
 
 // Set number of simulation steps
@@ -136,7 +116,7 @@ void MDEngine::run()
 	msg.print("Preparing MD run:\n");
 	msg.print("Temperature     : %e K\n", temperature_);
 	msg.print("Pressure        : %e atm\n", pressure_);
-	msg.print("Timestep        : %e ps\n", timeStep());
+	msg.print("Timestep        : %e ps\n", timeStep().value());
 	msg.print("Number of steps : %i\n", nSteps_);
 
 	msg.exit("MDEngine::run");

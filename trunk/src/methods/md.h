@@ -22,7 +22,7 @@
 #ifndef ATEN_MOLECULARDYNAMICS_H
 #define ATEN_MOLECULARDYNAMICS_H
 
-// Forward declarations
+#include "base/doubleexp.h"
 
 // Molecular Dynamics
 class MDEngine
@@ -40,9 +40,8 @@ class MDEngine
 	double temperature_;
 	// Starting simulation pressure, in atm
 	double pressure_;
-	// Simulation timestep , in ps
-	double timeStepMantissa_;
-	int timeStepExponent_;
+	// Simulation timestep, in ps
+	DoubleExp timeStep_;
 	// Number of steps to run
 	int nSteps_;
 	// Frequency of trajectory dump
@@ -56,14 +55,8 @@ class MDEngine
 	void setPressure(double p);
 	// Return starting simulation pressure
 	double pressure();
-	// Set simulation timestep (mantissa/exponent)
-	void setTimeStep(double mantissa, int exponent);
-	// Return simulation timestep mantissa
-	double timeStepMantissa();
-	// Return simulation timestep exponent
-	int timeStepExponent();
-	// Return simulation timestep as simple real number
-	double timeStep();
+	// Return simulation timestep (as a DoubleExp)
+	DoubleExp &timeStep();
 	// Set number of simulation steps
 	void setNSteps(int n);
 	// Return number of simulation steps

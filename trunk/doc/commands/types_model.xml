@@ -226,5 +226,174 @@
 				</tbody>
 			</tgroup>
 		</table>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Model type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>addhydrogen ( )</entry>
+						<entry>--</entry>
+						<entry>Hydrogen satisfy all atoms in the model. See the <link linkend="command.ref.addhydrogen">addhydrogen</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>augment ( )</entry>
+						<entry>--</entry>
+						<entry>Automatically detect and add multiple bonds in the system. See the <link linkend="command.ref.augment">augment</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>charge ( )</entry>
+						<entry>--</entry>
+						<entry>Assign charges to the model from the current forcefield. See the <link linkend="command.ref.charge">charge</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearbonds ( )</entry>
+						<entry>--</entry>
+						<entry>Remove all bonds from the model. See the <link linkend="command.ref.clearbonds">clearbonds</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearcharges ( )</entry>
+						<entry>--</entry>
+						<entry>Remove al charges from the model, setting them to zero. See the <link linkend="command.ref.clearcharges">clearcharges</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearselectedbonds ( )</entry>
+						<entry>--</entry>
+						<entry>Remove all bonds from the current atom selection. See the <link linkend="command.ref.clearselectedbonds">clearselectedbonds</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>copy ( )</entry>
+						<entry>--</entry>
+						<entry>Copy the current atom selection to the clipboard. See the <link linkend="command.ref.copy">copy</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>cut ( )</entry>
+						<entry>--</entry>
+						<entry>Cut the current atom selection to the clipboard. See the <link linkend="command.ref.cut">cut</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>delete ( )</entry>
+						<entry>--</entry>
+						<entry>Delete the current atom selection. See the <link linkend="command.ref.delete">delete</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>finalise ( )</entry>
+						<entry>--</entry>
+						<entry>Finalise the current model. See the <link linkend="command.ref.finalise">finalise</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>movetoend ( )</entry>
+						<entry>--</entry>
+						<entry>Move the current atom selection to the bottom (highest IDs) of the atom list. See the <link linkend="command.ref.movetoend">movetoend</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>movetostart ( )</entry>
+						<entry>--</entry>
+						<entry>Move the current atom selection to the top (lowest IDs) of the atom list. See the <link linkend="command.ref.movetstart">movetostart</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newatom ( int|string <emphasis>el</emphasis>, double <emphasis>x</emphasis> = 0.0, double <emphasis>y</emphasis> = 0.0, double <emphasis>z</emphasis> = 0.0, double <emphasis>vx</emphasis> = 0.0, double <emphasis>vy</emphasis> = 0.0, double <emphasis>vz</emphasis> = 0.0, double <emphasis>fx</emphasis> = 0.0, double <emphasis>fy</emphasis> = 0.0, double <emphasis>fz</emphasis> )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Create a new atom in the model. See the <link linkend="command.ref.newatom">newatom</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newatomfrac ( int|string <emphasis>el</emphasis>, double <emphasis>x</emphasis>, double <emphasis>y</emphasis>, double <emphasis>z</emphasis>, double <emphasis>vx</emphasis> = 0.0, double <emphasis>vy</emphasis> = 0.0, double <emphasis>vz</emphasis> = 0.0, double <emphasis>fx</emphasis> = 0.0, double <emphasis>fy</emphasis> = 0.0, double <emphasis>fz</emphasis> )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Create a new atom in the model, in fractional coordinates. See the <link linkend="command.ref.newatomfrac">newatomfrac</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newbond ( atom|int <emphasis>i</emphasis>, atom|int <emphasis>j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
+						<entry><link linkend="command.types.bond">bond</link></entry>
+						<entry>Create a new bond between atoms in the model. See the <link linkend="command.ref.newbond">newbond</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newbondid ( int <emphasis>id_i</emphasis>, int <emphasis>id_j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
+						<entry><link linkend="command.types.bond">bond</link></entry>
+						<entry>Create a new bond between atom IDs in the model. See the <link linkend="command.ref.newbondid">newbondid</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newglyph ( string <emphasis>style</emphasis>, string <emphasis>options = ""</emphasis> )</entry>
+						<entry><link linkend="command.types.glyph">glyph</link></entry>
+						<entry>Create a new glyph in the model. See the <link linkend="command.ref.newglyph">newglyph</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newgrid ( string <emphasis>name</emphasis> )</entry>
+						<entry><link linkend="command.types.grid">grid</link></entry>
+						<entry>Create a new gridh in the model. See the <link linkend="command.ref.newgrid">newgrid</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>paste ( )</entry>
+						<entry>--</entry>
+						<entry>Paste the current clipboard contents into the model. See the <link linkend="command.ref.paste">paste</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebond ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds in the model. See the <link linkend="command.ref.rebond">rebond</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebondpatterns ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds within patterns in the model. See the <link linkend="command.ref.rebondpatterns">rebondpatterns</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebondselection ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds in the current selection. See the <link linkend="command.ref.rebondselection">rebondselection</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>redo ( )</entry>
+						<entry>--</entry>
+						<entry>Redo the last undone change in the model. See the <link linkend="command.ref.redo">redo</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>reorder ( )</entry>
+						<entry>--</entry>
+						<entry>Reorder atoms so bound atoms have adjacent IDs. See the <link linkend="command.ref.reorder">reorder</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>savebitmap ( string <emphasis>format</emphasis>, string <emphasis>filename</emphasis>, int <emphasis>width</emphasis> = auto, int <emphasis>height</emphasis> = auto, int <emphasis>quality</emphasis> = 100 )</entry>
+						<entry>--</entry>
+						<entry>Save a bitmap image of the current model view. See the <link linkend="command.ref.savebitmap">savebitmap</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selectionaddhydrogen ( )</entry>
+						<entry>--</entry>
+						<entry>Hydrogen satisfy all atoms in the current selection. See the <link linkend="command.ref.selectionaddhydrogen">selectionaddhydrogen</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>shiftdown ( int <emphasis>n</emphasis> = 1 )</entry>
+						<entry>--</entry>
+						<entry>Shift the current atom selection down one (or more) places in the atom list (towards higher IDs). See the <link linkend="command.ref.shiftdown">shiftdown</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>shiftup ( int <emphasis>n</emphasis> = 1 )</entry>
+						<entry>--</entry>
+						<entry>Shift the current atom selection up one (or more) places in the atom list (towards lower IDs). See the <link linkend="command.ref.shiftup">shiftup</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>showall ( )</entry>
+						<entry>--</entry>
+						<entry>Unhides any hidden atoms in the model. See the <link linkend="command.ref.showall">showall</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>transmute ( int|string <emphasis>el</emphasis> )</entry>
+						<entry>--</entry>
+						<entry>Transmute all selected atoms to the specified element. See the <link linkend="command.ref.transmute">transmute</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>undo ( )</entry>
+						<entry>--</entry>
+						<entry>Undo the last chanige made to the model. See the <link linkend="command.ref.undo">undo</link> command for more details.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
 	
 	</section>
