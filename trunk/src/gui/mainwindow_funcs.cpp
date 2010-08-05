@@ -549,7 +549,7 @@ void AtenForm::runScript()
 		return;
 	}
 	// Find the CommandList from the loadedscripts() Reflist
-	Refitem<QAction, Forest*> *ri = scriptActions_.search(action);
+	Refitem<QAction, Forest*> *ri = scriptActions_.contains(action);
 	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
 	else
 	{

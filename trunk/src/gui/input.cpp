@@ -41,7 +41,7 @@ void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y, bool
 	if (pickEnabled_ && (atomClicked_ != NULL))
 	{
 		// Don't add the same atom more than once
-		if (pickedAtoms_.search(atomClicked_) == NULL)
+		if (pickedAtoms_.contains(atomClicked_) == NULL)
 		{
 			pickedAtoms_.add(atomClicked_);
 			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomClicked_);

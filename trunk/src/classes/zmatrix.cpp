@@ -366,6 +366,36 @@ void ZMatrix::createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist)
 	msg.exit("ZMatrix::createAlongBonds");
 }
 
+// Create path of bound atoms of the requested size, starting from last atom of the supplied list
+bool ZMatrix::createBoundPath(Reflist<Atom,int> &atomlist, int size, Reflist<Atom,int> &bestlist)
+{
+	// Check for correct path size...
+	if (atomlist.nItems() == size)
+	{
+		bestlist = atomlist;
+		return TRUE;
+	}
+	// From last atom in path, add bound neighbours to path list (if their ID is lower) and recurse if necessary
+	Atom *i = atomlist.last()->item, *j;
+	int maxid = atomlist.first()->item->id();
+	for (Refitem<Bond,int> *ri = i->bonds(); ri != NULL; ri = ri->next)
+	{
+		// Get bond neighbour and check that it has a lower ID *and* doesn't already exist in the list
+		j = ri->item->partner(i);
+		if (j->id() >= maxid) continue;
+		if (atomlist.contains(j)) continue;
+		// OK, so add to list and check for correct size
+		atomlist.add(j);
+		if (atomlist.nItems() > bestlist.nItems()) bestlist = atomlist;
+		if (atomlist.nItems() == size) return TRUE;
+		// Not enough atoms yet, so recurse...
+		if (createBoundPath(atomlist, size, bestlist)) return TRUE;
+		// Still not big enough, so remove this atom from the list tail and try another bound neighbour
+		atomlist.removeLast();
+	}
+	return FALSE;
+}
+
 // Create from specified model
 void ZMatrix::create(Model *source, bool usebonds)
 {
@@ -376,8 +406,8 @@ void ZMatrix::create(Model *source, bool usebonds)
 	angles_.clear();
 	torsions_.clear();
 	parent_ = source;
-	// List of previous atoms
-	Reflist<Atom,int> atomlist;
+	// Lists of previous atoms
+	Reflist<Atom,int> atomlist, boundpath, bestpath;
 	ZMatrixElement *zel;
 	if (parent_->nAtoms() == 0)
 	{
@@ -388,8 +418,36 @@ void ZMatrix::create(Model *source, bool usebonds)
 	origin_ = parent_->atoms()->r();
 	if (TRUE)
 	{
-		parent_->selectNone(TRUE);
-		createAlongBonds(parent_->atoms(), atomlist);
+		// Step through atoms in order, creating elements as we go using bonds wherever possible
+		// We always maintain a list of the previous four atoms, just in case there are not enough bound connections to use
+		for (Atom *i = parent_->atoms(); i != NULL; i = i->next)
+		{
+			// Check current size of atomlist
+			if (atomlist.nItems() == 4) atomlist.removeLast();
+			// Add current atom to the reflist
+			atomlist.addStart(i);
+			// Construct a path of bound atoms
+			boundpath.clear();
+			bestpath.clear();
+			boundpath.add(i);
+			if (createBoundPath(boundpath, atomlist.nItems(), bestpath)) zel = addElement(bestpath);
+			else
+			{
+				// Take best path found, and add extra atoms to it
+				for (Refitem<Atom,int> *ri = atomlist.first(); ri != NULL; ri = ri->next)
+				{
+					if (!bestpath.contains(ri->item)) bestpath.add(ri->item);
+					if (bestpath.nItems() == atomlist.nItems()) break;
+				}
+				if (bestpath.nItems() != atomlist.nItems())
+				{
+					msg.print("Internal Error: Failed to create ZMatrix using connectivity.\n");
+					msg.exit("ZMatrix::create");
+					return;
+				}
+				zel = addElement(bestpath);
+			}
+		}
 	}
 	else
 	{
@@ -403,6 +461,7 @@ void ZMatrix::create(Model *source, bool usebonds)
 			// Create element
 			zel = addElement(atomlist);
 		}
+
 	}
 	msg.exit("ZMatrix::create");
 }

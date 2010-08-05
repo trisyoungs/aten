@@ -79,7 +79,7 @@ template <class T> class List
 	// Remove last item from the list
 	void removeLast();
 	// Return whether the item is owned by the list
-	bool ownsItem(T*);
+	bool contains(T*);
 	// Remove an item from the list, and return the next in the list
 	T* removeAndGetNext(T*);
 	// Bridge items either side of the specified item
@@ -251,7 +251,7 @@ template <class T> void List<T>::removeLast()
 }
 
 // Return whether the item is owned by the list
-template <class T> bool List<T>::ownsItem(T *searchitem)
+template <class T> bool List<T>::contains(T *searchitem)
 {
 	T *item;
 	for (item = listHead_; item != NULL; item = item->next) if (searchitem == item) break;

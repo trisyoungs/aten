@@ -1354,7 +1354,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom *target, Refli
 			// Get bound partner
 			j = b->item->partner(i);
 			// Skip if this atom already exists in the chain
-			if (currentChain_.search(j) != NULL) continue;
+			if (currentChain_.contains(j) != NULL) continue;
 			// Construct new, single-item bound reflist
 			Reflist<Atom,int> boundList;
 			boundList.add(j);
