@@ -106,14 +106,16 @@ void Model::adjustCamera(const Vec3<double> &v, double r)
 	adjustCamera(v.x,v.y,v.z,r);
 }
 
-// Set exact rotation of model (angles passed in radians)
+// Set exact rotation of model (angles passed in degrees)
 void Model::setRotation(double rotx, double roty)
 {
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::setRotation");
-	static double sinx, cosx, siny, cosy;
+	double sinx, cosx, siny, cosy;
 	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
 	// Calculate cos/sin terms for needless speedup!
+	rotx /= DEGRAD;
+	roty /= DEGRAD;
 	cosx = cos(rotx);
 	cosy = cos(roty);
 	sinx = sin(rotx);
@@ -513,8 +515,8 @@ void Model::viewAlong(double x, double y, double z)
 	Vec3<double> v;
 	v.set(x,y,z);
 	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
-	setRotation(-v.z,v.y);
+	// setRotation() expects the degrees of rotation about the x and y axes respectively
+	setRotation(-v.y,fabs(v.z-180.0));
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlong");
@@ -529,8 +531,8 @@ void Model::viewAlongCell(double x, double y, double z)
 	v.set(x,y,z);
 	v *= cell()->transpose();
 	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
-	setRotation(-v.z,v.y);
+	// setRotation() expects the degrees of rotation about the x and y axes respectively
+	setRotation(-v.y,fabs(v.z-180.0));
 	// Log camera change
 	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");
