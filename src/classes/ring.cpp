@@ -134,7 +134,7 @@ int Ring::requestedSize() const
 // Search ring list for specified atom
 bool Ring::containsAtom(Atom *i)
 {
-	return atoms_.search(i);
+	return atoms_.contains(i);
 }
 
 
@@ -149,7 +149,7 @@ bool Ring::addAtom(Atom *i)
 		return FALSE;
 	}
 	// Duplicate check
-	if (atoms_.search(i) != NULL)
+	if (atoms_.contains(i) != NULL)
 	{
 		msg.exit("Ring::addAtom");
 		return FALSE;

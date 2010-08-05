@@ -230,8 +230,8 @@ void Forest::deleteTree(Tree *t)
 {
 	if (t == NULL) return;
 	// Search for the specified tree...
-	if (trees_.ownsItem(t)) trees_.remove(t);
-	else if (functions_.ownsItem(t)) functions_.remove(t);
+	if (trees_.contains(t)) trees_.remove(t);
+	else if (functions_.contains(t)) functions_.remove(t);
 	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 

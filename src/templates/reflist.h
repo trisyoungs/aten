@@ -99,7 +99,7 @@ template <class T, class D> class Reflist
 	// Element access operator
 	Refitem<T,D> *operator[](int);
 	// Search references for item
-	Refitem<T,D> *search(T *item);
+	Refitem<T,D> *contains(T *item);
 	// Clear the list of all references
 	void clear();
 	// Move head of list to tail of list
@@ -202,8 +202,9 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item)
 	Refitem<T,D> *newitem = new Refitem<T,D>;
 	// Add the pointer to the beginning of the list
 	newitem->next = listHead_;
-	listHead_ == NULL ? listHead_ = newitem : listHead_->prev = newitem;
+	if (listHead_ != NULL) listHead_->prev = newitem;
 	listHead_ = newitem;
+	if (listTail_ == NULL) listTail_ = newitem;
 	newitem->item = item;
 	nItems_ ++;
 	regenerate_ = 1;
@@ -247,7 +248,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addStart(T* item, D extr
 // Add unique item to list
 template <class T, class D> Refitem<T,D> *Reflist<T,D>::addUnique(T* item)
 {
-	Refitem<T,D> *srch = search(item);
+	Refitem<T,D> *srch = contains(item);
 	if (srch == NULL) return add(item);
 	else return srch;
 }
@@ -255,7 +256,7 @@ template <class T, class D> Refitem<T,D> *Reflist<T,D>::addUnique(T* item)
 // Add unique item to list
 template <class T, class D> Refitem<T,D> *Reflist<T,D>::addUnique(T* item, D extradata)
 {
-	Refitem<T,D> *srch = search(item);
+	Refitem<T,D> *srch = contains(item);
 	if (srch == NULL) return add(item, extradata);
 	else return srch;
 }
@@ -306,7 +307,7 @@ template <class T, class D> void Reflist<T,D>::removeLast()
 template <class T, class D> void Reflist<T,D>::remove(T *xitem)
 {
 	// Delete a specific item from the list
-	Refitem<T,D> *r = search(xitem);
+	Refitem<T,D> *r = contains(xitem);
 	if (r != NULL) remove(r);
 }
 
@@ -323,7 +324,7 @@ template <class T, class D> Refitem<T,D>* Reflist<T,D>::operator[](int index)
 }
 
 // Search for item
-template <class T, class D> Refitem<T,D>* Reflist<T,D>::search(T *xitem)
+template <class T, class D> Refitem<T,D>* Reflist<T,D>::contains(T *xitem)
 {
 	// Search references for specified item
 	Refitem<T,D> *r;

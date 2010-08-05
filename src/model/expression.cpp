@@ -275,19 +275,19 @@ void Model::createForcefieldLists()
 		// Bond terms
 		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
 		{
-			if (forcefieldBonds_.search(ffb->item) == NULL) forcefieldBonds_.add(ffb->item);
+			if (forcefieldBonds_.contains(ffb->item) == NULL) forcefieldBonds_.add(ffb->item);
 		}
 
 		// Angle terms
 		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
 		{
-			if (forcefieldAngles_.search(ffb->item) == NULL) forcefieldAngles_.add(ffb->item);
+			if (forcefieldAngles_.contains(ffb->item) == NULL) forcefieldAngles_.add(ffb->item);
 		}
 
 		// Torsion terms
 		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
 		{
-			if (forcefieldTorsions_.search(ffb->item) == NULL) forcefieldTorsions_.add(ffb->item);
+			if (forcefieldTorsions_.contains(ffb->item) == NULL) forcefieldTorsions_.add(ffb->item);
 		}
 	}
 

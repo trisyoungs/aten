@@ -163,6 +163,8 @@ class ZMatrix
 	ZMatrixElement *addElement(Reflist<Atom,int> &atomlist);
 	// Create zmatrix recursively along bonds
 	void createAlongBonds(Atom *target, Reflist<Atom,int> &atomlist);
+	// Create path of bound atoms from current atom
+	bool createBoundPath(Reflist<Atom,int> &atomlist, int size, Reflist<Atom,int> &bestlist);
 
 	public:
 	// Create for specified model
