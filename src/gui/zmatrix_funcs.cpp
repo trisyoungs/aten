@@ -177,8 +177,40 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 			}
 			break;
 		case (AtenZMatrix::AngleColumn):
+			// Only valid for the third atom and above
+			if (row < 2) break;
+			// Select a new variable of angle type
+			oldvar = zMatrix_->angle(row-2);
+			el = zMatrix_->element(row-2);
+			newvar = gui.selectVariableDialog->selectVariable(zMatrix_, 1, oldvar, el->negated(1));
+			if (newvar != NULL)
+			{
+				// Set new variable if it is different
+				if (newvar != oldvar)
+				{
+					el->setAngleVariable(newvar);
+					el->setNegated(1, gui.selectVariableDialog->isNegated());
+				}
+				changed = TRUE;
+			}
 			break;
 		case (AtenZMatrix::TorsionColumn):
+			// Only valid for the fourth atom and above
+			if (row < 3) break;
+			// Select a new variable of angle type
+			oldvar = zMatrix_->angle(row-3);
+			el = zMatrix_->element(row-3);
+			newvar = gui.selectVariableDialog->selectVariable(zMatrix_, 2, oldvar, el->negated(2));
+			if (newvar != NULL)
+			{
+				// Set new variable if it is different
+				if (newvar != oldvar)
+				{
+					el->setTorsionVariable(newvar);
+					el->setNegated(2, gui.selectVariableDialog->isNegated());
+				}
+				changed = TRUE;
+			}
 			break;
 	}
 	// Has anything changed?
