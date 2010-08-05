@@ -250,7 +250,7 @@ void Model::setAtomicDistance(Atom *i, Atom *j, double newdistance)
 	translateAtom(j, v);
 }
 
-// Set angle between atoms
+// Set angle between atoms, moving atom k
 void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
 {
 	static Mat3<double> r, u, ut, gr, Igr;
@@ -279,7 +279,7 @@ void Model::setAtomicAngle(Atom *i, Atom *j, Atom *k, double newangle)
 	positionAtom(k, tempv);
 }
 
-// Set torsionx between atoms
+// Set torsion between atoms, moving atom l
 void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsion)
 {
 	static Mat3<double> r, u, ut, gr, Igr;
@@ -302,7 +302,7 @@ void Model::setAtomicTorsion(Atom *i, Atom *j, Atom *k, Atom *l, double newtorsi
 	Igr.setIdentity();
 	Igr = Igr - gr;
 
-	Vec3<double> tempv = gr * k->r();
-	tempv += Igr * j->r();
-	positionAtom(k, tempv);
+	Vec3<double> tempv = gr * l->r();
+	tempv += Igr * k->r();
+	positionAtom(l, tempv);
 }

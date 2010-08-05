@@ -209,15 +209,56 @@ void AtenGeometry::on_NudgeAngleMinusButton_clicked(bool checked)
 
 void AtenGeometry::on_SetNewTorsionButton_clicked(bool checked)
 {
+	Model *m = aten.currentModel()->renderSource();
+	if (m->nSelected() != 4)
+	{
+		msg.print("Can't set torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		return;
+	}
+	Atom *i, *j, *k, *l;
+	Refitem<Atom,int> *ri = m->selection();
+	i = ri->item;
+	j = ri->next->item;
+	k = ri->next->next->item;
+	l = ri->next->next->next->item;
+	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, ui.NewTorsionSpin->value());
 	gui.update(TRUE, FALSE, FALSE);
 }
 
 void AtenGeometry::on_NudgeTorsionPlusButton_clicked(bool checked)
 {
+	Model *m = aten.currentModel()->renderSource();
+	if (m->nSelected() != 4)
+	{
+		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		return;
+	}
+	Atom *i, *j, *k, *l;
+	Refitem<Atom,int> *ri = m->selection();
+	i = ri->item;
+	j = ri->next->item;
+	k = ri->next->next->item;
+	l = ri->next->next->next->item;
+	double value = m->torsion(i,j,k,l) + ui.NudgeTorsionSpin->value();
+	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
 	gui.update(TRUE, FALSE, FALSE);
 }
 
 void AtenGeometry::on_NudgeTorsionMinusButton_clicked(bool checked)
 {
+	Model *m = aten.currentModel()->renderSource();
+	if (m->nSelected() != 4)
+	{
+		msg.print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		return;
+	}
+	Atom *i, *j, *k, *l;
+	Refitem<Atom,int> *ri = m->selection();
+	i = ri->item;
+	j = ri->next->item;
+	k = ri->next->next->item;
+	l = ri->next->next->next->item;
+	double value = m->torsion(i,j,k,l) - ui.NudgeTorsionSpin->value();
+	CommandNode::run(Command::SetTorsion, "iiiid", i->id()+1, j->id()+1, k->id()+1, l->id()+1, value);
 	gui.update(TRUE, FALSE, FALSE);
 }
