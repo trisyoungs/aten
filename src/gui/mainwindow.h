@@ -205,6 +205,7 @@ class AtenForm : public QMainWindow
 	void on_actionFileAddTrajectory_triggered(bool checked);
 	void on_actionFileSave_triggered(bool checked);
 	void on_actionFileSaveAs_triggered(bool checked);
+	void on_actionExportOptions_triggered(bool checked);
 	void on_actionFileClose_triggered(bool checked);
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);

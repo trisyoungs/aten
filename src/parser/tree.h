@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include "parser/filterdata.h"
+#include "parser/guifilteroptionnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "command/commands.h"
@@ -40,6 +41,7 @@ class ScopeNode;
 class VariableNode;
 class StepNode;
 class Forest;
+class QVBoxLayout;
 
 // Tree
 class Tree
@@ -197,11 +199,25 @@ class Tree
 	/*
 	// Filter Properties
 	*/
+	private:
+	// List of user-defined GUI filter options (if any)
+	Reflist<GuiFilterOptionNode,int> guiFilterOptions_;
+	// QLayout containing ready-created set of controls
+	QGridLayout *guiFilterOptionsLayout_;
+
 	public:
 	// Filter data
 	FilterData filter;
 	// Return whether this tree is a filter
 	bool isFilter() const;
+	// Add new (GUI-based) filter option linked to a variable
+	virtual TreeNode *addGuiFilterOption(TreeNode *arglist);
+	// Return first item in list of filter options
+	Refitem<GuiFilterOptionNode,int> *guiFilterOptions();
+	// Set filter options layout widget
+	void setLayout(QGridLayout *layout);
+	// Return filter options layout widget
+	QGridLayout *layout();
 
 
 	/*

@@ -59,20 +59,21 @@
      HELP = 275,
      DIOV = 276,
      DUMMY = 277,
-     ELSE = 278,
-     OR = 279,
-     AND = 280,
-     DEQ = 281,
-     TEQ = 282,
-     MEQ = 283,
-     PEQ = 284,
-     NEQ = 285,
-     EQ = 286,
-     LEQ = 287,
-     GEQ = 288,
-     UMINUS = 289,
-     MINUSMINUS = 290,
-     PLUSPLUS = 291
+     OPTION = 278,
+     ELSE = 279,
+     OR = 280,
+     AND = 281,
+     DEQ = 282,
+     TEQ = 283,
+     MEQ = 284,
+     PEQ = 285,
+     NEQ = 286,
+     EQ = 287,
+     LEQ = 288,
+     GEQ = 289,
+     UMINUS = 290,
+     MINUSMINUS = 291,
+     PLUSPLUS = 292
    };
 #endif
 /* Tokens.  */
@@ -96,20 +97,21 @@
 #define HELP 275
 #define DIOV 276
 #define DUMMY 277
-#define ELSE 278
-#define OR 279
-#define AND 280
-#define DEQ 281
-#define TEQ 282
-#define MEQ 283
-#define PEQ 284
-#define NEQ 285
-#define EQ 286
-#define LEQ 287
-#define GEQ 288
-#define UMINUS 289
-#define MINUSMINUS 290
-#define PLUSPLUS 291
+#define OPTION 278
+#define ELSE 279
+#define OR 280
+#define AND 281
+#define DEQ 282
+#define TEQ 283
+#define MEQ 284
+#define PEQ 285
+#define NEQ 286
+#define EQ 287
+#define LEQ 288
+#define GEQ 289
+#define UMINUS 290
+#define MINUSMINUS 291
+#define PLUSPLUS 292
 
 
 
@@ -128,7 +130,7 @@ typedef union YYSTYPE
 	double doubleconst;		/* double constant value */
 }
 /* Line 1489 of yacc.c.  */
-#line 132 "grammar.h"
+#line 134 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

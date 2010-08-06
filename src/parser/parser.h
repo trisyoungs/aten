@@ -188,7 +188,8 @@ class CommandParser : public Tree
 	public:
 	// Set filter option
 	bool setFilterOption(Dnchar *name, TreeNode *value);
-
+	// Add new (GUI-based) filter option linked to a variable
+	TreeNode *addGuiFilterOption(TreeNode *arglist);
 };
 
 // External declaration

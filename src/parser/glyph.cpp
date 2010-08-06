@@ -105,7 +105,7 @@ StepNode *GlyphVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GlyphData, functionData[i].returnType);
-		result->reverseAddArgumentList(arglist);
+		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'glyph&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

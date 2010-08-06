@@ -181,8 +181,8 @@ bool Pattern::createExpression(bool vdwOnly)
 						msg.print(Messenger::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					// Update the bonding array counters
-					bonding[ii].add()->data = jj;
-					bonding[jj].add()->data = ii;
+					bonding[ii].add()->setValue(jj);
+					bonding[jj].add()->setValue(ii);
 					//bonding[ii][0] ++;
 					//bonding[jj][0] ++;
 					// Add the bond partner to each of the atom's own lists
@@ -210,25 +210,25 @@ bool Pattern::createExpression(bool vdwOnly)
 			{
 				for (kk=ii+1; kk<bonding[jj].nItems(); kk++)
 				{
-					ai = atoms_[bonding[jj][ii]->data]->atom();
+					ai = atoms_[bonding[jj][ii]->value()]->atom();
 					aj = atoms_[jj]->atom();
-					ak = atoms_[bonding[jj][kk]->data]->atom();
+					ak = atoms_[bonding[jj][kk]->value()]->atom();
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
 					// Search for the angle data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findAngle(ti,tj,tk);
-					if (ffb != NULL) addAngleData(ffb, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
+					if (ffb != NULL) addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) addAngleData(NULL, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
+						if (ff->rules() == Rules::None) addAngleData(NULL, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 						else
 						{
 							// Generate the new parameters required
 							ffb = ff->generateAngle(ai,aj,ak);
-							addAngleData(ffb, bonding[jj][ii]->data, jj, bonding[jj][kk]->data);
+							addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 						}
 					}
 					// Check ffa and raise warning if NULL
@@ -264,17 +264,17 @@ bool Pattern::createExpression(bool vdwOnly)
 			for (ii=0; ii<bonding[jj].nItems(); ii++)
 			{
 				// Skip atom kk
-				if (bonding[jj][ii]->data == kk) continue;
+				if (bonding[jj][ii]->value() == kk) continue;
 				// Loop over list of atoms bound to kk
 				for (ll=0; ll<bonding[kk].nItems(); ll++)
 				{
 					// Skip atom jj
-					if (bonding[kk][ll]->data == jj) continue;
+					if (bonding[kk][ll]->value() == jj) continue;
 	
-					ai = atoms_[bonding[jj][ii]->data]->atom();
+					ai = atoms_[bonding[jj][ii]->value()]->atom();
 					aj = atoms_[jj]->atom();
 					ak = atoms_[kk]->atom();
-					al = atoms_[bonding[kk][ll]->data]->atom();
+					al = atoms_[bonding[kk][ll]->value()]->atom();
 
 					// Check for ii == ll (caused by three-membered rings)
 					if (ai->id() == al->id())
@@ -292,16 +292,16 @@ bool Pattern::createExpression(bool vdwOnly)
 					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findTorsion(ti,tj,tk,tl);
-					if (ffb != NULL) addTorsionData(ffb, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
+					if (ffb != NULL) addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) addTorsionData(NULL, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
+						if (ff->rules() == Rules::None) addTorsionData(NULL, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
 						else
 						{
 							// Generate the new parameters required
 							ffb = ff->generateTorsion(ai,aj,ak,al);
-							addTorsionData(ffb, bonding[jj][ii]->data, jj, kk, bonding[kk][ll]->data);
+							addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
 						}
 					}
 					// Check fft and raise warning if NULL

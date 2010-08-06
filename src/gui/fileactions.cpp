@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
+#include "gui/filteroptions.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
@@ -127,6 +128,12 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	Model *m;
 	if (runSaveModelDialog())
 	{
+		// Run options dialog
+		if (!gui.filterOptionsDialog->show(saveModelFilter))
+		{
+			msg.print("Not saved.\n");
+			return;
+		}
 		m = aten.currentModelOrFrame();
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
@@ -155,6 +162,12 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	{
 		if (runSaveModelDialog())
 		{
+			// Run options dialog
+			if (!gui.filterOptionsDialog->show(saveModelFilter))
+			{
+				msg.print("Not saved.\n");
+				return;
+			}
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
 			if (saveModelFilter->executeWrite(saveModelFilename.get()))
@@ -172,6 +185,17 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		m->changeLog.updateSavePoint();
 	}	
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+// Modify export options for current model's associated filter
+void AtenForm::on_actionExportOptions_triggered(bool checked)
+{
+	Model *m = aten.currentModelOrFrame();
+	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
+	else
+	{
+		gui.filterOptionsDialog->show(m->filter());
+	}
 }
 
 // Close current model
@@ -202,6 +226,12 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 				if (filter != NULL) filter->executeWrite(m->filename());
 				else if (runSaveModelDialog())
 				{
+					// Run options dialog
+					if (!gui.filterOptionsDialog->show(saveModelFilter))
+					{
+						msg.print("Not saved.\n");
+						return;
+					}
 					m->setFilter(saveModelFilter);
 					m->setFilename(saveModelFilename.get());
 					saveModelFilter->executeWrite(saveModelFilename.get());

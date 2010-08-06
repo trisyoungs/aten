@@ -25,6 +25,7 @@
 #include "parser/usercommandnode.h"
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
+#include "parser/guifilteroptionnode.h"
 #include "parser/grammar.h"
 #include "parser/parser.h"
 #include "parser/tree.h"
@@ -49,6 +50,7 @@ Tree::Tree()
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
 	readOptions_ = LineParser::Defaults;
+	guiFilterOptionsLayout_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -116,6 +118,46 @@ VTypes::DataType Tree::returnType() const
 bool Tree::isFilter() const
 {
 	return (filter.type() != FilterData::nFilterTypes);
+}
+
+// Add new (GUI-based) filter option linked to a variable
+TreeNode *Tree::addGuiFilterOption(TreeNode *arglist)
+{
+	msg.enter("Tree::addGuiFilterOption");
+	// Wrap the variable and add it to the arguments_ list
+	GuiFilterOptionNode *gnode = new GuiFilterOptionNode();
+	arguments_.own(gnode);
+	gnode->setParent(this);
+	// Store in reflist also...
+	guiFilterOptions_.add(gnode);
+	// Add arguments to node (also sets return type)
+	if (gnode->addJoinedArguments(arglist)) msg.print(Messenger::Parse, "Added filter option '%s'...\n", gnode->name());
+	else
+	{
+		msg.print("Failed to add GUI filter option.\n");
+		msg.exit("Tree::addGuiFilterOption");
+		return NULL;
+	}
+	msg.exit("Tree::addGuiFilterOption");
+	return gnode;
+}
+
+// Return first item in list of filter options
+Refitem<GuiFilterOptionNode,int> *Tree::guiFilterOptions()
+{
+	return guiFilterOptions_.first();
+}
+
+// Set filter options layout widget
+void Tree::setLayout(QGridLayout *layout)
+{
+	guiFilterOptionsLayout_ = layout;
+}
+
+// Return filter options layout widget
+QGridLayout *Tree::layout()
+{
+	return guiFilterOptionsLayout_;
 }
 
 /*
@@ -411,7 +453,7 @@ TreeNode *Tree::addFunctionWithArglist(Command::Function func, TreeNode *arglist
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added function '%s' (%p)...\n", Command::data[func].keyword, leaf);
 	// Add argument list to node and set parent
-	leaf->reverseAddArgumentList(arglist);
+	leaf->addJoinedArguments(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(Command::data[func].returnType);
@@ -461,7 +503,7 @@ TreeNode *Tree::addUserFunction(Tree *func, TreeNode *arglist)
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added user function '%s' (%p)...\n", func->name(), leaf);
 	// Add argument list to node and set parent
-	leaf->reverseAddArgumentList(arglist);
+	leaf->addJoinedArguments(arglist);
 	leaf->setParent(this);
 	// Store the function's return type
 	leaf->setReturnType(func->returnType());
@@ -480,7 +522,7 @@ TreeNode *Tree::addDeclarations(TreeNode *declist)
 	nodes_.own(leaf);
 	msg.print(Messenger::Parse, "Added declarations node (%p)...\n", leaf);
 	// Add argument list to node and set parent
-	leaf->reverseAddArgumentList(declist);
+	leaf->addJoinedArguments(declist);
 	leaf->setParent(this);
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(Command::data[Command::Declarations].arguments, Command::data[Command::Declarations].keyword)) leaf = NULL;
@@ -733,7 +775,7 @@ TreeNode *Tree::addArrayConstant(TreeNode *values)
 	else dt = VTypes::IntegerData;
 	Variable *var = ri->item->variables.createArrayConstant(dt, nvalues);
 	var->setParent(this);
-	var->reverseAddArgumentList(values);
+	var->addJoinedArguments(values);
 	nodes_.own(var);
 	return var;
 }

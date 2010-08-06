@@ -116,7 +116,7 @@ StepNode *CellVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::CellData, functionData[i].returnType);
-		result->reverseAddArgumentList(arglist);
+		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'cell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

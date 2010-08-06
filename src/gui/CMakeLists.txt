@@ -38,7 +38,9 @@ set(qtproject_SRCS
   glyphs_funcs.cpp
   grids_funcs.cpp
   gui.cpp
+  filteroptions_funcs.cpp
   input.cpp
+  layoutlist.cpp
   loadmodel_funcs.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
@@ -85,6 +87,8 @@ SET(pro_MOC_HDRS
   geometry.h
   glyphs.h
   grids.h
+  filteroptions.h
+  layoutlist.h
   loadmodel.h
   mainwindow.h
   md.h
@@ -120,6 +124,7 @@ SET(pro_UIS
   geometry.ui
   glyphs.ui
   grids.ui
+  filteroptions.ui
   loadmodel.ui
   mainwindow.ui
   md.ui

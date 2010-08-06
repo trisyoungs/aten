@@ -157,7 +157,7 @@ StepNode *PreferencesVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::PreferencesData, functionData[i].returnType);
-		result->reverseAddArgumentList(arglist);
+		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
 			msg.print("Error: Syntax for 'prefs&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );

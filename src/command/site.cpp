@@ -44,7 +44,7 @@ bool Command::function_NewSite(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			ListItem<int> *li = obj.s->atoms.add();
 			// Store n-1 since internally we work in 0-n range
-			li->data = parser.argi(n) - 1;
+			li->setValue(parser.argi(n) - 1);
 		}
 	}
 	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
@@ -65,7 +65,7 @@ bool Command::function_ListSites(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		{
 			msg.print(" %15s %15s  ",s->name(), s->pattern()->name());
 			if (s->atoms.nItems() == 0) msg.print("All atoms assumed (none defined)");
-			else for (ListItem<int> *li = s->atoms.first(); li != NULL; li = li->next) msg.print(" %i",li->data);
+			else for (ListItem<int> *li = s->atoms.first(); li != NULL; li = li->next) msg.print(" %i",li->value());
 			msg.print("\n");
 		}
 	}
@@ -98,7 +98,7 @@ bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		li = obj.s->xAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
-		li->data = parser.argi(n) - 1;
+		li->setValue(parser.argi(n) - 1);
 	}
 	// Parse atom list for y-axis
 	parser.getArgsDelim(c->argc(1), LineParser::Defaults);
@@ -106,7 +106,7 @@ bool Command::function_SiteAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		li = obj.s->yAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
-		li->data = parser.argi(n) - 1;
+		li->setValue(parser.argi(n) - 1);
 	}
 	rv.reset();
 	return TRUE;

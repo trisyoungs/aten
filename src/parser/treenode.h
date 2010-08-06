@@ -45,7 +45,7 @@ class TreeNode
 	// List pointers (for argument list)
 	TreeNode *nextArgument, *prevArgument;
 	// Node Types
-	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, ArrayConstantNode, UserCmdNode, nNodeTypes };
+	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, ArrayConstantNode, UserCmdNode, GuiFilterOptNode, nNodeTypes };
 	// Copy data
 	void copy(TreeNode *source);
 
@@ -81,9 +81,9 @@ class TreeNode
 	// Return datatype of nth argument
 	VTypes::DataType argType(int i);
 	// Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
-	void addArguments(TreeNode *leaf);
-	// Add list of arguments, beginning from supplied list tail
-	void reverseAddArgumentList(TreeNode *args);
+	void addListArguments(TreeNode *leaf);
+	// Add list of arguments joined by parser, probably with list tail supplied
+	void addJoinedArguments(TreeNode *args);
 	// Add multiple arguments to node
 	void addArguments(int nargs, ...);
 	// Add multiple arguments to node

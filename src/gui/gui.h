@@ -43,6 +43,7 @@ class AtenCellTransform;
 class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
+class AtenFilterOptions;
 class AtenFragment;
 class AtenGeometry;
 class AtenGlyphs;
@@ -122,6 +123,7 @@ class GuiQt
 	// Enable / disable GUI (except progress bar group)
 	void setWindowsEnabled(bool b);
 
+
 	/*
 	// Windows / Subwindows
 	*/
@@ -163,6 +165,7 @@ class GuiQt
 	// Zmatrix window
 	AtenZMatrix *zmatrixWindow;
 
+
 	/*
 	// Dialogs
 	*/
@@ -185,6 +188,9 @@ class GuiQt
 	AtenSelectElement *selectElementDialog;
 	// Command help dialog
 	AtenCommandHelp *commandHelpDialog;
+	// Filter options dialog
+	AtenFilterOptions *filterOptionsDialog;
+
 
 	/*
 	// Canvas
@@ -198,6 +204,7 @@ class GuiQt
 	void updateContextMenu();
 	// Call the atompopup menu
 	void callContextMenu(Atom*, int, int);
+
 
 	/*
 	// Trajectory State
@@ -219,6 +226,7 @@ class GuiQt
 	void setTrajectoryTimerId(int i);
 	// Stop trajectory playback
 	void stopTrajectoryPlayback();
+
 
 	/*
 	// Progress Dialog

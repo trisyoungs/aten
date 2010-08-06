@@ -224,6 +224,12 @@ int CommandParser::lex()
 				return DOUBLECONST;
 			}
 
+			// OPTION keywords
+			if (strcmp(token,"option") == 0)
+			{
+				return OPTION;
+			}
+
 			// Element symbol?
 			for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
 			if (n < elements().nElements())
@@ -256,7 +262,29 @@ int CommandParser::lex()
 				return FILTERBLOCK;
 			}
 
-			// If we get to here then its not a high-level keyword.
+			// Is it an existing variable in scope?
+			if (tree_ != NULL)
+			{
+				// Search the variable lists currently in scope...
+				int scopelevel;
+				Variable *v = tree_->findVariableInScope(token, scopelevel);
+				if (v != NULL)
+				{
+					if (scopelevel == 0)
+					{
+						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
+						CommandParser_lval.variable = v;
+						return LOCALVAR;
+					}
+					else
+					{
+						msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
+						CommandParser_lval.variable = v;
+						return VAR;
+					}
+				}
+			}
+
 			// Is it one of Aten's function keywords?
 			for (n=0; n<Command::nCommands; n++) if (strcmp(token,Command::data[n].keyword) == 0) break;
 			if (n != Command::nCommands)
@@ -300,27 +328,6 @@ int CommandParser::lex()
 			name = token;
 			CommandParser_lval.name = &name;
 			return STEPTOKEN;
-		}
-		else if (tree_ != NULL)
-		{
-			// Search the variable lists currently in scope...
-			int scopelevel;
-			Variable *v = tree_->findVariableInScope(token, scopelevel);
-			if (v != NULL)
-			{
-				if (scopelevel == 0)
-				{
-					msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing local variable (->LOCALVAR)\n", tree_);
-					CommandParser_lval.variable = v;
-					return LOCALVAR;
-				}
-				else
-				{
-					msg.print(Messenger::Parse, "LEXER (%p): ...which is an existing variable (->VAR)\n", tree_);
-					CommandParser_lval.variable = v;
-					return VAR;
-				}
-			}
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
