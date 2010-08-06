@@ -62,7 +62,7 @@ ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_
 }
 
 // Operator =
-void ReturnValue::operator=(ReturnValue &source)
+void ReturnValue::operator=(const ReturnValue &source)
 {
 	clearArrayData();
 	// Copy datatype of source

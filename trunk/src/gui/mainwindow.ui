@@ -140,7 +140,7 @@
           <bool>false</bool>
          </property>
          <property name="textInteractionFlags" >
-          <set>Qt::TextSelectableByMouse</set>
+          <set>Qt::TextBrowserInteraction</set>
          </property>
         </widget>
        </widget>
@@ -182,6 +182,7 @@
     <addaction name="actionFileClose" />
     <addaction name="actionFileSave" />
     <addaction name="actionFileSaveAs" />
+    <addaction name="actionExportOptions" />
     <addaction name="actionFileSaveExpression" />
     <addaction name="separator" />
     <addaction name="actionFileAddTrajectory" />
@@ -2495,6 +2496,11 @@
    </property>
    <property name="toolTip" >
     <string>Show the ZMatrix Editor</string>
+   </property>
+  </action>
+  <action name="actionExportOptions" >
+   <property name="text" >
+    <string>E&amp;xport Options</string>
    </property>
   </action>
  </widget>

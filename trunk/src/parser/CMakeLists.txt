@@ -18,6 +18,7 @@ grammar.h
 glyph.h
 glyphdata.h
 grid.h
+guifilteroptionnode.h
 integer.h
 measurement.h
 model.h
@@ -58,6 +59,7 @@ glyph.cpp
 glyphdata.cpp
 grammar.cc
 grid.cpp
+guifilteroptionnode.cpp
 integer.cpp
 measurement.cpp
 model.cpp

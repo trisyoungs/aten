@@ -158,20 +158,20 @@ bool TreeNode::hasArg(int i)
 }
 
 // Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
-void TreeNode::addArguments(TreeNode *leaf)
+void TreeNode::addListArguments(TreeNode *leaf)
 {
 	for (TreeNode *node = leaf; node != NULL; node = node->next) args_.add(node);
 }
 
-// Add list of arguments formed as a linked TreeNode list, beginning from supplied list tail
-void TreeNode::reverseAddArgumentList(TreeNode *leaf)
+// Add list of arguments formed as a linked TreeNode list
+void TreeNode::addJoinedArguments(TreeNode *lastleaf)
 {
 	/*
-	The supplied leaf may be a single node, or it may be a list of nodes.
-	In the case of a list, we must walk backwards through the list to get to the beginning since the parser will provide only the last node of the list
+	The supplied leaf may be a single node, or it may be a list of nodes beginning at the *last* node (this is the case if Joined by the parser)
+	Therefore, must walk backwards through the list first to get to the head...
 	*/
 	TreeNode *first;
-	for (first = leaf; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
+	for (first = lastleaf; first != NULL; first = first->prevArgument) if (first->prevArgument == NULL) break;
 	for (TreeNode *node = first; node != NULL; node = node->nextArgument) args_.add(node);
 }
 

@@ -94,8 +94,22 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
+	# Define options
+	string runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
+	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
+	int mult = option("Multiplicity", "spin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
+	int charge = option("Charge", "spin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
+	string dfttyp = option("DFT Type", "combo", "NONE,XXXX", 1, "group=Job Control ($CONTRL)", "newline");
+	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
+	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
+	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
+	string cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
+	string relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
+	string exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
+
 	# Write a standard control header
-	writeline(" $CONTRL SCFTYP=RHF RUNTYP=OPTIMIZE COORD=CART ICHARG=0 MULT=1 $END");
+	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);
+	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", dfttyp, tddft, mplevl, cityp, cctyp);
 	writeline(" $STATPT NSTEP=100 $END");
 	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
 	writeline(" $BASIS GBASIS=N31 NGAUSS=6 NDFUNC=1 $END");

@@ -49,11 +49,11 @@ Vec3<double> Model::siteCentre(Site *s, int mol)
 	if (s->atoms.nItems() != 0)
 	{
 		li = s->atoms.first();
-		centre = modelatoms[offset + li->data]->r();
+		centre = modelatoms[offset + li->value()]->r();
 		firstid = centre;
 		for (li = li->next; li != NULL; li = li->next)
 		{
-			mim = cell_.mim(modelatoms[offset + li->data]->r(), firstid);
+			mim = cell_.mim(modelatoms[offset + li->value()]->r(), firstid);
 			centre += mim;
 		}
 		// Take average
@@ -94,7 +94,7 @@ Mat3<double> Model::siteAxes(Site *s, int mol)
 	v1.zero();
 	for (li = s->xAxisAtoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell_.mim(modelatoms[offset + li->data]->r(), centre);
+		mim = cell_.mim(modelatoms[offset + li->value()]->r(), centre);
 		v1 += mim;
 	}
 	// Take average and subtract site centre to get vector
@@ -105,7 +105,7 @@ Mat3<double> Model::siteAxes(Site *s, int mol)
 	v2.zero();
 	for (li = s->yAxisAtoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell_.mim(modelatoms[offset + li->data]->r(), centre);
+		mim = cell_.mim(modelatoms[offset + li->value()]->r(), centre);
 		v2 += mim;
 	}
 	// Take average and subtract site centre to get vector

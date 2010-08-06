@@ -68,17 +68,26 @@ Dnchar::Dnchar(const char *s)
 	set(s);
 }
 
+// Copy constructor
+Dnchar::Dnchar(const Dnchar &source)
+{
+	// Private variables
+	data_ = NULL;
+	size_ = 0;
+	endPosition_ = 0;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	if (source.data_ == NULL) clear();
+	else set(source.data_);
+}
+
 // Destructor
 Dnchar::~Dnchar()
 {
 	if (data_ != NULL) delete[] data_;
-}
-
-// Copy constructor
-Dnchar::Dnchar(const Dnchar &source)
-{
-	if (source.data_ == NULL) clear();
-	else set(source.data_);
 }
 
 // Print

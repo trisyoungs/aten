@@ -216,7 +216,7 @@ bool UserCommandNode::run(Tree *func, ReturnValue &rv, TreeNode *arglisthead)
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	node.addArguments(arglisthead);
+	node.addListArguments(arglisthead);
 
 	// Now, run the command...
 	bool result = node.execute(rv);

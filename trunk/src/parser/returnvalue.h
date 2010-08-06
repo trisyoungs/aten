@@ -38,7 +38,7 @@ class ReturnValue
 	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
 	// Operator=
-	void operator=(ReturnValue &rv);
+	void operator=(const ReturnValue &rv);
 
 
 	/*

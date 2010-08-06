@@ -25,19 +25,50 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/*
 // Template object for types not including prev/next pointers (e.g. PODs)
+*/
 template <class T> class ListItem
 {
 	public:
-	// Data object
-	T data;
-	// List pointers
-	ListItem<T> *prev, *next;
 	// Constructor
 	ListItem<T>();
+	// List pointers
+	ListItem<T> *prev, *next;
+
+	private:
+	// Data object
+	T data_;
+
+	public:
+	// Set data object
+	void setValue(T value);
+	// Return data object
+	T value();
 };
 
+// Constructor
+template <class T> ListItem<T>::ListItem()
+{
+	prev = NULL;
+	next = NULL;
+}
+
+// Set data object
+template <class T> void ListItem<T>::setValue(T value)
+{
+	data_ = value;
+}
+
+// Set data object
+template <class T> T ListItem<T>::value()
+{
+	return data_;
+}
+
+/*
 // List structure for user-generated classes (containing prev/next pointers)
+*/
 template <class T> class List
 {
 	public:
@@ -135,12 +166,6 @@ template <class T> List<T>::List()
 	nItems_ = 0;
 	regenerate_ = 1;
 	items_ = NULL;
-}
-
-template <class T> ListItem<T>::ListItem()
-{
-	prev = NULL;
-	next = NULL;
 }
 
 // Destructor

@@ -31,8 +31,7 @@ class Dnchar
 	Dnchar(int size);
 	Dnchar(const char*);
 	~Dnchar();
-	// Copy constructor
-	Dnchar(const Dnchar&);
+	Dnchar(const Dnchar&);	// Copy constructor
 	// List pointers
 	Dnchar *prev, *next;
 

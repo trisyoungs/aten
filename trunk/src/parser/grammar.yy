@@ -44,7 +44,7 @@ VTypes::DataType declaredType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK HELP DIOV DUMMY
+%token DO WHILE FOR IF RETURN FILTERBLOCK HELP DIOV DUMMY OPTION
 %nonassoc ELSE
 
 %left AND OR
@@ -61,7 +61,7 @@ VTypes::DataType declaredType;
 %type <node> fstatement decexpr statement block blockment statementlist exprlist ARRAYCONST
 %type <node> namelist namelistitem newname
 %type <name> newvar
-%type <node> filter pushscope declaration userfunc userfuncdef userstatementdef
+%type <node> filter pushscope declaration userfunc userfuncdef userstatementdef guifilteroption
 
 %%
 
@@ -193,6 +193,7 @@ newname:
 	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3); }
 	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '=' ARRAYCONST				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
+	| newvar '=' guifilteroption 			{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar '[' expr ']' '=' ARRAYCONST		{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
@@ -200,9 +201,9 @@ newname:
 
 newvar:
 	VAR 						{ tokenName = yylval.variable->name(); $$ = &tokenName; }
+	| FUNCCALL					{ tokenName = Command::data[yylval.functionId].keyword; $$ = &tokenName; }
 	| LOCALVAR					{ msg.print("Error: Existing variable in local scope cannot be redeclared.\n"); YYABORT; }
 	| constant					{ msg.print("Error: Constant value found in declaration.\n"); YYABORT; }
-	| FUNCCALL					{ msg.print("Error: Existing function name cannot be redeclared as a variable.\n"); YYABORT; }
 	| USERFUNCCALL					{ msg.print("Error: Existing user-defined function name cannot be redeclared.\n"); YYABORT; }
 	| VTYPE						{ msg.print("Error: Type-name used in variable declaration.\n"); YYABORT; }
 	| NEWTOKEN savetokenname				{ if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; } $$ = $1; }
@@ -211,6 +212,12 @@ newvar:
 declaration:
 	VTYPE savetype namelist				{ $$ = cmdparser.addDeclarations($3); declaredType = VTypes::NoData; }
 	| VTYPE savetype error				{ msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType)); YYABORT; }
+	;
+
+/* Filter Option Definition */
+
+guifilteroption:
+	OPTION '(' exprlist ')'				{ $$ = cmdparser.addGuiFilterOption($3); }
 	;
 
 /* Variables / Paths */
