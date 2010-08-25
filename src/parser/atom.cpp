@@ -53,6 +53,9 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "bonds", 	VTypes::BondData,		-1, TRUE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
 	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
+	{ "fracx",	VTypes::DoubleData,		0, FALSE },
+	{ "fracy",	VTypes::DoubleData,		0, FALSE },
+	{ "fracz",	VTypes::DoubleData,		0, FALSE },
 	{ "fx",		VTypes::DoubleData,		0, FALSE },
 	{ "fy",		VTypes::DoubleData,		0, FALSE },
 	{ "fz",		VTypes::DoubleData,		0, FALSE },
@@ -190,6 +193,11 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtomVariable::Fixed):
 			rv.set(ptr->isPositionFixed());
 			break;
+		case (AtomVariable::FracX):
+		case (AtomVariable::FracY):
+		case (AtomVariable::FracZ):
+			rv.set((ptr->r() * ptr->parent()->cell()->inverseTranspose()).get(acc - AtomVariable::FracX));
+			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):
 		case (AtomVariable::FZ):
@@ -326,6 +334,16 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			break;
 		case (AtomVariable::Fixed):
 			ptr->parent()->setFixed(ptr, newvalue.asBool());
+			break;
+		case (AtomVariable::FracX):
+		case (AtomVariable::FracY):
+		case (AtomVariable::FracZ):
+			v = ptr->parent()->cell()->inverseTranspose() * ptr->r();
+			v.set(acc - AtomVariable::RX, newvalue.asDouble());
+			v = ptr->parent()->cell()->fracToReal(v);
+			ptr->parent()->beginUndoState("Position atom (fractional coordinates)");
+			ptr->parent()->positionAtom(ptr, v);
+			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::FX):
 		case (AtomVariable::FY):

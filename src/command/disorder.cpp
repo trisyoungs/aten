@@ -92,7 +92,7 @@ bool Command::function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue
 	return TRUE;
 }
 
-// Set geometry of region in fractional coordinates ('regiongeometryf <x y z>')
+// Set geometry of region in real coordinates ('regiongeometry <x y z>')
 bool Command::function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -101,7 +101,7 @@ bool Command::function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &
 	return TRUE;
 }
 
-// Set geometry of region ('regiongeometryf <x y z>')
+// Set geometry of region in fractional coordinates ('regiongeometryf <x y z>')
 bool Command::function_RegionGeometryFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;

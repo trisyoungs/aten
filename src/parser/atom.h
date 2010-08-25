@@ -41,7 +41,7 @@ class AtomVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Bonds, F, Fixed, FX, FY, FZ, Hidden, Id, Mass, Name, NBonds, Q, R, RX, RY, RZ, Selected, Symbol, Type, V, VX, VY, VZ, Z, nAccessors };
+        enum Accessors { Bonds, F, Fixed, FracX, FracY, FracZ, FX, FY, FZ, Hidden, Id, Mass, Name, NBonds, Q, R, RX, RY, RZ, Selected, Symbol, Type, V, VX, VY, VZ, Z, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

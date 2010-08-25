@@ -32,6 +32,24 @@
 						<entry>Force vector</entry>
 					</row>
 					<row>
+						<entry>fracx</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position x-component in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>fracy</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position y-component in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>fracz</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>Position z-component in fractional cell coordinates</entry>
+					</row>
+					<row>
 						<entry>fx</entry>
 						<entry>double</entry>
 						<entry>rw</entry>
