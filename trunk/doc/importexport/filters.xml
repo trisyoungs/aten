@@ -344,4 +344,38 @@ zmap=&quot;numeric&quot;
 		
 	</section>
 
+	<section id="readwrite.filters.options"><title>Filter Options</title>
+		<indexterm><primary>filters</primary><secondary>options</secondary></indexterm>
+		
+		<para>When writing data, in many cases all the information that the filter wants to write is contained within the current model, for example when outputting simple file formats such as xyz or Aten's own akf. In other cases ther may be additional data for which would be nice to have some control over, and which lays beyond atoms and bondes. The best example is probably the input formats for nearly all <emphasis>ab initio</emphasis> codes which contain (as well as the atomic coordinates) statements and additional data necessary to control the running of the code itself. It is not a problem to write out 'static' lines of control commands from the output filter, but it would of course also be nice to be able to tailor this output from within the GUI (or from the command-line). This can be achieved by assigning values to variables in the filter through the use of filter options.</para>
+
+		<para>Any number of options can be defined, and some relatively simple but useful control over the layout of the related GUI controls is possible.</para>
+
+		<sect5 id="readwrite.filters.options.defining"><title>Defining Options</title>
+		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>defining</tertiary></indexterm>
+
+			<para>A filter option is defined in the following way within a filter file. In this case, we are setting a string variable with one of several possible values using a combo box control in the GUI. When saving a file in a new format (or by selecting 'Export Options' from the 'File' menu) a dialog is shown in the GUI which contains all of the defined controls in the relevant filter, from which options can be set before the file is written.</para>
+
+			<synopsis>
+string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check,run,restart,analyse&quot;, 2);
+			</synopsis>
+		
+			<para>Note that when the filter actually runs on the file, the target variable 'runtype' will be set with whatever value the control holds in the GUI (or the default if running from the command-line) - no questions are asked interactively at the points at which the 'option()' commands exist. So, the variable here will be guaranteed to take on one of the possible values 'check', 'run', 'restart', or 'analyse'.</para>
+
+		</sect5>
+
+		<sect5 id="readwrite.filters.options.types"><title>Option Types</title>
+		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>types</tertiary></indexterm>
+
+		XXX Table of option types
+
+		</sect5>
+
+		<sect5 id="readwrite.filters.options.layout"><title>Option Layout</title>
+		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>layout</tertiary></indexterm>
+
+		</sect5>
+	
+	</section>
+
 </section>
