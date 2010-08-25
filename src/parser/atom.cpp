@@ -339,7 +339,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
 			v = ptr->parent()->cell()->inverseTranspose() * ptr->r();
-			v.set(acc - AtomVariable::RX, newvalue.asDouble());
+			v.set(acc - AtomVariable::FracX, newvalue.asDouble());
 			v = ptr->parent()->cell()->fracToReal(v);
 			ptr->parent()->beginUndoState("Position atom (fractional coordinates)");
 			ptr->parent()->positionAtom(ptr, v);
