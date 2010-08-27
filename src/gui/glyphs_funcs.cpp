@@ -221,7 +221,7 @@ void AtenGlyphs::on_GlyphList_currentRowChanged(int row)
 void AtenGlyphs::on_GlyphList_itemSelectionChanged()
 {
 	// Extra check to deactivate controls when no glyph in the list is selected
-	if (ui.GlyphList->selectedItems().size() == 0)
+	if (ui.GlyphList->currentRow() == -1)
 	{
 		refreshing_ = TRUE;
 		updateData(NULL);
@@ -241,8 +241,8 @@ void AtenGlyphs::on_GlyphAddButton_clicked(bool checked)
 	ui.GlyphList->setCurrentRow(ui.GlyphList->count()-1);
 	ui.GlyphList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	refreshing_ = TRUE;
-	updateData(NULL);
-	updateControls(NULL);
+	updateData(g);
+	updateControls(g);
 	refreshing_ = FALSE;
 }
 
@@ -302,18 +302,21 @@ void AtenGlyphs::on_GlyphTypeCombo_currentIndexChanged(int row)
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	Glyph *g;
+	QString s;
+	TListWidgetItem *item;
 	Glyph::GlyphType gt = (Glyph::GlyphType) row;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		item = (TListWidgetItem*) items.at(i);
+		g = (Glyph*) item->data.asPointer(VTypes::GlyphData);
 		g->setType(gt);
+		s = itoa(ui.GlyphList->row(item)+1);
+		s += ". ";
+		s += Glyph::glyphType(gt);
+		item->setText(s);
 	}
 	aten.currentModelOrFrame()->changeLog.add(Log::Glyphs);
 	gui.mainView.postRedisplay();
-	refreshing_ = TRUE;
-	updateData(NULL);
-	updateControls(NULL);
-	refreshing_ = FALSE;
 }
 
 void AtenGlyphs::on_GlyphLineEdit_returnPressed()
