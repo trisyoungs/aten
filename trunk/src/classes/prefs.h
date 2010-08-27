@@ -73,7 +73,7 @@ class Prefs
 	static ViewObject viewObject(const char *name, bool reporterror = 0);
 	static const char *viewObject(ViewObject);
 	// Atom colouring scheme
-	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char *name, bool reporterror = 0);
 	static const char *colouringScheme(ColouringScheme cs);
 	// Filter override switches

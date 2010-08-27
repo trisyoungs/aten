@@ -90,6 +90,10 @@ Atom::Atom()
 	style_ = StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
+	colour_[0] = 1.0;
+	colour_[1] = 1.0;
+	colour_[2] = 1.0;
+	colour_[3] = 1.0;
 
 	// Public variables
 	next = NULL;
@@ -682,4 +686,35 @@ void Atom::removeLabel(Atom::AtomLabel label)
 void Atom::clearLabels()
 {
 	labels_ = 0;
+}
+
+// Set custom colour of atom
+void Atom::setColour(double r, double g, double b, double a)
+{
+	colour_[0] = r;
+	colour_[1] = g;
+	colour_[2] = b;
+	colour_[3] = a;
+}
+
+// Set n'th component of custom colour
+void Atom::setColour(int n, double d)
+{
+	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for atom colour which is out of range.\n", n+1);
+	else colour_[n] = d;
+}
+
+// Return custom colour
+double *Atom::colour()
+{
+	return colour_;
+}
+
+// Copy custom colour
+void Atom::copyColour(GLfloat *c) const
+{
+	 c[0] = (GLfloat) colour_[0];
+	 c[1] = (GLfloat) colour_[1];
+	 c[2] = (GLfloat) colour_[2];
+	 c[3] = (GLfloat) colour_[3];
 }

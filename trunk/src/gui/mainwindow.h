@@ -330,6 +330,8 @@ class AtenForm : public QMainWindow
 	void on_actionSchemeElement_triggered(bool checked);
 	void on_actionSchemeCharge_triggered(bool checked);
 	void on_actionSchemeForce_triggered(bool checked);
+	void on_actionSchemeVelocity_triggered(bool checked);
+	void on_actionSchemeCustom_triggered(bool checked);
 
 	/*
 	// Window Show / Hide Actions

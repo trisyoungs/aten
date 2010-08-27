@@ -115,6 +115,7 @@ class Command
 	
 		// Atom Commands
 		AtomStyle,
+		ColourAtoms,
 		CurrentAtom,
 		Fix,
 		Free,
@@ -584,6 +585,7 @@ class Command
 	static bool function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Atom Commands
 	static bool function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Fix(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv);

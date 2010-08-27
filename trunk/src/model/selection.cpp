@@ -207,7 +207,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 // Set selection visibility
 void Model::selectionSetHidden(bool hidden)
 {
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) setHidden(ri->item, hidden);
+	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
 	changeLog.add(Log::Visual);
 }
 
@@ -215,7 +215,20 @@ void Model::selectionSetHidden(bool hidden)
 void Model::selectionSetFixed(bool fixed)
 {
 	// Sets 'fixed' values to TRUE
-	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) setFixed(ri->item, fixed);
+	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
+}
+
+void Model::selectionSetColour(double r, double g, double b, double a)
+{
+	for (Refitem<Atom,int> *ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
+	changeLog.add(Log::Visual);
+}
+
+// Set selection style
+void Model::selectionSetStyle(Atom::DrawStyle ds)
+{
+	// Sets all atoms currently selected to have the drawing style specified
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) atomSetStyle(i, ds);
 }
 
 // Select bound and selected atoms from the current atom

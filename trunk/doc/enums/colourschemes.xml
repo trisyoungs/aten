@@ -27,6 +27,10 @@
 					<entry>velocity</entry>
 					<entry>Atoms and connected bonds are coloured according to the velocities of the atoms</entry>
 				</row>
+				<row>
+					<entry>custom</entry>
+					<entry>Atoms and connected bonds are coloured according to the custom colours set on individual atoms</entry>
+				</row>
 			</tbody>
 		</tgroup>
 	</table>

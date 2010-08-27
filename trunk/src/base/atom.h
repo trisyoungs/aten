@@ -25,6 +25,7 @@
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 #include "templates/reflist.h"
+#include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
 class Model;
@@ -278,6 +279,8 @@ class Atom
 	Atom::DrawStyle style_;
 	// Bitvector for atom labelling
 	short int labels_;
+	// Custom colour
+	double colour_[4];
 
 	public:
 	// Sets the drawing style of the atom
@@ -296,6 +299,14 @@ class Atom
 	void removeLabel(Atom::AtomLabel label);
 	// Clear all labels from the atom
 	void clearLabels();
+	// Set custom colour of atom
+	void setColour(double r, double g, double b, double a = 1.0f);
+	// Set n'th component of custom colour
+	void setColour(int n, double d);
+	// Return custom colour
+	double *colour();
+	// Copy custom colour
+	void copyColour(GLfloat *c) const;
 };
 
 #endif

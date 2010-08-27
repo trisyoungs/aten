@@ -176,21 +176,21 @@ class Model
 	// Return (and autocreate if necessary) the static atoms array
 	Atom **atomArray();
 	// Set visibility of specified atom
-	void setHidden(Atom *i, bool hidden);
+	void atomSetHidden(Atom *i, bool hidden);
 	// Set fixed status of specified atom
-	void setFixed(Atom *i, bool fixed);
+	void atomSetFixed(Atom *i, bool fixed);
 	// Set charge of specified atom
-	void chargeAtom(Atom *i, double q);
+	void atomSetCharge(Atom *i, double q);
+	// Set custom colour of specified atom
+	void atomSetColour(Atom *i, double r, double g, double b, double a = 1.0);
+	// Set the drawing style of the specified atom
+	void atomSetStyle(Atom *i, Atom::DrawStyle);
 	// Prints out the coordinates of the atoms in the model
 	void printCoords() const;
 	// Return total bond order penalty of atoms in the first pattern molecule
 	int totalBondOrderPenalty() const;
 	// Return the number of bonds of specified type to the atom
 	int countBondsToAtom(Atom *i, Bond::BondType);
-	// Set the drawing style of the specified atom
-	void styleAtom(Atom *i, Atom::DrawStyle);
-	// Set the drawing style of the current atom selection
-	void styleSelection(Atom::DrawStyle);
 	// Calculate the total mass of the model
 	void calculateMass();
 	// Return the mass of the model
@@ -373,6 +373,20 @@ class Model
 	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
 	// Recursive selector for fragmentFromSelection()
 	void fragmentFromSelectionSelector(Atom *start, Reflist<Atom,int> &list);
+	// Clear all atom labelling from the current selection
+	void selectionClearLabels();
+	// Clear specified atom labelling from the current selection
+	void selectionRemoveLabels(Atom::AtomLabel);
+	// Set the specified label for all atoms currently selected
+	void selectionAddLabels(Atom::AtomLabel);
+	// Set the visibility property for all selected atoms
+	void selectionSetHidden(bool hidden);
+	// Sets the 'fixed' variable of all selected atoms
+	void selectionSetFixed(bool fixed);
+	// Set the custom colour of all selected atoms
+	void selectionSetColour(double r, double g, double b, double a = 1.0);
+	// Set the drawing style of the current atom selection
+	void selectionSetStyle(Atom::DrawStyle);
 
 
 	/*
@@ -445,7 +459,7 @@ class Model
 
 
 	/*
-	// Labelling
+	// Other Properties
 	*/
 	public:
 	// Add label to atom
@@ -456,16 +470,6 @@ class Model
 	void clearAllLabels();
 	// Clear labelling from specific atom
 	void clearLabels(Atom *i);
-	// Clear all atom labelling from the current selection
-	void selectionClearLabels();
-	// Clear specified atom labelling from the current selection
-	void selectionRemoveLabels(Atom::AtomLabel);
-	// Set the specified label for all atoms currently selected
-	void selectionAddLabels(Atom::AtomLabel);
-	// Set the visibility property for all selected atoms
-	void selectionSetHidden(bool hidden);
-	// Sets the 'fixed' variable of all selected atoms
-	void selectionSetFixed(bool fixed);
 
 
 	/*

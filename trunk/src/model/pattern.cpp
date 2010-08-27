@@ -465,12 +465,12 @@ void Model::chargePatternAtom(Pattern *p, int id, double q)
 	pnatoms = p->nAtoms();
 	// Skip on the 'i' pointer so it points to the atom 'id' in the first molecule of the pattern
 	for (n=0; n<id; n++) i = i->next;
-	chargeAtom(i, q);
+	atomSetCharge(i, q);
 	// Loop over molecules-1, setting charge and then skipping on pnatoms
 	for (n=1; n<p->nMolecules(); n++)
 	{
 		for (m=0; m<pnatoms; m++) i = i->next;
-		chargeAtom(i, q);
+		atomSetCharge(i, q);
 	}
 	msg.exit("Model::chargePatternAtom");
 }

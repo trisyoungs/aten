@@ -351,6 +351,63 @@ void GlyphEvent::print()
 }
 
 /*
+// Colour Atom Event
+*/
+
+// Constructor
+ColourEvent::ColourEvent()
+{
+}
+
+// Destructor
+ColourEvent::~ColourEvent()
+{
+}
+
+// Set change 
+void ColourEvent::set(int id, double oldr, double oldg, double oldb, double olda, double newr, double newg, double newb, double newa)
+{
+	msg.enter("ColourEvent::set");
+	targetId_ = id;
+	oldColour_[0] = oldr;
+	oldColour_[1] = oldg;
+	oldColour_[2] = oldb;
+	oldColour_[3] = olda;
+	newColour_[0] = newr;
+	newColour_[1] = newg;
+	newColour_[2] = newb;
+	newColour_[3] = newa;
+	msg.exit("ColourEvent::set");
+}
+
+// Undo stored change
+void ColourEvent::undo(Model *m)
+{
+	msg.enter("ColourEvent::undo");
+	Atom *i, **modelatoms = m->atomArray();
+	// Atom hide (UndoEvent::Redo) and show (UndoEvent::Undo)
+	i = modelatoms[targetId_];
+	if (direction_ == UndoEvent::Undo)
+	{
+		msg.print(Messenger::Verbose,"Reversing atom colour - atom id = %i\n", targetId_);
+		m->atomSetColour(i, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3]);
+	}
+	else
+	{
+		msg.print(Messenger::Verbose,"Replaying atom colour - atom id = %i\n", targetId_);
+		m->atomSetColour(i, newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
+	}
+	msg.exit("ColourEvent::undo");
+}
+
+// Print event info
+void ColourEvent::print()
+{
+	if (direction_ == UndoEvent::Undo) printf("       Atom colour undo - atom id = %i\n", targetId_);
+	else printf("       Atom colour redo - atom id = %i\n", targetId_);
+}
+
+/*
 // Fix/Free Event
 */
 
@@ -383,12 +440,12 @@ void FixFreeEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing atom fix - atom id = %i\n", targetId_);
-		m->setFixed(i, FALSE);
+		m->atomSetFixed(i, FALSE);
 	}
 	else
 	{
 		msg.print(Messenger::Verbose,"Replaying atom fix - atom id = %i\n", targetId_);
-		m->setFixed(i, TRUE);
+		m->atomSetFixed(i, TRUE);
 	}
 	msg.exit("FixFreeEvent::undo");
 }
@@ -433,12 +490,12 @@ void HideEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing atom hide - atom id = %i\n", targetId_);
-		m->setHidden(i, FALSE);
+		m->atomSetHidden(i, FALSE);
 	}
 	else
 	{
 		msg.print(Messenger::Verbose,"Replaying atom hide - atom id = %i\n", targetId_);
-		m->setHidden(i, TRUE);
+		m->atomSetHidden(i, TRUE);
 	}
 	msg.exit("HideEvent::undo");
 }
@@ -792,12 +849,12 @@ void StyleEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing atom style change - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
-		m->styleAtom(i, oldStyle_);
+		m->atomSetStyle(i, oldStyle_);
 	}
 	else
 	{
 		msg.print(Messenger::Verbose,"Replaying atom style change - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
-		m->styleAtom(i, newStyle_);
+		m->atomSetStyle(i, newStyle_);
 	}
 	msg.exit("StyleEvent::undo");
 }
