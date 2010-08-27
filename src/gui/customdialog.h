@@ -36,7 +36,7 @@ class QCheckBox;
 class GuiFilterOptionNode;
 
 // Filter Options Dialog
-class AtenFilterOptions : public QDialog
+class AtenCustomDialog : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -54,34 +54,34 @@ class AtenFilterOptions : public QDialog
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
 	// Create simple label
-	QLabel *createLabel(const char *text);
+	static QLabel *createLabel(const char *text);
 	// Create empty grid layout
-	QGridLayout *createGridLayout(QWidget *parent);
+	static QGridLayout *createGridLayout(QWidget *parent);
 	// Create check box from data in specified GuiFilterOption
-	QCheckBox *createCheckBox(GuiFilterOptionNode *gfo);
+	static QCheckBox *createCheckBox(GuiFilterOptionNode *gfo);
 	// Create combo box from data in specified GuiFilterOption
-	QComboBox *createComboBox(GuiFilterOptionNode *gfo);
+	static QComboBox *createComboBox(GuiFilterOptionNode *gfo);
 	// Create double spin edit from data in specified GuiFilterOption
-	QDoubleSpinBox *createDoubleSpinBox(GuiFilterOptionNode *gfo);
+	static QDoubleSpinBox *createDoubleSpinBox(GuiFilterOptionNode *gfo);
 	// Create line edit from data in specified GuiFilterOption
-	QLineEdit *createLineEdit(GuiFilterOptionNode *gfo);
+	static QLineEdit *createLineEdit(GuiFilterOptionNode *gfo);
 	// Create spin edit from data in specified GuiFilterOption
-	QSpinBox *createSpinBox(GuiFilterOptionNode *gfo);
-	// Store widget values back into the filter options structures
-	void storeFilterOptions(Tree *filter);
+	static QSpinBox *createSpinBox(GuiFilterOptionNode *gfo);
+	// Store widget values back into the target variables
+	static void storeValues(Tree *filter);
 
 	public:
 	// Construct filter option widgets
-	bool createFilterOptionWidgets();
-	// Call the dialog, displaying options for the specified filter
-	bool show(Tree *filter);
+	static bool createWidgets(Tree *t);
+	// Call the dialog, displaying options for the specified tree and setting variables within
+	static bool show(QString title, Tree *t);
 
 	/*
 	// Widgets
 	*/
 	public:
 	// Constructor
-	AtenFilterOptions(QWidget *parent = 0);
+	AtenCustomDialog(QWidget *parent = 0);
 	// Main form declaration
 	Ui::FilterOptionsDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
