@@ -173,6 +173,28 @@ class ChargeEvent : public UndoEvent
 	void print();
 };
 
+// Colour (atom) Event
+class ColourEvent : public UndoEvent
+{
+	public:
+	// Constructor / Destructor
+	ColourEvent();
+	~ColourEvent();
+	
+	private:
+	// Change data
+	int targetId_;
+	double oldColour_[4], newColour_[4];
+
+	public:
+	// Set change data
+	void set(int id, double oldr, double oldg, double oldb, double olda, double newr, double newg, double newb, double newa);
+	// Undo stored change
+	void undo(Model *m);
+	// Print change information
+	void print();
+};
+
 // Fix/Free Event
 class FixFreeEvent : public UndoEvent
 {

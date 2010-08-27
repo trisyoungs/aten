@@ -14,10 +14,16 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>elements</entry>
-						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bond">bond</link>[]</entry>
 						<entry>ro</entry>
-						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+						<entry>List of bonds the atom is involved in</entry>
+					</row>
+					<row>
+						<entry>colour</entry>
+						<entry>double[4]</entry>
+						<entry>rw</entry>
+						<entry>Custom colour of the atom (used when the <link linkend="enums.colourschemes">colouring scheme</link> is set to 'custom')</entry>
 					</row>
 					<row>
 						<entry>fixed</entry>

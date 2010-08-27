@@ -180,3 +180,19 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
+
+void AtenForm::on_actionSchemeVelocity_triggered(bool checked)
+{
+	if (!checked) return;
+	prefs.setColourScheme(Prefs::VelocityScheme);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_actionSchemeCustom_triggered(bool checked)
+{
+	if (!checked) return;
+	prefs.setColourScheme(Prefs::CustomScheme);
+	aten.currentModelOrFrame()->changeLog.add(Log::Visual);
+	gui.mainView.postRedisplay();
+}

@@ -51,6 +51,7 @@ AtomVariable::~AtomVariable()
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "bonds", 	VTypes::BondData,		-1, TRUE },
+	{ "colour",	VTypes::DoubleData,		4, FALSE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
 	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
 	{ "fracx",	VTypes::DoubleData,		0, FALSE },
@@ -187,6 +188,10 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			}
 			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item);
 			break;
+		case (AtomVariable::Colour):
+			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
+			break;
 		case (AtomVariable::F):
 			rv.set(ptr->f());
 			break;
@@ -320,6 +325,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	// Get current data from ReturnValue
 	Vec3<double> v;
+	int n;
 	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
@@ -329,11 +335,16 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
+		case (AtomVariable::Colour):
+			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
+			break;
 		case (AtomVariable::F):
 			ptr->f() = newvalue.asVector();
 			break;
 		case (AtomVariable::Fixed):
-			ptr->parent()->setFixed(ptr, newvalue.asBool());
+			ptr->parent()->atomSetFixed(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
@@ -351,11 +362,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->f().set(acc - AtomVariable::FX, newvalue.asDouble());
 			break;
 		case (AtomVariable::Hidden):
-			ptr->parent()->setHidden(ptr, newvalue.asBool());
+			ptr->parent()->atomSetHidden(ptr, newvalue.asBool());
 			break;
 		case (AtomVariable::Q):
 			ptr->parent()->beginUndoState("Charge atom");
-			ptr->parent()->chargeAtom(ptr, newvalue.asDouble());
+			ptr->parent()->atomSetCharge(ptr, newvalue.asDouble());
 			ptr->parent()->endUndoState();
 			break;
 		case (AtomVariable::R):

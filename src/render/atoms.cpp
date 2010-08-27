@@ -85,6 +85,10 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 				prefs.colourScale[2].colour(cval, ambient);
 				prefs.colourScale[2].colour(cval, diffuse);
 				break;
+			case (Prefs::CustomScheme):
+				i->copyColour(ambient);
+				i->copyColour(diffuse);
+				break;
 			default:
 				break;
 		  }
@@ -259,6 +263,10 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 			case (Prefs::ForceScheme):
 				prefs.colourScale[2].colour(i->charge(), ambient);
 				prefs.colourScale[2].colour(i->charge(), diffuse);
+				break;
+			case (Prefs::CustomScheme):
+				i->copyColour(ambient);
+				i->copyColour(diffuse);
 				break;
 			default:
 				break;

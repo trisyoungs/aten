@@ -345,7 +345,7 @@ void Model::normaliseForces(double norm, bool tolargest)
 }
 
 // Set visibility of specified atom
-void Model::setHidden(Atom *i, bool hidden)
+void Model::atomSetHidden(Atom *i, bool hidden)
 {
 	if (i->isHidden() != hidden)
 	{
@@ -362,7 +362,7 @@ void Model::setHidden(Atom *i, bool hidden)
 }
 
 // Set fixed status of specified atom
-void Model::setFixed(Atom *i, bool fixed)
+void Model::atomSetFixed(Atom *i, bool fixed)
 {
 	if (i->isPositionFixed() != fixed)
 	{
@@ -375,6 +375,53 @@ void Model::setFixed(Atom *i, bool fixed)
 			newchange->set(fixed, i->id());
 			recordingState_->addEvent(newchange);
 		}
+	}
+}
+
+// Set charge of specified atom
+void Model::atomSetCharge(Atom *target, double q)
+{
+	double oldcharge = target->charge();
+	target->setCharge(q);
+	changeLog.add(Log::Coordinates);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ChargeEvent *newchange = new ChargeEvent;
+		newchange->set(target->id(), oldcharge, q);
+		recordingState_->addEvent(newchange);
+	}
+}
+
+// Set custom colour of specified atom
+void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
+{
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ColourEvent *newchange = new ColourEvent;
+		double *oldcol = i->colour();
+		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], r, g, b, a);
+		recordingState_->addEvent(newchange);
+	}
+	// Now set the colour....
+	i->setColour(r, g, b, a);
+	changeLog.add(Log::Visual);
+}
+
+// Set style of individual atom
+void Model::atomSetStyle(Atom *i, Atom::DrawStyle ds)
+{
+	// Sets all atoms currently selected to have the drawing style specified
+	Atom::DrawStyle oldstyle = i->style();
+	i->setStyle(ds);
+	changeLog.add(Log::Visual);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		StyleEvent *newchange = new StyleEvent;
+		newchange->set(i->id(), oldstyle, ds);
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -408,21 +455,6 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 	}
 }
 
-// Set charge of specified atom
-void Model::chargeAtom(Atom *target, double q)
-{
-	double oldcharge = target->charge();
-	target->setCharge(q);
-	changeLog.add(Log::Coordinates);
-	// Add the change to the undo state (if there is one)
-	if (recordingState_ != NULL)
-	{
-		ChargeEvent *newchange = new ChargeEvent;
-		newchange->set(target->id(), oldcharge, q);
-		recordingState_->addEvent(newchange);
-	}
-}
-
 // Return total bond order penalty of atoms in the model
 int Model::totalBondOrderPenalty() const
 {
@@ -440,29 +472,6 @@ int Model::countBondsToAtom(Atom *i, Bond::BondType type)
 		if (bref->item->order() == type) count ++;
 	msg.exit("Model::countBondsToAtom");
 	return count;
-}
-
-// Set style of individual atom
-void Model::styleAtom(Atom *i, Atom::DrawStyle ds)
-{
-	// Sets all atoms currently selected to have the drawing style specified
-	Atom::DrawStyle oldstyle = i->style();
-	i->setStyle(ds);
-	changeLog.add(Log::Visual);
-	// Add the change to the undo state (if there is one)
-	if (recordingState_ != NULL)
-	{
-		StyleEvent *newchange = new StyleEvent;
-		newchange->set(i->id(), oldstyle, ds);
-		recordingState_->addEvent(newchange);
-	}
-}
-
-// Set selection style
-void Model::styleSelection(Atom::DrawStyle ds)
-{
-	// Sets all atoms currently selected to have the drawing style specified
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) styleAtom(i, ds);
 }
 
 // Return the total mass of atoms

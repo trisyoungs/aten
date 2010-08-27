@@ -66,6 +66,8 @@ void AtenForm::finaliseUi()
 	group->addAction(ui.actionSchemeElement);
 	group->addAction(ui.actionSchemeCharge);
 	group->addAction(ui.actionSchemeForce);
+	group->addAction(ui.actionSchemeVelocity);
+	group->addAction(ui.actionSchemeCustom);
 
 	// Create QActionGroup for Mouse toolbar
 	group = new QActionGroup(this);

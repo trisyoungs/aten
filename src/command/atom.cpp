@@ -35,15 +35,26 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		Atom *i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
 		if (i == NULL) return FALSE;
 		obj.rs->beginUndoState("Style individual atom");
-		obj.rs->styleAtom(i, ds);
+		obj.rs->atomSetStyle(i, ds);
 		obj.rs->endUndoState();
 	}
 	else
 	{
 		obj.rs->beginUndoState("Style atom selection");
-		obj.rs->styleSelection(ds);
+		obj.rs->selectionSetStyle(ds);
 		obj.rs->endUndoState();
 	}
+	rv.reset();
+	return TRUE;
+}
+
+// Set custom colours of selected atoms
+bool Command::function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Fix positions of %i atoms", obj.rs->nSelected());
+	obj.rs->selectionSetColour(c->argd(0), c->argd(1), c->argd(2), (c->hasArg(3) ? c->argd(3) : 1.0));
+	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;
 }
@@ -284,7 +295,7 @@ bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Show all atoms", obj.rs->nSelected());
-	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->atomSetHidden(i,FALSE);
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;

@@ -297,7 +297,7 @@ void Model::resetTempi(int value)
 void Model::clearCharges()
 {
 	msg.enter("Model::clearCharges");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) chargeAtom(i, 0.0);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
 	msg.exit("Model::clearCharges");
 }
 
