@@ -24,7 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
-#include "gui/filteroptions.h"
+#include "gui/customdialog.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
@@ -129,7 +129,10 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	if (runSaveModelDialog())
 	{
 		// Run options dialog
-		if (!gui.filterOptionsDialog->show(saveModelFilter))
+		QString s = "Save Options (";
+		s += saveModelFilter->name();
+		s += ")";
+		if (!AtenCustomDialog::show(s, saveModelFilter))
 		{
 			msg.print("Not saved.\n");
 			return;
@@ -163,7 +166,10 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		if (runSaveModelDialog())
 		{
 			// Run options dialog
-			if (!gui.filterOptionsDialog->show(saveModelFilter))
+			QString s = "Save Options (";
+			s += saveModelFilter->name();
+			s += ")";
+			if (!AtenCustomDialog::show(s, saveModelFilter))
 			{
 				msg.print("Not saved.\n");
 				return;
@@ -194,7 +200,10 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
 	else
 	{
-		gui.filterOptionsDialog->show(m->filter());
+		QString s = "Save Options (";
+		s += saveModelFilter->name();
+		s += ")";
+		AtenCustomDialog::show(s, m->filter());
 	}
 }
 
@@ -227,7 +236,10 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 				else if (runSaveModelDialog())
 				{
 					// Run options dialog
-					if (!gui.filterOptionsDialog->show(saveModelFilter))
+					QString s = "Save Options (";
+					s += saveModelFilter->name();
+					s += ")";
+					if (!AtenCustomDialog::show(s, saveModelFilter))
 					{
 						msg.print("Not saved.\n");
 						return;

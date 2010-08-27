@@ -43,7 +43,7 @@ class AtenCellTransform;
 class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
-class AtenFilterOptions;
+class AtenCustomDialog;
 class AtenFragment;
 class AtenGeometry;
 class AtenGlyphs;
@@ -188,8 +188,6 @@ class GuiQt
 	AtenSelectElement *selectElementDialog;
 	// Command help dialog
 	AtenCommandHelp *commandHelpDialog;
-	// Filter options dialog
-	AtenFilterOptions *filterOptionsDialog;
 
 
 	/*

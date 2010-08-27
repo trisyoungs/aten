@@ -30,7 +30,7 @@
 #include "gui/selectpattern.h"
 #include "gui/selectvariable.h"
 #include "gui/selectelement.h"
-#include "gui/filteroptions.h"
+#include "gui/customdialog.h"
 #include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "gui/ffeditor.h"
@@ -99,7 +99,6 @@ GuiQt::GuiQt()
 	selectVariableDialog = NULL;
 	selectElementDialog = NULL;
 	commandHelpDialog = NULL;
-	filterOptionsDialog = NULL;
 	aboutDialog = NULL;
 	atomlistWindow = NULL;
 	buildWindow = NULL;
@@ -202,7 +201,6 @@ void GuiQt::run()
 	selectVariableDialog = new AtenSelectVariable(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
 	commandHelpDialog = new AtenCommandHelp(mainWindow);
-	filterOptionsDialog = new AtenFilterOptions(mainWindow);
 	aboutDialog = new AtenAbout(mainWindow);
 	// ...tool windows
 	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
@@ -249,7 +247,6 @@ void GuiQt::run()
 	selectVariableDialog->setModal(TRUE);
 	selectElementDialog->setModal(TRUE);
 	commandHelpDialog->setModal(TRUE);
-	filterOptionsDialog->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
@@ -277,7 +274,10 @@ void GuiQt::run()
 	fragmentWindow->refresh();
 
 	// Construct filter option widgets
-	filterOptionsDialog->createFilterOptionWidgets();
+	for (int n=0; n<FilterData::nFilterTypes; ++n)
+	{
+		for (Refitem<Tree,int> *ri = aten.filters((FilterData::FilterType) n); ri != NULL; ri = ri->next) AtenCustomDialog::createWidgets(ri->item);
+	}
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();
