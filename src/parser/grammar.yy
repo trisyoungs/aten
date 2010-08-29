@@ -61,7 +61,7 @@ VTypes::DataType declaredType;
 %type <node> fstatement decexpr statement block blockment statementlist exprlist ARRAYCONST
 %type <node> namelist namelistitem newname
 %type <name> newvar
-%type <node> filter pushscope declaration userfunc userfuncdef userstatementdef guifilteroption
+%type <node> filter pushscope declaration userfunc userfuncdef userstatementdef widget
 
 %%
 
@@ -132,6 +132,7 @@ statement:
 decexpr:
 	declaration					{ $$ = $1; }
 	| expr						{ $$ = $1; }
+	| widget					{ $$ = $1; }
 	;
 
 fstatement:
@@ -193,7 +194,7 @@ newname:
 	newvar '[' expr ']' 				{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3); }
 	| newvar '=' expr 				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '=' ARRAYCONST				{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
-	| newvar '=' guifilteroption 			{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
+	| newvar '=' widget	 			{ $$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newvar '[' expr ']' '=' expr			{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar '[' expr ']' '=' ARRAYCONST		{ $$ = cmdparser.addArrayVariable(declaredType, &tokenName,$3,$6); }
 	| newvar					{ $$ = cmdparser.addVariable(declaredType, $1); }
@@ -216,8 +217,8 @@ declaration:
 
 /* Filter Option Definition */
 
-guifilteroption:
-	OPTION '(' exprlist ')'				{ $$ = cmdparser.addGuiFilterOption($3); }
+widget:
+	OPTION '(' exprlist ')'				{ $$ = cmdparser.addWidget($3); }
 	;
 
 /* Variables / Paths */

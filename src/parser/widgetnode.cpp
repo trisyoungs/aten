@@ -1,6 +1,6 @@
 /*
-	*** Gui Filter Option Definition
-	*** src/parser/guifilteroption.cpp
+	*** Widget Node FUnctions
+	*** src/parser/widgetnode.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,72 +19,73 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/guifilteroptionnode.h"
+#include "parser/widgetnode.h"
 #include "parser/treenode.h"
 #include "base/lineparser.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 
 // GUI Control Typesname
-const char *GuiControlTypeKeywords[GuiFilterOptionNode::nGuiControlTypes] = { "check", "combo", "doublespin", "edit", "intcombo", "spin" };
-const char *GuiFilterOptionNode::guiControlType(GuiFilterOptionNode::GuiControlType gct)
+const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label" };
+const char *WidgetNode::guiControl(WidgetNode::GuiControl gct)
 {
-	return GuiControlTypeKeywords[gct];
+	return GuiControlKeywords[gct];
 }
-GuiFilterOptionNode::GuiControlType GuiFilterOptionNode::guiControlType(const char *s, bool reporterror)
+WidgetNode::GuiControl WidgetNode::guiControl(const char *s, bool reporterror)
 {
-        GuiFilterOptionNode::GuiControlType gct = (GuiFilterOptionNode::GuiControlType) enumSearch("gui control type", GuiFilterOptionNode::nGuiControlTypes, GuiControlTypeKeywords, s);
-	if ((gct == GuiFilterOptionNode::nGuiControlTypes) && reporterror) enumPrintValid(GuiFilterOptionNode::nGuiControlTypes,GuiControlTypeKeywords);
+        WidgetNode::GuiControl gct = (WidgetNode::GuiControl) enumSearch("gui control type", WidgetNode::nGuiControls, GuiControlKeywords, s);
+	if ((gct == WidgetNode::nGuiControls) && reporterror) enumPrintValid(WidgetNode::nGuiControls,GuiControlKeywords);
 	return gct;
 }
 
 // Options for Qt layout
-const char *GuiQtOptionKeywords[GuiFilterOptionNode::nGuiQtOptions] = { "disabled", "group", "labelspan", "newline", "parentspan", "span", "tab" };
-const char *GuiFilterOptionNode::guiQtOption(GuiQtOption gqo)
+const char *GuiQtOptionKeywords[WidgetNode::nGuiQtOptions] = { "centre", "disabled", "group", "labelspan", "left", "newline", "parentspan", "span", "tab" };
+const char *WidgetNode::guiQtOption(GuiQtOption gqo)
 {
 	return GuiQtOptionKeywords[gqo];
 }
-GuiFilterOptionNode::GuiQtOption GuiFilterOptionNode::guiQtOption(const char *s, bool reporterror)
+WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 {
-        GuiFilterOptionNode::GuiQtOption gqo = (GuiFilterOptionNode::GuiQtOption) enumSearch("QUI Qt option", GuiFilterOptionNode::nGuiQtOptions, GuiQtOptionKeywords, s);
-	if ((gqo == GuiFilterOptionNode::nGuiQtOptions) && reporterror) enumPrintValid(GuiFilterOptionNode::nGuiQtOptions,GuiQtOptionKeywords);
+        WidgetNode::GuiQtOption gqo = (WidgetNode::GuiQtOption) enumSearch("QUI Qt option", WidgetNode::nGuiQtOptions, GuiQtOptionKeywords, s);
+	if ((gqo == WidgetNode::nGuiQtOptions) && reporterror) enumPrintValid(WidgetNode::nGuiQtOptions,GuiQtOptionKeywords);
 	return gqo;
 }
 
 // Constructor
-GuiFilterOptionNode::GuiFilterOptionNode()
+WidgetNode::WidgetNode()
 {
 	// Public variables
 	prev = NULL;
 	next = NULL;
 
 	// Private variables
-	controlType_ = GuiFilterOptionNode::nGuiControlTypes;
+	controlType_ = WidgetNode::nGuiControls;
 	returnType_ = VTypes::NoData;
 	widget_ = NULL;
-	widgetParentType_ = GuiFilterOptionNode::NoParent;
+	widgetParentType_ = WidgetNode::NoParent;
 	widgetParentSpan_ = 2;
 	widgetSpan_ = 1;
+	widgetLabelAlignment_ = 2;
 	widgetLabelSpan_ = 1;
 	widgetNewLine_ = FALSE;
 	widgetEnabled_ = TRUE;
 }
 
 // Destructor
-GuiFilterOptionNode::~GuiFilterOptionNode()
+WidgetNode::~WidgetNode()
 {
 }
 
 // Set return value
-void GuiFilterOptionNode::setReturnValue(const ReturnValue &rv)
+void WidgetNode::setReturnValue(const ReturnValue &rv)
 {
 	returnValue_ = rv;
 }
 
 // Set argument list from parser-joined treenodes
-bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
+bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 {
-	msg.enter("GuiFilterOptionNode::addJoinedArguments");
+	msg.enter("WidgetNode::addJoinedArguments");
 	// From supplied argument list (which contains items in reverse order as passed from the parser) get rest of data...
 	TreeNode *arg;
 	for (arg = arglist; arg != NULL; arg = arg->prevArgument) if (arg->prevArgument == NULL) break;
@@ -94,7 +95,7 @@ bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
 	if (arg == NULL)
 	{
 		msg.print("Error: No control name specified for GUI filter option.\n");
-		msg.exit("GuiFilterOptionNode::addJoinedArguments");
+		msg.exit("WidgetNode::addJoinedArguments");
 		return FALSE;
 	}
 	arg->execute(rv);
@@ -106,32 +107,35 @@ bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
 	if (arg == NULL)
 	{
 		msg.print("Error: No control type specified for GUI filter option.\n");
-		msg.exit("GuiFilterOptionNode::addJoinedArguments");
+		msg.exit("WidgetNode::addJoinedArguments");
 		return FALSE;
 	}
 	arg->execute(rv);
-	controlType_ = GuiFilterOptionNode::guiControlType(rv.asString(), TRUE);
-	if (controlType_ == GuiFilterOptionNode::nGuiControlTypes)
+	controlType_ = WidgetNode::guiControl(rv.asString(), TRUE);
+	if (controlType_ == WidgetNode::nGuiControls)
 	{
-		msg.exit("GuiFilterOptionNode::addJoinedArguments");
+		msg.exit("WidgetNode::addJoinedArguments");
 		return FALSE;
 	}
-	msg.print(Messenger::Parse, "GUI filter option control type = '%s'\n", GuiFilterOptionNode::guiControlType(controlType_));
+	msg.print(Messenger::Parse, "GUI filter option control type = '%s'\n", WidgetNode::guiControl(controlType_));
 
 	// Set basic return type based on control type
 	switch (controlType_)
 	{
-		case (GuiFilterOptionNode::EditType):
-		case (GuiFilterOptionNode::ComboType):
+		case (WidgetNode::EditControl):
+		case (WidgetNode::ComboControl):
 			returnType_ = VTypes::StringData;
 			break;
-		case (GuiFilterOptionNode::DoubleSpinType):
+		case (WidgetNode::DoubleSpinControl):
 			returnType_ = VTypes::DoubleData;
 			break;
-		case (GuiFilterOptionNode::CheckType):
-		case (GuiFilterOptionNode::SpinType):
-		case (GuiFilterOptionNode::IntegerComboType):
+		case (WidgetNode::CheckControl):
+		case (WidgetNode::IntegerSpinControl):
+		case (WidgetNode::IntegerComboControl):
 			returnType_ = VTypes::IntegerData;
+			break;
+		case (WidgetNode::LabelControl):
+			returnType_ = VTypes::NoData;
 			break;
 	}
 
@@ -141,20 +145,22 @@ bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
 	switch (controlType_)
 	{
 		// Check Box - option("Title", "check", int state)
-		case (GuiFilterOptionNode::CheckType):
+		case (WidgetNode::CheckControl):
 			if (!setData("state", arg, "Error: No initial state supplied for 'check' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Combo Box - option("Title", "combo", "<csv itemlist>", int default=1)
-		case (GuiFilterOptionNode::IntegerComboType):
-		case (GuiFilterOptionNode::ComboType):
+		case (WidgetNode::IntegerComboControl):
+		case (WidgetNode::ComboControl):
 			if (!setData("items", arg, "Error: No items list supplied for 'combo' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			setData("default", arg, "No default value supplied for 'combo' GUI filter option - '1' assumed.\n", TRUE, "1");
+			arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Double Spin Edit - option("Title", "spin", double min, double max, double start, double step)
-		case (GuiFilterOptionNode::DoubleSpinType):
+		case (WidgetNode::DoubleSpinControl):
 			if (!setData("min", arg, "Error: No minimum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
@@ -162,15 +168,17 @@ bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
 			if (!setData("start", arg, "Error: No starting value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'doublespin' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
 			result = TRUE;
 			break;
 		// Spin Edit - option("Title", "edit", string text = "")
-		case (GuiFilterOptionNode::EditType):
+		case (WidgetNode::EditControl):
 			setData("text", arg, "No default string supplied for 'edit' GUI filter option - empty string assumed.\n", TRUE, "");
+			arg = arg->nextArgument;
 			result = TRUE;
 			break;
-		// Spin Edit - option("Title", "spin", int min, int max, int start, int step)
-		case (GuiFilterOptionNode::SpinType):
+		// Integer Spin Edit - option("Title", "spin", int min, int max, int start, int step)
+		case (WidgetNode::IntegerSpinControl):
 			if (!setData("min", arg, "Error: No minimum value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			if (!setData("max", arg, "Error: No maximum value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
@@ -178,32 +186,37 @@ bool GuiFilterOptionNode::addJoinedArguments(TreeNode *arglist)
 			if (!setData("start", arg, "Error: No starting value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
 			arg = arg->nextArgument;
 			if (!setData("step", arg, "Error: No step value supplied for 'spin' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
+			result = TRUE;
+			break;
+		// Label - no data
+		case (WidgetNode::LabelControl):
 			result = TRUE;
 			break;
 		default:
-			printf("Internal Error: Setting arguments for control type '%s' has not been implemented.\n", GuiFilterOptionNode::guiControlType(controlType_));
+			printf("Internal Error: Setting arguments for control type '%s' has not been implemented.\n", WidgetNode::guiControl(controlType_));
 			break;
 	}
 	// Any remaining arguments are options of the format opt=arg
-	for (arg = arg->nextArgument; arg != NULL; arg = arg->nextArgument) setOption(arg);
-	msg.exit("GuiFilterOptionNode::addJoinedArguments");
+	for (arg = arg; arg != NULL; arg = arg->nextArgument) setOption(arg);
+	msg.exit("WidgetNode::addJoinedArguments");
 	return result;
 }
 
 // Return type of GUI control
-GuiFilterOptionNode::GuiControlType GuiFilterOptionNode::controlType()
+WidgetNode::GuiControl WidgetNode::controlType()
 {
 	return controlType_;
 }
 
 // Return name of option
-const char *GuiFilterOptionNode::name()
+const char *WidgetNode::name()
 {
 	return name_.get();
 }
 
 // Set associated data
-bool GuiFilterOptionNode::setData(const char *name, TreeNode *arg, const char *errormsg, bool critical, const char *def)
+bool WidgetNode::setData(const char *name, TreeNode *arg, const char *errormsg, bool critical, const char *def)
 {
 	ReturnValue rv;
 	if ((arg == NULL) || (!arg->execute(rv)))
@@ -220,7 +233,7 @@ bool GuiFilterOptionNode::setData(const char *name, TreeNode *arg, const char *e
 }
 
 // Retrieve associated data
-bool GuiFilterOptionNode::data(const char *name, Dnchar &value)
+bool WidgetNode::data(const char *name, Dnchar &value)
 {
 	bool success;
 	value = data_.value(name, success);
@@ -228,97 +241,109 @@ bool GuiFilterOptionNode::data(const char *name, Dnchar &value)
 }
 
 // Set option from argument
-void GuiFilterOptionNode::setOption(TreeNode *arg)
+void WidgetNode::setOption(TreeNode *arg)
 {
 	ReturnValue rv;
 	arg->execute(rv);
 	Dnchar keywd = beforeChar(rv.asString(), '=');
 	Dnchar argdata = afterChar(rv.asString(), '=');
 	// Determine option enum
-	GuiFilterOptionNode::GuiQtOption gqo = GuiFilterOptionNode::guiQtOption(keywd.get(), TRUE);
-	if (gqo == GuiFilterOptionNode::nGuiQtOptions) return;
+	WidgetNode::GuiQtOption gqo = WidgetNode::guiQtOption(keywd.get(), TRUE);
+	if (gqo == WidgetNode::nGuiQtOptions) return;
 	// Set relevant data
 	switch (gqo)
 	{
-		case (GuiFilterOptionNode::DisabledOption):
+		case (WidgetNode::CentreOption):
+			widgetLabelAlignment_ = 4;
+			break;
+		case (WidgetNode::DisabledOption):
 			widgetEnabled_ = FALSE;
 			break;
-		case (GuiFilterOptionNode::GroupNameOption):
-			widgetParentType_ = GuiFilterOptionNode::GroupBoxParent;
+		case (WidgetNode::GroupNameOption):
+			widgetParentType_ = WidgetNode::GroupBoxParent;
 			widgetParentName_ = argdata;
 			break;
-		case (GuiFilterOptionNode::LabelSpanOption):
+		case (WidgetNode::LabelSpanOption):
 			widgetLabelSpan_ = argdata.asInteger();
 			break;
-		case (GuiFilterOptionNode::NewLineOption):
+		case (WidgetNode::LeftOption):
+			widgetLabelAlignment_ = 1;
+			break;
+		case (WidgetNode::NewLineOption):
 			widgetNewLine_ = TRUE;
 			break;
-		case (GuiFilterOptionNode::ParentSpanOption):
+		case (WidgetNode::ParentSpanOption):
 			widgetParentSpan_ = argdata.asInteger();
 			break;
-		case (GuiFilterOptionNode::SpanOption):
+		case (WidgetNode::SpanOption):
 			widgetSpan_ = argdata.asInteger();
 			break;
-		case (GuiFilterOptionNode::TabsOption):
-			widgetParentType_ = GuiFilterOptionNode::TabWidgetParent;
+		case (WidgetNode::TabsOption):
+			widgetParentType_ = WidgetNode::TabWidgetParent;
 			widgetParentName_ = argdata;	// In format 'page@tabwidget'
 			break;
 		default:
-			printf("Internal Error: Don't know how to set GuiQtOption '%s'\n", GuiFilterOptionNode::guiQtOption(gqo));
+			printf("Internal Error: Don't know how to set GuiQtOption '%s'\n", WidgetNode::guiQtOption(gqo));
 			break;
 	}
 }
 
 // Return whether a parent exists
-GuiFilterOptionNode::GuiWidgetParent GuiFilterOptionNode::widgetParentType()
+WidgetNode::GuiWidgetParent WidgetNode::widgetParentType()
 {
 	return widgetParentType_;
 }
 
 // Return parent name
-const char *GuiFilterOptionNode::widgetParentName()
+const char *WidgetNode::widgetParentName()
 {
 	return widgetParentName_.get();
 }
 
 // Return parent span
-int GuiFilterOptionNode::widgetParentSpan()
+int WidgetNode::widgetParentSpan()
 {
 	return widgetParentSpan_;
 }
 
 // Return label span
-int GuiFilterOptionNode::widgetLabelSpan()
+int WidgetNode::widgetLabelSpan()
 {
 	return widgetLabelSpan_;
 }
 
+// Return label span
+int WidgetNode::widgetLabelAlignment()
+{
+	return widgetLabelAlignment_;
+}
+
 // Return widget span
-int GuiFilterOptionNode::widgetSpan()
+int WidgetNode::widgetSpan()
 {
 	return widgetSpan_;
 }
 
 // Return newline flag
-bool GuiFilterOptionNode::widgetNewLine()
+bool WidgetNode::widgetNewLine()
 {
 	return widgetNewLine_;
 }
 
 // Set widget pointer
-void GuiFilterOptionNode::setWidget(QWidget *w)
+void WidgetNode::setWidget(QWidget *w)
 {
 	widget_ = w;
 }
 
 // Return widget pointer
-QWidget *GuiFilterOptionNode::widget()
+QWidget *WidgetNode::widget()
 {
 	return widget_;
 }
 
 // Return whether the widget is enabled
-bool GuiFilterOptionNode::widgetEnabled()
+bool WidgetNode::widgetEnabled()
 {
 	return widgetEnabled_;
 }
@@ -328,17 +353,17 @@ bool GuiFilterOptionNode::widgetEnabled()
 */
 
 // Execute command
-bool GuiFilterOptionNode::execute(ReturnValue &rv)
+bool WidgetNode::execute(ReturnValue &rv)
 {
-	msg.enter("GuiFilterOptionNode::execute");
+	msg.enter("WidgetNode::execute");
 	// Just copy local returnvalue contents
 	rv = returnValue_;
-	msg.exit("GuiFilterOptionNode::execute");
+	msg.exit("WidgetNode::execute");
 	return TRUE;
 }
 
 // Print node contents
-void GuiFilterOptionNode::nodePrint(int offset, const char *prefix)
+void WidgetNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
 	char *tab;
@@ -354,16 +379,16 @@ void GuiFilterOptionNode::nodePrint(int offset, const char *prefix)
 }
 
 // Set from returnvalue node
-bool GuiFilterOptionNode::set(ReturnValue &setrv)
+bool WidgetNode::set(ReturnValue &setrv)
 {
-	msg.enter("GuiFilterOptionNode::set");
+	msg.enter("WidgetNode::set");
 	returnValue_ = setrv;
-	msg.exit("GuiFilterOptionNode::set");
+	msg.exit("WidgetNode::set");
 	return TRUE;
 }
 
 // Initialise node
-bool GuiFilterOptionNode::initialise()
+bool WidgetNode::initialise()
 {
 	returnValue_.reset();
 	return TRUE;

@@ -18,7 +18,6 @@ grammar.h
 glyph.h
 glyphdata.h
 grid.h
-guifilteroptionnode.h
 integer.h
 measurement.h
 model.h
@@ -39,6 +38,7 @@ variablelist.h
 variablenode.h
 vector.h
 vtypes.h
+widgetnode.h
 zmatrix.h
 zmatrixelement.h
 aten.cpp
@@ -59,7 +59,6 @@ glyph.cpp
 glyphdata.cpp
 grammar.cc
 grid.cpp
-guifilteroptionnode.cpp
 integer.cpp
 measurement.cpp
 model.cpp
@@ -83,6 +82,7 @@ variablelist.cpp
 variablenode.cpp
 vector.cpp
 vtypes.cpp
+widgetnode.cpp
 zmatrix.cpp
 zmatrixelement.cpp
 )

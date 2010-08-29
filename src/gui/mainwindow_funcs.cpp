@@ -45,6 +45,7 @@
 #include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "model/model.h"
+#include "model/clipboard.h"
 #include "model/undostate.h"
 #include "parser/commandnode.h"
 #include <QtGui/QFileDialog>
@@ -211,6 +212,12 @@ void AtenForm::update()
 	ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
 	updateUndoRedo();
+	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
+	ui.actionEditPaste->setEnabled( aten.userClipboard->nAtoms() != 0);
+	ui.actionEditPasteTranslated->setEnabled( aten.userClipboard->nAtoms() != 0);
+	ui.actionEditCopy->setEnabled( m->nSelected() != 0 );
+	ui.actionEditCut->setEnabled( m->nSelected() != 0 );
+	ui.actionEditDelete->setEnabled( m->nSelected() != 0 );
 	// Update main window title
 	updateWindowTitle();
 }

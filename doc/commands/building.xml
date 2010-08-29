@@ -379,6 +379,20 @@ rotz(109.5);
 		<para>rotates around the z axis by 109.5 degrees.</para>
 	
 	</section>
+
+	<section id="command.ref.selectionaddhydrogen"><title>selectionaddhydrogen</title>
+		<indexterm><primary>commands</primary><secondary>selectionaddhydrogen</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>selectionaddhydrogen</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adds hydrogen atoms to the current atom selection only.</para>
+		
+	</section>
 	
 	<section id="command.ref.shiftdown"><title>shiftdown</title>
 		<indexterm><primary>commands</primary><secondary>shiftdown</secondary></indexterm>

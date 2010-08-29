@@ -197,6 +197,7 @@
     <addaction name="actionEditCut"/>
     <addaction name="actionEditCopy"/>
     <addaction name="actionEditPaste"/>
+    <addaction name="actionEditPasteTranslated"/>
     <addaction name="actionEditDelete"/>
     <addaction name="separator"/>
     <addaction name="actionEditInvert"/>
@@ -2399,6 +2400,15 @@
    </property>
    <property name="text">
     <string>Custom</string>
+   </property>
+  </action>
+  <action name="actionEditPasteTranslated">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/edit/icons/edit_paste.svg</normaloff>:/edit/icons/edit_paste.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Paste &amp;Translated</string>
    </property>
   </action>
  </widget>

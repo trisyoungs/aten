@@ -25,7 +25,7 @@
 #include "parser/usercommandnode.h"
 #include "parser/variablenode.h"
 #include "parser/stepnode.h"
-#include "parser/guifilteroptionnode.h"
+#include "parser/widgetnode.h"
 #include "parser/grammar.h"
 #include "parser/parser.h"
 #include "parser/tree.h"
@@ -50,7 +50,7 @@ Tree::Tree()
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
 	readOptions_ = LineParser::Defaults;
-	guiFilterOptionsLayout_ = NULL;
+	mainWidget_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -120,46 +120,6 @@ bool Tree::isFilter() const
 	return (filter.type() != FilterData::nFilterTypes);
 }
 
-// Add new (GUI-based) filter option linked to a variable
-TreeNode *Tree::addGuiFilterOption(TreeNode *arglist)
-{
-	msg.enter("Tree::addGuiFilterOption");
-	// Wrap the variable and add it to the arguments_ list
-	GuiFilterOptionNode *gnode = new GuiFilterOptionNode();
-	arguments_.own(gnode);
-	gnode->setParent(this);
-	// Store in reflist also...
-	guiFilterOptions_.add(gnode);
-	// Add arguments to node (also sets return type)
-	if (gnode->addJoinedArguments(arglist)) msg.print(Messenger::Parse, "Added filter option '%s'...\n", gnode->name());
-	else
-	{
-		msg.print("Failed to add GUI filter option.\n");
-		msg.exit("Tree::addGuiFilterOption");
-		return NULL;
-	}
-	msg.exit("Tree::addGuiFilterOption");
-	return gnode;
-}
-
-// Return first item in list of filter options
-Refitem<GuiFilterOptionNode,int> *Tree::guiFilterOptions()
-{
-	return guiFilterOptions_.first();
-}
-
-// Set filter options layout widget
-void Tree::setLayout(QGridLayout *layout)
-{
-	guiFilterOptionsLayout_ = layout;
-}
-
-// Return filter options layout widget
-QGridLayout *Tree::layout()
-{
-	return guiFilterOptionsLayout_;
-}
-
 /*
 // Create / Execute
 */
@@ -213,7 +173,7 @@ void Tree::initialise()
 {
 	msg.enter("Tree::initialise");
 	clear();
-	// Store this as the current Tree (for Bison) and add a dummy ScopeNode to contain the main variable list
+	// Add a dummy ScopeNode to contain the main variable list
 	ScopeNode *root = new ScopeNode(Command::NoFunction);
 	root->setParent(this);
 	root->createGlobalVariables();
@@ -937,5 +897,114 @@ Tree *Tree::findLocalFunction(const char *funcname) const
 {
 	Tree *result;
 	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),funcname) == 0) break;
+	return result;
+}
+
+/*
+// Custom GUI Widgets
+*/
+
+// Add new (GUI-based) widget linked to a variable
+TreeNode *Tree::addWidget(TreeNode *arglist)
+{
+	msg.enter("Tree::addWidget");
+	// Wrap the variable and add it to the arguments_ list
+	WidgetNode *node = new WidgetNode();
+	arguments_.own(node);
+	node->setParent(this);
+	// Store in reflist also...
+	widgets_.add(node);
+	// Add arguments to node (also sets return type)
+	if (node->addJoinedArguments(arglist)) msg.print(Messenger::Parse, "Added GUI widget '%s'...\n", node->name());
+	else
+	{
+		msg.print("Failed to add GUI widget.\n");
+		msg.exit("Tree::addWidget");
+		return NULL;
+	}
+	msg.exit("Tree::addWidget");
+	return node;
+}
+
+// Return first item in list of widgets
+Refitem<WidgetNode,int> *Tree::widgets()
+{
+	return widgets_.first();
+}
+
+// Set GUI main widget
+void Tree::setMainWidget(QWidget *layout)
+{
+	mainWidget_ = layout;
+}
+
+// Return main widget
+QWidget *Tree::mainWidget()
+{
+	return mainWidget_;
+}
+
+// Locate named widget
+WidgetNode *Tree::findWidget(const char *name)
+{
+	// Search through disordered node list for ScopedNodes and then search their variable listst
+	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next)
+	{
+		if (strcmp(name, ri->item->name()) == 0) return ri->item;
+	}
+	printf("Internal Error: Couldn't find widget named '%s' in tree '%s'.\n", name, name_.get());
+	return NULL;
+}
+
+// Retrieve current value of named widget as a double
+double Tree::widgetValued(const char *name)
+{
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return 0.0;
+	ReturnValue rv;
+	node->execute(rv);
+	return rv.asDouble();
+}
+
+// Retrieve current value of named widget as an integer
+int Tree::widgetValuei(const char *name)
+{
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return 0;
+	ReturnValue rv;
+	node->execute(rv);
+	return rv.asInteger();
+}
+
+// Retrieve current value of named widget as a string
+const char *Tree::widgetValuec(const char *name)
+{
+	WidgetNode *node = findWidget(name);
+	if (node == NULL) return "NULL";
+	ReturnValue rv;
+	node->execute(rv);
+	return rv.asString();
+}
+
+// Retrieve current value of named widget triplet as a vector
+Vec3<double> Tree::widgetValue3d(const char *name1, const char *name2, const char *name3)
+{
+	ReturnValue rv;
+	Vec3<double> result;
+	// First value
+	WidgetNode *node = findWidget(name1);
+	if (node == NULL) result.x = 0.0;
+	node->execute(rv);
+	result.x = rv.asDouble();
+	// Second value
+	node = findWidget(name2);
+	if (node == NULL) result.y = 0.0;
+	node->execute(rv);
+	result.y = rv.asDouble();
+	// Third value
+	node = findWidget(name3);
+	if (node == NULL) result.z = 0.0;
+	node->execute(rv);
+	result.z = rv.asDouble();
 	return result;
 }
