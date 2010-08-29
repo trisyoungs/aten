@@ -122,19 +122,19 @@ void AtenForm::finaliseUi()
 	switch (prefs.renderStyle())
 	{
 		case (Atom::StickStyle):
-			ui.actionStyleStick->setChecked(true);
+			ui.actionStyleStick->setChecked(TRUE);
 			break;
 		case (Atom::TubeStyle):
-			ui.actionStyleTube->setChecked(true);
+			ui.actionStyleTube->setChecked(TRUE);
 			break;
 		case (Atom::SphereStyle):
-			ui.actionStyleSphere->setChecked(true);
+			ui.actionStyleSphere->setChecked(TRUE);
 			break;
 		case (Atom::ScaledStyle):
-			ui.actionStyleScaled->setChecked(true);
+			ui.actionStyleScaled->setChecked(TRUE);
 			break;
 		case (Atom::IndividualStyle):
-			ui.actionStyleIndividual->setChecked(true);
+			ui.actionStyleIndividual->setChecked(TRUE);
 			break;
 		default:
 			break;

@@ -33,10 +33,10 @@ AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 }
 
 // Create simple label
-QLabel *AtenCustomDialog::createLabel(const char *text)
+QLabel *AtenCustomDialog::createLabel(const char *text, int alignment)
 {
 	QLabel *label = new QLabel(text);
-	label->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+	label->setAlignment(((Qt::Alignment) alignment)|Qt::AlignVCenter);
 	return label;
 }
 
@@ -50,7 +50,7 @@ QGridLayout *AtenCustomDialog::createGridLayout(QWidget *parent)
 }
 
 // Create check box from data in specified GuiFilterOption
-QCheckBox *AtenCustomDialog::createCheckBox(GuiFilterOptionNode *gfo)
+QCheckBox *AtenCustomDialog::createCheckBox(WidgetNode *gfo)
 {
 	QCheckBox *check = new QCheckBox(gfo->name());
 	// Critical : state
@@ -61,7 +61,7 @@ QCheckBox *AtenCustomDialog::createCheckBox(GuiFilterOptionNode *gfo)
 }
 
 // Create combo box from data in specified GuiFilterOption
-QComboBox *AtenCustomDialog::createComboBox(GuiFilterOptionNode *gfo)
+QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 {
 	QComboBox *combo = new QComboBox();
 	// Critical : items list
@@ -77,9 +77,10 @@ QComboBox *AtenCustomDialog::createComboBox(GuiFilterOptionNode *gfo)
 }
 
 // Create double spin edit from data in specified GuiFilterOption
-QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(GuiFilterOptionNode *gfo)
+QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(WidgetNode *gfo)
 {
 	QDoubleSpinBox *spin = new QDoubleSpinBox();
+	spin->setDecimals(5);
 	// Critical : minimum, maximum, start, and step values
 	Dnchar data;
 	if (!gfo->data("min", data)) printf("Critical: No minimum value found when constructing QDoubleSpinBox.\n");
@@ -97,7 +98,7 @@ QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(GuiFilterOptionNode *gfo)
 }
 
 // Create line edit from data in specified GuiFilterOption
-QLineEdit *AtenCustomDialog::createLineEdit(GuiFilterOptionNode *gfo)
+QLineEdit *AtenCustomDialog::createLineEdit(WidgetNode *gfo)
 {
 	QLineEdit *lineedit = new QLineEdit();
 	// Critical : text
@@ -108,7 +109,7 @@ QLineEdit *AtenCustomDialog::createLineEdit(GuiFilterOptionNode *gfo)
 }
 
 // Create spin box from data in specified GuiFilterOption
-QSpinBox *AtenCustomDialog::createSpinBox(GuiFilterOptionNode *gfo)
+QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 {
 	QSpinBox *spin = new QSpinBox();
 	// Critical : minimum, maximum, start, and step values
@@ -131,12 +132,12 @@ QSpinBox *AtenCustomDialog::createSpinBox(GuiFilterOptionNode *gfo)
 bool AtenCustomDialog::createWidgets(Tree *t)
 {
 	msg.enter("AtenCustomDialog::createWidgets");
-	Refitem<GuiFilterOptionNode,int> *firstri, *gfori;
-	GuiFilterOptionNode *gfo;
+	Refitem<WidgetNode,int> *ri;
+	WidgetNode *gfo;
 	QGroupBox *group;
 	QGridLayout *gridl;
 	QTabWidget *tabw;
-	int span, labelspan;
+	int span, labelspan, alignment;
 	bool newline;
 	LayoutList layouts;
 	Reflist<QTabWidget,Dnchar> tabwidgets;
@@ -146,10 +147,9 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 	QWidget *widget;
 
 	// Get start of list of defined options - if there are none, do nothing
-	firstri = t->guiFilterOptions();
-	if (firstri == NULL)
+	if (t->widgets() == NULL)
 	{
-		t->setLayout(NULL);
+		t->setMainWidget(NULL);
 		msg.exit("AtenCustomDialog::createWidgets");
 		return TRUE;
 	}
@@ -157,23 +157,24 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 	// Create main layout widget for the other widgets
 	layouts.clear();
 	tabwidgets.clear();
-	gridl = createGridLayout(NULL);
-	t->setLayout(gridl);
+	QWidget *mainwidget = new QWidget(gui.mainWindow);
+	t->setMainWidget(mainwidget);
+	gridl = createGridLayout(mainwidget);
 	mainlayout = layouts.add("_MAIN_", gridl);
 
 	// Create widgets
-	for (gfori = firstri; gfori != NULL; gfori = gfori->next)
+	for (ri = t->widgets(); ri != NULL; ri = ri->next)
 	{
-		gfo = gfori->item;
+		gfo = ri->item;
 		// We will add to the main widget, unless another is specified (i.e. a group)
-		if (gfo->widgetParentType() == GuiFilterOptionNode::NoParent) currentlayout = mainlayout;
+		if (gfo->widgetParentType() == WidgetNode::NoParent) currentlayout = mainlayout;
 		else
 		{
 			// Find the specified layout (or create it)
 			currentlayout = layouts.find(gfo->widgetParentName());
 			if (currentlayout == NULL)
 			{
-				if (gfo->widgetParentType() == GuiFilterOptionNode::GroupBoxParent)
+				if (gfo->widgetParentType() == WidgetNode::GroupBoxParent)
 				{
 					// Create a new QGroupBox in the main widget (for now...)
 					group = new QGroupBox();
@@ -182,7 +183,7 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 					gridl = createGridLayout(group);
 					currentlayout = layouts.add(gfo->widgetParentName(), gridl);
 				}
-				else if (gfo->widgetParentType() == GuiFilterOptionNode::TabWidgetParent)
+				else if (gfo->widgetParentType() == WidgetNode::TabWidgetParent)
 				{
 					// Format of name should be 'page@tabwidget'
 					// Two possibilities -  1) the 'tabwidget' does exist but the page doesn't
@@ -217,47 +218,54 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 		span = gfo->widgetSpan();
 		labelspan = gfo->widgetLabelSpan();
 		newline = gfo->widgetNewLine();
+		alignment = gfo->widgetLabelAlignment();
 
 		// Now create the widget
 		switch (gfo->controlType())
 		{
 			// Check Box - data: state)
-			case (GuiFilterOptionNode::CheckType):
+			case (WidgetNode::CheckControl):
 				widget = createCheckBox(gfo);
 				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
 			// Combo Box - data:  items, default
-			case (GuiFilterOptionNode::IntegerComboType):
-			case (GuiFilterOptionNode::ComboType):
-				widget = createLabel(gfo->name());
+			case (WidgetNode::IntegerComboControl):
+			case (WidgetNode::ComboControl):
+				widget = createLabel(gfo->name(), alignment);
 				currentlayout->addWidget(widget, labelspan, newline);
 				widget = createComboBox(gfo);
 				currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
-			// Spin Edit - data: min, max, start
-			case (GuiFilterOptionNode::DoubleSpinType):
-				widget = createLabel(gfo->name());
+			// Double Spin Edit - data: min, max, start
+			case (WidgetNode::DoubleSpinControl):
+				widget = createLabel(gfo->name(), alignment);
 				currentlayout->addWidget(widget, labelspan, newline);
 				widget = createDoubleSpinBox(gfo);
 				currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
-			// Spin Edit - data: text
-			case (GuiFilterOptionNode::EditType):
-				widget = createLabel(gfo->name());
+			// Text Edit - data: text
+			case (WidgetNode::EditControl):
+				widget = createLabel(gfo->name(), alignment);
 				currentlayout->addWidget(widget, labelspan, newline);
 				widget = createLineEdit(gfo);
 				currentlayout->addWidget(widget, span, FALSE);
 				gfo->setWidget(widget);
 				break;
-			// Spin Edit - data: min, max, start
-			case (GuiFilterOptionNode::SpinType):
-				widget = createLabel(gfo->name());
+			// Integer Spin Edit - data: min, max, start
+			case (WidgetNode::IntegerSpinControl):
+				widget = createLabel(gfo->name(), alignment);
 				currentlayout->addWidget(widget, labelspan, newline);
 				widget = createSpinBox(gfo);
 				currentlayout->addWidget(widget, span, FALSE);
+				gfo->setWidget(widget);
+				break;
+			// Label
+			case (WidgetNode::LabelControl):
+				widget = createLabel(gfo->name(), alignment);
+				currentlayout->addWidget(widget, labelspan, newline);
 				gfo->setWidget(widget);
 				break;
 		}
@@ -273,32 +281,34 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 void AtenCustomDialog::storeValues(Tree *filter)
 {
 	msg.enter("AtenCustomDialog::storeValues");
-	GuiFilterOptionNode *gfo;
+	WidgetNode *gfo;
 	QWidget *widget;
 	ReturnValue rv;
-	for (Refitem<GuiFilterOptionNode,int> *ri = filter->guiFilterOptions(); ri != NULL; ri = ri->next)
+	for (Refitem<WidgetNode,int> *ri = filter->widgets(); ri != NULL; ri = ri->next)
 	{
 		gfo = ri->item;
 		rv.reset();
 		switch (gfo->controlType())
 		{
-			case (GuiFilterOptionNode::CheckType):
+			case (WidgetNode::CheckControl):
 				rv.set( ((QCheckBox*) (gfo->widget()))->isChecked());
 				break;
-			case (GuiFilterOptionNode::IntegerComboType):
+			case (WidgetNode::IntegerComboControl):
 				rv.set( ((QComboBox*) (gfo->widget()))->currentIndex());
 				break;
-			case (GuiFilterOptionNode::ComboType):
+			case (WidgetNode::ComboControl):
 				rv.set( qPrintable(((QComboBox*) (gfo->widget()))->currentText()));
 				break;
-			case (GuiFilterOptionNode::DoubleSpinType):
+			case (WidgetNode::DoubleSpinControl):
 				rv.set( ((QDoubleSpinBox*) (gfo->widget()))->value());
 				break;
-			case (GuiFilterOptionNode::EditType):
+			case (WidgetNode::EditControl):
 				rv.set( qPrintable(((QLineEdit*) (gfo->widget()))->text()));
 				break;
-			case (GuiFilterOptionNode::SpinType):
+			case (WidgetNode::IntegerSpinControl):
 				rv.set( ((QSpinBox*) (gfo->widget()))->value());
+				break;
+			case (WidgetNode::LabelControl):
 				break;
 		}
 		gfo->setReturnValue(rv);
@@ -317,14 +327,18 @@ bool AtenCustomDialog::show(QString title, Tree *t)
 		return FALSE;
 	}
 	// If there is no layout return immediately
-	if (t->layout() == NULL) return TRUE;
+	if (t->mainWidget() == NULL) return TRUE;
 	// Create a temporary dialog and add widget layout to it...
 	AtenCustomDialog *dialog = new AtenCustomDialog(gui.mainWindow);
-	// Set title and central widgets
+	// Set title and widget
 	dialog->setWindowTitle(title);
-	dialog->ui.CentralWidget->setLayout(t->layout());
+	dialog->ui.MainLayout->addWidget(t->mainWidget());
 	bool result = (dialog->exec() == 1 ? TRUE : FALSE);
 	if (result) AtenCustomDialog::storeValues(t);
+	dialog->ui.MainLayout->removeWidget(t->mainWidget());
+	// Need to reparent the widget so it doesn't get deleted along with the dialog
+	t->mainWidget()->setParent(gui.mainWindow);
+	delete dialog;
 	msg.exit("AtenCustomDialog::show");
 	return result;
 }

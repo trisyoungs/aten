@@ -26,8 +26,9 @@
 #include "parser/double.h"
 #include "parser/character.h"
 #include "main/aten.h"
+#include "gui/customdialog.h"
 
-// Constructor
+// Constructors
 Forest::Forest()
 {
 	// Private variables
@@ -37,6 +38,20 @@ Forest::Forest()
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+Forest::Forest(const char *name, const char *commands)
+{
+	// Private variables
+	fromFilterFile_ = FALSE;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	// Generate tree from supplied commands
+	generateFromString(commands, name, FALSE);
+	finalise();
 }
 
 // Destructor
@@ -72,9 +87,11 @@ const char *Forest::filename()
 // Finalise forest
 void Forest::finalise()
 {
-	// Register any filters with the master
+	msg.enter("Forest::finalise");
+	// Cycle over generated trees...
 	for (Tree *t = trees_.first(); t != NULL; t = t->next)
 	{
+		// Register file filters with the master
 		if (t->isFilter())
 		{
 			aten.registerFilter(t, t->filter.type());
@@ -102,13 +119,22 @@ void Forest::finalise()
 				t->filter.setTrajectoryFrameFunction(func);
 			}
 		}
+		// Generate widgets (if Tree has any)
+		AtenCustomDialog::createWidgets(t);
 	}
+	msg.exit("Forest::finalise");
 }
 
 // Return number of trees in forest
 int Forest::nTrees()
 {
 	return trees_.nItems();
+}
+
+// Return first tree of forest
+Tree *Forest::trees()
+{
+	return trees_.first();
 }
 
 // Create a new tree

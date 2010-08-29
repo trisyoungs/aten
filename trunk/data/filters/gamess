@@ -97,8 +97,8 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	# General control options ($CONTRL)
 	string runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
 	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
-	int mult = option("Multiplicity", "spin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
-	int charge = option("Charge", "spin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
+	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
+	int charge = option("Charge", "intspin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
 	string dfttyp = option("DFT Type", "combo", "NONE,XXXX", 1, "group=Job Control ($CONTRL)", "newline");
 	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
 	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
@@ -109,17 +109,17 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 	# Basis set specification ($BASIS)
 	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCn,ACCn,CCnC,ACCnC,PCn,APCn,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
-	int basis_ngauss = option("NGAUSS", "spin", 3,8,6,1, "group=Basis Set ($BASIS)");
-	int basis_ndfunc = option("NDFUNC", "spin", 0,3,0,1, "group=Basis Set ($BASIS)");
-	int basis_npfunc = option("NPFUNC", "spin", 0,3,0,1, "group=Basis Set ($BASIS)");
-	int basis_nffunc = option("NFFUNC", "spin", 0,1,0,1, "group=Basis Set ($BASIS)");
+	int basis_ngauss = option("NGAUSS", "intspin", 3,8,6,1, "group=Basis Set ($BASIS)");
+	int basis_ndfunc = option("NDFUNC", "intspin", 0,3,0,1, "group=Basis Set ($BASIS)");
+	int basis_npfunc = option("NPFUNC", "intspin", 0,3,0,1, "group=Basis Set ($BASIS)");
+	int basis_nffunc = option("NFFUNC", "intspin", 0,1,0,1, "group=Basis Set ($BASIS)");
 	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
 	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
 
 	# Stationary point location options ($STATPT), placed in 'opts' tabs
 	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
 	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
-	int statpt_nstep = option("NStep", "spin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
+	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
 
 	# Write $CONTRL, $SYSTEM and $BASIS groups
 	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);

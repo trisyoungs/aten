@@ -274,10 +274,10 @@ void GuiQt::run()
 	fragmentWindow->refresh();
 
 	// Construct filter option widgets
-	for (int n=0; n<FilterData::nFilterTypes; ++n)
-	{
-		for (Refitem<Tree,int> *ri = aten.filters((FilterData::FilterType) n); ri != NULL; ri = ri->next) AtenCustomDialog::createWidgets(ri->item);
-	}
+// 	for (int n=0; n<FilterData::nFilterTypes; ++n)
+// 	{
+// 		for (Refitem<Tree,int> *ri = aten.filters((FilterData::FilterType) n); ri != NULL; ri = ri->next) AtenCustomDialog::createWidgets(ri->item);
+// 	}
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();

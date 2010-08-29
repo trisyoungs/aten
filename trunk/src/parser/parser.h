@@ -183,13 +183,13 @@ class CommandParser : public Tree
 	TreeNode *wrapVariable(Variable *var, TreeNode *arrayindex = NULL);
 
 	/*
-	// Filters
+	// Filters / GUI
 	*/
 	public:
 	// Set filter option
 	bool setFilterOption(Dnchar *name, TreeNode *value);
-	// Add new (GUI-based) filter option linked to a variable
-	TreeNode *addGuiFilterOption(TreeNode *arglist);
+	// Add new (GUI-based) widget linked to a variable
+	TreeNode *addWidget(TreeNode *arglist);
 };
 
 // External declaration

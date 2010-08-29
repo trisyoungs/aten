@@ -24,7 +24,7 @@
 
 #include <iostream>
 #include "parser/filterdata.h"
-#include "parser/guifilteroptionnode.h"
+#include "parser/widgetnode.h"
 #include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "command/commands.h"
@@ -112,7 +112,7 @@ class Tree
 	VTypes::DataType checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray);
 	// Check binary operator type compatibility
 	VTypes::DataType checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
-
+	
 	public:
 	// Create a new path on the stack with the specified base 'variable'
 	virtual TreeNode *createPath(TreeNode *var);
@@ -199,25 +199,41 @@ class Tree
 	/*
 	// Filter Properties
 	*/
-	private:
-	// List of user-defined GUI filter options (if any)
-	Reflist<GuiFilterOptionNode,int> guiFilterOptions_;
-	// QLayout containing ready-created set of controls
-	QGridLayout *guiFilterOptionsLayout_;
-
 	public:
 	// Filter data
 	FilterData filter;
 	// Return whether this tree is a filter
 	bool isFilter() const;
+
+
+	/*
+	// Custom Dialog Widgets
+	*/
+	private:
+	// List of user-defined widgets for custom dialog / filter options
+	Reflist<WidgetNode,int> widgets_;
+	// QWidget containing ready-created set of controls
+	QWidget *mainWidget_;
+	// Locate first occurrence of named variable in node list
+	WidgetNode *findWidget(const char *name);
+
+	public:
 	// Add new (GUI-based) filter option linked to a variable
-	virtual TreeNode *addGuiFilterOption(TreeNode *arglist);
+	virtual TreeNode *addWidget(TreeNode *arglist);
 	// Return first item in list of filter options
-	Refitem<GuiFilterOptionNode,int> *guiFilterOptions();
+	Refitem<WidgetNode,int> *widgets();
 	// Set filter options layout widget
-	void setLayout(QGridLayout *layout);
+	void setMainWidget(QWidget *layout);
 	// Return filter options layout widget
-	QGridLayout *layout();
+	QWidget *mainWidget();
+	// Retrieve current value of named widget as a double
+	double widgetValued(const char *name);
+	// Retrieve current value of named widget as an integer
+	int widgetValuei(const char *name);
+	// Retrieve current value of named widget as a string
+	const char *widgetValuec(const char *name);
+	// Retrieve current value of named widget triplet as a vector
+	Vec3<double> widgetValue3d(const char *name1, const char *name2, const char *name3);
 
 
 	/*

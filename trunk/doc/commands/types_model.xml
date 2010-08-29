@@ -295,7 +295,7 @@
 					<row>
 						<entry>movetostart ( )</entry>
 						<entry>--</entry>
-						<entry>Move the current atom selection to the top (lowest IDs) of the atom list. See the <link linkend="command.ref.movetstart">movetostart</link> command for more details.</entry>
+						<entry>Move the current atom selection to the top (lowest IDs) of the atom list. See the <link linkend="command.ref.movetostart">movetostart</link> command for more details.</entry>
 					</row>
 					<row>
 						<entry>newatom ( int|string <emphasis>el</emphasis>, double <emphasis>x</emphasis> = 0.0, double <emphasis>y</emphasis> = 0.0, double <emphasis>z</emphasis> = 0.0, double <emphasis>vx</emphasis> = 0.0, double <emphasis>vy</emphasis> = 0.0, double <emphasis>vz</emphasis> = 0.0, double <emphasis>fx</emphasis> = 0.0, double <emphasis>fy</emphasis> = 0.0, double <emphasis>fz</emphasis> )</entry>

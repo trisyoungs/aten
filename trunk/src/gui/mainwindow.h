@@ -188,6 +188,7 @@ class AtenForm : public QMainWindow
 	void on_actionEditCut_triggered(bool checked);
 	void on_actionEditCopy_triggered(bool checked);
 	void on_actionEditPaste_triggered(bool checked);
+	void on_actionEditPasteTranslated_triggered(bool checked);
 	void on_actionEditDelete_triggered(bool checked);
 	void on_actionEditSelectAll_triggered(bool checked);
 	void on_actionEditSelectNone_triggered(bool checked);

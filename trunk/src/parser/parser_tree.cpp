@@ -392,18 +392,18 @@ bool CommandParser::setFilterOption(Dnchar *name, TreeNode *value)
 	return result;
 }
 
-// Add new (GUI-based) filter option linked to a variable
-TreeNode *CommandParser::addGuiFilterOption(TreeNode *arglist)
+// Add new (GUI-based) widget linked to a variable
+TreeNode *CommandParser::addWidget(TreeNode *arglist)
 {
-	msg.enter("CommandParser::addGuiFilterOption");
+	msg.enter("CommandParser::addWidget");
 	if (tree_ == NULL)
 	{
-		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addGuiFilterOption).\n");
-		else printf("Internal Error: No current Tree target for Parser (addGuiFilterOption).\n");
-		msg.exit("CommandParser::addGuiFilterOption");	
+		if (forest_->isFromFilterFile()) msg.print("Statements found outside of a filter/function definition (addWidget).\n");
+		else printf("Internal Error: No current Tree target for Parser (addWidget).\n");
+		msg.exit("CommandParser::addWidget");	
 		return NULL;
 	}
-	TreeNode *result = tree_->addGuiFilterOption(arglist);
-	msg.exit("CommandParser::addGuiFilterOption");
+	TreeNode *result = tree_->addWidget(arglist);
+	msg.exit("CommandParser::addWidget");
 	return result;
 }

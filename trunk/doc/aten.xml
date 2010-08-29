@@ -48,6 +48,7 @@
 	<!ENTITY typesforcefield SYSTEM "commands/types_forcefield.xml">
 	<!ENTITY typesglyph SYSTEM "commands/types_glyph.xml">
 	<!ENTITY typesglyphdata SYSTEM "commands/types_glyphdata.xml">
+	<!ENTITY typesgrid SYSTEM "commands/types_grid.xml">
 	<!ENTITY typesmeasurement SYSTEM "commands/types_measurement.xml">
 	<!ENTITY typesmodel SYSTEM "commands/types_model.xml">
 	<!ENTITY typespattern SYSTEM "commands/types_pattern.xml">
@@ -260,6 +261,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&typesforcefield;
 			&typesglyph;
 			&typesglyphdata;
+			&typesgrid;
 			&typesmeasurement;
 			&typesmodel;
 			&typespattern;

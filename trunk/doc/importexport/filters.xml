@@ -353,27 +353,157 @@ zmap=&quot;numeric&quot;
 
 		<sect5 id="readwrite.filters.options.defining"><title>Defining Options</title>
 		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>defining</tertiary></indexterm>
+		<indexterm><primary>commands</primary><secondary>option</secondary></indexterm>
 
-			<para>A filter option is defined in the following way within a filter file. In this case, we are setting a string variable with one of several possible values using a combo box control in the GUI. When saving a file in a new format (or by selecting 'Export Options' from the 'File' menu) a dialog is shown in the GUI which contains all of the defined controls in the relevant filter, from which options can be set before the file is written.</para>
+			<para>A filter option is defined in the following way within a filter file:</para>
+				
+			<synopsis>
+<emphasis>vartype</emphasis> <emphasis>var</emphasis> = option(string <emphasis>name</emphasis>, string <emphasis>type</emphasis>, ...);
+			</synopsis>
+			
+			<para>The specified <emphasis>name</emphasis> is the text that will appear next to the control in the GUI. The <emphasis>type</emphasis> of control governs the type of GUI widget that will appear (see the list of <link linkend="readwrite.filters.options.types">types</linkend> below). Following these two mandatory specifications, any required values must then be given in the correct order, after which any other non-control-specific options may be given, each surrounded by quote marks and in the format 'option' or 'option=value'. All of these are to do with the layout of controls (see the <link linkend="readwrite.filters.options.layout">option layout</link> section).</para>
+				
+			<para>For example, we we can set a string variable with one of several possible values using a combo box control in the GUI. When saving a file in a new format (or by selecting 'Export Options' from the 'File' menu) a dialog is shown in the GUI which contains all of the defined controls in the relevant filter, from which options can be set before the file is written. This would be written as follows in the filter file:</para>
 
 			<synopsis>
 string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check,run,restart,analyse&quot;, 2);
 			</synopsis>
 		
-			<para>Note that when the filter actually runs on the file, the target variable 'runtype' will be set with whatever value the control holds in the GUI (or the default if running from the command-line) - no questions are asked interactively at the points at which the 'option()' commands exist. So, the variable here will be guaranteed to take on one of the possible values 'check', 'run', 'restart', or 'analyse'.</para>
+			<para>Note that when the filter code actually runs, the target variable 'runtype' will be set with whatever value the control holds in the GUI (or the default if running from the command-line) - no questions are asked interactively at the points at which the 'option()' commands exist. So, the variable here will be guaranteed to take on one of the possible values 'check', 'run', 'restart', or 'analyse'.</para>
 
 		</sect5>
 
 		<sect5 id="readwrite.filters.options.types"><title>Option Types</title>
 		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>types</tertiary></indexterm>
 
-		XXX Table of option types
+			<para>All available control types are listed in the following table. Note that <emphasis>all</emphasis> of the required data items must be given as arguments following the control type string in the <link linkend="commands.options">options</link>.</para>
+			
+			<table frame='all' pgwide='1' tocentry='0'><title>Option Types</title>
+				<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+					<thead>
+						<row>
+							<entry>Type</entry>
+							<entry>Required Data</entry>
+							<entry>Description</entry>
+						</row>
+					</thead>
+					<tbody>
+						<row>
+							<entry>check</entry>
+							<entry>int state = <emphasis>0 or 1</emphasis></entry>
+							<entry>A checkbox whose state is either off or on. Returns an integer value ('1' if the control is ticked, '0' otherwise).</entry>
+						</row>
+						<row>
+							<entry morerows='1'>combo</entry>
+							<entry>string items = "<emphasis>item1,item2,...</emphasis>"</entry>
+
+							<entry morerows='1'>A combobox is a drop-down list of predefined items. The text of the selected item is returned.</entry>
+						</row>
+						<row><entry>int default = 1-<emphasis>nitems</emphasis></entry></row>
+						<row>
+							<entry morerows='3'>doublespin</entry>
+							<entry>double min</entry>
+							<entry morerows='3'>Control allowing a real number to be input, strictly within the min/max range, and with start value specified. Up/down arrows to the side of the control adjust the current value by the 'step' value. A real number is returned.</entry>
+						</row>
+						<row><entry>double max</entry></row>
+						<row><entry>double start</entry></row>
+						<row><entry>double step</entry></row>
+						<row>
+							<entry>edit</entry>
+							<entry></entry>
+							<entry></entry>
+						</row>
+						<row>
+							<entry morerows='1'>intcombo</entry>
+							<entry>string items = "<emphasis>item1,item2,...</emphasis>"</entry>
+							<entry morerows='1'>Exactly the same as the 'combo' control above, but instead returns an integer value corresponding to the index of the selected entry.</entry>
+						</row>
+						<row><entry>int default = 1-<emphasis>nitems</emphasis></entry></row>
+						<row>
+							<entry morerows='3'>intspin</entry>
+							<entry>int min</entry>
+							<entry morerows='3'>Control allowing an integer number to be input, strictly within the min/max range, and with start value specified. Up/down arrows to the side of the control adjust the current value by the 'step' value. An integer number is returned.</entry>
+						</row>
+						<row><entry>int max</entry></row>
+						<row><entry>int start</entry></row>
+						<row><entry>int step</entry></row>
+						<row>
+							<entry>label</entry>
+							<entry>None.</entry>
+							<entry>A simple text label, with no associated value.</entry>
+						</row>
+					</tbody>
+				</tgroup>
+			</table>
 
 		</sect5>
 
 		<sect5 id="readwrite.filters.options.layout"><title>Option Layout</title>
 		<indexterm><primary>filters</primary><secondary>options</secondary><tertiary>layout</tertiary></indexterm>
 
+		<para>The layout of specified GUI controls is done in as simplistic a manner as possible, while still offering reasonable control over the positioning of elements. If no layout options are specified, all defined controls will be added one after the other in a single row, left-to-right, possibly stretching further than the screen can handle. At the very least, the 'newline' command should be used to force a control option to start a new 'row' of controls in the GUI. All controls are added into a grid (Qt's QGridLayout) so that controls always line up nicely. It is also possible to group controls together in tabbed widgets and group boxes.</para>
+		
+		<para>All controls (except the plain label) are two 'units' wide on the grid, and this should be borne in mind when stretching a single control to be the same width as a set of controls on a different row.</para>
+		
+		<table frame='all' pgwide='1' tocentry='0'><title>Layout Commands</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Option</entry>
+						<entry>Value</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>centre</entry>
+						<entry><emphasis>none</emphasis></entry>
+						<entry>By default, all labels are right-aligned so they sit next to their associated controls. This forces the label to be aligned in the centre instead.</entry>
+					</row>
+					<row>
+						<entry>disabled</entry>
+						<entry><emphasis>none</emphasis></entry>
+						<entry>All controls are enabled by default. Specifying 'disabled' will gray-out the control.</entry>
+					</row>
+					<row>
+						<entry>group</entry>
+						<entry>name</entry>
+						<entry>To place controls inside a groupbox instead of just adding them to the window the 'group' property can be set. For instance, to add a control to a group box called 'Run Options' you can specify 'group=Run Options' as an argument. Note that the group name is displayed as the title of the group in the GUI. If the named group box does not exist then it is created in the next available position (i.e. after the last created control). Otherwise, the control is added to the existing group box in the next available position.</entry>
+					</row>
+					<row>
+						<entry>labelspan</entry>
+						<entry>ncols</entry>
+						<entry>A label takes up a single column by default. The 'labelspan' property can be set to override this. For example, adding 'labelspan=4' to the list of arguments will force the label to span four columns instead of one.</entry>
+					</row>
+					<row>
+						<entry>left</entry>
+						<entry><emphasis>none</emphasis></entry>
+						<entry>By default, all labels are right-justified so they sit next to their associated controls. This forces the label to be aligned to the left instead.</entry>
+					</row>
+					<row>
+						<entry>newline</entry>
+						<entry><emphasis>none</emphasis></entry>
+						<entry>All controls are added to the immediate right of the last control created, unless the 'newline' command is given. Then, the control will be added at the beginning of a new row.</entry>
+					</row>
+					<row>
+						<entry>parentspan</entry>
+						<entry>ncols</entry>
+						<entry>A group box or tab control takes up a single column by default. The 'parentspan' property can be set to override this at the time of creation of the group/tab control. For example, adding 'parentspan=2' to the list of arguments will force the group box or tab widget to span two columns instead of one.</entry>
+					</row>
+					<row>
+						<entry>span</entry>
+						<entry>ncols</entry>
+						<entry>All controls take up a single column by default. The 'span' property can be set to override this. For example, adding 'span=5' to the list of arguments will force the control to span five columns instead of one. The associated label will still use only one column, unless this is overridden by the 'labelspan' property.</entry>
+					</row>
+					<row>
+						<entry>tab</entry>
+						<entry>page@name</entry>
+						<entry>Similar to the 'group' command, this adds the widget to an existing page in an existing tab widget, or creates one or both and adds it there. For example, to add a control to a page named "Extra" in a tab widget called "My Tabs", you can specify 'tab=Extra@My Tabs' as an argument.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
 		</sect5>
 	
 	</section>

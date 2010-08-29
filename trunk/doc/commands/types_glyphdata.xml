@@ -15,7 +15,7 @@
 				<tbody>
 					<row>
 						<entry>atom</entry>
-						<entry><link linkend="command.types.atom">vector</link></entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
 						<entry>rw</entry>
 						<entry>Atom (if any) from which positional data is retrieved</entry>
 					</row>

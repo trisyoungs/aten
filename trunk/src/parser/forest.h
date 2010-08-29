@@ -29,8 +29,9 @@
 class Forest
 {
 	public:
-	// Constructor / Destructor
+	// Constructors / Destructor
 	Forest();
+	Forest(const char *name, const char *commands);
 	~Forest();
 	// List pointers
 	Forest *prev, *next;
@@ -69,6 +70,8 @@ class Forest
 	void finalise();
 	// Return number of trees in forest
 	int nTrees();
+	// Return first tree of forest
+	Tree *trees();
 	// Add a new, generic (filter, script or command) tree
 	Tree *addTree(Tree::TreeType type);
 	// Add a new Forest-global function tree

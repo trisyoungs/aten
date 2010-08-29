@@ -1,6 +1,6 @@
 /*
-	*** GUI Filter Option Node
-	*** src/parser/guifilteroptionnode.h
+	*** GUI Widget Node
+	*** src/parser/widgetnode.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GUIFILTEROPTIONNODE_H
-#define ATEN_GUIFILTEROPTIONNODE_H
+#ifndef ATEN_WIDGETNODE_H
+#define ATEN_WIDGETNODE_H
 
 #include "parser/treenode.h"
 #include "templates/list.h"
@@ -31,18 +31,18 @@
 class QWidget;
 
 // User-defined GUI filter option
-class GuiFilterOptionNode : public TreeNode
+class WidgetNode : public TreeNode
 {
 	public:
 	// Constructor / destructor
-	GuiFilterOptionNode();
-	~GuiFilterOptionNode();
+	WidgetNode();
+	~WidgetNode();
 	// User-defined GUI option types
-	enum GuiControlType { CheckType, ComboType, DoubleSpinType, EditType, IntegerComboType, SpinType, nGuiControlTypes };
-	static GuiControlType guiControlType(const char *s, bool reporterror = FALSE);
-	static const char *guiControlType(GuiControlType got);
+	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, nGuiControls };
+	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
+	static const char *guiControl(GuiControl got);
 	// Options for Qt layout
-	enum GuiQtOption { DisabledOption, GroupNameOption, LabelSpanOption, NewLineOption, ParentSpanOption, SpanOption, TabsOption, nGuiQtOptions };
+	enum GuiQtOption { CentreOption, DisabledOption, GroupNameOption, LabelSpanOption, LeftOption, NewLineOption, ParentSpanOption, SpanOption, TabsOption, nGuiQtOptions };
 	static GuiQtOption guiQtOption(const char *s, bool reporterror = FALSE);
 	static const char *guiQtOption(GuiQtOption gqo);
 	// Widget parent types
@@ -55,7 +55,7 @@ class GuiFilterOptionNode : public TreeNode
 	// Return value of node
 	ReturnValue returnValue_;
 	// Type of GUI control
-	GuiControlType controlType_;
+	GuiControl controlType_;
 	// Option name
 	Dnchar name_;
 	// Data for control
@@ -69,7 +69,7 @@ class GuiFilterOptionNode : public TreeNode
 	// Set argument list from parser-joined treenodes
 	bool addJoinedArguments(TreeNode *arglist);
 	// Return type of GUI control
-	GuiControlType controlType();
+	GuiControl controlType();
 	// Return name of option
 	const char *name();
 	// Retrieve associated data
@@ -92,6 +92,8 @@ class GuiFilterOptionNode : public TreeNode
 	int widgetSpan_;
 	// Span width of the label for the widget
 	int widgetLabelSpan_;
+	// Label alignment type
+	int widgetLabelAlignment_;
 	// Whether this widget should be placed on a new row in the current layout
 	bool widgetNewLine_;
 	// Whether the widget is enabled
@@ -108,6 +110,8 @@ class GuiFilterOptionNode : public TreeNode
 	int widgetParentSpan();
 	// Return label span
 	int widgetLabelSpan();
+	// Return whether to centre lable text
+	int widgetLabelAlignment();
 	// Return widget span
 	int widgetSpan();
 	// Return newline flag
