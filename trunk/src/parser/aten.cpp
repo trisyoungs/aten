@@ -178,7 +178,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
-		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
+		if ((arrayIndex < (acc == AtenVariable::Elements ? 0 : 1)) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			msg.exit("AtenVariable::retrieveAccessor");
@@ -193,7 +193,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtenVariable::Elements):
 			if (hasArrayIndex)
 			{
-				if ((arrayIndex < 1) || (arrayIndex > elements().nElements()))
+				if ((arrayIndex < 0) || (arrayIndex > elements().nElements()))
 				{
 					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
 					result = FALSE;
