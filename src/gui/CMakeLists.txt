@@ -51,6 +51,7 @@ set(qtproject_SRCS
   mouseactions.cpp
   position_funcs.cpp
   prefs_funcs.cpp
+  select_funcs.cpp
   selectactions.cpp
   selectelement_funcs.cpp
   selectfilter_funcs.cpp
@@ -95,6 +96,7 @@ SET(pro_MOC_HDRS
   minimiser.h
   position.h
   prefs.h
+  select.h
   selectelement.h
   selectfilter.h
   selectpattern.h
@@ -131,6 +133,7 @@ SET(pro_UIS
   minimiser.ui
   position.ui
   prefs.ui
+  select.ui
   selectelement.ui
   selectfilter.ui
   selectpattern.ui

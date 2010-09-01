@@ -170,9 +170,9 @@ types
 154     OH              O       "-H,-C"					"all-atom O: mono alcohols"
 155     HO              H       "-O(-C)"				"all-atom H(O): mono alcohols"
 156     HC              H       "-C(nh=3,-O)"				"all-atom H(C): methanol"
-157     CT              C       "-H(n=2),-O(-H)"			"all-atom C: CH3 & CH2, alcohols"
-158     CT              C       "-H,-O(-H)"				"all-atom C: CH, alcohols"
-159     CT              C       "nbonds=4,-O(-H)"			"all-atom C: C, alcohols"
+157     CT              C       "-H(n>=2),-O(-H)"			"all-atom C: CH3 & CH2, alcohols"
+158     CT              C       "-H(n=1),-O(-H)"			"all-atom C: CH, alcohols"
+159     CT              C       "-O(-H)"				"all-atom C: C, alcohols"
 160	CT		C	"-H,-H,-O(-H),-C(-F(n=3))"		"CH2 in trifluoroethanol"
 161	CT		C	"-&160"					"CF3 in trifluoroethanol"
 162	OH		O	"-&160"					"OH in trifluoroethanol"
@@ -537,8 +537,8 @@ types
 514	CW		C	""	"CD1 in TRP"
 515	CT		C	""	"all-atom C: CH, isopropyl benzene"
 516	CT		C	""	"all-atom C: C,  t-butyl benzene"
-517	CM		C	"-H,-O(-C)"		"vinyl ether HCOR"
-518	CM		C	"-C,-O(-C)"		"vinyl ether RCOR"
+517	CM		C	"-H,-O(nh=0,-C)"		"vinyl ether HCOR"
+518	CM		C	"-C,-O(nh=0,-C)"		"vinyl ether RCOR"
 519	C!		C	""	"biphenyl C1"
 520	NC		N	""	"N   in pyridine 6-31G*"
 521	CA		C	""	"C1  in pyridine CHELPG"
@@ -1013,7 +1013,7 @@ end
 # TYP eq Numerical OPLS atom type (used for unique internal id of type); AN eq atomic no.; AT eq AMBER/OPLS atom type
 #-- Types 1-18, 35, 53 give generic L-J parameters for QM/MM calculations. LJ params for H on heteroatom are set to zero by BOSS.
 #-- For types 1-53 entries with 2 decimal places need verification, e.g., Be, B.	
-#TYP	AT	CHARGE	SIGMA	EPSILON
+#TYP	AT	CHARGE	EPSILON	SIGMA
 inter ljgeom
 1	H	0.000	0.030	2.460
 2	He	0.000	0.020	2.556

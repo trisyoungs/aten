@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Qt GUI: Select Window
+	*** src/gui/select.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,12 +19,41 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_SELECTWINDOW_H
+#define ATEN_SELECTWINDOW_H
 
-#define ATENVERSION "1.6"
-#define ATENREVISION "1246"
-#define ATENDATE "Wed 01 Sep - 16:58"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#include "gui/ui_select.h"
+
+// Selection window
+class AtenSelect : public QDialog
+{
+	// All Qt declarations derived from QObject must include this macro
+	Q_OBJECT
+
+	/*
+	// Window Functions
+	*/
+	public:
+	void refresh();
+	void showWindow();
+	private slots:
+	void on_AddAtomButton_clicked(bool on);
+	void dialogFinished(int result);
+
+	/*
+	// Local variables
+	*/
+	private:
+
+	/*
+	// Dialog
+	*/
+	public:
+	// Constructor / Destructor
+	AtenSelect(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	~AtenSelect();
+	// Main form declaration
+	Ui::SelectDialog ui;
+};
 
 #endif

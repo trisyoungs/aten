@@ -21,11 +21,11 @@ SUFFIXES: .ui .uih .qrc
 clean:
 	rm -f *.o ui_* tprompt.cpp ttreewidget.cpp tcanvas.cpp ttabbar.cpp tcolourframe.cpp
 
-SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui customdialog.ui md.ui minimiser.ui position.ui transform.ui zmatrix.ui
-SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp customdialog_funcs.cpp md_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp zmatrix_funcs.cpp
+SUBWINDOW_UI = about.ui atomlist.ui build.ui celldefine.ui celltransform.ui command.ui commandhelp.ui disorder.ui forcefields.ui fragment.ui geometry.ui glyphs.ui grids.ui customdialog.ui md.ui minimiser.ui position.ui select.ui transform.ui zmatrix.ui
+SUBWINDOW_FUNCS = about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp command_funcs.cpp commandhelp_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp fragment_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp customdialog_funcs.cpp md_funcs.cpp minimiser_funcs.cpp position_funcs.cpp select_funcs.cpp transform_funcs.cpp zmatrix_funcs.cpp
 
 MAINWINDOW_UI = icons.qrc ffeditor.ui loadmodel.ui prefs.ui selectelement.ui selectfilter.ui selectpattern.ui selectvariable.ui mainwindow.ui
-MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
+MAINWINDOW_FUNCS = contextmenu_funcs.cpp ffeditor_funcs.cpp gui.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp select_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 MAINWINDOW_ACTIONS = bondactions.cpp drawactions.cpp editactions.cpp fileactions.cpp forcefieldactions.cpp measureactions.cpp modelactions.cpp mouseactions.cpp selectactions.cpp styleactions.cpp systemactions.cpp trajectoryactions.cpp viewactions.cpp
 
 WIDGET_UI = ttabbar.uih tcolourframe.uih ttreewidget.uih tcanvas.uih tprompt.uih
