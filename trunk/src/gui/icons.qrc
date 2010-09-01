@@ -31,6 +31,7 @@
     <file>icons/bond_triple.svg</file>
   </qresource>
   <qresource prefix="/build" >
+    <file>icons/build_transmutesel.svg</file>
     <file>icons/build_fragment.svg</file>
     <file>icons/build_c.svg</file>
     <file>icons/build_h.svg</file>

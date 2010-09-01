@@ -51,6 +51,12 @@ void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::DrawTransmuteAction);
 }
 
+void AtenForm::on_actionTransmuteSelection_triggered(bool on)
+{
+	CommandNode::run(Command::Transmute, "i", aten.sketchElement());
+	gui.update();
+}
+
 void AtenForm::on_actionBondSingle_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondSingleAction);

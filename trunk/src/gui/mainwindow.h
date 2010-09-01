@@ -161,6 +161,7 @@ class AtenForm : public QMainWindow
 	void on_actionDrawFragment_triggered(bool checked);
 	void on_actionDeleteAtom_triggered(bool checked);
 	void on_actionTransmuteAtom_triggered(bool checked);
+	void on_actionTransmuteSelection_triggered(bool checked);
 	void on_actionBondSingle_triggered(bool checked);
 	void on_actionBondDouble_triggered(bool checked);
 	void on_actionBondTriple_triggered(bool checked);

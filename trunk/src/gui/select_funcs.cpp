@@ -1,6 +1,6 @@
 /*
-	*** Qt build window functions
-	*** src/gui/build_funcs.cpp
+	*** Qt select window functions
+	*** src/gui/select_funcs.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -21,43 +21,35 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/build.h"
+#include "gui/select.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
 // Constructor
-AtenBuild::AtenBuild(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
+AtenSelect::AtenSelect(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }
 
 // Destructor
-AtenBuild::~AtenBuild()
+AtenSelect::~AtenSelect()
 {
 }
 
 // Show window
-void AtenBuild::showWindow()
+void AtenSelect::showWindow()
 {
 	//if (shouldRefresh_) refresh();
 	show();
 }
 
-void AtenBuild::on_AddAtomButton_clicked(bool on)
+void AtenSelect::on_AddAtomButton_clicked(bool on)
 {
-	if (ui.AddAtomFractionalCheck->isChecked())
-	{
-		CommandNode::run(Command::NewAtomFrac, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-	}
-	else
-	{
-		CommandNode::run(Command::NewAtom, "iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-	}
 	gui.update();
 }
 
-void AtenBuild::dialogFinished(int result)
+void AtenSelect::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionBuildWindow->setChecked(FALSE);
+	//gui.mainWindow->ui.actionSelectWindow->setChecked(FALSE);
 }
