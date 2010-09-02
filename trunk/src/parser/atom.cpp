@@ -71,6 +71,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "ry",		VTypes::DoubleData,		0, FALSE },
 	{ "rz",		VTypes::DoubleData,		0, FALSE },
 	{ "selected",	VTypes::IntegerData,		0, FALSE },
+	{ "style",	VTypes::StringData,		0, FALSE },
 	{ "symbol",	VTypes::StringData,		0, TRUE },
 	{ "type",	VTypes::ForcefieldAtomData,	0, FALSE },
 	{ "v",		VTypes::VectorData,		0, FALSE },
@@ -237,6 +238,9 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (AtomVariable::Selected):
 			rv.set(ptr->isSelected());
 			break;
+		case (AtomVariable::Style):
+			rv.set(Atom::drawStyle(ptr->style()));
+			break;
 		case (AtomVariable::Symbol):
 			rv.set(elements().symbol(ptr));
 			break;
@@ -326,6 +330,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	// Get current data from ReturnValue
 	Vec3<double> v;
 	int n;
+	Atom::DrawStyle ds;
 	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
@@ -387,6 +392,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			ptr->parent()->beginUndoState("(De)select atom");
 			newvalue.asBool() ? ptr->parent()->deselectAtom(i) : ptr->parent()->selectAtom(ptr);
 			ptr->parent()->endUndoState();
+			break;
+		case (AtomVariable::Style):
+			ds = Atom::drawStyle( newvalue.asString() );
+			if (ds != Atom::nDrawStyles) ptr->setStyle(ds);
+			else result = FALSE;
 			break;
 		case (AtomVariable::Type):
 			ptr->setType( (ForcefieldAtom*) newvalue.asPointer(VTypes::ForcefieldAtomData));

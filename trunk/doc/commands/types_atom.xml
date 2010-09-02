@@ -134,6 +134,12 @@
 						<entry>Whether the atom is selected (1) or unselected (0)</entry>
 					</row>
 					<row>
+						<entry>style</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current <link linkend="enums.drawstyles">drawing style</link> of the atom</entry>
+					</row>
+					<row>
 						<entry>symbol</entry>
 						<entry>string</entry>
 						<entry>ro</entry>
