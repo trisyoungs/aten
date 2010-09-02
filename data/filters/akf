@@ -1,7 +1,8 @@
 # Aten 'Custom' file format (for v1.2+)
 # Created:	 14/05/2009
-# Last modified: 27/06/2010
+# Last modified: 02/09/2010
 # ChangeLog:
+# 	02/09/2010: Added read/write of atom style / custom colour information
 # 	27/06/2010: Added glyph support
 # 	09/04/2010: Added 'title' keyword
 
@@ -9,9 +10,10 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 {
 	# Variable declaration
 	int n,i,j,k,l,ndata,atomdata;
-	string e,keywd,line,type;
+	string e,keywd,line,type,style;
 	double rx,ry,rz, lengths[3], angs[3], q, colour[4];
 	glyph g;
+	atom atm;
 	vector v;
 
 	newmodel(filterfilename());
@@ -22,9 +24,11 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 		readlinef("%s%r",keywd,line);
 		if (keywd == "atom")
 		{
-			readvar(line,i,e,rx,ry,rz,q);
-			newatom(e,rx,ry,rz);
-			setcharge(q);
+			readvar(line,i,e,rx,ry,rz,q,style,colour[1],colour[2],colour[3],colour[4]);
+			atm = newatom(e,rx,ry,rz);
+			atm.q = q;
+			if (style != "") atm.style = style;
+			atm.colour = colour;
 		}
 		else if (keywd == "bond")
 		{
@@ -97,7 +101,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	writelinef("title  %s\n", m.name);
 
 	// Atom data
-	for (atom i = m.atoms; i; ++i) writelinef("atom   %i %s %f %f %f %f\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q);
+	for (atom i = m.atoms; i; ++i) writelinef("atom   %i %s %f %f %f %f %s %f %f %f %f\n", i.id, i.symbol, i.rx, i.ry, i.rz, i.q, i.style, i.colour[1], i.colour[2], i.colour[3], i.colour[4] );
 
 	// Bond data
 	for (bond b = m.bonds; b; ++b) writelinef("bond   %i %i %s\n", b.i.id, b.j.id, b.type);
