@@ -34,7 +34,7 @@ class TCanvas : public QGLWidget
 	Q_OBJECT
 
 	public:
-	TCanvas(QWidget*);
+	TCanvas(QGLContext *context, QWidget *parent);
 
 	private:
 	// Canvas object used by the widget

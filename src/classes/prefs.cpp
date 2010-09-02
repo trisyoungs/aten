@@ -198,6 +198,7 @@ Prefs::Prefs()
 	depthCue_ = FALSE;
 	lineAliasing_ = TRUE;
 	polygonAliasing_ = FALSE;
+	multiSampling_ = TRUE;
 	backfaceCulling_ = FALSE;
 	shininess_ = 100;
 	clipNear_ = 0.5;
@@ -743,6 +744,18 @@ void Prefs::setPolygonAliasing(bool status)
 bool Prefs::polygonAliasing() const
 {
 	return polygonAliasing_;
+}
+
+// Set status of polygon aliasing
+void Prefs::setMultiSampling(bool status)
+{
+	multiSampling_ = status;
+}
+
+// Return status of polygon aliasing
+bool Prefs::multiSampling() const
+{
+	return multiSampling_;
 }
 
 // Set status of backface culling

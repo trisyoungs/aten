@@ -49,6 +49,9 @@
      <property name="currentIndex" >
       <number>0</number>
      </property>
+     <property name="usesScrollButtons" >
+      <bool>true</bool>
+     </property>
      <widget class="QWidget" name="ElementsTab" >
       <property name="geometry" >
        <rect>
@@ -822,7 +825,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget" >
          <property name="currentIndex" >
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="RadiiSubTab" >
           <property name="geometry" >
@@ -2015,6 +2018,13 @@
                <widget class="QCheckBox" name="PolygonAliasingCheck" >
                 <property name="text" >
                  <string>Polygon</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="MultiSamplingCheck" >
+                <property name="text" >
+                 <string>Multisampling</string>
                 </property>
                </widget>
               </item>
