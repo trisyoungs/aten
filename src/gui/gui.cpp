@@ -49,6 +49,7 @@
 #include "gui/md.h"
 #include "gui/minimiser.h"
 #include "gui/transform.h"
+#include "gui/select.h"
 #include "gui/position.h"
 #include "gui/zmatrix.h"
 #include "model/model.h"
@@ -121,32 +122,6 @@ GuiQt::GuiQt()
 // Destructor
 GuiQt::~GuiQt()
 {
-// 	if (mainWindow != NULL) delete mainWindow;
-// 	mainWidget = NULL;
-// 	prefsDialog = NULL;
-// 	forcefieldEditorDialog = NULL;
-// 	loadModelDialog = NULL;
-// 	selectFilterDialog = NULL;
-// 	selectPatternDialog = NULL;
-// 	selectVariableDialog = NULL;
-// 	selectElementDialog = NULL;
-// 	commandHelpDialog = NULL;
-// 	filterOptionsDialog = NULL;
-// 	aboutDialog = NULL;
-// 	// ...tool windows
-// 	atomlistWindow = NULL;
-// 	buildWindow = NULL;
-// 	cellDefineWindow = NULL;
-// 	cellTransformWindow = NULL;
-// 	commandWindow = NULL;
-// 	disorderWindow = NULL;
-// 	forcefieldsWindow = NULL;
-// 	glyphsWindow = NULL;
-// 	mdWindow = NULL;
-// 	gridsWindow = NULL;
-// 	minimiserWindow = NULL;
-// 	positionWindow = NULL;
-// 	transformWindow = NULL;
 }
 
 /*
@@ -217,6 +192,7 @@ void GuiQt::run()
 	mdWindow = new AtenMD(mainWindow, Qt::Window|Qt::Tool);
 	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
 	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
+	selectWindow = new AtenSelect(mainWindow, Qt::Window|Qt::Tool);
 	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
 	zmatrixWindow = new AtenZMatrix(mainWindow);	// Modal dialog
 
@@ -235,6 +211,7 @@ void GuiQt::run()
 	QObject::connect(mdWindow, SIGNAL(finished(int)), mdWindow, SLOT(dialogFinished(int)));
 	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
 	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
+	QObject::connect(selectWindow, SIGNAL(finished(int)), selectWindow, SLOT(dialogFinished(int)));
 	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));
 
@@ -272,12 +249,6 @@ void GuiQt::run()
 	selectPatternDialog->setControls();
 	selectVariableDialog->setControls();
 	fragmentWindow->refresh();
-
-	// Construct filter option widgets
-// 	for (int n=0; n<FilterData::nFilterTypes; ++n)
-// 	{
-// 		for (Refitem<Tree,int> *ri = aten.filters((FilterData::FilterType) n); ri != NULL; ri = ri->next) AtenCustomDialog::createWidgets(ri->item);
-// 	}
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();
@@ -344,6 +315,8 @@ void GuiQt::run()
 	// Enter main message processing loop
 	app->exec();
 
+	delete mainWindow;
+
 	msg.exit("GuiQt::run");
 }
 
@@ -361,6 +334,8 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	if (updateAtoms) atomlistWindow->refresh();
 	// Update contents of the glyph list
 	if (updateGlyphs) glyphsWindow->refresh();
+	// Update selection window
+	selectWindow->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{

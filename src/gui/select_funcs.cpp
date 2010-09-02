@@ -40,16 +40,66 @@ AtenSelect::~AtenSelect()
 // Show window
 void AtenSelect::showWindow()
 {
-	//if (shouldRefresh_) refresh();
 	show();
+	refresh();
 }
 
-void AtenSelect::on_AddAtomButton_clicked(bool on)
+void AtenSelect::on_SelectAllButton_clicked(bool on)
 {
-	gui.update();
+	CommandNode::run(Command::SelectAll, "");
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_SelectNoneButton_clicked(bool on)
+{
+	CommandNode::run(Command::SelectNone, "");
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_SelectionExpandButton_clicked(bool on)
+{
+	CommandNode::run(Command::Expand, "");
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_SelectionInvertButton_clicked(bool on)
+{
+	CommandNode::run(Command::Invert, "");
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_SelectButton_clicked(bool on)
+{
+	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectionCombo->currentText()));
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::on_DeselectButton_clicked(bool on)
+{
+	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectionCombo->currentText()));
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenSelect::refresh()
+{
+	// If the select window is not visible, don't do anything
+	if (!gui.selectWindow->isVisible()) return;
+
+	Model *m = aten.currentModelOrFrame();
+
+	// Update selection text details
+	ui.SelectionText->clear();
+
+	// First line, total number of selected atoms.
+	Dnchar text;
+	text.print("Total selected : %i\n", m->nSelected());
+	ui.SelectionText->append(text.get());
+	// Next follows empirica formula of selection
+	m->selectionEmpirical(text, FALSE);
+	ui.SelectionText->append(text.get());
 }
 
 void AtenSelect::dialogFinished(int result)
 {
-	//gui.mainWindow->ui.actionSelectWindow->setChecked(FALSE);
+	gui.mainWindow->ui.actionSelectWindow->setChecked(FALSE);
 }

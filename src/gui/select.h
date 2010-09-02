@@ -37,7 +37,12 @@ class AtenSelect : public QDialog
 	void refresh();
 	void showWindow();
 	private slots:
-	void on_AddAtomButton_clicked(bool on);
+	void on_SelectAllButton_clicked(bool on);
+	void on_SelectNoneButton_clicked(bool on);
+	void on_SelectionExpandButton_clicked(bool on);
+	void on_SelectionInvertButton_clicked(bool on);
+	void on_SelectButton_clicked(bool on);
+	void on_DeselectButton_clicked(bool on);
 	void dialogFinished(int result);
 
 	/*

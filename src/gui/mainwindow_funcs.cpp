@@ -33,6 +33,7 @@
 #include "gui/transform.h"
 #include "gui/position.h"
 #include "gui/atomlist.h"
+#include "gui/select.h"
 #include "gui/forcefields.h"
 #include "gui/fragment.h"
 #include "gui/md.h"
@@ -104,22 +105,23 @@ void AtenForm::closeEvent(QCloseEvent *event)
 		saveSettings();
 		event->accept();
 		// Delete subwindows / dialogs
-		delete gui.prefsDialog;
-		delete gui.forcefieldEditorDialog;
-// 		delete gui.loadModelDialog;
-		delete gui.selectPatternDialog;
-		delete gui.atomlistWindow;
-		delete gui.buildWindow;
-		delete gui.cellDefineWindow;
-		delete gui.cellTransformWindow;
-		delete gui.disorderWindow;
-		delete gui.forcefieldsWindow;
-		delete gui.glyphsWindow;
-		delete gui.gridsWindow;
-		delete gui.mdWindow;
-		delete gui.minimiserWindow;
-		delete gui.positionWindow;
-		delete gui.transformWindow;
+// 		delete gui.prefsDialog;
+// 		delete gui.forcefieldEditorDialog;
+// // 		delete gui.loadModelDialog;
+// 		delete gui.selectPatternDialog;
+// 		delete gui.atomlistWindow;
+// 		delete gui.buildWindow;
+// 		delete gui.cellDefineWindow;
+// 		delete gui.cellTransformWindow;
+// 		delete gui.disorderWindow;
+// 		delete gui.forcefieldsWindow;
+// 		delete gui.glyphsWindow;
+// 		delete gui.gridsWindow;
+// 		delete gui.mdWindow;
+// 		delete gui.minimiserWindow;
+// 		delete gui.positionWindow;
+// 		delete gui.selectWindow;
+// 		delete gui.transformWindow;
 		gui.app->exit(0);
 	}
 	else event->ignore();
@@ -592,6 +594,12 @@ void AtenForm::on_actionTransformWindow_triggered(bool checked)
 {
 	if (checked) gui.transformWindow->showWindow();
 	else gui.transformWindow->hide();
+}
+
+void AtenForm::on_actionSelectWindow_triggered(bool checked)
+{
+	if (checked) gui.selectWindow->showWindow();
+	else gui.selectWindow->hide();
 }
 
 void AtenForm::on_actionPositionWindow_triggered(bool checked)
