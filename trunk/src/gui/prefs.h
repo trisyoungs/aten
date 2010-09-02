@@ -121,6 +121,7 @@ class AtenPrefs : public QDialog
 	void on_NearDepthSpin_valueChanged(int value);
 	void on_LineAliasingCheck_stateChanged(int state);
 	void on_PolygonAliasingCheck_stateChanged(int state);
+	void on_MultiSamplingCheck_stateChanged(int state);
 	// Program
 	void on_CommonElementsEdit_textEdited(const QString &text);
 	void on_DensityUnitCombo_currentIndexChanged(int index);

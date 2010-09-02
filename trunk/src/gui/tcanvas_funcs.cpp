@@ -28,7 +28,7 @@
 bool DONTDRAW = FALSE;
 
 // Constructor
-TCanvas::TCanvas(QWidget *parent) : QGLWidget(parent)
+TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, parent)
 {
 	// Private variables
 	canvas_ = NULL;
@@ -36,6 +36,7 @@ TCanvas::TCanvas(QWidget *parent) : QGLWidget(parent)
 	renderSource_ = NULL;
 
 	setAutoFillBackground(FALSE);
+
 }
 
 // Set the widgetcanvas for the display

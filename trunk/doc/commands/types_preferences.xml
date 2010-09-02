@@ -272,6 +272,12 @@
 						<entry>Current actions of the Left, Middle, Right, and Wheel mouse buttons</entry>
 					</row>
 					<row>
+						<entry>multisampling</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Enables/disables multisampling (hardware aliasing)</entry>
+					</row>
+					<row>
 						<entry>offscreenobjects</entry>
 						<entry>int</entry>
 						<entry>rw</entry>

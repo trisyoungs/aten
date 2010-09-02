@@ -282,6 +282,8 @@ class Prefs
 	bool depthCue_;
 	// Line aliasing flag
 	bool lineAliasing_;
+	// Multisampling flag
+	bool multiSampling_;
 	// Polygon aliasing flag
 	bool polygonAliasing_;
 	// Backface culling flag
@@ -314,6 +316,10 @@ class Prefs
 	void setPolygonAliasing(bool status);
 	// Return status of polygon aliasing
 	bool polygonAliasing() const;
+	// Set status of multisampling
+	void setMultiSampling(bool status);
+	// Return status of multisampling
+	bool multiSampling() const;
 	// Set status of backface culling
 	void setBackfaceCulling(bool status);
 	// Return status of backface culling

@@ -229,7 +229,7 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 	}
 	// Second pass to render selected sphere atoms (transparency)
 	// Enable alpha component (if we weren't aliasing anyway)
-	if ((!prefs.lineAliasing()) && (!prefs.polygonAliasing())) glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	// Make sure lighting is on
 	glEnable(GL_LIGHTING);
 	for (i = sourceModel->atoms(); i != NULL; i = i->next)

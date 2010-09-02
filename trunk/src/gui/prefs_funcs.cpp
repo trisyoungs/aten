@@ -104,6 +104,9 @@ void AtenPrefs::setControls()
 	// ... GL
 	ui.AtomQualitySpin->setValue(prefs.atomDetail());
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
+	ui.LineAliasingCheck->setChecked(prefs.lineAliasing());
+	ui.PolygonAliasingCheck->setChecked(prefs.polygonAliasing());
+	ui.MultiSamplingCheck->setChecked(prefs.multiSampling());
 	ui.NearClipSpin->setValue(prefs.clipNear());
 	ui.FarClipSpin->setValue(prefs.clipFar());
 	ui.NearDepthSpin->setValue(prefs.depthNear());
@@ -396,6 +399,12 @@ void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
 {
 	prefs.setPolygonAliasing(state == Qt::Checked);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
+{
+	prefs.setMultiSampling(state == Qt::Checked);
 	updateAfterViewPrefs();
 }
 

@@ -265,7 +265,9 @@ void Canvas::prepGl()
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
+		glDisable(GL_MULTISAMPLE);
 		// Configure antialiasing
+		if (prefs.multiSampling()) glEnable(GL_MULTISAMPLE);
 		if (prefs.lineAliasing())
 		{
 			glEnable(GL_BLEND);

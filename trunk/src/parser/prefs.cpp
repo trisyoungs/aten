@@ -94,6 +94,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
 	{ "modelupdate",	VTypes::IntegerData,	0, FALSE },
 	{ "mouseaction",	VTypes::StringData,	Prefs::nMouseButtons, FALSE },
+	{ "multisampling",	VTypes::IntegerData,	0, FALSE },
 	{ "offscreenobjects",	VTypes::IntegerData,	0, FALSE },
 	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
 	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
@@ -358,6 +359,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::MouseAction):
 			if (hasArrayIndex) rv.set(Prefs::mouseAction( ptr->mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
 			else rv.setArray( VTypes::StringData, &ptr->mouseActionTexts_, Prefs::nMouseButtons);
+			break;
+		case (PreferencesVariable::MultiSampling):
+			rv.set( ptr->multiSampling() );
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			rv.set( ptr->offScreenObjects() );
@@ -717,6 +721,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
 				else { result = FALSE; break; }
 			}
+			break;
+		case (PreferencesVariable::MultiSampling):
+			ptr->setMultiSampling( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			ptr->setOffScreenObjects( newvalue.asInteger(result) );
