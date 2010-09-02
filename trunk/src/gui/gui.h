@@ -51,6 +51,7 @@ class AtenGrids;
 class AtenMD;
 class AtenMinimiser;
 class AtenPosition;
+class AtenSelect;
 class AtenTransform;
 class AtenZMatrix;
 class Atom;
@@ -160,6 +161,8 @@ class GuiQt
 	AtenMinimiser *minimiserWindow;
 	// Atom positioning window
 	AtenPosition *positionWindow;
+	// Atom selection window
+	AtenSelect *selectWindow;
 	// Atom transformation window
 	AtenTransform *transformWindow;
 	// Zmatrix window

@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 			break;
 	}
 
+	// Delete the main QApplication
 	delete gui.app;
 
 	// Done.

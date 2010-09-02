@@ -35,6 +35,6 @@ CANVAS_FUNCS = actiontext.cpp input.cpp
 
 libgui_a_SOURCES = $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(CANVAS_FUNCS) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(MAINWINDOW_ACTIONS) $(SUBWINDOW_FUNCS)
 
-noinst_HEADERS = about.h actiontext.h atomlist.h build.h celldefine.h celltransform.h command.h commandhelp.h disorder.h ffeditor.h forcefields.h fragment.h geometry.h glyphs.h grids.h gui.h customdialog.h layoutlist.h loadmodel.h mainwindow.h md.h minimiser.h position.h prefs.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h zmatrix.h
+noinst_HEADERS = about.h actiontext.h atomlist.h build.h celldefine.h celltransform.h command.h commandhelp.h disorder.h ffeditor.h forcefields.h fragment.h geometry.h glyphs.h grids.h gui.h customdialog.h layoutlist.h loadmodel.h mainwindow.h md.h minimiser.h position.h prefs.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@

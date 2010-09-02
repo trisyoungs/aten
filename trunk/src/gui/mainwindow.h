@@ -353,6 +353,7 @@ class AtenForm : public QMainWindow
 	void on_actionMinimiserWindow_triggered(bool checked);
  	void on_actionMolecularDynamicsWindow_triggered(bool checked);
 	void on_actionPositionWindow_triggered(bool checked);
+	void on_actionSelectWindow_triggered(bool checked);
 	void on_actionTransformWindow_triggered(bool checked);
  	void on_actionZMatrixEditorWindow_triggered(bool checked);
 

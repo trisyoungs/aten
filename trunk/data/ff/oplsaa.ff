@@ -112,7 +112,7 @@ types
 104	Kr		Kr	""					"Kr"
 105	Xe		Xe	""					"Xe"
 106	CH		C	"-C(n=3),nbonds=3"			"CH UA isopropanol"
-107	CT		C	"-C(n=4)"				"C t-Butanol"
+107	CT		C	"-C(n=3),-O(-H)"			"C t-Butanol"
 # United atom ethers : JCC,11,958 (1990)
 108	OS		O	"-C(nbonds=1,n=2)"			"UA ether O"
 109	C3		C	""	"ETHER CH3 (-O)"

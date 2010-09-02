@@ -22,9 +22,10 @@
 #include "gui/layoutlist.h"
 #include <string.h>
 #include "QtGui/QGridLayout"
+#include "QtGui/QWidget"
 
 /*
-// QGridLayout/int/int class
+// LayoutData class
 */
 
 // Constructor
