@@ -30,22 +30,22 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 
-// Return number of forcefield atom types in model
-int Model::nForcefieldTypes() const
+// Return number of unique (by name) forcefield atom types used over all patterns in the model
+int Model::nUniqueForcefieldTypes() const
 {
-	return forcefieldTypes_.nItems();
+	return uniqueForcefieldTypes_.nItems();
 }
 
 // Return the list of forcefield types in the model
-Refitem <ForcefieldAtom,int> *Model::forcefieldTypes()
+Refitem <ForcefieldAtom,int> *Model::uniqueForcefieldTypes()
 {
-	return forcefieldTypes_.first();
+	return uniqueForcefieldTypes_.first();
 }
 
 // Return the nth forcefield type interaction in the model
-Refitem <ForcefieldAtom,int> *Model::forcefieldType(int i)
+Refitem <ForcefieldAtom,int> *Model::uniqueForcefieldType(int i)
 {
-	return forcefieldTypes_[i];
+	return uniqueForcefieldTypes_[i];
 }
 
 // Return number of forcefield bond interactions in the model

@@ -25,6 +25,9 @@
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
+// Static singleton
+QHBoxLayout AtenCustomDialog::masterLayout_;
+
 // Constructor
 AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 {
@@ -157,7 +160,8 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 	// Create main layout widget for the other widgets
 	layouts.clear();
 	tabwidgets.clear();
-	QWidget *mainwidget = new QWidget(gui.mainWindow);
+	QWidget *mainwidget = new QWidget(NULL);
+	masterLayout_.addWidget(mainwidget);
 	t->setMainWidget(mainwidget);
 	gridl = createGridLayout(mainwidget);
 	mainlayout = layouts.add("_MAIN_", gridl);
@@ -337,7 +341,7 @@ bool AtenCustomDialog::show(QString title, Tree *t)
 	if (result) AtenCustomDialog::storeValues(t);
 	dialog->ui.MainLayout->removeWidget(t->mainWidget());
 	// Need to reparent the widget so it doesn't get deleted along with the dialog
-	t->mainWidget()->setParent(gui.mainWindow);
+	masterLayout_.addWidget(t->mainWidget());
 	delete dialog;
 	msg.exit("AtenCustomDialog::show");
 	return result;

@@ -146,8 +146,8 @@ ForcefieldAtom *Forcefield::findType(int query)
 	return result;
 }
 
-// Search FF for type name
-ForcefieldAtom *Forcefield::findType(const char *query)
+	// Find the named atomtype
+ForcefieldAtom *Forcefield::findType(const char *name)
 {
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
@@ -155,7 +155,7 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 	msg.enter("Forcefield::findType[char]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
-		if ((strcmp(result->name(),query) == 0) || (strcmp(result->equivalent(),query) == 0)) break;
+		if ((strcmp(result->name(),name) == 0) || (strcmp(result->equivalent(),name) == 0)) break;
 	msg.exit("Forcefield::findType[char]");
 	return result;
 }

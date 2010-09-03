@@ -95,6 +95,7 @@ bool Forcefield::load(const char *filename)
 				okay = readData(ffparser.argc(1));
 				break;
 			case (Forcefield::EquivalentsCommand):
+				if (types_.nItems() == 0) msg.print("\nWarning - Equivalent definitions have been provided before any types have been defined.\n\n");
 				okay = readEquivalents();
 				break;
 			case (Forcefield::FunctionCommand):
