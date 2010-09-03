@@ -303,15 +303,15 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::FFTypes):
 			if (!hasArrayIndex)
 			{
-				if (ptr->forcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldTypes()->item, ptr->forcefieldTypes());
+				if (ptr->uniqueForcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldTypes()->item, ptr->uniqueForcefieldTypes());
 				else rv.set(VTypes::ForcefieldAtomData, NULL);
 			}
-			else if (arrayIndex > ptr->nForcefieldTypes())
+			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
 				msg.print("Forcefield types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldType(arrayIndex-1)->item, ptr->forcefieldType(arrayIndex-1));
+			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
 			break;
 		case (ModelVariable::FField):
 			rv.set(VTypes::ForcefieldData, ptr->forcefield());
@@ -381,7 +381,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->nForcefieldTorsions());
 			break;
 		case (ModelVariable::NFFTypes):
-			rv.set(ptr->nForcefieldTypes());
+			rv.set(ptr->nUniqueForcefieldTypes());
 			break;
 		case (ModelVariable::NFrames):
 			rv.set(ptr->nFrames());

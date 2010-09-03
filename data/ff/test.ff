@@ -37,6 +37,7 @@ uatypes
 end
 
 # Both OW1 and OW2 we will consider as equivalent (== OW) in all intramolecular terms
+# Note that these definitions must come *after* the types have been defined - they are retroactively applied
 equivalents
 OW	OW1 OW2
 end

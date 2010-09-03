@@ -94,9 +94,9 @@ class Forcefield
 	// Returns the n'th type in the list
 	ForcefieldAtom *type(int n);
 	// Get the atomtype specified by the ffid number passed
-	ForcefieldAtom *findType(int);
-	// Get the array entry of the atomtype specified by the atomname passed
-	ForcefieldAtom *findType(const char*);
+	ForcefieldAtom *findType(int id);
+	// Find the named atomtype
+	ForcefieldAtom *findType(const char *name);
 	// Returns the ForcefieldAtom with the typeId provided
 	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
 	// Find type define

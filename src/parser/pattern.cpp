@@ -250,15 +250,15 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (PatternVariable::FFTypes):
 			if (!hasArrayIndex)
 			{
-				if (ptr->forcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldTypes()->item, ptr->forcefieldTypes());
+				if (ptr->uniqueForcefieldTypes() != NULL) rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldTypes()->item, ptr->uniqueForcefieldTypes());
 				else rv.set(VTypes::ForcefieldAtomData, NULL);
 			}
-			else if (arrayIndex > ptr->nForcefieldTypes())
+			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
 				msg.print("Forcefield types array index (%i) is out of bounds for pattern '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
-			else rv.set(VTypes::ForcefieldAtomData, ptr->forcefieldType(arrayIndex-1)->item, ptr->forcefieldType(arrayIndex-1));
+			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
 			break;
 		case (PatternVariable::FField):
 			rv.set(VTypes::ForcefieldData, ptr->forcefield());
@@ -300,7 +300,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 			rv.set(ptr->nForcefieldTorsions());
 			break;
 		case (PatternVariable::NFFTypes):
-			rv.set(ptr->nForcefieldTypes());
+			rv.set(ptr->nUniqueForcefieldTypes());
 			break;
 		case (PatternVariable::NMolAtoms):
 			rv.set(ptr->nAtoms());

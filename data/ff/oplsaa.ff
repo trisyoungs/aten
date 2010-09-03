@@ -2,14 +2,19 @@
 # Thanks to W. L. Jorgensen for supplying this data.
 # Original comments from the file are included in "#--" lines
 #
-# NOTE:
+# NOTES:
 # Some atom names have been changed to remove symbols:
 #	'*' -> star   (e.g. 'C*' -> 'Cstar')
 #	'$' -> doll   (e.g. 'C$' -> 'Cdoll')
 #	'=' -> eq     (e.g. 'C=' -> 'Ceq')
 # Force constants for bond and angle functions are multiplied by two from the original
 # parameter set since the harmonic functions in Aten have a pre-factor of 0.5 applied.
-
+#
+# Some types have had their names appended with an underscore followed by their ID or a 
+# single letter. This is to cope with situations where some (or all) the types with the
+# same name have *different* VDW parameters (C3 is a good example). To allow these 
+# types to still utilise the same bonded parameters, an 'equivalents' section is added to
+# map these names back to the original.
 
 # References:
 # W. L. Jorgensen, D. S. Maxwell, and J. Tirado-Rives, J. Am. Chem. Soc. 118, 11225-11236 (1996).
@@ -31,15 +36,15 @@ units kcal
 
 # Specification of atom types in forcefield begins here
 types
-1	H		H	""
+1	H_1		H	""
 2	He		He	""
 3	Li		Li	""
 4	Be		Be	""
 5	B		B	""
-6	C		C	""
+6	C_6		C	""
 7	N		N	""
-8	O		O	""
-9	F		F	""
+8	O_8		O	""
+9	F_a		F	""
 10	Ne		Ne	""
 11	Na		Na	""
 12	Mg		Mg	""
@@ -49,9 +54,9 @@ types
 16	S		S	""
 17	Cl		Cl	""
 18	Ar		Ar	""	
-20	Ne		Ne	""					"2-A probe"
+20	Ne_20		Ne	""					"2-A probe"
 35	Br		Br	""
-53	I		I	""
+53	I_53		I	""
 54	F		F	"-C"					"F     alkyl fluoride (UA)"
 55	C2		C	"-F"					"CH2F  alkyl fluoride (UA)"
 #56
@@ -62,44 +67,44 @@ types
 # United atom acetic acid : JPC,95,3315(1991)
 61	C		C	"-C(nbonds=1),-O,=O"	"Co in CCOOH"
 62	O		O	""	"Oc in CCOOH     UA acid"
-63	OH		O	""	"Oh in CCOOH"
-64	C3		C	""	"CH3 in CH3COOH"
+63	OH_b		O	""	"Oh in CCOOH"
+64	C3_64		C	""	"CH3 in CH3COOH"
 65	HO		H	""	"H  in CCOOH"
 # Types 66 - 77 : JACS,106,6638 (1984)
 66	C4		C	""	"CH4"
-67	C3		C	""	"CH3 (C1) ETHANE"
-68	C3		C	""	"CH3 (C2) N-ALKANES"
-69	C3		C	""	"CH3 (C3) ISOBUTANE"
-70	C3		C	""	"CH3 (C4) NEOPENTANE"
+67	C3_c		C	""	"CH3 (C1) ETHANE"
+68	C3_68		C	""	"CH3 (C2) N-ALKANES"
+69	C3_69		C	""	"CH3 (C3) ISOBUTANE"
+70	C3_70		C	""	"CH3 (C4) NEOPENTANE"
 71	C2		C	""	"CH2 (SP3) ALKANES"
 72	C9		C	""	"CH2 (SP2) 1-ALKENES"
 73	CH		C	""	"CH  (SP3) ISOBUTANE"
 74	C8		C	""	"CH  (SP2) 2-ALKENES"
 75	CD		C	""	"CH (AROM) BENZENOID united atom"
-76	CT		C	""	"C   (SP3) NEOPENTANE"
+76	CT_d		C	""	"C   (SP3) NEOPENTANE"
 77	C7		C	""	"C   (SP2) ISOBUTENE"
 # United atom alcohols : JPC,90,1276 (1986)
 78	OH		O	""	"O   ALCOHOLS"
 79	HO		H	""	"H(O) ALCOHOLS"
-80	C3		C	""	"CH3 in METHANOL"
-81	C2		C	""	"CH2 in ETHANOL"
+80	C3_c		C	""	"CH3 in METHANOL"
+81	C2_81		C	""	"CH2 in ETHANOL"
 # United atom thioalkanes : JPC,90,6379 (1986)
-82	SH		S	""	"S in H2S"
+82	SH_a		S	""	"S in H2S"
 83	SH		S	""	"S in RSH"
 84	S		S	""	"S in RSR"
 85	S		S	""	"S in RSSR"
 86	HS		H	""	"H in H2S"
 87	HS		H	""	"H(S) in RSH"
-88	C3		C	""	"CH3 in CH3SH"
+88	C3_c		C	""	"CH3 in CH3SH"
 89	C2		C	""	"CH2 in CH3CH2SH"
-90	C3		C	""	"CH3 in CH3SR"
-91	C2		C	""	"CH2 in RCH2SR"
-92	C3		C	""	"CH3 in CH3SSR"
-93	C2		C	""	"CH2 in RCH2SSR"
+90	C3_b		C	""	"CH3 in CH3SR"
+91	C2_91		C	""	"CH2 in RCH2SR"
+92	C3_b		C	""	"CH3 in CH3SSR"
+93	C2_93		C	""	"CH2 in RCH2SSR"
 # United-atom methylcyanide : Mol.Phys.,63,547 (1988)
 94	NZ		N	"nbonds=1,-C(nbonds=1,-C(nbonds=1))"	"N in UA CH3CN"
 95	CZ		C	"-&94"					"C in UA CH3CN"
-96	C3		C	"-&95"					"CH3 in UA CH3CN"
+96	C3_c		C	"-&95"					"CH3 in UA CH3CN"
 # TIP5P unpublished
 #97	OW		O	""					"O TIP5P Water"
 #98	HW		H	""					"H TIP5P Water"
@@ -112,11 +117,11 @@ types
 104	Kr		Kr	""					"Kr"
 105	Xe		Xe	""					"Xe"
 106	CH		C	"-C(n=3),nbonds=3"			"CH UA isopropanol"
-107	CT		C	"-C(n=3),-O(-H)"			"C t-Butanol"
+107	CT_d		C	"-C(n=3),-O(-H)"			"C t-Butanol"
 # United atom ethers : JCC,11,958 (1990)
-108	OS		O	"-C(nbonds=1,n=2)"			"UA ether O"
-109	C3		C	""	"ETHER CH3 (-O)"
-110	C2		C	""	"ETHER CH2 (-O)"
+108	OS_a		O	"-C(nbonds=1,n=2)"			"UA ether O"
+109	C3_b		C	""	"ETHER CH3 (-O)"
+110	C2_110		C	""	"ETHER CH2 (-O)"
 # TIP3P (JCP,79,926 (1983)), TIP4P, TIP3F Water Models
 #111	OW		O	""					"O TIP3P Water"
 #112	HW		H	""					"H TIP3P Water"
@@ -128,23 +133,23 @@ types
 118	C2		C	"nbonds=2,-Cl,-Cl"			"CH2 UA Methylenechloride  C-Cl=1.772"
 119	Cl		Cl	"-&118"					"Cl UA Methylenechloride  ClCCl = 111.8"
 # UA chloroform : JPC,94,1683 (1990)
-120	CH		C	"-Cl(n=3),nbonds=3"			"CH UA Chloroform"
-121	Cl		Cl	"-&120"					"Cl UA Chloroform"
+120	CH_120		C	"-Cl(n=3),nbonds=3"			"CH UA Chloroform"
+121	Cl_121		Cl	"-&120"					"Cl UA Chloroform"
 # Carbon tetrachloride
-122	CT		C	"-Cl(n=4)"				"C   CCl4"
-123	Cl		Cl	"-&122"					"Cl  CCl4"
+122	CT_d		C	"-Cl(n=4)"				"C   CCl4"
+123	Cl_123		Cl	"-&122"					"Cl  CCl4"
 # UA DMSO
 124	SZ		S	"-C(nbonds=1,n=2),=O"			"DMSO UA (unpub.)"
-125	OY		O	"-&124"					"DMSO UA (unpub.)"
-126	C3		C	"-&124"					"DMSO UA (unpub.)"
+125	OY_a		O	"-&124"					"DMSO UA (unpub.)"
+126	C3_126		C	"-&124"					"DMSO UA (unpub.)"
 # Ammonia
-127	NT		N	"nbonds=3,nh=3"				"Ammonia"
+127	NT_127		N	"nbonds=3,nh=3"				"Ammonia"
 128	H		H	"-&127"					"Ammonia"
 # UA DMF (N,N-dimethylformamide)
 130	N		N	"-C(=O,nbonds=2),-C(n=2,nh=0)"		"N in DMF - united atom"
 129	O		O	"-C(nbonds=2,-&130)"			"O in DMF - united atom"
-131	C		C	"=O,-&130"				"C in C=O for UA formamide, DMF."
-132	C3		C	"-&130"					"CH3 in HCON(CH3)2 DMF"
+131	C_131		C	"=O,-&130"				"C in C=O for UA formamide, DMF."
+132	C3_b		C	"-&130"					"CH3 in HCON(CH3)2 DMF"
 133	OW		O	"nbonds=2,nh=2"				"O SPC Water"
 134	HW		H	"-&133"					"H SPC Water"
 # Start of OPLS-AA Parameters
@@ -154,10 +159,10 @@ types
 138	CT		C	"-H(n=4)"				"C(H4) AA methane"
 139	CT		C	"-C(n=4)"				"all-atom C: alkanes"
 140	HC		H	"-C"					"all-atom H: alkanes"
-141	CM		C	"=C,-C(n=2)"				"alkene C (R2-C=) all atom"
-142	CM		C	"=C,-C,-H"				"alkene C (RH-C=) all atom"
-143	CM		C	"=C,-H,-H"				"alkene C (H2-C=) all atom"
-144	HC		H	"=C,-H"					"alkene H (H-C=)  all atom"
+141	CM_a		C	"=C,-C(n=2)"				"alkene C (R2-C=) all atom"
+142	CM_a		C	"=C,-C,-H"				"alkene C (RH-C=) all atom"
+143	CM_a		C	"=C,-H,-H"				"alkene C (H2-C=) all atom"
+144	HC_d		H	"=C,-H"					"alkene H (H-C=)  all atom"
 145	CA		C	"ring(size=6,-C(n=6)),-[C,H](noring),aromatic"	"Benzene C - 12 site JACS,112,4768-90"
 146	HA		H	"-C(ring(size=6,-C(n=6),aromatic))"	"Benzene H - 12 site (see 145)"
 147	CA		C	"ring(size=6,-C(n=6)),ring(size=6,=C(n=6))"		"Naphthalene fusion C (C9)"
@@ -167,14 +172,14 @@ types
 151	Cl		Cl	"-C"					"Cl in alkyl chlorides"
 152	CT		C	"-Cl,-H,-H"				"RCH2Cl in alkyl chlorides [R is undefined in NETA]"
 153	HC		H	"-C(-Cl)"				"H in alkyl chlorides"
-154     OH              O       "-H,-C"					"all-atom O: mono alcohols"
-155     HO              H       "-O(-C)"				"all-atom H(O): mono alcohols"
-156     HC              H       "-C(nh=3,-O)"				"all-atom H(C): methanol"
-157     CT              C       "-H(n>=2),-O(-H)"			"all-atom C: CH3 & CH2, alcohols"
-158     CT              C       "-H(n=1),-O(-H)"			"all-atom C: CH, alcohols"
-159     CT              C       "-O(-H)"				"all-atom C: C, alcohols"
+154	OH_a		O	"-H,-C"					"all-atom O: mono alcohols"
+155	HO		H	"-O(-C)"				"all-atom H(O): mono alcohols"
+156	HC              H       "-C(nh=3,-O)"				"all-atom H(C): methanol"
+157	CT              C       "-H(n>=2),-O(-H)"			"all-atom C: CH3 & CH2, alcohols"
+158	CT              C       "-H(n=1),-O(-H)"			"all-atom C: CH, alcohols"
+159	CT              C       "-O(-H)"				"all-atom C: C, alcohols"
 160	CT		C	"-H,-H,-O(-H),-C(-F(n=3))"		"CH2 in trifluoroethanol"
-161	CT		C	"-&160"					"CF3 in trifluoroethanol"
+161	CT_a		C	"-&160"					"CF3 in trifluoroethanol"
 162	OH		O	"-&160"					"OH in trifluoroethanol"
 163	HO		H	"-O(-&160)"				"HO in trifluoroethanol"
 164	F		F	"-C(-&160)"				"F in trifluoroethanol"
@@ -214,7 +219,7 @@ types
 198	CO		C	"-&197"					"C(C2O2): hemiacetal OCRROH"
 199	CA		C	"nh=3,-O(-C(ring(size=6,-C(n=6))))"	"C(OMe) in anisole"
 200	SH		S	"-C,-H"					"all-atom S: thiols (mod 11/99)"
-201	SH		S	"-H,-H"					"S in H2S  [JPC,90,6379 (1986)]"
+201	SH_a		S	"-H,-H"					"S in H2S  [JPC,90,6379 (1986)]"
 202	S		S	"-C,-C"					"all-atom S: sulfides"
 203	S		S	"-C,-S(-C(n=2))"			"all-atom S: disulfides"
 204	HS		H	"-&200"					"all-atom H(S): thiols  (mod 11/99)"
@@ -240,7 +245,7 @@ types
 224	CT		C	"-H,-C,-C,-N(nh=2)"			"C in R2CHNH2 and Ala CA"
 225	CT		C	"-C,-C,-C,-N(nh=2)"			"C in R3CNH2 and Aib CA"
 226	Cl		Cl	"-C(-H,=C)"				"chloroalkene Cl (ClH-Ceq) - see also 398"
-227	CM		C	"-Cl,-H,=C"				"chloroalkene C (ClH-Ceq)"
+227	CM_a		C	"-Cl,-H,=C"				"chloroalkene C (ClH-Ceq)"
 228	CA		C	"nh=3,-S(-C(ring(size=6,-C(n=6))))"	"C(SMe)  thioanisole"
 229	CT		C	""	"C on N: secondary N-CHR2 amide" XXX
 230	CT		C	""	"C on N: secondary N-CR3 amide"
@@ -269,7 +274,7 @@ types
 252	C		C	"=O,-&251"				"C(=O) in imide"
 253	O		O	"=&252"					"O in imide"
 254	H		H	"-&251"					"H(N) in imide"
-255	HC		H	"-&252"					"H(C) in formimide"
+255	HC_255		H	"-&252"					"H(C) in formimide"
 256	CT		C	"-&252,nh=3"				"C in CH3 imide"
 257	CT		C	"-&252,nh=2"				"C in RCH2 imide"
 258	CT		C	"-&252,nh=1"				"C in R2CH imide"
@@ -282,21 +287,21 @@ types
 265	N		N	"-C(ring(size=6,-C(n=6),aromatic)),-C(=O,-C),-H"	"N: N-phenylacetamide"
 266	CA		C	"-&265,ring"				"ipso C in N-phenylacetamide"
 267	C		C	"-C,=O,-O(-H)"				"Co in CCOOH carboxylic acid"
-268	OH		O	"-&267,-H"				"Oh in CCOOH R in RCOOH is"
+268	OH_b		O	"-&267,-H"				"Oh in CCOOH R in RCOOH is"
 269	O		O	"=&267"					"Oc in CCOOH neutral; use 135-140"
 270	HO		H	"-&268"					"H  in CCOOH"
 271	C		C	"-C,-O(nbonds=1,n=2)"			"C in COO- carboxylate"
-272	O2		O	"-&271"					"O: O in COO- carboxylate"
+272	O2_a		O	"-&271"					"O: O in COO- carboxylate"
 273	CT		C	"-&271,-H(n=3)"				"C: CH3, carboxylate ion"
 274	CT		C	"-&271,-H(n=2)"				"C: CH2, carboxylate ion"
 275	CT		C	"-&271,-H"				"C: CH,  carboxylate ion"
 276	CT		C	"-&271"					"C: C,   carboxylate ion"
 277	C		C	"=O,-C,-[H,Cl,Br,I,F]"			"AA C: aldehyde & acyl halide - for C-alpha use 135-139"
 278	O		O	"=&277"					"AA O: aldehyde & acyl halide"
-279	HC		H	"-&277 | -C(=O,-N(nh=2)) | -&465"	"AA H-alpha in aldehyde & formamide (and ester for H-C(=O)-R? (&465))"
+279	HC_b		H	"-&277 | -C(=O,-N(nh=2)) | -&465"	"AA H-alpha in aldehyde & formamide (and ester for H-C(=O)-R? (&465))"
 280	C		C	"=O,-C,-C"				"AA C: ketone - for C-alpha use 135-139"
 281	O		O	"=&280"					"AA O: ketone"
-282	HC		H	"-C(-[&277,&280,&465])"			"AA H on C-alpha in ketone & aldehyde & acyl halide (& ester)"
+282	HC_b		H	"-C(-[&277,&280,&465])"			"AA H on C-alpha in ketone & aldehyde & acyl halide (& ester)"
 283	CT		C	""	"AA C-alpha on C-terminal ALA"
 284	CT		C	""	"AA C-alpha on C-terminal GLY"
 285	CT		C	""	"AA C-alpha on C-terminal PRO"
@@ -316,7 +321,7 @@ types
 299	CT		C	""	"AA C-alpha in Ala zwitterion"
 300	N2		N	""	"N: guanidinium NH2"
 301	H3		H	""	"H: guanidinium NH2"
-302	CA		C	""	"C: guanidinium C+"
+302	CA_b		C	""	"C: guanidinium C+"
 303	N2		N	""	"N: guanidinium NHR"
 304	H3		H	""	"H: guanidinium NHR"
 305	CT		C	""	"C: CH3, methylguanidinium"
@@ -326,13 +331,13 @@ types
 309	N3		N	"-C(n=2),-H(n=2)"			"N (R2NH2+)"
 310	H3		H	"-&309"					"H (R2NH2+)"
 311	NC		N	""	"DAP N1   Diamino-"
-312	CA		C	""	"DAP C2   pyridine"
+312	CA_a		C	""	"DAP C2   pyridine"
 313	N2		N	""	"DAP N-amine"
 314	H		H	""	"DAP H-amine"
-315	CA		C	""	"DAP C3"
-316	HA		H	""	"DAP H3"
-317	CA		C	""	"DAP C4"
-318	HA		H	""	"DAP H4"
+315	CA_a		C	""	"DAP C3"
+316	HA_a		H	""	"DAP H3"
+317	CA_a		C	""	"DAP C4"
+318	HA_a		H	""	"DAP H4"
 319	NA		N	"ring(size=6,-C(n=4),-N,-N),~C,~C,-H"	"Uracil N1 -use 938 for nucleoside"
 320	C		C	"ring(size=6,-C(n=4),-N,-N),~N(n=2),=O"	"Uracil C2"
 321	NA		N	"ring(size=6,-C(n=4),-N,-N),~C(=O),~C(=O),-H"	"Uracil N3"
@@ -343,14 +348,14 @@ types
 326	O		O	"=&320"		"Uracil O-C2"
 327	H		H	"-&321"		"Uracil H-N3"
 328	O		O	"=&322"		"Uracil O-C4"
-329	HC		H	"-&323"		"Uracil H-C5"
-330	HC		H	"-&324"		"Uracil H-C6  Thymine"
-331	CT		C	"-&323,noring"	"Thymine C-C5"
-332	HC		H	"-&331"		"Thymine H-CC5"
+329	HC_a		H	"-&323"		"Uracil H-C5"
+330	HC_a		H	"-&324"		"Uracil H-C6  Thymine"
+331	CT_c		C	"-&323,noring"	"Thymine C-C5"
+332	HC_a		H	"-&331"		"Thymine H-CC5"
 333	NA		N	""	"Cytosine N1 -use 937 for nucleoside"
 334	C		C	""	"Cytosine C2"
 335	NC		N	""	"Cytosine N3"
-336	CA		C	""	"Cytosine C4     Nucleotide base"
+336	CA_a		C	""	"Cytosine C4     Nucleotide base"
 337	CM		C	""	"Cytosine C5     parameters:"
 338	CM		C	""	"Cytosine C6     JACS,113,2810(1991)"
 339	H		H	""	"Cytosine H-N1"
@@ -358,14 +363,14 @@ types
 341	N2		N	""	"Cytosine N-C4"
 342	H		H	""	"Cytosine H-NC4/N3"
 343	H		H	""	"Cytosine H-NC4/C5"
-344	HC		H	""	"Cytosine H-C5"
+344	HC_a		H	""	"Cytosine H-C5"
 345	H4		H	""	"Cytosine H-C6"
 346	NC		N	""	"Adenine N1"
-347	CQ		C	""	"Adenine C2"
+347	CQ_347		C	""	"Adenine C2"
 348	NC		N	""	"Adenine N3"
-349	CB		C	""	"Adenine C4"
-350	CB		C	""	"Adenine C5"
-351	CA		C	""	"Adenine C6"
+349	CB_a		C	""	"Adenine C4"
+350	CB_a		C	""	"Adenine C5"
+351	CA_a		C	""	"Adenine C6"
 352	NB		N	""	"Adenine N7 Guanine"
 353	CK		C	""	"Adenine C8 Guanine"
 354	NA		N	""	"Adenine N9 Guanine -use 936 for"
@@ -376,25 +381,25 @@ types
 359	H5		H	""	"Adenine H-C8 Guanine"
 360	H		H	""	"Adenine H-N9 Guanine"
 361	NA		N	""	"Guanine N1"
-362	CA		C	""	"Guanine C2"
+362	CA_a		C	""	"Guanine C2"
 363	NC		N	""	"Guanine N3"
-364	CB		C	""	"Guanine C4"
-365	CB		C	""	"Guanine C5"
+364	CB_a		C	""	"Guanine C4"
+365	CB_a		C	""	"Guanine C5"
 366	C		C	""	"Guanine C6"
 367	H		H	""	"Guanine H-N1"
 368	N2		N	""	"Guanine N-C2"
 369	H		H	""	"Guanine H-NC2"
 370	O		O	""	"Guanine O-C6"
-371	CT		C	""	"9-Me A or G C-N9"
-372	HC		H	""	"9-Me A or G H-CN9"
-373	CT		C	""	"1-Me U or T C-N1"
-374	HC		H	""	"1-Me U or T H-CN1"
-375	CT		C	""	"1-Me Cytosine C-N1"
-376	HC		H	""	"1-Me Cytosine H-CN1"
+371	CT_c		C	""	"9-Me A or G C-N9"
+372	HC_a		H	""	"9-Me A or G H-CN9"
+373	CT_c		C	""	"1-Me U or T C-N1"
+374	HC_a		H	""	"1-Me U or T H-CN1"
+375	CT_c		C	""	"1-Me Cytosine C-N1"
+376	HC_a		H	""	"1-Me Cytosine H-CN1"
 377	NA		N	""	"CytH+ N1 Use AT eq N* for nucleoside."
 378	C		C	""	"CytH+ C2"
 379	NA		N	""	"CytH+ N3    Protonated cytosine."
-380	CA		C	""	"CytH+ C4"
+380	CA_a		C	""	"CytH+ C4"
 381	CM		C	""	"CytH+ C5"
 382	CM		C	""	"CytH+ C6"
 383	H		H	""	"CytH+ H-N1"
@@ -403,56 +408,56 @@ types
 386	N2		N	""	"CytH+ N-C4"
 387	H		H	""	"CytH+ H-NC4/N3"
 388	H		H	""	"CytH+ H-NC4/C5"
-389	HA		H	""	"CytH+ H-C5"
+389	HA_a		H	""	"CytH+ H-C5"
 390	H4		H	""	"CytH+ H-C6"
-391	CT		C	""	"1-Me CytH+ C-N1"
-392	HC		H	""	"1-Me CytH+ H-CN1"
+391	CT_c		C	""	"1-Me CytH+ C-N1"
+392	HC_a		H	""	"1-Me CytH+ H-CN1"
 # UA dimethylphosphate anion
 393	P		P	"=O,-O(n=3)"				"P: UA DMP- (see 440 for AA)"
-394	O2		O	"=&393"					"O=: UA DMP- (see 440 for AA)"
-395	OS		O	"-&393,-C"				"O-: UA DMP- (see 440 for AA)"
-396	CT		C	"-&395"					"C(H3): UA DMP- (see 440 for AA)"
+394	O2_a		O	"=&393"					"O=: UA DMP- (see 440 for AA)"
+395	OS_a		O	"-&393,-C"				"O-: UA DMP- (see 440 for AA)"
+396	CT_396		C	"-&395"					"C(H3): UA DMP- (see 440 for AA)"
 397	CM		C	""	"F3C-C5 thymine; trifluorothymine" XXX
 398	Cl		Cl	"-C(-Cl,-Cl,=C)"			"chloroalkene Cl (Cl2-C=) - tentative"
-399	CM		C	"-Cl,-Cl,=C"				"chloroalkene C (Cl2-C=) - tentative"
+399	CM_a		C	"-Cl,-Cl,=C"				"chloroalkene C (Cl2-C=) - tentative"
 # Anions: F-,Cl- JACS 106, 903 (1984), Br- JACS 107, 7793(1985),
 #         I- JACS 120, 5104(1998), Li+,Na+ JACS 106, 903 (1984), La+ -> Ba2+ JPC 94, 8021, (90)
-400	F		F	"unbound"				"F-"
-401	Cl		Cl	"unbound"				"Cl-"
-402	Br		Br	"unbound"				"Br"
-403	I		I	"unbound"				"I-"
-404	Li		Li	"unbound"				"Li+"
-405	Na		Na	"unbound"				"Na+"
-406	Li		Li	"unbound"				"Li+"
-407	Na		Na	"unbound"				"Na+"
+400	F_400		F	"unbound"				"F-"
+401	Cl_401		Cl	"unbound"				"Cl-"
+402	Br_402		Br	"unbound"				"Br"
+403	I_403		I	"unbound"				"I-"
+404	Li_404		Li	"unbound"				"Li+"
+405	Na_405		Na	"unbound"				"Na+"
+406	Li_406		Li	"unbound"				"Li+"
+407	Na_407		Na	"unbound"				"Na+"
 408	K		K	"unbound"				"K+"
 409	Rb		Rb	"unbound"				"Rb+"
 410	Cs		Cs	"unbound"				"Cs+"
-411	Mg		Mg	"unbound"				"Mg2+"
-412	Ca		Ca	"unbound"				"Ca2+"
+411	Mg_411		Mg	"unbound"				"Mg2+"
+412	Ca_412		Ca	"unbound"				"Ca2+"
 413	Sr		Sr	"unbound"				"Sr2+"
-414	Ba		Ba	"unbound"				"Ba2+"
-415	C3		C	"-S(nbonds=1),-H(n=3)"			"C in CH3S- thiolate"
-416	HC		H	"-&415"					"H in CH3S- thiolate"
-417	SH		S	"-&415"					"S in CH3S- thiolate"
-418	C3		C	"-O(nbonds=1),-H(n=3)"			"C in CH3O- alkoxide"
-419	HC		H	"-&418"					"H in CH3O- alkoxide"
-420	OH		O	"-&419"					"O in CH3O- alkoxide"
+414	Ba_414		Ba	"unbound"				"Ba2+"
+415	C3_a		C	"-S(nbonds=1),-H(n=3)"			"C in CH3S- thiolate"
+416	HC_a		H	"-&415"					"H in CH3S- thiolate"
+417	SH_417		S	"-&415"					"S in CH3S- thiolate"
+418	C3_a		C	"-O(nbonds=1),-H(n=3)"			"C in CH3O- alkoxide"
+419	HC_a		H	"-&418"					"H in CH3O- alkoxide"
+420	OH_420		O	"-&419"					"O in CH3O- alkoxide"
 # Organic anions: JACS, 111, 4190 (1989)
-421	CT		C	"nh=2,-C(-N(nbonds=1))"		"C1 in CH2CN-"
-422	HC		H	"-&421"					"H in CH2CN-"
+421	CT_e		C	"nh=2,-C(-N(nbonds=1))"		"C1 in CH2CN-"
+422	HC_a		H	"-&421"					"H in CH2CN-"
 423	CZ		C	"-&421,-N(nbonds=1)"			"C2 in CH2CN-"
-424	NZ		N	"-&421"					"N in CH2CN-"
-425	C3		C	"nh=3,-N(-H,nbonds=2)"			"C in CH3NH-"
-426	HC		H	"-&425"					"HC in CH3NH-"
-427	N3		N	"-&425"					"N in CH3NH-"
-428	H		H	"-&427"					"HN in CH3NH-"
-429	C3		C	"nh=2,nbonds=3,-C(nh=3)"		"C2 in  CH3CH2- RCH2-"
-430	HC		H	"-&429"					"H  in  CH3CH2-"
-431	CT		C	"-&429"					"C1 in  CH3CH2-"
-432	HC		H	"-&431"					"H1 in  CH3CH2-"
+424	NZ_424		N	"-&421"					"N in CH2CN-"
+425	C3_a		C	"nh=3,-N(-H,nbonds=2)"			"C in CH3NH-"
+426	HC_a		H	"-&425"					"HC in CH3NH-"
+427	N3_427		N	"-&425"					"N in CH3NH-"
+428	H_428		H	"-&427"					"HN in CH3NH-"
+429	C3_a		C	"nh=2,nbonds=3,-C(nh=3)"		"C2 in  CH3CH2- RCH2-"
+430	HC_a		H	"-&429"					"H  in  CH3CH2-"
+431	CT_e		C	"-&429"					"C1 in  CH3CH2-"
+432	HC_a		H	"-&431"					"H1 in  CH3CH2-"
 433	LP		He	""					"LP in  CH3CH2-"
-434	OH		O	"nbonds=1,-H"				"O in OH- [JACS 108, 2517 (86)]"
+434	OH_434		O	"nbonds=1,-H"				"O in OH- [JACS 108, 2517 (86)]"
 435	HO		H	"-&434"					"H in OH- [JACS 108, 2517 (86)]"
 436	U		U	"-O(n=2)"				"U in UO2+ [J Mol Struct 366, 55 (96)]"
 437	OU		O	"-&436"					"O in UO2+ [J Mol Struct 366, 55 (96)]"
@@ -487,13 +492,13 @@ types
 464	CT		C	""	"C6(R2) of barbiturate"
 465	C		C	"=O,-O,-[C,H]"				"AA C:   esters   - for R on C=O, use ketone params 280-282"
 466	O		O	"=&465"					"AA =O:  esters"
-467	OS		O	"-&465,-C"				"AA -OR: ester"
+467	OS_a		O	"-&465,-C"				"AA -OR: ester"
 468	CT		C	"nh=3,-&467"				"methoxy C in esters - see also 490-492"
-469	HC		H	"-C(nbonds=4,-&467)"			"alkoxy H's in esters"
+469	HC_b		H	"-C(nbonds=4,-&467)"			"alkoxy H's in esters"
 470	C		C	"-C(ring(size=6,-C(n=6),aromatic)),=O,-O(-H)"	"Co in benzoic acid"
 471	C		C	"(-C(ring(size=6,-C(n=6),aromatic)),=O,-O(-C)) | (=O,-C(noring),-O(-C(ring(size=6,-C(n=6),aromatic))))"	"Co in methyl benzoate, aryl ester"
 472	CA		C	"ring(size=6,-C(n=6),aromatic),-O(-C(noring,=O))"	"Cipso phenyl ester"
-473	OS		O	"-&471"					"AA -OR phenyl ester"
+473	OS_a		O	"-&471"					"AA -OR phenyl ester"
 474	SY		S	"=O,=O,-C,-N(-[C,H](n=2))"		"S in sulfonamide"
 475	OY		O	"=&474"					"O in sulfonamide"
 476	CT		C	"nh=3,-&474"				"CH3 attached to S of sulfonamide"
@@ -517,7 +522,7 @@ types
 494	OY		O	"=&493"					"O in sulfone"
 495	SZ		S	""	"alkyl aryl sulfoxide - all atom"
 496	SZ		S	"=O,-C,-C"				"sulfoxide - all atom"
-497	OY		O	"=&496"					"sulfoxide - all atom"
+497	OY_a		O	"=&496"					"sulfoxide - all atom"
 498	CT		C	"nh=3,-&496"				"CH3 all-atom C: sulfoxide"
 499	CT		C	"nh=2,-&496"				"CH2 all-atom C: sulfoxide"
 500	Cstar		C	""	"CG in TRP"
@@ -537,8 +542,8 @@ types
 514	CW		C	""	"CD1 in TRP"
 515	CT		C	""	"all-atom C: CH, isopropyl benzene"
 516	CT		C	""	"all-atom C: C,  t-butyl benzene"
-517	CM		C	"-H,-O(nh=0,-C)"		"vinyl ether HCOR"
-518	CM		C	"-C,-O(nh=0,-C)"		"vinyl ether RCOR"
+517	CM_a		C	"-H,-O(nh=0,-C)"		"vinyl ether HCOR"
+518	CM_a		C	"-C,-O(nh=0,-C)"		"vinyl ether RCOR"
 519	C!		C	""	"biphenyl C1"
 520	NC		N	""	"N   in pyridine 6-31G*"
 521	CA		C	""	"C1  in pyridine CHELPG"
@@ -588,7 +593,7 @@ types
 565	HA		H	""	"H5  in imidazole"
 566	OS		O	""	"O   in furan"
 567	CW		C	""	"C2  in furan"
-568	CS		C	""	"C3  in furan"
+568	CS_a		C	""	"C3  in furan"
 569	HA		H	""	"H2  in furan"
 570	HA		H	""	"H3  in furan"
 571	OS		O	""	"O   in oxazole"
@@ -647,7 +652,7 @@ types
 624	CB		C	""	"C5  in purine"
 625	CA		C	""	"C6  in purine"
 626	NB		N	""	"N7  in purine"
-627	CK		C	""	"C8  in purine"
+627	CK_627		C	""	"C8  in purine"
 628	NA		N	""	"N9  in purine"
 629	HA		H	""	"H2  in purine"
 630	HA		H	""	"H6  in purine"
@@ -732,9 +737,9 @@ types
 706	Gd		Gd	""					"Gd+3"
 707	Yb		Yb	""					"Yb+3"
 # Cl...CH3...Cl- transition state: JACS 117, 2024 (1995)
-708	CM		C	""	"C: Cl..CH3..Cl- TS"
+708	CM_a		C	""	"C: Cl..CH3..Cl- TS"
 709	Cl		Cl	""	"Cl: Cl..CH3..Cl- TS"
-710	HC		H	""	"H: Cl..CH3..Cl- TS"
+710	HC_d		H	""	"H: Cl..CH3..Cl- TS"
 # Cyclopropane
 711	CY		C	"ring(size=3,-C(n=3)),nh=2"		"C(H2): cyclopropane"
 712	CY		C	"ring(size=3,-C(n=3)),nh=1,-C"		"C(HR): cyclopropane"
@@ -744,16 +749,16 @@ types
 716	CA		C	""					"C: C5H5  cyclopentadienyl radical" XXX
 717	HA		H	""					"H: C5H5  cyclopentadienyl radical" XXX
 718	CA		C	"-F,ring(size=6,-C(n=6))"		"C(F) fluorobenzene"
-719	F		F	"-&718"					"F fluorobenzene"
+719	F_b		F	"-&718"					"F fluorobenzene"
 720	CA		C	"-F,ring(size=6,-C(-F,n=6))"		"C(F) hexafluorobenzene"
-721	F		F	"-&720"					"F hexafluorobenzene"
+721	F_b		F	"-&720"					"F hexafluorobenzene"
 722	Br		Br	"-C(nh=0)"				"Br: UA alkyl bromide"
 723	C2		C	"-&722"					"C(H2): UA alkyl bromide"
 724	CA		C	"ring(size=6,-C(n=6)),-C(-F(n=3))"	"C(CF3): trifluoromethylbenzene"
-725	CT		C	"-&724,-F(n=3)"				"C(F3): trifluoromethylbenzene"
+725	CT_a		C	"-&724,-F(n=3)"				"C(F3): trifluoromethylbenzene"
 726	F		F	"-&725"					"F: trifluoromethylbenzene"
 727	CA		C	"ring(size=6,-C(n=6)),-F"		"C(F): difluorobenzenes"
-728	F		F	"-&727"					"F: difluorobenzenes"
+728	F_b		F	"-&727"					"F: difluorobenzenes"
 729	CA		C	"ring(size=6,-C(n=6)),-Br"		"C(Br): bromobenzene"
 730	Br		Br	"-&729"					"Br: bromobenzene"
 731	CA		C	"ring(size=6,-C(n=6)),-I"		"C(I): iodobenzene - tentative"
@@ -767,7 +772,7 @@ types
 739	CA		C	""	"CZ of Benzamidine"
 740	HA		H	""	"HD of Benzamidine"
 741	HA		H	""	"HE of Benzamidine"
-742	CA		C	""	"C+ of Benzamidine"
+742	CA_b		C	""	"C+ of Benzamidine"
 743	N2		N	""	"N-H2 of Benzamidine"
 744	H		H	""	"H1-N of Benzamidine"
 745	H		H	""	"H2-N of Benzamidine"
@@ -775,21 +780,21 @@ types
 747	CT		C	""	"CH3 in neutral MeGDN"
 748	CT		C	""	"CD of neutral ARG"
 749	NY		N	""	"NE  ""
-750	NZ		N	""	"N1  "        " (HN=CZ)"
+750	NZ_750		N	""	"N1  "        " (HN=CZ)"
 751	NY		N	""	"N2  "        " (H2N-CZ)"
-752	CA		C	""	"CZ  "        ""
+752	CA_b		C	""	"CZ  "        ""
 # Nitriles
 753	NZ		N	"~C(bond=triple,-C)"			"N: AA RCN"
-754	CZ		C	"~&753(bond=triple)"			"C: AA RCN"
+754	CZ_754		C	"~&753(bond=triple)"			"C: AA RCN"
 755	CT		C	"nh=3,-&754"				"C(H3): AA CH3CN"
 756	CT		C	"nh=2,-&754"				"C(RH2): AA RCH2CN"
-757	CT		C	"nh=1,-&754"				"C(R2H): AA R2CHCN"
-758	CT		C	"nh=0,-&754"				"C(R3): AA R3CCN"
-759	HC		H	"-C(-&754)"				"HC-CT-CN alpha-H in nitriles"
+757	CT_b		C	"nh=1,-&754"				"C(R2H): AA R2CHCN"
+758	CT_b		C	"nh=0,-&754"				"C(R3): AA R3CCN"
+759	HC_c		H	"-C(-&754)"				"HC-CT-CN alpha-H in nitriles"
 760	NO		N	"-C,-O,-O"				"N: nitro R-NO2"
 761	ON		O	"-&760"					"O: nitro R-NO2"
 762	CT		C	"nh=3,-&760"				"CT-NO2 nitromethane"
-763	HC		H	"-C(-&760)"				"HC-CT-NO2 alpha-H in nitroalkanes"
+763	HC_c		H	"-C(-&760)"				"HC-CT-NO2 alpha-H in nitroalkanes"
 764	CT		C	"nh=2,-C,-&760"				"CT-NO2 nitroethane"
 765	CT		C	"-H,-C,-C,-&760"			"CT-NO2 2-nitropropane"
 766	CT		C	"-C(n=3),-&760"				"CT-NO2 2-methyl-2-nitropropane"
@@ -800,13 +805,13 @@ types
 # Propylene carbonate
 771	O		O	"=C(ring(size=5,-C(n=3),-O,-O),-O,-O)"	"propylene carbonate O"
 772	C		C	"-&771"					"C=O Lucienne's parameters"
-773	OS		O	"ring(size=5,-C(n=3),-O,-O),-C(=O)"	"OS: propylene carbonate"
+773	OS_a		O	"ring(size=5,-C(n=3),-O,-O),-C(=O)"	"OS: propylene carbonate"
 774	CT		C	"-&773,-C(-H,-C(nh=3))"			"C in CH2: propylene carbonate"
 775	CT		C	"-&774,-C(-H,-H)"			"C in CH: propylene carbonate"
 776	CT		C	"nh=3,-&775"				"C in CH3: propylene carbonate"
-777	HC		H	"-&774"					"H in CH2: propylene carbonate"
-778	HC		H	"-&775"					"H in CH: propylene carbonate"
-779	HC		H	"-&776"					"H in CH3: propylene carbonate"
+777	HC_b		H	"-&774"					"H in CH2: propylene carbonate"
+778	HC_b		H	"-&775"					"H in CH: propylene carbonate"
+779	HC_b		H	"-&776"					"H in CH3: propylene carbonate"
 #780
 # Phosphonium ions
 781	P+		P	""	"phosphonium R4P+"
@@ -814,13 +819,13 @@ types
 783	CT		C	""	"RCH2PR3+"
 784	HC		H	""	"H in CH3PR3+"
 785	P		P	""	"P in PF6-"
-786	F		F	""	"F in PF6-"
+786	F_786		F	""	"F in PF6-"
 # Nitrate anion
-787	N		N	""	"N in NO3- F. van Veggel"
-788	O		O	""	"O in NO3- r(NO) eq"
+787	N_787		N	""	"N in NO3- F. van Veggel"
+788	O_788		O	""	"O in NO3- r(NO) eq"
 #789
 790	CA		C	""	"C(CF3) trifluoromethylbenzene test"
-791	CT		C	""	"CF3           test"
+791	CT_a		C	""	"CF3           test"
 792	F		F	""	"F             test"
 #793
 #794
@@ -841,7 +846,7 @@ types
 908	CT		C	"nh=2,-C,-&902"		"CH2(N) tertiary  aliphatic amines, H(C) type 911"
 909	H		H	"-&900"			"H(N)   primary   amines"
 910	H		H	"-&901"			"H(N)   secondary amines"
-911	HC		H	"-[&903,&904,&905,&906,&907,&908]"	"H(C) for Carbons directly bonded to N in amines, diamine"
+911	HC_c		H	"-[&903,&904,&905,&906,&907,&908]"	"H(C) for Carbons directly bonded to N in amines, diamine"
 912	CT		C	"-&900,-H,-C(nh=3,n=2)"	"CH     primary isopropyl amine"
 913	CT		C	"-&900,-C(nh=3,n=3)"	"C      primary t-butyl amine"
 914	CT		C	"-&901,-H,-C(nh=3,n=2)"	"CH     secondary isopropyl amine"
@@ -855,21 +860,21 @@ types
 922	CT		C	""	"C in CH2OR  - benzyl ethers; C(CH2OR) is #221"
 923	CT		C	""	"C in CH2SR  - benzyl sulfides; C(CH2SR) is #221"
 924	CT		C	""	"C in CH2NHR - benzyl amines; C(CH2NH2) is #221"
-925	CZ		C	""	"alkyne RC%CH terminal C   acetylene"
-926	HC		H	""	"alkyne RC%CH terminal H"
-927	CZ		C	""	"alkyne RC%CH C2 R-with 2 or 3 H"
-928	CZ		C	""	"alkyne RC%CH C2 R-with 1 H"
-929	CZ		C	""	"alkyne RC%CH C2 R-with no H or ReqPhenyl"
-930	HC		H	""	"alkyne RC%CH H on C3 (for C3 use 135-139)"
+925	CZ_925		C	""	"alkyne RC%CH terminal C   acetylene"
+926	HC_b		H	""	"alkyne RC%CH terminal H"
+927	CZ_a		C	""	"alkyne RC%CH C2 R-with 2 or 3 H"
+928	CZ_928		C	""	"alkyne RC%CH C2 R-with 1 H"
+929	CZ_929		C	""	"alkyne RC%CH C2 R-with no H or ReqPhenyl"
+930	HC_c		H	""	"alkyne RC%CH H on C3 (for C3 use 135-139)"
 931	CO		C	""	"C1' of (ade, gua) by Deping"
 932	CO		C	""	"C1' of cyt by Deping"
 933	CO		C	""	"C1' of (ura, thy) by Deping"
-934	OH		O	""	"O5' by Deping"
+934	OH_a		O	""	"O5' by Deping"
 935	HO		H	""	"H(3') OH by Deping"
 936	Nstar		N	""	"Adenine N9 Guanine nucleosides"
 937	Nstar		N	""	"Cytosine N1 nucleoside"
 938	Nstar		N	""	"Uracil N1 Thymine nucleosides"
-939	CZ		C	""	"alkyne RC%CR - only did MC for MeCCMe"
+939	CZ_a		C	""	"alkyne RC%CR - only did MC for MeCCMe"
 940	N3		N	""	"N (R3NH+)"
 941	H3		H	""	"H (R3NH+)"
 942	CT		C	""	"C in  CH3NHR2+"
@@ -877,14 +882,14 @@ types
 944	CT		C	""	"C in  R2CHNHR2+"
 945	CT		C	""	"C in  R3CNHR2+"
 946	CW		C	""	"C2  in 2-phenylfuran"
-947	CS		C	""	"C3  in 3-phenylfuran"
+947	CS_a		C	""	"C3  in 3-phenylfuran"
 948	C!		C	""	"C2' in 2-phenylfuran"
 949	C!		C	""	"C3' in 2-phenylfuran"
 950	HC		H	""	"glycine zwit. 6-31G* CHELPG charges"
 951	CT		C	""	"glycine zwit. 6-31G* CHELPG charges"
 952	C		C	""	"glycine zwit. 6-31G* CHELPG charges"
 953	N3		N	""	"glycine zwit. 6-31G* CHELPG charges"
-954	O2		O	""	"glycine zwit. 6-31G* CHELPG charges"
+954	O2_a		O	""	"glycine zwit. 6-31G* CHELPG charges"
 955	H3		H	""	"glycine zwit. 6-31G* CHELPG charges"
 #Alkyl Halides - JPCB 015
 956	F		F	""	"F  in monoalkyl fluorides"
@@ -895,9 +900,9 @@ types
 961	CT		C	""	"CF3    perfluoroalkanes JPC A, 105, 4118"
 962	CT		C	""	"CF2    perfluoroalkanes       ""
 963	CT		C	""	"CF     perfluoroalkanes       ""
-964	CT		C	""	"CF4                           ""
-965	F		F	""	"F      F in perfluoroalkanes  ""
-966	CT		C	""	"CF2H   difluoromethylbenzene"
+964	CT_964		C	""	"CF4                           ""
+965	F_965		F	""	"F      F in perfluoroalkanes  ""
+966	CT_a		C	""	"CF2H   difluoromethylbenzene"
 967	HC		H	""	"H in CF2H     ""
 968	CT		C	""	"FCH2COO-  fluoroacetate tentative"
 969	CT		C	""	"ClCH2COO- chloroacetate  ""
@@ -918,7 +923,7 @@ types
 983	CA		C	""	"C(OCF3): trifluoroanisole"
 984	OS		O	""	"O: trifluoroanisole"
 985	CT		C	""	"C in CF3: trifluoroanisole"
-986	F		F	""	"F: trifluoroanisole"
+986	F_a		F	""	"F: trifluoroanisole"
 987	N		N	""	"N: N-methyl,N-phenylacetamide"
 988	CA		C	""	"ipso C in N-methyl,N-phenylacetamide"
 989	CT		C	""	"C in CH2NR2 - benzyl amines; C(CH2NH2) is #221"
@@ -927,7 +932,7 @@ types
 992	O		O	""	"O  in hydroxamic acid"
 993	N		N	""	"N  in hydroxamic acid"
 994	H		H	""	"HN in hydroxamic acid"
-995	OH		O	""	"OH in hydroxamic acid"
+995	OH_a		O	""	"OH in hydroxamic acid"
 996	HO		H	""	"HO in hydroxamic acid"
 997	CT		C	""	"C in CHROR  - benzyl ethers; C(CHROR) is #221"
 998	CT		C	""	"C in CRROR  - benzyl ethers; C(CRROR) is #221"
@@ -962,30 +967,30 @@ types
 1039	CT		C	"-&1037,nh=2,-C"	"C on N: tertiary amide CH2R"
 1040	CT		C	"-&1037,nh=1,-C,-C"	"C on N: tertiary amide CHR2"
 1041	CT		C	"-&1037,nh=0,-C,-C,-C"	"C on N: tertiary amide CR3"
-1042	HC		H	"-[&1038,&1039,&1040]"	"H on CT:tertiary amide"
+1042	HC_b		H	"-[&1038,&1039,&1040]"	"H on CT:tertiary amide"
 1043	C		C	"-&1037,=O,-H"		"C: CeqO in tert formamide."
 1044	O		O	"=&1043"		"O: CeqO in tert formamide."
-1045	HC		H	"-&1043"		"H on CO:  tert formamide"
+1045	HC_b		H	"-&1043"		"H on CO:  tert formamide"
 #1046
 #1047
 #1048
 #1049
 #1050
-1100	F		F	""	"F-   1100-1114 provide"
-1101	Cl		Cl	""	"Cl-  sigmas that yield the"
-1102	Br		Br	""	"Br-  correct free energies"
-1103	I		I	""	"I-   of hydration for"
-1104	ions		these	""	"     these ions using"
+1100	F_1100		F	""	"F-   1100-1114 provide"
+1101	Cl_1101		Cl	""	"Cl-  sigmas that yield the"
+1102	Br_1102		Br	""	"Br-  correct free energies"
+1103	I_1103		I	""	"I-   of hydration for"
+#1104	ions		these	""	"     these ions using"
 #1105
-1106	Li		Li	""	"Li+  The epsilons are"
-1107	Na		Na	""	"Na+  unchanged from"
-1108	K		K	""	"K+   400-414."
-1109	Rb		Rb	""	"Rb+"
-1110	Cs		Cs	""	"Cs+"
-1111	Mg		Mg	""	"Mg++"
-1112	Ca		Ca	""	"Ca++"
-1113	Sr		Sr	""	"Sr++"
-1114	Ba		Ba	""	"Ba++"
+1106	Li_1106		Li	""	"Li+  The epsilons are"
+1107	Na_1107		Na	""	"Na+  unchanged from"
+1108	K_1108		K	""	"K+   400-414."
+1109	Rb_1109		Rb	""	"Rb+"
+1110	Cs_1110		Cs	""	"Cs+"
+1111	Mg_1111		Mg	""	"Mg++"
+1112	Ca_1112 	Ca	""	"Ca++"
+1113	Sr_1113		Sr	""	"Sr++"
+1114	Ba_1114		Ba	""	"Ba++"
 #1115
 #1116
 1120	CT		C	""	"C in  CH3NR3+    July 2005"
@@ -1009,13 +1014,56 @@ types
 1240	HA		H	""	"H5  thiazole jlj0003"
 end
 
+# Type equivalents (enabling dissimilar VDW params for originally-identical type names to be mapped to intra data)
+equivalents
+Ba	Ba_1114 Ba_414
+Br	Br_402 Br_1102
+C	C_6 C_131
+C2	C2_81 C2_91 C2_93 C2_110
+C3	C3_a C3_b C3_c C3_68 C3_69 C3_70 C3_126
+CA	CA_a CA_b
+Ca	Ca_742 Ca_1112
+CB	CB_a
+CH	CH_120
+CK	CK_627
+Cl	Cl_121 Cl_123 Cl_401 Cl_1101
+CM	CM_a
+CQ	CQ_347
+Cs	Cs_1110
+CS	CS_a
+CT	CT_a CT_b CT_c CT_d CT_e CT_964 CT_396
+CZ	CZ_a CZ_754 CZ_925 CZ_928 CZ_929
+F	F_a F_b F_400 F_965 F_1100 F_786
+H	H_1 H_428
+HA	HA_a
+HC	HC_a HC_b HC_c HC_d HC_255
+I	I_53 I_403 I_1103
+K	K_1108
+Li	Li_404 Li_406 Li_1106
+Mg	Mg_411 Mg_1111
+N	N_787
+N3	N3_427
+Na	Na_405 Na_407 Na_1107
+Ne	Ne_20
+NT	NT_127
+NZ	NZ_424 NZ_750
+O	O_8 O_788
+O2	O2_a
+OH	OH_a OH_b OH_420 OH_434
+OS	OS_a
+OY	OY_a
+Rb 	Rb_1109
+SH	SH_a SH_417
+Sr	Sr_1113
+end
+
 # Lennard-Jones parameters
 # TYP eq Numerical OPLS atom type (used for unique internal id of type); AN eq atomic no.; AT eq AMBER/OPLS atom type
 #-- Types 1-18, 35, 53 give generic L-J parameters for QM/MM calculations. LJ params for H on heteroatom are set to zero by BOSS.
 #-- For types 1-53 entries with 2 decimal places need verification, e.g., Be, B.	
 #TYP	AT	CHARGE	EPSILON	SIGMA
 inter ljgeom
-1	H	0.000	0.030	2.460
+1	H_1	0.000	0.030	2.460
 2	He	0.000	0.020	2.556
 3	Li	0.000	0.018	2.126
 4	Be	0.000	0.05	3.25
@@ -1023,7 +1071,7 @@ inter ljgeom
 6	C	0.000	0.070	3.550
 7	N	0.000	0.170	3.250
 8	O	0.000	0.170	3.000
-9	F	0.000	0.060	2.900
+9	F_a	0.000	0.060	2.900
 10	Ne	0.000	0.069	2.780
 11	Na	0.000	0.003	3.330
 12	Mg	0.000	0.05	3.40
@@ -1034,9 +1082,9 @@ inter ljgeom
 17	Cl	0.000	0.300	3.400
 18	Ar	0.000	0.234	3.401
 #-- 2-A probe (TYP 20)
-20	Ne	0.000	0.100	2.0
+20	Ne_20	0.000	0.100	2.0
 35	Br	0.000	0.470	3.470
-53	I	0.000	0.58	3.55
+53	I_53	0.000	0.58	3.55
 #
 54	F	-0.220	0.061	2.940
 55	C2	0.220	0.118	3.905
@@ -1047,40 +1095,40 @@ inter ljgeom
 #60
 61	C	0.550	0.105	3.750
 62	O	-0.500	0.210	2.960
-63	OH	-0.580	0.170	3.000
-64	C3	0.080	0.160	3.910
+63	OH_b	-0.580	0.170	3.000
+64	C3_64	0.080	0.160	3.910
 65	HO	0.450	0.0	0.0
 66	C4	0.0	0.294	3.730
-67	C3	0.0	0.207	3.775
-68	C3	0.0	0.175	3.905
-69	C3	0.0	0.160	3.910
-70	C3	0.0	0.145	3.960
+67	C3_c	0.0	0.207	3.775
+68	C3_68	0.0	0.175	3.905
+69	C3_69	0.0	0.160	3.910
+70	C3_70	0.0	0.145	3.960
 71	C2	0.0	0.118	3.905
 72	C9	0.0	0.140	3.850
 73	CH	0.0	0.080	3.850
 74	C8	0.0	0.115	3.800
 75	CD	0.0	0.110	3.750
-76	CT	0.0	0.050	3.800
+76	CT_d	0.0	0.050	3.800
 77	C7	0.0	0.105	3.750
 78	OH	-0.700	0.170	3.070
 79	HO	0.435	0.0	0.0
-80	C3	0.265	0.207	3.775
-81	C2	0.265	0.118	3.905
-82	SH	-0.470	0.250	3.700
+80	C3_c	0.265	0.207	3.775
+81	C2_81	0.265	0.118	3.905
+82	SH_a	-0.470	0.250	3.700
 83	SH	-0.450	0.250	3.550
 84	S	-0.470	0.250	3.550
 85	S	-0.300	0.250	3.550
 86	HS	0.235	0.0	0.0
 87	HS	0.270	0.0	0.0
-88	C3	0.180	0.207	3.775
+88	C3_c	0.180	0.207	3.775
 89	C2	0.180	0.118	3.905
-90	C3	0.235	0.170	3.800
-91	C2	0.235	0.118	3.800
-92	C3	0.300	0.170	3.800
-93	C2	0.300	0.118	3.800
+90	C3_b	0.235	0.170	3.800
+91	C2_91	0.235	0.118	3.800
+92	C3_b	0.300	0.170	3.800
+93	C2_93	0.300	0.118	3.800
 94	NZ	-0.430	0.170	3.200
 95	CZ	0.280	0.150	3.650
-96	C3	0.150	0.207	3.775
+96	C3_c	0.150	0.207	3.775
 #97	OW	0.0	0.16	3.12
 #98	HW	0.241	0.0	0.0
 #99	LP	-0.241	0.0	0.0
@@ -1091,10 +1139,10 @@ inter ljgeom
 104	Kr	0.000	0.3170	3.624
 105	Xe	0.000	0.4330	3.935
 106	CH	0.265	0.080	3.850
-107	CT	0.265	0.050	3.800
-108	OS	-0.50	0.170	3.000
-109	C3	0.25	0.170	3.800
-110	C2	0.25	0.118	3.800
+107	CT_d	0.265	0.050	3.800
+108	OS_a	-0.50	0.170	3.000
+109	C3_b	0.25	0.170	3.800
+110	C2_110	0.25	0.118	3.800
 # TIP3P (TIP3F and TIP4P Water Models in separate forcefields)
 #111	OW	-0.834	0.1521	3.15061
 #112	HW	0.417	0.0	0.0
@@ -1105,19 +1153,19 @@ inter ljgeom
 #117	HW	0.411	0.0	0.0
 118	C2	0.500	0.118	3.800
 119	Cl	-0.250	0.300	3.400
-120	CH	0.420	0.080	3.800
-121	Cl	-0.140	0.300	3.470
-122	CT	0.248	0.050	3.800
-123	Cl	-0.062	0.266	3.470
+120	CH_120	0.420	0.080	3.800
+121	Cl_121	-0.140	0.300	3.470
+122	CT_d	0.248	0.050	3.800
+123	Cl_123	-0.062	0.266	3.470
 124	SZ	0.139	0.395	3.56
-125	OY	-0.459	0.280	2.93
-126	C3	0.160	0.160	3.81
-127	NT	-1.020	0.170	3.42
+125	OY_a	-0.459	0.280	2.93
+126	C3_126	0.160	0.160	3.81
+127	NT_127	-1.020	0.170	3.42
 128	H	0.340	0.0	0.0
 129	O	-0.500	0.210	2.960
 130	N	-0.570	0.170	3.250
 131	C	0.500	0.115	3.800
-132	C3	0.285	0.170	3.80
+132	C3_b	0.285	0.170	3.80
 133	OW	-0.820	0.1554	3.16557
 134	HW	0.410	0.0	0.0
 #-- OPLS-AA Parameters Start Here
@@ -1127,10 +1175,10 @@ inter ljgeom
 138	CT	-0.24	0.066	3.500
 139	CT	0.00	0.066	3.500
 140	HC	0.06	0.030	2.500
-141	CM	0.000	0.076	3.550
-142	CM	-0.115	0.076	3.550
-143	CM	-0.230	0.076	3.550
-144	HC	0.115	0.030	2.420
+141	CM_a	0.000	0.076	3.550
+142	CM_a	-0.115	0.076	3.550
+143	CM_a	-0.230	0.076	3.550
+144	HC_d	0.115	0.030	2.420
 145	CA	-0.115	0.070	3.550
 146	HA	0.115	0.030	2.420
 147	CA	0.000	0.070	3.550
@@ -1140,14 +1188,14 @@ inter ljgeom
 151	Cl	-0.200	0.300	3.400
 152	CT	-0.006	0.066	3.500
 153	HC	0.103	0.030	2.500
-154	OH	-0.683	0.170	3.120
+154	OH_a	-0.683	0.170	3.120
 155	HO	0.418	0.0	0.0
 156	HC	0.040	0.030	2.500
 157	CT	0.145	0.066	3.500
 158	CT	0.205	0.066	3.500
 159	CT	0.265	0.066	3.500
 160	CT	0.1263	0.066	3.500
-161	CT	0.5323	0.062	3.250
+161	CT_a	0.5323	0.062	3.250
 162	OH	-0.6351	0.170	3.070
 163	HO	0.4286	0.000	0.00
 164	F	-0.2057	0.061	2.940
@@ -1187,7 +1235,7 @@ inter ljgeom
 198	CO	0.465	0.066	3.500
 199	CA	0.085	0.070	3.550
 200	SH	-0.335	0.250	3.550
-201	SH	-0.470	0.250	3.700
+201	SH_a	-0.470	0.250	3.700
 202	S	-0.435	0.250	3.550
 203	S	-0.2175	0.250	3.550
 204	HS	0.155	0.0	0.0
@@ -1213,7 +1261,7 @@ inter ljgeom
 224	CT	0.140	0.066	3.500
 225	CT	0.200	0.066	3.500
 226	Cl	-0.120	0.300	3.400
-227	CM	0.005	0.076	3.550
+227	CM_a	0.005	0.076	3.550
 228	CA	0.1025	0.070	3.550
 229	CT	0.140	0.066	3.500
 230	CT	0.200	0.066	3.500
@@ -1241,7 +1289,7 @@ inter ljgeom
 252	C	0.420	0.105	3.750
 253	O	-0.420	0.210	2.960
 254	H	0.370	0.000	0.000
-255	HC	0.060	0.020	2.500
+255	HC_255	0.060	0.020	2.500
 256	CT	-0.120	0.066	3.500
 257	CT	-0.060	0.066	3.500
 258	CT	0.000	0.066	3.500
@@ -1254,21 +1302,21 @@ inter ljgeom
 265	N	-0.385	0.170	3.250
 266	CA	0.085	0.070	3.550
 267	C	0.520	0.105	3.750
-268	OH	-0.530	0.170	3.000
+268	OH_b	-0.530	0.170	3.000
 269	O	-0.440	0.210	2.960
 270	HO	0.450	0.0	0.0
 271	C	0.700	0.105	3.750
-272	O2	-0.800	0.210	2.960
+272	O2_a	-0.800	0.210	2.960
 273	CT	-0.280	0.066	3.500
 274	CT	-0.220	0.066	3.500
 275	CT	-0.160	0.066	3.500
 276	CT	-0.100	0.066	3.500
 277	C	0.450	0.105	3.750
 278	O	-0.450	0.210	2.960
-279	HC	0.000	0.015	2.420
+279	HC_b	0.000	0.015	2.420
 280	C	0.470	0.105	3.750
 281	O	-0.470	0.210	2.960
-282	HC	0.060	0.015	2.420
+282	HC_b	0.060	0.015	2.420
 283	CT	0.040	0.066	3.500
 284	CT	-0.020	0.066	3.500
 285	CT	-0.090	0.066	3.500
@@ -1288,7 +1336,7 @@ inter ljgeom
 299	CT	0.150	0.066	3.500
 300	N2	-0.800	0.170	3.250
 301	H3	0.460	0.0	0.0
-302	CA	0.640	0.050	3.550
+302	CA_b	0.640	0.050	3.550
 303	N2	-0.700	0.170	3.250
 304	H3	0.440	0.0	0.0
 305	CT	0.200	0.066	3.500
@@ -1298,13 +1346,13 @@ inter ljgeom
 309	N3	-0.20	0.170	3.250
 310	H3	0.31	0.0	0.0
 311	NC	-0.46	0.17	3.25
-312	CA	0.36	0.08	3.50
+312	CA_a	0.36	0.08	3.50
 313	N2	-0.85	0.17	3.25
 314	H	0.37	0.0	0.0
-315	CA	-0.15	0.08	3.50
-316	HA	0.10	0.05	2.50
-317	CA	-0.04	0.08	3.50
-318	HA	0.10	0.05	2.50
+315	CA_a	-0.15	0.08	3.50
+316	HA_a	0.10	0.05	2.50
+317	CA_a	-0.04	0.08	3.50
+318	HA_a	0.10	0.05	2.50
 319	NA	-0.60	0.17	3.25
 320	C	0.50	0.105	3.75
 321	NA	-0.51	0.17	3.25
@@ -1315,14 +1363,14 @@ inter ljgeom
 326	O	-0.40	0.210	2.96
 327	H	0.36	0.0	0.0
 328	O	-0.42	0.210	2.96
-329	HC	0.10	0.05	2.50
-330	HC	0.10	0.05	2.50
-331	CT	-0.14	0.08	3.50
-332	HC	0.08	0.05	2.50
+329	HC_a	0.10	0.05	2.50
+330	HC_a	0.10	0.05	2.50
+331	CT_c	-0.14	0.08	3.50
+332	HC_a	0.08	0.05	2.50
 333	NA	-0.56	0.17	3.25
 334	C	0.55	0.105	3.75
 335	NC	-0.54	0.17	3.25
-336	CA	0.46	0.08	3.50
+336	CA_a	0.46	0.08	3.50
 337	CM	-0.06	0.08	3.50
 338	CM	0.10	0.08	3.50
 339	H	0.38	0.0	0.0
@@ -1330,14 +1378,14 @@ inter ljgeom
 341	N2	-0.79	0.17	3.25
 342	H	0.385	0.0	0.0
 343	H	0.355	0.0	0.0
-344	HC	0.10	0.05	2.50
+344	HC_a	0.10	0.05	2.50
 345	H4	0.10	0.05	2.50
 346	NC	-0.53	0.17	3.25
-347	CQ	0.22	0.08	3.50
+347	CQ_347	0.22	0.08	3.50
 348	NC	-0.55	0.17	3.25
-349	CB	0.38	0.08	3.50
-350	CB	0.15	0.08	3.50
-351	CA	0.44	0.08	3.50
+349	CB_a	0.38	0.08	3.50
+350	CB_a	0.15	0.08	3.50
+351	CA_a	0.44	0.08	3.50
 352	NB	-0.49	0.17	3.25
 353	CK	0.20	0.08	3.50
 354	NA	-0.50	0.17	3.25
@@ -1348,25 +1396,25 @@ inter ljgeom
 359	H5	0.20	0.05	2.50
 360	H	0.35	0.0	0.0
 361	NA	-0.56	0.17	3.25
-362	CA	0.46	0.08	3.50
+362	CA_a	0.46	0.08	3.50
 363	NC	-0.51	0.17	3.25
-364	CB	0.34	0.08	3.50
-365	CB	0.12	0.08	3.50
+364	CB_a	0.34	0.08	3.50
+365	CB_a	0.12	0.08	3.50
 366	C	0.52	0.105	3.75
 367	H	0.38	0.0	0.0
 368	N2	-0.80	0.17	3.25
 369	H	0.40	0.0	0.0
 370	O	-0.51	0.21	2.96
-371	CT	-0.01	0.08	3.50
-372	HC	0.12	0.05	2.50
-373	CT	-0.01	0.08	3.50
-374	HC	0.14	0.05	2.50
-375	CT	-0.01	0.08	3.50
-376	HC	0.13	0.05	2.50
+371	CT_c	-0.01	0.08	3.50
+372	HC_a	0.12	0.05	2.50
+373	CT_c	-0.01	0.08	3.50
+374	HC_a	0.14	0.05	2.50
+375	CT_c	-0.01	0.08	3.50
+376	HC_a	0.13	0.05	2.50
 377	NA	-0.64	0.17	3.25
 378	C	0.65	0.105	3.75
 379	NA	-0.74	0.17	3.25
-380	CA	0.66	0.08	3.50
+380	CA_a	0.66	0.08	3.50
 381	CM	-0.06	0.08	3.50
 382	CM	0.10	0.08	3.50
 383	H	0.49	0.0	0.0
@@ -1375,52 +1423,52 @@ inter ljgeom
 386	N2	-0.81	0.17	3.25
 387	H	0.46	0.0	0.0
 388	H	0.43	0.0	0.0
-389	HA	0.14	0.05	2.50
+389	HA_a	0.14	0.05	2.50
 390	H4	0.14	0.05	2.50
-391	CT	0.01	0.08	3.50
-392	HC	0.16	0.05	2.50
+391	CT_c	0.01	0.08	3.50
+392	HC_a	0.16	0.05	2.50
 393	P	0.780	0.200	3.740
-394	O2	-0.660	0.210	2.960
-395	OS	-0.430	0.170	3.000
-396	CT	0.020	0.066	3.550
+394	O2_a	-0.660	0.210	2.960
+395	OS_a	-0.430	0.170	3.000
+396	CT_396	0.020	0.066	3.550
 397	CM	0.18	0.08	3.50
 398	Cl	-0.060	0.300	3.400
-399	CM	0.120	0.076	3.550
-400	F	-1.0	0.72000	2.73295
-401	Cl	-1.0	0.11779	4.41724
-402	Br	-1.0	0.09000	4.62376
-403	I	-1.0	0.07000	5.40000
-404	Li	1.0	6.25000	1.25992
-405	Na	1.0	1.60714	1.89744
-406	Li	1.00	0.018279	2.126452
-407	Na	1.00	0.002772	3.330445
+399	CM_a	0.120	0.076	3.550
+400	F_400	-1.0	0.72000	2.73295
+401	Cl_401	-1.0	0.11779	4.41724
+402	Br_402	-1.0	0.09000	4.62376
+403	I_403	-1.0	0.07000	5.40000
+404	Li_404	1.0	6.25000	1.25992
+405	Na_405	1.0	1.60714	1.89744
+406	Li_406	1.00	0.018279	2.126452
+407	Na_407	1.00	0.002772	3.330445
 408	K	1.00	0.000328	4.934628
 409	Rb	1.00	0.000171	5.621773
 410	Cs	1.00	0.000081	6.715999
-411	Mg	2.00	0.875044	1.644471
+411	Mg_411	2.00	0.875044	1.644471
 412	Ca	2.00	0.449657	2.412031
 413	Sr	2.00	0.118226	3.102688
-414	Ba	2.00	0.047096	3.816610
-415	C3	-0.40	0.30	4.20
-416	HC	0.10	0.05	2.50
-417	SH	-0.90	0.50	4.25
-418	C3	-0.20	0.30	4.20
-419	HC	0.06	0.05	2.50
-420	OH	-0.98	0.25	3.15
-421	CT	-1.07	0.30	4.20
-422	HC	0.19	0.05	2.50
+414	Ba_414	2.00	0.047096	3.816610
+415	C3_a	-0.40	0.30	4.20
+416	HC_a	0.10	0.05	2.50
+417	SH_417	-0.90	0.50	4.25
+418	C3_a	-0.20	0.30	4.20
+419	HC_a	0.06	0.05	2.50
+420	OH_420	-0.98	0.25	3.15
+421	CT_e	-1.07	0.30	4.20
+422	HC_a	0.19	0.05	2.50
 423	CZ	0.51	0.15	3.65
-424	NZ	-0.82	0.25	3.40
-425	C3	-0.30	0.30	4.20
-426	HC	0.07	0.05	2.50
-427	N3	-1.31	0.25	3.40
-428	H	0.40	0.05	2.50
-429	C3	-0.40	0.30	4.20
-430	HC	0.08	0.05	2.50
-431	CT	0.00	0.30	4.20
-432	HC	0.07	0.05	2.50
+424	NZ_424	-0.82	0.25	3.40
+425	C3_a	-0.30	0.30	4.20
+426	HC_a	0.07	0.05	2.50
+427	N3_427	-1.31	0.25	3.40
+428	H_428	0.40	0.05	2.50
+429	C3_a	-0.40	0.30	4.20
+430	HC_a	0.08	0.05	2.50
+431	CT_e	0.00	0.30	4.20
+432	HC_a	0.07	0.05	2.50
 433	LP	-0.98	0.0	0.0
-434	OH	-1.300	0.250	3.200
+434	OH_434	-1.300	0.250	3.200
 435	HO	0.300	0.0	0.0
 436	U	2.500	0.400	2.81524
 437	OU	-0.250	0.200	3.11815
@@ -1453,13 +1501,13 @@ inter ljgeom
 464	CT	0.24	0.066	3.500
 465	C	0.510	0.105	3.750
 466	O	-0.430	0.210	2.960
-467	OS	-0.330	0.170	3.000
+467	OS_a	-0.330	0.170	3.000
 468	CT	0.160	0.066	3.500
-469	HC	0.030	0.015	2.420
+469	HC_b	0.030	0.015	2.420
 470	C	0.635	0.105	3.750
 471	C	0.625	0.105	3.750
 472	CA	0.135	0.070	3.550
-473	OS	-0.215	0.170	3.000
+473	OS_a	-0.215	0.170	3.000
 474	SY	1.48	0.25	3.55
 475	OY	-0.68	0.17	2.96
 476	CT	-0.54	0.066	3.50
@@ -1483,7 +1531,7 @@ inter ljgeom
 494	OY	-0.687	0.17	2.96
 495	SZ	0.245	0.395	3.56
 496	SZ	0.130	0.395	3.56
-497	OY	-0.420	0.280	2.93
+497	OY_a	-0.420	0.280	2.93
 498	CT	-0.035	0.066	3.500
 499	CT	0.025	0.066	3.500
 500	Cstar	0.075	0.070	3.550
@@ -1503,8 +1551,8 @@ inter ljgeom
 514	CW	-0.115	0.070	3.550
 515	CT	0.055	0.066	3.500
 516	CT	0.115	0.066	3.500
-517	CM	-0.030	0.076	3.550
-518	CM	0.085	0.076	3.550
+517	CM_a	-0.030	0.076	3.550
+518	CM_a	0.085	0.076	3.550
 519	C!	0.000	0.070	3.550
 520	NC	-0.678	0.170	3.250
 521	CA	0.473	0.070	3.550
@@ -1554,7 +1602,7 @@ inter ljgeom
 565	HA	0.187	0.030	2.420
 566	OS	-0.190	0.140	2.900
 567	CW	-0.019	0.070	3.550
-568	CS	-0.154	0.076	3.550
+568	CS_a	-0.154	0.076	3.550
 569	HA	0.142	0.030	2.420
 570	HA	0.126	0.030	2.420
 571	OS	-0.257	0.140	2.900
@@ -1613,7 +1661,7 @@ inter ljgeom
 624	CB	0.038	0.070	3.550
 625	CA	0.343	0.070	3.550
 626	NB	-0.642	0.170	3.250
-627	CK	0.452	0.070	3.550
+627	CK_627	0.452	0.070	3.550
 628	NA	-0.682	0.170	3.250
 629	HA	0.024	0.030	2.420
 630	HA	0.101	0.030	2.420
@@ -1694,9 +1742,9 @@ inter ljgeom
 705	Eu	3.000	0.050	3.300
 706	Gd	3.000	0.050	3.300
 707	Yb	3.000	0.040	2.950
-708	CM	-0.344	0.076	3.550
+708	CM_a	-0.344	0.076	3.550
 709	Cl	-0.628	0.300	3.400
-710	HC	0.200	0.030	2.420
+710	HC_d	0.200	0.030	2.420
 711	CY	-0.12	0.066	3.500
 712	CY	-0.06	0.066	3.500
 713	CY	0.00	0.066	3.500
@@ -1705,16 +1753,16 @@ inter ljgeom
 716	CA	-0.099	0.070	3.550
 717	HA	0.099	0.030	2.420
 718	CA	0.220	0.070	3.550
-719	F	-0.220	0.061	2.850
+719	F_b	-0.220	0.061	2.850
 720	CA	0.130	0.070	3.550
-721	F	-0.130	0.061	2.850
+721	F_b	-0.130	0.061	2.850
 722	Br	-0.220	0.470	3.470
 723	C2	0.220	0.118	3.905
 724	CA	0.150	0.070	3.550
-725	CT	0.450	0.062	3.250
+725	CT_a	0.450	0.062	3.250
 726	F	-0.200	0.061	2.940
 727	CA	0.200	0.070	3.550
-728	F	-0.200	0.061	2.850
+728	F_b	-0.200	0.061	2.850
 729	CA	0.200	0.070	3.550
 730	Br	-0.200	0.470	3.470
 731	CA	0.100	0.070	3.550
@@ -1728,7 +1776,7 @@ inter ljgeom
 739	CA	-0.119	0.070	3.550
 740	HA	0.141	0.030	2.420
 741	HA	0.129	0.030	2.420
-742	CA	0.827	0.050	3.550
+742	CA_b	0.827	0.050	3.550
 743	N2	-0.885	0.170	3.250
 744	H	0.426	0.000	0.000
 745	H	0.465	0.000	0.000
@@ -1736,20 +1784,20 @@ inter ljgeom
 747	CT	-0.02	0.066	3.500
 748	CT	0.04	0.066	3.500
 749	NY	-0.620	0.17	3.25
-750	NZ	-0.785	0.17	3.25
+750	NZ_750	-0.785	0.17	3.25
 751	NY	-0.785	0.17	3.25
-752	CA	0.550	0.050	3.550
+752	CA_b	0.550	0.050	3.550
 753	NZ	-0.560	0.170	3.200
-754	CZ	0.460	0.066	3.300
+754	CZ_754	0.460	0.066	3.300
 755	CT	-0.080	0.066	3.300
 756	CT	-0.020	0.066	3.300
-757	CT	0.040	0.066	3.300
-758	CT	0.100	0.066	3.300
-759	HC	0.06	0.015	2.500
+757	CT_b	0.040	0.066	3.300
+758	CT_b	0.100	0.066	3.300
+759	HC_c	0.06	0.015	2.500
 760	NO	0.54	0.12	3.25
 761	ON	-0.37	0.17	2.96
 762	CT	0.02	0.066	3.500
-763	HC	0.06	0.015	2.500
+763	HC_c	0.06	0.015	2.500
 764	CT	0.08	0.066	3.500
 765	CT	0.14	0.066	3.500
 766	CT	0.20	0.066	3.500
@@ -1759,25 +1807,25 @@ inter ljgeom
 770	NC	-0.900	0.170	3.250
 771	O	-0.500	0.210	2.960
 772	C	0.860	0.105	3.750
-773	OS	-0.450	0.170	3.000
+773	OS_a	-0.450	0.170	3.000
 774	CT	0.210	0.066	3.500
 775	CT	0.160	0.066	3.500
 776	CT	-0.100	0.066	3.500
-777	HC	0.030	0.015	2.420
-778	HC	0.030	0.015	2.420
-779	HC	0.060	0.015	2.420
+777	HC_b	0.030	0.015	2.420
+778	HC_b	0.030	0.015	2.420
+779	HC_b	0.060	0.015	2.420
 #780
 781	P+	0.9684	0.200	3.740
 782	CT	-0.5081	0.066	3.500
 783	CT	-0.0080	0.066	3.500
 784	HC	0.1720	0.030	2.500
 785	P	1.3400	0.200	3.740
-786	F	-0.3900	0.061	3.1181
-787	N	0.794	0.170	3.150
-788	O	-0.598	0.210	2.860
+786	F_786	-0.3900	0.061	3.1181
+787	N_787	0.794	0.170	3.150
+788	O_788	-0.598	0.210	2.860
 #789
 790	CA	0.150	0.070	3.550
-791	CT	0.450	0.062	3.250
+791	CT_a	0.450	0.062	3.250
 792	F	-0.200	0.061	2.940
 #793
 #794
@@ -1798,7 +1846,7 @@ inter ljgeom
 908	CT	0.090	0.066	3.500
 909	H	0.360	0.0	0.0
 910	H	0.380	0.0	0.0
-911	HC	0.06	0.015	2.500
+911	HC_c	0.06	0.015	2.500
 912	CT	0.120	0.066	3.500
 913	CT	0.180	0.066	3.500
 914	CT	0.140	0.066	3.500
@@ -1812,21 +1860,21 @@ inter ljgeom
 922	CT	0.195	0.066	3.500
 923	CT	0.1525	0.066	3.500
 924	CT	0.135	0.066	3.500
-925	CZ	-0.210	0.086	3.300
-926	HC	0.200	0.015	2.420
-927	CZ	0.010	0.210	3.300
-928	CZ	0.010	0.135	3.300
-929	CZ	0.010	0.100	3.300
-930	HC	0.060	0.015	2.500
+925	CZ_925	-0.210	0.086	3.300
+926	HC_b	0.200	0.015	2.420
+927	CZ_a	0.010	0.210	3.300
+928	CZ_928	0.010	0.135	3.300
+929	CZ_929	0.010	0.100	3.300
+930	HC_c	0.060	0.015	2.500
 931	CO	0.450	0.066	3.500
 932	CO	0.480	0.066	3.500
 933	CO	0.510	0.066	3.500
-934	OH	-0.655	0.170	3.120
+934	OH_a	-0.655	0.170	3.120
 935	HO	0.390	0.0	0.0
 936	Nstar	-0.50	0.17	3.25
 937	Nstar	-0.56	0.17	3.25
 938	Nstar	-0.60	0.17	3.25
-939	CZ	0.000	0.210	3.300
+939	CZ_a	0.000	0.210	3.300
 940	N3	-0.10	0.170	3.250
 941	H3	0.29	0.0	0.0
 942	CT	0.090	0.066	3.500
@@ -1834,14 +1882,14 @@ inter ljgeom
 944	CT	0.210	0.066	3.500
 945	CT	0.270	0.066	3.500
 946	CW	0.096	0.070	3.550
-947	CS	-0.039	0.076	3.550
+947	CS_a	-0.039	0.076	3.550
 948	C!	0.027	0.070	3.550
 949	C!	0.011	0.070	3.550
 950	HC	0.074	0.030	2.500
 951	CT	-0.029	0.066	3.500
 952	C	0.700	0.105	3.750
 953	N3	-0.352	0.170	3.250
-954	O2	-0.709	0.210	2.960
+954	O2_a	-0.709	0.210	2.960
 955	H3	0.317	0.0	0.0
 #-- Alkyl Halides - JPCB 108, 16264 (2004) - for iodides, see 1011-1015
 956	F	-0.220	0.061	2.940
@@ -1852,9 +1900,9 @@ inter ljgeom
 961	CT	0.36	0.066	3.500
 962	CT	0.24	0.066	3.500
 963	CT	0.12	0.066	3.500
-964	CT	0.48	0.097	3.500
-965	F	-0.120	0.053	2.950
-966	CT	0.250	0.062	3.250
+964	CT_964	0.48	0.097	3.500
+965	F_965	-0.120	0.053	2.950
+966	CT_a	0.250	0.062	3.250
 967	HC	0.150	0.030	2.500
 968	CT	-0.080	0.066	3.500
 969	CT	-0.106	0.066	3.500
@@ -1884,7 +1932,7 @@ inter ljgeom
 992	O	-0.658	0.210	2.960
 993	N	-0.634	0.170	3.250
 994	H	0.411	0.000	0.000
-995	OH	-0.442	0.170	3.120
+995	OH_a	-0.442	0.170	3.120
 996	HO	0.435	0.000	0.000
 997	CT	0.225	0.066	3.500
 998	CT	0.255	0.066	3.500
@@ -1919,10 +1967,10 @@ inter ljgeom
 1039	CT	0.060	0.066	3.500
 1040	CT	0.120	0.066	3.500
 1041	CT	0.180	0.066	3.500
-1042	HC	0.060	0.015	2.420
+1042	HC_b	0.060	0.015	2.420
 1043	C	0.570	0.105	3.750
 1044	O	-0.570	0.210	2.960
-1045	HC	0.000	0.015	2.420
+1045	HC_b	0.000	0.015	2.420
 #1046
 #1047
 #1048
@@ -1930,21 +1978,21 @@ inter ljgeom
 #1050
 #-- 1100-1114 provide sigmas that yield the correct free energies of hydration for these ions using GB/SA.
 #-- The epsilons are unchanged from 400-414.
-1100	F	-1.0	0.72000	3.08
-1101	Cl	-1.0	0.11779	4.18
-1102	Br	-1.0	0.09000	4.51
-1103	I	-1.0	0.07000	5.15
+1100	F_1100	-1.0	0.72000	3.08
+1101	Cl_1101	-1.0	0.11779	4.18
+1102	Br_1102	-1.0	0.09000	4.51
+1103	I_1103	-1.0	0.07000	5.15
 #1104
 #1105
-1106	Li	1.00	0.018279	2.70
-1107	Na	1.00	0.002772	3.35
-1108	K	1.00	0.000328	4.06
-1109	Rb	1.00	0.000171	4.32
-1110	Cs	1.00	0.000081	4.82
-1111	Mg	2.00	0.875044	2.91
-1112	Ca	2.00	0.449657	3.47
-1113	Sr	2.00	0.118226	3.82
-1114	Ba	2.00	0.047096	4.18
+1106	Li_1106	1.00	0.018279	2.70
+1107	Na_1107	1.00	0.002772	3.35
+1108	K_1108	1.00	0.000328	4.06
+1109	Rb_1109	1.00	0.000171	4.32
+1110	Cs_1110	1.00	0.000081	4.82
+1111	Mg_1111	2.00	0.875044	2.91
+1112	Ca_1112	2.00	0.449657	3.47
+1113	Sr_1113	2.00	0.118226	3.82
+1114	Ba_1114	2.00	0.047096	4.18
 #1115
 #1116
 1120	CT	-0.050	0.066	3.500

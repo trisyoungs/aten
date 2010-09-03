@@ -263,8 +263,10 @@ class Pattern
 	Reflist<ForcefieldBound, int> forcefieldAngles_;
 	// Reference list of torsion terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldTorsions_;
-	// Reference list of atom types in pattern
-	Reflist<ForcefieldAtom, int> forcefieldTypes_;
+	// Reference list of unique (by name) atom types used in the pattern
+	Reflist<ForcefieldAtom, int> uniqueForcefieldTypes_;
+	// Reference list of all (i.e. unique by pointer) atom types used in the pattern
+	Reflist<ForcefieldAtom, int> allForcefieldTypes_;
 	// Add atom data
 	void addAtomData(Atom *i, ForcefieldAtom *ffa);
 	// Add bond data
@@ -310,23 +312,27 @@ class Pattern
 	// Return number of forcefield torsions used in the pattern
 	int nForcefieldTorsions() const;
 	// Return number of forcefield types used in the pattern
-	int nForcefieldTypes() const;
+	int nUniqueForcefieldTypes() const;
 	// Return first forcefield bond of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldBonds();
 	// Return first forcefield angle of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldAngles();
 	// Return first forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldTorsions();
-	// Return first forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *forcefieldTypes();
+	// Return first (unique by name) forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *uniqueForcefieldTypes();
+	// Return first (unique by pointer) forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *allForcefieldTypes();
 	// Return selected forcefield bond of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldBond(int i);
 	// Return selected forcefield angle of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldAngle(int i);
 	// Return selected forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
-	// Return selected forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
+	// Return selected (unique by name) forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
+	// Return selected (unique by pointer) forcefield type of the pattern
+	Refitem<ForcefieldAtom,int> *allForcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool areAtomsFixed() const;
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations

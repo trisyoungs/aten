@@ -179,12 +179,13 @@ void Pattern::addAtomData(Atom *i, ForcefieldAtom *ffa)
 	pa->setAtom(i);
 	pa->setData(ffa);
 	pa->setForcefieldDataId(-1);
-	// Add this to the unique types list if it isn't there already
-	// For types, we only add types if they have different names because of type equivalents
+	// Add this to the unique types (by pointer) list
+	allForcefieldTypes_.addUnique(ffa);
+	// Add this to the unique types list if it isn't there already (type name equivalants in force)
 	int n;
-	for (n=0; n<forcefieldTypes_.nItems(); ++n) if (strcmp(forcefieldTypes_[n]->item->name(),ffa->name()) == 0) break;
-	if (n == forcefieldTypes_.nItems()) forcefieldTypes_.add(ffa, 1);
-	else forcefieldTypes_[n]->data = forcefieldTypes_[n]->data + 1;
+	for (n=0; n<uniqueForcefieldTypes_.nItems(); ++n) if (strcmp(uniqueForcefieldTypes_[n]->item->name(),ffa->name()) == 0) break;
+	if (n == uniqueForcefieldTypes_.nItems()) uniqueForcefieldTypes_.add(ffa, 1);
+	else uniqueForcefieldTypes_[n]->data = uniqueForcefieldTypes_[n]->data + 1;
 	pa->setForcefieldDataId(n);
 }
 
@@ -359,10 +360,10 @@ int Pattern::nForcefieldTorsions() const
 	return forcefieldTorsions_.nItems();
 }
 
-// Return number of forcefield types used in the pattern
-int Pattern::nForcefieldTypes() const
+// Return number of forcefield types (by name) used in the pattern
+int Pattern::nUniqueForcefieldTypes() const
 {
-	return forcefieldTypes_.nItems();
+	return uniqueForcefieldTypes_.nItems();
 }
 
 // Return first forcefield bond used in the pattern
@@ -383,10 +384,16 @@ Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsions()
 	return forcefieldTorsions_.first();
 }
 
-// Return first forcefield type used in the pattern
-Refitem<ForcefieldAtom,int> *Pattern::forcefieldTypes()
+// Return first unique (by name) forcefield type used in the pattern
+Refitem<ForcefieldAtom,int> *Pattern::uniqueForcefieldTypes()
 {
-	return forcefieldTypes_.first();
+	return uniqueForcefieldTypes_.first();
+}
+
+// Return first unique (by pointer) forcefield type used in the pattern
+Refitem<ForcefieldAtom,int> *Pattern::allForcefieldTypes()
+{
+	return allForcefieldTypes_.first();
 }
 
 // Return selected forcefield bond used in the pattern
@@ -408,9 +415,9 @@ Refitem<ForcefieldBound,int> *Pattern::forcefieldTorsion(int i)
 }
 
 // Return selected forcefield type used in the pattern
-Refitem<ForcefieldAtom,int> *Pattern::forcefieldType(int i)
+Refitem<ForcefieldAtom,int> *Pattern::uniqueForcefieldType(int i)
 {
-	return forcefieldTypes_[i];
+	return uniqueForcefieldTypes_[i];
 }
 
 // Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
@@ -642,6 +649,8 @@ void Pattern::deleteExpression()
 	bonds_.clear();
 	angles_.clear();
 	torsions_.clear();
+	uniqueForcefieldTypes_.clear();
+	allForcefieldTypes_.clear();
 	if (conMatrix_ != NULL)
 	{
 		for (int n=0; n<nAtoms_; n++) delete[] conMatrix_[n];

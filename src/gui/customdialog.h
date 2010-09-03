@@ -51,6 +51,8 @@ class AtenCustomDialog : public QDialog
 	// Data
 	*/
 	private:
+	// Static, local layout which contains all widgets when they're not being displayed in the Dialog
+	static QHBoxLayout masterLayout_;
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
 	// Create simple label

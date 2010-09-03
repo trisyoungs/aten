@@ -514,8 +514,10 @@ class Model
 	Reflist<ForcefieldBound,int> forcefieldAngles_;
 	// List containing references to torsion interactions in model (useful in expression export)
 	Reflist<ForcefieldBound,int> forcefieldTorsions_;
-	// List containing references to atom types in used in model (useful in expression export)
-	Reflist<ForcefieldAtom,int> forcefieldTypes_;
+	// List containing references to unique (by name) atom types in used in model (useful in expression export)
+	Reflist<ForcefieldAtom,int> uniqueForcefieldTypes_;
+	// List containing references to all (i.e. unique by pointer) atom types use in model
+	Reflist<ForcefieldAtom,int> allForcefieldTypes_;
 	// Combination table, containing pre-combined VDW parameters
 	PairTable<ForcefieldAtom,double> combinationTable_;
 
@@ -550,12 +552,12 @@ class Model
 	Refitem<ForcefieldBound,int> *forcefieldTorsions();
 	// Return the unique torsion term specified
 	Refitem<ForcefieldBound,int> *forcefieldTorsion(int i);
-	// Return number of unique atom types in model
-	int nForcefieldTypes() const;
+	// Return number of unique (by name) atom types in model
+	int nUniqueForcefieldTypes() const;
 	// Return the first item in the list of unique types in the model
-	Refitem<ForcefieldAtom,int> *forcefieldTypes();
+	Refitem<ForcefieldAtom,int> *uniqueForcefieldTypes();
 	// Return the unique type specified
-	Refitem<ForcefieldAtom,int> *forcefieldType(int i);
+	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid

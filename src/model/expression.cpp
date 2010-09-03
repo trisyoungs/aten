@@ -80,7 +80,7 @@ void Model::clearExpression()
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
-	forcefieldTypes_.clear();
+	uniqueForcefieldTypes_.clear();
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->deleteExpression();
 	expressionPoint_  = -1;
 	msg.exit("Model::clearExpression");
@@ -149,7 +149,7 @@ bool Model::createExpression(bool vdwOnly)
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
-	forcefieldTypes_.clear();
+	uniqueForcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
 	expressionPoint_ = -1;
 	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
@@ -214,7 +214,7 @@ bool Model::createExpression(bool vdwOnly)
 	ForcefieldAtom *ffa, *ffb;
 	Combine::CombinationRule *crflags;
 	int i;
-	for (Refitem<ForcefieldAtom,int> *rfa = forcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
+	for (Refitem<ForcefieldAtom,int> *rfa = allForcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
 	{
 		ffa = rfa->item;
 		for (Refitem<ForcefieldAtom,int> *rfb = rfa; rfb != NULL; rfb = rfb->next)
@@ -229,7 +229,7 @@ bool Model::createExpression(bool vdwOnly)
 				return FALSE;
 			}
 			// Create item in table
-			pp = combinationTable_.add(rfa->item, rfb->item, VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters);
+			pp = combinationTable_.add(ffa, ffb, VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters);
 			// Combine parameters
 			crflags = VdwFunctions::VdwFunctions[ffa->vdwForm()].combinationRules;
 			for (i=0; i<VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters; ++i)
@@ -254,22 +254,24 @@ void Model::createForcefieldLists()
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
-	forcefieldTypes_.clear();
+	uniqueForcefieldTypes_.clear();
 
 	Refitem<ForcefieldAtom,int> *ffa2;
 
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		msg.print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
+		msg.print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
 		// Atom types. We only add types to the list that have a unique type name.
-		for (Refitem<ForcefieldAtom,int> *ffa1 = p->forcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
+		for (Refitem<ForcefieldAtom,int> *ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
 		{
-			// Search through current list...
-			for (ffa2 = forcefieldTypes_.first(); ffa2 != NULL; ffa2 = ffa2->next) if (strcmp(ffa1->item->name(),ffa2->item->name()) == 0) break;
+			// Add to list of unique (by pointer) types
+			allForcefieldTypes_.addUnique(ffa1->item);
+			// Add to list of unique (by name) types
+			for (ffa2 = uniqueForcefieldTypes_.first(); ffa2 != NULL; ffa2 = ffa2->next) if (strcmp(ffa1->item->name(),ffa2->item->name()) == 0) break;
 			if (ffa2 != NULL) continue;
-			forcefieldTypes_.add(ffa1->item);
+			uniqueForcefieldTypes_.add(ffa1->item);
 		}
 
 		// Bond terms
@@ -291,7 +293,7 @@ void Model::createForcefieldLists()
 		}
 	}
 
-	msg.print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
+	msg.print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
 	msg.exit("Model::createForcefieldLists");
 }

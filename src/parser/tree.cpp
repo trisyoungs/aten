@@ -167,8 +167,8 @@ void Tree::clear()
 	statements_.clear();
 	scopeStack_.clear();
 	widgets_.clear();
-	if (mainWidget_ != NULL) delete mainWidget_;
-	mainWidget_ = NULL;
+// 	if (mainWidget_ != NULL) delete mainWidget_;
+// 	mainWidget_ = NULL;
 }
 
 // (Re)Initialise Tree

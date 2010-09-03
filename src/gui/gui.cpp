@@ -90,6 +90,7 @@ GuiQt::GuiQt()
 	isAvailable_ = FALSE;
 	trajectoryPlaying_ = FALSE;
 	trajectoryTimerId_ = -1;
+	app = NULL;
 	mainWindow = NULL;
 	mainWidget = NULL;
 	prefsDialog = NULL;
@@ -319,7 +320,7 @@ void GuiQt::run()
 	// Enter main message processing loop
 	app->exec();
 
-	delete mainWindow;
+// 	delete mainWindow;
 
 	msg.exit("GuiQt::run");
 }
