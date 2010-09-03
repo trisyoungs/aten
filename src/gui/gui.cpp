@@ -141,12 +141,16 @@ void GuiQt::initialise(int &argc, char **argv)
 	// Create the QApplication
 	app = new QApplication(argc, argv);
 
+	// Create GUI window here (used to be done in Gui Qt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
+	mainWindow = new AtenForm;
+
 	// Create the main QGLWidget
 	QGLFormat format;
 	format.setSampleBuffers(TRUE);
 	QGLContext *ctxt = new QGLContext(format);
 
-	mainWidget = new TCanvas(ctxt, NULL);
+	// Create the widget
+	mainWidget = new TCanvas(ctxt, mainWindow);
 	mainWidget->probeFeatures();
 	mainWidget->setGeometry(0,0,800,600);
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
@@ -170,8 +174,6 @@ void GuiQt::run()
 	// Initialise Qt's icons resource
 	Q_INIT_RESOURCE(icons);
 
-	// Create GUI window, dialog windows, and sub windows
-	mainWindow = new AtenForm;
 	// ...dialog windows...
 	prefsDialog = new AtenPrefs(mainWindow);
 	forcefieldEditorDialog = new AtenForcefieldEditor(mainWindow);
