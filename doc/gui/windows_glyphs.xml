@@ -1,0 +1,16 @@
+<section id="gui.toolwindows.glyphs"><title>Glyphs Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>glyphs</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_glyphs.png"/>Glyphs Window
+	</para>
+
+	<para>The glyphs window allows new glyphs to be created by hand, or existing glyphs in the model to be managed, edited, and deleted.</para>
+	
+	<figure><title>Glyphs Window</title>
+		<graphic fileref="images/window_glyphs.png" align="center"/>
+	</figure>
+
+	<para>All glyphs in the current model are listed to the left. Selecting one will allow its properties to be edited on the right. The type of glyph can be changed also. Colours for individual glyph data (i.e. points) may be changed through the colour controls associated to each.</para>
+
+</section>

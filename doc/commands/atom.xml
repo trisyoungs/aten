@@ -449,6 +449,6 @@ atom i = getatom(3);
 		<para>Makes the current selection of atoms (or the supplied atom) visible again if they were previously hidden.</para>
 
 	</section>
-		 
+
 </section>
 

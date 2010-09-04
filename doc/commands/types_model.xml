@@ -285,7 +285,7 @@
 					<row>
 						<entry>finalise ( )</entry>
 						<entry>--</entry>
-						<entry>Finalise the current model. See the <link linkend="command.ref.finalise">finalise</link> command for more details.</entry>
+						<entry>Finalise the current model. See the <link linkend="command.ref.finalisemodel">finalisemodel</link> command for more details.</entry>
 					</row>
 					<row>
 						<entry>movetoend ( )</entry>

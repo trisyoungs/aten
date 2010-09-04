@@ -5,7 +5,7 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="readwrite.xxx">Formatted Output</link> for in-depth explanations on the usage of C-style formatted output</para>
+				<para><link linkend="readwrite.formatted">Formatted Output</link> for explanations on the usage of C-style formatted output</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="command.groups.readwrite">Read/Write commands</link> for commands to read/write from/to files.</para>

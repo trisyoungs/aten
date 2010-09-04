@@ -8,7 +8,7 @@
 				<para><link linkend="command.groups.messaging">Messaging Commands</link> for commands that write to the screen.</para>
 			</listitem>
 			<listitem>
-				<para><link linkend="readwrite.xxx">Formatting Strings</link> for details on the C-style formatting of data employed by some commands.</para>
+				<para><link linkend="readwrite.formatted">Formatting Output</link> for more details on the C-style formatting of data employed by some commands.</para>
 			</listitem>
 			<listitem>
 				<para><link linkend="readwrite.delimited">Delimited Reading and Writing</link> for details on the parsing of delimited data, as employed by some commands.</para>

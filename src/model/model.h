@@ -640,10 +640,6 @@ class Model
 	void setPatternsFixed(int);
 	// Calculates the atom locality of the supplied atom
 	Atomaddress locateAtom(Atom*);
-	// Creates a string of the element symbols in the selection
-	void selectionAtomFingerprint(Dnchar&);
-	// Creates a characteristic string of the bonds in the selection
-	void selectionBondFingerprint(Dnchar&);
 	// Charge the pattern atom across the model
 	void chargePatternAtom(Pattern*, int, double);
 	// Calculate bonding restricted to patterns
@@ -946,13 +942,17 @@ class Model
 	*/
 	public:
 	// Return the empirical formula of the selected atoms
-	void selectionEmpirical(Dnchar&, bool markonly) const;
+	void selectionEmpirical(Dnchar&, bool markonly, bool addspaces = FALSE) const;
 	// Get selection's centre of geometry
 	Vec3<double> selectionCentreOfGeometry() const;
 	// Get selection's centre of mass
 	Vec3<double> selectionCentreOfMass() const;
 	// Reorder bound atoms/fragments within the selection so that they are consecutive
 	void reorderSelectedAtoms();
+	// Creates a string of the element symbols in the selection
+	void selectionAtomFingerprint(Dnchar&);
+	// Creates a characteristic string of the bonds in the selection
+	void selectionBondFingerprint(Dnchar&);
 
 
 	/*

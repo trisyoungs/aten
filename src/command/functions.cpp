@@ -93,7 +93,6 @@ void Command::initPointers()
 	pointers_[SetVY] = &Command::function_SetVY;
 	pointers_[SetVZ] = &Command::function_SetVZ;
 	pointers_[Show] = &Command::function_Show;
-	pointers_[ShowAll] = &Command::function_ShowAll;
 
 	// Bond commands
 	pointers_[Augment] = &Command::function_Augment;
@@ -377,6 +376,7 @@ void Command::initPointers()
 	pointers_[SaveModel] = &Command::function_SaveModel;
 	pointers_[SaveSelection] = &Command::function_SaveSelection;
 	pointers_[SetName] = &Command::function_SetName;
+	pointers_[ShowAll] = &Command::function_ShowAll;
 
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
