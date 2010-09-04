@@ -88,15 +88,13 @@ void AtenSelect::refresh()
 	Model *m = aten.currentModelOrFrame();
 
 	// Update selection text details
-	ui.SelectionText->clear();
-
-	// First line, total number of selected atoms.
+	// First label, total number of selected atoms.
 	Dnchar text;
 	text.print("Total selected : %i\n", m->nSelected());
-	ui.SelectionText->append(text.get());
-	// Next follows empirica formula of selection
-	m->selectionEmpirical(text, FALSE);
-	ui.SelectionText->append(text.get());
+	ui.SelectionLabel1->setText(text.get());
+	// Second label contains empirical formula of selection
+	m->selectionEmpirical(text, FALSE, TRUE);
+	ui.SelectionLabel2->setText(text.get());
 }
 
 void AtenSelect::dialogFinished(int result)

@@ -141,24 +141,24 @@ Constant is 10, variable is 1234.
 		<para>Formatted input corresponds to input from either files or string variables, and is used in the following commands:</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Formatted input commands</title>
-		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-		<thead>
-		<row>
-		<entry>Command</entry>
-		<entry>Function</entry>
-		</row>
-		</thead>
-		<tbody>
-		<row>
-		<entry>readlinef</entry>
-		<entry>Read a formatted line from the current input file</entry>
-		</row>
-		<row>
-		<entry>readvarf</entry>
-		<entry>Read a formatted string from a variable</entry>
-		</row>
-		</tbody>
-		</tgroup>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Command</entry>
+						<entry>Function</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>readlinef</entry>
+						<entry>Read a formatted line from the current input file</entry>
+					</row>
+					<row>
+						<entry>readvarf</entry>
+						<entry>Read a formatted string from a variable</entry>
+					</row>
+				</tbody>
+			</tgroup>
 		</table>
 		
 		<para>Note that the meaning of the formatting string changes slightly here - in essence, the type and formats of the specifiers are used to break up the supplied string into separate arguments, which are then placed in the provided corresponding variable arguments. When reading in string data, note that blank characters are significant and will be retained. To strip trailing blank characters (spaces and tabs) when reading a fixed-length string in a format, supply the length as a negative number.</para>
@@ -241,14 +241,12 @@ Constant is 10, variable is 1234.
 	
 	<section id="readwrite.delimited"><title>Delimited Reading and Writing</title>
 	
-		<para><link linkend="XXX.formattingstrings">Formatting strings</link> can be used to specify the layout of data items on a line when reading or writing data, but if the data are separated by whitespace characters such as spaces or tabs (or, alternatively, commas), such 'delimited' data can be read in more easily. In such cases, it is not necessary to know beforehand the number of characters taken up by each item on the line, since the delimiters separate adjacent data items. A simplified method for reading and writing can be employed in these cases.</para>
+		<para>Formatting strings (or 'format specifiers') can be used to specify the layout of data items on a line when reading or writing data, but if the data are separated by whitespace characters such as spaces or tabs (or, alternatively, commas), such 'delimited' data can be read in more easily. In such cases, it is not necessary to know beforehand the number of characters taken up by each item on the line, since the delimiters separate adjacent data items. A simplified method for reading and writing can be employed in these cases.</para>
 		
 		<para>Commands providing delimited reading and writing are:</para>
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Delimited read/write commands</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='escape sequence'/> -->
-				<!-- <colspec colname='meaning'/> -->
 				<thead>
 					<row>
 						<entry>Command</entry>
@@ -280,7 +278,7 @@ Constant is 10, variable is 1234.
 			</tgroup>
 		</table>
 		
-		<para>Note that all are called the same as their <link linkend="XXX.formattingstrings.formatted">formatted counterparts</link>, but minus the 'f' at the end of the name.</para>
+		<para>Note that all are called the same as their formatted counterparts, but minus the 'f' at the end of the name.</para>
 		
 		<section id="readwrite.delimited.example"><title>Delimited Data Example</title>
 		

@@ -220,9 +220,6 @@ CommandData Command::data[Command::nCommands] = {
 	{ "show",		"a",		VTypes::NoData,
 		"atom|int id = 0",
 		"Show (make visible) the current selection of atoms (or supplied atom)" },
-	{ "showall",		"",		VTypes::NoData,
-		"",
-		"Show all atoms in the current model" },
 
 	// Bonding commands
 	{ "augment",		"",		VTypes::NoData,
@@ -976,6 +973,9 @@ CommandData Command::data[Command::nCommands] = {
 	{ "setname",		"C",		VTypes::NoData,
 		"string name",
 		"Set the name of the current model" },
+	{ "showall",		"",		VTypes::NoData,
+		"",
+		"Show all atoms in the current model" },
 
 	// Pattern commands
 	{ "clearpatterns",	"",		VTypes::NoData,

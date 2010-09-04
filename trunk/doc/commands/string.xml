@@ -254,7 +254,7 @@ string debt = removestr("I owe you 2 million dollars.", "million ");
 				<paramdef><parameter>...</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Prints a formatted string to the supplied variable <emphasis>dest</emphasis>, and is an alias for the <link linkend="commands.ref.writevarf">writevarf</link> command.</para>
+		<para>Prints a formatted string to the supplied variable <emphasis>dest</emphasis>, and is an alias for the <link linkend="command.ref.writevarf">writevarf</link> command.</para>
 
 	</section>
 	

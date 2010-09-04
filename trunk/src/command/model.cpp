@@ -406,3 +406,14 @@ bool Command::function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return TRUE;
 }
+
+// Show all atoms
+bool Command::function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Show all atoms", obj.rs->nSelected());
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->atomSetHidden(i,FALSE);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}

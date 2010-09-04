@@ -59,9 +59,10 @@
 			<inlinegraphic fileref="images/build_fragment.png"/>
 			<inlinegraphic fileref="images/build_delete.png"/>
 			<inlinegraphic fileref="images/build_transmute.png"/>
-			<inlinegraphic fileref="images/spacer.png"/>
-			<inlinegraphic fileref="images/build_addh.png"/>
 			<inlinegraphic fileref="images/build_atomaddh.png"/>
+			<inlinegraphic fileref="images/spacer.png"/>
+			<inlinegraphic fileref="images/build_transmutesel.png"/>
+			<inlinegraphic fileref="images/build_addh.png"/>
 			<inlinegraphic fileref="images/spacer.png"/>
 			<inlinegraphic fileref="images/build_h.png"/>
 			<inlinegraphic fileref="images/build_c.png"/>
@@ -96,15 +97,19 @@
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_transmute.png"/></entry>
-						<entry>Change clicked atoms to the currently selected element</entry>
-					</row>
-					<row>
-						<entry><inlinegraphic fileref="images/build_addh.png"/></entry>
-						<entry>Satisfy the natural valencies of all C, N, and O atoms by adding hydrogen atoms</entry>
+						<entry>Transmute clicked atoms to the currently selected element</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_atomaddh.png"/></entry>
 						<entry>Add hydrogens to clicked atoms</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_transmutesel.png"/></entry>
+						<entry>Transmute all selected atoms to the currently selected element</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/build_addh.png"/></entry>
+						<entry>Satisfy the natural valencies of all C, N, and O atoms by adding hydrogen atoms</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_h.png"/></entry>
@@ -442,13 +447,16 @@
 		<para>
 			<inlinegraphic fileref="images/dotspacer.png"/>
 			<inlinegraphic fileref="images/stack_atomlist.png"/>
+			<inlinegraphic fileref="images/stack_zmatrix.png"/>
 			<inlinegraphic fileref="images/stack_surfaces.png"/>
 			<inlinegraphic fileref="images/stack_fragment.png"/>
+			<inlinegraphic fileref="images/stack_glyphs.png"/>
 			<inlinegraphic fileref="images/spacer.png"/>
 			<inlinegraphic fileref="images/stack_build.png"/>
 			<inlinegraphic fileref="images/stack_transform.png"/>
 			<inlinegraphic fileref="images/stack_position.png"/>
 			<inlinegraphic fileref="images/stack_geometry.png"/>
+			<inlinegraphic fileref="images/stack_select.png"/>
 			<inlinegraphic fileref="images/spacer.png"/>
 			<inlinegraphic fileref="images/stack_celldefine.png"/>
 			<inlinegraphic fileref="images/stack_celltransform.png"/>
@@ -468,12 +476,20 @@
 						<entry>Show the atomlist window</entry>
 					</row>
 					<row>
+						<entry><inlinegraphic fileref="images/stack_zmatrix.png"/></entry>
+						<entry>Show the Z-Matrix editor window</entry>
+					</row>
+					<row>
 						<entry><inlinegraphic fileref="images/stack_surfaces.png"/></entry>
 						<entry>Show the surface/grid management window</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_fragment.png"/></entry>
 						<entry>Show the fragment library</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_glyphs.png"/></entry>
+						<entry>Show the glyph edit window</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_build.png"/></entry>
@@ -490,6 +506,10 @@
 					<row>
 						<entry><inlinegraphic fileref="images/stack_geometry.png"/></entry>
 						<entry>Show the atom geometry tools</entry>
+					</row>
+					<row>
+						<entry><inlinegraphic fileref="images/stack_select.png"/></entry>
+						<entry>Show the atom selection window</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/stack_celldefine.png"/></entry>

@@ -5,10 +5,10 @@
 	<note><title>See also:</title>
 		<itemizedlist mark='opencircle'>
 			<listitem>
-				<para><link linkend="XXX.glyphs">Glyphs</link> for information on glyph types and how they use vector data.</para>
+				<para><link linkend="enums.glyphtypes">Glyphs</link> for information on glyph types and how they use vector data.</para>
 			</listitem>
 			<listitem>
-				<para><link linkend="gui.windows.glyph">Glyph window</link> for management of glyphs in the GUI.</para>
+				<para><link linkend="gui.toolwindows.glyphs">Glyph window</link> for management of glyphs in the GUI.</para>
 			</listitem>
 		</itemizedlist>
 	</note>
@@ -341,7 +341,7 @@ glyphtext(&quot;Coordinate Origin&quot;);
 				<paramdef>string <parameter>options = ""</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global <link linkend="command.types.preferences">preferences</link>. Valid glyph styles are listed in the <link linkend="xxx.glyph">Glyphs</link> section. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
+		<para>Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global <link linkend="command.types.preferences">preferences</link>. Valid glyph styles are listed in <link linkend="enums.glyphtypes">glyph types</link>. Positional / size / scale vector data should be set afterwards with appropriate 'glyphatom*' and 'glyphdata' commands.</para>
 		
 		<para>One or more options may be given to the command. The list of possible options is:</para>
 		

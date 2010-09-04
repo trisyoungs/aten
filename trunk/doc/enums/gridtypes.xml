@@ -14,11 +14,11 @@
 				<row>
 "regularxy", "regularxyz", "freexyz" };
 					<entry>regularxy</entry>
-					<entry>Two-dimensional surface data on a regularly-spaced XY grid. The grid size must be specified on creation (with <link linkend="commands.grid.initgrid">initgrid</link>).</entry>
+					<entry>Two-dimensional surface data on a regularly-spaced XY grid. The grid size must be specified on creation (with <link linkend="command.ref.initgrid">initgrid</link>).</entry>
 				</row>
 				<row>
 					<entry>regularxyz</entry>
-					<entry>Three-dimensional volumetric data on a regularly spaced XYZ grid. The grid size must be specified on creation (with <link linkend="commands.grid.initgrid">initgrid</link>).</entry>
+					<entry>Three-dimensional volumetric data on a regularly spaced XYZ grid. The grid size must be specified on creation (with <link linkend="command.ref.initgrid">initgrid</link>).</entry>
 				</row>
 				<row>
 					<entry>freexyz</entry>
