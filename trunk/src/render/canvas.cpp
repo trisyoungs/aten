@@ -24,6 +24,9 @@
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
 #include "model/model.h"
+#ifdef _WIN32
+  #include "glext.h"
+#endif
 
 // Constructor
 TextObject::TextObject(int xx, int yy, bool ralign, const char *txt) : x(xx), y(yy), rightAlign(ralign)
