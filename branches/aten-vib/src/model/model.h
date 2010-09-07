@@ -1080,6 +1080,14 @@ class Model
 	ZMatrix *zMatrix();
 	// Recalculate model atom posions from ZMatrix definition
 	void recalculateFromZMatrix();
+
+
+	/*
+	// Vibration Data
+	*/
+	private:
+	public:
+
 };
 
 #endif
