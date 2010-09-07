@@ -40,6 +40,7 @@
 #include "parser/patternbound.h"
 #include "parser/region.h"
 #include "parser/vector.h"
+#include "parser/vibration.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
 #include <string.h>
@@ -134,6 +135,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::RegionData):
 			v = (Variable*) new RegionVariable(NULL, FALSE);
 			break;
+		case (VTypes::VibrationData):
+			v = (Variable*) new VibrationVariable(NULL, FALSE);
+			break;
 		case (VTypes::ZMatrixData):
 			v = (Variable*) new ZMatrixVariable(NULL, FALSE);
 			break;
@@ -212,6 +216,9 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 			break;
 		case (VTypes::VectorData):
 			var = new VectorArrayVariable(sizeexpr);
+			break;
+		case (VTypes::VibrationData):
+			var = new VibrationArrayVariable(sizeexpr);
 			break;
 		case (VTypes::ZMatrixData):
 			var = new ZMatrixArrayVariable(sizeexpr);

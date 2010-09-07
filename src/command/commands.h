@@ -410,6 +410,7 @@ class Command
 		LogInfo,
 		ModelTemplate,
 		NewModel,
+		NewVibration,
 		NextModel,
 		ParentModel,
 		PrevModel,
@@ -859,6 +860,7 @@ class Command
 	static bool function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);

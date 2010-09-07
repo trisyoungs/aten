@@ -20,22 +20,25 @@
 */
 
 #include "base/vibration.h"
+#include "model/model.h"
 
 // Constructor
-Vibration::Vibration(int natoms, Model *parent)
+Vibration::Vibration(Model *parent)
 {
 	// Private variables
 	parent_ = parent;
 	frequency_ = 0.0;
+	nDisplacements_ = 0;
 	displacements_ = NULL;
-	nDisplacements_ = natoms;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
 
-	// Create array for displacement data
-	if (nDisplacements_ < 1) printf("Warning - Displacement data array for vibration not created. An invalid number of atoms was passed (%i).\n", nDisplacements_);
+	// Get number of atoms from parent model and create data array
+	if (parent_ == NULL) printf("Warning - Vibration created without a parent model.\n");
+	nDisplacements_ = parent_->nAtoms();
+	if (nDisplacements_ < 1) msg.print("Warning - No displacement data array created for vibration.\n");
 	else displacements_ = new Vec3<double>[nDisplacements_];
 }
 
@@ -43,7 +46,6 @@ Vibration::Vibration(int natoms, Model *parent)
 // Destructor
 Vibration::~Vibration()
 {
-	if (displacements_ != NULL) delete[] displacements_;
 }
 
 // Return parent model
@@ -97,18 +99,17 @@ void Vibration::setDisplacement(int n, int component, double d)
 }
 
 // Set specified displacement data (vector)
-void Vibration::setDisplacement(int n, Vec3<double> &v)
+void Vibration::setDisplacement(int n, Vec3<double> v)
 {
 	if ((n < 0) || (n >= nDisplacements_)) msg.print("Warning - Displacement index %i is out of range for vibration.\n", n);
 	else displacements_[n] = v;
 }
 
 // Return n'th displacement data
-Vec3<double> &Vibration::displacement(int n) const
+Vec3<double> Vibration::displacement(int n) const
 {
-	static Vec3<double> dummyVec;
 	if ((n < 0) || (n >= nDisplacements_)) msg.print("Warning - Displacement index %i is out of range for vibration.\n", n);
 	else return displacements_[n];
-	return dummyVec;
+	return Vec3<double>();
 }
 

@@ -37,6 +37,7 @@ variable.h
 variablelist.h
 variablenode.h
 vector.h
+vibration.h
 vtypes.h
 widgetnode.h
 zmatrix.h
@@ -81,6 +82,7 @@ variable.cpp
 variablelist.cpp
 variablenode.cpp
 vector.cpp
+vibration.cpp
 vtypes.cpp
 widgetnode.cpp
 zmatrix.cpp

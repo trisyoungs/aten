@@ -369,6 +369,7 @@ void Command::initPointers()
 	pointers_[LogInfo] = &Command::function_LogInfo;
 	pointers_[ModelTemplate] = &Command::function_ModelTemplate;
 	pointers_[NewModel] = &Command::function_NewModel;
+	pointers_[NewVibration] = &Command::function_NewVibration;
 	pointers_[NextModel] = &Command::function_NextModel;
 	pointers_[ParentModel] = &Command::function_ParentModel;
 	pointers_[PrevModel] = &Command::function_PrevModel;
