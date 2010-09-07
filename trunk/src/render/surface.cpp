@@ -460,27 +460,19 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					if (g->withinCutoff(vertex[5])) cubetype += 32;
 					if (g->withinCutoff(vertex[6])) cubetype += 64;
 					if (g->withinCutoff(vertex[7])) cubetype += 128;
-// 					if (vertex[0] >= cutoff) cubetype += 1;
-// 					if (vertex[1] >= cutoff) cubetype += 2;
-// 					if (vertex[2] >= cutoff) cubetype += 4;
-// 					if (vertex[3] >= cutoff) cubetype += 8;
-// 					if (vertex[4] >= cutoff) cubetype += 16;
-// 					if (vertex[5] >= cutoff) cubetype += 32;
-// 					if (vertex[6] >= cutoff) cubetype += 64;
-// 					if (vertex[7] >= cutoff) cubetype += 128;
 				}
 				else
 				{
 					if ((vertex[0] + vertex[1] + vertex[2] + vertex[3] + vertex[4] + vertex[5] + vertex[6] + vertex[7]) < 0)
 					{
-						if (vertex[0] <= -cutoff) cubetype += 1;
-						if (vertex[1] <= -cutoff) cubetype += 2;
-						if (vertex[2] <= -cutoff) cubetype += 4;
-						if (vertex[3] <= -cutoff) cubetype += 8;
-						if (vertex[4] <= -cutoff) cubetype += 16;
-						if (vertex[5] <= -cutoff) cubetype += 32;
-						if (vertex[6] <= -cutoff) cubetype += 64;
-						if (vertex[7] <= -cutoff) cubetype += 128;
+						if (g->withinCutoff(fabs(vertex[0]))) cubetype += 1;
+						if (g->withinCutoff(fabs(vertex[1]))) cubetype += 2;
+						if (g->withinCutoff(fabs(vertex[2]))) cubetype += 4;
+						if (g->withinCutoff(fabs(vertex[3]))) cubetype += 8;
+						if (g->withinCutoff(fabs(vertex[4]))) cubetype += 16;
+						if (g->withinCutoff(fabs(vertex[5]))) cubetype += 32;
+						if (g->withinCutoff(fabs(vertex[6]))) cubetype += 64;
+						if (g->withinCutoff(fabs(vertex[7]))) cubetype += 128;
 						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, negcol);
 						mult = -1.0;
 					}

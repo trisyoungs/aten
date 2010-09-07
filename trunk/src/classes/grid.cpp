@@ -134,6 +134,11 @@ Grid::Grid()
 	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
+	totalPositiveIntegral_ = 0.0;
+	totalNegativeIntegral_ = 0.0;
+	partialPositiveIntegral_ = 0.0;
+	partialNegativeIntegral_ = 0.0;
+	integralPoint_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -162,6 +167,11 @@ void Grid::operator=(Grid &source)
 	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = source.visible_;
+	totalPositiveIntegral_ = source.totalPositiveIntegral_;
+	partialPositiveIntegral_ = source.partialPositiveIntegral_;
+	integralPoint_ = -1;
+	totalNegativeIntegral_ = source.totalNegativeIntegral_;
+	partialNegativeIntegral_ = source.partialNegativeIntegral_;
 	for (int i=0; i<4; i++)
 	{
 		positiveColour_[i] = source.positiveColour_[i];
@@ -581,6 +591,101 @@ void Grid::setUseDataForZ(bool b)
 bool Grid::useDataForZ() const
 {
 	return useDataForZ_;
+}
+
+// Calculate integrals
+void Grid::calculateIntegrals()
+{
+	msg.enter("Grid::calculateIntegrals");
+	int i,j,k;
+	double **data2, *data1;
+	partialPositiveIntegral_ = 0.0;
+	totalPositiveIntegral_ = 0.0;
+	partialNegativeIntegral_ = 0.0;
+	totalNegativeIntegral_ = 0.0;
+	if (type_ == Grid::RegularXYZData)
+	{
+		for (i = 0; i < nPoints_.x; i++)
+		{
+			data2 = data3d_[i];
+			for (j = 0; j<nPoints_.y; j++)
+			{
+				data1 = data2[j];
+				for (k = 0; k<nPoints_.z; k++)
+				{
+					if (data1[k] > 0) totalPositiveIntegral_ += data1[k];
+					else totalNegativeIntegral_ += data1[k];
+					if (data1[k] > 0)
+					{
+						if (withinCutoff(data1[k])) partialPositiveIntegral_ += data1[k];
+					}
+					else if (withinCutoff(fabs(data1[k]))) partialNegativeIntegral_ += data1[k];
+				}
+			}
+		}
+	}
+	else if (type_ == Grid::RegularXYData)
+	{
+		for (i = 0; i < nPoints_.x; i++)
+		{
+			data1 = data2d_[i];
+			for (j = 0; j<nPoints_.y; j++)
+			{
+				if (data1[j] > 0) totalPositiveIntegral_ += data1[j];
+				else totalNegativeIntegral_ += data1[j];
+				if (data1[j] > 0)
+				{
+					if (withinCutoff(data1[j])) partialPositiveIntegral_ += data1[j];
+				}
+				else if (withinCutoff(fabs(data1[j]))) partialNegativeIntegral_ += data1[j];
+			}
+		}
+	}
+	msg.exit("Grid::calculateIntegrals");
+}
+
+// Return the total positive integral of the grid (calculated when drawn)
+double Grid::totalPositiveIntegral()
+{
+	if (log_ != integralPoint_)
+	{
+		calculateIntegrals();
+		integralPoint_ = log_;
+	}
+	return totalPositiveIntegral_;
+}
+
+// Return the partial positive integral of the grid, determined by cutoffs (calculated when drawn)
+double Grid::partialPositiveIntegral()
+{
+	if (log_ != integralPoint_)
+	{
+		calculateIntegrals();
+		integralPoint_ = log_;
+	}
+	return partialPositiveIntegral_;
+}
+
+// Return the total negative integral of the grid (calculated when drawn)
+double Grid::totalNegativeIntegral()
+{
+	if (log_ != integralPoint_)
+	{
+		calculateIntegrals();
+		integralPoint_ = log_;
+	}
+	return totalNegativeIntegral_;
+}
+
+// Return the partial negative integral of the grid, determined by cutoffs (calculated when drawn)
+double Grid::partialNegativeIntegral()
+{
+	if (log_ != integralPoint_)
+	{
+		calculateIntegrals();
+		integralPoint_ = log_;
+	}
+	return partialNegativeIntegral_;
 }
 
 // Create data array (from npoints vector)

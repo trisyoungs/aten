@@ -270,6 +270,13 @@ void AtenGrids::refreshGridInfo()
 	ui.GridUpperCutoffSpin->setValue(g->upperCutoff());
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
+	// Set integral data labels
+	ui.GridTotalPositiveIntegralLabel->setText(ftoa(g->totalPositiveIntegral()));
+	ui.GridTotalNegativeIntegralLabel->setText(ftoa(g->totalNegativeIntegral()));
+	ui.GridPartialPositiveIntegralLabel->setText(ftoa(g->partialPositiveIntegral()));
+	ui.GridPartialNegativeIntegralLabel->setText(ftoa(g->partialNegativeIntegral()));
+	ui.GridPercentagePositiveIntegralLabel->setText(ftoa(100.0*g->partialPositiveIntegral()/g->totalPositiveIntegral()));
+	ui.GridPercentageNegativeIntegralLabel->setText(ftoa(100.0*g->partialNegativeIntegral()/g->totalNegativeIntegral()));
 	// Set origin and axes
 	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);
@@ -390,6 +397,7 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setCutoff(d);
+	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 
@@ -402,6 +410,7 @@ void AtenGrids::on_GridUpperCutoffSpin_valueChanged(double d)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setUpperCutoff(d);
+	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 
