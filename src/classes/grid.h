@@ -79,6 +79,7 @@ class Grid
 	// Assignment operator
 	void operator=(Grid &source);
 
+
 	/*
 	// Identity
 	*/
@@ -97,6 +98,7 @@ class Grid
 	bool initialise(GridType type, Vec3<int> npoints);
 	// Return type of Grid data
 	GridType type() const;
+
 
 	/*
 	// Gridded Data
@@ -134,10 +136,16 @@ class Grid
 	Vec3<int> loopOrder_;
 	// Use data value for z-component of 2D surface
 	bool useDataForZ_;
-
-	private:
 	// Calculate bounding lower-left and upper-right corners
 	void calculateBounds();
+	// Integral calculation log point
+	int integralPoint_;
+	// Total integrals of the grid (calculated when drawn)
+	double totalPositiveIntegral_, totalNegativeIntegral_;
+	// Partial integral of the grid, determined by cutoffs (calculated when drawn)
+	double partialPositiveIntegral_, partialNegativeIntegral_;
+	// Calculate integrals
+	void calculateIntegrals();
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -190,6 +198,15 @@ class Grid
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface
 	bool useDataForZ() const;
+	// Return the total positive integral of the grid (calculated when drawn)
+	double totalPositiveIntegral();
+	// Return the total negative integral of the grid (calculated when drawn)
+	double totalNegativeIntegral();
+	// Return the partial positive integral of the grid, determined by cutoffs (calculated when drawn)
+	double partialPositiveIntegral();
+	// Return the partial negative integral of the grid, determined by cutoffs (calculated when drawn)
+	double partialNegativeIntegral();
+
 
 	/*
 	// Data Interface
