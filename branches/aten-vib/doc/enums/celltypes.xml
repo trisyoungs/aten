@@ -1,0 +1,45 @@
+<section id="enums.celltypes"><title>Cell Types</title>
+
+	<para>A model's unit cell is, at any given time, one of the following:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Cell type keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>none</entry>
+					<entry>The model has no unit cell (i.e. it is non-periodic)</entry>
+				</row>
+				<row>
+					<entry>cubic</entry>
+					<entry>The model's unit cell is cubic, with A=B=C and alpha=beta=gamma=90</entry>
+				</row>
+				<row>
+					<entry>orthorhombic</entry>
+					<entry>The model's unit cell is an orthorhombus, with any cell lengths and alpha=beta=gamma=90</entry>
+				</row>
+				<row>
+					<entry>parallelepiped</entry>
+					<entry>The model's unit cell is monoclinic or triclinic, with any cell lengths and angles</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.groups.cell">Cell Commands</link> for methods to set and manipulate unit cells of models</para>
+			</listitem>
+			<listitem>
+				<para><link linkend="command.types.unitcell">Unitcell type</link> for information on the relevant variable type</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>

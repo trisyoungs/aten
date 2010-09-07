@@ -1,0 +1,223 @@
+<section id="command.groups.disordered"><title>Disordered Commands</title>
+	
+	<para>Set up the disordered builder to create systems from individual components using Monte Carlo methods.</para>
+
+	<section id="command.ref.disorder"><title>disorder</title>
+		<indexterm><primary>commands</primary><secondary>disorder</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>disorder</function></funcdef>
+				<paramdef>int <parameter>ncycles</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Start the disordered builder, requesting <emphasis>ncycles</emphasis> cycles of Monte Carlo moves.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+disorder(50);
+		</synopsis>
+		<para>runs 50 cycles of the disordered builder.</para>
+	
+	</section>
+	
+	<section id="command.ref.nmols"><title>nmols</title>
+		<indexterm><primary>commands</primary><secondary>nmols</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>nmols</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Specify that <emphasis>n</emphasis> copies of the current model are to be added (or attempted to be added) during the build process.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+nmols(300);
+		</synopsis>
+		<para>requests that the current model, whatever it is, should be used in disordered building and that there should be 300 copies of the model in the new system.</para>
+	
+	</section>
+	
+	<section id="command.ref.listcomponents"><title>listcomponents</title>
+		<indexterm><primary>commands</primary><secondary>listcomponents</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listcomponents</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints a list of the currently requested populations for all models to be added during the disordered building process.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+listcomponents();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.regioncentre"><title>regioncentre</title>
+		<indexterm><primary>commands</primary><secondary>regioncentre</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regioncentre</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the coordinates of the centre of the set region for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+regioncentre(5.0, 7.0, 6.0);
+		</synopsis>
+		<para>sets the centre of the current model's region to {5.0, 7.0, 6.0}.</para>
+	
+	</section>
+	
+	<section id="command.ref.regioncentrefrac"><title>regioncentrefrac</title>
+		<indexterm><primary>commands</primary><secondary>regioncentrefrac</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regioncentrefrac</function></funcdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>As with <link linkend="command.ref.regioncentre">regioncentre</link>, sets the coordinates of the centre of the set region for the current model but in fractional cell coordinates.</para>
+	
+	</section>
+	
+	<section id="command.ref.regiongeometry"><title>regiongeometry</title>
+		<indexterm><primary>commands</primary><secondary>regiongeometry</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regiongeometry</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the geometry of the allowed region for the current model. The <emphasis>x</emphasis>, <emphasis>y</emphasis>, and <emphasis>z</emphasis> values determine the total extent/size of the region along each principal axis. For cylindrical regions, <emphasis>x</emphasis> and <emphasis>y</emphasis> determine the radii of the cylinder in the perpendicular directions to the cylinder vector, while <emphasis>z</emphasis> determines the length of the cylinder.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+regiongeometry(10.0, 10.0, 3.0);
+		</synopsis>
+		<para>sets the geometry of the region for the current model. For example, if the region was of type 'sphere' this would create an elongated ellipsoid.</para>
+		
+	</section>
+	
+	<section id="command.ref.regiongeometryfrac"><title>regiongeometryfrac</title>
+		<indexterm><primary>commands</primary><secondary>regiongeometryfrac</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regiongeometryfrac</function></funcdef>
+				<paramdef>double <parameter>fx</parameter></paramdef>
+				<paramdef>double <parameter>fy</parameter></paramdef>
+				<paramdef>double <parameter>fz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>As with <link linkend="command.ref.regiongeometry">regiongeometry</link>, sets the geometry of the allowed region for the current model but in fractional cell coordinates.</para>
+	
+	</section>
+	
+	<section id="command.ref.regionoverlap"><title>regionoverlap</title>
+		<indexterm><primary>commands</primary><secondary>regionoverlap</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regionoverlap</function></funcdef>
+				<paramdef>bool <parameter>allowoverlap</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Determines whether additions into the current model's region are allowed to overlap with regions defined for other models. Default is true.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+regionoverlap(&quot;false&quot;);
+		</synopsis>
+		<para>restricts the current model to the subspace of its defined region that does not overlap with any other region.</para>
+		
+	</section>
+	
+	<section id="command.ref.regionrotation"><title>regionrotation</title>
+		<indexterm><primary>commands</primary><secondary>regionrotation</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regionrotation</function></funcdef>
+				<paramdef>double <parameter>rotx</parameter></paramdef>
+				<paramdef>double <parameter>roty</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the rotations of the current region.</para>
+	
+	</section>
+	
+	<section id="command.ref.regionshape"><title>regionshape</title>
+		<indexterm><primary>commands</primary><secondary>regionshape</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>regionshape</function></funcdef>
+				<paramdef>string <parameter>shape</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the shape of the allowed insertion region for the current model. Valid <emphasis>shapes</emphasis> are 'cell', 'cuboid', 'spheroid' and 'cylinder'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+regionshape(&quot;sphere&quot;);
+		</synopsis>
+		<para>restricts the current model to a spherical region of the cell.</para>
+		
+	</section>
+	
+	<section id="command.ref.vdwscale"><title>vdwscale</title>
+		<indexterm><primary>commands</primary><secondary>vdwscale</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>double <function>vdwscale</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>double <function>vdwscale</function></funcdef>
+				<paramdef>double <parameter>scale</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the scaling factor for VDW radii to use in the disordered builder, or returns the current value.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+vdwscale(0.75);
+		</synopsis>
+		<para>scales all VDW radii by 0.75 in the calculation.</para>
+		<synopsis>
+dosuble currentscale = vdwscale();
+		</synopsis>
+		<para>returns the current VDW scaling factor that will bbe applied.</para>
+		
+	</section>
+
+</section>

@@ -1,0 +1,38 @@
+<section id="enums.readsuccess"><title>Read Success Integers</title>
+	
+	<para>Integer return values for many <link linkend="command.groups.readwrite">read/write</link> operations.</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Read/write return values</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>1</entry>
+					<entry>Success - no errors encountered</entry>
+				</row>
+				<row>
+					<entry>0</entry>
+					<entry>The read/write operation failed before it was completed</entry>
+				</row>
+				<row>
+					<entry>-1</entry>
+					<entry>End-of-file was encountered during read operation||</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+	
+	<note><title>See Also:</title>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				<para><link linkend="command.groups.readwrite">Read/Write Commands</link> for methods to read in data from files</para>
+			</listitem>
+		</itemizedlist>
+	</note>
+
+</section>

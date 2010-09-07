@@ -1,0 +1,398 @@
+<section id="command.groups.model"><title>Model Commands</title>
+	
+	<para>Model creation and management.</para>
+
+	<section id="command.ref.createatoms"><title>createatoms</title>
+		<indexterm><primary>commands</primary><secondary>createatoms</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>createatoms</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Can be run when importing trajectory frames. Creates enough atoms in the current trajectory frame to match the parent model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+createatoms();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.currentmodel"><title>currentmodel</title>
+		<indexterm><primary>commands</primary><secondary>currentmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>currentmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>model <function>currentmodel</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>model <function>currentmodel</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>model <function>currentmodel</function></funcdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		
+		<para>Returns a reference to the current model (if no argument is given) or selects the supplied model and makes it the current model. The model may be selected either by name, by its integer position in the list of loaded models (i.e. 1 to N), or a model-type variable containing a valid model reference may be passed.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+currentmodel(4);
+		</synopsis>
+		<para>selects the fourth loaded model.</para>
+		<synopsis>
+currentmodel(&quot;Protein coordinates&quot;)
+		</synopsis>
+		<para>selects the model named &quot;Protein coordinates&quot; (provided it exists)</para>
+		<synopsis>
+model m1, m2;
+m1 = newmodel(&quot;Test model 1&quot;);
+m2 = newmodel(&quot;Test model 2&quot;);
+currentmodel(m1);
+		</synopsis>
+		<para>creates two models, storing references to each, and then re-selects the first one and makes it the current target again.</para>
+		
+	</section>
+
+	<section id="command.ref.deletemodel"><title>deletemodel</title>
+		<indexterm><primary>commands</primary><secondary>deletemodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void<function>deletemodel</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>deletemodel</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>deletemodel</function></funcdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		
+		<para>Deletes the current model (if no argument is given) or the supplied model.</para>
+		
+	</section>
+	
+	<section id="command.ref.firstmodel"><title>firstmodel</title>
+		<indexterm><primary>commands</primary><secondary>firstmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>firstmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Makes the first loaded / created model the current model, and returns a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+firstmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.info"><title>info</title>
+		<indexterm><primary>commands</primary><secondary>info</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>info</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Print out information on the current model and its atoms.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+info();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.finalisemodel"><title>finalisemodel</title>
+		<indexterm><primary>commands</primary><secondary>finalisemodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>finalisemodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Performs various internal tasks after a model has been fully created within a filter. Should be called after all operations on each created model have finished.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+finalisemodel();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.getmodel"><title>getmodel</title>
+		<indexterm><primary>commands</primary><secondary>getmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>getmodel</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>model <function>getmodel</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>model <function>getmodel</function></funcdef>
+				<paramdef>model <parameter>m</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns a reference to the requested model, but unlike <link linkend="command.ref.currentmodel">currentmodel</link> does not make it the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+model alpha = getmodel(&quot;alpha2&quot;);
+		</synopsis>
+		<para>grabs a reference to the model named 'alpha2'.</para>
+		<synopsis>
+model m = getmodel(5);
+		</synopsis>
+		<para>gets a reference to the fifth loaded model.</para>
+	
+	</section>
+	
+	<section id="command.ref.lastmodel"><title>lastmodel</title>
+		<indexterm><primary>commands</primary><secondary>lastmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>lastmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Makes the last loaded / created model the current model, and returns a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+model final = lastmodel();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.listmodels"><title>listmodels</title>
+		<indexterm><primary>commands</primary><secondary>listmodels</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>listmodels</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Lists all models currently available.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+listmodels();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.loadmodel"><title>loadmodel</title>
+		<indexterm><primary>commands</primary><secondary>loadmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>loadmodel</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>int <function>loadmodel</function></funcdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+				<paramdef>string <parameter>newname</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Load model(s) from the <emphasis>filename</emphasis> provided, changing the name of the the (last loaded) model to <emphasis>newname</emphasis> (if provided). The last loaded model becomes the current model, and the number of models loaded is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+loadmodel(&quot;/home/foo/coords/test.xyz&quot;, &quot;mymodel&quot;);
+		</synopsis>
+		<para>loads a model called 'test.xyz' and gives it the new name 'mymodel'.</para>
+		
+	</section>
+	
+	<section id="command.ref.modeltemplate"><title>modeltemplate</title>
+		<indexterm><primary>commands</primary><secondary>modeltemplate</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>modeltemplate</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Can only be run when importing trajectory frames. Templates the atoms in the trajectory's parent model by creating an equal number of atoms in the target trajectory frame, and copying the element and style data. Positions, forces, and velocities are not copied from the parent model atoms.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+modeltemplate();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.newmodel"><title>newmodel</title>
+		<indexterm><primary>commands</primary><secondary>newmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>newmodel</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Create a new model called <emphasis>name</emphasis> which becomes the current model, and return a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+newmodel(&quot;emptymodel&quot;);
+		</synopsis>
+		<para>creates a new, empty model called 'emptymodel' and makes it current.</para>
+		<synopsis>
+model c12 = newmodel(&quot;dodecane&quot;);
+		</synopsis>
+		<para>creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable <emphasis>c12</emphasis>.</para>
+		
+	</section>
+	
+	<section id="command.ref.nextmodel"><title>nextmodel</title>
+		<indexterm><primary>commands</primary><secondary>nextmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>nextmodel</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Skips to the next loaded model, makes it current, and returns a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+model next = nextmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.parentmodel"><title>parentmodel</title>
+		<indexterm><primary>commands</primary><secondary>parentmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>parentmodel</function></funcdef>
+				<void/>
+				</funcprototype>
+		</funcsynopsis>
+		<para>Makes the parent model of the current trajectory frame the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+parentmodel();
+		</synopsis>
+
+	</section>
+		
+	<section id="command.ref.prevmodel"><title>prevmodel</title>
+		<indexterm><primary>commands</primary><secondary>prevmodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>model <function>prevmodel</function></funcdef>
+				<void/>
+				</funcprototype>
+		</funcsynopsis>
+		<para>Skips to the previous loaded model, makes it current, and returns a reference to it.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+model prev = prevmodel();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.savemodel"><title>savemodel</title>
+		<indexterm><primary>commands</primary><secondary>savemodel</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>savemodel</function></funcdef>
+				<paramdef>string <parameter>format</parameter></paramdef>
+				<paramdef>string <parameter>filename</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Save the current model in the  <emphasis>format</emphasis> given (which should correspond to a model export <link linkend="readwrite.filters.properties.type">Filter</link> nickname) to the <emphasis>filename</emphasis> specified. If the save was successful, an integer value of '1' is returned, otherwise '0'.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int success = savemodel(&quot;xyz&quot;, &quot;/home/foo/newcoords/test.config&quot;);
+		</synopsis>
+		<para>saves the current model in xyz format to the filename given.</para>
+	
+	</section>
+	
+	<section id="command.ref.setname"><title>setname</title>
+		<indexterm><primary>commands</primary><secondary>setname</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setname</function></funcdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the name of the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+setname(&quot;panther)&quot;;
+		</synopsis>
+		<para>gives the current model the cool-sounding name of 'panther'! Ahem.</para>
+
+	</section>
+
+	<section id="command.ref.showall"><title>showall</title>
+		<indexterm><primary>commands</primary><secondary>showall</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>showall</function></funcdef>
+			<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Makes any previously-hidden atoms in the model visible again.</para>
+		
+	</section>
+
+</section>

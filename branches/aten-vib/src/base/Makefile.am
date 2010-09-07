@@ -1,0 +1,11 @@
+noinst_LIBRARIES = libbase.a libmath.a libsg.a
+
+libmath_a_SOURCES = mathfunc.cpp
+
+libbase_a_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp bond.cpp bundle.cpp cell.cpp colourscalepoint.cpp dnchar.cpp doubleexp.cpp elements.cpp glyph.cpp kvmap.cpp log.cpp mathfunc.cpp measurement.cpp messenger.cpp lineparser.cpp pattern.cpp region.cpp sysfunc.cpp
+
+libsg_a_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegroup.cpp
+
+noinst_HEADERS = atomaddress.h atom.h bond.h bundle.h cell.h colourscalepoint.h constants.h dnchar.h doubleexp.h elements.h generator.h glyph.h kvmap.h log.h mathfunc.h measurement.h messenger.h lineparser.h pattern.h region.h sginfo.h spacegroup.h sysfunc.h
+
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@

@@ -1,0 +1,102 @@
+# This simplistic (and pretty useless) example forcefield for all-atom water and united-atom
+# methanol contains all the allowable blocks in a forcefield.
+
+# Basic definitions: name and units
+name "Test Forcefield"
+units kj
+
+# Print out a message here to inform the user of something
+message "Aten's test forcefield - Consider yourself informed."
+
+# The atomtypes that we define in the 'types' block can make use of NETA descriptions that we define
+# in a 'defines' block. In this way, commonly-used NETA definitions can be stated once and used many
+# times through referencing their names. All NETA strings defined here must be valid in their own
+# right.
+defines
+WATER_O		"-O(nh=2,nbonds=2)"
+ch3carbon	"-H(n=3),-C"
+end
+
+# We will define some simple atomtypes. Note that the NETA description for types 1 and 2 are 
+# identical, but type 2 makes use of one of the NETA defines in the previous block.
+# For the united atom methanol, the oxygen atom is defined explicitly, and then the attached
+# carbon and hydrogen atoms are defined purely by reference to the oxygen.
+types
+1	HW1	H	"nbonds=1,-O(nh=2,nbonds=2)"	"Water hydrogen 1"
+2	HW2	H	"nbonds=1,$WATER_O"		"Water hydrogen 2 (identical to 1)"
+3	OW1	O	"nbonds=2,nh=2"			"Water oxygen"
+4	OW2	O	"nh=2,linear"			"Water oxygen in H2O where the bond angle is linear"
+5	OH	O	"nbonds=2,nh=1,-C(nbonds=1)"	"Hydroxyl oxygen in united-atom methanol"
+7	HO	H	"-&5"				"Hydroxyl hydrogen in united-atom methanol"
+end
+
+# The united atom types block allows a simple way to define, in addition to the type names and NETA
+# definitions, the effective masses of the atoms.
+uatypes
+6	CH3	C	15.0344		"nbonds=1,-&5"
+end
+
+# Both OW1 and OW2 we will consider as equivalent (== OW) in all intramolecular terms
+# Note that these definitions must come *after* the types have been defined - they are retroactively applied
+equivalents
+OW	OW1 OW2
+end
+
+# Here come the intermolecular definitons for each atomtype - charge, LJ epsilon, and LJ sigma
+# We *must* define the data for each atomtype listed in the 'types' block above
+inter  lj
+1	HW1	0.41	0.0	0.0	
+2	HW2	0.41	0.0	0.0	
+3	OW1	-0.82	0.650	3.166
+4	OW2	-0.82	0.650	3.166
+end
+
+# Bond definition. We will only strictly define the OW-HW1 bond - the OW-HW2 bond will
+# be accounted for through 'generator' definitions. There can be more than one 'bonds' block in a single forcefield.
+bonds constraint
+HW1	OW	4184.0	1.000
+end
+
+# For angles, we will define all possible angles using a single definition with wildcards
+angles bondconstraint
+HW*	OW	HW*	4184.0	1.62398
+end
+
+# Extra data definitions add character and numerical data to the defined atom types, and can be accessed from filters, scripts etc.
+# We'll define one additional parameter of each type (string, double, and int).
+data "string s, double d, int i"
+1	HW1	"white elephant"	3.1416		1
+2	HW2	"blue monday"		4.184		11
+3	OW1	"red mist"		627.5095	21
+4	OW2	"yellow belly"		2.718281828	1211
+end
+
+# ****************
+# Forcefield Rules
+# ****************
+
+# Here we will state a new set of type descriptions for an ethane molecule, but will use some simple rule definitions instead.
+
+types 
+10	CH3	C	"nbonds=4,$ch3carbon"		"Either carbon in ethane"
+11	HC	H	"-&10"				"Hydrogen on CH3 in ethane"
+end
+
+# In forcefields for which parameters are calculated on-the-fly, the set of generating data constants for each atom type are
+# listed in a 'generator' block. The syntax is similar to the 'data' block above, with the data types and names specified first.
+# We will define the generator data for only the ethane types here...
+generator "double sigma, double eps, double k, double theta "
+10	CH3	3.25	0.2	1000.0	109.5
+end
+
+# When a vdw, bond, angle, or torsion parameter is required by the forcefield but is not defined in any lists, the relevant
+# generator function is called (if one exists). The functions themselves have strict declarations that must be followed.
+# Functions are defined in one or more 'function' blocks
+function
+int generatebond(ffbound newterm, atom i, atom j)
+{
+	printf("Here we are in the bond generation function.\n");
+	printf("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equiv,j.type.equiv);
+	#return 1;
+}
+end

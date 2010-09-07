@@ -1,0 +1,122 @@
+<section id="command.groups.minimiser"><title>Minimiser Commands</title>
+	
+	<para>Perform energy minimisation on models.</para>
+	
+	<section id="command.ref.cgminimise"><title>cgminimise</title>
+		<indexterm><primary>commands</primary><secondary>cgminimise</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>cgminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Geometry optimises the current model using the conjugate gradient method.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+cgminimise(20);
+		</synopsis>
+		<para>runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.</para>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="methods.literature">Literature methods</link> for details on the conjugate gradient method as it is implemented in Aten.</para>
+				</listitem>
+			</itemizedlist>
+		</note>	
+		
+	</section>
+	
+	<section id="command.ref.converge"><title>converge</title>
+		<indexterm><primary>commands</primary><secondary>converge</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>converge</function></funcdef>
+				<paramdef>double <parameter>econv</parameter></paramdef>
+				<paramdef>double <parameter>fconv</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+converge(1e-6, 1e-4);
+		</synopsis>
+		<para>sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.</para>
+	
+	</section>
+	
+	<section id="command.ref.linetol"><title>linetol</title>
+		<indexterm><primary>commands</primary><secondary>linetol</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>linetol</function></funcdef>
+				<paramdef>double <parameter>tolerance</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the tolerance of the line minimiser.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+linetol(1e-5);
+		</synopsis>
+		<para>sets the line tolerance to 1.0E-5.</para>
+
+	</section>
+	
+	<section id="command.ref.mcminimise"><title>mcminimise</title>
+		<indexterm><primary>commands</primary><secondary>mcminimise</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Optimises the current model using a molecular Monte Carlo minimisation method.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mcminimise(20);
+		</synopsis>
+		<para>runs a geometry optimisation for a maximum of 20 cycles.</para>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="methods.mcminimiser">Monte Carlo Minimiser method</link> for details on the Monte Carlo minimisation method as it is implemented in Aten.</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+	
+	</section>
+	
+	<section id="command.ref.sdminimise"><title>sdminimise</title>
+		<indexterm><primary>commands</primary><secondary>sdminimise</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>sdminimise</function></funcdef>
+				<paramdef>int <parameter>maxsteps</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Optimises the current model using the Steepest Descent method.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+sdminimise(100);
+		</synopsis>
+		<para>minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.</para>
+		
+	</section>
+	
+</section>

@@ -1,0 +1,139 @@
+# GAMESS-US Output Filter, and Cartesian Input Model Filters (I/O) (for v1.2+)
+# Created:	 14/04/2009
+# Last modified: 13/10/2009
+# ChangeLog:
+#	13/10/2009 - Last frame and parent frame from logfile are now deselected.
+#	12/05/2010 - Changed id of log file filter to 11 (was 10, which conflicted with MDL Molfile in 'mol')
+# Notes:
+#	Output model filter sets symmetry to C1, regardless of the actual symmetry.
+
+filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", extension="log", glob="*.log", zmap="name", search="GAMESS VERSION", id=11)
+{
+	# Variable declaration
+	int result,nstructures,natoms,n;
+	string line,e,name,discard;
+	double rx,ry,rz;
+
+	# Determine number of atoms - search for line containing 'TOTAL NUMBER OF ATOMS'
+	if (!find("TOTAL NUMBER OF ATOMS",line)) error("Couldn't determine number of atoms from GAMESS-US output.");
+
+	# Get number of atoms from line
+	readvarf(line, "%48*%i",natoms);
+
+	# Create a new model, and store its pointer for use later
+	model m = newmodel("GAMESS-US Output");
+
+	# Now search for sets of coordinate
+	nstructures = 0;
+	while (!eof())
+	{
+		# Lines containing 'COORDINATES OF ALL ATOMS ARE' are the beginning of coordinate sections
+		if (find("COORDINATES OF ALL ATOMS ARE"))
+		{
+			# Found a set of coordinates. Skip 2 lines and then read coordinates
+			nstructures++;
+			skipline(2);
+			writevarf(name, "Frame %i", nstructures);
+			addframe(name);
+			for (n=1; n<=natoms; ++n)
+			{
+				readline(e,discard,rx,ry,rz);
+				newatom(e,rx,ry,rz);
+			}
+			# Recalculate bonding
+			rebond();
+			finaliseframe();
+		}
+	}
+
+	# Now, copy the contents of the current (i.e. last) frame, and paste it into the parent model
+	selectall();
+	copy();
+	selectnone();
+	parentmodel();
+	paste();
+	selectnone();
+	finalisemodel();
+}
+
+filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", zmap="name", id=5)
+{
+	# Variables
+	string symm,symbol,title;
+	int n,z;
+	double rx,ry,rz;
+
+	# Search for $DATA section
+	if (!find("DATA")) error("Couldn't find 'DATA' section in input file.");
+
+	# Read in title card
+	getline(title);
+	newmodel(title);
+
+	# Skip over symmetry specification
+	readline(symm);
+	if (symm <> "C1")
+	{
+		# Single blank line means the master frame is in use, and only this line to skip
+		readline(symm);
+		if (symm != "") skipline();
+	}
+	
+	# Coordinates follow, terminated by $END
+	readline(symbol,z,rx,ry,rz);
+	while (symbol != "$END")
+	{
+		newatom(symbol,rx,ry,rz);
+		readline(symbol,z,rx,ry,rz);
+	}
+
+	# Done
+	rebond();
+	finalisemodel();
+}
+
+filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
+{
+	# General control options ($CONTRL)
+	string runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
+	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
+	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
+	int charge = option("Charge", "intspin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
+	string dfttyp = option("DFT Type", "combo", "NONE,XXXX", 1, "group=Job Control ($CONTRL)", "newline");
+	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
+	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
+	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
+	string cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
+	string relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
+	string exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
+
+	# Basis set specification ($BASIS)
+	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCn,ACCn,CCnC,ACCnC,PCn,APCn,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
+	int basis_ngauss = option("NGAUSS", "intspin", 3,8,6,1, "group=Basis Set ($BASIS)");
+	int basis_ndfunc = option("NDFUNC", "intspin", 0,3,0,1, "group=Basis Set ($BASIS)");
+	int basis_npfunc = option("NPFUNC", "intspin", 0,3,0,1, "group=Basis Set ($BASIS)");
+	int basis_nffunc = option("NFFUNC", "intspin", 0,1,0,1, "group=Basis Set ($BASIS)");
+	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
+	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
+
+	# Stationary point location options ($STATPT), placed in 'opts' tabs
+	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");
+	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
+	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
+
+	# Write $CONTRL, $SYSTEM and $BASIS groups
+	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);
+	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", dfttyp, tddft, mplevl, cityp, cctyp);
+	writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc, basis_nffunc, basis_diffsp, basis_diffs);
+	if ((runtyp == "OPTIMISE") || (runtyp == "SADPOINT")) writelinef(" $STATPT METHOD=%s NSTEP=%i OPTTOL=%f $END\n", statpt_method, statpt_nstep, statpt_opttol);
+	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
+	writeline(" $GUESS GUESS=HUCKEL $END");
+	writeline(" $SCF DIRSCF=.TRUE. $END");
+
+	# Now for the DATA section
+	writeline(" $DATA");
+	writeline(aten.frame.name);
+	writeline("C1");
+	for (atom i = aten.frame.atoms; i != 0; ++i) writelinef("%-15s  %4.1f  %12.6f %12.6f %12.6f\n", i.name,i.z*1.0,i.rx,i.ry,i.rz);
+	writeline(" $END");
+}

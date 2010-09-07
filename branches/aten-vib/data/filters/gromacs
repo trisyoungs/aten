@@ -1,0 +1,153 @@
+# Gromacs Configuration and Expression Files
+# Created:	 25/05/2010
+# Last modified: 10/05/2010
+# ChangeLog:
+
+filter(type="importmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
+{
+
+	# Variable declaration
+	int natoms,n,m,resno;
+	string e,title,res;
+	double rx,ry,rz,a,b,c;
+	atom i;
+	aten.prefs.zmap = "singlealpha";
+
+	# Read data
+	getline(title);
+	newmodel(title);
+	readline(natoms);
+	for (n=1; n<=natoms; ++n)
+	{
+		readlinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f",resno,res,e,m,rx,ry,rz);
+		i = newatom(e, rx*10.0, ry*10.0, rz*10.0);
+	}
+	readline(a,b,c);
+	if ((a < 0.0001) || (b < 0.0001) || (c < 0.0001)) printf("No valid cell found.\n");
+	else cell(a*10.0,b*10.0,c*10.0,90,90,90);
+	rebond(FALSE);
+	finalisemodel();
+}
+
+filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
+{
+
+	# Variable declaration
+	int n;
+	model m = aten.frame;
+
+	# Write data
+	writeline(m.name);
+	writeline(m.natoms);
+
+	n = 1;
+	for (atom i=m.atoms; i; ++i)
+	{
+		if (i.type == 0) writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.symbol,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+		else writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.type.name,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+		++n;
+	}
+	if (m.cell.type == "none") writelinef("%9.5f%9.5f%9.5f\n",0.0,0.0,0.0);
+	else writelinef("%9.5f%9.5f%9.5f\n",m.cell.a/10.0,m.cell.b/10.0,m.cell.c/10.0);
+}
+
+filter(type="exportexpression",name="Gromacs .rtp file Specification", extension="rtp", glob="*.rtp",nickname="rtp", id=14)
+{
+	# Variable declaration
+        pattern p;
+	atom a;
+	bound b;
+	ffatom at1, at2;
+	int nvdw, n, nc, n2, nconstraints, i,j,k,l,f;
+	
+	# Get current model
+	model m = aten.frame;
+	
+	typemodel();
+
+	#should make sure there is at least one pattern here
+	if (p = m.patterns)
+	{
+	printf("a pattern exists\n");
+	}
+	else
+	{
+	printf("noone here but us chickens\n");
+	p = newpattern("NUN", 1, m.natoms);
+	}
+     
+	# Loop over patterns (molecule types)
+	k=0;
+	for (p = m.patterns; p; ++p)
+	{
+		nconstraints = 0;
+
+		k++;
+
+		if (p.name) # actually want if p.name is 4 chars in length and/or not the same as another potential p.name
+		{
+		writelinef("[ %4s ]\n", p.name);
+		} 
+		else  
+		{
+		writelinef("[ MOL%i ]\n", k);
+		}
+
+	writeline(" [ atoms ]");
+	a = p.firstatom;
+		for (n=1; n<=p.nmolatoms; ++n)
+		{
+
+			printf("Using : %s\n", a.type.ff.name);
+			if(a.type.ff.name == "Canongia Lopes & Padua Ionic Liquids (version 01/06/2006)"){
+			writelinef("   %3s%-4i    cldp_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			}
+			else {
+			writelinef("   %3s%-4i    opls_%-3i    %9.6f      1\n",a.symbol,n,a.type.id,a.q);
+			}
+
+
+			++a;
+		}
+
+    	# Bonds in pattern
+	writelinef(" [ bonds ]\n");
+	nc = 0;
+		for (n=1; n<=p.nbonds; ++n) if (p.bonds[n].form == "constraint") ++nc;
+
+		for (n=1; n<=p.nbonds; ++n)
+		{
+			# Grab bound pointer
+			b = p.bonds[n];
+			if (b.form == "constraint") nconstraints++;
+			else 
+			{
+			i=b.id[1];
+			j=b.id[2];
+
+#			writelinef("   %5s%i %5s%i\n",p.atoms[i].type.name,i,p.atoms[j].type.name,j);
+			writelinef("   %5s%i %5s%i\n",p.atoms[i].symbol,i,p.atoms[j].symbol,j);
+
+
+			}
+                   }
+
+    	# Torsions in pattern
+	writelinef("\n  [dihedrals]\n");
+		# Grab bound pointer
+		for (b = p.torsions; b; ++b)
+		{
+			i=b.id[1];
+			j=b.id[2];
+			k=b.id[3];
+			l=b.id[4];			
+#			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].type.name,i,p.atoms[j].type.name,j,p.atoms[k].type.name,k,p.atoms[l].type.name,l);
+			writelinef("   %5s%i %5s%i %5s%i %5s%i   \n",p.atoms[i].symbol,i,p.atoms[j].symbol,j,p.atoms[k].symbol,k,p.atoms[l].symbol,l);
+
+
+		}
+
+
+          }
+}
+
