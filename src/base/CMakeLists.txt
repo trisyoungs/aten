@@ -18,6 +18,7 @@ messenger.cpp
 pattern.cpp
 region.cpp
 sysfunc.cpp
+vibration.cpp
 atomaddress.h
 atom.h
 bond.h
@@ -37,6 +38,7 @@ messenger.h
 pattern.h
 region.h
 sysfunc.h
+vibration.h
 )
 
 add_library(math
