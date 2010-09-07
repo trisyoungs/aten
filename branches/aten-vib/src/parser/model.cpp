@@ -84,15 +84,18 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
+	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
+	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
 	{ "zmatrix",		VTypes::ZMatrixData,		0, TRUE }
 };
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::syntax(Command::AddHydrogen) },
+	{ "addvibration",	VTypes::VibrationData,	Command::arguments(Command::NewVibration),	Command::syntax(Command::NewVibration) },
 	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::syntax(Command::Augment) },
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::syntax(Command::Charge) },
 	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::syntax(Command::ClearBonds) },

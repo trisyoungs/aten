@@ -23,6 +23,7 @@
 #define ATEN_VIBRATION_H
 
 #include "base/dnchar.h"
+#include "templates/list.h"
 #include "templates/vector3.h"
 
 // Forward declarations
@@ -33,7 +34,7 @@ class Vibration
 {
 	public:
 	// Constructor / Destructor
-	Vibration(int natoms, Model *parent = NULL);
+	Vibration(Model *parent = NULL);
 	~Vibration();
 	// List pointers
 	Vibration *prev, *next;
@@ -49,7 +50,7 @@ class Vibration
 	Dnchar name_;
 	// Frequency of the vibration
 	double frequency_;
-	// Number of displacements defined
+	// Number of displacements defined in vibration
 	int nDisplacements_;
 	// Displacement vectors for each associated atom
 	Vec3<double> *displacements_;
@@ -72,9 +73,9 @@ class Vibration
 	// Set specified displacement data (individual component)
 	void setDisplacement(int n, int component, double d);
 	// Set specified displacement data (vector)
-	void setDisplacement(int n, Vec3<double> &v);
+	void setDisplacement(int n, Vec3<double> v);
 	// Return n'th displacement data
-	Vec3<double> &displacement(int n) const;
+	Vec3<double> displacement(int n) const;
 };
 
 #endif

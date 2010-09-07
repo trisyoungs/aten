@@ -1,6 +1,6 @@
 /*
-	*** Model Variable and Array
-	*** src/parser/model.h
+	*** Vibration Variable and Array
+	*** src/parser/vibration.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,32 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELVARIABLE_H
-#define ATEN_MODELVARIABLE_H
+#ifndef ATEN_VIBRATIONVARIABLE_H
+#define ATEN_VIBRATIONVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Model;
+class Vibration;
 
-// Model Variable
-class ModelVariable : public PointerVariable
+// Vibration Variable
+class VibrationVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
-	~ModelVariable();
+	VibrationVariable(Vibration *vib = NULL, bool constant = FALSE);
+	~VibrationVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, NVibrations, Patterns, Region, Torsions, Vibrations, ZMatrix, nAccessors };
+        enum Accessors { Displacements, Frequency, Name, NDisplacements, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, AddVibration, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBond, NewBondId, NewGlyph, NewGrid, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, Transmute, Undo, nFunctions };
-
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
@@ -63,12 +62,12 @@ class ModelVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Model Array Variable
-class ModelArrayVariable : public PointerArrayVariable
+// Vibration Array Variable
+class VibrationArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	VibrationArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

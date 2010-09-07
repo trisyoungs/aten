@@ -28,6 +28,7 @@
 #include "model/clipboard.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
+#include "base/vibration.h"
 #include "gui/gui.h"
 
 // Create 'n' new atoms at once in model
@@ -282,6 +283,17 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
+	return TRUE;
+}
+
+// Create new vibration in current model
+bool Command::function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	Vibration *v = obj.rs->renderSource()->addVibration();
+	if (c->hasArg(0)) v->setName(c->argc(0));
+	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs->name());
+	rv.set(VTypes::VibrationData, v);
 	return TRUE;
 }
 

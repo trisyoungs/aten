@@ -23,8 +23,8 @@
 #define ATEN_VERSION_H
 
 #define ATENVERSION "1.6"
-#define ATENREVISION "1256"
-#define ATENDATE "Tue 07 Sep - 12:22"
+#define ATENREVISION "1257"
+#define ATENDATE "Tue 07 Sep - 13:29"
 #define ATENURL "http://aten.googlecode.com/svn/branches/aten-vib"
 
 #endif
