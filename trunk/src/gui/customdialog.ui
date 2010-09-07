@@ -27,7 +27,11 @@
     <number>2</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="MainLayout"/>
+    <layout class="QVBoxLayout" name="MainLayout">
+     <property name="margin">
+      <number>2</number>
+     </property>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
