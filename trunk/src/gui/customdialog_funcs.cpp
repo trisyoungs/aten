@@ -28,7 +28,7 @@
 // Constructor
 AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 {
-	refreshing_ = TRUE;
+	refreshing_ = FALSE;
 	ui.setupUi(this);
 	parentTree_ = NULL;
 }
@@ -36,12 +36,117 @@ AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 // Perform specified state change
 void AtenCustomDialog::performStateChange(StateChange *sc)
 {
-	// First, find relevant widget
+	// First, find relevant widget definition
 	WidgetNode *node = parentTree_->findWidget(sc->targetWidget());
 	if (node == NULL)
 	{
 		printf("AtenCustomDialog::performStateChange - Unable to locate widget '%s'.\n", sc->targetWidget());
 		return;
+	}
+	// Proceed based on widget type
+	QComboBox *combo;
+	QSpinBox *spin;
+	QDoubleSpinBox *doublespin;
+	QCheckBox *check;
+	QLineEdit *line;
+	Dnchar data;
+	LineParser lp;
+	int n;
+	switch (node->controlType())
+	{
+		// Check Box
+		case (WidgetNode::CheckControl):
+			check = (QCheckBox*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::CheckedAction):
+					check->setChecked(sc->changeDataAsBool());
+					break;
+				case (StateChange::DisableAction):
+					check->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					check->setEnabled(TRUE);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// Combo Box
+		case (WidgetNode::IntegerComboControl):
+		case (WidgetNode::ComboControl):
+			combo = (QComboBox*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					combo->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					combo->setEnabled(TRUE);
+					break;
+				case (StateChange::ItemsAction):
+					lp.getArgsDelim(sc->changeData(), LineParser::UseQuotes);
+					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
+					combo->setCurrentIndex(0);
+					break;
+				case (StateChange::OriginalItemsAction):
+					if (!node->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
+					lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
+					combo->setCurrentIndex(0);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// Double Spin Edit
+		case (WidgetNode::DoubleSpinControl):
+			doublespin = (QDoubleSpinBox*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					doublespin->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					doublespin->setEnabled(TRUE);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// Text Edit
+		case (WidgetNode::EditControl):
+			line = (QLineEdit*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					line->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					line->setEnabled(TRUE);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// Integer spin edit
+		case (WidgetNode::IntegerSpinControl):
+			spin = (QSpinBox*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					spin->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					spin->setEnabled(TRUE);
+					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// Label
+		case (WidgetNode::LabelControl):
+			break;
 	}
 }
 
@@ -53,7 +158,7 @@ void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
 // Generic function for combobox activation
 void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
 {
-	if (refreshing_) return;
+	if (!isVisible()) return;
 	// Cast sender into combobox
 	refreshing_ = TRUE;
 	QComboBox *combo = (QComboBox*) sender();
@@ -65,7 +170,6 @@ void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
 	// Search for widget definition in original tree...
 	WidgetNode *node = parentTree_->findWidget(combo);
 	if (node == NULL)
-	if (!combo)
 	{
 		printf("AtenCustomDialog::comboWidget_currentIndexChanged - couldn't find associated WidgetNode.\n");
 		return;
@@ -133,7 +237,7 @@ QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 	Dnchar data;
 	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
 	LineParser lp;
-	lp.getArgsDelim(data.get());
+	lp.getArgsDelim(data.get(), LineParser::UseQuotes);
 	for (int n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
 	// Optional : default index (+1)
 	if (!gfo->data("default", data)) printf("Warning: Default value for QComboBox not set.\n");

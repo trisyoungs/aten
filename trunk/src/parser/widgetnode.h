@@ -39,7 +39,7 @@ class StateChange
 	// List pointers
 	StateChange *prev, *next;
 	// State change actions
-	enum StateAction { DisableAction, EnableAction, ItemsAction, nStateActions };
+	enum StateAction { CheckedAction, DisableAction, EnableAction, ItemsAction, OriginalItemsAction, nStateActions };
 	static StateAction stateAction(const char *s, bool reporterror = FALSE);
 	static const char *stateAction(StateAction sa);
 
@@ -73,6 +73,12 @@ class StateChange
 	StateAction changeAction() const;
 	// Return action data
 	const char *changeData() const;
+	// Return action data as integer
+	int changeDataAsInteger() const;
+	// Return action data as double
+	double changeDataAsDouble() const;
+	// Return action data as bool
+	bool changeDataAsBool() const;
 };
 
 // User-defined GUI filter option
