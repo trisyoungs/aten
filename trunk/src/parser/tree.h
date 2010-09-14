@@ -41,7 +41,7 @@ class ScopeNode;
 class VariableNode;
 class StepNode;
 class Forest;
-class QVBoxLayout;
+class AtenCustomDialog;
 
 // Tree
 class Tree
@@ -212,20 +212,24 @@ class Tree
 	private:
 	// List of user-defined widgets for custom dialog / filter options
 	Reflist<WidgetNode,int> widgets_;
-	// QWidget containing ready-created set of controls
-	QWidget *mainWidget_;
-	// Locate first occurrence of named variable in node list
-	WidgetNode *findWidget(const char *name);
+	// Custom dialog containing ready-created set of controls
+	AtenCustomDialog *customDialog_;
 
 	public:
 	// Add new (GUI-based) filter option linked to a variable
 	virtual TreeNode *addWidget(TreeNode *arglist);
 	// Return first item in list of filter options
 	Refitem<WidgetNode,int> *widgets();
-	// Set filter options layout widget
-	void setMainWidget(QWidget *layout);
-	// Return filter options layout widget
-	QWidget *mainWidget();
+	// Locate named widget
+	WidgetNode *findWidget(const char *name);
+	// Locate widget with specified pointer
+	WidgetNode *findWidget(QWidget *widget);
+	// Create custom dialog from defined widgets (if there are any)
+	void createCustomDialog(const char *title = NULL);
+	// Return custom dialog (if any)
+	AtenCustomDialog *customDialog();
+	// Execute defined custom dialog (if one exists, just return TRUE if not)
+	bool executeCustomDialog();
 	// Retrieve current value of named widget as a double
 	double widgetValued(const char *name);
 	// Retrieve current value of named widget as an integer

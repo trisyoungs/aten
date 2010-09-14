@@ -39,7 +39,7 @@ WidgetNode::GuiControl WidgetNode::guiControl(const char *s, bool reporterror)
 }
 
 // Options for Qt layout
-const char *GuiQtOptionKeywords[WidgetNode::nGuiQtOptions] = { "centre", "disabled", "group", "labelspan", "left", "newline", "parentspan", "span", "tab" };
+const char *GuiQtOptionKeywords[WidgetNode::nGuiQtOptions] = { "centre", "disabled", "group", "labelspan", "left", "newline", "parentspan", "span", "state", "tab" };
 const char *WidgetNode::guiQtOption(GuiQtOption gqo)
 {
 	return GuiQtOptionKeywords[gqo];
@@ -50,6 +50,92 @@ WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 	if ((gqo == WidgetNode::nGuiQtOptions) && reporterror) enumPrintValid(WidgetNode::nGuiQtOptions,GuiQtOptionKeywords);
 	return gqo;
 }
+
+// State change actions
+enum StateAction { DisableAction, EnableAction, ItemsAction, nStateActions };
+const char *StateActionKeywords[StateChange::nStateActions] = { "disable", "enable", "items" };
+StateChange::StateAction StateChange::stateAction(const char *s, bool reporterror)
+{
+        StateChange::StateAction sa = (StateChange::StateAction) enumSearch("state action", StateChange::nStateActions, StateActionKeywords, s);
+	if ((sa == StateChange::nStateActions) && reporterror) enumPrintValid(StateChange::nStateActions,StateActionKeywords);
+	return sa;
+}
+const char *StateChange::stateAction(StateChange::StateAction sa)
+{
+	return StateActionKeywords[sa];
+}
+
+/*
+// StateChange
+*/
+
+// Constructor
+StateChange::StateChange()
+{
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+
+// Set control value for which state change applies
+void StateChange::setStateValue(const char *value)
+{
+	stateValue_ = value;
+}
+
+// Return control value for which state change applies
+const char *StateChange::stateValue() const
+{
+	return stateValue_.get();
+}
+
+// Return control value for which state change applies as an integer
+int StateChange::stateValueAsInteger() const
+{
+	return stateValue_.asInteger();
+}
+
+// Return control value for which state change applies as a double
+double StateChange::stateValueAsDouble() const
+{
+	return stateValue_.asDouble();
+}
+
+// Set name target widget to which state change applies
+void StateChange::setTargetWidget(const char *value)
+{
+	targetWidget_ = value;
+}
+
+// Return name of target widget to which state change applies
+const char *StateChange::targetWidget() const
+{
+	return targetWidget_.get();
+}
+
+// Set action to perform on target widget
+void StateChange::setChange(StateAction sa, const char *data)
+{
+	changeData_.setKey(sa);
+	changeData_.setValue(data);
+}
+
+// Return action type
+StateChange::StateAction StateChange::changeAction() const
+{
+	return changeData_.key();
+}
+
+// Return action data
+const char *StateChange::changeData() const
+{
+	return changeData_.value().get();
+}
+
+/*
+// WidgetNode
+*/
 
 // Constructor
 WidgetNode::WidgetNode()
@@ -240,12 +326,21 @@ bool WidgetNode::data(const char *name, Dnchar &value)
 	return success;
 }
 
+// Return first state change
+StateChange *WidgetNode::stateChanges()
+{
+	return stateChanges_.first();
+}
+
 // Set option from argument
 void WidgetNode::setOption(TreeNode *arg)
 {
+	msg.enter("WidgetNode::setOption");
 	ReturnValue rv;
+	StateChange *state;
+	StateChange::StateAction sa;
 	arg->execute(rv);
-	Dnchar keywd = beforeChar(rv.asString(), '=');
+	Dnchar keywd = beforeChar(rv.asString(), '='), otherdata;
 	Dnchar argdata = afterChar(rv.asString(), '=');
 	// Determine option enum
 	WidgetNode::GuiQtOption gqo = WidgetNode::guiQtOption(keywd.get(), TRUE);
@@ -278,6 +373,27 @@ void WidgetNode::setOption(TreeNode *arg)
 		case (WidgetNode::SpanOption):
 			widgetSpan_ = argdata.asInteger();
 			break;
+		case (WidgetNode::StateOption):
+			state = stateChanges_.add();
+			// Split argument again: part before '@' is the state value
+			keywd = beforeChar(argdata.get(), '@');
+			state->setStateValue(keywd.get());
+			printf("STATE VALUE = [%s]\n", keywd.get());
+			// ...after '@' and before '?' is the target control...
+			otherdata = afterChar(argdata.get(), '@');
+			keywd = beforeChar(otherdata.get(), '?');
+			state->setTargetWidget(otherdata.get());
+			printf("STATE TARGET = [%s]\n", keywd.get());
+			// ...and after '?' is the state change definition
+			keywd = afterChar(otherdata.get(), '?');
+			otherdata = beforeChar(keywd.get(), '=');
+			if (otherdata.isEmpty()) otherdata = keywd;
+			sa = StateChange::stateAction(otherdata.get(), TRUE);
+			printf("STATE ACTION = [%s]\n", StateChange::stateAction(sa));
+			otherdata = afterChar(keywd.get(), '=');
+			printf("STATE DATA = [%s]\n", otherdata.get());
+			state->setChange(sa, otherdata.get());
+			break;
 		case (WidgetNode::TabsOption):
 			widgetParentType_ = WidgetNode::TabWidgetParent;
 			widgetParentName_ = argdata;	// In format 'page@tabwidget'
@@ -286,6 +402,7 @@ void WidgetNode::setOption(TreeNode *arg)
 			printf("Internal Error: Don't know how to set GuiQtOption '%s'\n", WidgetNode::guiQtOption(gqo));
 			break;
 	}
+	msg.exit("WidgetNode::setOption");
 }
 
 // Return whether a parent exists

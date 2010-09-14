@@ -43,7 +43,6 @@ class AtenCellTransform;
 class AtenCommand;
 class AtenDisorder;
 class AtenForcefields;
-class AtenCustomDialog;
 class AtenFragment;
 class AtenGeometry;
 class AtenGlyphs;

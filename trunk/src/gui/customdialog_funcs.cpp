@@ -25,14 +25,75 @@
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
-// Static singleton
-QHBoxLayout AtenCustomDialog::masterLayout_;
-
 // Constructor
 AtenCustomDialog::AtenCustomDialog(QWidget *parent) : QDialog(parent)
 {
-	refreshing_ = FALSE;
+	refreshing_ = TRUE;
 	ui.setupUi(this);
+	parentTree_ = NULL;
+}
+
+// Perform specified state change
+void AtenCustomDialog::performStateChange(StateChange *sc)
+{
+	// First, find relevant widget
+	WidgetNode *node = parentTree_->findWidget(sc->targetWidget());
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::performStateChange - Unable to locate widget '%s'.\n", sc->targetWidget());
+		return;
+	}
+}
+
+// Generic function for checkbox activation
+void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
+{
+}
+
+// Generic function for combobox activation
+void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
+{
+	if (refreshing_) return;
+	// Cast sender into combobox
+	refreshing_ = TRUE;
+	QComboBox *combo = (QComboBox*) sender();
+	if (!combo)
+	{
+		printf("AtenCustomDialog::comboWidget_currentIndexChanged - Sender could not be cast to a QComboBox.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(combo);
+	if (node == NULL)
+	if (!combo)
+	{
+		printf("AtenCustomDialog::comboWidget_currentIndexChanged - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next)
+	{
+		// Compare by integer value or string depending on control type
+		if (node->controlType() == WidgetNode::IntegerComboControl)
+		{
+			if ((row+1) == sc->stateValueAsInteger()) performStateChange(sc);
+		}
+		else if (node->controlType() == WidgetNode::ComboControl)
+		{
+			if (strcmp(qPrintable(combo->currentText()), sc->stateValue()) == 0) performStateChange(sc);
+		}
+	}
+	refreshing_ = FALSE;
+}
+
+// Generic function for double spin activation
+void AtenCustomDialog::doubleSpinWidget_valueChanged(double d)
+{
+}
+
+// Generic function for integer spin activation
+void AtenCustomDialog::integerSpinWidget_valueChanged(double d)
+{
 }
 
 // Create simple label
@@ -67,6 +128,7 @@ QCheckBox *AtenCustomDialog::createCheckBox(WidgetNode *gfo)
 QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 {
 	QComboBox *combo = new QComboBox();
+	QObject::connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboWidget_currentIndexChanged(int)));
 	// Critical : items list
 	Dnchar data;
 	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
@@ -132,7 +194,7 @@ QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 }
 
 // Construct filter option widgets for specified tree
-bool AtenCustomDialog::createWidgets(Tree *t)
+bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 {
 	msg.enter("AtenCustomDialog::createWidgets");
 	Refitem<WidgetNode,int> *ri;
@@ -149,10 +211,13 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 	LayoutData *mainlayout, *currentlayout, *newlayout;
 	QWidget *widget;
 
+	// Set title of window and store target tree
+	setWindowTitle(title);
+	parentTree_ = t;
+
 	// Get start of list of defined options - if there are none, do nothing
-	if (t->widgets() == NULL)
+	if (parentTree_->widgets() == NULL)
 	{
-		t->setMainWidget(NULL);
 		msg.exit("AtenCustomDialog::createWidgets");
 		return TRUE;
 	}
@@ -160,11 +225,8 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 	// Create main layout widget for the other widgets
 	layouts.clear();
 	tabwidgets.clear();
-	QWidget *mainwidget = new QWidget(NULL);
-	masterLayout_.addWidget(mainwidget);
-	t->setMainWidget(mainwidget);
-	gridl = createGridLayout(mainwidget);
-	mainlayout = layouts.add("_MAIN_", gridl);
+
+	mainlayout = layouts.add("_MAIN_", ui.MainLayout);
 
 	// Create widgets
 	for (ri = t->widgets(); ri != NULL; ri = ri->next)
@@ -282,13 +344,13 @@ bool AtenCustomDialog::createWidgets(Tree *t)
 }
 
 // Store widget values back into the associated tree variables
-void AtenCustomDialog::storeValues(Tree *filter)
+void AtenCustomDialog::storeValues()
 {
 	msg.enter("AtenCustomDialog::storeValues");
 	WidgetNode *gfo;
 	QWidget *widget;
 	ReturnValue rv;
-	for (Refitem<WidgetNode,int> *ri = filter->widgets(); ri != NULL; ri = ri->next)
+	for (Refitem<WidgetNode,int> *ri = parentTree_->widgets(); ri != NULL; ri = ri->next)
 	{
 		gfo = ri->item;
 		rv.reset();
@@ -321,28 +383,19 @@ void AtenCustomDialog::storeValues(Tree *filter)
 }
 
 // Call the dialog, displaying options for the specified filter
-bool AtenCustomDialog::show(QString title, Tree *t)
+bool AtenCustomDialog::showDialog()
 {
-	msg.enter("AtenCustomDialog::show");
-	if (t == NULL)
+	msg.enter("AtenCustomDialog::showDialog");
+	if (parentTree_ == NULL)
 	{
-		printf("NULL Tree pointer passed to AtenCustomDialog::show\n");
-		msg.exit("AtenCustomDialog::show");
+		printf("Error - NULL Tree pointer found when in AtenCustomDialog::showDialog\n");
+		msg.exit("AtenCustomDialog::showDialog");
 		return FALSE;
 	}
-	// If there is no layout return immediately
-	if (t->mainWidget() == NULL) return TRUE;
-	// Create a temporary dialog and add widget layout to it...
-	AtenCustomDialog *dialog = new AtenCustomDialog(gui.mainWindow);
-	// Set title and widget
-	dialog->setWindowTitle(title);
-	dialog->ui.MainLayout->addWidget(t->mainWidget());
-	bool result = (dialog->exec() == 1 ? TRUE : FALSE);
-	if (result) AtenCustomDialog::storeValues(t);
-	dialog->ui.MainLayout->removeWidget(t->mainWidget());
-	// Need to reparent the widget so it doesn't get deleted along with the dialog
-	masterLayout_.addWidget(t->mainWidget());
-	delete dialog;
-	msg.exit("AtenCustomDialog::show");
+	refreshing_ = FALSE;
+	bool result = (exec() == 1 ? TRUE : FALSE);
+	refreshing_ = TRUE;
+	if (result) storeValues();
+	msg.exit("AtenCustomDialog::showDialog");
 	return result;
 }
