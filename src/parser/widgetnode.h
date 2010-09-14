@@ -30,6 +30,51 @@
 // Forward Declarations
 class QWidget;
 
+// State change from GUI widget
+class StateChange
+{
+	public:
+	// Constructor
+	StateChange();
+	// List pointers
+	StateChange *prev, *next;
+	// State change actions
+	enum StateAction { DisableAction, EnableAction, ItemsAction, nStateActions };
+	static StateAction stateAction(const char *s, bool reporterror = FALSE);
+	static const char *stateAction(StateAction sa);
+
+	/*
+	// State change data
+	*/
+	private:
+	// Control value for which state change applies
+	Dnchar stateValue_;
+	// Name of target widget
+	Dnchar targetWidget_;
+	// Action to perform on target widget
+	KVData<StateAction,Dnchar> changeData_;
+	
+	public:
+	// Set control value for which state change applies
+	void setStateValue(const char *value);
+	// Return control value for which state change applies
+	const char *stateValue() const;
+	// Return control value for which state change applies as an integer
+	int stateValueAsInteger() const;
+	// Return control value for which state change applies as a double
+	double stateValueAsDouble() const;
+	// Set name target widget to which state change applies
+	void setTargetWidget(const char *value);
+	// Return name of target widget to which state change applies
+	const char *targetWidget() const;
+	// Set action to perform on target widget
+	void setChange(StateAction sa, const char *data);
+	// Return action type
+	StateAction changeAction() const;
+	// Return action data
+	const char *changeData() const;
+};
+
 // User-defined GUI filter option
 class WidgetNode : public TreeNode
 {
@@ -42,7 +87,7 @@ class WidgetNode : public TreeNode
 	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
 	static const char *guiControl(GuiControl got);
 	// Options for Qt layout
-	enum GuiQtOption { CentreOption, DisabledOption, GroupNameOption, LabelSpanOption, LeftOption, NewLineOption, ParentSpanOption, SpanOption, TabsOption, nGuiQtOptions };
+	enum GuiQtOption { CentreOption, DisabledOption, GroupNameOption, LabelSpanOption, LeftOption, NewLineOption, ParentSpanOption, SpanOption, StateOption, TabsOption, nGuiQtOptions };
 	static GuiQtOption guiQtOption(const char *s, bool reporterror = FALSE);
 	static const char *guiQtOption(GuiQtOption gqo);
 	// Widget parent types
@@ -62,6 +107,8 @@ class WidgetNode : public TreeNode
 	KVTable<Dnchar,Dnchar> data_;
 	// Set associated data
 	bool setData(const char *name, TreeNode *arg, const char *errormsg, bool critical, const char *def);
+	// State changes associated to widget
+	List<StateChange> stateChanges_;
 
 	public:
 	// Set return value
@@ -74,6 +121,8 @@ class WidgetNode : public TreeNode
 	const char *name();
 	// Retrieve associated data
 	bool data(const char *name, Dnchar &value);
+	// Return first state change
+	StateChange *stateChanges();
 
 
 	/*

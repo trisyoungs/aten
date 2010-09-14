@@ -30,7 +30,6 @@
 #include "gui/selectpattern.h"
 #include "gui/selectvariable.h"
 #include "gui/selectelement.h"
-#include "gui/customdialog.h"
 #include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "gui/ffeditor.h"

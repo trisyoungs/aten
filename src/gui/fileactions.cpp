@@ -129,10 +129,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	if (runSaveModelDialog())
 	{
 		// Run options dialog
-		QString s = "Save Options (";
-		s += saveModelFilter->name();
-		s += ")";
-		if (!AtenCustomDialog::show(s, saveModelFilter))
+		if (!saveModelFilter->executeCustomDialog())
 		{
 			msg.print("Not saved.\n");
 			return;
@@ -169,7 +166,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			QString s = "Save Options (";
 			s += saveModelFilter->name();
 			s += ")";
-			if (!AtenCustomDialog::show(s, saveModelFilter))
+			if (!saveModelFilter->executeCustomDialog())
 			{
 				msg.print("Not saved.\n");
 				return;
@@ -203,7 +200,7 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 		QString s = "Save Options (";
 		s += saveModelFilter->name();
 		s += ")";
-		AtenCustomDialog::show(s, m->filter());
+		m->filter()->executeCustomDialog();
 	}
 }
 
@@ -239,7 +236,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 					QString s = "Save Options (";
 					s += saveModelFilter->name();
 					s += ")";
-					if (!AtenCustomDialog::show(s, saveModelFilter))
+					if (!saveModelFilter->executeCustomDialog())
 					{
 						msg.print("Not saved.\n");
 						return;

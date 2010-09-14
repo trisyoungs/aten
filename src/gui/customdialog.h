@@ -34,6 +34,7 @@ class QDoubleSpinEdit;
 class QLineEdit;
 class QCheckBox;
 class WidgetNode;
+class StateChange;
 
 // Filter Options Dialog
 class AtenCustomDialog : public QDialog
@@ -42,41 +43,46 @@ class AtenCustomDialog : public QDialog
 	Q_OBJECT
 
 	/*
-	// Widget Functions
+	// Generic Widget Functions
 	*/
+	private:
+	void performStateChange(StateChange *sc);
 	private slots:
-
+	void checkBoxWidget_clicked(bool checked);
+	void comboWidget_currentIndexChanged(int row);
+	void doubleSpinWidget_valueChanged(double d);
+	void integerSpinWidget_valueChanged(double d);
 
 	/*
 	// Data
 	*/
 	private:
-	// Static, local layout which contains all widgets when they're not being displayed in the Dialog
-	static QHBoxLayout masterLayout_;
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
+	// Parent tree target
+	Tree *parentTree_;
 	// Create simple label
-	static QLabel *createLabel(const char *text, int alignment);
+	QLabel *createLabel(const char *text, int alignment);
 	// Create empty grid layout
-	static QGridLayout *createGridLayout(QWidget *parent);
+	QGridLayout *createGridLayout(QWidget *parent);
 	// Create check box from data in specified WidgetNode
-	static QCheckBox *createCheckBox(WidgetNode *gfo);
+	QCheckBox *createCheckBox(WidgetNode *gfo);
 	// Create combo box from data in specified GuiFilterOption
-	static QComboBox *createComboBox(WidgetNode *gfo);
+	QComboBox *createComboBox(WidgetNode *gfo);
 	// Create double spin edit from data in specified GuiFilterOption
-	static QDoubleSpinBox *createDoubleSpinBox(WidgetNode *gfo);
+	QDoubleSpinBox *createDoubleSpinBox(WidgetNode *gfo);
 	// Create line edit from data in specified GuiFilterOption
-	static QLineEdit *createLineEdit(WidgetNode *gfo);
+	QLineEdit *createLineEdit(WidgetNode *gfo);
 	// Create spin edit from data in specified GuiFilterOption
-	static QSpinBox *createSpinBox(WidgetNode *gfo);
+	QSpinBox *createSpinBox(WidgetNode *gfo);
 	// Store widget values back into the target variables
-	static void storeValues(Tree *filter);
+	void storeValues();
 
 	public:
 	// Construct filter option widgets
-	static bool createWidgets(Tree *t);
-	// Create temporary dialog, displaying options for the specified tree and setting variables within
-	static bool show(QString title, Tree *t);
+	bool createWidgets(const char *title, Tree *t);
+	// Show defined dialog, displaying options for the specified tree and setting variables within
+	bool showDialog();
 
 	/*
 	// Widgets

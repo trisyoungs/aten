@@ -26,7 +26,6 @@
 #include "parser/double.h"
 #include "parser/character.h"
 #include "main/aten.h"
-#include "gui/customdialog.h"
 
 // Constructors
 Forest::Forest()
@@ -120,7 +119,18 @@ void Forest::finalise()
 			}
 		}
 		// Generate widgets (if Tree has any)
-		AtenCustomDialog::createWidgets(t);
+		if (t->widgets() != NULL)
+		{
+			QString title;
+			if (!t->isFilter()) t->createCustomDialog();
+			else
+			{
+				QString s = "Save Options (";
+				s += t->name();
+				s += ")";
+				t->createCustomDialog(qPrintable(s));
+			}
+		}
 	}
 	msg.exit("Forest::finalise");
 }

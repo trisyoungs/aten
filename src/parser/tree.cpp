@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/customdialog.h"
 #include "parser/treenode.h"
 #include "parser/scopenode.h"
 #include "parser/commandnode.h"
@@ -50,7 +51,7 @@ Tree::Tree()
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
 	readOptions_ = LineParser::Defaults;
-	mainWidget_ = NULL;
+	customDialog_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -167,8 +168,6 @@ void Tree::clear()
 	statements_.clear();
 	scopeStack_.clear();
 	widgets_.clear();
-// 	if (mainWidget_ != NULL) delete mainWidget_;
-// 	mainWidget_ = NULL;
 }
 
 // (Re)Initialise Tree
@@ -935,27 +934,41 @@ Refitem<WidgetNode,int> *Tree::widgets()
 	return widgets_.first();
 }
 
-// Set GUI main widget
-void Tree::setMainWidget(QWidget *layout)
+// Create custom dialog from defined widgets
+void Tree::createCustomDialog(const char *title)
 {
-	mainWidget_ = layout;
+	customDialog_ = new AtenCustomDialog(NULL);
+	customDialog_->createWidgets(title, this);
 }
 
-// Return main widget
-QWidget *Tree::mainWidget()
+// Return custom dialog (if any)
+AtenCustomDialog *Tree::customDialog()
 {
-	return mainWidget_;
+	return customDialog_;
+}
+
+// Execute contained custom dialog
+ bool Tree::executeCustomDialog()
+{
+	return (customDialog_ != NULL ? customDialog_->showDialog() : TRUE);
 }
 
 // Locate named widget
 WidgetNode *Tree::findWidget(const char *name)
 {
-	// Search through disordered node list for ScopedNodes and then search their variable listst
 	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next)
 	{
 		if (strcmp(name, ri->item->name()) == 0) return ri->item;
 	}
 	printf("Internal Error: Couldn't find widget named '%s' in tree '%s'.\n", name, name_.get());
+	return NULL;
+}
+
+// Locate named widget
+WidgetNode *Tree::findWidget(QWidget *widget)
+{
+	for (Refitem<WidgetNode,int> *ri = widgets_.first(); ri != NULL; ri = ri->next) if (ri->item->widget() == widget) return ri->item;
+	printf("Internal Error: Couldn't find widget %p in tree '%s'.\n", widget, name_.get());
 	return NULL;
 }
 
