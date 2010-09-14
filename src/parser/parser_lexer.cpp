@@ -49,7 +49,7 @@ int CommandParser::lex()
 
 	int length, n;
 	bool done, integer, hasexp;
-	static char token[256], quotechar, c;
+	static char token[1024], quotechar, c;
 	static Dnchar name;
 	length = 0;
 	token[0] = '\0';

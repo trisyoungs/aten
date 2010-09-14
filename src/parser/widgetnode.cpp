@@ -53,7 +53,7 @@ WidgetNode::GuiQtOption WidgetNode::guiQtOption(const char *s, bool reporterror)
 
 // State change actions
 enum StateAction { DisableAction, EnableAction, ItemsAction, nStateActions };
-const char *StateActionKeywords[StateChange::nStateActions] = { "disable", "enable", "items" };
+const char *StateActionKeywords[StateChange::nStateActions] = { "checked", "disable", "enable", "items", "originalitems" };
 StateChange::StateAction StateChange::stateAction(const char *s, bool reporterror)
 {
         StateChange::StateAction sa = (StateChange::StateAction) enumSearch("state action", StateChange::nStateActions, StateActionKeywords, s);
@@ -131,6 +131,24 @@ StateChange::StateAction StateChange::changeAction() const
 const char *StateChange::changeData() const
 {
 	return changeData_.value().get();
+}
+
+// Return action data as integer
+int StateChange::changeDataAsInteger() const
+{
+	return changeData_.value().asInteger();
+}
+
+// Return action data as double
+double StateChange::changeDataAsDouble() const
+{
+	return changeData_.value().asDouble();
+}
+
+// Return action data as bool
+bool StateChange::changeDataAsBool() const
+{
+	return changeData_.value().asBool();
 }
 
 /*
@@ -382,7 +400,7 @@ void WidgetNode::setOption(TreeNode *arg)
 			// ...after '@' and before '?' is the target control...
 			otherdata = afterChar(argdata.get(), '@');
 			keywd = beforeChar(otherdata.get(), '?');
-			state->setTargetWidget(otherdata.get());
+			state->setTargetWidget(keywd.get());
 			printf("STATE TARGET = [%s]\n", keywd.get());
 			// ...and after '?' is the state change definition
 			keywd = afterChar(otherdata.get(), '?');

@@ -96,13 +96,17 @@ filter(type="importmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp", extension="inp", glob="*.inp", id=5)
 {
+	#
+	# GUI Control Definitions
+	#
+
 	# General control options ($CONTRL)
 	string runtyp = option("Run Type", "combo", "ENERGY,GRADIENT,HESSIAN,GAMMA,OPTIMIZE,TRUDGE,SADPOINT,MEX,IRC,VSCF,DRC,MD,GLOBOP,OPTFMO,GRADEXTR,SURFACE,G3MP2,PROP,RAMAN,NACME,NMR,EDA,TRANSITN,FFIELD,TDHF,TDHFX,MAKEFP,FMO0", 5, "group=Job Control ($CONTRL)");
 	string scftyp = option("SCF Type", "combo", "RHF,UHF,ROHF,GVB,MCSCF,NONE", 1, "group=Job Control ($CONTRL)");
 	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
 	int charge = option("Charge", "intspin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
-	string dfttyp = option("DFT Type", "combo", "NONE,XXXX", 1, "group=Job Control ($CONTRL)", "newline");
-	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=0@DFT Type?items=NONE,SVWN (...local DFT),BLYP (...pure DFT GGA),PW91,B97-D,PBE,PBEsol,B3LYP (...hybrid DFT GGA),X3LYP,PBE0,TPSS (...pure DFT meta-GGA),TPSSm,TPSSh (...hybrid DFT meta-GGA),M06,SLATER (...pure exchange),BECKE,GILL,OPTX,PW91X,PBEX,VWN (...pure correlation),VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,SVWN (...combinations),BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", "state=1@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP");
+	string dfttyp = option("DFT Type", "combo", "NONE,'SVWN (...local DFT)','BLYP (...pure DFT GGA)',PW91,B97-D,PBE,PBEsol,'B3LYP (...hybrid DFT GGA)',X3LYP,PBE0,'TPSS (...pure DFT meta-GGA)',TPSSm,'TPSSh (...hybrid DFT meta-GGA)',M06,'SLATER (...pure exchange)',BECKE,GILL,OPTX,PW91X,PBEX,'VWN (...pure correlation)',VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,'SVWN (...combinations)',BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
+	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP");
 	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
 	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
 	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
@@ -124,15 +128,66 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	double statpt_opttol = option("Tolerance", "doublespin", 0.0, 1.0, 0.0001, 0.0001, "tab=$STATPT@opts");
 	int statpt_nstep = option("NStep", "intspin", 1, 1000000, 20, 5, "tab=$STATPT@opts");
 
+	# Electron density calculation ($ELDENS), placed in 'opts' tabs
+	int eldens_ieden = option("Calculate", "check", 0, "tab=$ELDENS@opts", "newline");
+	int eldens_morb = option("MORB", "intspin", 0, 10000, 0, 1, "tab=$ELDENS@opts");
+	string eldens_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID", 2, "tab=$ELDENS@opts");
+	string eldens_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH", 3, "tab=$ELDENS@opts");
+
+	# Electrostatic potential calculation ($ELPOT), placed in 'opts' tabs
+	int elpot_iepot = option("Calculate", "check", 0, "tab=$ELPOT@opts", "newline");
+	string elpot_where = option("WHERE", "combo", "COMASS,NUCLEI,POINTS,GRID,PDC", 2, "tab=$ELPOT@opts");
+	string elpot_output = option("OUTPUT", "combo", "PUNCH,PAPER,BOTH,NONE", 3, "tab=$ELPOT@opts");
+
+	# Grid specification ($GRID), placed in 'opts' tabs
+	int grid_modgrd = option("3D Grid", "check", 0, "tab=$GRID@opts", "newline");
+	double grid_size = option("Grid Increment", "doublespin", 0.00001, 2.0, 0.25, 0.1, "tab=$GRID@opts");
+	option("ORIGIN", "label", "newline", "tab=$GRID@opts");
+	double grid_originx = option("X", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	double grid_originy = option("Y", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	double grid_originz = option("Z", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	option("XVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_xvecx = option("X", "doublespin", -1000.0, 1000,  10.0, 1, "tab=$GRID@opts");
+	double grid_xvecy = option("Y", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	double grid_xvecz = option("Z", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	option("YVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_yvecx = option("X", "doublespin", -1000.0, 1000,  10.0, 1, "tab=$GRID@opts");
+	double grid_yvecy = option("Y", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	double grid_yvecz = option("Z", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	option("ZVEC", "label", "newline", "tab=$GRID@opts");
+	double grid_zvecx = option("X", "doublespin", -1000.0, 1000,  10.0, 1, "tab=$GRID@opts");
+	double grid_zvecy = option("Y", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+	double grid_zvecz = option("Z", "doublespin", -1000.0, 1000, -10.0, 1, "tab=$GRID@opts");
+
+	#
+	# Write Data
+	#
+
 	# Write $CONTRL, $SYSTEM and $BASIS groups
 	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);
-	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", dfttyp, tddft, mplevl, cityp, cctyp);
+	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", beforestr(dfttyp," "), tddft, mplevl, cityp, cctyp);
 	writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
 	writelinef(" $BASIS NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_nffunc, basis_diffsp, basis_diffs);
 	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT")) writelinef(" $STATPT METHOD=%s NSTEP=%i OPTTOL=%f $END\n", statpt_method, statpt_nstep, statpt_opttol);
 	writeline(" $SYSTEM MEMDDI=16 TIMLIM=2400 MWORDS=96 $END");
 	writeline(" $GUESS GUESS=HUCKEL $END");
 	writeline(" $SCF DIRSCF=.TRUE. $END");
+
+	# Write $ELDENS if required
+	if (eldens_ieden == 1) writelinef(" $ELDEN IEDEN=1 MORB=%i WHERE=%s OUTPUT=%s $END\n", eldens_morb, eldens_where, eldens_output);
+
+	# Write $ELPOT if required
+	if (elpot_iepot == 1) writelinef(" $ELPOT IEPOT=1 WHERE=%s OUTPUT=%s $END\n", elpot_where, elpot_output);
+
+	# Write $GRID if required
+	if ((eldens_where == "GRID") || (elpot_where == "GRID"))
+	{
+		writelinef(" $GRID MODGRD=%i UNITS=ANGS SIZE=%f $END\n", grid_modgrd, grid_size);
+		writelinef(" $GRID ORIGIN(1)=%f ORIGIN(2)=%f ORIGIN(3)=%f $END\n", grid_originx, grid_originy, grid_originz);
+		writelinef(" $GRID XVEC(1)=%f XVEC(2)=%f XVEC(3)=%f $END\n", grid_xvecx, grid_xvecy, grid_xvecz);
+		writelinef(" $GRID YVEC(1)=%f YVEC(2)=%f YVEC(3)=%f $END\n", grid_yvecx, grid_yvecy, grid_yvecz);
+		if (grid_modgrd == 1) writelinef(" $GRID ZVEC(1)=%f ZVEC(2)=%f ZVEC(3)=%f $END\n", grid_zvecx, grid_zvecy, grid_zvecz);
+	}
 
 	# Now for the DATA section
 	writeline(" $DATA");
