@@ -140,7 +140,7 @@ fstatement:
 	| IF '(' expr ')' blockment			{ $$ = cmdparser.addFunction(Command::If,$3,$5); }
 	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment { $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
 	| WHILE pushscope '(' expr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
-	| DO pushscope blockment WHILE '(' expr ')'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
+	| DO pushscope blockment WHILE '(' expr ')' ';'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
 	;
 
 /* Constants */
