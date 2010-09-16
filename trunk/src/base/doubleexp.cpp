@@ -56,7 +56,7 @@ void DoubleExp::set(double mantissa, int exponent)
 void DoubleExp::set(double value)
 {
 	exponent_ = 0;
-	printf("A value of %f gives ",value);
+// 	printf("A value of %f gives ",value);
 	if (value > 1.0)
 	{
 		do

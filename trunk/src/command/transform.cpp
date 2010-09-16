@@ -431,13 +431,13 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Clear any current marked selection
 	obj.rs->selectNone(TRUE);
 	// Find bond (if any) between j and k
-	Bond *b = k->findBond(l);
-	// Perform mark-only tree select on atom j, excluding any bond to atom i
+	Bond *b = j->findBond(k);
+	// Perform mark-only tree select on atom l, excluding any bond to atom i
 	obj.rs->selectTree(l, TRUE, FALSE, b);
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		msg.print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'l', or are unbound and within the same fragment.\n");
+		msg.print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.\n");
 		return FALSE;
 	}
 	// Get current torsion between the four atoms
