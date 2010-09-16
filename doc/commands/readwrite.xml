@@ -95,7 +95,7 @@ string filename = filterfilename();
 				<paramdef>string <parameter>linevar</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Searches for the specified <emphasis>searchstring</emphasis> in the input file, returning 0 if <emphasis>searchstring</emphasis> is not found before the end of the file, and 1 if it is. The optional argument <emphasis>linevar</emphasis> is a character variable in which the matching line (if any) is put.</para>
+		<para>Searches for the specified <emphasis>searchstring</emphasis> in the input file, returning 0 if <emphasis>searchstring</emphasis> is not found before the end of the file, and 1 if it is. The optional argument <emphasis>linevar</emphasis> is a character variable in which the matching line (if any) is put. If the search string is not found the file position is returned to the place it was before the command was run.</para>
 		
 		<para>For example:</para>
 		<synopsis>

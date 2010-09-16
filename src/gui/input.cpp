@@ -225,6 +225,8 @@ void Canvas::setSelectedMode(UserAction ua)
 	}
 	// If previous action was Canvas::ManualPickAction then finalise it first
 	if (selectedMode_ == Canvas::ManualPickAction) endManualPick(FALSE);
+	// Clear any old selection (from e.g. bonding, measurements....)
+	clearPicked();
 	// Prepare canvas for the selected action
 	switch (ua)
 	{
@@ -355,7 +357,6 @@ void Canvas::modeMotion(double x, double y)
 	// Actively update variables when moving the mouse (possibly while performing a given action)
 	msg.enter("Canvas::modeMotion");
 	static Vec3<double> delta;
-	//static Model *viewtarget;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
