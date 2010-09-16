@@ -70,7 +70,9 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("No valid filesource available for the 'find' command.\n");
 		return FALSE;
 	}
-	rv.set(0);
+	// Store current stream position in case the string is not found
+	streampos currentpos = c->parent()->parser()->tellg();
+	bool found = FALSE;
 	do
 	{
 		// Get line from file
@@ -79,7 +81,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		// Check for string
 		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')
 		{
-			rv.set(1);
+			found = TRUE;
 			// Store the line if a second argument was given
 			if (c->hasArg(1))
 			{
@@ -89,6 +91,9 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			break;
 		}
 	} while (1);
+	// Rewind file to previous position if not found
+	if (!found) c->parent()->parser()->seekg(currentpos);
+	rv.set( found ? 1 : 0 );
 	return TRUE;
 }
 
