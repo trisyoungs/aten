@@ -192,13 +192,17 @@ Vec3<double> Model::selectionCentreOfMass() const
 		for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item;
-			result += cell_.mim(i, selection_.first()->item);
 			if (i->element() == 0)
 			{
 				msg.print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
 				massnorm += 1.0;
+				result += cell_.mim(i, selection_.first()->item);
 			}
-			else massnorm += elements().atomicMass(i);
+			else
+			{
+				massnorm += elements().atomicMass(i);
+				result += cell_.mim(i, selection_.first()->item) * elements().atomicMass(i);
+			}
 		}
 		result /= massnorm;
 	}

@@ -8,6 +8,7 @@ cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
 doubleexp.cpp
+eigenvector.cpp
 elements.cpp
 glyph.cpp
 kvmap.cpp
@@ -27,6 +28,7 @@ colourscalepoint.h
 constants.h
 dnchar.h
 doubleexp.h
+eigenvector.h
 elements.h
 glyph.h
 kvmap.h

@@ -396,20 +396,16 @@ void WidgetNode::setOption(TreeNode *arg)
 			// Split argument again: part before '@' is the state value
 			keywd = beforeChar(argdata.get(), '@');
 			state->setStateValue(keywd.get());
-			printf("STATE VALUE = [%s]\n", keywd.get());
 			// ...after '@' and before '?' is the target control...
 			otherdata = afterChar(argdata.get(), '@');
 			keywd = beforeChar(otherdata.get(), '?');
 			state->setTargetWidget(keywd.get());
-			printf("STATE TARGET = [%s]\n", keywd.get());
 			// ...and after '?' is the state change definition
 			keywd = afterChar(otherdata.get(), '?');
 			otherdata = beforeChar(keywd.get(), '=');
 			if (otherdata.isEmpty()) otherdata = keywd;
 			sa = StateChange::stateAction(otherdata.get(), TRUE);
-			printf("STATE ACTION = [%s]\n", StateChange::stateAction(sa));
 			otherdata = afterChar(keywd.get(), '=');
-			printf("STATE DATA = [%s]\n", otherdata.get());
 			state->setChange(sa, otherdata.get());
 			break;
 		case (WidgetNode::TabsOption):
