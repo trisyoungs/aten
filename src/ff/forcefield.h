@@ -44,7 +44,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, RulesCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -186,42 +186,41 @@ class Forcefield
 	/*
 	// Generator
 	*/
-	// BEGIN OLD
 	private:
 	// Generator values that have units of energy (and thus should be converted)
 	bool energyGenerators_[MAXFFGENDATA];
-	// Which rules the ff uses (if any)
-	Rules::ForcefieldRules rules_;
-
-	public:
-	// Returns the typing rules of the Forcefield
-	Rules::ForcefieldRules rules();
-	// Set conversion flag for energetic generator data
-	void setEnergyGenerator(int n);
-	// Return energy generator array
-	bool *energyGenerators();
-	// Generate the VDW parameters (rule-based Forcefield)
-	void generateVdw(Atom*);
-	// Generate bond parameters (rule-based Forcefield)
-	ForcefieldBound *generateBond(Atom*, Atom*);
-	// Generate angle parameters (rule-based Forcefield)
-	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
-	// Generate angle parameters (rule-based Forcefield)
-	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
-	// END OLD
-	// BEGIN NEW
-	private:
 	// Container for generator functions defined in this forcefield
 	Forest generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
-	Tree *vdwdGenerator_;
+	Tree *vdwGenerator_;
 	// Pointer to bond generation function (if one is defined)
 	Tree *bondGenerator_;
 	// Pointer to angle generation function (if one is defined)
 	Tree *angleGenerator_;
 	// Pointer to torsion generation function (if one is defined)
 	Tree *torsionGenerator_;
-	// END NEW
+
+	public:
+	// Set conversion flag for energetic generator data
+	void setEnergyGenerator(int n);
+	// Return energy generator array
+	bool *energyGenerators();
+	// Return pointer to vdw generation function (if one is defined)
+	Tree *vdwGenerator();
+	// Return pointer to bond generation function (if one is defined)
+	Tree *bondGenerator();
+	// Return pointer to angle generation function (if one is defined)
+	Tree *angleGenerator();
+	// Return pointer to torsion generation function (if one is defined)
+	Tree *torsionGenerator();
+	// Generate VDW params for specified atom
+	bool generateVdw(Atom *i);
+	// Generate bond params for specified atoms
+	ForcefieldBound *generateBond(Atom *i, Atom *j);
+	// Generate angle params for specified atoms
+	ForcefieldBound *generateAngle(Atom *i, Atom *j, Atom *k);
+	// Generate torsion params for specified atoms
+	ForcefieldBound *generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l);
 
 
 	/*
@@ -248,7 +247,7 @@ class Forcefield
 	// Reads in extra data for atoms
 	bool readData(const char *vars);
 	// Reads in generator data for atoms (rule-based ff)
-	bool readGenerator();
+	bool readGenerator(const char *vars);
 	// Read in generator function definitions
 	bool readFunctions();
 	// Reads in and applies equivalent atomtype names

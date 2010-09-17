@@ -9,7 +9,6 @@
 #     implementation in MCCCS Towhee.
 
 name "UFF"
-rules uff
 units kcal
 types
 1	H_	H	""
@@ -140,7 +139,7 @@ types
 126	No6+3	No	""
 127	Lw6+3	Lw	""
 end
-generator 10
+generator "double r, double theta, double x, double D, double zeta, double Z, double chi, int thyb, double V, double U"
 #FFID   FFtype	  r	theta     x       D     zeta      Z      chi	THyb	V	U
 1	H_	0.3540	180.00	2.8860	0.0440	12.000	0.7120	4.528	0	0.0	0.0
 2	H_b	0.4600	83.50	2.8860	0.0440	12.000	0.7125	4.528	0	0.0	0.0
@@ -271,3 +270,81 @@ generator 10
 127	Lw6+3	1.6980	90.00	3.2360	0.0110	12.000	3.8882	3.5	0	1.0	1.0
 end
 convert 4 9 10
+
+# Functional forms defined here
+function
+
+int generatebond(ffbound newterm, atom i, atom j)
+{
+	double k, rij, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
+	# Grab pointers to ff atoms and some oft-used data
+	ffatom fi = i.type;
+	ffatom fj = j.type;
+	#verbose("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);
+	ri = fi.datad("r");
+	rj = fj.datad("r");
+	chii = fi.datad("chi");
+	chij = fj.datad("chi");
+	# rBO : Bond-order correction = -0.1332 * (ri + rj) * ln(n)  (eq 3)
+	sumr = ri + rj;
+	rBO = -0.1332 * sumr * ln(i.findbond(j).order());
+	# rEN : Electronegativity correction : ri*rj * (sqrt(Xi)-sqrt(Xj))**2 / (Xi*ri + Xj*rj)    (eq 4)
+	chi = sqrt(chii) - sqrt(chij);
+	rEN = ri * rj * chi * chi / (chii*ri + chij*rj);
+	# rij : Equilibrium distance : = ri + rj + rBO - rEN  (eq 2)
+	# Note: In the original paper  rij = ri + rj + rBO + rEN, but Marcus Martin (MCCCS Towhee) notes that the last term should be subtracted
+	rij = sumr + rBO - rEN;
+	Zi = fi.datad("Z");
+	Zj = fj.datad("Z");
+	k = aten.convertenergy(664.12, "kcal") * ( (Zi * Zj) / (sumr * sumr * sumr) );
+	# Set the parameters of the new bond term
+	# In Aten, parameter order is { force constant, eq distance }, and the functional form is : U = 0.5 * k * (r - eq)**2   (same as UFF)
+	newterm.form = "harmonic";
+	newterm.data = { k, rij };
+	return 1;
+}
+
+int generateangle(ffbound newterm, atom i, atom j, atom k)
+{
+	double k, rij, rjk, ri, rj, rk, sumr, chii, chij, chik, rBOij, rBOjk, chiij, chijk, rENij, rENjk, Zi, Zk;
+	# Grab pointers to ff atoms and some oft-used data
+	ffatom fi = i.type;
+	ffatom fj = j.type;
+	ffatom fk = k.type;
+	#verbose("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);
+	ri = fi.datad("r");
+	rj = fj.datad("r");
+	rk = fk.datad("r");
+	chii = fi.datad("chi");
+	chij = fj.datad("chi");
+	chik = fk.datad("chi");
+	Zi = fi.datad("Z");
+	Zk = fk.datad("Z");
+	# rBO : Bond-order correction = -0.1332 * (ri + rj) * ln(n)  (eq 3)
+	sumrij = ri + rj;
+	sumrjk = rj + rk;
+	rBOij = -0.1332 * sumrij * ln(i.findbond(j).order());
+	rBOjk = -0.1332 * sumrjk * ln(j.findbond(k).order());
+	# rEN : Electronegativity correction : ri*rj * (sqrt(Xi)-sqrt(Xj))**2 / (Xi*ri + Xj*rj)    (eq 4)
+	chiij = sqrt(chii) - sqrt(chij);
+	chijk = sqrt(chij) - sqrt(chik);
+	rENij = ri * rj * chiij * chiij / (chii*ri + chij*rj);
+	rENjk = rj * rk * chijk * chijk / (chij*rj + chik*rk);
+	# rij : Equilibrium distance : = ri + rj + rBO - rEN  (eq 2)
+	# Note: In the original paper  rij = ri + rj + rBO + rEN, but Marcus Martin (MCCCS Towhee) notes that the last term should be subtracted
+	rij = sumrij + rBOij - rENij;
+	rjk = sumrjk + rBOjk - rENjk;
+	# Determine rik2 and rik5 values
+	eq = fj.data("theta") / DEGRAD;
+	rik2 = rij * rij + rjk * rjk - 2.0 * ( rij * rjk * cos(eq));
+	rik5 = rik2 * rik2 * sqrt(rik2);
+
+	k = aten.convertenergy(664.12, "kcal") * ( (Zi * Zj) / (sumr * sumr * sumr) );
+	# Set the parameters of the new angle term
+	# In Aten, parameter order is { force constant, eq distance }, and the functional form is : U = 0.5 * k * (r - eq)**2   (same as UFF)
+	newterm.form = "harmonic";
+	newterm.data = { k, rij };
+	return 1;
+}
+
+end

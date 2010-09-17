@@ -54,7 +54,7 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 	{ "escale",	VTypes::DoubleData,	0, FALSE },
 	{ "form",	VTypes::StringData,	0, FALSE },
 	{ "natoms",	VTypes::IntegerData,	0, TRUE },
-	{ "type",	VTypes::StringData,	0, FALSE },
+	{ "type",	VTypes::StringData,	0, TRUE },
 	{ "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE },
 	{ "vscale",	VTypes::DoubleData,	0, FALSE }
 };
@@ -231,9 +231,9 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -267,8 +267,38 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
 		result = FALSE;
 	}
+	int n;
 	if (result) switch (acc)
 	{
+		case (ForcefieldBoundVariable::Data):
+			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setParameter(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newvalue.asDouble());
+			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newvalue.asDouble());
+			break;
+		case (ForcefieldBoundVariable::EScale):
+			if (ptr->type() != ForcefieldBound::TorsionInteraction)
+			{
+				msg.print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				result = FALSE;
+			}
+			else ptr->setElecScale( newvalue.asDouble() );
+			break;
+		case (ForcefieldBoundVariable::Form):
+			result = ptr->setForm(newvalue.asString());
+			break;
+		case (ForcefieldBoundVariable::TypeNames):
+			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFBOUNDTYPES)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setTypeName(n, newvalue.asString(n, result));
+			else if (hasArrayIndex) ptr->setTypeName(arrayIndex-1, newvalue.asString());
+			else for (n=0; n<MAXFFBOUNDTYPES; ++n) ptr->setTypeName(n, newvalue.asString());
+			break;
+		case (ForcefieldBoundVariable::VScale):
+			if (ptr->type() != ForcefieldBound::TorsionInteraction)
+			{
+				msg.print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				result = FALSE;
+			}
+			else ptr->setVdwScale( newvalue.asDouble() );
+			break;
 		default:
 			printf("ForcefieldBoundVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;

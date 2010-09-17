@@ -477,9 +477,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -541,7 +541,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setBackfaceCulling(newvalue.asBool());
 			break;
 		case (PreferencesVariable::BackgroundColour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
 			break;
@@ -643,7 +643,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setForceRhombohedral( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::ForegroundColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newvalue.asDouble(result));
 			break;
@@ -651,7 +651,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setGlobeSize( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::GlyphColour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::GlyphColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlyphColour, n, newvalue.asDouble(result));
 			break;
@@ -758,7 +758,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setShininess( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::SpecularColour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::SpecularColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::SpecularColour, n, newvalue.asDouble(result));
 			break;
@@ -766,22 +766,22 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			ptr->setSpotlightActive( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::SpotlightAmbient):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::AmbientComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::AmbientComponent, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightDiffuse):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::DiffuseComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::DiffuseComponent, n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightPosition):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightPosition(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightPosition(n, newvalue.asDouble(result));
 			break;
 		case (PreferencesVariable::SpotlightSpecular):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
 			break;

@@ -78,6 +78,11 @@
 				</thead>
 				<tbody>
 					<row>
+						<entry>convertenergy ( double value, string <emphasis>oldunits</emphasis> )</entry>
+						<entry>double</entry>
+						<entry>Convert the supplied energy value from <emphasis>oldunits</emphasis> to the current, internal unit of energy in use by Aten. See also <link linkend="enums.energyunits">Energy Units</link> and the relevant <link linkend="command.types.preferences">prefs</link> accessor.</entry>
+					</row>
+					<row>
 						<entry>findelement ( string <emphasis>name</emphasis> )</entry>
 						<entry><link linkend="command.types.element">element</link></entry>
 						<entry>Convert the string specified into an element, according to the current <link linkend="enums.zmaptypes">zmapping type</link>.</entry>

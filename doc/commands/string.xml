@@ -22,9 +22,10 @@
 				<funcdef>string <function>afterstr</function></funcdef>
 				<paramdef>string <parameter>source</parameter></paramdef>
 				<paramdef>string <parameter>search</parameter></paramdef>
+				<paramdef>bool <parameter>sourceonfail = FALSE</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Return the part of the <emphasis>source</emphasis> string that comes after the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned.</para>
+		<para>Return the part of the <emphasis>source</emphasis> string that comes after the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned, unless the flag 'sourceonfail' is set to TRUE in which case the original source string is returned instead.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -90,9 +91,10 @@ int i = atoi(&quot;000023&quot;);
 				<funcdef>string <function>beforestr</function></funcdef>
 				<paramdef>string <parameter>source</parameter></paramdef>
 				<paramdef>string <parameter>search</parameter></paramdef>
+				<paramdef>bool <parameter>sourceonfail = FALSE</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Return the part of the <emphasis>source</emphasis> string that comes before the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned.</para>
+		<para>Return the part of the <emphasis>source</emphasis> string that comes before the first occurrence of the <emphasis>search</emphasis> string. If <emphasis>source</emphasis> doesn't contain any occurrences of <emphasis>search</emphasis> an empty string is returned, unless the flag 'sourceonfail' is set to TRUE in which case the original source string is returned instead.</para>
 		
 		<para>For example:</para>
 		<synopsis>

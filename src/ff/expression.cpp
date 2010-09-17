@@ -121,7 +121,7 @@ bool Pattern::createExpression(bool vdwOnly)
 		// Set data
 		addAtomData(ai, ai->type());
 		// If the forcefield is rule-based, generate the required parameters first
-		if (ff->rules() != Rules::None) ff->generateVdw(ai);
+		if (ff->vdwGenerator() != NULL) ff->generateVdw(ai);
 		ai = ai->next;
 	}
 	// Generate intramolecular terms (if not disabled)
@@ -161,7 +161,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) addBondData(NULL, ii, jj);
+						if (ff->bondGenerator() == NULL) addBondData(NULL, ii, jj);
 						else
 						{
 							// Generate the new parameters required
@@ -223,7 +223,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) addAngleData(NULL, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
+						if (ff->angleGenerator() == NULL) addAngleData(NULL, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 						else
 						{
 							// Generate the new parameters required
@@ -296,7 +296,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (ff->rules() == Rules::None) addTorsionData(NULL, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
+						if (ff->torsionGenerator() == NULL) addTorsionData(NULL, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
 						else
 						{
 							// Generate the new parameters required

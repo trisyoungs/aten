@@ -29,7 +29,7 @@
 						<entry>form</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
-						<entry>Functional form of short-range potential - see <link linkend="ff.forms.vdw">VDW Forms</link></entry>
+						<entry>Functional form of intramolecular potential - see <link linkend="ff.forms">Functional Forms</link></entry>
 					</row>
 					<row>
 						<entry>natoms</entry>
@@ -40,7 +40,7 @@
 					<row>
 						<entry>type</entry>
 						<entry>string</entry>
-						<entry>rw</entry>
+						<entry>ro</entry>
 						<entry>Actual type of the bound interaction (bond, angle, etc.)</entry>
 					</row>
 					<row>

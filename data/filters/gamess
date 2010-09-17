@@ -165,7 +165,7 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 
 	# Write $CONTRL, $SYSTEM and $BASIS groups
 	writelinef(" $CONTRL SCFTYP=%s RUNTYP=%s COORD=CART ICHARG=%i MULT=%i $END\n", scftyp, runtyp, charge, mult);
-	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", beforestr(dfttyp," "), tddft, mplevl, cityp, cctyp);
+	writelinef(" $CONTRL DFTTYP=%s TDDFT=%s MPLEVL=%s CITYP=%s CCTYP=%s $END\n", beforestr(dfttyp," ",TRUE), tddft, mplevl, cityp, cctyp);
 	writelinef(" $BASIS GBASIS=%s NGAUSS=%i NDFUNC=%i NPFUNC=%i $END\n", basis_gbasis, basis_ngauss, basis_ndfunc, basis_npfunc);
 	writelinef(" $BASIS NFFUNC=%i DIFFSP=%s DIFFS=%s $END\n", basis_nffunc, basis_diffsp, basis_diffs);
 	if ((runtyp == "OPTIMIZE") || (runtyp == "SADPOINT")) writelinef(" $STATPT METHOD=%s NSTEP=%i OPTTOL=%f $END\n", statpt_method, statpt_nstep, statpt_opttol);

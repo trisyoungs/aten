@@ -83,7 +83,7 @@ Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "findbond",	VTypes::BondData,	"A",	"atom j" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -298,9 +298,9 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -341,7 +341,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	if (result) switch (acc)
 	{
 		case (AtomVariable::Colour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
 			break;
@@ -439,6 +439,9 @@ bool AtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	Atom *ptr= (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if (result) switch (i)
 	{
+		case (AtomVariable::FindBond):
+			rv.set(VTypes::BondData, ptr->findBond( (Atom*) node->argp(0, VTypes::AtomData) ) );
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", functionData[i].name);
 			result = FALSE;
