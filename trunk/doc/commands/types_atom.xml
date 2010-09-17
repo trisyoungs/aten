@@ -15,7 +15,7 @@
 				<tbody>
 					<row>
 						<entry>bonds</entry>
-						<entry><link linkend="command.types.bond">bond</link>[]</entry>
+						<entry><link linkend="command.types.bond">bonds</link>[]</entry>
 						<entry>ro</entry>
 						<entry>List of bonds the atom is involved in</entry>
 					</row>
@@ -184,5 +184,24 @@
 				</tbody>
 			</tgroup>
 		</table>
-	
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Atom type functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>findbond ( Atom <emphasis>i</emphasis> )</entry>
+						<entry><link linkend="command.types.bond">bond</link></entry>
+						<entry>Return the bond (if any) between the current and specified atoms</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>

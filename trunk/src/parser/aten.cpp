@@ -98,6 +98,7 @@ Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
+	{ "convertenergy",	VTypes::DoubleData,	"NS",	"double value, string oldunits" },
 	{ "findelement",	VTypes::ElementData,	"S",	"string name" }
 };
 
@@ -272,9 +273,9 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -328,9 +329,15 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int el;
+	Prefs::EnergyUnit eu;
 	Aten *ptr= (Aten*) rv.asPointer(VTypes::AtenData, result);
 	if (result) switch (i)
 	{
+		case (AtenVariable::ConvertEnergy):
+			eu = Prefs::energyUnit(node->argc(1), TRUE);
+			if (eu == Prefs::nEnergyUnits) result = FALSE;
+			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
+			break;
 		case (AtenVariable::FindElement):
 			el = elements().find(node->argc(0));
 			if (el != 0) rv.set(VTypes::ElementData, &elements().el[el]);

@@ -25,6 +25,8 @@
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "parser/character.h"
+#include "parser/forcefieldbound.h"
+#include "parser/atom.h"
 #include "main/aten.h"
 
 // Constructors
@@ -205,6 +207,12 @@ bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const 
 			case ('c'):
 			case ('s'):
 				var = new StringVariable(va_arg(vars, const char *), TRUE);
+				break;
+			case ('a'):
+				var = new AtomVariable(va_arg(vars, Atom*));
+				break;
+			case ('z'):
+				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in Forest::executeGlobalFunctin.\n", *c);

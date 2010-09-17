@@ -74,11 +74,6 @@ bool Forcefield::load(const char *filename)
 				}
 				else okay = FALSE;
 				break;
-			case (Forcefield::RulesCommand):
-				rules_ = Rules::forcefieldRules(ffparser.argc(1));
-				msg.print("\t: Rule-set to use is '%s'\n", Rules::forcefieldRules(rules_));
-				okay = TRUE;
-				break;
 			case (Forcefield::DefinesCommand):
 				okay = readDefines();
 				break;
@@ -89,7 +84,7 @@ bool Forcefield::load(const char *filename)
 				okay = readTypes();
 				break;
 			case (Forcefield::GeneratorCommand):
-				okay = readGenerator();
+				okay = readGenerator(ffparser.argc(1));
 				break;
 			case (Forcefield::DataCommand):
 				okay = readData(ffparser.argc(1));
@@ -146,14 +141,10 @@ bool Forcefield::load(const char *filename)
 		}
 	} while (okay);
 	ffparser.closeFile();
+
 	// Check that some forcefield types were defined...
 	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
-	// Check that all generator data was provided...
-	if (rules_ != Rules::None)
-	{
-		for (ForcefieldAtom *ffa = types_.first()->next; ffa != NULL; ffa = ffa->next)
-			if (ffa->generator() == NULL) msg.print("Warning - type '%s' has no generator data.\n", ffa->name());
-	}
+
 	// Link forcefield type references (&N) to their actual forcefield types
 	for (ForcefieldAtom *ffa = types_.first(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
@@ -358,7 +349,7 @@ bool Forcefield::readData(const char *vars)
 		for (n=2; n<ffparser.nArgs(); ++n)
 		{
 			// If the parser argument is blank we've run out of arguments early
-			if (ffparser.hasArg(n))
+			if (!ffparser.hasArg(n))
 			{
 				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
 				break;
@@ -388,7 +379,7 @@ bool Forcefield::readData(const char *vars)
 }
 
 // Read generator data
-bool Forcefield::readGenerator()
+bool Forcefield::readGenerator(const char *vars)
 {
 	// Read in generator data for atom types in rule-based forcefields
 	// We expect there to be the same number of sets of data as there are types...
@@ -397,6 +388,22 @@ bool Forcefield::readGenerator()
 	int count, success, n;
 	ForcefieldAtom *ffa;
 	bool done = FALSE;
+	// First, parse list of data items to get names and types of variables
+	NameMapList<VTypes::DataType> items(VTypes::nDataTypes);
+	LineParser parser;
+	parser.getArgsDelim(vars);
+	for (n=0; n<parser.nArgs(); n += 2)
+	{
+		// Determine data type
+		VTypes::DataType vt = VTypes::dataType(parser.argc(n));
+		if (vt == VTypes::nDataTypes)
+		{
+			msg.print("Unrecognised type ('%s') found in list in 'generator' block header.\n", parser.argc(0));
+			msg.exit("Forcefield::readGenerator");
+			return FALSE;
+		}
+		items.add(parser.argc(n+1), vt);
+	}
 	count = 0;
 	do
 	{
@@ -408,30 +415,44 @@ bool Forcefield::readGenerator()
 			msg.exit("Forcefield::readGenerator");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
-		else
+		if (strcmp(ffparser.argc(0),"end") == 0) break;
+		// Search for this ffatom ID and retrieve it
+		ForcefieldAtom *ffa = findType(ffparser.argi(0));
+		if (ffa == NULL)
 		{
-			// Convert type name to internal index and read in generator data...
-			// Format of lines is : ffid  typename data1  data2 ...
-			// Typename is unused, but is present in the file to aid readability
-			ffa = findType(ffparser.argi(0));
-			if (ffa == NULL)
+			msg.print("Error: forcefield type ID '%i' has not been specified, so can't add generator data to it.\n", ffparser.argi(0));
+			msg.exit("Forcefield::readGenerator");
+			return FALSE;
+		}
+		count ++;
+		// Get data from lines in the order it was specified above
+		for (n=2; n<ffparser.nArgs(); ++n)
+		{
+			// If the parser argument is blank we've run out of arguments early
+			if (!ffparser.hasArg(n))
 			{
-				msg.print("Unrecognised forcefield atom id in generator list: '%s'\n",ffparser.argc(0));
-				msg.exit("Forcefield::readGenerator");
-				return FALSE;
+				msg.print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).\n", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
+				break;
 			}
-			ffa->initialiseGenerator();
-			for (n=0; n<MAXFFGENDATA; n++) ffa->setGenerator(n,ffparser.argd(n+2));
-			count ++;
+			switch (items.data(n-2))
+			{
+				case (VTypes::IntegerData):
+					ffa->addData(items.name(n-2), ffparser.argi(n));
+					break;
+				case (VTypes::DoubleData):
+					ffa->addData(items.name(n-2), ffparser.argd(n));
+					break;
+				case (VTypes::StringData):
+					ffa->addData(items.name(n-2), ffparser.argc(n));
+					break;
+				default:
+					msg.print("Error: Unsuitable datatype for data item %i.\n", n-1);
+					msg.exit("Forcefield::readGenerator");
+					return TRUE;
+			}
 		}
 	} while (!done);
-	if (count != types_.nItems()-1)
-	{
-		msg.print("Not all atom types had generator data defined (%i missing).\n", types_.nItems()-count-1);
-		msg.exit("Forcefield::readGenerator");
-		return FALSE;
-	}
+	if (count != types_.nItems()-1) msg.print("Warning: Not all atom types had generator data defined (%i missing).\n", types_.nItems()-count-1);
 	msg.print("\t: Read in generator data for %i atomtypes.\n", count);
 	msg.exit("Forcefield::readGenerator");
 	return TRUE;
@@ -473,7 +494,20 @@ bool Forcefield::readFunctions()
 	printf("Finished reading stringlist.\n");
 // 	for (Dnchar *d = stringList.first(); d != NULL; d = d->next) d->print();
 	// Now, attempt to parser the lines we just read in to create functions....
-	bool result = generatorFunctions_.generateFromStringList(stringList.first());
+	bool result = generatorFunctions_.generateFromStringList(stringList.first(), "GeneratorFuncs", TRUE);
+	// Search for functions we recognise
+	vdwGenerator_ = generatorFunctions_.findGlobalFunction("generatevdw");
+	if (vdwGenerator_) msg.print("\t: Found 'generatevdw' function.\n");
+	else msg.print("\t: Warning - No 'generatevdw' function defined.\n");
+	bondGenerator_ = generatorFunctions_.findGlobalFunction("generatebond");
+	if (bondGenerator_) msg.print("\t: Found 'generatebond' function.\n");
+	else msg.print("\t: Warning - No 'generatebond' function defined.\n");
+	angleGenerator_ = generatorFunctions_.findGlobalFunction("generateangle");
+	if (angleGenerator_) msg.print("\t: Found 'generateangle' function.\n");
+	else msg.print("\t: Warning - No 'generateangle' function defined.\n");
+	torsionGenerator_ = generatorFunctions_.findGlobalFunction("generatetorsion");
+	if (torsionGenerator_) msg.print("\t: Found 'generatetorsion' function.\n");
+	else msg.print("\t: Warning - No 'generatetorsion' function defined.\n");
 	msg.exit("Forcefield::readFunctions");
 	return result;
 }

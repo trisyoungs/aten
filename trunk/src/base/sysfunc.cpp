@@ -31,7 +31,7 @@ using namespace std;
 // Convert string to uppercase
 const char *upperCase(const char *s)
 {
-	static char result[256];
+	static char result[1024];
 	static int i;
 	for (i = 0; s[i] != '\0'; i++) result[i] = toupper(s[i]);
 	result[i] = '\0';
@@ -41,7 +41,7 @@ const char *upperCase(const char *s)
 // Convert string to lowercase
 const char *lowerCase(const char *s)
 {
-	static char result[256];
+	static char result[1024];
 	static int i;
 	for (i = 0; s[i] != '\0'; i++) result[i] = tolower(s[i]);
 	result[i] = '\0';
@@ -51,7 +51,7 @@ const char *lowerCase(const char *s)
 // Get characters before first occurrence of designated character
 const char *beforeChar(const char *s, char delim)
 {
-	static char result[256];
+	static char result[1024];
 	static int i, count;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
@@ -67,7 +67,7 @@ const char *beforeChar(const char *s, char delim)
 // Get characters after first occurrence of designated character
 const char *afterChar(const char *s, char delim)
 {
-	static char result[256];
+	static char result[1024];
 	static int i, count, ndelim;
 	ndelim = 0;
 	count = 0;
@@ -91,7 +91,7 @@ const char *afterChar(const char *s, char delim)
 // Get characters after last occurrence of designated character
 const char *afterLastChar(const char *s, char delim)
 {
-	static char result[256];
+	static char result[1024];
 	int count;
 	const char *c, *d = NULL;
 	for (c = &s[0]; *c != '\0'; ++c) if (*c == delim) d = c;
@@ -189,7 +189,7 @@ const char *removePath(const char *s)
 const char *stripTrailing(const char *s)
 {
 	int n;
-	static char result[512];
+	static char result[1024];
 	// Go backwards through string and find first non-whitespace character
 	for (n=strlen(s)-1; n>=0; n--) if (s[n] != ' ') break;
 	strncpy(result,s,n+1);

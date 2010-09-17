@@ -213,9 +213,9 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -253,12 +253,12 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 	if (result) switch (acc)
 	{
 		case (ElementVariable::Ambient):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->ambientColour[n] = newvalue.asDouble(n, result);
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->ambientColour[n] = newvalue.asDouble(n, result);
 			else if (hasArrayIndex) ptr->ambientColour[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->ambientColour[n] = newvalue.asDouble(result);
 			break;
 		case (ElementVariable::Colour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n)
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n)
 			{
 				ptr->ambientColour[n] = newvalue.asDouble(n, result);
 				ptr->diffuseColour[n] = newvalue.asDouble(n, result) * 0.75;
@@ -275,7 +275,7 @@ bool ElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &new
 			}
 			break;
 		case (ElementVariable::Diffuse):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->diffuseColour[n] = newvalue.asDouble(n, result);
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->diffuseColour[n] = newvalue.asDouble(n, result);
 			else if (hasArrayIndex) ptr->diffuseColour[arrayIndex-1] = newvalue.asDouble(result);
 			else for (n=0; n<4; ++n) ptr->diffuseColour[n] = newvalue.asDouble(result);
 			break;

@@ -96,7 +96,7 @@ function
 int generatebond(ffbound newterm, atom i, atom j)
 {
 	printf("Here we are in the bond generation function.\n");
-	printf("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equiv,j.type.equiv);
-	#return 1;
+	printf("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);
+	return 1;
 }
 end

@@ -210,9 +210,9 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 		}
 		else
 		{
-			if ((newvalue.arraySize() > 0) && (newvalue.arraySize() != accessorData[i].arraySize))
+			if (newvalue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -256,7 +256,7 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 			ptr->setAtomData( (GlyphData::GlyphDataType) newvalue.asInteger() );
 			break;
 		case (GlyphDataVariable::Colour):
-			if (newvalue.arraySize() == 4) for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(n, result));
+			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
 			break;

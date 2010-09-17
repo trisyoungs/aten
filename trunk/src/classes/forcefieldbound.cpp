@@ -123,6 +123,35 @@ void ForcefieldBound::setTorsionStyle(TorsionFunctions::TorsionFunction tf)
 	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = TorsionFunctions::TorsionFunctions[tf].defaultValues[i];
 }
 
+// Set the functional form by name, without changing any existing parameters
+bool ForcefieldBound::setForm(const char *form)
+{
+	// Based on the current type of the ForcefieldBound, convert text to enum
+	int newform = -1;
+	switch (type_)
+	{
+		case (ForcefieldBound::BondInteraction):
+			newform = BondFunctions::bondFunction(form);
+			if (newform == BondFunctions::nBondFunctions) newform = -1;
+			break;
+		case (ForcefieldBound::AngleInteraction):
+			newform = AngleFunctions::angleFunction(form);
+			if (newform == AngleFunctions::nAngleFunctions) newform = -1;
+			break;
+		case (ForcefieldBound::TorsionInteraction):
+		case (ForcefieldBound::ImproperInteraction):
+			newform = TorsionFunctions::torsionFunction(form);
+			if (newform == TorsionFunctions::nTorsionFunctions) newform = -1;
+		break;
+		default:
+			printf("Internal Error - No bound type defined in ForcefieldBound structure.\n");
+			break;
+	}
+	if (newform != -1) functionalForm_ = newform;
+	else msg.print("Unrecognised functional form (%s) for a %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+	return (newform != -1);
+}
+
 // Set the parameter data specified
 void ForcefieldBound::setParameter(int i, double d)
 {
@@ -171,10 +200,22 @@ void ForcefieldBound::setScaleFactors(double escale, double vscale)
 	vdwScale_ = vscale;
 }
 
+// Set electrostatic scale factor
+void ForcefieldBound::setElecScale(double d)
+{
+	elecScale_ = d;
+}
+
 // Return electrostatic scale factor (if torsion)
 double ForcefieldBound::elecScale() const
 {
 	return elecScale_;
+}
+
+// Set Vdw scale factor
+void ForcefieldBound::setVdwScale(double d)
+{
+	vdwScale_ = d;
 }
 
 // Return VDW scale factor (if torsion)

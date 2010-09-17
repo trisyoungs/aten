@@ -71,6 +71,8 @@ class ForcefieldBound
 	void setAngleStyle(AngleFunctions::AngleFunction af);
 	// Set the torsion functional form
 	void setTorsionStyle(TorsionFunctions::TorsionFunction tf);
+	// Set the functional form by name
+	bool setForm(const char *form);
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified
@@ -83,10 +85,14 @@ class ForcefieldBound
 	Dnchar *typeNames();
 	// Set the atom type 'n'
 	void setTypeName(int n, const char *s);
-	// Set 1-4 scale factors
+	// Set both 1-4 scale factors
 	void setScaleFactors(double escale, double vscale);
+	// Set electrostatic scale factor
+	void setElecScale(double d);
 	// Return electrostatic scale factor (if torsion)
 	double elecScale() const;
+	// Set Vdw scale factor
+	void setVdwScale(double d);
 	// Return VDW scale factor (if torsion)
 	double vdwScale() const;
 };
