@@ -727,13 +727,13 @@ class Model
 	void centre(const Vec3<double> &v, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
 	void centre(double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
 	// Translate selection by the vector specified
-	void translateSelectionLocal(const Vec3<double>&);
+	void translateSelectionLocal(const Vec3<double>&, bool markonly = FALSE);
 	// Translate selection by the vector specified (in world coordinates)
-	void translateSelectionWorld(const Vec3<double>&);
+	void translateSelectionWorld(const Vec3<double>&, bool markonly = FALSE);
 	// Rotate selection about specified vector
 	void rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markonly = FALSE);
 	// Mirror selection about specified axis
-	void mirrorSelectionLocal(int axis);
+	void mirrorSelectionLocal(int axis, bool markonly = FALSE);
 	// Matrix transform current selection
 	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, bool markonly = FALSE);
 

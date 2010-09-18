@@ -184,6 +184,11 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	}
 	else
 	{
+		if (!t->executeCustomDialog(TRUE))
+		{
+			msg.print("Not saved.\n");
+			return;
+		}
 		t->executeWrite(filename.get());
 		m->changeLog.updateSavePoint();
 	}	

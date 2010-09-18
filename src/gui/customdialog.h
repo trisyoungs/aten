@@ -75,12 +75,12 @@ class AtenCustomDialog : public QDialog
 	QLineEdit *createLineEdit(WidgetNode *gfo);
 	// Create spin edit from data in specified GuiFilterOption
 	QSpinBox *createSpinBox(WidgetNode *gfo);
-	// Store widget values back into the target variables
-	void storeValues();
 
 	public:
 	// Construct filter option widgets
 	bool createWidgets(const char *title, Tree *t);
+	// Store widget values back into the target variables
+	void storeValues();
 	// Show defined dialog, displaying options for the specified tree and setting variables within
 	bool showDialog();
 
