@@ -25,6 +25,7 @@
 #include "parser/integer.h"
 #include "parser/double.h"
 #include "parser/character.h"
+#include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/atom.h"
 #include "main/aten.h"
@@ -210,6 +211,9 @@ bool Forest::executeGlobalFunction(const char *funcname, ReturnValue &rv, const 
 				break;
 			case ('a'):
 				var = new AtomVariable(va_arg(vars, Atom*));
+				break;
+			case ('y'):
+				var = new ForcefieldAtomVariable(va_arg(vars, ForcefieldAtom*));
 				break;
 			case ('z'):
 				var = new ForcefieldBoundVariable(va_arg(vars, ForcefieldBound*));

@@ -24,23 +24,17 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 
-// References
-// UFF:
-// DREIDING: A Generic Force Field for Molecular Simulations
-//	Stephen L. Mayo, Barry D. Olafson, and William A. Goddard III
-//	J. Phys. Chem. 1990, 94, 8897-8909
-
-// Set conversion flag for energetic generator data
-void Forcefield::setEnergyGenerator(int n)
+// Add energy data value to list of those flagged as energies
+void Forcefield::addEnergyData(const char *s)
 {
-	if ((n < 0) || (n > MAXFFGENDATA)) msg.print("Index %i is out of range for generator data.\n", n);
-	else energyGenerators_[n] = TRUE;
+	Dnchar *newdata = energyData_.add();
+	newdata->set(s);
 }
 
-// Return energy generator array
-bool *Forcefield::energyGenerators()
+// Return list of energy data values
+Dnchar *Forcefield::energyData()
 {
-	return energyGenerators_;
+	return energyData_.first();
 }
 
 // Return pointer to vdw generation function (if one is defined)
@@ -70,10 +64,7 @@ Tree *Forcefield::torsionGenerator()
 // Generate VDW params
 bool Forcefield::generateVdw(Atom *i)
 {
-	// Simplest of all generation routines - creates the params() data for VDW interactions.
 	msg.enter("Forcefield::generateVdw");
-	double sigma, epsilon, r0, d0;
-	ForcefieldAtom *ffi = i->type();
 	// Call the generator function.....
 	if (vdwGenerator_ == NULL)
 	{
@@ -81,33 +72,26 @@ bool Forcefield::generateVdw(Atom *i)
 		msg.exit("Forcefield::generateVdw");
 		return FALSE;
 	}
-// 	switch (rules_)
-// 	{
-// 		case (Rules::None):
-// 			msg.print("Error - tried to generate VDW parameters for a forcefield that has no rules.\n");
-// 			break;
-// 		case (Rules::Uff):
-// 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
-// 			epsilon = ffi->generator(3);
-// 			sigma = ffi->generator(2);
-// 			ffi->setVdwForm(VdwFunctions::Lj);
-// 			ffi->setParameter(VdwFunctions::LjEpsilon, epsilon * 0.25);
-// 			ffi->setParameter(VdwFunctions::LjSigma, sigma);
-// 			ffi->setParameter(VdwFunctions::LjN, 2.0);
-// 			msg.print(Messenger::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
-// 			break;
-// 		case (Rules::DreidingLJ):
-// 			r0 = ffi->generator(2);
-// 			d0 = ffi->generator(3);
-// 			ffi->setVdwForm(VdwFunctions::LjAB);
-// 			ffi->setParameter(VdwFunctions::LjA, d0 * pow(r0,12.0));
-// 			ffi->setParameter(VdwFunctions::LjB, 2.0 * d0 * pow(r0,6.0));
-// 			msg.print(Messenger::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->parameter(VdwFunctions::LjA), ffi->parameter(VdwFunctions::LjB));
-// 			break;
-// 		case (Rules::DreidingX6):
-// 			break;
-// 	}
+	// Check atom pointers
+	if (i == NULL)
+	{
+		msg.print("Internal Error - NULL atom passed to VDW generator function in forcefield '%s' (pointers: %p).\n", name_.get(), i);
+		msg.exit("Forcefield::generateBond");
+		return FALSE;
+	}
+	// Grab forcefieldatom pointer
+	ForcefieldAtom *ffi = i->type();
+	// Call the generator function with the necessary arguments
+	ReturnValue rv;
+	if (!generatorFunctions_.executeGlobalFunction("generatevdw", rv, "y", ffi))
+	{
+		msg.print("Error - Failed to generate Vdw function data for atom type.\n");
+		ffi->setVdwForm(VdwFunctions::None);
+		msg.exit("Forcefield::generateVdw");
+		return FALSE;
+	}
 	msg.exit("Forcefield::generateVdw");
+	return TRUE;
 }
 
 // Generate bond params
@@ -121,9 +105,18 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 		msg.exit("Forcefield::generateBond");
 		return NULL;
 	}
-	// Create new bond and set type to None for now...
+	// Check atom pointers
+	if ((i == NULL) || (j == NULL))
+	{
+		msg.print("Internal Error - NULL atom(s) passed to bond generator function in forcefield '%s' (pointers: %p %p).\n", name_.get(), i, j);
+		msg.exit("Forcefield::generateBond");
+		return NULL;
+	}
+	// Create new bond and set atom equivalents, but set type to None for now...
 	ForcefieldBound *newbond = addBond(BondFunctions::None);
-	// Call the generator function with the necessary 
+	newbond->setTypeName(0, i->type()->equivalent());
+	newbond->setTypeName(1, j->type()->equivalent());
+	// Call the generator function with the necessary arguments
 	ReturnValue rv;
 	if (!generatorFunctions_.executeGlobalFunction("generatebond", rv, "zaa", newbond, i, j))
 	{
@@ -145,9 +138,19 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 		msg.exit("Forcefield::generateAngle");
 		return NULL;
 	}
-	// Create new bond and set type to None for now...
+	// Check atom pointers
+	if ((i == NULL) || (j == NULL) || (k == NULL))
+	{
+		msg.print("Internal Error - NULL atom(s) passed to angle generator function in forcefield '%s' (pointers: %p %p %p).\n", name_.get(), i, j, k);
+		msg.exit("Forcefield::generateAngle");
+		return NULL;
+	}
+	// Create new angle and set atom equivalents, but set type to None for now...
 	ForcefieldBound *newangle = addAngle(AngleFunctions::None);
-	// Call the generator function with the necessary 
+	newangle->setTypeName(0, i->type()->equivalent());
+	newangle->setTypeName(1, j->type()->equivalent());
+	newangle->setTypeName(2, k->type()->equivalent());
+	// Call the generator function with the necessary arguments
 	ReturnValue rv;
 	if (!generatorFunctions_.executeGlobalFunction("generateangle", rv, "zaaa", newangle, i, j, k))
 	{
@@ -169,11 +172,22 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 		msg.exit("Forcefield::generateTorsion");
 		return NULL;
 	}
-	// Create new bond and set type to None for now...
+	// Check atom pointers
+	if ((i == NULL) || (j == NULL) || (k == NULL) || (l == NULL))
+	{
+		msg.print("Internal Error - NULL atom(s) passed to torsion generator function in forcefield '%s' (pointers: %p %p %p %p).\n", name_.get(), i, j, k, l);
+		msg.exit("Forcefield::generateTorsion");
+		return NULL;
+	}
+	// Create new torsion and set atom equivalents, but set type to None for now...
 	ForcefieldBound *newtorsion = addTorsion(TorsionFunctions::None);
-	// Call the generator function with the necessary 
+	newtorsion->setTypeName(0, i->type()->equivalent());
+	newtorsion->setTypeName(1, j->type()->equivalent());
+	newtorsion->setTypeName(2, k->type()->equivalent());
+	newtorsion->setTypeName(3, l->type()->equivalent());
+	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("generatetorsion", rv, "zaaa", newtorsion, i, j, k))
+	if (!generatorFunctions_.executeGlobalFunction("generatetorsion", rv, "zaaaa", newtorsion, i, j, k, l))
 	{
 		msg.print("Error - Failed to generate function data for torsion.\n");
 		newtorsion = NULL;

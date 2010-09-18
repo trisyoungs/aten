@@ -44,7 +44,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, GeneratorCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -184,11 +184,11 @@ class Forcefield
 
 
 	/*
-	// Generator
+	// Parameter Generation
 	*/
 	private:
-	// Generator values that have units of energy (and thus should be converted)
-	bool energyGenerators_[MAXFFGENDATA];
+	// List of data values that have units of energy (and thus should be converted)
+	List<Dnchar> energyData_;
 	// Container for generator functions defined in this forcefield
 	Forest generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
@@ -201,10 +201,10 @@ class Forcefield
 	Tree *torsionGenerator_;
 
 	public:
-	// Set conversion flag for energetic generator data
-	void setEnergyGenerator(int n);
-	// Return energy generator array
-	bool *energyGenerators();
+	// Add energy data value to list of those flagged as energies
+	void addEnergyData(const char *s);
+	// Return list of energy data values
+	Dnchar *energyData();
 	// Return pointer to vdw generation function (if one is defined)
 	Tree *vdwGenerator();
 	// Return pointer to bond generation function (if one is defined)
@@ -233,6 +233,7 @@ class Forcefield
 	int matchType(const Dnchar &a, const Dnchar &b);
 	// Match names of atomtypes supplied to strings supplied
 	int matchTypes(ForcefieldAtom*, ForcefieldAtom*, const char*, const char*);
+
 
 	/*
 	// File
@@ -266,6 +267,7 @@ class Forcefield
 	public:
 	// Load Forcefield from the filename supplied
 	bool load(const char*);
+
 
 	/*
 	// Misc

@@ -148,7 +148,7 @@ bool ForcefieldBound::setForm(const char *form)
 			break;
 	}
 	if (newform != -1) functionalForm_ = newform;
-	else msg.print("Unrecognised functional form (%s) for a %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+	else msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
 	return (newform != -1);
 }
 

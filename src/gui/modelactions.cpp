@@ -29,12 +29,6 @@
 // Model Menu Actions
 */
 
-void AtenForm::on_actionModelFFType_triggered(bool checked)
-{
-	aten.currentModelOrFrame()->typeAll();
-	gui.update(TRUE,FALSE,FALSE);
-}
-
 void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->autocreatePatterns();
@@ -53,9 +47,22 @@ void AtenForm::on_actionModelListPatterns_triggered(bool checked)
 	gui.update(TRUE,FALSE,FALSE);
 }
 
+
+void AtenForm::on_actionModelFFType_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->typeAll();
+	gui.update(TRUE,FALSE,FALSE);
+}
+
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModelOrFrame()->removeTyping();
+	gui.update(TRUE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionModelCreateExpression_triggered(bool checked)
+{
+	aten.currentModelOrFrame()->createExpression();
 	gui.update(TRUE,FALSE,FALSE);
 }
 

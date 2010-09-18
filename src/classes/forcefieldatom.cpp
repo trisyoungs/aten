@@ -272,10 +272,10 @@ void ForcefieldAtom::addData(const char *name, const char *s)
 }
 
 // Retrieve named variable
-Variable *ForcefieldAtom::data(const char *s)
+Variable *ForcefieldAtom::data(const char *s, bool reporterror)
 {
 	Variable *v = data_.find(s);
-	if (v == NULL) msg.print("Error: Forcefield atom '%s' does not contain any data named '%s'.\n", name_.get(), s);
+	if ((v == NULL) && reporterror) msg.print("Error: Forcefield atom '%s' does not contain any data named '%s'.\n", name_.get(), s);
 	return v;
 }
 

@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "generator", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
@@ -41,7 +41,6 @@ Forcefield::Forcefield()
 	ffa->setParent(this);
 	ffa->setName("_NDEF_");
 	ffa->setTypeId(-1);
-	for (int i=0; i<MAXFFGENDATA; i++) energyGenerators_[i] = FALSE;
 	vdwGenerator_ = NULL;
 	bondGenerator_ = NULL;
 	angleGenerator_ = NULL;
@@ -504,19 +503,24 @@ void Forcefield::convertParameters()
 	ForcefieldBound *ffb;
 	ForcefieldAtom *ffa;
 	int n;
-	// VDW and Generator Data
-	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
-	for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
+	Dnchar *param;
+	Variable *v;
+	ReturnValue newvalue, oldvalue;
+	// VDW and extra defined data - skip first definition which is '_NDEF_'
+	for (ffa = types_.first()->next; ffa != NULL; ffa = ffa->next)
 	{
 		if (ffa->vdwForm() != VdwFunctions::None)
 		{
 			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
 		}
-		// Only convert those parameters for which the 'energyGenerators_[]' flag is TRUE
-		if (ffa->generator() != NULL)
+		// Only convert those parameters which are contained in the energyData_ list
+		for (Dnchar *param = energyData_.first(); param != NULL; param = param->next)
 		{
-			for (n=0; n<MAXFFGENDATA; n++)
-				if (energyGenerators_[n]) ffa->setGenerator(n, prefs.convertEnergy(ffa->generator(n), energyUnit_));
+			v = ffa->data(param->get());
+			if (v == NULL) continue;
+			v->execute(oldvalue);
+			newvalue.set(prefs.convertEnergy(oldvalue.asDouble(), energyUnit_));
+			v->set(newvalue);
 		}
 	}
 	// Bonds 
