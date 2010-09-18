@@ -114,14 +114,21 @@ bool Pattern::createExpression(bool vdwOnly)
 		}
 		if (ai->type() == NULL)
 		{
-			msg.print("... No FF definition for atom %i (%s).\n", n+1, elements().symbol(ai));
+			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
 		// Set data
 		addAtomData(ai, ai->type());
-		// If the forcefield is rule-based, generate the required parameters first
-		if (ff->vdwGenerator() != NULL) ff->generateVdw(ai);
+		// If the type of vdw interaction is None, attempt to generate it
+		if ((ai->type()->vdwForm() == VdwFunctions::None) && (ff->vdwGenerator() != NULL)) ff->generateVdw(ai);
+		// Make another check to see that we now have vdw parameters
+		if (ai->type()->vdwForm() == NULL)
+		{
+			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, elements().symbol(ai));
+			incomplete_ = TRUE;
+			iatoms ++;
+		}
 		ai = ai->next;
 	}
 	// Generate intramolecular terms (if not disabled)

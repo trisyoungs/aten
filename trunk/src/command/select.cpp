@@ -31,7 +31,7 @@
 
 bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
-	static char from[32], to[32], text[512];
+	static char from[32], to[32];
 	int i, j, n, plus = 0;
 	bool range;
 	// Execute argument to get result
@@ -62,86 +62,90 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 	}
 	else if (value.type() == VTypes::StringData)
 	{
-		// Copy variable contents into local character array
-		strcpy(text, value.asString());
-		// If arg contains a '-', select by range
-		if (strchr(text, '-') != NULL)
+		// Use a parser to split up the line, in case there are multiple selections separated by commas
+		LineParser parser;
+		parser.getArgsDelim(value.asString());
+		for (int arg=0; arg<parser.nArgs(); ++arg)
 		{
-			range = TRUE;
-			strcpy(from,beforeChar(text,'-'));
-			strcpy(to,afterChar(text,'-'));
-			// Arguments for ranges cannot have '+' in them
-			if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
+			// If arg contains a '-', select by range
+			if (strchr(parser.argc(arg), '-') != NULL)
 			{
-				msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
-				return FALSE;
-			}
-		}
-		else
-		{
-			range = FALSE;
-			strcpy(from,text);
-			if (strchr(from,'+') == NULL) plus = 0;
-			else if (from[0] == '+') plus = -1;
-			else if (from[strlen(from)-1] == '+') plus = 1;
-			else
-			{
-				msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
-				return FALSE;
-			}
-		}
-		// Do the selection
-		m->beginUndoState("%select (%s)", deselect ? "Des" : "S", value.asString());
-		if (!range)
-		{
-			if (VTypes::determineType(from) == VTypes::IntegerData)
-			{
-				i = atoi(from);
-				// Integer atom ID selection
-				if (plus == 0) (deselect ? m->deselectAtom(i-1) : m->selectAtom(i-1));
-				else if (plus == -1) for (n=0; n < i; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
-				else if (plus == 1) for (n=i-1; n < m->nAtoms(); n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
+				range = TRUE;
+				strcpy(from,beforeChar(parser.argc(arg),'-'));
+				strcpy(to,afterChar(parser.argc(arg),'-'));
+				// Arguments for ranges cannot have '+' in them
+				if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
+				{
+					msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
+					return FALSE;
+				}
 			}
 			else
 			{
-				i = elements().findAlpha(from);
-				if (i == 0)
+				range = FALSE;
+				strcpy(from,parser.argc(arg));
+				if (strchr(from,'+') == NULL) plus = 0;
+				else if (from[0] == '+') plus = -1;
+				else if (from[strlen(from)-1] == '+') plus = 1;
+				else
 				{
-					msg.print("Unrecognised element (%s) in select.\n", from);
+					msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
 					return FALSE;
 				}
-				if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
-				else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-				else if (plus == 1) for (n=i; n <= elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
-		}
-		else
-		{
-			// Range of id's or elements
-			if (VTypes::determineType(from) == VTypes::IntegerData)
+			// Do the selection
+			m->beginUndoState("%select (%s)", deselect ? "Des" : "S", parser.argc(arg));
+			if (!range)
 			{
-				i = atoi(from);
-				j = atoi(to);
-				for (n=i-1; n<j; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
+				if (VTypes::determineType(from) == VTypes::IntegerData)
+				{
+					i = atoi(from);
+					// Integer atom ID selection
+					if (plus == 0) (deselect ? m->deselectAtom(i-1) : m->selectAtom(i-1));
+					else if (plus == -1) for (n=0; n < i; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
+					else if (plus == 1) for (n=i-1; n < m->nAtoms(); n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
+				}
+				else
+				{
+					i = elements().findAlpha(from);
+					if (i == 0)
+					{
+						msg.print("Unrecognised element (%s) in select.\n", from);
+						return FALSE;
+					}
+					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
+					else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
+					else if (plus == 1) for (n=i; n <= elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
+				}
 			}
 			else
 			{
-				i = elements().findAlpha(from);
-				if (i == 0)
+				// Range of id's or elements
+				if (VTypes::determineType(from) == VTypes::IntegerData)
 				{
-					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
-					return FALSE;
+					i = atoi(from);
+					j = atoi(to);
+					for (n=i-1; n<j; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
 				}
-				j = elements().findAlpha(to);
-				if (j == 0)
+				else
 				{
-					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
-					return FALSE;
+					i = elements().findAlpha(from);
+					if (i == 0)
+					{
+						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
+						return FALSE;
+					}
+					j = elements().findAlpha(to);
+					if (j == 0)
+					{
+						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
+						return FALSE;
+					}
+					for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 				}
-				for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
+			m->endUndoState();
 		}
-		m->endUndoState();
 	}
 	else
 	{

@@ -83,9 +83,6 @@ bool Forcefield::load(const char *filename)
 			case (Forcefield::TypesCommand):
 				okay = readTypes();
 				break;
-			case (Forcefield::GeneratorCommand):
-				okay = readGenerator(ffparser.argc(1));
-				break;
 			case (Forcefield::DataCommand):
 				okay = readData(ffparser.argc(1));
 				break;
@@ -97,8 +94,8 @@ bool Forcefield::load(const char *filename)
 				okay = readFunctions();
 				break;
 			case (Forcefield::ConvertCommand):
-				// Check that generator data has been initialised
-				for (n=1; n<ffparser.nArgs(); n++) energyGenerators_[ffparser.argi(n)-1] = TRUE;
+				// Add simple list of energetic data parameters
+				for (n=1; n<ffparser.nArgs(); n++) addEnergyData(ffparser.argc(n));
 				okay = TRUE;
 				break;
 			case (Forcefield::VdwCommand):
@@ -491,8 +488,6 @@ bool Forcefield::readFunctions()
 		msg.exit("Forcefield::readFunctions");
 		return TRUE;
 	}
-	printf("Finished reading stringlist.\n");
-// 	for (Dnchar *d = stringList.first(); d != NULL; d = d->next) d->print();
 	// Now, attempt to parser the lines we just read in to create functions....
 	bool result = generatorFunctions_.generateFromStringList(stringList.first(), "GeneratorFuncs", TRUE);
 	// Search for functions we recognise

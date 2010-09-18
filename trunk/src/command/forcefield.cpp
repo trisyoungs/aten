@@ -157,7 +157,16 @@ bool Command::function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set equivalent 
+// Set energetic parameters to convert in generator data
+bool Command::function_EnergyConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
+	for (int n=0; n<c->nArgs(); n++) obj.ff->addEnergyData(c->argc(n));
+	rv.reset();
+	return TRUE;
+}
+
+// Set equivalent
 bool Command::function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
@@ -308,33 +317,6 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	else for (Refitem<Atom,int> *ri = obj.rs->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), TRUE);
 	obj.m->changeLog.add(Log::Structure);
-	rv.reset();
-	return TRUE;
-}
-
-// Set energetic parameters to convert in generator data
-bool Command::function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	for (int n=0; n<c->nArgs(); n++) obj.ff->setEnergyGenerator(c->argi(n));
-	rv.reset();
-	return TRUE;
-}
-
-// Set generator data for atom type
-bool Command::function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	int n;
-	// Convert type name to internal index and read in generator data...
-	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
-	if (ffa == NULL)
-	{
-		msg.print("Unrecognised forcefield typeId %i in generator list.\n",c->argi(0));
-		return FALSE;
-	}
-	// Create generator array on atom
-	ffa->initialiseGenerator();
-	for (n=1; n<c->nArgs(); n++) ffa->setGenerator(n-1, c->argd(n));
 	rv.reset();
 	return TRUE;
 }

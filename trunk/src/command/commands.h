@@ -271,6 +271,7 @@ class Command
 		CreateExpression,
 		CurrentFF,
 		DefaultFF,
+		EnergyConvert,
 		Equivalent,
 		ExportMap,
 		FFModel,
@@ -278,8 +279,6 @@ class Command
 		FinaliseFF,
 		FixType,
 		FreeType,
-		GenConvert,
-		GeneratorData,
 		GetCombinationRule,
 		GetFF,
 		InterDef,
@@ -730,6 +729,7 @@ class Command
 	static bool function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DefaultFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_EnergyConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Equivalent(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FFModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -737,8 +737,6 @@ class Command
 	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GenConvert(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GeneratorData(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);

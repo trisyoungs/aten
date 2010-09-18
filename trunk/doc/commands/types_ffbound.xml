@@ -29,7 +29,7 @@
 						<entry>form</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
-						<entry>Functional form of intramolecular potential - see <link linkend="ff.forms">Functional Forms</link></entry>
+						<entry>Functional form of intramolecular potential - see the <link linkend="ff">forcefields</link> chapter for lists of allowable functional forms for each intramolecular interaction type</entry>
 					</row>
 					<row>
 						<entry>natoms</entry>

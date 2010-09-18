@@ -252,6 +252,7 @@ class AtenForm : public QMainWindow
 	void on_actionModelListPatterns_triggered(bool checked);
 	void on_actionModelFFType_triggered(bool checked);
 	void on_actionModelFFUntype_triggered(bool checked);
+	void on_actionModelCreateExpression_triggered(bool checked);
 	void on_actionModelFoldAtoms_triggered(bool checked);
 	void on_actionModelFoldMolecules_triggered(bool checked);
 	void on_actionModelNext_triggered(bool checked);

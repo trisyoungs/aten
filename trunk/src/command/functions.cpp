@@ -231,6 +231,7 @@ void Command::initPointers()
 	pointers_[CreateExpression] = &Command::function_CreateExpression;
 	pointers_[CurrentFF] = &Command::function_CurrentFF;
 	pointers_[DefaultFF] = &Command::function_DefaultFF;
+	pointers_[EnergyConvert] = &Command::function_EnergyConvert;
 	pointers_[Equivalent] = &Command::function_Equivalent;
 	pointers_[ExportMap] = &Command::function_ExportMap;
 	pointers_[FFModel] = &Command::function_FFModel;
@@ -238,8 +239,6 @@ void Command::initPointers()
 	pointers_[FinaliseFF] = &Command::function_FinaliseFF;
 	pointers_[FixType] = &Command::function_FixType;
 	pointers_[FreeType] = &Command::function_FreeType;
-	pointers_[GenConvert] = &Command::function_GenConvert;
-	pointers_[GeneratorData] = &Command::function_GeneratorData;
 	pointers_[GetCombinationRule] = &Command::function_GetCombinationRule;
 	pointers_[GetFF] = &Command::function_GetFF;
 	pointers_[InterDef] = &Command::function_InterDef;
