@@ -229,7 +229,7 @@ class Tree
 	// Return custom dialog (if any)
 	AtenCustomDialog *customDialog();
 	// Execute defined custom dialog (if one exists, just return TRUE if not)
-	bool executeCustomDialog();
+	bool executeCustomDialog(bool getvaluesonly = FALSE);
 	// Retrieve current value of named widget as a double
 	double widgetValued(const char *name);
 	// Retrieve current value of named widget as an integer

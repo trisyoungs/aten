@@ -153,6 +153,25 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 // Generic function for checkbox activation
 void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
 {
+	if (!isVisible()) return;
+	// Cast sender into checkbox
+	refreshing_ = TRUE;
+	QCheckBox *check = (QCheckBox*) sender();
+	if (!check)
+	{
+		printf("AtenCustomDialog::checkBoxWidget_clicked - Sender could not be cast to a QCheckBox.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(check);
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::checkBoxWidget_clicked - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (checked == sc->stateValueAsInteger()) performStateChange(sc);
+	refreshing_ = FALSE;
 }
 
 // Generic function for combobox activation
@@ -193,11 +212,49 @@ void AtenCustomDialog::comboWidget_currentIndexChanged(int row)
 // Generic function for double spin activation
 void AtenCustomDialog::doubleSpinWidget_valueChanged(double d)
 {
+	if (!isVisible()) return;
+	// Cast sender into checkbox
+	refreshing_ = TRUE;
+	QDoubleSpinBox *spin = (QDoubleSpinBox*) sender();
+	if (!spin)
+	{
+		printf("AtenCustomDialog::doubleSpinWidget_valueChanged - Sender could not be cast to a QDoubleSpinBox.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(spin);
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::doubleSpinWidget_valueChanged - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (d == sc->stateValueAsDouble()) performStateChange(sc);
+	refreshing_ = FALSE;
 }
 
 // Generic function for integer spin activation
 void AtenCustomDialog::integerSpinWidget_valueChanged(double d)
 {
+	if (!isVisible()) return;
+	// Cast sender into checkbox
+	refreshing_ = TRUE;
+	QSpinBox *spin = (QSpinBox*) sender();
+	if (!spin)
+	{
+		printf("AtenCustomDialog::integerSpinWidget_valueChanged - Sender could not be cast to a QSpinBox.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(spin);
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::integerSpinWidget_valueChanged - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (d == sc->stateValueAsInteger()) performStateChange(sc);
+	refreshing_ = FALSE;
 }
 
 // Create simple label

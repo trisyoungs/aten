@@ -184,7 +184,7 @@ void Model::rotateSelectionZaxis(double dz)
 }
 
 // Translate Selection in world coordinates
-void Model::translateSelectionWorld(const Vec3<double> &v)
+void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 {
 	// Translate the selected atoms in the local XY plane
 	msg.enter("Model::translateSelectionWorld");
@@ -193,7 +193,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 	// So, take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
 	// Grab unit cell origin
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = ri->item->rWorld() + v;
 		//newr += v;
@@ -210,11 +210,11 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 }
 
 // Move selected atoms in local space
-void Model::translateSelectionLocal(const Vec3<double> &tvec)
+void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 {
 	// Translate the model's current selection by the vector supplied.
 	msg.enter("Model::translateSelectionLocal");
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) translateAtom(ri->item,tvec);
+	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next) translateAtom(ri->item,tvec);
 
 	// Update model measurements
 	updateMeasurements();
@@ -226,13 +226,13 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec)
 }
 
 // Mirror selection in local coordinates
-void Model::mirrorSelectionLocal(int axis)
+void Model::mirrorSelectionLocal(int axis, bool markonly)
 {
 	msg.enter("Model::mirrorSelectionLocal");
 	// Get selection's local COG in the desired coordinate
 	Vec3<double> newr, vec, cog = selectionCentreOfGeometry();
 	for (int n=0; n<3; n++) vec.set(n, n == axis ? -1.0 : 1.0);
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		// Calculate newr
 		newr = (ri->item->r() - cog);

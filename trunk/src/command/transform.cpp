@@ -394,7 +394,7 @@ bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	v.normalise();
 	v *= delta;
 	obj.rs->beginUndoState("Set distance between atoms");
-	for (Refitem<Atom,int> *ri = obj.rs->selection(TRUE); ri != NULL; ri = ri->next) obj.rs->translateAtom(ri->item, v);
+	obj.rs->translateSelectionLocal(v, TRUE);
 	obj.rs->endUndoState();
 	return TRUE;
 }

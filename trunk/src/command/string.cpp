@@ -27,7 +27,7 @@
 bool Command::function_AfterStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( afterStr(c->argc(0), c->argc(1)) );
-	if (c->hasArg(2) && c->argb(2) && (rv.asString() == '\0')) rv.set(c->argc(0));
+	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
 	return TRUE;
 }
 
@@ -49,7 +49,7 @@ bool Command::function_AToI(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_BeforeStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	rv.set( beforeStr(c->argc(0), c->argc(1)) );
-	if (c->hasArg(2) && c->argb(2) && (rv.asString() == '\0')) rv.set(c->argc(0));
+	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
 	return TRUE;
 }
 

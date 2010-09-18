@@ -948,9 +948,15 @@ AtenCustomDialog *Tree::customDialog()
 }
 
 // Execute contained custom dialog
- bool Tree::executeCustomDialog()
+ bool Tree::executeCustomDialog(bool getvaluesonly)
 {
-	return (customDialog_ != NULL ? customDialog_->showDialog() : TRUE);
+	if (customDialog_ == NULL) return TRUE;
+	if (getvaluesonly)
+	{
+		customDialog_->storeValues();
+		return TRUE;
+	}
+	return customDialog_->showDialog();
 }
 
 // Locate named widget

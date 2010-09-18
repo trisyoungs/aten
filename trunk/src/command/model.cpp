@@ -344,6 +344,7 @@ bool Command::function_SaveModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	}
 	obj.rs->setFilter(filter);
 	obj.rs->setFilename(c->argc(1));
+	filter->executeCustomDialog(TRUE);
 	bool result = filter->executeWrite(obj.rs->filename());
 	if (result)
 	{
