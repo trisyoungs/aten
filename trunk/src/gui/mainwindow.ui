@@ -347,6 +347,7 @@
     <addaction name="actionSetTorsionAngle"/>
     <addaction name="separator"/>
     <addaction name="actionCreateGlyph"/>
+    <addaction name="actionCreateFragment"/>
     <addaction name="separator"/>
     <addaction name="actionCentreAtOrigin"/>
    </widget>
@@ -2428,6 +2429,11 @@
   <action name="actionModelCreateExpression">
    <property name="text">
     <string>Create Expression</string>
+   </property>
+  </action>
+  <action name="actionCreateFragment">
+   <property name="text">
+    <string>Create Fragment</string>
    </property>
   </action>
  </widget>

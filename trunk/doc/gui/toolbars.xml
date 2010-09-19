@@ -97,7 +97,7 @@
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_transmute.png"/></entry>
-						<entry>Transmute clicked atoms to the currently selected element</entry>
+						<entry>Transmute clicked atoms to the currently selected element, or hold <keycap>Shift</keycap> to transmute all atoms of the same element as the clicked atom</entry>
 					</row>
 					<row>
 						<entry><inlinegraphic fileref="images/build_atomaddh.png"/></entry>

@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
+#include "gui/fragment.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -227,6 +228,13 @@ void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 {
 	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
 	gui.update(FALSE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionCreateFragment_triggered(bool checked)
+{
+	Model *viewTarget = gui.mainView.displayModel();
+	Model *m = aten.addFragmentFromSelection(viewTarget, "Selections");
+	gui.fragmentWindow->refresh();
 }
 
 void AtenForm::createGlyph()

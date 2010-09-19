@@ -104,7 +104,7 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Atom Context Menu Actions
+	// Atom Selection / Context Menu Actions
 	*/
 	public:
 	void activateGlyphActions(int n);
@@ -133,6 +133,7 @@ class AtenForm : public QMainWindow
 	void on_actionSetBondLength_triggered(bool checked);
 	void on_actionSetBondAngle_triggered(bool checked);
 	void on_actionSetTorsionAngle_triggered(bool checked);
+	void on_actionCreateFragment_triggered(bool checked);
 	void on_actionCentreAtOrigin_triggered(bool checked);
 	void createGlyph();
 

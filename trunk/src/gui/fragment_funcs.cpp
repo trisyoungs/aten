@@ -38,6 +38,7 @@ AtenFragment::AtenFragment(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 
 	// Private variables
 	currentFragment_ = NULL;
+	bondId_ = 0;
 }
 
 // Destructor
@@ -48,6 +49,18 @@ AtenFragment::~AtenFragment()
 void AtenFragment::showWindow()
 {
 	show();
+}
+
+// Increment bond id value
+void AtenFragment::increaseBondId()
+{
+	bondId_++;
+}
+
+// Return bondId (as reference so it can be reset by associated Fragment routines)
+int &AtenFragment::bondId()
+{
+	return bondId_;
 }
 
 // Return current drawing fragment

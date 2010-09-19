@@ -556,6 +556,53 @@ Grid *Aten::gridClipboard()
 // Fragment Library
 */
 
+// Add new fragment model from specified model's current selection
+Model *Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
+{
+	msg.enter("Aten::addFragmentFromSelection");
+
+	// Check source model and selection
+	if (source == NULL)
+	{
+		printf("Internal Error : NULL model pointer passed to Aten::addFragmentFromSelection.\n");
+		msg.exit("Aten::addFragmentFromSelection");
+		return NULL;
+	}
+	if (source->nSelected() == 0)
+	{
+		msg.print("Source model '%s' has no selected atoms from which to make a fragment.\n", source->name());
+		msg.exit("Aten::addFragmentFromSelection");
+		return NULL;
+	}
+
+	// Redirect model creation to fragment list
+	targetModelList_ = Aten::FragmentLibraryList;
+
+	// Create new fragment model and paste in source model selection
+	Clipboard clip;
+	clip.copySelection(source);
+	Model *m = addModel();
+	clip.pasteToModel(m, FALSE);
+
+	// Does the named fragment group already exist? If not, create new one
+	FragmentGroup *fg = findFragmentGroup( parentgroup == NULL ? "New Fragments" : parentgroup );
+	if (fg == NULL)
+	{
+		// Add default fragment group...
+		fg = fragmentGroups_.add();
+		fg->setName(parentgroup);
+	}
+
+	// Store the last model on the list.
+	Fragment *f = fg->addFragment();
+	if (!f->setMasterModel(m)) fg->removeFragment(f);
+
+	// Return model creation to main list
+	targetModelList_ = Aten::MainModelList;
+
+	msg.exit("Aten::addFragmentFromSelection");
+}
+
 // Parse fragment directory
 bool Aten::parseFragmentDir(const char *path, const char *groupname)
 {
