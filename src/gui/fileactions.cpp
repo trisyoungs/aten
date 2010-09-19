@@ -65,8 +65,9 @@ bool AtenForm::runSaveModelDialog()
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
 	Tree *filter = NULL;
+	static QString selectedFilter(aten.filters(FilterData::ModelExport)->item->filter.name());
 	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(),saveModelFilters);
+	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), saveModelFilters, &selectedFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -283,8 +284,9 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	else return;
 	// Get filename from user
 	GuiQt::BitmapFormat bf;
+	static QString selectedFilter("Windows Bitmap (*.bmp)");
 	static QDir currentDirectory_(aten.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters);
+	QString filename = QFileDialog::getSaveFileName(this, "Save Bitmap", currentDirectory_.path(), saveBitmapFilters, &selectedFilter);
 	if (!filename.isEmpty())
 	{
 		// Store path for next use
@@ -336,6 +338,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Tree *filter;
+	static QString selectedFilter(aten.filters(FilterData::ExpressionExport)->item->filter.name());
 	static QDir currentDirectory_(aten.workDir());
 	QString filename = QFileDialog::getSaveFileName(this, "Save Expression", currentDirectory_.path(), saveExpressionFilters);
 	if (!filename.isEmpty())

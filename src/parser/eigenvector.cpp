@@ -1,6 +1,6 @@
 /*
-	*** Grid Variable and Array
-	*** src/parser/grid.cpp
+	*** Eigenvector Variable and Array
+	*** src/parser/eigenvector.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/grid.h"
+#include "parser/eigenvector.h"
 #include "parser/stepnode.h"
-#include "classes/grid.h"
+#include "base/eigenvector.h"
 #include "base/constants.h"
 #include "base/elements.h"
 #include <stdio.h>
@@ -33,16 +33,16 @@
 */
 
 // Constructor
-GridVariable::GridVariable(Grid *ptr, bool constant)
+EigenvectorVariable::EigenvectorVariable(Eigenvector *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GridData;
+	returnType_ = VTypes::EigenvectorData;
 	readOnly_ = constant;
 	pointerData_ = ptr;
 }
 
 // Destructor
-GridVariable::~GridVariable()
+EigenvectorVariable::~EigenvectorVariable()
 {
 }
 
@@ -51,31 +51,27 @@ GridVariable::~GridVariable()
 */
 
 // Accessor data
-Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
-	{ "axes",	VTypes::CellData,	0, TRUE },
+Accessor EigenvectorVariable::accessorData[EigenvectorVariable::nAccessors] = {
 	{ "name",	VTypes::StringData,	0, FALSE },
-	{ "nx",		VTypes::IntegerData,	0, TRUE },
-	{ "ny",		VTypes::IntegerData,	0, TRUE },
-	{ "nz",		VTypes::IntegerData,	0, TRUE },
-	{ "origin", 	VTypes::VectorData,	0, FALSE },
-	{ "visible",	VTypes::IntegerData,	0, FALSE }
+	{ "size",	VTypes::IntegerData,	0, TRUE },
+	{ "vector",	VTypes::IntegerData,	-1, FALSE }
 };
 
 // Function data
-FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
+FunctionAccessor EigenvectorVariable::functionData[EigenvectorVariable::nFunctions] = {
 	{ ".dummy",	VTypes::IntegerData,	"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *GridVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *EigenvectorVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GridVariable::accessorSearch(s, arrayindex, arglist);
+	return EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *EigenvectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("GridVariable::accessorSearch");
+	msg.enter("EigenvectorVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -85,24 +81,24 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'grid&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'eigenvector&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("GridVariable::accessorSearch");
+			msg.exit("EigenvectorVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'grid&' function '%s'.\n", s);
-			msg.exit("GridVariable::accessorSearch");
+			msg.print("Error: Array index given to 'eigenvector&' function '%s'.\n", s);
+			msg.exit("EigenvectorVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::GridData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::EigenvectorData, functionData[i].returnType);
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'eigenvector&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -116,21 +112,21 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::GridData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::EigenvectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("GridVariable::accessorSearch");
+	msg.exit("EigenvectorVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GridVariable::retrieveAccessor");
+	msg.enter("EigenvectorVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::retrieveAccessor");
+		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
+		msg.exit("EigenvectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -138,7 +134,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("GridVariable::retrieveAccessor");
+		msg.exit("EigenvectorVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
@@ -146,55 +142,48 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("GridVariable::retrieveAccessor");
+			msg.exit("EigenvectorVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr= (Grid*) rv.asPointer(VTypes::GridData, result);
+	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (GridVariable::Axes):
-			rv.set(VTypes::CellData, ptr->cell());
-			break;
-		case (GridVariable::Name):
+		case (EigenvectorVariable::Name):
 			rv.set(ptr->name());
 			break;
-		case (GridVariable::NX):
-		case (GridVariable::NY):
-		case (GridVariable::NZ):
-			rv.set(ptr->nPoints().get(acc-GridVariable::NX));
+		case (EigenvectorVariable::Size):
+			rv.set(ptr->size());
 			break;
-		case (GridVariable::Origin):
-			rv.set(ptr->origin());
-			break;
-		case (GridVariable::Visible):
-			rv.set(ptr->isVisible());
+		case (EigenvectorVariable::Vector):
+			if (hasArrayIndex) rv.set(ptr->value(arrayIndex-1));
+			else rv.setArray(VTypes::DoubleData, ptr->valueArray(), ptr->size());
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in GridVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in EigenvectorVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::retrieveAccessor");
+	msg.exit("EigenvectorVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GridVariable::setAccessor");
+	msg.enter("EigenvectorVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::setAccessor");
+		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
+		msg.exit("EigenvectorVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -243,74 +232,77 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	if (!result)
 	{
-		msg.exit("GridVariable::setAccessor");
+		msg.exit("EigenvectorVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Grid *ptr= (Grid*) sourcerv.asPointer(VTypes::GridData, result);
+	Eigenvector *ptr= (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
+	int n;
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (GridVariable::Name):
+		case (EigenvectorVariable::Name):
 			ptr->setName( newvalue.asString() );
 			break;
-		case (GridVariable::Origin):
-			ptr->setOrigin( newvalue.asVector() );
+		case (EigenvectorVariable::Size):
+			ptr->initialise( newvalue.asInteger() );
 			break;
-		case (GridVariable::Visible):
-			ptr->setVisible( newvalue.asBool() );
+		case (EigenvectorVariable::Vector):
+			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= ptr->size())) for (n=0; n<newvalue.arraySize(); ++n) ptr->setValue(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setValue(arrayIndex-1, newvalue.asDouble());
+			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setValue(n, newvalue.asDouble());
 			break;
 		default:
-			printf("GridVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("EigenvectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::setAccessor");
+	msg.exit("EigenvectorVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool EigenvectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("GridVariable::performFunction");
+	msg.enter("EigenvectorVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
-		printf("Internal Error: FunctionAccessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::performFunction");
+		printf("Internal Error: FunctionAccessor id %i is out of range for Eigenvector type.\n", i);
+		msg.exit("EigenvectorVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr= (Grid*) rv.asPointer(VTypes::GridData, result);
+	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if (result) switch (i)
 	{
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in GridVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in EigenvectorVariable.\n", functionData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::performFunction");
+	msg.exit("EigenvectorVariable::performFunction");
 	return result;
 }
 
 // Print valid accessors/functions
-void GridVariable::printAccessors()
+void EigenvectorVariable::printAccessors()
 {
-	if (GridVariable::nAccessors > 0)
+	if (EigenvectorVariable::nAccessors > 0)
 	{
 		msg.print("Valid accessors are:\n");
-		for (int n=0; n<GridVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		for (int n=0; n<EigenvectorVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
 		msg.print("\n");
 	}
-	if ((GridVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	if ((EigenvectorVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
 		msg.print("Valid functions are:\n");
-		for (int n=0; n<GridVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		for (int n=0; n<EigenvectorVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
 		msg.print("\n");
 	}
 }
@@ -320,10 +312,10 @@ void GridVariable::printAccessors()
 */
 
 // Constructor
-GridArrayVariable::GridArrayVariable(TreeNode *sizeexpr, bool constant)
+EigenvectorArrayVariable::EigenvectorArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::GridData;
+	returnType_ = VTypes::EigenvectorData;
 	pointerArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
@@ -332,8 +324,8 @@ GridArrayVariable::GridArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *GridArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *EigenvectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return GridVariable::accessorSearch(s, arrayindex, arglist);
+	return EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
 }
 

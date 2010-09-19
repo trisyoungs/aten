@@ -29,14 +29,13 @@
 class BasisFunction
 {
 	public:
-	// Constructor / Destructor
+	// Constructor
 	BasisFunction();
-	~BasisFunction();
 	// List pointers
 	BasisFunction *prev, *next;
 	// Function Type
 	enum BasisFunctionType { NoType, SShellType, PShellType, DShellType, FShellType, nBasisFunctionTypes };
-	static BasisFunctionType basisFunctionType(const char *s, bool reporterror);
+	static BasisFunctionType basisFunctionType(const char *s, bool reporterror = FALSE);
 	static const char *basisFunctionType(BasisFunctionType bft);
 
 
@@ -51,7 +50,7 @@ class BasisFunction
 	// Basis function exponent
 	double exponent_;
 	// Basis function contraction coefficients
-	List< ListItem<double> > contractionCoefficients_;
+	List< ListItem<double> > coefficients_;
 
 	public:
 	// Set associated atom pointer
@@ -61,15 +60,17 @@ class BasisFunction
 	// Set basis function type
 	void setType(BasisFunctionType bft);
 	// Return basis function type
-	BasisFunctionType type();
+	BasisFunctionType type() const;
 	// Set basis function exponent
 	void setExponent(double exponent);
 	// Return basis function exponent
-	double exponent();
+	double exponent() const;
 	// Add contraction coefficient
-	void addContractionCoefficient(double cc);
+	void addCoefficient(double cc);
+	// Return number of defined coefficients
+	int nCoefficients() const;
 	// Return specified contraction coefficient
-	double contractionCoefficient(int index);
+	double coefficient(int index);
 };
 
 #endif

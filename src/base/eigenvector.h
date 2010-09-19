@@ -35,7 +35,7 @@ class Eigenvector
 	Eigenvector *prev, *next;
 
 	/*
-	// Rotation Matrix and Translation Vector
+	// Data
 	*/
 	private:
 	// Name of eigenvector
@@ -49,13 +49,17 @@ class Eigenvector
 	// Initialise to be specified size
 	void initialise(int size);
 	// Return size of eigenvector
-	int size();
+	int size() const;
+	// Set text name of eigenvalue
+	void setName(const char *name);
 	// Return text 'name' of eigenvalue
 	const char *name() const;
 	// Set array index
 	void setValue(int index, double value);
-	// Return array index
-	void value(int index);
+	// Return array value specified
+	double value(int index);
+	// Return array pointer
+	double *valueArray();
 };
 
 #endif
