@@ -377,6 +377,10 @@ void Command::initPointers()
 	pointers_[SetName] = &Command::function_SetName;
 	pointers_[ShowAll] = &Command::function_ShowAll;
 
+	// MO Definition Commands
+	pointers_[NewBasisFunction] = &Command::function_NewBasisFunction;
+	pointers_[NewEigenvector] = &Command::function_NewEigenvector;
+
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;
 	pointers_[CreatePatterns] = &Command::function_CreatePatterns;

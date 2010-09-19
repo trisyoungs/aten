@@ -16,6 +16,7 @@ fragment.cpp
 glyph.cpp
 grid.cpp
 measure.cpp 
+mo.cpp
 model.cpp 
 molecule.cpp 
 pattern.cpp 

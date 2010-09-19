@@ -31,6 +31,8 @@
 #include "base/bond.h"
 #include "base/atom.h"
 #include "base/lineparser.h"
+#include "base/eigenvector.h"
+#include "classes/basisfunction.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
 #include "methods/mc.h"
@@ -1066,6 +1068,7 @@ class Model
 	// Request rerendering of all grid data
 	void rerenderGrids();
 
+
 	/*
 	// ZMatrix
 	*/
@@ -1080,6 +1083,32 @@ class Model
 	ZMatrix *zMatrix();
 	// Recalculate model atom posions from ZMatrix definition
 	void recalculateFromZMatrix();
+
+
+	/*
+	// Molecular Orbital Data
+	*/
+	private:
+	// Basis functions involved in the molecular orbitals
+	List<BasisFunction> basisFunctions_;
+	// Eigenvectors
+	List<Eigenvector> eigenvectors_;
+
+	public:
+	// Add new basis function to the list
+	BasisFunction *addBasisFunction();
+	// Return the first basis function in the list
+	BasisFunction *basisFunctions();
+	// Return total number of defined basis functions
+	int nBasisFunctions();
+	// Add new eigenvevtor to the list
+	Eigenvector *addEigenvector();
+	// Return the first eigenvector in the list
+	Eigenvector *eigenvectors();
+	// Return the n'th eigenvector in the list
+	Eigenvector *eigenvector(int n);
+	// Return total number of defined eigenvectors
+	int nEigenvectors();
 };
 
 #endif

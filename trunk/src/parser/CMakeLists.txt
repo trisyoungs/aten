@@ -2,11 +2,13 @@ add_library(parser
 accessor.h
 aten.h
 atom.h
+basisfunction.h
 bond.h
 cell.h
 character.h
 commandnode.h
 double.h
+eigenvector.h
 element.h
 filterdata.h
 forcefieldatom.h
@@ -43,11 +45,13 @@ zmatrix.h
 zmatrixelement.h
 aten.cpp
 atom.cpp
+basisfunction.cpp
 bond.cpp
 cell.cpp
 character.cpp
 commandnode.cpp
 double.cpp
+eigenvector.cpp
 element.cpp
 filterdata.cpp
 forcefieldatom.cpp

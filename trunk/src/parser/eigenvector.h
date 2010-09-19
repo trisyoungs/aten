@@ -1,6 +1,6 @@
 /*
-	*** Model Variable and Array
-	*** src/parser/model.h
+	*** Eigenvector Variable and Array
+	*** src/parser/eigenvector.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,32 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELVARIABLE_H
-#define ATEN_MODELVARIABLE_H
+#ifndef ATEN_EIGENVECTORVARIABLE_H
+#define ATEN_EIGENVECTORVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Model;
+class Eigenvector;
 
-// Model Variable
-class ModelVariable : public PointerVariable
+// Eigenvector Variable
+class EigenvectorVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
-	~ModelVariable();
+	EigenvectorVariable(Eigenvector *vec = NULL, bool constant = FALSE);
+	~EigenvectorVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, Eigenvectors, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, Patterns, Region, Torsions, ZMatrix, nAccessors };
+        enum Accessors { Name, Size, Vector, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisFunction, NewBond, NewBondId, NewEigenvector, NewGlyph, NewGrid, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, Transmute, Undo, nFunctions };
-
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
@@ -63,12 +62,12 @@ class ModelVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Model Array Variable
-class ModelArrayVariable : public PointerArrayVariable
+// Eigenvector Array Variable
+class EigenvectorArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	EigenvectorArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals
@@ -79,3 +78,4 @@ class ModelArrayVariable : public PointerArrayVariable
 };
 
 #endif
+

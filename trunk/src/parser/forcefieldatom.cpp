@@ -279,6 +279,7 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	}
 	// Get current data from ReturnValue
 	VdwFunctions::VdwFunction vf;
+	int n;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) sourcerv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result && (ptr == NULL))
 	{
@@ -291,7 +292,9 @@ bool ForcefieldAtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 			ptr->setCharge(newvalue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			ptr->setParameter(arrayIndex-1, newvalue.asDouble());
+			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setParameter(n, newvalue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newvalue.asDouble());
+			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newvalue.asDouble());
 			break;
 		case (ForcefieldAtomVariable::Description):
 			ptr->setDescription(newvalue.asString());

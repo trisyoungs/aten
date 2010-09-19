@@ -41,9 +41,66 @@ BasisFunction::BasisFunction()
 	// Private variables
 	type_ = BasisFunction::NoType;
 	exponent_ = 0.0;
-	
+	atom_ = NULL;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
 }
 
+// Set associated atom pointer
+void BasisFunction::setAtom(Atom *i)
+{
+	atom_ = i;
+}
+
+// Return associated atom pointer
+Atom *BasisFunction::atom() const
+{
+	return atom_;
+}
+
+// Set basis function type
+void BasisFunction::setType(BasisFunctionType bft)
+{
+	type_ = bft;
+}
+
+// Return basis function type
+BasisFunction::BasisFunctionType BasisFunction::type() const
+{
+	return type_;
+}
+
+// Set basis function exponent
+void BasisFunction::setExponent(double exponent)
+{
+	exponent_ = exponent;
+}
+
+// Return basis function exponent
+double BasisFunction::exponent() const
+{
+	return exponent_;
+}
+
+// Add contraction coefficient
+void BasisFunction::addCoefficient(double coeff)
+{
+	ListItem<double> *newitem = coefficients_.add();
+	newitem->setValue(coeff);
+}
+
+// Return number of defined coefficients
+int BasisFunction::nCoefficients() const
+{
+	return coefficients_.nItems();
+}
+
+// Return specified contraction coefficient
+double BasisFunction::coefficient(int index)
+{
+	if ((index < 0) || (index >= coefficients_.nItems())) msg.print("Coefficient index %i is out of bounds.\n", index);
+	else return coefficients_[index]->value();
+	return 0.0;
+}
