@@ -84,6 +84,7 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 {
 	// Check datamodel...
 	if (displayModel_ == NULL) return;
+	bool refresh = FALSE;
 	// Set keystates
 	keyModifier_[Prefs::ShiftKey] = shiftkey;
 	keyModifier_[Prefs::CtrlKey] = ctrlkey;
@@ -121,23 +122,23 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 // 			}
 // 			else
 			displayModel_->rotateView( shiftkey ? -1.0 : -10.0, 0.0);
-			postRedisplay();
+			refresh = TRUE;
 			break;
 		case (Canvas::RightKey):
 			displayModel_->rotateView( shiftkey ? 1.0 : 10.0, 0.0);
-			postRedisplay();
+			refresh = TRUE;
 			break;
 		case (Canvas::UpKey):
 			displayModel_->rotateView(0.0, shiftkey ? -1.0 : -10.0);
-			postRedisplay();
+			refresh = TRUE;
 			break;
 		case (Canvas::DownKey):
 			displayModel_->rotateView(0.0, shiftkey ? 1.0 : 10.0);
-			postRedisplay();
+			refresh = TRUE;
 			break;
 		case (Canvas::EscapeKey):
 			gui.mainWindow->cancelCurrentMode();
-			postRedisplay();
+			refresh = TRUE;
 			break;
 		default:
 			break;
@@ -153,14 +154,21 @@ void Canvas::informKeyDown(Canvas::KeyCode key, bool shiftkey, bool ctrlkey, boo
 				Fragment *frag = gui.fragmentWindow->currentFragment();
 				if (frag == NULL) break;
 				frag->cycleLinkAtom();
-				gui.mainView.postRedisplay();
+				refresh = TRUE;
 			}
 			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey]) gui.mainView.postRedisplay();
+			if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
+			if (keyModifier_[Prefs::CtrlKey])
+			{
+				refresh = TRUE;
+				gui.fragmentWindow->increaseBondId();
+			}
 			break;
 		default:
 			break;
 	}
+	// Update display if necessary
+	if (refresh) postRedisplay();
 }
 
 // Inform key up
@@ -567,7 +575,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				displayModel_->beginUndoState("Draw Attached Fragment");
-				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], displayModel_);
+				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], gui.fragmentWindow->bondId(), displayModel_);
 			}
 			else
 			{
@@ -579,8 +587,15 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.update(TRUE,FALSE,TRUE);
 			break;
 		case (Canvas::DrawTransmuteAction):
+			if (atomClicked_ == NULL) break;
 			displayModel_->beginUndoState("Transmute");
-			displayModel_->transmuteAtom(atomClicked_, aten.sketchElement());
+			// If SHIFT was held, transmute all atoms of the same element...
+			if (shifted)
+			{
+				int element = atomClicked_->element();
+				for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next) if (i->element() == element) displayModel_->transmuteAtom(i, aten.sketchElement());
+			}
+			else displayModel_->transmuteAtom(atomClicked_, aten.sketchElement());
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);
 			break;

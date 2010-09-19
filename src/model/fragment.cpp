@@ -234,18 +234,19 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 }
 
 // Return anchored model, oriented to attach to specified atom
-Model *Fragment::anchoredModel(Atom *anchorpoint, bool replacehydrogen)
+Model *Fragment::anchoredModel(Atom *anchorpoint, bool replace, int &replacebond)
 {
 	msg.enter("Fragment::anchoredModel");
 
 	// Determine vector along which our reference vector should point
 	Vec3<double> orientation;
-	if ((!replacehydrogen) || (anchorpoint->nHydrogens()) == 0) orientation = anchorpoint->nextBondVector();
+	if ((!replace) || (anchorpoint->nBonds()) == 0) orientation = anchorpoint->nextBondVector();
 	else
 	{
-		// Find first hydrogen attached to anchorpoint
-		Refitem<Bond,int> *ri;
-		for (ri = anchorpoint->bonds(); ri != NULL; ri = ri->next) if (ri->item->partner(anchorpoint)->element() == 1) break;
+		// Clamp range of replaced atom id
+		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
+		// Grab atom along n'th bond
+		Refitem<Bond,int> *ri = anchorpoint->bond(replacebond);
 		orientation = anchorpoint->parent()->cell()->mimd(ri->item->partner(anchorpoint), anchorpoint);
 		orientation.normalise();
 	}
@@ -282,12 +283,12 @@ Model *Fragment::anchoredModel(Atom *anchorpoint, bool replacehydrogen)
 }
 
 // Paste anchored model to target model
-void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model *target)
+void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replacebond, Model *target)
 {
 	msg.enter("Fragment::pasteAnchoredModel");
 
 	// Set up anchored model in correct geometry - have we a valid attachment point?
-	if (!anchoredModel(anchorpoint, replacehydrogen))
+	if (!anchoredModel(anchorpoint, replace, replacebond))
 	{
 		msg.exit("Fragment::pasteAnchoredModel");
 		return;
@@ -311,11 +312,12 @@ void Fragment::pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model
 	anchoredModel_.translateSelectionLocal(anchorpoint->r());
 
 	// If we are to replace a hydrogen in the target model, delete it first
-	if (replacehydrogen && (anchorpoint->nHydrogens() != 0))
+	if (replacebond && (anchorpoint->nBonds() != 0))
 	{
-		// Find first hydrogen attached to anchorpoint (this is what we have assumed in orienting the fragment)
-		Refitem<Bond,int> *ri;
-		for (ri = anchorpoint->bonds(); ri != NULL; ri = ri->next) if (ri->item->partner(anchorpoint)->element() == 1) break;
+		// For safety, clamp range of replaced atom id (shouldn't be necessary)
+		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
+		// Grab atom along n'th bond
+		Refitem<Bond,int> *ri = anchorpoint->bond(replacebond);
 		target->deleteAtom(ri->item->partner(anchorpoint));
 	}
 

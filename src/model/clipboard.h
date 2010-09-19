@@ -133,7 +133,7 @@ class Clipboard
 	void pasteBonds(Model*);
 
 	public:
-	// Copy all atoms in the specified model to the Clipboard
+	// Copy all selected atoms in the specified model to the Clipboard
 	void copySelection(Model *m);
 	// Copy all marked atoms in the specified model
 	void copyMarked(Model *m);

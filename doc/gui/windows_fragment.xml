@@ -26,7 +26,7 @@
 	<section><title>Attaching to Existing Atoms</title>
 		<para>When moving over an existing atom with an anchor point that has at least one bond to another atom, the fragment is attached at a suitable geometry, provided the valency of the atom allows (if not, the atom will be surrounded by a crossed-out box and the fragment will temporarily disappear). A single-click will place the fragment in the shown position and orientation, while click-dragging rotates the fragment about the newly-formed bond to allow fine adjustment before the final placement. If the anchor point has no bonds to other atoms, the fragment is placed in no specific orientation, and click-dragging freely rotates the molecule about the anchor point. In both cases, the anchor atom is <emphasis>always</emphasis> removed when being added to the model since the existing atom which was clicked on will replace it in terms of position.</para>
 
-		<para>If the existing atom in the model has one or more hydrogens attached to it, holding <keycap>Shift</keycap> will orient the fragment along the existing X-H bond. In this case, both the anchor atom and the existing hydrogen atom are removed when the fragment is placed.</para>
+		<para>If the existing atom in the model has one or more other atoms attached to it, holding <keycap>Shift</keycap> will orient the fragment along an existing bond vector. In this case, both the anchor atom and the atom at the other end of the bond are removed when the fragment is placed. Pressing <keycap>Ctrl</keycap> cycles over the bonds of the existing atom.</para>
 	</section>
 
 

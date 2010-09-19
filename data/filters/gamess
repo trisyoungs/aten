@@ -106,13 +106,13 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	int mult = option("Multiplicity", "intspin", 1, 8, 1, 1, "group=Job Control ($CONTRL)");
 	int charge = option("Charge", "intspin", -1000, 1000, 0, 1, "group=Job Control ($CONTRL)");
 	string dfttyp = option("DFT Type", "combo", "NONE,'SVWN (...local DFT)','BLYP (...pure DFT GGA)',PW91,B97-D,PBE,PBEsol,'B3LYP (...hybrid DFT GGA)',X3LYP,PBE0,'TPSS (...pure DFT meta-GGA)',TPSSm,'TPSSh (...hybrid DFT meta-GGA)',M06,'SLATER (...pure exchange)',BECKE,GILL,OPTX,PW91X,PBEX,'VWN (...pure correlation)',VWN1,PZ81,P86,LYP,PW91C,PBEc,OP,'SVWN (...combinations)',BLYP,BOP,BP86,GVWN,GPW91,PBEVWN,PBEOP,OLYP,PW91,PBE", 1, "group=Job Control ($CONTRL)", "newline");
-	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP");
 	string tddft = option("TDDFT Type", "combo", "NONE,EXCITE", 1, "group=Job Control ($CONTRL)");
 	string mplevl = option("MP Level", "combo", "0,2", 1, "group=Job Control ($CONTRL)");
 	string cityp = option("CI Type", "combo", "NONE,CIS,ALDET,ORMAS,FSOCI,GENCI,GUGA", 1, "group=Job Control ($CONTRL)");
 	string cctyp = option("CC Type", "combo", "NONE,LCCD,CCD,CCSD,CCSD(T),R-CC,CR-CC,CR-CCL,CCSD(TQ),CR-CC(Q),EOM-CCSD,CR-EOM,CR-EOML,IP-EOM2,EA-EOM2,EA-EOM3A", 1, "group=Job Control ($CONTRL)", "newline");
 	string relwfn = option("Rel. Wfn.", "combo", "NONE,DK,RESC,NESC", 1, "group=Job Control ($CONTRL)");
 	string exetyp = option("Exe Type", "combo", "RUN,CHECK,DEBUG", 1, "group=Job Control ($CONTRL)");
+	string pp = option("Pseudo", "combo", "NONE,READ,SBKJC,HW,MCP", 1, "group=Job Control ($CONTRL)");
 
 	# Basis set specification ($BASIS)
 	string basis_gbasis = option("Basis", "combo", "MINI,MIDI,STO,N21,N31,N311,DZV,DH,TZV,MC,CCD,CCT,CCQ,CC5,CC6,ACCD,ACCT,ACCQ,ACC5,ACC6,CCDC,CCTC,CCQC,CC5C,CC6C,ACCDC,ACCTC,ACCQC,ACC5C,ACC6C,PC0,PC1,PC2,PC3,PC4,APC0,APC1,APC2,APC3,APC4,SBKJC,HW,MCP-DZP,MCP-TZP,MCP-QZP,IMCP-SR1,IMCP-SR2,IMCP-NR1,IMCP-NR2,MNDO,AM1,PM3", 5, "group=Basis Set ($BASIS)", "newline");
@@ -122,6 +122,9 @@ filter(type="exportmodel", name="GAMESS-US Cartesian Input", nickname="gamusinp"
 	int basis_nffunc = option("NFFUNC", "intspin", 0,1,0,1, "group=Basis Set ($BASIS)");
 	string basis_diffsp = option("DIFFSP", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
 	string basis_diffs = option("DIFFS", "combo", ".TRUE.,.FALSE.", 2, "group=Basis Set ($BASIS)");
+
+	# DFT options ($DFT), placed in 'opts' tab
+	string dftgrid = option("DFT Method", "combo", "GRID,GRIDFREE", 1, "state=GRID@DFT Type?originalitems", "state=GRIDFREE@DFT Type?items=NONE,XALPHA,SLATER,BECKE,DEPRISTO,CAMA,HALF,VWN,PWLOC,LYP,BVWN,BLYP,BPWLOC,B3LYP,CAMB,XVWN,XPWLOC,SVWN,SPWLOC,WIGNER,WS,WIGEXP", "tab=$DFT@opts", "newline");
 
 	# Stationary point location options ($STATPT), placed in 'opts' tabs
 	string statpt_method = option("Method", "combo", "NR,RFO,QA,SCHLEGEL,CONOPT", 3, "tab=$STATPT@opts", "newline");

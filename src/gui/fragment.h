@@ -61,10 +61,17 @@ class AtenFragment : public QDialog
 	Fragment *currentFragment_;
 	// Text string to filter fragments by
 	Dnchar filterText_;
+	// Index of bond to orient along on target atom
+	int bondId_;
 
 	public:
+	// Increment bond id value
+	void increaseBondId();
+	// Return bondId (as reference so it can be reset by associated Fragment routines)
+	int &bondId();
 	// Return current drawing fragment
 	Fragment *currentFragment();
+	
 
 	/*
 	// Dialog

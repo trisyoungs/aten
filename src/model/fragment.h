@@ -88,9 +88,9 @@ class Fragment
 	// Adjust anchored model rotation (from mouse delta)
 	void rotateAnchoredModel(double dx, double dy);
 	// Return anchored model, oriented to attach to specified atom
-	Model *anchoredModel(Atom *anchorpoint, bool replacehydrogen);
+	Model *anchoredModel(Atom *anchorpoint, bool replace, int &replacebond);
 	// Paste anchored model to target model
-	void pasteAnchoredModel(Atom *anchorpoint, bool replacehydrogen, Model *model);
+	void pasteAnchoredModel(Atom *anchorpoint, bool replace, int &replacebond, Model *model);
 };
 
 // Fragment Library

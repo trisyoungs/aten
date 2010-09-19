@@ -123,7 +123,7 @@ void Canvas::renderExtra3d() const
 				// Atom is now fragment anchor point
 				if (atomClicked_ != NULL) i = atomClicked_;
 				r = i->r();
-				Model *m = frag->anchoredModel(i, keyModifier_[Prefs::ShiftKey]);
+				Model *m = frag->anchoredModel(i, keyModifier_[Prefs::ShiftKey], gui.fragmentWindow->bondId());
 
 				// Did we find a valid anchor point?
 				if (m != NULL)
@@ -138,6 +138,7 @@ void Canvas::renderExtra3d() const
 					glPushMatrix();
 					  glTranslated(r.x, r.y, r.z);
 					  glColor3d(1.0,0.0,0.0);
+					  glScaled(0.5,0.5,0.5);
 					  glCallList(glob(CrossedUnitCubeGlob));
 					glPopMatrix();
 				}
