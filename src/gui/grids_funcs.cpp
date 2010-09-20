@@ -550,6 +550,10 @@ void AtenGrids::on_OrbitalSpacingSpin_valueChanged(double d)
 {
 }
 
+void AtenGrids::on_OrbitalPointsSpin_valueChanged(int i)
+{
+}
+
 void AtenGrids::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionGridsWindow->setChecked(FALSE);

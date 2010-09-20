@@ -1217,7 +1217,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="GridPointsSpin" >
+             <widget class="QSpinBox" name="OrbitalPointsSpin" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                 <horstretch>0</horstretch>
@@ -1243,7 +1243,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="GridSpacingSpin" >
+             <widget class="QDoubleSpinBox" name="OrbitalSpacingSpin" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
                 <horstretch>0</horstretch>

@@ -126,7 +126,7 @@ class LineParser
 	// Get next delimited chunk from file (not line)
 	bool getCharsDelim(Dnchar *destarg = NULL);
 	// Read next line from internal source file, setting as parsing source
-	int readLine();
+	int readLine(bool closeoneof = TRUE);
 	// Read next line from source file, skipping blank lines and removing comments
 	int getLine();
 	// Skip 'n' lines from internal file

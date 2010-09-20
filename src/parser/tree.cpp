@@ -248,6 +248,11 @@ bool Tree::execute(ReturnValue &rv)
 			result = TRUE;
 			break;
 		}
+		else if (acceptedFail_ == Command::Error)
+		{
+			result = FALSE;
+			break;
+		}
 		if (!result) break;
 	}
 	// Perform any finalisation commands related to filter trees

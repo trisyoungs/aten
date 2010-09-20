@@ -76,7 +76,7 @@ bool Command::function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	do
 	{
 		// Get line from file
-		int result = c->parent()->parser()->readLine();
+		int result = c->parent()->parser()->readLine(FALSE);
 		if (result != 0) break;
 		// Check for string
 		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')

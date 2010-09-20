@@ -39,6 +39,7 @@ Bundle::Bundle(Model *ptr)
 {
 	clear();
 	m = ptr;
+	rs = ptr;
 }
 
 Bundle::Bundle(Pattern *ptr)

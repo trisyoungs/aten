@@ -62,12 +62,12 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",	VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::syntax(Command::AngleDef) },
-	{ "addbond",	VTypes::NoData,	Command::arguments(Command::BondDef),	Command::syntax(Command::BondDef) },
-	{ "addinter",	VTypes::NoData,	Command::arguments(Command::InterDef),	Command::syntax(Command::InterDef) },
-	{ "addtorsion",	VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::syntax(Command::TorsionDef) },
-	{ "addtype",	VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::syntax(Command::TypeDef) },
-	{ "finalise",	VTypes::NoData, Command::arguments(Command::Finalise),	Command::syntax(Command::Finalise) }
+	{ "addangle",	VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addbond",	VTypes::NoData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addinter",	VTypes::NoData,	Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
+	{ "addtorsion",	VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addtype",	VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
+	{ "finalise",	VTypes::NoData, Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -285,29 +285,28 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr= (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	// Construct temporary bundle object containing our forcefield pointer
 	Bundle bundle(ptr);
-	ReturnValue temprv;
 	if (result) switch (i)
 	{
-		case (AddAngle):
-			result = aten.commands.call(Command::AngleDef, node, temprv, bundle);
+		case (ForcefieldVariable::AddAngle):
+			result = aten.commands.call(Command::AngleDef, node, rv, bundle);
 			break;
-		case (AddBond):
-			result = aten.commands.call(Command::BondDef, node, temprv, bundle);
+		case (ForcefieldVariable::AddBond):
+			result = aten.commands.call(Command::BondDef, node, rv, bundle);
 			break;
-		case (AddInter):
-			result = aten.commands.call(Command::InterDef, node, temprv, bundle);
+		case (ForcefieldVariable::AddInter):
+			result = aten.commands.call(Command::InterDef, node, rv, bundle);
 			break;
-		case (AddTorsion):
-			result = aten.commands.call(Command::TorsionDef, node, temprv, bundle);
+		case (ForcefieldVariable::AddTorsion):
+			result = aten.commands.call(Command::TorsionDef, node, rv, bundle);
 			break;
-		case (AddType):
-			result = aten.commands.call(Command::TypeDef, node, temprv, bundle);
+		case (ForcefieldVariable::AddType):
+			result = aten.commands.call(Command::TypeDef, node, rv, bundle);
 			break;
-		case (Finalise):
-			result = aten.commands.call(Command::FinaliseFF, node, temprv, bundle);
+		case (ForcefieldVariable::Finalise):
+			result = aten.commands.call(Command::FinaliseFF, node, rv, bundle);
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);

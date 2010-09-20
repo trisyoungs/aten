@@ -94,38 +94,38 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::syntax(Command::AddHydrogen) },
-	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::syntax(Command::Augment) },
-	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::syntax(Command::Charge) },
-	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::syntax(Command::ClearBonds) },
-	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::syntax(Command::ClearCharges) },
-	{ "clearselectedbonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::syntax(Command::ClearSelectedBonds) },
-	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::syntax(Command::Copy) },
-	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::syntax(Command::Cut) },
-	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::syntax(Command::Delete) },
-	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::syntax(Command::Finalise) },
-	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::syntax(Command::MoveToEnd) },
-	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::syntax(Command::MoveToStart) },
-	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::syntax(Command::NewAtom) },
-	{ "newatomfrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::syntax(Command::NewAtomFrac) },
-	{ "newbasisshell",	VTypes::BasisShellData,	Command::arguments(Command::NewBasisShell),	Command::syntax(Command::NewBasisShell) },
-	{ "newbond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::syntax(Command::NewBond) },
-	{ "newbondid",		VTypes::BondData,	Command::arguments(Command::NewBondId),		Command::syntax(Command::NewBondId) },
-	{ "neweigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::syntax(Command::NewEigenvector) },
-	{ "newglyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::syntax(Command::NewGlyph) },
-	{ "newgrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::syntax(Command::NewGrid) },
-	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::syntax(Command::Paste) },
-	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::syntax(Command::ReBond) },
-	{ "rebondpatterns",	VTypes::NoData,		Command::arguments(Command::ReBondPatterns),	Command::syntax(Command::ReBondPatterns) },
-	{ "rebondselection",	VTypes::NoData,		Command::arguments(Command::ReBondSelection),	Command::syntax(Command::ReBondSelection) },
-	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::syntax(Command::Redo) },
-	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::syntax(Command::ReOrder) },
-	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::syntax(Command::SaveBitmap) },
-	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::syntax(Command::SelectionAddHydrogen) },
-	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::syntax(Command::ShiftDown) },
-	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::syntax(Command::ShiftUp) },
-	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::syntax(Command::ShowAll) },
-	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::syntax(Command::Transmute) },
-	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::syntax(Command::Undo) }
+	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
+	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
+	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
+	{ "clearcharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
+	{ "clearselectedbonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::argText(Command::ClearSelectedBonds) },
+	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
+	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
+	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
+	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
+	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::argText(Command::MoveToEnd) },
+	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::argText(Command::MoveToStart) },
+	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::argText(Command::NewAtom) },
+	{ "newatomfrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::argText(Command::NewAtomFrac) },
+	{ "newbasisshell",	VTypes::BasisShellData,	Command::arguments(Command::NewBasisShell),	Command::argText(Command::NewBasisShell) },
+	{ "newbond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::argText(Command::NewBond) },
+	{ "newbondid",		VTypes::BondData,	Command::arguments(Command::NewBondId),		Command::argText(Command::NewBondId) },
+	{ "neweigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::argText(Command::NewEigenvector) },
+	{ "newglyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::argText(Command::NewGlyph) },
+	{ "newgrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::argText(Command::NewGrid) },
+	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::argText(Command::Paste) },
+	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::argText(Command::ReBond) },
+	{ "rebondpatterns",	VTypes::NoData,		Command::arguments(Command::ReBondPatterns),	Command::argText(Command::ReBondPatterns) },
+	{ "rebondselection",	VTypes::NoData,		Command::arguments(Command::ReBondSelection),	Command::argText(Command::ReBondSelection) },
+	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::argText(Command::Redo) },
+	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::argText(Command::ReOrder) },
+	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::argText(Command::SaveBitmap) },
+	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
+	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
+	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
+	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
+	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::argText(Command::Transmute) },
+	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -538,8 +538,110 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	Model *ptr= (Model*) rv.asPointer(VTypes::ModelData, result);
+	// Construct temporary bundle object containing our model pointer
+	Bundle bundle(ptr);
+// 	ReturnValue temprv;
 	if (result) switch (i)
 	{
+		case (ModelVariable::AddHydrogen):
+			result = aten.commands.call(Command::AddHydrogen, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Augment):
+			result = aten.commands.call(Command::Augment, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Charge):
+			result = aten.commands.call(Command::Charge, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ClearBonds):
+			result = aten.commands.call(Command::ClearBonds, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ClearCharges):
+			result = aten.commands.call(Command::ClearCharges, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ClearSelectedBonds):
+			result = aten.commands.call(Command::ClearSelectedBonds, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Copy):
+			result = aten.commands.call(Command::Copy, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Cut):
+			result = aten.commands.call(Command::Cut, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Delete):
+			result = aten.commands.call(Command::Delete, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Finalise):
+			result = aten.commands.call(Command::Finalise, node, rv, bundle);
+			break;
+ 		case (ModelVariable::MoveToEnd):
+			result = aten.commands.call(Command::MoveToEnd, node, rv, bundle);
+			break;
+ 		case (ModelVariable::MoveToStart):
+			result = aten.commands.call(Command::MoveToStart, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewAtom):
+			result = aten.commands.call(Command::NewAtom, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewAtomFrac):
+			result = aten.commands.call(Command::NewAtomFrac, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewBasisShell):
+			result = aten.commands.call(Command::NewBasisShell, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewBond):
+			result = aten.commands.call(Command::NewBond, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewBondId):
+			result = aten.commands.call(Command::NewBondId, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewEigenvector):
+			result = aten.commands.call(Command::NewEigenvector, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewGlyph):
+			result = aten.commands.call(Command::NewGlyph, node, rv, bundle);
+			break;
+ 		case (ModelVariable::NewGrid):
+			result = aten.commands.call(Command::NewGrid, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Paste):
+			result = aten.commands.call(Command::Paste, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ReBond):
+			result = aten.commands.call(Command::ReBond, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ReBondPatterns):
+			result = aten.commands.call(Command::ReBondPatterns, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ReBondSelection):
+			result = aten.commands.call(Command::ReBondSelection, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Redo):
+			result = aten.commands.call(Command::Redo, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ReOrder):
+			result = aten.commands.call(Command::ReOrder, node, rv, bundle);
+			break;
+ 		case (ModelVariable::SaveBitmap):
+			result = aten.commands.call(Command::SaveBitmap, node, rv, bundle);
+			break;
+ 		case (ModelVariable::SelectionAddHydrogen):
+			result = aten.commands.call(Command::SelectionAddHydrogen, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ShiftDown):
+			result = aten.commands.call(Command::ShiftDown, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ShiftUp):
+			result = aten.commands.call(Command::ShiftUp, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ShowAll):
+			result = aten.commands.call(Command::ShowAll, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Transmute):
+			result = aten.commands.call(Command::Transmute, node, rv, bundle);
+			break;
+ 		case (ModelVariable::Undo):
+			result = aten.commands.call(Command::Undo, node, rv, bundle);
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ModelVariable.\n", functionData[i].name);
 			result = FALSE;
