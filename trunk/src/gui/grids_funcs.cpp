@@ -81,6 +81,28 @@ void AtenGrids::refresh()
 	// Select the first item
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
+	// Update orbital page
+	QTableWidgetItem *tabitem;
+	ui.OrbitalTable->clear();
+	ui.OrbitalTable->setRowCount(m->nEigenvectors());
+	int count = 0;
+	for (Eigenvector *vec = m->eigenvectors(); vec != NULL; vec = vec->next)
+	{
+		tabitem = new QTableWidgetItem();
+		tabitem->setText(itoa(++count));
+		ui.OrbitalTable->setItem(count, 0, tabitem);
+		tabitem = new QTableWidgetItem();
+		tabitem->setText(vec->name());
+		ui.OrbitalTable->setItem(count, 1, tabitem);
+		tabitem = new QTableWidgetItem();
+		tabitem->setText(ftoa(vec->eigenvalue()));
+		ui.OrbitalTable->setItem(count, 2, tabitem);
+	}
+	ui.OrbitalTable->resizeColumnToContents(0);
+	ui.OrbitalTable->resizeColumnToContents(1);
+	ui.OrbitalTable->resizeColumnToContents(2);
+	// Select the first item
+	if (m->nEigenvectors() != 0) ui.OrbitalTable->setCurrentItem(0,0);
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
 }
@@ -498,6 +520,34 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	Grid *g = m->grid(row);
 	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();
+}
+
+/*
+// Orbital Page
+*/
+
+void AtenGrids::on_ViewBasisButton_clicked(bool checked)
+{
+}
+
+void AtenGrids::on_ViewEigenvectorButton_clicked(bool checked)
+{
+}
+
+void AtenGrids::on_OrbitalOriginXSpin_valueChanged(double d)
+{
+}
+
+void AtenGrids::on_OrbitalOriginYSpin_valueChanged(double d)
+{
+}
+
+void AtenGrids::on_OrbitalOriginZSpin_valueChanged(double d)
+{
+}
+
+void AtenGrids::on_OrbitalSpacingSpin_valueChanged(double d)
+{
 }
 
 void AtenGrids::dialogFinished(int result)

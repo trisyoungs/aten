@@ -975,9 +975,9 @@ CommandData Command::data[Command::nCommands] = {
 		"Show all atoms in the current model" },
 
 	// MO Definnition commands
-	{ "newbasisfunction",	"AS",		VTypes::BasisFunctionData,
+	{ "newbasisfunction",	"AS",		VTypes::BasisShellData,
 		"atom|int id, string type",
-		"Adds a new basis function definition with the specified type, centred on the specified atom" },
+		"Adds a new basis shell definition with the specified type, centred on the specified atom" },
 	{ "neweigenvector",	"n",		VTypes::EigenvectorData,
 		"int size = <auto>",
 		"Creates a new, empty eigenvector in the model to match the size of the current basis functions list (if a size is not specified" },

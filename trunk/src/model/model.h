@@ -32,7 +32,7 @@
 #include "base/atom.h"
 #include "base/lineparser.h"
 #include "base/eigenvector.h"
-#include "classes/basisfunction.h"
+#include "classes/basisshell.h"
 #define SGCOREDEF__
 #include "base/sginfo.h"
 #include "methods/mc.h"
@@ -1089,18 +1089,20 @@ class Model
 	// Molecular Orbital Data
 	*/
 	private:
-	// Basis functions involved in the molecular orbitals
-	List<BasisFunction> basisFunctions_;
+	// List of basis shells
+	List<BasisShell> basisShells_;
 	// Eigenvectors
 	List<Eigenvector> eigenvectors_;
 
 	public:
 	// Add new basis function to the list
-	BasisFunction *addBasisFunction();
+	BasisShell *addBasisShell();
 	// Return the first basis function in the list
-	BasisFunction *basisFunctions();
-	// Return total number of defined basis functions
-	int nBasisFunctions();
+	BasisShell *basisShells();
+	// Return total number of defined basis functions (shells)
+	int nBasisShells();
+	// Return total number of cartesian basis functions
+	int nCartesianBasisFunctions();
 	// Add new eigenvevtor to the list
 	Eigenvector *addEigenvector();
 	// Return the first eigenvector in the list

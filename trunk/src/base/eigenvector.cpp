@@ -88,8 +88,20 @@ double Eigenvector::value(int index)
 }
 
 // Return array pointer
-double *Eigenvector::valueArray()
+double *Eigenvector::eigenvector()
 {
 	if (eigenvector_ == NULL) printf("Warning - Eigenvector array is not yet created.\n");
 	return eigenvector_;
+}
+
+// Set eigenvalue
+void Eigenvector::setEigenvalue(double d)
+{
+	eigenvalue_ = d;
+}
+
+// Return eigenvalue
+double Eigenvector::eigenvalue()
+{
+	return eigenvalue_;
 }

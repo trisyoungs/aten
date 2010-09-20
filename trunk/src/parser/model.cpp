@@ -107,7 +107,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::syntax(Command::MoveToStart) },
 	{ "newatom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::syntax(Command::NewAtom) },
 	{ "newatomfrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::syntax(Command::NewAtomFrac) },
-	{ "newbasisfunction",	VTypes::BasisFunctionData,Command::arguments(Command::NewBasisFunction),Command::syntax(Command::NewBasisFunction) },
+	{ "newbasisshell",	VTypes::BasisShellData,	Command::arguments(Command::NewBasisShell),	Command::syntax(Command::NewBasisShell) },
 	{ "newbond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::syntax(Command::NewBond) },
 	{ "newbondid",		VTypes::BondData,	Command::arguments(Command::NewBondId),		Command::syntax(Command::NewBondId) },
 	{ "neweigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::syntax(Command::NewEigenvector) },

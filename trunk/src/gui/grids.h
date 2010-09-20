@@ -77,7 +77,15 @@ class AtenGrids : public QDialog
 	void on_GridNegativeColourButton_clicked(bool checked);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridUseInternalColoursRadio_clicked(bool checked);
-	void on_GridUseColourScaleRadio_clicked(bool checked);
+	void on_GridUseColourScaleRadio_clicked(bool checked);	
+	// Orbital Page
+	void on_ViewBasisButton_clicked(bool checked);
+	void on_ViewEigenvectorButton_clicked(bool checked);
+	void on_OrbitalOriginXSpin_valueChanged(double d);
+	void on_OrbitalOriginYSpin_valueChanged(double d);
+	void on_OrbitalOriginZSpin_valueChanged(double d);
+	void on_OrbitalSpacingSpin_valueChanged(double d);
+	void on_OrbitalPointsSpin_valueChanged(int i);
 	// Dialog
 	void dialogFinished(int result);
 

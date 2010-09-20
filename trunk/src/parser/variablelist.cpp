@@ -22,10 +22,13 @@
 #include "parser/variablelist.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
+#include "parser/basisprimitive.h"
+#include "parser/basisshell.h"
 #include "parser/bond.h"
 #include "parser/cell.h"
 #include "parser/character.h"
 #include "parser/double.h"
+#include "parser/eigenvector.h"
 #include "parser/element.h"
 #include "parser/integer.h"
 #include "parser/glyph.h"
@@ -92,11 +95,20 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 		case (VTypes::AtomData):
 			v = (Variable*) new AtomVariable(NULL, FALSE);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			v = (Variable*) new BasisPrimitiveVariable(NULL, FALSE);
+			break;
+		case (VTypes::BasisShellData):
+			v = (Variable*) new BasisShellVariable(NULL, FALSE);
+			break;
 		case (VTypes::BondData):
 			v = (Variable*) new BondVariable(NULL, FALSE);
 			break;
 		case (VTypes::CellData):
 			v = (Variable*) new CellVariable(NULL, FALSE);
+			break;
+		case (VTypes::EigenvectorData):
+			v = (Variable*) new EigenvectorVariable(NULL, FALSE);
 			break;
 		case (VTypes::ElementData):
 			v = (Variable*) new ElementVariable();
@@ -165,11 +177,20 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 		case (VTypes::AtomData):
 			var = new AtomArrayVariable(sizeexpr);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			var = new BasisPrimitiveArrayVariable(sizeexpr);
+			break;
+		case (VTypes::BasisShellData):
+			var = new BasisShellArrayVariable(sizeexpr);
+			break;
 		case (VTypes::BondData):
 			var = new BondArrayVariable(sizeexpr);
 			break;
 		case (VTypes::CellData):
 			var = new CellArrayVariable(sizeexpr);
+			break;
+		case (VTypes::EigenvectorData):
+			var = new EigenvectorArrayVariable(sizeexpr);
 			break;
 		case (VTypes::IntegerData):
 			var = new IntegerArrayVariable(sizeexpr);

@@ -1,6 +1,6 @@
 /*
-	*** Eigenvector Variable and Array
-	*** src/parser/eigenvector.cpp
+	*** BasisPrimitive Variable and Array
+	*** src/parser/basisprimitive.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/eigenvector.h"
+#include "parser/basisprimitive.h"
 #include "parser/stepnode.h"
-#include "base/eigenvector.h"
+#include "classes/basisshell.h"
 #include "base/constants.h"
-#include "base/elements.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,16 +32,16 @@
 */
 
 // Constructor
-EigenvectorVariable::EigenvectorVariable(Eigenvector *ptr, bool constant)
+BasisPrimitiveVariable::BasisPrimitiveVariable(BasisPrimitive *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::EigenvectorData;
+	returnType_ = VTypes::BasisPrimitiveData;
 	readOnly_ = constant;
 	pointerData_ = ptr;
 }
 
 // Destructor
-EigenvectorVariable::~EigenvectorVariable()
+BasisPrimitiveVariable::~BasisPrimitiveVariable()
 {
 }
 
@@ -51,27 +50,26 @@ EigenvectorVariable::~EigenvectorVariable()
 */
 
 // Accessor data
-Accessor EigenvectorVariable::accessorData[EigenvectorVariable::nAccessors] = {
-	{ "name",	VTypes::StringData,	0, FALSE },
-	{ "size",	VTypes::IntegerData,	0, TRUE },
-	{ "vector",	VTypes::IntegerData,	-1, FALSE }
+Accessor BasisPrimitiveVariable::accessorData[BasisPrimitiveVariable::nAccessors] = {
+	{ "exponent",		VTypes::DoubleData,	0, FALSE },
+	{ "coefficients",	VTypes::DoubleData,	-1, TRUE }
 };
 
 // Function data
-FunctionAccessor EigenvectorVariable::functionData[EigenvectorVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+FunctionAccessor BasisPrimitiveVariable::functionData[BasisPrimitiveVariable::nFunctions] = {
+	{ "addcoefficient",	VTypes::NoData,		"N",	"double coeff" }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *EigenvectorVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisPrimitiveVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisPrimitiveVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *EigenvectorVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisPrimitiveVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("EigenvectorVariable::accessorSearch");
+	msg.enter("BasisPrimitiveVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -81,24 +79,24 @@ StepNode *EigenvectorVariable::accessorSearch(const char *s, TreeNode *arrayinde
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'eigenvector&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'basisprimitive&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("EigenvectorVariable::accessorSearch");
+			msg.exit("BasisPrimitiveVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'eigenvector&' function '%s'.\n", s);
-			msg.exit("EigenvectorVariable::accessorSearch");
+			msg.print("Error: Array index given to 'basisprimitive&' function '%s'.\n", s);
+			msg.exit("BasisPrimitiveVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::EigenvectorData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::BasisPrimitiveData, functionData[i].returnType);
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'eigenvector&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'basisprimitive&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -112,21 +110,21 @@ StepNode *EigenvectorVariable::accessorSearch(const char *s, TreeNode *arrayinde
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::EigenvectorData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::BasisPrimitiveData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("EigenvectorVariable::accessorSearch");
+	msg.exit("BasisPrimitiveVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("EigenvectorVariable::retrieveAccessor");
+	msg.enter("BasisPrimitiveVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
-		msg.exit("EigenvectorVariable::retrieveAccessor");
+		printf("Internal Error: Accessor id %i is out of range for BasisPrimitive type.\n", i);
+		msg.exit("BasisPrimitiveVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -134,7 +132,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("EigenvectorVariable::retrieveAccessor");
+		msg.exit("BasisPrimitiveVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
@@ -142,48 +140,49 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("EigenvectorVariable::retrieveAccessor");
+			msg.exit("BasisPrimitiveVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
+	BasisPrimitive *ptr= (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (EigenvectorVariable::Name):
-			rv.set(ptr->name());
+		case (BasisPrimitiveVariable::Exponent):
+			rv.set(ptr->exponent());
 			break;
-		case (EigenvectorVariable::Size):
-			rv.set(ptr->size());
-			break;
-		case (EigenvectorVariable::Vector):
-			if (hasArrayIndex) rv.set(ptr->value(arrayIndex-1));
-			else rv.setArray(VTypes::DoubleData, ptr->eigenvector(), ptr->size());
+		case (BasisPrimitiveVariable::Coefficients):
+			if ((arrayIndex < 1) || (arrayIndex > ptr->nCoefficients()))
+			{
+				msg.print("Array index [%i] is out of range for 'coefficients' member.\n", arrayIndex);
+				result = FALSE;
+			}
+			else rv.set(ptr->coefficient(arrayIndex-1));
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in EigenvectorVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in BasisPrimitiveVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("EigenvectorVariable::retrieveAccessor");
+	msg.exit("BasisPrimitiveVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("EigenvectorVariable::setAccessor");
+	msg.enter("BasisPrimitiveVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
-		msg.exit("EigenvectorVariable::setAccessor");
+		printf("Internal Error: Accessor id %i is out of range for BasisPrimitive type.\n", i);
+		msg.exit("BasisPrimitiveVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -232,77 +231,71 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	if (!result)
 	{
-		msg.exit("EigenvectorVariable::setAccessor");
+		msg.exit("BasisPrimitiveVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Eigenvector *ptr= (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
-	int n;
+	BasisPrimitive *ptr= (BasisPrimitive*) sourcerv.asPointer(VTypes::BasisPrimitiveData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EigenvectorData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (EigenvectorVariable::Name):
-			ptr->setName( newvalue.asString() );
-			break;
-		case (EigenvectorVariable::Size):
-			ptr->initialise( newvalue.asInteger() );
-			break;
-		case (EigenvectorVariable::Vector):
-			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= ptr->size())) for (n=0; n<newvalue.arraySize(); ++n) ptr->setValue(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setValue(arrayIndex-1, newvalue.asDouble());
-			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setValue(n, newvalue.asDouble());
+		case (BasisPrimitiveVariable::Exponent):
+			ptr->setExponent( newvalue.asDouble() );
 			break;
 		default:
-			printf("EigenvectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("BasisPrimitiveVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("EigenvectorVariable::setAccessor");
+	msg.exit("BasisPrimitiveVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool EigenvectorVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool BasisPrimitiveVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("EigenvectorVariable::performFunction");
+	msg.enter("BasisPrimitiveVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
-		printf("Internal Error: FunctionAccessor id %i is out of range for Eigenvector type.\n", i);
-		msg.exit("EigenvectorVariable::performFunction");
+		printf("Internal Error: FunctionAccessor id %i is out of range for BasisPrimitive type.\n", i);
+		msg.exit("BasisPrimitiveVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Eigenvector *ptr= (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
+	BasisPrimitive *ptr= (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
 	if (result) switch (i)
 	{
+		case (BasisPrimitiveVariable::AddCoefficient):
+			ptr->addCoefficient( node->argd(0) );
+			break;
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in EigenvectorVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in BasisPrimitiveVariable.\n", functionData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("EigenvectorVariable::performFunction");
+	msg.exit("BasisPrimitiveVariable::performFunction");
 	return result;
 }
 
 // Print valid accessors/functions
-void EigenvectorVariable::printAccessors()
+void BasisPrimitiveVariable::printAccessors()
 {
-	if (EigenvectorVariable::nAccessors > 0)
+	if (BasisPrimitiveVariable::nAccessors > 0)
 	{
 		msg.print("Valid accessors are:\n");
-		for (int n=0; n<EigenvectorVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		for (int n=0; n<BasisPrimitiveVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
 		msg.print("\n");
 	}
-	if ((EigenvectorVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	if ((BasisPrimitiveVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
 		msg.print("Valid functions are:\n");
-		for (int n=0; n<EigenvectorVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		for (int n=0; n<BasisPrimitiveVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
 		msg.print("\n");
 	}
 }
@@ -312,10 +305,10 @@ void EigenvectorVariable::printAccessors()
 */
 
 // Constructor
-EigenvectorArrayVariable::EigenvectorArrayVariable(TreeNode *sizeexpr, bool constant)
+BasisPrimitiveArrayVariable::BasisPrimitiveArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::EigenvectorData;
+	returnType_ = VTypes::BasisPrimitiveData;
 	pointerArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
@@ -324,8 +317,8 @@ EigenvectorArrayVariable::EigenvectorArrayVariable(TreeNode *sizeexpr, bool cons
 }
 
 // Search variable access list for provided accessor
-StepNode *EigenvectorArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisPrimitiveArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisPrimitiveVariable::accessorSearch(s, arrayindex, arglist);
 }
 

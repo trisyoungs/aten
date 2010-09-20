@@ -24,23 +24,16 @@
 #include "model/model.h"
 
 // Create new basis function in the current model
-bool Command::function_NewBasisFunction(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	// Get atom and type arguments
-	Atom *i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs->atom(c->argi(0)-1));
-	if (i == NULL)
-	{
-		msg.print("Illegal atom pointer/id specified. Basis function will not be created.\n");
-		rv.reset();
-		return FALSE;
-	}
-	BasisFunction::BasisFunctionType bft = BasisFunction::basisFunctionType(c->argc(1), TRUE);
-	if (bft == BasisFunction::nBasisFunctionTypes) return FALSE;
-	BasisFunction *bf = obj.rs->addBasisFunction();
-	bf->setAtom(i);
+	// Get shell type argument
+	BasisShell::BasisShellType bft = BasisShell::basisShellType(c->argc(1), TRUE);
+	if (bft == BasisShell::nBasisShellTypes) return FALSE;
+	BasisShell *bf = obj.rs->addBasisShell();
+	bf->setAtomId(c->argi(0));
 	bf->setType(bft);
-	rv.set(VTypes::BasisFunctionData, bf);
+	rv.set(VTypes::BasisShellData, bf);
 	return TRUE;
 }
 
@@ -49,7 +42,7 @@ bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument is size of vector. If not present, use current size of basis function array
-	int size = c->hasArg(0) ? c->argi(0) : obj.rs->nBasisFunctions();
+	int size = c->hasArg(0) ? c->argi(0) : obj.rs->nBasisShells();
 	Eigenvector *vec = obj.rs->addEigenvector();
 	vec->initialise(size);
 	rv.set(VTypes::EigenvectorData, vec);

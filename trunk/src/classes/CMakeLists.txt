@@ -1,5 +1,5 @@
 add_library(classes
-basisfunction.h
+basisshell.h
 colourscale.h
 grid.h
 forcefieldatom.h
@@ -12,7 +12,7 @@ restraint.h
 ring.h
 site.h
 zmatrix.h
-basisfunction.cpp
+basisshell.cpp
 colourscale.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp
