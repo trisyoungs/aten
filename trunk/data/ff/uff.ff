@@ -287,11 +287,13 @@ int generatevdw(ffatom term)
 	return 1;
 }
 
-int generatebond(ffbound newterm, ffatom i, ffatom j)
+int generatebond(ffbound newterm, atom i, atom j)
 {
 	printf("Generating bond....\n");
 	double k, rij, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
 	# Grab some oft-used data
+	ffatom fi = i.type;
+	ffatom fj = j.type;
 	ri = fi.datad("r");
 	rj = fj.datad("r");
 	chii = fi.datad("chi");
@@ -316,12 +318,15 @@ int generatebond(ffbound newterm, ffatom i, ffatom j)
 	return 1;
 }
 
-int generateangle(ffbound newterm, ffatom i, ffatom j, ffatom k)
+int generateangle(ffbound newterm, atom i, atom j, atom k)
 {
 	double rij, rjk, ri, rj, rk, sumrij, sumrjk, chii, chij, chik, rBOij, rBOjk, chiij, chijk, rENij, rENjk, Zi, Zk;
 	double theta, rik2, rik5, forcek, c0, c1, c2;
 	int n, geom;
 	# Grab some oft-used data
+	ffatom fi = i.type;
+	ffatom fj = j.type;
+	ffatom fk = k.type;
 	#verbose("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);
 	ri = fi.datad("r");
 	rj = fj.datad("r");
@@ -389,9 +394,14 @@ int generateangle(ffbound newterm, ffatom i, ffatom j, ffatom k)
 	return 1;
 }
 
-int generatetorsion(ffbound newterm, ffatom i, ffatom j, ffatom k, ffatom l)
+int generatetorsion(ffbound newterm, atom i, atom j, atom k, atom l)
 {
+	ffatom fi = i.type;
+	ffatom fj = j.type;
+	ffatom fk = k.type;
+	ffatom fl = l.type;
 	return 0;
 }
 
-nd
+end
+

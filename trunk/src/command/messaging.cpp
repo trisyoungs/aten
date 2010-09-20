@@ -21,6 +21,7 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "parser/tree.h"
 
 // Write line to msg output and stop
 bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -32,6 +33,7 @@ bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		return FALSE;
 	}
 	if (fmt->writeToString()) msg.print("%s\n",fmt->string());
+	c->parent()->setAcceptedFail(Command::Error);
 	return FALSE;
 }
 

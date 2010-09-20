@@ -22,8 +22,11 @@
 #include "parser/stepnode.h"
 #include "parser/aten.h"
 #include "parser/atom.h"
+#include "parser/basisprimitive.h"
+#include "parser/basisshell.h"
 #include "parser/bond.h"
 #include "parser/cell.h"
+#include "parser/eigenvector.h"
 #include "parser/element.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
@@ -128,6 +131,14 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = AtomVariable::performFunction(accessor_, rv, this);
 			else result = AtomVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			if (functionAccessor_) result = BasisPrimitiveVariable::performFunction(accessor_, rv, this);
+			else result = BasisPrimitiveVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::BasisShellData):
+			if (functionAccessor_) result = BasisShellVariable::performFunction(accessor_, rv, this);
+			else result = BasisShellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::BondData):
 			if (functionAccessor_) result = BondVariable::performFunction(accessor_, rv, this);
 			else result = BondVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -135,6 +146,10 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::CellData):
 			if (functionAccessor_) result = CellVariable::performFunction(accessor_, rv, this);
 			else result = CellVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::EigenvectorData):
+			if (functionAccessor_) result = EigenvectorVariable::performFunction(accessor_, rv, this);
+			else result = EigenvectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ElementData):
 			if (functionAccessor_) result = ElementVariable::performFunction(accessor_, rv, this);
@@ -313,11 +328,20 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::AtomData):
 			result = AtomVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			result = BasisPrimitiveVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::BasisShellData):
+			result = BasisShellVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::BondData):
 			result = BondVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::CellData):
 			result = CellVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::EigenvectorData):
+			result = EigenvectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ElementData):
 			result = ElementVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
@@ -400,11 +424,20 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 		case (VTypes::AtomData):
 			result = AtomVariable::accessorSearch(s, arrayindex, arglist);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			result = BasisPrimitiveVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::BasisShellData):
+			result = BasisShellVariable::accessorSearch(s, arrayindex, arglist);
+			break;
 		case (VTypes::BondData):
 			result = BondVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::CellData):
 			result = CellVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::EigenvectorData):
+			result = EigenvectorVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::ElementData):
 			result = ElementVariable::accessorSearch(s, arrayindex, arglist);

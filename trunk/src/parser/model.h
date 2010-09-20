@@ -43,7 +43,7 @@ class ModelVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, Eigenvectors, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBonds, NDistances, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, Patterns, Region, Torsions, ZMatrix, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisFunction, NewBond, NewBondId, NewEigenvector, NewGlyph, NewGrid, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, Transmute, Undo, nFunctions };
+	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewBondId, NewEigenvector, NewGlyph, NewGrid, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, Transmute, Undo, nFunctions };
 
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);

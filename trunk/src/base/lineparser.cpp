@@ -231,7 +231,7 @@ bool LineParser::eofOrBlank() const
 */
 
 // Read single line from internal file source
-int LineParser::readLine()
+int LineParser::readLine(bool closeoneof)
 {
 	msg.enter("LineParser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
@@ -244,13 +244,13 @@ int LineParser::readLine()
 	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 	if (file_->eof())
 	{
-		closeFile();
+		if (closeoneof) closeFile();
 		msg.exit("LineParser::readLine");
 		return -1;
 	}
 	if (file_->fail())
 	{
-		closeFile();
+		if (closeoneof) closeFile();
 		msg.exit("LineParser::readLine");
 		return 1;
 	}
