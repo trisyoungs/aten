@@ -22,21 +22,29 @@
 #include "model/model.h"
 
 // Add new basis function to the list
-BasisFunction *Model::addBasisFunction()
+BasisShell *Model::addBasisShell()
 {
-	return basisFunctions_.add();
+	return basisShells_.add();
 }
 
 // Return the first basis function in the list
-BasisFunction *Model::basisFunctions()
+BasisShell *Model::basisShells()
 {
-	return basisFunctions_.first();
+	return basisShells_.first();
 }
 
 // Return total number of defined basis functions
-int Model::nBasisFunctions()
+int Model::nBasisShells()
 {
-	return basisFunctions_.nItems();
+	return basisShells_.nItems();
+}
+
+// Return total number of cartesian basis functions
+int Model::nCartesianBasisFunctions()
+{
+	int result = 0;
+	for (BasisShell *basis = basisShells_.first(); basis != NULL; basis = basis->next) result += basis->nCartesianFunctions();
+	return result;
 }
 
 // Add new eigenvevtor to the list

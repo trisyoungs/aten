@@ -418,7 +418,7 @@ class Command
 		ShowAll,
 
 		// MO Definition Commands
-		NewBasisFunction,
+		NewBasisShell,
 		NewEigenvector,
 	
 		// Pattern Commands
@@ -869,7 +869,7 @@ class Command
 	static bool function_SetName(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ShowAll(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// MO Definition Commands
-	static bool function_NewBasisFunction(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Pattern Commands
 	static bool function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -1,6 +1,6 @@
 /*
-	*** BasisFunction Variable and Array
-	*** src/parser/basisfunction.cpp
+	*** BasisShell Variable and Array
+	*** src/parser/basisshell.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/basisfunction.h"
+#include "parser/basisshell.h"
 #include "parser/stepnode.h"
-#include "classes/basisfunction.h"
+#include "classes/basisshell.h"
 #include "base/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,16 +32,16 @@
 */
 
 // Constructor
-BasisFunctionVariable::BasisFunctionVariable(BasisFunction *ptr, bool constant)
+BasisShellVariable::BasisShellVariable(BasisShell *ptr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::BasisFunctionData;
+	returnType_ = VTypes::BasisShellData;
 	readOnly_ = constant;
 	pointerData_ = ptr;
 }
 
 // Destructor
-BasisFunctionVariable::~BasisFunctionVariable()
+BasisShellVariable::~BasisShellVariable()
 {
 }
 
@@ -50,27 +50,28 @@ BasisFunctionVariable::~BasisFunctionVariable()
 */
 
 // Accessor data
-Accessor BasisFunctionVariable::accessorData[BasisFunctionVariable::nAccessors] = {
-	{ "exponent",		VTypes::DoubleData,	0, FALSE },
-	{ "coefficients",	VTypes::DoubleData,	-1, TRUE },
-	{ "type",		VTypes::StringData,	0, FALSE }
+Accessor BasisShellVariable::accessorData[BasisShellVariable::nAccessors] = {
+	{ "atomid",		VTypes::IntegerData,		0, FALSE },
+	{ "nprimitives",	VTypes::IntegerData,		0, TRUE },
+	{ "primitives",		VTypes::BasisPrimitiveData,	-1, TRUE },
+	{ "type",		VTypes::StringData,		0, FALSE }
 };
 
 // Function data
-FunctionAccessor BasisFunctionVariable::functionData[BasisFunctionVariable::nFunctions] = {
-	{ "addcoefficient",	VTypes::NoData,		"N",	"double coeff" }
+FunctionAccessor BasisShellVariable::functionData[BasisShellVariable::nFunctions] = {
+	{ "addprimitive",	VTypes::BasisPrimitiveData,	"Nn*",	"double exponent, double c1 = 0.0 ..." }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *BasisFunctionVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisShellVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return BasisFunctionVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisShellVariable::accessorSearch(s, arrayindex, arglist);
 }
 
 // Private static function to search accessors
-StepNode *BasisFunctionVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisShellVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	msg.enter("BasisFunctionVariable::accessorSearch");
+	msg.enter("BasisShellVariable::accessorSearch");
 	StepNode *result = NULL;
 	int i = 0;
 	for (i = 0; i < nAccessors; i++) if (strcmp(accessorData[i].name,s) == 0) break;
@@ -80,24 +81,24 @@ StepNode *BasisFunctionVariable::accessorSearch(const char *s, TreeNode *arrayin
 		for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
 		if (i == nFunctions)
 		{
-			msg.print("Error: Type 'basisfunction&' has no member or function named '%s'.\n", s);
+			msg.print("Error: Type 'basisshell&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("BasisFunctionVariable::accessorSearch");
+			msg.exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
 		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
 		if (arrayindex != NULL)
 		{
-			msg.print("Error: Array index given to 'basisfunction&' function '%s'.\n", s);
-			msg.exit("BasisFunctionVariable::accessorSearch");
+			msg.print("Error: Array index given to 'basisshell&' function '%s'.\n", s);
+			msg.exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
-		result = new StepNode(i, VTypes::BasisFunctionData, functionData[i].returnType);
+		result = new StepNode(i, VTypes::BasisShellData, functionData[i].returnType);
 		result->addJoinedArguments(arglist);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'basisfunction&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			msg.print("Error: Syntax for 'basisshell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
@@ -111,21 +112,21 @@ StepNode *BasisFunctionVariable::accessorSearch(const char *s, TreeNode *arrayin
 			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
-		else result = new StepNode(i, VTypes::BasisFunctionData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		else result = new StepNode(i, VTypes::BasisShellData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("BasisFunctionVariable::accessorSearch");
+	msg.exit("BasisShellVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool BasisFunctionVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool BasisShellVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisFunctionVariable::retrieveAccessor");
+	msg.enter("BasisShellVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for BasisFunction type.\n", i);
-		msg.exit("BasisFunctionVariable::retrieveAccessor");
+		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
+		msg.exit("BasisShellVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -133,7 +134,7 @@ bool BasisFunctionVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArr
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
 		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("BasisFunctionVariable::retrieveAccessor");
+		msg.exit("BasisShellVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
@@ -141,52 +142,52 @@ bool BasisFunctionVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArr
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
 			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("BasisFunctionVariable::retrieveAccessor");
+			msg.exit("BasisShellVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisFunction *ptr= (BasisFunction*) rv.asPointer(VTypes::BasisFunctionData, result);
+	BasisShell *ptr= (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisFunctionData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
-		case (BasisFunctionVariable::Exponent):
-			rv.set(ptr->exponent());
+		case (BasisShellVariable::AtomId):
+			rv.set(ptr->atomId()+1);
 			break;
-		case (BasisFunctionVariable::Coefficients):
-			if ((arrayIndex < 1) || (arrayIndex > ptr->nCoefficients()))
+		case (BasisShellVariable::Primitives):
+			if ((arrayIndex < 1) || (arrayIndex > ptr->nPrimitives()))
 			{
-				msg.print("Array index [%i] is out of range for 'coefficients' member.\n", arrayIndex);
+				msg.print("Array index [%i] is out of range for 'primitives' member.\n", arrayIndex);
 				result = FALSE;
 			}
-			else rv.set(ptr->coefficient(arrayIndex-1));
+			else rv.set(VTypes::BasisPrimitiveData, ptr->primitive(arrayIndex-1));
 			break;
-		case (BasisFunctionVariable::Type):
-			rv.set(BasisFunction::basisFunctionType(ptr->type()));
+		case (BasisShellVariable::Type):
+			rv.set(BasisShell::basisShellType(ptr->type()));
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in BasisFunctionVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in BasisShellVariable.\n", accessorData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisFunctionVariable::retrieveAccessor");
+	msg.exit("BasisShellVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool BasisFunctionVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool BasisShellVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisFunctionVariable::setAccessor");
+	msg.enter("BasisShellVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
-		printf("Internal Error: Accessor id %i is out of range for BasisFunction type.\n", i);
-		msg.exit("BasisFunctionVariable::setAccessor");
+		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
+		msg.exit("BasisShellVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -235,77 +236,82 @@ bool BasisFunctionVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValu
 	}
 	if (!result)
 	{
-		msg.exit("BasisFunctionVariable::setAccessor");
+		msg.exit("BasisShellVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	BasisFunction *ptr= (BasisFunction*) sourcerv.asPointer(VTypes::BasisFunctionData, result);
+	BasisShell *ptr= (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
 	if (result && (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisFunctionData));
+		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisShellData));
 		result = FALSE;
 	}
-	BasisFunction::BasisFunctionType bft;
+	BasisShell::BasisShellType bft;
 	if (result) switch (acc)
 	{
-		case (BasisFunctionVariable::Exponent):
-			ptr->setExponent( newvalue.asDouble() );
+		case (BasisShellVariable::AtomId):
+			ptr->setAtomId( newvalue.asInteger() - 1);
 			break;
-		case (BasisFunctionVariable::Type):
-			bft = BasisFunction::basisFunctionType( newvalue.asString() );
-			if (bft == BasisFunction::nBasisFunctionTypes) result = FALSE;
+		case (BasisShellVariable::Type):
+			bft = BasisShell::basisShellType( newvalue.asString() );
+			if (bft == BasisShell::nBasisShellTypes) result = FALSE;
 			else ptr->setType(bft);
 			break;
 		default:
-			printf("BasisFunctionVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("BasisShellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisFunctionVariable::setAccessor");
+	msg.exit("BasisShellVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool BasisFunctionVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool BasisShellVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 {
-	msg.enter("BasisFunctionVariable::performFunction");
+	msg.enter("BasisShellVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
-		printf("Internal Error: FunctionAccessor id %i is out of range for BasisFunction type.\n", i);
-		msg.exit("BasisFunctionVariable::performFunction");
+		printf("Internal Error: FunctionAccessor id %i is out of range for BasisShell type.\n", i);
+		msg.exit("BasisShellVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisFunction *ptr= (BasisFunction*) rv.asPointer(VTypes::BasisFunctionData, result);
+	BasisShell *ptr= (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
+	BasisPrimitive *prim;
+	int n;
 	if (result) switch (i)
 	{
-		case (BasisFunctionVariable::AddCoefficient):
-			ptr->addCoefficient( node->argd(0) );
+		case (BasisShellVariable::AddPrimitive):
+			prim = ptr->addPrimitive();
+			prim->setExponent( node->argd(0) );
+			for (n=1; n<node->nArgs(); ++n) prim->addCoefficient(node->argd(n));
+			rv.set(VTypes::BasisPrimitiveData, prim);
 			break;
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in BasisFunctionVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in BasisShellVariable.\n", functionData[i].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisFunctionVariable::performFunction");
+	msg.exit("BasisShellVariable::performFunction");
 	return result;
 }
 
 // Print valid accessors/functions
-void BasisFunctionVariable::printAccessors()
+void BasisShellVariable::printAccessors()
 {
-	if (BasisFunctionVariable::nAccessors > 0)
+	if (BasisShellVariable::nAccessors > 0)
 	{
 		msg.print("Valid accessors are:\n");
-		for (int n=0; n<BasisFunctionVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		for (int n=0; n<BasisShellVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
 		msg.print("\n");
 	}
-	if ((BasisFunctionVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
+	if ((BasisShellVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
 		msg.print("Valid functions are:\n");
-		for (int n=0; n<BasisFunctionVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		for (int n=0; n<BasisShellVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
 		msg.print("\n");
 	}
 }
@@ -315,10 +321,10 @@ void BasisFunctionVariable::printAccessors()
 */
 
 // Constructor
-BasisFunctionArrayVariable::BasisFunctionArrayVariable(TreeNode *sizeexpr, bool constant)
+BasisShellArrayVariable::BasisShellArrayVariable(TreeNode *sizeexpr, bool constant)
 {
 	// Private variables
-	returnType_ = VTypes::BasisFunctionData;
+	returnType_ = VTypes::BasisShellData;
 	pointerArrayData_ = NULL;
 	arraySize_ = 0;
 	nodeType_ = TreeNode::ArrayVarNode;
@@ -327,8 +333,8 @@ BasisFunctionArrayVariable::BasisFunctionArrayVariable(TreeNode *sizeexpr, bool 
 }
 
 // Search variable access list for provided accessor
-StepNode *BasisFunctionArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode *BasisShellArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
 {
-	return BasisFunctionVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisShellVariable::accessorSearch(s, arrayindex, arglist);
 }
 

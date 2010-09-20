@@ -1,6 +1,6 @@
 /*
-	*** BasisFunction Variable and Array
-	*** src/parser/basisfunction.h
+	*** BasisPrimitive Variable and Array
+	*** src/parser/basisprimitive.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,29 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_BASISFUNCTIONVARIABLE_H
-#define ATEN_BASISFUNCTIONVARIABLE_H
+#ifndef ATEN_BASISPRIMITIVEVARIABLE_H
+#define ATEN_BASISPRIMITIVEVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class BasisFunction;
+class BasisPrimitive;
 
-// BasisFunction Variable
-class BasisFunctionVariable : public PointerVariable
+// BasisPrimitive Variable
+class BasisPrimitiveVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisFunctionVariable(BasisFunction *func = NULL, bool constant = FALSE);
-	~BasisFunctionVariable();
+	BasisPrimitiveVariable(BasisPrimitive *func = NULL, bool constant = FALSE);
+	~BasisPrimitiveVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Exponent, Coefficients, Type, nAccessors };
+        enum Accessors { Exponent, Coefficients, nAccessors };
 	// Function list
 	enum Functions { AddCoefficient, nFunctions };
 	// Search variable access list for provided accessor
@@ -62,12 +62,12 @@ class BasisFunctionVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// BasisFunction Array Variable
-class BasisFunctionArrayVariable : public PointerArrayVariable
+// BasisPrimitive Array Variable
+class BasisPrimitiveArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisFunctionArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	BasisPrimitiveArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals

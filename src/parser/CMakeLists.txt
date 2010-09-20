@@ -2,7 +2,8 @@ add_library(parser
 accessor.h
 aten.h
 atom.h
-basisfunction.h
+basisprimitive.h
+basisshell.h
 bond.h
 cell.h
 character.h
@@ -45,7 +46,8 @@ zmatrix.h
 zmatrixelement.h
 aten.cpp
 atom.cpp
-basisfunction.cpp
+basisprimitive.cpp
+basisshell.cpp
 bond.cpp
 cell.cpp
 character.cpp

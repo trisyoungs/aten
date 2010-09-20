@@ -38,12 +38,14 @@ class Eigenvector
 	// Data
 	*/
 	private:
-	// Name of eigenvector
+	// Name (typically symmetry type) of eigenvector
 	Dnchar name_;
 	// Size of eigenvector when created
 	int size_;
 	// Eigenvector
 	double *eigenvector_;
+	// Eigenvalue
+	double eigenvalue_;
 
 	public:
 	// Initialise to be specified size
@@ -59,7 +61,11 @@ class Eigenvector
 	// Return array value specified
 	double value(int index);
 	// Return array pointer
-	double *valueArray();
+	double *eigenvector();
+	// Set eigenvalue
+	void setEigenvalue(double d);
+	// Return eigenvalue
+	double eigenvalue();
 };
 
 #endif
