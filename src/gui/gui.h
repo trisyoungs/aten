@@ -52,6 +52,8 @@ class AtenMinimiser;
 class AtenPosition;
 class AtenSelect;
 class AtenTransform;
+class AtenViewBasis;
+class AtenViewEigenvector;
 class AtenZMatrix;
 class Atom;
 class Model;
@@ -190,6 +192,10 @@ class GuiQt
 	AtenSelectElement *selectElementDialog;
 	// Command help dialog
 	AtenCommandHelp *commandHelpDialog;
+	// View basis dialog
+	AtenViewBasis *viewBasisDialog;
+	// View eigenvector dialog
+	AtenViewEigenvector *viewEigenvectorDialog;
 
 
 	/*

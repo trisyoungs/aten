@@ -125,6 +125,8 @@ class LineParser
 	void getArgsDelim(const char *string, int flags = LineParser::Defaults);
 	// Get next delimited chunk from file (not line)
 	bool getCharsDelim(Dnchar *destarg = NULL);
+	// Get next delimited chunk from string, removing grabbed part
+	bool getCharsDelim(Dnchar *source, Dnchar *destarg);
 	// Read next line from internal source file, setting as parsing source
 	int readLine(bool closeoneof = TRUE);
 	// Read next line from source file, skipping blank lines and removing comments

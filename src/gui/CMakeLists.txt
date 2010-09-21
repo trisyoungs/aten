@@ -70,6 +70,8 @@ set(qtproject_SRCS
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
   viewactions.cpp
+  viewbasis_funcs.cpp
+  vieweigenvector_funcs.cpp
   zmatrix_funcs.cpp
 )
 
@@ -102,6 +104,8 @@ SET(pro_MOC_HDRS
   selectpattern.h
   selectvariable.h
   transform.h
+  viewbasis.h
+  vieweigenvector.h
   zmatrix.h
   tcanvas.uih
   tcolourframe.uih
@@ -139,6 +143,8 @@ SET(pro_UIS
   selectpattern.ui
   selectvariable.ui
   transform.ui
+  viewbasis.ui
+  vieweigenvector.ui
   zmatrix.ui
 )
 QT4_WRAP_UI(pro_UIS_H ${pro_UIS})

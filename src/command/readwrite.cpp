@@ -132,6 +132,21 @@ bool Command::function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Get next whitespace-delimited argument from specified variable file
+bool Command::function_NextVariableArg(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Dnchar source = c->argc(0);
+	Dnchar arg;
+	rv.set( c->parent()->parser()->getCharsDelim(&source, &arg) );
+	printf("COMMAND RESULT = %i\n", rv.asInteger());
+	ReturnValue argrv;
+	argrv.set(arg.get());
+	c->setArg(1, argrv);
+	argrv.set(source.get());
+	c->setArg(0, argrv);
+	return TRUE;
+}
+
 // Peek next character from file
 bool Command::function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

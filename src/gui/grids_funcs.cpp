@@ -24,6 +24,8 @@
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
+#include "gui/viewbasis.h"
+#include "gui/vieweigenvector.h"
 #include "gui/tlistwidgetitem.h"
 #include "classes/grid.h"
 #include "base/sysfunc.h"
@@ -528,10 +530,14 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 
 void AtenGrids::on_ViewBasisButton_clicked(bool checked)
 {
+	gui.viewBasisDialog->showWindow( aten.currentModelOrFrame() );
 }
 
 void AtenGrids::on_ViewEigenvectorButton_clicked(bool checked)
 {
+	int row = ui.OrbitalTable->currentRow();
+	if (row == -1) return;
+	gui.viewEigenvectorDialog->showWindow( aten.currentModelOrFrame(), row);
 }
 
 void AtenGrids::on_OrbitalOriginXSpin_valueChanged(double d)
