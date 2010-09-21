@@ -437,6 +437,7 @@ class Command
 		Find,
 		GetLine,
 		NextArg,
+		NextVariableArg,
 		PeekChar,
 		PeekCharI,
 		ReadChars,
@@ -886,6 +887,7 @@ class Command
 	static bool function_Find(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetLine(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NextArg(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NextVariableArg(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekChar(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PeekCharI(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReadChars(CommandNode *c, Bundle &obj, ReturnValue &rv);

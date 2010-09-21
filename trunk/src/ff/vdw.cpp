@@ -283,7 +283,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					// Find relevant (pre-combined) parameters
-					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					pp = parent_->combinedParameters(atoms_[i]->data(), otherPattern->atoms_[j]->data());
 					if (pp == NULL) break;
 					// Calculate the energy contribution
 					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, pp->data(), vrs, i, j);
@@ -401,7 +401,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					if (rij > cutoff) continue;
 
 					// Find relevant (pre-combined) parameters
-					pp = parent_->combinedParameters(atoms_[i]->data(), atoms_[j]->data());
+					pp = parent_->combinedParameters(atoms_[i]->data(), otherPattern->atoms_[j]->data());
 					if (pp == NULL) break;
 
 					// Calculate force contribution

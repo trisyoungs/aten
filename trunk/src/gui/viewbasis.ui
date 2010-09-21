@@ -1,0 +1,113 @@
+<ui version="4.0" >
+ <class>ViewBasisDialog</class>
+ <widget class="QDialog" name="ViewBasisDialog" >
+  <property name="windowModality" >
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>319</width>
+    <height>303</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Defined Atomic Basis</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >
+    <normaloff>:/stackicons/icons/stack_surfaces.svg</normaloff>:/stackicons/icons/stack_surfaces.svg</iconset>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox" >
+   <property name="geometry" >
+    <rect>
+     <x>9</x>
+     <y>264</y>
+     <width>301</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="standardButtons" >
+    <set>QDialogButtonBox::Close</set>
+   </property>
+  </widget>
+  <widget class="QTableWidget" name="BasisTable" >
+   <property name="geometry" >
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>299</width>
+     <height>247</height>
+    </rect>
+   </property>
+   <property name="sizePolicy" >
+    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+     <horstretch>5</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="editTriggers" >
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <property name="showDropIndicator" stdset="0" >
+    <bool>false</bool>
+   </property>
+   <property name="dragDropOverwriteMode" >
+    <bool>false</bool>
+   </property>
+   <property name="selectionMode" >
+    <enum>QAbstractItemView::SingleSelection</enum>
+   </property>
+   <property name="selectionBehavior" >
+    <enum>QAbstractItemView::SelectRows</enum>
+   </property>
+   <column>
+    <property name="text" >
+     <string>AtomId</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>Shell</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>Type</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>Exponent</string>
+    </property>
+   </column>
+   <column>
+    <property name="text" >
+     <string>Coefficients</string>
+    </property>
+   </column>
+  </widget>
+ </widget>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ViewBasisDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>269</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>4</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

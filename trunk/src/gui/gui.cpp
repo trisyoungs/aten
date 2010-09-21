@@ -50,6 +50,8 @@
 #include "gui/transform.h"
 #include "gui/select.h"
 #include "gui/position.h"
+#include "gui/viewbasis.h"
+#include "gui/vieweigenvector.h"
 #include "gui/zmatrix.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
@@ -100,6 +102,8 @@ GuiQt::GuiQt()
 	selectVariableDialog = NULL;
 	selectElementDialog = NULL;
 	commandHelpDialog = NULL;
+	viewBasisDialog = NULL;
+	viewEigenvectorDialog = NULL;
 	aboutDialog = NULL;
 	atomlistWindow = NULL;
 	buildWindow = NULL;
@@ -183,6 +187,8 @@ void GuiQt::run()
 	selectElementDialog = new AtenSelectElement(mainWindow);
 	commandHelpDialog = new AtenCommandHelp(mainWindow);
 	aboutDialog = new AtenAbout(mainWindow);
+	viewBasisDialog = new AtenViewBasis(mainWindow);
+	viewEigenvectorDialog = new AtenViewEigenvector(mainWindow);
 	// ...tool windows
 	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
 	buildWindow = new AtenBuild(mainWindow, Qt::Window|Qt::Tool);

@@ -397,6 +397,7 @@ void Command::initPointers()
 	pointers_[Find] = &Command::function_Find;
 	pointers_[GetLine] = &Command::function_GetLine;
 	pointers_[NextArg] = &Command::function_NextArg;
+	pointers_[NextVariableArg] = &Command::function_NextVariableArg;
 	pointers_[PeekChar] = &Command::function_PeekChar;
 	pointers_[PeekCharI] = &Command::function_PeekCharI;
 	pointers_[ReadChars] = &Command::function_ReadChars;

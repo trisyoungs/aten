@@ -633,6 +633,122 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 	return result;
 }
 
+// Get next delimited chunk from string, removing grabbed part
+bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
+{
+	// Get the next input chunk from the internal string and put into argument specified.
+	msg.enter("LineParser::getCharsDelim(Dnchar,Dnchar)");
+	int arglen, pos = 0, length = source->length();
+	bool done, hadquotes, failed;
+	char c, quotechar;
+	failed = FALSE;
+	done = FALSE;
+	hadquotes = FALSE;
+	quotechar = '\0';
+	arglen = 0;
+	while (pos < length)
+	{
+		c = (*source)[pos];
+		switch (c)
+		{
+			// End of line markers
+			case (10):	// Line feed (\n)
+			case (13):	// Carriage Return
+				done = TRUE;
+				break;
+			// Delimiters
+			// If we encounter one and arg length != 0 this signals the end of the argument.
+			case (9):	// Horizontal Tab
+			case (' '):	// Space
+			case (','):	// Comma
+				if (quotechar != '\0')
+				{
+					tempArg_[arglen] = c;
+					arglen ++;
+				}
+				else if (arglen != 0) done = TRUE;
+				break;
+			// Quote marks
+			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
+			case (34):	// Double quotes
+			case (39):	// Single quotes
+				if (!(optionMask_&LineParser::UseQuotes)) break;
+				if (quotechar == '\0') quotechar = c;
+				else if (quotechar == c)
+				{
+					quotechar = '\0';
+					hadquotes = TRUE;
+					done = TRUE;
+				}
+				else
+				{
+					tempArg_[arglen] = c;
+					arglen ++;
+				}
+				break;
+			// Curly brackets - treat in the same way as quotes
+			case ('{'):
+			case ('}'):
+				if (!(optionMask_&LineParser::UseBraces))
+				{
+					// Just add as normal character
+					tempArg_[arglen] = c;
+					arglen ++;
+				}
+				else
+				{
+					// If the quotechar is a left brace and we have a right brace, stop quoting
+					if ((quotechar == '{') && (c == '}'))
+					{
+						quotechar = '\0';
+						break;
+					}
+					// If we are already quoting by some other means, add character and exit
+					if (quotechar != '\0')
+					{
+						tempArg_[arglen] = c;
+						arglen ++;
+					}
+					// No previous quoting, so begin quoting if '{'
+					if (c == '{') quotechar = '{';
+				}
+				break;
+			// Parentheses
+			case ('('):	// Left parenthesis
+			case (')'):	// Right parenthesis
+				if (optionMask_&LineParser::StripBrackets) break;
+				tempArg_[arglen] = c;
+				arglen ++;
+				break;
+			// Comment markers
+			case ('#'):	// "#" Rest/all of line is a comment
+				endOfLine_ = TRUE;
+				done = TRUE;
+				break;
+			// Normal character
+			default: 
+				tempArg_[arglen] = c;
+				arglen ++;
+				break;
+		}
+		// Increment line position
+		pos ++;
+		if (done || failed) break;
+	}
+	// Finalise argument
+	tempArg_[arglen] = '\0';
+	// Store the result in the desired destination
+	if (destarg != NULL) *destarg = tempArg_;
+	// Trim characters from source string
+	printf("Number of chars = %i\n", pos);
+	printf("Size of original string = %i\n", source->length());
+	source->eraseStart(pos);
+	printf("Size of trimmed string = %i\n", source->length());
+	msg.exit("LineParser::getCharsDelim(Dnchar,Dnchar)");
+	if (failed) return FALSE;
+	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
+}
+
 // Return a number of characters from the input stream
 const char *LineParser::getChars(int nchars, bool skipeol)
 {
