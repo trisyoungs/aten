@@ -200,8 +200,22 @@ void StringArrayVariable::reset()
 // Return value of node
 bool StringArrayVariable::execute(ReturnValue &rv)
 {
-	msg.print("A whole array ('%s') cannot be passed as a value.\n", name_.get());
-	return FALSE;
+	if (stringArrayData_ == NULL)
+	{
+		if (!readOnly_)
+		{
+			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+			return FALSE;
+		}
+		if (!initialise())
+		{
+			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", name_.get());
+			return FALSE;
+		}
+	}
+	else if (readOnly_) reset();
+	rv.setArray(VTypes::StringData, stringArrayData_, arraySize_);
+	return TRUE;
 }
 
 // Return value of node as array

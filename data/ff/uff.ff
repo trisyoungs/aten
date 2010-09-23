@@ -274,7 +274,7 @@ convert D V U
 # Functional forms defined here
 function
 
-int generatevdw(ffatom term)
+int vdwgenerator(ffatom term)
 {
 	double D, sigma;
 	D = term.datad("D");
@@ -288,7 +288,7 @@ int generatevdw(ffatom term)
 	return 1;
 }
 
-int generatebond(ffbound newterm, atom i, atom j)
+int bondgenerator(ffbound newterm, atom i, atom j)
 {
 	double k, rij, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
 	# Grab some oft-used data
@@ -318,7 +318,7 @@ int generatebond(ffbound newterm, atom i, atom j)
 	return 1;
 }
 
-int generateangle(ffbound newterm, atom i, atom j, atom k)
+int anglegenerator(ffbound newterm, atom i, atom j, atom k)
 {
 	double rij, rjk, ri, rj, rk, sumrij, sumrjk, chii, chij, chik, rBOij, rBOjk, chiij, chijk, rENij, rENjk, Zi, Zk;
 	double theta, rik2, rik5, forcek, c0, c1, c2;
@@ -381,7 +381,6 @@ int generateangle(ffbound newterm, atom i, atom j, atom k)
 		c0 = c2 * (2.0 * cos(theta) * cos(theta) + 1.0);
 		newterm.form = "cos2";
 		newterm.data = { forcek, c0, c1, c2 };
-		printf("DEBUG: NONLIN : cos2 %f %f %f %f\n", forcek, c0, c1, c2);
 		verbose("Generated cos2 angle information for %s-%s-%s : k=%f, c0=%f, c1=%f, c2=%f\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek,c0,c1,c2);
 	}
 
@@ -390,13 +389,12 @@ int generateangle(ffbound newterm, atom i, atom j, atom k)
 	{
 		newterm.form = "cos";
 		newterm.data = { forcek/(n*n), n };
-		printf("DEBUG: SPECIFIC : cos %f %i \n", forcek, n);
 		verbose("Generated cos angle information for %s-%s-%s : k=%f (n=%i), eq=0.0\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek,n);
 	}
 	return 1;
 }
 
-int generatetorsion(ffbound newterm, atom i, atom j, atom k, atom l)
+int torsiongenerator(ffbound newterm, atom i, atom j, atom k, atom l)
 {
 	ffatom fi = i.type;
 	ffatom fj = j.type;

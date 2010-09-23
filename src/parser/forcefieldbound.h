@@ -41,7 +41,7 @@ class ForcefieldBoundVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Data, EScale, Form, NAtoms, Type, TypeNames, VScale, nAccessors };
+	enum Accessors { Data, DataKeyword, DataName, EScale, Form, NAtoms, NParams, Type, TypeNames, VScale, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

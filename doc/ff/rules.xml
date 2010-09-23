@@ -21,19 +21,19 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>int generatevdw(ffatom data)</entry>
+						<entry>int vdwgenerator(ffatom data)</entry>
 						<entry>Called whenever descriptive VDW data is missing from an atom type (which is passed into the function and should have the correct data placed in it)</entry>
 					</row>
 					<row>
-						<entry>int generatebond(ffbound newdata, atom i, atom j)</entry>
+						<entry>int bondgenerator(ffbound newdata, atom i, atom j)</entry>
 						<entry>Called whenever function data for an unrecognised bond (between the atom types currently assigned to atoms 'i' and 'j') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
 					</row>
 					<row>
-						<entry>int generateangle(ffbound newdata, atom i, atom j, atom k)</entry>
+						<entry>int anglegenerator(ffbound newdata, atom i, atom j, atom k)</entry>
 						<entry>Called whenever function data for an unrecognised angle (between the atom types currently assigned to atoms 'i', 'j', and 'k') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
 					</row>
 					<row>
-						<entry>int generatetorsion(ffbound newdata, atom i, atom j, atom k, atom l)</entry>
+						<entry>int torsiongenerator(ffbound newdata, atom i, atom j, atom k, atom l)</entry>
 						<entry>Called whenever function data for an unrecognised torsion (between the atom types currently assigned to atoms 'i', 'j', 'k', and 'l') is needed. Generated parameters should be store in the passed 'newdata' structure</entry>
 					</row>
 				</tbody>

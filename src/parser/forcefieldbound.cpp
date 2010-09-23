@@ -50,13 +50,16 @@ ForcefieldBoundVariable::~ForcefieldBoundVariable()
 
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
-	{ "data",	VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
-	{ "escale",	VTypes::DoubleData,	0, FALSE },
-	{ "form",	VTypes::StringData,	0, FALSE },
-	{ "natoms",	VTypes::IntegerData,	0, TRUE },
-	{ "type",	VTypes::StringData,	0, TRUE },
-	{ "typenames",	VTypes::StringData,	MAXFFPARAMDATA, FALSE },
-	{ "vscale",	VTypes::DoubleData,	0, FALSE }
+	{ "data",		VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
+	{ "datakeyword",	VTypes::StringData,	MAXFFPARAMDATA, TRUE },
+	{ "dataname",		VTypes::StringData,	MAXFFPARAMDATA, TRUE },
+	{ "escale",		VTypes::DoubleData,	0, FALSE },
+	{ "form",		VTypes::StringData,	0, FALSE },
+	{ "natoms",		VTypes::IntegerData,	0, TRUE },
+	{ "nparams",		VTypes::IntegerData,	0, TRUE },
+	{ "type",		VTypes::StringData,	0, TRUE },
+	{ "typenames",		VTypes::StringData,	MAXFFPARAMDATA, FALSE },
+	{ "vscale",		VTypes::DoubleData,	0, FALSE }
 };
 
 // Function data
@@ -162,6 +165,46 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			if (hasArrayIndex) rv.set(ptr->parameter(arrayIndex-1));
 			else rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
 			break;
+		case (ForcefieldBoundVariable::DataKeyword):
+			// Must have an array index here...
+			if (!hasArrayIndex)
+			{
+				msg.print("Accessor 'datakeyword' must have an array index.\n");
+				result = FALSE;
+			}
+			else switch (ptr->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].parameterKeywords[arrayIndex-1]);
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].parameterKeywords[arrayIndex-1]);
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].parameterKeywords[arrayIndex-1]);
+					break;
+			}
+			break;
+		case (ForcefieldBoundVariable::DataName):
+			// Must have an array index here...
+			if (!hasArrayIndex)
+			{
+				msg.print("Accessor 'dataname' must have an array index.\n");
+				result = FALSE;
+			}
+			else switch (ptr->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].parameters[arrayIndex-1]);
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].parameters[arrayIndex-1]);
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].parameters[arrayIndex-1]);
+					break;
+			}
+			break;
 		case (ForcefieldBoundVariable::EScale):
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
@@ -175,6 +218,20 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			break;
 		case (ForcefieldBoundVariable::NAtoms):
 			rv.set(ForcefieldBound::boundTypeNAtoms(ptr->type()));
+			break;
+		case (ForcefieldBoundVariable::NParams):
+			switch (ptr->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].nParameters);
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].nParameters);
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].nParameters);
+					break;
+			}
 			break;
 		case (ForcefieldBoundVariable::Type):
 			rv.set(ForcefieldBound::boundType(ptr->type()));
