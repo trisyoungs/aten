@@ -1,8 +1,8 @@
-	<section id="command.types.atom"><title>Atom</title>
+	<section id="command.types.atom"><title>Atom Type</title>
 	
 		<indexterm zone="command.types.atom"><primary>types</primary><secondary>atom</secondary></indexterm>
 	
-		<table frame='all' pgwide='1' tocentry='1'><title>Atom type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Atom Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -185,7 +185,7 @@
 			</tgroup>
 		</table>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Atom type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Atom Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

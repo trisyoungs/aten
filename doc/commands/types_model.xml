@@ -1,8 +1,8 @@
-	<section id="command.types.model"><title>Model</title>
+	<section id="command.types.model"><title>Model Type</title>
 		
 		<indexterm zone="command.types.model"><primary>types</primary><secondary>model</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Model type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Model Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -48,6 +48,12 @@
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>
 						<entry>List of current distance measurements in the model</entry>
+					</row>
+					<row>
+						<entry>eigenvectors</entry>
+						<entry><link linkend="command.types.eigenvector">eigenvector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current eigenvectors stored in the model</entry>
 					</row>
 					<row>
 						<entry>ff</entry>
@@ -132,6 +138,18 @@
 						<entry>int</entry>
 						<entry>ro</entry>
 						<entry>Number of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>nbasiscartesians</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of cartesian basis functions defined in stored basis shells</entry>
+					</row>
+					<row>
+						<entry>nbasisshells</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of basis shells defined in the model</entry>
 					</row>
 					<row>
 						<entry>nbonds</entry>
@@ -227,7 +245,7 @@
 			</tgroup>
 		</table>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Model type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Model Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -308,6 +326,11 @@
 						<entry>Create a new atom in the model, in fractional coordinates. See the <link linkend="command.ref.newatomfrac">newatomfrac</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>newbasisshell ( atom|int <emphasis>i</emphasis>, string <emphasis>type</emphasis> )</entry>
+						<entry><link linkend="command.types.basisshell">basisshell</link></entry>
+						<entry>Create a new basis shell definition in the model, centred on the specified atom/id, and of the given shell type. See the <link linkend="command.ref.newbasisshell">newbasisshell</link> command for more details.</entry>
+					</row>
+					<row>
 						<entry>newbond ( atom|int <emphasis>i</emphasis>, atom|int <emphasis>j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
 						<entry><link linkend="command.types.bond">bond</link></entry>
 						<entry>Create a new bond between atoms in the model. See the <link linkend="command.ref.newbond">newbond</link> command for more details.</entry>
@@ -316,6 +339,11 @@
 						<entry>newbondid ( int <emphasis>id_i</emphasis>, int <emphasis>id_j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
 						<entry><link linkend="command.types.bond">bond</link></entry>
 						<entry>Create a new bond between atom IDs in the model. See the <link linkend="command.ref.newbondid">newbondid</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>neweigenvector ( int <emphasis>size</emphasis> = (auto) )</entry>
+						<entry><link linkend="command.types.eigenvector">eigenvector</link></entry>
+						<entry>Create a new eigenvector in the model of the specified size. If the size is not specified, the vector length is set to match the number of cartesian basis functions store with the current basis shell definitions in the model. See the <link linkend="command.ref.neweigenvector">neweigenvector</link> command for more details.</entry>
 					</row>
 					<row>
 						<entry>newglyph ( string <emphasis>style</emphasis>, string <emphasis>options = ""</emphasis> )</entry>

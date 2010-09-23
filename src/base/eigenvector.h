@@ -46,6 +46,8 @@ class Eigenvector
 	double *eigenvector_;
 	// Eigenvalue
 	double eigenvalue_;
+	// Occupancy
+	double occupancy_;
 
 	public:
 	// Initialise to be specified size
@@ -66,6 +68,10 @@ class Eigenvector
 	void setEigenvalue(double d);
 	// Return eigenvalue
 	double eigenvalue();
+	// Set occupancy
+	void setOccupancy(double d);
+	// Return occupancy
+	double occupancy();
 };
 
 #endif

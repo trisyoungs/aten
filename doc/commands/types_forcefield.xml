@@ -1,8 +1,8 @@
-	<section id="command.types.forcefield"><title>Forcefield</title>
+	<section id="command.types.forcefield"><title>Forcefield Type</title>
 		
 		<indexterm zone="command.types.forcefield"><primary>types</primary><secondary>forcefield</secondary></indexterm>	
 	
-		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -35,7 +35,7 @@
 			</tgroup>
 		</table>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Forcefield Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

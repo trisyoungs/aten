@@ -90,6 +90,8 @@ class BasisShell
 	void setType(BasisShellType bft);
 	// Return number of related cartesian functions, based on shell type
 	int nCartesianFunctions();
+	// Return name of n'th cartesian function associated with shell
+	const char *cartesianFunctionName(int n);
 	// Return basis function type
 	BasisShellType type() const;
 	// Add new primitive to shell

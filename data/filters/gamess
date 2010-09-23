@@ -27,25 +27,22 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 
 	# Now search for sets of coordinate
 	nstructures = 0;
-	while (!eof())
+	# Lines containing 'COORDINATES OF ALL ATOMS ARE' are the beginning of coordinate sections
+	while (find("COORDINATES OF ALL ATOMS ARE"))
 	{
-		# Lines containing 'COORDINATES OF ALL ATOMS ARE' are the beginning of coordinate sections
-		if (find("COORDINATES OF ALL ATOMS ARE"))
+		# Found a set of coordinates. Skip 2 lines and then read coordinates
+		nstructures++;
+		skipline(2);
+		writevarf(name, "Frame %i", nstructures);
+		addframe(name);
+		for (n=1; n<=natoms; ++n)
 		{
-			# Found a set of coordinates. Skip 2 lines and then read coordinates
-			nstructures++;
-			skipline(2);
-			writevarf(name, "Frame %i", nstructures);
-			addframe(name);
-			for (n=1; n<=natoms; ++n)
-			{
-				readline(e,discard,rx,ry,rz);
-				newatom(e,rx,ry,rz);
-			}
-			# Recalculate bonding
-			rebond();
-			finaliseframe();
+			readline(e,discard,rx,ry,rz);
+			newatom(e,rx,ry,rz);
 		}
+		# Recalculate bonding
+		rebond();
+		finaliseframe();
 	}
 
 	# Now, copy the contents of the current (i.e. last) frame, and paste it into the parent model

@@ -191,7 +191,11 @@ streampos LineParser::tellg() const
 // Seek position in file
 void LineParser::seekg(streampos pos)
 {
-	if (file_ != NULL) file_->seekg(pos);
+	if (file_ != NULL)
+	{
+		if (file_->eof()) file_->clear();
+		file_->seekg(pos);
+	}
 	else printf("Warning: LineParser tried to seekg() on a non-existent file.\n");
 }
 
@@ -244,13 +248,13 @@ int LineParser::readLine(bool closeoneof)
 	msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 	if (file_->eof())
 	{
-		if (closeoneof) closeFile();
+// 		if (closeoneof) closeFile();
 		msg.exit("LineParser::readLine");
 		return -1;
 	}
 	if (file_->fail())
 	{
-		if (closeoneof) closeFile();
+// 		if (closeoneof) closeFile();
 		msg.exit("LineParser::readLine");
 		return 1;
 	}
@@ -740,10 +744,7 @@ bool LineParser::getCharsDelim(Dnchar *source, Dnchar *destarg)
 	// Store the result in the desired destination
 	if (destarg != NULL) *destarg = tempArg_;
 	// Trim characters from source string
-	printf("Number of chars = %i\n", pos);
-	printf("Size of original string = %i\n", source->length());
 	source->eraseStart(pos);
-	printf("Size of trimmed string = %i\n", source->length());
 	msg.exit("LineParser::getCharsDelim(Dnchar,Dnchar)");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
@@ -776,12 +777,12 @@ const char *LineParser::getChars(int nchars, bool skipeol)
 	tempArg_[i] = '\0';
 	if (file_->eof())
 	{
-		closeFile();
+// 		closeFile();
 		return NULL;
 	}
 	if (file_->fail())
 	{
-		closeFile();
+// 		closeFile();
 		return NULL;
 	}
 	return tempArg_;
@@ -792,7 +793,7 @@ void LineParser::skipChars(int nchars)
 {
 	if (nchars == 0) return;
 	file_->ignore(nchars);
-	if (file_->eof() || file_->fail()) closeFile();
+// 	if (file_->eof() || file_->fail()) closeFile();
 }
 
 // Return an integer value from reading 'n' chars of an (unformatted) input file
@@ -834,12 +835,12 @@ int LineParser::getIntegerArray(int *array, int count)
 	file_->read((char*) array, count*sizeof(int));
 	if (file_->eof())
 	{
-		closeFile();
+// 		closeFile();
 		return -1;
 	}
 	if (file_->fail())
 	{
-		closeFile();
+// 		closeFile();
 		return 0;
 	}
 	return 1;
@@ -878,12 +879,12 @@ int LineParser::getDoubleArray(double *array, int count)
 	file_->read((char*) array, count*sizeof(double));
 	if (file_->eof())
 	{
-		closeFile();
+// 		closeFile();
 		return -1;
 	}
 	if (file_->fail())
 	{
-		closeFile();
+// 		closeFile();
 		return 0;
 	}
 	return 1;

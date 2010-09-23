@@ -1111,6 +1111,8 @@ class Model
 	Eigenvector *eigenvector(int n);
 	// Return total number of defined eigenvectors
 	int nEigenvectors();
+	// Return density of nth eigenvalue at given coordinates
+	double eigenvectorDensityAt(int id, Vec3<double> v);
 };
 
 #endif

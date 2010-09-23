@@ -41,7 +41,7 @@ class EigenvectorVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Name, Size, Vector, nAccessors };
+        enum Accessors { Eigenvalue, Name, Occupancy, Size, Vector, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

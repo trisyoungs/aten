@@ -1,10 +1,10 @@
-	<section id="command.types.aten"><title>Aten</title>
+	<section id="command.types.aten"><title>Aten Type</title>
 		
 		<indexterm zone="command.types.aten"><primary>types</primary><secondary>aten</secondary></indexterm>
 	
 		<para>The 'master' class type, 'aten', is there to provide access to various other structures such as the list of loaded models, preferences, element data etc. It is available at all times from any command, script, or filter, and is always called 'aten'.</para>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Aten type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Aten Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -67,7 +67,7 @@
 			</tgroup>
 		</table>
 	
-		<table frame='all' pgwide='1' tocentry='1'><title>Bond type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Bond Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

@@ -337,7 +337,7 @@ void GuiQt::run()
 */
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's functinn)
-void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs)
+void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs, bool updateGrids)
 {
 	if (!doesExist_) return;
 	// Refresh aspects of main window
@@ -346,6 +346,8 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	if (updateAtoms) atomlistWindow->refresh();
 	// Update contents of the glyph list
 	if (updateGlyphs) glyphsWindow->refresh();
+	// Update contents of the grid window
+	if (updateGrids) gridsWindow->refresh();
 	// Update selection window
 	selectWindow->refresh();
 	// Update the contents of the cell page

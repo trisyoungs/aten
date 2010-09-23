@@ -33,6 +33,11 @@
 					<entry>4184.0</entry>
 				</row>
 				<row>
+					<entry>K</entry>
+					<entry>Kelvin (K)</entry>
+					<entry>1.0 / (503.2166 / 4184.0)</entry>
+				</row>
+				<row>
 					<entry>ev</entry>
 					<entry>Electronvolts per mole (eV/mol)</entry>
 					<entry>96485.14925</entry>

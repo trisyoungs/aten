@@ -1,0 +1,46 @@
+<section id="command.groups.mo"><title>Molecular Orbital Commands</title>
+	
+	<para>Store and manipulate molecular orbital data.</para>
+	
+	<section id="command.ref.newbasisshell"><title>newbasisshell</title>
+		<indexterm><primary>commands</primary><secondary>newbasisshell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>basisshell <function>newbasisshell</function></funcdef>
+				<paramdef>atom|int <parameter>id</parameter></paramdef>
+				<paramdef>string <parameter>type</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adds a new basis shell definition to the current model, returning the generated structure. The atomic centre on which the basis function exists must be provided either as an integer or an atom pointer (from which the integer ID is extracter). The type of the basis shell should correspond to one listed in <link linkend="enums.basisshelltype">basis shell types</link>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+basisshell = newbasisshell(15, &quot;D&quot;);
+		</synopsis>
+		<para>creates a new D-orbital shell centred on atom 15.</para>
+	
+	</section>
+	
+	<section id="command.ref.neweigenvector"><title>neweigenvector</title>
+		<indexterm><primary>commands</primary><secondary>neweigenvector</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>eigenvector <function>neweigenvector</function></funcdef>
+				<paramdef>int <parameter>size</parameter> = (auto)</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Adds a new, empty eigenvector to the current model. If the <emphasis>size</emphasis> argument is given the eigenvector array will contain this many elements. Otherwise, the size of the array is determined by the total number of cartesian basis functions implied by the current basis shell definitions of the model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+eigenvector = neweigenvector(180);
+		</synopsis>
+		<para>creates a new eigenvector which will contain 180 coefficients.</para>
+	
+	</section>
+	
+</section>

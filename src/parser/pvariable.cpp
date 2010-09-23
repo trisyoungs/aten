@@ -193,7 +193,7 @@ bool PointerArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	rv.set( returnType_, pointerArrayData_[arrayindex] );
-	printf("Executed :: '%s'\n", rv.info());
+// 	printf("Executed :: '%s'\n", rv.info());
 	return TRUE;
 }
 

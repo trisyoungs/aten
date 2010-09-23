@@ -975,7 +975,7 @@ CommandData Command::data[Command::nCommands] = {
 		"Show all atoms in the current model" },
 
 	// MO Definnition commands
-	{ "newbasisfunction",	"AS",		VTypes::BasisShellData,
+	{ "newbasisshell",	"AS",		VTypes::BasisShellData,
 		"atom|int id, string type",
 		"Adds a new basis shell definition with the specified type, centred on the specified atom" },
 	{ "neweigenvector",	"n",		VTypes::EigenvectorData,

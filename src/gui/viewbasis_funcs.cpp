@@ -39,19 +39,20 @@ AtenViewBasis::~AtenViewBasis()
 
 void AtenViewBasis::showWindow(Model *m)
 {
-	// Update contents
+	// Clear old contents
 	ui.BasisTable->clear();
+	ui.BasisTable->setColumnCount(10);
+	ui.BasisTable->setHorizontalHeaderLabels(QStringList() << "Atom" << "Shell" << "Type" << "Exponent" << "Coefficients" << " " << " " << " " << " " << " " );
 	// Check model pointer
 	if (m == NULL) return;
-	printf("lkdjflkjsdkfjdskl\n");
 	// Determine total row count
 	BasisShell *bas;
 	BasisPrimitive *prim;
-	int row = 0, shell, lastid = -1, n;
+	int row = 0, shell, lastid = -1, n, ncartesians = 0;
+	Dnchar text;
 	for (bas = m->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
 	ui.BasisTable->setRowCount(row);
-	ui.BasisTable->setColumnCount(10);
-	printf("TOtal row count = %i\n", row);
+	ui.BasisShellsLabel->setText(itoa(m->nBasisShells()));
 	// Populate table
 	QTableWidgetItem *tabitem;
 	row = 0;
@@ -59,12 +60,14 @@ void AtenViewBasis::showWindow(Model *m)
 	for (bas = m->basisShells(); bas != NULL; bas = bas->next)
 	{
 		++shell;
+		ncartesians += bas->nCartesianFunctions();
 		// Create atom id item?
 		if (lastid != bas->atomId())
 		{
 			lastid = bas->atomId();
 			tabitem = new QTableWidgetItem();
-			tabitem->setText(itoa(lastid+1));
+			text.print("%i (%s)\n", lastid+1, m->atom(lastid) != NULL ? elements().symbol(m->atom(lastid)) : "NULL");
+			tabitem->setText(text.get());
 			ui.BasisTable->setItem(row, AtenViewBasis::AtomIdColumn, tabitem);
 		}
 		// Add in shell data
@@ -91,6 +94,7 @@ void AtenViewBasis::showWindow(Model *m)
 			row++;
 		}
 	}
+	ui.BasisCartesiansLabel->setText(itoa(ncartesians));
 	// Resize columns
 	for (n=0; n<AtenViewBasis::nColumns; ++n) ui.BasisTable->resizeColumnToContents(n);
 	show();
@@ -98,5 +102,6 @@ void AtenViewBasis::showWindow(Model *m)
 
 void AtenViewBasis::dialogFinished(int result)
 {
+	accept();
 }
 

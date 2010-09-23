@@ -43,9 +43,12 @@
 	<!ENTITY commandoverview SYSTEM "commands/commandoverview.xml">
 	<!ENTITY typesaten SYSTEM "commands/types_aten.xml">
 	<!ENTITY typesatom SYSTEM "commands/types_atom.xml">
+	<!ENTITY typesbasisprimitive SYSTEM "commands/types_basisprimitive.xml">
+	<!ENTITY typesbasisshell SYSTEM "commands/types_basisshell.xml">
 	<!ENTITY typesbond SYSTEM "commands/types_bond.xml">
 	<!ENTITY typesbound SYSTEM "commands/types_bound.xml">
 	<!ENTITY typescell SYSTEM "commands/types_cell.xml">
+	<!ENTITY typeseigenvector SYSTEM "commands/types_eigenvector.xml">
 	<!ENTITY typeselement SYSTEM "commands/types_element.xml">
 	<!ENTITY typesffatom SYSTEM "commands/types_ffatom.xml">
 	<!ENTITY typesffbound SYSTEM "commands/types_ffbound.xml">
@@ -80,6 +83,7 @@
 	<!ENTITY commandmeasure SYSTEM "commands/measure.xml">
 	<!ENTITY commandmessaging SYSTEM "commands/messaging.xml">
 	<!ENTITY commandminimiser SYSTEM "commands/minimiser.xml">
+	<!ENTITY commandmo SYSTEM "commands/mo.xml">
 	<!ENTITY commandmodel SYSTEM "commands/model.xml">
 	<!ENTITY commandmontecarlo SYSTEM "commands/montecarlo.xml">
 	<!ENTITY commandpattern SYSTEM "commands/pattern.xml">
@@ -114,6 +118,7 @@
 	<!ENTITY methodrebond SYSTEM "methods/rebond.xml">
 	<!ENTITY methodliterature SYSTEM "methods/literature.xml">
 	<!-- Enums -->
+	<!ENTITY basisshelltypes SYSTEM "enums/basisshelltypes.xml">
 	<!ENTITY bondtypes SYSTEM "enums/bondtypes.xml">
 	<!ENTITY celltypes SYSTEM "enums/celltypes.xml">
 	<!ENTITY colourschemes SYSTEM "enums/colourschemes.xml">
@@ -262,10 +267,13 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	
 			&typesaten;
 			&typesatom;
+			&typesbasisprimitive;
+			&typesbasisshell;
 			&typesbond;
 			&typesbound;
 			&typescell;
 			&typeselement;
+			&typeseigenvector;
 			&typesffatom;
 			&typesffbound;
 			&typesforcefield;
@@ -301,6 +309,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&commandmeasure;
 			&commandmessaging;
 			&commandminimiser;
+			&commandmo;
 			&commandmodel;
 			&commandmontecarlo;
 			&commandpattern;
@@ -356,6 +365,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 	<!-- Enums -->
 	<chapter id="enums"><title>Enumerations</title>
 		<para>The following tables list sets of keywords relevant to various data (e.g. bond types), to be used when setting or checking such values.</para>
+		&basisshelltypes;
 		&bondtypes;
 		&celltypes;
 		&colourschemes;

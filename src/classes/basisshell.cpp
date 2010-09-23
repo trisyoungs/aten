@@ -23,7 +23,7 @@
 #include "base/sysfunc.h"
 
 // Basis Function Types
-const char *BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "s", "l", "p", "d", "f" };
+const char *BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "none", "s", "l", "p", "d", "f" };
 BasisShell::BasisShellType BasisShell::basisShellType(const char *s, bool reporterror)
 {
 	BasisShell::BasisShellType bft = (BasisShell::BasisShellType) enumSearch("basis shell type", BasisShell::nBasisShellTypes, BasisShellTypeKeywords, s, reporterror);
@@ -135,12 +135,48 @@ int BasisShell::nCartesianFunctions()
 			return 3;
 			break;
 		case (BasisShell::DShellType):
-			return 6;
+			return 5;
 			break;
 		case (BasisShell::FShellType):
-			return 999;
+			return 7;
 			break;
 	}
+	return -1;
+}
+
+// Return name of cartesian function
+const char *BasisShell::cartesianFunctionName(int id)
+{
+	static const char *pshell[3] = { "P(X)", "P(Y)", "P(Z)" };
+	static const char *lshell[4] = { "L(S)", "L(PX)", "L(PY)", "L(PZ)" };
+	static const char *dshell[5] = { "D(Z2)", "D(XZ)", "D(YZ)", "D(XY)", "D(X2-Y2)" };
+	static const char *fshell[7] = { "F(Z3)", "F(XZ2)", "F(YZ2)", "F(XYZ)", "FZ(X2-Y2)", "FX(X2-3Y2)", "FY(3Z2-Y2)" };
+	switch (type_)
+	{
+		case (BasisShell::NoType):
+			break;
+		case (BasisShell::SShellType):
+			if (id == 0) return "S";
+			else printf("Cartesian function ID is out of range for an S shell.\n", id);
+			break;
+		case (BasisShell::SPShellType):
+			if ((id < 0) || (id > 3)) printf("Cartesian function ID is out of range for an L shell.\n", id);
+			else return lshell[id];
+			break;
+		case (BasisShell::PShellType):
+			if ((id < 0) || (id > 2)) printf("Cartesian function ID is out of range for a P shell.\n", id);
+			else return pshell[id];
+			break;
+		case (BasisShell::DShellType):
+			if ((id < 0) || (id > 4)) printf("Cartesian function ID is out of range for a D shell.\n", id);
+			else return dshell[id];
+			break;
+		case (BasisShell::FShellType):
+			if ((id < 0) || (id > 6)) printf("Cartesian function ID is out of range for a F shell.\n", id);
+			else return fshell[id];
+			break;
+	}
+	return "NONAME";
 }
 
 // Return basis function type
