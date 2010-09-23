@@ -70,3 +70,31 @@ int Model::nEigenvectors()
 {
 	return eigenvectors_.nItems();
 }
+
+// Return density of nth eigenvalue at given coordinates
+double Model::eigenvectorDensityAt(int id, Vec3<double> v)
+{
+	msg.enter("Model::eigenvectorDensityAt");
+	int n, i = 0;
+	double result = 0.0;
+	// Grab eigenvector pointer
+	if ((id < 0) || (id >= eigenvectors_.nItems()))
+	{
+		msg.print("Illegal eigenvector ID '%i' given to Model::eigenvectorDensityAt.\n", id);
+		msg.exit("Model::eigenvectorDensityAt");
+		return 0.0;
+	}
+	Eigenvector *evec = eigenvectors_[id];
+	double *eigenvec = evec->eigenvector();
+	for (BasisShell *bas = basisShells_.first(); bas != NULL; bas = bas->next)
+	{
+		// Cycle over primitives
+		for (n = 0; n < bas->nCartesianFunctions(); ++n)
+		{
+// 			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? elements().symbol(m->atom(bas->atomId())) : "NULL");
+			i++;
+		}
+	}
+	msg.exit("Model::eigenvectorDensityAt");
+	return result;
+}

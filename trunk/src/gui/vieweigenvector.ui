@@ -64,11 +64,6 @@
    </property>
    <column>
     <property name="text" >
-     <string>Id</string>
-    </property>
-   </column>
-   <column>
-    <property name="text" >
      <string>AtomId</string>
     </property>
    </column>
@@ -92,5 +87,38 @@
  <resources>
   <include location="icons.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ViewEigenvectorDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>258</x>
+     <y>282</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>185</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ViewEigenvectorDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>134</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>82</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

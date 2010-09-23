@@ -61,7 +61,7 @@ class Prefs
 	static const char *penColourName(PenColour);
 	static PenColour penColour(const char *name, bool reporterror = 0);
 	// Energy Units
-	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree, nEnergyUnits };
+	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
 	static EnergyUnit energyUnit(const char *name, bool reporterror = 0);
 	// Density calculation units

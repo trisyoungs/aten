@@ -289,7 +289,6 @@ int generatevdw(ffatom term)
 
 int generatebond(ffbound newterm, atom i, atom j)
 {
-	printf("Generating bond....\n");
 	double k, rij, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
 	# Grab some oft-used data
 	ffatom fi = i.type;
@@ -314,7 +313,7 @@ int generatebond(ffbound newterm, atom i, atom j)
 	# In Aten, parameter order is { force constant, eq distance }, and the functional form is : U = 0.5 * k * (r - eq)**2   (same as UFF)
 	newterm.form = "harmonic";
 	newterm.data = { k, rij };
-	verbose("Generated harmonic bond information for %s-%s : k=%f, eq=%f\n", i.type.equivalent,j.type.equivalent, k, rij);
+	verbose("Generated harmonic bond information for %s-%s : k=%f, eq=%f\n", fi.equivalent,fj.equivalent, k, rij);
 	return 1;
 }
 
@@ -378,10 +377,11 @@ int generateangle(ffbound newterm, atom i, atom j, atom k)
 		# General nonlinear case:  U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
 		c2 = 1.0 / (4.0 * sin(theta)*sin(theta));
 		c1 = -4.0 * c2 * cos(theta);
-		c0 = c2 * 2.0 * cos(theta) * cos(theta) + 1.0;
+		c0 = c2 * (2.0 * cos(theta) * cos(theta) + 1.0);
 		newterm.form = "cos2";
 		newterm.data = { forcek, c0, c1, c2 };
 		printf("DEBUG: NONLIN : cos2 %f %f %f %f\n", forcek, c0, c1, c2);
+		verbose("Generated cos2 angle information for %s-%s-%s : k=%f, c0=%f, c1=%f, c2=%f\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek,c0,c1,c2);
 	}
 
 	# Setup terms for the specific case
@@ -390,6 +390,7 @@ int generateangle(ffbound newterm, atom i, atom j, atom k)
 		newterm.form = "cos";
 		newterm.data = { forcek/(n*n), n };
 		printf("DEBUG: SPECIFIC : cos %f %i \n", forcek, n);
+		verbose("Generated cos angle information for %s-%s-%s : k=%f (n=%i), eq=0.0\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek,n);
 	}
 	return 1;
 }

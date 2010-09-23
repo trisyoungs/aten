@@ -1,8 +1,8 @@
-	<section id="command.types.bound"><title>Bound</title>
+	<section id="command.types.bound"><title>Bound Type</title>
 	
 		<indexterm zone="command.types.bound"><primary>types</primary><secondary>bound</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Bound type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Bound Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

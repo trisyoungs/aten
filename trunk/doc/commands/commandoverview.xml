@@ -129,8 +129,6 @@ t = 40;
 		
 		<table frame='all' pgwide='1' tocentry='0'><title>Built-in Constants</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
-				<!-- <colspec colname='command'/> -->
-				<!-- <colspec colname='function'/> -->
 				<thead>
 					<row>
 						<entry>Name</entry>
@@ -139,6 +137,11 @@ t = 40;
 					</row>
 				</thead>
 				<tbody>
+					<row>
+						<entry>DEGRAD</entry>
+						<entry>double</entry>
+						<entry>57.295779578552</entry>
+					</row>
 					<row>
 						<entry>FALSE</entry>
 						<entry>int</entry>

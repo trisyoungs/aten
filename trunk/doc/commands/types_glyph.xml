@@ -2,7 +2,7 @@
 		
 		<indexterm zone="command.types.glyph"><primary>types</primary><secondary>glyph</secondary></indexterm>
 	
-		<table frame='all' pgwide='1' tocentry='1'><title>Glyph type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -65,7 +65,7 @@
 			</tgroup>
 		</table>
 
-		<table frame='all' pgwide='1' tocentry='1'><title>Glyph type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Glyph Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

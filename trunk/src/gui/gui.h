@@ -81,7 +81,7 @@ class GuiQt
 	*/
 	public:
 	// Refreshes all widgets to do with the model
-	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE, bool updateglyphs = TRUE);
+	void update(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE, bool updateGlyphs = TRUE, bool updateGrids = TRUE);
 	// Update statusbar
 	void updateStatusBar(bool clear = FALSE);
 

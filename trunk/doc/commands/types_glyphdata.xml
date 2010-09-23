@@ -1,8 +1,8 @@
-	<section id="command.types.glyphdata"><title>GlyphData</title>
+	<section id="command.types.glyphdata"><title>GlyphData Type</title>
 		
 		<indexterm zone="command.types.glyphdata"><primary>types</primary><secondary>glyphdata</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>GlyphData type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>GlyphData Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

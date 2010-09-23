@@ -138,7 +138,6 @@ bool Command::function_NextVariableArg(CommandNode *c, Bundle &obj, ReturnValue 
 	Dnchar source = c->argc(0);
 	Dnchar arg;
 	rv.set( c->parent()->parser()->getCharsDelim(&source, &arg) );
-	printf("COMMAND RESULT = %i\n", rv.asInteger());
 	ReturnValue argrv;
 	argrv.set(arg.get());
 	c->setArg(1, argrv);

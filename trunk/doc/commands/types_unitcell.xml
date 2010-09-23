@@ -1,8 +1,8 @@
-	<section id="command.types.unitcell"><title>UnitCell</title>
+	<section id="command.types.unitcell"><title>UnitCell Type</title>
 		
 		<indexterm zone="command.types.unitcell"><primary>types</primary><secondary>unitcell</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>UnitCell type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>UnitCell Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

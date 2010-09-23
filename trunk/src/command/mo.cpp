@@ -31,7 +31,7 @@ bool Command::function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &r
 	BasisShell::BasisShellType bft = BasisShell::basisShellType(c->argc(1), TRUE);
 	if (bft == BasisShell::nBasisShellTypes) return FALSE;
 	BasisShell *bf = obj.rs->addBasisShell();
-	bf->setAtomId(c->argi(0));
+	bf->setAtomId(c->argi(0)-1);
 	bf->setType(bft);
 	rv.set(VTypes::BasisShellData, bf);
 	return TRUE;

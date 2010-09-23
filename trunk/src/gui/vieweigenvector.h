@@ -35,7 +35,7 @@ class AtenViewEigenvector : public QDialog
 
 	public:
 	// Table columns
-	enum TableColumns { IdColumn, AtomIdColumn, ShellColumn, TypeColumn, CoefficientColumn, nColumns };
+	enum TableColumns { AtomColumn, ShellColumn, TypeColumn, CoefficientColumn, nColumns };
 
 	/*
 	// Window Functions

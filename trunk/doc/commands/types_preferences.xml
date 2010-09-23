@@ -1,8 +1,8 @@
-	<section id="command.types.preferences"><title>Prefs</title>
+	<section id="command.types.preferences"><title>Prefs Type</title>
 		
 		<indexterm zone="command.types.preferences"><primary>types</primary><secondary>prefs</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Prefs type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Prefs Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

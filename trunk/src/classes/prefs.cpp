@@ -128,8 +128,8 @@ Prefs::DensityUnit Prefs::densityUnit(const char *s, bool reporterror)
 }
 
 // Energy Units
-const char *EnergyUnitFormatted[Prefs::nEnergyUnits] = { "J/mol", "kJ/mol", "cal/mol", "kcal/mol", "eV/mol", "Ha/mol" };
-const char *EnergyUnitKeywords[Prefs::nEnergyUnits] = { "j", "kj", "cal", "kcal", "ev", "ha" };
+const char *EnergyUnitFormatted[Prefs::nEnergyUnits] = { "J/mol", "kJ/mol", "cal/mol", "kcal/mol", "K", "eV/mol", "Ha/mol" };
+const char *EnergyUnitKeywords[Prefs::nEnergyUnits] = { "j", "kj", "cal", "kcal", "K", "ev", "ha" };
 const char *Prefs::energyUnit(Prefs::EnergyUnit i)
 {
 	return EnergyUnitKeywords[i];
@@ -285,6 +285,7 @@ Prefs::Prefs()
 	energyConversions_[Prefs::KiloJoules] = 1000.0;
 	energyConversions_[Prefs::Calories] = 4.184;
 	energyConversions_[Prefs::KiloCalories] = 4184.0;
+	energyConversions_[Prefs::Kelvin] = 1.0 / (503.2166 / 4184.0);
 	energyConversions_[Prefs::ElectronVolts] = 96485.14925;
 	energyConversions_[Prefs::Hartree] = 2625494.616;
 	energyUnit_ = Prefs::KiloJoules;

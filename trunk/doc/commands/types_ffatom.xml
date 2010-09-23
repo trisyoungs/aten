@@ -1,8 +1,8 @@
-	<section id="command.types.ffatom"><title>FFAtom</title>
+	<section id="command.types.ffatom"><title>FFAtom Type</title>
 		
 		<indexterm zone="command.types.ffatom"><primary>types</primary><secondary>ffatom</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>
@@ -83,7 +83,7 @@
 			</tgroup>
 		</table>
 
-		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom type functions</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>FFAtom Type Functions</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

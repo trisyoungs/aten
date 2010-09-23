@@ -1,8 +1,8 @@
-	<section id="command.types.pattern"><title>Pattern</title>
+	<section id="command.types.pattern"><title>Pattern Type</title>
 		
 		<indexterm zone="command.types.pattern"><primary>types</primary><secondary>pattern</secondary></indexterm>
 		
-		<table frame='all' pgwide='1' tocentry='1'><title>Pattern type members</title>
+		<table frame='all' pgwide='1' tocentry='1'><title>Pattern Type Members</title>
 			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
 				<thead>
 					<row>

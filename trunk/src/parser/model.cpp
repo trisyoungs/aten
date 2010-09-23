@@ -73,8 +73,11 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "nangles",		VTypes::IntegerData,		0, TRUE },
 	{ "natoms",		VTypes::IntegerData,		0, TRUE },
+	{ "nbasiscartesians",	VTypes::IntegerData,		0, TRUE },
+	{ "nbasisshells",	VTypes::IntegerData,		0, TRUE },
 	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
 	{ "ndistances",		VTypes::IntegerData,		0, TRUE },
+	{ "neigenvalues",	VTypes::IntegerData,		0, TRUE },
 	{ "nffangles",		VTypes::IntegerData,		0, TRUE },
 	{ "nffbonds",		VTypes::IntegerData,		0, TRUE },
 	{ "nfftorsions",	VTypes::IntegerData,		0, TRUE },
@@ -93,7 +96,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
-	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::syntax(Command::AddHydrogen) },
+	{ "addhydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::argText(Command::AddHydrogen) },
 	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
 	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
 	{ "clearbonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
@@ -368,11 +371,20 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NAtoms):
 			rv.set(ptr->nAtoms());
 			break;
+		case (ModelVariable::NBasisCartesians):
+			rv.set(ptr->nCartesianBasisFunctions());
+			break;
+		case (ModelVariable::NBasisShells):
+			rv.set(ptr->nBasisShells());
+			break;
 		case (ModelVariable::NBonds):
 			rv.set(ptr->nBonds());
 			break;
- 		case (ModelVariable::NDistances):
+		case (ModelVariable::NDistances):
 			rv.set(ptr->nDistanceMeasurements());
+			break;
+ 		case (ModelVariable::NEigenvectors):
+			rv.set(ptr->nEigenvectors());
 			break;
 		case (ModelVariable::NFFAngles):
 			rv.set(ptr->nForcefieldAngles());

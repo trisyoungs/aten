@@ -41,6 +41,7 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 {
 	// Update contents
 	ui.EigenvectorTable->clear();
+	ui.EigenvectorTable->setHorizontalHeaderLabels(QStringList() << "Atom" << "Shell" << "Type" << "Coefficient" );
 	// Check model pointer and eigenvector ID specified
 	if (m == NULL) return;
 	if ((id < 0) || (id >= m->nEigenvectors()))
@@ -49,13 +50,13 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 		return;
 	}
 	// Determine row count
-	int row, shell, n;
+	int row = 0, shell = 0, n;
 	BasisShell *bas;
 	BasisPrimitive *prim;
-	for (bas = m->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
-	ui.EigenvectorTable->setRowCount(row);
+	ui.EigenvectorTable->setRowCount(m->nCartesianBasisFunctions());
 	// Loop over basis shells and their primitives....
 	QTableWidgetItem *tabitem;
+	Dnchar text;
 	row = 0;
 	Eigenvector *evec = m->eigenvector(id); 
 	double *eigenvec = evec->eigenvector();
@@ -63,37 +64,33 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 	{
 		++shell;
 		// Cycle over primitives
-		n = 0;
-		for (prim = bas->primitives(); prim != NULL; prim = prim->next)
+		for (n = 0; n < bas->nCartesianFunctions(); ++n)
 		{
-			for (n = 0; n < bas->nCartesianFunctions(); ++n)
-			{
-				// ID column
-				tabitem = new QTableWidgetItem();
-				tabitem->setText(itoa(row+1));
-				ui.EigenvectorTable->setItem(row, AtenViewEigenvector::IdColumn, tabitem);
-				// Atom ID column
-				tabitem = new QTableWidgetItem();
-				tabitem->setText(itoa(bas->atomId()+1));
-				ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomIdColumn, tabitem);
-				// Add in shell data
-				tabitem = new QTableWidgetItem();
-				tabitem->setText(itoa(shell));
-				ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
-				tabitem = new QTableWidgetItem();
-				tabitem->setText(ftoa(eigenvec[row]));
-				ui.EigenvectorTable->setItem(row, AtenViewEigenvector::CoefficientColumn+n, tabitem);
-			//	tabitem = new QTableWidgetItem();
-			//	tabitem->setText(BasisShell::basisShellType(bas->type()));
-			//	ui.EigenvectorTable->setItem(row, AtenViewEigenvector::TypeColumn, tabitem);
-				row++;
-			}
+			// Atom column
+			tabitem = new QTableWidgetItem();
+			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? elements().symbol(m->atom(bas->atomId())) : "NULL");
+			tabitem->setText(text.get());
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
+			// Add in shell data
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(itoa(shell));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(bas->cartesianFunctionName(n));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::TypeColumn, tabitem);
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(ftoa(eigenvec[row]));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::CoefficientColumn, tabitem);
+			row++;
 		}
 	}
+	// Resize columns
+	for (n=0; n<AtenViewEigenvector::nColumns; ++n) ui.EigenvectorTable->resizeColumnToContents(n);
 	show();
 }
 
 void AtenViewEigenvector::dialogFinished(int result)
 {
+	accept();
 }
 

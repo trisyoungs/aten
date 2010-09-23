@@ -81,6 +81,7 @@ class AtenGrids : public QDialog
 	// Orbital Page
 	void on_ViewBasisButton_clicked(bool checked);
 	void on_ViewEigenvectorButton_clicked(bool checked);
+	void on_OrbitalCalculateButton_clicked(bool checked);
 	void on_OrbitalOriginXSpin_valueChanged(double d);
 	void on_OrbitalOriginYSpin_valueChanged(double d);
 	void on_OrbitalOriginZSpin_valueChanged(double d);

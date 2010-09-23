@@ -31,6 +31,7 @@ Eigenvector::Eigenvector()
 	// Private variables
 	size_ = -1;
 	eigenvector_ = NULL;
+	occupancy_ = 0.0;
 
 	// Public variables
 	prev = NULL;
@@ -47,7 +48,7 @@ void Eigenvector::initialise(int size)
 {
 	if (eigenvector_ != NULL)
 	{
-		printf("Warning - Eigenvector array alread exists...\n");
+		printf("Warning - Eigenvector array already exists...\n");
 		delete[] eigenvector_;
 	}
 	size_ = size;
@@ -90,7 +91,7 @@ double Eigenvector::value(int index)
 // Return array pointer
 double *Eigenvector::eigenvector()
 {
-	if (eigenvector_ == NULL) printf("Warning - Eigenvector array is not yet created.\n");
+	if (eigenvector_ == NULL) printf("Warning - Eigenvector array has not yet been created.\n");
 	return eigenvector_;
 }
 
@@ -104,4 +105,16 @@ void Eigenvector::setEigenvalue(double d)
 double Eigenvector::eigenvalue()
 {
 	return eigenvalue_;
+}
+
+// Set occupancy
+void Eigenvector::setOccupancy(double d)
+{
+	occupancy_ = d;
+}
+
+// Return occupancy
+double Eigenvector::occupancy()
+{
+	return occupancy_;
 }

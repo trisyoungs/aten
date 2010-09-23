@@ -52,7 +52,9 @@ EigenvectorVariable::~EigenvectorVariable()
 
 // Accessor data
 Accessor EigenvectorVariable::accessorData[EigenvectorVariable::nAccessors] = {
+	{ "eigenvalue",	VTypes::DoubleData,	0, FALSE },
 	{ "name",	VTypes::StringData,	0, FALSE },
+	{ "occupancy",	VTypes::DoubleData,	0, FALSE },
 	{ "size",	VTypes::IntegerData,	0, TRUE },
 	{ "vector",	VTypes::IntegerData,	-1, FALSE }
 };
@@ -156,6 +158,12 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 	}
 	if (result) switch (acc)
 	{
+		case (EigenvectorVariable::Eigenvalue):
+			rv.set(ptr->eigenvalue());
+			break;
+		case (EigenvectorVariable::Occupancy):
+			rv.set(ptr->occupancy());
+			break;
 		case (EigenvectorVariable::Name):
 			rv.set(ptr->name());
 			break;
@@ -245,8 +253,14 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 	}
 	if (result) switch (acc)
 	{
+		case (EigenvectorVariable::Eigenvalue):
+			ptr->setEigenvalue( newvalue.asDouble() );
+			break;
 		case (EigenvectorVariable::Name):
 			ptr->setName( newvalue.asString() );
+			break;
+		case (EigenvectorVariable::Occupancy):
+			ptr->setOccupancy( newvalue.asDouble() );
 			break;
 		case (EigenvectorVariable::Size):
 			ptr->initialise( newvalue.asInteger() );

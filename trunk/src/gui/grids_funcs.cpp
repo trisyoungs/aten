@@ -91,20 +91,19 @@ void AtenGrids::refresh()
 	for (Eigenvector *vec = m->eigenvectors(); vec != NULL; vec = vec->next)
 	{
 		tabitem = new QTableWidgetItem();
-		tabitem->setText(itoa(++count));
+		tabitem->setText(vec->name());
 		ui.OrbitalTable->setItem(count, 0, tabitem);
 		tabitem = new QTableWidgetItem();
-		tabitem->setText(vec->name());
+		tabitem->setText(ftoa(vec->occupancy()));
 		ui.OrbitalTable->setItem(count, 1, tabitem);
 		tabitem = new QTableWidgetItem();
 		tabitem->setText(ftoa(vec->eigenvalue()));
 		ui.OrbitalTable->setItem(count, 2, tabitem);
+		count++;
 	}
 	ui.OrbitalTable->resizeColumnToContents(0);
 	ui.OrbitalTable->resizeColumnToContents(1);
 	ui.OrbitalTable->resizeColumnToContents(2);
-	// Select the first item
-	if (m->nEigenvectors() != 0) ui.OrbitalTable->setCurrentItem(0,0);
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
 }
@@ -536,8 +535,49 @@ void AtenGrids::on_ViewBasisButton_clicked(bool checked)
 void AtenGrids::on_ViewEigenvectorButton_clicked(bool checked)
 {
 	int row = ui.OrbitalTable->currentRow();
-	if (row == -1) return;
+	if (row == -1) 
+	{
+		msg.print("No orbital selected!\n");
+		return;
+	}
 	gui.viewEigenvectorDialog->showWindow( aten.currentModelOrFrame(), row);
+}
+
+void AtenGrids::on_OrbitalCalculateButton_clicked(bool checked)
+{
+	int row = ui.OrbitalTable->currentRow();
+	if (row == -1)
+	{
+		msg.print("No orbital selected!\n");
+		return;
+	}
+	// Generate a new grid in the current model
+	Model *m = aten.currentModelOrFrame();
+	Grid *g = m->addGrid();
+	// Set origin
+	Vec3<double> origin(ui.OrbitalOriginXSpin->value(), ui.OrbitalOriginYSpin->value(), ui.OrbitalOriginZSpin->value());
+	g->setOrigin(origin);
+	// Initialise grid structure
+	int npoints = ui.OrbitalPointsSpin->value();
+	Vec3<int> iv(npoints, npoints, npoints);
+	g->initialise(Grid::RegularXYZData, iv);
+	double dx = ui.OrbitalSpacingSpin->value(); 
+	g->setAxes(dx);
+	// Generate gridpoints data
+	Vec3<double> v;
+	for (int i=0; i<npoints; ++i)
+	{
+		for (int j=0; j<npoints; ++j)
+		{
+			for (int k=0; k<npoints; ++k)
+			{
+				v.set(i,j,k);
+				v *= dx;
+				v += origin;
+				g->setData(i, j, k, m->eigenvectorDensityAt(row, v));
+			}
+		}
+	}
 }
 
 void AtenGrids::on_OrbitalOriginXSpin_valueChanged(double d)
