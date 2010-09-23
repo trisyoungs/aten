@@ -19,10 +19,10 @@
 			</thead>
 			<tbody>
 				<row>
-					<entry morerows='2'>Lennard-Jones 12-6</entry>
-					<entry morerows='2'>lj</entry>
-					<entry morerows='2'>3 (2)</entry>
-					<entry morerows='2'>
+					<entry morerows='1'>Lennard-Jones 12-6</entry>
+					<entry morerows='1'>lj</entry>
+					<entry morerows='1'>2 (2)</entry>
+					<entry morerows='1'>
 						<inlineequation>
 							<mml:math>
 								<mml:mrow>
@@ -44,7 +44,6 @@
 											<mml:mn>12</mml:mn>
 										</mml:msup>
 										<mml:mo>-</mml:mo>
-										<mml:mi>n</mml:mi>
 										<mml:msup>
 											<mml:mfenced>
 												<mml:mfrac>
@@ -78,23 +77,12 @@
 						Arithmetic
 					</entry>
 				</row>
-				<row>
-					<entry>
-						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
-					</entry>
-					<entry>
-						1.0
-					</entry>
-					<entry>
-						Arithmetic
-					</entry>
-				</row>
 
 				<row>
-					<entry morerows='2'>Lennard-Jones 12-6 (Geometric rules)</entry>
-					<entry morerows='2'>ljgeom</entry>
-					<entry morerows='2'>3 (2)</entry>
-					<entry morerows='2'>
+					<entry morerows='1'>Lennard-Jones 12-6 (Geometric rules)</entry>
+					<entry morerows='1'>ljgeom</entry>
+					<entry morerows='1'>2 (2)</entry>
+					<entry morerows='1'>
 						<inlineequation>
 							<mml:math>
 								<mml:mrow>
@@ -116,7 +104,6 @@
 								<mml:mn>12</mml:mn>
 							</mml:msup>
 							<mml:mo>-</mml:mo>
-							<mml:mi>n</mml:mi>
 							<mml:msup>
 								<mml:mfenced>
 									<mml:mfrac>
@@ -148,17 +135,6 @@
 					</entry>
 					<entry>
 						Geometric
-					</entry>
-				</row>
-				<row>
-					<entry>
-						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
-					</entry>
-					<entry>
-						1.0
-					</entry>
-					<entry>
-						Arithmetic
 					</entry>
 				</row>
 				
@@ -274,6 +250,81 @@
 						Geometric
 					</entry>
 				</row>
+
+				<row>
+					<entry morerows='2'>UFF Lennard-Jones 12-6</entry>
+					<entry morerows='2'>ufflj</entry>
+					<entry morerows='2'>3 (2)</entry>
+					<entry morerows='2'>
+						<inlineequation>
+							<mml:math>
+								<mml:mrow>
+									<mml:msub>
+										<mml:mi>U</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mo>=</mml:mo>
+									<mml:msub>
+										<mml:mi>D</mml:mi>
+										<mml:mi>ij</mml:mi>
+									</mml:msub>
+									<mml:mrow><mml:mo>(</mml:mo>
+										<mml:msup>
+										<mml:mrow><mml:mo>(</mml:mo>
+										<mml:mfrac>
+										<mml:mi>&sigma;</mml:mi>
+										<mml:mi>r</mml:mi>
+									</mml:mfrac>
+									<mml:mo>)</mml:mo></mml:mrow>
+								<mml:mn>12</mml:mn>
+							</mml:msup>
+							<mml:mo>-</mml:mo>
+							<mml:mi>n</mml:mi>
+							<mml:msup>
+								<mml:mfenced>
+									<mml:mfrac>
+										<mml:mi>&sigma;</mml:mi>
+										<mml:mi>r</mml:mi>
+									</mml:mfrac>
+								</mml:mfenced>
+								<mml:mn>6</mml:mn>
+							</mml:msup>
+							<mml:mo>)</mml:mo></mml:mrow>
+								</mml:mrow>
+							</mml:math>
+						</inlineequation>
+					</entry>
+					<entry>
+						<inlineequation><mml:math><mml:msub><mml:mi>D</mml:mi><mml:mi>ij</mml:mi></mml:msub></mml:math></inlineequation>
+					</entry>
+					<entry>
+					</entry>
+					<entry>
+						Geometric
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>&sigma;</mml:mi></mml:math></inlineequation>
+					</entry>
+					<entry>
+					</entry>
+					<entry>
+						Geometric
+					</entry>
+				</row>
+				<row>
+					<entry>
+						<inlineequation><mml:math><mml:mi>n</mml:mi></mml:math></inlineequation>
+					</entry>
+					<entry>
+						2.0
+					</entry>
+					<entry>
+						Arithmetic
+					</entry>
+				</row>
+				
 			
 				<row>
 					<entry morerows='2'>Buckingham exp6</entry>

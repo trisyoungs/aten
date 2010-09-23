@@ -117,7 +117,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 				if (nattempts == 1) stepsize *= 1.5;
 			}
 			else newEnergy = lineMinimise(srcmodel);
-
+// printf("StepSize = %f (%i)\n", stepsize, nattempts);
 			srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
 
 			// Calculate forces ready for next cycle
