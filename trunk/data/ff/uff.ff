@@ -276,14 +276,15 @@ function
 
 int generatevdw(ffatom term)
 {
-	double epsilon, sigma;
-	epsilon = term.datad("D");
+	double D, sigma;
+	D = term.datad("D");
 	sigma = term.datad("x");
 	# UFF functional form:  U = Dij * ( (r/rij)**12 - 2(r/rij)**6 )
-	# Aten functional form: U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
-	# Parameter order: epsilon, sigma, n
-	term.form = "lj";
-	#term.data 
+	# Aten functional form (ufflj) : U = Dij * [ (s/rij)**12 - n *(s/rij)**6 ]
+	# Parameter order: D, sigma, n
+	term.form = "ufflj";
+	term.data = { D, sigma, 2.0 };
+	verbose("Generated UFFlj VDW information for type %s : D=%f, x=%f\n", term.name, D, sigma);
 	return 1;
 }
 
