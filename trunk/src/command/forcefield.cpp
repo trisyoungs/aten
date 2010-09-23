@@ -321,6 +321,90 @@ bool Command::function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Generate (or return existing) bound parameters for specified angle interaction
+bool Command::function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
+	// Find named atoms in forcefield
+	Atom *atoms[3];
+	for (int i=0; i<3; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	// Check atom and associated type pointers
+	for (int i=0; i<3; ++i)
+	{
+		if (atoms[i] == NULL)
+		{
+			msg.print("Atom %i given to 'generateangle' is NULL.\n", i);
+			return FALSE;
+		}
+		if (atoms[i]->type() == NULL)
+		{
+			msg.print("Atom %i given to 'generateangle' has no forcefield atom assigned.\n", i);
+			return FALSE;
+		}
+	}
+	// Does a suitable definition already exist?
+	ForcefieldBound *ffb = obj.ff->findAngle(atoms[0]->type(), atoms[1]->type(), atoms[2]->type());
+	if (ffb == NULL) ffb = obj.ff->generateAngle(atoms[0], atoms[1], atoms[2]);
+	rv.set(VTypes::ForcefieldBoundData, ffb);
+	return (ffb == NULL ? FALSE : TRUE);
+}
+
+// Generate (or return existing) bound parameters for specified bond interaction
+bool Command::function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
+	// Find named atoms in forcefield
+	Atom *atoms[2];
+	for (int i=0; i<2; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	// Check atom and associated type pointers
+	for (int i=0; i<2; ++i)
+	{
+		if (atoms[i] == NULL)
+		{
+			msg.print("Atom %i given to 'generatebond' is NULL.\n", i);
+			return FALSE;
+		}
+		if (atoms[i]->type() == NULL)
+		{
+			msg.print("Atom %i given to 'generatebond' has no forcefield atom assigned.\n", i);
+			return FALSE;
+		}
+	}
+	// Does a suitable definition already exist?
+	ForcefieldBound *ffb = obj.ff->findBond(atoms[0]->type(), atoms[1]->type());
+	if (ffb == NULL) ffb = obj.ff->generateBond(atoms[0], atoms[1]);
+	rv.set(VTypes::ForcefieldBoundData, ffb);
+	return (ffb == NULL ? FALSE : TRUE);
+}
+
+// Generate (or return existing) bound parameters for specified torsion interaction
+bool Command::function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
+	// Find named atoms in forcefield
+	Atom *atoms[4];
+	for (int i=0; i<4; ++i) atoms[i] = (c->argType(i) == VTypes::AtomData ? (Atom*) c->argp(i, VTypes::AtomData) : obj.rs->atom(c->argi(i)-1));
+	// Check atom and associated type pointers
+	for (int i=0; i<4; ++i)
+	{
+		if (atoms[i] == NULL)
+		{
+			msg.print("Atom %i given to 'generatetorsion' is NULL.\n", i);
+			return FALSE;
+		}
+		if (atoms[i]->type() == NULL)
+		{
+			msg.print("Atom %i given to 'generatetorsion' has no forcefield atom assigned.\n", i);
+			return FALSE;
+		}
+	}
+	// Does a suitable definition already exist?
+	ForcefieldBound *ffb = obj.ff->findTorsion(atoms[0]->type(), atoms[1]->type(), atoms[2]->type(), atoms[3]->type());
+	if (ffb == NULL) ffb = obj.ff->generateTorsion(atoms[0], atoms[1], atoms[2], atoms[3]);
+	rv.set(VTypes::ForcefieldBoundData, ffb);
+	return (ffb == NULL ? FALSE : TRUE);
+}
+
 // Get combination rule in use for VDW parameter
 bool Command::function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

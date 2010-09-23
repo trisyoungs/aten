@@ -279,6 +279,9 @@ class Command
 		FinaliseFF,
 		FixType,
 		FreeType,
+		GenerateAngle,
+		GenerateBond,
+		GenerateTorsion,
 		GetCombinationRule,
 		GetFF,
 		InterDef,
@@ -742,6 +745,9 @@ class Command
 	static bool function_FinaliseFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FixType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FreeType(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);

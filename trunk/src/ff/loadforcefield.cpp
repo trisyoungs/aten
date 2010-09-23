@@ -491,18 +491,18 @@ bool Forcefield::readFunctions()
 	// Now, attempt to parser the lines we just read in to create functions....
 	bool result = generatorFunctions_.generateFromStringList(stringList.first(), "GeneratorFuncs", TRUE);
 	// Search for functions we recognise
-	vdwGenerator_ = generatorFunctions_.findGlobalFunction("generatevdw");
-	if (vdwGenerator_) msg.print("\t: Found 'generatevdw' function.\n");
-	else msg.print("\t: Warning - No 'generatevdw' function defined.\n");
-	bondGenerator_ = generatorFunctions_.findGlobalFunction("generatebond");
-	if (bondGenerator_) msg.print("\t: Found 'generatebond' function.\n");
-	else msg.print("\t: Warning - No 'generatebond' function defined.\n");
-	angleGenerator_ = generatorFunctions_.findGlobalFunction("generateangle");
-	if (angleGenerator_) msg.print("\t: Found 'generateangle' function.\n");
-	else msg.print("\t: Warning - No 'generateangle' function defined.\n");
-	torsionGenerator_ = generatorFunctions_.findGlobalFunction("generatetorsion");
-	if (torsionGenerator_) msg.print("\t: Found 'generatetorsion' function.\n");
-	else msg.print("\t: Warning - No 'generatetorsion' function defined.\n");
+	vdwGenerator_ = generatorFunctions_.findGlobalFunction("vdwgenerator");
+	if (vdwGenerator_) msg.print("\t: Found 'vdwgenerator' function.\n");
+	else msg.print("\t: Warning - No 'vdwgenerator' function defined.\n");
+	bondGenerator_ = generatorFunctions_.findGlobalFunction("bondgenerator");
+	if (bondGenerator_) msg.print("\t: Found 'bondgenerator' function.\n");
+	else msg.print("\t: Warning - No 'bondgenerator' function defined.\n");
+	angleGenerator_ = generatorFunctions_.findGlobalFunction("anglegenerator");
+	if (angleGenerator_) msg.print("\t: Found 'anglegenerator' function.\n");
+	else msg.print("\t: Warning - No 'anglegenerator' function defined.\n");
+	torsionGenerator_ = generatorFunctions_.findGlobalFunction("torsiongenerator");
+	if (torsionGenerator_) msg.print("\t: Found 'torsiongenerator' function.\n");
+	else msg.print("\t: Warning - No 'torsiongenerator' function defined.\n");
 	msg.exit("Forcefield::readFunctions");
 	return result;
 }

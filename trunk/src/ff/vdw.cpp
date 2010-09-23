@@ -101,7 +101,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 // Calculate forces for specified interaction (return force on atom i)
 Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *params, double scale, int i, int j)
 {
-	static double du_dr, epsilon, sigma, sigmar2, sigmar6, sigmar7, sigmar13, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
+	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
 	switch (type)
 	{
@@ -118,15 +118,13 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::Lj):
 		case (VdwFunctions::LjGeometric):
-			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
+			// dU/dr = 48 * epsilon * ( sigma**12/r**13 - 0.5 * sigma**6/r**7)
 			epsilon = params[VdwFunctions::LjEpsilon];
 			sigma = params[VdwFunctions::LjSigma] * scale;
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
-			sigmar7 = sigmar6 * (sigma / rij);
-			sigmar13 = sigmar6 * sigmar7;
-			du_dr = 48.0 * epsilon * ( sigmar13 - 0.5*sigmar7) / rij;
+			du_dr = 48.0 * epsilon * sigmar6 * (sigmar6 - 0.5) / rij;
 			break;
 		case (VdwFunctions::LjAB):
 			// dU/dr = 6*(B/r**7) - 12*(A/r**13)
@@ -139,15 +137,14 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			du_dr = (6.0 * br6 - 12.0 * ar12) / rij;
 			break;
 		case (VdwFunctions::UFFLj):
-			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
+			// dU/dr = D * ( sigma**12/r**13 - n * sigma**6/r**7)
 			epsilon = params[VdwFunctions::UFFLjD];
 			sigma = params[VdwFunctions::UFFLjSigma] * scale;
 			a = params[VdwFunctions::UFFLjN];
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
-			sigmar7 = sigmar6 * (sigma / rij);
-			du_dr = 12.0 * epsilon * sigmar7 * (sigmar6 - a) / rij;
+			du_dr = 12.0 * epsilon * sigmar6 * (sigmar6 - a) / rij;
 			break;
 		case (VdwFunctions::Buckingham):
 			// dU/dr = A * exp(-rij/B) / B + 6.0 * C/(rij**7)

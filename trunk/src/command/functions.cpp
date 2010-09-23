@@ -239,6 +239,9 @@ void Command::initPointers()
 	pointers_[FinaliseFF] = &Command::function_FinaliseFF;
 	pointers_[FixType] = &Command::function_FixType;
 	pointers_[FreeType] = &Command::function_FreeType;
+	pointers_[GenerateAngle] = &Command::function_GenerateAngle;
+	pointers_[GenerateBond] = &Command::function_GenerateBond;
+	pointers_[GenerateTorsion] = &Command::function_GenerateTorsion;
 	pointers_[GetCombinationRule] = &Command::function_GetCombinationRule;
 	pointers_[GetFF] = &Command::function_GetFF;
 	pointers_[InterDef] = &Command::function_InterDef;
