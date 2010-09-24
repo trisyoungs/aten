@@ -408,9 +408,9 @@ class Pattern
 	// Returns the first ring in the ring list
 	Ring *rings();
 	// Reset the atom environment flags
-	void clearHybrids();
-	// Set atom hybridisations
-	void assignHybrids();
+	void clearEnvironments();
+	// Set atom environments
+	void assignEnvironments();
 	// Assign forcefield atom types
 	bool typeAtoms();
 	// Locate ring structures in the pattern

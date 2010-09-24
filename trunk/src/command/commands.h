@@ -282,6 +282,7 @@ class Command
 		GenerateAngle,
 		GenerateBond,
 		GenerateTorsion,
+		GenerateVdw,
 		GetCombinationRule,
 		GetFF,
 		InterDef,
@@ -291,7 +292,6 @@ class Command
 		PrintSetup,
 		PrintType,
 		RecreateExpression,
-		Rules,
 		SaveExpression,
 		SetCombinationRule,
 		TorsionDef,
@@ -748,6 +748,7 @@ class Command
 	static bool function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GenerateVdw(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetFF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InterDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -757,7 +758,6 @@ class Command
 	static bool function_PrintSetup(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintType(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SaveExpression(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetCombinationRule(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv);

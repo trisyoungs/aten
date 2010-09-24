@@ -45,7 +45,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 			break;
 		case (VdwFunctions::Lj):
 		case (VdwFunctions::LjGeometric):
-			// U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
+			// U = 4 * epsilon * [ (s/rij)**12 - (s/rij)**6 ]
 			epsilon = params[VdwFunctions::LjEpsilon];
 			sigma = params[VdwFunctions::LjSigma] * scale;
 			sigmar2 = sigma / rij;
@@ -62,16 +62,6 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *params, dou
 			ar12 = a / (r6 * r6);
 			br6 = b / r6;
 			U = ar12 - br6;
-			break;
-		case (VdwFunctions::UFFLj):
-			// U = D * [ (s/rij)**12 - n *(s/rij)**6 ]
-			epsilon = params[VdwFunctions::UFFLjD];
-			sigma = params[VdwFunctions::UFFLjSigma] * scale;
-			a = params[VdwFunctions::UFFLjN];
-			sigmar2 = sigma / rij;
-			sigmar2 *= sigmar2;
-			sigmar6 = sigmar2 * sigmar2 * sigmar2;
-			U = epsilon * (sigmar6*sigmar6 - a * sigmar6);
 			break;
 		case (VdwFunctions::Buckingham):
 			// U = A * exp(-rij/B) - C/(rij**6)
@@ -135,16 +125,6 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			ar12 = a / (r6 * r6);
 			br6 = b / r6;
 			du_dr = (6.0 * br6 - 12.0 * ar12) / rij;
-			break;
-		case (VdwFunctions::UFFLj):
-			// dU/dr = D * ( sigma**12/r**13 - n * sigma**6/r**7)
-			epsilon = params[VdwFunctions::UFFLjD];
-			sigma = params[VdwFunctions::UFFLjSigma] * scale;
-			a = params[VdwFunctions::UFFLjN];
-			sigmar2 = (sigma / rij);
-			sigmar2 *= sigmar2;
-			sigmar6 = sigmar2 * sigmar2 * sigmar2;
-			du_dr = 12.0 * epsilon * sigmar6 * (sigmar6 - a) / rij;
 			break;
 		case (VdwFunctions::Buckingham):
 			// dU/dr = A * exp(-rij/B) / B + 6.0 * C/(rij**7)

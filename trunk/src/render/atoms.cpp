@@ -147,7 +147,6 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 			if (style_i != Atom::StickStyle)
 			{
 				// Draw cylinder bonds.
-// 				bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
 				bondradius = prefs.bondStyleRadius(style_i);
 				switch (bref->item->type())
 				{
@@ -155,6 +154,7 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 						glCylinder(rj,rij,0,bondradius);
 						break;
 					case (Bond::Double):	// Double bond
+					case (Bond::Aromatic):	// Double bond
 						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
 						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius;
@@ -206,6 +206,25 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 						  glVertex3d(-ijk.x,-ijk.y,-ijk.z);
 						  glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
 						glEnd();
+						break;
+					case (Bond::Aromatic):	// Aromatic bond
+						// Must define a plane in which the bond will lay
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
+						ijk *= bondradius; // 0.05;
+						// Can now draw the bond. Displace each part of the bond +rk or -rk.
+						glBegin(GL_LINES);
+						  glVertex3d(0.0, 0.0, 0.0);
+						  glVertex3d(rj.x,rj.y,rj.z);
+						glEnd();
+						glEnable(GL_LINE_STIPPLE);
+						glLineStipple(1, 0x00FF);
+						glBegin(GL_LINES);
+// 						  glVertex3d(ijk.x,ijk.y,ijk.z);
+						  glVertex3d(rj.x*bondradius+ijk.x,rj.y*bondradius+ijk.y,rj.z*bondradius+ijk.z);
+						  glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
+						glEnd();
+						glDisable(GL_LINE_STIPPLE);
 						break;
 					case (Bond::Triple):	// Triple bond
 						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);

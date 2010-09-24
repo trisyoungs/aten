@@ -17,7 +17,19 @@
 						<entry>data</entry>
 						<entry>double[]</entry>
 						<entry>rw</entry>
-						<entry>Parameter data for short-range potential</entry>
+						<entry>Parameter data for the potential</entry>
+					</row>
+					<row>
+						<entry>datakeyword</entry>
+						<entry>string[]</entry>
+						<entry>ro</entry>
+						<entry>Keyword names of the associated parameters, up to 'nparams'</entry>
+					</row>
+					<row>
+						<entry>datanames</entry>
+						<entry>string[]</entry>
+						<entry>ro</entry>
+						<entry>Proper names of the associated parameters, up to 'nparams'</entry>
 					</row>
 					<row>
 						<entry>escale</entry>
@@ -36,6 +48,12 @@
 						<entry>int</entry>
 						<entry>ro</entry>
 						<entry>Number of atoms involved in the bound interaction</entry>
+					</row>
+					<row>
+						<entry>nparams</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>The number of parameters used by the functional form of the interaction</entry>
 					</row>
 					<row>
 						<entry>type</entry>

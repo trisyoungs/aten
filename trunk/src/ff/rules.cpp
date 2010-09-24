@@ -76,14 +76,14 @@ bool Forcefield::generateVdw(Atom *i)
 	if (i == NULL)
 	{
 		msg.print("Internal Error - NULL atom passed to VDW generator function in forcefield '%s' (pointers: %p).\n", name_.get(), i);
-		msg.exit("Forcefield::generateBond");
+		msg.exit("Forcefield::generateVdw");
 		return FALSE;
 	}
 	// Grab forcefieldatom pointer
 	ForcefieldAtom *ffi = i->type();
 	// Call the generator function with the necessary arguments
 	ReturnValue rv;
-	if (!generatorFunctions_.executeGlobalFunction("generatevdw", rv, "y", ffi))
+	if (!generatorFunctions_.executeGlobalFunction("vdwgenerator", rv, "y", ffi))
 	{
 		msg.print("Error - Failed to generate Vdw function data for atom type.\n");
 		ffi->setVdwForm(VdwFunctions::None);

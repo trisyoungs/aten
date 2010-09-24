@@ -19,16 +19,16 @@ types
 6	B_3	B	"tetrahedral"
 7	B_2	B	"trigonal | (nbonds=2,=XX)"
 8	C_3	C	""
-9	C_R	C	"sp2"
+9	C_R	C	"aromatic"
 10	C_2	C	"trigonal"
 11	C_1	C	"linear"
 12	N_3	N	""
-13	N_R	N	"sp2"
+13	N_R	N	"aromatic"
 14	N_2	N	"trigonal | (nbonds=2,=XX)"
 15	N_1	N	"linear"
 16	O_3	O	"tetrahedral"
 17	O_3_z	O	""
-18	O_R	O	"nbonds=1"	# C=0?
+18	O_R	O	"aromatic"
 19	O_2	O	"trigonal"
 20	O_1	O	""
 21	F_	F	""
@@ -43,7 +43,7 @@ types
 30	S_3+2	S	""		# Was 'os=2', but removed until os assignment is correct
 31	S_3+4	S	"os=4"
 32	S_3+6	S	"os=6"
-33	S_R	S	"sp2"
+33	S_R	S	"aromatic"
 34	S_2	S	"trigonal"
 35	Cl	Cl	""
 36	Ar4+4	Ar	""
@@ -280,11 +280,12 @@ int vdwgenerator(ffatom term)
 	D = term.datad("D");
 	sigma = term.datad("x");
 	# UFF functional form:  U = Dij * ( (r/rij)**12 - 2(r/rij)**6 )
-	# Aten functional form (ufflj) : U = Dij * [ (s/rij)**12 - n *(s/rij)**6 ]
-	# Parameter order: D, sigma, n
-	term.form = "ufflj";
-	term.data = { D, sigma, 2.0 };
-	verbose("Generated UFFlj VDW information for type %s : D=%f, x=%f\n", term.name, D, sigma);
+	# Aten functional form (lj) : U = 4 * epsilon * [ (s/rij)**12 - (s/rij)**6 ]
+	# To convert from UFF -> Lj divide sigma by 2**(1/6)
+	# Parameter order: D, sigma
+	term.form = "lj";
+	term.data = { D, sigma/2.0^(1.0/6.0) };
+	verbose("Generated lj VDW information for type %s : epsilon=%f, sigma=%f\n", term.name, D, sigma);
 	return 1;
 }
 

@@ -118,11 +118,6 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 		{ "a", "b" },
 		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 		{ Combine::GeometricRule, Combine::GeometricRule } },
-	{ "UFF Lennard-Jones 12-6", "ufflj", 3,
-		{ "D", "Sigma", "N" },
-		{ "d", "sigma", "n" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 2.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::GeometricRule, Combine::ArithmeticRule } },
 	{ "Buckingham", "buck", 3,
 		{ "A", "B", "C" },
 		{ "a", "b", "c" },
@@ -320,17 +315,4 @@ void TorsionFunctions::printValid()
 	msg.print("Valid forms are:\n   ");
 	for (int i=1; i< TorsionFunctions::nTorsionFunctions; i++) msg.print("%s ",TorsionFunctions::TorsionFunctions[i].keyword);
 	msg.print("\n");
-}
-
-// Generation rules (for rule-based FFs)
-
-const char *ForcefieldRulesStrings[Rules::nForcefieldRules] = { "None", "UFF", "Dreiding", "Dreiding/X6" };
-const char *ForcefieldRulesKeywords[Rules::nForcefieldRules] = { "none", "uff", "dreiding", "dreidingx6" };
-const char *Rules::forcefieldRules(Rules::ForcefieldRules i)
-{
-	return ForcefieldRulesStrings[i];
-}
-Rules::ForcefieldRules Rules::forcefieldRules(const char *s)
-{
-	return (Rules::ForcefieldRules) enumSearch("forcefield rules", Rules::nForcefieldRules, ForcefieldRulesKeywords, s);
 }
