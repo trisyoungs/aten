@@ -242,6 +242,7 @@ void Command::initPointers()
 	pointers_[GenerateAngle] = &Command::function_GenerateAngle;
 	pointers_[GenerateBond] = &Command::function_GenerateBond;
 	pointers_[GenerateTorsion] = &Command::function_GenerateTorsion;
+	pointers_[GenerateVdw] = &Command::function_GenerateVdw;
 	pointers_[GetCombinationRule] = &Command::function_GetCombinationRule;
 	pointers_[GetFF] = &Command::function_GetFF;
 	pointers_[InterDef] = &Command::function_InterDef;
@@ -251,7 +252,6 @@ void Command::initPointers()
 	pointers_[PrintSetup] = &Command::function_PrintSetup;
 	pointers_[PrintType] = &Command::function_PrintType;
 	pointers_[RecreateExpression] = &Command::function_RecreateExpression;
-	pointers_[Rules] = &Command::function_Rules;
 	pointers_[SaveExpression] = &Command::function_SaveExpression;
 	pointers_[SetCombinationRule] = &Command::function_SetCombinationRule;
 	pointers_[TorsionDef] = &Command::function_TorsionDef;

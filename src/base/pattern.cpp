@@ -1380,35 +1380,35 @@ void Pattern::describeAtoms()
 	findRings();
 	// 2) Reset atom environments
 	msg.print(Messenger::Verbose, "Determining atom environments in pattern '%s'...\n", name_.get());
-	clearHybrids();
+	clearEnvironments();
 	printstuff(this);
 	// 3) Assign hybridisation types
-	assignHybrids();
+	assignEnvironments();
 	printstuff(this);
 	// 4) Go through the ring list and see if any are aromatic
 	msg.print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...\n", name_.get());
 	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
 }
 
-// Clear hybridisation data
-void Pattern::clearHybrids()
+// Clear environment data
+void Pattern::clearEnvironments()
 {
 	// Set all environment flags of the atoms in pattern to Atomtype::NoEnvironment
-	msg.enter("Pattern::clearHybrids");
+	msg.enter("Pattern::clearEnvironments");
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
 		i->setEnvironment(Atom::NoEnvironment);
 		i = i->next;
 	}
-	msg.exit("Pattern::clearHybrids");
+	msg.exit("Pattern::clearEnvironments");
 }
 
-// Assign hybridisation data
-void Pattern::assignHybrids()
+// Assign environment data
+void Pattern::assignEnvironments()
 {
 	// Assign hybridisation types to the atoms in this pattern.
-	msg.enter("Pattern::assignHybrids");
+	msg.enter("Pattern::assignEnvironments");
 	Atom *i = firstAtom_;
 	int nsingle, nother;
 	for (int n=0; n<nAtoms_; n++)
@@ -1417,21 +1417,22 @@ void Pattern::assignHybrids()
 		i->setEnvironment(Atom::NoEnvironment);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
+		nsingle = 0;
+		nother = 0;
 		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 		{
-			nsingle = 0;
-			nother = 0;
 			switch (bref->item->type())
 			{
 				case (Bond::Single):
 					nsingle ++;
 					break;
+				case (Bond::Aromatic):
 				case (Bond::Double):
 				case (Bond::Triple):
 					nother ++;
 					break;
 				default:
-					printf("Warning - Unrecognised bond type in Pattern::assignHybrids.\n");
+					printf("Warning - Unrecognised bond type in Pattern::assignEnvironments.\n");
 					nother ++;
 					break;
 			}
@@ -1441,7 +1442,7 @@ void Pattern::assignHybrids()
 		}
 		i = i->next;
 	}
-	msg.exit("Pattern::assignHybrids");
+	msg.exit("Pattern::assignEnvironments");
 }
 
 // Type atoms in pattern

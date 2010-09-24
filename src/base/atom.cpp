@@ -369,8 +369,7 @@ int Atom::totalBondOrder()
 	// Returned result is 2*actual bond order (to account for aromatic bonds [BO = 1.5])
 	msg.enter("Atom::totalBondOrder");
 	double result = 0;
-	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next)
-		result += bref->item->order();
+	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next) result += bref->item->order();
 	msg.exit("Atom::totalBondOrder");
 	return int(result * 2.0 + 0.1);
 }
@@ -541,13 +540,34 @@ Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	static Vec3<double> rk, xp1, xp2;
-	Refitem<Bond,int> *brefi = bonds_.first();
-	Refitem<Bond,int> *brefj = j->bonds_.first();
-	if (bonds_.nItems() > 1)	// Can define from another bond on 'this'
-		b == brefi->item ? rk = brefi->next->item->partner(this)->r_ : rk = brefi->item->partner(this)->r_;
-	else if (j->bonds_.nItems() > 1)// Can define from another bond on j
-		this == brefj->item->partner(j) ? rk = brefj->next->item->partner(j)->r_ : rk = brefj->item->partner(j)->r_;
-	else rk = rij.orthogonal();		// Default, just in case
+	Refitem<Bond,int> *brefi = NULL, *brefj = NULL;
+	bool done = TRUE;
+	// If the supplied ij bond is aromatic, attempt to find another aromatic bond...
+	if (b->type() == Bond::Aromatic)
+	{
+		if (id_ > j->id())
+		{
+			for (brefi = bonds_.first(); brefi != NULL; brefi = brefi->next) if ((brefi->item != b) && (brefi->item->type() == Bond::Aromatic)) break;
+			if (brefi != NULL) rk = brefi->item->partner(this)->r_;
+		}
+		else
+		{
+			for (brefi = j->bonds_.first(); brefi != NULL; brefi = brefi->next) if ((brefi->item != b) && (brefi->item->type() == Bond::Aromatic)) break;
+			if (brefi != NULL) rk = brefi->item->partner(j)->r_;
+		}
+		if (brefi == NULL) done = FALSE;
+	}
+	// Do we need to calculate a normal bond vector with some other atom, or the aromatic condition failed?
+	if (!done)
+	{
+		brefi = bonds_.first();
+		brefj = j->bonds_.first();
+		if (bonds_.nItems() > 1)	// Can define from another bond on 'this'
+			b == brefi->item ? rk = brefi->next->item->partner(this)->r_ : rk = brefi->item->partner(this)->r_;
+		else if (j->bonds_.nItems() > 1)// Can define from another bond on j
+			this == brefj->item->partner(j) ? rk = brefj->next->item->partner(j)->r_ : rk = brefj->item->partner(j)->r_;
+		else rk = rij.orthogonal();		// Default, just in case
+	}
 	// Now, take cross product of rij and (repositioned) rk -> perpendicular vector
 	rk -= r_;
 	xp1 = rij * rk;

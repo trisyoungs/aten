@@ -190,7 +190,7 @@ void Ring::recallBondTypes()
 void Ring::detectType()
 {
 	msg.enter("Ring::detectType");
-	int nsingle = 0, ndouble = 0, nother = 0;
+	int nsingle = 0, ndouble = 0, nother = 0, naromatic = 0;
 	Bond::BondType lasttype, thistype;
 	bool alternating = TRUE;
 	// Get numbers of single/double bonds, and wheter they alternate around the ring
@@ -198,6 +198,7 @@ void Ring::detectType()
 	{
 		thistype = rb->item->type();
 		if (thistype == Bond::Single) nsingle ++;
+		else if (thistype == Bond::Aromatic) naromatic ++;
 		else if (thistype == Bond::Double) ndouble ++;
 		else
 		{
@@ -212,6 +213,7 @@ void Ring::detectType()
 	}
 	// Set type
 	if (nsingle == bonds_.nItems()) type_ = Ring::AliphaticRing;
+	if (naromatic == bonds_.nItems()) type_ = Ring::AromaticRing;
 	else if ((bonds_.nItems()%2) == 0)
 	{
 		// For rings with an even number of atoms, the bonds *must* alternate in type
@@ -249,8 +251,16 @@ void Ring::detectType()
 			type_ = Ring::AromaticRing;	
 		}
 	}
-	// If aromatic, set atom environments to match
-	if (type_ == Ring::AromaticRing) for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
+	// If aromatic, set atom and bond environments to match
+	if (type_ == Ring::AromaticRing)
+	{
+		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
+		for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
+		{
+			rb->item->setType(Bond::Aromatic);
+			rb->data = Bond::Aromatic;
+		}
+	}
 	msg.exit("Ring::detectType");
 }
 

@@ -1150,6 +1150,8 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];
+	// Loop over stored forcefields and convert energetic parameters
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 }
 
 // Convert energy from specified unit to current internal unit

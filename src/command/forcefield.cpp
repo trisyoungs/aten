@@ -346,7 +346,7 @@ bool Command::function_GenerateAngle(CommandNode *c, Bundle &obj, ReturnValue &r
 	ForcefieldBound *ffb = obj.ff->findAngle(atoms[0]->type(), atoms[1]->type(), atoms[2]->type());
 	if (ffb == NULL) ffb = obj.ff->generateAngle(atoms[0], atoms[1], atoms[2]);
 	rv.set(VTypes::ForcefieldBoundData, ffb);
-	return (ffb == NULL ? FALSE : TRUE);
+	return TRUE;
 }
 
 // Generate (or return existing) bound parameters for specified bond interaction
@@ -374,7 +374,7 @@ bool Command::function_GenerateBond(CommandNode *c, Bundle &obj, ReturnValue &rv
 	ForcefieldBound *ffb = obj.ff->findBond(atoms[0]->type(), atoms[1]->type());
 	if (ffb == NULL) ffb = obj.ff->generateBond(atoms[0], atoms[1]);
 	rv.set(VTypes::ForcefieldBoundData, ffb);
-	return (ffb == NULL ? FALSE : TRUE);
+	return TRUE;
 }
 
 // Generate (or return existing) bound parameters for specified torsion interaction
@@ -402,7 +402,30 @@ bool Command::function_GenerateTorsion(CommandNode *c, Bundle &obj, ReturnValue 
 	ForcefieldBound *ffb = obj.ff->findTorsion(atoms[0]->type(), atoms[1]->type(), atoms[2]->type(), atoms[3]->type());
 	if (ffb == NULL) ffb = obj.ff->generateTorsion(atoms[0], atoms[1], atoms[2], atoms[3]);
 	rv.set(VTypes::ForcefieldBoundData, ffb);
-	return (ffb == NULL ? FALSE : TRUE);
+	return TRUE;
+}
+
+// Generate (or return existing) vdw parameters for specified atom
+bool Command::function_GenerateVdw(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ForcefieldPointer+Bundle::ModelPointer)) return FALSE;
+	// Find named atoms in forcefield
+	Atom *i = (c->argType(0) == VTypes::AtomData ? (Atom*) c->argp(0, VTypes::AtomData) : obj.rs->atom(c->argi(0)-1));
+	// Check atom and associated type pointers
+	if (i == NULL)
+	{
+		msg.print("Atom given to 'generatevdw' is NULL.\n");
+		return FALSE;
+	}
+	ForcefieldAtom *ffa = i->type();
+	if (ffa == NULL)
+	{
+		msg.print("Atom given to 'generatevdw' has no forcefield atom assigned.\n");
+		return FALSE;
+	}
+	if (ffa->vdwForm() == VdwFunctions::None) obj.ff->generateVdw(i);
+	rv.set(VTypes::ForcefieldAtomData, ffa->vdwForm() == VdwFunctions::None ? NULL : ffa);
+	return TRUE;
 }
 
 // Get combination rule in use for VDW parameter
@@ -556,16 +579,6 @@ bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnVal
 	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
 	if (!obj.m->createExpression(nointra)) return FALSE;
 	rv.reset();
-	return TRUE;
-}
-
-// Set rules to use in parameter generation
-bool Command::function_Rules(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
-	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
-	if (rules == Rules::nForcefieldRules) return FALSE;
-	msg.print("\t: Rule-set to use is '%s'\n", rules);
 	return TRUE;
 }
 

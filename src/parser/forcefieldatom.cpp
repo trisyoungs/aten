@@ -52,6 +52,8 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
 	{ "charge",		VTypes::DoubleData,		0, FALSE },
 	{ "data",		VTypes::DoubleData,		MAXFFPARAMDATA, FALSE },
+	{ "datakeyword",	VTypes::StringData,		MAXFFPARAMDATA, TRUE },
+	{ "dataname",		VTypes::StringData,		MAXFFPARAMDATA, TRUE },
 	{ "description",	VTypes::StringData,		0, FALSE },
 	{ "equivalent",		VTypes::StringData,		0, FALSE },
 	{ "ff",			VTypes::ForcefieldData,		0, TRUE },
@@ -60,6 +62,7 @@ Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors
 	{ "mass",		VTypes::DoubleData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
 	{ "neta",		VTypes::StringData,		0, FALSE },
+	{ "nparams",		VTypes::IntegerData,		0, TRUE },
 	{ "z",			VTypes::IntegerData,		0, FALSE }
 };
 
@@ -182,6 +185,24 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		case (ForcefieldAtomVariable::Description):
 			rv.set(ptr->description());
 			break;
+		case (ForcefieldAtomVariable::DataKeyword):
+			// Must have an array index here...
+			if (!hasArrayIndex)
+			{
+				msg.print("Accessor 'datakeyword' must have an array index.\n");
+				result = FALSE;
+			}
+			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameterKeywords[arrayIndex-1]);
+			break;
+		case (ForcefieldAtomVariable::DataName):
+			// Must have an array index here...
+			if (!hasArrayIndex)
+			{
+				msg.print("Accessor 'dataname' must have an array index.\n");
+				result = FALSE;
+			}
+			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameters[arrayIndex-1]);
+			break;
 		case (ForcefieldAtomVariable::Equivalent):
 			if (aten.typeExportMapping()) rv.set(aten.typeExportConvert(ptr->equivalent()));
 			else rv.set(ptr->equivalent());
@@ -204,6 +225,9 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			break;
 		case (ForcefieldAtomVariable::Neta):
 			rv.set(ptr->netaString());
+			break;
+		case (ForcefieldAtomVariable::NParams):
+			rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
 			break;
 		case (ForcefieldAtomVariable::Z):
 			rv.set(ptr->neta()->characterElement());
