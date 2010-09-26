@@ -47,6 +47,7 @@ Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
 	{ "ambient",	VTypes::DoubleData,	4, FALSE },
 	{ "colour",	VTypes::DoubleData,	4, FALSE },
 	{ "diffuse",	VTypes::DoubleData,	4, FALSE },
+	{ "group",	VTypes::IntegerData,	0, TRUE },
 	{ "mass",	VTypes::DoubleData,	0, TRUE },
 	{ "name",	VTypes::DoubleData,	0, TRUE },
 	{ "radius",	VTypes::DoubleData,	0, FALSE },
@@ -160,6 +161,9 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayInde
 		case (ElementVariable::Diffuse):
 			if (hasArrayIndex) rv.set( ptr->diffuseColour[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, &ptr->diffuseColour, 4);
+			break;
+		case (ElementVariable::Group):
+			rv.set( ptr->group );
 			break;
 		case (ElementVariable::Mass):
 			rv.set( ptr->atomicMass );
