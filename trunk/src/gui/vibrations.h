@@ -38,9 +38,13 @@ class AtenVibrations : public QDialog
 	void refresh();
 	private slots:
 	void dialogFinished(int result);
+	void on_PlayPauseVibration_clicked(bool checked);
 	private:
 	// Refresh displacements table
 	void refreshDisplacements();
+	protected:
+	void timerEvent(QTimerEvent*);
+
 
 	/*
 	// Local variables
@@ -50,6 +54,12 @@ class AtenVibrations : public QDialog
 	bool refreshing_;
 	// Whether the window should be refreshed when next shown
 	bool shouldRefresh_;
+	// Whether the trajectory is currently playing
+	bool vibrationPlaying_;
+	// ID of rtrajectory timer
+	int vibrationTimerId_;
+	// Flag to prevent overdrawing
+	bool DONTDRAW;
 
 	/*
 	// Dialog

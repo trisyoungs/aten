@@ -36,7 +36,6 @@ TCanvas::TCanvas(QGLContext *context, QWidget *parent) : QGLWidget(context, pare
 	renderSource_ = NULL;
 
 	setAutoFillBackground(FALSE);
-
 }
 
 // Set the widgetcanvas for the display
