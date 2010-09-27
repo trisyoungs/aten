@@ -60,9 +60,44 @@ bool Command::function_AddHydrogen(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Convert coordinates/data of object(s) to Bohr
 bool Command::function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	msg.print("'bohr' command is not fully implemented yet.\n");
-	return FALSE;
+	Atom *i;
+	Model *m;
+	Grid *g;
+	bool result = TRUE;
+	for (int n=0; n<c->nArgs(); ++n)
+	{
+		// Check for valid pointer
+		if (c->argp(n, c->argType(n)) == NULL) msg.print("Argument %i passed to 'bohr' is a NULL pointer.\n", n+1);
+		else switch (c->argType(n))
+		{
+			case (VTypes::AtomData):
+				i = (Atom*) c->argp(n, VTypes::AtomData);
+				m = i->parent();
+				m->beginUndoState("Convert coordinates of atom to Angstroms");
+				m->positionAtom(i, i->r()/ANGBOHR);
+				m->endUndoState();
+				break;
+			case (VTypes::ModelData):
+				m = (Model*) c->argp(n, VTypes::ModelData);
+				m->bohrToAngstrom();
+				break;
+			case (VTypes::IntegerData):
+			case (VTypes::DoubleData):
+			case (VTypes::StringData):
+				msg.print("No valid conversion for ordinary types.\n");
+				result = FALSE;
+				break;
+			case (VTypes::ElementData):
+				msg.print("No valid Bohr conversion for type '%s'.\n", VTypes::dataType(c->argType(n)));
+				result = FALSE;
+				break;
+			default:
+				msg.print("Bohr conversion for type '%s' not implemented.\n", VTypes::dataType(c->argType(n)));
+				result = FALSE;
+				break;
+		}
+	}
+	return result;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')

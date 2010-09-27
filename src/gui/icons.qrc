@@ -121,6 +121,7 @@
   </qresource>
   <qresource prefix="/stackicons" >
     <file>icons/stack_select.svg</file>
+    <file>icons/stack_vibrations.svg</file>
     <file>icons/stack_zmatrix.svg</file>
     <file>icons/stack_md.svg</file>
     <file>icons/stack_glyphs.svg</file>

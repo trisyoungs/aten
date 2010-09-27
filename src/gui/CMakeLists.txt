@@ -69,6 +69,7 @@ set(qtproject_SRCS
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
   ttreewidgetitem_funcs.cpp
+  vibrations_funcs.cpp
   viewactions.cpp
   viewbasis_funcs.cpp
   vieweigenvector_funcs.cpp
@@ -104,6 +105,7 @@ SET(pro_MOC_HDRS
   selectpattern.h
   selectvariable.h
   transform.h
+  vibrations.h
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
@@ -143,6 +145,7 @@ SET(pro_UIS
   selectpattern.ui
   selectvariable.ui
   transform.ui
+  vibrations.ui
   viewbasis.ui
   vieweigenvector.ui
   zmatrix.ui

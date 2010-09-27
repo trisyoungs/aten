@@ -40,6 +40,7 @@
 #include "parser/patternbound.h"
 #include "parser/prefs.h"
 #include "parser/vector.h"
+#include "parser/vibration.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
 #include <string.h>
@@ -203,6 +204,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = VectorVariable::performFunction(accessor_, rv, this);
 			else result = VectorVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::VibrationData):
+			if (functionAccessor_) result = VibrationVariable::performFunction(accessor_, rv, this);
+			else result = VibrationVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::ZMatrixData):
 			if (functionAccessor_) result = ZMatrixVariable::performFunction(accessor_, rv, this);
 			else result = ZMatrixVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -234,8 +239,17 @@ void StepNode::nodePrint(int offset, const char *prefix)
 		case (VTypes::AtomData):
 			printf("%s", AtomVariable::accessorData[accessor_].name);
 			break;
+		case (VTypes::BasisPrimitiveData):
+			printf("%s", BasisPrimitiveVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::BasisShellData):
+			printf("%s", BasisShellVariable::accessorData[accessor_].name);
+			break;
 		case (VTypes::BondData):
 			printf("%s", BondVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::EigenvectorData):
+			printf("%s", EigenvectorVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::ElementData):
 			printf("%s", ElementVariable::accessorData[accessor_].name);
@@ -274,6 +288,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			printf("%s", PreferencesVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::VectorData):
+			printf("%s", VectorVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::VibrationData):
 			printf("%s", VectorVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::ZMatrixData):
@@ -381,6 +398,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::VibrationData):
+			result = VibrationVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::ZMatrixData):
 			result = ZMatrixVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);

@@ -420,9 +420,10 @@ class Command
 		SetName,
 		ShowAll,
 
-		// MO Definition Commands
+		// Model Extras Commands
 		NewBasisShell,
 		NewEigenvector,
+		NewVibration,
 	
 		// Pattern Commands
 		ClearPatterns,
@@ -868,6 +869,7 @@ class Command
 	static bool function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ModelTemplate(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_NextModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrevModel(CommandNode *c, Bundle &obj, ReturnValue &rv);

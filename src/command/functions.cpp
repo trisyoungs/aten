@@ -380,9 +380,10 @@ void Command::initPointers()
 	pointers_[SetName] = &Command::function_SetName;
 	pointers_[ShowAll] = &Command::function_ShowAll;
 
-	// MO Definition Commands
+	// Model Extras Commands
 	pointers_[NewBasisShell] = &Command::function_NewBasisShell;
 	pointers_[NewEigenvector] = &Command::function_NewEigenvector;
+	pointers_[NewVibration] = &Command::function_NewVibration;
 
 	// Pattern Commands
 	pointers_[ClearPatterns] = &Command::function_ClearPatterns;

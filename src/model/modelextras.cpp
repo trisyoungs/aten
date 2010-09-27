@@ -98,3 +98,29 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 	msg.exit("Model::eigenvectorDensityAt");
 	return result;
 }
+
+// Add a new vibration to the model
+Vibration *Model::addVibration(int size)
+{
+	Vibration *vib = vibrations_.add();
+	vib->initialise(this, size);
+	return vib;
+}
+
+// Return number of defined vibrations
+int Model::nVibrations()
+{
+	return vibrations_.nItems();
+}
+
+// Return first vibration
+Vibration *Model::vibrations()
+{
+	return vibrations_.first();
+}
+
+// Return n'th vibration
+Vibration *Model::vibration(int n)
+{
+	return vibrations_[n];
+}

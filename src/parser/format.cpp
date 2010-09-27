@@ -493,9 +493,14 @@ int Format::read(LineParser *parser, int flags)
 		msg.exit("Format::read[file]");
 		return 1;
 	}
-	// Get next line from file
-	int result = parser->readLine();
-	if (result == 0) result = executeRead(parser, flags);
+	// Get next line from file and parse line
+	int result;
+	do
+	{
+		result = parser->readLine();
+		if (result == 0) result = executeRead(parser, flags);
+		if ((result == 0) && !(flags&LineParser::SkipBlanks)) break;
+	} while (result == 0);
 	msg.exit("Format::read[file]");
 	return result;
 }
