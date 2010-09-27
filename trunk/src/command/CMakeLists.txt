@@ -24,8 +24,8 @@ mc.cpp
 measure.cpp
 messaging.cpp
 minimise.cpp
-mo.cpp
 model.cpp
+modelextras.cpp
 operators.cpp
 pattern.cpp
 readwrite.cpp

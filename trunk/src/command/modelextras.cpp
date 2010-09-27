@@ -1,6 +1,6 @@
 /*
-	*** Molecular Orbital Commands
-	*** src/command/mo.cpp
+	*** Model Extras Commands
+	*** src/command/modelextras.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.

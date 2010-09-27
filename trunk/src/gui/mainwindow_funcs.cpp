@@ -38,6 +38,7 @@
 #include "gui/fragment.h"
 #include "gui/md.h"
 #include "gui/minimiser.h"
+#include "gui/vibrations.h"
 #include "gui/zmatrix.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
@@ -695,6 +696,12 @@ void AtenForm::on_actionMolecularDynamicsWindow_triggered(bool checked)
 //	if (checked) gui.analyseWindow->showWindow();
 //	else gui.analyseWindow->hide();
 // }
+
+void AtenForm::on_actionVibrationsWindow_triggered(bool checked)
+{
+	if (checked) gui.vibrationsWindow->showWindow();
+	else gui.vibrationsWindow->hide();
+}
 
 void AtenForm::on_actionZMatrixEditorWindow_triggered(bool checked)
 {

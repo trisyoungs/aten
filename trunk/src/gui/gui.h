@@ -52,6 +52,7 @@ class AtenMinimiser;
 class AtenPosition;
 class AtenSelect;
 class AtenTransform;
+class AtenVibrations;
 class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
@@ -166,6 +167,8 @@ class GuiQt
 	AtenSelect *selectWindow;
 	// Atom transformation window
 	AtenTransform *transformWindow;
+	// Vibrations window
+	AtenVibrations *vibrationsWindow;
 	// Zmatrix window
 	AtenZMatrix *zmatrixWindow;
 

@@ -36,6 +36,7 @@
 #define SGCOREDEF__
 #include "base/sginfo.h"
 #include "methods/mc.h"
+#include "base/vibration.h"
 #include "classes/zmatrix.h"
 
 // Forward Declarations
@@ -1113,6 +1114,24 @@ class Model
 	int nEigenvectors();
 	// Return density of nth eigenvalue at given coordinates
 	double eigenvectorDensityAt(int id, Vec3<double> v);
+
+
+	/*
+	// Vibration Data
+	*/
+	private:
+	// List of defined vibrations
+	List<Vibration> vibrations_;
+
+	public:
+	// Add a new vibration to the model
+	Vibration *addVibration(int size = -1);
+	// Return number of defined vibrations
+	int nVibrations();
+	// Return first vibration
+	Vibration *vibrations();
+	// Return n'th vibration
+	Vibration *vibration(int n);
 };
 
 #endif

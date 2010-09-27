@@ -789,6 +789,7 @@
    <addaction name="actionMinimiserWindow" />
    <addaction name="actionForcefieldsWindow" />
    <addaction name="actionMolecularDynamicsWindow" />
+   <addaction name="actionVibrationsWindow" />
    <addaction name="separator" />
    <addaction name="actionCommandWindow" />
   </widget>
@@ -2541,6 +2542,21 @@
   <action name="actionCreateFragment" >
    <property name="text" >
     <string>Create Fragment</string>
+   </property>
+  </action>
+  <action name="actionVibrationsWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >
+     <normaloff>:/stackicons/icons/stack_vibrations.svg</normaloff>:/stackicons/icons/stack_vibrations.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Build</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide vibrations window</string>
    </property>
   </action>
  </widget>

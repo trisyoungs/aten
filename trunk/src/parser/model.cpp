@@ -88,9 +88,11 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
+	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
+	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
 	{ "zmatrix",		VTypes::ZMatrixData,		0, TRUE }
 };
 
@@ -116,6 +118,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "neweigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::argText(Command::NewEigenvector) },
 	{ "newglyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::argText(Command::NewGlyph) },
 	{ "newgrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::argText(Command::NewGrid) },
+	{ "newvibration",	VTypes::VibrationData,	Command::arguments(Command::NewVibration),	Command::argText(Command::NewVibration) },
 	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::argText(Command::Paste) },
 	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::argText(Command::ReBond) },
 	{ "rebondpatterns",	VTypes::NoData,		Command::arguments(Command::ReBondPatterns),	Command::argText(Command::ReBondPatterns) },
@@ -127,6 +130,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
 	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
 	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
+	{ "toangstroms",	VTypes::NoData,		"",						"Convert cell and atom coordinates from Bohr to Angstroms" },
 	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::argText(Command::Transmute) },
 	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) }
 };
@@ -615,6 +619,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::NewGrid):
 			result = aten.commands.call(Command::NewGrid, node, rv, bundle);
 			break;
+ 		case (ModelVariable::NewVibration):
+			result = aten.commands.call(Command::NewVibration, node, rv, bundle);
+			break;
  		case (ModelVariable::Paste):
 			result = aten.commands.call(Command::Paste, node, rv, bundle);
 			break;
@@ -647,6 +654,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			break;
  		case (ModelVariable::ShowAll):
 			result = aten.commands.call(Command::ShowAll, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ToAngstroms):
+			ptr->bohrToAngstrom();
 			break;
  		case (ModelVariable::Transmute):
 			result = aten.commands.call(Command::Transmute, node, rv, bundle);

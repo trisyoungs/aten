@@ -50,6 +50,7 @@
 #include "gui/transform.h"
 #include "gui/select.h"
 #include "gui/position.h"
+#include "gui/vibrations.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
 #include "gui/zmatrix.h"
@@ -120,6 +121,7 @@ GuiQt::GuiQt()
 	minimiserWindow = NULL;
 	positionWindow = NULL;
 	transformWindow = NULL;
+	vibrationsWindow = NULL;
 	zmatrixWindow = NULL;
 }
 
@@ -206,6 +208,7 @@ void GuiQt::run()
 	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
 	selectWindow = new AtenSelect(mainWindow, Qt::Window|Qt::Tool);
 	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
+	vibrationsWindow = new AtenVibrations(mainWindow, Qt::Window|Qt::Tool);
 	zmatrixWindow = new AtenZMatrix(mainWindow);	// Modal dialog
 
 	// Connect Finished signal of tool windows to finished slots in structure
@@ -225,6 +228,7 @@ void GuiQt::run()
 	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
 	QObject::connect(selectWindow, SIGNAL(finished(int)), selectWindow, SLOT(dialogFinished(int)));
 	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
+	QObject::connect(vibrationsWindow, SIGNAL(finished(int)), vibrationsWindow, SLOT(dialogFinished(int)));
 	QObject::connect(zmatrixWindow, SIGNAL(finished(int)), zmatrixWindow, SLOT(dialogFinished(int)));
 
 	// Set the modality of some dialogs
@@ -336,7 +340,7 @@ void GuiQt::run()
 // Refresh Wrapper
 */
 
-// Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's functinn)
+// Update GUI after model change (or different model selected) (accessible wrapper to call AtenForm's function)
 void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, bool updateGlyphs, bool updateGrids)
 {
 	if (!doesExist_) return;
@@ -350,6 +354,8 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 	if (updateGrids) gridsWindow->refresh();
 	// Update selection window
 	selectWindow->refresh();
+	// Update vibrations window
+	vibrationsWindow->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{
@@ -581,6 +587,7 @@ void GuiQt::setWindowsEnabled(bool b)
 	minimiserWindow->setEnabled(b);
 	positionWindow->setEnabled(b);
 	transformWindow->setEnabled(b);
+	vibrationsWindow->setEnabled(b);
 	mainWindow->ui.BondToolbar->setEnabled(b);
 	mainWindow->ui.DrawToolbar->setEnabled(b);
 	mainWindow->ui.EditToolbar->setEnabled(b);
