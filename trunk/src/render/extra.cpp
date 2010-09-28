@@ -24,6 +24,7 @@
 #include "render/canvas.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
+#include "gui/vibrations.h"
 #include "gui/fragment.h"
 #include "base/sysfunc.h"
 
@@ -159,18 +160,44 @@ void Canvas::renderExtra3d() const
 			break;
 	}
 	// Draw on extra stuff based on the visibility of any tool windows
-	if (gui.exists() && gui.cellTransformWindow->isVisible())
+	if (gui.exists())
 	{
-		Vec3<double> hkl;
-		switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+		// Cell Transformation Window
+		if (gui.cellTransformWindow->isVisible())
 		{
-			// Replicate
-			case (0):
-				break;
-			// Miller
-			case (3):
-				millerPlane(gui.cellTransformWindow->ui.MillerHSpin->value(), gui.cellTransformWindow->ui.MillerKSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), 1);
-				break;
+			Vec3<double> hkl;
+			switch (gui.cellTransformWindow->ui.CellTransformTabs->currentIndex())
+			{
+				// Replicate
+				case (0):
+					break;
+				// Miller
+				case (3):
+					millerPlane(gui.cellTransformWindow->ui.MillerHSpin->value(), gui.cellTransformWindow->ui.MillerKSpin->value(), gui.cellTransformWindow->ui.MillerLSpin->value(), 1);
+					break;
+			}
+		}
+		// Vibrations Window
+		if ((gui.vibrationsWindow->isVisible()) && (gui.vibrationsWindow->ui.ShowVectorsCheck->isChecked()))
+		{
+			int row = gui.vibrationsWindow->ui.VibrationsList->currentRow();
+			if (row != -1)
+			{
+				// Grab displacements array
+				Vibration *vib = displayModel_->vibration(row);
+				if (vib != NULL)
+				{
+					Vec3<double> *disp = vib->displacements();
+					// Cycle over model atoms and draw associated displacement vectors
+					int count = 0;
+					for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
+					{
+						glArrow(i->r(), disp[count], FALSE);
+						++count;
+					}
+				}
+				else printf("Internal Error : Couldn't get vibration from model.\n");
+			}
 		}
 	}
 	msg.exit("Canvas::renderExtra3d");

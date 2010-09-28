@@ -40,6 +40,8 @@ class Eigenvector
 	private:
 	// Name (typically symmetry type) of eigenvector
 	Dnchar name_;
+	// Whether the coefficients correspond to spherical (TRUE) or cartesian (FALSE) basis functions
+	bool isSpherical_;
 	// Size of eigenvector when created
 	int size_;
 	// Eigenvector
@@ -54,6 +56,8 @@ class Eigenvector
 	void initialise(int size);
 	// Return size of eigenvector
 	int size() const;
+	// Return whether coefficients correspond to spherical or cartesian functions
+	bool isSpherical();
 	// Set text name of eigenvalue
 	void setName(const char *name);
 	// Return text 'name' of eigenvalue

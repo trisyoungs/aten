@@ -60,11 +60,11 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 	row = 0;
 	Eigenvector *evec = m->eigenvector(id); 
 	double *eigenvec = evec->eigenvector();
-	for (bas = m->basisShells(); bas != NULL; bas = bas->next)
+	if (evec->isSpherical()) for (bas = m->basisShells(); bas != NULL; bas = bas->next)
 	{
 		++shell;
-		// Cycle over primitives
-		for (n = 0; n < bas->nCartesianFunctions(); ++n)
+		// Cycle over spherical functions
+		for (n = 0; n < BasisShell::nSphericalFunctions(bas->type()); ++n)
 		{
 			// Atom column
 			tabitem = new QTableWidgetItem();
@@ -76,7 +76,31 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 			tabitem->setText(itoa(shell));
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
 			tabitem = new QTableWidgetItem();
-			tabitem->setText(bas->cartesianFunctionName(n));
+			tabitem->setText(BasisShell::sphericalFunction(bas->type(), n));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::TypeColumn, tabitem);
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(ftoa(eigenvec[row]));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::CoefficientColumn, tabitem);
+			row++;
+		}
+	}
+	else for (bas = m->basisShells(); bas != NULL; bas = bas->next)
+	{
+		++shell;
+		// Cycle over cartesian functions
+		for (n = 0; n < BasisShell::nCartesianFunctions(bas->type()); ++n)
+		{
+			// Atom column
+			tabitem = new QTableWidgetItem();
+			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? elements().symbol(m->atom(bas->atomId())) : "NULL");
+			tabitem->setText(text.get());
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
+			// Add in shell data
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(itoa(shell));
+			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
+			tabitem = new QTableWidgetItem();
+			tabitem->setText(BasisShell::cartesianFunction(bas->type(), n));
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::TypeColumn, tabitem);
 			tabitem = new QTableWidgetItem();
 			tabitem->setText(ftoa(eigenvec[row]));

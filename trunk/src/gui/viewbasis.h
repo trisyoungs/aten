@@ -46,6 +46,13 @@ class AtenViewBasis : public QDialog
 	void dialogFinished(int result);
 
 	/*
+	// Local Variables
+	*/
+	private:
+	// Current model target
+	Model *target_;
+
+	/*
 	// Dialog
 	*/
 	public:
