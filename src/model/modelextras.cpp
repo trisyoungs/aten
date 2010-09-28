@@ -43,7 +43,7 @@ int Model::nBasisShells()
 int Model::nCartesianBasisFunctions()
 {
 	int result = 0;
-	for (BasisShell *basis = basisShells_.first(); basis != NULL; basis = basis->next) result += basis->nCartesianFunctions();
+	for (BasisShell *basis = basisShells_.first(); basis != NULL; basis = basis->next) result += BasisShell::nCartesianFunctions(basis->type());
 	return result;
 }
 
@@ -89,11 +89,11 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 	for (BasisShell *bas = basisShells_.first(); bas != NULL; bas = bas->next)
 	{
 		// Cycle over primitives
-		for (n = 0; n < bas->nCartesianFunctions(); ++n)
-		{
+// 		for (n = 0; n < bas->nCartesianFunctions(); ++n)
+// 		{
 // 			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? elements().symbol(m->atom(bas->atomId())) : "NULL");
-			i++;
-		}
+// 			i++;
+// 		}
 	}
 	msg.exit("Model::eigenvectorDensityAt");
 	return result;

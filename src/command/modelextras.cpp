@@ -42,7 +42,7 @@ bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument is size of vector. If not present, use current size of basis function array
-	int size = c->hasArg(0) ? c->argi(0) : obj.rs->nBasisShells();
+	int size = c->hasArg(0) ? c->argi(0) : obj.rs->nCartesianBasisFunctions();
 	Eigenvector *vec = obj.rs->addEigenvector();
 	vec->initialise(size);
 	rv.set(VTypes::EigenvectorData, vec);

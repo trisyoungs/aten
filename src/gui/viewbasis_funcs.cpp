@@ -29,6 +29,9 @@
 // Constructor
 AtenViewBasis::AtenViewBasis(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
+	// Private variables
+	target_ = NULL;
+
 	ui.setupUi(this);
 }
 
@@ -45,22 +48,29 @@ void AtenViewBasis::showWindow(Model *m)
 	ui.BasisTable->setHorizontalHeaderLabels(QStringList() << "Atom" << "Shell" << "Type" << "Exponent" << "Coefficients" << " " << " " << " " << " " << " " );
 	// Check model pointer
 	if (m == NULL) return;
+	// If no basis definition exists in the supplied model, try to look at the trajectory parent
+	target_ = m;
+	if ((target_->basisShells() == NULL) && (target_->trajectoryParent() != NULL))
+	{
+		target_ = target_->trajectoryParent();
+		msg.print("No basis definition found in trajectory frame - looking in trajectory parent...\n");
+	}
 	// Determine total row count
 	BasisShell *bas;
 	BasisPrimitive *prim;
 	int row = 0, shell, lastid = -1, n, ncartesians = 0;
 	Dnchar text;
-	for (bas = m->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
+	for (bas = target_->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
 	ui.BasisTable->setRowCount(row);
-	ui.BasisShellsLabel->setText(itoa(m->nBasisShells()));
+	ui.BasisShellsLabel->setText(itoa(target_->nBasisShells()));
 	// Populate table
 	QTableWidgetItem *tabitem;
 	row = 0;
 	shell = 0;
-	for (bas = m->basisShells(); bas != NULL; bas = bas->next)
+	for (bas = target_->basisShells(); bas != NULL; bas = bas->next)
 	{
 		++shell;
-		ncartesians += bas->nCartesianFunctions();
+		ncartesians += BasisShell::nCartesianFunctions(bas->type());
 		// Create atom id item?
 		if (lastid != bas->atomId())
 		{

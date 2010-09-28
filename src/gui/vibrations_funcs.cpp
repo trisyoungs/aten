@@ -93,7 +93,8 @@ void AtenVibrations::refreshDisplacements()
 	Vec3<double> *displacements = vib->displacements();
 	QTableWidgetItem *item;
 	ui.DisplacementsTable->setRowCount(vib->nDisplacements());
-	for (int n=0; n<vib->nDisplacements(); ++n)
+	int n;
+	for (n=0; n<vib->nDisplacements(); ++n)
 	{
 		if (i == NULL) msg.print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
 		item = new QTableWidgetItem();
@@ -109,6 +110,18 @@ void AtenVibrations::refreshDisplacements()
 		item->setText(ftoa(displacements[n].z));
 		ui.DisplacementsTable->setItem(n, 3, item);
 	}
+	for (n=0; n<4; ++n) ui.DisplacementsTable->resizeColumnToContents(n);
+}
+
+void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
+{
+	refreshDisplacements();
+	if (ui.ShowVectorsCheck->isChecked()) gui.mainView.postRedisplay();
+}
+
+void AtenVibrations::on_ShowVectorsCheck_clicked(bool checked)
+{
+	gui.mainView.postRedisplay();
 }
 
 void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
@@ -130,8 +143,6 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 
 void AtenVibrations::timerEvent(QTimerEvent*)
 {
-	// Move on to the next frame in the trajectory
-	// Check that we're not still drawing the last frame from the last timerEvent
 	printf("kjkj\n");
 // 	if (DONTDRAW) printf("Still drawing previous frame.\n");
 // 	else

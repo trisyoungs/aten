@@ -32,6 +32,7 @@ Eigenvector::Eigenvector()
 	size_ = -1;
 	eigenvector_ = NULL;
 	occupancy_ = 0.0;
+	isSpherical_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -59,6 +60,12 @@ void Eigenvector::initialise(int size)
 int Eigenvector::size() const
 {
 	return size_;
+}
+
+// Return whether coefficients correspond to spherical or cartesian functions
+bool Eigenvector::isSpherical()
+{
+	return isSpherical_;
 }
 
 // Set text name of eigenvalue

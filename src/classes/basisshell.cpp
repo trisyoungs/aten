@@ -23,7 +23,7 @@
 #include "base/sysfunc.h"
 
 // Basis Function Types
-const char *BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "none", "s", "l", "p", "d", "f" };
+const char *BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "none", "s", "p", "d", "f", "g", "l" };
 BasisShell::BasisShellType BasisShell::basisShellType(const char *s, bool reporterror)
 {
 	BasisShell::BasisShellType bft = (BasisShell::BasisShellType) enumSearch("basis shell type", BasisShell::nBasisShellTypes, BasisShellTypeKeywords, s, reporterror);
@@ -33,6 +33,50 @@ BasisShell::BasisShellType BasisShell::basisShellType(const char *s, bool report
 const char *BasisShell::basisShellType(BasisShell::BasisShellType bft)
 {
 	return BasisShellTypeKeywords[bft];
+}
+// Cartesian function numbers and names
+int NumberCartesianFunctions[BasisShell::nBasisShellTypes] = { 0, 1, 3, 6, 10, 15, 4 };
+int BasisShell::nCartesianFunctions(BasisShellType bft)
+{
+	return NumberCartesianFunctions[bft];
+}
+const char *CartesianFunctionNames[BasisShell::nBasisShellTypes][11] = {
+	{ "", "", "", "", "", "", "", "", "", "", "" },			// None
+	{ "S", "", "", "", "", "", "", "", "", "", "" },		// S
+	{ "P(X)", "P(Y)", "P(Z)", "", "", "", "", "", "", "", "" },	// P
+	{ "D(X2)", "D(Y2)", "D(Z2)", "D(XY)", "D(XZ)", "D(YZ)", "", "", "", "", "" },	 // D
+	{ "F(X3)", "F(Y3)", "F(Z3)", "", "", "", "", "", "", "", "" },	// F
+	{ "", "", "", "", "", "", "", "", "", "", "" },		// G
+	{ "", "", "", "", "", "", "", "", "", "", "" }		// L
+};
+const char *BasisShell::cartesianFunction(BasisShellType bft, int index)
+{
+	// Check limits of index
+	if ((index < 0) || (index >= NumberCartesianFunctions[bft])) printf("Cartesian function ID %i is out of range for an '%s' shell.\n", BasisShellTypeKeywords[bft], index);
+	else return CartesianFunctionNames[bft][index];
+	return "NONAME";
+}
+// Spherical function numbers and names
+int NumberSphericalFunctions[BasisShell::nBasisShellTypes] = { 0, 1, 3, 5, 7, 9, 4 };
+int BasisShell::nSphericalFunctions(BasisShellType bft)
+{
+	return NumberSphericalFunctions[bft];
+}
+const char *SphericalFunctionNames[BasisShell::nBasisShellTypes][11] = {
+	{ "", "", "", "", "", "", "", "", "", "", "" },			// None
+	{ "S", "", "", "", "", "", "", "", "", "", "" },		// S
+	{ "P(X)", "P(Y)", "P(Z)", "", "", "", "", "", "", "", "" },	// P
+	{ "D(Z2)", "D(XZ)", "D(YZ)", "D(XY)", "D(X2-Y2)", "", "", "", "", "", "" },	 // D
+	{ "F(Z3)", "F(XZ2)", "F(YZ2)", "F(XYZ)", "FZ(X2-Y2)", "FX(X2-3Y2)", "FY(3Z2-Y2)", "", "", "", "" },	// F
+	{ "", "", "", "", "", "", "", "", "", "", "" },		// G
+	{ "", "", "", "", "", "", "", "", "", "", "" }		// L
+};
+const char *BasisShell::sphericalFunction(BasisShellType bft, int index)
+{
+	// Check limits of index
+	if ((index < 0) || (index >= NumberSphericalFunctions[bft])) printf("Spherical function ID %i is out of range for an '%s' shell.\n", BasisShellTypeKeywords[bft], index);
+	else return SphericalFunctionNames[bft][index];
+	return "NONAME";
 }
 
 /*
@@ -117,67 +161,6 @@ void BasisShell::setType(BasisShellType bft)
 	type_ = bft;
 }
 
-// Return number of related cartesian functions, based on shell type
-int BasisShell::nCartesianFunctions()
-{
-	switch (type_)
-	{
-		case (BasisShell::NoType):
-			return 0;
-			break;
-		case (BasisShell::SShellType):
-			return 1;
-			break;
-		case (BasisShell::SPShellType):
-			return 4;
-			break;
-		case (BasisShell::PShellType):
-			return 3;
-			break;
-		case (BasisShell::DShellType):
-			return 5;
-			break;
-		case (BasisShell::FShellType):
-			return 7;
-			break;
-	}
-	return -1;
-}
-
-// Return name of cartesian function
-const char *BasisShell::cartesianFunctionName(int id)
-{
-	static const char *pshell[3] = { "P(X)", "P(Y)", "P(Z)" };
-	static const char *lshell[4] = { "L(S)", "L(PX)", "L(PY)", "L(PZ)" };
-	static const char *dshell[5] = { "D(Z2)", "D(XZ)", "D(YZ)", "D(XY)", "D(X2-Y2)" };
-	static const char *fshell[7] = { "F(Z3)", "F(XZ2)", "F(YZ2)", "F(XYZ)", "FZ(X2-Y2)", "FX(X2-3Y2)", "FY(3Z2-Y2)" };
-	switch (type_)
-	{
-		case (BasisShell::NoType):
-			break;
-		case (BasisShell::SShellType):
-			if (id == 0) return "S";
-			else printf("Cartesian function ID is out of range for an S shell.\n", id);
-			break;
-		case (BasisShell::SPShellType):
-			if ((id < 0) || (id > 3)) printf("Cartesian function ID is out of range for an L shell.\n", id);
-			else return lshell[id];
-			break;
-		case (BasisShell::PShellType):
-			if ((id < 0) || (id > 2)) printf("Cartesian function ID is out of range for a P shell.\n", id);
-			else return pshell[id];
-			break;
-		case (BasisShell::DShellType):
-			if ((id < 0) || (id > 4)) printf("Cartesian function ID is out of range for a D shell.\n", id);
-			else return dshell[id];
-			break;
-		case (BasisShell::FShellType):
-			if ((id < 0) || (id > 6)) printf("Cartesian function ID is out of range for a F shell.\n", id);
-			else return fshell[id];
-			break;
-	}
-	return "NONAME";
-}
 
 // Return basis function type
 BasisShell::BasisShellType BasisShell::type() const

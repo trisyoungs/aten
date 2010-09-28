@@ -38,7 +38,9 @@ class AtenVibrations : public QDialog
 	void refresh();
 	private slots:
 	void dialogFinished(int result);
+	void on_VibrationsList_currentRowChanged(int row);
 	void on_PlayPauseVibration_clicked(bool checked);
+	void on_ShowVectorsCheck_clicked(bool checked);
 	private:
 	// Refresh displacements table
 	void refreshDisplacements();

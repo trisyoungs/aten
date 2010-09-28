@@ -65,9 +65,15 @@ class BasisShell
 	// List pointers
 	BasisShell *prev, *next;
 	// Function Type
-	enum BasisShellType { NoType, SShellType, SPShellType, PShellType, DShellType, FShellType, nBasisShellTypes };
+	enum BasisShellType { NoType, SShellType, PShellType, DShellType, FShellType, GShellType, SPShellType, nBasisShellTypes };
 	static BasisShellType basisShellType(const char *s, bool reporterror = FALSE);
 	static const char *basisShellType(BasisShellType bft);
+	// Cartesian function names
+	static int nCartesianFunctions(BasisShellType bft);
+	static const char *cartesianFunction(BasisShellType bft, int index);
+	// Spherical function names
+	static int nSphericalFunctions(BasisShellType bft);
+	static const char *sphericalFunction(BasisShellType bft, int index);
 
 
 	/*
@@ -88,10 +94,6 @@ class BasisShell
 	int atomId() const;
 	// Set basis function type
 	void setType(BasisShellType bft);
-	// Return number of related cartesian functions, based on shell type
-	int nCartesianFunctions();
-	// Return name of n'th cartesian function associated with shell
-	const char *cartesianFunctionName(int n);
 	// Return basis function type
 	BasisShellType type() const;
 	// Add new primitive to shell
