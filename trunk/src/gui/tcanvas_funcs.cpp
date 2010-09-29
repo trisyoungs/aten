@@ -100,7 +100,7 @@ void TCanvas::paintGL()
 		// so here it is done in the 'wrong' order.
 
 		Model *source;
-		if (useCurrentModel_) source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSource();
+		if (useCurrentModel_) source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSourceModel();
 		else source = renderSource_;
 
 		if (source != NULL)
@@ -244,8 +244,8 @@ void TCanvas::timerEvent(QTimerEvent *event)
 	{
 		DONTDRAW = TRUE;
 		Model *m = aten.currentModel();
-		m->seekNextFrame();
-		if (m->frameIndex() == m->nFrames()-1) gui.stopTrajectoryPlayback();
+		m->seekNextTrajectoryFrame();
+		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) gui.stopTrajectoryPlayback();
 		gui.update(FALSE,FALSE,FALSE);
 		DONTDRAW = FALSE;
 	}

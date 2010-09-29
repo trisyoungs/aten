@@ -89,11 +89,11 @@ void AtenVibrations::refreshDisplacements()
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Vibration *vib = m->vibration(row);
-	Atom *i = m->atoms();
 	Vec3<double> *displacements = vib->displacements();
 	QTableWidgetItem *item;
 	ui.DisplacementsTable->setRowCount(vib->nDisplacements());
 	int n;
+	Atom *i = m->atoms();
 	for (n=0; n<vib->nDisplacements(); ++n)
 	{
 		if (i == NULL) msg.print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
@@ -109,6 +109,7 @@ void AtenVibrations::refreshDisplacements()
 		item = new QTableWidgetItem();
 		item->setText(ftoa(displacements[n].z));
 		ui.DisplacementsTable->setItem(n, 3, item);
+		i = i->next;
 	}
 	for (n=0; n<4; ++n) ui.DisplacementsTable->resizeColumnToContents(n);
 }

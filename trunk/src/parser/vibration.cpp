@@ -51,8 +51,10 @@ VibrationVariable::~VibrationVariable()
 Accessor VibrationVariable::accessorData[VibrationVariable::nAccessors] = {
 	{ "displacements",	VTypes::VectorData,		-1, TRUE },
 	{ "frequency",		VTypes::DoubleData,		0, FALSE },
+	{ "intensity",		VTypes::DoubleData,		0, FALSE },
 	{ "name",		VTypes::StringData,		0, FALSE },
-	{ "ndisplacements",	VTypes::IntegerData,		0, TRUE }
+	{ "ndisplacements",	VTypes::IntegerData,		0, TRUE },
+	{ "rmass",		VTypes::DoubleData,		0, FALSE }
 };
 
 // Function data
@@ -166,11 +168,17 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 		case (VibrationVariable::Frequency):
 			rv.set(ptr->frequency());
 			break;
+		case (VibrationVariable::Intensity):
+			rv.set(ptr->intensity());
+			break;
 		case (VibrationVariable::Name):
 			rv.set(ptr->name());
 			break;
 		case (VibrationVariable::NDisplacements):
 			rv.set(ptr->nDisplacements());
+			break;
+		case (VibrationVariable::ReducedMass):
+			rv.set(ptr->reducedMass());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in VibrationVariable.\n", accessorData[i].name);
@@ -265,8 +273,14 @@ bool VibrationVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 		case (VibrationVariable::Frequency):
 			ptr->setFrequency( newvalue.asDouble() );
 			break;
+		case (VibrationVariable::Intensity):
+			ptr->setFrequency( newvalue.asDouble() );
+			break;
 		case (VibrationVariable::Name):
 			ptr->setName( newvalue.asString() );
+			break;
+		case (VibrationVariable::ReducedMass):
+			ptr->setReducedMass( newvalue.asDouble() );
 			break;
 		default:
 			printf("VibrationVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

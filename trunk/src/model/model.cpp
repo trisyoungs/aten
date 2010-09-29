@@ -36,11 +36,13 @@
 Model::Model()
 {
 	// Private variables
-	// Camera / View
+	// Camera / View / render
 	camera_.set(0.0,0.0,-10.0);
 	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
+	renderSource_ = Model::ModelSource;
+	sourceBeforeVibration_ = Model::VibrationSource;
 
 	// Properties
 	name_ = "NewModel";
@@ -70,14 +72,13 @@ Model::Model()
 	trajectoryHeaderFunction_ = NULL;
 	trajectoryFrameFunction_ = NULL;
 	trajectoryOffsets_ = NULL;
-	highestFrameOffset_ = 0;
-	frameSize_ = 0;
-	nFileFrames_ = 0;
-	renderFromSelf_ = TRUE;
-	framesAreCached_ = FALSE;
-	frameIndex_ = -1;
+	trajectoryHighestFrameOffset_ = 0;
+	trajectoryFrameSize_ = 0;
+	nTrajectoryFileFrames_ = 0;
+	trajectoryFramesAreCached_ = FALSE;
+	trajectoryFrameIndex_ = -1;
 	trajectoryPlaying_ = FALSE;
-	currentFrame_ = NULL;
+	trajectoryCurrentFrame_ = NULL;
 
 	// Disordered builder
 	componentPattern_ = NULL;
@@ -98,6 +99,9 @@ Model::Model()
 	spacegroup_.MaxList = 192;
 	spacegroup_.ListSeitzMx = new T_RTMx[192];
 	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
+
+	// Vibration info
+	vibrationCurrentFrame_ = NULL;
 
 	// Public variables
 	next = NULL;
@@ -170,7 +174,8 @@ void Model::clear()
 	glyphs_.clear();
 	clearAtoms();
 	patterns_.clear();
-	frames_.clear();
+	trajectoryFrames_.clear();
+	vibrationFrames_.clear();
 	// Reset logs and log points
 	changeLog.reset();
 	patternsPoint_ = -1;

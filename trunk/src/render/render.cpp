@@ -74,8 +74,8 @@ void Canvas::renderScene(Model *source)
 	// If this is a trajectory frame, check its ID against the last one rendered
 	if (source->trajectoryParent() != NULL)
 	{
-		if (source->trajectoryParent()->frameIndex() != displayFrameId_) renderPoint_.reset();
-		displayFrameId_ = source->trajectoryParent()->frameIndex();
+		if (source->trajectoryParent()->trajectoryFrameIndex() != displayFrameId_) renderPoint_.reset();
+		displayFrameId_ = source->trajectoryParent()->trajectoryFrameIndex();
 		msg.print(Messenger::GL, " --> Source model is a trajectory frame - index = %i\n", displayFrameId_);
 	}
 

@@ -41,7 +41,7 @@ bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
-	Model *frame = obj.m->currentFrame();
+	Model *frame = obj.m->trajectoryCurrentFrame();
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 	rv.reset();
 	return TRUE;
@@ -133,7 +133,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	Model *frame;
 	Calculable *calc;
 	// Check that the model has a trajectory associated to it
-	totalframes = obj.m->nFrames();
+	totalframes = obj.m->nTrajectoryFrames();
 	if (totalframes == 0)
 	{
 		msg.print("No trajectory associated to model.\n");
@@ -145,7 +145,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	frameskip = c->argi(1);
 	framestodo = (c->hasArg(2) ? c->argi(2) : -1);
 	// Rewind trajectory to first frame and begin
-	obj.m->seekFirstFrame();
+	obj.m->seekFirstTrajectoryFrame();
 	framesdone = 0;
 	for (n=1; n <= totalframes; n++)
 	{
@@ -156,14 +156,14 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		// Calculate quantities
 		if (calculate)
 		{
-			frame = obj.m->currentFrame();
+			frame = obj.m->trajectoryCurrentFrame();
 			for (calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 			framesdone ++;
 		}
 		// Check for required number of frames completed
 		if (framesdone == framestodo) break;
 		// Move to next frame
-		if (n != totalframes) obj.m->seekNextFrame();
+		if (n != totalframes) obj.m->seekNextTrajectoryFrame();
 	}
 	msg.print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
 	rv.reset();

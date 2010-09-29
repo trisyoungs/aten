@@ -137,7 +137,7 @@ bool Command::function_FinaliseModel(CommandNode *c, Bundle &obj, ReturnValue &r
 	msg.print(Messenger::Verbose, "Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
-	if (obj.m->nFrames() > 0) obj.m->setRenderFromFrames();
+	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
 	// Lastly, reset all the log points and start afresh
 	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();
@@ -179,7 +179,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		m->setRenderFromSelf();
+		m->setRenderSource(Model::ModelSource);
 		gui.update(FALSE, FALSE, FALSE);
 		obj.p = NULL;
 		obj.i = m->atoms();
@@ -196,7 +196,7 @@ bool Command::function_GetModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_Info(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->renderSource()->print();
+	obj.rs->renderSourceModel()->print();
 	rv.reset();
 	return TRUE;
 }
@@ -248,7 +248,7 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LogInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->renderSource()->printLogs();
+	obj.rs->renderSourceModel()->printLogs();
 	rv.reset();
 	return TRUE;
 }
@@ -290,7 +290,7 @@ bool Command::function_NewModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vibration *v = obj.rs->renderSource()->addVibration();
+	Vibration *v = obj.rs->renderSourceModel()->addVibration();
 	if (c->hasArg(0)) v->setName(c->argc(0));
 	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs->name());
 	rv.set(VTypes::VibrationData, v);
@@ -321,7 +321,7 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		msg.print("This model doesn't have a trajectory parent.\n");
 		return FALSE;
 	}
-	obj.m->setRenderFromSelf();
+	obj.m->setRenderSource(Model::ModelSource);
 	aten.setCurrentModel(obj.m);
 	return TRUE;
 }

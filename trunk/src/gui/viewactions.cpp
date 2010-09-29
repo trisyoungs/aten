@@ -66,7 +66,7 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
-	aten.currentModel()->setRenderFromSelf();
+	aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
@@ -76,7 +76,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
-	aten.currentModel()->setRenderFromFrames();
+	aten.currentModel()->setRenderSource(Model::TrajectorySource);
 	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);

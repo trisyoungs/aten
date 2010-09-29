@@ -192,7 +192,8 @@ void Canvas::renderExtra3d() const
 					int count = 0;
 					for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 					{
-						glArrow(i->r(), disp[count], FALSE);
+						if (prefs.renderStyle() == Atom::StickStyle) glArrow(i->r(), disp[count], FALSE);
+						else glCylinderArrow(i->r(), disp[count], FALSE);
 						++count;
 					}
 				}

@@ -61,6 +61,8 @@ class Model
 	~Model();
 	// List pointers
 	Model *prev, *next;
+	// Render source list
+	enum RenderSource { ModelSource, TrajectorySource, VibrationSource };
 	// Friend declarations
 	friend class IdShiftEvent;
 
@@ -760,27 +762,27 @@ class Model
 	// File offsets for frames
 	streampos *trajectoryOffsets_;
 	// Number of highest frame file offset stored
-	int highestFrameOffset_;
+	int trajectoryHighestFrameOffset_;
 	// Size of one frame
-	long int frameSize_;
+	long int trajectoryFrameSize_;
 	// Frame list
-	List<Model> frames_;
+	List<Model> trajectoryFrames_;
 	// Remove frame from trajectory
-	void removeFrame(Model*);
+	void removeTrajectoryFrame(Model*);
 	// Total number of frames available in file (if an uncached trajectory)
-	int nFileFrames_;
+	int nTrajectoryFileFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
-	bool framesAreCached_;
+	bool trajectoryFramesAreCached_;
 	// Current frame position counter
-	int frameIndex_;
+	int trajectoryFrameIndex_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
-	// Pointer to config to be drawn
-	Model *currentFrame_;
+	// Current trajectory frame (Model*) to be drawn
+	Model *trajectoryCurrentFrame_;
 
 	public:
 	// Add frame to trajectory
-	Model *addFrame();
+	Model *addTrajectoryFrame();
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
@@ -798,41 +800,43 @@ class Model
 	// Return the trajectory file pointer
 	ifstream *trajectoryFile();
 	// Return the current frame pointer
-	Model *currentFrame() const;
+	Model *trajectoryCurrentFrame() const;
 	// Return pointer to specified frame number
-	Model *frame(int n);
+	Model *trajectoryFrame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
-	int nFrames() const;
+	int nTrajectoryFrames() const;
 	// Return the current integer frame position
-	int frameIndex() const;
+	int trajectoryFrameIndex() const;
 	// Seek to first frame
-	void seekFirstFrame();
+	void seekFirstTrajectoryFrame();
 	// Seek to last frame
-	void seekLastFrame();
+	void seekLastTrajectoryFrame();
 	// Seek to next frame
-	void seekNextFrame();
+	void seekNextTrajectoryFrame();
 	// Seek to previous frame
-	void seekPreviousFrame();
+	void seekPreviousTrajectoryFrame();
 	// Seek to specified frame
-	void seekFrame(int frameno);
+	void seekTrajectoryFrame(int frameno);
 
 
 	/*
-	// Rendering
+	// Rendering Source
 	*/
 	private:
 	// Whether to render from self (TRUE) or trajectory frame (FALSE)
-	bool renderFromSelf_;
+	RenderSource renderSource_;
+	// Previous rendering source, before changing to Model::VibrationSource
+	RenderSource sourceBeforeVibration_;
 
 	public:
-	// Render from self
-	void setRenderFromSelf();
+	// Set rendering source
+	void setRenderSource(RenderSource rs);
 	// Return whether rendering from self
-	bool renderFromSelf() const;
-	// Render from trajectory
-	void setRenderFromFrames();
+	RenderSource renderSource() const;
+	// Restore rendering source to previous value (after VibrationSource)
+	void restoreRenderSource();
 	// Return the current rendering source for the model
-	Model *renderSource();
+	Model *renderSourceModel();
 
 
 	/*
@@ -1122,6 +1126,10 @@ class Model
 	private:
 	// List of defined vibrations
 	List<Vibration> vibrations_;
+	// List of vibration frames
+	List<Model> vibrationFrames_;
+	// Current vibration frame
+	Model *vibrationCurrentFrame_;
 
 	public:
 	// Add a new vibration to the model

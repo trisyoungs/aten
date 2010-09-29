@@ -32,8 +32,8 @@
 void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory (or vice versa)
-	if (checked) aten.currentModel()->setRenderFromFrames();
-	else aten.currentModel()->setRenderFromSelf();
+	if (checked) aten.currentModel()->setRenderSource(Model::TrajectorySource);
+	else aten.currentModel()->setRenderSource(Model::ModelSource);
 	Model *m = aten.currentModelOrFrame();
 	m->calculateViewMatrix();
 	m->changeLog.add(Log::Camera);
@@ -42,28 +42,28 @@ void AtenForm::on_actionTrajectoryViewTrajectory_triggered(bool checked)
 
 void AtenForm::on_actionTrajectoryNextFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekNextFrame();
+	aten.currentModel()->seekNextTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionTrajectoryPreviousFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekPreviousFrame();
+	aten.currentModel()->seekPreviousTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionTrajectoryFirstFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekFirstFrame();
+	aten.currentModel()->seekFirstTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionTrajectoryLastFrame_triggered(bool checked)
 {
-	aten.currentModel()->seekLastFrame();
+	aten.currentModel()->seekLastTrajectoryFrame();
 	aten.currentModelOrFrame()->changeLog.add(Log::Camera);
 	gui.update(TRUE,TRUE,FALSE);
 }
@@ -89,7 +89,7 @@ void AtenForm::trajectorySlider_sliderMoved(int i)
 	if (trajectoryToolbarRefreshing_) return;
 	trajectoryToolbarRefreshing_ = TRUE;
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
-	aten.current.m->seekFrame(i-1);
+	aten.current.m->seekTrajectoryFrame(i-1);
 	// Set corresponding value in Spin control
 	trajectorySpin_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;
@@ -100,8 +100,8 @@ void AtenForm::trajectorySpin_valueChanged(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
 	trajectoryToolbarRefreshing_ = TRUE;
-	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
-	aten.current.m->seekFrame(i-1);
+	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
+	aten.current.m->seekTrajectoryFrame(i-1);
 	// Set corresponding value in Spin control
 	trajectorySlider_->setValue(i);
 	trajectoryToolbarRefreshing_ = FALSE;

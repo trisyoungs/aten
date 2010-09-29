@@ -150,13 +150,13 @@ void Aten::setCurrentModel(Model *m)
 	}
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
-	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
+	current.rs = (current.m == NULL ? NULL : current.m->renderSourceModel());
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.g = m->grids();
 	current.i = NULL;
-	current.m->renderSource()->calculateViewMatrix();
-	current.m->renderSource()->projectAll();
+	current.m->renderSourceModel()->calculateViewMatrix();
+	current.m->renderSourceModel()->projectAll();
 	// Set window title
 	// Set the title of the main window to reflect the version
 	char title[256];
@@ -182,7 +182,7 @@ Model *Aten::currentModel() const
 // Return current active model for editing, accounting for trajectory frames
 Model *Aten::currentModelOrFrame() const
 {
-	return (current.m == NULL ? NULL : current.m->renderSource());
+	return (current.m == NULL ? NULL : current.m->renderSourceModel());
 }
 
 // Return first item in the model list
