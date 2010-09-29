@@ -205,7 +205,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			else rv.set(VTypes::ElementData, &elements().el[0]);
 			break;
 		case (AtenVariable::Frame):
-			rv.set(VTypes::ModelData, aten.currentModel()->renderSource());
+			rv.set(VTypes::ModelData, aten.currentModel()->renderSourceModel());
 			break;
 		case (AtenVariable::Modeldata):
 			rv.set(VTypes::ModelData, aten.currentModel());
