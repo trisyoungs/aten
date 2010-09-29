@@ -159,7 +159,7 @@ void Model::generateVibration(int index)
 		delta=k*stepdelta;
 		// To add a new frame to the list	
 		Model *m = vibrationFrames_.add();
-		m->setTrajectoryParent(this);
+		m->setParent(this);
 	
 		// To loop over original atom coordinates
 		int count = 0;

@@ -116,8 +116,15 @@ void AtenVibrations::refreshDisplacements()
 
 void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
 {
+	if (refreshing_) return;
 	refreshDisplacements();
 	if (ui.ShowVectorsCheck->isChecked()) gui.mainView.postRedisplay();
+	// If currently playing a trajectory, regenerate it
+	if (ui.PlayPauseVibration->isChecked())
+	{
+		Model *m = aten.currentModelOrFrame();
+		m->generateVibration(ui.VibrationsList->currentRow());
+	}
 }
 
 void AtenVibrations::on_ShowVectorsCheck_clicked(bool checked)
@@ -130,7 +137,7 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 	if (checked)
 	{
 		vibrationPlaying_ = TRUE;
-		gui.setWindowsEnabled(FALSE);
+// 		gui.setWindowsEnabled(FALSE);
 		this->setEnabled(TRUE);
 		Model *m = aten.currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow());
@@ -141,21 +148,22 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 	{
 		vibrationPlaying_ = FALSE;
 		this->killTimer(vibrationTimerId_);
-		Model *m = aten.currentModel();
-		m->setRenderFromVibration(TRUE);
-		gui.setWindowsEnabled(TRUE);
+		Model *m = aten.currentModelOrFrame();
+		m->setRenderFromVibration(FALSE);
+		gui.mainView.postRedisplay();
+// 		gui.setWindowsEnabled(TRUE);
 	}
 }
 
 void AtenVibrations::timerEvent(QTimerEvent*)
 {
-	if (DONTDRAW) printf("Still drawing previous frame.\n");
+	if (DONTDRAW) msg.print(Messenger::Verbose, "AtenVibrations - Still drawing previous frame...\n");
 	else
 	{
 		DONTDRAW = TRUE;
 		Model *m = aten.currentModelOrFrame();
 		m->vibrationNextFrame();
-		gui.update(FALSE,FALSE,FALSE);
+		gui.mainView.postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }

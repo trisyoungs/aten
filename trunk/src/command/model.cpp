@@ -316,9 +316,9 @@ bool Command::function_ParentModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Check for parent frame
-	if (obj.rs->trajectoryParent() == NULL)
+	if (obj.rs->parent() == NULL)
 	{
-		msg.print("This model doesn't have a trajectory parent.\n");
+		msg.print("This model doesn't have a parent.\n");
 		return FALSE;
 	}
 	obj.m->setRenderSource(Model::ModelSource);

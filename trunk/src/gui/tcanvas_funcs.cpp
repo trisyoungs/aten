@@ -102,8 +102,7 @@ void TCanvas::paintGL()
 		Model *source;
 		if (useCurrentModel_)
 		{
-// 			source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSourceModel();
-			source = aten.currentModel();
+			source = aten.currentModelOrFrame();
 			if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source->renderSourceModel());
 		}
 		else
