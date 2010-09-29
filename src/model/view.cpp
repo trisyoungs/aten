@@ -25,8 +25,6 @@
 // Set rendering source
 void Model::setRenderSource(Model::RenderSource rs)
 {
-	// Store previous rendering source, if new source is VibrationSource, else set to VibrationSource
-	sourceBeforeVibration_ = (rs == Model::VibrationSource ? renderSource_ : Model::VibrationSource);
 	renderSource_ = rs;
 }
 
@@ -34,13 +32,6 @@ void Model::setRenderSource(Model::RenderSource rs)
 Model::RenderSource Model::renderSource() const
 {
 	return renderSource_;
-}
-
-// Restore rendering source to previous value (after VibrationSource)
-void Model::restoreRenderSource()
-{
-	if (sourceBeforeVibration_ != Model::VibrationSource) renderSource_ = sourceBeforeVibration_;
-	sourceBeforeVibration_ = Model::VibrationSource;
 }
 
 // Return the current rendering source for the model
@@ -52,10 +43,20 @@ Model *Model::renderSourceModel()
 			return this;
 		case (Model::TrajectorySource):
 			return trajectoryCurrentFrame_;
-		case (Model::VibrationSource):
-			return vibrationCurrentFrame_;
 	}
 	return NULL;
+}
+
+// Set whether to render from vibration frames
+void Model::setRenderFromVibration(bool b)
+{
+	renderFromVibration_ = b;
+}
+
+// Return whether to render from vibration frames
+bool Model::renderFromVibration()
+{
+	return renderFromVibration_;
 }
 
 // Set the current rotation matrix

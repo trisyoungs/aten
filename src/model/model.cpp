@@ -42,7 +42,7 @@ Model::Model()
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	renderSource_ = Model::ModelSource;
-	sourceBeforeVibration_ = Model::VibrationSource;
+	renderFromVibration_ = FALSE;
 
 	// Properties
 	name_ = "NewModel";
@@ -102,6 +102,7 @@ Model::Model()
 
 	// Vibration info
 	vibrationCurrentFrame_ = NULL;
+	vibrationForward_ = TRUE;
 
 	// Public variables
 	next = NULL;

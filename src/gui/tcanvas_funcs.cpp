@@ -100,8 +100,17 @@ void TCanvas::paintGL()
 		// so here it is done in the 'wrong' order.
 
 		Model *source;
-		if (useCurrentModel_) source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSourceModel();
-		else source = renderSource_;
+		if (useCurrentModel_)
+		{
+// 			source = aten.currentModel() == NULL ? NULL : aten.currentModel()->renderSourceModel();
+			source = aten.currentModel();
+			if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source->renderSourceModel());
+		}
+		else
+		{
+			source = renderSource_;
+			if (source != NULL) source = (source->renderFromVibration() ? source->vibrationCurrentFrame() : source->renderSourceModel());
+		}
 
 		if (source != NULL)
 		{

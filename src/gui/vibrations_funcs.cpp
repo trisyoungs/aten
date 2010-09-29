@@ -132,30 +132,32 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 		vibrationPlaying_ = TRUE;
 		gui.setWindowsEnabled(FALSE);
 		this->setEnabled(TRUE);
+		Model *m = aten.currentModelOrFrame();
+		m->generateVibration(ui.VibrationsList->currentRow());
+		m->setRenderFromVibration(TRUE);
 		vibrationTimerId_ = this->startTimer(100);
 	}
 	else
 	{
 		vibrationPlaying_ = FALSE;
 		this->killTimer(vibrationTimerId_);
+		Model *m = aten.currentModel();
+		m->setRenderFromVibration(TRUE);
 		gui.setWindowsEnabled(TRUE);
 	}
 }
 
 void AtenVibrations::timerEvent(QTimerEvent*)
 {
-	printf("kjkj\n");
-// 	if (DONTDRAW) printf("Still drawing previous frame.\n");
-// 	else
-// 	{
-// 		DONTDRAW = TRUE;
-// 		Model *m = aten.currentModel();
-// 		m->seekNextFrame();
-// 		if (m->frameIndex() == m->nFrames()-1) gui.stopTrajectoryPlayback();
-// 		gui.update(FALSE,FALSE,FALSE);
-// 		DONTDRAW = FALSE;
-// 	}
-
+	if (DONTDRAW) printf("Still drawing previous frame.\n");
+	else
+	{
+		DONTDRAW = TRUE;
+		Model *m = aten.currentModelOrFrame();
+		m->vibrationNextFrame();
+		gui.update(FALSE,FALSE,FALSE);
+		DONTDRAW = FALSE;
+	}
 }
 
 void AtenVibrations::dialogFinished(int result)
