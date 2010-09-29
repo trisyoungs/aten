@@ -160,6 +160,7 @@ void Model::generateVibration(int index)
 		// To add a new frame to the list	
 		Model *m = vibrationFrames_.add();
 		m->setParent(this);
+		m->setType(Model::VibrationFrameType);
 	
 		// To loop over original atom coordinates
 		int count = 0;
@@ -219,6 +220,5 @@ void Model::vibrationNextFrame()
 		}
 		else vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;
 	}
-	printf("New vibration frame = %p\n", vibrationCurrentFrame_);
 	msg.exit("Model::vibrationNextFrame");
 }

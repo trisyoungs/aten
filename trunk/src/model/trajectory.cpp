@@ -213,6 +213,7 @@ Model *Model::addTrajectoryFrame()
 {
 	msg.enter("Model::addFrame");	
 	Model *newframe = trajectoryFrames_.add();
+	newframe->setType(Model::TrajectoryFrameType);
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
 	trajectoryCurrentFrame_ = newframe;
 	newframe->setParent(this);

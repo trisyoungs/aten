@@ -232,6 +232,7 @@ Model *Aten::addModel()
 	{
 		case (Aten::MainModelList):
 			m = models_.add();
+			m->setType(Model::ParentModelType);
 			sprintf(newname,"Unnamed%03i", ++modelId_);
 			m->setName(newname);
 			m->changeLog.reset();
@@ -241,6 +242,7 @@ Model *Aten::addModel()
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
+			m->setType(Model::ParentModelType);
 			sprintf(newname,"Fragment%03i", ++fragmentModelId_);
 			m->setName(newname);
 			m->changeLog.reset();
