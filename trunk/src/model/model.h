@@ -62,7 +62,7 @@ class Model
 	// List pointers
 	Model *prev, *next;
 	// Render source list
-	enum RenderSource { ModelSource, TrajectorySource, VibrationSource };
+	enum RenderSource { ModelSource, TrajectorySource };
 	// Friend declarations
 	friend class IdShiftEvent;
 
@@ -825,18 +825,20 @@ class Model
 	private:
 	// Whether to render from self (TRUE) or trajectory frame (FALSE)
 	RenderSource renderSource_;
-	// Previous rendering source, before changing to Model::VibrationSource
-	RenderSource sourceBeforeVibration_;
+	// Flags whether to draw from associated vibration instead of model
+	bool renderFromVibration_;
 
 	public:
 	// Set rendering source
 	void setRenderSource(RenderSource rs);
 	// Return whether rendering from self
 	RenderSource renderSource() const;
-	// Restore rendering source to previous value (after VibrationSource)
-	void restoreRenderSource();
 	// Return the current rendering source for the model
 	Model *renderSourceModel();
+	// Set whether to render from vibration frames
+	void setRenderFromVibration(bool b);
+	// Return whether to render from vibration frames
+	bool renderFromVibration();
 
 
 	/*
@@ -1130,6 +1132,8 @@ class Model
 	List<Model> vibrationFrames_;
 	// Current vibration frame
 	Model *vibrationCurrentFrame_;
+	// Direction of current playback
+	bool vibrationForward_;
 
 	public:
 	// Add a new vibration to the model
@@ -1140,6 +1144,12 @@ class Model
 	Vibration *vibrations();
 	// Return n'th vibration
 	Vibration *vibration(int n);
+	// Generate trajectory for n'th vibration
+	void generateVibration(int index);
+	// Return current vibration frame
+	Model *vibrationCurrentFrame();
+	// Move on to next/prev frame (depending on current playback direction)
+	void vibrationNextFrame();
 };
 
 #endif

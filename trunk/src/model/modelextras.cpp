@@ -1,6 +1,6 @@
 /*
-	*** Model Molecular Orbital functions
-	*** src/model/mo.cpp
+	*** Model Extras
+	*** src/model/modelextras.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -123,4 +123,102 @@ Vibration *Model::vibrations()
 Vibration *Model::vibration(int n)
 {
 	return vibrations_[n];
+}
+
+ // Generate trajectory for n'th vibration
+void Model::generateVibration(int index)
+{
+	msg.enter("Model::generateVibration");
+	// Delete old vibrations
+	vibrationFrames_.clear();
+	// Check vibration index
+	if ((index < 0) || (index >= vibrations_.nItems()))
+	{
+		printf("Internal Error : Vibration index %i given to Model::generateVibration is invalid.\n", index);
+		msg.exit("Model::generateVibration");
+		return;
+	}
+	// Grab necessary pointers
+	Vibration *vib = vibrations_[index];
+	double freq = vib->frequency();
+	Vec3<double> *displacements = vib->displacements();
+	// Check number of atoms against number of defined displacements
+	if (vib->nDisplacements() != atoms_.nItems())
+	{
+		printf("Internal Error : Vibration given to Model::generateVibration contains %i displacements, but there are %i atoms.\n", vib->nDisplacements(), atoms_.nItems());
+		msg.exit("Model::generateVibration");
+		return;
+	}
+	// Ready to generate frames
+	int nsteps = 20;
+	double delta, stepdelta = 1.0 / nsteps;
+	int k;
+	// LOOP!
+	for(k=0; k<=nsteps; k++)
+	{	
+		delta=k*stepdelta;
+		// To add a new frame to the list	
+		Model *m = vibrationFrames_.add();
+		m->setTrajectoryParent(this);
+	
+		// To loop over original atom coordinates
+		int count = 0;
+		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		{
+			// CODE GOES HERE
+			// Atom coordinates
+			Vec3<double> pos = i->r();
+			
+			// For example!
+			Vec3<double> newpos = i->r() + displacements[count] * delta;
+			++count;
+	
+			// How to add a new atom!
+			Atom *j = m->addAtom( i->element(), newpos);
+		}
+	}
+	// Reset variables
+	vibrationForward_ = TRUE;
+	vibrationCurrentFrame_ = vibrationFrames_.first();
+	printf("Ini model %p, vib pointer is %p\n", this, vibrationCurrentFrame_);
+	msg.exit("Model::generateVibration");
+}
+
+// Return current vibration frame
+Model *Model::vibrationCurrentFrame()
+{
+	return vibrationCurrentFrame_;
+}
+
+// Move on to next/prev frame (depending on current playback direction)
+void Model::vibrationNextFrame()
+{
+	msg.enter("Model::vibrationNextFrame");
+	// Check for presence of a vibration trajectory
+	if (vibrationFrames_.nItems() == 0)
+	{
+		printf("Internal Error : Model '%s' has no vibration trajectory to display.\n", name_.get());
+		msg.exit("Model::vibrationNextFrame");
+		return;
+	}
+	if (vibrationForward_)
+	{
+		if (vibrationCurrentFrame_->next == NULL)
+		{
+			vibrationForward_ = FALSE;
+			vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;
+		}
+		else vibrationCurrentFrame_ = vibrationCurrentFrame_->next;
+	}
+	else
+	{
+		if (vibrationCurrentFrame_->prev == NULL)
+		{
+			vibrationForward_ = TRUE;
+			vibrationCurrentFrame_ = vibrationCurrentFrame_->next;
+		}
+		else vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;
+	}
+	printf("New vibration frame = %p\n", vibrationCurrentFrame_);
+	msg.exit("Model::vibrationNextFrame");
 }
