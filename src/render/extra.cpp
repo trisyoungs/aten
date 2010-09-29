@@ -183,8 +183,11 @@ void Canvas::renderExtra3d() const
 			int row = gui.vibrationsWindow->ui.VibrationsList->currentRow();
 			if (row != -1)
 			{
+				// Get relevant model and vibration
+				Model *m = displayModel_;
+				if (m->type() == Model::VibrationFrameType) m = m->parent();
 				// Grab displacements array
-				Vibration *vib = displayModel_->vibration(row);
+				Vibration *vib = m->vibration(row);
 				if (vib != NULL)
 				{
 					Vec3<double> *disp = vib->displacements();
