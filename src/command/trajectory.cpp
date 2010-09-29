@@ -44,7 +44,7 @@ bool Command::function_ClearTrajectory(CommandNode *c, Bundle &obj, ReturnValue 
 	if (obj.rs != obj.m)
 	{
 		msg.print("Current model is a trajectory frame - resetting to the parent model...\n");
-		obj.rs = obj.m->trajectoryParent();
+		obj.rs = obj.m->parent();
 	}
 	obj.m->clearTrajectory();
 	gui.update(FALSE, FALSE, FALSE);

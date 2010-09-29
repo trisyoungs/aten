@@ -50,10 +50,10 @@ void AtenViewBasis::showWindow(Model *m)
 	if (m == NULL) return;
 	// If no basis definition exists in the supplied model, try to look at the trajectory parent
 	target_ = m;
-	if ((target_->basisShells() == NULL) && (target_->trajectoryParent() != NULL))
+	if ((target_->basisShells() == NULL) && (target_->parent() != NULL))
 	{
-		target_ = target_->trajectoryParent();
-		msg.print("No basis definition found in trajectory frame - looking in trajectory parent...\n");
+		target_ = target_->parent();
+		msg.print("No basis definition found in trajectory frame - looking in parent model...\n");
 	}
 	// Determine total row count
 	BasisShell *bas;

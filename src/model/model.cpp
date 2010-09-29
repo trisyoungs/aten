@@ -36,6 +36,9 @@
 Model::Model()
 {
 	// Private variables
+	parent_ = NULL;
+// 	type_ = Model::ParentModel;
+
 	// Camera / View / render
 	camera_.set(0.0,0.0,-10.0);
 	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
@@ -67,7 +70,6 @@ Model::Model()
 	undoRedoEnabled_ = FALSE;
 
 	// Trajectory
-	trajectoryParent_ = NULL;
 	trajectoryFilter_ = NULL;
 	trajectoryHeaderFunction_ = NULL;
 	trajectoryFrameFunction_ = NULL;
@@ -185,6 +187,29 @@ void Model::clear()
 	zMatrixPoint_ = -1;
 }
 
+// Set parent model of model (for frames)
+void Model::setParent(Model *m)
+{
+	parent_ = m;
+}
+
+// Return parent model of model (for frames)
+Model *Model::parent() const
+{
+	return parent_;
+}
+
+// Set model type
+void Model::setType(Model::ModelType mt)
+{
+	type_ = mt;
+}
+
+// Return model type
+Model::ModelType Model::type()
+{
+	return type_;
+}
 
 /*
 // Labelling

@@ -25,18 +25,6 @@
 #include "classes/prefs.h"
 #include <fstream>
 
-// Set parent model of trajectory
-void Model::setTrajectoryParent(Model *m)
-{
-	trajectoryParent_ = m;
-}
-
-// Return parent model of trajectory
-Model *Model::trajectoryParent() const
-{
-	return trajectoryParent_;
-}
-
 // Set the format of the trajectory
 void Model::setTrajectoryFilter(Tree *f)
 {
@@ -227,7 +215,7 @@ Model *Model::addTrajectoryFrame()
 	Model *newframe = trajectoryFrames_.add();
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
 	trajectoryCurrentFrame_ = newframe;
-	newframe->setTrajectoryParent(this);
+	newframe->setParent(this);
 	if (trajectoryFrames_.nItems() > 1) trajectoryFramesAreCached_ = TRUE;
 	trajectoryFrameIndex_ = trajectoryFrames_.nItems()-1;
 	msg.exit("Model::addFrame");	
@@ -238,10 +226,10 @@ Model *Model::addTrajectoryFrame()
 void Model::removeTrajectoryFrame(Model *xframe)
 {
 	// Delete the specified frame from the trajectory structure
-	msg.enter("Model::removeFrame");
+	msg.enter("Model::removeTrajectoryFrame");
 	if (xframe == trajectoryCurrentFrame_) trajectoryCurrentFrame_ = (xframe->next == NULL ? xframe->prev : xframe->next);
 	trajectoryFrames_.remove(xframe);
-	msg.exit("Model::removeFrame");
+	msg.exit("Model::removeTrajectoryFrame");
 }
 
 // Seek to first frame

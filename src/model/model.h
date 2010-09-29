@@ -63,6 +63,8 @@ class Model
 	Model *prev, *next;
 	// Render source list
 	enum RenderSource { ModelSource, TrajectorySource };
+	// Model types
+	enum ModelType { ParentModelType, TrajectoryFrameType, VibrationFrameType };
 	// Friend declarations
 	friend class IdShiftEvent;
 
@@ -77,6 +79,10 @@ class Model
 	Tree *filter_;
 	// Filename of model when loaded / last saved
 	Dnchar filename_;
+	// Parent model (if a trajectory or vibration frame)
+	Model *parent_;
+	// Type of model
+	ModelType type_;
 
 	public:
 	// Sets the filename of the model
@@ -103,6 +109,14 @@ class Model
 	void copyAtomData(Model *source, int);
 	// Copy range of atom data from specified model
 	void copyAtomData(Model *source, int, int, int);
+	// Set parent model of model (for frames)
+	void setParent(Model *m);
+	// Return parent model of model (for frames)
+	Model *parent() const;
+	// Set model type
+	void setType(Model::ModelType mt);
+	// Return model type
+	Model::ModelType type();
 
 
 	/*
@@ -422,6 +436,8 @@ class Model
 	Mat4<double> rotationMatrix() const;
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyRotationMatrix(double *m);
+	// Return the current camera matrix
+	Mat4<double> cameraMatrix() const;
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyCameraMatrix(double *m);
 	// Set the camera z-rotation
@@ -747,8 +763,6 @@ class Model
 	// Trajectory Frames
 	*/
 	private:
-	// Parent model of trajectory
-	Model *trajectoryParent_;
 	// Name associated with trajectory file
 	Dnchar trajectoryName_;
 	// Filename of file
@@ -787,10 +801,6 @@ class Model
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
 	bool trajectoryIsCached() const;
-	// Set parent model of trajectory
-	void setTrajectoryParent(Model *m);
-	// Return parent model of trajectory
-	Model *trajectoryParent() const;
 	// Initialise trajectory from file specified
 	bool initialiseTrajectory(const char*, Tree*);
 	// Reinitialise (clear) the associated trajectory
@@ -823,7 +833,7 @@ class Model
 	// Rendering Source
 	*/
 	private:
-	// Whether to render from self (TRUE) or trajectory frame (FALSE)
+	// Where to get 
 	RenderSource renderSource_;
 	// Flags whether to draw from associated vibration instead of model
 	bool renderFromVibration_;

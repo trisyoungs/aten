@@ -62,8 +62,8 @@ bool Model::renderFromVibration()
 // Set the current rotation matrix
 void Model::setRotationMatrix(Mat4<double> &rmat)
 {
-	if (trajectoryParent_ == NULL) rotationMatrix_ = rmat;
-	else trajectoryParent_->rotationMatrix_ = rmat;
+	if (parent_ == NULL) rotationMatrix_ = rmat;
+	else parent_->setRotationMatrix(rmat);
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -73,23 +73,29 @@ void Model::setRotationMatrix(Mat4<double> &rmat)
 // Return the current rotation matrix
 Mat4<double> Model::rotationMatrix() const
 {
-	return (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
+	return (parent_ == NULL ? rotationMatrix_ : parent_->rotationMatrix());
 }
 
 // Return the GL-compatible array from the ModelMAT structure
 void Model::copyRotationMatrix(double *m)
 {
 	// If a trajectory frame, return the parent's matrix
-	if (trajectoryParent_ == NULL) rotationMatrix_.copyColumnMajor(m);
-	else trajectoryParent_->rotationMatrix_.copyColumnMajor(m);
+	if (parent_ == NULL) rotationMatrix_.copyColumnMajor(m);
+	else parent_->copyRotationMatrix(m);
+}
+
+// Return the current camera matrix
+Mat4<double> Model::cameraMatrix() const
+{
+	return (parent_ == NULL ? cameraMatrix_ : parent_->cameraMatrix());
 }
 
 // Return the GL-compatible array from the ModelMAT structure
 void Model::copyCameraMatrix(double *m)
 {
 	// If a trajectory frame, return the parent's matrix
-	if (trajectoryParent_ == NULL) cameraMatrix_.copyColumnMajor(m);
-	else trajectoryParent_->cameraMatrix_.copyColumnMajor(m);
+	if (parent_ == NULL) cameraMatrix_.copyColumnMajor(m);
+	else parent_->copyCameraMatrix(m);
 }
 
 // Set the camera z-rotation
@@ -104,7 +110,7 @@ void Model::setCameraRotation(double r)
 // Return the current camera z-rotation
 double Model::cameraRotation() const
 {
-	return (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
+	return (parent_ == NULL ? cameraRotation_ : parent_->cameraRotation());
 }
 
 // Spin the model about the z axis
@@ -125,27 +131,21 @@ void Model::setRotation(double rotx, double roty)
 	// Rotate the whole system by the amounts specified.
 	msg.enter("Model::setRotation");
 	double sinx, cosx, siny, cosy;
-	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
 	// Calculate cos/sin terms for needless speedup!
-	rotx /= DEGRAD;
-	roty /= DEGRAD;
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	if (trajectoryParent_ == NULL)
+	if (parent_ == NULL)
 	{
+		rotx /= DEGRAD;
+		roty /= DEGRAD;
+		cosx = cos(rotx);
+		cosy = cos(roty);
+		sinx = sin(rotx);
+		siny = sin(roty);
 		rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
 		rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
 		rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+		rotationMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
 	}
-	else
-	{
-		trajectoryParent_->rotationMatrix_.rows[0].set(cosy,0.0,siny,0.0);
-		trajectoryParent_->rotationMatrix_.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-		trajectoryParent_->rotationMatrix_.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-	}
-	//rot.rows[3].set(0.0,0.0,0.0,1.0);
+	else parent_->setRotation(rotx, roty);
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -159,7 +159,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	// Adjust the models camera variables
 	msg.enter("Model::adjustCamera");
 	double sincam, coscam;
-	if (trajectoryParent_ == NULL)
+	if (parent_ == NULL)
 	{
 		camera_.add(dx, -dy, dz);
 		// Never let camera z go below -1.0...
@@ -174,19 +174,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 		cameraMatrix_.rows[2].set(0.0,0.0,1.0,camera_.z);
 		cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
 	}
-	else
-	{
-		trajectoryParent_->camera_.add(dx, -dy, dz);
-		trajectoryParent_->cameraRotation_ = trajectoryParent_->cameraRotation_ + angle;
-		if (trajectoryParent_->cameraRotation_ > 2.0*PI) trajectoryParent_->cameraRotation_ -= 2.0*PI;
-		coscam = cos(trajectoryParent_->cameraRotation_);
-		sincam = sin(trajectoryParent_->cameraRotation_);
-		// Now create the new matrix
-		trajectoryParent_->cameraMatrix_.rows[0].set(coscam,-sincam,0.0,trajectoryParent_->camera_.x*coscam-trajectoryParent_->camera_.y*sincam);
-		trajectoryParent_->cameraMatrix_.rows[1].set(sincam,coscam,0.0,trajectoryParent_->camera_.x*sincam-trajectoryParent_->camera_.y*coscam);
-		trajectoryParent_->cameraMatrix_.rows[2].set(0.0,0.0,1.0,trajectoryParent_->camera_.z);
-		trajectoryParent_->cameraMatrix_.rows[3].set(0.0,0.0,0.0,1.0);
-	}
+	else parent_->adjustCamera(dx, dy, dz, angle);
 	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
@@ -197,7 +185,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 void Model::adjustZoom(bool zoomin)
 {
 	msg.enter("Model::adjustZoom");
-	double dz = (trajectoryParent_ == NULL ? -camera_.z : -trajectoryParent_->camera_.z);
+	double dz = (parent_ == NULL ? -camera_.z : -parent_->camera().z);
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz,0.0);
@@ -231,7 +219,8 @@ void Model::resetView()
 	Atom *i, target;
 	bool done = FALSE;
 	double z, largest = 0.0;
-	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
+	Mat4<double> dummy;
+	parent_ == NULL ? rotationMatrix_.setIdentity() : parent_->setRotationMatrix( dummy );
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (i = atoms_.first(); i != NULL; i = i->next)
@@ -292,17 +281,20 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 	msg.enter("Model::axisRotateView");
 	static double theta, camrot;
 	static Mat4<double> newrotmat, oldrotmat;
-	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
-	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
-	// Account for the orientation of the current camera up vector.
-// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
-// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
-	// Generate quaternion
-	newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
-	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
-	// Now, multiply our matrices together...
-	if (trajectoryParent_ == NULL) rotationMatrix_ = newrotmat * oldrotmat;
-	else trajectoryParent_->rotationMatrix_ = newrotmat * oldrotmat;
+	if (parent_ == NULL)
+	{
+		camrot = cameraRotation_;
+		camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
+		// Account for the orientation of the current camera up vector.
+	// 	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
+	// 	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
+		// Generate quaternion
+		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle);
+		oldrotmat = rotationMatrix_;
+		// Now, multiply our matrices together...
+		rotationMatrix_ = newrotmat * oldrotmat;
+	}
+	else parent_->axisRotateView(vec, angle);
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -317,24 +309,27 @@ void Model::rotateView(double dx, double dy)
 	msg.enter("Model::rotateView");
 	static double rotx, roty, theta, sinx, cosx, siny, cosy, camrot;
 	static Mat4<double> newrotmat, oldrotmat;
-	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
-	camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
-	// Account for the orientation of the current camera up vector.
-	rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
-	roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
-	// Calculate cos/sin terms for needless speedup!
-	cosx = cos(rotx);
-	cosy = cos(roty);
-	sinx = sin(rotx);
-	siny = sin(roty);
-	newrotmat.rows[0].set(cosy,0.0,siny,0.0);
-	newrotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
-	newrotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
-	newrotmat.rows[3].set(0.0,0.0,0.0,1.0);
-	oldrotmat = (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
-	// Now, multiply our matrices together...
-	if (trajectoryParent_ == NULL) rotationMatrix_ = newrotmat * oldrotmat;
-	else trajectoryParent_->rotationMatrix_ = newrotmat * oldrotmat;
+	if (parent_ == NULL)
+	{
+		camrot = cameraRotation_;
+		camrot > PI ? theta = camrot-2.0*PI : theta = camrot;
+		// Account for the orientation of the current camera up vector.
+		rotx = (dx*sin(theta) + dy*cos(theta) ) / DEGRAD;
+		roty = (dx*cos(theta) - dy*sin(theta) ) / DEGRAD;
+		// Calculate cos/sin terms for needless speedup!
+		cosx = cos(rotx);
+		cosy = cos(roty);
+		sinx = sin(rotx);
+		siny = sin(roty);
+		newrotmat.rows[0].set(cosy,0.0,siny,0.0);
+		newrotmat.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+		newrotmat.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+		newrotmat.rows[3].set(0.0,0.0,0.0,1.0);
+		oldrotmat = rotationMatrix_;
+		// Now, multiply our matrices together...
+		rotationMatrix_ = newrotmat * oldrotmat;
+	}
+	else parent_->rotateView(dx, dy);
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -346,8 +341,8 @@ void Model::rotateView(double dx, double dy)
 void Model::calculateViewMatrix()
 {
 	// Calculate full viewing matrix
-	if (trajectoryParent_ == NULL) viewMatrix_ = cameraMatrix_ * rotationMatrix_;
-	else viewMatrix_ = trajectoryParent_->cameraMatrix_ * trajectoryParent_->rotationMatrix_;
+	if (parent_ == NULL) viewMatrix_ = cameraMatrix_ * rotationMatrix_;
+	else viewMatrix_ = parent_->cameraMatrix() * parent_->rotationMatrix();
 	// Calculate inverse
 	viewMatrixInverse_ = viewMatrix_;
 	viewMatrixInverse_.invert();
@@ -517,7 +512,7 @@ Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
 // Return the camera position vector
 Vec3<double> Model::camera() const
 {
-	return (trajectoryParent_ == NULL ? camera_ : trajectoryParent_->camera_);
+	return (parent_ == NULL ? camera_ : parent_->camera());
 }
 
 // Set view to be along the specified cartesian axis
