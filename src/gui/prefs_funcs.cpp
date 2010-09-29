@@ -291,8 +291,8 @@ void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
 	gui.mainView.createLists();
-	aten.currentModel()->renderSource()->projectAll();
-	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
+	aten.currentModel()->renderSourceModel()->projectAll();
+	aten.currentModel()->renderSourceModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 

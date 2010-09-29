@@ -87,6 +87,30 @@ double Vibration::frequency() const
 	return frequency_;
 }
 
+// Set intensity of the vibration
+void Vibration::setIntensity(double intensity)
+{
+	intensity_ = intensity;
+}
+
+// Return intensity of the vibration
+double Vibration::intensity() const
+{
+	return intensity_;
+}
+
+// Set reduced mass of the vibration
+void Vibration::setReducedMass(double rmass)
+{
+	reducedMass_ = rmass;
+}
+
+// Return reduced mass of the vibration
+double Vibration::reducedMass() const
+{
+	return reducedMass_;
+}
+
 // Return number of displacements defined in vibration
 int Vibration::nDisplacements()
 {

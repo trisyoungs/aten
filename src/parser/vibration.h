@@ -41,7 +41,7 @@ class VibrationVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Displacements, Frequency, Name, NDisplacements, nAccessors };
+        enum Accessors { Displacements, Frequency, Intensity, Name, NDisplacements, ReducedMass, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor

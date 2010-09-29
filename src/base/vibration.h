@@ -50,6 +50,10 @@ class Vibration
 	Dnchar name_;
 	// Frequency of the vibration
 	double frequency_;
+	// Intensity of the vibration
+	double intensity_;
+	// Reduced mass of the vibration
+	double reducedMass_;
 	// Number of displacements defined in vibration
 	int nDisplacements_;
 	// Displacement vectors for each associated atom
@@ -68,6 +72,14 @@ class Vibration
 	void setFrequency(double freq);
 	// Return frequency of the vibration
 	double frequency() const;
+	// Set intensity of the vibration
+	void setIntensity(double freq);
+	// Return intensity of the vibration
+	double intensity() const;
+	// Set reduced mass of the vibration
+	void setReducedMass(double freq);
+	// Return reduced mass of the vibration
+	double reducedMass() const;
 	// Return number of displacements defined in vibration
 	int nDisplacements();
 	// Set specified displacement data (set of doubles)

@@ -22,28 +22,40 @@
 #include "model/model.h"
 #include "gui/gui.h"
 
-// Render from self
-void Model::setRenderFromSelf()
+// Set rendering source
+void Model::setRenderSource(Model::RenderSource rs)
 {
-	renderFromSelf_ = TRUE;
+	// Store previous rendering source, if new source is VibrationSource, else set to VibrationSource
+	sourceBeforeVibration_ = (rs == Model::VibrationSource ? renderSource_ : Model::VibrationSource);
+	renderSource_ = rs;
 }
 
-// Render from trajectory
-void Model::setRenderFromFrames()
+// Return rendering source
+Model::RenderSource Model::renderSource() const
 {
-	renderFromSelf_ = FALSE;
+	return renderSource_;
 }
 
-// Return whether rendering from self
-bool Model::renderFromSelf() const
+// Restore rendering source to previous value (after VibrationSource)
+void Model::restoreRenderSource()
 {
-	return renderFromSelf_;
+	if (sourceBeforeVibration_ != Model::VibrationSource) renderSource_ = sourceBeforeVibration_;
+	sourceBeforeVibration_ = Model::VibrationSource;
 }
 
 // Return the current rendering source for the model
-Model *Model::renderSource()
+Model *Model::renderSourceModel()
 {
-	return (renderFromSelf_ ? this : currentFrame_);
+	switch (renderSource_)
+	{
+		case (Model::ModelSource):
+			return this;
+		case (Model::TrajectorySource):
+			return trajectoryCurrentFrame_;
+		case (Model::VibrationSource):
+			return vibrationCurrentFrame_;
+	}
+	return NULL;
 }
 
 // Set the current rotation matrix

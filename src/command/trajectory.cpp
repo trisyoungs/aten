@@ -29,8 +29,8 @@
 bool Command::function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs = obj.m->addFrame();
-	obj.m->setRenderFromFrames();
+	obj.rs = obj.m->addTrajectoryFrame();
+	obj.m->setRenderSource(Model::TrajectorySource);
 	if (c->hasArg(0)) obj.rs->setName(c->argc(0));
 	gui.update(FALSE, FALSE, FALSE);
 	rv.set(VTypes::ModelData, obj.rs);
@@ -82,12 +82,12 @@ bool Command::function_FinaliseFrame(CommandNode *c, Bundle &obj, ReturnValue &r
 bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekFirstFrame();
+	obj.m->seekFirstTrajectoryFrame();
 	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
@@ -97,12 +97,12 @@ bool Command::function_FirstFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_LastFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekLastFrame();
+	obj.m->seekLastTrajectoryFrame();
 	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
@@ -123,12 +123,12 @@ bool Command::function_LoadTrajectory(CommandNode *c, Bundle &obj, ReturnValue &
 bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekNextFrame();
+	obj.m->seekNextTrajectoryFrame();
 	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
@@ -138,12 +138,12 @@ bool Command::function_NextFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekPreviousFrame();
+	obj.m->seekPreviousTrajectoryFrame();
 	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;
@@ -153,12 +153,12 @@ bool Command::function_PrevFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SeekFrame(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (obj.m->nFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return FALSE;
 	}
-	obj.m->seekFrame(c->argi(0)-1);
+	obj.m->seekTrajectoryFrame(c->argi(0)-1);
 	gui.update(FALSE, FALSE, FALSE);
 	rv.reset();
 	return TRUE;

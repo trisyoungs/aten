@@ -47,7 +47,7 @@ void ScopeNode::createGlobalVariables()
 bool ScopeNode::execute(ReturnValue &rv)
 {
 	// Make sure the current rendersource is up-to-date
-	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
+	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSourceModel());
 	// Execute the command
 	return aten.commands.call(function_, this, rv);
 }

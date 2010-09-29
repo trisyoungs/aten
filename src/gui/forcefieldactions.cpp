@@ -42,7 +42,7 @@ void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelEnergy, "");
 	else CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
-	aten.currentModel()->renderSource()->energy.print();
+	aten.currentModel()->renderSourceModel()->energy.print();
 }
 
 void AtenForm::on_actionCalculateForces_triggered(bool on)

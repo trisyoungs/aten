@@ -141,18 +141,18 @@ void AtenForm::update()
 	// First label - atom and trajectory frame information
 	if (m->hasTrajectory())
 	{
-		if (m->renderSource() == m)
+		if (m->renderSourceModel() == m)
 		{
 			s = "(Parent of ";
-			s += itoa(m->nFrames());
+			s += itoa(m->nTrajectoryFrames());
 			s += " frames) ";
 		}
 		else
 		{
 			s = "(Frame ";
-			s += itoa(m->frameIndex()+1);
+			s += itoa(m->trajectoryFrameIndex()+1);
 			s += " of ";
-			s += itoa(m->nFrames());
+			s += itoa(m->nTrajectoryFrames());
 			s += ") ";
 		}
 		// Make sure the trajectory toolbar is visible
@@ -169,7 +169,7 @@ void AtenForm::update()
 		ui.TrajectoryToolbar->setDisabled(TRUE);
 // 		ui.TrajectoryToolbar->setVisible(FALSE);
 	}
-	m = m->renderSource();
+	m = m->renderSourceModel();
 	s += itoa(m->nAtoms());
 	s += " Atoms ";
 	// Add on unknown atom information
@@ -212,7 +212,7 @@ void AtenForm::update()
 	// Update save button status
 	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Enable the Atom menu if one or more atoms are selected
-	ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
+	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
 	updateUndoRedo();
 	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
@@ -230,9 +230,9 @@ void AtenForm::updateModelTabName(int tabid, Model *m)
 {
 	if (tabid < 0) tabid = ui.ModelTabs->currentIndex();
 	char title[512];
-	if (m->nFrames() == 0) sprintf(title, "%s", m->name());
-	else if (m->renderSource() == m) sprintf(title, "%s (Parent of %i frames)", m->name(), m->nFrames());
-	else sprintf(title, "%s (Frame %i of %i)", m->name(), m->frameIndex()+1, m->nFrames());
+	if (m->nTrajectoryFrames() == 0) sprintf(title, "%s", m->name());
+	else if (m->renderSourceModel() == m) sprintf(title, "%s (Parent of %i frames)", m->name(), m->nTrajectoryFrames());
+	else sprintf(title, "%s (Frame %i of %i)", m->name(), m->trajectoryFrameIndex()+1, m->nTrajectoryFrames());
 	ui.ModelTabs->setTabText(tabid, title);
 }
 
@@ -242,7 +242,7 @@ void AtenForm::updateTrajectoryControls()
 	if (!gui.exists()) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->nFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
+	if (m->nTrajectoryFrames() == 0) ui.TrajectoryToolbar->setDisabled(TRUE);
 	else
 	{
 		// If the trajectory is playing, desensitise all but the play/pause button
@@ -268,7 +268,7 @@ void AtenForm::updateTrajectoryControls()
 		}
 		ui.actionViewTrajectory->setDisabled(FALSE);
 		// Select the correct view action
-		if (m->renderFromSelf())
+		if (m->renderSource() == Model::ModelSource)
 		{
 			ui.actionViewModel->setChecked(TRUE);
 			ui.actionTrajectoryViewTrajectory->setChecked(FALSE);
@@ -288,10 +288,10 @@ void AtenForm::updateTrajectoryToolbar()
 {
 	trajectoryToolbarRefreshing_ = TRUE;
 	trajectorySlider_->setMinimum(1);
-	trajectorySlider_->setMaximum(aten.currentModel()->nFrames());
-	trajectorySlider_->setValue(aten.currentModel()->frameIndex()+1);
-	trajectorySpin_->setRange(1,aten.currentModel()->nFrames());
-	trajectorySpin_->setValue(aten.currentModel()->frameIndex()+1);
+	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
+	trajectorySlider_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
+	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
+	trajectorySpin_->setValue(aten.currentModel()->trajectoryFrameIndex()+1);
 	trajectoryToolbarRefreshing_ = FALSE;
 }
 

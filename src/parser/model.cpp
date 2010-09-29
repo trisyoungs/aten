@@ -330,7 +330,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->filename());
 			break;
 		case (ModelVariable::Frame):
-			rv.set(VTypes::ModelData, ptr->currentFrame());
+			rv.set(VTypes::ModelData, ptr->trajectoryCurrentFrame());
 			break;
 		case (ModelVariable::Frames):
 			// Only works for a cached trajectory
@@ -339,13 +339,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				msg.print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
 				result = FALSE;
 			}
-			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->frame(0));
-			else if ((arrayIndex < 1) || (arrayIndex > ptr->nFrames()))
+			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->trajectoryFrame(0));
+			else if ((arrayIndex < 1) || (arrayIndex > ptr->nTrajectoryFrames()))
 			{
-				msg.print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nFrames());
+				msg.print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
 				result = FALSE;
 			}
-			else rv.set(VTypes::ModelData, ptr->frame(arrayIndex-1));
+			else rv.set(VTypes::ModelData, ptr->trajectoryFrame(arrayIndex-1));
 			break;
 		case (ModelVariable::Glyphs):
 			if (!hasArrayIndex)
@@ -403,7 +403,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			rv.set(ptr->nUniqueForcefieldTypes());
 			break;
 		case (ModelVariable::NFrames):
-			rv.set(ptr->nFrames());
+			rv.set(ptr->nTrajectoryFrames());
 			break;
 		case (ModelVariable::NGlyphs):
 			rv.set(ptr->nGlyphs());
