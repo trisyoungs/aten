@@ -122,8 +122,13 @@ void AtenVibrations::on_VibrationsList_currentRowChanged(int row)
 	// If currently playing a trajectory, regenerate it
 	if (ui.PlayPauseVibration->isChecked())
 	{
+		// Stop current timer, generate new vibration frames, and restart
+		stopTimer();
 		Model *m = aten.currentModelOrFrame();
+		m->setRenderFromVibration(FALSE);
 		m->generateVibration(ui.VibrationsList->currentRow());
+		m->setRenderFromVibration(TRUE);
+		resetTimer(ui.DelaySpin->value());
 	}
 }
 
@@ -173,11 +178,18 @@ void AtenVibrations::on_DelaySpin_valueChanged(int value)
 	resetTimer(value);
 }
 
+// Stop current timer (if any)
+void AtenVibrations::stopTimer()
+{
+	if (vibrationTimerId_ != -1) this->killTimer(vibrationTimerId_);
+	vibrationTimerId_ = -1;
+}
+
 // (Re)start timer event with specified delay
 void AtenVibrations::resetTimer(int delay)
 {
 	// If a timer currently exists, kill it first
-	if (vibrationTimerId_ != -1) this->killTimer(vibrationTimerId_);
+	stopTimer();
 	vibrationTimerId_ = this->startTimer(delay);
 }
 

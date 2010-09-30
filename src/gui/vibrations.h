@@ -47,6 +47,8 @@ class AtenVibrations : public QDialog
 	private:
 	// Refresh displacements table
 	void refreshDisplacements();
+	// Stop current timer (if any)
+	void stopTimer();
 	// (Re)start timer event with specified delay
 	void resetTimer(int delay);
 	protected:
