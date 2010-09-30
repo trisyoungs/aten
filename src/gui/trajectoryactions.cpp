@@ -75,11 +75,13 @@ void AtenForm::on_actionTrajectoryPlayPause_triggered(bool checked)
 	{
 		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
 		gui.setTrajectoryPlaying(TRUE);
+		gui.mainView.setEditable(FALSE);
 	}
 	else
 	{
 		gui.mainWidget->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
+		gui.mainView.setEditable(TRUE);
 	}
 	updateTrajectoryControls();
 }

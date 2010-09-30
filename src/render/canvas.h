@@ -334,6 +334,8 @@ class Canvas
 	bool hasMoved_;
 	// Current drawing depth for certain tools
 	double currentDrawDepth_;
+	// Whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable_;
 
 	public:
 	// Set the active mode to the current user mode
@@ -356,6 +358,10 @@ class Canvas
 	void informKeyUp(KeyCode kc, bool shiftkey, bool ctrlkey, bool altkey);
 	// Return modifier status
 	bool modifierOn(Prefs::ModifierKey) const;
+	// Set whether to accept editing actions (i.e. anything other than view manipulation)
+	void setEditable(bool b);
+	// Return whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable();
 };
 
 #endif

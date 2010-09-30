@@ -41,9 +41,14 @@ class AtenVibrations : public QDialog
 	void on_VibrationsList_currentRowChanged(int row);
 	void on_PlayPauseVibration_clicked(bool checked);
 	void on_ShowVectorsCheck_clicked(bool checked);
+	void on_VectorScaleSpin_valueChanged(double value);
+	void on_DelaySlider_valueChanged(int value);
+	void on_DelaySpin_valueChanged(int value);
 	private:
 	// Refresh displacements table
 	void refreshDisplacements();
+	// (Re)start timer event with specified delay
+	void resetTimer(int delay);
 	protected:
 	void timerEvent(QTimerEvent*);
 

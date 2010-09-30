@@ -64,6 +64,7 @@ Canvas::Canvas()
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
 	currentDrawDepth_ = 0.0;
+	editable_ = TRUE;
 }
 
 // Set the internal name of the canvas
@@ -759,4 +760,16 @@ void Canvas::endManualPick(bool resetaction)
 	nAtomsToPick_ = -1;
 	gui.mainView.postRedisplay();
 	msg.exit("Canvas::endManualPick");
+}
+
+// Set whether to accept editing actions (i.e. anything other than view manipulation)
+void Canvas::setEditable(bool b)
+{
+	editable_ = b;
+}
+
+// Return whether to accept editing actions (i.e. anything other than view manipulation)
+bool Canvas::editable()
+{
+	return editable_;
 }

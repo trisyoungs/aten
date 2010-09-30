@@ -131,6 +131,7 @@ void Model::generateVibration(int index)
 {
 	msg.enter("Model::generateVibration");
 	// Delete old vibrations
+	vibrationCurrentFrame_ = NULL;
 	vibrationFrames_.clear();
 	// Check vibration index
 	if ((index < 0) || (index >= vibrations_.nItems()))
