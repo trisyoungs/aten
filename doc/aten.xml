@@ -83,8 +83,8 @@
 	<!ENTITY commandmeasure SYSTEM "commands/measure.xml">
 	<!ENTITY commandmessaging SYSTEM "commands/messaging.xml">
 	<!ENTITY commandminimiser SYSTEM "commands/minimiser.xml">
-	<!ENTITY commandmo SYSTEM "commands/mo.xml">
 	<!ENTITY commandmodel SYSTEM "commands/model.xml">
+	<!ENTITY commandmodelextras SYSTEM "commands/modelextras.xml">
 	<!ENTITY commandmontecarlo SYSTEM "commands/montecarlo.xml">
 	<!ENTITY commandpattern SYSTEM "commands/pattern.xml">
 	<!ENTITY commandreadwrite SYSTEM "commands/readwrite.xml">
@@ -309,8 +309,8 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&commandmeasure;
 			&commandmessaging;
 			&commandminimiser;
-			&commandmo;
 			&commandmodel;
+			&commandmodelextras;
 			&commandmontecarlo;
 			&commandpattern;
 			&commandreadwrite;
