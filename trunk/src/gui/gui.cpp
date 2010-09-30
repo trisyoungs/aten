@@ -752,6 +752,7 @@ void GuiQt::stopTrajectoryPlayback()
 	mainWidget->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionTrajectoryPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
+	gui.mainView.setEditable(TRUE);
 	mainWindow->updateTrajectoryControls();
 	update();
 }
