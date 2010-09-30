@@ -205,6 +205,7 @@ filter(type="importmodel", name="GAMESS-US Log File", nickname="gamuslog", exten
 			for (l=1; l<6; ++l)
 			{
 				if ((l+n-1) > 3*m.natoms()) break;
+				if (contains(vib_imag[l],"I")) vib_freq[l] = -vib_freq[l];
 				verbose("Created vibration number %i with frequency %f\n", l+n-1, vib_freq[l]);
 				vibs[l] = m.newvibration();
 				vibs[l].frequency = vib_freq[l];

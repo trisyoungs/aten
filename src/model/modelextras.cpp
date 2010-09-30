@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include "model/clipboard.h"
 
 // Add new basis function to the list
 BasisShell *Model::addBasisShell()
@@ -153,6 +154,8 @@ void Model::generateVibration(int index)
 	int nsteps = 20;
 	double delta, stepdelta = 1.0 / nsteps;
 	int k;
+	Clipboard clip;
+	clip.copyAll(this);
 	// LOOP!
 	for(k=0; k<=nsteps; k++)
 	{	
@@ -161,27 +164,19 @@ void Model::generateVibration(int index)
 		Model *m = vibrationFrames_.add();
 		m->setParent(this);
 		m->setType(Model::VibrationFrameType);
-	
+		clip.pasteToModel(m, FALSE);	
+
 		// To loop over original atom coordinates
 		int count = 0;
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		for (Atom *i = m->atoms(); i != NULL; i = i->next)
 		{
-			// CODE GOES HERE
-			// Atom coordinates
-			Vec3<double> pos = i->r();
-			
-			// For example!
-			Vec3<double> newpos = i->r() + displacements[count] * delta;
+			i->r() += displacements[count] * delta;
 			++count;
-	
-			// How to add a new atom!
-			Atom *j = m->addAtom( i->element(), newpos);
 		}
 	}
 	// Reset variables
 	vibrationForward_ = TRUE;
 	vibrationCurrentFrame_ = vibrationFrames_.first();
-	printf("Ini model %p, vib pointer is %p\n", this, vibrationCurrentFrame_);
 	msg.exit("Model::generateVibration");
 }
 
