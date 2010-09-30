@@ -228,6 +228,11 @@ int CommandParser::lex()
 				CommandParser_lval.doubleconst = DEGRAD;
 				return DOUBLECONST;
 			}
+			else if (strcmp(token,"ANGBOHR") == 0)
+			{
+				CommandParser_lval.doubleconst = ANGBOHR;
+				return DOUBLECONST;
+			}
 
 			// OPTION keywords
 			if (strcmp(token,"option") == 0)

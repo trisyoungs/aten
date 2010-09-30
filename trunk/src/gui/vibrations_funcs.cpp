@@ -142,7 +142,7 @@ void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 		Model *m = aten.currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow());
 		m->setRenderFromVibration(TRUE);
-		vibrationTimerId_ = this->startTimer(100);
+		vibrationTimerId_ = this->startTimer(25);
 	}
 	else
 	{

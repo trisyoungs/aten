@@ -1,7 +1,8 @@
 # Siesta Flexible Data Format (for v1.2+)
 # Created:	 16/04/2009
-# Last modified: 16/04/2009
+# Last modified: 30/09/2010
 # ChangeLog:
+#		30/09/2010: Added filter for siesta vectors file.
 # Notes:
 #	GGA (PBE) exchange assumed, with pseudos named 'H-PBE', 'C-PBE', etc.
 
@@ -148,3 +149,36 @@ filter(type="exportmodel", name="Siesta FDF", nickname="siesta", extension="fdf"
 	writeline("%endblock AtomicCoordinatesAndAtomicSpecies");
 	writeline("");
 }
+
+filter(type="importmodel", name="Siesta Vectors File", nickname="siestavec", extension="vectors", glob="*.vectors")
+{
+	# Variable declaration
+	int result,nstructures,natoms,n,l,count;
+	vibration vib;
+	string line,e,name,discard;
+	double freq;
+
+	# Everything depends on the current loaded model
+	model m = aten.frame;
+	natoms = m.natoms;
+	if (natoms == 0) error("No atoms in current model. Can't load in frequencies.");
+
+	count = 0;
+	while (find("Eigenvector"))
+	{
+		++count;
+		readline(discard, discard, freq);
+		vib = m.newvibration();
+		vib.frequency = freq;
+		# SKip next line ("Eigenmode (real part)")
+		skipline();
+		# Now read in atomic displacements
+		for (n=1; n<=natoms; ++n) readline(vib.displacements[n].x, vib.displacements[n].y, vib.displacements[n].z);
+	}
+
+	# Summarise
+	printf("Added %i frequencies to model '%s'\n", count, m.name);
+	if (count != (3*natoms)) printf("Warning - Model '%s' contains %i atoms, but read in %i frequencies (!= 3N).\n", m.name, natoms, count);
+
+}
+
