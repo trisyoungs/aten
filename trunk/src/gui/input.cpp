@@ -307,6 +307,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 		{
 			// Main interactor - selection, sketching, measuring
 			case (Prefs::InteractAction):
+				// Only act if the editable_ flag is set
+				if (!editable_) break;
 				useSelectedMode();
 				// Some modes require actions to be done when the button is first depressed
 				switch (activeMode_)
@@ -330,8 +332,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				break;
 			case (Prefs::RotateAction):
 				// Check for multiple key modifiers first.
-				if (manipulate && zrotate) activeMode_ = Canvas::TransformRotateZAction;
-				else if (manipulate) activeMode_ = Canvas::TransformRotateXYAction;
+				if (manipulate && zrotate && editable_) activeMode_ = Canvas::TransformRotateZAction;
+				else if (manipulate && editable_) activeMode_ = Canvas::TransformRotateXYAction;
 				else if (zrotate) activeMode_ = Canvas::RotateZAction;
 				else activeMode_ = Canvas::RotateXYAction;
 				break;
@@ -339,7 +341,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				activeMode_ = Canvas::ZoomAction;
 				break;
 			case (Prefs::TranslateAction):
-				activeMode_ = (manipulate ? Canvas::TransformTranslateAction : Canvas::TranslateAction);
+				if (manipulate && editable_) activeMode_ = Canvas::TransformTranslateAction;
+				else activeMode_ = Canvas::TranslateAction;
 				break;
 			default:
 				break;
@@ -451,6 +454,9 @@ void Canvas::endMode(Prefs::MouseButton button)
 	// Finalize the action
 	switch (endingMode)
 	{
+		// No action
+		case (Canvas::NoAction):
+			break;
 		// Plain atom / box select
 		case (Canvas::SelectAction):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
@@ -712,12 +718,16 @@ void Canvas::modeScroll(bool scrollup)
 		case (Prefs::NoAction):
 			break;
 		case (Prefs::InteractAction):
+			// Only act if the editable_ flag is set
+			if (!editable_) break;
 			useSelectedMode();
 			break;
 		case (Prefs::RotateAction):
 			scrollup ? displayModel_->rotateView(1.0,0.0) : displayModel_->rotateView(-1.0,0.0);
 			break;
 		case (Prefs::TranslateAction):
+			// Only act if the editable_ flag is set
+			if (!editable_) break;
 			break;
 		case (Prefs::ZoomAction):
 			displayModel_->adjustZoom(scrollup);

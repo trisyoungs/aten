@@ -132,27 +132,53 @@ void AtenVibrations::on_ShowVectorsCheck_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
+void AtenVibrations::on_VectorScaleSpin_valueChanged(double value)
+{
+	gui.mainView.postRedisplay();
+}
+
 void AtenVibrations::on_PlayPauseVibration_clicked(bool checked)
 {
 	if (checked)
 	{
 		vibrationPlaying_ = TRUE;
-// 		gui.setWindowsEnabled(FALSE);
 		this->setEnabled(TRUE);
 		Model *m = aten.currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow());
 		m->setRenderFromVibration(TRUE);
-		vibrationTimerId_ = this->startTimer(25);
+		gui.mainView.setEditable(FALSE);
+		resetTimer(ui.DelaySpin->value());
 	}
 	else
 	{
 		vibrationPlaying_ = FALSE;
 		this->killTimer(vibrationTimerId_);
+		vibrationTimerId_ = -1;
 		Model *m = aten.currentModelOrFrame();
 		m->setRenderFromVibration(FALSE);
 		gui.mainView.postRedisplay();
-// 		gui.setWindowsEnabled(TRUE);
+		gui.mainView.setEditable(TRUE);
 	}
+}
+
+void AtenVibrations::on_DelaySlider_valueChanged(int value)
+{
+	if (vibrationTimerId_ == -1) return;
+	resetTimer(value);
+}
+
+void AtenVibrations::on_DelaySpin_valueChanged(int value)
+{
+	if (vibrationTimerId_ == -1) return;
+	resetTimer(value);
+}
+
+// (Re)start timer event with specified delay
+void AtenVibrations::resetTimer(int delay)
+{
+	// If a timer currently exists, kill it first
+	if (vibrationTimerId_ != -1) this->killTimer(vibrationTimerId_);
+	vibrationTimerId_ = this->startTimer(delay);
 }
 
 void AtenVibrations::timerEvent(QTimerEvent*)

@@ -174,7 +174,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if (button == Prefs::RightButton)
+	if ((button == Prefs::RightButton) && gui.mainView.editable())
 	{
 		Atom *tempi = gui.mainView.displayModel()->atomOnScreen(event->x(), event->y());
 		if (tempi != NULL)

@@ -183,11 +183,16 @@ void Canvas::renderExtra3d() const
 			int row = gui.vibrationsWindow->ui.VibrationsList->currentRow();
 			if (row != -1)
 			{
+				GLfloat coloura[4] = { 0.0,0.0,0.0,1.0 }, colourb[4] = {0.2,0.2,0.2,1.0};
+				glMaterialfv(GL_FRONT,GL_AMBIENT, coloura);
+				glMaterialfv(GL_FRONT,GL_DIFFUSE, colourb);
 				// Get relevant model and vibration
 				Model *m = displayModel_;
 				if (m->type() == Model::VibrationFrameType) m = m->parent();
 				// Grab displacements array
 				Vibration *vib = m->vibration(row);
+				// Get vector scale factor
+				double scale = gui.vibrationsWindow->ui.VectorScaleSpin->value();
 				if (vib != NULL)
 				{
 					Vec3<double> *disp = vib->displacements();
@@ -195,8 +200,8 @@ void Canvas::renderExtra3d() const
 					int count = 0;
 					for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 					{
-						if (prefs.renderStyle() == Atom::StickStyle) glArrow(i->r(), disp[count], FALSE);
-						else glCylinderArrow(i->r(), disp[count], FALSE);
+						if (prefs.renderStyle() == Atom::StickStyle) glArrow(i->r(), disp[count]*scale, FALSE);
+						else glCylinderArrow(i->r(), disp[count]*scale, FALSE);
 						++count;
 					}
 				}
