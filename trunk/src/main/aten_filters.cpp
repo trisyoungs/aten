@@ -167,8 +167,7 @@ int Aten::parseFilterDir(const char *path)
 {
 	msg.enter("Aten::parseFilterDir");
 	int i, nfailed = 0;
-	char s[8096], bit[128];
-	strcpy(s, "--> ");
+	Dnchar s("--> ");
 	// First check - does this directory actually exist
 	QDir filterdir(path);
 	if (!filterdir.exists())
@@ -195,11 +194,10 @@ int Aten::parseFilterDir(const char *path)
 		else
 		{
 			// Add on a bit of useful text to print out
-			sprintf(bit, "%s  ", qPrintable(filterlist.at(i)));
-			strcat(s, bit);
+			s.catPrint("%s  ", qPrintable(filterlist.at(i)));
 		}
 	}
-	strcat(s, "\n");
+	s += '\n';
 	msg.print(Messenger::Verbose, s);
 	msg.exit("Aten::parseFilterDir");
 	return nfailed;
@@ -210,11 +208,10 @@ void Aten::partnerFilters()
 {
 	msg.enter("Aten::partnerFilters");
 	// Loop through import filters and search / set export partners
-	char s[512], bit[32];
+	Dnchar s("Model Formats:");
 	Refitem<Tree,int> *ri, *rj;
 	Tree *imp, *exp;
 	int importid;
-	strcpy(s,"Model Formats:");
 	for (ri = filters_[FilterData::ModelImport].first(); ri != NULL; ri = ri->next)
 	{
 		imp = ri->item;
@@ -234,12 +231,11 @@ void Aten::partnerFilters()
 				}
 			}
 		}
-		sprintf(bit, " %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
-		strcat(s,bit);
+		s.catPrint(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
-	strcat(s, "\n");
+	s+= '\n';
 	msg.print(Messenger::Verbose, s);
-	strcpy(s,"Grid Formats :");
+	s = "Grid Formats :";
 	for (ri = filters_[FilterData::GridImport].first(); ri != NULL; ri = ri->next)
 	{
 		imp = ri->item;
@@ -260,10 +256,9 @@ void Aten::partnerFilters()
 				}
 			}
 		}
-		sprintf(bit, " %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
-		strcat(s,bit);
+		s.catPrint(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
-	strcat(s, "\n");
+	s += '\n';
 	msg.print(Messenger::Verbose, s);
 	msg.exit("Aten::partnerFilters");
 }

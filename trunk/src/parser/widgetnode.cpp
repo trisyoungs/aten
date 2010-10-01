@@ -497,15 +497,13 @@ bool WidgetNode::execute(ReturnValue &rv)
 void WidgetNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	tab.cat(prefix);
+
 	// Output node data
-	printf("[CN]%s%s (GUIFO)\n", tab, name_.get());
+	printf("[CN]%s%s (GUIFO)\n", tab.get(), name_.get());
 	delete[] tab;
 }
 

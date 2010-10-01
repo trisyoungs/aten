@@ -118,15 +118,15 @@ void ZMatrixElement::setDistanceName(const char *name)
 // Retrieve distance variable name (geometry variable 0)
 const char *ZMatrixElement::distanceName()
 {
-	static char name[32];
-	name[0] = '\0';
+	static Dnchar name;
+	name.clear();
 	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[0]) strcpy(name, "-");
-		strcat(name, values_[0]->name());
+		if (negated_[0]) name.print("-%s",values_[0]->name());
+		else name = values_[0]->name();
 	}
-	return name;
+	return name.get();
 }
 
 // Set distance value
@@ -172,15 +172,15 @@ void ZMatrixElement::setAngleName(const char *name)
 // Retrieve angle variable name (geometry variable 0)
 const char *ZMatrixElement::angleName()
 {
-	static char name[32];
-	name[0] = '\0';
+	static Dnchar name;
+	name.clear();
 	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[1]) strcpy(name, "-");
-		strcat(name, values_[1]->name());
+		if (negated_[1]) name.print("-%s",values_[1]->name());
+		else name = values_[1]->name();
 	}
-	return name;
+	return name.get();
 }
 
 // Set angle value
@@ -226,15 +226,15 @@ void ZMatrixElement::setTorsionName(const char *name)
 // Retrieve torsion variable name (geometry variable 0)
 const char *ZMatrixElement::torsionName()
 {
-	static char name[32];
-	name[0] = '\0';
+	static Dnchar name;
+	name.clear();
 	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[2]) strcpy(name, "-");
-		strcat(name, values_[2]->name());
+		if (negated_[2]) name.print("-%s",values_[2]->name());
+		else name = values_[2]->name();
 	}
-	return name;
+	return name.get();
 }
 
 // Set torsion value
@@ -297,7 +297,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 {
 	msg.enter("ZMatrix::addElement");
 	int i;
-	char name[32];
+	Dnchar name;
 	DoubleVariable *v;
 	// Create a new element structure, and store a maximum of 4 atoms from list in the element's array
 	ZMatrixElement *zel = elements_.add();
@@ -319,27 +319,24 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), FALSE);
 		distances_.take(v);
-		strcpy(name,"d");
-		strcat(name, itoa(distances_.nVariables()));
-		v->setName(name);
+		name.print("d%i",itoa(distances_.nVariables()));
+		v->setName(name.get());
 		zel->setDistanceVariable(v);
 	}
 	if (i > 2)
 	{
 		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
 		angles_.take(v);
-		strcpy(name,"a");
-		strcat(name, itoa(angles_.nVariables()));
-		v->setName(name);
+		name.print("a%i",itoa(angles_.nVariables()));
+		v->setName(name.get());
 		zel->setAngleVariable(v);
 	}
 	if (i > 3)
 	{
 		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
 		torsions_.take(v);
-		strcpy(name,"t");
-		strcat(name, itoa(torsions_.nVariables()));
-		v->setName(name);
+		name.print("t%i",itoa(torsions_.nVariables()));
+		v->setName(name.get());
 		zel->setTorsionVariable(v);
 	}
 	msg.exit("ZMatrix::addElement");

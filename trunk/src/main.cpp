@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
 	if (prefs.loadFragments()) aten.openFragments();
 
 	// Load in user preferences
-	char filename[512];
-	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
+	Dnchar filename;
+	filename.print("%s/%s/prefs.dat", aten.homeDir(), aten.atenDir());
 	if (!prefs.load(filename)) return -1;
 
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure

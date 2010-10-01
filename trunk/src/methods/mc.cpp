@@ -175,7 +175,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
 	msg.enter("MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats;
-	char s[256], t[32];
+	Dnchar s;
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
@@ -307,16 +307,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MonteCarlo::nMoveTypes; n++)
-			{
-				sprintf(t," %3i", int(acceptanceRatio_[0][n]*100.0));
-				strcat(s,t);
-			}
-			strcat(s, "  ");
-			strcat(s, etatext.get());
-			strcat(s,"\n");
-			msg.print(s);
+			s.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.catPrint(" %3i", int(acceptanceRatio_[0][n]*100.0));
+			s.catPrint("  %s\n", etatext.get());
+			msg.print(s.get());
 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
 			//msg.print("\n");
@@ -344,7 +338,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	msg.enter("MonteCarlo::disorder");
 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
 	int patternNMols, prog;
-	char s[256], t[32];
+	Dnchar s;
 	Refitem<Model,int> *ri;
 	Model *c;
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
@@ -666,24 +660,21 @@ bool MonteCarlo::disorder(Model *destmodel)
 			for (p = destmodel->patterns(); p != NULL; p = p->next)
 			{
 				n = p->id();
-				s[0] = '\n';
 				if (p == destmodel->patterns())
 				{
-					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
+					s.print(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
 				}
-				else sprintf(s,"%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
+				else s.print("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
 				{
-					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));
-					strcat(s,t);
+					s.catPrint(" %3i", int(acceptanceRatio_[n][m]*100.0));
 				}
 				if (p == destmodel->patterns())
 				{
-					strcat(s," ");
-					strcat(s,etatext.get());
+					s.print(" %s", etatext.get());
 				}
-				strcat(s,"\n");
-				msg.print(s);
+				s += '\n';
+				msg.print(s.get());
 			}
 		}
 		elast = ecurrent;

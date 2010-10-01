@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-char s[8096];
+Dnchar s;
 
 // Add two quantities together
 bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
@@ -42,7 +42,7 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
 		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(i,b)); rv = lhs; break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) { strcpy(s,lhs.asString(i,b)); strcat(s,rhs.asString(i,b)); lhs.setElement(i,s); } rv = lhs; break;
+		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) { s = lhs.asString(i,b); s.cat(rhs.asString(i,b)); lhs.setElement(i,s); } rv = lhs; break;
 		case (VTypes::IntAInt):
 		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(b)); rv = lhs; break;
 		case (VTypes::DblAInt):
@@ -66,7 +66,7 @@ bool Command::function_OperatorAdd(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		case (VTypes::VecIntA):
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v + lhs.asVector()); } break;
-		case (VTypes::StrStr): strcpy(s,lhs.asString(b)); strcat(s,rhs.asString(b)); rv.set(s); break;
+		case (VTypes::StrStr): s = lhs.asString(b); s.cat(rhs.asString(b)); rv.set(s); break;
 		default:
 			msg.print("The operator '+' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
