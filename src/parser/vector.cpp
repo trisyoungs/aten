@@ -462,7 +462,6 @@ void VectorArrayVariable::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
-	delete[] tab;
 }
 
 // Initialise array

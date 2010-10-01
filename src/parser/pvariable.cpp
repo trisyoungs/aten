@@ -69,7 +69,6 @@ void PointerVariable::nodePrint(int offset, const char *prefix)
 	// Output node data
 	if (readOnly_) printf("%s%p (%s) (constant value)\n", tab.get(), pointerData_, VTypes::dataType(returnType_));
 	else printf("%s%p (%s) (variable, name=%s)\n", tab.get(), pointerData_, VTypes::dataType(returnType_), name_.get());
-	delete[] tab;
 }
 
 /*
@@ -207,7 +206,6 @@ void PointerArrayVariable::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 	printf("[V]%s (%s array, name=%s, current size=%i)\n", tab.get(), VTypes::dataType(returnType_), name_.get(), arraySize_);
-	delete[] tab;
 }
 
 // Initialise array

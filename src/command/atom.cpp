@@ -239,7 +239,7 @@ bool Command::function_SetRZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_SetVelocities(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (c->hasArg(3)) obj.i = c->argType(1) == VTypes::AtomData ? (Atom*) c->argp(1,VTypes::AtomData) : obj.rs->atom(c->argi(1)-1);
+	if (c->hasArg(3)) obj.i = c->argType(3) == VTypes::AtomData ? (Atom*) c->argp(3,VTypes::AtomData) : obj.rs->atom(c->argi(3)-1);
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	obj.i->v() = c->arg3d(0);
 	rv.reset();

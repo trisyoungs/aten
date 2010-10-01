@@ -84,7 +84,6 @@ void DoubleVariable::nodePrint(int offset, const char *prefix)
 	// Output node data
 	if (readOnly_) printf("[C]%s%f (constant value)\n", tab.get(), doubleData_);
 	else printf("[V]%s%f (variable, name=%s)\n", tab.get(), doubleData_, name_.get());
-	delete[] tab;
 }
 
 /*
@@ -239,7 +238,6 @@ void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
-	delete[] tab;
 }
 
 // Return array pointer

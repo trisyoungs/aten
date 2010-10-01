@@ -503,8 +503,7 @@ void WidgetNode::nodePrint(int offset, const char *prefix)
 	tab.cat(prefix);
 
 	// Output node data
-	printf("[CN]%s%s (GUIFO)\n", tab.get(), name_.get());
-	delete[] tab;
+	printf("[CN]%s%s (WDGT)\n", tab.get(), name_.get());
 }
 
 // Set from returnvalue node

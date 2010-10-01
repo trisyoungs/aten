@@ -262,8 +262,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		setname(title);
 
 		# Check number of atoms in trajectory frame
-		modeltemplate();
 		if (aten.model.natoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
+		modeltemplate();
 
 		# Read cell if its present
 		if (imcon > 0)
