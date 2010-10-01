@@ -173,7 +173,13 @@ filter(type="importmodel", name="Siesta Vectors File", nickname="siestavec", ext
 		# SKip next line ("Eigenmode (real part)")
 		skipline();
 		# Now read in atomic displacements
-		for (n=1; n<=natoms; ++n) readline(vib.displacements[n].x, vib.displacements[n].y, vib.displacements[n].z);
+		for (n=1; n<=natoms; ++n)
+		{
+			readline(vib.displacements[n].x, vib.displacements[n].y, vib.displacements[n].z);
+			vib.displacements[n].x *= ANGBOHR;
+			vib.displacements[n].y *= ANGBOHR;
+			vib.displacements[n].z *= ANGBOHR;
+		}
 	}
 
 	# Summarise
