@@ -77,7 +77,6 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 	printf("[V]%s&%p (Aten) (constant value)\n", tab.get(), &aten);
-	delete[] tab;
 }
 
 /*

@@ -92,7 +92,6 @@ void StringVariable::nodePrint(int offset, const char *prefix)
 	// Output node data
 	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab.get(), stringData_.get());
 	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab.get(), stringData_.get(), name_.get());
-	delete[] tab;
 }
 
 
@@ -241,7 +240,6 @@ void StringArrayVariable::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
-	delete[] tab;
 }
 
 // Initialise array
