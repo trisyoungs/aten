@@ -216,6 +216,8 @@ class Aten
 	Dnchar dataDir_;
 	// Whether data dir has been set
 	bool dataDirSet_;
+	// Name of user's 'aten' directory within their homedir
+	Dnchar atenDir_;
 
 	public:
 	// Set location of users's home directory
@@ -232,6 +234,8 @@ class Aten
 	const char *dataDir() const;
 	// Return whether the data dir has already been set
 	bool dataDirSet() const;
+	// Return the aten directory name
+	const char *atenDir() const;
 
 
 	/*

@@ -36,33 +36,27 @@ void Aten::setExportFilter(Tree *filter)
 void Aten::exportModels()
 {
 	msg.enter("Aten::exportModels");
-	char filename[1024], *c;
+	Dnchar filename;
 	int n;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		aten.setCurrentModel(m);
 		// Generate new filename for model.
-		// Find rightmost '.'
-		strcpy(filename, m->filename());
-		c = &filename[0];
-		for (n=0; c != '\0'; n++)
-		{
-			if (filename[n] == '.') break;
-			c++;
-		}
-		if (n != -1) filename[n] = '\0';
+		filename = m->filename();
+		int n = filename.rFind('.', '/', '\\');
+		filename.eraseFrom(n);
 		// Append new suffix
-		strcat(filename,".");
-		strcat(filename,exportFilter_->filter.extensions()->get());
+		filename += '.';
+		filename.cat(exportFilter_->filter.extensions()->get());
 		// Make sure that the new filename is not the same as the old filename
-		if (strcmp(filename, m->filename()) == 0)
+		if (filename == m->filename())
 		{
-			msg.print("Export filename generated is identical to the original (%s) - not converted.\n", filename);
+			msg.print("Export filename generated is identical to the original (%s) - not converted.\n", filename.get());
 			continue;
 		}
 		m->setFilter(exportFilter_);
 		m->setFilename(filename);
-		if (exportFilter_->executeWrite(filename)) msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename, exportFilter_->filter.name());
+		if (exportFilter_->executeWrite(filename)) msg.print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename.get(), exportFilter_->filter.name());
 		else msg.print("Failed to save model '%s'.\n", m->name());
 	}
 	msg.exit("Aten::exportModels");

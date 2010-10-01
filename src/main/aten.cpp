@@ -53,6 +53,11 @@ Aten::Aten()
 
 	// Misc 
 	homeDir_ = "/tmp";
+	#ifdef _WIN32
+	atenDir_ = "aten";
+	#else
+	atenDir_ = ".aten";
+	#endif
 	defaultForcefield_ = NULL;
 	nFiltersFailed_ = 0;
 	dataDirSet_ = FALSE;
@@ -507,6 +512,12 @@ const char *Aten::dataDir() const
 bool Aten::dataDirSet() const
 {
 	return dataDirSet_;
+}
+
+// Return the aten directory
+const char *Aten::atenDir() const
+{
+	return atenDir_.get();
 }
 
 /*

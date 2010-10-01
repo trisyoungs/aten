@@ -346,12 +346,10 @@ void NetaNode::setParent(Neta *neta)
 void NetaNode::printScore(int level, const char *fmt ...)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[level+32];
-	tab[0] = '\0';
-	for (int n=0; n<level-1; n++) strcat(tab,"\t");
-	if (level > 1) strcat(tab,"   |--> ");
-	if (level == 1) strcat(tab,"\t");
+	Dnchar tab(level+32);
+	for (int n=0; n<level-1; n++) tab += '\t';
+	if (level > 1) tab.cat("   |--> ");
+	if (level == 1) tab += '\t';
 
 	va_list arguments;
 	static char msgs[8096];
@@ -361,8 +359,7 @@ void NetaNode::printScore(int level, const char *fmt ...)
 	vsprintf(msgs,fmt,arguments);
 	va_end(arguments);
 	// Output node data
-	msg.print(Messenger::Typing, "NETA%03i:%s%s\n", level, tab, msgs);
-	delete[] tab;
+	msg.print(Messenger::Typing, "NETA%03i:%s%s\n", level, tab.get(), msgs);
 }
 
 /*
@@ -487,18 +484,16 @@ int NetaLogicNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 void NetaLogicNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
+
 	// Output node data
-	printf("%s (Logic Node: %s)\n", tab, Neta::netaLogic(netaLogic_));
+	printf("%s (Logic Node: %s)\n", tab.get(), Neta::netaLogic(netaLogic_));
 	argument1_->nodePrint(offset+1, "");
 	argument2_->nodePrint(offset+1, "");
-	delete[] tab;
 }
 
 // Print (append) NETA representation of node contents
@@ -560,18 +555,16 @@ NetaBoundNode::~NetaBoundNode()
 void NetaBoundNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Bound Node: %s)\n", tab, Bond::bondType(bondType_));
+	printf("%s (Bound Node: %s)\n", tab.get(), Bond::bondType(bondType_));
 	// Print element/type info
-	printf("%s    Number of allowed elements/types defined = %i\n", tab, allowedElementsAndTypes_.nItems());
-	printf("%s      ", tab);
+	printf("%s    Number of allowed elements/types defined = %i\n", tab.get(), allowedElementsAndTypes_.nItems());
+	printf("%s      ", tab.get());
 	for (Refitem<ForcefieldAtom,int> *ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
 		if (ri->data == 0) printf("Any ");
@@ -580,8 +573,7 @@ void NetaBoundNode::nodePrint(int offset, const char *prefix)
 	}
 	printf("\n");
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab);
-	delete[] tab;
+	else printf("%s   -> No Inner Description\n", tab.get());
 }
 
 // Print (append) NETA representation of node contents
@@ -694,37 +686,37 @@ int NetaBoundNode::atomScore(Atom *target)
 const char *NetaBoundNode::elementsAndTypesString()
 {
 	msg.enter("NetaBoundNode::elementsAndTypesString");
-	static char s[1024];
+	static Dnchar s;
+	s.clear();
 	switch (bondType_)
 	{
 		case (Bond::Any):
-			s[0] = '~';
+			s = "~";
 			break;
 		case (Bond::Single):
-			s[0] = '-';
+			s = "-";
 			break;
 		case (Bond::Double):
-			s[0] = '=';
+			s = "=";
 			break;
 		default:
 			msg.print("NETA Internal Error: Can't convert this bond type to a single character.\n");
-			s[0] = '_';
+			s = "_";
 			break;
 	}
-	s[1] = '\0';
-	if (allowedElementsAndTypes_.nItems() != 1) strcat(s, "[");
+	if (allowedElementsAndTypes_.nItems() != 1) s += '[';
 	for (Refitem<ForcefieldAtom,int> *ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
-		if (ri != allowedElementsAndTypes_.first()) strcat(s,",");
+		if (ri != allowedElementsAndTypes_.first()) s += ',';
 		if ((ri->item != NULL) || (ri->data < 0))
 		{
-			strcat(s, "&");
-			strcat(s, itoa(abs(ri->data)));
+			s += '&';
+			s.cat(itoa(abs(ri->data)));
 		}
-		else if (ri->data == 0) strcat(s, "Any");
-		else strcat(s, elements().symbol(ri->data));
+		else if (ri->data == 0) s.cat("Any");
+		else s.cat(elements().symbol(ri->data));
 	}
-	if (allowedElementsAndTypes_.nItems() != 1) strcat(s, "]");
+	if (allowedElementsAndTypes_.nItems() != 1) s += ']';
 	msg.exit("NetaBoundNode::elementsAndTypesString");
 	return s;
 }
@@ -881,16 +873,14 @@ int NetaKeywordNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,i
 void NetaKeywordNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
+
 	// Output node data
-	printf("%s (Keyword Node: %s)\n", tab, Neta::netaKeyword(netaKeyword_));
-	delete[] tab;
+	printf("%s (Keyword Node: %s)\n", tab.get(), Neta::netaKeyword(netaKeyword_));
 }
 
 // Print (append) NETA representation of node contents
@@ -949,16 +939,13 @@ int NetaGeometryNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,
 void NetaGeometryNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Geometry Node: %s)\n", tab, Atom::atomGeometry(geometry_));
-	delete[] tab;
+	printf("%s (Geometry Node: %s)\n", tab.get(), Atom::atomGeometry(geometry_));
 }
 
 // Print (append) NETA representation of node contents
@@ -1061,16 +1048,13 @@ int NetaValueNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 void NetaValueNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Value Node: %s %s %i)\n", tab, Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_);
-	delete[] tab;
+	printf("%s (Value Node: %s %s %i)\n", tab.get(), Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_);
 }
 
 // Print (append) NETA representation of node contents
@@ -1122,17 +1106,14 @@ int NetaRootNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 void NetaRootNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Root Node:)\n", tab);
+	printf("%s (Root Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, prefix);
-	delete[] tab;
 }
 
 // Print (append) NETA representation of node contents
@@ -1263,18 +1244,15 @@ int NetaRingNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>
 void NetaRingNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Ring Node:)\n", tab);
+	printf("%s (Ring Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab);
-	delete[] tab;
+	else printf("%s   -> No Inner Description\n", tab.get());
 }
 
 // Print (append) NETA representation of node contents
@@ -1435,18 +1413,15 @@ int NetaChainNode::score(Atom *target, Reflist<Atom,int> *nbrs, Reflist<Ring,int
 void NetaChainNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	if (offset == 1) tab += '\t';
+	tab.cat(prefix);
 	// Output node data
-	printf("%s (Chain Node:)\n", tab);
+	printf("%s (Chain Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab);
-	delete[] tab;
+	else printf("%s   -> No Inner Description\n", tab.get());
 }
 
 // Print (append) NETA representation of node contents

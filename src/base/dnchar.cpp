@@ -84,6 +84,12 @@ Dnchar::Dnchar(const Dnchar &source)
 	else set(source.data_);
 }
 
+// Conversion operators
+Dnchar::operator const char*()
+{
+	return get();
+}
+
 // Destructor
 Dnchar::~Dnchar()
 {
@@ -193,6 +199,13 @@ void Dnchar::eraseEnd(int n)
 	if (n > 0) erase(endPosition_-n,endPosition_-1);
 }
 
+// Erase from specified position to end
+void Dnchar::eraseFrom(int n)
+{
+	if (n >= (endPosition_-1)) n = endPosition_-1;
+	if (n > 0) erase(n,endPosition_-1);
+}
+
 // Assignment operator (const char*)
 void Dnchar::operator=(const char *s)
 {
@@ -258,18 +271,20 @@ char Dnchar::operator[](int n) const
 // Character addition
 void Dnchar::operator+=(char c)
 {
-	// If we're passed \0, ignore it (since we already have one)
-	// Check size_ of array
-	if ((endPosition_ == (size_ - 1)) && (c != '\0'))
+	// Check whether we need to reallocate
+	if ((endPosition_+1) > (size_-1))
 	{
-		printf("Dnchar::operator+= <<<< No space left to add character >>>>\n");
-		return;
+		size_ = endPosition_+2;
+		char *newdata = new char[size_];
+		if (data_ != NULL)
+		{
+			strcpy(newdata, data_);
+			delete[] data_;
+		}
+		data_ = newdata;
 	}
-	if (c != '\0')
-	{
-		data_[endPosition_] = c;
-		endPosition_ ++;
-	}
+	data_[endPosition_] = c;
+	++endPosition_;
 	data_[endPosition_] = '\0';
 }
 
@@ -320,6 +335,19 @@ int Dnchar::find(char search) const
 		result ++;
 	}
 	if (result >= endPosition_) result = -1;
+	return result;
+}
+
+// Reverse find character
+int Dnchar::rFind(char search, char stopat1, char stopat2) const
+{
+	int result;
+	for (result = endPosition_; result >= 0; --result)
+	{
+		if (data_[result] == stopat1) return -1;
+		if (data_[result] == stopat2) return -1;
+		if (data_[result] == search) break;
+	}
 	return result;
 }
 
@@ -399,9 +427,6 @@ const char *Dnchar::upper() const
 // Create formatted string
 void Dnchar::print(const char *fmt ...)
 {
-	// Print to the text view in the main window if it has been initialised.
-	// If program is in quiet mode, don't print anything to stdout
-	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
 	va_list arguments;
 	static char s[8096];
 	s[0] = '\0';
@@ -410,4 +435,18 @@ void Dnchar::print(const char *fmt ...)
 	vsprintf(s,fmt,arguments);
 	set(s);
 	va_end(arguments);
+}
+
+// Append formatted string
+void Dnchar::catPrint(const char *fmt ...)
+{
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	// Now, append to existing string
+	cat(s);
 }

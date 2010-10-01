@@ -84,15 +84,14 @@ bool StringVariable::execute(ReturnValue &rv)
 void StringVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	tab.cat(prefix);
+
 	// Output node data
-	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab, stringData_.get());
-	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab, stringData_.get(), name_.get());
+	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab.get(), stringData_.get());
+	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab.get(), stringData_.get(), name_.get());
 	delete[] tab;
 }
 
@@ -235,14 +234,13 @@ bool StringArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
 void StringArrayVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	tab.cat(prefix);
+
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab, name_.get(), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
 	delete[] tab;
 }
 

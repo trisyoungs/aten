@@ -70,14 +70,13 @@ bool AtenVariable::execute(ReturnValue &rv)
 void AtenVariable::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	tab.cat(prefix);
+
 	// Output node data
-	printf("[V]%s&%p (Aten) (constant value)\n", tab, &aten);
+	printf("[V]%s&%p (Aten) (constant value)\n", tab.get(), &aten);
 	delete[] tab;
 }
 

@@ -31,7 +31,10 @@ class Dnchar
 	Dnchar(int size);
 	Dnchar(const char*);
 	~Dnchar();
-	Dnchar(const Dnchar&);	// Copy constructor
+	// Copy constructor
+	Dnchar(const Dnchar&);
+	// Conversion operators
+	operator const char*();
 	// List pointers
 	Dnchar *prev, *next;
 
@@ -66,8 +69,12 @@ class Dnchar
 	void eraseStart(int);
 	// Erase 'n' characters from end of string
 	void eraseEnd(int);
+	// Erase from nth character to the end of string
+	void eraseFrom(int);
 	// Find position of first occurrence of character 'c'
-	int find(char) const;
+	int find(char c) const;
+	// Find position of last occurrence of character 'c'
+	int rFind(char c, char stopat1 = '\0', char stopat2 = '\0') const;
 	// Cut n characters from start of string and place in other
 	void cutStart(int, Dnchar&);
 	// Concatenate supplied string on to end of this string
@@ -102,6 +109,8 @@ class Dnchar
 	const char *upper() const;
 	// Create formatted string
 	void print(const char *fmt ...);
+	// Append formatted string
+	void catPrint(const char *fmt ...);
 };
 
 #endif

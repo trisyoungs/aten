@@ -131,16 +131,14 @@ bool UserCommandNode::execute(ReturnValue &rv)
 void UserCommandNode::nodePrint(int offset, const char *prefix)
 {
 	// Construct tabbed offset
-	char *tab;
-	tab = new char[offset+32];
-	tab[0] = '\0';
-	for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-	if (offset > 1) strcat(tab,"   |--> ");
-	if (offset == 1) strcat(tab,"\t");
-	strcat(tab,prefix);
+	Dnchar tab(offset+32);
+	for (int n=0; n<offset-1; n++) tab += '\t';
+	if (offset > 1) tab.cat("   |--> ");
+	tab.cat(prefix);
+
 	// Output node data
 // 	printf("Function id = %p\n", function_);
-	printf("[UC]%s%s (UserCommand) (%i arguments)\n", tab, function_->name(), args_.nItems());
+	printf("[UC]%s%s (UserCommand) (%i arguments)\n", tab.get(), function_->name(), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 	delete[] tab;
