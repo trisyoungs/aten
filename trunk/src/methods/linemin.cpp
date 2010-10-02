@@ -120,6 +120,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	msg.enter("LineMinimiser::lineMinimise");
 	double enew, ecurrent, bounds[3], energies[3], newmin, a, b, b10, b12;
 	bool failed, leftbound, success;
+	int count = 0;
 
 	// Brent-style line minimiser with parabolic interpolation and Golden Search backup.
 	// We assume that the energy expression for the source model is correct.
@@ -230,6 +231,8 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 			}
 		}
 // 		printf("DIFF = %f, 2tol = %f\n", fabs(bounds[0]-bounds[2]), 2.0 * tolerance_);
+		++count;
+		if (count > 10) break;
 	} while (fabs(bounds[0]-bounds[2]) > (2.0 * tolerance_));
 // 	printf("Final bounding values are %f %f %f\n",bounds[0],bounds[1],bounds[2]);
 	gradientMove(srcmodel, bounds[1]);

@@ -74,6 +74,7 @@ void DoubleExp::set(double value)
 		} while (value < 1.0);
 	}
 	mantissa_ = value;
+	recalculate();
 // 	printf("mantissa of %f and exponent of %i\n", value, mantissa_, exponent_);
 }
 
