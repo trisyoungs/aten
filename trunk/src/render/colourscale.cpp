@@ -31,7 +31,7 @@ void Canvas::renderColourscales() const
 	// For now, draw in a stack at the bottom of the canvas.
 	double leftx, x, y, width, height = 20.0, start, scalestart;
 	double range, deltaw;
-	char label[128];
+	Dnchar label;
 	width = width_ * 0.6;
 	leftx = (width_ - width) * 0.50;
 	y = 5.0;
@@ -105,7 +105,7 @@ void Canvas::renderColourscales() const
 		  glVertex2d(leftx+width,y);
 		glEnd();
 		// Add on text labels
-		sprintf(label,"%s [%f : %f]", prefs.colourScale[n].name(), scalestart, scalestart + range);
+		label.sprintf("%s [%f : %f]", prefs.colourScale[n].name(), scalestart, scalestart + range);
 		glText(leftx+width+2.0, height_-y-8.0, label);
 		y += height + 10.0;
 	}

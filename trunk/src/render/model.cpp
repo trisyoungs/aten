@@ -30,7 +30,7 @@ void Canvas::renderModelLabels(Model *sourceModel)
 {
 	msg.enter("Canvas::renderModelLabels");
 	// Annotate the model with 2D labels
-	static char text[64];
+	Dnchar text;
 	static int labels;
 	static ForcefieldAtom *ffa;
 	static Vec3<double> cellCentre;
@@ -50,41 +50,41 @@ void Canvas::renderModelLabels(Model *sourceModel)
 		labels = i->labels();
 		ffa = i->type();
 		// Blank label string
-		text[0] = '\0';
+		text.clear();
 		// Now add on all parts of the label that are required
 		if (labels&(1 << Atom::IdLabel))
 		{
-			strcat(text,itoa(i->id()+1));
-			strcat(text," ");
+			text.strcat(itoa(i->id()+1));
+			text += ' ';
 		}
 		if (labels&(1 << Atom::ElementLabel))
 		{
-			strcat(text, elements().symbol(i));
-			strcat(text," ");
+			text.strcat(elements().symbol(i));
+			text += ' ';
 		}
 		if (labels&(1 << Atom::TypeLabel))
 		{
-			strcat(text,"[");
-			if (ffa == NULL) strcat(text, "None");
+			text += '[';
+			if (ffa == NULL) text.strcat("None");
 			else
 			{
-				strcat(text,itoa(ffa->typeId()));
-				strcat(text," ");
-				strcat(text,ffa->name());
+				text.strcat(itoa(ffa->typeId()));
+				text += ' ';
+				text.strcat(ffa->name());
 			}
-			strcat(text,"] ");
+			text.strcat("] ");
 		}
 		if (labels&(1 << Atom::EquivLabel))
 		{ 
-			strcat(text,"[=");
-			strcat(text,(ffa == NULL ? "None" : ffa->equivalent()));
-			strcat(text,"] ");
+			text.strcat("[=");
+			text.strcat(ffa == NULL ? "None" : ffa->equivalent());
+			text.strcat("] ");
 		}
 		if (labels&(1 << Atom::ChargeLabel))
 		{
-			strcat(text,"(");
-			strcat(text,ftoa(i->charge()));
-			strcat(text," e)");
+			text += '(';
+			text.strcat(ftoa(i->charge()));
+			text.strcat(" e)");
 		}
 		//glText(i->r() - cellCentre, text);
 		// Add text object to list
@@ -106,7 +106,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 	static Vec3<double> pos1, pos2;
 	double gamma, t;
 	bool rightalign;
-	static char text[256];
+	static Dnchar text;
 	static Atom **atoms;
 	// Check for valid model
 	if (sourceModel == NULL)
@@ -132,7 +132,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		  glVertex3d(ri.x, ri.y, ri.z);
 		  glVertex3d(rj.x, rj.y, rj.z);
 		glEnd();
-		sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
+		text.sprintf("%f %s", m->value(), prefs.distanceLabel());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
@@ -178,7 +178,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		pos1 = sourceModel->modelToScreen(labpos);
 		pos2 = sourceModel->modelToScreen(rj);
 		rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
-		sprintf(text,"%f %s", m->value(), prefs.angleLabel());
+		text.sprintf("%f %s", m->value(), prefs.angleLabel());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)
@@ -204,7 +204,7 @@ void Canvas::renderModelMeasurements(Model *sourceModel)
 		  glVertex3d(rl.x, rl.y, rl.z);
 		glEnd();
 		labpos = (rj + rk) * 0.5;
-		sprintf(text,"%f Deg", m->value());
+		text.sprintf("%f Deg", m->value());
 		// Add text object to list
 		pos1 = sourceModel->modelToScreen(labpos);
 		if (pos1.z < 1.0)

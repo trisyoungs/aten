@@ -341,8 +341,8 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		{
 			# Convert functional form to be recognised by DL_POLY
 			# Note: DL_POLY constraint terms are written in their own section
-			if (b.form == "harmonic") writelinef("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.data[1],b.data[2]);
-			else if (b.form == "morse") writelinef("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.data[3],b.data[2],b.data[1]);
+			if (b.form == "harmonic") writelinef("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.finddata("k"),b.finddata("eq"));
+			else if (b.form == "morse") writelinef("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.finddata("eq"),b.finddata("eq"),b.finddata("k"));
 			else if (b.form == "constraint") nconstraints++;
 			else
 			{
@@ -358,9 +358,9 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		for (b=p.angles; b; ++b)
 		{
 			# Convert functional form to be recognised by DL_POLY
-			if (b.form == "harmonic") writelinef("harm     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[2]);
-			else if (b.form == "cos") writelinef("cos      %5i %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[3],b.data[2]);
-			else if (b.form == "harmcos") writelinef("hcos     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.data[1],b.data[2]);
+			if (b.form == "harmonic") writelinef("harm     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.finddata("k"),b.finddata("eq"));
+			else if (b.form == "cos") writelinef("cos      %5i %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.finddata("k"),b.finddata("eq"),b.finddata("n"));
+			else if (b.form == "harmcos") writelinef("hcos     %5i %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.finddata("k"),b.finddata("eq"));
 			else if (b.form == "bondconstraint") nconstraints++;
 			else
 			{
@@ -374,9 +374,9 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 		for (b=p.torsions; b; ++b)
 		{
 			# Convert functional form to be recognised by DL_POLY
-			if (b.form == "cos") writelinef("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[3],b.data[2],b.escale,b.vscale);
-			else if (b.form == "cos3") writelinef("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.escale,b.vscale);
-			else if (b.form == "cos3c") writelinef("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.data[1],b.data[2],b.data[3],b.data[4]);
+			if (b.form == "cos") writelinef("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.finddata("k"),b.finddata("eq"),b.finddata("n"),b.escale,b.vscale);
+			else if (b.form == "cos3") writelinef("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.finddata("k1"),b.finddata("k2"),b.finddata("k3"),b.escale,b.vscale);
+			else if (b.form == "cos3c") writelinef("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.id[3],b.id[4],b.finddata("k0"),b.finddata("k1"),b.finddata("k2"),b.finddata("k3"),b.escale);
 			else
 			{
 				printf("Functional form of torsion term (%s) not accounted for in export filter.\n",b.form);

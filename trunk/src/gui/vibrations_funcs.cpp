@@ -70,7 +70,7 @@ void AtenVibrations::refresh()
 	int count = 0;
 	for (Vibration *vib = m->vibrations(); vib != NULL; vib = vib->next)
 	{
-		text.print("%i. Freq=%f\n", ++count, vib->frequency());
+		text.sprintf("%i. Freq=%f\n", ++count, vib->frequency());
 		ui.VibrationsList->addItem(text.get());
 	}
 	ui.VibrationsList->setCurrentRow(0);
@@ -208,5 +208,7 @@ void AtenVibrations::timerEvent(QTimerEvent*)
 
 void AtenVibrations::dialogFinished(int result)
 {
+	// Stop animation if it is playing
+	ui.PlayPauseVibration->setChecked(FALSE);
 	gui.mainWindow->ui.actionVibrationsWindow->setChecked(FALSE);
 }

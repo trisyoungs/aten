@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/tcanvas.uih"
 #include "gui/fragment.h"
 #include "render/canvas.h"
 #include "model/model.h"
@@ -255,6 +256,9 @@ void Canvas::setSelectedMode(UserAction ua)
 	}
 	// Finally, set the mode and refresh
 	selectedMode_ = ua;
+	// Change mouse cursor depending on mode
+	if (selectedMode_ == Canvas::SelectAction) gui.mainWidget->setCursor(Qt::ArrowCursor);
+	else gui.mainWidget->setCursor(Qt::CrossCursor);
 	gui.mainView.postRedisplay();
 	gui.updateStatusBar();
 	msg.exit("Canvas::setSelectedMode");

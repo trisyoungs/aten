@@ -27,7 +27,7 @@
 void Aten::openFilters()
 {
 	msg.enter("Aten::openFilters");
-	char path[512];
+	Dnchar path;
 	bool found = FALSE;
 	int nfailed;
 
@@ -51,9 +51,10 @@ void Aten::openFilters()
 
 	for (int i=0; i < paths.size(); i++)
 	{
-		sprintf(path,"%s/filters", qPrintable(paths.at(i)));
-		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", qPrintable(QDir::toNativeSeparators(path)));
-		nfailed = parseFilterDir( qPrintable(QDir::toNativeSeparators(path)) );
+		path.sprintf("%s/filters", qPrintable(paths.at(i)));
+		path = qPrintable(QDir::toNativeSeparators(path.get()));
+		msg.print(Messenger::Verbose, "Looking for filters in '%s'...\n", path.get());
+		nfailed = parseFilterDir(path);
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
 		nFiltersFailed_ += nfailed;
@@ -75,8 +76,9 @@ void Aten::openFilters()
 	}
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
-	sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-	msg.print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path);
+	path.sprintf("%s%s", homeDir_.get(), "/.aten/filters/");
+	path = qPrintable(QDir::toNativeSeparators(path.get()));
+	msg.print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path.get());
 	nfailed = parseFilterDir(path);
 	if (nfailed > 0) nFiltersFailed_ += nfailed;
 
@@ -120,7 +122,7 @@ void Aten::registerFilter(Tree *filter, FilterData::FilterType ft)
 int Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
-	char path[512];
+	Dnchar path;
 	msg.print("Clearing current filters....\n");
 	filters_[FilterData::ModelImport].clear();
 	filters_[FilterData::ModelExport].clear();
@@ -135,8 +137,10 @@ int Aten::reloadFilters()
 	failedFilters_.clear();
 
 	// Load filters
-	sprintf(path,"%s%s", dataDir_.get(), "/filters");
-	msg.print("Reading filters from '%s'...\n", path);
+	path.sprintf("%s%s", dataDir_.get(), "/filters");
+	path = qPrintable(QDir::toNativeSeparators(path.get()));
+
+	msg.print("Reading filters from '%s'...\n", path.get());
 	int result = parseFilterDir(path);
 
 	// Print out info and partner filters 
@@ -194,7 +198,7 @@ int Aten::parseFilterDir(const char *path)
 		else
 		{
 			// Add on a bit of useful text to print out
-			s.catPrint("%s  ", qPrintable(filterlist.at(i)));
+			s.strcatf("%s  ", qPrintable(filterlist.at(i)));
 		}
 	}
 	s += '\n';
@@ -231,7 +235,7 @@ void Aten::partnerFilters()
 				}
 			}
 		}
-		s.catPrint(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
+		s.strcatf(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
 	s+= '\n';
 	msg.print(Messenger::Verbose, s);
@@ -256,7 +260,7 @@ void Aten::partnerFilters()
 				}
 			}
 		}
-		s.catPrint(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
+		s.strcatf(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
 	s += '\n';
 	msg.print(Messenger::Verbose, s);

@@ -36,11 +36,11 @@ void Canvas::renderExtra3d() const
 {
 	msg.enter("Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
-	static double radius;
-	static char s[64];
-	static Vec3<double> r, mouse, textpos;
-	static Vec3<double> tempv;
-	static Atom *i;
+	double radius;
+	Dnchar s;
+	Vec3<double> r, mouse, textpos;
+	Vec3<double> tempv;
+	Atom *i;
 	Fragment *frag;
 	// Draw on the selection highlights (for atoms in canvas.subsel)
 	glSubsel3d();
@@ -111,7 +111,7 @@ void Canvas::renderExtra3d() const
 			  }
 			glPopMatrix();
 			// Draw text showing distance
-			sprintf(s," l = %f A",mouse.magnitude());
+			s.sprintf(" l = %f A",mouse.magnitude());
 			glText(textpos,s);
 			break;
 		// Draw on fragment (as long as mode is selected)
@@ -217,8 +217,8 @@ void Canvas::renderExtra2d() const
 {
 	msg.enter("Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
-	static int n, i, skip;
-	static double dx, halfw;
+	int n, i, skip;
+	double dx, halfw;
 	// First set up a 2D drawing area.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

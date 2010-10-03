@@ -110,14 +110,14 @@ bool Command::function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (srch == NULL)
 		{
 // 			printf("No substring match\n");
-			newstr.cat(s);
+			newstr.strcat(s);
 			s = NULL;
 		}
 		else
 		{
 // 			printf("Match at %p, offset is %i\n", srch, srch-s);
-			newstr.cat(s, srch-s);
-			newstr.cat(c->argc(2));
+			newstr.strcat(s, srch-s);
+			newstr.strcat(c->argc(2));
 			s = srch+searchlen;
 		}
 	}
@@ -138,13 +138,13 @@ bool Command::function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (srch == NULL)
 		{
 // 			printf("No substring match\n");
-			newstr.cat(s);
+			newstr.strcat(s);
 			s = NULL;
 		}
 		else
 		{
 // 			printf("Match at %p, offset is %i\n", srch, srch-s);
-			newstr.cat(s, srch-s);
+			newstr.strcat(s, srch-s);
 			s = srch+searchlen;
 // 			if (s != NULL) s++;
 		}

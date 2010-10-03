@@ -31,73 +31,56 @@ using namespace std;
 // Convert string to uppercase
 const char *upperCase(const char *s)
 {
-	static char result[1024];
-	static int i;
-	for (i = 0; s[i] != '\0'; i++) result[i] = toupper(s[i]);
-	result[i] = '\0';
+	static Dnchar result(1024);
+	result.clear();
+	for (int i = 0; s[i] != '\0'; i++) result += toupper(s[i]);
 	return result;
 }
 
 // Convert string to lowercase
 const char *lowerCase(const char *s)
 {
-	static char result[1024];
-	static int i;
-	for (i = 0; s[i] != '\0'; i++) result[i] = tolower(s[i]);
-	result[i] = '\0';
+	static Dnchar result(1024);
+	result.clear();
+	for (int i = 0; s[i] != '\0'; i++) result += tolower(s[i]);
 	return result;
 }
 
 // Get characters before first occurrence of designated character
 const char *beforeChar(const char *s, char delim)
 {
-	static char result[1024];
-	static int i, count;
-	count = 0;
-	for (i = 0; s[i] != '\0'; i++)
+	static Dnchar result(1024);
+	result.clear();
+	for (int i = 0; s[i] != '\0'; i++)
 	{
 		if (s[i] == delim) break;
-		result[count] = s[i];
-		count ++;
+		result += s[i];
 	}
-	result[count] = '\0';
 	return result;
 }
 
 // Get characters after first occurrence of designated character
 const char *afterChar(const char *s, char delim)
 {
-	static char result[1024];
-	static int i, count, ndelim;
-	ndelim = 0;
-	count = 0;
-	for (i = 0; s[i] != '\0'; i++)
+	static Dnchar result(1024);
+	result.clear();
+	bool found = FALSE;
+	for (int i = 0; s[i] != '\0'; i++)
 	{
-		if ((s[i] == delim) && (ndelim == 0))
-		{
-			ndelim ++;
-			continue;
-		}
-		if (ndelim > 0)
-		{
-			result[count] = s[i];
-			count ++;
-		}
+		if (found) result += s[i];
+		if (s[i] == delim) found = TRUE;
 	}
-	result[count] = '\0';
 	return result;
 }
 
 // Get characters after last occurrence of designated character
 const char *afterLastChar(const char *s, char delim)
 {
-	static char result[1024];
-	int count;
+	static Dnchar result;
+	result.clear();
 	const char *c, *d = NULL;
 	for (c = &s[0]; *c != '\0'; ++c) if (*c == delim) d = c;
-	count = 0;
-	if (d != NULL) for (c = ++d; *c != '\0'; ++c) result[count++] = *c;
-	result[count] = '\0';
+	if (d != NULL) result = ++d;
 	return result;
 }
 
@@ -125,13 +108,13 @@ const char *afterStr(const char *s, const char *search)
 // Search enum list for text
 int enumSearch(const char *name, int maxn, const char **itemlist, const char *query, bool reporterror)
 {
-	static char lowerq[50], lowers[50];
+	static Dnchar lowerq, lowers;
 	int result = maxn, i;
-	strcpy(lowerq,lowerCase(query));
+	lowerq = lowerCase(query);
 	for (i=0; i<maxn; i++)
 	{
-		strcpy(lowers,lowerCase(itemlist[i]));
-		if (strcmp(lowerq,lowers) == 0)
+		lowers = lowerCase(itemlist[i]);
+		if (lowerq == lowers)
 		{
 			result = i;
 			break;
@@ -156,24 +139,24 @@ void enumPrintValid(int nitems, const char **list)
 // Convert the number 'n' to a string representation.
 const char *itoa(int n)
 {
-	static char result[30];
-	sprintf(result,"%i",n);
+	static Dnchar result;
+	result.sprintf("%i",n);
 	return result;
 }
 
 // Convert the real number 'f' to a string representation
 const char *ftoa(double f)
 {
-	static char result[30];
-	sprintf(result,"%f",f);
+	static Dnchar result;
+	result.sprintf("%f",f);
 	return result;
 }
 
 // Convert the real number 'f' to a string representation with supplied format
 const char *ftoa(double f,const char *fmt)
 {
-	static char result[30];
-	sprintf(result,fmt,f);
+	static Dnchar result;
+	result.sprintf(fmt,f);
 	return result;
 }
 
@@ -200,7 +183,7 @@ const char *stripTrailing(const char *s)
 // Replace all of the supplied characters in the source string
 const char *replaceChars(const char *s, const char *charstoreplace, char r)
 {
-	static Dnchar result(1024);
+	static Dnchar result;
 	bool found;
 	char const *c1, *c2;
 	result.clear();
@@ -224,7 +207,7 @@ const char *replaceChars(const char *s, const char *charstoreplace, char r)
 // Strip all of the supplied characters from the source string
 const char *stripChars(const char *s, const char *charstostrip)
 {
-	static Dnchar result(1024);
+	static Dnchar result;
 	char const *c1, *c2;
 	bool found;
 	result.clear();

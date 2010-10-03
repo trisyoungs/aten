@@ -145,32 +145,31 @@ void ReturnValue::reset()
 // Return string of contained data
 const char *ReturnValue::info()
 {
-	static char result[8096];
-	result[0] = '\0';
+	static Dnchar result;
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			sprintf(result,"nothing (%s)", VTypes::dataType(type_));
+			result.sprintf("nothing (%s)", VTypes::dataType(type_));
 			break;
 		case (VTypes::IntegerData):
-			if (arraySize_ == -1) sprintf(result,"%i (%s)", valueI_, VTypes::dataType(type_));
-			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("%i (%s)", valueI_, VTypes::dataType(type_));
+			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::DoubleData):
-			if (arraySize_ == -1) sprintf(result,"%f (%s)", valueD_, VTypes::dataType(type_));
-			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("%f (%s)", valueD_, VTypes::dataType(type_));
+			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::StringData):
-			if (arraySize_ == -1) sprintf(result,"'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
-			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
+			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::VectorData):
-			if (arraySize_ == -1) sprintf(result,"{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, VTypes::dataType(type_));
-			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("{%f,%f,%f} (%s)", valueV_.x, valueV_.y, valueV_.z, VTypes::dataType(type_));
+			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		default:
-			if (arraySize_ == -1) sprintf(result,"%p (%s)", valueP_, VTypes::dataType(type_));
-			else sprintf(result,"%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("%p (%s)", valueP_, VTypes::dataType(type_));
+			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 	}
 	return result;
@@ -411,18 +410,18 @@ double ReturnValue::asDouble(bool &success)
 // Return as character string
 const char *ReturnValue::asString(bool &success)
 {
-	static char converted[128];
+	static Dnchar converted;
 	success = TRUE;
 	if (arraySize_ != -1)
 	{
 		// Use valueS_ to store the result....
 // 		msg.print("Cannot return a whole array as a single string.\n");
-		valueS_.createEmpty(1024);
+// 		valueS_.createEmpty(1024);
 		valueS_.clear();
-		valueS_.cat("{ ");
+		valueS_.strcat("{ ");
 		for (int i=0; i<arraySize_; ++i)
 		{
-			if (i != 0) valueS_.cat(", ");
+			if (i != 0) valueS_.strcat(", ");
 			switch (type_)
 			{
 				case (VTypes::NoData):
@@ -431,21 +430,21 @@ const char *ReturnValue::asString(bool &success)
 					return "_NULL_";
 					break;
 				case (VTypes::IntegerData):
-					valueS_.cat(itoa(arrayI_[i]));
+					valueS_.strcat(itoa(arrayI_[i]));
 					break;
 				case (VTypes::DoubleData):
-					valueS_.cat(ftoa(arrayD_[i]));
+					valueS_.strcat(ftoa(arrayD_[i]));
 					break;
 				case (VTypes::StringData):
 					valueS_ += '"';
-					valueS_.cat(arrayS_[i].get());
+					valueS_.strcat(arrayS_[i].get());
 					valueS_ += '"';
 					break;
 				default:
 					break;
 			}
 		}
-		valueS_.cat(" }");
+		valueS_.strcat(" }");
 		return valueS_.get();
 	}
 	else switch (type_)
@@ -465,10 +464,9 @@ const char *ReturnValue::asString(bool &success)
 			return valueS_.get();
 			break;
 		case (VTypes::VectorData):
-			converted[0] = '\0';
-			sprintf(converted, "{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
+			converted.sprintf("{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
 			tempString_ = converted;
-			return tempString_.get();
+			return tempString_;
 			break;
 		default:
 			// All pointer types
@@ -640,7 +638,7 @@ double ReturnValue::asDouble(int index, bool &success)
 // Return as character string
 const char *ReturnValue::asString(int index, bool &success)
 {
-	static char converted[128];
+	static Dnchar converted;
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
@@ -673,10 +671,9 @@ const char *ReturnValue::asString(int index, bool &success)
 			break;
 		default:
 			// All pointer types
-			converted[0] = '\0';
-			sprintf(converted, "%p", valueP_);
+			converted.sprintf("%p", valueP_);
 			tempString_ = converted;
-			return tempString_.get();
+			return tempString_;
 			break;
 	}
 	success = FALSE;

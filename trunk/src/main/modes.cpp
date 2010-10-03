@@ -47,7 +47,7 @@ void Aten::exportModels()
 		filename.eraseFrom(n);
 		// Append new suffix
 		filename += '.';
-		filename.cat(exportFilter_->filter.extensions()->get());
+		filename.strcat(exportFilter_->filter.extensions()->get());
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
 		{

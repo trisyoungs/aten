@@ -48,12 +48,12 @@ int NetaParser::lex()
 		return 0;
 	}
 
-	int length, n;
+	int n;
 	bool done;
-	static char token[256], c;
+	static Dnchar token;
+	char c;
 	static Dnchar name;
-	length = 0;
-	token[0] = '\0';
+	token.clear();
 
 	// Skip over whitespace
 	while ((c = getChar()) == ' ' || c == '\t' || c == '\r' || c == '\n' );
@@ -71,21 +71,20 @@ int NetaParser::lex()
 	*/
 	if (isdigit (c))
 	{
-		token[length++] = c;
+		token += c;
 		done = FALSE;
 		do
 		{
 			c = getChar();
-			if (isdigit(c)) token[length++] = c;
+			if (isdigit(c)) token += c;
 			else
 			{
 				unGetChar();
-				token[length] = '\0';
 				done = TRUE;
 			}
 		} while (!done);
 		NetaParser_lval.intconst = atoi(token);
-		msg.print(Messenger::Test, "NETA : found an integer constant [%s] [%i]\n", token, NetaParser_lval.intconst);
+		msg.print(Messenger::Test, "NETA : found an integer constant [%s] [%i]\n", token.get(), NetaParser_lval.intconst);
 		return INTCONST;
 	}
 
@@ -96,22 +95,21 @@ int NetaParser::lex()
 	{
 		do
 		{
-			token[length++] = c;
+			token += c;
 			c = getChar();
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		token[length] = '\0';
-		msg.print(Messenger::Test, "NETA : found an alpha token [%s]...\n", token);
+		msg.print(Messenger::Test, "NETA : found an alpha token [%s]...\n", token.get());
 
 		// Element Symbol (or 'Any')
-		if (strcmp(token,"Any") == 0)
+		if (token == "Any")
 		{
 			NetaParser_lval.intconst = 0;
 			msg.print(Messenger::Test, "NETA : ...which is the any element symbol (Any)\n");
 			return ELEMENT;
 		}
-		for (n=0; n<elements().nElements(); ++n) if (strcmp(token,elements().symbol(n)) == 0) break;
+		for (n=0; n<elements().nElements(); ++n) if (token == elements().symbol(n)) break;
 		if (n < elements().nElements())
 		{
 			NetaParser_lval.intconst = n;
@@ -178,7 +176,7 @@ int NetaParser::lex()
 		msg.print(Messenger::Test, "NETA : found symbol [%c]\n",c);
 		return c;
 	}
-	token[0] = c;
+	token += c;
 	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
 	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
@@ -186,12 +184,11 @@ int NetaParser::lex()
 	if (ispunct(c2))
 	{
 		c = getChar();
-		token[1] = c;
-		token[2] = '\0';
-		msg.print(Messenger::Test, "NETA : found symbol [%s]\n",token);
+		token += c;
+		msg.print(Messenger::Test, "NETA : found symbol [%s]\n",token.get());
 		NetaSymbolToken st = (NetaSymbolToken) enumSearch("", nNetaSymbolTokens, NetaSymbolTokenKeywords, token);
 		if (st != nNetaSymbolTokens) return NetaSymbolTokenValues[st];
-		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token);
+		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token.get());
  	}
 	else
 	{

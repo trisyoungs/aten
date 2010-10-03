@@ -31,7 +31,7 @@
 
 bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 {
-	static char from[32], to[32];
+	static Dnchar from, to;
 	int i, j, n, plus = 0;
 	bool range;
 	// Execute argument to get result
@@ -71,22 +71,22 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 			if (strchr(parser.argc(arg), '-') != NULL)
 			{
 				range = TRUE;
-				strcpy(from,beforeChar(parser.argc(arg),'-'));
-				strcpy(to,afterChar(parser.argc(arg),'-'));
+				from = beforeChar(parser.argc(arg),'-');
+				to = afterChar(parser.argc(arg),'-');
 				// Arguments for ranges cannot have '+' in them
-				if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
+				if ((!from.strchr('+')) || (to.strchr('+')))
 				{
-					msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
+					msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from.get(), to.get());
 					return FALSE;
 				}
 			}
 			else
 			{
 				range = FALSE;
-				strcpy(from,parser.argc(arg));
-				if (strchr(from,'+') == NULL) plus = 0;
+				from = parser.argc(arg);
+				if (!from.strchr('+')) plus = 0;
 				else if (from[0] == '+') plus = -1;
-				else if (from[strlen(from)-1] == '+') plus = 1;
+				else if (from.lastChar() == '+') plus = 1;
 				else
 				{
 					msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
@@ -110,7 +110,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 					i = elements().findAlpha(from);
 					if (i == 0)
 					{
-						msg.print("Unrecognised element (%s) in select.\n", from);
+						msg.print("Unrecognised element (%s) in select.\n", from.get());
 						return FALSE;
 					}
 					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
@@ -132,13 +132,13 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 					i = elements().findAlpha(from);
 					if (i == 0)
 					{
-						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
+						msg.print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
 						return FALSE;
 					}
 					j = elements().findAlpha(to);
 					if (j == 0)
 					{
-						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
+						msg.print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
 						return FALSE;
 					}
 					for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));

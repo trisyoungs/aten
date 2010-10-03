@@ -47,12 +47,11 @@ int CommandParser::lex()
 		return 0;
 	}
 
-	int length, n;
+	int n;
 	bool done, integer, hasexp;
-	static char token[1024], quotechar, c;
-	static Dnchar name;
-	length = 0;
-	token[0] = '\0';
+	static Dnchar token, name;
+	char quotechar, c;
+	token.clear();
 
 	// Skip over whitespace
 	while ((c = getChar()) == ' ' || c == '\t' || c == '\r' || c == '\n' );
@@ -80,16 +79,16 @@ int CommandParser::lex()
 	{
 		integer = TRUE;
 		hasexp = FALSE;
-		token[length++] = c;
+		token += c;
 		done = FALSE;
 		do
 		{
 			c = getChar();
-			if (isdigit(c)) token[length++] = c;
+			if (isdigit(c)) token += c;
 			else if (c == '.')
 			{
 				integer = FALSE;
-				token[length++] = '.';
+				token += '.';
 			}
 			else if ((c == 'e') || (c == 'E'))
 			{
@@ -99,24 +98,22 @@ int CommandParser::lex()
 					msg.print("Error: Number has two exponentiations (e/E).\n");
 					return 0;
 				}
-				token[length++] = 'E';
+				token += 'E';
 				hasexp = TRUE;
 			}
 			else if ((c == '-') || (c == '+'))
 			{
 				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
-				if ((length > 0) && (token[length-1] != 'E'))
+				if ((!token.isEmpty()) && (token.lastChar() != 'E'))
 				{
 					unGetChar();
-					token[length] = '\0';
 					done = TRUE;
 				}
-				else token[length++] = c;
+				else token += c;
 			}
 			else
 			{
 				unGetChar();
-				token[length] = '\0';
 				done = TRUE;
 			}
 		} while (!done);
@@ -132,8 +129,8 @@ int CommandParser::lex()
 			integer = FALSE;
 			CommandParser_lval.doubleconst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token, CommandParser_lval.intconst);
-		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token, CommandParser_lval.doubleconst);
+		if (integer) msg.print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]\n", tree_, token.get(), CommandParser_lval.intconst);
+		else msg.print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]\n", tree_, token.get(), CommandParser_lval.doubleconst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -156,13 +153,13 @@ int CommandParser::lex()
 				switch (c2)
 				{
 					case ('n'):
-						token[length++] = '\n'; break;
+						token += '\n'; break;
 					case ('t'):
-						token[length++] = '\t'; break;
+						token += '\t'; break;
 					case ('r'):
-						token[length++] = '\r'; break;
+						token += '\r'; break;
 					default:
-						token[length++] = c2; break;
+						token += c2; break;
 				}
 			}
 			else if (c == quotechar) done = TRUE;
@@ -171,10 +168,9 @@ int CommandParser::lex()
 				msg.print("Runaway character constant in input.\n");
 				return 0;
 			}
-			else token[length++] = c;
+			else token += c;
 		} while (!done);
-		token[length] = '\0';
-		msg.print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token);
+		msg.print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...\n",tree_,token.get());
 		name = token;
 		CommandParser_lval.name = &name;
 		return CHARCONST;
@@ -187,13 +183,12 @@ int CommandParser::lex()
 	{
 		do
 		{
-			token[length++] = c;
+			token += c;
 			c = getChar();
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		token[length] = '\0';
-		msg.print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...\n", tree_, token);
+		msg.print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...\n", tree_, token.get());
 		// Skip over keyword detection if we are expecting a path step
 		if (!expectPathStep_)
 		{
@@ -208,27 +203,27 @@ int CommandParser::lex()
 
 			// Built-in numeric constants
 			// TRUE, FALSE, or NULL token?
-			if (strcmp(token,"TRUE") == 0)
+			if (token == "TRUE")
 			{
 				CommandParser_lval.intconst = 1;
 				return INTCONST;
 			}
-			else if ((strcmp(token,"FALSE") == 0) || (strcmp(token,"NULL") == 0))
+			else if ((token == "FALSE") || (token == "NULL"))
 			{
 				CommandParser_lval.intconst = 0;
 				return INTCONST;
 			}
-			else if (strcmp(token,"PI") == 0)
+			else if (token == "PI")
 			{
 				CommandParser_lval.doubleconst = 3.14159265358979323846;
 				return DOUBLECONST;
 			}
-			else if (strcmp(token,"DEGRAD") == 0)
+			else if (token == "DEGRAD")
 			{
 				CommandParser_lval.doubleconst = DEGRAD;
 				return DOUBLECONST;
 			}
-			else if (strcmp(token,"ANGBOHR") == 0)
+			else if (token == "ANGBOHR")
 			{
 				CommandParser_lval.doubleconst = ANGBOHR;
 				return DOUBLECONST;
@@ -251,14 +246,14 @@ int CommandParser::lex()
 
 			// Is this a recognised high-level keyword?
 			n = 0;
-			if (strcmp(token,"if") == 0) n = IF;
-			else if (strcmp(token,"else") == 0) n = ELSE;
-			else if (strcmp(token,"for") == 0) n = FOR;
-			else if (strcmp(token,"do") == 0) n = DO;
-			else if (strcmp(token,"while") == 0) n = WHILE;
-			else if (strcmp(token,"return") == 0) n = RETURN;
-			else if (strcmp(token,"void") == 0) n = DIOV;
-			else if (strcmp(token,"help") == 0) n = HELP;
+			if (token == "if") n = IF;
+			else if (token == "else") n = ELSE;
+			else if (token == "for") n = FOR;
+			else if (token == "do") n = DO;
+			else if (token == "while") n = WHILE;
+			else if (token == "return") n = RETURN;
+			else if (token == "void") n = DIOV;
+			else if (token == "help") n = HELP;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);
@@ -266,7 +261,7 @@ int CommandParser::lex()
 			}
 
 			// Is this the start of a filter or a function?
-			if (strcmp(token,"filter") == 0)
+			if (token == "filter")
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)\n",tree_);
 				return FILTERBLOCK;
@@ -354,7 +349,7 @@ int CommandParser::lex()
 		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%c]\n",tree_,c);
 		return c;
 	}
-	token[0] = c;
+	token += c;
 	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
 	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
@@ -364,12 +359,11 @@ int CommandParser::lex()
 	if (ispunct(c2))
 	{
 		c = getChar();
-		token[1] = c;
-		token[2] = '\0';
-		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%s]\n",tree_,token);
-		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token);
+		token += c;
+		msg.print(Messenger::Parse, "LEXER (%p): found symbol [%s]\n",tree_,token.get());
+		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token.get());
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
-		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token);
+		else msg.print("Error: Unrecognised symbol found in input (%s).\n", token.get());
  	}
 	else
 	{

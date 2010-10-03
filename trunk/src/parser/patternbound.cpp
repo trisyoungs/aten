@@ -56,7 +56,7 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 
 // Function data
 FunctionAccessor PatternBoundVariable::functionData[PatternBoundVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "finddata",	VTypes::DoubleData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -331,8 +331,30 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	PatternBound *ptr= (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
+	int id;
 	if (result) switch (i)
 	{
+		case (PatternBoundVariable::FindData):
+			switch (ptr->data()->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					id = BondFunctions::bondParameter(ptr->data()->bondStyle(), node->argc(0), TRUE);
+					if (id == BondFunctions::BondFunctions[ptr->data()->bondStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->data()->parameter(id));
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					id = AngleFunctions::angleParameter(ptr->data()->angleStyle(), node->argc(0), TRUE);
+					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->data()->parameter(id));
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					id = TorsionFunctions::torsionParameter(ptr->data()->torsionStyle(), node->argc(0), TRUE);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->data()->parameter(id));
+					break;
+			}
+			break;
+
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PatternBoundVariable.\n", functionData[i].name);
 			result = FALSE;

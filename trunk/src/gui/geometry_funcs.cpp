@@ -53,7 +53,7 @@ void AtenGeometry::refresh()
 	if (m->nSelected() < 2) return;
 	double value;
 	Atom *i, *j, *k, *l;
-	Dnchar s;
+	Dnchar text;
 	Refitem<Atom,int> *ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -64,16 +64,16 @@ void AtenGeometry::refresh()
 			ui.DistanceTab->setEnabled(TRUE);
 			ui.Tabs->setCurrentIndex(0);
 			value = m->distance(i,j);
-			s.print("%f (atoms %i-%i)", value, i->id()+1, j->id()+1);
-			ui.DistanceLabel->setText(s.get());
+			text.sprintf("%f (atoms %i-%i)", value, i->id()+1, j->id()+1);
+			ui.DistanceLabel->setText(text.get());
 			break;
 		case (3):
 			ui.AngleTab->setEnabled(TRUE);
 			ui.Tabs->setCurrentIndex(1);
 			k = ri->item;
 			value = m->angle(i,j,k);
-			s.print("%f (atoms %i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1);
-			ui.AngleLabel->setText(s.get());
+			text.sprintf("%f (atoms %i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1);
+			ui.AngleLabel->setText(text.get());
 			break;
 		case (4):
 			ui.TorsionTab->setEnabled(TRUE);
@@ -81,8 +81,8 @@ void AtenGeometry::refresh()
 			k = ri->item;
 			l = ri->next->item;
 			value = m->torsion(i,j,k,l);
-			s.print("%f (atoms %i-%i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1, l->id()+1);
-			ui.TorsionLabel->setText(s.get());
+			text.sprintf("%f (atoms %i-%i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1, l->id()+1);
+			ui.TorsionLabel->setText(text.get());
 			break;
 	}
 }

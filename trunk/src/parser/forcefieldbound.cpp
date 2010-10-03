@@ -64,7 +64,7 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 
 // Function data
 FunctionAccessor ForcefieldBoundVariable::functionData[ForcefieldBoundVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "finddata",		VTypes::DoubleData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -379,8 +379,29 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	ForcefieldBound *ptr= (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	int id;
 	if (result) switch (i)
 	{
+		case (ForcefieldBoundVariable::FindData):
+			switch (ptr->type())
+			{
+				case (ForcefieldBound::BondInteraction):
+					id = BondFunctions::bondParameter(ptr->bondStyle(), node->argc(0), TRUE);
+					if (id == BondFunctions::BondFunctions[ptr->bondStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->parameter(id));
+					break;
+				case (ForcefieldBound::AngleInteraction):
+					id = AngleFunctions::angleParameter(ptr->angleStyle(), node->argc(0), TRUE);
+					if (id == AngleFunctions::AngleFunctions[ptr->angleStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->parameter(id));
+					break;
+				case (ForcefieldBound::TorsionInteraction):
+					id = TorsionFunctions::torsionParameter(ptr->torsionStyle(), node->argc(0), TRUE);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].nParameters) result = FALSE;
+					else rv.set(ptr->parameter(id));
+					break;
+			}
+			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldBoundVariable.\n", functionData[i].name);
 			result = FALSE;

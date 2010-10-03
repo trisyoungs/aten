@@ -204,7 +204,7 @@ void Model::setSpacegroup(const char *sg)
 		{
 			Dnchar newname(128);
 			newname = tsgn->SgLabels;
-			newname.cat(":R");
+			newname.strcat(":R");
 			tsgn = FindTabSgNameEntry(newname.get(), 'A');
 			if (tsgn == NULL)
 			{

@@ -90,6 +90,7 @@ namespace BondFunctions
 	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char *s, bool reporterror = FALSE);
+	int bondParameter(BondFunction, const char *s, bool reporterror = FALSE);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
@@ -103,6 +104,7 @@ namespace AngleFunctions
 	enum AngleFunction { None, Ignore, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char *s, bool reporterror = FALSE);
+	int angleParameter(AngleFunction, const char *s, bool reporterror = FALSE);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
@@ -117,6 +119,7 @@ namespace TorsionFunctions
 	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, Pol9, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
 	TorsionFunction torsionFunction(const char *s, bool reporterror = FALSE);
+	int torsionParameter(TorsionFunction, const char *s, bool reporterror = FALSE);
 	void printValid();
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3 };

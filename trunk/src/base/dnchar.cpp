@@ -22,10 +22,11 @@
 #include "base/constants.h"
 #include "base/sysfunc.h"
 #include "base/dnchar.h"
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+using namespace std;
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdarg>
 
 // Constructors
 Dnchar::Dnchar()
@@ -99,7 +100,7 @@ Dnchar::~Dnchar()
 // Print
 void Dnchar::info() const
 {
-	printf("DnChar len = %i, end = %i : '%s'\n",size_,endPosition_,data_);
+	std::printf("DnChar len = %i, end = %i : '%s'\n",size_,endPosition_,data_);
 }
 
 // Clear
@@ -160,7 +161,17 @@ void Dnchar::createEmpty(Dnchar &s)
 bool Dnchar::isEmpty() const
 {
 	return (endPosition_ <= 0 ? TRUE : FALSE);
-}	
+}
+
+// Return last character of string (before '\0')
+char Dnchar::lastChar() const
+{
+	return (endPosition_ == 0 ? '\0' : data_[endPosition_-1]);
+}
+
+/*
+// Erase / Cut
+*/
 
 // Erase range
 void Dnchar::erase(int start, int end)
@@ -205,6 +216,19 @@ void Dnchar::eraseFrom(int n)
 	if (n >= (endPosition_-1)) n = endPosition_-1;
 	if (n > 0) erase(n,endPosition_-1);
 }
+
+// Cut characters from start
+void Dnchar::cutStart(int len, Dnchar &target)
+{
+	// Set new size_ of target string
+	target.createEmpty(len+1);
+	for (int n=0; n<len; n++) target += data_[n];
+	erase(0,len-1);
+}
+
+/*
+// Operators
+*/
 
 // Assignment operator (const char*)
 void Dnchar::operator=(const char *s)
@@ -262,7 +286,7 @@ char Dnchar::operator[](int n) const
 {
 	if ((n < 0) || (n >= size_))
 	{
-		printf("Dnchar::operator[] <<<< Array subscript %i out of range (0-%i) >>>>\n",n,size_-1);
+		std::printf("Dnchar::operator[] <<<< Array subscript %i out of range (0-%i) >>>>\n",n,size_-1);
 		return 0;
 	}
 	return data_[n];
@@ -274,7 +298,8 @@ void Dnchar::operator+=(char c)
 	// Check whether we need to reallocate
 	if ((endPosition_+1) > (size_-1))
 	{
-		size_ = endPosition_+2;
+		// We'll extend the size by 100 characters, rather than just 1 since we're likely to be adding more....
+		size_ = endPosition_+100;
 		char *newdata = new char[size_];
 		if (data_ != NULL)
 		{
@@ -288,77 +313,9 @@ void Dnchar::operator+=(char c)
 	data_[endPosition_] = '\0';
 }
 
-// String addition
-void Dnchar::cat(const char *s, int charcount)
-{
-	if (charcount == 0) return;
-	// Check whether we need to reallocate
-	int slen = strlen(s);
-	if ((charcount != -1) && (charcount <= slen)) slen = charcount;
-	if ((slen+endPosition_) > (size_-1))
-	{
-		size_ = slen+endPosition_+1;
-		char *newdata = new char[size_];
-		if (data_ != NULL)
-		{
-			strcpy(newdata, data_);
-			delete[] data_;
-		}
-		data_ = newdata;
-	}
-	for (const char *c = s; *c != '\0'; ++c)
-	{
-		// If we're passed \0, ignore it (since we already have one)
-		// Check size_ of array
-		if (endPosition_ == (size_ - 1))
-		{
-			printf("Dnchar::cat <<<< Buffer overflow - blame shoddy programming >>>>\n");
-			return;
-		}
-		data_[endPosition_] = *c;
-		++endPosition_;
-		--slen;
-		if (slen == 0) break;
-	}
-	data_[endPosition_] = '\0';
-}
-
-// Find character
-int Dnchar::find(char search) const
-{
-	int result = 0;
-	char *c;
-	for (c = data_; *c != '\0'; c++)
-	{
-	//printf("Dnchar %c %c\n",*c,search);
-		if (*c == search) break;
-		result ++;
-	}
-	if (result >= endPosition_) result = -1;
-	return result;
-}
-
-// Reverse find character
-int Dnchar::rFind(char search, char stopat1, char stopat2) const
-{
-	int result;
-	for (result = endPosition_; result >= 0; --result)
-	{
-		if (data_[result] == stopat1) return -1;
-		if (data_[result] == stopat2) return -1;
-		if (data_[result] == search) break;
-	}
-	return result;
-}
-
-// Cut characters from start
-void Dnchar::cutStart(int len, Dnchar &target)
-{
-	// Set new size_ of target string
-	target.createEmpty(len+1);
-	for (int n=0; n<len; n++) target += data_[n];
-	erase(0,len-1);
-}
+/*
+// Conversion
+*/
 
 // Return as double
 double Dnchar::asDouble() const
@@ -377,17 +334,16 @@ bool Dnchar::asBool() const
 {
 	// Convert string to boolean
 	bool result = FALSE;
-	static char lcase[512];
-	strcpy(lcase,lowerCase(data_));
-	if (strcmp(lcase,"off") == 0) result = FALSE;
-	else if (strcmp(lcase,"on") == 0) result = TRUE;
-	else if (strcmp(lcase,"no") == 0) result = FALSE;
-	else if (strcmp(lcase,"yes") == 0) result = TRUE;
-	else if (strcmp(lcase,"false") == 0) result = FALSE;
-	else if (strcmp(lcase,"true") == 0) result = TRUE;
+	Dnchar lcase(lowerCase(data_));
+	if (lcase == "off") result = FALSE;
+	else if (lcase == "on") result = TRUE;
+	else if (lcase == "no") result = FALSE;
+	else if (lcase == "yes") result = TRUE;
+	else if (lcase == "false") result = FALSE;
+	else if (lcase == "true") result = TRUE;
 	else
 	{
-		printf("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", lcase);
+		std::printf("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", lcase.get());
 		result = FALSE;
 	}
 	return result;
@@ -424,8 +380,93 @@ const char *Dnchar::upper() const
 	return upperCase(data_);
 }
 
+/*
+// Search
+*/
+
+// Find character
+int Dnchar::find(char search) const
+{
+	int result = 0;
+	char *c;
+	for (c = data_; *c != '\0'; c++)
+	{
+	//printf("Dnchar %c %c\n",*c,search);
+		if (*c == search) break;
+		result ++;
+	}
+	if (result >= endPosition_) result = -1;
+	return result;
+}
+
+// Reverse find character
+int Dnchar::rFind(char search, char stopat1, char stopat2) const
+{
+	int result;
+	for (result = endPosition_; result >= 0; --result)
+	{
+		if (data_[result] == stopat1) return -1;
+		if (data_[result] == stopat2) return -1;
+		if (data_[result] == search) break;
+	}
+	return result;
+}
+
+/*
+// C-String Functions
+*/
+
+// String addition
+void Dnchar::strcat(const char *s, int charcount)
+{
+	if (charcount == 0) return;
+	// Check whether we need to reallocate
+	int slen = strlen(s);
+	if ((charcount != -1) && (charcount <= slen)) slen = charcount;
+	if ((slen+endPosition_) > (size_-1))
+	{
+		size_ = slen+endPosition_+1;
+		char *newdata = new char[size_];
+		if (data_ != NULL)
+		{
+			strcpy(newdata, data_);
+			delete[] data_;
+		}
+		data_ = newdata;
+	}
+	for (const char *c = s; *c != '\0'; ++c)
+	{
+		// If we're passed \0, ignore it (since we already have one)
+		// Check size_ of array
+		if (endPosition_ == (size_ - 1))
+		{
+			printf("Dnchar::cat <<<< Buffer overflow - blame shoddy programming >>>>\n");
+			return;
+		}
+		data_[endPosition_] = *c;
+		++endPosition_;
+		--slen;
+		if (slen == 0) break;
+	}
+	data_[endPosition_] = '\0';
+}
+
+// Append formatted string
+void Dnchar::strcatf(const char *fmt ...)
+{
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	// Now, append to existing string
+	strcat(s);
+}
+
 // Create formatted string
-void Dnchar::print(const char *fmt ...)
+void Dnchar::sprintf(const char *fmt ...)
 {
 	va_list arguments;
 	static char s[8096];
@@ -437,16 +478,8 @@ void Dnchar::print(const char *fmt ...)
 	va_end(arguments);
 }
 
-// Append formatted string
-void Dnchar::catPrint(const char *fmt ...)
+// Search for character in string
+char *Dnchar::strchr(char c) const
 {
-	va_list arguments;
-	static char s[8096];
-	s[0] = '\0';
-	// Parse the argument list (...) and internally write the output string into msgs[]
-	va_start(arguments,fmt);
-	vsprintf(s,fmt,arguments);
-	va_end(arguments);
-	// Now, append to existing string
-	cat(s);
+	return std::strchr(data_, c);
 }

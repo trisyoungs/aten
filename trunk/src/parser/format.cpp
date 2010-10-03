@@ -42,10 +42,8 @@ FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes:
 	// Determine length of format if one was provided
 	if (fmt != NULL)
 	{
-		char text[32];
-		int n = 0;
-		for (const char *c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text[n++] = *c;
-		text[n] = '\0';
+		Dnchar text;
+		for (const char *c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text += *c;
 		formatLength_ = atoi(text);
 	}
 
