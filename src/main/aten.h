@@ -250,12 +250,26 @@ class Aten
 	void setProgramMode(ProgramMode pm);
 	// Return the current program mode
 	ProgramMode programMode() const;
-	// Cached scripts
-	List<Forest> scripts;
-	// Script to store temporary typed commands
-	Forest tempScript;
-	// Interactive mode command list
-	Forest interactiveScript;
+
+
+	/*
+	// Scripts
+	*/
+	private:
+	// List of loaded scripts
+	List<Forest> scripts_;
+
+	public:
+	// Add script to list
+	Forest *addScript();
+	// Remove specified script
+	void removeScript(Forest *script);
+	// Return number of loaded scripts
+	int nScripts();
+	// Return first script in list
+	Forest *scripts();
+	// Return n'th script in list
+	Forest *script(int n);
 
 
 	/*

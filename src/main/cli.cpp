@@ -327,6 +327,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Forest *script, tempforest;
 	ReturnValue rv;
 	Tree *f, *modelfilter = NULL;
+	Forest interactiveScript;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -525,11 +526,8 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						// Get string from user
 						line = readline(prompt);
-// 						strcpy(s, line);
-// 						linelen = strlen(s);
-// 						if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
-						aten.interactiveScript.clear();
-						if (aten.interactiveScript.generateFromString(line)) aten.interactiveScript.executeAll(rv);
+						interactiveScript.clear();
+						if (interactiveScript.generateFromString(line)) interactiveScript.executeAll(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;
@@ -608,7 +606,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
-					script = aten.scripts.add();
+					script = aten.addScript();
 					if (script->generateFromFile(argtext.get(), "CliScript"))
 					{
 						aten.setProgramMode(Aten::CommandMode);
@@ -618,7 +616,7 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 					else
 					{
-						aten.scripts.remove(script);
+						aten.removeScript(script);
 						return -1;
 					}
 					break;

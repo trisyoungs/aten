@@ -22,14 +22,15 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
+#include "gui/gui.h"
+#include "gui/command.h"
 
 // List available scripts
 bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
+	if (aten.nScripts() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
-	for (Forest *f = aten.scripts.first(); f != NULL; f = f->next)
-		msg.print("  %s (%s)\n", f->filename(), f->name());
+	for (Forest *f = aten.scripts(); f != NULL; f = f->next) msg.print("  %s (%s)\n", f->filename(), f->name());
 	rv.reset();
 	return TRUE;
 }
@@ -37,15 +38,17 @@ bool Command::function_ListScripts(CommandNode *c, Bundle &obj, ReturnValue &rv)
 // Load script from disk
 bool Command::function_LoadScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
-	Forest *f = aten.scripts.add();
+	Forest *f = aten.addScript();
 	if (!f->generateFromFile(c->argc(0), "ScriptFile"))
 	{
-		aten.scripts.remove(f);
+		aten.removeScript(f);
 		return FALSE;
 	}
 	if (c->hasArg(1)) f->setName(c->argc(1));
 	else f->setName(c->argc(0));
 	rv.reset();
+	// Update GUI
+	if (gui.exists()) gui.commandWindow->refreshScripts();
 	return TRUE;
 }
 
@@ -54,7 +57,7 @@ bool Command::function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	// Find the script...
 	Forest *f;
-	for (f = aten.scripts.first(); f != NULL; f = f->next) if (strcmp(c->argc(0), f->name()) == 0) break;
+	for (f = aten.scripts(); f != NULL; f = f->next) if (strcmp(c->argc(0), f->name()) == 0) break;
 	if (f != NULL)
 	{
 		msg.print("Executing script '%s':\n",c->argc(0));
@@ -65,4 +68,3 @@ bool Command::function_RunScript(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	return TRUE;
 }
-

@@ -87,7 +87,7 @@ void Aten::clear()
 	models_.clear();
 	forcefields_.clear();
 	userClipboard->clear();
-	scripts.clear();
+	scripts_.clear();
 	for (int i=0; i<FilterData::nFilterTypes; i++) filters_[i].clear();
 }
 
@@ -719,3 +719,40 @@ FragmentGroup *Aten::fragmentGroups()
 {
 	return fragmentGroups_.first();
 }
+
+/*
+// Scripts
+*/
+
+// Add script to list
+Forest *Aten::addScript()
+{
+	return scripts_.add();
+}
+
+// Remove specified script
+void Aten::removeScript(Forest *script)
+{
+	scripts_.remove(script);
+}
+
+// Return number of loaded scripts
+int Aten::nScripts()
+{
+	return scripts_.nItems();
+}
+
+// Return first script in list
+Forest *Aten::scripts()
+{
+	return scripts_.first();
+}
+
+// Return n'th script in list
+Forest *Aten::script(int n)
+{
+	if ((n < 0) || (n >= scripts_.nItems())) msg.print("Script %i is out of range.\n", n);
+	else return scripts_[n];
+	return NULL;
+}
+

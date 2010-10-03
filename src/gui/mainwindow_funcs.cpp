@@ -44,7 +44,6 @@
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
-#include "gui/commandhelp.h"
 #include "gui/about.h"
 #include "model/model.h"
 #include "model/clipboard.h"
@@ -501,76 +500,6 @@ void AtenForm::setWidgetsEnabled(bool b)
 	bondToleranceSpin_->setEnabled(b);
 }
 
-void AtenForm::refreshScriptsMenu()
-{
-	// Remove old actions from menu (i.e. current items in Reflist)
-	for (Refitem<QAction, Forest*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
-	{
-		ui.ScriptsMenu->removeAction(sa->item);
-		// Free Reflist QActions
-		delete sa->item;
-	}
-	// Clear Reflist and repopulate, along with scriptsmenu
-	scriptActions_.clear();
-	for (Forest *f = aten.scripts.first(); f != NULL; f = f->next)
-	{
-		// Create new QAction and add to Reflist
-		QAction *qa = new QAction(this);
-		// Set action data
-		qa->setVisible(TRUE);
-		qa->setText(f->name());
-		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
-		scriptActions_.add(qa, f);
-		ui.ScriptsMenu->addAction(qa);
-	}
-}
-
-void AtenForm::on_actionLoadScript_triggered(bool v)
-{
-	static QDir currentDirectory_(aten.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Load Script", currentDirectory_.path(), loadScriptFilters, &selFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Create script and model variables within it
-		Forest *ca = aten.scripts.add();
-		if (ca->generateFromFile(qPrintable(filename)))
-		{
-			refreshScriptsMenu();
-			msg.print("Script file '%s' loaded succesfully and added to the Scripts menu.\nClick on its menu item to run it.\n", qPrintable(filename));
-		}
-		else
-		{
-			aten.scripts.remove(ca);
-			msg.print("Failed to load script file '%s'.\n", qPrintable(filename));
-		}
-	}
-}
-
-void AtenForm::runScript()
-{
-	// Cast sending QAction and grab filename
-	QAction *action = qobject_cast<QAction*> (sender());
-	if (!action)
-	{
-		printf("AtenForm::runScript - Sender was not a QAction.\n");
-		return;
-	}
-	// Find the CommandList from the loadedscripts() Reflist
-	Refitem<QAction, Forest*> *ri = scriptActions_.contains(action);
-	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
-	else
-	{
-		// Execute the script
-		msg.print("Executing script '%s':\n",ri->data->name());
-		ReturnValue result;
-		ri->data->executeAll(result);
-	}
-	gui.update();
-}
-
 /*
 // Window Show / Hide Functions
 */
@@ -717,9 +646,4 @@ void AtenForm::on_actionAboutAten_triggered(bool checked)
 void AtenForm::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
-}
-
-void AtenForm::on_actionCommandHelp_triggered(bool checked)
-{
-	gui.commandHelpDialog->exec();
 }
