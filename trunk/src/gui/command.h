@@ -38,16 +38,41 @@ class AtenCommand : public QDialog
 	void refresh();
 	private slots:
 	void dialogFinished(int result);
-	void on_CommandPrompt_returnPressed();
+
 
 	/*
-	// Public Functions
+	// Prompt Page
 	*/
+	private slots:
+	void on_CommandPrompt_returnPressed();
+
 	public:
 	// Set list of commands in command tab
 	void setCommandList(QStringList cmds);
 	// Return list of commands stored in command tab
 	QStringList commandList();
+
+
+	/*
+	// Scripts Page
+	*/
+	private slots:
+	void on_ReloadAllButton_clicked(bool checked);
+	void on_RunSelectedButton_clicked(bool checked);
+	void on_OpenScriptButton_clicked(bool checked);
+	void on_ScriptsList_currentRowChanged(int row);
+	public:
+	void refreshScripts();
+
+	/*
+	// Command Index Page
+	*/
+	private:
+	void repopulateCommandList(const char *search);
+	private slots:
+	void on_CommandSearchEdit_textChanged(QString test);
+	void on_CommandList_currentRowChanged(int row);
+
 
 	/*
 	// Widgets

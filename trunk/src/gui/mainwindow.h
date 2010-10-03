@@ -269,18 +269,6 @@ class AtenForm : public QMainWindow
 	void on_actionMouseTranslate_triggered(bool checked);
 
 	/*
-	// Script Actions
-	*/
-	private:
-	// Pointers to recent file actions
-	Reflist<QAction, Forest*> scriptActions_;
-	private slots:
-	void runScript();
-	void on_actionLoadScript_triggered(bool v);
-	public:
-	void refreshScriptsMenu();
-
-	/*
 	// Selection actions
 	*/
 	private slots:
@@ -373,7 +361,6 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
-	void on_actionCommandHelp_triggered(bool checked);
 
 	/*
 	// Local Routines

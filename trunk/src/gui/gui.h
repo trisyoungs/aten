@@ -35,7 +35,6 @@ class AtenSelectFilter;
 class AtenSelectPattern;
 class AtenSelectElement;
 class AtenSelectVariable;
-class AtenCommandHelp;
 class AtenAtomlist;
 class AtenBuild;
 class AtenCellDefine;
@@ -193,8 +192,6 @@ class GuiQt
 	AtenSelectVariable *selectVariableDialog;
 	// Select element dialog
 	AtenSelectElement *selectElementDialog;
-	// Command help dialog
-	AtenCommandHelp *commandHelpDialog;
 	// View basis dialog
 	AtenViewBasis *viewBasisDialog;
 	// View eigenvector dialog

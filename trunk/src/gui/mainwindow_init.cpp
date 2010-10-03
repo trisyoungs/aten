@@ -240,9 +240,6 @@ void AtenForm::finaliseUi()
 	}
 	ui.actionCreateGlyph->setMenu(menu);
 
-	// Populate scripts menu
-	refreshScriptsMenu();
-
 	// Load Qt Settings
 	loadSettings();
 

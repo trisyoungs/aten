@@ -65,4 +65,23 @@
 			</tgroup>
 		</table>
 
+		<table frame='all' pgwide='1' tocentry='1'><title>Bound Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>finddata ( string <emphasis>keyword</emphasis> )</entry>
+						<entry>double</entry>
+						<entry>Search for and return the named parameter of the bound interaction</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+
 	</section>
