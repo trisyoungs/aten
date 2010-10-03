@@ -70,7 +70,7 @@ bool Combine::regenerateEquations()
 	{
 		cr = (Combine::CombinationRule) n;
 		eqn = eqns.add();
-		eqn->print("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
+		eqn->sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
 	}
 	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", TRUE);
 	msg.exit("Combine::regenerateEquations");
@@ -141,12 +141,6 @@ VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s, bool reporter
 	}
 	return (VdwFunctions::VdwFunction) i;
 }
-void VdwFunctions::printValid()
-{
-	msg.print("Valid forms are:\n   ");
-	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) msg.print("%s ",VdwFunctions::VdwFunctions[i].keyword);
-	msg.print("\n");
-}
 int VdwFunctions::vdwParameter(VdwFunction form, const char *s, bool reporterror)
 {
 	int i;
@@ -161,7 +155,12 @@ int VdwFunctions::vdwParameter(VdwFunction form, const char *s, bool reporterror
 	}
 	return i;
 }
-
+void VdwFunctions::printValid()
+{
+	msg.print("Valid forms are:\n   ");
+	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) msg.print("%s ",VdwFunctions::VdwFunctions[i].keyword);
+	msg.print("\n");
+}
 
 // Bond potential forms
 FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
@@ -201,6 +200,20 @@ BondFunctions::BondFunction BondFunctions::bondFunction(const char *s, bool repo
 		printValid();
 	}
 	return (BondFunctions::BondFunction) i;
+}
+int BondFunctions::bondParameter(BondFunction form, const char *s, bool reporterror)
+{
+	int i;
+	for (i=0; i < BondFunctions::BondFunctions[form].nParameters; i++)
+		if (strcmp(BondFunctions::BondFunctions[form].parameterKeywords[i],s) == 0) break;
+	if ((i == BondFunctions::BondFunctions[form].nParameters) && reporterror)
+	{
+		msg.print("Invalid parameter '%s' for bond functional form '%s'.\n", s, BondFunctions::BondFunctions[form].name);
+		msg.print("Valid parameters are:\n   ");
+		for (int n=0; n< BondFunctions::BondFunctions[form].nParameters; n++) msg.print("%s ",BondFunctions::BondFunctions[form].parameterKeywords[n]);
+		msg.print("\n");
+	}
+	return i;
 }
 void BondFunctions::printValid()
 {
@@ -251,6 +264,20 @@ AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s, bool 
 		printValid();
 	}
 	return (AngleFunctions::AngleFunction) i;
+}
+int AngleFunctions::angleParameter(AngleFunction form, const char *s, bool reporterror)
+{
+	int i;
+	for (i=0; i < AngleFunctions::AngleFunctions[form].nParameters; i++)
+		if (strcmp(AngleFunctions::AngleFunctions[form].parameterKeywords[i],s) == 0) break;
+	if ((i == AngleFunctions::AngleFunctions[form].nParameters) && reporterror)
+	{
+		msg.print("Invalid parameter '%s' for bond functional form '%s'.\n", s, AngleFunctions::AngleFunctions[form].name);
+		msg.print("Valid parameters are:\n   ");
+		for (int n=0; n< AngleFunctions::AngleFunctions[form].nParameters; n++) msg.print("%s ",AngleFunctions::AngleFunctions[form].parameterKeywords[n]);
+		msg.print("\n");
+	}
+	return i;
 }
 void AngleFunctions::printValid()
 {
@@ -309,6 +336,20 @@ TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *
 		printValid();
 	}
 	return (TorsionFunctions::TorsionFunction) i;
+}
+int TorsionFunctions::torsionParameter(TorsionFunction form, const char *s, bool reporterror)
+{
+	int i;
+	for (i=0; i < TorsionFunctions::TorsionFunctions[form].nParameters; i++)
+		if (strcmp(TorsionFunctions::TorsionFunctions[form].parameterKeywords[i],s) == 0) break;
+	if ((i == TorsionFunctions::TorsionFunctions[form].nParameters) && reporterror)
+	{
+		msg.print("Invalid parameter '%s' for bond functional form '%s'.\n", s, TorsionFunctions::TorsionFunctions[form].name);
+		msg.print("Valid parameters are:\n   ");
+		for (int n=0; n< TorsionFunctions::TorsionFunctions[form].nParameters; n++) msg.print("%s ",TorsionFunctions::TorsionFunctions[form].parameterKeywords[n]);
+		msg.print("\n");
+	}
+	return i;
 }
 void TorsionFunctions::printValid()
 {

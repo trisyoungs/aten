@@ -586,58 +586,36 @@ int ElementMap::numberToZ(const char *s) const
 int ElementMap::alphaToZ(const char *s) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
-	static char cleaned[32];
-	int n, len = 0, result = -1;
+	static Dnchar cleaned;
+	cleaned.clear();
+	int n;
 	for (n=0; s[n] != '\0'; n++)
+	{
 		if (s[n] == ' ') continue;
-		else if (s[n] > 64 && s[n] < 91)
-		{
-			cleaned[len] = s[n];
-			len++;
-		}
-		else if (s[n] > 96 && s[n] < 123)
-		{
-			cleaned[len] = toupper(s[n]);
-			len++;
-		}
+		else if (s[n] > 64 && s[n] < 91) cleaned += s[n];
+		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
 		else if (s[n] == '_') break;
-	cleaned[len] = '\0';
-	for (n=0; n<nElements_; n++)
-		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
-		{
-			result = n;
-			break;
-		}
-	return result;
+	}
+	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucSymbol) return n;
+	return -1;
 }
 
 // Convert string from first alpha part to element number
 int ElementMap::firstAlphaToZ(const char *s) const
 {
 	// Convert up to non-alpha character.
-	static char cleaned[32];
-	int n, len = 0, result = -1;
+	static Dnchar cleaned;
+	cleaned.clear();
+	int n;
 	for (n=0; s[n] != '\0'; n++)
+	{
 		if (s[n] == ' ') continue;
-		else if (s[n] > 64 && s[n] < 91)
-		{
-			cleaned[len] = s[n];
-			len++;
-		}
-		else if (s[n] > 96 && s[n] < 123)
-		{
-			cleaned[len] = toupper(s[n]);
-			len++;
-		}
+		else if (s[n] > 64 && s[n] < 91) cleaned += s[n];
+		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
 		else break;
-	cleaned[len] = '\0';
-	for (n=0; n<nElements_; n++)
-		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
-		{
-			result = n;
-			break;
-		}
-	return result;
+	}
+	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucSymbol) return n;
+	return -1;
 }
 
 // Convert string from first alpha character to element number
@@ -645,7 +623,7 @@ int ElementMap::singleAlphaToZ(const char *s) const
 {
 	// Convert first alpha character.
 	char cleaned[2];
-	int n, result = -1;
+	int n;
 	cleaned[0] = '\0';
 	for (n=0; s[n] != '\0'; n++)
 	{
@@ -656,41 +634,25 @@ int ElementMap::singleAlphaToZ(const char *s) const
 		if (cleaned[0] != '\0') break;
 	}
 	cleaned[1] = '\0';
-	for (n=0; n<nElements_; n++)
-		if (strcmp(el[n].ucSymbol,cleaned) == 0) 
-		{
-			result = n;
-			break;
-		}
-	return result;
+	for (n=0; n<nElements_; n++) if (strcmp(el[n].ucSymbol,cleaned) == 0) return n;
+	return -1;
 }
 
 // Convert string from name to element number
 int ElementMap::nameToZ(const char *s) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
-	static char cleaned[32];
-	int n, len = 0, result = -1;
+	static Dnchar cleaned;
+	cleaned.clear();
+	int n;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91)
-		{
-			cleaned[len] = s[n];
-			len++;
-		}
-		else if (s[n] > 96 && s[n] < 123)
-		{
-			cleaned[len] = toupper(s[n]);
-			len++;
-		}
+	{
+		if (s[n] > 64 && s[n] < 91) cleaned += s[n];
+		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
 		else if (s[n] == '_') break;
-	cleaned[len] = '\0';
-	for (n=0; n<nElements_; n++)
-		if (strcmp(el[n].ucName,cleaned) == 0) 
-		{
-			result = n;
-			break;
-		}
-	return result;
+	}
+	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucName) return n;
+	return -1;
 }
 
 // Convert string from fftype to element number

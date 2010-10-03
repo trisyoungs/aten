@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 
 	// Load in user preferences
 	Dnchar filename;
-	filename.print("%s/%s/prefs.dat", aten.homeDir(), aten.atenDir());
+	filename.sprintf("%s/%s/prefs.dat", aten.homeDir(), aten.atenDir());
 	if (!prefs.load(filename)) return -1;
 
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure

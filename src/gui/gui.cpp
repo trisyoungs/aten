@@ -385,24 +385,24 @@ void GuiQt::updateStatusBar(bool clear)
 	{
 		lastAction = mainView.selectedMode();
 		text.clear();
-		text.cat("<b>");
-		text.cat(UserActionTexts[lastAction].name);
-		text.cat(":</b> ");
-		text.cat(UserActionTexts[lastAction].unModified);
+		text.strcat("<b>");
+		text.strcat(UserActionTexts[lastAction].name);
+		text.strcat(":</b> ");
+		text.strcat(UserActionTexts[lastAction].unModified);
 		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
 		{
-			text.cat(", <b>+shift</b> ");
-			text.cat(UserActionTexts[lastAction].shiftModified);
+			text.strcat(", <b>+shift</b> ");
+			text.strcat(UserActionTexts[lastAction].shiftModified);
 		}
 		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
 		{
-			text.cat(", <b>+ctrl</b> ");
-			text.cat(UserActionTexts[lastAction].ctrlModified);
+			text.strcat(", <b>+ctrl</b> ");
+			text.strcat(UserActionTexts[lastAction].ctrlModified);
 		}
 		if (UserActionTexts[lastAction].altModified[0] != '\0')
 		{
-			text.cat(", <b>+alt</b> ");
-			text.cat(UserActionTexts[lastAction].altModified);
+			text.strcat(", <b>+alt</b> ");
+			text.strcat(UserActionTexts[lastAction].altModified);
 		}
 	}
 	// Set text in statusbar widget
@@ -481,7 +481,7 @@ void GuiQt::removeModel(int id)
 bool GuiQt::saveBeforeClose()
 {
 	// Check the status of all models, asking to save before close if necessary
-	char text[512];
+	Dnchar text;
 	int returnvalue;
 	ReturnValue rv;
 	Tree *f;
@@ -490,8 +490,8 @@ bool GuiQt::saveBeforeClose()
 		if (m->changeLog.isModified())
 		{
 			// Create a model message dialog
-			sprintf(text, "Model '%s' has been modified.\n", m->name());
-			returnvalue = QMessageBox::warning(mainWindow, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+			text.sprintf("Model '%s' has been modified.\n", m->name());
+			returnvalue = QMessageBox::warning(mainWindow, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 			switch (returnvalue)
 			{
 				// Discard changes
@@ -664,10 +664,9 @@ void GuiQt::progressTerminate()
 bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 {
 	progressCurrentStep_ = (currentstep == -1 ? progressCurrentStep_+1 : currentstep);
-	static double dpercent;
+	double dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
 	static QTime remtime;
-	static char etatext[64];
-	dpercent = double(progressCurrentStep_) / double(progressStepsToDo_);
+	static Dnchar etatext;
 	// Show the progress bar if enough time has elapsed since the start of the operation...
 	// If the GUI doesn't exist, call the text-based progress indicator instead
 	// Calculate ETA
@@ -691,14 +690,14 @@ bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 		// New dots or percentage to output?
 		if (percent != progressPercent_)
 		{
-			if (etatext == NULL)
+			if (shorttext == NULL)
 			{
 				for (n=0; n<ndots; n++) printf(".");
 				for (n=ndots; n<30; n++) printf(" ");
 			}
 			// Lastly, print percentage and ETA
-			sprintf(etatext, "(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
-			if (shorttext == NULL) printf("%s", etatext);
+			etatext.sprintf("(%-3i%%, ETA %02i:%02i:%02i)",percent, remtime.hour(), remtime.minute(), remtime.second());
+			if (shorttext == NULL) printf("%s", etatext.get());
 			else shorttext->set(etatext);
 			fflush(stdout);
 			progressPercent_ = percent;
@@ -706,12 +705,11 @@ bool GuiQt::progressUpdate(int currentstep, Dnchar *shorttext)
 	}
 	else if (time_.elapsed() >= 500)
 	{
-		static char s[64];
 		setWindowsEnabled(FALSE);
 		mainWindow->progressIndicator->setVisible(TRUE);
 		mainWindow->progressBar->setValue(progressCurrentStep_);
-		sprintf(s, "ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
-		mainWindow->progressEta->setText(s);
+		etatext.sprintf("ETA %02i:%02i:%02i", remtime.hour(), remtime.minute(), remtime.second());
+		mainWindow->progressEta->setText(etatext.get());
 		app->processEvents();
 	}
 	// Check to see if the abort button was pressed

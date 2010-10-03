@@ -123,7 +123,7 @@ const char *ZMatrixElement::distanceName()
 	if (values_[0] == NULL) msg.print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[0]) name.print("-%s",values_[0]->name());
+		if (negated_[0]) name.sprintf("-%s",values_[0]->name());
 		else name = values_[0]->name();
 	}
 	return name.get();
@@ -177,7 +177,7 @@ const char *ZMatrixElement::angleName()
 	if (values_[1] == NULL) msg.print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[1]) name.print("-%s",values_[1]->name());
+		if (negated_[1]) name.sprintf("-%s",values_[1]->name());
 		else name = values_[1]->name();
 	}
 	return name.get();
@@ -231,7 +231,7 @@ const char *ZMatrixElement::torsionName()
 	if (values_[2] == NULL) msg.print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
 	else
 	{
-		if (negated_[2]) name.print("-%s",values_[2]->name());
+		if (negated_[2]) name.sprintf("-%s",values_[2]->name());
 		else name = values_[2]->name();
 	}
 	return name.get();
@@ -319,7 +319,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), FALSE);
 		distances_.take(v);
-		name.print("d%i",itoa(distances_.nVariables()));
+		name.sprintf("d%i",itoa(distances_.nVariables()));
 		v->setName(name.get());
 		zel->setDistanceVariable(v);
 	}
@@ -327,7 +327,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
 		angles_.take(v);
-		name.print("a%i",itoa(angles_.nVariables()));
+		name.sprintf("a%i",itoa(angles_.nVariables()));
 		v->setName(name.get());
 		zel->setAngleVariable(v);
 	}
@@ -335,7 +335,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	{
 		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
 		torsions_.take(v);
-		name.print("t%i",itoa(torsions_.nVariables()));
+		name.sprintf("t%i",itoa(torsions_.nVariables()));
 		v->setName(name.get());
 		zel->setTorsionVariable(v);
 	}

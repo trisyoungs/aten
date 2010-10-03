@@ -348,7 +348,7 @@ void NetaNode::printScore(int level, const char *fmt ...)
 	// Construct tabbed offset
 	Dnchar tab(level+32);
 	for (int n=0; n<level-1; n++) tab += '\t';
-	if (level > 1) tab.cat("   |--> ");
+	if (level > 1) tab.strcat("   |--> ");
 	if (level == 1) tab += '\t';
 
 	va_list arguments;
@@ -486,9 +486,9 @@ void NetaLogicNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 
 	// Output node data
 	printf("%s (Logic Node: %s)\n", tab.get(), Neta::netaLogic(netaLogic_));
@@ -510,7 +510,7 @@ void NetaLogicNode::netaPrint(Dnchar &neta)
 			neta += '|';
 			break;
 		case (Neta::NetaAndNotLogic):
-			neta.cat("&!");
+			neta.strcat("&!");
 			break;
 		default:
 			printf("Internal Error: Unrecognised logic in Neta::netaPrint.\n");
@@ -557,9 +557,9 @@ void NetaBoundNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Bound Node: %s)\n", tab.get(), Bond::bondType(bondType_));
 	// Print element/type info
@@ -580,7 +580,7 @@ void NetaBoundNode::nodePrint(int offset, const char *prefix)
 void NetaBoundNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaBoundNode::netaPrint");
-	neta.cat(elementsAndTypesString());
+	neta.strcat(elementsAndTypesString());
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';
@@ -711,10 +711,10 @@ const char *NetaBoundNode::elementsAndTypesString()
 		if ((ri->item != NULL) || (ri->data < 0))
 		{
 			s += '&';
-			s.cat(itoa(abs(ri->data)));
+			s.strcat(itoa(abs(ri->data)));
 		}
-		else if (ri->data == 0) s.cat("Any");
-		else s.cat(elements().symbol(ri->data));
+		else if (ri->data == 0) s.strcat("Any");
+		else s.strcat(elements().symbol(ri->data));
 	}
 	if (allowedElementsAndTypes_.nItems() != 1) s += ']';
 	msg.exit("NetaBoundNode::elementsAndTypesString");
@@ -875,9 +875,9 @@ void NetaKeywordNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 
 	// Output node data
 	printf("%s (Keyword Node: %s)\n", tab.get(), Neta::netaKeyword(netaKeyword_));
@@ -887,7 +887,7 @@ void NetaKeywordNode::nodePrint(int offset, const char *prefix)
 void NetaKeywordNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaKeywordNode::netaPrint");
-	neta.cat(Neta::netaKeyword(netaKeyword_));
+	neta.strcat(Neta::netaKeyword(netaKeyword_));
 	msg.exit("NetaKeywordNode::netaPrint");
 }
 
@@ -941,9 +941,9 @@ void NetaGeometryNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Geometry Node: %s)\n", tab.get(), Atom::atomGeometry(geometry_));
 }
@@ -952,7 +952,7 @@ void NetaGeometryNode::nodePrint(int offset, const char *prefix)
 void NetaGeometryNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaGeometryNode::netaPrint");
-	neta.cat(Atom::atomGeometry(geometry_));
+	neta.strcat(Atom::atomGeometry(geometry_));
 	msg.exit("NetaGeometryNode::netaPrint");
 }
 
@@ -1050,9 +1050,9 @@ void NetaValueNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Value Node: %s %s %i)\n", tab.get(), Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_);
 }
@@ -1061,9 +1061,9 @@ void NetaValueNode::nodePrint(int offset, const char *prefix)
 void NetaValueNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaValueNode::netaPrint");
-	neta.cat(Neta::netaValue(netaValue_));
-	neta.cat(Neta::netaValueComparison(netaComparison_));
-	neta.cat(itoa(value_));
+	neta.strcat(Neta::netaValue(netaValue_));
+	neta.strcat(Neta::netaValueComparison(netaComparison_));
+	neta.strcat(itoa(value_));
 	msg.exit("NetaValueNode::netaPrint");
 }
 
@@ -1108,9 +1108,9 @@ void NetaRootNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Root Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, prefix);
@@ -1246,9 +1246,9 @@ void NetaRingNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Ring Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
@@ -1259,7 +1259,7 @@ void NetaRingNode::nodePrint(int offset, const char *prefix)
 void NetaRingNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaRingNode::netaPrint");
-	neta.cat("ring");
+	neta.strcat("ring");
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';
@@ -1415,9 +1415,9 @@ void NetaChainNode::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
+	if (offset > 1) tab.strcat("   |--> ");
 	if (offset == 1) tab += '\t';
-	tab.cat(prefix);
+	tab.strcat(prefix);
 	// Output node data
 	printf("%s (Chain Node:)\n", tab.get());
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
@@ -1428,7 +1428,7 @@ void NetaChainNode::nodePrint(int offset, const char *prefix)
 void NetaChainNode::netaPrint(Dnchar &neta)
 {
 	msg.enter("NetaChainNode::netaPrint");
-	neta.cat("chain");
+	neta.strcat("chain");
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';

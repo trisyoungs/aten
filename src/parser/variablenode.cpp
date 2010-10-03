@@ -149,14 +149,13 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 	{
 		// Construct tabbed offset
 		offset++;
-		char *tab;
-		tab = new char[offset+32];
-		tab[0] = '\0';
-		for (int n=0; n<offset-1; n++) strcat(tab,"\t");
-		if (offset > 1) strcat(tab,"   |--> ");
-		if (offset == 1) strcat(tab,"\t");
-		strcat(tab,prefix);
-		printf("[PATH]%s (basevar).", tab);
+
+		Dnchar tab(offset+32);
+		for (int n=0; n<offset-1; n++) tab += '\t';
+		if (offset > 1) tab.strcat("   |--> ");
+		tab.strcat(prefix);
+
+		printf("[PATH]%s (basevar).", tab.get());
 		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			ri->item->nodePrint(offset);

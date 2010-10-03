@@ -48,7 +48,7 @@ class TextObject
 	// Whether to right-align text at the provided coordinate
 	bool rightAlign;
 	// Text to render
-	char text[128];
+	Dnchar text;
 	// List pointers
 	TextObject *prev, *next;
 };

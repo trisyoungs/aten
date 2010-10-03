@@ -282,8 +282,8 @@ void Canvas::renderText(QPainter &painter)
 		if (!prefs.useNiceText()) glText(to->x, to->y, to->text);
 		else
 		{
-			if (to->rightAlign) painter.drawText(0, to->y, to->x, to->y, Qt::AlignRight, to->text, NULL);
-			else painter.drawText(to->x, to->y, to->text);
+			if (to->rightAlign) painter.drawText(0, to->y, to->x, to->y, Qt::AlignRight, to->text.get(), NULL);
+			else painter.drawText(to->x, to->y, to->text.get());
 		}
 	}
 

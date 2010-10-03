@@ -38,6 +38,10 @@ class Dnchar
 	// List pointers
 	Dnchar *prev, *next;
 
+
+	/*
+	// Data / Access
+	*/
 	private:
 	// Current size
 	int size_;
@@ -63,6 +67,13 @@ class Dnchar
 	int length() const;
 	// Returns TRUE if current length is 1 or less.
 	bool isEmpty() const;
+	// Return last character of string (before '\0')
+	char lastChar() const;
+
+	/*
+	// Erase / Cut
+	*/
+	public:
 	// Erase range of characters from the string
 	void erase(int, int);
 	// Erase 'n' characters from start of string
@@ -71,14 +82,14 @@ class Dnchar
 	void eraseEnd(int);
 	// Erase from nth character to the end of string
 	void eraseFrom(int);
-	// Find position of first occurrence of character 'c'
-	int find(char c) const;
-	// Find position of last occurrence of character 'c'
-	int rFind(char c, char stopat1 = '\0', char stopat2 = '\0') const;
 	// Cut n characters from start of string and place in other
 	void cutStart(int, Dnchar&);
-	// Concatenate supplied string on to end of this string
-	void cat(const char *s, int charcount = -1);
+
+
+	/*
+	// Operators
+	*/
+	public:
 	// Assignment operator
 	void operator=(const char*);
 	// Assignment operator
@@ -95,6 +106,12 @@ class Dnchar
 	char operator[](int) const;
 	// Character addition operator
 	void operator+=(char);
+
+
+	/*
+	// Conversion
+	*/
+	public:
 	// Returns contents as double
 	double asDouble() const;
 	// Returns contents as integer
@@ -107,10 +124,30 @@ class Dnchar
 	const char *lower() const;
 	// Return the uppercase conversion of the string
 	const char *upper() const;
+
+
+	/*
+	// Search (Returning integer index)
+	*/
+	public:
+	// Find position of first occurrence of character 'c'
+	int find(char c) const;
+	// Find position of last occurrence of character 'c'
+	int rFind(char c, char stopat1 = '\0', char stopat2 = '\0') const;
+
+
+	/*
+	// C-String Routines
+	*/
+	public:
+	// Concatenate supplied string on to end of this string
+	void strcat(const char *s, int charcount = -1);
+	// Append formatted string (not actually a C string function, but would be useful!)
+	void strcatf(const char *fmt ...);
 	// Create formatted string
-	void print(const char *fmt ...);
-	// Append formatted string
-	void catPrint(const char *fmt ...);
+	void sprintf(const char *fmt ...);
+	// Search for character in string
+	char *strchr(char c) const;
 };
 
 #endif

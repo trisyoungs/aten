@@ -100,8 +100,8 @@ const char *FilterData::extensionList() const
 	extlist.clear();
 	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next)
 	{
-		extlist.cat(d->get());
-		if (d->next != NULL) extlist.cat(", ");
+		extlist.strcat(d->get());
+		if (d->next != NULL) extlist.strcat(", ");
 	}
 	return extlist.get();
 }

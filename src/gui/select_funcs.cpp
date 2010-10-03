@@ -90,7 +90,7 @@ void AtenSelect::refresh()
 	// Update selection text details
 	// First label, total number of selected atoms.
 	Dnchar text;
-	text.print("Total selected : %i\n", m->nSelected());
+	text.sprintf("Total selected : %i\n", m->nSelected());
 	ui.SelectionLabel1->setText(text.get());
 	// Second label contains empirical formula of selection
 	m->selectionEmpirical(text, FALSE, TRUE);

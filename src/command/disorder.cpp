@@ -41,7 +41,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 {
 	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
-	char s[150];
+	Dnchar text;
 	msg.print("                                                      Centre                 Geometry\n");
 	msg.print("Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
@@ -49,7 +49,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 		ComponentRegion *r = m->region();
 		v1 = r->centre();
 		v2 = r->geometry();
-		sprintf(s,"%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
+		text.sprintf("%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
 			m->name(),m->nRequested(),
 			(m->isMoveAllowed(MonteCarlo::Insert) ? "+" : " "),
 			(m->isMoveAllowed(MonteCarlo::Delete) ? "+" : " "),
@@ -59,7 +59,7 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 			ComponentRegion::regionShape(r->shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
 			(r->allowOverlap() ? "Yes" : "No"));
-		msg.print(s);
+		msg.print(text);
 	}
 	rv.reset();
 	return TRUE;

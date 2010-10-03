@@ -307,9 +307,9 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			s.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.catPrint(" %3i", int(acceptanceRatio_[0][n]*100.0));
-			s.catPrint("  %s\n", etatext.get());
+			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));
+			s.strcatf("  %s\n", etatext.get());
 			msg.print(s.get());
 			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
@@ -662,16 +662,16 @@ bool MonteCarlo::disorder(Model *destmodel)
 				n = p->id();
 				if (p == destmodel->patterns())
 				{
-					s.print(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
+					s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e   %-12.12s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
 				}
-				else s.print("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
+				else s.sprintf("%65s%-12.12s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
 				{
-					s.catPrint(" %3i", int(acceptanceRatio_[n][m]*100.0));
+					s.strcatf(" %3i", int(acceptanceRatio_[n][m]*100.0));
 				}
 				if (p == destmodel->patterns())
 				{
-					s.print(" %s", etatext.get());
+					s.sprintf(" %s", etatext.get());
 				}
 				s += '\n';
 				msg.print(s.get());

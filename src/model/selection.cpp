@@ -317,9 +317,9 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) co
 	for (n=MAXELEMENTS-1; n>0; n--)
 		if (elcount[n] != 0)
 		{
-			if ((count>0) && addspaces) target.cat(" ");
-			target.cat(elements().symbol(n));
-			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
+			if ((count>0) && addspaces) target.strcat(" ");
+			target.strcat(elements().symbol(n));
+			if (elcount[n] > 1) target.strcat(itoa(elcount[n]));
 			count++;
 		}
 	msg.exit("Model::selectionEmpirical");
@@ -347,8 +347,8 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		if (newel == lastel) count ++;
 		else
 		{
-			target.cat(elements().symbol(i));
-			target.cat(itoa(count));
+			target.strcat(elements().symbol(i));
+			target.strcat(itoa(count));
 			lastel = newel;
 			count = 0;
 		}
@@ -356,8 +356,8 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 	// Check for last element chunk
 	if (count != 0)
 	{
-		target.cat(elements().symbol(lastel));
-		target.cat(itoa(count));
+		target.strcat(elements().symbol(lastel));
+		target.strcat(itoa(count));
 	}
 	msg.exit("Model::selectionAtomFingerprint");
 }
@@ -382,9 +382,9 @@ void Model::selectionBondFingerprint(Dnchar &target)
 				diff = j->id() - i->id();
 				if (diff > 0)
 				{
-					target.cat(itoa(count));
+					target.strcat(itoa(count));
 					target += '-';
-					target.cat(itoa(count + diff));
+					target.strcat(itoa(count + diff));
 					target += ' ';
 				}
 				ri = ri->next;

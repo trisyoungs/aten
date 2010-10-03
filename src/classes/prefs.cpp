@@ -346,7 +346,7 @@ bool Prefs::save(const char *filename)
 {
 	msg.enter("Prefs::save");
 	bool result = TRUE;
-	char line[512];
+	Dnchar line;
 	int n, i;
 	LineParser prefsfile(filename, TRUE);
 	if (prefsfile.isFileGoodForWriting())
@@ -359,20 +359,20 @@ bool Prefs::save(const char *filename)
 			for (i = 0; i<4; ++i) if (elements().defaultEl[n].ambientColour[i] != elements().el[n].ambientColour[i]) break;
 			if (i != 4)
 			{
-				sprintf(line,"aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
+				line.sprintf("aten.elements[%s].ambient = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].ambientColour[0], elements().el[n].ambientColour[1], elements().el[n].ambientColour[2], elements().el[n].ambientColour[3]);
 				prefsfile.writeLine(line);
 			}
 			// Diffuse Colour
 			for (i = 0; i<4; ++i) if (elements().defaultEl[n].diffuseColour[i] != elements().el[n].diffuseColour[i]) break;
 			if (i != 4)
 			{
-				sprintf(line,"aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
+				line.sprintf("aten.elements[%s].diffuse = { %f, %f, %f, %f };\n", elements().el[n].symbol, elements().el[n].diffuseColour[0], elements().el[n].diffuseColour[1], elements().el[n].diffuseColour[2], elements().el[n].diffuseColour[3]);
 				prefsfile.writeLine(line);
 			}
 			// Atomic radius
 			if (elements().defaultEl[n].atomicRadius != elements().el[n].atomicRadius)
 			{
-				sprintf(line,"aten.elements[%s].radius = %f;\n", elements().el[n].symbol, elements().el[n].atomicRadius);
+				line.sprintf("aten.elements[%s].radius = %f;\n", elements().el[n].symbol, elements().el[n].atomicRadius);
 				prefsfile.writeLine(line);
 			}
 		}
@@ -392,8 +392,8 @@ bool Prefs::save(const char *filename)
 			// Compare the two strings - if different, write the prefs value to the file....
 // 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
 			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;
-			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) sprintf(line,"aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
-			else sprintf(line,"aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+			else line.sprintf("aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
 			prefsfile.writeLine(line);
 		}
 	}

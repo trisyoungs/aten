@@ -317,8 +317,8 @@ int Aten::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el, linelen;
 	bool isShort, hasArg;
-	char *line, prompt[32], s[4096];
-	Dnchar arg, argtext, varname, varvalue;
+	char *line, s[4096];
+	Dnchar arg, argtext, varname, varvalue, prompt;
 	Forcefield *ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
@@ -518,18 +518,18 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
-					sprintf(prompt,"Aten %s > ",ATENVERSION);
+					prompt.sprintf("Aten %s > ",ATENVERSION);
 					printf("Entering interactive mode...\n");
 					aten.setProgramMode(Aten::InteractiveMode);
 					do
 					{
 						// Get string from user
 						line = readline(prompt);
-						strcpy(s, line);
-						linelen = strlen(s);
-						if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
+// 						strcpy(s, line);
+// 						linelen = strlen(s);
+// 						if (s[linelen-1] != ';') { s[linelen] = ';'; s[linelen+1] = '\0'; }
 						aten.interactiveScript.clear();
-						if (aten.interactiveScript.generateFromString(s)) aten.interactiveScript.executeAll(rv);
+						if (aten.interactiveScript.generateFromString(line)) aten.interactiveScript.executeAll(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;

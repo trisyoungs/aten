@@ -31,7 +31,7 @@
 // Constructor
 TextObject::TextObject(int xx, int yy, bool ralign, const char *txt) : x(xx), y(yy), rightAlign(ralign)
 {
-	strcpy(text,txt);
+	text = txt;
 	prev = NULL;
 	next = NULL;
 }

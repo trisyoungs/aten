@@ -164,11 +164,11 @@ void Aten::setCurrentModel(Model *m)
 	current.m->renderSourceModel()->projectAll();
 	// Set window title
 	// Set the title of the main window to reflect the version
-	char title[256];
-	sprintf(title, "Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
+	Dnchar title;
+	title.sprintf("Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
 	if (gui.exists())
 	{
-		gui.mainWindow->setWindowTitle(title);
+		gui.mainWindow->setWindowTitle(title.get());
 		gui.gridsWindow->refresh();
 	}
 	msg.exit("Aten::setCurrentModel");
@@ -230,7 +230,7 @@ int Aten::nModels() const
 Model *Aten::addModel()
 {
 	msg.enter("Aten::addModel");
-	char newname[32];
+	Dnchar newname;
 	Model *m = NULL;
 	// Check current list target for model creation
 	switch (targetModelList_)
@@ -238,7 +238,7 @@ Model *Aten::addModel()
 		case (Aten::MainModelList):
 			m = models_.add();
 			m->setType(Model::ParentModelType);
-			sprintf(newname,"Unnamed%03i", ++modelId_);
+			newname.sprintf("Unnamed%03i", ++modelId_);
 			m->setName(newname);
 			m->changeLog.reset();
 			gui.addModel(m);
@@ -248,7 +248,7 @@ Model *Aten::addModel()
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
 			m->setType(Model::ParentModelType);
-			sprintf(newname,"Fragment%03i", ++fragmentModelId_);
+			newname.sprintf("Fragment%03i", ++fragmentModelId_);
 			m->setName(newname);
 			m->changeLog.reset();
 			m->disableUndoRedo();
@@ -309,7 +309,7 @@ Forcefield *Aten::loadForcefield(const char *filename)
 {
 	msg.enter("Aten::loadForcefield");
 	// Try some different locations to find the supplied forcefield.
-	static char s[512];
+	static Dnchar filepath;
 	bool result;
 	Forcefield *newff = forcefields_.add();
 	// First try - actual / absolute path
@@ -318,15 +318,15 @@ Forcefield *Aten::loadForcefield(const char *filename)
 	else
 	{
 		// Second try - aten.dataDir/ff
-		sprintf(s,"%s/ff/%s", dataDir_.get(), filename);
-		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
-		if (fileExists(s)) result = newff->load(s);
+		filepath.sprintf("%s/ff/%s", dataDir_.get(), filename);
+		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",filepath.get());
+		if (fileExists(filepath)) result = newff->load(filepath);
 		else
 		{
 			// Last try - user home datadir/ff
-			sprintf(s,"%s/.aten/ff/%s", homeDir_.get(), filename);
-			msg.print(Messenger::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
-			if (fileExists(s)) result = newff->load(s);
+			filepath.sprintf("%s/.aten/ff/%s", homeDir_.get(), filename);
+			msg.print(Messenger::Verbose,"Looking for forcefield in user's data directory (%s)...\n",filepath.get());
+			if (fileExists(filepath)) result = newff->load(filepath);
 			else
 			{
 				msg.print("Can't find forcefield file '%s' in any location.\n", filename);
@@ -679,20 +679,20 @@ bool Aten::parseFragmentDir(const char *path, const char *groupname)
 void Aten::openFragments()
 {
 	msg.enter("Aten::openFragments");
-	char path[512];
+	Dnchar path;
 	int nfailed;
 
 	// Redirect model creation to fragment list
 	targetModelList_ = Aten::FragmentLibraryList;
 
 	// Default search path should have already been set by openFilters()...
-	sprintf(path,"%s/fragments", dataDir_.get());
-	msg.print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path)));
+	path.sprintf("%s/fragments", dataDir_.get());
+	msg.print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path.get())));
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
-	sprintf(path,"%s%s", homeDir_.get(), "/.aten/fragments/");
-	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path);
+	path.sprintf("%s%s", homeDir_.get(), "/.aten/fragments/");
+	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path.get());
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Return model creation to main list

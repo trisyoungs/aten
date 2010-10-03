@@ -63,8 +63,8 @@ void PointerVariable::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
-	tab.cat(prefix);
+	if (offset > 1) tab.strcat("   |--> ");
+	tab.strcat(prefix);
 
 	// Output node data
 	if (readOnly_) printf("%s%p (%s) (constant value)\n", tab.get(), pointerData_, VTypes::dataType(returnType_));
@@ -201,8 +201,8 @@ void PointerArrayVariable::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
-	tab.cat(prefix);
+	if (offset > 1) tab.strcat("   |--> ");
+	tab.strcat(prefix);
 
 	// Output node data
 	printf("[V]%s (%s array, name=%s, current size=%i)\n", tab.get(), VTypes::dataType(returnType_), name_.get(), arraySize_);

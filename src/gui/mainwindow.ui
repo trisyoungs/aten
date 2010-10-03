@@ -81,9 +81,6 @@
          <enum>Qt::Vertical</enum>
         </property>
         <widget class="QFrame" name="ViewFrame" >
-         <property name="cursor" >
-          <cursorShape>CrossCursor</cursorShape>
-         </property>
          <property name="frameShape" >
           <enum>QFrame::StyledPanel</enum>
          </property>

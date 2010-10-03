@@ -162,17 +162,16 @@ void Model::redo()
 // List undo states and the changes within
 void Model::listUndoStates()
 {
-	char suffix[32];
+	Dnchar suffix;
 	int count = 0;
 	printf("Current UndoStates in Model '%s' are:\n", name_.get());
 	for (UndoState *u = undoStates_.first(); u != NULL; u = u->next)
 	{
 		count ++;
-		if (currentUndoState_ == u) strcpy(suffix,"(Current Undo State)");
-		else if (currentRedoState_ == u) strcpy(suffix,"(Current Redo State)");
-		else suffix[0] = '\0';
+		if (currentUndoState_ == u) suffix = "(Current Undo State)";
+		else if (currentRedoState_ == u) suffix = "(Current Redo State)";
 		printf(" %3i : '%s'\n", count, u->description());
-		printf("       Ptr=%p, %4i changes %s\n", u, u->nChanges(), suffix);
+		printf("       Ptr=%p, %4i changes %s\n", u, u->nChanges(), suffix.get());
 		u->print();
 	}	
 }

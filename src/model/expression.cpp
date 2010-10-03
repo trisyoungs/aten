@@ -35,8 +35,8 @@ void Model::createNamesForcefield()
 {
 	if (namesForcefield_ != NULL) msg.print("Warning - an atom names forcefield already exists for model '%s'.\n", name_.get());
 	msg.print("Creating atom names forcefield for model '%s'.\n", name_.get());
-	char s[512];
-	sprintf(s,"Names kept from Model %s",name_.get());
+	Dnchar s;
+	s.sprintf("Names kept from Model %s",name_.get());
 	namesForcefield_ = aten.addForcefield(s);
 }
 

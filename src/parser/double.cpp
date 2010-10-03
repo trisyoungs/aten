@@ -78,8 +78,8 @@ void DoubleVariable::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
-	tab.cat(prefix);
+	if (offset > 1) tab.strcat("   |--> ");
+	tab.strcat(prefix);
 
 	// Output node data
 	if (readOnly_) printf("[C]%s%f (constant value)\n", tab.get(), doubleData_);
@@ -233,8 +233,8 @@ void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.cat("   |--> ");
-	tab.cat(prefix);
+	if (offset > 1) tab.strcat("   |--> ");
+	tab.strcat(prefix);
 
 	// Output node data
 	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
