@@ -269,15 +269,7 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 const char *FilterData::description()
 {
 	// If the description string is empty, create a new one
-	if (description_.length() < 3)
-	{
-		int size = name_.length() + glob_.length() + 10;
-		char *longname = new char[size];
-		// Generate the filter desciption string`
-		sprintf(longname,"%s (%s)",name_.get(),glob_.get());
-		description_ = longname;
-		delete[] longname;
-	}
+	if (description_.length() < 3) description_.sprintf("%s (%s)",name_.get(),glob_.get());
 	return description_.get();
 }
 

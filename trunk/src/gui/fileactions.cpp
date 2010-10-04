@@ -214,14 +214,14 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 void AtenForm::on_actionFileClose_triggered(bool checked)
 {
 	// If the current model has been modified, ask for confirmation before we close it
-	char text[512];
+	Dnchar text;
 	Tree *filter;
 	Model *m = aten.currentModel();
 	if (m->changeLog.isModified())
 	{
 		// Create a model message dialog
-		sprintf(text, "Model '%s' has been modified.\n", m->name());
-		int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		text.sprintf("Model '%s' has been modified.\n", m->name());
+		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 		switch (returnvalue)
 		{
 			// Discard changes
@@ -239,9 +239,6 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 				else if (runSaveModelDialog())
 				{
 					// Run options dialog
-					QString s = "Save Options (";
-					s += saveModelFilter->name();
-					s += ")";
 					if (!saveModelFilter->executeCustomDialog())
 					{
 						msg.print("Not saved.\n");
@@ -263,21 +260,20 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Get geometry from user - initial setup is to use current canvas geometry
-	char geometry[128];
+	Dnchar geometry, message;
 	int width, height;
 	bool ok;
-	sprintf(geometry,"%ix%i\n", (int) gui.mainView.width(), (int) gui.mainView.height());
-	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry, &ok);
+	geometry.sprintf("%ix%i\n", (int) gui.mainView.width(), (int) gui.mainView.height());
+	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry.get(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		strcpy(geometry,qPrintable(text));
+		geometry = qPrintable(text);
 		width = atoi(beforeChar(geometry,'x'));
 		height = atoi(afterChar(geometry,'x'));
 		if ((width < 1) || (height < 1))
 		{
-			char text[512];
-			sprintf(text, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
-			QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
+			message.sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
+			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 			return;
 		}
 	}
@@ -297,9 +293,8 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// If we didn't recognise the extension, complain and quit
 		if (bf == GuiQt::nBitmapFormats) 
 		{
-			Dnchar text;
-			text.sprintf("Bitmap format not recognised - '%s'.\n", ext.get());
-			QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Ok);
+			message.sprintf("Bitmap format not recognised - '%s'.\n", ext.get());
+			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		}
 		else if (!gui.saveImage(qPrintable(filename), bf, width, height, -1)) msg.print("Failed to save image.\n");
 	}

@@ -309,7 +309,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	// Get pointer to forcefield type from edited row
 	ForcefieldAtom *ffa = targetForcefield_->type(row);
 	// Set new data based on the column edited
-	char text[512];
+	Dnchar text;
 	ForcefieldAtom *old;
 	int n, returnvalue;
 	QComboBox *combo;
@@ -322,8 +322,8 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 			old = targetForcefield_->findByTypeId(n, ffa);
 			if (old != NULL)
 			{
-				sprintf(text, "Another type with id %i already exists (%s).\n", n, old->name());
-				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text, QMessageBox::Ok);
+				text.sprintf("Another type with id %i already exists (%s).\n", n, old->name());
+				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text.get(), QMessageBox::Ok);
 				// Set the table value item back to the old value
 				w->setText(itoa(ffa->typeId()));
 			}

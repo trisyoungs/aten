@@ -34,9 +34,9 @@ void AtenForm::finaliseUi()
 	int n;
 
 	// Set the title of the main window to reflect the version
-	char title[64];
-	sprintf(title, "Aten (%s)", ATENVERSION);
-	setWindowTitle(title);
+	Dnchar title;
+	title.sprintf("Aten (%s)", ATENVERSION);
+	setWindowTitle(title.get());
 
 	// Initialise application name, organisation and author
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");

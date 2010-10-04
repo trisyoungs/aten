@@ -21,6 +21,7 @@
 
 #include "main/version.h"
 #include "gui/about.h"
+#include "base/dnchar.h"
 #include <cstdio>
 
 // Constructor
@@ -29,9 +30,9 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 	ui.setupUi(this);
 
 	// Setup label contents
-	char s[150];
-	sprintf(s, "%s (from revision %s)", ATENVERSION, ATENREVISION);
-	ui.VersionLabel->setText(s);
+	Dnchar label;
+	label.sprintf("%s (from revision %s)", ATENVERSION, ATENREVISION);
+	ui.VersionLabel->setText(label.get());
 	ui.DateLabel->setText(ATENDATE);
 	ui.UrlLabel->setText(ATENURL);
 }

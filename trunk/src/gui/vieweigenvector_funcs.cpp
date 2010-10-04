@@ -52,7 +52,6 @@ void AtenViewEigenvector::showWindow(Model *m, int id)
 	// Determine row count
 	int row = 0, shell = 0, n;
 	BasisShell *bas;
-	BasisPrimitive *prim;
 	ui.EigenvectorTable->setRowCount(m->nCartesianBasisFunctions());
 	// Loop over basis shells and their primitives....
 	QTableWidgetItem *tabitem;

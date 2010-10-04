@@ -228,11 +228,11 @@ void AtenForm::update()
 void AtenForm::updateModelTabName(int tabid, Model *m)
 {
 	if (tabid < 0) tabid = ui.ModelTabs->currentIndex();
-	char title[512];
-	if (m->nTrajectoryFrames() == 0) sprintf(title, "%s", m->name());
-	else if (m->renderSourceModel() == m) sprintf(title, "%s (Parent of %i frames)", m->name(), m->nTrajectoryFrames());
-	else sprintf(title, "%s (Frame %i of %i)", m->name(), m->trajectoryFrameIndex()+1, m->nTrajectoryFrames());
-	ui.ModelTabs->setTabText(tabid, title);
+	Dnchar title;
+	if (m->nTrajectoryFrames() == 0) title.sprintf("%s", m->name());
+	else if (m->renderSourceModel() == m) title.sprintf("%s (Parent of %i frames)", m->name(), m->nTrajectoryFrames());
+	else title.sprintf("%s (Frame %i of %i)", m->name(), m->trajectoryFrameIndex()+1, m->nTrajectoryFrames());
+	ui.ModelTabs->setTabText(tabid, title.get());
 }
 
 // Update trajectory controls
@@ -306,9 +306,9 @@ void AtenForm::updateWindowTitle()
 {
 	if (!gui.exists()) return;
 	Model *m = aten.currentModel();
-	char title[512];
-	sprintf(title, "Aten (v%s r%s) - %s (%s)%s", ATENVERSION, ATENREVISION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
-	setWindowTitle(title);
+	Dnchar title;
+	title.sprintf("Aten (v%s r%s) - %s (%s)%s", ATENVERSION, ATENREVISION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	setWindowTitle(title.get());
 }
 
 // Add model tab
@@ -433,7 +433,7 @@ void AtenForm::addRecent(const char *filename)
 {
 	// Find unused (i.e. still hidden) recent file action
 	int last, n;
-	char temp[512];
+	Dnchar temp;
 	for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
 	// 'last' now holds the first empty slot in the recent files list.
 	// If 'last' == MAXRECENTFILES then shuffle top 'n-1' down a position and add at '0'.
@@ -443,15 +443,15 @@ void AtenForm::addRecent(const char *filename)
 		for (n=MAXRECENTFILES-2; n>=0; n--)
 		{
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			sprintf(temp,"&%i %s", n, removePath(qPrintable(actionRecentFile[n]->data().toString())));
-			actionRecentFile[n+1]->setText(temp);
+			temp.sprintf("&%i %s", n, removePath(qPrintable(actionRecentFile[n]->data().toString())));
+			actionRecentFile[n+1]->setText(temp.get());
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
 		}
 		last = 0;
 	}
 	// Set the new data
-	sprintf(temp,"&%i %s (%s)",last,removePath(filename),filename);
-	actionRecentFile[last]->setText(temp);
+	temp.sprintf("&%i %s (%s)",last,removePath(filename),filename);
+	actionRecentFile[last]->setText(temp.get());
 	actionRecentFile[last]->setData(filename);
 	actionRecentFile[last]->setVisible(TRUE);
 }
@@ -459,7 +459,7 @@ void AtenForm::addRecent(const char *filename)
 // Update undo/redo actions in Edit menu
 void AtenForm::updateUndoRedo()
 {
-	static char text[128];
+	Dnchar text;
 	Model *m = aten.currentModelOrFrame();
 	// Check the model's state pointers
 	if (m->currentUndoState() == NULL)
@@ -469,10 +469,8 @@ void AtenForm::updateUndoRedo()
 	}
 	else
 	{
-		strcpy(text,"Undo (");
-		strcat(text,m->currentUndoState()->description());
-		strcat(text,")");
-		ui.actionEditUndo->setText(text);
+		text.sprintf("Undo (%s)", m->currentUndoState()->description());
+		ui.actionEditUndo->setText(text.get());
 		ui.actionEditUndo->setEnabled(TRUE);
 	}
 	if (m->currentRedoState() == NULL)
@@ -482,10 +480,8 @@ void AtenForm::updateUndoRedo()
 	}
 	else
 	{
-		strcpy(text,"Redo (");
-		strcat(text,m->currentRedoState()->description());
-		strcat(text,")");
-		ui.actionEditRedo->setText(text);
+		text.sprintf("Redo (%s)", m->currentRedoState()->description());
+		ui.actionEditRedo->setText(text.get());
 		ui.actionEditRedo->setEnabled(TRUE);
 	}
 }

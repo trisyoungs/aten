@@ -170,7 +170,7 @@ void AtenCustomDialog::checkBoxWidget_clicked(bool checked)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (checked == sc->stateValueAsInteger()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (checked == (int)sc->stateValueAsInteger()) performStateChange(sc);
 	refreshing_ = FALSE;
 }
 
@@ -369,7 +369,7 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 	Reflist<QTabWidget,Dnchar> tabwidgets;
 	Refitem<QTabWidget,Dnchar> *tabref;
 	Dnchar name;
-	LayoutData *mainlayout, *currentlayout, *newlayout;
+	LayoutData *mainlayout, *currentlayout;
 	QWidget *widget;
 
 	// Set title of window and store target tree
@@ -509,7 +509,6 @@ void AtenCustomDialog::storeValues()
 {
 	msg.enter("AtenCustomDialog::storeValues");
 	WidgetNode *gfo;
-	QWidget *widget;
 	ReturnValue rv;
 	for (Refitem<WidgetNode,int> *ri = parentTree_->widgets(); ri != NULL; ri = ri->next)
 	{
