@@ -151,11 +151,12 @@ void AtenPrefs::setControls()
 	}
         ui.StandardColoursFrame->setColour(prefs.colour( (Prefs::PenColour) 0 ));
         ui.StandardColoursFrame->update();
-	char name[128];
+	Dnchar name;
 	for (int n=0; n<10; n++)
 	{
 		QListWidgetItem *item = ui.ScaleList->item(n);
-		sprintf(name, "%i. %s", n+1, prefs.colourScale[n].name());
+		name.sprintf("%i. %s", n+1, prefs.colourScale[n].name());
+		item->setText(name.get());
 		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
 	}
 	updateScalePointsList();

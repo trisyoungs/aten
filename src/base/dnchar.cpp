@@ -22,8 +22,8 @@
 #include "base/constants.h"
 #include "base/sysfunc.h"
 #include "base/dnchar.h"
-using namespace std;
 #include <cstring>
+using namespace std;
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>

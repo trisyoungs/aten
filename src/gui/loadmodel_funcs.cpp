@@ -69,14 +69,13 @@ void AtenLoadModel::on_FilenameEdit_returnPressed()
 void AtenLoadModel::on_BrowseButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten.workDir());
-	static char s[512], *c;
+	Dnchar s;
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), gui.mainWindow->loadModelFilters, &selFilter));
-	strcpy(s, selectedFilename_.get());
-	c = strrchr(s, '/');
-	if (c == NULL) s[0] = '\0';
-	else *c = '\0';
-	currentDirectory_ = s;
+	s = qPrintable(QDir::fromNativeSeparators(selectedFilename_.get()));
+	int pos = s.rFind('/');
+	if (pos != -1) s.eraseFrom(pos);
+	currentDirectory_ = qPrintable(QDir::toNativeSeparators(selectedFilename_.get()));
 	ui.FilenameEdit->setText(selectedFilename_.get());
 }
 

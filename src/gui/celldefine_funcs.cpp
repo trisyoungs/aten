@@ -57,9 +57,9 @@ void AtenCellDefine::refresh()
 	if (m == NULL) return;
 	Cell *cell = m->cell();
 	Cell::CellType ct = cell->type();
-	static char s[128];
-	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>",cell->volume());
-	ui.CellVolumeLabel->setText(s);
+	Dnchar label;
+	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>",cell->volume());
+	ui.CellVolumeLabel->setText(label.get());
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
@@ -88,8 +88,8 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name,  m->cell()->spacegroupId());
-	ui.SpacegroupLabel->setText(s);
+	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name,  m->cell()->spacegroupId());
+	ui.SpacegroupLabel->setText(label.get());
 	refreshing_ = FALSE;
 }
 
@@ -99,9 +99,9 @@ void AtenCellDefine::cellChanged()
 	else refreshing_ = TRUE;
 	CommandNode::run(Command::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	Model *m = aten.currentModelOrFrame();
-	char s[64];
-	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
-	ui.CellVolumeLabel->setText(s);
+	Dnchar label;
+	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
+	ui.CellVolumeLabel->setText(label.get());
 	gui.update(FALSE,FALSE,FALSE);
 	refreshing_ = FALSE;
 }
@@ -170,14 +170,14 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 {
-	static char s[64];
 	// Grab the current text of the line edit and determine spacegroup
 	CommandNode::run(Command::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
 	ui.CellSpacegroupEdit->setText("");
 	// Set spacegroup label
 	Model *m = aten.currentModelOrFrame();
-	sprintf(s,"%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
-	ui.SpacegroupLabel->setText(s);
+	Dnchar label;
+	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
+	ui.SpacegroupLabel->setText(label.get());
 }
 
 void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)

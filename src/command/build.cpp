@@ -23,6 +23,7 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "model/model.h"
+#include "classes/grid.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
@@ -81,7 +82,10 @@ bool Command::function_Bohr(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				m = (Model*) c->argp(n, VTypes::ModelData);
 				m->bohrToAngstrom();
 				break;
-			case (VTypes::IntegerData):
+			case (VTypes::GridData):
+				g = (Grid*) c->argp(n, VTypes::GridData);
+				g->bohrToAngstrom();
+				break;			case (VTypes::IntegerData):
 			case (VTypes::DoubleData):
 			case (VTypes::StringData):
 				msg.print("No valid conversion for ordinary types.\n");
