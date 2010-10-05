@@ -10,7 +10,7 @@ move(1.0, 0.0, 0.0);
 chain(H);
 
 # Set box size and determine number of molecules
-double boxlength = 10.0;
+double boxlength = 20.0;
 nmols(boxlength^3 / 29.9);
 
 loadff("spc.ff");
