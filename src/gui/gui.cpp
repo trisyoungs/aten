@@ -156,6 +156,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	mainWidget = new TCanvas(ctxt, mainWindow);
 	mainWidget->probeFeatures();
 	mainWidget->setGeometry(0,0,800,600);
+	mainWidget->setCursor(Qt::ArrowCursor);
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
 	mainView.setWidget(mainWidget);
 	mainWidget->setCanvas(&mainView);
