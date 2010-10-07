@@ -28,6 +28,7 @@
 #include "parser/cell.h"
 #include "parser/eigenvector.h"
 #include "parser/element.h"
+#include "parser/energystore.h"
 #include "parser/forcefield.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
@@ -39,6 +40,8 @@
 #include "parser/pattern.h"
 #include "parser/patternbound.h"
 #include "parser/prefs.h"
+#include "parser/region.h"
+#include "parser/site.h"
 #include "parser/vector.h"
 #include "parser/vibration.h"
 #include "parser/zmatrix.h"
@@ -156,6 +159,10 @@ bool StepNode::execute(ReturnValue &rv)
 			if (functionAccessor_) result = ElementVariable::performFunction(accessor_, rv, this);
 			else result = ElementVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::EnergyStoreData):
+			if (functionAccessor_) result = EnergyStoreVariable::performFunction(accessor_, rv, this);
+			else result = EnergyStoreVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::ForcefieldData):
 			if (functionAccessor_) result = ForcefieldVariable::performFunction(accessor_, rv, this);
 			else result = ForcefieldVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
@@ -199,6 +206,14 @@ bool StepNode::execute(ReturnValue &rv)
 		case (VTypes::PreferencesData):
 			if (functionAccessor_) result = PreferencesVariable::performFunction(accessor_, rv, this);
 			else result = PreferencesVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::RegionData):
+			if (functionAccessor_) result = RegionVariable::performFunction(accessor_, rv, this);
+			else result = RegionVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::SiteData):
+			if (functionAccessor_) result = SiteVariable::performFunction(accessor_, rv, this);
+			else result = SiteVariable::retrieveAccessor(accessor_, rv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::VectorData):
 			if (functionAccessor_) result = VectorVariable::performFunction(accessor_, rv, this);
@@ -254,6 +269,9 @@ void StepNode::nodePrint(int offset, const char *prefix)
 		case (VTypes::ElementData):
 			printf("%s", ElementVariable::accessorData[accessor_].name);
 			break;
+		case (VTypes::EnergyStoreData):
+			printf("%s", EnergyStoreVariable::accessorData[accessor_].name);
+			break;
 		case (VTypes::ForcefieldData):
 			printf("%s", ForcefieldVariable::accessorData[accessor_].name);
 			break;
@@ -286,6 +304,12 @@ void StepNode::nodePrint(int offset, const char *prefix)
 			break;
 		case (VTypes::PreferencesData):
 			printf("%s", PreferencesVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::RegionData):
+			printf("%s", RegionVariable::accessorData[accessor_].name);
+			break;
+		case (VTypes::SiteData):
+			printf("%s", SiteVariable::accessorData[accessor_].name);
 			break;
 		case (VTypes::VectorData):
 			printf("%s", VectorVariable::accessorData[accessor_].name);
@@ -363,6 +387,9 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 		case (VTypes::ElementData):
 			result = ElementVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
+		case (VTypes::EnergyStoreData):
+			result = EnergyStoreVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
 		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
@@ -395,6 +422,12 @@ bool StepNode::set(ReturnValue &executerv, ReturnValue &setrv)
 			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::RegionData):
+			result = RegionVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
+			break;
+		case (VTypes::SiteData):
+			result = SiteVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::setAccessor(accessor_, executerv, setrv, arrayIndex_ != NULL, i);
@@ -462,6 +495,9 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 		case (VTypes::ElementData):
 			result = ElementVariable::accessorSearch(s, arrayindex, arglist);
 			break;
+		case (VTypes::EnergyStoreData):
+			result = EnergyStoreVariable::accessorSearch(s, arrayindex, arglist);
+			break;
 		case (VTypes::ForcefieldData):
 			result = ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
 			break;
@@ -494,6 +530,12 @@ StepNode *StepNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *
 			break;
 		case (VTypes::PreferencesData):
 			result = PreferencesVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::RegionData):
+			result = RegionVariable::accessorSearch(s, arrayindex, arglist);
+			break;
+		case (VTypes::SiteData):
+			result = SiteVariable::accessorSearch(s, arrayindex, arglist);
 			break;
 		case (VTypes::VectorData):
 			result = VectorVariable::accessorSearch(s, arrayindex, arglist);

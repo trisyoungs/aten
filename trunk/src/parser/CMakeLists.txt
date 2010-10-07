@@ -11,6 +11,7 @@ commandnode.h
 double.h
 eigenvector.h
 element.h
+energystore.h
 filterdata.h
 forcefieldatom.h
 forcefieldbound.h
@@ -32,6 +33,7 @@ pvariable.h
 region.h
 returnvalue.h
 scopenode.h
+site.h
 stepnode.h
 tree.h
 treenode.h
@@ -56,6 +58,7 @@ commandnode.cpp
 double.cpp
 eigenvector.cpp
 element.cpp
+energystore.cpp
 filterdata.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp
@@ -79,6 +82,7 @@ pvariable.cpp
 region.cpp
 returnvalue.cpp
 scopenode.cpp
+site.cpp
 stepnode.cpp
 tree.cpp
 treenode.cpp

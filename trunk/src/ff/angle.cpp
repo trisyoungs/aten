@@ -24,7 +24,7 @@
 #include "base/pattern.h"
 
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
-void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
+void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	msg.enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
@@ -99,7 +99,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 		aoff += nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(Energy::AngleEnergy,energy,id_);
+	estore->add(EnergyStore::AngleEnergy,energy,id_);
 	msg.exit("Pattern::angleEnergy");
 }
 

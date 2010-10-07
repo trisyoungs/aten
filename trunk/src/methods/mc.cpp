@@ -212,7 +212,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 		return FALSE;
 	}
 	currentVdwEnergy = srcmodel->energy.vdw();
-	currentElecEnergy = srcmodel->energy.elec();
+	currentElecEnergy = srcmodel->energy.electrostatic();
 	elast = ecurrent;
 	msg.print("       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
 
@@ -253,7 +253,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				// Calculate reference energy (before move)
 				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol, success);
 				referenceVdwEnergy = srcmodel->energy.vdw();
-				referenceElecEnergy = srcmodel->energy.elec();
+				referenceElecEnergy = srcmodel->energy.electrostatic();
 
 				// Otherwise, generate the new configuration (in model's cfg space)
 				switch (move)
@@ -282,7 +282,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				// If the energy has gone up, undo the move.
 				deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 				deltaVdwEnergy = srcmodel->energy.vdw() - referenceVdwEnergy;
-				deltaElecEnergy = srcmodel->energy.elec() - referenceElecEnergy;
+				deltaElecEnergy = srcmodel->energy.electrostatic() - referenceElecEnergy;
 
 				// Do we accept the move?
 				if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
@@ -481,10 +481,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 		return FALSE;
 	}
 	currentVdwEnergy = destmodel->energy.vdw();
-	currentElecEnergy = destmodel->energy.elec();
+	currentElecEnergy = destmodel->energy.electrostatic();
 
 	elast = ecurrent;
-	msg.print(" Init  %13.6e %13s %13.6e %13.6e \n", ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
+	msg.print(" Init  %13.6e %13s %13.6e %13.6e \n", ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.electrostatic());
 
 	// Loop over MC cycles
 	gui.progressCreate("Building disordered system", nCycles_ * components.nItems());
@@ -570,7 +570,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							mol = csRandomi(patternNMols-1);
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
-							referenceElecEnergy = destmodel->energy.elec();
+							referenceElecEnergy = destmodel->energy.electrostatic();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Create a random translation vector
 							v.randomUnit();
@@ -588,7 +588,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							mol = csRandomi(patternNMols-1);
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol, success);
 							referenceVdwEnergy = destmodel->energy.vdw();
-							referenceElecEnergy = destmodel->energy.elec();
+							referenceElecEnergy = destmodel->energy.electrostatic();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Do two separate random rotations about the x and y axes.
 							phi = csRandom() * maxStep_[MonteCarlo::Rotate];
@@ -610,7 +610,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 					// If the energy has gone up, undo the move.
 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
-					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
+					deltaElecEnergy = destmodel->energy.electrostatic() - referenceElecEnergy;
 					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
 					if ((deltaMoleculeEnergy < acceptanceEnergy_[move]) || ( csRandom() < exp(-beta*deltaMoleculeEnergy) ))
 					{

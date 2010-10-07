@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "vdw", "vscale" };
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "angles", "bonds", "convert", "data", "defines", "escale", "equivalents", "function", "impropers", "inter", "message", "name", "torsions", "types", "uatypes", "units", "ureybradleys", "vdw", "vscale" };
 Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 {
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
@@ -425,6 +425,81 @@ ForcefieldBound *Forcefield::improper(int n)
 		return NULL;
 	}
 	return impropers_[n];
+}
+
+/*
+// Urey-Bradley Interactions
+*/
+
+// Add Urey-Bradley term to the forcefield
+ForcefieldBound *Forcefield::addUreyBradley(BondFunctions::BondFunction form)
+{
+	ForcefieldBound *ffb = ureyBradleys_.add();
+	ffb->setType(ForcefieldBound::BondInteraction);
+	ffb->setBondStyle(form);
+	return ffb;
+}
+
+// Return number of terms defined in Urey-Bradley list
+int Forcefield::nUreyBradleys()
+{
+	return ureyBradleys_.nItems();
+}
+
+// Returns the Urey-Bradley list
+ForcefieldBound *Forcefield::ureyBradleys()
+{
+	return ureyBradleys_.first();
+}
+
+// Returns nth defined Urey-Bradley
+ForcefieldBound *Forcefield::ureyBradley(int n)
+{
+	if ((n < 0) || (n > ureyBradleys_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::ureyBradley list\n",n);
+		return NULL;
+	}
+	return ureyBradleys_[n];
+}
+
+// Find Urey-Bradley type
+ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk)
+{
+	// Search the forcefield for the Urey-Bradley definition for the interaction of the atom types i-j-k
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findUreyBradley");
+	ForcefieldBound *result = NULL;
+	int matchj, matchik, matchki, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *a = ureyBradleys_.first();
+	while (a != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the Urey-Bradley specification
+		// Check the central atom of the Urey-Bradley first
+		matchj = matchType(ffj->equivalent(),a->typeName(1));
+		if (matchj != 10)
+		{
+			matchik = matchTypes(ffi,ffk,a->typeName(0),a->typeName(2));
+			matchki = matchTypes(ffk,ffi,a->typeName(0),a->typeName(2));
+			// Take the better of the two results
+			if (matchki < matchik) matchik = matchki;
+			// Add on the score from the central atom
+			matchik += matchj;
+			if (matchik < 10)
+			{
+				if (matchik < bestmatch)
+				{
+					result = a;
+					bestmatch = matchik;
+				}
+			}
+		}
+		if (bestmatch == 0) break;		// Early exit for an exact match
+		a = a ->next;
+	}
+	msg.exit("Forcefield::findUreyBradley");
+	return result;
 }
 
 /*

@@ -27,25 +27,31 @@ class Pattern;
 class Model;
 
 // Energy store
-class Energy
+class EnergyStore
 {
 	public:
+	// Constructor / Destructor
+	EnergyStore();
+	~EnergyStore();
 	// Energy Types
-	enum EnergyType { BondEnergy, AngleEnergy, TorsionEnergy, VdwIntraEnergy, VdwInterEnergy, VdwTailEnergy, CoulombIntraEnergy, CoulombInterEnergy, EwaldRealIntraEnergy, EwaldRealInterEnergy, EwaldRecipIntraEnergy, EwaldRecipInterEnergy, EwaldSelfEnergy, EwaldMolecularEnergy, nEnergyTypes };
+	enum EnergyType { BondEnergy, AngleEnergy, TorsionEnergy, UreyBradleyEnergy, VdwIntraEnergy, VdwInterEnergy, VdwTailEnergy, CoulombIntraEnergy, CoulombInterEnergy, EwaldRealIntraEnergy, EwaldRealInterEnergy, EwaldRecipIntraEnergy, EwaldRecipInterEnergy, EwaldSelfEnergy, EwaldMolecularEnergy, nEnergyTypes };
 
+	/*
+	// Energy components
+	*/
 	private:
 	// Dimension of arrays in created structure.
 	int size_;
 	// Whether the Energy has actually been used (i.e. calculated)
 	bool calculated_;
-	// Deallocate arrays in Energy
-	void deallocate();
 	// Bond energies
 	double *bond_;
 	// Angle energies
 	double *angle_;
 	// Torsion energies
 	double *torsion_;
+	// Urey-Bradley energies
+	double *ureyBradley_;
 	// Intramolecular VDW energies
 	double *vdwIntra_;
 	// Intermolecular VDW energies
@@ -69,33 +75,29 @@ class Energy
 	// Ewald molecular-interaction correction to reciprocal energy
 	double *ewaldMolCorrect_;
 	// Intramolecular contributions
-	double totBond_, totAngle_, totTorsion_;
+	double totalBond_, totalAngle_, totalTorsion_, totalUreyBradley_;
 	// Short-range interactions total
-	double totVdw_;
+	double totalVdw_;
 	// Electrostatic interactions total
-	double totElec_;
+	double totalElectrostatic_;
 	// Ewald real/reciprocal totals
-	double totEwaldReal_, totEwaldRecip_;
+	double totalEwaldReal_, totalEwaldRecip_;
 	// Ewald correction totals
-	double totEwaldSelf_, totEwaldMol_;
+	double totalEwaldSelf_, totalEwaldMol_;
 	// Totals
-	double total_, totInter_, totIntra_;
+	double total_, totalInter_, totalIntra_;
+	// Deallocate arrays in Energy
+	void deallocate();
+	// Reset totals
+	void resetTotals();
 
 	public:
-	// Constructor / Destructor
-	Energy();
-	~Energy();
 	// Clear the energy store (reset to zero)
 	void clear();
 	// Resize the Energy
 	void resize(int);
 	// Calculate the sub-total and total energies.
 	void totalise();
-
-	/*
-	// Set / Get
-	*/
-	public:
 	// Add to energy
 	void add(EnergyType, double, int, int=-1);
 	// Returns the total energy in the store
@@ -106,10 +108,13 @@ class Energy
 	double angle();
 	// Returns the total torsion energy in the store
 	double torsion();
+	// Returns the total Urey-Bradley energy in the store
+	double ureyBradley();
 	// Returns the VDW part of the model's energy
 	double vdw();
 	// Returns the electrostatic part of the model's energy
-	double elec();
+	double electrostatic();
+
 
 	/*
 	// Printing

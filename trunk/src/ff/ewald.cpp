@@ -60,7 +60,7 @@ void Prefs::estimateEwaldParameters(Cell *cell)
 // 'n' is box vector - here we only consider the minimimum image coordinates of the atoms in the central box (n=0)
 // Factor of 1/2 is not required in the summation since the sums go from i=0,N-1 and j=i,N
 
-void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int molecule)
+void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	// Calculate a real-space contribution to the Ewald sum.
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
@@ -97,12 +97,12 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int m
 	}
 	energy_intra *= prefs.elecConvert();
 	energy_inter *= prefs.elecConvert();
-	estore->add(Energy::EwaldRealIntraEnergy,energy_intra,id_);
-	estore->add(Energy::EwaldRealInterEnergy,energy_inter,id_,id_);
+	estore->add(EnergyStore::EwaldRealIntraEnergy,energy_intra,id_);
+	estore->add(EnergyStore::EwaldRealInterEnergy,energy_inter,id_,id_);
 	msg.exit("Pattern::ewaldRealIntraPatternEnergy");
 }
 
-void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy *estore, int molecule)
+void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStore *estore, int molecule)
 {
 	// Calculate the real-space Ewald contribution to the energy from interactions between different molecules
 	// of this pnode and the one supplied. Contributions to the sum from the inner loop of atoms (a2) is summed into
@@ -156,7 +156,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 		aoff1 += nAtoms_;
 	}
 	energy_inter = energy_inter * prefs.elecConvert();
-	estore->add(Energy::EwaldRealInterEnergy,energy_inter,id_,xpnode->id_);
+	estore->add(EnergyStore::EwaldRealInterEnergy,energy_inter,id_,xpnode->id_);
 	msg.exit("Pattern::ewaldRealInterPatternEnergy");
 }
 
@@ -165,7 +165,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 //		E(recip) =  ---- E' E   E  q(i) * q(j) * exp(ik.(rj - ri)) * exp( --------- ) * ---
 //			    L**3 k i=1 j=1					  4*alphasq	ksq
 
-void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats, Energy *estore, int molecule)
+void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats, EnergyStore *estore, int molecule)
 {
 	// Calculate the reciprocal contribution of all atoms to the Ewald sum.
 	// Only needs to be called once from an arbitrary pattern.
@@ -246,7 +246,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 			for (n=i; n<npats; n++)
 			{
 				energy_inter = exp1*(sumcos[i]*sumcos[n] + sumsin[i]*sumsin[n]);
-				estore->add(Energy::EwaldRecipInterEnergy,energy_inter,i,n);
+				estore->add(EnergyStore::EwaldRecipInterEnergy,energy_inter,i,n);
 			}
 	}
 	delete sumcos;
@@ -264,7 +264,7 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 //				 m  i j			    rij
 // Sums over i=* and j=* indicate excluded interactions, i.e. bond i-j, angle i-x-j and torsion i-x-x-j.
 
-void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
+void Pattern::ewaldCorrectEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	// Calculate corrections to the Ewald sum energy
 	msg.enter("Pattern::ewaldCorrectEnergy");
@@ -287,7 +287,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 		aoff += nAtoms_;
 	}
 	energy = (alpha/SQRTPI) * chargesum * prefs.elecConvert();
-	estore->add(Energy::EwaldSelfEnergy,energy,id_);
+	estore->add(EnergyStore::EwaldSelfEnergy,energy,id_);
 
 	// Correct the reciprocal Ewald energy for molecular interactions, i.e. bond, angle, torsion exclusions
 	molcorrect = 0.0;
@@ -312,7 +312,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 		aoff += nAtoms_;
 	}
 	energy = molcorrect * prefs.elecConvert();
-	estore->add(Energy::EwaldMolecularEnergy,energy,id_);
+	estore->add(EnergyStore::EwaldMolecularEnergy,energy,id_);
 	msg.exit("Pattern::ewaldCorrectEnergy");
 }
 

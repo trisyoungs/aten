@@ -29,7 +29,7 @@
 #include "base/dnchar.h"
 
 // Forward declarations
-class Energy;
+class EnergyStore;
 class Atom;
 class ForcefieldAtom;
 class ForcefieldBound;
@@ -257,12 +257,16 @@ class Pattern
 	List<PatternBound> angles_;
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
+	// List of Urey-Bradley terms in one pattern molecule
+	List<PatternBound> ureyBradleys_;
 	// Reference list of bond terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldBonds_;
 	// Reference list of angle terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldAngles_;
 	// Reference list of torsion terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldTorsions_;
+	// Reference list of Urey-Bradley terms in pattern
+	Reflist<ForcefieldBound, int> forcefieldUreyBradleys_;
 	// Reference list of unique (by name) atom types used in the pattern
 	Reflist<ForcefieldAtom, int> uniqueForcefieldTypes_;
 	// Reference list of all (i.e. unique by pointer) atom types used in the pattern
@@ -275,6 +279,8 @@ class Pattern
 	void addAngleData(ForcefieldBound *ffb, int i, int j, int k);
 	// Add torsion data
 	void addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l);
+	// Add Urey-Bradley data
+	void addUreyBradleyData(ForcefieldBound *ffb, int i, int j);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -344,51 +350,55 @@ class Pattern
 	*/
 	public:
 	// Calculate bond energy of pattern (or specific molecule)
-	void bondEnergy(Model*, Energy*, int molecule = -1);
+	void bondEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate angle energy of pattern (or specific molecule)
-	void angleEnergy(Model*, Energy*, int molecule = -1);
+	void angleEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate torsion energy (including impropers) of pattern (or specific molecule)
-	void torsionEnergy(Model*, Energy*, int molecule = -1);
+	void torsionEnergy(Model *source, EnergyStore *estore, int molecule = -1);
+	// Calculate Urey-Bradley energy (including impropers) of pattern (or specific molecule)
+	void ureyBradleyEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate intrapattern Vdw energy (or for specific molecule)
-	bool vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	bool vdwIntraPatternEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate interpattern Vdw energy (or for specific molecule)
-	bool vdwInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	bool vdwInterPatternEnergy(Model *source, Pattern *other, EnergyStore *estore, int molecule = -1);
 	// Calculate Vdw correction energy for pattern
-	bool vdwCorrectEnergy(Cell*, Energy*);
+	bool vdwCorrectEnergy(Cell*, EnergyStore *estore);
 	// Calculate intrapattern coulomb energy (or for specific molecule)
-	void coulombIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	void coulombIntraPatternEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate interpattern coulomb energy (or for specific molecule)
-	void coulombInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	void coulombInterPatternEnergy(Model *source, Pattern *other, EnergyStore *estore, int molecule = -1);
 	// Calculate intrapattern real-space Ewald energy (or for specific molecule)
-	void ewaldRealIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	void ewaldRealIntraPatternEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate interpattern real-space Ewald energy (or for specific molecule)
-	void ewaldRealInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	void ewaldRealInterPatternEnergy(Model *source, Pattern *other, EnergyStore *estore, int molecule = -1);
 	// Calculate reciprocal-space Ewald energy (or for specific molecule)
-	void ewaldReciprocalEnergy(Model*, Pattern*, int, Energy*, int molecule = -1);
+	void ewaldReciprocalEnergy(Model *source, Pattern *other, int, EnergyStore *estore, int molecule = -1);
 	// Calculate Ewald correction energy (or for specific molecule)
-	void ewaldCorrectEnergy(Model*, Energy*, int molecule = -1);
+	void ewaldCorrectEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate bond forces in pattern
-	void bondForces(Model*);
+	void bondForces(Model *source);
 	// Calculate angle forces in pattern
-	void angleForces(Model*);
+	void angleForces(Model *source);
 	// Calculate torsion forces (including impropers) in pattern
-	void torsionForces(Model*);
+	void torsionForces(Model *source);
+	// Calculate Urey-Bradley forces in pattern
+	void ureyBradleyForces(Model *source);
 	// Calculate Vdw intrapattern forces
-	bool vdwIntraPatternForces(Model*);
+	bool vdwIntraPatternForces(Model *source);
 	// Calculate Vdw interpattern forces
-	bool vdwInterPatternForces(Model*, Pattern*);
+	bool vdwInterPatternForces(Model *source, Pattern *other);
 	// Calculate Coulomb intrapattern forces
-	void coulombIntraPatternForces(Model*);
+	void coulombIntraPatternForces(Model *source);
 	// Calculate Coulomb interpattern forces
-	void coulombInterPatternForces(Model*, Pattern*);
+	void coulombInterPatternForces(Model *source, Pattern *other);
 	// Calculate Ewald real-space intrapattern forces
-	void ewaldRealIntraPatternForces(Model*);
+	void ewaldRealIntraPatternForces(Model *source);
 	// Calculate Ewald real-space interpattern forces
-	void ewaldRealInterPatternForces(Model*, Pattern*);
+	void ewaldRealInterPatternForces(Model *source, Pattern *other);
 	// Calculate Ewald reciprocal-space forces
-	void ewaldReciprocalForces(Model*);
+	void ewaldReciprocalForces(Model *source);
 	// Calculate Ewald force corrections
-	void ewaldCorrectForces(Model*);
+	void ewaldCorrectForces(Model *source);
 
 
 	/*

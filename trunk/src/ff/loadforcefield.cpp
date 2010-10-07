@@ -115,6 +115,9 @@ bool Forcefield::load(const char *filename)
 			case (Forcefield::ImproperCommand):
 				okay = readImpropers();
 				break;
+			case (Forcefield::UreyBradleyCommand):
+				okay = readUreyBradley();
+				break;
 			case (Forcefield::VScaleCommand):
 				msg.print("Error: Use of 'vscale' command is deprecated.\n\tSpecify 1-4 scaling factors in the torsion block header.\n");
 				okay = FALSE;
@@ -828,5 +831,60 @@ bool Forcefield::readImpropers()
 	} while (!done);
 	msg.print("\t: Read in %i improper torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
 	msg.exit("Forcefield::readImpropers");
+	return TRUE;
+}
+
+bool Forcefield::readUreyBradley()
+{
+	// Read in torsion data
+	msg.enter("Forcefield::readUreyBradley");
+	ForcefieldBound *newffurey;
+	int count, success, n;
+	// Get functional form of potential
+	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(ffparser.argc(1));
+	if (bondstyle == BondFunctions::nBondFunctions)
+	{
+		bondstyle = BondFunctions::None;
+		msg.print("Urey-Bradley (bond) functional form not recognised - '%s'\n",ffparser.argc(1));
+		BondFunctions::printValid();
+		return FALSE;
+	}
+	count = 0;
+	bool done = FALSE;
+	do
+	{
+		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
+		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		if (success != 0)
+		{
+			if (success == 1) msg.print("File error reading Urey-Bradley data %i.\n",count+1);
+			if (success == -1) msg.print("End of file error reading Urey-Bradley data %i.\n",count+1);
+			msg.exit("Forcefield::readUreyBradley");
+			return FALSE;
+		}
+		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		else
+		{
+			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
+			// If not, then check to see that it references an atomname in the atomtypes list
+			for (n=0; n<3; n++)
+			{
+				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
+					msg.print("\t... Warning - Urey-Bradley atom '%s' does not exist in the forcefield!\n",ffparser.argc(n));
+			}
+			// Create new ff_angle structure
+			newffurey = ureyBradleys_.add();
+			newffurey->setType(ForcefieldBound::BondInteraction);
+			newffurey->setTypeName(0,ffparser.argc(0));
+			newffurey->setTypeName(1,ffparser.argc(1));
+			newffurey->setTypeName(2,ffparser.argc(2));
+			newffurey->setBondStyle(bondstyle);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffurey->setParameter(n, ffparser.argd(n+3));
+			msg.print(Messenger::Verbose,"UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffurey->typeName(0), newffurey->typeName(1), newffurey->typeName(2), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
+			count ++;
+		}
+	} while (!done);
+	msg.print("\t: Read in %i Urey-Bradley definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
+	msg.exit("Forcefield::readUreyBradley");
 	return TRUE;
 }

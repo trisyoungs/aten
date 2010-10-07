@@ -56,6 +56,12 @@
 						<entry>List of current eigenvectors stored in the model</entry>
 					</row>
 					<row>
+						<entry>energy</entry>
+						<entry><link linkend="command.types.energystore">energystore</link></entry>
+						<entry>ro</entry>
+						<entry>The model's energy store, containing the total calculated energy and all associated contributions</entry>
+					</row>
+					<row>
 						<entry>ff</entry>
 						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
 						<entry>rw</entry>
