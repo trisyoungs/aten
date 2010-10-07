@@ -1,6 +1,6 @@
 /*
-	*** Model Variable and Array
-	*** src/parser/model.h
+	*** EnergyStore Variable and Array
+	*** src/parser/energystore.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,32 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELVARIABLE_H
-#define ATEN_MODELVARIABLE_H
+#ifndef ATEN_ENERGYSTOREVARIABLE_H
+#define ATEN_ENERGYSTOREVARIABLE_H
 
 #include "parser/pvariable.h"
 #include "parser/accessor.h"
 
 // Forward Declarations
-class Model;
+class EnergyStore;
 
-// Model Variable
-class ModelVariable : public PointerVariable
+// EnergyStore Variable
+class EnergyStoreVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model *ptr = NULL, bool constant = FALSE);
-	~ModelVariable();
+	EnergyStoreVariable(EnergyStore *e = NULL, bool constant = FALSE);
+	~EnergyStoreVariable();
 
 	/*
 	// Access Data
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, Eigenvectors, Energy, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBasisCartesians, NBasisShells, NBonds, NDistances, NEigenvectors, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NRequested, NSelected, NTorsions, NUnknown, NVibrations, Patterns, Region, Torsions, Vibrations, ZMatrix, nAccessors };
+        enum Accessors { Angle, Bond, Electrostatic, Torsion, Total, UreyBradley, Vdw, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewBondId, NewEigenvector, NewGlyph, NewGrid, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, ToAngstroms, Transmute, Undo, nFunctions };
-
+	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
 	// Static function to search accessors
@@ -63,12 +62,12 @@ class ModelVariable : public PointerVariable
 	static FunctionAccessor functionData[nFunctions];
 };
 
-// Model Array Variable
-class ModelArrayVariable : public PointerArrayVariable
+// EnergyStore Array Variable
+class EnergyStoreArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	EnergyStoreArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
 
 	/*
 	// Inherited Virtuals
@@ -79,3 +78,4 @@ class ModelArrayVariable : public PointerArrayVariable
 };
 
 #endif
+

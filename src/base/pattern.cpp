@@ -189,7 +189,7 @@ void Pattern::addAtomData(Atom *i, ForcefieldAtom *ffa)
 	pa->setForcefieldDataId(n);
 }
 
-// Set the bond data specified
+// Add the bond data specified
 void Pattern::addBondData(ForcefieldBound *ffb, int i, int j)
 {
 	PatternBound *pb = bonds_.add();
@@ -205,7 +205,7 @@ void Pattern::addBondData(ForcefieldBound *ffb, int i, int j)
 	pb->setForcefieldDataId(n);
 }
 
-// Set the angle data specified
+// Add the angle data specified
 void Pattern::addAngleData(ForcefieldBound *ffb, int i, int j, int k)
 {
 	PatternBound *pb = angles_.add();
@@ -222,7 +222,7 @@ void Pattern::addAngleData(ForcefieldBound *ffb, int i, int j, int k)
 	pb->setForcefieldDataId(n);
 }
 
-// Set the torsion data specified
+// Add the torsion data specified
 void Pattern::addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l)
 {
 	PatternBound *pb = torsions_.add();
@@ -237,6 +237,22 @@ void Pattern::addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l)
 	for (n=0; n<forcefieldTorsions_.nItems(); ++n) if (forcefieldTorsions_[n]->item == ffb) break;
 	if (n == forcefieldTorsions_.nItems()) forcefieldTorsions_.add(ffb, 1);
 	else forcefieldTorsions_[n]->data = forcefieldTorsions_[n]->data + 1;
+	pb->setForcefieldDataId(n);
+}
+
+// Add the Urey-Bradley data specified
+void Pattern::addUreyBradleyData(ForcefieldBound *ffb, int i, int j)
+{
+	PatternBound *pb = ureyBradleys_.add();
+	pb->setAtomId(0,i);
+	pb->setAtomId(1,j);
+	pb->setData(ffb);
+	pb->setForcefieldDataId(-1);
+	// Add this to the unique bonds list if it isn't there already
+	int n;
+	for (n=0; n<forcefieldUreyBradleys_.nItems(); ++n) if (forcefieldUreyBradleys_[n]->item == ffb) break;
+	if (n == forcefieldUreyBradleys_.nItems()) forcefieldUreyBradleys_.add(ffb, 1);
+	else forcefieldUreyBradleys_[n]->data = forcefieldUreyBradleys_[n]->data + 1;
 	pb->setForcefieldDataId(n);
 }
 

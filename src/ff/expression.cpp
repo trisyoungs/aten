@@ -36,7 +36,7 @@ bool Pattern::createExpression(bool vdwOnly)
 	msg.enter("Pattern::createExpression");
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0;
+	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0;
 	Atom *ai, *aj, *ak, *al;
 	ForcefieldBound *ffb;
 	PatternAtom *ipa[4];
@@ -94,7 +94,7 @@ bool Pattern::createExpression(bool vdwOnly)
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		msg.print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
+		msg.print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers and Urey-Bradley terms (if any) will be added later.\n", name_.get(), nBonds, nAngles, nTorsions);
 	}
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
@@ -238,7 +238,7 @@ bool Pattern::createExpression(bool vdwOnly)
 							addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 						}
 					}
-					// Check ffa and raise warning if NULL
+					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
 						msg.print("!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
@@ -248,6 +248,14 @@ bool Pattern::createExpression(bool vdwOnly)
 					else
 					{
 						msg.print(Messenger::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						// Check here for Urey-Bradley definition involving the same atoms.
+						// We don't mind if there isn't one
+						ffb = ff->findUreyBradley(ti,tj,tk);
+						if (ffb != NULL)
+						{
+							++nUreyBradleys;
+							addUreyBradleyData(ffb, bonding[jj][ii]->value(), bonding[jj][kk]->value());
+						}
 					}
 				}
 			}
@@ -258,7 +266,11 @@ bool Pattern::createExpression(bool vdwOnly)
 			incomplete_ = TRUE;
 		}
 		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
-		else if (iangles == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
+		else if (iangles == 0)
+		{
+			if (nUreyBradleys == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
+			else msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", ureyBradleys_.nItems());
+		}
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
 		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k

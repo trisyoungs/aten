@@ -152,7 +152,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 }
 
 // Intrapattern VDW energy
-bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemolecule)
+bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lonemolecule)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
@@ -202,14 +202,14 @@ bool Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 		aoff += nAtoms_;
 	}
 	// Add totals into Energy
-	estore->add(Energy::VdwIntraEnergy,energy_intra,id_);
-	estore->add(Energy::VdwInterEnergy,energy_inter,id_,id_);
+	estore->add(EnergyStore::VdwIntraEnergy,energy_intra,id_);
+	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,id_);
 	msg.exit("Pattern::vdwIntraPatternEnergy");
 	return TRUE;
 }
 
 // Interpattern VDW energy
-bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Energy *estore, int molId)
+bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, EnergyStore *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	msg.enter("Pattern::vdwInterPatternEnergy");
@@ -292,7 +292,7 @@ bool Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		}
 		aoff1 += nAtoms_;
 	}
-	estore->add(Energy::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
+	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
 	msg.exit("Pattern::vdwInterPatternEnergy");
 	return TRUE;
 }
@@ -428,7 +428,7 @@ bool Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 //
 // Assume p(r) is equal to the (bulk) number density at r > rcut.
 */
-bool Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
+bool Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
 {
 	// Calculate the long-range correction to the VDW energy
 	msg.enter("Pattern::vdwCorrectEnergy");
@@ -487,7 +487,7 @@ bool Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 			}
 		}
 	}
-	estore->add(Energy::VdwTailEnergy,energy,-1);
+	estore->add(EnergyStore::VdwTailEnergy,energy,-1);
 	msg.exit("Pattern::vdwCorrectEnergy");
 	return TRUE;
 }

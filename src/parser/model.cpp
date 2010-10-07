@@ -58,6 +58,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "cell",		VTypes::CellData,		0, FALSE },
 	{ "distances",		VTypes::MeasurementData,	-1, TRUE },
 	{ "eigenvectors",	VTypes::EigenvectorData,	-1, TRUE },
+	{ "energy",		VTypes::EnergyStoreData,	0, TRUE },
 	{ "ffangles",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "ffbonds",		VTypes::ForcefieldBoundData,	-1, TRUE },
 	{ "ffmass",		VTypes::DoubleData,		0, TRUE },
@@ -268,6 +269,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
+			break;
+		case (ModelVariable::Energy):
+			rv.set(VTypes::EnergyStoreData, &ptr->energy);
 			break;
 		case (ModelVariable::FFAngles):
 			if (!hasArrayIndex)

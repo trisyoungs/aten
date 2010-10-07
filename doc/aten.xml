@@ -50,6 +50,7 @@
 	<!ENTITY typescell SYSTEM "commands/types_cell.xml">
 	<!ENTITY typeseigenvector SYSTEM "commands/types_eigenvector.xml">
 	<!ENTITY typeselement SYSTEM "commands/types_element.xml">
+	<!ENTITY typesenergystore SYSTEM "commands/types_energystore.xml">
 	<!ENTITY typesffatom SYSTEM "commands/types_ffatom.xml">
 	<!ENTITY typesffbound SYSTEM "commands/types_ffbound.xml">
 	<!ENTITY typesforcefield SYSTEM "commands/types_forcefield.xml">
@@ -61,6 +62,7 @@
 	<!ENTITY typespattern SYSTEM "commands/types_pattern.xml">
 	<!ENTITY typespreferences SYSTEM "commands/types_preferences.xml">
 	<!ENTITY typesregion SYSTEM "commands/types_region.xml">
+	<!ENTITY typessite SYSTEM "commands/types_site.xml">
 	<!ENTITY typesunitcell SYSTEM "commands/types_unitcell.xml">
 	<!ENTITY typesvector SYSTEM "commands/types_vector.xml">
 	<!ENTITY commandatom SYSTEM "commands/atom.xml">
@@ -272,8 +274,9 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&typesbond;
 			&typesbound;
 			&typescell;
-			&typeselement;
 			&typeseigenvector;
+			&typeselement;
+			&typesenergystore;
 			&typesffatom;
 			&typesffbound;
 			&typesforcefield;
@@ -285,6 +288,7 @@ printf(&quot;New coordinates are: %f %f %f\n&quot;, a.rx, a.ry, a.rz);
 			&typespattern;
 			&typespreferences;
 			&typesregion;
+			&typessite;
 			&typesunitcell;
 			&typesvector;
 		</section>

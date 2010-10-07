@@ -86,7 +86,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	newRms = srcmodel->rmsForce();
 
 	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+	msg.print("Init  %12.5e        ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", newEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 	gui.progressCreate("Minimising (SD)", nCycles_);
 
 	stepsize = 1.0;
@@ -135,7 +135,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.elec(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
+		if (prefs.shouldUpdateEnergy(cycle)) msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, newEnergy, deltaEnergy, newRms, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), etatext.get());
 
 		if (prefs.shouldUpdateModel(cycle)) gui.update(FALSE, FALSE, FALSE, FALSE);
 

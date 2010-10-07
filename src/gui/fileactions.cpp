@@ -272,7 +272,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		height = atoi(afterChar(geometry,'x'));
 		if ((width < 1) || (height < 1))
 		{
-			message.sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
+			message.sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
 			QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 			return;
 		}

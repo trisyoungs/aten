@@ -602,7 +602,7 @@ class Model
 
 	public:
 	// Storage for energy
-	Energy energy;
+	EnergyStore energy;
 	// Calculate (and return) the total energy of the specified model configuration
 	double totalEnergy(Model *config, bool &success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder

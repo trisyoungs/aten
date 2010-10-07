@@ -25,12 +25,13 @@
 #include "base/pattern.h"
 
 // Constructor
-Energy::Energy()
+EnergyStore::EnergyStore()
 {
 	// Private variables
 	bond_ = NULL;
 	angle_ = NULL;
 	torsion_ = NULL;
+	ureyBradley_ = NULL;
 	vdwIntra_ = NULL;
 	coulombIntra_ = NULL;
 	ewaldRealIntra_ = NULL;
@@ -42,120 +43,29 @@ Energy::Energy()
 	ewaldRecipInter_ = NULL;
 	ewaldSelfCorrect_ = NULL;
 	ewaldMolCorrect_ = NULL;
+	resetTotals();
 	size_ = 0;
 	calculated_ = FALSE;
 }
 
 // Destructor
-Energy::~Energy()
+EnergyStore::~EnergyStore()
 {
 	deallocate();
 }
 
-// Returns the total energy in the store
-double Energy::total()
-{
-	return total_;
-}
-
-// Returns the total bond energy in the store
-double Energy::bond()
-{
-	return totBond_;
-}
-
-// Returns the total angle energy in the store
-double Energy::angle()
-{
-	return totAngle_;
-}
-
-// Returns the total torsion energy in the store
-double Energy::torsion()
-{
-	return totTorsion_;
-}
-
-// Returns the VDW part of the model's energy
-double Energy::vdw()
-{
-	return totVdw_;
-}
-
-// Returns the electrostatic part of the model's energy
-double Energy::elec()
-{
-	return totElec_;
-}
-
-// Add
-void Energy::add(EnergyType et, double energy, int id1, int id2)
-{
-	msg.enter("Energy::add");
-	if ((id1 >= size_) || (id2 >= size_))
-	{
-		printf("Energy::add <<<< Array element out of range - %i %i - Ignored >>>>\n", id1, id2);
-		msg.exit("Energy::add");
-		return;
-	}
-	switch (et)
-	{
-		case (Energy::BondEnergy):
-			bond_[id1] += energy;
-			break;
-		case (Energy::AngleEnergy):
-			angle_[id1] += energy;
-			break;
-		case (Energy::TorsionEnergy):
-			torsion_[id1] += energy;
-			break;
-		case (Energy::VdwIntraEnergy):
-			vdwIntra_[id1] += energy;
-			break;
-		case (Energy::VdwInterEnergy):
-			vdwInter_[id1][id2] += energy;
-			break;
-		case (Energy::VdwTailEnergy):
-			vdwTail_ += energy;
-			break;
-		case (Energy::CoulombIntraEnergy):
-			coulombIntra_[id1] += energy;
-			break;
-		case (Energy::CoulombInterEnergy):
-			coulombInter_[id1][id2] += energy;
-			break;
-		case (Energy::EwaldRealIntraEnergy):
-			ewaldRealIntra_[id1] += energy;
-			break;
-		case (Energy::EwaldRealInterEnergy):
-			ewaldRealInter_[id1][id2] += energy;
-			break;
-		case (Energy::EwaldRecipIntraEnergy):
-			ewaldRecipIntra_[id1] += energy;
-			break;
-		case (Energy::EwaldRecipInterEnergy):
-			ewaldRecipInter_[id1][id2] += energy;
-			break;
-		case (Energy::EwaldSelfEnergy):
-			ewaldSelfCorrect_[id1] += energy;
-			break;
-		case (Energy::EwaldMolecularEnergy):
-			ewaldMolCorrect_[id1] += energy;
-			break;
-		default:
-			printf("Internal Error: Summation of energy type %i missed.\n", et);
-			break;
-	}
-	msg.exit("Energy::add");
-}
+/*
+// Energy components
+*/
 
 // Deallocate arrays
-void Energy::deallocate()
+void EnergyStore::deallocate()
 {
-	msg.enter("Energy::deallocate");
+	msg.enter("EnergyStore::deallocate");
 	if (bond_ != NULL) delete[] bond_;
 	if (angle_ != NULL) delete[] angle_;
 	if (torsion_ != NULL) delete[] torsion_;
+	if (ureyBradley_ != NULL) delete[] ureyBradley_;
 	if (vdwIntra_ != NULL) delete[] vdwIntra_;
 	if (coulombIntra_ != NULL) delete[] coulombIntra_;
 	if (ewaldRealIntra_ != NULL) delete[] ewaldRealIntra_;
@@ -174,13 +84,63 @@ void Energy::deallocate()
 	if (ewaldSelfCorrect_ != NULL) delete[] ewaldSelfCorrect_;
 	if (ewaldMolCorrect_ != NULL) delete[] ewaldMolCorrect_;
 	size_ = 0;
-	msg.exit("Energy::deallocate");
+	msg.exit("EnergyStore::deallocate");
+}
+
+// Reset totals
+void EnergyStore::resetTotals()
+{
+	totalBond_ = 0.0;
+	totalAngle_ = 0.0;
+	totalTorsion_ = 0.0;
+	totalUreyBradley_ = 0.0;
+	totalVdw_ = 0.0;
+	totalElectrostatic_ = 0.0;
+	totalIntra_ = 0.0;
+	totalInter_ = 0.0;
+	totalEwaldReal_ = 0.0;
+	totalEwaldRecip_ = 0.0;
+	totalEwaldSelf_ = 0.0;
+	totalEwaldMol_ = 0.0;
+	total_ = 0.0;
+}
+
+// Clear values
+void EnergyStore::clear()
+{
+	// Clear all the values in the energy store
+	msg.enter("EnergyStore::clear");
+	int n,m;
+	for (n=0; n<size_; n++)
+	{
+		bond_[n] = 0.0;
+		angle_[n] = 0.0;
+		torsion_[n] = 0.0;
+		ureyBradley_[n] = 0.0;
+		vdwIntra_[n] = 0.0;
+		coulombIntra_[n] = 0.0;
+		ewaldRealIntra_[n] = 0.0;
+		ewaldRecipIntra_[n] = 0.0;
+		for (m=0; m<size_; m++)
+		{
+			vdwInter_[n][m] = 0.0;
+			coulombInter_[n][m] = 0.0;
+			ewaldRealInter_[n][m] = 0.0;
+			ewaldRecipInter_[n][m] = 0.0;
+		}
+		ewaldSelfCorrect_[n] = 0.0;
+		ewaldMolCorrect_[n] = 0.0;
+	}
+	vdwTail_ = 0.0;
+	resetTotals();
+	calculated_ = FALSE;
+	msg.exit("EnergyStore::clear");
 }
 
 // Resize
-void Energy::resize(int newsize)
+void EnergyStore::resize(int newsize)
 {
-	msg.enter("Energy::resize");
+	msg.enter("EnergyStore::resize");
 	// Delete old data first
 	deallocate();
 	// Now create new arrays...
@@ -188,6 +148,7 @@ void Energy::resize(int newsize)
 	bond_ = new double[size_];
 	angle_ = new double[size_];
 	torsion_ = new double[size_];
+	ureyBradley_ = new double[size_];
 	vdwIntra_ = new double[size_];
 	vdwInter_ = new double*[size_];
 	coulombIntra_ = new double[size_];
@@ -207,78 +168,26 @@ void Energy::resize(int newsize)
 	ewaldMolCorrect_ = new double[size_];
 	clear();
 	msg.print(Messenger::Verbose,"Energy store resized to %i\n",size_);
-	msg.exit("Energy::resize");
-}
-
-// CLear values
-void Energy::clear()
-{
-	// Clear all the values in the energy store
-	msg.enter("Energy::clear");
-	int n,m;
-	for (n=0; n<size_; n++)
-	{
-		bond_[n] = 0.0;
-		angle_[n] = 0.0;
-		torsion_[n] = 0.0;
-		vdwIntra_[n] = 0.0;
-		coulombIntra_[n] = 0.0;
-		ewaldRealIntra_[n] = 0.0;
-		ewaldRecipIntra_[n] = 0.0;
-		for (m=0; m<size_; m++)
-		{
-			vdwInter_[n][m] = 0.0;
-			coulombInter_[n][m] = 0.0;
-			ewaldRealInter_[n][m] = 0.0;
-			ewaldRecipInter_[n][m] = 0.0;
-		}
-		ewaldSelfCorrect_[n] = 0.0;
-		ewaldMolCorrect_[n] = 0.0;
-	}
-	vdwTail_ = 0.0;
-	totBond_ = 0.0;
-	totAngle_ = 0.0;
-	totTorsion_ = 0.0;
-	totVdw_ = 0.0;
-	totElec_ = 0.0;
-	totIntra_ = 0.0;
-	totInter_ = 0.0;
-	totEwaldReal_ = 0.0;
-	totEwaldRecip_ = 0.0;
-	totEwaldSelf_ = 0.0;
-	totEwaldMol_ = 0.0;
-	total_ = 0.0;
-	calculated_ = FALSE;
-	msg.exit("Energy::clear");
+	msg.exit("EnergyStore::resize");
 }
 
 // Create totals
-void Energy::totalise()
+void EnergyStore::totalise()
 {
 	// Sum up the energies to get totals for individual aspects and the total overall energy.
-	msg.enter("Energy::totalise");
-	totBond_ = 0.0;
-	totAngle_ = 0.0;
-	totTorsion_ = 0.0;
-	totVdw_ = 0.0;
-	totElec_ = 0.0;
-	totIntra_ = 0.0;
-	totInter_ = 0.0;
-	totEwaldReal_ = 0.0;
-	totEwaldRecip_ = 0.0;
-	totEwaldSelf_ = 0.0;
-	totEwaldMol_ = 0.0;
-	total_ = 0.0;
+	msg.enter("EnergyStore::totalise");
+	resetTotals();
 	int n,m;
 	for (n=0; n<size_; n++)
 	{
-		totBond_ += bond_[n];
-		totAngle_ += angle_[n];
-		totTorsion_ += torsion_[n];
-		totVdw_ += vdwIntra_[n];
-		totElec_ += coulombIntra_[n];
-		totElec_ += ewaldRealIntra_[n];
-		totElec_ += ewaldRecipIntra_[n];
+		totalBond_ += bond_[n];
+		totalAngle_ += angle_[n];
+		totalTorsion_ += torsion_[n];
+		totalUreyBradley_ += ureyBradley_[n];
+		totalVdw_ += vdwIntra_[n];
+		totalElectrostatic_ += coulombIntra_[n];
+		totalElectrostatic_ += ewaldRealIntra_[n];
+		totalElectrostatic_ += ewaldRecipIntra_[n];
 		for (m=n; m<size_; m++)
 		{
 			// Symmetrise matrices here (for printed output)
@@ -294,87 +203,198 @@ void Energy::totalise()
 				ewaldRecipInter_[m][n] = ewaldRecipInter_[n][m];
 			}
 			// Sum intermolecular contributions
-			totVdw_ += vdwInter_[n][m];
-			totElec_ += coulombInter_[n][m];
-			totEwaldReal_ += ewaldRealInter_[n][m];
+			totalVdw_ += vdwInter_[n][m];
+			totalElectrostatic_ += coulombInter_[n][m];
+			totalEwaldReal_ += ewaldRealInter_[n][m];
 			// Ewald off-diagonal terms must be added twice
-			totEwaldRecip_ += (n == m ? ewaldRecipInter_[n][m] : 2.0*ewaldRecipInter_[n][m]);
+			totalEwaldRecip_ += (n == m ? ewaldRecipInter_[n][m] : 2.0*ewaldRecipInter_[n][m]);
 		}
-		totEwaldSelf_ += ewaldSelfCorrect_[n];
-		totEwaldMol_ += ewaldMolCorrect_[n];
+		totalEwaldSelf_ += ewaldSelfCorrect_[n];
+		totalEwaldMol_ += ewaldMolCorrect_[n];
 	}
-	totVdw_ += vdwTail_;
-	totElec_ += totEwaldReal_ + totEwaldRecip_ - totEwaldSelf_ - totEwaldMol_;
-	totIntra_ = totBond_ + totAngle_ + totTorsion_;
-	totInter_ = totVdw_ + totElec_;
-	total_ = totIntra_ + totInter_;
+	totalVdw_ += vdwTail_;
+	totalElectrostatic_ += totalEwaldReal_ + totalEwaldRecip_ - totalEwaldSelf_ - totalEwaldMol_;
+	totalIntra_ = totalBond_ + totalAngle_ + totalTorsion_ + totalUreyBradley_;
+	totalInter_ = totalVdw_ + totalElectrostatic_;
+	total_ = totalIntra_ + totalInter_;
 	calculated_ = TRUE;
-	msg.exit("Energy::totalise");
+	msg.exit("EnergyStore::totalise");
 }
 
-// Print out all energy terms
-void Energy::print()
+// Add
+void EnergyStore::add(EnergyType et, double energy, int id1, int id2)
 {
-	msg.enter("Energy::print");
+	msg.enter("EnergyStore::add");
+	if ((id1 >= size_) || (id2 >= size_))
+	{
+		printf("EnergyStore::add <<<< Array element out of range - %i %i - Ignored >>>>\n", id1, id2);
+		msg.exit("EnergyStore::add");
+		return;
+	}
+	switch (et)
+	{
+		case (EnergyStore::BondEnergy):
+			bond_[id1] += energy;
+			break;
+		case (EnergyStore::AngleEnergy):
+			angle_[id1] += energy;
+			break;
+		case (EnergyStore::TorsionEnergy):
+			torsion_[id1] += energy;
+			break;
+		case (EnergyStore::UreyBradleyEnergy):
+			ureyBradley_[id1] += energy;
+			break;
+		case (EnergyStore::VdwIntraEnergy):
+			vdwIntra_[id1] += energy;
+			break;
+		case (EnergyStore::VdwInterEnergy):
+			vdwInter_[id1][id2] += energy;
+			break;
+		case (EnergyStore::VdwTailEnergy):
+			vdwTail_ += energy;
+			break;
+		case (EnergyStore::CoulombIntraEnergy):
+			coulombIntra_[id1] += energy;
+			break;
+		case (EnergyStore::CoulombInterEnergy):
+			coulombInter_[id1][id2] += energy;
+			break;
+		case (EnergyStore::EwaldRealIntraEnergy):
+			ewaldRealIntra_[id1] += energy;
+			break;
+		case (EnergyStore::EwaldRealInterEnergy):
+			ewaldRealInter_[id1][id2] += energy;
+			break;
+		case (EnergyStore::EwaldRecipIntraEnergy):
+			ewaldRecipIntra_[id1] += energy;
+			break;
+		case (EnergyStore::EwaldRecipInterEnergy):
+			ewaldRecipInter_[id1][id2] += energy;
+			break;
+		case (EnergyStore::EwaldSelfEnergy):
+			ewaldSelfCorrect_[id1] += energy;
+			break;
+		case (EnergyStore::EwaldMolecularEnergy):
+			ewaldMolCorrect_[id1] += energy;
+			break;
+		default:
+			printf("Internal Error: Summation of energy type %i missed.\n", et);
+			break;
+	}
+	msg.exit("EnergyStore::add");
+}
+
+// Returns the total energy in the store
+double EnergyStore::total()
+{
+	return total_;
+}
+
+// Returns the total bond energy in the store
+double EnergyStore::bond()
+{
+	return totalBond_;
+}
+
+// Returns the total angle energy in the store
+double EnergyStore::angle()
+{
+	return totalAngle_;
+}
+
+// Returns the total torsion energy in the store
+double EnergyStore::torsion()
+{
+	return totalTorsion_;
+}
+
+// Returns the total Urey-Bradley energy in the store
+double EnergyStore::ureyBradley()
+{
+	return totalUreyBradley_;
+}
+
+// Returns the VDW part of the model's energy
+double EnergyStore::vdw()
+{
+	return totalVdw_;
+}
+
+// Returns the electrostatic part of the model's energy
+double EnergyStore::electrostatic()
+{
+	return totalElectrostatic_;
+}
+
+/*
+// Printing
+*/
+
+// Print out all energy terms
+void EnergyStore::print()
+{
+	msg.enter("EnergyStore::print");
 	if (!calculated_)
 	{
-		msg.print("Energy::print - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::print");
+		msg.print("EnergyStore::print - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::print");
 		return;
 	}
 	msg.print("Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print("   Bond : %13.6f\n",totBond_);
-	msg.print("  Angle : %13.6f\n",totAngle_);
-	msg.print("Torsion : %13.6f\n",totTorsion_);
-	msg.print("    VDW : %13.6f (tail contribution : %13.6f)\n",totVdw_,vdwTail_);
-	msg.print("   Elec : %13.6f\n",totElec_);
-	msg.print("  TOTAL : %13.6f\n",total_);
-	msg.exit("Energy::print");
+	msg.print("        Bond : %13.6f\n",totalBond_);
+	msg.print("       Angle : %13.6f\n",totalAngle_);
+	msg.print("Urey-Bradley : %13.6f\n",totalUreyBradley_);
+	msg.print("     Torsion : %13.6f\n",totalTorsion_);
+	msg.print("         VDW : %13.6f (tail contribution : %13.6f)\n",totalVdw_,vdwTail_);
+	msg.print("        Elec : %13.6f\n",totalElectrostatic_);
+	msg.print("       TOTAL : %13.6f\n",total_);
+	msg.exit("EnergyStore::print");
 }
 
 // Print energy summary
-void Energy::printSummary()
+void EnergyStore::printSummary()
 {
-	msg.enter("Energy::printSummary");
+	msg.enter("EnergyStore::printSummary");
 	if (!calculated_)
 	{
-		msg.print("Energy::printSummary - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printSummary");
+		msg.print("EnergyStore::printSummary - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printSummary");
 		return;
 	}
-	msg.print("Etot = %13.6e %s, b a t = %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totBond_, totAngle_, totTorsion_, totVdw_, totElec_);
-	msg.exit("Energy::printSummary");
+	msg.print("Etot = %13.6e %s, b a t u = %13.6e %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totalBond_, totalAngle_, totalTorsion_, totalUreyBradley_, totalVdw_, totalElectrostatic_);
+	msg.exit("EnergyStore::printSummary");
 }
 
 // Print out Ewald energy terms
-void Energy::printEwald()
+void EnergyStore::printEwald()
 {
-	msg.enter("Energy::printEwald");
+	msg.enter("EnergyStore::printEwald");
 	if (!calculated_)
 	{
-		msg.print("Energy::printEwald - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printEwald");
+		msg.print("EnergyStore::printEwald - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printEwald");
 		return;
 	}
 	msg.print("Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg.print(" Real : %13.6f\n",totEwaldReal_);
-	msg.print("Recip : %13.6f\n",totEwaldRecip_);
-	msg.print(" Self : %13.6f\n",totEwaldSelf_);
-	msg.print("  Mol : %13.6f\n",totEwaldMol_);
-	msg.print("TOTAL : %13.6f\n",totElec_);
-	msg.exit("Energy::printEwald");
+	msg.print(" Real : %13.6f\n",totalEwaldReal_);
+	msg.print("Recip : %13.6f\n",totalEwaldRecip_);
+	msg.print(" Self : %13.6f\n",totalEwaldSelf_);
+	msg.print("  Mol : %13.6f\n",totalEwaldMol_);
+	msg.print("TOTAL : %13.6f\n",totalElectrostatic_);
+	msg.exit("EnergyStore::printEwald");
 }
 
 // Print out VDW energy decomposition Matrix
-void Energy::printVdwMatrix(Model *m)
+void EnergyStore::printVdwMatrix(Model *m)
 {
-	msg.enter("Energy::printVdwMatrix");
+	msg.enter("EnergyStore::printVdwMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	if (!calculated_)
 	{
-		msg.print("Energy::printVdwMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printVdwMatrix");
+		msg.print("EnergyStore::printVdwMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printVdwMatrix");
 		return;
 	}
 	// Print out VDW energy decomposition
@@ -394,20 +414,20 @@ void Energy::printVdwMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("Energy::printVdwMatrix");
+	msg.exit("EnergyStore::printVdwMatrix");
 }
 
 // Print out electrostatic energy decomposition Matrix
-void Energy::printElecMatrix(Model *m)
+void EnergyStore::printElecMatrix(Model *m)
 {
-	msg.enter("Energy::printElecMatrix");
+	msg.enter("EnergyStore::printElecMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	double energy;
 	if (!calculated_)
 	{
-		msg.print("Energy::printElecMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printElecMatrix");
+		msg.print("EnergyStore::printElecMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printElecMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -446,20 +466,20 @@ void Energy::printElecMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("Energy::printElecMatrix");
+	msg.exit("EnergyStore::printElecMatrix");
 }
 
 // Print out interpattern energy decomposition Matrix
-void Energy::printInterMatrix(Model *m)
+void EnergyStore::printInterMatrix(Model *m)
 {
-	msg.enter("Energy::printInterMatrix");
+	msg.enter("EnergyStore::printInterMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	double energyInter, energyIntra;
 	if (!calculated_)
 	{
-		msg.print("Energy::printInterMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printInterMatrix");
+		msg.print("EnergyStore::printInterMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printInterMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -508,30 +528,30 @@ void Energy::printInterMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	msg.exit("Energy::printInterMatrix");
+	msg.exit("EnergyStore::printInterMatrix");
 }
 
 // Print out intramolecular energy decomposition Matrix
-void Energy::printIntraMatrix(Model *m)
+void EnergyStore::printIntraMatrix(Model *m)
 {
-	msg.enter("Energy::printIntraMatrix");
+	msg.enter("EnergyStore::printIntraMatrix");
 	int count1;
 	Pattern *p1;
 	double energy;
 	if (!calculated_)
 	{
-		msg.print("Energy::printIntraMatrix - Total energy has not yet been calculated.\n");
-		msg.exit("Energy::printIntraMatrix");
+		msg.print("EnergyStore::printIntraMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("EnergyStore::printIntraMatrix");
 		return;
 	}
-	// Print out VDW energy decomposition
+	// Print out intramolecular energy decomposition
 	printf("Intramolecular Energy:\n     Pattern         Total       Per Mol         Bond         Angle       Torsion \n");
 	count1 = 0;
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
-		energy = bond_[count1] + angle_[count1] + torsion_[count1];
+		energy = bond_[count1] + angle_[count1] + torsion_[count1] + ureyBradley_[count1];
 		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMolecules(), bond_[count1], angle_[count1], torsion_[count1]);
 		count1 ++;
 	}
-	msg.exit("Energy::printIntraMatrix");
+	msg.exit("EnergyStore::printIntraMatrix");
 }

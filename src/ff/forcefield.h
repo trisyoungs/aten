@@ -44,7 +44,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, UreyBradleyCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 	// Local parser
 	LineParser ffparser;
@@ -107,7 +107,7 @@ class Forcefield
 	// Bonding Interactions
 	*/
 	private:
-	// List pointers for bond data
+	// List of bond data
 	List<ForcefieldBound> bonds_;
 
 	public:
@@ -127,7 +127,7 @@ class Forcefield
 	// Angle Interactions
 	*/
 	private:
-	// List pointers for angle data
+	// List of angle data
 	List<ForcefieldBound> angles_;
 
 	public:
@@ -147,7 +147,7 @@ class Forcefield
 	// Torsion Interactions
 	*/
 	private:
-	// List pointers for torsion data
+	// List of torsion data
 	List<ForcefieldBound> torsions_;
 
 	public:
@@ -167,7 +167,7 @@ class Forcefield
 	// Improper Torsion Interactions
 	*/
 	private:
-	// List pointers for improper torsions data
+	// List of improper torsions data
 	List<ForcefieldBound> impropers_;
 
 	public:
@@ -181,6 +181,26 @@ class Forcefield
 	ForcefieldBound *improper(int n);
 	// Retreve improper torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findImproper(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
+
+
+	/*
+	// Urey-Bradley Interactions
+	*/
+	private:
+	// List of Urey-Bradley data
+	List<ForcefieldBound> ureyBradleys_;
+
+	public:
+	// Add Urey-Bradley term to the forcefield
+	ForcefieldBound *addUreyBradley(BondFunctions::BondFunction form);
+	// Return number of terms defined in Urey-Bradley list
+	int nUreyBradleys();
+	// Returns the Urey-Bradley list
+	ForcefieldBound *ureyBradleys();
+	// Return the n'th Urey-Bradley term in the list
+	ForcefieldBound *ureyBradley(int n);
+	// Retrieve Urey-Bradley data corresponding to specified atomtype id's
+	ForcefieldBound *findUreyBradley(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
 
 	/*
@@ -263,6 +283,8 @@ class Forcefield
 	bool readTorsions();
 	// Reads in improper data
 	bool readImpropers();
+	// Read in Urey-Bradley data
+	bool readUreyBradley();
 
 	public:
 	// Load Forcefield from the filename supplied

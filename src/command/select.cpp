@@ -89,7 +89,7 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				else if (from.lastChar() == '+') plus = 1;
 				else
 				{
-					msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
+					msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from.get());
 					return FALSE;
 				}
 			}

@@ -1,6 +1,6 @@
 /*
-	*** Bond energy / force calculation
-	*** src/ff/bond.cpp
+	*** Urey-Bradley energy / force calculation
+	*** src/ff/ureybradley.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -23,10 +23,10 @@
 #include "classes/forcefieldbound.h"
 #include "base/pattern.h"
 
-// Calculate bond energy of pattern (or molecule in pattern)
-void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+// Calculate Urey-Bradley energy of pattern (or molecule in pattern)
+void Pattern::ureyBradleyEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	msg.enter("Pattern::bondEnergy");
+	msg.enter("Pattern::ureyBradleyEnergy");
 	int i, j, m1, aoff;
 	static double forcek, eq, rij, energy, d, expo;
 	static ForcefieldBound *ffb;
@@ -35,10 +35,9 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 	Cell *cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
-	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMolecules_,nAtoms_,nbonds);
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
-		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+		for (pb = ureyBradleys_.first(); pb != NULL; pb = pb->next)
 		{
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
@@ -47,7 +46,7 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					msg.print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
+					msg.print("Warning: No function is specified for Urey-Bradley energy %i-%i.\n", i, j);
 				case (BondFunctions::Ignore):
 					break;
 				case (BondFunctions::Constraint):
@@ -83,21 +82,21 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 					energy += d * expo * expo;
 					break;
 				default:
-					msg.print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for Urey-Bradley energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 		}
 		aoff = aoff + nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(EnergyStore::BondEnergy,energy,id_);
-	msg.exit("Pattern::bondEnergy");
+	estore->add(EnergyStore::UreyBradleyEnergy,energy,id_);
+	msg.exit("Pattern::ureyBradleyEnergy");
 }
 
-// Calculate bond forces in pattern
-void Pattern::bondForces(Model *srcmodel)
+// Calculate Urey-Bradley forces in pattern
+void Pattern::ureyBradleyForces(Model *srcmodel)
 {
-	msg.enter("Pattern::bondForcess");
+	msg.enter("Pattern::ureyBradleyForcess");
 	int i, j, m1, aoff;
 	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, d, expo, du_dr;
@@ -108,9 +107,9 @@ void Pattern::bondForces(Model *srcmodel)
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
-		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+		for (pb = ureyBradleys_.first(); pb != NULL; pb = pb->next)
 		{
-			// Calculate bond vector
+			// Calculate atom-atom vector
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
 			mim_i = cell->mimd(modelatoms[j]->r(), modelatoms[i]->r());
@@ -120,7 +119,7 @@ void Pattern::bondForces(Model *srcmodel)
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					msg.print("Warning: No function is specified for bond force %i-%i.\n", i, j);
+					msg.print("Warning: No function is specified for Urey-Bradley force %i-%i.\n", i, j);
 				case (BondFunctions::Ignore):
 					du_dr = 0.0;
 					break;
@@ -153,7 +152,7 @@ void Pattern::bondForces(Model *srcmodel)
 					du_dr = -2.0 * d * forcek * expo * (expo - 1.0);
 					break;
 				default:
-					msg.print( "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for Urey-Bradley forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 			// Calculate forces
@@ -163,5 +162,5 @@ void Pattern::bondForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	msg.exit("Pattern::bondForcess");
+	msg.exit("Pattern::ureyBradleyForcess");
 }
