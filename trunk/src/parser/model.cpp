@@ -85,6 +85,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nframes",		VTypes::IntegerData,		0, TRUE },
 	{ "nglyphs",		VTypes::IntegerData,		0, TRUE },
 	{ "npatterns",		VTypes::IntegerData,		0, TRUE },
+	{ "nrequested",		VTypes::IntegerData,		0, FALSE },
 	{ "nselected",		VTypes::IntegerData,		0, TRUE },
 	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "nunknown",		VTypes::IntegerData,		0, TRUE },
@@ -411,6 +412,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 		case (ModelVariable::NPatterns):
 			rv.set(ptr->nPatterns());
 			break;
+		case (ModelVariable::NRequested):
+			rv.set(ptr->nRequested());
+			break;
 		case (ModelVariable::NSelected):
 			rv.set(ptr->nSelected());
 			break;
@@ -530,6 +534,9 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 			break;
 		case (ModelVariable::Name):
 			ptr->setName(newvalue.asString());
+			break;
+		case (ModelVariable::NRequested):
+			ptr->setNRequested(newvalue.asInteger());
 			break;
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

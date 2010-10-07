@@ -37,6 +37,7 @@ class ReturnValue
 	ReturnValue(double d);
 	ReturnValue(const char *s);
 	ReturnValue(Vec3<double> v);
+	ReturnValue(VTypes::DataType type, void *ptr);
 	// Operator=
 	void operator=(const ReturnValue &rv);
 
