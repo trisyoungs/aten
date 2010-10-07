@@ -65,8 +65,8 @@ bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &
 	return TRUE;
 }
 
-// Set number of requested molecules ('nmols <n>')
-bool Command::function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv)
+// Set number of requested molecules ('setnmols <n>')
+bool Command::function_SetNMols(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->setNRequested(c->argi(0));

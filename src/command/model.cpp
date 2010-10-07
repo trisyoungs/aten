@@ -237,6 +237,11 @@ bool Command::function_LoadModel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		Model *m = aten.currentModel();
 		if (c->hasArg(1)) m->setName(c->argc(1));
+		if (c->hasArg(2))
+		{
+			ReturnValue val(VTypes::ModelData, m);
+			c->setArg(2, val);
+		}
 		obj.i = m->atoms();
 		rv.set(aten.nModels() - oldnmodels);
 	}

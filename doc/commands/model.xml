@@ -227,10 +227,11 @@ listmodels();
 			<funcprototype>
 				<funcdef>int <function>loadmodel</function></funcdef>
 				<paramdef>string <parameter>filename</parameter></paramdef>
-				<paramdef>string <parameter>newname</parameter></paramdef>
+				<paramdef>string <parameter>newname</parameter> = &lt;automatic&gt;</paramdef>
+				<paramdef>model <parameter>&amp;modelptr</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Load model(s) from the <emphasis>filename</emphasis> provided, changing the name of the the (last loaded) model to <emphasis>newname</emphasis> (if provided). The last loaded model becomes the current model, and the number of models loaded is returned.</para>
+		<para>Load model(s) from the <emphasis>filename</emphasis> provided, changing the name of the the (last loaded) model to <emphasis>newname</emphasis> (if provided). The last loaded model becomes the current model, and the number of models loaded is returned. If the optional model variable is supplied, it is set to point to the new current model.</para>
 		
 		<para>For example:</para>
 		<synopsis>

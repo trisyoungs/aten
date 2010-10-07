@@ -60,6 +60,9 @@ ReturnValue::ReturnValue(const char *s) : type_(VTypes::StringData), arraySize_(
 ReturnValue::ReturnValue(Vec3<double> v) : type_(VTypes::VectorData), arraySize_(-1), valueV_(v)
 {
 }
+ReturnValue::ReturnValue(VTypes::DataType dt, void *ptr) : type_(dt), arraySize_(-1), valueP_(ptr)
+{
+}
 
 // Operator =
 void ReturnValue::operator=(const ReturnValue &source)

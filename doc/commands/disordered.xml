@@ -22,26 +22,6 @@ disorder(50);
 	
 	</section>
 	
-	<section id="command.ref.nmols"><title>nmols</title>
-		<indexterm><primary>commands</primary><secondary>nmols</secondary></indexterm>
-		
-		<para><emphasis>Syntax:</emphasis></para>
-		<funcsynopsis>
-			<funcprototype>
-				<funcdef>void <function>nmols</function></funcdef>
-				<paramdef>int <parameter>n</parameter></paramdef>
-			</funcprototype>
-		</funcsynopsis>
-		<para>Specify that <emphasis>n</emphasis> copies of the current model are to be added (or attempted to be added) during the build process.</para>
-		
-		<para>For example:</para>
-		<synopsis>
-nmols(300);
-		</synopsis>
-		<para>requests that the current model, whatever it is, should be used in disordered building and that there should be 300 copies of the model in the new system.</para>
-	
-	</section>
-	
 	<section id="command.ref.listcomponents"><title>listcomponents</title>
 		<indexterm><primary>commands</primary><secondary>listcomponents</secondary></indexterm>
 		
@@ -189,6 +169,68 @@ regionoverlap(&quot;false&quot;);
 regionshape(&quot;sphere&quot;);
 		</synopsis>
 		<para>restricts the current model to a spherical region of the cell.</para>
+		
+	</section>
+	
+	<section id="command.ref.setnmols"><title>setnmols</title>
+		<indexterm><primary>commands</primary><secondary>setnmols</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setnmols</function></funcdef>
+				<paramdef>int <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Specify that <emphasis>n</emphasis> copies of the current model are to be added (or attempted to be added) during the build process.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+setnmols(300);
+		</synopsis>
+		<para>requests that the current model, whatever it is, should be used in disordered building and that there should be 300 copies of the model in the new system. See also the 'nrequested' accessor of the <link linkend="command.types.model">model</link> variable.</para>
+	
+	</section>
+	
+	<section id="command.ref.setregion"><title>setregion</title>
+		<indexterm><primary>commands</primary><secondary>setregion</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setregion</function></funcdef>
+				<paramdef>string <parameter>shape</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>bool <parameter>allowoverlap</parameter> = TRUE</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Compound command that sets most aspects of the model's region definition at once, including its shape, centre coordinates, and geometry.</para>
+		
+	</section>
+
+	<section id="command.ref.setregionfrac"><title>setregionfrac</title>
+		<indexterm><primary>commands</primary><secondary>setregionfrac</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setregion</function></funcdef>
+				<paramdef>string <parameter>shape</parameter></paramdef>
+				<paramdef>double <parameter>fraccx</parameter></paramdef>
+				<paramdef>double <parameter>fraccy</parameter></paramdef>
+				<paramdef>double <parameter>fraccz</parameter></paramdef>
+				<paramdef>double <parameter>fracx</parameter></paramdef>
+				<paramdef>double <parameter>fracy</parameter></paramdef>
+				<paramdef>double <parameter>fracz</parameter></paramdef>
+				<paramdef>bool <parameter>allowoverlap</parameter> = TRUE</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Compound command that sets most aspects of the model's region definition at once, including its shape, centre coordinates, and geometry, all in fractional cell coordinates.</para>
 		
 	</section>
 	

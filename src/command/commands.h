@@ -214,7 +214,6 @@ class Command
 		// Disordered build commands
 		Disorder,
 		ListComponents,
-		NMols,
 		RegionCentre,
 		RegionCentreFrac,
 		RegionGeometry,
@@ -222,6 +221,7 @@ class Command
 		RegionOverlaps,
 		RegionRotation,
 		RegionShape,
+		SetNMols,
 		SetRegion,
 		SetRegionFrac,
 		VdwScale,
@@ -686,7 +686,6 @@ class Command
 	// Disordered build commands
 	static bool function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_NMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionCentre(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionCentreFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionGeometry(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -694,6 +693,7 @@ class Command
 	static bool function_RegionOverlaps(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionRotation(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RegionShape(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SetNMols(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetRegion(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetRegionFrac(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_VdwScale(CommandNode *c, Bundle &obj, ReturnValue &rv);

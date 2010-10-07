@@ -41,7 +41,7 @@ class ModelVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, Eigenvectors, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBasisCartesians, NBasisShells, NBonds, NDistances, NEigenvectors, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NSelected, NTorsions, NUnknown, NVibrations, Patterns, Region, Torsions, Vibrations, ZMatrix, nAccessors };
+	enum Accessors { Angles, Atoms, Bonds, Celldata, Distances, Eigenvectors, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Id, Mass, Name, NAngles, NAtoms, NBasisCartesians, NBasisShells, NBonds, NDistances, NEigenvectors, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NPatterns, NRequested, NSelected, NTorsions, NUnknown, NVibrations, Patterns, Region, Torsions, Vibrations, ZMatrix, nAccessors };
 	// Function list
 	enum Functions { AddHydrogen, Augment, Charge, ClearBonds, ClearCharges, ClearSelectedBonds, Copy, Cut, Delete, Finalise, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewBondId, NewEigenvector, NewGlyph, NewGrid, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, SelectionAddHydrogen, ShiftDown, ShiftUp, ShowAll, ToAngstroms, Transmute, Undo, nFunctions };
 
