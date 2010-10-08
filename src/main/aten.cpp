@@ -570,7 +570,7 @@ Grid *Aten::gridClipboard()
 */
 
 // Add new fragment model from specified model's current selection
-Model *Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
+void Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
 {
 	msg.enter("Aten::addFragmentFromSelection");
 
@@ -579,13 +579,13 @@ Model *Aten::addFragmentFromSelection(Model *source, const char *parentgroup)
 	{
 		printf("Internal Error : NULL model pointer passed to Aten::addFragmentFromSelection.\n");
 		msg.exit("Aten::addFragmentFromSelection");
-		return NULL;
+		return;
 	}
 	if (source->nSelected() == 0)
 	{
 		msg.print("Source model '%s' has no selected atoms from which to make a fragment.\n", source->name());
 		msg.exit("Aten::addFragmentFromSelection");
-		return NULL;
+		return;
 	}
 
 	// Redirect model creation to fragment list
