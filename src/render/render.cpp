@@ -22,6 +22,23 @@
 #include "render/canvas.h"
 #include "model/model.h"
 
+// // Test rendering for corruption
+// bool Canvas::checkRendering()
+// {
+// 	// Select projection matrix and load the identity matrix
+// 	glMatrixMode(GL_PROJECTION);
+// 	glLoadIdentity();
+// 	// Set up a 2D canvas
+// 	glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1.0,1.0);
+// 	// Draw on our default message
+// 	glMatrixMode(GL_MODELVIEW);
+// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+// 	glText(width_/2,height_/2,"No model to display.");
+// 
+// 	
+// 
+// }
+
 // Render model
 void Canvas::renderScene(Model *source)
 {
@@ -210,6 +227,7 @@ void Canvas::renderScene(Model *source)
 					glPushMatrix();
 					  glTranslated(k*cz.x,k*cz.y,k*cz.z);
 					  glCallList(glob(ModelGlob));
+					  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces(displayModel_);
 					glPopMatrix();
 				}
 				glPopMatrix();
