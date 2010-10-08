@@ -378,7 +378,7 @@ class Aten
 
 	public:
 	// Add new fragment model from specified model's current selection
-	Model *addFragmentFromSelection(Model *source, const char *parentgroup);
+	void addFragmentFromSelection(Model *source, const char *parentgroup);
 	// Load fragment library
 	void openFragments();
 	// Return first fragment library

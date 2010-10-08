@@ -233,7 +233,7 @@ void AtenForm::on_actionCentreAtOrigin_triggered(bool checked)
 void AtenForm::on_actionCreateFragment_triggered(bool checked)
 {
 	Model *viewTarget = gui.mainView.displayModel();
-	Model *m = aten.addFragmentFromSelection(viewTarget, "Selections");
+	aten.addFragmentFromSelection(viewTarget, "Selections");
 	gui.fragmentWindow->refresh();
 }
 

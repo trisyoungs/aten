@@ -510,9 +510,10 @@ bool Forcefield::readFunctions()
 	return result;
 }
 
+// Read in equivalent atom type names.
 bool Forcefield::readEquivalents()
 {
-	/* Read in equivalent atom type names.
+	/*
 	By default, the 'equiv' name is set to the same as the atomtype name.
 	Here, we search/replace specified definitions and set the equiv names to the first name in the list.
 	The equivname doesn't have to exist in the atomtypes itself since the equivalent names are only used in intramolecular parameter searching.
@@ -550,6 +551,7 @@ bool Forcefield::readEquivalents()
 	return TRUE;
 }
 
+// Read in interatomic (vdW) terms
 bool Forcefield::readInter()
 {
 	// Format of lines is: 'ffid  fftype  charge  data1  data2  ... dataN'
@@ -600,9 +602,9 @@ bool Forcefield::readInter()
 	return TRUE;
 }
 
+// Read in bond specifications
 bool Forcefield::readBonds()
 {
-	// Read in bond specifications
 	msg.enter("Forcefield::readBonds");
 	ForcefieldBound *newffbond;
 	bool done = FALSE;
@@ -653,9 +655,9 @@ bool Forcefield::readBonds()
 	return TRUE;
 }
 
+// Read in angle specifications
 bool Forcefield::readAngles()
 {
-	// Read in angle specifications
 	msg.enter("Forcefield::readAngles");
 	ForcefieldBound *newffangle;
 	int count, success, n;
@@ -707,9 +709,9 @@ bool Forcefield::readAngles()
 	return TRUE;
 }
 
+// Read in torsion data
 bool Forcefield::readTorsions()
 {
-	// Read in torsion data
 	msg.enter("Forcefield::readTorsions");
 	ForcefieldBound *newfftorsion;
 	int count, success, n;
@@ -777,9 +779,9 @@ bool Forcefield::readTorsions()
 	return TRUE;
 }
 
+// Read in improper definitions
 bool Forcefield::readImpropers()
 {
-	// Read in torsion data
 	msg.enter("Forcefield::readImpropers");
 	ForcefieldBound *newffimproper;
 	int count, success, n;
@@ -834,9 +836,9 @@ bool Forcefield::readImpropers()
 	return TRUE;
 }
 
+// Read in Urey-Bradley data
 bool Forcefield::readUreyBradley()
 {
-	// Read in torsion data
 	msg.enter("Forcefield::readUreyBradley");
 	ForcefieldBound *newffurey;
 	int count, success, n;
