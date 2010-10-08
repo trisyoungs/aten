@@ -120,11 +120,15 @@ if(WIN32)
   if(NOT qsvg) 
     Find_File(qsvg qsvgicon4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
   endif(NOT qsvg)
+  Find_File(qsvgie qsvg4.dll PATHS ${QT_PLUGINS_DIR}/imageformats NO_DEFAULT_PATH)
   install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
    DESTINATION bin
   )
   install(FILES ${qsvg} 
     DESTINATION bin/iconengines
+  )
+  install(FILES ${qsvgie} 
+    DESTINATION bin/imageformats
   )
 ENDIF(WIN32)
 
