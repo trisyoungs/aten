@@ -49,6 +49,7 @@ class Tree
 	public:
 	// Constructor / Destructor
 	Tree();
+	Tree(const char *name, const char *commands);
 	virtual ~Tree();
 	// List pointers
 	Tree *prev, *next;
@@ -229,7 +230,7 @@ class Tree
 	// Return custom dialog (if any)
 	AtenCustomDialog *customDialog();
 	// Execute defined custom dialog (if one exists, just return TRUE if not)
-	bool executeCustomDialog(bool getvaluesonly = FALSE);
+	bool executeCustomDialog(bool getvaluesonly = FALSE, const char *newtitle = NULL);
 	// Retrieve current value of named widget as a double
 	double widgetValued(const char *name);
 	// Retrieve current value of named widget as an integer

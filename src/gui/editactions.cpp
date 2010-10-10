@@ -67,13 +67,11 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 void AtenForm::on_actionEditPasteTranslated_triggered(bool checked)
 {
 	// Static forest containing a single tree with variables and dialog control definitions
-	static Forest dialog("Forest for Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
+	static Tree dialog("Paste Translated", "option('Center of geometry of pasted atoms:', 'label', 'labelspan=6', 'left'); option('X', 'doublespin', -1e6, 1e6, 0.0, 1.0, 'newline'); option('Y', 'doublespin', -1e6, 1e6, 0.0, 1.0); option('Z', 'doublespin', -1e6, 1e6, 0.0, 1.0);");
 	// Run the custom dialog
-	Tree *t = dialog.trees();
-	if (t->executeCustomDialog()) //"Paste Translated", t)) TODO
+	if (dialog.executeCustomDialog())
 	{
-		// Execute tree and then retrieve variable values...
-		Vec3<double> r = t->widgetValue3d("X", "Y", "Z");
+		Vec3<double> r = dialog.widgetValue3d("X", "Y", "Z");
 		CommandNode::run(Command::Paste, "ddd", r.x, r.y, r.z);
 		gui.mainView.postRedisplay();
 		gui.update(TRUE,FALSE,TRUE);

@@ -42,20 +42,6 @@ Forest::Forest()
 	next = NULL;
 }
 
-Forest::Forest(const char *name, const char *commands)
-{
-	// Private variables
-	fromFilterFile_ = FALSE;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-
-	// Generate tree from supplied commands
-	generateFromString(commands, name, FALSE);
-	finalise();
-}
-
 // Destructor
 Forest::~Forest()
 {
@@ -124,14 +110,13 @@ void Forest::finalise()
 		// Generate widgets (if Tree has any)
 		if (t->widgets() != NULL)
 		{
-			QString title;
-			if (!t->isFilter()) t->createCustomDialog();
+			if (!t->isFilter()) t->createCustomDialog(name_.get());
 			else
 			{
-				QString s = "Save Options (";
-				s += t->name();
-				s += ")";
-				t->createCustomDialog(qPrintable(s));
+				Dnchar title;
+				if (t->filter.isExportFilter()) title.sprintf("Export Options (%s)", t->name());
+				else title.sprintf("Import Options (%s)", t->name());
+				t->createCustomDialog(title.get());
 			}
 		}
 	}

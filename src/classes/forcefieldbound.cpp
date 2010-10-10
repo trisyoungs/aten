@@ -223,3 +223,38 @@ double ForcefieldBound::vdwScale() const
 {
 	return vdwScale_;
 }
+
+// Return if supplied names match those store (in either 'direction')
+bool ForcefieldBound::namesMatch(const char *namei, const char *namej,const char *namek, const char *namel)
+{
+	if (namek == NULL)
+	{
+		// Bond interaction
+		if ((typeNames_[0] == namei) && (typeNames_[1] == namej)) return TRUE;
+		else if ((typeNames_[0] == namej) && (typeNames_[1] == namei)) return TRUE;
+		return FALSE;
+	}
+	else if (namel == NULL)
+	{
+		// Angle interaction
+		if (typeNames_[1] != namej) return FALSE;
+		if ((typeNames_[0] == namei) && (typeNames_[2] == namek)) return TRUE;
+		else if ((typeNames_[0] == namek) && (typeNames_[2] == namei)) return TRUE;
+		return FALSE;
+	}
+	else
+	{
+		// Torsion interaction
+		if ((typeNames_[1] == namej) && (typeNames_[2] == namek))
+		{
+			if ((typeNames_[0] == namei) && (typeNames_[3] == namel)) return TRUE;
+			else return FALSE;
+		}
+		else if ((typeNames_[2] == namej) && (typeNames_[1] == namek))
+		{
+			if ((typeNames_[3] == namei) && (typeNames_[0] == namel)) return TRUE;
+			else return FALSE;
+		}
+		return FALSE;
+	}
+}

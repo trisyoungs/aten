@@ -432,6 +432,12 @@ string runtype = option(&quot;"Run Type"&quot;, &quot;"combo"&quot;, &quot;check
 							<entry>None.</entry>
 							<entry>A simple text label, with no associated value.</entry>
 						</row>
+						<row>
+							<entry morerows='1'>radiogroup</entry>
+							<entry>string items = "<emphasis>item1,item2,...</emphasis>"</entry>
+
+							<entry morerows='1'>A radio group is a collection of radio buttons, of which only one can be selected at any one time. The index of the selected item is returned.</entry>
+						</row>
 					</tbody>
 				</tgroup>
 			</table>

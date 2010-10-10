@@ -271,6 +271,20 @@ class Pattern
 	Reflist<ForcefieldAtom, int> uniqueForcefieldTypes_;
 	// Reference list of all (i.e. unique by pointer) atom types used in the pattern
 	Reflist<ForcefieldAtom, int> allForcefieldTypes_;
+	// List of dummy bond terms local to this pattern
+	List<ForcefieldBound> dummyForcefieldBonds_;
+	// List of dummy angle terms local to this pattern
+	List<ForcefieldBound> dummyForcefieldAngles_;
+	// List of dummy torsion terms local to this pattern
+	List<ForcefieldBound> dummyForcefieldTorsions_;
+	// Create (or return existing) dummy bond term for supplied atom types
+	ForcefieldBound *createDummyBond(ForcefieldAtom *i, ForcefieldAtom *j);
+	// Create (or return existing) angle bond term for supplied atom types
+	ForcefieldBound *createDummyAngle(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k);
+	// Create (or return existing) angle bond term for supplied atom types
+	ForcefieldBound *createDummyTorsion(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k, ForcefieldAtom *l);
+	// Flag whether to create dummy terms for missing intramolecular parameters
+	bool addDummyTerms_;
 	// Add atom data
 	void addAtomData(Atom *i, ForcefieldAtom *ffa);
 	// Add bond data
@@ -288,7 +302,7 @@ class Pattern
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	bool createExpression(bool vdwOnly = FALSE);
+	bool createExpression(bool vdwOnly = FALSE, bool allowdummy = FALSE);
 	// Create the connectivity and scaling matrices
 	void createMatrices();
 	// Update scaling matrices
@@ -343,6 +357,8 @@ class Pattern
 	bool areAtomsFixed() const;
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	void setAtomsFixed(bool b);
+	// Set whether dummy terms will be generated for missing intramoleculars
+	void setAddDummyTerms(bool b);
 
 
 	/*

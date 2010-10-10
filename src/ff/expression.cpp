@@ -27,7 +27,7 @@
 #include "base/pattern.h"
 
 // Create forcefield expression for pattern
-bool Pattern::createExpression(bool vdwOnly)
+bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
@@ -49,6 +49,8 @@ bool Pattern::createExpression(bool vdwOnly)
 	int ii, jj, kk, ll, n, m;
 	List< ListItem<int> > *bonding;
 	bonding = new List< ListItem<int> >[nAtoms_];
+	// Set flag to allow dummy term generation
+	addDummyTerms_ = allowdummy;
 	// Clear old arrays
 	atoms_.clear();
 	bonds_.clear();
@@ -163,19 +165,13 @@ bool Pattern::createExpression(bool vdwOnly)
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findBond(ti,tj);
-					// If we found a match, point to it
-					if (ffb != NULL) addBondData(ffb, ii, jj);
-					else
+					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
+					if (ffb == NULL)
 					{
-						// If not a rule-based FF, nullify pointer
-						if (ff->bondGenerator() == NULL) addBondData(NULL, ii, jj);
-						else
-						{
-							// Generate the new parameters required
-							ffb = ff->generateBond(ai,aj);
-							addBondData(ffb, ii, jj);
-						}
+						if (ff->bondGenerator() != NULL) ffb = ff->generateBond(ai,aj);
+						else if (addDummyTerms_) ffb = createDummyBond(ti,tj);
 					}
+					addBondData(ffb, ii, jj);
 					// Check ffb - if it's still NULL we couldn't find a definition
 					if (ffb == NULL)
 					{
@@ -190,11 +186,6 @@ bool Pattern::createExpression(bool vdwOnly)
 					// Update the bonding array counters
 					bonding[ii].add()->setValue(jj);
 					bonding[jj].add()->setValue(ii);
-					//bonding[ii][0] ++;
-					//bonding[jj][0] ++;
-					// Add the bond partner to each of the atom's own lists
-					//bonding[ii][bonding[ii][0]] = jj;
-					//bonding[jj][bonding[jj][0]] = ii;
 				}
 				bref = bref->next;
 			}
@@ -226,18 +217,13 @@ bool Pattern::createExpression(bool vdwOnly)
 					// Search for the angle data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findAngle(ti,tj,tk);
-					if (ffb != NULL) addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
-					else
+					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
+					if (ffb == NULL)
 					{
-						// If not a rule-based FF, nullify pointer
-						if (ff->angleGenerator() == NULL) addAngleData(NULL, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
-						else
-						{
-							// Generate the new parameters required
-							ffb = ff->generateAngle(ai,aj,ak);
-							addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
-						}
+						if (ff->angleGenerator() != NULL) ffb = ff->generateAngle(ai,aj,ak);
+						else if (addDummyTerms_) ffb = createDummyAngle(ti,tj,tk);
 					}
+					addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
@@ -311,19 +297,14 @@ bool Pattern::createExpression(bool vdwOnly)
 					// Search for the torsion data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = ff->findTorsion(ti,tj,tk,tl);
-					if (ffb != NULL) addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
-					else
+					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
+					if (ffb == NULL)
 					{
-						// If not a rule-based FF, nullify pointer
-						if (ff->torsionGenerator() == NULL) addTorsionData(NULL, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
-						else
-						{
-							// Generate the new parameters required
-							ffb = ff->generateTorsion(ai,aj,ak,al);
-							addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
-						}
+						if (ff->torsionGenerator() != NULL) ffb = ff->generateAngle(ai,aj,ak);
+						else if (addDummyTerms_) ffb = createDummyTorsion(ti,tj,tk,tl);
 					}
-					// Check fft and raise warning if NULL
+					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
+					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
 						msg.print("!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());

@@ -39,10 +39,11 @@ void AtenForm::on_actionMinimise_triggered(bool on)
 
 void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 {
-	if (aten.current.rs == aten.current.m) CommandNode::run(Command::ModelEnergy, "");
-	else CommandNode::run(Command::FrameEnergy, "");
+	bool result;
+	if (aten.current.rs == aten.current.m) result = CommandNode::run(Command::ModelEnergy, "");
+	else result = CommandNode::run(Command::FrameEnergy, "");
 	// Print energy
-	aten.currentModel()->renderSourceModel()->energy.print();
+	if (result) aten.currentModel()->renderSourceModel()->energy.print();
 }
 
 void AtenForm::on_actionCalculateForces_triggered(bool on)
