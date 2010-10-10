@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // GUI Control Typesname
-const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label" };
+const char *GuiControlKeywords[WidgetNode::nGuiControls] = { "check", "combo", "doublespin", "edit", "intcombo", "intspin", "label", "radiogroup" };
 const char *WidgetNode::guiControl(WidgetNode::GuiControl gct)
 {
 	return GuiControlKeywords[gct];
@@ -234,6 +234,7 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			returnType_ = VTypes::DoubleData;
 			break;
 		case (WidgetNode::CheckControl):
+		case (WidgetNode::RadioGroupControl):
 		case (WidgetNode::IntegerSpinControl):
 		case (WidgetNode::IntegerComboControl):
 			returnType_ = VTypes::IntegerData;
@@ -251,6 +252,14 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 		// Check Box - option("Title", "check", int state)
 		case (WidgetNode::CheckControl):
 			if (!setData("state", arg, "Error: No initial state supplied for 'check' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
+			result = TRUE;
+			break;
+		// RadioGroup Box - option("Title", "radiogroup", "<csv itemlist>", int default=1)
+		case (WidgetNode::RadioGroupControl):
+			if (!setData("items", arg, "Error: No items list supplied for 'radiogroup' GUI filter option.\n", TRUE, "")) break;
+			arg = arg->nextArgument;
+			setData("default", arg, "No default value supplied for 'radiogroup' GUI filter option - '1' assumed.\n", TRUE, "1");
 			arg = arg->nextArgument;
 			result = TRUE;
 			break;

@@ -275,6 +275,35 @@ bool CommandParser::generateFromFile(Forest *f, const char *filename, bool dontp
 	return result;
 }
 
+// Populate supplied tree with commands
+bool CommandParser::generateSingleTree(Tree *t, const char *name, const char *commands)
+{
+	msg.enter("CommandParser::generateSingleTree");
+	if (t == NULL)
+	{
+		msg.print("NULL Tree passed to CommandParser::generateSingleTree.\n");
+		return FALSE;
+	}
+	// Set the forest target to be our own local, static Forest
+	static Forest localForest;
+	forest_ = &localForest;
+	tree_ = t;
+	// 'Push' tree onto the stack
+	stack_.add(tree_, FALSE);
+	// Store the source string
+	stringSource_ = commands;
+	stringPos_ = 0;
+	stringLength_ = stringSource_.length();
+	msg.print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
+	source_ = CommandParser::StringSource;
+	bool result = generate();
+	// Generate widgets (if Tree has any)
+	if (tree_->widgets() != NULL) tree_->createCustomDialog(name);
+	reset();
+	msg.exit("CommandParser::generateSingleTree");
+	return result;
+}
+
 // Push tree
 void CommandParser::pushTree(bool isfilter)
 {

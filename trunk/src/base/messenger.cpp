@@ -124,7 +124,7 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...) const
 	else if (isOutputActive(ot))
 	{
 		if (gui.exists()) gui.printMessage(msgs);
-		else if (!quiet_) printf("%s",msgs);
+		if (!quiet_) printf("%s",msgs);
 	}
 	va_end(arguments);
 }

@@ -95,6 +95,8 @@ class ForcefieldBound
 	void setVdwScale(double d);
 	// Return VDW scale factor (if torsion)
 	double vdwScale() const;
+	// Return if supplied names match those stored (in either 'direction')
+	bool namesMatch(const char *namei, const char *namej,const char *namek = NULL, const char *namel = NULL); 
 };
 
 #endif

@@ -41,7 +41,7 @@
 #include "main/aten.h"
 #include <stdarg.h>
 
-// Constructor
+// Constructors
 Tree::Tree()
 {
 	// Private variables
@@ -59,6 +59,25 @@ Tree::Tree()
 
 	// Initialise
 	initialise();
+}
+
+Tree::Tree(const char *name, const char *commands)
+{
+	parent_ = NULL;
+	parser_ = NULL;
+	acceptedFail_ = Command::NoFunction;
+	name_ = "unnamed";
+	type_ = Tree::UnknownTree;
+	readOptions_ = LineParser::Defaults;
+	customDialog_ = NULL;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+
+	// Initialise
+	initialise();
+	cmdparser.generateSingleTree(this, name, commands);
 }
 
 // Destructor
@@ -953,9 +972,11 @@ AtenCustomDialog *Tree::customDialog()
 }
 
 // Execute contained custom dialog
- bool Tree::executeCustomDialog(bool getvaluesonly)
+ bool Tree::executeCustomDialog(bool getvaluesonly, const char *newtitle)
 {
 	if (customDialog_ == NULL) return TRUE;
+	// Retitle dialog?
+	if (newtitle) customDialog_->setWindowTitle(newtitle);
 	if (getvaluesonly)
 	{
 		customDialog_->storeValues();

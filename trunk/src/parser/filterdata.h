@@ -138,6 +138,8 @@ class FilterData
 	const char *glob() const;
 	// Return the type of filter
 	FilterType type() const;
+	// Return if the filter is an export filter
+	bool isExportFilter() const;
 	// Return (after creation if it is needed) the long description of the filter (including glob)
 	const char *description();
 	// Return trajectory header function

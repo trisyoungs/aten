@@ -89,7 +89,7 @@ class WidgetNode : public TreeNode
 	WidgetNode();
 	~WidgetNode();
 	// User-defined GUI option types
-	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, nGuiControls };
+	enum GuiControl { CheckControl, ComboControl, DoubleSpinControl, EditControl, IntegerComboControl, IntegerSpinControl, LabelControl, RadioGroupControl, nGuiControls };
 	static GuiControl guiControl(const char *s, bool reporterror = FALSE);
 	static const char *guiControl(GuiControl got);
 	// Options for Qt layout

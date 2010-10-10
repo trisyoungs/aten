@@ -110,6 +110,7 @@ SET(pro_MOC_HDRS
   tcanvas.uih
   tcolourframe.uih
   tprompt.uih
+  tradiogroup.uih
   ttabbar.uih
   ttreewidget.uih
 )

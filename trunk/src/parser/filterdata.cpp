@@ -176,6 +176,12 @@ FilterData::FilterType FilterData::type() const
 	return type_;
 }
 
+// Return if the filter is an export filter
+bool FilterData::isExportFilter() const
+{
+	return (type_ >= FilterData::ModelExport);
+}
+
 // Set filter option
 bool FilterData::setOption(Dnchar *name, TreeNode *value)
 {

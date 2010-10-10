@@ -22,6 +22,7 @@
 #include "gui/customdialog.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/tradiogroup.uih"
 #include "main/aten.h"
 #include "base/sysfunc.h"
 
@@ -49,6 +50,7 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 	QDoubleSpinBox *doublespin;
 	QCheckBox *check;
 	QLineEdit *line;
+	TRadioGroup *radio;
 	Dnchar data;
 	LineParser lp;
 	int n;
@@ -68,6 +70,32 @@ void AtenCustomDialog::performStateChange(StateChange *sc)
 				case (StateChange::EnableAction):
 					check->setEnabled(TRUE);
 					break;
+				default:
+					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
+			}
+			break;
+		// RadioGroup
+		case (WidgetNode::RadioGroupControl):
+			radio = (TRadioGroup*) node->widget();
+			switch (sc->changeAction())
+			{
+				case (StateChange::DisableAction):
+					radio->setEnabled(FALSE);
+					break;
+				case (StateChange::EnableAction):
+					radio->setEnabled(TRUE);
+					break;
+// 				case (StateChange::ItemsAction):
+// 					lp.getArgsDelim(sc->changeData(), LineParser::UseQuotes);
+// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
+// 					combo->setCurrentIndex(0);
+// 					break;
+// 				case (StateChange::OriginalItemsAction):
+// 					if (!node->data("items", data)) printf("Critical: No items list found when constructing QComboBox.\n");
+// 					lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+// 					for (n=0; n<lp.nArgs(); ++n) combo->addItem(lp.argc(n));
+// 					combo->setCurrentIndex(0);
+// 					break;
 				default:
 					msg.print("Warning - State change '%s' is not valid for a control of type '%s'.\n", StateChange::stateAction(sc->changeAction()), WidgetNode::guiControl(node->controlType()));
 			}
@@ -234,7 +262,7 @@ void AtenCustomDialog::doubleSpinWidget_valueChanged(double d)
 }
 
 // Generic function for integer spin activation
-void AtenCustomDialog::integerSpinWidget_valueChanged(double d)
+void AtenCustomDialog::integerSpinWidget_valueChanged(int i)
 {
 	if (!isVisible()) return;
 	// Cast sender into checkbox
@@ -253,41 +281,91 @@ void AtenCustomDialog::integerSpinWidget_valueChanged(double d)
 		return;
 	}
 	// Check all states defined in the widgetnode
-	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (d == sc->stateValueAsInteger()) performStateChange(sc);
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (i == sc->stateValueAsInteger()) performStateChange(sc);
+	refreshing_ = FALSE;
+}
+
+// Generic function for radio group spin activation
+void AtenCustomDialog::radioGroupWidget_currentIndexChanged(int index)
+{
+	if (!isVisible()) return;
+	// Cast sender into checkbox
+	refreshing_ = TRUE;
+	TRadioGroup *radio = (TRadioGroup*) sender();
+	if (!radio)
+	{
+		printf("AtenCustomDialog::radioGroupWidget_currentIndexChanged - Sender could not be cast to a TRadioGroup.\n");
+		return;
+	}
+	// Search for widget definition in original tree...
+	WidgetNode *node = parentTree_->findWidget(radio);
+	if (node == NULL)
+	{
+		printf("AtenCustomDialog::radioGroupWidget_currentIndexChanged - couldn't find associated WidgetNode.\n");
+		return;
+	}
+	// Check all states defined in the widgetnode
+	for (StateChange *sc = node->stateChanges(); sc != NULL; sc = sc->next) if (index == sc->stateValueAsInteger()) performStateChange(sc);
 	refreshing_ = FALSE;
 }
 
 // Create simple label
 QLabel *AtenCustomDialog::createLabel(const char *text, int alignment)
 {
+	msg.enter("AtenCustomDialog::createLabel");
 	QLabel *label = new QLabel(text);
 	label->setAlignment(((Qt::Alignment) alignment)|Qt::AlignVCenter);
+	msg.exit("AtenCustomDialog::createLabel");
 	return label;
 }
 
 // Create empty grid layout
 QGridLayout *AtenCustomDialog::createGridLayout(QWidget *parent)
 {
+	msg.enter("AtenCustomDialog::createGridLayout");
 	QGridLayout *layout = new QGridLayout(parent);
 	layout->setContentsMargins(2,2,2,2);
 	layout->setSpacing(2);
+	msg.exit("AtenCustomDialog::createGridLayout");
 	return layout;
 }
 
 // Create check box from data in specified GuiFilterOption
 QCheckBox *AtenCustomDialog::createCheckBox(WidgetNode *gfo)
 {
+	msg.enter("AtenCustomDialog::createCheckBox");
 	QCheckBox *check = new QCheckBox(gfo->name());
 	// Critical : state
 	Dnchar data;
 	if (!gfo->data("state", data)) printf("Critical: No state found when constructing QCheckBox.\n");
 	check->setChecked(data.asInteger());
+	msg.exit("AtenCustomDialog::createCheckBox");
 	return check;
+}
+
+// Create radiogroup from data in specified GuiFilterOption
+TRadioGroup *AtenCustomDialog::createRadioGroup(WidgetNode *gfo)
+{
+	msg.enter("AtenCustomDialog::createRadioGroup");
+	TRadioGroup *radio = new TRadioGroup(this);
+	QObject::connect(radio, SIGNAL(currentIndexChanged(int)), this, SLOT(radioGroupWidget_currentIndexChanged(int)));
+	// Critical : items list
+	Dnchar data;
+	if (!gfo->data("items", data)) printf("Critical: No items list found when constructing TRadioGroup.\n");
+	LineParser lp;
+	lp.getArgsDelim(data.get(), LineParser::UseQuotes);
+	for (int n=0; n<lp.nArgs(); ++n) radio->addItem(lp.argc(n));
+	// Optional : default index (+1)
+	if (!gfo->data("default", data)) printf("Warning: Default value for TRadioGroup not set.\n");
+	radio->setCurrentIndex(data.asInteger()-1);
+	msg.exit("AtenCustomDialog::createRadioGroup");
+	return radio;
 }
 
 // Create combo box from data in specified GuiFilterOption
 QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 {
+	msg.enter("AtenCustomDialog::createComboBox");
 	QComboBox *combo = new QComboBox();
 	QObject::connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(comboWidget_currentIndexChanged(int)));
 	// Critical : items list
@@ -299,12 +377,14 @@ QComboBox *AtenCustomDialog::createComboBox(WidgetNode *gfo)
 	// Optional : default index (+1)
 	if (!gfo->data("default", data)) printf("Warning: Default value for QComboBox not set.\n");
 	combo->setCurrentIndex(data.asInteger()-1);
+	msg.exit("AtenCustomDialog::createComboBox");
 	return combo;
 }
 
 // Create double spin edit from data in specified GuiFilterOption
 QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(WidgetNode *gfo)
 {
+	msg.enter("AtenCustomDialog::createDoubleSpinBox");
 	QDoubleSpinBox *spin = new QDoubleSpinBox();
 	spin->setDecimals(5);
 	// Critical : minimum, maximum, start, and step values
@@ -320,23 +400,27 @@ QDoubleSpinBox *AtenCustomDialog::createDoubleSpinBox(WidgetNode *gfo)
 	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QDoubleSpinBox.\n");
 	double step = data.asDouble();
 	spin->setSingleStep(step);
+	msg.exit("AtenCustomDialog::createDoubleSpinBox");
 	return spin;
 }
 
 // Create line edit from data in specified GuiFilterOption
 QLineEdit *AtenCustomDialog::createLineEdit(WidgetNode *gfo)
 {
+	msg.enter("AtenCustomDialog::createLineEdit");
 	QLineEdit *lineedit = new QLineEdit();
 	// Critical : text
 	Dnchar data;
 	if (!gfo->data("text", data)) printf("Critical: No text found when constructing QLineEdit.\n");
 	lineedit->setText(data.get());
+	msg.exit("AtenCustomDialog::createLineEdit");
 	return lineedit;
 }
 
 // Create spin box from data in specified GuiFilterOption
 QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 {
+	msg.enter("AtenCustomDialog::createSpinBox");
 	QSpinBox *spin = new QSpinBox();
 	// Critical : minimum, maximum, start, and step values
 	Dnchar data;
@@ -351,6 +435,7 @@ QSpinBox *AtenCustomDialog::createSpinBox(WidgetNode *gfo)
 	if (!gfo->data("step", data)) printf("Critical: No step value found when constructing QSpinBox.\n");
 	int step = data.asInteger();
 	spin->setSingleStep(step);
+	msg.exit("AtenCustomDialog::createSpinBox");
 	return spin;
 }
 
@@ -456,6 +541,14 @@ bool AtenCustomDialog::createWidgets(const char *title, Tree *t)
 				currentlayout->addWidget(widget, span, newline);
 				gfo->setWidget(widget);
 				break;
+			// Checkgroup - data:  items, default
+			case (WidgetNode::RadioGroupControl):
+// 				widget = createLabel(gfo->name(), alignment);
+// 				currentlayout->addWidget(widget, labelspan, newline);
+				widget = createRadioGroup(gfo);
+				currentlayout->addWidget(widget, span, newline);
+				gfo->setWidget(widget);
+				break;
 			// Combo Box - data:  items, default
 			case (WidgetNode::IntegerComboControl):
 			case (WidgetNode::ComboControl):
@@ -519,8 +612,11 @@ void AtenCustomDialog::storeValues()
 			case (WidgetNode::CheckControl):
 				rv.set( ((QCheckBox*) (gfo->widget()))->isChecked());
 				break;
+			case (WidgetNode::RadioGroupControl):
+				rv.set( ((TRadioGroup*) (gfo->widget()))->currentIndex()+1);
+				break;
 			case (WidgetNode::IntegerComboControl):
-				rv.set( ((QComboBox*) (gfo->widget()))->currentIndex());
+				rv.set( ((QComboBox*) (gfo->widget()))->currentIndex()+1);
 				break;
 			case (WidgetNode::ComboControl):
 				rv.set( qPrintable(((QComboBox*) (gfo->widget()))->currentText()));

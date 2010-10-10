@@ -115,6 +115,8 @@ class CommandParser : public Tree
 	void popTree();
 	// Discard current tree and its contents
 	void deleteCurrentTree();
+	// Populate supplied tree with commands
+	bool generateSingleTree(Tree *t, const char *name, const char *commands);
 
 
 	/*

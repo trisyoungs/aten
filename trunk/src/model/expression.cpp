@@ -1,6 +1,6 @@
 /*
 	*** Energy expression 
-	*** src/energy/expression.cpp
+	*** src/model/expression.cpp
 	Copyright T. Youngs 2007-2010
 	This file is part of Aten.
 
@@ -23,6 +23,7 @@
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "main/aten.h"
+#include "gui/gui.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()
@@ -133,7 +134,7 @@ void Model::setForcefield(Forcefield *newff)
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(bool vdwOnly)
+bool Model::createExpression(bool vdwOnly, bool allowdummy)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	msg.enter("Model::createExpression");
@@ -154,7 +155,7 @@ bool Model::createExpression(bool vdwOnly)
 	expressionPoint_ = -1;
 	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
 	else msg.print("Creating expression for model %s...\n",name_.get());
-	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
+	// 1) Assign internal atom type data (hybridisations).
 	if (!typeAll())
 	{
 		msg.print("Couldn't type atoms.\n");
@@ -162,13 +163,54 @@ bool Model::createExpression(bool vdwOnly)
 		return FALSE;
 	}
 	// 2) Remove old expression data and create new
+	bool done;
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		p->deleteExpression();
-		if (!p->createExpression(vdwOnly))
+		done = FALSE;
+		while (!done)
 		{
-			msg.exit("Model::createExpression");
-			return FALSE;
+			p->deleteExpression();
+			if (!p->createExpression(vdwOnly, allowdummy))
+			{
+				// Failed to create an expression for this pattern, so....
+				if (!gui.exists())
+				{
+					msg.print("To force expression generation with missing terms see the optional parameters for the 'createexpression()' command:\n");
+					msg.print("   Syntax: createexpression(%s)\n", Command::data[Command::CreateExpression].argText);
+					msg.print("           %s\n", Command::data[Command::CreateExpression].syntax);
+					msg.exit("Model::createExpression");
+					return FALSE;
+				}
+				else
+				{
+					// What to do?
+					static Tree dialog("Expression For Pattern XXX", "option('One or more terms are missing from the pattern expression.', 'label', 'left'); option('Would you like to:', 'label', 'newline', 'left'); option('choice', 'radiogroup', '\"Cancel expression generation\",\"Add in dummy terms (type=ignore,params=0.0)\"', '1', 'newline');");
+					// Rename and run the custom dialog
+					Dnchar title;
+					title.sprintf("Expression for Pattern '%s'", p->name());
+					if (dialog.executeCustomDialog(FALSE, title.get()))
+					{
+						int choice = dialog.widgetValuei("choice");
+						if (choice == 1)
+						{
+							msg.exit("Model::createExpression");
+							return FALSE;
+						}
+						else if (choice == 2)
+						{
+							// Flag generation of dummy terms in expression, and let the loop cycle
+							p->setAddDummyTerms(TRUE);
+							done = FALSE;
+						}
+					}
+					else
+					{
+						msg.exit("Model::createExpression");
+						return FALSE;
+					}
+				}
+			}
+			else done = TRUE;
 		}
 		p->createMatrices();
 	}

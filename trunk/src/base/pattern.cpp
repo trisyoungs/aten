@@ -52,6 +52,7 @@ Pattern::Pattern()
 	testBonding_ = FALSE;
 	noIntramolecular_ = FALSE;
 	atomsFixed_ = FALSE;
+	addDummyTerms_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -448,6 +449,12 @@ void Pattern::setAtomsFixed(bool b)
 	atomsFixed_ = b;
 }
 
+// Set whether dummy terms will be generated for missing intramoleculars
+void Pattern::setAddDummyTerms(bool b)
+{
+	addDummyTerms_ = b;
+}
+
 // Sets the starting atom of the model
 void Pattern::setStartAtom(int n)
 {
@@ -763,7 +770,7 @@ void Pattern::createMatrices()
 		printf("\n"); 
 	} */
 
-	// Create scale matrices
+	// Update contents of scale matrices
 	updateScaleMatrices();
 
 	msg.exit("Pattern::createMatrices");
@@ -773,38 +780,59 @@ void Pattern::createMatrices()
 void Pattern::updateScaleMatrices()
 {
 	msg.enter("Pattern::updateScaleMatrices");
-	int n, m;
+	int i, j;
 	PatternBound *pb;
 	// Set all matrix elements to '1.0' initially. Then cycle over torsions, then angles, then bonds and set values accordingly.
-	for (n=0; n<nAtoms_; n++)
-		for (m=0; m<nAtoms_; m++)
+	for (i=0; i<nAtoms_; i++)
+		for (j=0; j<nAtoms_; j++)
 		{
-			vdwScaleMatrix_[n][m] = 1.0;
-			elecScaleMatrix_[n][m] = 1.0;
+			vdwScaleMatrix_[i][j] = 1.0;
+			elecScaleMatrix_[i][j] = 1.0;
 		}
 	// Interactions at ends of torsion atoms are scaled by the factors stored in the torsion term
 	for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 	{
-		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->vdwScale();
-		vdwScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->vdwScale();
-		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->elecScale();
-		elecScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->elecScale();
+		i = pb->atomId(0);
+		j = pb->atomId(3);
+		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
+		{
+			printf("Internal Error : One or both atom IDs associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			continue;
+		}
+		vdwScaleMatrix_[i][j] = pb->data()->vdwScale();
+		vdwScaleMatrix_[j][i] = pb->data()->vdwScale();
+		elecScaleMatrix_[i][j] = pb->data()->elecScale();
+		elecScaleMatrix_[j][i] = pb->data()->elecScale();
 	}
 	// Atoms at end of angles are excluded from vdw/elec interactions.
 	// Note that these elements are zeroed in the matrices, but the connectivity matrix is used to determined whether they are calculated.
 	for (pb = angles_.first(); pb != NULL; pb = pb->next)
 	{
-		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(2) ] = 0.0;
-		vdwScaleMatrix_[ pb->atomId(2) ] [ pb->atomId(0) ] = 0.0;
-		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(2) ] = 0.0;
-		elecScaleMatrix_[ pb->atomId(2) ] [ pb->atomId(0) ] = 0.0;
+		i = pb->atomId(0);
+		j = pb->atomId(2);
+		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
+		{
+			printf("Internal Error : One or both atom IDs associated to angle patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			continue;
+		}
+		vdwScaleMatrix_[i][j] = 0.0;
+		vdwScaleMatrix_[j][i] = 0.0;
+		elecScaleMatrix_[i][j] = 0.0;
+		elecScaleMatrix_[j][i] = 0.0;
 	}
 	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 	{
-		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 0.0;
-		vdwScaleMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 0.0;
-		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 0.0;
-		elecScaleMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 0.0;
+		i = pb->atomId(0);
+		j = pb->atomId(1);
+		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
+		{
+			printf("Internal Error : One or both atom IDs associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			continue;
+		}
+		vdwScaleMatrix_[i][j] = 0.0;
+		vdwScaleMatrix_[j][i] = 0.0;
+		elecScaleMatrix_[i][j] = 0.0;
+		elecScaleMatrix_[j][i] = 0.0;
 	}
 // 	printf("VSCALE Matrix\n");
 // 	for (n=0; n<nAtoms_; n++)
@@ -886,6 +914,60 @@ bool Pattern::validate()
 	if (!result) msg.print("No pattern defined for model.\n");
 	msg.exit("Pattern::validate");
 	return result;
+}
+
+// Create (or return existing) dummy bond term for supplied atom types
+ForcefieldBound *Pattern::createDummyBond(ForcefieldAtom *i, ForcefieldAtom *j)
+{
+	// Search for existing term...
+	ForcefieldBound *ffb;
+	for (ffb = dummyForcefieldBonds_.first(); ffb != NULL; ffb = ffb->next) if (ffb->namesMatch(i->equivalent(), j->equivalent())) break;
+	if (ffb == NULL)
+	{
+		ffb = dummyForcefieldBonds_.add();
+		ffb->setType(ForcefieldBound::BondInteraction);
+		ffb->setBondStyle(BondFunctions::Ignore);
+		ffb->setTypeName(0, i->equivalent());
+		ffb->setTypeName(1, j->equivalent());
+	}
+	return ffb;
+}
+
+// Create (or return existing) angle bond term for supplied atom types
+ForcefieldBound *Pattern::createDummyAngle(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k)
+{
+	// Search for existing term...
+	ForcefieldBound *ffb;
+	for (ffb = dummyForcefieldAngles_.first(); ffb != NULL; ffb = ffb->next) if (ffb->namesMatch(i->equivalent(), j->equivalent(), k->equivalent())) break;
+	if (ffb == NULL)
+	{
+		ffb = dummyForcefieldAngles_.add();
+		ffb->setType(ForcefieldBound::AngleInteraction);
+		ffb->setAngleStyle(AngleFunctions::Ignore);
+		ffb->setTypeName(0, i->equivalent());
+		ffb->setTypeName(1, j->equivalent());
+		ffb->setTypeName(2, k->equivalent());
+	}
+	return ffb;
+}
+
+// Create (or return existing) angle bond term for supplied atom types
+ForcefieldBound *Pattern::createDummyTorsion(ForcefieldAtom *i, ForcefieldAtom *j, ForcefieldAtom *k, ForcefieldAtom *l)
+{
+	// Search for existing term...
+	ForcefieldBound *ffb;
+	for (ffb = dummyForcefieldTorsions_.first(); ffb != NULL; ffb = ffb->next) if (ffb->namesMatch(i->equivalent(), j->equivalent(), k->equivalent(), l->equivalent())) break;
+	if (ffb == NULL)
+	{
+		ffb = dummyForcefieldTorsions_.add();
+		ffb->setType(ForcefieldBound::TorsionInteraction);
+		ffb->setTorsionStyle(TorsionFunctions::Ignore);
+		ffb->setTypeName(0, i->equivalent());
+		ffb->setTypeName(1, j->equivalent());
+		ffb->setTypeName(2, k->equivalent());
+		ffb->setTypeName(3, l->equivalent());
+	}
+	return ffb;
 }
 
 // Calculate centre of geometry for molecule 'mol' in pattern, from (Model) config supplied or parent_ if NULL

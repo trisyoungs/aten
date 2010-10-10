@@ -164,9 +164,6 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 		if (runSaveModelDialog())
 		{
 			// Run options dialog
-			QString s = "Save Options (";
-			s += saveModelFilter->name();
-			s += ")";
 			if (!saveModelFilter->executeCustomDialog())
 			{
 				msg.print("Not saved.\n");
@@ -201,13 +198,7 @@ void AtenForm::on_actionExportOptions_triggered(bool checked)
 {
 	Model *m = aten.currentModelOrFrame();
 	if (m->filter() == NULL) msg.print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
-	else
-	{
-		QString s = "Save Options (";
-		s += saveModelFilter->name();
-		s += ")";
-		m->filter()->executeCustomDialog();
-	}
+	else m->filter()->executeCustomDialog();
 }
 
 // Close current model

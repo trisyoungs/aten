@@ -31,10 +31,10 @@ class Forest
 	public:
 	// Constructors / Destructor
 	Forest();
-	Forest(const char *name, const char *commands);
 	~Forest();
 	// List pointers
 	Forest *prev, *next;
+
 
 	/*
 	// Tree data
