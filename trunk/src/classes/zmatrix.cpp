@@ -301,6 +301,7 @@ ZMatrixElement *ZMatrix::addElement(Reflist<Atom,int> &atoms)
 	DoubleVariable *v;
 	// Create a new element structure, and store a maximum of 4 atoms from list in the element's array
 	ZMatrixElement *zel = elements_.add();
+	zel->setParent(this);
 	i = 0;
 	for (Refitem<Atom,int> *ri = atoms.first(); ri != NULL; ri = ri->next)
 	{
@@ -555,13 +556,6 @@ void ZMatrix::setVariable(Variable *v, double value)
 	// Set the new value of the specified variable
 	ReturnValue newvalue(value);
 	v->set( newvalue );
-	updateModel();
-	msg.exit("ZMatrix::setVariable");
-}
-
-// Recalculate atom positions in model
-void ZMatrix::updateModel()
-{
-	// Reposition the model atoms to match
 	parent_->recalculateFromZMatrix();
+	msg.exit("ZMatrix::setVariable");
 }

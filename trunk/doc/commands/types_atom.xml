@@ -26,6 +26,12 @@
 						<entry>Custom colour of the atom (used when the <link linkend="enums.colourschemes">colouring scheme</link> is set to 'custom')</entry>
 					</row>
 					<row>
+						<entry>element</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>rw</entry>
+						<entry>Returns a pointer to the assigned element data of the atom</entry>
+					</row>
+					<row>
 						<entry>fixed</entry>
 						<entry>int</entry>
 						<entry>rw</entry>

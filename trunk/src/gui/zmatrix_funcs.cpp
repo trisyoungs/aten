@@ -217,7 +217,6 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	if (changed)
 	{
 		// New value has already been put into zmatrix structure, so update model and refresh window
-		zMatrix_->updateModel();
 		gui.update(TRUE);
 		refresh();
 	}

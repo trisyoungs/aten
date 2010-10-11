@@ -318,13 +318,13 @@ Forcefield *Aten::loadForcefield(const char *filename)
 	else
 	{
 		// Second try - aten.dataDir/ff
-		filepath.sprintf("%s/ff/%s", dataDir_.get(), filename);
+		filepath.sprintf("%s%cff%c%s", dataDir_.get(), PATHSEP, PATHSEP, filename);
 		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",filepath.get());
 		if (fileExists(filepath)) result = newff->load(filepath);
 		else
 		{
 			// Last try - user home datadir/ff
-			filepath.sprintf("%s/.aten/ff/%s", homeDir_.get(), filename);
+			filepath.sprintf("%s%c.aten%cff%c%s", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP, filename);
 			msg.print(Messenger::Verbose,"Looking for forcefield in user's data directory (%s)...\n",filepath.get());
 			if (fileExists(filepath)) result = newff->load(filepath);
 			else
@@ -686,12 +686,12 @@ void Aten::openFragments()
 	targetModelList_ = Aten::FragmentLibraryList;
 
 	// Default search path should have already been set by openFilters()...
-	path.sprintf("%s/fragments", dataDir_.get());
+	path.sprintf("%s%cfragments", dataDir_.get(), PATHSEP);
 	msg.print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path.get())));
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%s", homeDir_.get(), "/.aten/fragments/");
+	path.sprintf("%s%c.aten%cfragments%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
 	msg.print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path.get());
 	nfailed = parseFragmentDir(path, "Ungrouped");
 

@@ -171,8 +171,6 @@ class ZMatrix
 	void create(Model *source, bool usebonds);
 	// Set variable value and recalculate atom positions in model
 	void setVariable(Variable *v, double value);
-	// Recalculate atom positions in model
-	void updateModel();
 };
 
 #endif
