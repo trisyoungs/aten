@@ -187,7 +187,7 @@ bool Command::function_OperatorEqualTo(CommandNode *c, Bundle &obj, ReturnValue 
 		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) != 0) { result = 0; break; } break;
 		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) != rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
 		case (VTypes::IntInt): if (lhs.asInteger(b) != rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) != ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) != ((long int) rhs.asPointer(rhs.type(),b))) result = 0; break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): if (lhs.asDouble(b) != rhs.asDouble(b)) result = 0; break;

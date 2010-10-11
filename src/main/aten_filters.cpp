@@ -76,7 +76,7 @@ void Aten::openFilters()
 	}
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%s", homeDir_.get(), "/.aten/filters/");
+	path.sprintf("%s%c.aten%cfilters%c", homeDir_.get(), PATHSEP, PATHSEP, PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
 	msg.print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path.get());
 	nfailed = parseFilterDir(path);
@@ -137,7 +137,7 @@ int Aten::reloadFilters()
 	failedFilters_.clear();
 
 	// Load filters
-	path.sprintf("%s%s", dataDir_.get(), "/filters");
+	path.sprintf("%s%cfilters", dataDir_.get(), PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
 
 	msg.print("Reading filters from '%s'...\n", path.get());

@@ -979,6 +979,16 @@ bool ReturnValue::increase()
 			}
 			else valueP_ = ((PatternBound*) valueP_)->next;
 			break;
+		case (VTypes::ZMatrixElementData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->next;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ZMatrixElement*) valueP_)->next;
+			break;
 		default:
 			printf("Internal Error: No 'increase' has been defined for %s.\n", VTypes::aDataType(type_));
 			break;
@@ -1116,6 +1126,16 @@ bool ReturnValue::decrease()
 				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
 			}
 			else valueP_ = ((PatternBound*) valueP_)->prev;
+			break;
+		case (VTypes::ZMatrixElementData):
+			if (valueP_ == NULL) result = FALSE;
+			else if (valueRefitem_ != NULL)
+			{
+				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->prev;
+				if (valueRefitem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
+			}
+			else valueP_ = ((ZMatrixElement*) valueP_)->prev;
 			break;
 		default:
 			printf("Internal Error: No 'decrease' has been defined for %s.\n", VTypes::aDataType(type_));

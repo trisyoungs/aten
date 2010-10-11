@@ -52,6 +52,7 @@ AtomVariable::~AtomVariable()
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
 	{ "bonds", 	VTypes::BondData,		-1, TRUE },
 	{ "colour",	VTypes::DoubleData,		4, FALSE },
+	{ "element",	VTypes::ElementData,		0, FALSE },
 	{ "f",		VTypes::VectorData,		0, FALSE },
 	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
 	{ "fracx",	VTypes::DoubleData,		0, FALSE },
@@ -193,6 +194,9 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			if (hasArrayIndex) rv.set( ptr->colour()[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(), 4);
 			break;
+		case (AtomVariable::ElementInfo):
+			rv.set(VTypes::ElementData, &elements().el[ptr->element()]);
+			break;
 		case (AtomVariable::F):
 			rv.set(ptr->f());
 			break;
@@ -331,6 +335,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	Vec3<double> v;
 	int n;
 	Atom::DrawStyle ds;
+	Element *el;
 	Atom *ptr= (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if (result && (ptr == NULL))
 	{
@@ -344,6 +349,20 @@ bool AtomVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
+			break;
+		case (AtomVariable::ElementInfo):
+			el = (Element*) newvalue.asPointer(VTypes::ElementData);
+			if (el == NULL)
+			{
+				msg.print("Invalid (NULL) element reference encountered while setting atom's element.\n");
+				result = FALSE;
+			}
+			else if (&elements().el[ptr->element()] != el)
+			{
+				ptr->parent()->beginUndoState("Transmute atom");
+				ptr->parent()->transmuteAtom(ptr, el->z);
+				ptr->parent()->endUndoState();
+			}
 			break;
 		case (AtomVariable::F):
 			ptr->f() = newvalue.asVector();
