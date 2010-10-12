@@ -23,6 +23,8 @@
 #define ATEN_COMMANDWINDOW_H
 
 #include "gui/ui_command.h"
+#include "templates/reflist.h"
+#include "parser/forest.h"
 
 // Script/command window
 class AtenCommand : public QDialog

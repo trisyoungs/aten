@@ -198,7 +198,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 					result = FALSE;
 				}
 				else rv.set(VTypes::ElementData, &elements().el[arrayIndex]);
-				// Note: array index is not decreased by 1, since element 0 is 'XXX'
+				// Note: array index is not decreased by 1, since element 0 is 'XX'
 			}
 			else rv.set(VTypes::ElementData, &elements().el[0]);
 			break;
