@@ -307,6 +307,11 @@
 						<entry>Delete the current atom selection. See the <link linkend="command.ref.delete">delete</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>expand ( )</entry>
+						<entry>--</entry>
+						<entry>Expand the current atom selection along bonds. See the <link linkend="command.ref.expand">expand</link> command for more details.</entry>
+					</row>
+					<row>
 						<entry>finalise ( )</entry>
 						<entry>--</entry>
 						<entry>Finalise the current model. See the <link linkend="command.ref.finalisemodel">finalisemodel</link> command for more details.</entry>
@@ -397,9 +402,19 @@
 						<entry>Save a bitmap image of the current model view. See the <link linkend="command.ref.savebitmap">savebitmap</link> command for more details.</entry>
 					</row>
 					<row>
+						<entry>selectall ( )</entry>
+						<entry>--</entry>
+						<entry>Select all atoms in the model. See the <link linkend="command.ref.selectall">selectall</link> command for more details.</entry>
+					</row>
+					<row>
 						<entry>selectionaddhydrogen ( )</entry>
 						<entry>--</entry>
 						<entry>Hydrogen satisfy all atoms in the current selection. See the <link linkend="command.ref.selectionaddhydrogen">selectionaddhydrogen</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selectnone ( )</entry>
+						<entry>--</entry>
+						<entry>Deselect all atoms in the model. See the <link linkend="command.ref.selectnone">selectnone</link> command for more details.</entry>
 					</row>
 					<row>
 						<entry>shiftdown ( int <emphasis>n</emphasis> = 1 )</entry>

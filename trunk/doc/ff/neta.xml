@@ -33,7 +33,7 @@
 					</row>
 					<row>
 						<entry>!=O</entry>
-						<entry>Any bond to any atom, as long as its not a double bond to an oxygen</entry>
+						<entry>Explicitly states that there should not be a double bond to an oxygen atom</entry>
 					</row>
 				</tbody>
 			</tgroup>
