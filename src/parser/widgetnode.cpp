@@ -194,6 +194,7 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 	TreeNode *arg;
 	for (arg = arglist; arg != NULL; arg = arg->prevArgument) if (arg->prevArgument == NULL) break;
 	ReturnValue rv;
+	Dnchar d;
 
 	// First argument is the control name
 	if (arg == NULL)
@@ -251,9 +252,12 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 	{
 		// Check Box - option("Title", "check", int state)
 		case (WidgetNode::CheckControl):
-			if (!setData("state", arg, "Error: No initial state supplied for 'check' GUI filter option.\n", TRUE, "")) break;
+			if (!setData("state", arg, "Warning: No initial state supplied for 'check' GUI filter option - 'off' assumed.\n", TRUE, "0")) break;
 			arg = arg->nextArgument;
 			result = TRUE;
+			// Set default value ready to return
+			if (!data("state", d)) printf("Internal Error - Failed to set default value for %s control.\n", WidgetNode::guiControl(controlType_));
+			returnValue_.set( d.asInteger() );
 			break;
 		// RadioGroup Box - option("Title", "radiogroup", "<csv itemlist>", int default=1)
 		case (WidgetNode::RadioGroupControl):
@@ -262,6 +266,9 @@ bool WidgetNode::addJoinedArguments(TreeNode *arglist)
 			setData("default", arg, "No default value supplied for 'radiogroup' GUI filter option - '1' assumed.\n", TRUE, "1");
 			arg = arg->nextArgument;
 			result = TRUE;
+			// Set default value ready to return
+			if (!data("default", d)) printf("Internal Error - Failed to set default value for %s control.\n", WidgetNode::guiControl(controlType_));
+			returnValue_.set( d.asInteger() );
 			break;
 		// Combo Box - option("Title", "combo", "<csv itemlist>", int default=1)
 		case (WidgetNode::IntegerComboControl):
