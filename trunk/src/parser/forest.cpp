@@ -270,13 +270,13 @@ bool Forest::reload()
 	msg.enter("Forest::reload");
 	if (filename_.isEmpty())
 	{
-		msg.printf("No filename present in '%s' - can't reload commands.\n", name_);
+		msg.print("No filename present in '%s' - can't reload commands.\n", name_);
 		msg.exit("Forest::reload");
 		return FALSE;
 	}
 	// Clear old data...
 	clear();
-	bool result = cmdparser.generateFromFile(this, filename_ initialPushTree_);
+	bool result = cmdparser.generateFromFile(this, filename_, initialPushTree_);
 	finalise();
 	msg.exit("Forest::reload");
 	return result;

@@ -68,6 +68,7 @@ void AtenForm::loadSettings()
 			{
 				aten.removeScript(f);
 				msg.print("Failed to load script file '%s'.\n", filename.get());
+				settings_.remove(key);
 			}
 		}
 		++n;

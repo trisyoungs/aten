@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenCommand::AtenCommand(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
@@ -138,14 +139,54 @@ void AtenCommand::on_OpenScriptButton_clicked(bool v)
 void AtenCommand::on_ReloadAllButton_clicked(bool checked)
 {
 	// Cycle over scripts, clearing and reloading
-	for (Forest *script = aten.scripts(); script != NULL; script = script->next)
+	Forest *script = aten.scripts(), *xscript;
+	while (script != NULL)
 	{
-		// Clear any existing trees
-		f->clear();
-		f->generateFromFile(
-		printf("Filename = %s\n", script->filename());
-		XXX
+		// Check that the file still exists
+		if (!fileExists(script->filename()))
+		{
+			Tree dialog("Error Finding Script", "option('The script file could not be found.','label'); option('choice','radiogroup','\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry (and skip this script)\"',1,'newline');");
+			Dnchar text;
+			text.sprintf("Script '%s'", script->filename());
+			if (dialog.executeCustomDialog(FALSE, text))
+			{
+				int choice = dialog.widgetValuei("choice");
+				if (choice == 1)
+				{
+					xscript = script->next;
+					aten.removeScript(script);
+					script = xscript;
+					continue;
+				}
+			}
+			else script = script->next;
+		}
+		else if (!script->reload())
+		{
+			Tree dialog("Error Loading Script", "option('The script contained an error (see messagebox for details).','label'); option('choice','radiogroup','\"Retry (changes have just been made to the file)\",\"Delete the entry for this scriptfile (it will not reappear when Aten restarts)\",\"Do not delete the entry and skip this script\"',1,'newline');");
+			Dnchar text;
+			if (dialog.executeCustomDialog(FALSE, text))
+			{
+				int choice = dialog.widgetValuei("choice");
+				if (choice == 1)
+				{
+					// Do nothing - the loop will continue with the same script pointer (i.e. Retry loading)
+				}
+				else if (choice == 2)
+				{
+					xscript = script->next;
+					aten.removeScript(script);
+					script = xscript;
+					continue;
+				}
+				else script = script->next;
+			}
+			else script = script->next;
+		}
+		else script = script->next;
 	}
+	// Better refresh the window and lists
+	refreshScripts();
 }
 
 void AtenCommand::on_ScriptsList_currentRowChanged(int row)
@@ -165,6 +206,28 @@ void AtenCommand::on_RunSelectedButton_clicked(bool checked)
 		msg.print("Executing script '%s':\n",script->name());
 		ReturnValue result;
 		script->executeAll(result);
+	}
+	gui.update();
+}
+
+void AtenCommand::runScript()
+{
+	// First, try to cast the sender into a QAction
+	QAction *action = qobject_cast<QAction*> (sender());
+	if (!action)
+	{
+		printf("AtenCommand::runScript - Critical - sender was not a QAction.\n");
+		return;
+	}
+	// Find the relevant Script entry...
+	Refitem<QAction, Forest*> *ri = scriptActions_.contains(action);
+	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
+	else
+	{
+		// Execute the script
+		msg.print("Executing script '%s':\n",ri->data->name());
+		ReturnValue result;
+		ri->data->executeAll(result);
 	}
 	gui.update();
 }
