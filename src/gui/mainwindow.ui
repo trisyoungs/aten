@@ -356,12 +356,18 @@
     <addaction name="actionAboutQt" />
     <addaction name="separator" />
    </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scri&amp;pts</string>
+    </property>
+   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
    <addaction name="AtomContextMenu" />
    <addaction name="ModelMenu" />
    <addaction name="SettingsMenu" />
+   <addaction name="ScriptsMenu" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" >

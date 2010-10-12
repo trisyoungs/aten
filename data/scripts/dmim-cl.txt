@@ -13,7 +13,7 @@ loadff("data/ff/cldp-il.ff", "ilff");
 double mass;
 loadmodel("data/test/siesta-dmim.xyz","dmim");
 mass = aten.model.mass;
-nmols(10);
+setnmols(10);
 
 # Associate the current forcefield (the only one) to the model
 ffmodel();
@@ -31,7 +31,7 @@ info();
 # Create a new model (naming it 'chloride') and draw a chloride atom
 newmodel("chloride");
 newatom(Cl);
-nmols(n);
+setnmols(n);
 mass += aten.model.mass;
 
 # Associate forcefield to the model

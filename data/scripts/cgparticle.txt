@@ -16,14 +16,14 @@ for (n=1; n<7; ++n)
 rebond();
 selectall();
 copy();
-nmols(200);
+setnmols(200);
 
 # Create fluorobenzene model
 newmodel("fluorobenzene");
 paste();
 select(H);
 transmute(F);
-nmols(200);
+setnmols(200);
 
 # Create naphthalene model
 newmodel("naphthalene");
@@ -37,7 +37,7 @@ for (n=1; n<11; ++n)
 newbond(1, 10, "double");
 newbond(5, 10);
 addhydrogen();
-nmols(100);
+setnmols(100);
 
 # Create mixture model
 newmodel("mixture");

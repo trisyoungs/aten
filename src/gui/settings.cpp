@@ -23,12 +23,14 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
+#include "main/aten.h"
 #include <QtCore/QSettings>
 
 // Load Qt Settings
 void AtenForm::loadSettings()
 {
 	QString key;
+	Dnchar filename;
 	int n;
 	// Recent file entries
 	for (n=0; n<MAXRECENTFILES; n++)
@@ -51,6 +53,25 @@ void AtenForm::loadSettings()
 		++n;
 	} while (settings_.contains(key));
 	gui.commandWindow->setCommandList(history);
+	// Scripts
+	n = 0;
+	do
+	{
+		key = "Script";
+		key += itoa(n);
+		if (settings_.contains(key))
+		{
+			Forest *f = aten.addScript();
+			filename = qPrintable(settings_.value(key).toString());
+			if (f->generateFromFile(filename.get(), filename.get())) msg.print("Successfully loaded script file '%s'.\n", filename.get());
+			else
+			{
+				aten.removeScript(f);
+				msg.print("Failed to load script file '%s'.\n", filename.get());
+			}
+		}
+		++n;
+	} while (settings_.contains(key));
 }
 
 // Save Qt settings
@@ -76,6 +97,15 @@ void AtenForm::saveSettings()
 		key = "CommandHistory";
 		key += itoa(n);
 		settings_.setValue(key, history[n]);
+	}
+	// Scripts
+	n = 0;
+	for (Forest *f = aten.scripts(); f != NULL; f = f->next)
+	{
+		key = "Script";
+		key += itoa(n);
+		settings_.setValue(key, f->filename());
+		++n;
 	}
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();

@@ -50,6 +50,8 @@ class Forest
 	List<Tree> trees_;
 	// Whether this forest is being generated from a filter file...
 	bool fromFilterFile_;
+	// Whether or not a tree was pushed initially
+	bool initialPushTree_;
 
 	public:
 	// Clear contents of forest
@@ -66,6 +68,8 @@ class Forest
 	bool generateFromStringList(Dnchar *stringListHead, const char *name = NULL, bool dontpushtree = FALSE);
 	// Generate forest from input file
 	bool generateFromFile(const char *filename, const char *name = NULL, bool dontpushtree = FALSE, bool isFilterFile = FALSE);
+	// Reload forest (provided it was from a file...)
+	bool reload();
 	// Finalise forest
 	void finalise();
 	// Return number of trees in forest

@@ -274,6 +274,7 @@ void GuiQt::run()
 	cellDefineWindow->refresh();
 	cellTransformWindow->refresh();
 	mainWindow->update();
+	commandWindow->refreshScripts();
 
 	gui.mainView.enableDrawing();
 

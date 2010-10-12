@@ -10,19 +10,19 @@ loadff("uff.ff", "uff");
 # 'blue' will be contained in an orthorhomboid spanning the cell in the x-direction
 newmodel("blue");
 newatom(N);
-nmols(1000);
+setnmols(1000);
 setregion("cuboid", 15, 15, 15, 30, 15, 15, TRUE);
 
 # 'red' will be allowed anywhere except 'blue's orthorhomboid
 newmodel("red");
 newatom(O);
-nmols(2500);
+setnmols(2500);
 regionoverlap(FALSE);
 
 # 'yellow' will be allowed anywhere in the whole box (including 'blue's region)
 newmodel("yellow");
 newatom(Au);
-nmols(2500);
+setnmols(2500);
 
 # Create box to MC in to
 newmodel("regions");
