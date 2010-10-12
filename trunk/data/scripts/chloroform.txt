@@ -21,7 +21,7 @@ printf("Molecular volume = %f A3/molecule\n", mvol);
 double l = (mvol*n)^(1.0/3.0) * 1.0;
 printf("Box length for %i molecules in cubic cell is %f\n", n, l);
 
-nmols(n);
+setnmols(n);
 
 # Construct new forcefield (using AMBER params)
 newff("chloroformff");

@@ -11,7 +11,7 @@ chain(H);
 
 # Set box size and determine number of molecules
 double boxlength = 20.0;
-nmols(boxlength^3 / 29.9);
+setnmols(boxlength^3 / 29.9);
 
 loadff("spc.ff");
 ffmodel();

@@ -56,11 +56,15 @@ class AtenCommand : public QDialog
 	/*
 	// Scripts Page
 	*/
+	private:
+	// List of scripts and their associated Menu item actions
+	Reflist<QAction, Forest*> scriptActions_;
 	private slots:
 	void on_ReloadAllButton_clicked(bool checked);
 	void on_RunSelectedButton_clicked(bool checked);
 	void on_OpenScriptButton_clicked(bool checked);
 	void on_ScriptsList_currentRowChanged(int row);
+	void runScript();
 	public:
 	void refreshScripts();
 

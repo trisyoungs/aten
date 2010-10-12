@@ -89,6 +89,26 @@ void AtenCommand::refreshScripts()
 {
 	ui.ScriptsList->clear();
 	for (Forest *script = aten.scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
+	// Also clear and refresh scripts menu
+	for (Refitem<QAction, Forest*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+	{
+		gui.mainWindow->ui.ScriptsMenu->removeAction(sa->item);
+		// Free Reflist QActions
+		delete sa->item;
+	}
+	// Clear Reflist and repopulate, along with Scripts menu actions
+	scriptActions_.clear();
+	for (Forest *f = aten.scripts(); f != NULL; f = f->next)
+	{
+		// Create new QAction and add to Reflist
+		QAction *qa = new QAction(this);
+		// Set action data
+		qa->setVisible(TRUE);
+		qa->setText(f->name());
+		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
+		scriptActions_.add(qa, f);
+		gui.mainWindow->ui.ScriptsMenu->addAction(qa);
+	}
 }
 
 void AtenCommand::on_OpenScriptButton_clicked(bool v)
@@ -120,7 +140,11 @@ void AtenCommand::on_ReloadAllButton_clicked(bool checked)
 	// Cycle over scripts, clearing and reloading
 	for (Forest *script = aten.scripts(); script != NULL; script = script->next)
 	{
+		// Clear any existing trees
+		f->clear();
+		f->generateFromFile(
 		printf("Filename = %s\n", script->filename());
+		XXX
 	}
 }
 

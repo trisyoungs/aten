@@ -36,6 +36,7 @@ Forest::Forest()
 	// Private variables
 	name_ = "NewForest";
 	fromFilterFile_ = FALSE;
+	initialPushTree_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -118,6 +119,8 @@ void Forest::finalise()
 				else title.sprintf("Import Options (%s)", t->name());
 				t->createCustomDialog(title.get());
 			}
+			// Grab default values
+			t->executeCustomDialog(TRUE);
 		}
 	}
 	msg.exit("Forest::finalise");
@@ -225,7 +228,8 @@ bool Forest::generateFromString(const char *s, const char *name, bool dontpushtr
 	msg.enter("Forest::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
-	bool result = cmdparser.generateFromString(this, s, dontpushtree);
+	initialPushTree_ = dontpushtree;
+	bool result = cmdparser.generateFromString(this, s, initialPushTree_);
 	finalise();
 	msg.exit("Forest::generateFromString");
 	return result;
@@ -237,7 +241,8 @@ bool Forest::generateFromStringList(Dnchar *stringListHead, const char *name, bo
 	msg.enter("Forest::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
-	bool result = cmdparser.generateFromStringList(this, stringListHead, dontpushtree);
+	initialPushTree_ = dontpushtree;
+	bool result = cmdparser.generateFromStringList(this, stringListHead, initialPushTree_);
 	finalise();
 	msg.exit("Forest::generateFromStringList");
 	return result;
@@ -251,10 +256,29 @@ bool Forest::generateFromFile(const char *filename, const char *name, bool dontp
 	if (name != NULL) name_ = name;
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
-	bool result = cmdparser.generateFromFile(this, filename, dontpushtree);
+	initialPushTree_ = dontpushtree;
+	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_);
 // 	print();
 	finalise();
 	msg.exit("Forest::generateFromFile");
+	return result;
+}
+
+// Reload forest (provided it was from a file...)
+bool Forest::reload()
+{
+	msg.enter("Forest::reload");
+	if (filename_.isEmpty())
+	{
+		msg.printf("No filename present in '%s' - can't reload commands.\n", name_);
+		msg.exit("Forest::reload");
+		return FALSE;
+	}
+	// Clear old data...
+	clear();
+	bool result = cmdparser.generateFromFile(this, filename_ initialPushTree_);
+	finalise();
+	msg.exit("Forest::reload");
 	return result;
 }
 
