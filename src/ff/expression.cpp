@@ -300,7 +300,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 					// If we didn't find a match in the forcefield, attempt generation and dummy term addition
 					if (ffb == NULL)
 					{
-						if (ff->torsionGenerator() != NULL) ffb = ff->generateAngle(ai,aj,ak);
+						if (ff->torsionGenerator() != NULL) ffb = ff->generateTorsion(ai,aj,ak,al);
 						else if (addDummyTerms_) ffb = createDummyTorsion(ti,tj,tk,tl);
 					}
 					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());

@@ -109,6 +109,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
 	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
 	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
+	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
 	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
 	{ "movetoend",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::argText(Command::MoveToEnd) },
 	{ "movetostart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::argText(Command::MoveToStart) },
@@ -128,7 +129,9 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::argText(Command::Redo) },
 	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::argText(Command::ReOrder) },
 	{ "savebitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::argText(Command::SaveBitmap) },
+	{ "selectall",		VTypes::NoData,		Command::arguments(Command::SelectAll),		Command::argText(Command::SelectAll) },
 	{ "selectionaddhydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
+	{ "selectnone",		VTypes::NoData,		Command::arguments(Command::SelectNone),	Command::argText(Command::SelectNone) },
 	{ "shiftdown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
 	{ "shiftup",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
 	{ "showall",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
@@ -597,6 +600,9 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::Delete):
 			result = aten.commands.call(Command::Delete, node, rv, bundle);
 			break;
+ 		case (ModelVariable::Expand):
+			result = aten.commands.call(Command::Expand, node, rv, bundle);
+			break;
  		case (ModelVariable::Finalise):
 			result = aten.commands.call(Command::Finalise, node, rv, bundle);
 			break;
@@ -654,8 +660,14 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
  		case (ModelVariable::SaveBitmap):
 			result = aten.commands.call(Command::SaveBitmap, node, rv, bundle);
 			break;
+ 		case (ModelVariable::SelectAll):
+			result = aten.commands.call(Command::SelectAll, node, rv, bundle);
+			break;
  		case (ModelVariable::SelectionAddHydrogen):
 			result = aten.commands.call(Command::SelectionAddHydrogen, node, rv, bundle);
+			break;
+ 		case (ModelVariable::SelectNone):
+			result = aten.commands.call(Command::SelectNone, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftDown):
 			result = aten.commands.call(Command::ShiftDown, node, rv, bundle);
