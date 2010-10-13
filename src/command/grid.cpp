@@ -114,7 +114,7 @@ bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setPrimaryAlpha(c->argGLf(0));
-	obj.g->setSeondaryAlpha(c->argGLf(0));
+	obj.g->setSecondaryAlpha(c->argGLf(0));
 	rv.reset();
 	return TRUE;
 }
@@ -146,8 +146,8 @@ bool Command::function_GridColourPrimary(CommandNode *c, Bundle &obj, ReturnValu
 bool Command::function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	if (c->hasArg(3)) obj.g->setSecondaryeColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
-	else obj.g->setSecondaryeColour(c->argd(0), c->argd(1), c->argd(2));
+	if (c->hasArg(3)) obj.g->setSecondaryColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
+	else obj.g->setSecondaryColour(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
 	return TRUE;
 }
@@ -176,11 +176,22 @@ bool Command::function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set grid cutoff 
+// Set primary grid cutoff
 bool Command::function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	obj.g->setCutoff(c->argd(0));
+	obj.g->setLowerPrimaryCutoff(c->argd(0));
+	if (c->hasArg(1)) obj.g->setUpperPrimaryCutoff(c->argd(1));
+	rv.reset();
+	return TRUE;
+}
+
+// Set secondary grid cutoff
+bool Command::function_GridCutoffSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	obj.g->setLowerSecondaryCutoff(c->argd(0));
+	if (c->hasArg(1)) obj.g->setUpperSecondaryCutoff(c->argd(1));
 	rv.reset();
 	return TRUE;
 }

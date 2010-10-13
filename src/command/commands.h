@@ -330,6 +330,7 @@ class Command
 		GridColourscale,
 		GridCubic,
 		GridCutoff,
+		GridCutoffSecondary,
 		GridLoopOrder,
 		GridOrigin,
 		GridOrtho,
@@ -795,6 +796,7 @@ class Command
 	static bool function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridCutoffSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv);

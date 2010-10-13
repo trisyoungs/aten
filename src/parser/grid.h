@@ -41,7 +41,7 @@ class GridVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-        enum Accessors { Axes, Name, NX, NY, NZ, Origin, Visible, nAccessors };
+        enum Accessors { Axes, Cutoff, CutoffSecondary, Name, NX, NY, NZ, Origin, UpperCutoff, UpperCutoffSecondary, Visible, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
