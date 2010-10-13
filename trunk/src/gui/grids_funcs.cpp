@@ -283,23 +283,35 @@ void AtenGrids::refreshGridInfo()
 	}
 	else g = m->grid(row);
 	refreshing_ = TRUE;
-	// Set minimum, maximum, and cutoff
+	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
-	ui.GridCutoffSpin->setMinimum(g->minimum());
-	ui.GridCutoffSpin->setMaximum(g->maximum());
-	ui.GridCutoffSpin->setValue(g->cutoff());
+	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
+	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
+	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());
+	ui.GridLowerCutoffSpin->setSingleStep(g->maximum() / 100.0);
 	ui.GridUpperCutoffSpin->setMinimum(g->minimum());
 	ui.GridUpperCutoffSpin->setMaximum(g->maximum());
-	ui.GridUpperCutoffSpin->setValue(g->upperCutoff());
+	ui.GridUpperCutoffSpin->setValue(g->upperPrimaryCutoff());
+	ui.GridUpperCutoffSpin->setSingleStep(g->maximum() / 100.0);
+	ui.GridLowerCutoff2Spin->setMinimum(g->minimum());
+	ui.GridLowerCutoff2Spin->setMaximum(g->maximum());
+	ui.GridLowerCutoff2Spin->setValue(g->lowerSecondaryCutoff());
+	ui.GridLowerCutoff2Spin->setSingleStep(g->maximum() / 100.0);
+	ui.GridUpperCutoff2Spin->setMinimum(g->minimum());
+	ui.GridUpperCutoff2Spin->setMaximum(g->maximum());
+	ui.GridUpperCutoff2Spin->setValue(g->upperSecondaryCutoff());
+	ui.GridUpperCutoff2Spin->setSingleStep(g->maximum() / 100.0);
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
-	ui.GridSymmetricCheck->setChecked( g->isSymmetric() );
-	// Set integral data labels
-	ui.GridTotalPositiveIntegralLabel->setText(ftoa(g->totalPositiveIntegral()));
-	ui.GridTotalNegativeIntegralLabel->setText(ftoa(g->totalNegativeIntegral()));
-	ui.GridPartialPositiveIntegralLabel->setText(ftoa(g->partialPositiveIntegral()));
-	ui.GridPartialNegativeIntegralLabel->setText(ftoa(g->partialNegativeIntegral()));
-	ui.GridPercentagePositiveIntegralLabel->setText(ftoa(100.0*g->partialPositiveIntegral()/g->totalPositiveIntegral()));
-	ui.GridPercentageNegativeIntegralLabel->setText(ftoa(100.0*g->partialNegativeIntegral()/g->totalNegativeIntegral()));
+	ui.GridSecondaryCutoffCheck->setChecked( g->useSecondary() );
+	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
+	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
+	// Set sum data labels
+	ui.GridTotalPositiveSumLabel->setText(ftoa(g->totalPositiveSum()));
+	ui.GridTotalNegativeSumLabel->setText(ftoa(g->totalNegativeSum()));
+	double total = g->totalPositiveSum() + fabs(g->totalNegativeSum());
+	ui.GridTotalAbsoluteLabel->setText(ftoa(total));
+	ui.GridPrimarySumLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
+	ui.GridSecondarySumLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
 	// Set origin and axes
 	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);
@@ -317,10 +329,10 @@ void AtenGrids::refreshGridInfo()
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
 	// Set surface style data
 	ui.GridStyleCombo->setCurrentIndex(g->style());
-	ui.GridPositiveColourFrame->setColour(g->positiveColour());
-	ui.GridPositiveColourFrame->update();
-	ui.GridNegativeColourFrame->setColour(g->negativeColour());
-	ui.GridNegativeColourFrame->update();
+	ui.GridPrimaryColourFrame->setColour(g->primaryColour());
+	ui.GridPrimaryColourFrame->update();
+	ui.GridSecondaryColourFrame->setColour(g->secondaryColour());
+	ui.GridSecondaryColourFrame->update();
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
 	QString scalename = "(";
 	scalename += prefs.colourScale[g->colourScale()].name();
@@ -333,8 +345,8 @@ void AtenGrids::refreshGridInfo()
 
 void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 {
-	ui.GridNegativeColourButton->setEnabled(TRUE);
-	ui.GridPositiveColourButton->setEnabled(TRUE);
+	ui.GridSecondaryColourButton->setEnabled(TRUE);
+	ui.GridPrimaryColourButton->setEnabled(TRUE);
 	ui.GridColourscaleSpin->setEnabled(FALSE);
 	if (refreshing_) return;
 	// Get current surface in list
@@ -342,15 +354,15 @@ void AtenGrids::on_GridUseInternalColoursRadio_clicked(bool checked)
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
-	ui.GridNegativeColourButton->setEnabled(g->isSymmetric());
+	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(FALSE);
 	gui.mainView.postRedisplay();
 }
 
 void AtenGrids::on_GridUseColourScaleRadio_clicked(bool checked)
 {
-	ui.GridNegativeColourButton->setEnabled(FALSE);
-	ui.GridPositiveColourButton->setEnabled(FALSE);
+	ui.GridSecondaryColourButton->setEnabled(FALSE);
+	ui.GridPrimaryColourButton->setEnabled(FALSE);
 	ui.GridColourscaleSpin->setEnabled(TRUE);
 	if (refreshing_) return;
 	// Get current surface in list
@@ -411,7 +423,7 @@ void AtenGrids::on_GridList_currentRowChanged(int row)
 	if (row != -1) refreshGridInfo();
 }
 
-void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
+void AtenGrids::on_GridLowerCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -419,12 +431,12 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
-	g->setCutoff(d);
+	g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 
-void AtenGrids::on_GridUpperCutoffSpin_valueChanged(double d)
+void AtenGrids::on_GridUpperCutoffSpin_editingFinished()
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -432,7 +444,33 @@ void AtenGrids::on_GridUpperCutoffSpin_valueChanged(double d)
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
-	g->setUpperCutoff(d);
+	g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
+	refreshGridInfo();
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_GridLowerCutoff2Spin_editingFinished()
+{
+	if (refreshing_) return;
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModelOrFrame();
+	Grid *g = m->grid(row);
+	g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
+	refreshGridInfo();
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_GridUpperCutoff2Spin_editingFinished()
+{
+	if (refreshing_) return;
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModelOrFrame();
+	Grid *g = m->grid(row);
+	g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
@@ -449,7 +487,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	gui.mainView.postRedisplay();
 }
 
-void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
+void AtenGrids::on_GridPrimaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -458,7 +496,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	double *col = g->positiveColour();
+	double *col = g->primaryColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -466,13 +504,13 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.GridPositiveColourFrame->setColour(newcol);
-	ui.GridPositiveColourFrame->update();
+	g->setPrimaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	ui.GridPrimaryColourFrame->setColour(newcol);
+	ui.GridPrimaryColourFrame->update();
 	gui.mainView.postRedisplay();
 }
 
-void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
+void AtenGrids::on_GridSecondaryColourButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -481,7 +519,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
-	double *col = g->negativeColour();
+	double *col = g->secondaryColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -489,9 +527,9 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.GridNegativeColourFrame->setColour(newcol);
-	ui.GridNegativeColourFrame->update();
+	g->setSecondaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	ui.GridSecondaryColourFrame->setColour(newcol);
+	ui.GridSecondaryColourFrame->update();
 	gui.mainView.postRedisplay();
 }
 
@@ -511,7 +549,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	gui.mainView.postRedisplay();
 }
 
-void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
+void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
 {
 	if (refreshing_) return;
 	// Get current surface in list
@@ -519,7 +557,7 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	if (row == -1) return;
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
-	g->setSymmetric(checked);
+	g->setUseSecondary(checked);
 	gui.mainView.postRedisplay();
 }
 

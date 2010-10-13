@@ -38,10 +38,6 @@ void AtenForm::finaliseUi()
 	title.sprintf("Aten (%s)", ATENVERSION);
 	setWindowTitle(title.get());
 
-	// Initialise application name, organisation and author
-	QCoreApplication::setOrganizationDomain("www.projectaten.net");
-	QCoreApplication::setApplicationName("Aten");
-
 	// Set up recent files list (create all actions first)
 	for (n=0; n<MAXRECENTFILES; n++)
 	{

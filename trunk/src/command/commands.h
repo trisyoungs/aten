@@ -325,16 +325,16 @@ class Command
 		GetGrid,
 		GridAlpha,
 		GridAxes,
-		GridColour,
-		GridColourNegative,
+		GridColourPrimary,
+		GridColourSecondary,
 		GridColourscale,
 		GridCubic,
 		GridCutoff,
 		GridLoopOrder,
 		GridOrigin,
 		GridOrtho,
+		GridSecondary,
 		GridStyle,
-		GridSymmetric,
 		GridUseZ,
 		GridVisible,
 		InitialiseGrid,
@@ -790,16 +790,16 @@ class Command
 	static bool function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourPrimary(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GridSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv);

@@ -144,6 +144,11 @@ void GuiQt::initialise(int &argc, char **argv)
 	// Create the QApplication
 	app = new QApplication(argc, argv);
 
+	// Initialise application name, organisation and author
+	QCoreApplication::setOrganizationName("ProjectAten");
+	QCoreApplication::setOrganizationDomain("www.projectaten.net");
+	QCoreApplication::setApplicationName("Aten");
+
 	// Create GUI window here (used to be done in Gui Qt::run(), but this would cause GLX crashes under some circumstances, apparently as a result of the lack of ownership of the TCanvas)
 	mainWindow = new AtenForm;
 

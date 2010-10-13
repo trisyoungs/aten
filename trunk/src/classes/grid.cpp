@@ -111,8 +111,10 @@ Grid::Grid()
 	dataFull_ = FALSE;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
-	cutoff_ = 0.0;
-	upperCutoff_ = 0.0;
+	lowerPrimaryCutoff_ = 0.0;
+	upperPrimaryCutoff_ = 0.0;
+	lowerSecondaryCutoff_ = 0.0;
+	upperSecondaryCutoff_ = 0.0;
 	log_ = -1;
 	boundsLog_ = -1;
 	style_ = Grid::SolidSurface;
@@ -120,25 +122,25 @@ Grid::Grid()
 	offScreenDisplayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
-	positiveColour_[0] = 0.0;
-	positiveColour_[1] = 0.0;
-	positiveColour_[2] = 1.0;
-	positiveColour_[3] = 0.5;
-	negativeColour_[0] = 1.0;
-	negativeColour_[1] = 1.0;
-	negativeColour_[2] = 1.0;
-	negativeColour_[3] = 0.5;
-	symmetric_ = FALSE;
+	primaryColour_[0] = 0.0;
+	primaryColour_[1] = 0.0;
+	primaryColour_[2] = 1.0;
+	primaryColour_[3] = 0.5;
+	secondaryColour_[0] = 1.0;
+	secondaryColour_[1] = 1.0;
+	secondaryColour_[2] = 1.0;
+	secondaryColour_[3] = 0.5;
+	useSecondary_ = FALSE;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
 	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	useDataForZ_ = TRUE;
-	totalPositiveIntegral_ = 0.0;
-	totalNegativeIntegral_ = 0.0;
-	partialPositiveIntegral_ = 0.0;
-	partialNegativeIntegral_ = 0.0;
-	integralPoint_ = -1;
+	totalPositiveSum_ = 0.0;
+	totalNegativeSum_ = 0.0;
+	partialPrimarySum_ = 0.0;
+	partialSecondarySum_ = 0.0;
+	sumPoint_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -160,24 +162,26 @@ void Grid::operator=(Grid &source)
 	dataFull_ = source.dataFull_;
 	minimum_ = source.minimum_;
 	maximum_ = source.maximum_;
-	cutoff_ = source.cutoff_;
-	upperCutoff_ = source.upperCutoff_;
+	lowerPrimaryCutoff_ = source.lowerPrimaryCutoff_;
+	upperPrimaryCutoff_ = source.upperPrimaryCutoff_;
+	lowerSecondaryCutoff_ = source.lowerSecondaryCutoff_;
+	upperSecondaryCutoff_ = source.upperSecondaryCutoff_;
 	log_ = 0;
 	style_ = source.style_;
 	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = source.visible_;
-	totalPositiveIntegral_ = source.totalPositiveIntegral_;
-	partialPositiveIntegral_ = source.partialPositiveIntegral_;
-	integralPoint_ = -1;
-	totalNegativeIntegral_ = source.totalNegativeIntegral_;
-	partialNegativeIntegral_ = source.partialNegativeIntegral_;
+	totalPositiveSum_ = source.totalPositiveSum_;
+	partialPrimarySum_ = source.partialPrimarySum_;
+	sumPoint_ = -1;
+	totalNegativeSum_ = source.totalNegativeSum_;
+	partialSecondarySum_ = source.partialSecondarySum_;
 	for (int i=0; i<4; i++)
 	{
-		positiveColour_[i] = source.positiveColour_[i];
-		negativeColour_[i] = source.negativeColour_[i];
+		primaryColour_[i] = source.primaryColour_[i];
+		secondaryColour_[i] = source.secondaryColour_[i];
 	}
-	symmetric_ = source.symmetric_;
+	useSecondary_ = source.useSecondary_;
 	loopOrder_ = source.loopOrder_;
 	colourScale_ = source.colourScale_;
 	useColourScale_ = source.useColourScale_;
@@ -367,37 +371,77 @@ void Grid::calculateBounds()
 	msg.exit("Grid::calculateBounds");
 }
 
-// Set isovalue cutoff for surface
-void Grid::setCutoff(double d)
+// Set lower isovalue cutoff for primary surface
+void Grid::setLowerPrimaryCutoff(double d)
 {
-	cutoff_ = d;
+	lowerPrimaryCutoff_ = d;
 	log_++;
 }
 
-// Return isovalue cutoff for surface
-double Grid::cutoff() const
+// Return lower isovalue cutoff for primary surface
+double Grid::lowerPrimaryCutoff() const
 {
-	return cutoff_;
+	return lowerPrimaryCutoff_;
 }
 
-// Set isovalue cutoff for surface
-void Grid::setUpperCutoff(double d)
+// Set upper isovalue cutoff for primary surface
+void Grid::setUpperPrimaryCutoff(double d)
 {
-	upperCutoff_ = d;
+	upperPrimaryCutoff_ = d;
 	log_++;
 }
 
-// Return isovalue cutoff for surface
-double Grid::upperCutoff() const
+// Return upper isovalue cutoff for primary surface
+double Grid::upperPrimaryCutoff() const
 {
-	return upperCutoff_;
+	return upperPrimaryCutoff_;
 }
 
-// Return whether supplied number is within cutoff range
-bool Grid::withinCutoff(double d) const
+// Return whether supplied number is within primary cutoff range
+bool Grid::withinPrimaryCutoff(double d) const
 {
-	if ((d > cutoff_) && (d <= upperCutoff_)) return TRUE;
-// 	if (d > cutoff_) return TRUE;
+	if (upperPrimaryCutoff_ > lowerPrimaryCutoff_)
+	{
+		if ((d >= lowerPrimaryCutoff_) && (d <= upperPrimaryCutoff_)) return TRUE;
+	}
+	else if ((d >= upperPrimaryCutoff_) && (d <= lowerPrimaryCutoff_)) return TRUE;
+	return FALSE;
+}
+
+// Set lower isovalue cutoff for secondary surface
+void Grid::setLowerSecondaryCutoff(double d)
+{
+	lowerSecondaryCutoff_ = d;
+	log_++;
+}
+
+// Return lower isovalue cutoff for secondary surface
+double Grid::lowerSecondaryCutoff() const
+{
+	return lowerSecondaryCutoff_;
+}
+
+// Set upper isovalue cutoff for secondary surface
+void Grid::setUpperSecondaryCutoff(double d)
+{
+	upperSecondaryCutoff_ = d;
+	log_++;
+}
+
+// Return upper isovalue cutoff for secondary surface
+double Grid::upperSecondaryCutoff() const
+{
+	return upperSecondaryCutoff_;
+}
+
+// Return whether supplied number is within secondary cutoff range
+bool Grid::withinSecondaryCutoff(double d) const
+{
+	if (upperSecondaryCutoff_ > lowerSecondaryCutoff_)
+	{
+		if ((d >= lowerSecondaryCutoff_) && (d <= upperSecondaryCutoff_)) return TRUE;
+	}
+	else if ((d >= upperSecondaryCutoff_) && (d <= lowerSecondaryCutoff_)) return TRUE;
 	return FALSE;
 }
 
@@ -468,48 +512,60 @@ Grid::SurfaceStyle Grid::style() const
 	return style_;
 }
 
-// Set alpha value of the surface
-void Grid::setAlpha(double a)
+// Set alpha value of the primary colour
+void Grid::setPrimaryAlpha(double a)
 {
-	positiveColour_[3] = a;
-	negativeColour_[3] = a;
+	primaryColour_[3] = a;
 	log_++;
 }
 
-// Return alpha value of the grid's surface
-double Grid::alpha() const
+// Return alpha value of the primary colour
+double Grid::primaryAlpha() const
 {
-	return positiveColour_[3];
+	return primaryColour_[3];
 }
 
-// Return the (positive) colour of the grid's surface
-double *Grid::positiveColour()
+// Set alpha value of the secondary colour
+void Grid::setSecondaryAlpha(double a)
 {
-	return positiveColour_;
+	secondaryColour_[3] = a;
+	log_++;
 }
 
-// Copy the positive colour of the surface
-void Grid::copyPositiveColour(GLfloat *col)
+// Return alpha value of the secondary colour
+double Grid::secondaryAlpha() const
 {
-	col[0] = (GLfloat) positiveColour_[0];
-	col[1] = (GLfloat) positiveColour_[1];
-	col[2] = (GLfloat) positiveColour_[2];
-	col[3] = (GLfloat) positiveColour_[3];
+	return secondaryColour_[3];
 }
 
-// Return the (negative) colour of the grid's surface
-double *Grid::negativeColour()
+// Return the primary grid colour
+double *Grid::primaryColour()
 {
-	return negativeColour_;
+	return primaryColour_;
 }
 
-// Copy the negative colour of the surface
-void Grid::copyNegativeColour(GLfloat *col)
+// Copy the primary colour of the surface
+void Grid::copyPrimaryColour(GLfloat *col)
 {
-	col[0] = (GLfloat) negativeColour_[0];
-	col[1] = (GLfloat) negativeColour_[1];
-	col[2] = (GLfloat) negativeColour_[2];
-	col[3] = (GLfloat) negativeColour_[3];
+	col[0] = (GLfloat) primaryColour_[0];
+	col[1] = (GLfloat) primaryColour_[1];
+	col[2] = (GLfloat) primaryColour_[2];
+	col[3] = (GLfloat) primaryColour_[3];
+}
+
+// Return the (secondary) colour of the grid's surface
+double *Grid::secondaryColour()
+{
+	return secondaryColour_;
+}
+
+// Copy the secondary colour of the surface
+void Grid::copySecondaryColour(GLfloat *col)
+{
+	col[0] = (GLfloat) secondaryColour_[0];
+	col[1] = (GLfloat) secondaryColour_[1];
+	col[2] = (GLfloat) secondaryColour_[2];
+	col[3] = (GLfloat) secondaryColour_[3];
 }
 
 // Log changes
@@ -593,16 +649,16 @@ bool Grid::useDataForZ() const
 	return useDataForZ_;
 }
 
-// Calculate integrals
-void Grid::calculateIntegrals()
+// Calculate sums
+void Grid::calculateSums()
 {
-	msg.enter("Grid::calculateIntegrals");
+	msg.enter("Grid::calculateSums");
 	int i,j,k;
 	double **data2, *data1;
-	partialPositiveIntegral_ = 0.0;
-	totalPositiveIntegral_ = 0.0;
-	partialNegativeIntegral_ = 0.0;
-	totalNegativeIntegral_ = 0.0;
+	totalPositiveSum_ = 0.0;
+	totalNegativeSum_ = 0.0;
+	partialPrimarySum_ = 0.0;
+	partialSecondarySum_ = 0.0;
 	if (type_ == Grid::RegularXYZData)
 	{
 		for (i = 0; i < nPoints_.x; i++)
@@ -613,13 +669,11 @@ void Grid::calculateIntegrals()
 				data1 = data2[j];
 				for (k = 0; k<nPoints_.z; k++)
 				{
-					if (data1[k] > 0) totalPositiveIntegral_ += data1[k];
-					else totalNegativeIntegral_ += data1[k];
-					if (data1[k] > 0)
-					{
-						if (withinCutoff(data1[k])) partialPositiveIntegral_ += data1[k];
-					}
-					else if (withinCutoff(fabs(data1[k]))) partialNegativeIntegral_ += data1[k];
+					if (data1[k] > 0) totalPositiveSum_ += data1[k];
+					else totalNegativeSum_ += data1[k];
+					// Calculate cutoff sums
+					if (withinPrimaryCutoff(data1[k])) partialPrimarySum_ += fabs(data1[k]);
+					if (withinSecondaryCutoff(data1[k])) partialSecondarySum_ += fabs(data1[k]);
 				}
 			}
 		}
@@ -631,61 +685,58 @@ void Grid::calculateIntegrals()
 			data1 = data2d_[i];
 			for (j = 0; j<nPoints_.y; j++)
 			{
-				if (data1[j] > 0) totalPositiveIntegral_ += data1[j];
-				else totalNegativeIntegral_ += data1[j];
-				if (data1[j] > 0)
-				{
-					if (withinCutoff(data1[j])) partialPositiveIntegral_ += data1[j];
-				}
-				else if (withinCutoff(fabs(data1[j]))) partialNegativeIntegral_ += data1[j];
+				if (data1[j] > 0) totalPositiveSum_ += data1[j];
+				else totalNegativeSum_ += data1[j];
+				if (withinPrimaryCutoff(data1[j])) partialPrimarySum_ += fabs(data1[j]);
+				if (withinSecondaryCutoff(data1[j])) partialSecondarySum_ += fabs(data1[j]);
 			}
 		}
 	}
-	msg.exit("Grid::calculateIntegrals");
+	msg.exit("Grid::calculateSums");
 }
 
-// Return the total positive integral of the grid (calculated when drawn)
-double Grid::totalPositiveIntegral()
+// Return the total positive sum of the grid (calculated when drawn)
+double Grid::totalPositiveSum()
 {
-	if (log_ != integralPoint_)
+	if (log_ != sumPoint_)
 	{
-		calculateIntegrals();
-		integralPoint_ = log_;
+		calculateSums();
+		sumPoint_ = log_;
 	}
-	return totalPositiveIntegral_;
+	return totalPositiveSum_;
 }
 
-// Return the partial positive integral of the grid, determined by cutoffs (calculated when drawn)
-double Grid::partialPositiveIntegral()
+// Return the partial positive sum of the grid, determined by cutoffs (calculated when drawn)
+double Grid::partialPrimarySum()
 {
-	if (log_ != integralPoint_)
+	if (log_ != sumPoint_)
 	{
-		calculateIntegrals();
-		integralPoint_ = log_;
+		calculateSums();
+		sumPoint_ = log_;
 	}
-	return partialPositiveIntegral_;
+	return partialPrimarySum_;
 }
 
-// Return the total negative integral of the grid (calculated when drawn)
-double Grid::totalNegativeIntegral()
+// Return the total negative sum of the grid (calculated when drawn)
+double Grid::totalNegativeSum()
 {
-	if (log_ != integralPoint_)
+	if (log_ != sumPoint_)
 	{
-		calculateIntegrals();
-		integralPoint_ = log_;
+		calculateSums();
+		sumPoint_ = log_;
 	}
-	return totalNegativeIntegral_;
+	return totalNegativeSum_;
 }
 
-// Return the partial negative integral of the grid, determined by cutoffs (calculated when drawn)
-double Grid::partialNegativeIntegral()
+// Return the partial negative sum of the grid, determined by cutoffs (calculated when drawn)
+double Grid::partialSecondarySum()
 {
-	if (log_ != integralPoint_)
+	if (log_ != sumPoint_)
 	{
-		calculateIntegrals();
-		integralPoint_ = log_;
+		calculateSums();
+		sumPoint_ = log_;
 	}
-	return partialNegativeIntegral_;
+	return partialSecondarySum_;
 }
 
 // Create data array (from npoints vector)
@@ -697,10 +748,10 @@ bool Grid::allocateArrays()
 	{
 		case (Grid::RegularXYZData):
 			if (data3d_ != NULL) clear();
-			// Check point limits (negative only)
+			// Check point limits (secondary only)
 			if (nPoints_.min() < 1)
 			{
-				msg.print("Can't allocate 3D grid array - One or more grid limits are negative (%i,%i,%i).\n", nPoints_.x, nPoints_.y, nPoints_.z);
+				msg.print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).\n", nPoints_.x, nPoints_.y, nPoints_.z);
 				msg.exit("Grid::allocateArrays");
 				return FALSE;
 			}
@@ -713,10 +764,10 @@ bool Grid::allocateArrays()
 			break;
 		case (Grid::RegularXYData):
 			if (data2d_ != NULL) clear();
-			// Check point limits (negative only)
+			// Check point limits (secondary only)
 			if ((nPoints_.x < 1) || (nPoints_.y < 1))
 			{
-				msg.print("Can't allocate 2D grid array - One or more grid limits are negative (%i,%i).\n", nPoints_.x, nPoints_.y);
+				msg.print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).\n", nPoints_.x, nPoints_.y);
 				msg.exit("Grid::allocateArrays");
 				return FALSE;
 			}
@@ -767,8 +818,10 @@ void Grid::clear()
 	dataFull_ = FALSE;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
-	cutoff_ = 0.0;
-	upperCutoff_ = 100.0;
+	lowerPrimaryCutoff_ = 0.0;
+	upperPrimaryCutoff_ = 0.0;
+	lowerSecondaryCutoff_ = 0.0;
+	upperSecondaryCutoff_ = 0.0;
 	currentPoint_.zero();
 	visible_ = TRUE;
 	deleteArrays();
@@ -813,8 +866,10 @@ void Grid::setLimits(double d)
 {
 	if (d < minimum_) minimum_ = d;
 	else if (d > maximum_) maximum_ = d;
-	cutoff_ = (maximum_ - minimum_) * 0.5 + minimum_;
-	upperCutoff_ = maximum_;
+	lowerPrimaryCutoff_ = 0.5 * maximum_;
+	upperPrimaryCutoff_ = maximum_;
+	lowerSecondaryCutoff_ = 0.5 * minimum_;
+	upperSecondaryCutoff_ = minimum_;
 }
 
 // Set specific point in data array
@@ -894,21 +949,21 @@ void Grid::addFreePoint(double x, double y, double z, double value)
 	type_ = Grid::FreeXYZData;
 }
 
-void Grid::setPositiveColour(double r, double g, double b, double a)
+void Grid::setPrimaryColour(double r, double g, double b, double a)
 {
-	positiveColour_[0] = r;
-	positiveColour_[1] = g;
-	positiveColour_[2] = b;
-	if (a >= 0.0) positiveColour_[3] = a;
+	primaryColour_[0] = r;
+	primaryColour_[1] = g;
+	primaryColour_[2] = b;
+	if (a >= 0.0) primaryColour_[3] = a;
 	log_ ++;
 }
 
-void Grid::setNegativeColour(double r, double g, double b, double a)
+void Grid::setSecondaryColour(double r, double g, double b, double a)
 {
-	negativeColour_[0] = r;
-	negativeColour_[1] = g;
-	negativeColour_[2] = b;
-	if (a >= 0.0) negativeColour_[3] = a;
+	secondaryColour_[0] = r;
+	secondaryColour_[1] = g;
+	secondaryColour_[2] = b;
+	if (a >= 0.0) secondaryColour_[3] = a;
 	log_ ++;
 }
 
@@ -942,14 +997,14 @@ GLuint Grid::displayList(bool offscreenlist)
 }
 
 // Set whether to use both signs of a symmetric isovalue distribution
-void Grid::setSymmetric(bool b)
+void Grid::setUseSecondary(bool b)
 {
-	symmetric_ = b;
+	useSecondary_ = b;
 	log_ ++;
 }
 
 // Returns whether to use both signs of a symmetric isovalue distribution
-bool Grid::isSymmetric() const
+bool Grid::useSecondary() const
 {
-	return symmetric_;
+	return useSecondary_;
 }
