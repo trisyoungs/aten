@@ -109,11 +109,12 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
-// Set transparency of grid
+// Set transparency of primary and secondary grid surfaces
 bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	obj.g->setAlpha(c->argGLf(0));
+	obj.g->setPrimaryAlpha(c->argGLf(0));
+	obj.g->setSeondaryAlpha(c->argGLf(0));
 	rv.reset();
 	return TRUE;
 }
@@ -132,21 +133,21 @@ bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set (positive) colour for grid
-bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_GridColourPrimary(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	if (c->hasArg(3))  obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
-	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
+	if (c->hasArg(3)) obj.g->setPrimaryColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
+	else obj.g->setPrimaryColour(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
 	return TRUE;
 }
 
 // Set negative colour for grid
-bool Command::function_GridColourNegative(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Command::function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	if (c->hasArg(3)) obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
-	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
+	if (c->hasArg(3)) obj.g->setSecondaryeColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
+	else obj.g->setSecondaryeColour(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
 	return TRUE;
 }
@@ -242,6 +243,15 @@ bool Command::function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Set whether to draw the secondary grid surfce
+bool Command::function_GridSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
+	if (c->hasArg(0)) obj.g->setUseSecondary(c->argb(0));
+	rv.set(obj.g->useSecondary());
+	return TRUE;
+}
+
 // Set drawing style of grid
 bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -250,15 +260,6 @@ bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (ss == Grid::nSurfaceStyles) return FALSE;
 	obj.g->setStyle(ss);
 	rv.reset();
-	return TRUE;
-}
-
-// Set whether the grid has symmetric isovalues
-bool Command::function_GridSymmetric(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	if (c->hasArg(0)) obj.g->setSymmetric(c->argb(0));
-	rv.set(obj.g->isSymmetric());
 	return TRUE;
 }
 

@@ -82,7 +82,7 @@ finalisegrid();
 				<paramdef>double <parameter>newalpha</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set the alpha value (transparency of the current surface), with 0.0 being fully opaque and 1.0 being fully transparent (i.e. invisible), or simply return the current alpha value if no new value is provided.</para>
+		<para>Set the alpha value (transparency of the current surface), with 0.0 being fully opaque and 1.0 being fully transparent (i.e. invisible), or simply return the current alpha value if no new value is provided. Note that this command sets the alpha values for both the primary and secondary surface colours.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -122,47 +122,47 @@ gridaxes(0.8, 0, 0, 0.1, 0.6, 0, 0, 0, 0.7);
 		
 	</section>
 	
-	<section id="command.ref.gridcolour"><title>gridcolour</title>
-		<indexterm><primary>commands</primary><secondary>gridcolour</secondary></indexterm>
+	<section id="command.ref.gridcolourprimary"><title>gridcolourprimary</title>
+		<indexterm><primary>commands</primary><secondary>gridcolourprimary</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef>void <function>gridcolour</function></funcdef>
+				<funcdef>void <function>gridcolourprimary</function></funcdef>
 				<paramdef>double <parameter>r</parameter></paramdef>
 				<paramdef>double <parameter>g</parameter></paramdef>
 				<paramdef>double <parameter>b</parameter></paramdef>
 				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set the internal colour (of the positive sign if the 'symmetric' option is enabled for the grid) of the surface to the RGB(A) triplet.</para>
+		<para>Set the internal colour of the primary grid surface to the RGB(A) triplet.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-gridcolour(1.0, 1.0, 0.0);
+gridcolourprimary(1.0, 1.0, 0.0);
 		</synopsis>
-		<para>sets the (positive) surface colour to yellow.</para>
+		<para>sets the primary surface colour to yellow.</para>
 		
 	</section>
 	
-	<section id="command.ref.gridcolournegative"><title>gridcolournegative</title>
-		<indexterm><primary>commands</primary><secondary>gridcolournegative</secondary></indexterm>
+	<section id="command.ref.gridcoloursecondary"><title>gridcoloursecondary</title>
+		<indexterm><primary>commands</primary><secondary>gridcoloursecondary</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef>void <function>gridcolournegative</function></funcdef>
+				<funcdef>void <function>gridcoloursecondary</function></funcdef>
 				<paramdef>double <parameter>r</parameter></paramdef>
 				<paramdef>double <parameter>g</parameter></paramdef>
 				<paramdef>double <parameter>b</parameter></paramdef>
 				<paramdef>double <parameter>a = 1.0</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Set the internal colour of the negative sign of the surface to the RGB(A) triplet.</para>
+		<para>Set the internal colour of secondary grid surface to the RGB(A) triplet.</para>
 		
 		<para>For example:</para>
 		<synopsis>
-gridcolournegative(0.9, 0.9, 0.9);
+gridcoloursecondary(0.9, 0.9, 0.9);
 		</synopsis>
-		<para>sets the negative surface colour to off-white.</para>
+		<para>sets the secondary surface colour to off-white.</para>
 		
 	</section>
 	

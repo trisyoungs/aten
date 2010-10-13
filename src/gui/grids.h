@@ -54,10 +54,12 @@ class AtenGrids : public QDialog
 	// List
 	void on_GridList_currentRowChanged(int row);
 	void on_GridList_itemClicked(QListWidgetItem *item);
-	// Cutoff Page
-	void on_GridCutoffSpin_valueChanged(double d);
-	void on_GridUpperCutoffSpin_valueChanged(double d);
-	void on_GridSymmetricCheck_clicked(bool checked);
+	// Data / Cutoff Page
+	void on_GridLowerCutoffSpin_editingFinished();
+	void on_GridUpperCutoffSpin_editingFinished();
+	void on_GridLowerCutoff2Spin_editingFinished();
+	void on_GridUpperCutoff2Spin_editingFinished();
+	void on_GridSecondaryCutoffCheck_clicked(bool checked);
 	// Origin / Axes Page
 	void on_GridOriginXSpin_valueChanged(double d);
 	void on_GridOriginYSpin_valueChanged(double d);
@@ -73,8 +75,8 @@ class AtenGrids : public QDialog
 	void on_GridAxesCZSpin_valueChanged(double d);
 	// Style Page
 	void on_GridStyleCombo_currentIndexChanged(int index);
-	void on_GridPositiveColourButton_clicked(bool checked);
-	void on_GridNegativeColourButton_clicked(bool checked);
+	void on_GridPrimaryColourButton_clicked(bool checked);
+	void on_GridSecondaryColourButton_clicked(bool checked);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridUseInternalColoursRadio_clicked(bool checked);
 	void on_GridUseColourScaleRadio_clicked(bool checked);	

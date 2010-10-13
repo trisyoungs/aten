@@ -285,8 +285,8 @@ void Command::initPointers()
 	pointers_[GetGrid] = &Command::function_GetGrid;
 	pointers_[GridAlpha] = &Command::function_GridAlpha;
 	pointers_[GridAxes] = &Command::function_GridAxes;
-	pointers_[GridColour] = &Command::function_GridColour;
-	pointers_[GridColourNegative] = &Command::function_GridColourNegative;
+	pointers_[GridColourPrimary] = &Command::function_GridColourPrimary;
+	pointers_[GridColourSecondary] = &Command::function_GridColourSecondary;
 	pointers_[GridColourscale] = &Command::function_GridColourscale;
 	pointers_[GridCubic] = &Command::function_GridCubic;
 	pointers_[GridCutoff] = &Command::function_GridCutoff;
@@ -294,8 +294,8 @@ void Command::initPointers()
 	pointers_[GridOrigin] = &Command::function_GridOrigin;
 	pointers_[GridOrtho] = &Command::function_GridOrtho;
 	pointers_[InitialiseGrid] = &Command::function_InitialiseGrid;
+	pointers_[GridSecondary] = &Command::function_GridSecondary;
 	pointers_[GridStyle] = &Command::function_GridStyle;
-	pointers_[GridSymmetric] = &Command::function_GridSymmetric;
 	pointers_[GridUseZ] = &Command::function_GridUseZ;
 	pointers_[GridVisible] = &Command::function_GridVisible;
 	pointers_[LoadGrid] = &Command::function_LoadGrid;

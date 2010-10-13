@@ -123,7 +123,8 @@ class Grid
 	// Allocate grid arrays
 	bool allocateArrays();
 	// Cutoffs for isosurface generation
-	double cutoff_, upperCutoff_;
+	double lowerPrimaryCutoff_, upperPrimaryCutoff_;
+	double lowerSecondaryCutoff_, upperSecondaryCutoff_;
 	// Bounds (enclosing rhombohedral volume) for grid data
 	Vec3<double> lowerLeftCorner_, upperRightCorner_;
 	// Logpoint for last bounds calculation
@@ -138,14 +139,14 @@ class Grid
 	bool useDataForZ_;
 	// Calculate bounding lower-left and upper-right corners
 	void calculateBounds();
-	// Integral calculation log point
-	int integralPoint_;
-	// Total integrals of the grid (calculated when drawn)
-	double totalPositiveIntegral_, totalNegativeIntegral_;
-	// Partial integral of the grid, determined by cutoffs (calculated when drawn)
-	double partialPositiveIntegral_, partialNegativeIntegral_;
-	// Calculate integrals
-	void calculateIntegrals();
+	// Sum calculation log point
+	int sumPoint_;
+	// Total sums of the positive and negative gridpoints
+	double totalPositiveSum_, totalNegativeSum_;
+	// Partial sums of the grid surfaces, determined by cutoffs
+	double partialPrimarySum_, partialSecondarySum_;
+	// Calculate sums
+	void calculateSums();
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -174,16 +175,26 @@ class Grid
 	Vec3<double> lowerLeftCorner();
 	// Return URC bounding values, calculating first if necessary
 	Vec3<double> upperRightCorner();
-	// Set isovalue cutoff for surface
-	void setCutoff(double d);
-	// Return isovalue cutoff for surface
-	double cutoff() const;
-	// Set isovalue cutoff for surface
-	void setUpperCutoff(double d);
-	// Return isovalue cutoff for surface
-	double upperCutoff() const;
-	// Return whether supplied number is within cutoff range
-	bool withinCutoff(double d) const;
+	// Set lower isovalue cutoff for primary surface
+	void setLowerPrimaryCutoff(double d);
+	// Return lower isovalue cutoff for primary surface
+	double lowerPrimaryCutoff() const;
+	// Set uppwer isovalue cutoff for primary surface
+	void setUpperPrimaryCutoff(double d);
+	// Return upper isovalue cutoff for primary surface
+	double upperPrimaryCutoff() const;
+	// Return whether supplied number is within primary cutoff range
+	bool withinPrimaryCutoff(double d) const;
+	// Set lower isovalue cutoff for secondary surface
+	void setLowerSecondaryCutoff(double d);
+	// Return lower isovalue cutoff for secondary surface
+	double lowerSecondaryCutoff() const;
+	// Set uppwer isovalue cutoff for secondary surface
+	void setUpperSecondaryCutoff(double d);
+	// Return upper isovalue cutoff for secondary surface
+	double upperSecondaryCutoff() const;
+	// Return whether supplied number is within secondary cutoff range
+	bool withinSecondaryCutoff(double d) const;
 	// Return 3D data array
 	double ***data3d();
 	// Return 2D data array
@@ -198,14 +209,14 @@ class Grid
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface
 	bool useDataForZ() const;
-	// Return the total positive integral of the grid (calculated when drawn)
-	double totalPositiveIntegral();
-	// Return the total negative integral of the grid (calculated when drawn)
-	double totalNegativeIntegral();
-	// Return the partial positive integral of the grid, determined by cutoffs (calculated when drawn)
-	double partialPositiveIntegral();
-	// Return the partial negative integral of the grid, determined by cutoffs (calculated when drawn)
-	double partialNegativeIntegral();
+	// Return the total positive sum of the grid (calculated when drawn)
+	double totalPositiveSum();
+	// Return the total negative sum of the grid (calculated when drawn)
+	double totalNegativeSum();
+	// Return the partial primary sum of the grid, determined by cutoffs (calculated when drawn)
+	double partialPrimarySum();
+	// Return the partial secondary sum of the grid, determined by cutoffs (calculated when drawn)
+	double partialSecondarySum();
 
 
 	/*
@@ -240,13 +251,13 @@ class Grid
 	// How to render this surface
 	SurfaceStyle style_;
 	// Local colours (including alpha component)
-	double positiveColour_[4], negativeColour_[4];
+	double primaryColour_[4], secondaryColour_[4];
 	// Colour scale to take colouring from (zero for internal colours)
 	int colourScale_;
 	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
 	bool useColourScale_;
-	// Whether to assume a 'symmetric' isovalue distribution about zero and draw surfaces for both signs
-	bool symmetric_;
+	// Whether to draw complementary surface with second set of cutoffs
+	bool useSecondary_;
 
 	public:
 	// Increase the internal log
@@ -267,22 +278,26 @@ class Grid
 	void setStyle(SurfaceStyle ss);
 	// Return the rendering style of the surface
 	SurfaceStyle style() const;
-	// Set the positive colour of the surface
-	void setPositiveColour(double r, double g, double b, double a = -1);
-	// Set the negative colour of the surface
-	void setNegativeColour(double r, double g, double b, double a = -1);
-	// Set alpha value of the surface
-	void setAlpha(double a);
-	// Return the alpha value of the surface
-	double alpha() const;
-	// Return the positive colour of the surface
-	double *positiveColour();
-	// Copy the positive colour of the surface
-	void copyPositiveColour(GLfloat *col);
-	// Return the negative colour of the surface
-	double *negativeColour();
-	// Copy the negative colour of the surface
-	void copyNegativeColour(GLfloat *col);
+	// Set the primary colour of the surface
+	void setPrimaryColour(double r, double g, double b, double a = -1);
+	// Set the secondary colour of the surface
+	void setSecondaryColour(double r, double g, double b, double a = -1);
+	// Set alpha value of the primary colour
+	void setPrimaryAlpha(double a);
+	// Return the alpha value of the primary colour
+	double primaryAlpha() const;
+	// Set alpha value of the secondary colour
+	void setSecondaryAlpha(double a);
+	// Return the alpha value of the secondary colour
+	double secondaryAlpha() const;
+	// Return the primary colour of the surface
+	double *primaryColour();
+	// Copy the primary colour of the surface
+	void copyPrimaryColour(GLfloat *col);
+	// Return the secondary colour of the surface
+	double *secondaryColour();
+	// Copy the secondary colour of the surface
+	void copySecondaryColour(GLfloat *col);
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
@@ -291,10 +306,10 @@ class Grid
 	bool useColourScale() const;
 	// Set whether the surface should be rendered with an associated colourscale
 	void setUseColourScale(bool b);
-	// Set whether to use both signs of a symmetric isovalue distribution
-	void setSymmetric(bool b);
-	// Returns whether to use both signs of a symmetric isovalue distribution
-	bool isSymmetric() const;
+	// Set whether to render additional data using secondary cutoff
+	void setUseSecondary(bool b);
+	// Returns whether to render additional data using secondary cutoff
+	bool useSecondary() const;
 
 	/*
 	// Transformations

@@ -613,7 +613,7 @@ template <class T> void Vec3<T>::toCartesian()
 // Convert to spherical
 template <class T> void Vec3<T>::toSpherical()
 {
-	T rho, s, phi, theta;
+	T rho, phi, theta;
 	rho = magnitude();
 	theta = acos(z/rho);
 	phi = atan2(y,x);
