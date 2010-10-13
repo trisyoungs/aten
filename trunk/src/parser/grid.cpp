@@ -52,13 +52,17 @@ GridVariable::~GridVariable()
 
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
-	{ "axes",	VTypes::CellData,	0, TRUE },
-	{ "name",	VTypes::StringData,	0, FALSE },
-	{ "nx",		VTypes::IntegerData,	0, TRUE },
-	{ "ny",		VTypes::IntegerData,	0, TRUE },
-	{ "nz",		VTypes::IntegerData,	0, TRUE },
-	{ "origin", 	VTypes::VectorData,	0, FALSE },
-	{ "visible",	VTypes::IntegerData,	0, FALSE }
+	{ "axes",		VTypes::CellData,	0, TRUE },
+	{ "cutoff",		VTypes::DoubleData,	0, FALSE },
+	{ "cutoffsec",		VTypes::DoubleData,	0, FALSE },
+	{ "name",		VTypes::StringData,	0, FALSE },
+	{ "nx",			VTypes::IntegerData,	0, TRUE },
+	{ "ny",			VTypes::IntegerData,	0, TRUE },
+	{ "nz",			VTypes::IntegerData,	0, TRUE },
+	{ "origin", 		VTypes::VectorData,	0, FALSE },
+	{ "uppercutoff",	VTypes::DoubleData,	0, FALSE },
+	{ "uppercutoffsec",	VTypes::DoubleData,	0, FALSE },
+	{ "visible",		VTypes::IntegerData,	0, FALSE }
 };
 
 // Function data
@@ -163,6 +167,12 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 		case (GridVariable::Axes):
 			rv.set(VTypes::CellData, ptr->cell());
 			break;
+		case (GridVariable::Cutoff):
+			rv.set(ptr->lowerPrimaryCutoff());
+			break;
+		case (GridVariable::CutoffSecondary):
+			rv.set(ptr->lowerSecondaryCutoff());
+			break;
 		case (GridVariable::Name):
 			rv.set(ptr->name());
 			break;
@@ -173,6 +183,12 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::Origin):
 			rv.set(ptr->origin());
+			break;
+		case (GridVariable::UpperCutoff):
+			rv.set(ptr->upperPrimaryCutoff());
+			break;
+		case (GridVariable::UpperCutoffSecondary):
+			rv.set(ptr->upperSecondaryCutoff());
 			break;
 		case (GridVariable::Visible):
 			rv.set(ptr->isVisible());
@@ -255,11 +271,23 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	}
 	if (result) switch (acc)
 	{
+		case (GridVariable::Cutoff):
+			ptr->setLowerPrimaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::CutoffSecondary):
+			ptr->setLowerSecondaryCutoff( newvalue.asDouble() );
+			break;
 		case (GridVariable::Name):
 			ptr->setName( newvalue.asString() );
 			break;
 		case (GridVariable::Origin):
 			ptr->setOrigin( newvalue.asVector() );
+			break;
+		case (GridVariable::UpperCutoff):
+			ptr->setUpperPrimaryCutoff( newvalue.asDouble() );
+			break;
+		case (GridVariable::UpperCutoffSecondary):
+			ptr->setUpperSecondaryCutoff( newvalue.asDouble() );
 			break;
 		case (GridVariable::Visible):
 			ptr->setVisible( newvalue.asBool() );

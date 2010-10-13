@@ -290,6 +290,7 @@ void Command::initPointers()
 	pointers_[GridColourscale] = &Command::function_GridColourscale;
 	pointers_[GridCubic] = &Command::function_GridCubic;
 	pointers_[GridCutoff] = &Command::function_GridCutoff;
+	pointers_[GridCutoffSecondary] = &Command::function_GridCutoffSecondary;
 	pointers_[GridLoopOrder] = &Command::function_GridLoopOrder;
 	pointers_[GridOrigin] = &Command::function_GridOrigin;
 	pointers_[GridOrtho] = &Command::function_GridOrtho;

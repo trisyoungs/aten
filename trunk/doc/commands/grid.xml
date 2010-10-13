@@ -208,6 +208,46 @@ gridcubic(0.5);
 		
 	</section>
 	
+	<section id="command.ref.gridcutoff"><title>gridcutoff</title>
+		<indexterm><primary>commands</primary><secondary>gridcutoff</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcutoff</function></funcdef>
+				<paramdef>double <parameter>lowercut</parameter></paramdef>
+				<paramdef>[double <parameter>uppercut</parameter>]</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the lower and (if supplied) upper cutoff values for the current grid.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+gridcutoff(0.002,0.005);
+		</synopsis>
+		<para>sets the lower grid cutoff for the current grid to 0.002, and the upper grid cutoff to 0.005.</para>
+		
+	</section>
+
+	<section id="command.ref.gridcutoffsecondary"><title>gridcutoffsecondary</title>
+		<indexterm><primary>commands</primary><secondary>gridcutoffsecondary</secondary></indexterm>
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>gridcutoffsecondary</function></funcdef>
+				<paramdef>double <parameter>lowercut</parameter></paramdef>
+				<paramdef>[double <parameter>uppercut</parameter>]</paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the lower and (if supplied) upper secondary cutoff values for the current grid.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+gridcutoffsecondary(0.0014);
+		</synopsis>
+		<para>sets the secondary lower grid cutoff for the current grid to 0.0014, leaving the upper secondary cutoff unchanged.</para>
+
+	</section>
+
 	<section id="command.ref.gridlooporder"><title>gridlooporder</title>
 		<indexterm><primary>commands</primary><secondary>gridlooporder</secondary></indexterm>
 		<para><emphasis>Syntax:</emphasis></para>

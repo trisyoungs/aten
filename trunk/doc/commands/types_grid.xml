@@ -20,6 +20,18 @@
 						<entry>Axes system for the grid, stored in a unit cell structure</entry>
 					</row>
 					<row>
+						<entry>cutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The lower primary cutoff value</entry>
+					</row>
+					<row>
+						<entry>cutoffsec</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The lower secondary cutoff value</entry>
+					</row>
+					<row>
 						<entry>name</entry>
 						<entry>string</entry>
 						<entry>rw</entry>
@@ -48,6 +60,18 @@
 						<entry><link linkend="command.types.vector">vector</link></entry>
 						<entry>rw</entry>
 						<entry>Coordinates of the origin (lower left-hand corner) of the grid data</entry>
+					</row>
+					<row>
+						<entry>uppercutoff</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The upper primary cutoff value</entry>
+					</row>
+					<row>
+						<entry>uppercutoffsec</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The upper secondary cutoff value</entry>
 					</row>
 					<row>
 						<entry>visible</entry>
