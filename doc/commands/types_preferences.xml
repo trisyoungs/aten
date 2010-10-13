@@ -278,6 +278,12 @@
 						<entry>Enables/disables multisampling (hardware aliasing)</entry>
 					</row>
 					<row>
+						<entry>noqtsettings</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag controlling whether OS-stored Qt settings are loaded on startup</entry>
+					</row>
+					<row>
 						<entry>offscreenobjects</entry>
 						<entry>int</entry>
 						<entry>rw</entry>

@@ -95,6 +95,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "modelupdate",	VTypes::IntegerData,	0, FALSE },
 	{ "mouseaction",	VTypes::StringData,	Prefs::nMouseButtons, FALSE },
 	{ "multisampling",	VTypes::IntegerData,	0, FALSE },
+	{ "noqtsettings",	VTypes::IntegerData,	0, FALSE },
 	{ "offscreenobjects",	VTypes::IntegerData,	0, FALSE },
 	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
 	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
@@ -362,6 +363,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::MultiSampling):
 			rv.set( ptr->multiSampling() );
+			break;
+		case (PreferencesVariable::NoQtSettings):
+			rv.set( ptr->loadQtSettings() );
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			rv.set( ptr->offScreenObjects() );
@@ -724,6 +728,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::MultiSampling):
 			ptr->setMultiSampling( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::NoQtSettings):
+			ptr->setLoadQtSettings( newvalue.asBool() );
 			break;
 		case (PreferencesVariable::OffScreenObjects):
 			ptr->setOffScreenObjects( newvalue.asInteger(result) );
