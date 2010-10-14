@@ -132,23 +132,24 @@ bool ForcefieldBound::setForm(const char *form)
 	{
 		case (ForcefieldBound::BondInteraction):
 			newform = BondFunctions::bondFunction(form);
-			if (newform == BondFunctions::nBondFunctions) newform = -1;
+			if (newform == BondFunctions::nBondFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			else setBondStyle((BondFunctions::BondFunction) newform);
 			break;
 		case (ForcefieldBound::AngleInteraction):
 			newform = AngleFunctions::angleFunction(form);
-			if (newform == AngleFunctions::nAngleFunctions) newform = -1;
+			if (newform == AngleFunctions::nAngleFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			else setAngleStyle((AngleFunctions::AngleFunction) newform);
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
 			newform = TorsionFunctions::torsionFunction(form);
-			if (newform == TorsionFunctions::nTorsionFunctions) newform = -1;
+			if (newform == TorsionFunctions::nTorsionFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			else setTorsionStyle((TorsionFunctions::TorsionFunction) newform);
 		break;
 		default:
 			printf("Internal Error - No bound type defined in ForcefieldBound structure.\n");
 			break;
 	}
-	if (newform != -1) functionalForm_ = newform;
-	else msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
 	return (newform != -1);
 }
 

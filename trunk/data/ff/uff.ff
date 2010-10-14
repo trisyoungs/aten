@@ -17,19 +17,19 @@ types
 4	Li	Li	""
 5	Be3+2	Be	""
 6	B_3	B	"tetrahedral"
-7	B_2	B	"trigonal | (nbonds=2,=XX)"
+7	B_2	B	"trigonal | (nbonds=2,=Any)"
 8	C_3	C	""
-9	C_R	C	"aromatic"
-10	C_2	C	"trigonal"
+9	C_R	C	"aromatic,nbonds=3"
+10	C_2	C	"nonaromatic,nbonds=3"
 11	C_1	C	"linear"
 12	N_3	N	""
 13	N_R	N	"aromatic"
-14	N_2	N	"trigonal | (nbonds=2,=XX)"
+14	N_2	N	"trigonal | (nbonds=2,=Any)"
 15	N_1	N	"linear"
 16	O_3	O	"tetrahedral"
 17	O_3_z	O	""
 18	O_R	O	"aromatic"
-19	O_2	O	"trigonal"
+19	O_2	O	"=Any"
 20	O_1	O	""
 21	F_	F	""
 22	Ne4+4	Ne	""
@@ -389,8 +389,8 @@ int anglegenerator(ffbound newterm, atom i, atom j, atom k)
 	if (n != 0)
 	{
 		newterm.form = "cos";
-		newterm.data = { forcek/(n*n), n };
-		verbose("Generated cos angle information for %s-%s-%s : k=%f (n=%i), eq=0.0\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek,n);
+		newterm.data = { forcek/(n*n), n, 0.0, -1.0 };
+		verbose("Generated cos angle information for %s-%s-%s : k=%f (n=%i), eq=0.0\n", fi.equivalent,fj.equivalent,fk.equivalent,forcek/(n*n),n);
 	}
 	return 1;
 }
