@@ -47,7 +47,7 @@ void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 			// Grab pointer to function data
 			ffb = pb->data();
 			// Calculate energy contribution
-			switch (pb->data()->angleStyle())
+			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
 					msg.print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
@@ -91,7 +91,7 @@ void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				default:
-					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
+					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 
 			}
@@ -135,7 +135,7 @@ void Pattern::angleForces(Model *srcmodel)
 			dtheta_dcostheta = -1.0 / sin(theta);
 			ffb = pb->data();
 			// Generate forces
-			switch (pb->data()->angleStyle())
+			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
 					msg.print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
@@ -178,12 +178,12 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
-					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
+					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 			}
 
 			// Exception for BondConstraint term...
-			if (pb->data()->angleStyle() == AngleFunctions::BondConstraint)
+			if (pb->data()->angleForm() == AngleFunctions::BondConstraint)
 			{
 				fi = (mim_ik / rij) * du_dtheta;
 				fj = 0.0;

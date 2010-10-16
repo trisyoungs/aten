@@ -28,7 +28,7 @@ void Pattern::ureyBradleyEnergy(Model *srcmodel, EnergyStore *estore, int molecu
 {
 	msg.enter("Pattern::ureyBradleyEnergy");
 	int i, j, m1, aoff;
-	static double forcek, eq, rij, energy, d, expo;
+	static double forcek, eq, rij, energy, d, expo, beta;
 	static ForcefieldBound *ffb;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
@@ -43,7 +43,7 @@ void Pattern::ureyBradleyEnergy(Model *srcmodel, EnergyStore *estore, int molecu
 			j = pb->atomId(1) + aoff;
 			ffb = pb->data();
 			rij = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
-			switch (pb->data()->bondStyle())
+			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
 					msg.print("Warning: No function is specified for Urey-Bradley energy %i-%i.\n", i, j);
@@ -66,23 +66,14 @@ void Pattern::ureyBradleyEnergy(Model *srcmodel, EnergyStore *estore, int molecu
 				case (BondFunctions::Morse):
 					// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
 					d = ffb->parameter(BondFunctions::MorseD);
-					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					beta = fabs(ffb->parameter(BondFunctions::MorseB));
 					eq = ffb->parameter(BondFunctions::MorseEq);
 					rij -= eq;
-					expo = 1.0 - exp( -forcek * rij );
+					expo = 1.0 - exp( -beta * rij );
 					energy += d * ( expo*expo - 1.0);
 					break;
-				case (BondFunctions::Morse2):
-					// U = E0 * ( (exp( -k(rij - r0) ) - 1)**2)
-					d = ffb->parameter(BondFunctions::MorseD);
-					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
-					eq = ffb->parameter(BondFunctions::MorseEq);
-					rij -= eq;
-					expo = exp( -forcek * rij ) - 1.0;
-					energy += d * expo * expo;
-					break;
 				default:
-					msg.print( "No equation coded for Urey-Bradley energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for Urey-Bradley energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
 					break;
 			}
 		}
@@ -99,7 +90,7 @@ void Pattern::ureyBradleyForces(Model *srcmodel)
 	msg.enter("Pattern::ureyBradleyForcess");
 	int i, j, m1, aoff;
 	static Vec3<double> mim_i, fi;
-	static double forcek, eq, rij, d, expo, du_dr;
+	static double forcek, eq, rij, d, expo, du_dr, beta;
 	static ForcefieldBound *ffb;;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
@@ -116,7 +107,7 @@ void Pattern::ureyBradleyForces(Model *srcmodel)
 			rij = mim_i.magnitude();
 			// Select energy function
 			ffb = pb->data();
-			switch (pb->data()->bondStyle())
+			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
 					msg.print("Warning: No function is specified for Urey-Bradley force %i-%i.\n", i, j);
@@ -138,21 +129,13 @@ void Pattern::ureyBradleyForces(Model *srcmodel)
 				case (BondFunctions::Morse):
 					// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
 					d = ffb->parameter(BondFunctions::MorseD);
-					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					beta = fabs(ffb->parameter(BondFunctions::MorseB));
 					eq = ffb->parameter(BondFunctions::MorseEq);
-					expo = exp( -forcek * (rij - eq) );
-					du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
-					break;
-				case (BondFunctions::Morse2):
-					// dU/dR = -2 * E0 * k * exp( -k*(rij - e0) ) * ( exp -k*(rij - e0) - 1)
-					d = ffb->parameter(BondFunctions::MorseD);
-					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
-					eq = ffb->parameter(BondFunctions::MorseEq);
-					expo = exp( -forcek * (rij - eq) );
-					du_dr = -2.0 * d * forcek * expo * (expo - 1.0);
+					expo = exp( -beta * (rij - eq) );
+					du_dr = 2.0 * beta * d * (1.0 - expo) * expo;
 					break;
 				default:
-					msg.print( "No equation coded for Urey-Bradley forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for Urey-Bradley forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
 					break;
 			}
 			// Calculate forces

@@ -56,7 +56,7 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 
 // Function data
 FunctionAccessor PatternBoundVariable::functionData[PatternBoundVariable::nFunctions] = {
-	{ "finddata",	VTypes::DoubleData,	"C",	"string name" }
+	{ "parameter",	VTypes::DoubleData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -334,22 +334,22 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 	int id;
 	if (result) switch (i)
 	{
-		case (PatternBoundVariable::FindData):
+		case (PatternBoundVariable::Parameter):
 			switch (ptr->data()->type())
 			{
 				case (ForcefieldBound::BondInteraction):
-					id = BondFunctions::bondParameter(ptr->data()->bondStyle(), node->argc(0), TRUE);
-					if (id == BondFunctions::BondFunctions[ptr->data()->bondStyle()].nParameters) result = FALSE;
+					id = BondFunctions::bondParameter(ptr->data()->bondForm(), node->argc(0), TRUE);
+					if (id == BondFunctions::BondFunctions[ptr->data()->bondForm()].nParameters) result = FALSE;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					id = AngleFunctions::angleParameter(ptr->data()->angleStyle(), node->argc(0), TRUE);
-					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleStyle()].nParameters) result = FALSE;
+					id = AngleFunctions::angleParameter(ptr->data()->angleForm(), node->argc(0), TRUE);
+					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleForm()].nParameters) result = FALSE;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
-					id = TorsionFunctions::torsionParameter(ptr->data()->torsionStyle(), node->argc(0), TRUE);
-					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionStyle()].nParameters) result = FALSE;
+					id = TorsionFunctions::torsionParameter(ptr->data()->torsionForm(), node->argc(0), TRUE);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionForm()].nParameters) result = FALSE;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 			}

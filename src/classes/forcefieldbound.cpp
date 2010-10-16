@@ -66,14 +66,14 @@ const char *ForcefieldBound::formText() const
 	switch (type_)
 	{
 		case (ForcefieldBound::BondInteraction):
-			return BondFunctions::BondFunctions[bondStyle()].keyword;
+			return BondFunctions::BondFunctions[bondForm()].keyword;
 			break;
 		case (ForcefieldBound::AngleInteraction):
-			return AngleFunctions::AngleFunctions[angleStyle()].keyword;
+			return AngleFunctions::AngleFunctions[angleForm()].keyword;
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
-			return TorsionFunctions::TorsionFunctions[torsionStyle()].keyword;
+			return TorsionFunctions::TorsionFunctions[torsionForm()].keyword;
 			break;
 		default:
 			return "No Bound type defined.";
@@ -82,43 +82,43 @@ const char *ForcefieldBound::formText() const
 }
 
 // Return the functional form (cast as a bond style)
-BondFunctions::BondFunction ForcefieldBound::bondStyle() const
+BondFunctions::BondFunction ForcefieldBound::bondForm() const
 {
-	return (BondFunctions::BondFunction) functionalForm_;
+	return (BondFunctions::BondFunction) form_;
 }
 
 // Return the functional form (cast as a angle style)
-AngleFunctions::AngleFunction ForcefieldBound::angleStyle() const
+AngleFunctions::AngleFunction ForcefieldBound::angleForm() const
 {
-	return (AngleFunctions::AngleFunction) functionalForm_;
+	return (AngleFunctions::AngleFunction) form_;
 }
 
 // Return the functional form (cast as a torsion style)
-TorsionFunctions::TorsionFunction ForcefieldBound::torsionStyle() const
+TorsionFunctions::TorsionFunction ForcefieldBound::torsionForm() const
 {
-	return (TorsionFunctions::TorsionFunction) functionalForm_;
+	return (TorsionFunctions::TorsionFunction) form_;
 }
 
 // Set the bond functional form
-void ForcefieldBound::setBondStyle(BondFunctions::BondFunction bf)
+void ForcefieldBound::setBondForm(BondFunctions::BondFunction bf)
 {
-	functionalForm_ = bf;
+	form_ = bf;
 	// Copy default parameters to structure
 	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = BondFunctions::BondFunctions[bf].defaultValues[i];
 }
 
 // Set the angle functional form
-void ForcefieldBound::setAngleStyle(AngleFunctions::AngleFunction af)
+void ForcefieldBound::setAngleForm(AngleFunctions::AngleFunction af)
 {
-	functionalForm_ = af;
+	form_ = af;
 	// Copy default parameters to structure
 	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = AngleFunctions::AngleFunctions[af].defaultValues[i];
 }
 
 // Set the torsion functional form
-void ForcefieldBound::setTorsionStyle(TorsionFunctions::TorsionFunction tf)
+void ForcefieldBound::setTorsionForm(TorsionFunctions::TorsionFunction tf)
 {
-	functionalForm_ = tf;
+	form_ = tf;
 	// Copy default parameters to structure
 	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = TorsionFunctions::TorsionFunctions[tf].defaultValues[i];
 }
@@ -133,18 +133,18 @@ bool ForcefieldBound::setForm(const char *form)
 		case (ForcefieldBound::BondInteraction):
 			newform = BondFunctions::bondFunction(form);
 			if (newform == BondFunctions::nBondFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
-			else setBondStyle((BondFunctions::BondFunction) newform);
+			else setBondForm((BondFunctions::BondFunction) newform);
 			break;
 		case (ForcefieldBound::AngleInteraction):
 			newform = AngleFunctions::angleFunction(form);
 			if (newform == AngleFunctions::nAngleFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
-			else setAngleStyle((AngleFunctions::AngleFunction) newform);
+			else setAngleForm((AngleFunctions::AngleFunction) newform);
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
 			newform = TorsionFunctions::torsionFunction(form);
 			if (newform == TorsionFunctions::nTorsionFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
-			else setTorsionStyle((TorsionFunctions::TorsionFunction) newform);
+			else setTorsionForm((TorsionFunctions::TorsionFunction) newform);
 		break;
 		default:
 			printf("Internal Error - No bound type defined in ForcefieldBound structure.\n");

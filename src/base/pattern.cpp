@@ -926,7 +926,7 @@ ForcefieldBound *Pattern::createDummyBond(ForcefieldAtom *i, ForcefieldAtom *j)
 	{
 		ffb = dummyForcefieldBonds_.add();
 		ffb->setType(ForcefieldBound::BondInteraction);
-		ffb->setBondStyle(BondFunctions::Ignore);
+		ffb->setBondForm(BondFunctions::Ignore);
 		ffb->setTypeName(0, i->equivalent());
 		ffb->setTypeName(1, j->equivalent());
 	}
@@ -943,7 +943,7 @@ ForcefieldBound *Pattern::createDummyAngle(ForcefieldAtom *i, ForcefieldAtom *j,
 	{
 		ffb = dummyForcefieldAngles_.add();
 		ffb->setType(ForcefieldBound::AngleInteraction);
-		ffb->setAngleStyle(AngleFunctions::Ignore);
+		ffb->setAngleForm(AngleFunctions::Ignore);
 		ffb->setTypeName(0, i->equivalent());
 		ffb->setTypeName(1, j->equivalent());
 		ffb->setTypeName(2, k->equivalent());
@@ -961,7 +961,7 @@ ForcefieldBound *Pattern::createDummyTorsion(ForcefieldAtom *i, ForcefieldAtom *
 	{
 		ffb = dummyForcefieldTorsions_.add();
 		ffb->setType(ForcefieldBound::TorsionInteraction);
-		ffb->setTorsionStyle(TorsionFunctions::Ignore);
+		ffb->setTorsionForm(TorsionFunctions::Ignore);
 		ffb->setTypeName(0, i->equivalent());
 		ffb->setTypeName(1, j->equivalent());
 		ffb->setTypeName(2, k->equivalent());

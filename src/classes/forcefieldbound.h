@@ -42,7 +42,7 @@ class ForcefieldBound
 	// Type of bound interaction
 	BoundType type_;
 	// Form of bound interaction type
-	int functionalForm_;
+	int form_;
 	// Forcefield types involved in this term
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Interaction parameter data
@@ -60,17 +60,17 @@ class ForcefieldBound
 	// Return functional form text
 	const char *formText() const;
 	// Return the functional form (cast as a bond style)
-	BondFunctions::BondFunction bondStyle() const;
+	BondFunctions::BondFunction bondForm() const;
 	// Return the functional form (cast as a angle style)
-	AngleFunctions::AngleFunction angleStyle() const;
+	AngleFunctions::AngleFunction angleForm() const;
 	// Return the functional form (cast as a torsion style)
-	TorsionFunctions::TorsionFunction torsionStyle() const;
+	TorsionFunctions::TorsionFunction torsionForm() const;
 	// Set the bond functional form
-	void setBondStyle(BondFunctions::BondFunction bf);
+	void setBondForm(BondFunctions::BondFunction bf);
 	// Set the angle functional form
-	void setAngleStyle(AngleFunctions::AngleFunction af);
+	void setAngleForm(AngleFunctions::AngleFunction af);
 	// Set the torsion functional form
-	void setTorsionStyle(TorsionFunctions::TorsionFunction tf);
+	void setTorsionForm(TorsionFunctions::TorsionFunction tf);
 	// Set the functional form by name
 	bool setForm(const char *form);
 	// Set the parameter data specified
