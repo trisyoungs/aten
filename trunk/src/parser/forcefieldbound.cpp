@@ -64,7 +64,7 @@ Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccesso
 
 // Function data
 FunctionAccessor ForcefieldBoundVariable::functionData[ForcefieldBoundVariable::nFunctions] = {
-	{ "finddata",		VTypes::DoubleData,	"C",	"string name" }
+	{ "parameter",		VTypes::DoubleData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -175,13 +175,13 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			else switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
-					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].parameterKeywords[arrayIndex-1]);
+					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].parameterKeywords[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].parameterKeywords[arrayIndex-1]);
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].parameterKeywords[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
-					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].parameterKeywords[arrayIndex-1]);
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameterKeywords[arrayIndex-1]);
 					break;
 			}
 			break;
@@ -195,13 +195,13 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			else switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
-					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].parameters[arrayIndex-1]);
+					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].parameters[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].parameters[arrayIndex-1]);
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].parameters[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
-					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].parameters[arrayIndex-1]);
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameters[arrayIndex-1]);
 					break;
 			}
 			break;
@@ -223,13 +223,13 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
-					rv.set(BondFunctions::BondFunctions[ptr->bondStyle()].nParameters);
+					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].nParameters);
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					rv.set(AngleFunctions::AngleFunctions[ptr->angleStyle()].nParameters);
+					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].nParameters);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
-					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].nParameters);
+					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters);
 					break;
 			}
 			break;
@@ -382,22 +382,22 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 	int id;
 	if (result) switch (i)
 	{
-		case (ForcefieldBoundVariable::FindData):
+		case (ForcefieldBoundVariable::Parameter):
 			switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
-					id = BondFunctions::bondParameter(ptr->bondStyle(), node->argc(0), TRUE);
-					if (id == BondFunctions::BondFunctions[ptr->bondStyle()].nParameters) result = FALSE;
+					id = BondFunctions::bondParameter(ptr->bondForm(), node->argc(0), TRUE);
+					if (id == BondFunctions::BondFunctions[ptr->bondForm()].nParameters) result = FALSE;
 					else rv.set(ptr->parameter(id));
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					id = AngleFunctions::angleParameter(ptr->angleStyle(), node->argc(0), TRUE);
-					if (id == AngleFunctions::AngleFunctions[ptr->angleStyle()].nParameters) result = FALSE;
+					id = AngleFunctions::angleParameter(ptr->angleForm(), node->argc(0), TRUE);
+					if (id == AngleFunctions::AngleFunctions[ptr->angleForm()].nParameters) result = FALSE;
 					else rv.set(ptr->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
-					id = TorsionFunctions::torsionParameter(ptr->torsionStyle(), node->argc(0), TRUE);
-					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionStyle()].nParameters) result = FALSE;
+					id = TorsionFunctions::torsionParameter(ptr->torsionForm(), node->argc(0), TRUE);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters) result = FALSE;
 					else rv.set(ptr->parameter(id));
 					break;
 			}

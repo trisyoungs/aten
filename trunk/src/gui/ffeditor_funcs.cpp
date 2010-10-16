@@ -168,7 +168,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo = new TComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->bondStyle());
+		combo->setCurrentIndex(ffb->bondForm());
 		combo->setPointer(ffb);
 		ui.FFEditorBondsTable->setCellWidget(count, BondColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
@@ -200,7 +200,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo = new TComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->angleStyle());
+		combo->setCurrentIndex(ffb->angleForm());
 		combo->setPointer(ffb);
 		ui.FFEditorAnglesTable->setCellWidget(count, AngleColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(AngleFunctionChanged(int)));
@@ -234,7 +234,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		combo = new TComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->torsionStyle());
+		combo->setCurrentIndex(ffb->torsionForm());
 		combo->setPointer(ffb);
 		ui.FFEditorTorsionsTable->setCellWidget(count, TorsionColumn::Form, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
@@ -373,7 +373,7 @@ void AtenForcefieldEditor::BondFunctionChanged(int index)
 	}
 	// Get ForcefieldBound pointer and set data
 	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setBondStyle( (BondFunctions::BondFunction) index);
+	ffb->setBondForm( (BondFunctions::BondFunction) index);
 }
 
 // Item in bonds table edited
@@ -430,7 +430,7 @@ void AtenForcefieldEditor::AngleFunctionChanged(int index)
 	}
 	// Get ForcefieldBound pointer and set data
 	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setAngleStyle( (AngleFunctions::AngleFunction) index);
+	ffb->setAngleForm( (AngleFunctions::AngleFunction) index);
 }
 
 // Item in angles table edited
@@ -488,7 +488,7 @@ void AtenForcefieldEditor::TorsionFunctionChanged(int index)
 	}
 	// Get ForcefieldBound pointer and set data
 	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setTorsionStyle( (TorsionFunctions::TorsionFunction) index);
+	ffb->setTorsionForm( (TorsionFunctions::TorsionFunction) index);
 }
 
 // Item in torsions table edited

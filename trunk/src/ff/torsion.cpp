@@ -48,7 +48,7 @@ void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 			phi = srcmodel->torsion(i,j,k,l) / DEGRAD;
 			ffb = pb->data();
 			// Calculate energy
-			switch (pb->data()->torsionStyle())
+			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
 					msg.print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
@@ -113,7 +113,7 @@ void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 					k9 = ffb->parameter(TorsionFunctions::Pol9K9);
 					energy += k1 + cos(chi)*(k2 + cos(chi)*(k3 + cos(chi)*(k4 + cos(chi)*(k5 + cos(chi)*(k6 + cos(chi)*(k7 + cos(chi)*(k8 + cos(chi)*k9)))))));
 				default:
-					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
+					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -233,7 +233,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			dcos_dxpk = (xpj - xpk * dp) / mag_xpk;
 
 			// Generate derivative of energy function (placed in 'du_dphi')
-			switch (pb->data()->torsionStyle())
+			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
 					msg.print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
@@ -285,7 +285,7 @@ void Pattern::torsionForces(Model *srcmodel)
 					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(period*(phi - eq));
 					break;
 				default:
-					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
+					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
 					break;
 			}
 // 			printf("i-j-k-l %i-%i-%i-%i %f %f %f\n",i,j,k,l, phi, dphi_dcosphi, du_dphi);

@@ -87,15 +87,14 @@ namespace VdwFunctions
 // Bond Potential Functions
 namespace BondFunctions
 {
-	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
+	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char *s, bool reporterror = FALSE);
 	int bondParameter(BondFunction, const char *s, bool reporterror = FALSE);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
-	enum MorseParameter { MorseK, MorseEq, MorseD };
-	enum Morse2Parameter { Morse2K, Morse2Eq, Morse2D };
+	enum MorseParameter { MorseD, MorseB, MorseEq };
 }
 
 // Angle potential forms

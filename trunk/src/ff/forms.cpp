@@ -181,13 +181,9 @@ FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Morse", "morse", 3,
-		{ "Force K", "Eq. Distance", "E(Diss.)" },
-		{ "k", "eq", "d" },
-		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
-	{ "Morse2", "morse2", 3,
-		{ "Force K", "Eq. Distance", "E(Diss.)" },
-		{ "k", "eq", "d" },
-		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ "E(D)", "Beta", "Eq. Distance" },
+		{ "d", "beta", "eq" },
+		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 BondFunctions::BondFunction BondFunctions::bondFunction(const char *s, bool reporterror)
 {

@@ -644,7 +644,7 @@ bool Forcefield::readBonds()
 			newffbond->setType(ForcefieldBound::BondInteraction);
 			newffbond->setTypeName(0,ffparser.argc(0));
 			newffbond->setTypeName(1,ffparser.argc(1));
-			newffbond->setBondStyle(bondstyle);
+			newffbond->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
 			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
@@ -698,7 +698,7 @@ bool Forcefield::readAngles()
 			newffangle->setTypeName(0, ffparser.argc(0));
 			newffangle->setTypeName(1, ffparser.argc(1));
 			newffangle->setTypeName(2, ffparser.argc(2));
-			newffangle->setAngleStyle(anglestyle);
+			newffangle->setAngleForm(anglestyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
@@ -767,7 +767,7 @@ bool Forcefield::readTorsions()
 			newfftorsion->setTypeName(1,ffparser.argc(1));
 			newfftorsion->setTypeName(2,ffparser.argc(2));
 			newfftorsion->setTypeName(3,ffparser.argc(3));
-			newfftorsion->setTorsionStyle(torsionstyle);
+			newfftorsion->setTorsionForm(torsionstyle);
 			newfftorsion->setScaleFactors(escale, vscale);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
@@ -824,7 +824,7 @@ bool Forcefield::readImpropers()
 			newffimproper->setTypeName(1,ffparser.argc(1));
 			newffimproper->setTypeName(2,ffparser.argc(2));
 			newffimproper->setTypeName(3,ffparser.argc(3));
-			newffimproper->setTorsionStyle(torsionstyle);
+			newffimproper->setTorsionForm(torsionstyle);
 			newffimproper->setScaleFactors(1.0,1.0);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
 			msg.print(Messenger::Verbose,"IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
@@ -880,7 +880,7 @@ bool Forcefield::readUreyBradley()
 			newffurey->setTypeName(0,ffparser.argc(0));
 			newffurey->setTypeName(1,ffparser.argc(1));
 			newffurey->setTypeName(2,ffparser.argc(2));
-			newffurey->setBondStyle(bondstyle);
+			newffurey->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffurey->setParameter(n, ffparser.argd(n+3));
 			msg.print(Messenger::Verbose,"UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffurey->typeName(0), newffurey->typeName(1), newffurey->typeName(2), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
 			count ++;

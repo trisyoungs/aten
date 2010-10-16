@@ -187,7 +187,7 @@ ForcefieldBound *Forcefield::addBond(BondFunctions::BondFunction form)
 {
 	ForcefieldBound *ffb = bonds_.add();
 	ffb->setType(ForcefieldBound::BondInteraction);
-	ffb->setBondStyle(form);
+	ffb->setBondForm(form);
 	return ffb;
 }
 
@@ -254,7 +254,7 @@ ForcefieldBound *Forcefield::addAngle(AngleFunctions::AngleFunction form)
 {
 	ForcefieldBound *ffb = angles_.add();
 	ffb->setType(ForcefieldBound::AngleInteraction);
-	ffb->setAngleStyle(form);
+	ffb->setAngleForm(form);
 	return ffb;
 }
 
@@ -329,7 +329,7 @@ ForcefieldBound *Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
 {
 	ForcefieldBound *ffb = torsions_.add();
 	ffb->setType(ForcefieldBound::TorsionInteraction);
-	ffb->setTorsionStyle(form);
+	ffb->setTorsionForm(form);
 	return ffb;
 }
 
@@ -400,7 +400,7 @@ ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
 {
 	ForcefieldBound *ffb = impropers_.add();
 	ffb->setType(ForcefieldBound::TorsionInteraction);
-	ffb->setTorsionStyle(form);
+	ffb->setTorsionForm(form);
 	return ffb;
 }
 
@@ -436,7 +436,7 @@ ForcefieldBound *Forcefield::addUreyBradley(BondFunctions::BondFunction form)
 {
 	ForcefieldBound *ffb = ureyBradleys_.add();
 	ffb->setType(ForcefieldBound::BondInteraction);
-	ffb->setBondStyle(form);
+	ffb->setBondForm(form);
 	return ffb;
 }
 
@@ -601,20 +601,20 @@ void Forcefield::convertParameters()
 	// Bonds 
 	for (ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		if (ffb->bondStyle() == BondFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		if (ffb->bondForm() == BondFunctions::None) continue;
+		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Angles
 	for (ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		if (ffb->angleStyle() == AngleFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		if (ffb->angleForm() == AngleFunctions::None) continue;
+		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Torsions
 	for (ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		if (ffb->torsionStyle() == TorsionFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		if (ffb->torsionForm() == TorsionFunctions::None) continue;
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Set new energy unit of the forcefield to the programs internal unit
 	energyUnit_ = prefs.energyUnit();

@@ -72,9 +72,7 @@ FunctionAccessor ForcefieldAtomVariable::functionData[ForcefieldAtomVariable::nF
 	{ "datad",		VTypes::DoubleData,	"C",	"string name" },
 	{ "datai",		VTypes::IntegerData,	"C",	"string name" },
 	{ "datas",		VTypes::StringData,	"C",	"string name" },
-	{ "generatord",		VTypes::DoubleData,	"C",	"string name" },
-	{ "generatori",		VTypes::IntegerData,	"C",	"string name" },
-	{ "generators",		VTypes::StringData,	"C",	"string name" }
+	{ "parameter",		VTypes::DoubleData,	"C",	"string name" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -366,6 +364,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 	ForcefieldAtom *at2;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	Variable *v;
+	int id;
 	ReturnValue resultrv;
 	if (result) switch (i)
 	{
@@ -413,6 +412,11 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			else if (i == ForcefieldAtomVariable::DataI) rv.set(resultrv.asInteger());
 			else if (i == ForcefieldAtomVariable::DataS) rv.set(resultrv.asString());
 			else result = FALSE;
+			break;
+		case (ForcefieldAtomVariable::Parameter):
+			id = VdwFunctions::vdwParameter(ptr->vdwForm(), node->argc(0), TRUE);
+			if (id == VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters) result = FALSE;
+			else rv.set(ptr->parameter(id));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldAtomVariable.\n", functionData[i].name);

@@ -76,7 +76,7 @@
 				</thead>
 				<tbody>
 					<row>
-						<entry>finddata ( string <emphasis>keyword</emphasis> )</entry>
+						<entry>parameter ( string <emphasis>keyword</emphasis> )</entry>
 						<entry>double</entry>
 						<entry>Search for and return the named parameter of the bound interaction</entry>
 					</row>
