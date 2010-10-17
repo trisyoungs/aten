@@ -1,5 +1,5 @@
 /*
-	*** Messaging Commands
+	*** Messaging and GUI Commands
 	*** src/command/messaging.cpp
 	Copyright T. Youngs 2007-2010
 
@@ -25,6 +25,12 @@
 #include "gui/gui.h"
 
 // Write line to msg output and stop
+bool Command::function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	printf("Dialog NOT IMPLEMENTED YET.\n");
+}
+
+// Write line to msg output and stop
 bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	Format *fmt = c->createFormat(0,1);
@@ -39,6 +45,30 @@ bool Command::function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if (gui.exists()) QMessageBox::critical(NULL, "Aten", fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	c->parent()->setAcceptedFail(Command::Error);
+	return FALSE;
+}
+
+// Display message dialog and continue
+bool Command::function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Format *fmt = c->createFormat(1,2);
+	if (fmt == NULL)
+	{
+		printf("Error - No format defined in 'message' command.\n");
+		return FALSE;
+	}
+	if (fmt->writeToString())
+	{
+		msg.print("[%s] %s\n",c->argc(0), fmt->string());
+		if (gui.exists()) QMessageBox::information(NULL, c->argc(0), fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
+	}
+	return TRUE;
+}
+
+// Create GUI option
+bool Command::function_Option(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	printf("THIS SHOULD NEVER BE CALLED\n");
 	return FALSE;
 }
 

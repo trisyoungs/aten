@@ -386,8 +386,11 @@ class Command
 		Torsion,
 		Torsions,
 	
-		// Messaging
+		// Messaging and GUI
+		Dialog,
 		Error,
+		Message,
+		Option,
 		Printf,
 		Verbose,
 	
@@ -847,7 +850,10 @@ class Command
 	static bool function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Messaging
+	static bool function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Message(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Option(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Printf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Verbose(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Minimisation Commands

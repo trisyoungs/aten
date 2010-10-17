@@ -36,7 +36,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 	returnsarray = FALSE;
 	switch (func)
 	{
-		// Postfix and prefix operators (must have integer or real types)
+		// Postfix and prefix operators (must have integer or real types, or pointer class with list pointers)
 		case (Command::OperatorPostfixIncrease):
 		case (Command::OperatorPostfixDecrease):
 		case (Command::OperatorPrefixIncrease):
