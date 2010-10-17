@@ -893,10 +893,19 @@ CommandData Command::data[Command::nCommands] = {
 		"",
 		"Measure torsion angles between atoms in current selection" },
 
-	// Messaging
+	// Messaging and GUI
+	{ "dialog",		"C*",		VTypes::IntegerData,
+		"string guidefinitions",
+		"Create and run a GUI dialog (if the GUI exists)" },
 	{ "error",		"Cz*",		VTypes::NoData,
 		"string format ...",
 		"Raise an error message (causes exit of current command list) (C printf-style)" },
+	{ "message",		"CCz*",		VTypes::NoData,
+		"string title, string format ...",
+		"Raise a message box with given title and (C printf-style) content string" },
+	{ "_OPTION",		"",		VTypes::NoData,
+		"",
+		"" },
 	{ "printf",		"Cz*",		VTypes::NoData,
 		"string format ...",
 		"Print a message (C printf-style)" },
