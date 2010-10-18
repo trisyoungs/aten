@@ -257,16 +257,12 @@ class Pattern
 	List<PatternBound> angles_;
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
-	// List of Urey-Bradley terms in one pattern molecule
-	List<PatternBound> ureyBradleys_;
 	// Reference list of bond terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldBonds_;
 	// Reference list of angle terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldAngles_;
 	// Reference list of torsion terms in pattern
 	Reflist<ForcefieldBound, int> forcefieldTorsions_;
-	// Reference list of Urey-Bradley terms in pattern
-	Reflist<ForcefieldBound, int> forcefieldUreyBradleys_;
 	// Reference list of unique (by name) atom types used in the pattern
 	Reflist<ForcefieldAtom, int> uniqueForcefieldTypes_;
 	// Reference list of all (i.e. unique by pointer) atom types used in the pattern
@@ -293,8 +289,6 @@ class Pattern
 	void addAngleData(ForcefieldBound *ffb, int i, int j, int k);
 	// Add torsion data
 	void addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l);
-	// Add Urey-Bradley data
-	void addUreyBradleyData(ForcefieldBound *ffb, int i, int j);
 	// Whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool atomsFixed_;
 
@@ -371,8 +365,6 @@ class Pattern
 	void angleEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate torsion energy (including impropers) of pattern (or specific molecule)
 	void torsionEnergy(Model *source, EnergyStore *estore, int molecule = -1);
-	// Calculate Urey-Bradley energy (including impropers) of pattern (or specific molecule)
-	void ureyBradleyEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate intrapattern Vdw energy (or for specific molecule)
 	bool vdwIntraPatternEnergy(Model *source, EnergyStore *estore, int molecule = -1);
 	// Calculate interpattern Vdw energy (or for specific molecule)
@@ -397,8 +389,6 @@ class Pattern
 	void angleForces(Model *source);
 	// Calculate torsion forces (including impropers) in pattern
 	void torsionForces(Model *source);
-	// Calculate Urey-Bradley forces in pattern
-	void ureyBradleyForces(Model *source);
 	// Calculate Vdw intrapattern forces
 	bool vdwIntraPatternForces(Model *source);
 	// Calculate Vdw interpattern forces

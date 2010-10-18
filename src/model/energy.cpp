@@ -68,7 +68,6 @@ double Model::totalEnergy(Model *srcmodel, bool &success)
 			p->bondEnergy(srcmodel, &energy);
 			p->angleEnergy(srcmodel, &energy);
 			p->torsionEnergy(srcmodel, &energy);
-			p->ureyBradleyEnergy(srcmodel, &energy);
 		}
 		// Van der Waals Interactions
 		if (prefs.calculateVdw())
@@ -209,7 +208,6 @@ bool Model::calculateForces(Model *srcmodel)
 			p->bondForces(srcmodel);
 			p->angleForces(srcmodel);
 			p->torsionForces(srcmodel);
-			p->ureyBradleyForces(srcmodel);
 		}
 		// VDW
 		if (prefs.calculateVdw())

@@ -241,22 +241,6 @@ void Pattern::addTorsionData(ForcefieldBound *ffb, int i, int j, int k, int l)
 	pb->setForcefieldDataId(n);
 }
 
-// Add the Urey-Bradley data specified
-void Pattern::addUreyBradleyData(ForcefieldBound *ffb, int i, int j)
-{
-	PatternBound *pb = ureyBradleys_.add();
-	pb->setAtomId(0,i);
-	pb->setAtomId(1,j);
-	pb->setData(ffb);
-	pb->setForcefieldDataId(-1);
-	// Add this to the unique bonds list if it isn't there already
-	int n;
-	for (n=0; n<forcefieldUreyBradleys_.nItems(); ++n) if (forcefieldUreyBradleys_[n]->item == ffb) break;
-	if (n == forcefieldUreyBradleys_.nItems()) forcefieldUreyBradleys_.add(ffb, 1);
-	else forcefieldUreyBradleys_[n]->data = forcefieldUreyBradleys_[n]->data + 1;
-	pb->setForcefieldDataId(n);
-}
-
 // Sets the ID of the pattern
 void Pattern::setId(int i)
 {

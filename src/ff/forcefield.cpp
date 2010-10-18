@@ -399,7 +399,7 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 ForcefieldBound *Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
 {
 	ForcefieldBound *ffb = impropers_.add();
-	ffb->setType(ForcefieldBound::TorsionInteraction);
+	ffb->setType(ForcefieldBound::ImproperInteraction);
 	ffb->setTorsionForm(form);
 	return ffb;
 }
@@ -435,7 +435,7 @@ ForcefieldBound *Forcefield::improper(int n)
 ForcefieldBound *Forcefield::addUreyBradley(BondFunctions::BondFunction form)
 {
 	ForcefieldBound *ffb = ureyBradleys_.add();
-	ffb->setType(ForcefieldBound::BondInteraction);
+	ffb->setType(ForcefieldBound::UreyBradleyInteraction);
 	ffb->setBondForm(form);
 	return ffb;
 }

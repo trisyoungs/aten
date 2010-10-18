@@ -50,6 +50,7 @@ Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = 
 	{ "form", 	VTypes::StringData,		0, TRUE },
 	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, TRUE },
 	{ "termid",	VTypes::IntegerData,		0, TRUE },
+	{ "type", 	VTypes::StringData,		0, TRUE },
 	{ "typenames", 	VTypes::StringData,		MAXFFBOUNDTYPES, TRUE },
 	{ "vscale",	VTypes::DoubleData,		0, TRUE }
 };
@@ -213,6 +214,14 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArra
 			else if (hasArrayIndex) rv.set(ptr->data()->typeName(arrayIndex-1));
 			else rv.setArray(VTypes::StringData, ptr->data()->typeNames(), MAXFFPARAMDATA);
 			break;
+		case (PatternBoundVariable::Type):
+			if (ptr->data() == NULL)
+			{
+				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
+				result = FALSE;
+			}
+			else rv.set(ForcefieldBound::boundType(ptr->data()->type()));
+			break;
 		case (PatternBoundVariable::VScale):
 			if (ptr->data() == NULL)
 			{
@@ -338,6 +347,7 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 			switch (ptr->data()->type())
 			{
 				case (ForcefieldBound::BondInteraction):
+				case (ForcefieldBound::UreyBradleyInteraction):
 					id = BondFunctions::bondParameter(ptr->data()->bondForm(), node->argc(0), TRUE);
 					if (id == BondFunctions::BondFunctions[ptr->data()->bondForm()].nParameters) result = FALSE;
 					else rv.set(ptr->data()->parameter(id));
@@ -348,6 +358,7 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *nod
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
+				case (ForcefieldBound::ImproperInteraction):
 					id = TorsionFunctions::torsionParameter(ptr->data()->torsionForm(), node->argc(0), TRUE);
 					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionForm()].nParameters) result = FALSE;
 					else rv.set(ptr->data()->parameter(id));
