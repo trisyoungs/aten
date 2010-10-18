@@ -50,6 +50,12 @@
 						<entry>Array index of forcefield term in relevant list (ffangles, ffbonds, or fftorsions) in local <link linkend="command.types.pattern">pattern</link></entry>
 					</row>
 					<row>
+						<entry>type</entry>
+						<entry>string</entry>
+						<entry>ro</entry>
+						<entry>Returns the <link linkend="enums.boundtypes">type</link> of the interaction.</entry>
+					</row>
+					<row>
 						<entry>typenames</entry>
 						<entry>string[]</entry>
 						<entry>ro</entry>

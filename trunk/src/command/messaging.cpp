@@ -28,6 +28,7 @@
 bool Command::function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	printf("Dialog NOT IMPLEMENTED YET.\n");
+	return FALSE;
 }
 
 // Write line to msg output and stop

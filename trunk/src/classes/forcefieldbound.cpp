@@ -25,8 +25,8 @@
 #include <stdio.h>
 
 // Interaction types
-const char *ForcefieldBoundKeywords[] = { "none", "bond", "angle", "torsion", "improper" };
-int ForcefieldBoundNAtoms[] = { 0, 2, 3, 4, 4 };
+const char *ForcefieldBoundKeywords[] = { "none", "bond", "angle", "torsion", "improper", "ub" };
+int ForcefieldBoundNAtoms[] = { 0, 2, 3, 4, 4, 2 };
 const char *ForcefieldBound::boundType(ForcefieldBound::BoundType bt)
 {
 	return ForcefieldBoundKeywords[bt];
@@ -66,6 +66,7 @@ const char *ForcefieldBound::formText() const
 	switch (type_)
 	{
 		case (ForcefieldBound::BondInteraction):
+		case (ForcefieldBound::UreyBradleyInteraction):
 			return BondFunctions::BondFunctions[bondForm()].keyword;
 			break;
 		case (ForcefieldBound::AngleInteraction):
@@ -131,6 +132,7 @@ bool ForcefieldBound::setForm(const char *form)
 	switch (type_)
 	{
 		case (ForcefieldBound::BondInteraction):
+		case (ForcefieldBound::UreyBradleyInteraction):
 			newform = BondFunctions::bondFunction(form);
 			if (newform == BondFunctions::nBondFunctions) msg.print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
 			else setBondForm((BondFunctions::BondFunction) newform);

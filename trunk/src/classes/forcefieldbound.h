@@ -34,7 +34,7 @@ class ForcefieldBound
 	// Constructor
 	ForcefieldBound();
 	// Forcefield Bound Interaction Type
-	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction, ImproperInteraction };
+	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction, ImproperInteraction, UreyBradleyInteraction };
 	static const char *boundType(ForcefieldBound::BoundType bt);
 	static int boundTypeNAtoms(ForcefieldBound::BoundType bt);
 
@@ -96,7 +96,7 @@ class ForcefieldBound
 	// Return VDW scale factor (if torsion)
 	double vdwScale() const;
 	// Return if supplied names match those stored (in either 'direction')
-	bool namesMatch(const char *namei, const char *namej,const char *namek = NULL, const char *namel = NULL); 
+	bool namesMatch(const char *namei, const char *namej,const char *namek = NULL, const char *namel = NULL);
 };
 
 #endif

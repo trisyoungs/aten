@@ -175,12 +175,14 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			else switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
+				case (ForcefieldBound::UreyBradleyInteraction):
 					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].parameterKeywords[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].parameterKeywords[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
+				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameterKeywords[arrayIndex-1]);
 					break;
 			}
@@ -195,12 +197,14 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			else switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
+				case (ForcefieldBound::UreyBradleyInteraction):
 					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].parameters[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].parameters[arrayIndex-1]);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
+				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].parameters[arrayIndex-1]);
 					break;
 			}
@@ -223,12 +227,14 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
+				case (ForcefieldBound::UreyBradleyInteraction):
 					rv.set(BondFunctions::BondFunctions[ptr->bondForm()].nParameters);
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					rv.set(AngleFunctions::AngleFunctions[ptr->angleForm()].nParameters);
 					break;
 				case (ForcefieldBound::TorsionInteraction):
+				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters);
 					break;
 			}
@@ -386,6 +392,7 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 			switch (ptr->type())
 			{
 				case (ForcefieldBound::BondInteraction):
+				case (ForcefieldBound::UreyBradleyInteraction):
 					id = BondFunctions::bondParameter(ptr->bondForm(), node->argc(0), TRUE);
 					if (id == BondFunctions::BondFunctions[ptr->bondForm()].nParameters) result = FALSE;
 					else rv.set(ptr->parameter(id));
@@ -396,6 +403,7 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 					else rv.set(ptr->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
+				case (ForcefieldBound::ImproperInteraction):
 					id = TorsionFunctions::torsionParameter(ptr->torsionForm(), node->argc(0), TRUE);
 					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters) result = FALSE;
 					else rv.set(ptr->parameter(id));

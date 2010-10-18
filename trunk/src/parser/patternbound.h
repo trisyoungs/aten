@@ -41,7 +41,7 @@ class PatternBoundVariable : public PointerVariable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { Data, EScale, Form, Id, TermId, TypeNames, VScale, nAccessors };
+	enum Accessors { Data, EScale, Form, Id, TermId, Type, TypeNames, VScale, nAccessors };
 	// Function list
 	enum Functions { Parameter, nFunctions };
 	// Search variable access list for provided accessor

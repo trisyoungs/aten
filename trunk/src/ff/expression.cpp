@@ -240,7 +240,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 						if (ffb != NULL)
 						{
 							++nUreyBradleys;
-							addUreyBradleyData(ffb, bonding[jj][ii]->value(), bonding[jj][kk]->value());
+							addBondData(ffb, bonding[jj][ii]->value(), bonding[jj][kk]->value());
 						}
 					}
 				}
@@ -255,7 +255,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 		else if (iangles == 0)
 		{
 			if (nUreyBradleys == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
-			else msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", ureyBradleys_.nItems());
+			else msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", nUreyBradleys);
 		}
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.

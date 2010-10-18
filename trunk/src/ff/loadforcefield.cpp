@@ -819,7 +819,7 @@ bool Forcefield::readImpropers()
 			}
 			// Create new ff_angle structure
 			newffimproper = impropers_.add();
-			newffimproper->setType(ForcefieldBound::TorsionInteraction);
+			newffimproper->setType(ForcefieldBound::ImproperInteraction);
 			newffimproper->setTypeName(0,ffparser.argc(0));
 			newffimproper->setTypeName(1,ffparser.argc(1));
 			newffimproper->setTypeName(2,ffparser.argc(2));
@@ -876,7 +876,7 @@ bool Forcefield::readUreyBradley()
 			}
 			// Create new ff_angle structure
 			newffurey = ureyBradleys_.add();
-			newffurey->setType(ForcefieldBound::BondInteraction);
+			newffurey->setType(ForcefieldBound::UreyBradleyInteraction);
 			newffurey->setTypeName(0,ffparser.argc(0));
 			newffurey->setTypeName(1,ffparser.argc(1));
 			newffurey->setTypeName(2,ffparser.argc(2));

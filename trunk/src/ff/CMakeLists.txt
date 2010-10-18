@@ -13,7 +13,6 @@ forms.cpp
 loadforcefield.cpp
 rules.cpp 
 torsion.cpp 
-ureybradley.cpp
 vdw.cpp
 )
 

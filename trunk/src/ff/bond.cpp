@@ -28,14 +28,16 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	msg.enter("Pattern::bondEnergy");
 	int i, j, m1, aoff;
-	static double forcek, eq, rij, energy, d, expo, beta;
-	static ForcefieldBound *ffb;
+	double forcek, eq, rij, energy, ubenergy, bondenergy, d, expo, beta;
+	ForcefieldBound *ffb;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
 	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMolecules_,nAtoms_,nbonds);
+	bondenergy = 0.0;
+	ubenergy = 0.0;
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
@@ -49,20 +51,21 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 				case (BondFunctions::None):
 					msg.print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
 				case (BondFunctions::Ignore):
+					energy = 0.0;
 					break;
 				case (BondFunctions::Constraint):
 					// U = 0.5 * forcek * (r - eq)**2
 					forcek = fabs(ffb->parameter(BondFunctions::ConstraintK));
 					eq = ffb->parameter(BondFunctions::ConstraintEq);
 					rij -= eq;
-					energy += 0.5 * forcek * rij * rij;
+					energy = 0.5 * forcek * rij * rij;
 					break;
 				case (BondFunctions::Harmonic):
 					// U = 0.5 * forcek * (r - eq)**2
 					forcek = fabs(ffb->parameter(BondFunctions::HarmonicK));
 					eq = ffb->parameter(BondFunctions::HarmonicEq);
 					rij -= eq;
-					energy += 0.5 * forcek * rij * rij;
+					energy = 0.5 * forcek * rij * rij;
 					break;
 				case (BondFunctions::Morse):
 					// U = E0 * (1 - exp( -B(rij - r0) ) )**2
@@ -71,17 +74,22 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 					eq = ffb->parameter(BondFunctions::MorseEq);
 					rij -= eq;
 					expo = 1.0 - exp( -beta * rij );
-					energy += d * ( expo*expo );
+					energy = d * ( expo*expo );
 					break;
 				default:
-					msg.print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
+					msg.print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
+					energy = 0.0;
 					break;
 			}
+			// Accumulate
+			if (ffb->type() == ForcefieldBound::BondInteraction) bondenergy += energy;
+			else ubenergy += energy;
 		}
 		aoff = aoff + nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(EnergyStore::BondEnergy,energy,id_);
+	estore->add(EnergyStore::BondEnergy,bondenergy,id_);
+	estore->add(EnergyStore::UreyBradleyEnergy,ubenergy,id_);
 	msg.exit("Pattern::bondEnergy");
 }
 
