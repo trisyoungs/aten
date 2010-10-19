@@ -106,6 +106,7 @@ bool UndoState::doLogsDiffer() const
 	if (startLogs_.log(Log::Structure) != endLogs_.log(Log::Structure)) return TRUE;
 	if (startLogs_.log(Log::Coordinates) != endLogs_.log(Log::Coordinates)) return TRUE;
 	if (startLogs_.log(Log::Selection) != endLogs_.log(Log::Selection)) return TRUE;
+	if (startLogs_.log(Log::Visual) != endLogs_.log(Log::Visual)) return TRUE;
 	return FALSE;
 }
 

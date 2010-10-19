@@ -75,7 +75,7 @@ void Model::beginUndoState(const char *fmt ...)
 	recordingState_->setDescription(msgs);
 	recordingState_->setStartLogs(changeLog);
 	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
-	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, visual = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Visual));
 	msg.exit("Model::beginUndoState");
 }
 

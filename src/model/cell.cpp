@@ -39,8 +39,7 @@ Cell *Model::cell()
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
 	msg.enter("Model::setCell[vectors]");
-	Vec3<double> oldlengths = cell_.lengths();
-	Vec3<double> oldangles = cell_.angles();
+	Mat3<double> oldmatrix = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(lengths, angles);
@@ -49,7 +48,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, lengths, angles, oldhs, TRUE);
+		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -60,8 +59,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 void Model::setCell(Mat3<double> axes)
 {
 	msg.enter("Model::setCell[axes]");
-	Vec3<double> oldlengths = cell_.lengths();;
-	Vec3<double> oldangles = cell_.angles();
+	Mat3<double> oldmatrix = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(axes);
@@ -70,7 +68,7 @@ void Model::setCell(Mat3<double> axes)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
+		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -81,8 +79,7 @@ void Model::setCell(Mat3<double> axes)
 void Model::setCell(Cell::CellParameter cp, double value)
 {
 	msg.enter("Model::setCell[parameter]");
-	Vec3<double> oldlengths = cell_.lengths();
-	Vec3<double> oldangles = cell_.angles();
+	Mat3<double> oldmatrix = cell_.axes();
 	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
@@ -91,7 +88,7 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
+		newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	changeLog.add(Log::Visual);
@@ -104,8 +101,7 @@ void Model::setCell(Cell *newcell)
 	if (newcell == NULL) printf("Warning: NULL Cell pointer passed to Model::setCell().\n");
 	else
 	{
-		Vec3<double> oldlengths = cell_.lengths();
-		Vec3<double> oldangles = cell_.angles();
+		Mat3<double> oldmatrix = cell_.axes();
 		bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 		cell_ = *newcell;
 		calculateDensity();
@@ -113,7 +109,7 @@ void Model::setCell(Cell *newcell)
 		if (recordingState_ != NULL)
 		{
 			CellEvent *newchange = new CellEvent;
-			newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
+			newchange->set(oldmatrix, cell_.axes(), oldhs, TRUE);
 			recordingState_->addEvent(newchange);
 		}
 	}
@@ -129,7 +125,7 @@ void Model::removeCell()
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(cell_.lengths(), cell_.angles(), cell_.lengths(), cell_.angles(), cell_.type() == Cell::NoCell, FALSE);
+		newchange->set(cell_.axes(), cell_.axes(), cell_.type() == Cell::NoCell, FALSE);
 		recordingState_->addEvent(newchange);
 	}
 	cell_.reset();
