@@ -33,18 +33,25 @@ class AtenCellDefine : public QDialog
 	/*
 	// Window Functions
 	*/
+	private:
+	void refreshMatrix();
+	void refreshABC();
 	public:
 	void showWindow();
 	void refresh();
-	void cellChanged();
+	void cellChanged(int index, double newvalue);
 	private slots:
 	void on_CellDefinitionGroup_clicked(bool checked);
-	void on_CellLengthASpin_valueChanged(double d);
-	void on_CellLengthBSpin_valueChanged(double d);
-	void on_CellLengthCSpin_valueChanged(double d);
-	void on_CellAngleASpin_valueChanged(double d);
-	void on_CellAngleBSpin_valueChanged(double d);
-	void on_CellAngleCSpin_valueChanged(double d);
+	void on_CellMatrixXXSpin_editingFinished();
+	void on_CellMatrixXYSpin_editingFinished();
+	void on_CellMatrixXZSpin_editingFinished();
+	void on_CellMatrixYXSpin_editingFinished();
+	void on_CellMatrixYYSpin_editingFinished();
+	void on_CellMatrixYZSpin_editingFinished();
+	void on_CellMatrixZXSpin_editingFinished();
+	void on_CellMatrixZYSpin_editingFinished();
+	void on_CellMatrixZZSpin_editingFinished();
+	void on_DefineFromABCButton_clicked(bool checked);
 	void on_CellSpacegroupSetButton_clicked(bool checked);
 	void on_CellSpacegroupEdit_returnPressed();
 	void on_CellSpacegroupRemoveButton_clicked(bool checked);

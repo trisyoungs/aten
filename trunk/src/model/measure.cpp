@@ -91,7 +91,7 @@ double Model::addDistanceMeasurement(Atom *i, Atom *j, bool quiet)
 {
 	// Measure distances between atoms
 	msg.enter("Model::addDistanceMeasurement");
-	bool result = 0.0;
+	double result = 0.0;
 	Measurement *newdist = findDistanceMeasurement(i,j);
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
 	if (newdist == NULL)
@@ -116,7 +116,7 @@ double Model::addAngleMeasurement(Atom *i, Atom *j, Atom *k, bool quiet)
 {
 	// Measure angles between atoms
 	msg.enter("Model::addAngleMeasurement");
-	bool result = 0.0;
+	double result = 0.0;
 	Measurement *newangle = findAngleMeasurement(i,j,k);
 	// Check that this angle isn't already in the list. If it is, delete it
 	if (newangle == NULL)
@@ -141,7 +141,7 @@ double Model::addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l, bool qui
 {
 	// Measure torsions between atoms
 	msg.enter("Model::addTorsionMeasurement");
-	bool result = 0.0;
+	double result = 0.0;
 	Measurement *newtorsion = findTorsionMeasurement(i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
 	if (newtorsion == NULL)
@@ -273,7 +273,6 @@ Measurement *Model::addMeasurement(Measurement::MeasurementType gt, ...)
 	for (n=0; n<nexpected; ++n) newm->setAtom(n, atoms[n]);
 	newm->setType(gt);
 	newm->calculate(&cell_);
-	newm->print();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
