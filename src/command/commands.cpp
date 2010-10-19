@@ -865,7 +865,7 @@ CommandData Command::data[Command::nCommands] = {
 		"Print current Monte Carlo parameters" },
 	
 	// Measurements
-	{ "angle",		"AAA",		VTypes::DoubleData,
+	{ "angle",		"AAAb",		VTypes::DoubleData,
 		"atom|int id1, atom|int id2, atom|int id3, bool quiet = FALSE", 
 		"Measure, return, and print (unless quiet) angle between atoms specified" },
 	{ "angles",		"",		VTypes::NoData,
@@ -886,7 +886,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "measure",		"AAaa",		VTypes::DoubleData,
 		"atom|int id1, atom|int id2, atom|int id3 = 0, atom|int id4 = 0", 
 		"Make and return (but don't print) a measurement between the specified atoms" },
-	{ "torsion",		"AAAA",		VTypes::DoubleData,
+	{ "torsion",		"AAAAb",	VTypes::DoubleData,
 		"atom|int id1, atom|int id2, atom|int id3 , atom|int id4", 
 		"Measure, return, and print (unless quiet) torsion angle between atoms specified, bool quiet = FALSE" },
 	{ "torsions",		"",		VTypes::NoData,
