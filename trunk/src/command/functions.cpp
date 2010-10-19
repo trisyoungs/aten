@@ -336,15 +336,11 @@ void Command::initPointers()
 	pointers_[PrintMC] = &Command::function_PrintMC;
 
 	// Measurement Commands
-	pointers_[Angle] = &Command::function_Angle;
-	pointers_[Angles] = &Command::function_Angles;
 	pointers_[ClearMeasurements] = &Command::function_ClearMeasurements;
-	pointers_[Distance] = &Command::function_Distance;
-	pointers_[Distances] = &Command::function_Distances;
+	pointers_[GeometryCalc] = &Command::function_GeometryCalc;
 	pointers_[ListMeasurements] = &Command::function_ListMeasurements;
 	pointers_[Measure] = &Command::function_Measure;
-	pointers_[Torsion] = &Command::function_Torsion;
-	pointers_[Torsions] = &Command::function_Torsions;
+	pointers_[MeasureSelected] = &Command::function_MeasureSelected;
 
 	// Messaging Commands
 	pointers_[Dialog] = &Command::function_Dialog;
