@@ -915,17 +915,17 @@ class Model
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Add distance measurement between atoms
-	double addDistanceMeasurement(Atom *i, Atom *j);
+	double addDistanceMeasurement(Atom *i, Atom *j, bool quiet = FALSE);
 	// Add distance measurement between atom ids
-	double addDistanceMeasurement(int i, int j);
+	double addDistanceMeasurement(int i, int j, bool quiet = FALSE);
 	// Add angle measurement between atoms
-	double addAngleMeasurement(Atom *i, Atom *j, Atom *k);
+	double addAngleMeasurement(Atom *i, Atom *j, Atom *k, bool quiet = FALSE);
 	// Add angle measurement between atom ids
-	double addAngleMeasurement(int i, int j, int k);
+	double addAngleMeasurement(int i, int j, int k, bool quiet = FALSE);
 	// Add torsion measurement between atoms
-	double addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l);
+	double addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l, bool quiet = FALSE);
 	// Add torsion measurement between atom ids
-	double addTorsionMeasurement(int i, int j, int k, int l);
+	double addTorsionMeasurement(int i, int j, int k, int l, bool quiet = FALSE);
 	// Update stored measurements
 	void updateMeasurements();
 	// List stored measurements

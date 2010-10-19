@@ -87,60 +87,78 @@ void Model::clearMeasurements()
 }
 
 // Add distance measurement
-double Model::addDistanceMeasurement(Atom *i, Atom *j)
+double Model::addDistanceMeasurement(Atom *i, Atom *j, bool quiet)
 {
 	// Measure distances between atoms
 	msg.enter("Model::addDistanceMeasurement");
+	bool result = 0.0;
 	Measurement *newdist = findDistanceMeasurement(i,j);
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
-	if (newdist == NULL) addMeasurement(Measurement::Distance,i,j);
+	if (newdist == NULL)
+	{
+		newdist = addMeasurement(Measurement::Distance,i,j);
+		if (!quiet) newdist->print();
+		result = newdist->value();
+	}
 	else removeMeasurement(newdist);
 	msg.exit("Model::addDistanceMeasurement");
-	return (newdist == NULL ? 0.0 : newdist->value());
+	return result;
 }
 
 // Add angle measurement (atom ids)
-double Model::addDistanceMeasurement(int i, int j)
+double Model::addDistanceMeasurement(int i, int j, bool quiet)
 {
-	return addDistanceMeasurement(atom(i), atom(j));
+	return addDistanceMeasurement(atom(i), atom(j), quiet);
 }
 
 // Add angle measurement
-double Model::addAngleMeasurement(Atom *i, Atom *j, Atom *k)
+double Model::addAngleMeasurement(Atom *i, Atom *j, Atom *k, bool quiet)
 {
 	// Measure angles between atoms
 	msg.enter("Model::addAngleMeasurement");
+	bool result = 0.0;
 	Measurement *newangle = findAngleMeasurement(i,j,k);
 	// Check that this angle isn't already in the list. If it is, delete it
-	if (newangle == NULL) addMeasurement(Measurement::Angle,i,j,k);
+	if (newangle == NULL)
+	{
+		newangle = addMeasurement(Measurement::Angle,i,j,k);
+		if (!quiet) newangle->print();
+		result = newangle->value();
+	}
 	else removeMeasurement(newangle);
 	msg.exit("Model::addAngleMeasurement");
-	return (newangle == NULL ? 0.0 : newangle->value());
+	return result;
 }
 
 // Add angle measurement (atom ids)
-double Model::addAngleMeasurement(int i, int j, int k)
+double Model::addAngleMeasurement(int i, int j, int k, bool quiet)
 {
-	return addAngleMeasurement(atom(i), atom(j), atom(k));
+	return addAngleMeasurement(atom(i), atom(j), atom(k), quiet);
 }
 
 // Add torsion measurement
-double Model::addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l)
+double Model::addTorsionMeasurement(Atom *i, Atom *j, Atom *k, Atom *l, bool quiet)
 {
 	// Measure torsions between atoms
 	msg.enter("Model::addTorsionMeasurement");
+	bool result = 0.0;
 	Measurement *newtorsion = findTorsionMeasurement(i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
-	if (newtorsion == NULL) newtorsion = addMeasurement(Measurement::Torsion,i,j,k,l);
+	if (newtorsion == NULL)
+	{
+		newtorsion = addMeasurement(Measurement::Torsion,i,j,k,l);
+		if (!quiet) newtorsion->print();
+		result = newtorsion->value();
+	}
 	else removeMeasurement(newtorsion);
 	msg.exit("Model::addTorsionMeasurement");
-	return (newtorsion == NULL ? 0.0 : newtorsion->value());
+	return result;
 }
 
 // Add torsion measurement (atom ids)
-double Model::addTorsionMeasurement(int i, int j, int k, int l)
+double Model::addTorsionMeasurement(int i, int j, int k, int l, bool quiet)
 {
-	return addTorsionMeasurement(atom(i), atom(j), atom(k), atom(l));
+	return addTorsionMeasurement(atom(i), atom(j), atom(k), atom(l), quiet);
 }
 
 // Remove specific measurement
