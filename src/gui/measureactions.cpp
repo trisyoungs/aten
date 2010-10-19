@@ -48,19 +48,19 @@ void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
-	CommandNode::run(Command::Distances, "");
+	CommandNode::run(Command::MeasureSelected, "i", 2);
 	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
-	CommandNode::run(Command::Angles, "");
+	CommandNode::run(Command::MeasureSelected, "i", 3);
 	gui.update(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
-	CommandNode::run(Command::Torsions, "");
+	CommandNode::run(Command::MeasureSelected, "i", 4);
 	gui.update(FALSE,FALSE,FALSE);
 }
 

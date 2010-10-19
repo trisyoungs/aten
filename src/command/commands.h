@@ -376,15 +376,11 @@ class Command
 		PrintMC,
 	
 		// Measurements
-		Angle,
-		Angles,
 		ClearMeasurements,
-		Distance,
-		Distances,
+		GeometryCalc,
 		ListMeasurements,
 		Measure,
-		Torsion,
-		Torsions,
+		MeasureSelected,
 	
 		// Messaging and GUI
 		Dialog,
@@ -839,16 +835,12 @@ class Command
 	static bool function_MCMaxStep(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MCNTrials(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	// Measurements
-	static bool function_Angle(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Angles(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	// Measurement and Geometry
 	static bool function_ClearMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Distance(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Distances(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_GeometryCalc(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ListMeasurements(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Torsion(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Torsions(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MeasureSelected(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Messaging
 	static bool function_Dialog(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Error(CommandNode *c, Bundle &obj, ReturnValue &rv);

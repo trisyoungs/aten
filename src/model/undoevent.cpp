@@ -232,7 +232,6 @@ void CellEvent::set(Mat3<double> oldaxes, Mat3<double> newaxes, bool ohs, bool n
 	newAxes_ = newaxes;
 	oldHasCell_ = ohs;
 	newHasCell_ = nhs;
-	printf("Setting CellEvent.\n");
 	msg.exit("CellEvent::set");
 }
 
