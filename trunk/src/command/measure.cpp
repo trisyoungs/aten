@@ -98,19 +98,19 @@ bool Command::function_Measure(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	{
 		obj.rs->beginUndoState("Measure torsion");
 		for (int n=0; n<4; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
-		rv.set(obj.rs->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3], c->hasArg(4) ? c->argb(4) : FALSE));
+		rv.set(obj.rs->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3], TRUE));
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs->beginUndoState("Measure angle");
 		for (int n=0; n<3; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
-		rv.set(obj.rs->addAngleMeasurement(atoms[0], atoms[1], atoms[2], c->hasArg(3) ? c->argb(3) : FALSE));
+		rv.set(obj.rs->addAngleMeasurement(atoms[0], atoms[1], atoms[2], TRUE));
 	}
 	else
 	{
 		obj.rs->beginUndoState("Measure distance");
 		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs->findAtom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
-		rv.set(obj.rs->addDistanceMeasurement(atoms[0], atoms[1], c->hasArg(2) ? c->argb(2) : FALSE));
+		rv.set(obj.rs->addDistanceMeasurement(atoms[0], atoms[1], TRUE));
 	}
 	obj.rs->endUndoState();
 	return TRUE;
