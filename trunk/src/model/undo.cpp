@@ -128,8 +128,9 @@ void Model::undo()
 		currentUndoState_->undo(this);
 		changeLog.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
+		changeLog.setLog(Log::Visual, currentUndoState_->startLog(Log::Visual));
 		// Log a visual change 
-		changeLog.add(Log::Visual);
+// 		changeLog.add(Log::Visual);
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
@@ -149,8 +150,9 @@ void Model::redo()
 		currentRedoState_->redo(this);
 		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
+		changeLog.setLog(Log::Visual, currentUndoState_->endLog(Log::Visual));
 		// Log a visual change if necessary
-		if (currentRedoState_->doLogsDiffer()) changeLog.add(Log::Visual);
+// 		if (currentRedoState_->doLogsDiffer()) changeLog.add(Log::Visual);
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
