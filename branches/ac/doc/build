@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# Check that a directory parameter was supplied
+TARGETDIR=$1
+if [ "$TARGETDIR" == "" ]
+then
+  echo "*********"
+  echo "********* Warning - Directory name for website not supplied."
+  echo "*********           Defaulting to 'Beta'"
+  echo "*********"
+  TARGETDIR="Beta"
+fi
+
+echo ""
+echo "Target directory for user manual is : "$TARGETDIR
+echo ""
+
+# Fix MathML usage in sgmltools-lite
+#export SGML_CATALOG_FILES=~/.docbook/catalog.txt
+
+# Update version info...
+DESTFILE=../src/main/version.h
+ATENREVISION=`grep '#define ATENREVISION' $DESTFILE | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'`
+ATENVERSION=`grep '#define ATENVERSION' $DESTFILE | sed -e 's/#define ATENVERSION "\(.*\)"/\1/g'`
+ATENDATE=`grep '#define ATENDATE' $DESTFILE | sed -e 's/#define ATENDATE "\(.*\)"/\1/g'`
+ATENURL=`grep '#define ATENURL' $DESTFILE | sed -e 's/#define ATENURL "\(.*\)"/\1/g'`
+echo "     version.h (ATENREVISION) : $ATENREVISION"
+echo "     version.h (ATENVERSION)  : $ATENVERSION"
+echo "     version.h (ATENDATE)     : $ATENDATE"
+echo "     version.h (ATENURL)      : $ATENURL"
+
+rm -rf aten-versioned.xml examples-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" aten.xml > aten-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" examples.xml > examples-versioned.xml
+sed -e "s/ATENREVISION/$ATENREVISION/g" -e "s,ATENURL,$ATENURL,g" -e "s/ATENDATE/$ATENDATE/g" -e "s/ATENVERSION/$ATENVERSION/g" faq.xml > faq-versioned.xml
+
+echo "#"
+echo "# Generating Chunked HTML Examples"
+echo "#"
+rm -rf codeexamples
+mkdir codeexamples
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./codeexamples/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl examples-versioned.xml
+# Process files to
+# 1) Rewrite links so they work in the website
+# 2) Remove blank extraneous line from synopsis elements
+# 3) Rewrite image locations to point to the *user manual* directory, so we can use the pre-existing GUI images
+cd codeexamples
+sed -i -n "
+1h
+1!H
+$ {
+	g
+	s/\n\t*<\/pre/<\/pre/g
+	s/\([a-z0-9\.]*\)\.html/\/doc\/Examples\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
+	p
+}" *.html
+for a in *html
+do
+  grep -v "<?xml" $a > ${a/.html/.xhtml}
+done
+rm *.html 
+cd ../
+
+echo "#"
+echo "# Generating Chunked HTML Manual"
+echo "#"
+rm -rf usermanual
+mkdir usermanual
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/chunk.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc --stringparam chunker.output.doctype-public "-//W3C//DTD XHTML 1.0 Transitional//EN" --stringparam chunker.output.doctype-system "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" --stringparam base.dir ./usermanual/ --stringparam use.id.as.filename 1 --stringparam chunk.section.depth 2 aten.xsl aten-versioned.xml
+# Copy images from usermanual dir (also from examples/images)
+mkdir usermanual/images
+cp images/*png usermanual/images
+cp images/*png usermanual/images
+for a in `ls -1 ../src/gui/icons/*svg`; do b=${a/..\/*\//}; echo $b; inkscape $a -d 29 -e usermanual/images/${b/svg/png}; done
+# Process files to
+# 1) Rewrite links so they work in the website
+# 2) Remove blank extraneous line from synopsis elements
+cd usermanual
+sed -i -n "
+1h
+1!H
+\$ {
+	g
+	s/\n\t*<\/pre/<\/pre/g
+	s/\([a-z\.]*\)\.html/\/doc\/$TARGETDIR\/\1.xhtml/g
+	s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g
+	p
+}" *html
+for a in *html
+do
+  grep -v "<?xml" $a > ${a/.html/.xhtml}
+done
+rm *.html 
+cd ../
+
+echo "#"
+echo "# Generating Single Page HTML Manual"
+echo "#"
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc aten.xsl aten-versioned.xml > manual.html
+# Rewrite image links
+sed -e "s/img src=\"images/img src=\"\/doc\/$TARGETDIR\/images/g" manual.html > manual.xhtml
+
+echo "#"
+echo "# Generating Single Page FAQ"
+echo "#"
+CHUNK=`ls /usr/share/xml/docbook/stylesheet/nwalsh/1.7[35].2/xhtml/docbook.xsl | head -n 1`
+sed "s:STYLE.xsl:$CHUNK:g" custom.xsl > aten.xsl
+xsltproc aten.xsl faq-versioned.xml > faq.html
+
+# Tidy up
+rm aten-versioned.xml examples-versioned.xml faq-versioned.xml aten.xsl

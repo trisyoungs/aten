@@ -1,0 +1,143 @@
+<section id="ff.supplied"><title>Supplied Forcefields</title>
+	<indexterm zone="ff.supplied"><primary>forcefields</primary><secondary>supplied</secondary></indexterm>
+
+	<para>A handful of forcefields ready-formatted for import into Aten are provided with the code and are listed here. It should be a relatively straightforward process to convert others, unless the functional forms used are not yet implemented (but sure, if you ask then I will add them). If you export an expression from Aten, <emphasis>please</emphasis> check the parameters in the file are what you actually want. Aten is designed to ease the pain of setting up a simulation in this manner, but is <emphasis>not</emphasis> intended as a black box.</para>
+	
+	<section id="ff.supplied.cldp"><title>Canongia-Lopes &amp; Padua Ionic Liquids (cldp-il.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>ionic liquids</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>CLDP-IL</tertiary></indexterm>
+		<para>All-atom ionic liquids forcefield of Canongia Lopes et al. covering various cation/anion combinations.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>J. N. Canongia Lopes, A. A. H. Padua, <emphasis>J. Phys. Chem. B</emphasis>, 110 (39), 19586-19592 (2006)</listitem>
+			<listitem> J. N. Canongia Lopes, A. A. H. Padua, <emphasis>J. Phys. Chem. B</emphasis>, 108 (43), 16893-16898 (2004)</listitem>
+			<listitem>J. N. Canongia Lopes, J. Deschamps, A. A. H. Padua, <emphasis>J. Phys. Chem. B</emphasis>, 108 (30), 11250 (2004)</listitem>
+			<listitem>J. N. Canongia Lopes, J. Deschamps, A. A. H. Padua, <emphasis>J. Phys. Chem. B</emphasis>, 108 (6), 2038-2047 (2004)</listitem>
+		</itemizedlist>
+	</section>
+	
+	<section id="ff.supplied.dmimclfm"><title>Youngs, Kohanoff, &amp; Del Pópolo [dmim]Cl (dmimcl-fm.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>ionic liquids</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>YoungsIL1</tertiary></indexterm>
+		<para>Force-matched model for the ionic liquid dimethylimidazolium chloride only. Integer charges on ions.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>T. G. A. Youngs, J. Kohanoff, and M. G. Del Pópolo, <emphasis>J. Phys. Chem. B</emphasis>, 110 (11), 5697-5707 (2006)</listitem>
+		</itemizedlist>
+	</section>
+	
+	<section id="ff.supplied.dmimclfm2"><title>Youngs &amp; Hardacre [dmim]Cl (dmimcl-fm2.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>ionic liquids</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>YoungsIL2</tertiary></indexterm>
+		<para>Second force-matched model for the ionic liquid dimethylimidazolium chloride only. Non-integer charges on ions.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>T. G. A. Youngs and C. Hardacre, <emphasis>ChemPhysChem</emphasis>, 9 (11), 1548-1558 (2008)</listitem>
+		</itemizedlist>
+	</section>
+
+	<section id="ff.supplied.oplsaa"><title>Jorgensen at al. OPLS-AA (oplsaa.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>general</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>OPLS-AA</tertiary></indexterm>
+		<para>Original OPLS-AA forcefield of Jorgensen et al.  Thanks to W. Jorgensen for supplying the parameter data.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>W. L. Jorgensen, D. S. Maxwell, and J. Tirado-Rives, <emphasis>J. Am. Chem. Soc.</emphasis> 118, 11225-11236 (1996).</listitem>
+				<listitem>W. L. Jorgensen and N. A. McDonald, <emphasis>Theochem</emphasis> 424, 145-155 (1998).</listitem>
+			<listitem>W. L. Jorgensen and N. A. McDonald, <emphasis>J. Phys. Chem. B</emphasis> 102, 8049-8059 (1998).</listitem>
+			<listitem>R. C. Rizzo and W. L. Jorgensen, <emphasis>J. Am. Chem. Soc.</emphasis> 121, 4827-4836 (1999).</listitem>
+			<listitem>M. L. Price, D. Ostrovsky, and W. L. Jorgensen, <emphasis>J. Comp. Chem.</emphasis> 22 (13), 1340-1352 (2001).</listitem>
+			<listitem>E. K. Watkins and W. L. Jorgensen, <emphasis>J. Phys. Chem. A</emphasis> 105, 4118-4125 (2001).</listitem>
+		</itemizedlist>
+		
+		<para><emphasis>Note: NETA definitions have been written for a large number of types in the forcefield, but not all.</emphasis></para>
+		
+	</section>
+	
+	<section id="ff.supplied.spc"><title>Berensen et al.s Simple Point Charge Water (spc.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>water</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>SPC</tertiary></indexterm>
+		<para>Rigid, simple point charge model for water</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>H. J. C. Berendsen, J. P. M. Postma, W. F. van Gunsteren and J. Hermans, in Intermolecular Forces, B. Pullman (ed.), Reidel, Dordrecht, 1981, p331.</listitem>
+		</itemizedlist>
+	</section>
+	
+	<section id="ff.supplied.spce"><title>Berensen et al.s Extended Simple Point Charge Water (spce.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>water</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>SPC/E</tertiary></indexterm>
+		<para>Simple point charge model for water, modified to reproduce molecular dipole in the liquid phase.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>J. C. Berendsen, J. R. Grigera and T. P. Straatsma, <emphasis>J. Phys. Chem.</emphasis> 91, 6269-6271 (1987)</listitem>
+		</itemizedlist>
+	</section>
+
+	<section id="ff.supplied.uff"><title>Rappe et al.s Universal Forcefield (testing/uff.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>general</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>UFF</tertiary></indexterm>
+		<para>Universal forcefield for the whole periodic table by Rappe et al.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>A. K. Rappe, C. J. Casewit, K. S. Colwell, W. A. Goddard III, and W. M. Skiff, <emphasis>J. Am. Chem. Soc.</emphasis> 114, 10024-10039 (1992)</listitem>
+		</itemizedlist>
+		<para><emphasis>Notes:</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>uff.ff currently lives in the testing/ directory since it is a rule-based forcefield and is currently being rewritten.</listitem>
+			<listitem>Generated terms should be checked by hand if forcefield expressions are exported.</listitem>
+			<listitem>Detection of some atomtypes, namely transition metals, is imperfect.</listitem>
+			<listitem>Warning: Generation of terms (especially angles) needs to undergo proper testing! If you wish to help, please contact me.</listitem>
+		</itemizedlist>
+	</section>
+
+	<section id="ff.supplied.dreiding"><title>Mayo, Olafson &amp; Goddard II's Generic Forcefield (testing/dreiding.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>general</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>DREIDING</tertiary></indexterm>
+		<para>Universal forcefield for the whole periodic table.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>S.L. Mayo, B.D. Olafson, and W.A. Goddard III, <emphasis>J. Phys. Chem.</emphasis> 94, 8897-8909 (1990).</listitem>
+		</itemizedlist>
+		<para><emphasis>Notes:</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>dreiding.ff currently lives in the testing/ directory since it is a rule-based forcefield and is currently being rewritten.</listitem>
+			<listitem>Generated terms should be checked by hand if forcefield expressions are exported.</listitem>
+			<listitem>Detection of some atomtypes, namely transition metals, is imperfect.</listitem>
+			<listitem>Warning: Generation of terms (especially angles) needs to undergo proper testing! If you wish to help, please contact me.</listitem>
+		</itemizedlist>
+
+	</section>
+
+	<section id="ff.supplied.gaff"><title>General Amber Forcefield (testing/gaff.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>general</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>GAFF</tertiary></indexterm>
+		<para>General Amber forcefield containing precalculated terms for most intramolecular terms, and generator section for any that are missing.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>J. Wang, R. M. Wolf, J. W. Caldwell, P. A. Kollman, and D. A. Case, <emphasis>J. Comp. Chem.</emphasis> 25, 1157-1174 (2004)</listitem>
+		</itemizedlist>
+		<para><emphasis>Notes:</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>gaff.ff currently lives in the testing/ directory since it's rule-based part has not been implemented yet.</listitem>
+		</itemizedlist>
+		
+	</section>
+
+	<section id="ff.supplied.lwwil"><title>Liu, Wu &amp; Wang's United-Atom Ionic Liquids Forcefield (lww-il.ff)</title>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>ionic liquids</tertiary></indexterm>
+		<indexterm><primary>forcefields</primary><secondary>supplied</secondary><tertiary>LWW-IL</tertiary></indexterm>
+		<para>United atom ionic liquids forcefield for a handful of cations and anions.</para>
+		<para><emphasis>References</emphasis></para>
+		<itemizedlist mark='opencircle'>
+			<listitem>
+				X. Zhang, F. Huo, Z. Liu, W. Wang, W. Shi, and E. J. Maginn, <emphasis>J. Phys. Chem. B</emphasis> 113, 7591-7598 (2009)
+			</listitem>
+			<listitem>
+				Z. Liu, X. Wu, and W. Wang, <emphasis>Phys. Chem. Chem. Phys.</emphasis> 8, 1096-1104 (2006)
+			</listitem>
+		</itemizedlist>
+		
+	</section>
+
+</section>

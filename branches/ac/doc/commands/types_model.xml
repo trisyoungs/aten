@@ -1,0 +1,448 @@
+	<section id="command.types.model"><title>Model Type</title>
+		
+		<indexterm zone="command.types.model"><primary>types</primary><secondary>model</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Model Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>elements</entry>
+						<entry><link linkend="command.types.element">element</link></entry>
+						<entry>ro</entry>
+						<entry>Array of element data (masses, symbols, names, etc.)</entry>
+					</row>
+					<row>
+						<entry>angles</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>atoms</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>bonds</entry>
+						<entry><link linkend="command.types.bond">bond</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of bonds defined in the model</entry>
+					</row>
+					<row>
+						<entry>cell</entry>
+						<entry><link linkend="command.types.unitcell">unitcell</link></entry>
+						<entry>rw</entry>
+						<entry>The model's unit cell</entry>
+					</row>
+					<row>
+						<entry>distances</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current distance measurements in the model</entry>
+					</row>
+					<row>
+						<entry>eigenvectors</entry>
+						<entry><link linkend="command.types.eigenvector">eigenvector</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current eigenvectors stored in the model</entry>
+					</row>
+					<row>
+						<entry>energy</entry>
+						<entry><link linkend="command.types.energystore">energystore</link></entry>
+						<entry>ro</entry>
+						<entry>The model's energy store, containing the total calculated energy and all associated contributions</entry>
+					</row>
+					<row>
+						<entry>ff</entry>
+						<entry><link linkend="command.types.forcefield">forcefield</link></entry>
+						<entry>rw</entry>
+						<entry>Forcefield associated to the model (if any)</entry>
+					</row>
+					<row>
+						<entry>ffangles</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield angle terms in the model</entry>
+					</row>
+					<row>
+						<entry>ffbonds</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield bond terms in the model</entry>
+					</row>
+					<row>
+						<entry>ffmass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Forcefield mass of the current model, which can differ from the actual mass if united-atom types have been assigned</entry>
+					</row>
+					<row>
+						<entry>fftorsions</entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of unique forcefield torsion terms in the model</entry>
+					</row>
+					<row>
+						<entry>fftypes</entry>
+						<entry><link linkend="command.types.ffatom">ffatom</link></entry>
+						<entry>ro</entry>
+						<entry>Array of unique atom types used in the model</entry>
+					</row>
+					<row>
+						<entry>frame</entry>
+						<entry><link linkend="command.types.model">model</link></entry>
+						<entry>ro</entry>
+						<entry>The current frame in the model's trajectory (if it has one)</entry>
+					</row>
+					<row>
+						<entry>frames</entry>
+						<entry><link linkend="command.types.model">model</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of trajectory frame pointers (only if the trajectory is cached)</entry>
+					</row>
+					<row>
+						<entry>glyphs</entry>
+						<entry><link linkend="command.types.glyph">glyph</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of glyphs owned by the model</entry>
+					</row>
+					<row>
+						<entry>id</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>The index of the model in Aten's internal list of loaded models</entry>
+					</row>
+					<row>
+						<entry>mass</entry>
+						<entry>double</entry>
+						<entry>ro</entry>
+						<entry>Mass of the current model</entry>
+					</row>
+					<row>
+						<entry>name</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>Name of the model</entry>
+					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>natoms</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model</entry>
+					</row>
+					<row>
+						<entry>nbasiscartesians</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of cartesian basis functions defined in stored basis shells</entry>
+					</row>
+					<row>
+						<entry>nbasisshells</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of basis shells defined in the model</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of bonds in the model</entry>
+					</row>
+					<row>
+						<entry>ndistances</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of distance measurements in the model</entry>
+					</row>
+					<row>
+						<entry>nffangles</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique angle terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nffbonds</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique bond terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nfftorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique torsion terms used in the model</entry>
+					</row>
+					<row>
+						<entry>nfftypes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of unique atom types used in the model</entry>
+					</row>
+					<row>
+						<entry>nframes</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of frames in associated trajectory</entry>
+					</row>
+					<row>
+						<entry>nglyphs</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of glyphs owned by the model</entry>
+					</row>
+					<row>
+						<entry>npatterns</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of patterns defined for the model</entry>
+					</row>
+					<row>
+						<entry>nselected</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms selected in the model</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion angle measurements in the model</entry>
+					</row>
+					<row>
+						<entry>nunknown</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Number of atoms in the model that are of unknown element</entry>
+					</row>
+					<row>
+						<entry>patterns</entry>
+						<entry><link linkend="command.types.pattern">pattern</link>[]</entry>
+						<entry>ro</entry>
+						<entry>Array of patterns currently defined for the model</entry>
+					</row>
+					<row>
+						<entry>region</entry>
+						<entry><link linkend="command.types.region">region</link></entry>
+						<entry>ro</entry>
+						<entry>Region data for this model, used by the disordered builder</entry>
+					</row>
+					<row>
+						<entry>torsions</entry>
+						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
+						<entry>ro</entry>
+						<entry>List of current torsion angle measurements in the model</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Model Type Functions</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Function</entry>
+						<entry>Return Type</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>addhydrogen ( )</entry>
+						<entry>--</entry>
+						<entry>Hydrogen satisfy all atoms in the model. See the <link linkend="command.ref.addhydrogen">addhydrogen</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>augment ( )</entry>
+						<entry>--</entry>
+						<entry>Automatically detect and add multiple bonds in the system. See the <link linkend="command.ref.augment">augment</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>charge ( )</entry>
+						<entry>--</entry>
+						<entry>Assign charges to the model from the current forcefield. See the <link linkend="command.ref.charge">charge</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearbonds ( )</entry>
+						<entry>--</entry>
+						<entry>Remove all bonds from the model. See the <link linkend="command.ref.clearbonds">clearbonds</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearcharges ( )</entry>
+						<entry>--</entry>
+						<entry>Remove al charges from the model, setting them to zero. See the <link linkend="command.ref.clearcharges">clearcharges</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>clearselectedbonds ( )</entry>
+						<entry>--</entry>
+						<entry>Remove all bonds from the current atom selection. See the <link linkend="command.ref.clearselectedbonds">clearselectedbonds</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>copy ( )</entry>
+						<entry>--</entry>
+						<entry>Copy the current atom selection to the clipboard. See the <link linkend="command.ref.copy">copy</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>cut ( )</entry>
+						<entry>--</entry>
+						<entry>Cut the current atom selection to the clipboard. See the <link linkend="command.ref.cut">cut</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>delete ( )</entry>
+						<entry>--</entry>
+						<entry>Delete the current atom selection. See the <link linkend="command.ref.delete">delete</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>expand ( )</entry>
+						<entry>--</entry>
+						<entry>Expand the current atom selection along bonds. See the <link linkend="command.ref.expand">expand</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>finalise ( )</entry>
+						<entry>--</entry>
+						<entry>Finalise the current model. See the <link linkend="command.ref.finalisemodel">finalisemodel</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>movetoend ( )</entry>
+						<entry>--</entry>
+						<entry>Move the current atom selection to the bottom (highest IDs) of the atom list. See the <link linkend="command.ref.movetoend">movetoend</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>movetostart ( )</entry>
+						<entry>--</entry>
+						<entry>Move the current atom selection to the top (lowest IDs) of the atom list. See the <link linkend="command.ref.movetostart">movetostart</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newatom ( int|string <emphasis>el</emphasis>, double <emphasis>x</emphasis> = 0.0, double <emphasis>y</emphasis> = 0.0, double <emphasis>z</emphasis> = 0.0, double <emphasis>vx</emphasis> = 0.0, double <emphasis>vy</emphasis> = 0.0, double <emphasis>vz</emphasis> = 0.0, double <emphasis>fx</emphasis> = 0.0, double <emphasis>fy</emphasis> = 0.0, double <emphasis>fz</emphasis> )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Create a new atom in the model. See the <link linkend="command.ref.newatom">newatom</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newatomfrac ( int|string <emphasis>el</emphasis>, double <emphasis>x</emphasis>, double <emphasis>y</emphasis>, double <emphasis>z</emphasis>, double <emphasis>vx</emphasis> = 0.0, double <emphasis>vy</emphasis> = 0.0, double <emphasis>vz</emphasis> = 0.0, double <emphasis>fx</emphasis> = 0.0, double <emphasis>fy</emphasis> = 0.0, double <emphasis>fz</emphasis> )</entry>
+						<entry><link linkend="command.types.atom">atom</link></entry>
+						<entry>Create a new atom in the model, in fractional coordinates. See the <link linkend="command.ref.newatomfrac">newatomfrac</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newbasisshell ( atom|int <emphasis>i</emphasis>, string <emphasis>type</emphasis> )</entry>
+						<entry><link linkend="command.types.basisshell">basisshell</link></entry>
+						<entry>Create a new basis shell definition in the model, centred on the specified atom/id, and of the given shell type. See the <link linkend="command.ref.newbasisshell">newbasisshell</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newbond ( atom|int <emphasis>i</emphasis>, atom|int <emphasis>j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
+						<entry><link linkend="command.types.bond">bond</link></entry>
+						<entry>Create a new bond between atoms in the model. See the <link linkend="command.ref.newbond">newbond</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newbondid ( int <emphasis>id_i</emphasis>, int <emphasis>id_j</emphasis>, string|int <emphasis>bondtype</emphasis> = "" )</entry>
+						<entry><link linkend="command.types.bond">bond</link></entry>
+						<entry>Create a new bond between atom IDs in the model. See the <link linkend="command.ref.newbondid">newbondid</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>neweigenvector ( int <emphasis>size</emphasis> = (auto) )</entry>
+						<entry><link linkend="command.types.eigenvector">eigenvector</link></entry>
+						<entry>Create a new eigenvector in the model of the specified size. If the size is not specified, the vector length is set to match the number of cartesian basis functions store with the current basis shell definitions in the model. See the <link linkend="command.ref.neweigenvector">neweigenvector</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newglyph ( string <emphasis>style</emphasis>, string <emphasis>options = ""</emphasis> )</entry>
+						<entry><link linkend="command.types.glyph">glyph</link></entry>
+						<entry>Create a new glyph in the model. See the <link linkend="command.ref.newglyph">newglyph</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>newgrid ( string <emphasis>name</emphasis> )</entry>
+						<entry><link linkend="command.types.grid">grid</link></entry>
+						<entry>Create a new gridh in the model. See the <link linkend="command.ref.newgrid">newgrid</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>paste ( )</entry>
+						<entry>--</entry>
+						<entry>Paste the current clipboard contents into the model. See the <link linkend="command.ref.paste">paste</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebond ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds in the model. See the <link linkend="command.ref.rebond">rebond</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebondpatterns ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds within patterns in the model. See the <link linkend="command.ref.rebondpatterns">rebondpatterns</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>rebondselection ( )</entry>
+						<entry>--</entry>
+						<entry>Calculate bonds in the current selection. See the <link linkend="command.ref.rebondselection">rebondselection</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>redo ( )</entry>
+						<entry>--</entry>
+						<entry>Redo the last undone change in the model. See the <link linkend="command.ref.redo">redo</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>reorder ( )</entry>
+						<entry>--</entry>
+						<entry>Reorder atoms so bound atoms have adjacent IDs. See the <link linkend="command.ref.reorder">reorder</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>savebitmap ( string <emphasis>format</emphasis>, string <emphasis>filename</emphasis>, int <emphasis>width</emphasis> = auto, int <emphasis>height</emphasis> = auto, int <emphasis>quality</emphasis> = 100 )</entry>
+						<entry>--</entry>
+						<entry>Save a bitmap image of the current model view. See the <link linkend="command.ref.savebitmap">savebitmap</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selectall ( )</entry>
+						<entry>--</entry>
+						<entry>Select all atoms in the model. See the <link linkend="command.ref.selectall">selectall</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selectionaddhydrogen ( )</entry>
+						<entry>--</entry>
+						<entry>Hydrogen satisfy all atoms in the current selection. See the <link linkend="command.ref.selectionaddhydrogen">selectionaddhydrogen</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>selectnone ( )</entry>
+						<entry>--</entry>
+						<entry>Deselect all atoms in the model. See the <link linkend="command.ref.selectnone">selectnone</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>shiftdown ( int <emphasis>n</emphasis> = 1 )</entry>
+						<entry>--</entry>
+						<entry>Shift the current atom selection down one (or more) places in the atom list (towards higher IDs). See the <link linkend="command.ref.shiftdown">shiftdown</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>shiftup ( int <emphasis>n</emphasis> = 1 )</entry>
+						<entry>--</entry>
+						<entry>Shift the current atom selection up one (or more) places in the atom list (towards lower IDs). See the <link linkend="command.ref.shiftup">shiftup</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>showall ( )</entry>
+						<entry>--</entry>
+						<entry>Unhides any hidden atoms in the model. See the <link linkend="command.ref.showall">showall</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>transmute ( int|string <emphasis>el</emphasis> )</entry>
+						<entry>--</entry>
+						<entry>Transmute all selected atoms to the specified element. See the <link linkend="command.ref.transmute">transmute</link> command for more details.</entry>
+					</row>
+					<row>
+						<entry>undo ( )</entry>
+						<entry>--</entry>
+						<entry>Undo the last chanige made to the model. See the <link linkend="command.ref.undo">undo</link> command for more details.</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

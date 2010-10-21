@@ -1,0 +1,282 @@
+<section id="command.groups.select"><title>Selection Commands</title>
+	
+	<para>Select atoms or groups of atoms within the current model.</para>
+
+	<section id="command.ref.deselect"><title>deselect</title>
+		<indexterm><primary>commands</primary><secondary>deselect</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>deselect</function></funcdef>
+				<paramdef>atom|int|string <parameter>selection</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Deselect atoms in the current model, returning the number of atoms deselected by the provided selection arguments. One or more arguments may be supplied, and each may be of the type int, atom, or string. In the case of the first two types, individual atoms (or those corresponding to the integer id) are deselected. On the other hand, strings may contain ranges of atom IDs and element symbols permitting atoms to be deselected in groups. Ranges are specified as '<emphasis>a</emphasis>-<emphasis>b</emphasis>' where <emphasis>a</emphasis> and <emphasis>b</emphasis> are either both atom IDs or both element symbols. In addition, the '+' symbol can be used before ('+<emphasis>a</emphasis>') or after ('<emphasis>a</emphasis>+') an atom ID or element symbol to mean either 'everything up to and including this' or 'this and everything after'. Within a string argument, one or more selection ranges may be separated by commas.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+deselect(5);
+		</synopsis>
+		<para>deselects the 5th atom.</para>
+		<synopsis>
+deselect(&quot;1-10,N&quot;);
+		</synopsis>
+		<para>deselects the first ten atoms, and all nitrogen atoms.</para>
+		<synopsis>
+int n = deselect(&quot;Sc-Zn&quot;);
+		</synopsis>
+		<para>deselects the first transition series of elements, returning the number of atoms that were deselected in the process.</para>
+		<synopsis>
+deselect(&quot;C+&quot;);
+		</synopsis>
+		<para>deselects all elements carbon and above.</para>
+		<synopsis>
+deselect(1, 2, 5, &quot;8+&quot;);
+		</synopsis>
+		<para>deselects the first, second, and fifth atoms, as well as the eighth atom and all that occur after it.</para>
+	
+	</section>
+	
+	<section id="command.ref.expand"><title>expand</title>
+		<indexterm><primary>commands</primary><secondary>expand</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>expand</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Expand the current selection of atoms by selecting any atoms that are directly bound to an already-selected atom. The number of atoms added to the previous selection is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+expand();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.invert"><title>invert</title>
+		<indexterm><primary>commands</primary><secondary>invert</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>invert</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Inverts the selection of all atoms in the current model. Returns the number of atoms selected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+invert();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.select"><title>select</title>
+		<indexterm><primary>commands</primary><secondary>select</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>select</function></funcdef>
+				<paramdef>atom|int|string <parameter>selection</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select atoms in the current model, keeping any previous selection of atoms. See the <link linkend="command.ref.deselect">deselect</link> command for a full description of the syntax. The number of atoms added to the existing selection is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+select(&quot;+5&quot;);
+		</synopsis>
+		<para>selects the first five atoms.</para>
+		<synopsis>
+int n = select(&quot;+5,H&quot;);
+		</synopsis>
+		<para>selects the first five atoms and all hydrogens.</para>
+		
+	</section>
+	
+	<section id="command.ref.selectall"><title>selectall</title>
+		<indexterm><primary>commands</primary><secondary>selectall</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectall</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms in the current model. The number of selected atoms is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+selectall();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.selectfftype"><title>selectfftype</title>
+		<indexterm><primary>commands</primary><secondary>selectfftype</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectfftype</function></funcdef>
+				<paramdef>string <parameter>fftype</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms with forcefield type <emphasis>fftype</emphasis> in the current model. The number of atoms selected is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+selecttype(&quot;CT&quot;);
+		</synopsis>
+		<para>selects all atoms that have been assigned the forcefield type 'CT'.</para>
+		
+	</section>
+	
+	<section id="command.ref.selectmiller"><title>selectmiller</title>
+		<indexterm><primary>commands</primary><secondary>selectmiller</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectmiller</function></funcdef>
+				<paramdef>int <parameter>h</parameter></paramdef>
+				<paramdef>int <parameter>k</parameter></paramdef>
+				<paramdef>int <parameter>l</parameter></paramdef>
+				<paramdef>int <parameter>inside = FALSE</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms that are 'outside' the specified Miller plane (and its mirror, if it has one). If the final parameter is specified as TRUE then atoms <emphasis>inside</emphasis> the specified Miller plane (and its mirror) are selected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+selectmiller(1, 1, 1);
+		</synopsis>
+		<para>selects all atoms located beyond the (111) plane in the unit cell.</para>
+		
+	</section>
+	
+	<section id="command.ref.selectnone"><title>selectnone</title>
+		<indexterm><primary>commands</primary><secondary>selectnone</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>selectnone</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Deselect all atoms in the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+selectnone();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.selectoverlaps"><title>selectoverlaps</title>
+		<indexterm><primary>commands</primary><secondary>selectoverlaps</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectoverlaps</function></funcdef>
+				<paramdef>double <parameter>dist = 0.2</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms that are within a certain distance of another, or the default of 0.2 &#8491; if no argument is provided. The number of selected overlapping atoms is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int noverlaps = selectoverlaps(&quot;0.1&quot;);
+		</synopsis>
+		<para>selects all atoms that are less than 0.1 &#8491; away from another.</para>
+		
+	</section>
+	
+	<section id="command.ref.selectpattern"><title>selectpattern</title>
+		<indexterm><primary>commands</primary><secondary>selectpattern</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectpattern</function></funcdef>
+				<paramdef>int <parameter>id</parameter></paramdef>
+				<paramdef>string <parameter>name</parameter></paramdef>
+				<paramdef>pattern <parameter>p</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Selects all atoms in the current (or named/specified) pattern. Returns the number of atoms added to the existing selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+selectpattern(2);
+		</synopsis>
+		<para>select all atoms in the second pattern of the current model.</para>
+		<synopsis>
+selectpattern(&quot;bubble&quot;);
+		</synopsis>
+		<para>select all atoms in the pattern 'bubble' of the current model.</para>
+	
+	</section>
+	
+	<section id="command.ref.selectradial"><title>selectradial</title>
+		<indexterm><primary>commands</primary><secondary>selectradial</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selectradial</function></funcdef>
+				<paramdef>atom|int <parameter>id</parameter></paramdef>
+				<paramdef>double <parameter>r</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Select all atoms within <emphasis>r</emphasis> &#8491; of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int nclose = selectradial(10, 4.5);
+		</synopsis>
+		<para>selects all atoms within 4.5 &#8491; of atom 10, and returns the number selected.</para>
+		
+	</section>
+	
+	<section id="command.ref.selecttype"><title>selecttype</title>
+		<indexterm><primary>commands</primary><secondary>selecttype</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>int <function>selecttype</function></funcdef>
+				<paramdef>int|string <parameter>element</parameter></paramdef>
+				<paramdef>string <parameter>neta</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Selects all atoms of the given <emphasis>element</emphasis> that also match the NETA description given, allowing selections to be made based on the connectivity and local environment of atoms. The number of (previously unselected) atoms matched is returned.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+int nch2 = selecttype(&quot;C&quot;, &quot;-H(n=2)&quot;);
+		</synopsis>
+		<para>selects all carbon atoms that are bound to two hydrogens.</para>
+		
+		<note><title>See also:</title>
+			<itemizedlist mark='opencircle'>
+				<listitem>
+					<para><link linkend="ff.neta.ref">NETA reference</link> for a description of the typing language in Aten.</para>
+				</listitem>
+			</itemizedlist>
+		</note>
+		
+	</section>
+
+</section>
