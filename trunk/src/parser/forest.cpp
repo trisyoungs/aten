@@ -270,7 +270,7 @@ bool Forest::reload()
 	msg.enter("Forest::reload");
 	if (filename_.isEmpty())
 	{
-		msg.print("No filename present in '%s' - can't reload commands.\n", name_);
+		msg.print("No filename present in '%s' - can't reload commands.\n", name_.get());
 		msg.exit("Forest::reload");
 		return FALSE;
 	}
