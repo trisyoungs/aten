@@ -128,7 +128,7 @@ CommandData Command::data[Command::nCommands] = {
 	{ "frameanalyse",	"",		VTypes::NoData,
 		"",
 		"Analyse quantities for the current trajectory frame" },
-	{ "geometric",		"CNNNCNNnn",	VTypes::NoData,
+	{ "geomdat",		"CNNNCNNnn",	VTypes::NoData,
 		"string name, double min, double binwidth, int nbins, string filename, int site1, int site2, int site3 = 0, int site4 = 0",
 		"Calculate geometries" },
 	{ "modelanalyse",	"",		VTypes::NoData,

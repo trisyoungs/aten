@@ -231,6 +231,13 @@ bool Forcefield::readTypes()
 		nadded ++;
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
+		// Check number of items on line in file
+		if (ffparser.nArgs() < 4)
+		{
+			msg.print("Error: Missing data in 'types' block.\n\tFormat of lines in block is 'ffid  typename  element   NETA  [description]'\n");
+			msg.exit("Forcefield::readTypes");
+			return FALSE;
+		}
 		ffa->setName(ffparser.argc(1));
 		int el = elements().findAlpha(ffparser.argc(2));
 		ffa->setElement(el);
@@ -282,6 +289,13 @@ bool Forcefield::readUnitedAtomTypes()
 		nadded ++;
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
+		// Check number of items on line in file
+		if (ffparser.nArgs() < 5)
+		{
+			msg.print("Error: Missing data in 'uatypes' block.\n\tFormat of lines in block is 'ffid  typename  element  mass  NETA  [description]'\n");
+			msg.exit("Forcefield::readUnitedAtomTypes");
+			return FALSE;
+		}
 		ffa->setName(ffparser.argc(1));
 		ffa->setEquivalent(ffparser.argc(1));
 		ffa->setElement(-1);
@@ -292,7 +306,7 @@ bool Forcefield::readUnitedAtomTypes()
 			msg.exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
-		if (ffparser.hasArg(4)) ffa->setDescription(ffparser.argc(4));
+		if (ffparser.hasArg(5)) ffa->setDescription(ffparser.argc(4));
 	} while (!done);
 	if (nadded == 0) msg.print("Warning - No united atom types specified in this block (at line %i)!\n", ffparser.lastLineNo());
 	else msg.print("\t: Read in %i united-atom type descriptions\n", nadded);

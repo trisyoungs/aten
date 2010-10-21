@@ -362,11 +362,10 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	int i, j, k, n, cubetype, *faces, cscale;
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
-	bool secondary;
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
-	secondary = g->useSecondary();
+	bool secondary = g->useSecondary();
 	cscale = g->useColourScale() ? g->colourScale() : -1;
 	mult = 1.0;
 	// Get distances between grid points
@@ -487,6 +486,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						glVertex3d(r.x, r.y, r.z);
 					}
 				}
+				if (!secondary) continue;
 				// Determine cube type (secondary cutoff)
 				cubetype = 0;
 				if (g->withinSecondaryCutoff(vertex[0])) cubetype += 1;
