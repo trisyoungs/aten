@@ -285,6 +285,8 @@ void AtenGrids::refreshGridInfo()
 	refreshing_ = TRUE;
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
+	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
+	ui.GridNPointsLabel->setText(itoa(g->nPoints().x*g->nPoints().y*g->nPoints().z));
 	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
 	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
 	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());
@@ -301,7 +303,6 @@ void AtenGrids::refreshGridInfo()
 	ui.GridUpperCutoff2Spin->setMaximum(g->maximum());
 	ui.GridUpperCutoff2Spin->setValue(g->upperSecondaryCutoff());
 	ui.GridUpperCutoff2Spin->setSingleStep(g->maximum() / 100.0);
-	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	ui.GridSecondaryCutoffCheck->setChecked( g->useSecondary() );
 	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
@@ -558,6 +559,8 @@ void AtenGrids::on_GridSecondaryCutoffCheck_clicked(bool checked)
 	Model *m = aten.currentModelOrFrame();
 	Grid *g = m->grid(row);
 	g->setUseSecondary(checked);
+	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
+	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	gui.mainView.postRedisplay();
 }
 
