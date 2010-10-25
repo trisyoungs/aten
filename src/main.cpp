@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
 	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
 	// This will also set dataDir_ to a valid value (provided one could be found in a default search location)
-	aten.openFilters();
+	if (prefs.loadFilters()) aten.openFilters();
 
 	// Load in fragments
 	if (prefs.loadFragments()) aten.openFragments();

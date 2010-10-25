@@ -43,37 +43,38 @@
      ELEMENTCONST = 259,
      DOUBLECONST = 260,
      NEWTOKEN = 261,
-     CHARCONST = 262,
-     STEPTOKEN = 263,
-     VAR = 264,
-     LOCALVAR = 265,
-     FUNCCALL = 266,
-     USERFUNCCALL = 267,
-     VTYPE = 268,
-     DO = 269,
-     WHILE = 270,
-     FOR = 271,
-     IF = 272,
-     RETURN = 273,
-     FILTERBLOCK = 274,
-     HELP = 275,
-     DIOV = 276,
-     DUMMY = 277,
-     OPTION = 278,
-     ELSE = 279,
-     OR = 280,
-     AND = 281,
-     DEQ = 282,
-     TEQ = 283,
-     MEQ = 284,
-     PEQ = 285,
-     NEQ = 286,
-     EQ = 287,
-     LEQ = 288,
-     GEQ = 289,
-     UMINUS = 290,
-     MINUSMINUS = 291,
-     PLUSPLUS = 292
+     NEWFUNCTOKEN = 262,
+     CHARCONST = 263,
+     STEPTOKEN = 264,
+     VAR = 265,
+     LOCALVAR = 266,
+     FUNCCALL = 267,
+     USERFUNCCALL = 268,
+     VTYPE = 269,
+     DO = 270,
+     WHILE = 271,
+     FOR = 272,
+     IF = 273,
+     RETURN = 274,
+     FILTERBLOCK = 275,
+     HELP = 276,
+     DIOV = 277,
+     DUMMY = 278,
+     OPTION = 279,
+     ELSE = 280,
+     OR = 281,
+     AND = 282,
+     DEQ = 283,
+     TEQ = 284,
+     MEQ = 285,
+     PEQ = 286,
+     NEQ = 287,
+     EQ = 288,
+     LEQ = 289,
+     GEQ = 290,
+     UMINUS = 291,
+     MINUSMINUS = 292,
+     PLUSPLUS = 293
    };
 #endif
 /* Tokens.  */
@@ -81,37 +82,38 @@
 #define ELEMENTCONST 259
 #define DOUBLECONST 260
 #define NEWTOKEN 261
-#define CHARCONST 262
-#define STEPTOKEN 263
-#define VAR 264
-#define LOCALVAR 265
-#define FUNCCALL 266
-#define USERFUNCCALL 267
-#define VTYPE 268
-#define DO 269
-#define WHILE 270
-#define FOR 271
-#define IF 272
-#define RETURN 273
-#define FILTERBLOCK 274
-#define HELP 275
-#define DIOV 276
-#define DUMMY 277
-#define OPTION 278
-#define ELSE 279
-#define OR 280
-#define AND 281
-#define DEQ 282
-#define TEQ 283
-#define MEQ 284
-#define PEQ 285
-#define NEQ 286
-#define EQ 287
-#define LEQ 288
-#define GEQ 289
-#define UMINUS 290
-#define MINUSMINUS 291
-#define PLUSPLUS 292
+#define NEWFUNCTOKEN 262
+#define CHARCONST 263
+#define STEPTOKEN 264
+#define VAR 265
+#define LOCALVAR 266
+#define FUNCCALL 267
+#define USERFUNCCALL 268
+#define VTYPE 269
+#define DO 270
+#define WHILE 271
+#define FOR 272
+#define IF 273
+#define RETURN 274
+#define FILTERBLOCK 275
+#define HELP 276
+#define DIOV 277
+#define DUMMY 278
+#define OPTION 279
+#define ELSE 280
+#define OR 281
+#define AND 282
+#define DEQ 283
+#define TEQ 284
+#define MEQ 285
+#define PEQ 286
+#define NEQ 287
+#define EQ 288
+#define LEQ 289
+#define GEQ 290
+#define UMINUS 291
+#define MINUSMINUS 292
+#define PLUSPLUS 293
 
 
 
@@ -130,7 +132,7 @@ typedef union YYSTYPE
 	double doubleconst;		/* double constant value */
 }
 /* Line 1489 of yacc.c.  */
-#line 134 "grammar.h"
+#line 136 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

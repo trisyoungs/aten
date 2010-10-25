@@ -133,7 +133,7 @@ char CommandParser::peekChar()
 			if (stringPos_ == stringLength_)
 			{
 				if (stringListSource_ == NULL) c = 0;
-				else c = stringListSource_->get()[0];
+				else c = '\n';
 			}
 			else c = stringSource_[stringPos_];
 			break;

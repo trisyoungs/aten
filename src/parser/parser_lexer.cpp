@@ -77,7 +77,8 @@ int CommandParser::lex()
 	*/
 	if (c == '.' || isdigit (c))
 	{
-		integer = TRUE;
+		// Default to integer, unless first char is '.'
+		integer = (c == '.' ? FALSE : TRUE);
 		hasexp = FALSE;
 		token += c;
 		done = FALSE;
@@ -322,7 +323,6 @@ int CommandParser::lex()
 				CommandParser_lval.functree = func;
 				return USERFUNCCALL;
 			}
-
 		}
 
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
@@ -336,10 +336,20 @@ int CommandParser::lex()
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token (a new variable?)
-		msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
-		name = token;
-		CommandParser_lval.name = &name;
-		return NEWTOKEN;
+		if (peekChar() == '(')
+		{
+			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWFUNC)\n", tree_);
+			name = token;
+			CommandParser_lval.name = &name;
+			return NEWFUNCTOKEN;
+		}
+		else
+		{
+			msg.print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)\n", tree_);
+			name = token;
+			CommandParser_lval.name = &name;
+			return NEWTOKEN;
+		}
 	}
 
 	/* We have found a symbolic character (or a pair) that corresponds to an operator */
@@ -350,9 +360,9 @@ int CommandParser::lex()
 		return c;
 	}
 	token += c;
-	// Similarly, if the next character is a bracket or double quotes, return immediately
+	// Similarly, if the next character is a period, bracket or double quotes, return immediately
 	char c2 = peekChar();
-	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
+	if ((c2 == '.') || (c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
 	// If next character is '-', return now if previous char was *not* another '-'
 	if ((c2 == '-') && (c != '-')) return c;
 	// If it is 'punctuation', add this second character to our operator and search for it
