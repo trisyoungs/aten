@@ -267,6 +267,7 @@ Prefs::Prefs()
 	warning1056_ = TRUE;
 	loadFragments_ = TRUE;
 	generateFragmentIcons_ = TRUE;
+	loadFilters_ = TRUE;
 
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
@@ -1301,6 +1302,18 @@ bool Prefs::warning1056() const
 void Prefs::setWarning1056(bool b)
 {
 	warning1056_ = b;
+}
+
+// Whether to load filters on startup
+bool Prefs::loadFilters() const
+{
+	return loadFilters_;
+}
+
+// Set whether to load filters on startup
+void Prefs::setLoadFilters(bool b)
+{
+	loadFilters_ = b;
 }
 
 // Whether to load fragments on startup

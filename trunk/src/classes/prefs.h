@@ -539,6 +539,8 @@ class Prefs
 	bool forceRhombohedral_;
 	// Display warning for version 1.5 (r1056) newness
 	bool warning1056_;
+	// Whether to load filters on startup
+	bool loadFilters_;
 	// Whether to load fragments on startup
 	bool loadFragments_;
 	// Whether to generate icons for loaded fragments
@@ -605,7 +607,11 @@ class Prefs
 	bool warning1056() const;
 	// Set whether to display warning for version 1.5 (r1056) newness
 	void setWarning1056(bool b);
-	// Whether to load fragments on startup
+	// Whether to load filters on startup
+	bool loadFilters() const;
+	// Set whether to load filters on startup
+	void setLoadFilters(bool b);
+	// Whether to load filters on startup
 	bool loadFragments() const;
 	// Set whether to load fragments on startup
 	void setLoadFragments(bool b);

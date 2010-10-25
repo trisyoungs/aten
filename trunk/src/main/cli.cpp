@@ -114,6 +114,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
 		"",
 		"Prevent centering of atomic coordinates at zero" },
+	{ Cli::NoFiltersSwitch,	'\0',"nofilters",	0,
+		"",
+		"Prevent loading of filters from standard locations on startup" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
 		"Prevent folding of atoms in periodic systems" },
@@ -279,10 +282,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 						else return FALSE;
 					}
 					break;
-				// Display help
-				case (Cli::HelpSwitch):
-					printUsage();
-					return FALSE;
+				// Restrict filter loading on startup
+				case (Cli::NoFiltersSwitch):
+					prefs.setLoadFilters(FALSE);
 					break;
 				// Restrict fragment loading on startup
 				case (Cli::NoFragmentsSwitch):
@@ -291,6 +293,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Restrict fragment icon generation
 				case (Cli::NoFragmentIconsSwitch):
 					prefs.setGenerateFragmentIcons(FALSE);
+					break;
+				// Display help
+				case (Cli::HelpSwitch):
+					printUsage();
+					return FALSE;
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
@@ -404,6 +411,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::AtenDataSwitch):
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
+				case (Cli::NoFiltersSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::QuietSwitch):

@@ -161,7 +161,7 @@ Tree *Forest::addGlobalFunction(const char *name)
 Tree *Forest::findGlobalFunction(const char *name)
 {
 	Tree *result;
-	for (result = functions_.first(); result != NULL; result = result ->next) if (strcmp(result->name(),name) == 0) break;
+	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
 	return result;
 }
 
