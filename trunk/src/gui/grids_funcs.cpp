@@ -311,8 +311,8 @@ void AtenGrids::refreshGridInfo()
 	ui.GridTotalNegativeSumLabel->setText(ftoa(g->totalNegativeSum()));
 	double total = g->totalPositiveSum() + fabs(g->totalNegativeSum());
 	ui.GridTotalAbsoluteLabel->setText(ftoa(total));
-	ui.GridPrimarySumLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
-	ui.GridSecondarySumLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
+	ui.GridPrimaryPercentLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
+	ui.GridSecondaryPercentLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
 	// Set origin and axes
 	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);
