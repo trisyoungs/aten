@@ -539,7 +539,7 @@ Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	static Vec3<double> rk, xp1, xp2;
 	Refitem<Bond,int> *brefi = NULL, *brefj = NULL;
-	bool done = TRUE;
+	bool done = FALSE;
 	// If the supplied ij bond is aromatic, attempt to find another aromatic bond...
 	if (b->type() == Bond::Aromatic)
 	{
@@ -553,7 +553,7 @@ Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
 			for (brefi = j->bonds_.first(); brefi != NULL; brefi = brefi->next) if ((brefi->item != b) && (brefi->item->type() == Bond::Aromatic)) break;
 			if (brefi != NULL) rk = brefi->item->partner(j)->r_;
 		}
-		if (brefi == NULL) done = FALSE;
+		done = (brefi != NULL);
 	}
 	// Do we need to calculate a normal bond vector with some other atom, or the aromatic condition failed?
 	if (!done)

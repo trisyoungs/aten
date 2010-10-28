@@ -375,58 +375,27 @@ void Canvas::createLists()
 	  spherePrimitive(1.0, FALSE);
 	glEndList();
 	/*
-	// Cylinders (bonds)
-	*/
-	// Solid cylinder of radius 1
-	glNewList(glob(CylinderGlob),GL_COMPILE);
-	  cylinderPrimitive(1.0, 1.0, TRUE);
-	glEndList();
-	// Solid selected cylinder
-	glNewList(glob(SelectedCylinderGlob),GL_COMPILE);
-	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), TRUE);
-	glEndList();
-	// Wireframe cylinder
-	glNewList(glob(WireCylinderGlob),GL_COMPILE);
-	  cylinderPrimitive(1.0, 1.0, FALSE);
-	glEndList();
-	// Selected wireframe cylinder
-	glNewList(glob(SelectedWireCylindedGlob),GL_COMPILE);
-	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), FALSE);
-	glEndList();
-	/*
 	// Objects
 	*/
-	// Cylinder Arrow
-	glNewList(glob(TubeArrowGlob),GL_COMPILE);
-	  glPushMatrix();
-	    glScaled(1.0,1.0,0.6);
-	    cylinderPrimitive(0.1, 0.1, TRUE);
-	  glPopMatrix();
-	  glTranslated(0.0,0.0,0.6);
-	  glPushMatrix();
-	    glScaled(1.0,1.0,0.4);
-	    cylinderPrimitive(0.2, 0.0, TRUE);
-	  glPopMatrix();
-	glEndList();
 	// View axes
 	glNewList(glob(GlobeGlob),GL_COMPILE);
 	  glBegin(GL_LINES);
 	    // X
-	    glVertex3f(0.6f,0.0f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
-	    glVertex3f(0.65f,-0.05f,0.0f); glVertex3f(0.85f,0.05f,0.0f);
-	    glVertex3f(0.65f,0.05f,0.0f); glVertex3f(0.85f,-0.05f,0.0f);
-	    // Y
-	    glVertex3f(0.0f,0.6f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
-	    glVertex3f(0.0f,0.65f,0.0f); glVertex3f(0.0f,0.75f,0.0f);
-	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(0.05f,0.85f,0.0f);
-	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(-0.05f,0.85f,0.0f);
+	    glVertex3d(0.6f,0.0f,0.0f); glVertex3d(0.0f,0.0f,0.0f);
+	    glVertex3d(0.65f,-0.05f,0.0f); glVertex3d(0.85f,0.05f,0.0f);
+	    glVertex3d(0.65f,0.05f,0.0f); glVertex3d(0.85f,-0.05f,0.0f);
+	    // Y`
+	    glVertex3d(0.0f,0.6f,0.0f); glVertex3d(0.0f,0.0f,0.0f);
+	    glVertex3d(0.0f,0.65f,0.0f); glVertex3d(0.0f,0.75f,0.0f);
+	    glVertex3d(0.0f,0.75f,0.0f); glVertex3d(0.05f,0.85f,0.0f);
+	    glVertex3d(0.0f,0.75f,0.0f); glVertex3d(-0.05f,0.85f,0.0f);
 	    // Z
 	    glVertex3d(0.0f,0.0f,0.6f); glVertex3d(0.0f,0.0f,0.0f);
 	    glVertex3d(-0.05f,0.0f,0.65f); glVertex3d(0.05f,0.0f,0.65f);
 	    glVertex3d(0.05f,0.0f,0.65f); glVertex3d(-0.05f,0.0f,0.85f);
 	    glVertex3d(-0.05f,0.0f,0.85f); glVertex3d(0.05f,0.0f,0.85f);
 	  glEnd();
-	  spherePrimitive(0.5, FALSE);
+	  spherePrimitive(0.5, FALSE, 10, 10);
 	glEndList();
 	// Drawing guide
 	delta = extent * spacing;

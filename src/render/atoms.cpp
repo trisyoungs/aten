@@ -151,30 +151,41 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 				switch (bref->item->type())
 				{
 					case (Bond::Single):	// Single bond
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						break;
 					case (Bond::Double):	// Double bond
-					case (Bond::Aromatic):	// Double bond
 						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
 						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						glTranslated(ijk.x,ijk.y,ijk.z);
+						break;
+					case (Bond::Aromatic):	// Aromatic bond
+						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
+						else ijk = j->findBondPlane(i,bref->item,rj);
+						ijk *= bondradius*2.0;
+						ijk += rj*bondradius;
+						// Can now draw the bond. Draw first part exactly between atoms, and solid
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
+						// Draw second part displaced, and segmented
+						glTranslated(ijk.x,ijk.y,ijk.z);
+						glCylinder(rj*(1.0-bondradius),bondradius*0.75,bondradius*0.75,TRUE,TRUE,prefs.bondDetail()+(i>j));
+						glTranslated(-ijk.x,-ijk.y,-ijk.z);
 						break;
 					case (Bond::Triple):	// Triple bond
 						if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
 						else ijk = j->findBondPlane(i,bref->item,rj);
 						ijk *= bondradius;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,0,bondradius);
+						glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 					default:
@@ -317,11 +328,11 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 			rj *= 0.5;
 			// Draw cylinder bonds.
 // 			bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
-			bondradius = prefs.bondStyleRadius(style_i);
+			bondradius = prefs.bondStyleRadius(style_i) * prefs.selectionScale();
 			switch (bref->item->type())
 			{
 				case (Bond::Single):	// Single bond
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					break;
 				case (Bond::Double):	// Double bond
 					if (i > j) ijk = i->findBondPlane(j,bref->item,rj);
@@ -329,9 +340,9 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 					ijk *= bondradius;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
 					glTranslated(ijk.x,ijk.y,ijk.z);
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
 				case (Bond::Triple):	// Triple bond
@@ -339,11 +350,11 @@ void Canvas::renderModelAtoms(Model *sourceModel) const
 					else ijk = j->findBondPlane(i,bref->item,rj);
 					ijk *= bondradius;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					glTranslated(ijk.x,ijk.y,ijk.z);
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-					glCylinder(rj,rij,1,bondradius);
+					glCylinder(rj,bondradius,bondradius,TRUE,FALSE);
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
 				default:

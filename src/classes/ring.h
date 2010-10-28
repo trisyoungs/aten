@@ -25,6 +25,9 @@
 #include "base/atom.h"
 #include "base/bond.h"
 
+// Forward declarations
+class Pattern;
+
 // Ring
 class Ring
 {
@@ -47,6 +50,8 @@ class Ring
 	// Constituent Atoms / Bonds
 	*/
 	private:
+	// Parent pattern
+	Pattern *parent_;
 	// List of referenced atoms
 	Reflist<Atom,int> atoms_;
 	// List of referenced bonds (and their types)
@@ -57,6 +62,10 @@ class Ring
 	RingType type_;
 
 	public:
+	// Set pattern parent
+	void setParent(Pattern *p);
+	// Return parent pattern
+	Pattern *parent();
 	// Return first referenced atom
 	Refitem<Atom,int> *atoms() const;
 	// Return last referenced atom
