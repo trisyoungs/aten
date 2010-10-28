@@ -92,7 +92,7 @@ void Canvas::renderExtra3d() const
 			  else
 			  {
 				radius = prefs.bondStyleRadius(prefs.renderStyle());
-				glCylinder(mouse, mouse.magnitude(), 3, radius);
+				glCylinder(mouse, mouse.magnitude(), radius, radius, FALSE, FALSE);
 				glTranslated(mouse.x, mouse.y, mouse.z);
 				switch (prefs.renderStyle())
 				{
@@ -200,8 +200,15 @@ void Canvas::renderExtra3d() const
 					int count = 0;
 					for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 					{
-						if (prefs.renderStyle() == Atom::StickStyle) glArrow(i->r(), disp[count]*scale, FALSE);
-						else glCylinderArrow(i->r(), disp[count]*scale, FALSE);
+						r = i->r();
+						if (prefs.renderStyle() == Atom::StickStyle) glArrow(r, disp[count]*scale, FALSE);
+						else
+						{
+							glPushMatrix();
+							  glTranslated(r.x, r.y, r.z);
+							  glCylinderArrow(disp[count]*scale, FALSE);
+							glPopMatrix();
+						}
 						++count;
 					}
 				}
@@ -336,7 +343,7 @@ void Canvas::renderRegions() const
 			case (ComponentRegion::CylinderRegion):
 				glTranslated(0.0,0.0,-0.5*geometry.z);
 				glScaled(geometry.x,geometry.y,geometry.z);
-				cylinderPrimitive(1.0, 1.0, TRUE, 25, 25);
+				glCylinder(Vec3<double>(0,0,1),1.0,1.0,TRUE,FALSE,25,25);
 				break;
 			default:
 				printf("renderRegions :: ComponentRegion type not done.\n");

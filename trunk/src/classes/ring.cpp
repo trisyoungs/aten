@@ -20,8 +20,10 @@
 */
 
 #include "classes/ring.h"
+#include "base/pattern.h"
 #include "base/atom.h"
 #include "base/elements.h"
+#include "model/model.h"
 
 // Ring types
 const char *RingTypes[Ring::nRingTypes] = { "any", "aliphatic", "non-aromatic", "aromatic" };
@@ -34,6 +36,7 @@ const char *Ring::ringType(Ring::RingType rt)
 Ring::Ring()
 {
 	// Private variables
+	parent_ = NULL;
 	requestedSize_ = -1;
 
 	// Public variables
@@ -78,6 +81,18 @@ bool Ring::operator==(Ring &r) const
 	}
 	if ((ri == NULL) && (rj == NULL)) return FALSE;
 	return TRUE;
+}
+
+// Set pattern parent
+void Ring::setParent(Pattern *p)
+{
+	parent_ = p;
+}
+
+// Return parent pattern
+Pattern *Ring::parent()
+{
+	return parent_;
 }
 
 /*
@@ -193,7 +208,7 @@ void Ring::detectType()
 	int nsingle = 0, ndouble = 0, nother = 0, naromatic = 0;
 	Bond::BondType lasttype, thistype;
 	bool alternating = TRUE;
-	// Get numbers of single/double bonds, and wheter they alternate around the ring
+	// Get numbers of single/double bonds, and whether they alternate around the ring
 	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
 	{
 		thistype = rb->item->type();
@@ -217,7 +232,16 @@ void Ring::detectType()
 	else if ((bonds_.nItems()%2) == 0)
 	{
 		// For rings with an even number of atoms, the bonds *must* alternate in type
-		type_ = (alternating ? Ring::AromaticRing : Ring::NonAromaticRing);
+		if (nsingle == ndouble)
+		{
+			type_ = (alternating ? Ring::AromaticRing : Ring::NonAromaticRing);
+		}
+		else
+		{
+			// Inequality between number of singla and double bonds - any aromatic bonds hanging around?
+			if (abs(nsingle-ndouble) <= (naromatic*2)) type_ = Ring::AromaticRing;
+			else type_ = Ring::NonAromaticRing;
+		}
 	}
 	else
 	{
@@ -251,13 +275,13 @@ void Ring::detectType()
 			type_ = Ring::AromaticRing;	
 		}
 	}
-	// If aromatic, set atom and bond environments to match
+	// Set aromatic bonds if so detected
 	if (type_ == Ring::AromaticRing)
 	{
 		for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
 		for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
 		{
-			rb->item->setType(Bond::Aromatic);
+			parent_->parent()->changeBond(rb->item, Bond::Aromatic);
 			rb->data = Bond::Aromatic;
 		}
 	}

@@ -1221,6 +1221,7 @@ bool Pattern::ringSearch(Atom *i, Ring *currentpath)
 						else
 						{
 							r = rings_.add();
+							r->setParent(this);
 							r->copy(currentpath);
 							r->finalise();
 							r->print();

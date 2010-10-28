@@ -105,32 +105,6 @@ void Canvas::spherePrimitive(double radius, bool filled, int nslices, int nstack
 	}
 }
 
-// Draw a cylinder
-void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled, int nslices, int nstacks) const
-{
-	int n, m;
-	double d, rdelta, radius1, radius2, rnstacks;
-	if (nslices == -1) nslices = prefs.bondDetail();
-	if (nstacks == -1) nstacks = prefs.bondDetail();
-	rnstacks = 1.0 / nstacks;
-	rdelta = (endradius - startradius) / nslices;
-	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
-	for (n=0; n<nslices; n++)		// Slices
-	{
-		radius1 = startradius + n*rdelta;
-		radius2 = startradius + (n+1)*rdelta;
-		glBegin(GL_QUAD_STRIP);
-		  for (m=0; m<=nstacks; m++)	// Stacks
-		  {
-			  d = m * TWOPI / nslices;
-			  glNormal3d(cos(d), sin(d), 0.0);
-			  glVertex3d(cos(d) * radius1, sin(d) * radius1, n * rnstacks);
-			  glVertex3d(cos(d) * radius2, sin(d) * radius2, (n + 1) * rnstacks);
-		  }
-		glEnd();
-	}
-}
-
 /*
 // Rendering Objects
 */
@@ -147,78 +121,9 @@ void Canvas::glText(const Vec3<double> r, const char *s) const
 	contextWidget_->renderText(r.x, r.y, r.z, s);
 }
 
-// Draw an arrow from origin along vector v
-void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead) const
-{
-	//static Vec3<double> perp, v2, v3, perp2;
-	static Vec3<double> orth1, orth2, arrowstart, arrowend, pos;
-	if (v.magnitude() < 0.0001) return;
-	// Get orthogonal vectors to v...
-	orth1 = v.orthogonal();	
-	orth2 = orth1 * v;
-	orth2.normalise();
-	// Arrowheads will be 0.1 Angstroms in length
-	orth1 *= 0.1;
-	orth2 *= 0.1;
-	// Set start and end points for arrow along vector
-	if (swaphead)
-	{
-		arrowstart = v * 0.1;
-		arrowend.zero();
-	}
-	else
-	{
-		arrowstart = v * 0.9;
-		arrowend = v;
-	}
-	glPushMatrix();
-	  // TODO Save on this glPushMatrix by just recentering vectors around origin?
-	  glTranslated(origin.x,origin.y,origin.z);
-	  glPushMatrix();
-	    glBegin(GL_LINES);
-	      glVertex3d(0.0,0.0,0.0);
-	      glVertex3d(v.x,v.y,v.z);
-	      pos = arrowstart + orth1;
-	      glVertex3d(pos.x,pos.y,pos.z);
-	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
-	      pos = arrowstart - orth1;
-	      glVertex3d(pos.x,pos.y,pos.z);
-	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
-	      pos = arrowstart + orth2;
-	      glVertex3d(pos.x,pos.y,pos.z);
-	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
-	      pos = arrowstart - orth2;
-	      glVertex3d(pos.x,pos.y,pos.z);
-	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
-	    glEnd();
-	  glPopMatrix();
-	glPopMatrix();
-}
-
-// Draw a cylinder arrow from origin along vector v
-void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead) const
-{
-	// Determine spherical coordinates
-	static double phi, rij;
-	rij = v.magnitude();
-	if (rij < 0.0001) return;
-	glPushMatrix();
-	  glTranslated(origin.x, origin.y, origin.z);
-	  // Calculate angle out of XZ plane
-	  phi = DEGRAD * acos(v.z/rij);
-	  glPushMatrix();
-	    // Special case where the bond is exactly in the XY plane.
-	    if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
-	    else glRotated(phi, -v.y/rij , v.x/rij ,0.0);
-	    glScaled(1.0,1.0,rij);
-	    glCallList(glob(TubeArrowGlob));
-	  glPopMatrix();
-	glPopMatrix();
-}
-
+// Highlight atoms in current subselection
 void Canvas::glSubsel3d() const
 {
-	// 3D atom highlights on atoms defined in subselection provided.
 	static Vec3<double> ir;
 	double radius;
 	Refitem<Atom,int> *ri;
@@ -231,10 +136,10 @@ void Canvas::glSubsel3d() const
 		ir = i->r();
 		// Draw a wireframe sphere at the atoms position
 		glPushMatrix();
-		  glTranslated(ir.x,ir.y,ir.z);
-		  renderstyle == Atom::IndividualStyle ? style_i = i->style() : style_i = renderstyle;
-		  switch (style_i)
-		  {
+		glTranslated(ir.x,ir.y,ir.z);
+		renderstyle == Atom::IndividualStyle ? style_i = i->style() : style_i = renderstyle;
+		switch (style_i)
+		{
 			case (Atom::StickStyle):
 				glCallList(glob(WireTubeAtomGlob));
 				break;
@@ -247,73 +152,61 @@ void Canvas::glSubsel3d() const
 			case (Atom::ScaledStyle): 
 				radius = prefs.screenRadius(i);
 				glPushMatrix();
-				  glScaled(radius,radius,radius);
-				  glCallList(glob(WireUnitAtomGlob));
+				glScaled(radius,radius,radius);
+				glCallList(glob(WireUnitAtomGlob));
 				glPopMatrix();
 				break;
 			default:
 				break;
-		  }
+		}
 		glPopMatrix();
 		// Draw line between this and last atom (if there was one)
 		if (lastatom != NULL)
 		{
 			glBegin(GL_LINES);
-			  ir = lastatom->rScreen();
-			  glVertex2d(ir.x, ir.y);
-			  ir = lastatom->rScreen();
-			  glVertex2d(ir.x, ir.y);
+			ir = lastatom->rScreen();
+			glVertex2d(ir.x, ir.y);
+			ir = lastatom->rScreen();
+			glVertex2d(ir.x, ir.y);
 			glEnd();
 		}
 		lastatom = i;
 	}
 }
 
-void Canvas::renderRotationGlobe(double *rmat, double camrot) const
+// Render a cylinder along a specific vector
+void Canvas::glCylinder( const Vec3<double> &rj, double startradius, double endradius, bool solid, bool segmented, int nstacks, int nslices) const
 {
-	// Draw the coordinate axes at the bottom right of the screen.
-	// First set up the small viewport and apply our stored projection matrix.
-	int globesize = prefs.globeSize();
-	glViewport(width_-globesize,0,globesize,globesize);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	static double pmat[16];
-	GlobePMAT.copyColumnMajor(pmat);
-	glMultMatrixd(pmat);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glRotated(camrot*DEGRAD,0.0,0.0,1.0);
-	glMultMatrixd(rmat);
-	glLineWidth(1.0);
-	glDisable(GL_LIGHTING);
-	glCallList(glob(GlobeGlob));
-	// Reset the viewport back to the entire canvas
-	glViewport(0, 0, width_, height_);
-}
-
-void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double radius) const
-{
-	/* Styles are:
-		0 = solid
-		1 = expanded solid
-		2 = expanded wireframe
-		3 = wireframe
-	*/
-	// Determine spherical coordinates
-	static double phi;
-	// Calculate angle out of XZ plane
-	phi = DEGRAD * acos(rj.z/rij);
-	glPushMatrix();
-	  // Special case where the bond is exactly in the XY plane.
-	  if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
-	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
-	  glScaled(radius,radius,rij);
-	  // Draw cylinder (bond)
-	  if (style == 0) glCallList(glob(CylinderGlob));
-	  else if (style == 1) glCallList(glob(SelectedCylinderGlob));
-	  else if (style == 2) glCallList(glob(SelectedWireCylindedGlob));
-	  else if (style == 3) glCallList(glob(WireCylinderGlob));
-	glPopMatrix();
+	// New code
+	static Vec3<double> u,v,deltarj,normal,coord;
+	// Determine orthogonal vectors
+	u = rj.orthogonal();
+	u.normalise();
+	v = rj * u;
+	v.normalise();
+	// Determine step sizes
+	if (nstacks == -1) nstacks = prefs.bondDetail();
+	if (nslices == -1) nslices = prefs.bondDetail();
+	int n, m;
+	double d, dtheta = TWOPI / nslices, dradius = (startradius-endradius)/nstacks;
+	deltarj = rj / nstacks;
+	glPolygonMode(GL_FRONT_AND_BACK, (solid ? GL_FILL : GL_LINE));
+	for (n=0; n<nstacks; ++n)
+	{
+		if (segmented && (n+1)%2) continue;
+		glBegin(GL_QUAD_STRIP);
+		for (m=0; m<=nslices; ++m)
+		  {
+			  d = m * dtheta;
+			  normal = u*cos(d) + v*sin(d);
+			  glNormal3d(normal.x, normal.y, normal.z);
+			  coord = normal*(startradius-n*dradius) + deltarj*n;
+			  glVertex3d(coord.x, coord.y, coord.z);
+			  coord = normal*(startradius-(n+1)*dradius) + deltarj*(n+1);
+			  glVertex3d(coord.x, coord.y, coord.z);
+		  }
+		glEnd();
+	}
 }
 
 void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, const Vec3<double> &v2) const
@@ -361,6 +254,71 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, cons
 	glPopMatrix();
 }
 
+// Draw an arrow from origin along vector v
+void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead) const
+{
+	//static Vec3<double> perp, v2, v3, perp2;
+	static Vec3<double> orth1, orth2, arrowstart, arrowend, pos;
+	if (v.magnitude() < 0.0001) return;
+	// Get orthogonal vectors to v...
+	orth1 = v.orthogonal();	
+	orth2 = orth1 * v;
+	orth2.normalise();
+	// Arrowheads will be 0.1 Angstroms in length
+	orth1 *= 0.1;
+	orth2 *= 0.1;
+	// Set start and end points for arrow along vector
+	if (swaphead)
+	{
+		arrowstart = v * 0.1;
+		arrowend.zero();
+	}
+	else
+	{
+		arrowstart = v * 0.9;
+		arrowend = v;
+	}
+	glPushMatrix();
+	// TODO Save on this glPushMatrix by just recentering vectors around origin?
+	glTranslated(origin.x,origin.y,origin.z);
+	glPushMatrix();
+	glBegin(GL_LINES);
+	glVertex3d(0.0,0.0,0.0);
+	glVertex3d(v.x,v.y,v.z);
+	pos = arrowstart + orth1;
+	glVertex3d(pos.x,pos.y,pos.z);
+	glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	pos = arrowstart - orth1;
+	glVertex3d(pos.x,pos.y,pos.z);
+	glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	pos = arrowstart + orth2;
+	glVertex3d(pos.x,pos.y,pos.z);
+	glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	pos = arrowstart - orth2;
+	glVertex3d(pos.x,pos.y,pos.z);
+	glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	glEnd();
+	glPopMatrix();
+	glPopMatrix();
+}
+
+// Draw a cylinder arrow from origin along vector v
+void Canvas::glCylinderArrow(const Vec3<double> &vector, bool swaphead) const
+{
+	// Determine vectors for cylinder and arrowhead will be.
+	// Minimum size of arrowhead will be 0.1 A, provided the length of the vector allows it.
+	Vec3<double> cyl, head;
+	double mag = vector.magnitude();
+	cyl = (mag < 0.25 ? vector*0.5 : vector*(mag-0.25)/mag);
+	head = vector-cyl;
+	glCylinder(cyl,0.1,0.1,TRUE,FALSE,12,12);
+	glPushMatrix();
+	  glTranslated(cyl.x,cyl.y,cyl.z);
+	  glCylinder(head,0.2,0.0,TRUE,FALSE,12,12);
+	glPopMatrix();
+}
+
+// Draw miller plane specified
 void Canvas::millerPlane(int h, int k, int l, int dir) const
 {
 	if (displayModel_->cell()->type() == Cell::NoCell) return;
@@ -430,4 +388,26 @@ void Canvas::millerPlane(int h, int k, int l, int dir) const
 	  }
 	glPopMatrix();
 	prefs.backfaceCulling() ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+}
+
+void Canvas::renderRotationGlobe(double *rmat, double camrot) const
+{
+	// Draw the coordinate axes at the bottom right of the screen.
+	// First set up the small viewport and apply our stored projection matrix.
+	int globesize = prefs.globeSize();
+	glViewport(width_-globesize,0,globesize,globesize);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	static double pmat[16];
+	GlobePMAT.copyColumnMajor(pmat);
+	glMultMatrixd(pmat);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glRotated(camrot*DEGRAD,0.0,0.0,1.0);
+	glMultMatrixd(rmat);
+	glLineWidth(1.0);
+	glDisable(GL_LIGHTING);
+	glCallList(glob(GlobeGlob));
+	// Reset the viewport back to the entire canvas
+	glViewport(0, 0, width_, height_);
 }

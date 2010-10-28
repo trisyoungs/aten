@@ -85,7 +85,7 @@ class Canvas
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
 
 	// GL Objects
-	enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, CylinderGlob, SelectedCylinderGlob, WireCylinderGlob, SelectedWireCylindedGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, TubeArrowGlob, ModelGlob, nGlobs };
+	enum GlObject { StickAtomGlob, TubeAtomGlob, SphereAtomGlob, UnitAtomGlob, WireTubeAtomGlob, WireSphereAtomGlob, WireUnitAtomGlob, GlobeGlob, GuideGlob, CircleGlob, CellAxesGlob, SelectedTubeAtomGlob, SelectedSphereAtomGlob, SelectedUnitAtomGlob, WireUnitCubeGlob, UnitCubeGlob, CrossedUnitCubeGlob, ModelGlob, nGlobs };
 
 
 	/*
@@ -168,8 +168,6 @@ class Canvas
 	void circlePrimitive(double xcentre, double ycenter, double radius) const;
 	// Manually draw a unit sphere
 	void spherePrimitive(double radius, bool filled, int nslices = -1, int nstacks = -1) const;
-	// Manually draw unit cylinder
-	void cylinderPrimitive(double startradius, double endradius, bool filled, int nslices = -1, int nstacks = -1) const;
 
 
 	/*
@@ -183,7 +181,7 @@ class Canvas
 	// Draw 3d marks for the atoms in the subselection
 	void glSubsel3d() const;
 	// Draw a cylinder along vector supplied
-	void glCylinder(const Vec3<double> &vec, double length, int style, double radius) const;
+	void glCylinder(const Vec3<double> &rj, double startradius, double endradius, bool solid, bool segmented, int nstacks = -1, int nslices = -1) const;
 	// Draw ellipsoid (construct third vector from the tqo supplied)
 	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y) const;
 	// Draw ellipsoid in the supplied axis sytem
@@ -193,7 +191,7 @@ class Canvas
 	// Draw a line arrow
 	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE) const;
 	// Draw a cylinder arrow
-	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE) const;
+	void glCylinderArrow(const Vec3<double> &vector, bool swaphead = FALSE) const;
 	// Draw the specified Miller plane (and directional arrow)
 	void millerPlane(int h, int k, int l, int dir) const;
 
