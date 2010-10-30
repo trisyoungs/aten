@@ -116,7 +116,7 @@ class Atom
 	// Atomic charge
 	double charge_;
 	// Element number
-	short int el_;
+	short int element_;
 	// Oxidation state (used by typing routines)
 	short int os_;
 	// Forcefield atom type
@@ -303,6 +303,8 @@ class Atom
 	void setColour(double r, double g, double b, double a = 1.0f);
 	// Set n'th component of custom colour
 	void setColour(int n, double d);
+	// Set custom colour from current atom element
+	void setColourFromElement();
 	// Return custom colour
 	double *colour();
 	// Copy custom colour

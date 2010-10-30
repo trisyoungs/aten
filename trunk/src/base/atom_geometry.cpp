@@ -118,7 +118,7 @@ Vec3<double> Atom::nextBondVector()
 	int nsingle = parent_->countBondsToAtom(this,Bond::Single);
 	int ndouble = parent_->countBondsToAtom(this,Bond::Double);
 	int ntriple = parent_->countBondsToAtom(this,Bond::Triple);
-	switch (el_)
+	switch (element_)
 	{
 		case (0):
 			break;

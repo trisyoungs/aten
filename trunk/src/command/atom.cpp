@@ -52,7 +52,7 @@ bool Command::function_AtomStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 bool Command::function_ColourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs->beginUndoState("Fix positions of %i atoms", obj.rs->nSelected());
+	obj.rs->beginUndoState("Set custom colour of %i atoms", obj.rs->nSelected());
 	obj.rs->selectionSetColour(c->argd(0), c->argd(1), c->argd(2), (c->hasArg(3) ? c->argd(3) : 1.0));
 	obj.rs->endUndoState();
 	rv.reset();
@@ -109,6 +109,17 @@ bool Command::function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs->beginUndoState("Hide %i atoms", obj.rs->nSelected());
 	obj.rs->selectionSetHidden(TRUE);
+	obj.rs->endUndoState();
+	rv.reset();
+	return TRUE;
+}
+
+// Set custom colours of selected atoms
+bool Command::function_RecolourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	obj.rs->beginUndoState("Reset custom colour of %i atoms", obj.rs->nSelected());
+	obj.rs->selectionResetColour();
 	obj.rs->endUndoState();
 	rv.reset();
 	return TRUE;

@@ -77,7 +77,7 @@ Atom::Atom()
 {
 	// Private variables
 	charge_ = 0.0;
-	el_ = 0;
+	element_ = 0;
 	os_ = 0;
 	environment_ = Atom::NoEnvironment;
 	type_ = NULL;
@@ -90,9 +90,10 @@ Atom::Atom()
 	style_ = StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
-	colour_[0] = 1.0;
-	colour_[1] = 1.0;
-	colour_[2] = 1.0;
+	// Set initial custom colour to be black (since we have no element yet)
+	colour_[0] = 0.0;
+	colour_[1] = 0.0;
+	colour_[2] = 0.0;
 	colour_[3] = 1.0;
 
 	// Public variables
@@ -156,19 +157,19 @@ double Atom::charge() const
 // Set the element type of the atom
 void Atom::setElement(short int newel)
 {
-	el_ = newel;
+	element_ = newel;
 }
 
 // Return the element of the atom
 short int Atom::element() const
 {
-	return el_;
+	return element_;
 }
 
 // Check element against the supplied value
 bool Atom::isElement(short int n) const
 {
-	return (n == el_ ? TRUE : FALSE);
+	return (n == element_ ? TRUE : FALSE);
 }
 
 // Check oxidation state against supplied value
@@ -254,7 +255,7 @@ bool Atom::isEnvironment(Atom::AtomEnvironment ae) const
 // Reset data in structure
 void Atom::reset()
 {
-	el_ = 0;
+	element_ = 0;
 	r_.zero();
 	f_.zero();
 	v_.zero();
@@ -268,12 +269,13 @@ void Atom::copy(Atom *source)
 	f_ = source->f_;
 	v_ = source->v_;
 	charge_ = source->charge_;
-	el_ = source->el_;
+	element_ = source->element_;
 	style_ = source->style_;
 	environment_ = source->environment_;
 	type_ = source->type_;
 	fixedType_ = source->fixedType_;
 	labels_ = source->labels_;
+	for (int n=0; n<4; ++n) colour_[n] = source->colour_[n];
 	// Do NOT copy selection or marked state (set to FALSE)
 	selected_ = FALSE;
 	marked_ = FALSE;
@@ -290,7 +292,7 @@ void Atom::copyStyle(Atom *source)
 void Atom::print() const
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(el_));
+	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(element_));
 	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
 	msg.print(" Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg.print(" World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
@@ -309,7 +311,7 @@ void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q        S  \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements().symbol(el_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
+	msg.print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
 }
 
 /*
@@ -720,6 +722,12 @@ void Atom::setColour(int n, double d)
 {
 	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for atom colour which is out of range.\n", n+1);
 	else colour_[n] = d;
+}
+
+// Set custom colour from current atom element
+void Atom::setColourFromElement()
+{
+	for (int n=0; n<4; ++n) colour_[n] = elements().el[element_].ambientColour[n];
 }
 
 // Return custom colour
