@@ -202,6 +202,8 @@ class Model
 	void atomSetCharge(Atom *i, double q);
 	// Set custom colour of specified atom
 	void atomSetColour(Atom *i, double r, double g, double b, double a = 1.0);
+	// Reset custom colour of specified atom
+	void atomResetColour(Atom *i);
 	// Set the drawing style of the specified atom
 	void atomSetStyle(Atom *i, Atom::DrawStyle);
 	// Prints out the coordinates of the atoms in the model
@@ -404,6 +406,8 @@ class Model
 	void selectionSetFixed(bool fixed);
 	// Set the custom colour of all selected atoms
 	void selectionSetColour(double r, double g, double b, double a = 1.0);
+	// Reset the custom colours of all selected atoms
+	void selectionResetColour();
 	// Set the drawing style of the current atom selection
 	void selectionSetStyle(Atom::DrawStyle);
 

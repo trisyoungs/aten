@@ -46,6 +46,7 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<d
 	Atom *newatom = atoms_.add();
 	newatom->setParent(this);
 	newatom->setElement(newel);
+	newatom->setColourFromElement();
 	newatom->setId(atoms_.nItems() - 1);
 	newatom->r() = pos;
 	newatom->v() = vel;
@@ -70,6 +71,7 @@ Atom *Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 	Atom *newatom = atoms_.insert(targetid == 0 ? NULL : atoms_[targetid-1]);
 	newatom->setParent(this);
 	newatom->setElement(newel);
+	newatom->setColourFromElement();
 	newatom->setId(targetid);
 	renumberAtoms(newatom);
 	newatom->r() = pos;
@@ -397,6 +399,7 @@ void Model::atomSetCharge(Atom *target, double q)
 void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
 {
 	// Add the change to the undo state (if there is one)
+	printf("New atom ID %i's colour is %f %f %f %f\n", i->id(), r, g, b, a);
 	if (recordingState_ != NULL)
 	{
 		ColourEvent *newchange = new ColourEvent;
@@ -406,6 +409,25 @@ void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
 	}
 	// Now set the colour....
 	i->setColour(r, g, b, a);
+	changeLog.add(Log::Visual);
+}
+
+// Reset custom colour of specified atom
+void Model::atomResetColour(Atom *i)
+{
+	// Grab new colour...
+	double newcol[4];
+	for (int n=0; n<4; ++n) newcol[n] = elements().el[i->element()].ambientColour[n];
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ColourEvent *newchange = new ColourEvent;
+		double *oldcol = i->colour();
+		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], newcol[0], newcol[1], newcol[2], newcol[3]);
+		recordingState_->addEvent(newchange);
+	}
+	// Now set the colour....
+	i->setColour(newcol[0], newcol[1], newcol[2], newcol[3]);
 	changeLog.add(Log::Visual);
 }
 

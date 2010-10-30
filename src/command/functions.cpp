@@ -77,6 +77,7 @@ void Command::initPointers()
 	pointers_[Free] = &Command::function_Free;
 	pointers_[GetAtom] = &Command::function_GetAtom;
 	pointers_[Hide] = &Command::function_Hide;
+	pointers_[RecolourAtoms] = &Command::function_RecolourAtoms;
 	pointers_[SetCoords] = &Command::function_SetCoords;
 	pointers_[SetCharge] = &Command::function_SetCharge;
 	pointers_[SetElement] = &Command::function_SetElement;

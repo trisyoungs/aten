@@ -121,6 +121,7 @@ class Command
 		Free,
 		GetAtom,
 		Hide,
+		RecolourAtoms,
 		SetCharge,
 		SetCoords,
 		SetElement,
@@ -599,6 +600,7 @@ class Command
 	static bool function_Free(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_GetAtom(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Hide(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_RecolourAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetCoords(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetCharge(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SetElement(CommandNode *c, Bundle &obj, ReturnValue &rv);

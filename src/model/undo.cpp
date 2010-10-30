@@ -150,7 +150,7 @@ void Model::redo()
 		currentRedoState_->redo(this);
 		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
 		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
-		changeLog.setLog(Log::Visual, currentUndoState_->endLog(Log::Visual));
+		changeLog.setLog(Log::Visual, currentRedoState_->endLog(Log::Visual));
 		// Log a visual change if necessary
 // 		if (currentRedoState_->doLogsDiffer()) changeLog.add(Log::Visual);
 		// Set new undo/redo pointers

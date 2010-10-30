@@ -166,6 +166,30 @@ void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
 	removeAtomLabels(TRUE);
 }
 
+// Reset atom custom colour to element colour
+void AtenForm::on_actionAtomColourReset_triggered(bool checked)
+{
+	CommandNode::run(Command::RecolourAtoms, "");
+	target = NULL;
+	gui.update(FALSE,FALSE,FALSE);
+}
+
+// Reset atom custom colour to element colour
+void AtenForm::on_actionAtomColourSet_triggered(bool checked)
+{
+	QColor oldcol, newcol;
+	// Get colour of clicked atom and convert into a QColor
+	oldcol.setRgbF( target->colour()[0], target->colour()[1], target->colour()[2], target->colour()[3] );
+	// Request a colour dialog
+	bool ok = FALSE;
+	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+	if (!ok) return;
+	// Store new colour
+	CommandNode::run(Command::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	target = NULL;
+	gui.update(FALSE,FALSE,FALSE);
+}
+
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
