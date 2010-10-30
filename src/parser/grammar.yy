@@ -19,6 +19,7 @@ void CommandParser_error(char *s);
 Dnchar tokenName;
 List<Dnchar> stepNameStack;
 VTypes::DataType declaredType, funcType;
+TreeNode *tempNode;
 
 %}
 
@@ -44,7 +45,7 @@ VTypes::DataType declaredType, funcType;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VTYPE
-%token DO WHILE FOR IF RETURN FILTERBLOCK HELP DIOV DUMMY OPTION
+%token DO WHILE FOR IF IN RETURN FILTERBLOCK HELP DIOV DUMMY OPTION
 %nonassoc ELSE
 
 %left AND OR
@@ -137,11 +138,29 @@ decexpr:
 	;
 
 flowstatement:
-	IF '(' expr ')' blockment ELSE blockment	{ $$ = cmdparser.addFunction(Command::If,$3,$5,$7); }
-	| IF '(' expr ')' blockment			{ $$ = cmdparser.addFunction(Command::If,$3,$5); }
-	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment { $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
-	| WHILE pushscope '(' expr ')' blockment	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
-	| DO pushscope blockment WHILE '(' expr ')' ';'	{ $$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
+	IF '(' expr ')' blockment ELSE blockment {
+		$$ = cmdparser.addFunction(Command::If,$3,$5,$7); }
+	| IF '(' expr ')' blockment {
+		$$ = cmdparser.addFunction(Command::If,$3,$5); }
+	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment {
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
+	| FOR pushscope '(' var IN expr ')' {
+		if ($4->returnType() <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
+		if ($4->returnType() != $6->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
+		}
+		blockment {
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,$4,$6,$9)); cmdparser.popScope(); }
+	| FOR pushscope '(' VTYPE savetype newname IN expr ')' { 
+		if (declaredType <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
+		tempNode = cmdparser.addVariable(declaredType, &tokenName);
+		if (declaredType != $8->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
+		}
+		blockment {
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,tempNode,$8,$11)); cmdparser.popScope(); }
+	| WHILE pushscope '(' expr ')' blockment {
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
+	| DO pushscope blockment WHILE '(' expr ')' ';' {
+		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
 	;
 
 /* Constants */
@@ -209,7 +228,7 @@ vardec:
 	newname '[' expr ']' 				{
 		msg.print(Messenger::Parse,"PARSER : vardec : array var '%s'\n", tokenName.get());
 		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3); }
-	| newname '=' ARRAYCONST				{
+	| newname '=' ARRAYCONST			{
 		msg.print(Messenger::Parse,"PARSER : vardec : var '%s' with array assignment\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, $3); }
 	| newname '=' widget	 			{

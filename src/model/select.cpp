@@ -443,6 +443,14 @@ Refitem<Atom,int> *Model::selection(bool markonly) const
 	else return selection_.first();
 }
 
+// Return the nth selected atom in the model
+Refitem<Atom,int> *Model::selected(int n)
+{
+	if ((n<0) || (n>=selection_.nItems())) printf("Array index for selection_ is out of bounds : %i.\n", n);
+	else return selection_[n];
+	return NULL;
+}
+
 // Select overlapping atoms
 void Model::selectOverlaps(double tolerance, bool markonly)
 {

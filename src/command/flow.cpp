@@ -131,6 +131,41 @@ bool Command::function_For(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// For x in y loop
+bool Command::function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Argument 0 - Initial value expression
+	// Argument 1 - Loop condition
+	// Argument 2 - Statementlist
+	// Set initial value
+	ReturnValue varval;
+	if (!c->arg(1, varval)) return FALSE;
+	c->setArg(0, varval);
+	Command::Function af;
+	bool result;
+	while (c->argp(0,c->argType(0)) != NULL)
+	{
+		// Loop body - catch break and continue calls which return FALSE
+		result = c->arg(2, rv);
+		if (!result)
+		{
+			// Check acceptedfail flag - if Break or Continue, reset flag and quit/continue
+			af = c->parent()->acceptedFail();
+			if (af == Command::Break)
+			{
+				c->parent()->setAcceptedFail(Command::NoFunction);
+				return TRUE;
+			}
+			else if (af == Command::Continue) c->parent()->setAcceptedFail(Command::NoFunction);
+			else if (af != Command::NoFunction) return FALSE;
+		}
+		// Skip to next linked item...
+		if (!varval.increase()) return FALSE;
+		c->setArg(0, varval);
+	}
+	return TRUE;
+}
+
 // If test
 bool Command::function_If(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

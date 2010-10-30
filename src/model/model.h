@@ -380,6 +380,8 @@ class Model
 	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
 	Refitem<Atom,int> *selection(bool markonly = FALSE) const;
+	// Return the nth selected atom in the model
+	Refitem<Atom,int> *selected(int n);
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance, bool markonly = FALSE);
 	// Select atoms (or molecule COGs) inside of the current unit cell

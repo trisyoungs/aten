@@ -41,6 +41,7 @@ i = 128
 		<synopsis>
 for ( startvalue ; condition ; increment ) { commands }
 		</synopsis>
+
 		<para>Three separate components make up a 'for' loop. <emphasis>startvalue</emphasis> defines both the control variable (i.e. the variable that changes on each loop iteration) and  optionally its starting value, the <emphasis>condition</emphasis> is tested on each loop iteration to see whether or not to continue with the loop, and finally the <emphasis>increment</emphasis> is an expression to modify the control variable after each iteration, setting it to a new value. If multiple <emphasis>commands</emphasis> are to make up the body of the loop (executed on each iteration) then they should be enclosed in curly brackets (as written in the syntax above). If only a single command is executed on each iteration, the curly brackets may be omitted.</para>
 		
 		<para>Some examples:</para>
@@ -57,6 +58,13 @@ for (atom a = aten.model.atoms; a; ++a) printf(&quot;Atom id %i is element %s.\n
 		</synopsis>
 		<para>In this example the variable <emphasis>a</emphasis> is declared and initialised to be a reference to the first atom in the current model. The <emphasis>condition</emphasis> part simply consists of the expression 'a', which effectively tests the reference address currently stored in <emphasis>a</emphasis>. Since any positive number equates to 'true' (see below for the 'if' test) the loop will continue until <emphasis>a</emphasis> contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator ('++') changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.</para>
 	
+		<para>A variant of the for loop described above is the for/in loop - here, only a control variable and initial value are supplied, both of which must be of pointer types. The loop itself will increase the value of the variable (i.e. skip to the next item in the linked list) until a NULL pointer is found. For example:</para>
+
+		<synopsis>
+select(H); for (atom i = aten.model.selection; i; ++i) printf("Atom %i is selected\n", i.id); for (atom ii in aten.model.selection) printf("Atom %i is selected\n", ii.id);
+		</synopsis>
+		<para>This will select all hydrogen atoms in the current model then loop over the atom selection twice, once with a for loop and once with a for/in loop, both of which are equivalent.</para>
+
 	</section>
 	
 	<section id="command.ref.if"><title>if</title>

@@ -254,6 +254,7 @@ class Command
 		Continue,
 		DoWhile,
 		For,
+		ForIn,
 		If,
 		Return,
 		While,
@@ -724,6 +725,7 @@ class Command
 	static bool function_Continue(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_DoWhile(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_For(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_ForIn(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_If(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Return(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_While(CommandNode *c, Bundle &obj, ReturnValue &rv);
