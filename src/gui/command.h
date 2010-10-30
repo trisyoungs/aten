@@ -76,8 +76,9 @@ class AtenCommand : public QDialog
 	private:
 	void repopulateCommandList(const char *search);
 	private slots:
+	void on_ClearSearchButton_clicked(bool checked);
 	void on_CommandSearchEdit_textChanged(QString test);
-	void on_CommandList_currentRowChanged(int row);
+	void on_CommandList_currentTextChanged(const QString &text);
 
 
 	/*

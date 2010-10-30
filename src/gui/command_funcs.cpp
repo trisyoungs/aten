@@ -239,11 +239,19 @@ void AtenCommand::runScript()
 void AtenCommand::repopulateCommandList(const char *search)
 {
 	ui.CommandList->clear();
-	for (int cf = 0; cf < Command::nCommands; ++cf)
+	for (int cf = Command::Declarations+1; cf < Command::nCommands; ++cf)
 	{
+		// Skip over commands beginning with '_' or ones which have no keyword defined (internals)
+		if ((commands.data[cf].keyword == NULL) || (commands.data[cf].keyword[0] == '_')) continue;
 		if (search == NULL) ui.CommandList->insertItem(cf, commands.data[cf].keyword);
 		else if (strstr(commands.data[cf].keyword, search) != 0) ui.CommandList->insertItem(cf, commands.data[cf].keyword);
 	}
+}
+
+void AtenCommand::on_ClearSearchButton_clicked(bool checked)
+{
+	ui.CommandSearchEdit->clear();
+	repopulateCommandList(NULL);
 }
 
 void AtenCommand::on_CommandSearchEdit_textChanged(QString text)
@@ -251,11 +259,14 @@ void AtenCommand::on_CommandSearchEdit_textChanged(QString text)
 	repopulateCommandList(qPrintable(text));
 }
 
-void AtenCommand::on_CommandList_currentRowChanged(int row)
+void AtenCommand::on_CommandList_currentTextChanged(const QString &text)
 {
-	Dnchar text;
- 	if (commands.data[row].hasArguments()) text.sprintf("<b>%s(%s)</b><br/>", commands.data[row].keyword, commands.data[row].argText);
-	else text.sprintf("<b>%s</b><br/>       %s", commands.data[row].keyword, commands.data[row].syntax);
-	text.strcatf("Syntax: %s\n", commands.data[row].syntax);
-	ui.CommandEdit->insertHtml(text.get());
+	ui.CommandEdit->clear();
+	if (ui.CommandList->currentRow() == -1) return;
+	// Find keyword
+	Command::Function cf = commands.command(qPrintable(text));
+	if (cf == Command::nCommands) return;
+	Dnchar cmdtext;
+ 	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", commands.data[cf].keyword, commands.data[cf].hasArguments() ? commands.data[cf].argText : "", commands.data[cf].syntax);
+	ui.CommandEdit->insertHtml(cmdtext.get());
 }
