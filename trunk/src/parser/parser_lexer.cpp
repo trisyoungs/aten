@@ -255,6 +255,7 @@ int CommandParser::lex()
 			else if (token == "return") n = RETURN;
 			else if (token == "void") n = DIOV;
 			else if (token == "help") n = HELP;
+			else if (token == "in") n = IN;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);

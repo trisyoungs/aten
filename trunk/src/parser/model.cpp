@@ -93,6 +93,7 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "nvibrations",	VTypes::IntegerData,		0, TRUE },
 	{ "patterns",		VTypes::PatternData,		-1, TRUE },
 	{ "region",		VTypes::RegionData,		0, TRUE },
+	{ "selection",		VTypes::AtomData,		-1, TRUE },
 	{ "torsions",		VTypes::MeasurementData,	-1, TRUE },
 	{ "vibrations",		VTypes::VibrationData,		0, TRUE },
 	{ "zmatrix",		VTypes::ZMatrixData,		0, TRUE }
@@ -442,6 +443,19 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::Region):
 			rv.set(VTypes::RegionData, ptr->region());
+			break;
+		case (ModelVariable::Selection):
+			if (!hasArrayIndex)
+			{
+				if (ptr->selection() == NULL) rv.set(VTypes::AtomData, NULL);
+				else rv.set(VTypes::AtomData, ptr->selection()->item, ptr->selection());
+			}
+			else if (arrayIndex > ptr->nSelected())
+			{
+				msg.print("Selection array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				result = FALSE;
+			}
+			else rv.set(VTypes::AtomData, ptr->selected(arrayIndex-1)->item, ptr->selected(arrayIndex-1));
 			break;
 		case (ModelVariable::Torsions):
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsionMeasurements());

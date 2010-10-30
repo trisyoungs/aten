@@ -55,26 +55,27 @@
      WHILE = 271,
      FOR = 272,
      IF = 273,
-     RETURN = 274,
-     FILTERBLOCK = 275,
-     HELP = 276,
-     DIOV = 277,
-     DUMMY = 278,
-     OPTION = 279,
-     ELSE = 280,
-     OR = 281,
-     AND = 282,
-     DEQ = 283,
-     TEQ = 284,
-     MEQ = 285,
-     PEQ = 286,
-     NEQ = 287,
-     EQ = 288,
-     LEQ = 289,
-     GEQ = 290,
-     UMINUS = 291,
-     MINUSMINUS = 292,
-     PLUSPLUS = 293
+     IN = 274,
+     RETURN = 275,
+     FILTERBLOCK = 276,
+     HELP = 277,
+     DIOV = 278,
+     DUMMY = 279,
+     OPTION = 280,
+     ELSE = 281,
+     OR = 282,
+     AND = 283,
+     DEQ = 284,
+     TEQ = 285,
+     MEQ = 286,
+     PEQ = 287,
+     NEQ = 288,
+     EQ = 289,
+     LEQ = 290,
+     GEQ = 291,
+     UMINUS = 292,
+     MINUSMINUS = 293,
+     PLUSPLUS = 294
    };
 #endif
 /* Tokens.  */
@@ -94,33 +95,34 @@
 #define WHILE 271
 #define FOR 272
 #define IF 273
-#define RETURN 274
-#define FILTERBLOCK 275
-#define HELP 276
-#define DIOV 277
-#define DUMMY 278
-#define OPTION 279
-#define ELSE 280
-#define OR 281
-#define AND 282
-#define DEQ 283
-#define TEQ 284
-#define MEQ 285
-#define PEQ 286
-#define NEQ 287
-#define EQ 288
-#define LEQ 289
-#define GEQ 290
-#define UMINUS 291
-#define MINUSMINUS 292
-#define PLUSPLUS 293
+#define IN 274
+#define RETURN 275
+#define FILTERBLOCK 276
+#define HELP 277
+#define DIOV 278
+#define DUMMY 279
+#define OPTION 280
+#define ELSE 281
+#define OR 282
+#define AND 283
+#define DEQ 284
+#define TEQ 285
+#define MEQ 286
+#define PEQ 287
+#define NEQ 288
+#define EQ 289
+#define LEQ 290
+#define GEQ 291
+#define UMINUS 292
+#define MINUSMINUS 293
+#define PLUSPLUS 294
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 29 "grammar.yy"
+#line 30 "grammar.yy"
 {
 	int functionId;			/* Function enum id */
 	Dnchar *name;			/* character pointer for names */
@@ -132,7 +134,7 @@ typedef union YYSTYPE
 	double doubleconst;		/* double constant value */
 }
 /* Line 1489 of yacc.c.  */
-#line 136 "grammar.h"
+#line 138 "grammar.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

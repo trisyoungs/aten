@@ -242,6 +242,12 @@
 						<entry>Region data for this model, used by the disordered builder</entry>
 					</row>
 					<row>
+						<entry>selection</entry>
+						<entry><link linkend="command.types.atom">atom</link>[]</entry>
+						<entry>ro</entry>
+						<entry>A list of atoms in representing the current atom selection of the model</entry>
+					</row>
+					<row>
 						<entry>torsions</entry>
 						<entry><link linkend="command.types.measurement">measurement</link>[]</entry>
 						<entry>ro</entry>

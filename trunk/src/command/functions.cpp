@@ -214,6 +214,7 @@ void Command::initPointers()
 	pointers_[Continue] = &Command::function_Continue;
 	pointers_[DoWhile] = &Command::function_DoWhile;
 	pointers_[For] = &Command::function_For;
+	pointers_[ForIn] = &Command::function_ForIn;
 	pointers_[If] = &Command::function_If;
 	pointers_[Return] = &Command::function_Return;
 	pointers_[While] = &Command::function_While;
