@@ -43,6 +43,21 @@ class AtenPrefs : public QDialog
 	void on_PrefsSetDefaultButton_clicked(bool checked);
 
 	/*
+	// General Page
+	*/
+	private slots:
+	void on_CommonElementsEdit_textEdited(const QString &text);
+	void on_DensityUnitCombo_currentIndexChanged(int index);
+	void on_EnergyUnitCombo_currentIndexChanged(int index);
+	void on_EnergyUpdateSpin_valueChanged(int value);
+	void on_HAddDistanceSpin_valueChanged(double value);
+	void on_MaxCuboidsSpin_valueChanged(int value);
+	void on_MaxRingsSpin_valueChanged(int value);
+	void on_MaxRingSizeSpin_valueChanged(int value);
+	void on_MaxUndoLevelsSpin_valueChanged(int value);
+	void on_ModelUpdateSpin_valueChanged(int value);
+
+	/*
 	// Element Page
 	*/
 	private slots:
@@ -122,17 +137,6 @@ class AtenPrefs : public QDialog
 	void on_LineAliasingCheck_stateChanged(int state);
 	void on_PolygonAliasingCheck_stateChanged(int state);
 	void on_MultiSamplingCheck_stateChanged(int state);
-	// Program
-	void on_CommonElementsEdit_textEdited(const QString &text);
-	void on_DensityUnitCombo_currentIndexChanged(int index);
-	void on_EnergyUnitCombo_currentIndexChanged(int index);
-	void on_EnergyUpdateSpin_valueChanged(int value);
-	void on_HAddDistanceSpin_valueChanged(double value);
-	void on_MaxCuboidsSpin_valueChanged(int value);
-	void on_MaxRingsSpin_valueChanged(int value);
-	void on_MaxRingSizeSpin_valueChanged(int value);
-	void on_MaxUndoLevelsSpin_valueChanged(int value);
-	void on_ModelUpdateSpin_valueChanged(int value);
 
 	/*
 	// Colours page
@@ -171,6 +175,15 @@ class AtenPrefs : public QDialog
 	void on_FunctionalFormList_currentRowChanged(int row);
 	void ParameterRuleChanged(int index);
 	void on_ParameterTable_itemChanged(QTableWidgetItem *w);
+
+	/*
+	// External Programs
+	*/
+	private slots:
+	void on_TemporaryDirButton_clicked(bool checked);
+	void on_TemporaryDirEdit_textEdited(const QString &text);
+	void on_MopacExecutableEdit_textEdited(const QString &text);
+	void on_MopacExecutableButton_clicked(bool checked);
 
 	/*
 	// Local variables

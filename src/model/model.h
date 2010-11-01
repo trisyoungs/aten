@@ -106,9 +106,9 @@ class Model
 	// Copy all information from another model
 	void copy(Model *source);
 	// Copy all atom data from specified model
-	void copyAtomData(Model *source, int);
+	void copyAtomData(Model *source, int data);
 	// Copy range of atom data from specified model
-	void copyAtomData(Model *source, int, int, int);
+	void copyAtomData(Model *source, int data, int startid, int n);
 	// Set parent model of model (for frames)
 	void setParent(Model *m);
 	// Return parent model of model (for frames)

@@ -25,6 +25,9 @@
 #include "methods/mc.h"
 #include "methods/cg.h"
 #include "model/model.h"
+#include "main/aten.h"
+#include "base/sysfunc.h"
+#include "parser/filterdata.h"
 
 // Local variables
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
@@ -77,6 +80,91 @@ bool Command::function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Use MOPAC to minimise the current model
+bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	rv.reset();
+	// Check that we can run system commands
+	int cmdresult = system(NULL);
+	if (cmdresult == 0)
+	{
+		msg.print("Error: Unable to run system commands.\n");
+		return FALSE;
+	}
+	// Grab pointers to MOPAC import and export filters
+	Tree *mopacexport = aten.findFilter(FilterData::ModelExport, "mopac");
+	if (mopacexport == NULL)
+	{
+		msg.print("Error: Couldn't find MOPAC export filter.\n");
+		return FALSE;
+	}
+	Tree *mopacimport = aten.findFilter(FilterData::ModelImport, "mopacarc");
+	if (mopacimport == NULL)
+	{
+		msg.print("Error: Couldn't find MOPAC arc import filter.\n");
+		return FALSE;
+	}
+	// Grab/create various filenames and paths
+	static int runid = 1;
+	Dnchar mopacexe, mopacinput, mopacoutput, mopaccmd;
+	mopacexe = "/home/tris/bin/MOPAC2009.exe";
+	mopacinput.sprintf("/home/tris/tmp/aten-mopac%05i.mop", runid);
+	mopacoutput.sprintf("/home/tris/tmp/aten-mopac%05i.arc", runid);
+	mopaccmd.sprintf("\"%s\" \"%s\"", mopacexe.get(), mopacinput.get());
+	msg.print(Messenger::Verbose, "Command to run will be '%s'\n", mopaccmd.get());
+	// Create copy of current model so as not to disturb filename/filter values
+	Model tempmodel;
+	tempmodel.copy(aten.currentModel());
+	tempmodel.setFilter(mopacexport);
+	tempmodel.setFilename(mopacinput);
+	// Save the input file...
+	bool result = TRUE;
+	// Construct temporary bundle object containing our model pointer
+	Bundle bundle(&tempmodel);
+	ReturnValue temprv;
+	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacinput.get());
+	// Ready to run command....
+	cmdresult = system(mopaccmd.get());
+	if (cmdresult != 0)
+	{
+		msg.print("Error: Failed to run MOPAC. Is it installed correctly?\n");
+		return FALSE;
+	}
+	// Check for existence of output file....
+	if (!fileExists(mopacoutput))
+	{
+		msg.print("Error: Can't locate MOPAC output '%s'.\n", mopacoutput.get());
+		return FALSE;
+	}
+	// Time to load in the results
+	printf("AT THIS POINT, obj.rs = %p\n", obj.rs);
+	aten.setUseWorkingList(TRUE);
+	result = CommandNode::run(Command::LoadModel, "c", mopacoutput.get());
+	// There should now be a model in the working model list (our results)
+	Model *m = aten.workingModels();
+	if (m == NULL)
+	{
+		msg.print("Error: No results model found.\n");
+		return FALSE;
+	}
+	printf("LOADED MOPAC MODEL is %p\n", m);
+	// Copy the atoms back into our tempmodel
+	tempmodel.copy(m);
+	aten.setUseWorkingList(FALSE);
+	// Start a new undostate in the original model
+	printf("AND NOW, obj.rs = %p\n", obj.rs);
+	obj.rs->beginUndoState("MOPAC geometry optimisation");
+	Atom *i, *j = obj.rs->atoms();
+	for (i = tempmodel.atoms(); i != NULL; i = i->next)
+	{
+		obj.rs->positionAtom(j, i->r());
+		j = j->next;
+	}
+	obj.rs->endUndoState();
+	return TRUE;
+}
+
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
 bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -92,10 +180,3 @@ bool Command::function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	rv.reset();
 	return TRUE;
 }
-
-bool Command::function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	rv.reset();
-	return FALSE;
-}
-

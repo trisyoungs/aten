@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
+    <width>428</width>
     <height>214</height>
    </rect>
   </property>
@@ -75,6 +75,11 @@
           <item>
            <property name="text">
             <string>Monte Carlo (Molecular)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>BFGS / PM6 (MOPAC)</string>
            </property>
           </item>
          </widget>

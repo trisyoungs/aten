@@ -357,8 +357,8 @@ void Command::initPointers()
 	pointers_[Converge] = &Command::function_Converge;
 	pointers_[LineTolerance] = &Command::function_LineTolerance;
 	pointers_[MCMinimise] = &Command::function_MCMinimise;
+	pointers_[MopacMinimise] = &Command::function_MopacMinimise;
 	pointers_[SDMinimise] = &Command::function_SDMinimise;
-	pointers_[SimplexMinimise] = &Command::function_SimplexMinimise;
 	
 	// Model Commands
 	pointers_[CreateAtoms] = &Command::function_CreateAtoms;

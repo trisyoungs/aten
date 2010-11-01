@@ -34,6 +34,8 @@ class AtenMinimiser : public QDialog
 	// Window Functions
 	*/
 	public:
+	// Minimisation algorithms
+	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, MopacMethod, nMinimiserMethods };
 	void showWindow();
 	private slots:
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);

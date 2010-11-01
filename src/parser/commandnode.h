@@ -70,6 +70,10 @@ class CommandNode : public TreeNode
 	bool initialise();
 	// Create, run, and free a single command with simple arguments
 	static bool run(Command::Function func, const char *arglist, ...);
+	// Create, run, and free a single command with simple arguments and specified bundle
+	static bool run(Command::Function func, Bundle &bundle, const char *arglist, ...);
+	// Execute command with specified bundle
+	bool execute(Bundle &bundle, ReturnValue &rv);
 };
 
 #endif

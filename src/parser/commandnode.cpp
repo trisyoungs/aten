@@ -238,3 +238,55 @@ bool CommandNode::run(Command::Function func, const char *arglist, ...)
 	msg.exit("CommandNode::run");
 	return result;
 }
+
+// Create, run, and free a single command with simple arguments and specified bundle
+bool CommandNode::run(Command::Function func, Bundle &bundle, const char *arglist, ...)
+{
+	msg.enter("CommandNode::run[bundle]");
+	// Local tree to contain commandnode and its arguments
+	Tree tree;
+
+	// Create our temporary node
+	CommandNode node(func);
+	node.parent_ = &tree;
+
+	// Set arguments from supplied list
+	const char *c;
+	va_list vars;
+	va_start(vars, arglist);
+	TreeNode *var = NULL;
+	for (c = &arglist[0]; *c != '\0'; c++)
+	{
+		switch (*c)
+		{
+			case ('i'):
+				var = tree.addConstant(va_arg(vars, int));
+				break;
+			case ('d'):
+				var = tree.addConstant(va_arg(vars, double));
+				break;
+			case ('c'):
+			case ('s'):
+				var = tree.addConstant(va_arg(vars, const char *));
+				break;
+			default:
+				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
+				var = NULL;
+				break;
+		}
+		node.addArgument(var);
+	}
+	va_end(vars);
+	// Now, run the command...
+	ReturnValue rv;
+	bool result = node.execute(bundle, rv);
+	msg.exit("CommandNode::run[bundle]");
+	return result;
+}
+
+// Execute command with specified bundle
+bool CommandNode::execute(Bundle &bundle, ReturnValue &rv)
+{
+	// Execute the command
+	return aten.commands.call(function_, this, rv, bundle);
+}

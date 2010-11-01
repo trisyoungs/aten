@@ -49,7 +49,7 @@ class Aten
 	// Program mode enum
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, BatchProcessMode, ProcessAndExportMode, NoMode };
 	// Target list for model creation
-	enum TargetModelList { MainModelList, FragmentLibraryList };
+	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
 	// Remove all dynamic data
 	void clear();
 
@@ -70,10 +70,16 @@ class Aten
 	int modelId_;
 	// List of models
 	List<Model> models_;
+	// Temporary, working model list
+	List<Model> workingModels_;
 	// Current target list for new generation of models
 	Aten::TargetModelList targetModelList_;
 
 	public:
+	// Set usage of working model list
+	void setUseWorkingList(bool b);
+	// Return list of working models
+	Model *workingModels() const;
 	// Sets the current active model for editing
 	void setCurrentModel(Model*);
 	// Return current active model for editing

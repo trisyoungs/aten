@@ -397,9 +397,9 @@ class Command
 		Converge,
 		LineTolerance,
 		MCMinimise,
+		MopacMinimise,
 		SDMinimise,
-		SimplexMinimise,
-		
+
 		// Model Commands
 		CreateAtoms,
 		CurrentModel,
@@ -857,8 +857,8 @@ class Command
 	static bool function_Converge(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_LineTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_MCMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SDMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_SimplexMinimise(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Model Commands
 	static bool function_CreateAtoms(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_CurrentModel(CommandNode *c, Bundle &obj, ReturnValue &rv);
