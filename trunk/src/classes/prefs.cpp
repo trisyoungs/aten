@@ -1617,3 +1617,31 @@ const char *Prefs::commonElements() const
 {
 	return commonElements_.get();
 }
+
+/*
+// External Programs
+*/
+
+// Set temp directory
+void Prefs::setTempDir(const char *path)
+{
+	tempDir_ = path;
+}
+
+// Return the temp directory path
+const char *Prefs::tempDir() const
+{
+	return tempDir_.get();
+}
+
+// Location of MOPAC executable
+void Prefs::setMopacExe(const char *path)
+{
+	mopacExe_ = path;
+}
+
+// Return the location of the MOPAC executable
+const char *Prefs::mopacExe() const
+{
+	return mopacExe_.get();
+}

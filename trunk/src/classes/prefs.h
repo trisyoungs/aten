@@ -732,6 +732,26 @@ class Prefs
 	void setCombinationRule(Combine::CombinationRule cr, const char *s);
 	// Return combination rule equation
 	const char *combinationRule(Combine::CombinationRule cr) const;
+
+
+	/*
+	// External Programs
+	*/
+	private:
+	// Location of temporary directory
+	Dnchar tempDir_;
+	// Location of MOPAC executable
+	Dnchar mopacExe_;
+
+	public:
+	// Set temp directory
+	void setTempDir(const char *path);
+	// Return the temp directory path
+	const char *tempDir() const;
+	// Location of MOPAC executable
+	void setMopacExe(const char *path);
+	// Return the location of the MOPAC executable
+	const char *mopacExe() const;
 };
 
 extern Prefs prefs;

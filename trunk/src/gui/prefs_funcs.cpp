@@ -182,6 +182,10 @@ void AtenPrefs::setControls()
 	}
 	ui.FunctionalFormList->setCurrentRow(0);
 
+	// External Programs
+	ui.TemporaryDirEdit->setText(prefs.tempDir());
+	ui.MopacExecutableEdit->setText(prefs.mopacExe());
+
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
 	elements().backupData();
@@ -983,4 +987,27 @@ void AtenPrefs::ParameterRuleChanged(int id)
 void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)
 {
 	// TGAY Do we need this?
+}
+
+/*
+// External Programs
+*/
+
+void AtenPrefs::on_TemporaryDirButton_clicked(bool checked)
+{
+
+}
+
+void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
+{
+}
+
+void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
+{
+}
+
+void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
+{
+	// Call a fileselector....
+// 	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path());
 }

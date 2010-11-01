@@ -29,9 +29,6 @@
 #include "model/model.h"
 #include "parser/commandnode.h"
 
-// Minimisation algorithms
-enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };
-
 // Constructor
 AtenMinimiser::AtenMinimiser(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
@@ -65,6 +62,7 @@ void AtenMinimiser::doMinimisation()
 	// Set convergence criteria and get maxcycles data
 	CommandNode::run(Command::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
 	int maxcycles = ui.MinimiseCyclesSpin->value();
+	Dnchar options;
 	
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
@@ -84,9 +82,11 @@ void AtenMinimiser::doMinimisation()
 		case (MonteCarloMethod):
 			CommandNode::run(Command::MCMinimise, "i", maxcycles);
 			break;
-// 		case (MM_SIMPLEX):
-// 			msg.print("Simplex minimiser not yet written!\n");
-// 			break;
+		case (MopacMethod):
+			// Construct command string from GUI widget options
+			
+			CommandNode::run(Command::MopacMinimise, "c", options.get());
+			break;
 	}
 	// Update the view
 	gui.update(FALSE,FALSE,FALSE);

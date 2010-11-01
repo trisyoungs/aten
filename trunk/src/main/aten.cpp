@@ -52,10 +52,11 @@ Aten::Aten()
 	typeExportMapping_ = FALSE;
 
 	// Misc 
-	homeDir_ = "/tmp";
 	#ifdef _WIN32
+	homeDir_ = "C:\\";
 	atenDir_ = "aten";
 	#else
+	homeDir_ = "/tmp";
 	atenDir_ = ".aten";
 	#endif
 	defaultForcefield_ = NULL;
@@ -178,6 +179,29 @@ void Aten::setCurrentModel(Model *m)
 // Model Management routines
 */
 
+// Set usage of working model list
+void Aten::setUseWorkingList(bool b)
+{
+	static Bundle originalBundle;
+	if (b)
+	{
+		originalBundle = aten.current;
+		targetModelList_ = Aten::WorkingModelList;
+	}
+	else 
+	{
+		aten.current = originalBundle;
+		workingModels_.clear();
+		targetModelList_ = Aten::MainModelList;
+	}
+}
+
+// Return list of working models
+Model *Aten::workingModels() const
+{
+	return workingModels_.first();
+}
+
 // Return current active model for editing
 Model *Aten::currentModel() const
 {
@@ -253,8 +277,17 @@ Model *Aten::addModel()
 			m->changeLog.reset();
 			m->disableUndoRedo();
 			break;
+		case (Aten::WorkingModelList):
+			m = workingModels_.add();
+			m->setType(Model::ParentModelType);
+			newname.sprintf("TempModel%03i", workingModels_.nItems());
+			m->setName(newname);
+			m->changeLog.reset();
+			m->disableUndoRedo();
+			break;
 		default:
 			printf("Internal Error: No target list set for model creation.\n");
+			break;
 	}
 	msg.exit("Aten::addModel");
 	return m;

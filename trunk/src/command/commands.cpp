@@ -920,12 +920,12 @@ CommandData Command::data[Command::nCommands] = {
 	{ "mcminimise",		"n",		VTypes::NoData,
 		"int maxsteps = 100",
 		"Run Monte Carlo minimiser on the current model" },
+	{ "mopacminimise",	"c",		VTypes::NoData,
+		"string options = null",
+		"Use MOPAC to minimise the current model. Note that the options string, if specified, should represent a complete MOPAC control string (i.e. including optimisation method etc." },
 	{ "sdminimise",		"nb",		VTypes::NoData,
 		"int maxsteps = 100, bool simple = FALSE",
 		"Run steepest descent minimiser on the current model (using either simplistic or line-minimised methods)" },
-	{ "simplexminimise",	"",		VTypes::NoData,
-		"",
-		"Run the Simplex minimiser on the current model" },
 	
 	// Model commands
 	{ "createatoms",	"",		VTypes::NoData,
