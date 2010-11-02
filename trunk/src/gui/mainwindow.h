@@ -217,6 +217,7 @@ class AtenForm : public QMainWindow
 	void on_actionFileOpenForcefield_triggered(bool checked);
 	//void on_actionFileSaveForcefield_triggered(bool checked);
 	void on_actionFileOpenGrid_triggered(bool checked);
+	void on_actionFileOpenExpression_triggered(bool checked);
 	void on_actionFileSaveExpression_triggered(bool checked);
 
 	/*

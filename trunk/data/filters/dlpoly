@@ -342,7 +342,7 @@ filter(type="exportexpression",name="DL_POLY Forcefield Specification", extensio
 			# Convert functional form to be recognised by DL_POLY
 			# Note: DL_POLY constraint terms are written in their own section
 			if (b.form == "harmonic") writelinef("harm     %5i %5i %10.4f %10.4f\n",b.id[1],b.id[2],b.parameter("k"),b.parameter("eq"));
-			else if (b.form == "morse") writelinef("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.parameter("eq"),b.parameter("eq"),b.parameter("k"));
+			else if (b.form == "morse") writelinef("morse    %5i %5i %10.4f %10.4f %10.4f\n",b.id[1],b.id[2],b.parameter("d"),b.parameter("eq"),b.parameter("k"));
 			else if (b.form == "constraint") nconstraints++;
 			else
 			{
