@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Tris Youngs</author>
  <class>MainWindow</class>
@@ -145,7 +144,7 @@
      <x>0</x>
      <y>0</y>
      <width>1031</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -167,6 +166,7 @@
     </widget>
     <addaction name="actionFileNew"/>
     <addaction name="actionFileOpen"/>
+    <addaction name="actionFileOpenExpression"/>
     <addaction name="RecentMenu"/>
     <addaction name="separator"/>
     <addaction name="actionFileClose"/>
@@ -2465,6 +2465,11 @@
   <action name="actionAtomColourSet">
    <property name="text">
     <string>Set...</string>
+   </property>
+  </action>
+  <action name="actionFileOpenExpression">
+   <property name="text">
+    <string>Open Expression</string>
    </property>
   </action>
  </widget>

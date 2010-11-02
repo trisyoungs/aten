@@ -320,6 +320,30 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
+// Open expression file
+void AtenForm::on_actionFileOpenExpression_triggered(bool checked)
+{
+	Tree *filter;
+	static QDir currentDirectory_(aten.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Expression", currentDirectory_.path(), gui.mainWindow->loadExpressionFilters, &selFilter);
+	if (!filename.isEmpty())
+	{
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Find the filter that was selected
+		filter = aten.findFilterByDescription(FilterData::ExpressionImport, qPrintable(selFilter));
+		if (filter != NULL) filter->executeRead(qPrintable(filename));
+		else
+		{
+			filter = aten.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+			if (filter != NULL) filter->executeRead(qPrintable(filename));
+		}
+	}
+	gui.gridsWindow->refresh();
+	gui.mainView.postRedisplay();
+}
+
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {

@@ -367,7 +367,7 @@ template <class T> T Mat3<T>::operator[](int index)
 	if ((index < 0) || (index > 8))
 	{
 		printf("Mat3 <<<< SEVERE - Array index (%i) out of bounds (0-8) >>>>\n",index);
-		return NULL;
+		return 0;
 	}
 	return element(index);
 }
