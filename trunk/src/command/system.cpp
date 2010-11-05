@@ -91,6 +91,30 @@ bool Command::function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Nullify specified pointers
+bool Command::function_Null(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	bool result = TRUE;
+	ReturnValue temprv;
+	for (int n=0; n<c->nArgs(); ++n)
+	{
+		temprv.set(c->argType(n), NULL);
+		c->setArg(n,temprv);
+	}
+	return result;
+}
+
+// Quit main program
+bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Set program mode here, in case we are running in PM_COMMAND
+	aten.setProgramMode(Aten::NoMode);
+	// If the GUI is active, close it...
+	if (gui.exists()) gui.saveBeforeClose();
+	c->parent()->setAcceptedFail(Command::Quit);
+	return FALSE;
+}
+
 // Search available commands
 bool Command::function_SearchCommands(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -105,17 +129,6 @@ bool Command::function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
 	srand( (unsigned) c->argi(0) );
 	return TRUE;
-}
-
-// Quit main program
-bool Command::function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv)
-{
-	// Set program mode here, in case we are running in PM_COMMAND
-	aten.setProgramMode(Aten::NoMode);
-	// If the GUI is active, close it...
-	if (gui.exists()) gui.saveBeforeClose();
-	c->parent()->setAcceptedFail(Command::Quit);
-	return FALSE;
 }
 
 // Print version information

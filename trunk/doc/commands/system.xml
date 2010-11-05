@@ -117,6 +117,21 @@ help cellaxes;
 	
 	</section>
 	
+	<section id="command.ref.null"><title>null</title>
+		<indexterm><primary>commands</primary><secondary>null</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>null</function></funcdef>
+				<paramdef>variable <parameter>var</parameter></paramdef>
+				<paramdef><parameter>...</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>The null command accepts one or more pointer variables whose values are to be set to NULL (0).</para>
+		
+	</section>
+
 	<section id="command.ref.searchcommands"><title>searchcommands</title>
 		<indexterm><primary>commands</primary><secondary>searchcommands</secondary></indexterm>
 		

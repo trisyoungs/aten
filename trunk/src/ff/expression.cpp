@@ -125,7 +125,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 		// If the type of vdw interaction is None, attempt to generate it
 		if ((ai->type()->vdwForm() == VdwFunctions::None) && (ff->vdwGenerator() != NULL)) ff->generateVdw(ai);
 		// Make another check to see that we now have vdw parameters
-		if (ai->type()->vdwForm() == NULL)
+		if (ai->type()->vdwForm() ==  VdwFunctions::None)
 		{
 			msg.print("!!! No FF type definition for atom %i (%s).\n", n+1, elements().symbol(ai));
 			incomplete_ = TRUE;

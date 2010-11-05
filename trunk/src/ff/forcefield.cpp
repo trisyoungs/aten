@@ -245,6 +245,37 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 	return result;
 }
 
+// Retrieve bond data corresponding to specified names
+ForcefieldBound *Forcefield::findBond(const char *typei, const char *typej)
+{
+	// Search the forcefield for the bond definition for the interaction of the atom types i-j
+	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
+	msg.enter("Forcefield::findBond[string]");
+	ForcefieldBound *result = NULL;
+	int matchij, matchji, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *b = bonds_.first();
+	while (b != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the bond specification
+		matchij = matchTypes(typei,typej,b->typeName(0),b->typeName(1));
+		matchji = matchTypes(typej,typei,b->typeName(0),b->typeName(1));
+		if (matchji < matchij) matchij = matchji;	// Take the better (smaller) of the two results
+			if (matchij < 10)
+			{
+				if (matchij < bestmatch)	// Better match
+				{
+					result = b;
+					bestmatch = matchij;
+				}
+			}
+			if (bestmatch == 0) break;
+			b = b ->next;
+	}
+	msg.exit("Forcefield::findBond[string]");
+	return result;
+}
+
 /*
 // Angle Interactions
 */
@@ -313,10 +344,51 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 				}
 			}
 		}
-		if (bestmatch == 0) break;		// Early exit for an exact match
-		a = a ->next;
+		// Early exit for an exact match
+		if (bestmatch == 0) break;
+		a = a->next;
 	}
 	msg.exit("Forcefield::findAngle");
+	return result;
+}
+
+// Find angle type
+ForcefieldBound *Forcefield::findAngle(const char *typei, const char *typej, const char *typek)
+{
+	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findAngle[string[");
+	ForcefieldBound *result = NULL;
+	int matchj, matchik, matchki, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *a = angles_.first();
+	while (a != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the angle specification
+		// Check the central atom of the angle first
+		matchj = matchType(typej,a->typeName(1));
+		if (matchj != 10)
+		{
+			matchik = matchTypes(typei,typek,a->typeName(0),a->typeName(2));
+			matchki = matchTypes(typek,typei,a->typeName(0),a->typeName(2));
+			// Take the better of the two results
+			if (matchki < matchik) matchik = matchki;
+			// Add on the score from the central atom
+			matchik += matchj;
+			if (matchik < 10)
+			{
+				if (matchik < bestmatch)
+				{
+					result = a;
+					bestmatch = matchik;
+				}
+			}
+		}
+		// Early exit for an exact match
+		if (bestmatch == 0) break;
+		a = a->next;
+	}
+	msg.exit("Forcefield::findAngle[string[");
 	return result;
 }
 
@@ -391,6 +463,41 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 	return result;
 }
 
+// Retrieve torsion data corresponding to specified names
+ForcefieldBound *Forcefield::findTorsion(const char *typei, const char *typej, const char *typek, const char *typel)
+{
+	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findTorsion[string]");
+	ForcefieldBound *result = NULL;
+	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *t = torsions_.first();
+	while (t != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the torsion specification
+		matchil = matchTypes(typei,typel,t->typeName(0),t->typeName(3));
+		matchli = matchTypes(typel,typei,t->typeName(0),t->typeName(3));
+		matchjk = matchTypes(typej,typek,t->typeName(1),t->typeName(2));
+		matchkj = matchTypes(typek,typej,t->typeName(1),t->typeName(2));
+		matchijkl = matchil + matchjk;
+		matchlkji = matchli + matchkj;
+		if (matchlkji < matchijkl) matchijkl = matchlkji;
+		if (matchijkl < 10)
+		{
+			if (matchijkl < bestmatch)
+			{
+				result = t;
+				bestmatch = matchijkl;
+			}
+		}
+		if (bestmatch == 0) break;
+		t = t->next;
+	}
+	msg.exit("Forcefield::findTorsion[string]");
+	return result;
+}
+
 /*
 // Improper Torsion Interactions
 */
@@ -425,6 +532,41 @@ ForcefieldBound *Forcefield::improper(int n)
 		return NULL;
 	}
 	return impropers_[n];
+}
+
+// Retrieve improper torsion data corresponding to specified names
+ForcefieldBound *Forcefield::findImproper(const char *typei, const char *typej, const char *typek, const char *typel)
+{
+	// Search the forcefield for the improper torsion definition for the interaction of the atom types i-j-k-l
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findImproper[string]");
+	ForcefieldBound *result = NULL;
+	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *t = impropers_.first();
+	while (t != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the torsion specification
+		matchil = matchTypes(typei,typel,t->typeName(0),t->typeName(3));
+		matchli = matchTypes(typel,typei,t->typeName(0),t->typeName(3));
+		matchjk = matchTypes(typej,typek,t->typeName(1),t->typeName(2));
+		matchkj = matchTypes(typek,typej,t->typeName(1),t->typeName(2));
+		matchijkl = matchil + matchjk;
+		matchlkji = matchli + matchkj;
+		if (matchlkji < matchijkl) matchijkl = matchlkji;
+		if (matchijkl < 10)
+		{
+			if (matchijkl < bestmatch)
+			{
+				result = t;
+				bestmatch = matchijkl;
+			}
+		}
+		if (bestmatch == 0) break;
+		t = t->next;
+	}
+	msg.exit("Forcefield::findImproper[string]");
+	return result;
 }
 
 /*
@@ -502,6 +644,45 @@ ForcefieldBound *Forcefield::findUreyBradley(ForcefieldAtom *ffi, ForcefieldAtom
 	return result;
 }
 
+// Find Urey-Bradley type
+ForcefieldBound *Forcefield::findUreyBradley(const char *typei, const char *typej, const char *typek)
+{
+	// Search the forcefield for the Urey-Bradley definition for the interaction of the atom types i-j-k
+	// Return NULL is no match found.
+	msg.enter("Forcefield::findUreyBradley[string]");
+	ForcefieldBound *result = NULL;
+	int matchj, matchik, matchki, bestmatch;
+	bestmatch = 10;
+	ForcefieldBound *a = ureyBradleys_.first();
+	while (a != NULL)
+	{
+		// See how close the match is between the atom forcefield types and the Urey-Bradley specification
+		// Check the central atom of the Urey-Bradley first
+		matchj = matchType(typej,a->typeName(1));
+		if (matchj != 10)
+		{
+			matchik = matchTypes(typei,typek,a->typeName(0),a->typeName(2));
+			matchki = matchTypes(typek,typei,a->typeName(0),a->typeName(2));
+			// Take the better of the two results
+			if (matchki < matchik) matchik = matchki;
+			// Add on the score from the central atom
+			matchik += matchj;
+			if (matchik < 10)
+			{
+				if (matchik < bestmatch)
+				{
+					result = a;
+					bestmatch = matchik;
+				}
+			}
+		}
+		if (bestmatch == 0) break;		// Early exit for an exact match
+			a = a ->next;
+	}
+	msg.exit("Forcefield::findUreyBradley[string]");
+	return result;
+}
+
 /*
 // Parameter Matching
 */
@@ -559,6 +740,28 @@ int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char 
 	matchi = matchType(ffi->equivalent(),typei);
 	matchj = matchType(ffj->equivalent(),typej);
 	msg.exit("Forcefield::matchTypes");
+	return (matchi + matchj);
+}
+
+// Match names of supplied typenames and test names 
+int Forcefield::matchTypes(const char *testi, const char *testj, const char *typei, const char *typej)
+{
+	// Type Match routines - string match the name of types_ 'i' and 'j' to the string'd types_
+	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
+	// must be called again with i and j swapped over to test the inverse case.
+	// Matches against 'equiv' atomnames.
+	msg.enter("Forcefield::matchTypes[string]");
+	int matchi, matchj;
+	// Best case - exact, direct match:
+	if ((strcmp(testi,typei) == 0) && (strcmp(testj,typej) == 0))
+	{
+		msg.exit("Forcefield::matchTypes[string]");
+		return 0;
+	}
+	// No such luck, so match each atom separately
+	matchi = matchType(testi,typei);
+	matchj = matchType(testj,typej);
+	msg.exit("Forcefield::matchTypes[string]");
 	return (matchi + matchj);
 }
 

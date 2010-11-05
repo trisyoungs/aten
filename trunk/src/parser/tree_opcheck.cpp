@@ -99,6 +99,9 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
+		// Check validity of left and rhs values
+		if (type1 == VTypes::NoData) msg.print("Error: LHS operator has no type and can't be assigned to.\n");
+		if (type2 == VTypes::NoData) msg.print("Error: RHS operator has no type and can't be assigned to.\n");
 		msg.exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}

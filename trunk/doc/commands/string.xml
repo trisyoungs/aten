@@ -179,6 +179,20 @@ string num = itoa(54);
 		
 	</section>
 	
+	<section id="command.ref.lowercase"><title>lowercase</title>
+		<indexterm><primary>commands</primary><secondary>lowercase</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>lowercase</function></funcdef>
+				<paramdef>string <parameter>source</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the source string with all uppercase letters converted to lowercase.</para>
+		
+	</section>
+
 	<section id="command.ref.replacechars"><title>replacechars</title>
 		<indexterm><primary>commands</primary><secondary>replacechars</secondary></indexterm>
 		
@@ -302,4 +316,18 @@ abc = stripchars(abc, &quot;aeiou&quot;);
 			
 	</section>
 	
+	<section id="command.ref.uppercase"><title>uppercase</title>
+		<indexterm><primary>commands</primary><secondary>uppercase</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>string <function>uppercase</function></funcdef>
+				<paramdef>string <parameter>source</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Returns the source string with all lowercase letters converted to uppercase.</para>
+		
+	</section>
+
 </section>

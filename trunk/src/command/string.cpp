@@ -88,6 +88,13 @@ bool Command::function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Return lowercase converted string
+bool Command::function_Lowercase(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( lowerCase(c->argc(0)) );
+	return TRUE;
+}
+
 // Replace characters in supplied string
 bool Command::function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {
@@ -179,4 +186,11 @@ bool Command::function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (result) rv.set(fmt->string());
 	else rv.reset();
 	return result;
+}
+
+// Return uppercase converted string
+bool Command::function_Uppercase(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	rv.set( upperCase(c->argc(0)) );
+	return TRUE;
 }

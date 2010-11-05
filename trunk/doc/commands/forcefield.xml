@@ -20,6 +20,26 @@
 		<para>Add an angle definition to the current forcefield. <emphasis>form</emphasis> should correspond to one of the implemented <link linkend="ff.forms.angle">angle functional forms</link>, while the three <emphasis>types</emphasis> refer to either type or equivalent names of defined atom types. Up to ten data parameters may be supplied.</para>
 	
 	</section>
+
+	<section id="command.ref.autoconversionunit"><title>autoconversionunit</title>
+		<indexterm><primary>commands</primary><secondary>autoconversionunit</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>autoconversionunit</function></funcdef>
+				<paramdef>string <parameter>unit = null</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the target energy unit for automatic conversion of energetic forcefield parameters when writing out expresisons. Can only be used within a file filter definition. The 'unit' parameter should correspond to one of the energy units recognised by Aten (see <link linkend="enums.energyunits">energy units</link>) or may be omitted to specify that no conversion of parameters from the current internal unit of energy should take place. Note that the conversion of energetic forcefield term parameters is performed only when accessing data through either the 'data' member or 'parameter' function of the <link linkend="command.types.forcefieldatom">forcefield atom</link>, <link linkend="command.types.forcefieldbound">forcefield bound</link> or <link linkend="command.types.bound">bound</link> variable types.</para>
+	
+		<para>For example:</para>
+		<synopsis>
+autoconversiontype("kcal");
+		</synopsis>
+		<para>indicates that, no matter what the current internal unit of energy is, all energetic forcefield parameters, when accessed by the means listed above, will be automatically converted into units of kcal.</para>
+
+	</section>
 	
 	<section id="command.ref.bonddef"><title>bonddef</title>
 		<indexterm><primary>commands</primary><secondary>bonddef</secondary></indexterm>

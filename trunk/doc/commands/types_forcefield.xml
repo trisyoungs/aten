@@ -31,6 +31,36 @@
 						<entry>rw</entry>
 						<entry>Name of the forcefield</entry>
 					</row>
+					<row>
+						<entry>nangles</entry>
+						<entry>integer</entry>
+						<entry>ro</entry>
+						<entry>Number of angle terms defined in the forcefield</entry>
+					</row>
+					<row>
+						<entry>natomtypes</entry>
+						<entry>integer</entry>
+						<entry>ro</entry>
+						<entry>Number of atomtypes defined in the forcefield</entry>
+					</row>
+					<row>
+						<entry>nbonds</entry>
+						<entry>integer</entry>
+						<entry>ro</entry>
+						<entry>Number of bond terms defined in the forcefield</entry>
+					</row>
+					<row>
+						<entry>nimpropers</entry>
+						<entry>integer</entry>
+						<entry>ro</entry>
+						<entry>Number of improper dihedral terms defined in the forcefield</entry>
+					</row>
+					<row>
+						<entry>ntorsions</entry>
+						<entry>integer</entry>
+						<entry>ro</entry>
+						<entry>Number of torsion terms defined in the forcefield</entry>
+					</row>
 				</tbody>
 			</tgroup>
 		</table>
@@ -74,6 +104,31 @@
 						<entry>finalise ( ) </entry>
 						<entry>--</entry>
 						<entry>Finalise the forcefield. See the <link linkend="command.ref.finaliseff">finaliseff</link> command for a full description.</entry>
+					</row>
+					<row>
+						<entry>findangle ( string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis> ) </entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link></entry>
+						<entry>Search for an existing angle definition in the forcefield between the type names supplied.</entry>
+					</row>
+					<row>
+						<entry>findbond ( string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis> ) </entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link></entry>
+						<entry>Search for an existing bond definition in the forcefield between the type names supplied.</entry>
+					</row>
+					<row>
+						<entry>findimproper ( string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis>, string <emphasis>type_l</emphasis> ) </entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link></entry>
+						<entry>Search for an existing improper torsion definition in the forcefield between the type names supplied.</entry>
+					</row>
+					<row>
+						<entry>findtorsion ( string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis>, string <emphasis>type_l</emphasis> ) </entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link></entry>
+						<entry>Search for an existing torsion definition in the forcefield between the type names supplied.</entry>
+					</row>
+					<row>
+						<entry>findureybradley ( string <emphasis>type_i</emphasis>, string <emphasis>type_j</emphasis>, string <emphasis>type_k</emphasis> ) </entry>
+						<entry><link linkend="command.types.ffbound">ffbound</link></entry>
+						<entry>Search for an existing Urey-Bradley definition in the forcefield between the type names supplied.</entry>
 					</row>
 				</tbody>
 			</tgroup>

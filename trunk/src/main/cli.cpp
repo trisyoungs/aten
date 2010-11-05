@@ -69,6 +69,9 @@ Cli cliSwitches[] = {
 	{ Cli::ExportMapSwitch,		'\0',"exportmap",	1,
 		"<name=element,...>",
 		"Map forcefield atomtypes to names supplied (for export)" },
+	{ Cli::ExpressionSwitch,	'\0',"expression",	1,
+		"<filename>",
+		"Load the specified forcefield expression file" },
 	{ Cli::FilterSwitch,		'\0',"filter",		1,
 		"<filename>",
 		"Load additional filter data from specified filename" },
@@ -479,6 +482,12 @@ int Aten::parseCli(int argc, char *argv[])
 						return -1;
 					}
 					for (n=0; n<parser.nArgs(); n++) typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n), '='));
+					break;
+				// Load expression
+				case (Cli::ExpressionSwitch):
+					f = aten.probeFile(argtext.get(), FilterData::ExpressionImport);
+					if (f == NULL) return -1;
+					else if (!f->executeRead(argtext.get())) return -1;
 					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):

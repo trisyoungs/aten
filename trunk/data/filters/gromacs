@@ -66,6 +66,8 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 	model m = aten.frame;
 
 	# Note: All distances divided by 10 to convert to nm. Some force constant terms multiplied by 100 to convert to nm**2 (from A**2)
+	# Energy unit must be kj/mol, so set automatic conversion of ff energy parameters to kj
+	autoconversionunit("kj");
 
 	# ---------------
 	# PARAMETER LEVEL
@@ -74,7 +76,7 @@ filter(type="exportexpression",name="Gromacs .top File", extension="top", glob="
 
 	# *** [ defaults ]
 	writeline("[ defaults ]");
-	writeline("; nbfunc    comb-rule     gen-pairs        fudgeLJ     fudgeQQ");
+	writeline("; nbfunc    comb-rule     gen-pairs       fudgeLJ  fudgeQQ");
 	# Attempt to grab scaling factors from first torsion in model
 	if (m.nfftorsions > 0)
 	{

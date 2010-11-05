@@ -57,17 +57,27 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 	{ "atomtypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
 	{ "filename",		VTypes::StringData,		0, TRUE },
 	{ "name",		VTypes::StringData,		0, FALSE },
+	{ "nangles",		VTypes::IntegerData,		0, TRUE },
+	{ "natomtypes",		VTypes::IntegerData,		0, TRUE },
+	{ "nbonds",		VTypes::IntegerData,		0, TRUE },
+	{ "nimpropers",		VTypes::IntegerData,		0, TRUE },
+	{ "ntorsions",		VTypes::IntegerData,		0, TRUE },
 	{ "units",		VTypes::StringData,		0, FALSE }
 };
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addangle",	VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addbond",	VTypes::NoData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
-	{ "addinter",	VTypes::NoData,	Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addtorsion",	VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
-	{ "addtype",	VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
-	{ "finalise",	VTypes::NoData, Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) }
+	{ "addangle",		VTypes::NoData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
+	{ "addbond",		VTypes::NoData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
+	{ "addinter",		VTypes::NoData,	Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
+	{ "addtorsion",		VTypes::NoData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
+	{ "addtype",		VTypes::IntegerData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
+	{ "finalise",		VTypes::NoData, Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
+	{ "findangle",		VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" },
+	{ "findbond",		VTypes::ForcefieldBoundData, "CC",	"string typei, string typej" },
+	{ "findimproper",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
+	{ "findtorsion",	VTypes::ForcefieldBoundData, "CCCC",	"string typei, string typej, string typek, string typel" },
+	{ "findureybradley",	VTypes::ForcefieldBoundData, "CCC",	"string typei, string typej, string typek" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -172,6 +182,21 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 			break;
 		case (Name):
 			rv.set( ptr->name() );
+			break;
+		case (NAngles):
+			rv.set( ptr->nAngles() );
+			break;
+		case (NAtomTypes):
+			rv.set( ptr->nTypes() );
+			break;
+		case (NBonds):
+			rv.set( ptr->nBonds() );
+			break;
+		case (NImpropers):
+			rv.set( ptr->nImpropers() );
+			break;
+		case (NTorsions):
+			rv.set( ptr->nTorsions() );
 			break;
 		case (Units):
 			rv.set ( Prefs::energyUnit(ptr->energyUnit()) );
@@ -308,6 +333,22 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 		case (ForcefieldVariable::Finalise):
 			result = aten.commands.call(Command::FinaliseFF, node, rv, bundle);
 			break;
+		case (ForcefieldVariable::FindAngle):
+			rv.set(VTypes::ForcefieldBoundData, ptr->findAngle(node->argc(0), node->argc(1), node->argc(2)));
+			break;
+		case (ForcefieldVariable::FindBond):
+			rv.set(VTypes::ForcefieldBoundData, ptr->findBond(node->argc(0), node->argc(1)));
+			break;
+		case (ForcefieldVariable::FindImproper):
+			rv.set(VTypes::ForcefieldBoundData, ptr->findImproper(node->argc(0), node->argc(1), node->argc(2), node->argc(3)));
+			break;
+		case (ForcefieldVariable::FindTorsion):
+			rv.set(VTypes::ForcefieldBoundData, ptr->findTorsion(node->argc(0), node->argc(1), node->argc(2), node->argc(3)));
+			break;
+		case (ForcefieldVariable::FindUreyBradley):
+			rv.set(VTypes::ForcefieldBoundData, ptr->findUreyBradley(node->argc(0), node->argc(1), node->argc(2)));
+			break;
+			
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);
 			result = FALSE;
