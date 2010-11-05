@@ -23,13 +23,15 @@
 #include "gui/ffeditor.h"
 #include "gui/tcombobox.h"
 #include "ff/forcefield.h"
+#include "model/model.h"
+#include "main/aten.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 
 // Local enum variables
 namespace TypeColumn
 {
-	enum TypeColumn { Id, Element, Name, Equivalent, TypeString, Description, nColumns };
+	enum TypeColumn { Id, Element, Name, Equivalent, NETAString, Description, nColumns };
 }
 namespace AtomColumn
 {
@@ -101,7 +103,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Types List
 	count = 0;
 	ui.FFEditorTypesTable->setRowCount(ff->nTypes()-1);
-	ui.FFEditorTypesTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "El" << "Name" << "Equiv" << "Atomtype" << "Description");
+	ui.FFEditorTypesTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "El" << "Name" << "Equiv" << "NETA" << "Description");
 	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
@@ -113,7 +115,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		item = new QTableWidgetItem(ffa->equivalent());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Equivalent, item);
 		item = new QTableWidgetItem(ffa->netaString());
-		ui.FFEditorTypesTable->setItem(count, TypeColumn::TypeString, item);
+		ui.FFEditorTypesTable->setItem(count, TypeColumn::NETAString, item);
 		item = new QTableWidgetItem(ffa->description());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Description, item);
 		count ++;
@@ -130,8 +132,10 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	{
 		params = ffa->parameters();
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
+		item->setFlags(Qt::ItemIsSelectable);
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Id, item);
 		item = new QTableWidgetItem(ffa->name());
+		item->setFlags(Qt::ItemIsSelectable);
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Name, item);
 		item = new QTableWidgetItem(ftoa(ffa->charge()));
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Charge, item);
@@ -256,27 +260,78 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 }
 
 /*
-// Atomtype Page
+// Types Page
 */
 
 // Test entered atom type
 void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 {
-	ui.FFEditorTypeScoreLabel->setText("Score : ");
-	ui.FFEditorNumMatchedLabel->setText("Atoms Matched : ");
-}
-
-// Generate type
-void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)
-{
+	Model *m = aten.currentModelOrFrame();
+	if (m == NULL) return;
+	// Get position of changed item (skipping _NDEF_)
+	int row = ui.FFEditorTypesTable->currentRow();
+	if (row == -1) return;
+	// Get pointer to forcefield type from edited row (skipping _NDEF_)
+	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
+	m->selectNone(TRUE);
+	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
+	msg.print("Type description matched %i atoms in current model.\n", m->nMarked());
 }
 
 // Item in type table edited
 void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 {
-	// Get position of changed item
-	ui.FFEditorTypesTable->row(w);
-	ui.FFEditorTypesTable->column(w);
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
+	// Get position of changed item (skipping _NDEF_)
+	int row = ui.FFEditorTypesTable->row(w) + 1;
+	int column = ui.FFEditorTypesTable->column(w);
+	// Get pointer to forcefield type from edited row
+	ForcefieldAtom *ffa = targetForcefield_->type(row);
+	// Set new data based on the column edited
+	Dnchar text;
+	ForcefieldAtom *old;
+	int n, returnvalue;
+	QComboBox *combo;
+	switch (column)
+	{
+		// Forcefield TypeId
+		enum TypeColumn { Id, Element, Name, Equivalent, NETAString, Description, nColumns };
+		case (TypeColumn::Id):
+			// Must search FF to see if another type with this id already exists
+			n = atoi(qPrintable(w->text()));
+			old = targetForcefield_->findByTypeId(n, ffa);
+			if (old != NULL)
+			{
+				text.sprintf("Another type with id %i already exists (%s).\n", n, old->name());
+				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text.get(), QMessageBox::Ok);
+				// Set the table value item back to the old value
+				w->setText(itoa(ffa->typeId()));
+			}
+			else ffa->setTypeId(n);
+			break;
+		// Character element
+		case (TypeColumn::Element):
+// 			ffa->setName(qPrintable(w->text()));
+			break;
+		// Character element
+		case (TypeColumn::Name):
+			ffa->setName(qPrintable(w->text()));
+			break;
+		// Character element
+		case (TypeColumn::Equivalent):
+			ffa->setEquivalent(qPrintable(w->text()));
+			break;
+		// Character element
+		case (TypeColumn::NETAString):
+			// 			ffa->setName(qPrintable(w->text()));
+			break;
+		// Character element
+		case (TypeColumn::Description):
+			ffa->setDescription(qPrintable(w->text()));
+			break;
+	}
+	updating_ = FALSE;
 }
 
 /*
@@ -317,17 +372,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	{
 		// Forcefield TypeId
 		case (AtomColumn::Id):
-			// Must search FF to see if another type with this id already exists
-			n = atoi(qPrintable(w->text()));
-			old = targetForcefield_->findByTypeId(n, ffa);
-			if (old != NULL)
-			{
-				text.sprintf("Another type with id %i already exists (%s).\n", n, old->name());
-				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text.get(), QMessageBox::Ok);
-				// Set the table value item back to the old value
-				w->setText(itoa(ffa->typeId()));
-			}
-			else ffa->setTypeId(n);
+			// SHhuld never be called since these items have been set read-only
 			break;
 		// Type name
 		case (AtomColumn::Name):
@@ -531,4 +576,15 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 			break;
 	}
 	updating_ = FALSE;
+}
+
+
+
+/*
+// Generate Page
+*/
+
+// Generate type
+void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)
+{
 }
