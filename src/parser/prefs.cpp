@@ -93,6 +93,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "maxringsize",	VTypes::IntegerData,	0, FALSE },
 	{ "maxundo",		VTypes::IntegerData,	0, FALSE },
 	{ "modelupdate",	VTypes::IntegerData,	0, FALSE },
+	{ "mopacexe",		VTypes::StringData,	0, FALSE },
 	{ "mouseaction",	VTypes::StringData,	Prefs::nMouseButtons, FALSE },
 	{ "multisampling",	VTypes::IntegerData,	0, FALSE },
 	{ "noqtsettings",	VTypes::IntegerData,	0, FALSE },
@@ -114,6 +115,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "spotlightspecular",	VTypes::DoubleData,	4, FALSE },
 	{ "useframebuffer",	VTypes::IntegerData,	0, FALSE },
 	{ "usenicetext",	VTypes::IntegerData,	0, FALSE },
+	{ "tempdir",		VTypes::StringData,	0, FALSE },
 	{ "vdwcutoff",		VTypes::DoubleData,	0, FALSE },
 	{ "vdwscale",		VTypes::DoubleData,	0, FALSE },
 	{ "warn1056",		VTypes::IntegerData,	0, FALSE },
@@ -357,6 +359,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::ModelUpdate):
 			rv.set( ptr->modelUpdate() );
 			break;
+		case (PreferencesVariable::MopacExe):
+			rv.set( ptr->mopacExe() );
+			break;
 		case (PreferencesVariable::MouseAction):
 			if (hasArrayIndex) rv.set(Prefs::mouseAction( ptr->mouseAction((Prefs::MouseButton) (arrayIndex-1))) );
 			else rv.setArray( VTypes::StringData, &ptr->mouseActionTexts_, Prefs::nMouseButtons);
@@ -419,6 +424,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::SpotlightSpecular):
 			if (hasArrayIndex) rv.set( ptr->spotlightColour(Prefs::SpecularComponent)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->spotlightColour(Prefs::SpecularComponent), 4);
+			break;
+		case (PreferencesVariable::TempDir):
+			rv.set( ptr->tempDir() );
 			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			rv.set( ptr->useFrameBuffer() );
@@ -706,6 +714,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::ModelUpdate):
 			ptr->setModelUpdate( newvalue.asInteger(result) );
 			break;
+		case (PreferencesVariable::MopacExe):
+			ptr->setMopacExe( newvalue.asString(result) );
+			break;
 		case (PreferencesVariable::MouseAction):
 			if (newvalue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nMouseActions; ++n)
 			{
@@ -791,6 +802,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setSpotlightColour(Prefs::SpecularComponent, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setSpotlightColour(Prefs::SpecularComponent, n, newvalue.asDouble(result));
+			break;
+		case (PreferencesVariable::TempDir):
+			ptr->setTempDir( newvalue.asString(result) );
 			break;
 		case (PreferencesVariable::UseFrameBuffer):
 			ptr->setUseFrameBuffer( newvalue.asBool() );

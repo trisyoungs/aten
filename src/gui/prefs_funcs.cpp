@@ -209,13 +209,14 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 // Store current prefs values as defaults
 void AtenPrefs::on_PrefsSetDefaultButton_clicked(bool checked)
 {
-	char filename[512];
-	sprintf(filename, "%s%s", aten.homeDir(), "/.aten/prefs.dat");
+	Dnchar filename;
+	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);
 	// Temporarily disable prefs window
 	gui.prefsDialog->setEnabled(FALSE);
 	bool result = prefs.save(filename);
 	gui.prefsDialog->setEnabled(TRUE);
 	if (!result) QMessageBox::warning(NULL, "Aten", "User preferences file could not be saved.\n", QMessageBox::Ok, QMessageBox::Ok);
+	else msg.print("Prefs file saved to '%s'\n", filename.get());
 }
 
 /*
@@ -995,19 +996,32 @@ void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)
 
 void AtenPrefs::on_TemporaryDirButton_clicked(bool checked)
 {
-
+	static QString dir = prefs.tempDir();
+	dir = QFileDialog::getExistingDirectory(this, "Select temporary directory", dir, QFileDialog::ShowDirsOnly);
+	if (!dir.isEmpty())
+	{
+		prefs.setTempDir( qPrintable(dir) );
+		ui.TemporaryDirEdit->setText(dir);
+	}
 }
 
 void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
 {
-}
-
-void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
-{
+	prefs.setTempDir( qPrintable(text) );
 }
 
 void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 {
 	// Call a fileselector....
-// 	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path());
+	QString filename = QFileDialog::getOpenFileName(this, "Select MOPAC executable", prefs.mopacExe());
+	if (!filename.isEmpty())
+	{
+		prefs.setMopacExe( qPrintable(filename) );
+		ui.MopacExecutableEdit->setText(filename);
+	}
+}
+
+void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
+{
+	prefs.setMopacExe( qPrintable(text) );
 }

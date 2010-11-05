@@ -323,6 +323,13 @@ Prefs::Prefs()
 	maxUndoLevels_ = -1;
 	loadQtSettings_ = TRUE;
 	maxImproperDist_ = 5.0;
+
+	// External programs
+#ifdef _WIN32
+	tempDir_ = "C:\\";
+#else
+	tempDir_ = "/tmp";
+#endif
 }
 
 // Load user preferences file

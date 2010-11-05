@@ -74,9 +74,9 @@ bool selectAtoms(Model *m, TreeNode *node, bool deselect)
 				from = beforeChar(parser.argc(arg),'-');
 				to = afterChar(parser.argc(arg),'-');
 				// Arguments for ranges cannot have '+' in them
-				if ((!from.strchr('+')) || (to.strchr('+')))
+				if ((from.strchr('+')) || (to.strchr('+')))
 				{
-					msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from.get(), to.get());
+					msg.print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').\n", from.get(), to.get());
 					return FALSE;
 				}
 			}
