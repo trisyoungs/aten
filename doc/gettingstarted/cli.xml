@@ -172,6 +172,13 @@ bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c '
 						<para>writes the water forcefield with the OW and HW atomtype names mapped to Ospc and Hspc respectively.</para>
 					</listitem>
 				</varlistentry>
+				<varlistentry id="cli.switches.expression">
+					<term><indexterm><primary>command line switches</primary><secondary>--expression</secondary></indexterm>
+						--expression &lt;file&gt;</term>
+					<listitem>
+						<para>Loads the specified file as if it were an expression.</para>
+					</listitem>
+				</varlistentry>
 			</variablelist>
 			
 		</section>

@@ -181,6 +181,8 @@ funcdeclaration:
 	| VTYPE savetype NEWFUNCTOKEN pushfunc arglist block	{
 		msg.print(Messenger::Parse,"PARSER : funcdeclaration : user-defined function\n");
 		if (!cmdparser.addStatement($6)) YYABORT; cmdparser.popTree(); declaredType = VTypes::NoData; }
+	| NEWFUNCTOKEN						{
+		printf("NOPE\n"); YYABORT; }
 	;
 
 vardeclaration:
@@ -221,7 +223,7 @@ argdeclaration:
 declist:
 	vardec						{ $$ = $1; if ($1 == NULL) YYABORT; }
 	| declist ',' vardec				{ if ($3 == NULL) YYABORT; $$ = Tree::joinArguments($3,$1); }
-	| declist vardec				{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
+	| declist vardec					{ msg.print("Error: Missing comma between declarations?\n"); YYABORT; }
 	;
 
 vardec:

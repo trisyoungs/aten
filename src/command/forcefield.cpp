@@ -51,7 +51,26 @@ bool Command::function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
 	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
-	rv.reset();
+	rv.set(VTypes::ForcefieldBoundData, ffb);
+	return TRUE;
+}
+
+// Cet current autoconversion unit
+bool Command::function_AutoConversionUnit(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	// Check that a valid file source/destination exists.
+	if (!c->parent()->isFilter())
+	{
+		msg.print("The 'autoconversionunit' command can only be used from within a Filter.\n");
+		return FALSE;
+	}
+	if (c->hasArg(0))
+	{
+		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), TRUE);
+		if (eu == Prefs::nEnergyUnits) return FALSE;
+		else prefs.setAutoConversionUnit(eu);
+	}
+	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 	return TRUE;
 }
 
@@ -75,7 +94,7 @@ bool Command::function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-3, c->argd(n));
 	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
-	rv.reset();
+	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
 
@@ -640,7 +659,7 @@ bool Command::function_TorsionDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-5, c->argd(n));
 	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
-	rv.reset();
+	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
 
@@ -664,7 +683,7 @@ bool Command::function_TypeDef(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	ffa->neta()->setCharacterElement(c->argz(3));
 	ffa->setNeta(c->argc(4), obj.ff);
 	if (c->hasArg(5)) ffa->setDescription(c->argc(5));
-	rv.reset();
+	rv.set(VTypes::ForcefieldAtomData, ffa);
 	return TRUE;
 }
 

@@ -290,6 +290,9 @@ bool Tree::execute(ReturnValue &rv)
 				break;
 		}
 	}
+	// Do a couple of things regardless of the type of tree
+	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
+	// Print some final verbose output
 	if (isFilter()) msg.print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in forest '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
 	else msg.print(Messenger::Parse, "Final result from execution of tree '%s' (in forest '%s') is %s\n", name_.get(), parent_->name(), rv.info());
 	if (!result) msg.print(Messenger::Parse, "Execution FAILED.\n");

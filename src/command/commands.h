@@ -266,6 +266,7 @@ class Command
 	
 		// Forcefield/Expression Commands
 		AngleDef,
+		AutoConversionUnit,
 		BondDef,
 		ClearMap,
 		ClearExportMap,
@@ -507,12 +508,14 @@ class Command
 		Contains,
 		FToA,
 		IToA,
+		Lowercase,
 		ReplaceChars,
 		ReplaceStr,
 		RemoveStr,
 		SPrintF,
 		StripChars,
 		ToA,
+		Uppercase,
 
 		// System commands
 		Debug,
@@ -521,9 +524,10 @@ class Command
 		Getenvi,
 		Gui,
 		Help,
+		Null,
+		Quit,
 		SearchCommands,
 		Seed,
-		Quit,
 		Version,
 
 		// Trajectory Commands
@@ -735,6 +739,7 @@ class Command
 	static bool function_PrintForces(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Forcefield Commands
 	static bool function_AngleDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_AutoConversionUnit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_BondDef(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ClearExportMap(CommandNode *c, Bundle &obj, ReturnValue &rv);
@@ -959,22 +964,25 @@ class Command
 	static bool function_Contains(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_FToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_IToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Lowercase(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReplaceChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ReplaceStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SPrintF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Uppercase(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands
 	static bool function_Debug(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Getenv(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Getenvf(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Getenvi(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Gui(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Null(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SearchCommands(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Seed(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Help(CommandNode *c, Bundle &obj, ReturnValue &rv);
-	static bool function_Quit(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Version(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// Trajectory Commands
 	static bool function_AddFrame(CommandNode *c, Bundle &obj, ReturnValue &rv);

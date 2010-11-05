@@ -290,6 +290,7 @@ Prefs::Prefs()
 	energyConversions_[Prefs::ElectronVolts] = 96485.14925;
 	energyConversions_[Prefs::Hartree] = 2625494.616;
 	energyUnit_ = Prefs::KiloJoules;
+	autoConversionUnit_ = Prefs::nEnergyUnits;
 	if (this == &prefs) setEnergyUnit(Prefs::KiloJoules);
 	densityUnit_ = Prefs::GramsPerCm;
 
@@ -1103,14 +1104,8 @@ bool Prefs::keepView() const
 }
 
 /*
-// Energy Units
+// Units and Conversion
 */
-
-// Return the working energy units
-Prefs::EnergyUnit Prefs::energyUnit() const
-{
-	return energyUnit_;
-}
 
 // Set the density unit to use
 void Prefs::setDensityUnit(Prefs::DensityUnit du)
@@ -1122,18 +1117,6 @@ void Prefs::setDensityUnit(Prefs::DensityUnit du)
 Prefs::DensityUnit Prefs::densityUnit() const
 {
 	return densityUnit_;
-}
-
-// Return the electrostastic energy conversion factor
-double Prefs::elecConvert() const
-{
-	return elecConvert_;
-}
-
-// Return the gas constant in the current unit of energy
-double Prefs::gasConstant() const
-{
-	return 8.314472 / energyConversions_[energyUnit_];
 }
 
 // Set the internal energy units to use
@@ -1155,14 +1138,46 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 }
 
+// Return the working energy units
+Prefs::EnergyUnit Prefs::energyUnit() const
+{
+	return energyUnit_;
+}
+
+
+// Set energy unit to use for automatic conversion of forcefield parameters when accessed through filters
+void Prefs::setAutoConversionUnit(Prefs::EnergyUnit eu)
+{
+	autoConversionUnit_ = eu;
+}
+
+// Return energy unit to use for automatic conversion of forcefield parameters when accessed through filters
+Prefs::EnergyUnit Prefs::autoConversionUnit() const
+{
+	return autoConversionUnit_;
+}
+
+
+// Return the electrostastic energy conversion factor
+double Prefs::elecConvert() const
+{
+	return elecConvert_;
+}
+
+// Return the gas constant in the current unit of energy
+double Prefs::gasConstant() const
+{
+	return 8.314472 / energyConversions_[energyUnit_];
+}
+
 // Convert energy from specified unit to current internal unit
-double Prefs::convertEnergy(double energy, EnergyUnit from) const
+double Prefs::convertEnergy(double energy, EnergyUnit fromUnit, EnergyUnit toUnit) const
 {
 	double result;
 	// Convert supplied value to units of J/mol
-	result = energy * energyConversions_[from];
+	result = energy * energyConversions_[fromUnit];
 	// Then, convert to internal units
-	result /= energyConversions_[energyUnit_];
+	result /= energyConversions_[toUnit == Prefs::nEnergyUnits ? energyUnit_ : toUnit];
 	return result;
 }
 

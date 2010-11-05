@@ -120,7 +120,9 @@ class Forcefield
 	// Return the n'th bond in the list
 	ForcefieldBound *bond(int n);
 	// Retrieve bond data corresponding to specified atomtype id's
-	ForcefieldBound *findBond(ForcefieldAtom*, ForcefieldAtom*);
+	ForcefieldBound *findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj);
+	// Retrieve bond data corresponding to specified names
+	ForcefieldBound *findBond(const char *typei, const char *typej);
 
 
 	/*
@@ -140,8 +142,10 @@ class Forcefield
 	// Return the n'th angle in the list
 	ForcefieldBound *angle(int n);
 	// Retrieve angle data corresponding to specified atomtype id's
-	ForcefieldBound *findAngle(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
-
+	ForcefieldBound *findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk);
+	// Retrieve angle data corresponding to specified names
+	ForcefieldBound *findAngle(const char *typei, const char *typej, const char *typek);
+	
 
 	/*
 	// Torsion Interactions
@@ -159,8 +163,10 @@ class Forcefield
 	ForcefieldBound *torsions();
 	// Return the n'th torsion in the list
 	ForcefieldBound *torsion(int n);
-	// Retreve torsion data corresponding to specified atomtype id's
-	ForcefieldBound *findTorsion(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
+	// Retrieve torsion data corresponding to specified atomtype id's
+	ForcefieldBound *findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ffj, ForcefieldAtom *ffk, ForcefieldAtom *ffl);
+	// Retrieve torsion data corresponding to specified names
+	ForcefieldBound *findTorsion(const char *typei, const char *typej, const char *typek, const char *typel);
 
 
 	/*
@@ -179,8 +185,10 @@ class Forcefield
 	ForcefieldBound *impropers();
 	// Return the n'th improper torsion in the list
 	ForcefieldBound *improper(int n);
-	// Retreve improper torsion data corresponding to specified atomtype id's
+	// Retrieve improper torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findImproper(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
+	// Retrieve improper torsion data corresponding to specified names
+	ForcefieldBound *findImproper(const char *typei, const char *typej, const char *typek, const char *typel);
 
 
 	/*
@@ -201,7 +209,9 @@ class Forcefield
 	ForcefieldBound *ureyBradley(int n);
 	// Retrieve Urey-Bradley data corresponding to specified atomtype id's
 	ForcefieldBound *findUreyBradley(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
-
+	// Retrieve Urey-Bradley data corresponding to specified names
+	ForcefieldBound *findUreyBradley(const char *typei, const char *typej, const char *typek);
+	
 
 	/*
 	// Parameter Generation
@@ -248,12 +258,14 @@ class Forcefield
 	*/
 	public:
 	// Character-match the atomtype names supplied
-	int matchType(const char*, const char*);
+	int matchType(const char *source, const char *target);
 	// Character-match the atomtype names supplied
 	int matchType(const Dnchar &a, const Dnchar &b);
 	// Match names of atomtypes supplied to strings supplied
-	int matchTypes(ForcefieldAtom*, ForcefieldAtom*, const char*, const char*);
-
+	int matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char *typei, const char *typej);
+	// Match names of supplied typenames and test names 
+	int matchTypes(const char *testi, const char *testj, const char *typei, const char *typej);
+	
 
 	/*
 	// File

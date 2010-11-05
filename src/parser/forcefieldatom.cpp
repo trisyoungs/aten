@@ -22,6 +22,7 @@
 #include "parser/forcefieldatom.h"
 #include "parser/stepnode.h"
 #include "classes/forcefieldatom.h"
+#include "classes/prefs.h"
 #include "base/constants.h"
 #include "main/aten.h"
 #include <string.h>
@@ -161,6 +162,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
+	int n;
 	ForcefieldAtom *ptr= (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
 	if (result && (ptr == NULL))
 	{
@@ -173,12 +175,22 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			rv.set(ptr->charge());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			if ((arrayIndex < 1) || (arrayIndex > MAXFFPARAMDATA))
+			if (hasArrayIndex)
 			{
-				msg.print("Array index [%i] is out of range for 'data' member.\n", arrayIndex);
-				result = FALSE;
+				rv.set(ptr->parameter(arrayIndex-1));
+				// Autoconversion of energy parameters?
+				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[arrayIndex-1]) rv.set( prefs.convertEnergy(rv.asDouble(), prefs.energyUnit(), prefs.autoConversionUnit()) );
 			}
-			else rv.set(ptr->parameter(arrayIndex-1));
+			else
+			{
+				rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
+				// Autoconversion of energy parameters?
+				if (prefs.autoConversionUnit() != Prefs::nEnergyUnits)
+				{
+					for (n = 0; n<MAXFFPARAMDATA; ++n) if (VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[n])
+						rv.setElement(n, prefs.convertEnergy(ptr->parameter(n), prefs.energyUnit(), prefs.autoConversionUnit()) );
+				}
+			}
 			break;
 		case (ForcefieldAtomVariable::Description):
 			rv.set(ptr->description());
@@ -416,7 +428,12 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 		case (ForcefieldAtomVariable::Parameter):
 			id = VdwFunctions::vdwParameter(ptr->vdwForm(), node->argc(0), TRUE);
 			if (id == VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters) result = FALSE;
-			else rv.set(ptr->parameter(id));
+			else
+			{
+				// Autoconversion of energy parameters?
+				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
+				else rv.set(ptr->parameter(id));
+			}
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldAtomVariable.\n", functionData[i].name);

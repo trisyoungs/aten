@@ -226,6 +226,7 @@ void Command::initPointers()
 
 	// Forcefield Commands
         pointers_[AngleDef] = &Command::function_AngleDef;
+	pointers_[AutoConversionUnit] = &Command::function_AutoConversionUnit;
 	pointers_[BondDef] = &Command::function_BondDef;
 	pointers_[ClearMap] = &Command::function_ClearMap;
 	pointers_[ClearExportMap] = &Command::function_ClearExportMap;
@@ -467,12 +468,14 @@ void Command::initPointers()
 	pointers_[Contains] = &Command::function_Contains;
 	pointers_[FToA] = &Command::function_FToA;
 	pointers_[IToA] = &Command::function_IToA;
+	pointers_[Lowercase] = &Command::function_Lowercase;
 	pointers_[ReplaceChars] = &Command::function_ReplaceChars;
 	pointers_[ReplaceStr] = &Command::function_ReplaceStr;
 	pointers_[RemoveStr] = &Command::function_RemoveStr;
 	pointers_[SPrintF] = &Command::function_SPrintF;
 	pointers_[StripChars] = &Command::function_StripChars;
 	pointers_[ToA] = &Command::function_ToA;
+	pointers_[Uppercase] = &Command::function_Uppercase;
 
 	// System Commands
 	pointers_[Debug] = &Command::function_Debug;
@@ -481,9 +484,10 @@ void Command::initPointers()
 	pointers_[Getenvi] = &Command::function_Getenvi;
 	pointers_[Gui] = &Command::function_Gui;
 	pointers_[Help] = &Command::function_Help;
+	pointers_[Null] = &Command::function_Null;
+	pointers_[Quit] = &Command::function_Quit;
 	pointers_[SearchCommands] = &Command::function_SearchCommands;
 	pointers_[Seed] = &Command::function_Seed;
-	pointers_[Quit] = &Command::function_Quit;
 	pointers_[Version] = &Command::function_Version;
 	
 	// Trajectory Commands

@@ -74,7 +74,7 @@ int VTypes::dataPair(DataType type1, int arraysize1, DataType type2, int arraysi
 {
 	if ((type1 == VTypes::NoData) || (type2 == VTypes::NoData))
 	{
-		msg.print("One or both arguments have no data type.\n");
+		msg.print(Messenger::Verbose, "One or both arguments have no data type.\n");
 		return UntypedData;
 	}
 	if ((arraysize1 > 0) && (arraysize2 > 0) && (arraysize1 != arraysize2))
