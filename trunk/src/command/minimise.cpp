@@ -26,6 +26,7 @@
 #include "methods/cg.h"
 #include "model/model.h"
 #include "main/aten.h"
+#include "classes/prefs.h"
 #include "base/sysfunc.h"
 #include "parser/filterdata.h"
 
@@ -105,22 +106,26 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: Couldn't find MOPAC arc import filter.\n");
 		return FALSE;
 	}
+	// Check that defined MOPAC exe exists
+	if (!fileExists(prefs.mopacExe()))
+	{
+		msg.print("Error: MOPAC excutable doesn't appear to be at '%s'.\n", prefs.mopacExe());
+		return FALSE;
+	}
 	// Grab/create various filenames and paths
 	static int runid = 1;
-	Dnchar mopacexe, mopacinput, mopacoutput, mopaccmd;
-	mopacexe = "/home/tris/bin/MOPAC2009.exe";
-	mopacinput.sprintf("/home/tris/tmp/aten-mopac%05i.mop", runid);
-	mopacoutput.sprintf("/home/tris/tmp/aten-mopac%05i.arc", runid);
-	mopaccmd.sprintf("\"%s\" \"%s\"", mopacexe.get(), mopacinput.get());
+	Dnchar mopacinput, mopacoutput, mopaccmd;
+	mopacinput.sprintf("%s%caten-mopac%05i.mop", prefs.tempDir(), PATHSEP, runid);
+	mopacoutput.sprintf("%s%caten-mopac%05i.arc", prefs.tempDir(), PATHSEP, runid);
+	mopaccmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacinput.get());
 	msg.print(Messenger::Verbose, "Command to run will be '%s'\n", mopaccmd.get());
 	// Create copy of current model so as not to disturb filename/filter values
 	Model tempmodel;
 	tempmodel.copy(aten.currentModel());
 	tempmodel.setFilter(mopacexport);
 	tempmodel.setFilename(mopacinput);
-	// Save the input file...
+	// Save the input file... construct temporary bundle object containing our model pointer
 	bool result = TRUE;
-	// Construct temporary bundle object containing our model pointer
 	Bundle bundle(&tempmodel);
 	ReturnValue temprv;
 	result = CommandNode::run(Command::SaveModel, bundle, "cc", "mopac", mopacinput.get());
@@ -138,7 +143,6 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		return FALSE;
 	}
 	// Time to load in the results
-	printf("AT THIS POINT, obj.rs = %p\n", obj.rs);
 	aten.setUseWorkingList(TRUE);
 	result = CommandNode::run(Command::LoadModel, "c", mopacoutput.get());
 	// There should now be a model in the working model list (our results)
@@ -148,12 +152,10 @@ bool Command::function_MopacMinimise(CommandNode *c, Bundle &obj, ReturnValue &r
 		msg.print("Error: No results model found.\n");
 		return FALSE;
 	}
-	printf("LOADED MOPAC MODEL is %p\n", m);
 	// Copy the atoms back into our tempmodel
 	tempmodel.copy(m);
 	aten.setUseWorkingList(FALSE);
 	// Start a new undostate in the original model
-	printf("AND NOW, obj.rs = %p\n", obj.rs);
 	obj.rs->beginUndoState("MOPAC geometry optimisation");
 	Atom *i, *j = obj.rs->atoms();
 	for (i = tempmodel.atoms(); i != NULL; i = i->next)

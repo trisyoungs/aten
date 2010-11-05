@@ -25,7 +25,7 @@
 #include "gui/mainwindow.h"
 #include "model/model.h"
 #ifdef _WIN32
-  #include "glext.h"
+#include "glext.h"
 #endif
 
 // Constructor
