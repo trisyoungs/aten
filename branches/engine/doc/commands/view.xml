@@ -1,0 +1,278 @@
+<section id="command.groups.view"><title>View Commands</title>
+	
+	<para>Commands to change the current model's view.</para>
+
+	<section id="command.ref.axisrotateview"><title>axisrotateview</title>
+		<indexterm><primary>commands</primary><secondary>axisrotateview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>axisrotateview</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>angle</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rotate the current view <emphasis>angle</emphasis> degrees about an axis defined between the supplied point {ax,ay,az} and the origin.</para>
+	
+	</section>
+	
+	<section id="command.ref.getview"><title>getview</title>
+		<indexterm><primary>commands</primary><secondary>getview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>getview</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Outputs the 3x3 rotation matrix, the camera position vector, and the z-rotation of the camera for the current model's view. The list of numbers may be passed directly to the 'setview' command to re-create the view exactly.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+getview();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.orthographic"><title>orthographic</title>
+		<indexterm><primary>commands</primary><secondary>orthographic</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>orthographic</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the view for all models to be an orthographic projection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+orthographic();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.perspective"><title>perspective</title>
+		<indexterm><primary>commands</primary><secondary>perspective</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>perspective</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Set the view for all models to be a perspective projection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+perspective();
+		</synopsis>
+	
+	</section>
+	
+	<section id="command.ref.resetview"><title>resetview</title>
+		<indexterm><primary>commands</primary><secondary>resetview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>resetview</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Resets the view rotation and zoom for the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+resetview();
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.rotateview"><title>rotateview</title>
+		<indexterm><primary>commands</primary><secondary>rotateview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>rotateview</function></funcdef>
+				<paramdef>double <parameter>rotx</parameter></paramdef>
+				<paramdef>double <parameter>roty</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Rotates the current view by <emphasis>rotx</emphasis> degrees around the x axis and <emphasis>roty</emphasis> degrees around the y axis.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+rotateview(10.0, 0.0);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.setview"><title>setview</title>
+		<indexterm><primary>commands</primary><secondary>setview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>setview</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+			<funcprototype>
+				<funcdef>void <function>setview</function></funcdef>
+				<paramdef>double <parameter>ax</parameter></paramdef>
+				<paramdef>double <parameter>ay</parameter></paramdef>
+				<paramdef>double <parameter>az</parameter></paramdef>
+				<paramdef>double <parameter>bx</parameter></paramdef>
+				<paramdef>double <parameter>by</parameter></paramdef>
+				<paramdef>double <parameter>bz</parameter></paramdef>
+				<paramdef>double <parameter>cx</parameter></paramdef>
+				<paramdef>double <parameter>cy</parameter></paramdef>
+				<paramdef>double <parameter>cz</parameter></paramdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+				<paramdef>double <parameter>zrot</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the current view to the rotation matrix, camera vector, and (if supplied) camera rotation (''zrot'') specified. The 10-number output of <link linkend="command.ref.getview">getview</link> can be passed to 'setview' to recreate the old camera rotation and position.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+setview(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
+		</synopsis>
+		<para>sets a view with the z axis pointing up, and the y axis normal to the screen (i.e. rotated 90 degrees around the x axis)</para>
+	
+	</section>
+	
+	<section id="command.ref.speedtest"><title>speedtest</title>
+		<indexterm><primary>commands</primary><secondary>speedtest</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>speedtest</function></funcdef>
+				<paramdef>int <parameter>nrenders = 100</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Performs a quick speed test based on rendering of the current model and general view.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+speedtest();
+		</synopsis>
+		<para>spins the current model for the default of 100 rendering passes.</para>
+		<synopsis>
+speedtest(2000);
+		</synopsis>
+		<para>spins the current model for 2000 rendering passes.</para>
+	
+	</section>
+	
+	<section id="command.ref.translateview"><title>translateview</title>
+		<indexterm><primary>commands</primary><secondary>translateview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>translateview</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Translates the camera viewing the current model.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+translateview(0.0, 0.0, 1.0);
+		</synopsis>
+		
+	</section>
+	
+	<section id="command.ref.viewalong"><title>viewalong</title>
+		<indexterm><primary>commands</primary><secondary>viewalong</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>viewalong</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the current view so that it is along the specified vector.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+viewalong(0, 0, -1);
+		</synopsis>
+		<para>view the current model along the negative z-axis.</para>
+	
+	</section>
+	
+	<section id="command.ref.viewalongcell"><title>viewalongcell</title>
+		<indexterm><primary>commands</primary><secondary>viewalongcell</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>viewalongcell</function></funcdef>
+				<paramdef>double <parameter>x</parameter></paramdef>
+				<paramdef>double <parameter>y</parameter></paramdef>
+				<paramdef>double <parameter>z</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the current view so that is along the specified cell vector.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+viewalongcell(1, 0, 0);
+		</synopsis>
+		<para>view the current model along the cell's x axis.</para>
+		
+	</section>
+	
+	<section id="command.ref.zoomview"><title>zoomview</title>
+		<indexterm><primary>commands</primary><secondary>zoomview</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>zoomview</function></funcdef>
+				<paramdef>double <parameter>dz</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Zooms the view by the specified amount.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+zoomview(10.0);
+		</synopsis>
+		<para>moves the camera 10 &#8491; forwards along the z-direction.</para>
+		<synopsis>
+zoomview(-5);
+		</synopsis>
+		<para>moves the camera 5 &#8491; backwards along the z-direction.</para>
+
+	</section>
+	
+</section>

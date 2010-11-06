@@ -1,0 +1,14 @@
+<section id="gui.toolwindows.select"><title>Select Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>select</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_select.png"/>Select Window
+	</para>
+
+	<para>The select window provides a means to quickly access the capabilities of the <link linkend="command.ref.select">select</link> and <link linkend="command.ref.deselect">deselect</link> commands from within the GUI. The total number of atoms selected along with their empirical formula is also displayed.</para>
+	
+	<figure><title>Select Window</title>
+		<graphic fileref="images/window_select.png" align="center"/>
+	</figure>
+
+</section>

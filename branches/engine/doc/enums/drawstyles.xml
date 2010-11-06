@@ -1,0 +1,34 @@
+<section id="enums.drawstyles"><title>Drawing Styles</title>
+	
+	<para>Available drawing styles for individual atoms are:</para>
+	
+	<table frame='all' pgwide='1' tocentry='1'><title>Draw style keywords</title>
+		<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+			<thead>
+				<row>
+					<entry>Value</entry>
+					<entry>Description</entry>
+				</row>
+			</thead>
+			<tbody>
+				<row>
+					<entry>stick</entry>
+					<entry>Atoms and connected bonds are drawn using simple lines</entry>
+				</row>
+				<row>
+					<entry>tube</entry>
+					<entry>Atoms and connected bonds are drawn using 'capped' cylinders</entry>
+				</row>
+				<row>
+					<entry>sphere</entry>
+					<entry>Atoms and connected bonds are drawn using spheres and cylinders, with all atoms the same size</entry>
+				</row>
+				<row>
+					<entry>scaled</entry>
+					<entry>Atoms and connected bonds are drawn using spheres and cylinders, with all atoms sized according to their atomic radius set in the preferences</entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</table>
+
+</section>

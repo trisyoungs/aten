@@ -1,0 +1,14 @@
+<section id="gui.toolwindows.zmatrix"><title>ZMatrix Window</title>
+	<indexterm><primary>GUI</primary><secondary>tool windows</secondary><tertiary>zmatrix</tertiary></indexterm>
+	
+	<para>
+		<inlinegraphic fileref="images/stack_zmatrix.png"/>ZMatrix Window
+	</para>
+
+	<para>The z-matrix window allows the z-matrix for the current model to be viewed and its variables edited. Any changes made are reflected immediately in the coordinates of the model.</para>
+	
+	<figure><title>ZMatrix Window</title>
+		<graphic fileref="images/window_zmatrix.png" align="center"/>
+	</figure>
+
+</section>

@@ -1,0 +1,80 @@
+	<section id="command.types.region"><title>Region Type</title>
+		
+		<indexterm zone="command.types.region"><primary>types</primary><secondary>region</secondary></indexterm>
+		
+		<table frame='all' pgwide='1' tocentry='1'><title>Region Type Members</title>
+			<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+				<thead>
+					<row>
+						<entry>Member</entry>
+						<entry>Type</entry>
+						<entry>Access</entry>
+						<entry>Description</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>centre</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometric centre of the region in real coordinates</entry>
+					</row>
+					<row>
+						<entry>centrefrac</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometric centre of the region in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>geometry</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometry of the region in real coordinates</entry>
+					</row>
+					<row>
+						<entry>geometry</entry>
+						<entry><link linkend="command.types.vector">vector</link></entry>
+						<entry>rw</entry>
+						<entry>Geometry of the region in fractional cell coordinates</entry>
+					</row>
+					<row>
+						<entry>iscentrefrac</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Indicates whether the current region centre was defined in fractional coordinates</entry>
+					</row>
+					<row>
+						<entry>isgeometryfrac</entry>
+						<entry>int</entry>
+						<entry>ro</entry>
+						<entry>Indicates whether the current region geometry was defined in fractional coordinates</entry>
+					</row>
+					<row>
+						<entry>overlap</entry>
+						<entry>int</entry>
+						<entry>rw</entry>
+						<entry>Flag to specify whether inserting molecules at positions that overlap with other regions is allowed</entry>
+					</row>
+					<row>
+						<entry>shape</entry>
+						<entry>string</entry>
+						<entry>rw</entry>
+						<entry>The current shape of the region. See <link linkend="enums.regionshapes">Region Shapes</link> for a list</entry>
+					</row>
+					<row>
+						<entry>xrotation</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The x-rotation of the region</entry>
+					</row>
+					<row>
+						<entry>yrotation</entry>
+						<entry>double</entry>
+						<entry>rw</entry>
+						<entry>The y-rotation of the region</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+	
+	</section>

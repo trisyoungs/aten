@@ -1,0 +1,36 @@
+# Generate water droplet in methane (Example 1 in published paper)
+
+# Create water model
+newmodel("water");
+newatom(O);
+addhydrogen();
+setnmols(150);
+setregionfrac("spheroid", 0.5, 0.5, 0.5, 0.3, 0.5, 0.3,TRUE);
+
+# Create methane model
+newmodel("methane");
+newatom(C);
+addhydrogen();
+setnmols(200);
+regionoverlap(FALSE);
+
+# Create mixed system
+newmodel("droplet");
+cell(40, 40, 40, 100, 100, 100);
+loadff("oplsaa.ff");
+disorder(100);
+
+# Add glyphs to methane molecules
+pattern p;
+int i,m;
+p = getpattern("methane");
+i = p.firstatomid;
+for (m=1; m<=p.nmols; ++m)
+{
+	newglyph("tetrahedron");
+	glyphatomsr(i+1, i+2, i+3, i+4);
+	i += p.nmolatoms;
+}
+foldmolecules();
+savemodel("dlpoly", "gaswater.CONFIG");
+saveexpression("dlpoly", "gaswater.FIELD");

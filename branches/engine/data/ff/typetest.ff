@@ -1,0 +1,43 @@
+# Type Engine Test Forcefield
+name "Type Test"
+
+types
+# Tests for geometric descriptions. Only the atom's geometry is specified.
+1	P[unbound]	P	"unbound"
+2	P[onebond]	P	"onebond"
+3	P[linear]	P	"linear"
+4	P[tshape]	P	"tshape"
+5	P[trigonal]	P	"trigonal"
+6	P[tetrahedral]	P	"tetrahedral"
+7	P[sqplanar]	P	"sqplanar"
+8	P[tbp]		P	"tbp"
+9	P[octahedral]	P	"octahedral"
+10	F		F	"-P"
+end
+
+# Fill in some misc vdw types
+inter lj
+1	P[unbound]	0.000	0.060	3.0
+2	P[onebond]	0.000	0.060	3.0
+3	P[linear]	0.000	0.060	3.0
+4	P[tshape]	0.000	0.060	3.0
+5	P[trigonal]	0.000	0.060	3.0
+6	P[tetrahedral]	0.000	0.060	3.0
+7	P[sqplanar]	0.000	0.060	3.0
+8	P[tbp]		0.000	0.060	3.0
+9	P[octahedral]	0.000	0.060	3.0
+10	F		0.000	0.060	3.0
+end
+
+# Set up some equivalents so we don't have to put in geometries for every combination
+equivalents
+P	P*
+end
+
+bonds harmonic
+P	F	1000.0		1.3
+end
+
+angles harmonic
+F	P	F	0.0	109.5
+end

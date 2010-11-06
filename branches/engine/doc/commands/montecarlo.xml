@@ -1,0 +1,120 @@
+<section id="command.groups.montecarlo"><title>Monte Carlo Commands</title>
+	
+	<para>Change parameters for Monte Carlo-based calculations. Energy values should be given in the current working unit of energy in the program.</para>
+	
+	<section id="command.ref.mcaccept"><title>mcaccept</title>
+		<indexterm><primary>commands</primary><secondary>mcaccept</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcaccept</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>emax</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the energy difference <emphasis>emax</emphasis> for the movetype <emphasis>move</emphasis> above which moves will be rejected.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mcaccept(&quot;translate&quot;, 0.0);
+		</synopsis>
+		<para>requests that only translation moves that lower the overall energy will be accepted.</para>
+		<synopsis>
+mcaccept(&quot;insert&quot;, 200.0);
+		</synopsis>
+		<para>requests that insertion moves will be accepted provided the total energy does not rise more than 200.0 units.</para>
+	
+	</section>
+	
+	<section id="command.ref.mcallow"><title>mcallow</title>
+		<indexterm><primary>commands</primary><secondary>mcallow</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcallow</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>bool <parameter>allow</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Indicates whether to allow moves of the specified type in Monte Carlo calculations.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mcallow(&quot;translate&quot;, FALSE);
+		</synopsis>
+		<para>disallows translation moves in Monte Carlo calculations.</para>
+		<synopsis>
+mcallow(&quot;rotate&quot;, &quot;true&quot;);
+		</synopsis>
+		<para>allows rotation moves in Monte Carlo calculations.</para>
+	
+	</section>
+	
+	<section id="command.ref.mcmaxstep"><title>mcmaxstep</title>
+		<indexterm><primary>commands</primary><secondary>mcmaxstep</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcmaxstep</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>mcmaxstep</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the maximal step size for the move type <emphasis>move</emphasis>.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mcmaxstep(&quot;translate&quot;, 5.0);
+		</synopsis>
+		<para>sets the maximum translation displacement to 5 &#8491;.</para>
+		<synopsis>
+mcmaxstep(&quot;rotate&quot;, 30.0);
+		</synopsis>
+		<para>sets the maximum rotation to 30 degrees.</para>
+	
+	</section>
+	
+	<section id="command.ref.mcntrials"><title>mcntrials</title>
+		<indexterm><primary>commands</primary><secondary>mcntrials</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>mcntrials</function></funcdef>
+				<paramdef>string <parameter>move</parameter></paramdef>
+				<paramdef>double <parameter>n</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Sets the number of times <emphasis>n</emphasis> that the move type <emphasis>move</emphasis> should be attempted in each cycle.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+mcntrials(&quot;insert&quot;, 50);
+		</synopsis>
+		<para>requests that there will be 50 insertion attempts per cycle per molecule type.</para>
+		
+	</section>
+	
+	<section id="command.ref.printmc"><title>printmc</title>
+		<indexterm><primary>commands</primary><secondary>printmc</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef>void <function>printmc</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Prints the current Monte Carlo parameters.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+printmc();
+		</synopsis>
+		
+	</section>
+	
+</section>

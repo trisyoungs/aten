@@ -1,0 +1,21 @@
+name "SPC/E Water"
+
+units kj
+
+types
+1	HW	H	"nbonds=1,-O(nh=2)"
+2	OW	O	"nbonds=2,nh=2"
+end
+
+inter  lj
+1	HW	0.4238	0.0	0.0	
+2	OW	-0.8476	0.650	3.166
+end
+
+bonds constraint
+HW	OW	4184.0	1.000
+end
+
+angles bondconstraint
+HW	OW	HW	4184.0	1.62398
+end
