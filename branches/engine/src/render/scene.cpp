@@ -1,6 +1,6 @@
-/*
-	*** Qt Select Actions
-	*** src/gui/selectactions.cpp
+ /*
+	*** Render scene
+	*** src/render/scene.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,25 +19,4 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/gui.h"
-#include "gui/mainwindow.h"
-
-/*
-// Select Toolbar
-*/
-
-void AtenForm::on_actionSelectAtoms_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectAction);
-}
-
-void AtenForm::on_actionSelectMolecules_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectMoleculeAction);
-}
-
-void AtenForm::on_actionSelectElement_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectElementAction);
-}
 

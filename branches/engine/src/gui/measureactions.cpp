@@ -27,17 +27,17 @@
 
 void AtenForm::on_actionMeasureDistance_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::MeasureDistanceAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::MeasureDistanceAction);
 }
 
 void AtenForm::on_actionMeasureAngle_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::MeasureAngleAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::MeasureAngleAction);
 }
 
 void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::MeasureTorsionAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::MeasureTorsionAction);
 }
 
 void AtenForm::on_actionMeasureClearAll_triggered(bool on)

@@ -430,12 +430,12 @@ class Model
 	int projectionPoint_;
 
 	public:
-	// Pre-generated display list for atoms
-	//GLuint displaylist;
 	// Project the specified world coordinates into 2D screen coords
 	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculateViewMatrix();
+	// Return current view matrix
+	Mat4<double> &viewMatrix();
 	// Set the current rotation matrix
 	void setRotationMatrix(Mat4<double> &rmat);
 	// Return the current rotation matrix

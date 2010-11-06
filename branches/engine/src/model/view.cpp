@@ -213,6 +213,7 @@ void Model::resetCamera(const Vec3<double> &newr)
 // Reset View
 void Model::resetView()
 {
+	return;  // BROKEN TGAY
 	// Reset the modelview matrix and the camera
 	msg.enter("Model::resetView");
 	static Vec3<double> newcam, newscreen;
@@ -348,6 +349,12 @@ void Model::calculateViewMatrix()
 	viewMatrixInverse_.invert();
 }
 
+// Return current view matrix
+Mat4<double> &Model::viewMatrix()
+{
+	return viewMatrix_;
+}
+
 // Project the coordinates of all atoms in the model
 void Model::projectAll()
 {
@@ -376,6 +383,7 @@ void Model::projectSelection()
 void Model::projectAtom(Atom *i)
 {
 	// Transform the model coordinates of specified atom into world GL and 2D screen coordinates
+	return;
 	if (!gui.mainView.isValid()) return;
 	static Vec4<double> modelr, screenr, worldr;
 	static double srx, sry, srz;
@@ -388,17 +396,17 @@ void Model::projectAtom(Atom *i)
 	worldr = viewMatrix_ * modelr;
 	i->rWorld().set(worldr.x, worldr.y, worldr.z);
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
-	screenr = gui.mainView.PMAT * worldr;
+// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
 	screenr.x /= screenr.w;
 	screenr.y /= screenr.w;
 	srz = screenr.z / screenr.w;
-	vmat = gui.mainView.VMAT;
+// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
 	srx = vmat[0] + vmat[2]*(screenr.x+1)*0.5;
 	sry = vmat[1] + vmat[3]*(screenr.y+1)*0.5;
 	i->rScreen().set(srx,sry,srz);
 	// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
 	worldr.x += prefs.screenRadius(i);
-	screenr = gui.mainView.PMAT * worldr;
+// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
 	screenr.x /= screenr.w;
 	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)*0.5) - srx));
 }
@@ -423,10 +431,10 @@ Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	worldr = viewMatrix_ * modelr;
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
-	screenr = gui.mainView.PMAT * worldr;
+// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
 	screenr.x /= screenr.w;
 	screenr.y /= screenr.w;
-	vmat = gui.mainView.VMAT;
+// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
 	result.set( vmat[0] + vmat[2]*(screenr.x+1)*0.5, vmat[1] + vmat[3]*(screenr.y+1)*0.5, screenr.z / screenr.w);
 	msg.exit("Model::modelToScreen");
 	return result;
@@ -453,14 +461,14 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	worldr = viewMatrix_ * modelr;
 	//viewMatrix_.print();
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
-	screenr = gui.mainView.PMAT * worldr;
+// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
 	screenr.x /= screenr.w;
 	screenr.y /= screenr.w;
 	result = screenr;
-	vmat = gui.mainView.VMAT;
+// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
 	x1 = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
 	worldr.x += 1.0;
-	screenr = gui.mainView.PMAT * worldr;
+// 	screenr = gui.mainView.PMAT * worldr;   PROJECTION IS BROKEN
 	screenr.x /= screenr.w;
 	x2 = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
 	radius = fabs(x2 - x1);

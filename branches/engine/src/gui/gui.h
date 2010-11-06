@@ -23,7 +23,7 @@
 #define ATEN_GUIQT_H
 
 #include "gui/gui.h"
-#include "render/canvas.h"
+#include "gui/canvas.h"
 
 // Forward declarations
 class AtenForm;

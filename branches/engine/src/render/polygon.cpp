@@ -1,6 +1,6 @@
 /*
-	*** Qt Select Actions
-	*** src/gui/selectactions.cpp
+	*** Polygon Class
+	*** src/render/polygon.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,25 +19,35 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/gui.h"
-#include "gui/mainwindow.h"
+#include "render/polygon.h"
 
 /*
-// Select Toolbar
+// Polygon Vertex
 */
 
-void AtenForm::on_actionSelectAtoms_triggered(bool on)
+// Constructor
+PolygonVertex::PolygonVertex()
 {
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectAction);
+	r[0] = 0.0;
+	r[1] = 0.0;
+	r[2] = 0.0;
+	normal[0] = 0.0;
+	normal[1] = 0.0;
+	normal[2] = 0.0;
+	colour[0] = 0.0;
+	colour[1] = 0.0;
+	colour[2] = 0.0;
+	colour[3] = 0.0;
 }
 
-void AtenForm::on_actionSelectMolecules_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectMoleculeAction);
-}
+/*
+// Polygon
+*/
 
-void AtenForm::on_actionSelectElement_triggered(bool on)
+// Constructor
+Polygon::Polygon()
 {
-	if (on) gui.mainView.setSelectedMode(UserAction::SelectElementAction);
+	prev = NULL;
+	next = NULL;
+	nVertices = 0;
 }
-

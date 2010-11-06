@@ -113,8 +113,8 @@ void TCanvas::paintGL()
 
 		if (source != NULL)
 		{
-			// Draw OpenGL objects (with OpenGL)
-			canvas_->renderScene(source);
+			// Render model
+			canvas_->renderModel(source);
 	
 			// Initialise QPainter
 			QPainter painter(this);
@@ -124,7 +124,7 @@ void TCanvas::paintGL()
 			painter.setFont(font);
 			painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
 			painter.setRenderHint(QPainter::Antialiasing);
-			canvas_->renderText(painter);
+// 			canvas_->renderText(painter);	TEXT IS BROKEN
 		}
 	}
 	else printf("NO CANVAS SET PAINT\n");
