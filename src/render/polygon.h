@@ -1,6 +1,6 @@
 /*
-	*** User action texts
-	*** src/gui/acitontext.h
+	*** Polygon
+	*** src/render/polygon.h
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,21 +19,43 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ACTIONTEXT_H
-#define ATEN_ACTIONTEXT_H
+#ifndef ATEN_POLYGON_H
+#define ATEN_POLYGON_H
 
-// User action text data
-class UserActionText
+#include <GL/gl.h>
+#include "templates/list.h"
+
+// Polygon vertex
+class PolygonVertex
 {
 	public:
-	// Action texts
-	const char *name;
-	const char *unModified;
-	const char *shiftModified;
-	const char *ctrlModified;
-	const char *altModified;
+	// Constructor
+	PolygonVertex();
+	// Coordinates
+	GLfloat r[3];
+	// Normal
+	GLfloat normal[3];
+	// Vertex colour
+	GLfloat colour[4];
 };
 
-extern UserActionText UserActionTexts[];
+// Polygon
+class Polygon
+{
+	public:
+	// Constructor
+	Polygon();
+	// List pointers
+	Polygon *prev, *next;
+	// Number of vertices in polygon
+	int nVertices;
+	// Vertex array
+	PolygonVertex *vertices;
+};
+
+// Polygon List
+class PolygonList : public List<Polygon>
+{
+};
 
 #endif

@@ -1,6 +1,6 @@
 /*
-	*** User action text
-	*** src/gui/actiontext.cpp
+	*** User actions
+	*** src/gui/useractions.cpp
 	Copyright T. Youngs 2007-2010
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/canvas.h"
+#include "gui/useractions.h"
 
 // User action texts (name, nomod, shift, ctrl, alt)
-UserActionText UserActionTexts[] = {
+UserAction UserActions[] = {
 	{ "", "", "", "", "" },
 	{ "Select", 	"Click or click-drag to select",
 		"toggle (left click) or add area to selection (left click-drag) or translate (middle click-drag) or rotate in local frame (right click-drag)",

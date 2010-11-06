@@ -22,8 +22,10 @@
 #ifndef ATEN_CANVAS_H
 #define ATEN_CANVAS_H
 
+#include "render/engine.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
+#include "gui/useractions.h"
 #include "classes/prefs.h"
 #include "base/log.h"
 
@@ -53,20 +55,6 @@ class TextObject
 	TextObject *prev, *next;
 };
 
-// User action texts
-class UserActionText
-{
-	public:
-	// Action texts
-	const char *name;
-	const char *unModified;
-	const char *shiftModified;
-	const char *ctrlModified;
-	const char *altModified;
-};
-
-extern UserActionText UserActionTexts[];
-
 /*
 // Canvas Master Class
 // Provides GL rendering functions for a context
@@ -76,10 +64,6 @@ class Canvas
 	public:
 	// Constructor
 	Canvas();
-
-
-	// Actions
-	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomAction, DrawChainAction, DrawFragmentAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
 	
 	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
@@ -96,8 +80,6 @@ class Canvas
 	const char *name_;
 	// Width, height, and aspect ratio of the canvas
 	GLsizei width_, height_;
-	// Aspect ratio of canvas
-	GLdouble aspect_;
 	// Point at which the stored atom display list was valid (sum of Change::StructureLog and Change::CoordinateLog points)
 	Log renderPoint_;
 	// Flag to indicate whether we may draw to the canvas
@@ -141,62 +123,6 @@ class Canvas
 
 
 	/*
-	// Rendering display lists
-	*/
-	private:
-	// Display list ID's for normal and temporary rendering contexts
-	GLuint globList_[nGlobs], temporaryGlobList_[nGlobs];
-	// Function to return glob integer id
-	GLuint glob(Canvas::GlObject ob) const;
-
-	public:
-	// Create globs for rendering
-	void createLists();
-
-
-	/*
-	// Rendering Primitives
-	*/
-	private:
-	// Draw a diamond
-	void diamondPrimitive(double xcenter, double ycentre, double size) const;
-	// Draw a square
-	void squarePrimitive(double xcentre, double ycentre, double size) const;
-	// Draw a rectangle
-	void rectanglePrimitive(double l, double t, double r, double b) const;
-	// Draw a circle
-	void circlePrimitive(double xcentre, double ycenter, double radius) const;
-	// Manually draw a unit sphere
-	void spherePrimitive(double radius, bool filled, int nslices = -1, int nstacks = -1) const;
-
-
-	/*
-	// Rendering Objects
-	*/
-	private:
-	// Render text string at specific coordinates
-	void glText(double x, double y, const char *text) const;
-	// Render text string at atom's screen coordinates
-	void glText(const Vec3<double> v, const char *text) const;
-	// Draw 3d marks for the atoms in the subselection
-	void glSubsel3d() const;
-	// Draw a cylinder along vector supplied
-	void glCylinder(const Vec3<double> &rj, double startradius, double endradius, bool solid, bool segmented, int nstacks = -1, int nslices = -1) const;
-	// Draw ellipsoid (construct third vector from the tqo supplied)
-	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y) const;
-	// Draw ellipsoid in the supplied axis sytem
-	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z) const;
-	// Draw the unit cell of the model
-	void glCell(Cell *cell) const;
-	// Draw a line arrow
-	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE) const;
-	// Draw a cylinder arrow
-	void glCylinderArrow(const Vec3<double> &vector, bool swaphead = FALSE) const;
-	// Draw the specified Miller plane (and directional arrow)
-	void millerPlane(int h, int k, int l, int dir) const;
-
-
-	/*
 	// General Rendering Calle
 	*/
 	protected:
@@ -204,6 +130,8 @@ class Canvas
 	Model *displayModel_;
 	// Last frame ID rendered by the canvas
 	int displayFrameId_;
+	// Rendering engine
+	RenderEngine engine_;
 
 	public:
 	// Configure OpenGL, generating display lists
@@ -218,54 +146,10 @@ class Canvas
 	void checkGlError();
 	// Reset the projection matrix based on the current canvas geometry
 	void doProjection();
-	// Projection matrices for scene and rotation globe
-	Mat4<GLdouble> PMAT, GlobePMAT;
-	// Viewport matrix for canvas
-	GLint VMAT[4];
 	// Return the current display model
 	Model *displayModel() const;
-
-
-	/*
-	// Scene Rendering
-	*/
-	private:
-	// List of text nuggets to render
-	List<TextObject> textObjects_;
-	// Render colourscales
-	void renderColourscales() const;
-	// Add extra 2D objects
-	void renderExtra2d() const;
-	// Add extra 3D objects
-	void renderExtra3d() const;
-	// Render the model specified
-	void renderModelAtoms(Model *source) const;
-	// Render model cell
-	void renderModelCell(Model *source) const;
-	// Draw model force arrows		// TODO Defunct now glyphs are available?
-	void renderModelForceArrows() const;
-	// Render glyphs in the current model
-	void renderModelGlyphs(Model *source);
-	// Add labels to the model
-	void renderModelLabels(Model *source);
-	// Add geometry measurements to the model
-	void renderModelMeasurements(Model *source);
-	// Render text glyphs in the current model
-	void renderModelTextGlyphs(Model *source);
-	// Draw regions specified for MC insertion
-	void renderRegions() const;
-	// Render the rotation globe
-	void renderRotationGlobe(double *rotmat, double camrot) const;
-	// Render model surfaces
-	void renderSurfaces(Model *source) const;
-
-	public:
 	// Render a scene based on the specified model
-	void renderScene(Model*);
-	// Render text for the current scene
-	void renderText(QPainter&);
-	// Save scene as vector image
-	//void saveVector(Model *source, vector_format vf, const char *filename);
+	void renderModel(Model*);
 
 
 	/*
@@ -313,9 +197,9 @@ class Canvas
 	*/
 	protected:
 	// Active interaction mode of the main canvas
-	UserAction activeMode_;
+	UserAction::Action activeMode_;
 	// Selected interaction mode (from GUI)
-	UserAction selectedMode_;
+	UserAction::Action selectedMode_;
 	// Button flags (uses enum 'MouseButton')
 	bool mouseButton_[Prefs::nMouseButtons];
 	// Key flags (set by Gui::informMouseDown and used by TCanvas::beginMode)
@@ -339,9 +223,9 @@ class Canvas
 	// Set the active mode to the current user mode
 	void useSelectedMode();
 	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction);
+	void setSelectedMode(UserAction::Action ua);
 	// Return the currently selected mode
-	UserAction selectedMode() const;
+	UserAction::Action selectedMode() const;
 	// Inform the canvas of a mouse down event
 	void informMouseDown(Prefs::MouseButton, double x, double y, bool shiftkey, bool ctrlkey, bool altkey);
 	// Inform the canvas of a mouse up event
@@ -360,6 +244,13 @@ class Canvas
 	void setEditable(bool b);
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable();
+
+
+	/*
+	// New Rendering
+	*/
+	private:
+	
 };
 
 #endif

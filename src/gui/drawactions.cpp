@@ -28,27 +28,27 @@
 
 void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawAtomAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawAtomAction);
 }
 
 void AtenForm::on_actionDrawChain_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawChainAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawChainAction);
 }
 
 void AtenForm::on_actionDrawFragment_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawFragmentAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawFragmentAction);
 }
 
 void AtenForm::on_actionDeleteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawDeleteAction);
 }
 
 void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawTransmuteAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawTransmuteAction);
 }
 
 void AtenForm::on_actionTransmuteSelection_triggered(bool on)
@@ -59,22 +59,22 @@ void AtenForm::on_actionTransmuteSelection_triggered(bool on)
 
 void AtenForm::on_actionBondSingle_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondSingleAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawBondSingleAction);
 }
 
 void AtenForm::on_actionBondDouble_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondDoubleAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawBondDoubleAction);
 }
 
 void AtenForm::on_actionBondTriple_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawBondTripleAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawBondTripleAction);
 }
 
 void AtenForm::on_actionDeleteBond_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawDeleteBondAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawDeleteBondAction);
 }
 
 void AtenForm::on_actionElementH_triggered(bool on)
@@ -114,12 +114,12 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 {
-	if (on) gui.mainView.setSelectedMode(Canvas::DrawAddHydrogenAction);
+	if (on) gui.mainView.setSelectedMode(UserAction::DrawAddHydrogenAction);
 }
 
 //void AtenForm::on_actionProbeAtom_triggered(bool on)
 //{
-//	if (on) gui.mainView.setSelectedMode(Canvas::DrawProbeAction);
+//	if (on) gui.mainView.setSelectedMode(UserAction::DrawProbeAction);
 //}
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)

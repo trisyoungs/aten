@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "main/version.h"
-#include "render/canvas.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
@@ -379,32 +378,32 @@ void GuiQt::update(bool updateAtoms, bool updateCell, bool updateForcefield, boo
 void GuiQt::updateStatusBar(bool clear)
 {
 	static Dnchar text(512);
-	static Canvas::UserAction lastAction = Canvas::NoAction;
+	static UserAction::Action lastAction = UserAction::NoAction;
 	// Initialise string if NoAction
-	if (lastAction == Canvas::NoAction) text.clear();
+	if (lastAction == UserAction::NoAction) text.clear();
 	// If current action is not the same as the last action, recreate string
 	if (lastAction != mainView.selectedMode())
 	{
 		lastAction = mainView.selectedMode();
 		text.clear();
 		text.strcat("<b>");
-		text.strcat(UserActionTexts[lastAction].name);
+		text.strcat(UserActions[lastAction].name);
 		text.strcat(":</b> ");
-		text.strcat(UserActionTexts[lastAction].unModified);
-		if (UserActionTexts[lastAction].shiftModified[0] != '\0')
+		text.strcat(UserActions[lastAction].unModified);
+		if (UserActions[lastAction].shiftModified[0] != '\0')
 		{
 			text.strcat(", <b>+shift</b> ");
-			text.strcat(UserActionTexts[lastAction].shiftModified);
+			text.strcat(UserActions[lastAction].shiftModified);
 		}
-		if (UserActionTexts[lastAction].ctrlModified[0] != '\0')
+		if (UserActions[lastAction].ctrlModified[0] != '\0')
 		{
 			text.strcat(", <b>+ctrl</b> ");
-			text.strcat(UserActionTexts[lastAction].ctrlModified);
+			text.strcat(UserActions[lastAction].ctrlModified);
 		}
-		if (UserActionTexts[lastAction].altModified[0] != '\0')
+		if (UserActions[lastAction].altModified[0] != '\0')
 		{
 			text.strcat(", <b>+alt</b> ");
-			text.strcat(UserActionTexts[lastAction].altModified);
+			text.strcat(UserActions[lastAction].altModified);
 		}
 	}
 	// Set text in statusbar widget

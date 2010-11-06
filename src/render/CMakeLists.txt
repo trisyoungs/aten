@@ -1,12 +1,14 @@
 add_library(render
-canvas.h
+engine.h
+polygon.h
 atoms.cpp 
-canvas.cpp
 colourscale.cpp
+engine.cpp
 extra.cpp 
 glyph.cpp 
 model.cpp 
 objects.cpp 
+polygon.cpp
 render.cpp 
 surface.cpp
 )

@@ -11,8 +11,8 @@ ${CMAKE_BINARY_DIR}
 )
 
 set(qtproject_SRCS
-  actiontext.h
-  actiontext.cpp
+  useractions.h
+  useractions.cpp
   gui.h 
   ttreewidgetitem.h
   ttablewidgetitem.h
