@@ -22,6 +22,7 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
+#include "gui/gui.h"
 
 // Variables
 Vec3<double> transformCOG;
@@ -48,12 +49,19 @@ void Model::prepareTransform()
 		return;
 	}
 	// Reference point for mim will be the updating cog
+	// At the same time, calculate a unit radius for the centre of geometry
+	Vec4<double> screenr;
 	transformCOG.zero();
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) transformCOG += ri->item->rWorld();
+	translateScale_ = 0.0;
+	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
+	{
+		transformCOG += gui.mainView.modelToWorld(ri->item->r(), viewMatrix(), &screenr, 1.0);
+		translateScale_ += screenr.w;
+	}
 	transformCOG /= selection_.nItems();
-	// Calculate a unit radius for the centre of geometry
-	Vec4<double> pvec = worldToScreen(transformCOG);
-	translateScale_ = pvec.w;
+	translateScale_ /= selection_.nItems();
+// 	Vec4<double> pvec = gui.mainView.worldToScreen(transformCOG, viewMatrix_);
+// 	translateScale_ = pvec.w;
 	msg.exit("Model::prepareTransform");
 }
 
@@ -78,7 +86,6 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 		}
 	}
 	changeLog.add(Log::Coordinates);
-	projectAll();
 	endUndoState();
 }
 
@@ -106,7 +113,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
-		newr = (rotmat * (ri->item->rWorld() - transformCOG)) + transformCOG;
+		newr = (rotmat * (gui.mainView.modelToWorld(ri->item->r(), viewMatrix()) - transformCOG)) + transformCOG;
 		newr *= viewMatrixInverse_;
 		ri->item->r() = newr + cell_.centre();
 	}
@@ -115,7 +122,6 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::rotateSelectionWorld");
 }
@@ -162,7 +168,6 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::rotateSelectionVector");
 }
@@ -195,8 +200,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	// Grab unit cell origin
 	for (Refitem<Atom,int> *ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
-		newr = ri->item->rWorld() + v;
-		//newr += v;
+		newr = gui.mainView.modelToWorld(ri->item->r(), viewMatrix()) + v;
 		newr = (viewMatrixInverse_ * newr) + cell_.centre();
 		positionAtom(ri->item, newr);
 	}
@@ -205,7 +209,6 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 	msg.exit("Model::translateSelectionWorld");
 }
 
@@ -220,7 +223,6 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::translateSelectionLocal");
 }
@@ -245,7 +247,6 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::mirrorSelectionLocal");
 }
@@ -285,7 +286,6 @@ void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix, b
 	updateMeasurements();
 
 	changeLog.add(Log::Visual);
-	projectSelection();
 
 	msg.exit("Model::matrixTransformSelection");
 }

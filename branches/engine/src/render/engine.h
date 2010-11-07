@@ -45,7 +45,9 @@ class RenderEngine
 	*/
 	private:
 	// Atom styles
-	Primitive atomStyle_[Atom::nDrawStyles];
+	PrimitiveGroup atom_[Atom::nDrawStyles], *scaledAtom_;
+	// Selected atom styles
+	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
 
 	public:
 	// (Re)Generate primitive vertex arrays
@@ -68,6 +70,10 @@ class RenderEngine
 	void setupView(GLint x, GLint y, GLint w, GLint h);
 	// Set current transformation matrix
 	void setTransformationMatrix(Mat4<double> &mat);
+	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Mat4<double> &viewMatrix, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	// Project the specified world coordinates into 2D screen coords
+	Vec4<double> &worldToScreen(const Vec3<double>&, Mat4<double> &viewMatrix);
 
 
 	/*
@@ -75,9 +81,7 @@ class RenderEngine
 	*/
 	private:
 	// Render primitive at requested local position in specified colour, returning projected position
-	Vec3<double> &renderPrimitive(Primitive *p, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse);
-	// Render scaled primitive at requested local position in specified colour, returning projected position
-	Vec3<double> &renderPrimitiveScaled(Primitive *p, GLfloat scale, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse);
+	Vec3<double> &renderPrimitive(PrimitiveGroup &pg, int lod, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse);
 
 	public:
 	// Render specified model

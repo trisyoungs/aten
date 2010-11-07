@@ -235,27 +235,21 @@ void Model::selectNone(bool markonly)
 Atom *Model::atomOnScreen(double x1, double y1)
 {
 	// See if an atom exists under the coordinates x1,y1
-	// Ignore 'hidden' atoms_.
+	// Ignore hidden atoms.
 	msg.enter("Model::atomOnScreen");
-	// Make sure we have a valid projection
-	projectAll();
 	Atom *closest = NULL;
-	static Vec3<double> wr, sr;
-	static double closestz, dist, nclip;
-	closestz = 10000.0;
-	nclip = prefs.clipNear();
+	Vec3<double> wr;
+	Vec4<double> sr;
+	double closestz = 10000.0, dist, nclip = prefs.clipNear();
 	y1 = gui.mainView.height() - y1;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		wr = -i->rWorld();
-		sr = i->rScreen();
-	//	printf("Screen coords:");
-	//	sr.print();
+		wr = -gui.mainView.modelToWorld(i->r(), viewMatrix(), &sr, prefs.screenRadius(i));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
-			if (dist < i->screenRadius())	// Mouse is inside bounding sphere
+			if (dist < sr.w)	// Mouse is inside bounding sphere
 			{
 				if ((closest == NULL) || (wr.z < closestz))
 				{
@@ -276,7 +270,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	msg.enter("Model::selectBox");
 	double t;
 	Atom *i;
-	Vec3<double> sr;
+	Vec4<double> sr;
 	y1 = gui.mainView.height() - y1;
 	y2 = gui.mainView.height() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
@@ -295,7 +289,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
-		sr = i->rScreen();
+		gui.mainView.modelToWorld(i->r(), viewMatrix(), &sr);
 		if ((sr.x >= x1) && (sr.x <= x2) && (sr.y >= y1) && (sr.y <= y2)) (deselect ? deselectAtom(i) : selectAtom(i));
 	}
 	msg.exit("Model::selectBox");

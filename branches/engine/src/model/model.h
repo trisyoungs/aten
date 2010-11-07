@@ -426,12 +426,8 @@ class Model
 	Mat4<double> viewMatrixInverse_;
 	// Camera position
 	Vec3<double> camera_;
-	// Log point at the last projection (Log::Coordinate+Log::Camera)
-	int projectionPoint_;
 
 	public:
-	// Project the specified world coordinates into 2D screen coords
-	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculateViewMatrix();
 	// Return current view matrix
@@ -471,14 +467,6 @@ class Model
 	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
 	void resetView();
-	// Project the model coordinates of the atom into local and 2D coordinates
-	void projectAtom(Atom*);
-	// Project given model coordinates into screen coordinates
-	Vec3<double> &modelToScreen(Vec3<double> &pos);
-	// Project the model coordinates of all atoms
-	void projectAll();
-	// Project the model coordinates of selected atoms
-	void projectSelection();
 	// Return the camera position vector
 	Vec3<double> camera() const;
 	// Calculate and return drawing pixel width
@@ -862,7 +850,6 @@ class Model
 	*/
 	public:
 	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> guideToModel(const Vec3<double> &v, double drawdepth);
 	Vec3<double> guideToModel(double x, double y, double drawdepth);
 	// Convert from Bohr to Angstrom
 	void bohrToAngstrom();

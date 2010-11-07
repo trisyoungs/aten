@@ -22,6 +22,7 @@
 #include "render/primitive.h"
 #include "base/messenger.h"
 #include "base/constants.h"
+#include "classes/prefs.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -29,12 +30,10 @@
 Primitive::Primitive()
 {
 	vertices_ = NULL;
-	scaledVertices_ = NULL;
 	normals_ = NULL;
 	nVertices_ = 0;
 	nDefinedVertices_ = 0;
 	type_ = GL_TRIANGLES;
-	nVerticesPerObject_ = 3;
 }
 
 // Destructor
@@ -48,22 +47,19 @@ void Primitive::clear()
 {
 	if (vertices_ != NULL) delete[] vertices_;
 	vertices_ = NULL;
-	if (scaledVertices_ != NULL) delete[] scaledVertices_;
-	scaledVertices_ = NULL;
 	if (normals_ != NULL) delete[] normals_;
 	normals_ = NULL;
 }
 
 // Create empty data arrays, setting type specified
-void Primitive::createEmpty(GLenum type, int nvertsperobject, int nvertices)
+void Primitive::createEmpty(GLenum type, int nvertices)
 {
 	// Clear old data, if any
 	clear();
 	nVertices_ = nvertices;
-	nVerticesPerObject_ = nvertsperobject;
+	nDefinedVertices_ = 0;
 	type_ = type;
 	vertices_ = new GLfloat[nVertices_*3];
-	scaledVertices_ = new GLfloat[nVertices_*3];
 	normals_ = new GLfloat[nVertices_*3];
 }
 
@@ -94,11 +90,10 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 
 	nVertices_ = 3*nstacks*nslices*2;
 	vertices_ = new GLfloat[nVertices_*3];
-	scaledVertices_ = new GLfloat[nVertices_*3];
 	normals_ = new GLfloat[nVertices_*3];
 	type_ = GL_TRIANGLES;
 	count = 0;
-	for (i = 0; i < nstacks; i++)
+	for (i = nstacks/2; i < nstacks; i++)
 	{
 		stack0 = PI * (-0.5 + (double) i / nstacks);
 		z0  = sin(stack0);
@@ -162,26 +157,85 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 	msg.exit("Primitive::createSphere");
 }
 
+// Create vertices of cross with specified width
+void Primitive::createCross(double width, int naxes)
+{
+	int i,j,count;
+	// Clear existing data first (if it exists)
+	clear();
+
+	nVertices_ = 6;
+	vertices_ = new GLfloat[nVertices_*3];
+	normals_ = new GLfloat[nVertices_*3];
+	type_ = GL_LINES;
+	count = 0;
+
+	for (i=0; i<max(1,naxes); ++i)
+	{
+		for (j=0; j<3; ++j)
+		{
+			vertices_[count] = (i == j ? width : 0.0);
+			normals_[count++] = (j == 0 ? 1.0 : 0.0);
+		}
+		for (j=0; j<3; ++j)
+		{
+			vertices_[count] = (i == j ? -width : 0.0);
+			normals_[count++] = (j == 0 ? 1.0 : 0.0);
+		}
+	}
+}
+
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL()
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(nVerticesPerObject_, GL_FLOAT, 0, vertices_);
+	glVertexPointer(3, GL_FLOAT, 0, vertices_);
 	glNormalPointer(GL_FLOAT, 0, normals_);
 	glDrawArrays(type_, 0, nVertices_);
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-// Send to OpenGL (i.e. render) with scaled vertex values
-void Primitive::sendScaledToGL(GLfloat scale)
+/*
+// Primitive Group
+*/
+
+// Constructor
+PrimitiveGroup::PrimitiveGroup()
 {
-	// Create scaled vertex array
-	for (int n=0; n<nVertices_*3; ++n) scaledVertices_[n] = vertices_[n] * scale;
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glVertexPointer(nVerticesPerObject_, GL_FLOAT, 0, scaledVertices_);
-	glNormalPointer(GL_FLOAT, 0, normals_);
-	glDrawArrays(type_, 0, nVertices_);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	primitives_ = NULL;
+	nPrimitives_ = 0;
+
+	clear();
+}
+
+PrimitiveGroup::~PrimitiveGroup()
+{
+	if (primitives_ != NULL) delete[] primitives_;
+	nPrimitives_ = 0;
+}
+
+// Clear old primitives array and allocate new one
+void PrimitiveGroup::clear()
+{
+	if (primitives_ != NULL) delete[] primitives_;
+	nPrimitives_ = prefs.levelsOfDetail();
+	primitives_ = new Primitive[nPrimitives_];
+}
+
+// Return primitive corresponding to level of detail specified
+Primitive &PrimitiveGroup::primitive(int lod)
+{
+	if ((lod < 0) || (lod >= nPrimitives_)) printf("Level of detail is out of range for PrimitiveGroup\n");
+	else return primitives_[lod];
+	return primitives_[0];
+}
+
+// Send to OpenGL (i.e. render) at specified level of detail
+void PrimitiveGroup::sendToGL(int lod)
+{
+	// Clamp lod to allowable range for this PrimitiveGroup
+	if (lod < 0) lod = 0;
+	else if (lod >= nPrimitives_) lod = nPrimitives_-1;
+	primitives_[lod].sendToGL();
 }

@@ -86,7 +86,6 @@ Atom::Atom()
 	selected_ = FALSE;
 	hidden_ = FALSE;
 	marked_ = FALSE;
-	screenRadius_ = 0.0;
 	style_ = StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
@@ -294,9 +293,7 @@ void Atom::print() const
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
 	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(element_));
 	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
-	msg.print(" Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
-	msg.print(" World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
-	msg.print("Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
+	msg.print(" Coordinates : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg.print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
 	msg.print("      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
 	msg.print("      Charge : %8.4f\n",charge_);
@@ -626,34 +623,6 @@ void Atom::decreaseId()
 int Atom::id() const
 {
 	return id_;
-}
-
-/*
-// Rendering Coordinates
-*/
-
-// World (GL Transformed) coordinates
-Vec3<double> &Atom::rWorld()
-{
-	return rWorld_;
-}
-
-// Screen (two-dimensional) coordinates
-Vec3<double> &Atom::rScreen()
-{
-	return rScreen_;
-}
-
-// Set the screen radius of the atom
-void Atom::setScreenRadius(double radius)
-{
-	screenRadius_ = radius;
-}
-
-// Return the screen radius of the atom
-double Atom::screenRadius() const
-{
-	return screenRadius_;
 }
 
 /*

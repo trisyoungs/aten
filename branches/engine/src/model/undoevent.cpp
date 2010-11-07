@@ -90,7 +90,6 @@ void AtomEvent::undo(Model *m)
 		msg.print(Messenger::Verbose,"Replaying atom creation - atom id = %i\n", id);
 		if (id == 0) i = m->addCopy(NULL, &atomData_);
 		else i = m->addCopy(modelatoms[id-1], &atomData_);
-		m->projectAtom(i);
 	}
 }
 

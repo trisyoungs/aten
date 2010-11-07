@@ -322,12 +322,12 @@ void Canvas::beginMode(Prefs::MouseButton button)
 						{
 							displayModel_->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, currentDrawDepth_));
+							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							displayModel_->endUndoState();
-							displayModel_->projectAtom(i);
+// 							displayModel_->projectAtom(i);  TGAY
 							atomClicked_ = i;
 						}
-						else currentDrawDepth_ = atomClicked_->rWorld().z;
+						else currentDrawDepth_ = gui.mainView.modelToWorld(atomClicked_->r(), displayModel_->viewMatrix()).z;
 						break;
 					default:
 						break;
@@ -435,6 +435,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 	// Finalize the current action on the model
 	msg.enter("Canvas::endMode");
 	double area, radius;
+	Vec4<double> screenr;
 	Atom *atoms[4], *i;
 	Bond *b;
 	Bond::BondType bt;
@@ -464,7 +465,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (UserAction::SelectAction):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndoState("Change Selection");
-			displayModel_->projectAll();
 			// If neither shift nor ctrl are not held down, deselect the current selection
 			if (!modded) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
@@ -499,7 +499,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
-				radius /= atomClicked_->screenRadius() * prefs.screenRadius(atomClicked_);
+				gui.mainView.modelToWorld(atomClicked_->r(), displayModel_->viewMatrix(), &screenr, prefs.screenRadius(atomClicked_));
+				radius /= screenr.w * prefs.screenRadius(atomClicked_);
 				displayModel_->selectRadial(atomClicked_,radius);
 			}
 			displayModel_->endUndoState();
@@ -543,9 +544,9 @@ void Canvas::endMode(Prefs::MouseButton button)
 			{
 				displayModel_->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_, currentDrawDepth_));
+				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				displayModel_->endUndoState();
-				displayModel_->projectAtom(i);
+// 				displayModel_->projectAtom(i); TGAY
 			}
 			gui.update(TRUE,FALSE,TRUE);
 			break;
@@ -558,8 +559,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_, currentDrawDepth_));
-				displayModel_->projectAtom(i);
+				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+// 				displayModel_->projectAtom(i);  TGAY
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -590,7 +591,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				displayModel_->beginUndoState("Draw Fragment");
-				frag->pasteOrientedModel(displayModel_->guideToModel(rMouseDown_, prefs.drawDepth()), displayModel_);
+				frag->pasteOrientedModel(displayModel_->guideToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), displayModel_);
 			}
 			displayModel_->endUndoState();
 			gui.update(TRUE,FALSE,TRUE);

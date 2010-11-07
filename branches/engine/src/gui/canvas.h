@@ -150,6 +150,10 @@ class Canvas
 	Model *displayModel() const;
 	// Render a scene based on the specified model
 	void renderModel(Model*);
+	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Mat4<double> &viewMatrix, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	// Project the specified world coordinates into 2D screen coords
+	Vec4<double> &worldToScreen(const Vec3<double>&, Mat4<double> &viewMatrix);
 
 
 	/*

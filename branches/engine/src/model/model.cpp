@@ -42,7 +42,6 @@ Model::Model()
 	// Camera / View / render
 	camera_.set(0.0,0.0,-10.0);
 	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
-	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	renderSource_ = Model::ModelSource;
 	renderFromVibration_ = FALSE;
@@ -183,7 +182,6 @@ void Model::clear()
 	changeLog.reset();
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
-	projectionPoint_ = -1;
 	zMatrixPoint_ = -1;
 }
 
@@ -366,7 +364,6 @@ void Model::printLogs()  const
 	changeLog.print();
 	msg.print("Expression point : %i\n", expressionPoint_);
 	msg.print("  Patterns point : %i\n", patternsPoint_);
-	msg.print("Projection point : %i\n", projectionPoint_);
 }
 
 // Print Forces

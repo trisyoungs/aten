@@ -275,7 +275,18 @@ void Canvas::renderModel(Model *source)
 	lastDisplayed_ = source;
 
 	msg.exit("RenderEngine::renderModel");
+}
 
+// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
+Vec3<double> &Canvas::modelToWorld(Vec3<double> &pos, Mat4<double> &viewMatrix, Vec4<double> *screenr, double screenradius)
+{
+	return engine_.modelToWorld(pos, viewMatrix, screenr, screenradius);
+}
+
+// Project the specified world coordinates into 2D screen coords
+Vec4<double> &Canvas::worldToScreen(const Vec3<double> &v, Mat4<double> &viewMatrix)
+{
+	return engine_.worldToScreen(v, viewMatrix);
 }
 
 // Set GL options

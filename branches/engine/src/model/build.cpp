@@ -68,7 +68,6 @@ void Model::hydrogenSatisfy(Atom *target)
 			else addHydrogens(i,numh,Atom::LinearHydrogen);
 		}
 	}
-	projectAll();
 	msg.exit("Model::hydrogenSatisfy");
 }
 
@@ -161,7 +160,6 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 		// Now add the atom at the position specified in newhpos.
 		newh = addAtom(1, newhpos + target->r());
 		bondAtoms(newh,target,Bond::Single);
-		projectAtom(newh);
 	}
 	msg.exit("Model::addHydrogens");
 }
