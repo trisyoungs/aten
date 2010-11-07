@@ -297,7 +297,7 @@ void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
 // 	gui.mainView.createLists();	LISTS ARE BROKEN
-	aten.currentModel()->renderSourceModel()->projectAll();
+// 	aten.currentModel()->renderSourceModel()->projectAll();
 	aten.currentModel()->renderSourceModel()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }

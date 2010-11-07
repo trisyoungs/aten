@@ -213,10 +213,10 @@ void Model::resetCamera(const Vec3<double> &newr)
 // Reset View
 void Model::resetView()
 {
-	return;  // BROKEN TGAY
 	// Reset the modelview matrix and the camera
 	msg.enter("Model::resetView");
-	static Vec3<double> newcam, newscreen;
+	Vec3<double> newcam;
+	Vec4<double> screenr;
 	Atom *i, target;
 	bool done = FALSE;
 	double z, largest = 0.0;
@@ -244,9 +244,9 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-				projectAtom(&target);
-				z = target.rWorld().z;
-			} while (z > -5.0);
+// 				gui.mainView.projectAtom(&target, viewMatrix());
+// 				z = target.rWorld().z;
+			} while (gui.mainView.modelToWorld(target.r(), viewMatrix()).z > -5.0);
 		}
 		else
 		{
@@ -255,11 +255,11 @@ void Model::resetView()
 				// Project our local atom and grab the z screen coordinate
 				adjustCamera(0.0,0.0,-1.0,0.0);
 				calculateViewMatrix();
-				projectAtom(&target);
+				gui.mainView.modelToWorld(target.r(), viewMatrix(), &screenr);
 				done = TRUE;
-				if ((target.rScreen().x < 0.0) || (target.rScreen().x > gui.mainView.width())) done = FALSE;
-				if ((target.rScreen().y < 0.0) || (target.rScreen().y > gui.mainView.height())) done = FALSE;
-				if (target.rScreen().z < 0.0) done = FALSE;
+				if ((screenr.x < 0.0) || (screenr.x > gui.mainView.width())) done = FALSE;
+				if ((screenr.y < 0.0) || (screenr.y > gui.mainView.height())) done = FALSE;
+				if (screenr.z < 0.0) done = FALSE;
 			} while (!done);
 		}
 	}
@@ -352,169 +352,7 @@ void Model::calculateViewMatrix()
 // Return current view matrix
 Mat4<double> &Model::viewMatrix()
 {
-	return viewMatrix_;
-}
-
-// Project the coordinates of all atoms in the model
-void Model::projectAll()
-{
-	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
-	msg.enter("Model::projectAll");
-	if (gui.mainView.isValid())
-	{
-		if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual)))
-		{
-			if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
-			projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual);
-		}
-	}
-	msg.exit("Model::projectAll");
-}
-
-// Project the coordinates of all selected atoms in the model
-void Model::projectSelection()
-{
-	msg.enter("Model::projectSelection");
-	if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) projectAtom(i);
-	msg.exit("Model::projectSelection");
-}
-
-// Project the coordinates of a single atom in the model
-void Model::projectAtom(Atom *i)
-{
-	// Transform the model coordinates of specified atom into world GL and 2D screen coordinates
-	return;
-	if (!gui.mainView.isValid()) return;
-	static Vec4<double> modelr, screenr, worldr;
-	static double srx, sry, srz;
-	static GLint *vmat;
-	// Projection formula is : worldr = P x M x modelr 
-	modelr.set(i->r(), 1.0);
-	// We also need to subtract the cell centre coordinate
-	modelr -= cell_.centre();
-	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	worldr = viewMatrix_ * modelr;
-	i->rWorld().set(worldr.x, worldr.y, worldr.z);
-	// Calculate 2D screen coordinates - Multiply world coordinates by P
-// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
-	screenr.x /= screenr.w;
-	screenr.y /= screenr.w;
-	srz = screenr.z / screenr.w;
-// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
-	srx = vmat[0] + vmat[2]*(screenr.x+1)*0.5;
-	sry = vmat[1] + vmat[3]*(screenr.y+1)*0.5;
-	i->rScreen().set(srx,sry,srz);
-	// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
-	worldr.x += prefs.screenRadius(i);
-// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
-	screenr.x /= screenr.w;
-	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)*0.5) - srx));
-}
-
-// Project given model coordinates into screen coordinates
-Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
-{
-	msg.enter("Model::modelToScreen");
-	static Vec4<double> modelr, screenr, worldr;
-	static Vec3<double> result;
-	if (!gui.mainView.isValid())
-	{
-		msg.exit("Model::modelToScreen");
-		result.zero();
-		return result;
-	}
-	static GLint *vmat;
-	// Projection formula is : worldr = P x M x modelr 
-	modelr.set(pos, 1.0);
-	// We also need to subtract the cell centre coordinate
-	modelr -= cell_.centre();
-	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
-	worldr = viewMatrix_ * modelr;
-	// Calculate 2D screen coordinates - Multiply world coordinates by P
-// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
-	screenr.x /= screenr.w;
-	screenr.y /= screenr.w;
-// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
-	result.set( vmat[0] + vmat[2]*(screenr.x+1)*0.5, vmat[1] + vmat[3]*(screenr.y+1)*0.5, screenr.z / screenr.w);
-	msg.exit("Model::modelToScreen");
-	return result;
-}
-
-// Project the supplied world coordinates into screen coordinates.
-Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
-{
-	// The returned vec4's 'w' component is the unit 'radius' at that point.
-	msg.enter("Model::worldToScreen");
-	static Vec4<double> modelr, screenr, worldr, result;
-	static double x1,x2,radius;
-	static GLint *vmat;
-	screenr.zero();
-	if (!gui.mainView.isValid() )
-	{
-		msg.exit("Model::worldToScreen");
-		return screenr;
-	}
-	calculateViewMatrix();
-	// Projection formula is : worldr = P x M x modelr
-	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
-	modelr.set(v.x, v.y, v.z, 1.0);
-	worldr = viewMatrix_ * modelr;
-	//viewMatrix_.print();
-	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
-// 	screenr = gui.mainView.PMAT * worldr;	PROJECTION IS BROKEN
-	screenr.x /= screenr.w;
-	screenr.y /= screenr.w;
-	result = screenr;
-// 	vmat = gui.mainView.VMAT;	PROJECTION IS BROKEN
-	x1 = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
-	worldr.x += 1.0;
-// 	screenr = gui.mainView.PMAT * worldr;   PROJECTION IS BROKEN
-	screenr.x /= screenr.w;
-	x2 = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
-	radius = fabs(x2 - x1);
-	// Store info and return
-	result.w = radius;
-	msg.exit("Model::worldToScreen");
-	return result;
-}
-
-// Convert screen coordinates into modelspace coordinates
-Vec3<double> Model::guideToModel(const Vec3<double> &v, double drawdepth)
-{
-	return guideToModel(v.x, v.y, drawdepth);
-}
-Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
-{
-	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
-	msg.enter("Model::guideToModel");
-	static Vec4<double> guidepoint;
-	static Vec3<double> newpoint;
-	static Mat4<double> rotmat;
-	double radius;
-	drawdepth = -camera_.z + drawdepth;
-// 	printf("DEPTH = %f, cameraZ= %f\n",drawdepth, camera_.z);
-	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(camera_.x, camera_.y, drawdepth);
-	//printf("newpoint1 "); newpoint.print();
-	rotmat = rotationMatrix_;
-	rotmat.invert();
-	newpoint *= rotmat;
-	//printf("newpoint2 "); newpoint.print();
-	guidepoint = worldToScreen(newpoint);
-	//printf("guidepoint "); guidepoint.print();
-	radius = guidepoint.w;
-	// Now, calculate the position of the clicked point on the guide
-	newpoint.x = sx - (gui.mainView.width() / 2.0 );
-	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
-	newpoint /= radius;
-	newpoint.z = drawdepth + camera_.z;
-	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
-	newpoint *= viewMatrixInverse_;
-	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
-	newpoint += cell_.centre();
-// 	newpoint.print();
-	msg.exit("Model::guideToModel");
-	return newpoint;
+	return (parent_ == NULL ? viewMatrix_ : parent_->viewMatrix());
 }
 
 // Return the camera position vector
@@ -561,4 +399,39 @@ double Model::drawPixelWidth(double drawdepth)
 	static Vec3<double> r;
 	r = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2, drawdepth) - guideToModel(gui.mainView.width()/2, gui.mainView.height()/2, drawdepth);
 	return r.magnitude();
+}
+
+// Convert screen coordinates into modelspace coordinates
+Vec3<double> Model::guideToModel(double sx, double sy, double drawdepth)
+{
+	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
+	msg.enter("Model::guideToModel");
+	static Vec4<double> guidepoint;
+	static Vec3<double> newpoint;
+	static Mat4<double> rotmat;
+	double radius;
+	drawdepth = -camera_.z + drawdepth;
+//      printf("DEPTH = %f, cameraZ= %f\n",drawdepth, camera_.z);
+	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
+	newpoint.set(camera_.x, camera_.y, drawdepth);
+	//printf("newpoint1 "); newpoint.print();
+	rotmat = rotationMatrix_;
+	rotmat.invert();
+	newpoint *= rotmat;
+	//printf("newpoint2 "); newpoint.print();
+	guidepoint = gui.mainView.worldToScreen(newpoint, viewMatrix());
+	//printf("guidepoint "); guidepoint.print();
+	radius = guidepoint.w;
+	// Now, calculate the position of the clicked point on the guide
+	newpoint.x = sx - (gui.mainView.width() / 2.0 );
+	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
+	newpoint /= radius;
+	newpoint.z = drawdepth + camera_.z;
+	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
+	newpoint *= viewMatrixInverse_;
+	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
+	newpoint += cell_.centre();
+//      newpoint.print();
+	msg.exit("Model::guideToModel");
+	return newpoint;
 }

@@ -34,7 +34,7 @@ class Primitive
 
 	private:
 	// Primitive's vertex and scaled vertex array
-	GLfloat *vertices_, *scaledVertices_;
+	GLfloat *vertices_;
 	// Primitive's normal array
 	GLfloat *normals_;
 	// Number of vertices in primitive
@@ -43,22 +43,43 @@ class Primitive
 	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
-	// Number of vertices per GL object
-	int nVerticesPerObject_;
 
 	public:
 	// Clear existing data
 	void clear();
 	// Create empty data arrays, setting type specified
-	void createEmpty(GLenum type, int nvertsperobject, int nvertices);
+	void createEmpty(GLenum type, int nvertices);
 	// Define next vertex and normal
 	void addVertexAndNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
+	// Create vertices of cross with specified width
+	void createCross(double width, int naxes);
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
-	// Send to OpenGL (i.e. render) with all vertex values scaled
-	void sendScaledToGL(GLfloat scale);
+};
+
+// Primitive Group
+class PrimitiveGroup
+{
+	public:
+	// Constructor
+	PrimitiveGroup();
+	~PrimitiveGroup();
+
+	private:
+	// Array of Primitives, corresponding to different levels of detail
+	Primitive *primitives_;
+	// Number of primitives in array (copied from Prefs)
+	int nPrimitives_;
+
+	public:
+	// Clear old primitives array and allocate new one
+	void clear();
+	// Return primitive corresponding to level of detail specified
+	Primitive &primitive(int lod);
+	// Send to OpenGL (i.e. render) at specified level of detail
+	void sendToGL(int lod);
 };
 
 #endif

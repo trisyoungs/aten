@@ -250,28 +250,6 @@ class Atom
 
 
 	/*
-	// Rendering Coordinates
-	*/
-	private:
-	// 2D coordinates (screen) and 2D depth
-	Vec3<double> rScreen_;
-	// Screen radius for selection
-	double screenRadius_;
-	// World (GL) coordinates, transformed by camera and rotation matrices
-	Vec3<double> rWorld_;
-
-	public:
-	// World (GL Transformed) coordinates
-	Vec3<double> &rWorld();
-	// Screen (two-dimensional) coordinates
-	Vec3<double> &rScreen();
-	// Set the screen radius of the atom
-	void setScreenRadius(double radius);
-	// Return the screen radius of the atom
-	double screenRadius() const;
-
-
-	/*
 	// Rendering
 	*/
 	protected:

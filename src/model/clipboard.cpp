@@ -251,7 +251,6 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 		if (selectpasted) m->selectAtom(pastedi);
 		// Store reference to the newly-pasted atom
 		i->setAtomPointer(pastedi);
-		m->projectAtom(pastedi);
 		aten.updateProgress(++count);
 	}
 	aten.cancelProgress();
@@ -279,8 +278,6 @@ void Clipboard::pasteToPattern(Model *m, Pattern *p)
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
-	// Project the newly-pasted (and currently selected) atoms
-	m->projectSelection();
 	msg.exit("Clipboard::pasteToPattern");
 }
 
@@ -331,8 +328,6 @@ void Clipboard::pasteToModel(Model *m, Vec3<double> t)
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
-	// Project the newly-pasted (and currently selected) atoms
-	m->projectSelection();
 	msg.exit("Clipboard::pasteToModel[translated]");
 }
 

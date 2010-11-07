@@ -31,6 +31,10 @@ RenderEngine::RenderEngine()
 	// Type
 	type_ = NoFilter;
 
+	// Primitives
+	scaledAtom_ = new PrimitiveGroup[elements().nElements()];
+	selectedScaledAtom_ = new PrimitiveGroup[elements().nElements()];
+
 	createPrimitives();
 }
 
@@ -42,17 +46,27 @@ RenderEngine::RenderEngine()
 void RenderEngine::createPrimitives()
 {
 	msg.enter("RenderEngine::createPrimitives");
-	// Atom Styles
-	atomStyle_[Atom::StickStyle].createEmpty(GL_LINES, 2, 6);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(-0.5,0.0,0.0,1.0,0.0,0.0);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(0.5,0.0,0.0,1.0,0.0,0.0);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(0.0,-0.5,0.0,1.0,0.0,0.0);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(0.0,0.5,0.0,1.0,0.0,0.0);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(0.0,0.0,-0.5,1.0,0.0,0.0);
-	atomStyle_[Atom::StickStyle].addVertexAndNormal(0.0,0.0,0.5,1.0,0.0,0.0);
-	atomStyle_[Atom::TubeStyle].createSphere(prefs.atomStyleRadius(Atom::TubeStyle), prefs.atomDetail(), prefs.atomDetail());
-	atomStyle_[Atom::SphereStyle].createSphere(prefs.atomStyleRadius(Atom::SphereStyle), prefs.atomDetail(), prefs.atomDetail());
-	atomStyle_[Atom::ScaledStyle].createSphere(1.0, prefs.atomDetail(), prefs.atomDetail());
+	double radius;
+	int lod, nstacks, nslices;
+	// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
+	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
+	{
+		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
+		nstacks = max(2,(int) (prefs.atomDetail()*(1.0-lod*0.2)));
+		nslices = max(2,(int) (prefs.atomDetail()*(1.0-lod*0.2)));
+		atom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle), nstacks, nslices);
+		atom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle), nstacks, nslices);
+		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
+		selectedAtom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), nstacks, nslices);
+		// Atom Styles (Atom::ScaledStyle)
+		for (int n = 0; n<elements().nElements(); ++n)
+		{
+			radius = prefs.atomStyleRadius(Atom::ScaledStyle) * elements().el[n].atomicRadius;
+			scaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
+			radius *= prefs.selectionScale();
+			selectedScaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
+		}
+	}
 	msg.exit("RenderEngine::createPrimitives");
 }
 
@@ -97,9 +111,85 @@ void RenderEngine::setTransformationMatrix(Mat4<double> &mat)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	transformationMatrix_ = mat;
-	double m[16];
-	transformationMatrix_.copyColumnMajor(m);
-	glMultMatrixd(m);
+// 	double m[16];
+// 	transformationMatrix_.copyColumnMajor(m);
+// 	glMultMatrixd(m);
+}
+
+// Project given model coordinates into world coordinates (and screen coordinates if requested)
+Vec3<double> &RenderEngine::modelToWorld(Vec3<double> &modelr, Mat4<double> &viewMatrix, Vec4<double> *screenr, double screenradius)
+{
+	msg.enter("RenderEngine::modelToWorld");
+	static Vec3<double> worldr;
+	Vec4<double> pos, temp, tempscreen;
+// 	if (!gui.mainView.isValid())
+// 	{
+// 		msg.exit("RenderEngine::modelToWorld");
+// 		result.zero();
+// 		return result;
+// 	}
+	// Projection formula is : worldr = P x M x modelr
+	pos.set(modelr, 1.0);
+	// We also need to subtract the cell centre coordinate
+// 	pos -= cell_.centre();	BROKEN
+	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
+	temp = viewMatrix * pos;
+	worldr.set(temp.x, temp.y, temp.z);
+	// Calculate 2D screen coordinates - Multiply world coordinates by P
+	if (screenr != NULL)
+	{
+		*screenr = projectionMatrix_ * temp;
+		screenr->x /= screenr->w;
+		screenr->y /= screenr->w;
+		screenr->x = viewportMatrix_[0] + viewportMatrix_[2]*(screenr->x+1)*0.5;
+		screenr->y = viewportMatrix_[1] + viewportMatrix_[3]*(screenr->y+1)*0.5;
+		screenr->z = screenr->z / screenr->w;
+		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
+		if (screenradius > 0.0)
+		{
+			temp.x += screenradius;
+			tempscreen = projectionMatrix_ * temp;
+			tempscreen.x /= tempscreen.w;
+			screenr->w = fabs( (viewportMatrix_[0] + viewportMatrix_[2]*(tempscreen.x+1)*0.5) - screenr->x);
+		}
+	}
+	msg.exit("RenderEngine::modelToWorld");
+	return worldr;
+}
+
+// Project the specified world coordinates into 2D screen coords
+Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &viewMatrix)
+{
+	// The returned vec4's 'w' component is the unit 'radius' at that point.
+	msg.enter("RenderEngine::worldToScreen");
+	static Vec4<double> modelr, screenr, worldr, result;
+	static double x1,x2,radius;
+	screenr.zero();
+// 	if (!gui.mainView.isValid() )
+// 	{
+// 		msg.exit("RenderEngine::worldToScreen");
+// 		return screenr;
+// 	}
+	// Projection formula is : worldr = P x M x modelr
+	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
+	modelr.set(v.x, v.y, v.z, 1.0);
+	worldr = viewMatrix * modelr;
+	//viewMatrix_.print();
+	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
+	screenr = projectionMatrix_ * worldr;
+	screenr.x /= screenr.w;
+	screenr.y /= screenr.w;
+	result = screenr;
+	x1 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
+	worldr.x += 1.0;
+	screenr = projectionMatrix_ * worldr;
+	screenr.x /= screenr.w;
+	x2 = viewportMatrix_[0] + viewportMatrix_[2]*(screenr.x+1)/2.0;
+	radius = fabs(x2 - x1);
+	// Store info and return
+	result.w = radius;
+	msg.exit("RenderEngine::worldToScreen");
+	return result;
 }
 
 /*
@@ -107,9 +197,8 @@ void RenderEngine::setTransformationMatrix(Mat4<double> &mat)
 */
 
 // Render primitive at requested local position in specified colour, returning projected position
-Vec3<double> &RenderEngine::renderPrimitive(Primitive *primitive, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse)
+Vec3<double> &RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse)
 {
-	static Vec3<double> projected;
 	double alphadelta = 1.0-ambient[4];
 	// Filter type determines what to do here...
 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
@@ -118,33 +207,8 @@ Vec3<double> &RenderEngine::renderPrimitive(Primitive *primitive, Vec3<double> p
 		glTranslated(pos.x, pos.y, pos.z);
 		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, ambient);
-		primitive->sendToGL();
+		pg.sendToGL(lod);
 		glTranslated(-pos.x, -pos.y, -pos.z);
-		// Calculate projected coordinate
-		projected = transformationMatrix_ * pos;
-	}
-	else
-	{
-		// Store triangulation in local polygon list
-	}
-}
-
-// Render scaled primitive at requested local position in specified colour, returning projected position
-Vec3<double> &RenderEngine::renderPrimitiveScaled(Primitive *prmtv, GLfloat scale, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse)
-{
-	static Vec3<double> projected;
-	double alphadelta = 1.0-ambient[4];
-	// Filter type determines what to do here...
-	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
-	{
-		// Pass through direct to GL
-		glTranslated(pos.x, pos.y, pos.z);
-		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-		prmtv->sendScaledToGL(scale);
-		glTranslated(-pos.x, -pos.y, -pos.z);
-		// Calculate projected coordinate
-		projected = transformationMatrix_ * pos;
 	}
 	else
 	{
@@ -156,6 +220,8 @@ Vec3<double> &RenderEngine::renderPrimitiveScaled(Primitive *prmtv, GLfloat scal
 void RenderEngine::renderModel(Model *source)
 {
 	GLfloat ambient[4], diffuse[4], scaledradius;
+	Vec3<double> pos;
+	int lod;
 
 	// Set transformation matrix
 	setTransformationMatrix(source->viewMatrix());
@@ -170,6 +236,10 @@ void RenderEngine::renderModel(Model *source)
 	{
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
+		// Calculate world position and level of detail
+		pos = transformationMatrix_ * i->r();
+		lod = -pos.z / prefs.levelOfDetailWidth();
+// 		printf("lod = %i, clipnear = %f, pos.z = %f\n", lod, prefs.clipNear(), pos.z);
 		// Select colour
 		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambient);
 		else switch (scheme)
@@ -202,12 +272,29 @@ void RenderEngine::renderModel(Model *source)
 		diffuse[1] = ambient[1] * 0.75;
 		diffuse[2] = ambient[2] * 0.75;
 		diffuse[3] = ambient[3];
-		if (style != Atom::IndividualStyle)
+		if (style == Atom::IndividualStyle) style = i->style();
+		switch (style)
 		{
-			if (style != Atom::ScaledStyle) renderPrimitive(&atomStyle_[style], i->r(), ambient, diffuse);
-			else renderPrimitiveScaled(&atomStyle_[Atom::ScaledStyle], scaledradius*elements().atomicRadius(i), i->r(), ambient, diffuse);
+			case (Atom::StickStyle):
+				renderPrimitive(atom_[style], lod, pos, ambient, diffuse);
+				break;
+			case (Atom::TubeStyle):
+			case (Atom::SphereStyle):
+				renderPrimitive(atom_[style], lod, pos, ambient, diffuse);
+				if (i->isSelected())
+				{
+					ambient[3] = 0.5;
+					renderPrimitive(selectedAtom_[style], lod, pos, ambient, diffuse);
+				}
+				break;
+			case (Atom::ScaledStyle):
+				renderPrimitive(scaledAtom_[i->element()], lod, pos, ambient, diffuse);
+				if (i->isSelected())
+				{
+					ambient[3] = 0.5;
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, pos, ambient, diffuse);
+				}
+				break;
 		}
-		else if (i->style() != Atom::ScaledStyle) renderPrimitive(&atomStyle_[i->style()], i->r(), ambient, diffuse);
-		else renderPrimitiveScaled(&atomStyle_[Atom::ScaledStyle], scaledradius*elements().atomicRadius(i), i->r(), ambient, diffuse);
 	}
 }

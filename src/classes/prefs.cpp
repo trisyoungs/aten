@@ -210,6 +210,8 @@ Prefs::Prefs()
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
 	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
 	renderStyle_ = Atom::StickStyle;
+	levelsOfDetail_ = 3;
+	levelOfDetailWidth_ = 10;
 
 	// Build
 	showGuide_ = FALSE;
@@ -512,6 +514,30 @@ void Prefs::setRepeatCellsNeg(int i, int r)
 int Prefs::repeatCellsNeg(int i) const
 {
 	return repeatCellsNeg_.get(i);
+}
+
+// Set number of levels of detail for rendering primitives
+void Prefs::setLevelsOfDetail(int n)
+{
+	levelsOfDetail_ = n;
+}
+
+// Return number of levels of detail for rendering primitives
+int Prefs::levelsOfDetail()
+{
+	return levelsOfDetail_;
+}
+
+// Set level of detail slice 'width'
+void Prefs::setLevelOfDetailWidth(double width)
+{
+	levelOfDetailWidth_ = width;
+}
+
+// Return level of detail slice 'width'
+int Prefs::levelOfDetailWidth()
+{
+	return levelOfDetailWidth_;
 }
 
 double Prefs::screenRadius(Atom *i) const
