@@ -93,7 +93,7 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 	normals_ = new GLfloat[nVertices_*3];
 	type_ = GL_TRIANGLES;
 	count = 0;
-	for (i = nstacks/2; i < nstacks; i++)
+	for (i = 0; i < nstacks; i++)
 	{
 		stack0 = PI * (-0.5 + (double) i / nstacks);
 		z0  = sin(stack0);
@@ -114,7 +114,16 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 			y1 = sin(slice1);
 
 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			vertices_[count] = x0 * zr0 * radius;
+			addVertexAndNormal(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
+			addVertexAndNormal(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+			addVertexAndNormal(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+
+			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			addVertexAndNormal(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+			addVertexAndNormal(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+			addVertexAndNormal(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
+
+/*			vertices_[count] = x0 * zr0 * radius;
 			normals_[count++] = x0 * zr0;
 			vertices_[count] = y0 * zr0 * radius;
 			normals_[count++] = y0 * zr0;
@@ -150,27 +159,78 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 			vertices_[count] = y1 * zr1 * radius;
 			normals_[count++] = y1 * zr1;
 			vertices_[count] = z1 * radius;
-			normals_[count++] = z1;
+			normals_[count++] = z1; */
 			if (count > nVertices_*3) printf("MISCALCULATED!!\n");
 		}
 	}
 	msg.exit("Primitive::createSphere");
 }
 
-// Create vertices of cross with specified width
-void Primitive::createCross(double width, int naxes)
+// Create vertices of cylinder with specified radii, length, and quality
+void Primitive::createCylinder(double startradius, double endradius, double length, int nstacks, int nslices)
 {
-	int i,j,count;
+	msg.enter("Primitive::createCylinder");
+	int i, j, count;
+	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1, deltaz, deltar;
+
 	// Clear existing data first (if it exists)
 	clear();
 
-	nVertices_ = 6;
+	nVertices_ = 3*nstacks*nslices*2;
+	vertices_ = new GLfloat[nVertices_*3];
+	normals_ = new GLfloat[nVertices_*3];
+	type_ = GL_TRIANGLES;
+	count = 0;
+	deltaz = length / nstacks;
+	deltar = (endradius-startradius) / nstacks;
+	for (i = 0; i < nstacks; i++)
+	{
+		stack0 = PI * (-0.5 + (double) i / nstacks);
+		z0  = i*deltaz;
+		zr0 = startradius - i*deltar;
+
+		stack1 = PI * (-0.5 + (double) (i+1) / nstacks);
+		z1 = (i+1)*deltaz;
+		zr1 = startradius - (i+1)*deltar;;
+
+		for (j = 0; j < nslices; j++)
+		{
+			slice0 = 2 * PI * (double) j / nslices;
+			x0 = cos(slice0);
+			y0 = sin(slice0);
+
+			slice1 = 2 * PI * (double) (j+1) / nslices;
+			x1 = cos(slice1);
+			y1 = sin(slice1);
+
+			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			addVertexAndNormal(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, z0);
+			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, z1);
+			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, z0);
+
+			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, z1);
+			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, z0);
+			addVertexAndNormal(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, z1);
+		}
+	}
+	msg.exit("Primitive::createCylinder");
+}
+
+// Create vertices of cross with specified width
+void Primitive::createCross(double width, int naxes)
+{
+	int i,j,count, limit = max(1,naxes);
+	// Clear existing data first (if it exists)
+	clear();
+
+	nVertices_ = 2*limit;
 	vertices_ = new GLfloat[nVertices_*3];
 	normals_ = new GLfloat[nVertices_*3];
 	type_ = GL_LINES;
 	count = 0;
 
-	for (i=0; i<max(1,naxes); ++i)
+	for (i=0; i<limit; ++i)
 	{
 		for (j=0; j<3; ++j)
 		{
@@ -194,6 +254,49 @@ void Primitive::sendToGL()
 	glNormalPointer(GL_FLOAT, 0, normals_);
 	glDrawArrays(type_, 0, nVertices_);
 	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+/*
+// Primitive Info
+*/
+
+// Constructor
+PrimitiveInfo::PrimitiveInfo()
+{
+	// Private variables
+	primitive_ = NULL;
+	transformDefined_ = FALSE;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}
+
+// Set primitive info data
+void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords)
+{
+	primitive_ = prim;
+	localCoords_ = coords;
+	for (int n=0; n<4; ++n)
+	{
+		ambient_[n] = ambient[n];
+		diffuse_[n] = diffuse[n];
+	}
+}
+
+// Set primitive info data, including local rotation
+void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, GLdouble *transform)
+{
+	primitive_ = prim;
+	localCoords_ = coords;
+	transformDefined_ = TRUE;
+	int n;
+	for (n=0; n<16; ++n) localTransform_[n] = transform[n];
+	for (n=0; n<4; ++n)
+	{
+		ambient_[n] = ambient[n];
+		diffuse_[n] = diffuse[n];
+	}
 }
 
 /*

@@ -48,12 +48,13 @@ void RenderEngine::createPrimitives()
 	msg.enter("RenderEngine::createPrimitives");
 	double radius;
 	int lod, nstacks, nslices;
-	// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
+	// Loop over levels of detail
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
 	{
+		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
 		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
-		nstacks = max(2,(int) (prefs.atomDetail()*(1.0-lod*0.2)));
-		nslices = max(2,(int) (prefs.atomDetail()*(1.0-lod*0.2)));
+		nstacks = max(3,(int) (prefs.atomDetail()*(1.0-lod*0.2)*0.75));
+		nslices = max(3,(int) (prefs.atomDetail()*(1.0-lod*0.2)*1.5));
 		atom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle), nstacks, nslices);
 		atom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle), nstacks, nslices);
 		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
@@ -66,6 +67,11 @@ void RenderEngine::createPrimitives()
 			radius *= prefs.selectionScale();
 			selectedScaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
 		}
+		// Bond Styles (all)
+		bond_[Atom::StickStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
+		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
+		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), 1.0, nstacks, nslices);
+		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), 1.0, nstacks, nslices);
 	}
 	msg.exit("RenderEngine::createPrimitives");
 }
@@ -111,9 +117,9 @@ void RenderEngine::setTransformationMatrix(Mat4<double> &mat)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	transformationMatrix_ = mat;
-// 	double m[16];
-// 	transformationMatrix_.copyColumnMajor(m);
-// 	glMultMatrixd(m);
+	double m[16];
+	transformationMatrix_.copyColumnMajor(m);
+	glMultMatrixd(m);
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
@@ -197,22 +203,40 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &v
 */
 
 // Render primitive at requested local position in specified colour, returning projected position
-Vec3<double> &RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &pos)
 {
 	double alphadelta = 1.0-ambient[4];
 	// Filter type determines what to do here...
 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
 	{
 		// Pass through direct to GL
-		glTranslated(pos.x, pos.y, pos.z);
 		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, ambient);
 		pg.sendToGL(lod);
-		glTranslated(-pos.x, -pos.y, -pos.z);
 	}
 	else
 	{
-		// Store triangulation in local polygon list
+		// Add primitive info to local buffer (it will be rednered later
+		
+	}
+}
+
+// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, GLdouble *transform)
+{
+	double alphadelta = 1.0-ambient[4];
+	// Filter type determines what to do here...
+	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
+	{
+		// Pass through direct to GL
+		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, ambient);
+		pg.sendToGL(lod);
+	}
+	else
+	{
+		// Add primitive info to local buffer (it will be rednered later
+		
 	}
 }
 
@@ -220,26 +244,39 @@ Vec3<double> &RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, Vec3<do
 void RenderEngine::renderModel(Model *source)
 {
 	GLfloat ambient[4], diffuse[4], scaledradius;
-	Vec3<double> pos;
-	int lod;
+	int lod, id_i;
+	double z, phi, rij;
+	Atom *i, *j;
+	Vec3<double> pos, v;
+	Vec4<double> transformZ;
+	GLdouble transform[16];
+	Refitem<Bond,int> *ri;
 
 	// Set transformation matrix
 	setTransformationMatrix(source->viewMatrix());
+	transformZ = transformationMatrix_.z();
 
 	// Grab style values....
 	Prefs::ColouringScheme scheme = prefs.colourScheme();
 	Atom::DrawStyle style = prefs.renderStyle();
 	scaledradius = prefs.atomStyleRadius(Atom::ScaledStyle);
 
-	// Atoms
-	for (Atom *i = source->atoms(); i != NULL; i = i->next)
+	// Atoms and Bonds
+	for (i = source->atoms(); i != NULL; i = i->next)
 	{
 		// Skip hidden atoms
 		if (i->isHidden()) continue;
-		// Calculate world position and level of detail
-		pos = transformationMatrix_ * i->r();
-		lod = -pos.z / prefs.levelOfDetailWidth();
-// 		printf("lod = %i, clipnear = %f, pos.z = %f\n", lod, prefs.clipNear(), pos.z);
+
+		// Grab atom coordinate - we'll need it a lot
+		pos = i->r();
+		// Calculate projected Z coordinate and level of detail
+		z = pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w;
+		lod = int(-z / prefs.levelOfDetailWidth());
+		printf("lod = %i, clipnear = %f, pos.z = %f\n", lod, prefs.clipNear(), z);
+
+		// Move to local atom position
+		glTranslated(pos.x, pos.y, pos.z);
+
 		// Select colour
 		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambient);
 		else switch (scheme)
@@ -276,25 +313,77 @@ void RenderEngine::renderModel(Model *source)
 		switch (style)
 		{
 			case (Atom::StickStyle):
-				renderPrimitive(atom_[style], lod, pos, ambient, diffuse);
+				renderPrimitive(atom_[style], lod, ambient, diffuse, pos);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[style], lod, pos, ambient, diffuse);
+				renderPrimitive(atom_[style], lod, ambient, diffuse, pos);
 				if (i->isSelected())
 				{
 					ambient[3] = 0.5;
-					renderPrimitive(selectedAtom_[style], lod, pos, ambient, diffuse);
+					renderPrimitive(selectedAtom_[style], lod, ambient, diffuse, pos);
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, pos, ambient, diffuse);
+				renderPrimitive(scaledAtom_[i->element()], lod, ambient, diffuse, pos);
 				if (i->isSelected())
 				{
 					ambient[3] = 0.5;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, pos, ambient, diffuse);
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, ambient, diffuse, pos);
 				}
 				break;
 		}
+		// Bonds
+		id_i = i->id();
+		for (ri = i->bonds(); ri != NULL; ri = ri->next)
+		{
+			j = ri->item->partner(i);
+			if (j->id() > id_i) continue;
+			v = j->r() - i->r();
+			rij = v.magnitude();
+			// Calculate angle out of XZ plane
+			phi = DEGRAD * acos(v.z/rij);
+			// Special case where the bond is exactly in the XY plane.
+			glPushMatrix();
+			if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
+			else glRotated(phi, -v.y/rij , v.x/rij, 0.0);
+		glGetDoublev(GL_MODELVIEW_MATRIX, m);
+		printf(" %f  %f  %f  %f\n", m[0], m[1], m[2], m[3]);
+		printf(" %f  %f  %f  %f\n", m[4], m[5], m[6], m[7]);
+		printf(" %f  %f  %f  %f\n", m[8], m[9], m[10], m[11]);
+		printf(" %f  %f  %f  %f\n", m[12], m[13], m[14], m[15]);
+			glScaled(1.0,1.0,rij);
+		glGetDoublev(GL_MODELVIEW_MATRIX, m);
+		printf(" %f  %f  %f  %f\n", m[0], m[1], m[2], m[3]);
+		printf(" %f  %f  %f  %f\n", m[4], m[5], m[6], m[7]);
+		printf(" %f  %f  %f  %f\n", m[8], m[9], m[10], m[11]);
+		printf(" %f  %f  %f  %f\n", m[12], m[13], m[14], m[15]);
+
+			glPopMatrix();
+
+			glPushMatrix();
+			if ((180.0 - phi) < 0.0001) transform.createRotationX(phi);
+			else transform.createRotationAxis(-v.y/rij , v.x/rij, 0.0, phi);
+			transform.print();
+// 			glScaled(1.0,1.0,rij);
+// 			glCallList(glob(TubeArrowGlob));
+			glGetDoublev(GL_MODELVIEW_MATRIX, m);
+		printf(" %f  %f  %f  %f\n", m[0], m[1], m[2], m[3]);
+		printf(" %f  %f  %f  %f\n", m[4], m[5], m[6], m[7]);
+		printf(" %f  %f  %f  %f\n", m[8], m[9], m[10], m[11]);
+		printf(" %f  %f  %f  %f\n", m[12], m[13], m[14], m[15]);
+	transform.copyColumnMajor(m);
+	glMultMatrixd(m);
+			glGetDoublev(GL_MODELVIEW_MATRIX, m);
+		printf(" %f  %f  %f  %f\n", m[0], m[1], m[2], m[3]);
+		printf(" %f  %f  %f  %f\n", m[4], m[5], m[6], m[7]);
+		printf(" %f  %f  %f  %f\n", m[8], m[9], m[10], m[11]);
+		printf(" %f  %f  %f  %f\n", m[12], m[13], m[14], m[15]);
+			renderPrimitive(bond_[Atom::SphereStyle], lod, ambient, diffuse, pos, transform);
+			glPopMatrix();
+		}
+
+		// Move back to 'zero' position
+		glTranslated(-pos.x, -pos.y, -pos.z);
 	}
 }

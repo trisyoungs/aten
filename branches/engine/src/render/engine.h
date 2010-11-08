@@ -48,6 +48,8 @@ class RenderEngine
 	PrimitiveGroup atom_[Atom::nDrawStyles], *scaledAtom_;
 	// Selected atom styles
 	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
+	// Bond styles
+	PrimitiveGroup bond_[Atom::nDrawStyles];
 
 	public:
 	// (Re)Generate primitive vertex arrays
@@ -80,8 +82,10 @@ class RenderEngine
 	// Rendering Functions
 	*/
 	private:
-	// Render primitive at requested local position in specified colour, returning projected position
-	Vec3<double> &renderPrimitive(PrimitiveGroup &pg, int lod, Vec3<double> pos, GLfloat *ambient, GLfloat *diffuse);
+	// Render primitive in specified colour and level of detail (coords used only if filtered)
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
+	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, GLdouble *transform);
 
 	public:
 	// Render specified model
@@ -94,10 +98,8 @@ class RenderEngine
 	private:
 	// Filter type
 	FilterType type_;
-	// List of filtered polygons
-	List<Polygon> filteredPolygons_;
-	// Depth-sorted polygon index
-	int *sortedPolygons_;
+	// List of filtered primitives
+	List<PrimitiveInfo> filteredPrimitives_;
 
 	public:
 	// Set filter type

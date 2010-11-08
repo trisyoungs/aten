@@ -23,6 +23,7 @@
 #define ATEN_PRIMITIVE_H
 
 #include <GL/gl.h>
+#include "templates/vector3.h"
 
 // Rendering Primitive
 class Primitive
@@ -53,10 +54,42 @@ class Primitive
 	void addVertexAndNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
+	// Create vertices of cylinder along z with specified radius, length, and quality
+	void createCylinder(double startradius, double endradius, double length, int nstacks, int nslices);
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
+};
+
+// Primitive Info
+class PrimitiveInfo
+{
+	public:
+	// Constructor
+	PrimitiveInfo();
+	// List pointer
+	PrimitiveInfo *prev, *next;
+
+	private:
+	// Target primitive
+	Primitive *primitive_;
+	// Local coordinates of primitive
+	Vec3<double> localCoords_;
+	// Local transformation of primitive (if defined)
+	GLdouble localTransform_[16];
+	// Flag to specify whether local transform of primitive has been defined
+	bool transformDefined_;
+	// Ambient colour
+	GLfloat ambient_[4];
+	// Diffuse colour
+	GLfloat diffuse_[4];
+	
+	public:
+	// Set primitive info data
+	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords);
+	// Set primitive info data, including local rotation
+	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, GLdouble *transform);
 };
 
 // Primitive Group
