@@ -399,7 +399,6 @@ void Model::atomSetCharge(Atom *target, double q)
 void Model::atomSetColour(Atom *i, double r, double g, double b, double a)
 {
 	// Add the change to the undo state (if there is one)
-	printf("New atom ID %i's colour is %f %f %f %f\n", i->id(), r, g, b, a);
 	if (recordingState_ != NULL)
 	{
 		ColourEvent *newchange = new ColourEvent;

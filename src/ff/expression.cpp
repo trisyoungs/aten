@@ -27,7 +27,7 @@
 #include "base/pattern.h"
 
 // Create forcefield expression for pattern
-bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
+bool Pattern::createExpression(bool vdwOnly)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
@@ -36,7 +36,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 	msg.enter("Pattern::createExpression");
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0;
+	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0, nDummy;
 	Atom *ai, *aj, *ak, *al;
 	ForcefieldBound *ffb;
 	PatternAtom *ipa[4];
@@ -49,8 +49,6 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 	int ii, jj, kk, ll, n, m;
 	List< ListItem<int> > *bonding;
 	bonding = new List< ListItem<int> >[nAtoms_];
-	// Set flag to allow dummy term generation
-	addDummyTerms_ = allowdummy;
 	// Clear old arrays
 	atoms_.clear();
 	bonds_.clear();
@@ -142,6 +140,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 		// Also, create the lists of bound atoms here for use by the angle and torsion functions.
 		// Again, only add bonds involving atoms in the first molecule of the pattern.
 		ai = firstAtom_;
+		nDummy = 0;
 		for (ii=0; ii<nAtoms_; ii++)
 		{
 			// Go through the list of bonds to this atom
@@ -169,7 +168,11 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 					if (ffb == NULL)
 					{
 						if (ff->bondGenerator() != NULL) ffb = ff->generateBond(ai,aj);
-						else if (addDummyTerms_) ffb = createDummyBond(ti,tj);
+						else if (addDummyTerms_)
+						{
+							ffb = createDummyBond(ti,tj);
+							++nDummy;
+						}
 					}
 					addBondData(ffb, ii, jj);
 					// Check ffb - if it's still NULL we couldn't find a definition
@@ -197,11 +200,16 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 			incomplete_ = TRUE;
 		}
 		else if (bonds_.nItems() == 0) msg.print("... No bonds in model.\n");
-		else if (ibonds == 0) msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
+		else if (ibonds == 0)
+		{
+			if (nDummy == 0) msg.print("... Found parameters for %i bonds.\n", bonds_.nItems());
+			else msg.print("... Found parameters for %i bonds (%i dummy terms).\n", bonds_.nItems(), nDummy);
+		}
 		else msg.print("... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
 		// Construct the angle list.
 		// Use the list of bound atoms in the bonding[][] array generated above
 		// Loop over central atoms 'jj'
+		nDummy = 0;
 		for (jj=0; jj<nAtoms_; jj++)
 		{
 			for (ii=0; ii<bonding[jj].nItems(); ii++)
@@ -221,7 +229,11 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 					if (ffb == NULL)
 					{
 						if (ff->angleGenerator() != NULL) ffb = ff->generateAngle(ai,aj,ak);
-						else if (addDummyTerms_) ffb = createDummyAngle(ti,tj,tk);
+						else if (addDummyTerms_)
+						{
+							ffb = createDummyAngle(ti,tj,tk);
+							++nDummy;
+						}
 					}
 					addAngleData(ffb, bonding[jj][ii]->value(), jj, bonding[jj][kk]->value());
 					// Check ffb and raise warning if NULL
@@ -254,13 +266,19 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 		else if (angles_.nItems() == 0) msg.print("... No angles in model.\n");
 		else if (iangles == 0)
 		{
-			if (nUreyBradleys == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
-			else msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", nUreyBradleys);
+			if (nUreyBradleys == 0)
+			{
+				if (nDummy == 0) msg.print("... Found parameters for %i angles.\n", angles_.nItems());
+				else msg.print("... Found parameters for %i angles (%i dummy terms).\n", bonds_.nItems(), nDummy);
+			}
+			else if (nDummy == 0) msg.print("... Found parameters for %i angles with %i corresponding Urey-Bradley definitions.\n", nUreyBradleys);
+			else msg.print("... Found parameters for %i angles (%i dummy terms) with %i corresponding Urey-Bradley definitions.\n", nDummy, nUreyBradleys);
 		}
 		else msg.print("... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
 		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
 		// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
+		nDummy = 0;
 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
 			jj = pb->atomId(0);
@@ -301,7 +319,11 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 					if (ffb == NULL)
 					{
 						if (ff->torsionGenerator() != NULL) ffb = ff->generateTorsion(ai,aj,ak,al);
-						else if (addDummyTerms_) ffb = createDummyTorsion(ti,tj,tk,tl);
+						else if (addDummyTerms_)
+						{
+							ffb = createDummyTorsion(ti,tj,tk,tl);
+							++nDummy;
+						}
 					}
 					addTorsionData(ffb, bonding[jj][ii]->value(), jj, kk, bonding[kk][ll]->value());
 					// Check ffb and raise warning if NULL
@@ -324,7 +346,11 @@ bool Pattern::createExpression(bool vdwOnly, bool allowdummy)
 			incomplete_ = TRUE;
 		}
 		else if (torsions_.nItems() == 0) msg.print("... No torsions in model.\n");
-		else if (itorsions == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
+		else if (itorsions == 0)
+		{
+			if (nDummy == 0) msg.print("... Found parameters for %i torsions.\n", torsions_.nItems());
+			else msg.print("... Found parameters for %i torsions (%i dummy terms).\n", torsions_.nItems(), nDummy);
+		}
 		else msg.print("... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 		// Construct improper torsions list
 		// Cycle over impropers defined in forcefield and see if the pattern contains those atoms within a certain distance
