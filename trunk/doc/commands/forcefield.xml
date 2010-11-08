@@ -118,11 +118,12 @@ clearexpression();
 		<para><emphasis>Syntax:</emphasis></para>
 		<funcsynopsis>
 			<funcprototype>
-				<funcdef>void <function>createexpression</function></funcdef>
+	   			<funcdef>void <function>createexpression</function></funcdef>
+				<paramdef>bool <parameter>nointra = FALSE</parameter></paramdef>
 				<void/>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Creates a suitable energy description for the current model.</para>
+		<para>Creates a suitable energy description for the current model. The optional 'nointra' flag can be used to force the creation of an expression containing only atomtype (i.e. van der Waals) terms.</para>
 		
 		<para>For example:</para>
 		<synopsis>
@@ -425,10 +426,11 @@ printsetup();
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>void <function>recreateexpression</function></funcdef>
+				<paramdef>bool <parameter>nointra = FALSE</parameter></paramdef>
 				<void/>
 			</funcprototype>
 		</funcsynopsis>
-		<para>Delete and recreate a suitable energy description for the current model.</para>
+		<para>Delete and recreate a suitable energy description for the current model. The optional 'nointra' flag can be used to force the creation of an expression containing only atomtype (i.e. van der Waals) terms.</para>
 		
 		<para>For example:</para>
 		<synopsis>

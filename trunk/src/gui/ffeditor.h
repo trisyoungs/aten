@@ -61,20 +61,23 @@ class AtenForcefieldEditor : public QDialog
 	private slots:
 	void VdwFunctionChanged(int index);
 	void on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w);
-
+	void on_FFEditorAtomsTable_itemSelectionChanged();
+	
 	/*
 	// Bonds Tab
 	*/
 	private slots:
 	void BondFunctionChanged(int index);
 	void on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w);
-
+	void on_FFEditorBondsTable_itemSelectionChanged();
+	
 	/*
 	// Angles Tab
 	*/
 	private slots:
 	void AngleFunctionChanged(int index);
 	void on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w);
+	void on_FFEditorAnglesTable_itemSelectionChanged();
 
 	/*
 	// Torsions Tab
@@ -82,6 +85,7 @@ class AtenForcefieldEditor : public QDialog
 	private slots:
 	void TorsionFunctionChanged(int index);
 	void on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w);
+	void on_FFEditorTorsionsTable_itemSelectionChanged();
 
 	/*
 	// Widgets

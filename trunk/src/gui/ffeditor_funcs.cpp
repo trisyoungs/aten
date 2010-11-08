@@ -155,7 +155,8 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	for (n=0; n<AtomColumn::nColumns; n++) ui.FFEditorAtomsTable->resizeColumnToContents(n);
 	ui.FFEditorAtomsTable->setColumnWidth(AtomColumn::Form, 68);
-
+	ui.FFEditorAtomsTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	
 	// Bonds List
 	count = 0;
 	ui.FFEditorBondsTable->setRowCount(ff->nBonds());
@@ -185,6 +186,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	for (n=0; n<BondColumn::nColumns; n++) ui.FFEditorBondsTable->resizeColumnToContents(n);
 	ui.FFEditorBondsTable->setColumnWidth(BondColumn::Form, 82);
+	ui.FFEditorBondsTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	// Angles List
 	count = 0;
@@ -217,7 +219,8 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	for (n=0; n<AngleColumn::nColumns; n++) ui.FFEditorAnglesTable->resizeColumnToContents(n);
 	ui.FFEditorAnglesTable->setColumnWidth(AngleColumn::Form, 82);
-
+	ui.FFEditorAnglesTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	
 	// Torsions List
 	count = 0;
 	ui.FFEditorTorsionsTable->setRowCount(ff->nTorsions());
@@ -255,6 +258,47 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	for (n=0; n<TorsionColumn::nColumns; n++) ui.FFEditorTorsionsTable->resizeColumnToContents(n);
 	ui.FFEditorTorsionsTable->setColumnWidth(TorsionColumn::Form, 82);
+	ui.FFEditorTorsionsTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	
+	// Impropers List
+	count = 0;
+	ui.FFEditorImpropersTable->setRowCount(ff->nImpropers());
+	ui.FFEditorImpropersTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
+	slist.clear();
+	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
+	for (ForcefieldBound *ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
+	{
+		params = ffb->parameters();
+		item = new QTableWidgetItem(ffb->typeName(0));
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Type1, item);
+		item = new QTableWidgetItem(ffb->typeName(1));
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Type2, item);
+		item = new QTableWidgetItem(ffb->typeName(2));
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Type3, item);
+		item = new QTableWidgetItem(ffb->typeName(3));
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Type4, item);
+		combo = new TComboBox(this);
+		combo->setMinimumSize(78,24);
+		combo->addItems(slist);
+		combo->setCurrentIndex(ffb->torsionForm());
+		combo->setPointer(ffb);
+		ui.FFEditorImpropersTable->setCellWidget(count, TorsionColumn::Form, combo);
+		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
+		item = new QTableWidgetItem(ffb->elecScale());
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::ElecScale, item);
+		item = new QTableWidgetItem(ffb->vdwScale());
+		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::VdwScale, item);
+		for (int n=0; n<MAXFFPARAMDATA; n++)
+		{
+			item = new QTableWidgetItem(ftoa(params[n]));
+			ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Data1+n, item);
+		}
+		count ++;
+	}
+	for (n=0; n<TorsionColumn::nColumns; n++) ui.FFEditorImpropersTable->resizeColumnToContents(n);
+	ui.FFEditorImpropersTable->setColumnWidth(TorsionColumn::Form, 82);
+	ui.FFEditorImpropersTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	
 	// Done
 	updating_ = FALSE;
 }
@@ -402,6 +446,11 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	updating_ = FALSE;
 }
 
+void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
+{
+	printf("Hello Types number of selected items is %i\n", ui.FFEditorAtomsTable->selectedItems().count());
+}
+
 /*
 // Bonds Page
 */
@@ -457,6 +506,11 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 			break;
 	}
 	updating_ = FALSE;
+}
+
+void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
+{
+	printf("Hello bonds number of selected items is %i\n", ui.FFEditorBondsTable->selectedItems().count());
 }
 
 /*
@@ -515,6 +569,11 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 			break;
 	}
 	updating_ = FALSE;
+}
+
+void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
+{
+	printf("Hello angles number of selected items is %i\n", ui.FFEditorAnglesTable->selectedItems().count());
 }
 
 /*
@@ -578,7 +637,10 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 	updating_ = FALSE;
 }
 
-
+void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
+{
+	printf("Hello torsions number of selected items is %i\n", ui.FFEditorTorsionsTable->selectedItems().count());
+}
 
 /*
 // Generate Page

@@ -296,7 +296,7 @@ class Pattern
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	bool createExpression(bool vdwOnly = FALSE, bool allowdummy = FALSE);
+	bool createExpression(bool vdwOnly = FALSE);
 	// Create the connectivity and scaling matrices
 	void createMatrices();
 	// Update scaling matrices

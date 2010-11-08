@@ -129,8 +129,7 @@ bool Command::function_CreateExpression(CommandNode *c, Bundle &obj, ReturnValue
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!obj.m->autocreatePatterns()) return FALSE;
 	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
-	bool allowdummy = c->hasArg(1) ? c->argb(1) : FALSE;
-	if (!obj.m->createExpression(nointra, allowdummy)) return FALSE;
+	if (!obj.m->createExpression(nointra)) return FALSE;
 	rv.reset();
 	return TRUE;
 }
@@ -597,8 +596,7 @@ bool Command::function_RecreateExpression(CommandNode *c, Bundle &obj, ReturnVal
 	obj.m->clearExpression();
 	if (!obj.m->autocreatePatterns()) return FALSE;
 	bool nointra = c->hasArg(0) ? c->argb(0) : FALSE;
-	bool allowdummy = c->hasArg(1) ? c->argb(1) : FALSE;
-	if (!obj.m->createExpression(nointra, allowdummy)) return FALSE;
+	if (!obj.m->createExpression(nointra)) return FALSE;
 	rv.reset();
 	return TRUE;
 }
