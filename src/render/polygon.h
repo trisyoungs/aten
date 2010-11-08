@@ -56,6 +56,12 @@ class Polygon
 // Polygon List
 class PolygonList : public List<Polygon>
 {
+	public:
+	// Constructor
+	PolygonList();
+
+	private:
+	// 
 };
 
 #endif

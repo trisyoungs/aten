@@ -100,6 +100,7 @@ class Atom
 	public:
 	Vec3<double> &f();
 
+
 	/*
 	// Velocities
 	*/
