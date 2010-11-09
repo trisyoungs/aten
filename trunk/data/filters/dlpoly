@@ -458,10 +458,8 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 
 	# Next line is energy unit
 	readline(discard, s);
-	if (lowercase(s) == "kj") aten.prefs.energyunit == "kj";
-	else if (lowercase(s) == "kcal") aten.prefs.energyunit == "kcal";
-	else if (lowercase(s) == "ev") aten.prefs.energyunit == "ev";
-	else error("FIELD file energy unit (%s) is not compatible with Aten.\n", s);
+	if ((lowercase(s) != "kj") && (lowercase(s) != "kcal") && (lowercase(s) != "ev")) error("FIELD file energy unit (%s) is not compatible with Aten.\n", s);
+	units(s);
 
 	# Next is number of molecules specified in the 
 	readline(s, nmols);
@@ -592,21 +590,27 @@ filter(type="importexpression",name="DL_POLY Forcefield Specification", extensio
 
 	# VDW Specification
 	readline(keyword, nvdw);
-	if (lowercase(keyword) != "vdw") error("Didn't find 'vdw' section where expected.");
-	for (n=0; n<nvdw; ++n)
+	if (lowercase(keyword) != "vdw") printf("Didn't find 'vdw' section where expected. VDW information not converted.");
+	else
 	{
 		printf("Found 'vdw' block...\n");
-		# Read in each line of data, searching for those where the first atomtype is equal to the second
-		readline(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
-		if (names[1] != names[2]) continue;
-		# We may have added multiple types of the same name earlier, so search the whole list explicitly
-		for (at1 in ff.atomtypes)
+		for (n=0; n<nvdw; ++n)
 		{
-			if (at1.name != names[1]) continue;
-			# Check form
-			if (form == "lj") interdef("lj", at1.id, at1.charge, data[1], data[2]);
-#			else if (form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
-			else printf("Functional form of VDW term (%s) is not present in Aten.\n",form);
+			# Read in each line of data, searching for those where the first atomtype is equal to the second
+			readline(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
+			if (names[1] != names[2]) continue;
+			# We may have added multiple types of the same name earlier, so search the whole list explicitly
+			for (at1 in ff.atomtypes)
+			{
+				if (at1.name != names[1]) continue;
+				# Check form
+				if (form == "lj") interdef("lj", at1.id, at1.charge, data[1], data[2]);
+#				else if (form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
+				else printf("Functional form of VDW term (%s) is not present in Aten.\n",form);
+			}
 		}
 	}
+
+	# Perform necessary tasks
+	finaliseff();
 }
