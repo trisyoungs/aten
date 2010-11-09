@@ -140,6 +140,48 @@ selecttype(&quot;CT&quot;);
 		<para>selects all atoms that have been assigned the forcefield type 'CT'.</para>
 		
 	</section>
+
+	<section id="command.ref.selectioncog"><title>selectioncog</title>
+		<indexterm><primary>commands</primary><secondary>selectioncog</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.vector">vector</link> <function>selectioncog</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return the centre of geometry of the current atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+vector v = selectioncog();
+printf("Centre of geometry of current selection is: %f %f %f\n", v.x, v.y, v.z);
+		</synopsis>
+		<para>calculates and prints the centre-of-geometry of the current selection.</para>
+		
+	</section>
+
+	<section id="command.ref.selectioncom"><title>selectioncom</title>
+		<indexterm><primary>commands</primary><secondary>selectioncom</secondary></indexterm>
+		
+		<para><emphasis>Syntax:</emphasis></para>
+		<funcsynopsis>
+			<funcprototype>
+				<funcdef><link linkend="command.types.vector">vector</link> <function>selectioncom</function></funcdef>
+				<void/>
+			</funcprototype>
+		</funcsynopsis>
+		<para>Return the centre of mass of the current atom selection.</para>
+		
+		<para>For example:</para>
+		<synopsis>
+vector v = selectioncom();
+newatom(Be, v.x, v.y, v.z);
+		</synopsis>
+		<para>calculates the centre-of-mass of the current selection and creates a beryllium atom at those coordinates.</para>
+		
+	</section>
 	
 	<section id="command.ref.selectmiller"><title>selectmiller</title>
 		<indexterm><primary>commands</primary><secondary>selectmiller</secondary></indexterm>

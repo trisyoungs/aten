@@ -262,7 +262,12 @@ bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c '
 				<varlistentry id="cli.switches.keepnames">
 					<term><indexterm><primary>command line switches</primary><secondary>--keepnames</secondary></indexterm>
 					--keepnames</term>
-					<listitem><para>If specified, for each model loaded the original atom names in the file will be preserved as a series of forcefield types generated within a new forcefield created specifically for the model. Elements are still determined from conversion of the atom names, and may still be mapped with the --map option. This option is useful for quickly creating a skeleton set of forcefield types from an existing model with type names, or to allow quick import and export of typed configurations without requiring the original forcefield file to be loaded.</para></listitem>
+					<listitem><para>If specified, for each model loaded the original atom names in the file will be preserved as a series of forcefield types generated within a new forcefield created specifically for the model. Elements are still determined from conversion of the atom names, and may still be mapped with the --map option. This option is useful for quickly creating a skeleton set of forcefield types from an existing model with type names, or to allow quick import and export of typed configurations without requiring the original forcefield file to be loaded.</para><para>Note that the --keeptypes and --keepnames switches are mutually exclusive.</para></listitem>
+				</varlistentry>
+				<varlistentry id="cli.switches.keeptypes">
+					<term><indexterm><primary>command line switches</primary><secondary>--keeptypes</secondary></indexterm>
+					--keeptypes</term>
+					<listitem><para>If specified, for each atom name converted to an element using a forcefield name match, the corresponding forcefield type will be assigned to the atom and fixed. Like the --keepnames switch, this is useful for preserving atom type data when importing certain models which do not store element information.</para><para>Note that the --keeptypes and --keepnames switches are mutually exclusive.</para></listitem>
 				</varlistentry>
 			</variablelist>
 			

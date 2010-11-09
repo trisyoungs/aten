@@ -178,12 +178,23 @@ bool Command::function_InsertAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	if (c->hasArg(4)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1), id-1);
 	else aten.current.i = obj.rs->addAtomAtPen(el, id-1);
 	// Add the name to the model's namesForcefield, if requested and it exists
- 	if (prefs.keepNames())
- 	{
+	if (prefs.keepNames())
+	{
 		ForcefieldAtom *ffa = obj.rs->addAtomName(el, c->argc(0));
- 		aten.current.i->setType(ffa);
- 		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
- 	}
+		aten.current.i->setType(ffa);
+		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
+	}
+	if (prefs.keepTypes())
+	{
+		ForcefieldAtom *ffa;
+		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+		{
+			ffa = ff->findType(c->argc(0));
+			if (ffa != NULL) break;
+		}
+		aten.current.i->setType(ffa);
+		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
+	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
@@ -245,6 +256,17 @@ bool Command::function_NewAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
+ 	if (prefs.keepTypes())
+	{
+		ForcefieldAtom *ffa;
+		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+		{
+			ffa = ff->findType(c->argc(0));
+			if (ffa != NULL) break;
+		}
+		aten.current.i->setType(ffa);
+		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
+	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;
@@ -276,6 +298,17 @@ bool Command::function_NewAtomFrac(CommandNode *c, Bundle &obj, ReturnValue &rv)
  		aten.current.i->setType(ffa);
  		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
  	}
+ 	if (prefs.keepTypes())
+	{
+		ForcefieldAtom *ffa;
+		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+		{
+			ffa = ff->findType(c->argc(0));
+			if (ffa != NULL) break;
+		}
+		aten.current.i->setType(ffa);
+		if (ffa != NULL) aten.current.i->setTypeFixed(TRUE);
+	}
 	obj.rs->endUndoState();
 	rv.set(VTypes::AtomData, aten.current.i);
 	return TRUE;

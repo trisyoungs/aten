@@ -279,6 +279,7 @@ Prefs::Prefs()
 	fixedZMapType_ = FALSE;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
+	keepTypes_ = FALSE;
 	keepView_ = FALSE;
 
 	// Energy unit conversion factors to J
@@ -1096,6 +1097,18 @@ void Prefs::setKeepNames(bool b)
 bool Prefs::keepNames() const
 {
 	return keepNames_;
+}
+
+// Set whether to assign and fix type names on load
+void Prefs::setKeepTypes(bool b)
+{
+	keepTypes_ = b;
+}
+
+// Return whether to assign and fix type names on load
+bool Prefs::keepTypes() const
+{
+	return keepTypes_;
 }
 
 // Set whether to keep view on GUI start

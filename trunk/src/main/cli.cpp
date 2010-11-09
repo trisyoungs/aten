@@ -99,6 +99,9 @@ Cli cliSwitches[] = {
 	{ Cli::KeepNamesSwitch,		'\0',"keepnames",	0,
 		"",
 		"Store atom (type)names given in files in a forcefield created for the model" },
+	{ Cli::KeepTypesSwitch,		'\0',"keeptypes",	0,
+		"",
+		"Assign and fix corresponding atom types to atoms whose names have been converted from forcefield zmapping" },
 	{ Cli::KeepViewSwitch,		'k',"keepview",		0,
 		"",
 		"Keep (don't reset) view when GUI starts" },
@@ -553,7 +556,23 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
+					// Mutually exclusive with keeptypes
+					if  (prefs.keepTypes())
+					{
+						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
+						return -1;
+					}
 					prefs.setKeepNames(TRUE);
+					break;
+				// Keep atom type names in file
+				case (Cli::KeepTypesSwitch):
+					// Mutually exclusive with keepnames
+					if  (prefs.keepNames())
+					{
+						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
+						return -1;
+					}
+					prefs.setKeepTypes(TRUE);
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
