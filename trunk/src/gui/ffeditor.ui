@@ -355,6 +355,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QTableWidget" name="FFEditorBondsTable">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>Type I</string>
@@ -537,6 +543,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <widget class="QTableWidget" name="FFEditorAnglesTable">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>Type I</string>
@@ -724,6 +736,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
         <widget class="QTableWidget" name="FFEditorTorsionsTable">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>Type I</string>
@@ -913,6 +931,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
         <widget class="QTableWidget" name="FFEditorImpropersTable">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>Type I</string>
@@ -1102,6 +1126,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
         <widget class="QTableWidget" name="FFEditorUreyBradleysTable">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
          <column>
           <property name="text">
            <string>Type I</string>

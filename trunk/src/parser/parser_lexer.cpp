@@ -247,15 +247,15 @@ int CommandParser::lex()
 
 			// Is this a recognised high-level keyword?
 			n = 0;
-			if (token == "if") n = IF;
+			if (token == "if") n = ATEN_IF;
 			else if (token == "else") n = ELSE;
 			else if (token == "for") n = FOR;
-			else if (token == "do") n = DO;
+			else if (token == "do") n = ATEN_DO;
 			else if (token == "while") n = WHILE;
-			else if (token == "return") n = RETURN;
-			else if (token == "void") n = DIOV;
+			else if (token == "return") n = ATEN_RETURN;
+			else if (token == "void") n = ATEN_VOID;
 			else if (token == "help") n = HELP;
-			else if (token == "in") n = IN;
+			else if (token == "in") n = ATEN_IN;
 			if (n != 0)
 			{
 				msg.print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)\n",tree_,n);

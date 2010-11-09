@@ -139,15 +139,15 @@ TreeNode *tempNode;
      FUNCCALL = 267,
      USERFUNCCALL = 268,
      VTYPE = 269,
-     DO = 270,
+     ATEN_DO = 270,
      WHILE = 271,
      FOR = 272,
-     IF = 273,
-     IN = 274,
-     RETURN = 275,
+     ATEN_IF = 273,
+     ATEN_IN = 274,
+     ATEN_RETURN = 275,
      FILTERBLOCK = 276,
      HELP = 277,
-     DIOV = 278,
+     ATEN_VOID = 278,
      DUMMY = 279,
      OPTION = 280,
      ELSE = 281,
@@ -179,15 +179,15 @@ TreeNode *tempNode;
 #define FUNCCALL 267
 #define USERFUNCCALL 268
 #define VTYPE 269
-#define DO 270
+#define ATEN_DO 270
 #define WHILE 271
 #define FOR 272
-#define IF 273
-#define IN 274
-#define RETURN 275
+#define ATEN_IF 273
+#define ATEN_IN 274
+#define ATEN_RETURN 275
 #define FILTERBLOCK 276
 #define HELP 277
-#define DIOV 278
+#define ATEN_VOID 278
 #define DUMMY 279
 #define OPTION 280
 #define ELSE 281
@@ -608,19 +608,20 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "INTCONST", "ELEMENTCONST",
   "DOUBLECONST", "NEWTOKEN", "NEWFUNCTOKEN", "CHARCONST", "STEPTOKEN",
-  "VAR", "LOCALVAR", "FUNCCALL", "USERFUNCCALL", "VTYPE", "DO", "WHILE",
-  "FOR", "IF", "IN", "RETURN", "FILTERBLOCK", "HELP", "DIOV", "DUMMY",
-  "OPTION", "ELSE", "OR", "AND", "'='", "DEQ", "TEQ", "MEQ", "PEQ", "'>'",
-  "'<'", "NEQ", "EQ", "LEQ", "GEQ", "'+'", "'-'", "'*'", "'/'", "'%'",
-  "UMINUS", "MINUSMINUS", "PLUSPLUS", "'!'", "'^'", "'{'", "'}'", "';'",
-  "','", "'('", "')'", "'['", "']'", "'.'", "$accept", "programlist",
-  "program", "block", "pushscope", "popscope", "statementlist",
-  "blockment", "optlist", "filter", "pushfilter", "statement", "decexpr",
-  "flowstatement", "$@1", "$@2", "constant", "funcdeclaration",
-  "vardeclaration", "arglist", "args", "argdeclaration", "declist",
-  "vardec", "newname", "pushfunc", "widget", "step", "steplist", "var",
-  "rawvar", "$@3", "exprlist", "expr", "rawexpr", "ARRAYCONST", "func",
-  "userfunc", "savetokenname", "savetype", "cleartype", "pushstepname", 0
+  "VAR", "LOCALVAR", "FUNCCALL", "USERFUNCCALL", "VTYPE", "ATEN_DO",
+  "WHILE", "FOR", "ATEN_IF", "ATEN_IN", "ATEN_RETURN", "FILTERBLOCK",
+  "HELP", "ATEN_VOID", "DUMMY", "OPTION", "ELSE", "OR", "AND", "'='",
+  "DEQ", "TEQ", "MEQ", "PEQ", "'>'", "'<'", "NEQ", "EQ", "LEQ", "GEQ",
+  "'+'", "'-'", "'*'", "'/'", "'%'", "UMINUS", "MINUSMINUS", "PLUSPLUS",
+  "'!'", "'^'", "'{'", "'}'", "';'", "','", "'('", "')'", "'['", "']'",
+  "'.'", "$accept", "programlist", "program", "block", "pushscope",
+  "popscope", "statementlist", "blockment", "optlist", "filter",
+  "pushfilter", "statement", "decexpr", "flowstatement", "$@1", "$@2",
+  "constant", "funcdeclaration", "vardeclaration", "arglist", "args",
+  "argdeclaration", "declist", "vardec", "newname", "pushfunc", "widget",
+  "step", "steplist", "var", "rawvar", "$@3", "exprlist", "expr",
+  "rawexpr", "ARRAYCONST", "func", "userfunc", "savetokenname", "savetype",
+  "cleartype", "pushstepname", 0
 };
 #endif
 
@@ -2163,7 +2164,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 184 "grammar.yy"
     {
-		printf("NOPE\n"); YYABORT; }
+		msg.print("Error: '%s' is not a recognised built-in or user-defined function.\n", (yyvsp[(1) - (1)].name)->get()); YYABORT; }
     break;
 
   case 46:
@@ -2844,7 +2845,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2848 "grammar.cc"
+#line 2849 "grammar.cc"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
