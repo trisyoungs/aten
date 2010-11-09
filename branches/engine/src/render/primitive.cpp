@@ -122,44 +122,6 @@ void Primitive::createSphere(double radius, int nstacks, int nslices)
 			addVertexAndNormal(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
 			addVertexAndNormal(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
 			addVertexAndNormal(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
-
-/*			vertices_[count] = x0 * zr0 * radius;
-			normals_[count++] = x0 * zr0;
-			vertices_[count] = y0 * zr0 * radius;
-			normals_[count++] = y0 * zr0;
-			vertices_[count] = z0 * radius;
-			normals_[count++] = z0;
-			vertices_[count] = x0 * zr1 * radius;
-			normals_[count++] = x0 * zr1;
-			vertices_[count] = y0 * zr1 * radius;
-			normals_[count++] = y0 * zr1;
-			vertices_[count] = z1 * radius;
-			normals_[count++] = z1;
-			vertices_[count] = x1 * zr0 * radius;
-			normals_[count++] = x1 * zr0;
-			vertices_[count] = y1 * zr0 * radius;
-			normals_[count++] = y1 * zr0;
-			vertices_[count] = z0 * radius;
-			normals_[count++] = z0;
-			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			vertices_[count] = x0 * zr1 * radius;
-			normals_[count++] = x0 * zr1;
-			vertices_[count] = y0 * zr1 * radius;
-			normals_[count++] = y0 * zr1;
-			vertices_[count] = z1 * radius;
-			normals_[count++] = z1;
-			vertices_[count] = x1 * zr0 * radius;
-			normals_[count++] = x1 * zr0;
-			vertices_[count] = y1 * zr0 * radius;
-			normals_[count++] = y1 * zr0;
-			vertices_[count] = z0 * radius;
-			normals_[count++] = z0;
-			vertices_[count] = x1 * zr1 * radius;
-			normals_[count++] = x1 * zr1;
-			vertices_[count] = y1 * zr1 * radius;
-			normals_[count++] = y1 * zr1;
-			vertices_[count] = z1 * radius;
-			normals_[count++] = z1; */
 			if (count > nVertices_*3) printf("MISCALCULATED!!\n");
 		}
 	}
@@ -204,14 +166,14 @@ void Primitive::createCylinder(double startradius, double endradius, double leng
 			y1 = sin(slice1);
 
 			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			addVertexAndNormal(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, z0);
-			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, z1);
-			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, z0);
+			addVertexAndNormal(x0 * zr0, y0 * zr0, z0, x0 * zr0, y0 * zr0, 0.0);
+			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
 
 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, z1);
-			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, z0);
-			addVertexAndNormal(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, z1);
+			addVertexAndNormal(x0 * zr1, y0 * zr1, z1, x0 * zr1, y0 * zr1, 0.0);
+			addVertexAndNormal(x1 * zr0, y1 * zr0, z0, x1 * zr0, y1 * zr0, 0.0);
+			addVertexAndNormal(x1 * zr1, y1 * zr1, z1, x1 * zr1, y1 * zr1, 0.0);
 		}
 	}
 	msg.exit("Primitive::createCylinder");
@@ -285,18 +247,53 @@ void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec
 }
 
 // Set primitive info data, including local rotation
-void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, GLdouble *transform)
+void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, Mat4<double> &transform)
 {
 	primitive_ = prim;
 	localCoords_ = coords;
+	localTransform_ = transform;
 	transformDefined_ = TRUE;
-	int n;
-	for (n=0; n<16; ++n) localTransform_[n] = transform[n];
-	for (n=0; n<4; ++n)
+	for (int n=0; n<4; ++n)
 	{
 		ambient_[n] = ambient[n];
 		diffuse_[n] = diffuse[n];
 	}
+}
+
+// Return pointer to primitive
+Primitive *PrimitiveInfo::primitive()
+{
+	return primitive_;
+}
+
+// Return local coordinates of primitive
+Vec3<double> &PrimitiveInfo::localCoords()
+{
+	return localCoords_;
+}
+
+// Return local transformation of primitive
+Mat4<double> &PrimitiveInfo::localTransform()
+{
+	return localTransform_;
+}
+
+// Return whether a local transformation is defined
+bool PrimitiveInfo::transformDefined()
+{
+	return transformDefined_;
+}
+
+// Return ambient colour pointer
+GLfloat *PrimitiveInfo::ambient()
+{
+	return ambient_;
+}
+
+// Return diffuse colour pointer
+GLfloat *PrimitiveInfo::diffuse()
+{
+	return diffuse_;
 }
 
 /*

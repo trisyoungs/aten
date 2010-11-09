@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
+#include <GL/gl.h>
 using namespace std;
 
 // 4x4 matrix
@@ -108,6 +109,8 @@ template <class T> class Mat4
 	void print() const;
 	// Set the zero matrix
 	void zero();
+	// Return matrix suitable for use in OpenGL (stored in static local array...)
+	GLdouble *forGL();
 };
 
 // Constructor
@@ -476,6 +479,14 @@ template <class T> void Mat4<T>::print() const
 	printf("Mat4_Y %8.4f %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z,rows[1].w);
 	printf("Mat4_Z %8.4f %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z,rows[2].w);
 	printf("Mat4_W %8.4f %8.4f %8.4f %8.4f\n",rows[3].x,rows[3].y,rows[3].z,rows[3].w);
+}
+
+// Return matrix suitable for use in OpenGL (stored in static local array...)
+template <class T> GLdouble *Mat4<T>::forGL()
+{
+	static GLdouble m[16];
+	copyColumnMajor(m);
+	return m;
 }
 
 #endif
