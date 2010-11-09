@@ -38,7 +38,7 @@ class RenderEngine
 	// Constructor
 	RenderEngine();
 	// Filter type (if any)
-	enum FilterType { NoFilter, TransparencyFilter, nFilterTypes };
+	enum FilterType { NoFilter, TransparencyFilter, CompleteFilter, nFilterTypes };
 
 	/*
 	// Primitives
@@ -85,7 +85,7 @@ class RenderEngine
 	// Render primitive in specified colour and level of detail (coords used only if filtered)
 	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
 	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, GLdouble *transform);
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, Mat4<double> &transform);
 
 	public:
 	// Render specified model
@@ -106,7 +106,8 @@ class RenderEngine
 	void setType(FilterType type);
 	// Return filter type
 	FilterType type();
-	// Sort filtered polygons by depth
+	// Sort and render filtered polygons by depth
+	void sortAndSendGL();
 };
 
 #endif

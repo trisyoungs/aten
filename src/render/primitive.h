@@ -77,7 +77,7 @@ class PrimitiveInfo
 	// Local coordinates of primitive
 	Vec3<double> localCoords_;
 	// Local transformation of primitive (if defined)
-	GLdouble localTransform_[16];
+	Mat4<double> localTransform_;
 	// Flag to specify whether local transform of primitive has been defined
 	bool transformDefined_;
 	// Ambient colour
@@ -89,7 +89,20 @@ class PrimitiveInfo
 	// Set primitive info data
 	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords);
 	// Set primitive info data, including local rotation
-	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, GLdouble *transform);
+	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, Mat4<double> &transform);
+	// OPTIMISE - Instead of storing both coords, and transform, combine into single matrix
+	// Return pointer to primitive
+	Primitive *primitive();
+	// Return local coordinates of primitive
+	Vec3<double> &localCoords();
+	// Return local transformation of primitive
+	Mat4<double> &localTransform();
+	// Return whether a local transformation is defined
+	bool transformDefined();
+	// Return ambient colour pointer
+	GLfloat *ambient();
+	// Return diffuse colour pointer
+	GLfloat *diffuse();
 };
 
 // Primitive Group
