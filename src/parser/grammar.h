@@ -51,15 +51,15 @@
      FUNCCALL = 267,
      USERFUNCCALL = 268,
      VTYPE = 269,
-     DO = 270,
+     ATEN_DO = 270,
      WHILE = 271,
      FOR = 272,
-     IF = 273,
-     IN = 274,
-     RETURN = 275,
+     ATEN_IF = 273,
+     ATEN_IN = 274,
+     ATEN_RETURN = 275,
      FILTERBLOCK = 276,
      HELP = 277,
-     DIOV = 278,
+     ATEN_VOID = 278,
      DUMMY = 279,
      OPTION = 280,
      ELSE = 281,
@@ -91,15 +91,15 @@
 #define FUNCCALL 267
 #define USERFUNCCALL 268
 #define VTYPE 269
-#define DO 270
+#define ATEN_DO 270
 #define WHILE 271
 #define FOR 272
-#define IF 273
-#define IN 274
-#define RETURN 275
+#define ATEN_IF 273
+#define ATEN_IN 274
+#define ATEN_RETURN 275
 #define FILTERBLOCK 276
 #define HELP 277
-#define DIOV 278
+#define ATEN_VOID 278
 #define DUMMY 279
 #define OPTION 280
 #define ELSE 281

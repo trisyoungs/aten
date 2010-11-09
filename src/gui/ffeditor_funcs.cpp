@@ -299,8 +299,65 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	ui.FFEditorImpropersTable->setColumnWidth(TorsionColumn::Form, 82);
 	ui.FFEditorImpropersTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	
+	// UreyBradleys List
+	count = 0;
+	ui.FFEditorUreyBradleysTable->setRowCount(ff->nUreyBradleys());
+	ui.FFEditorUreyBradleysTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
+	slist.clear();
+	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
+	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
+	{
+		params = ffb->parameters();
+		item = new QTableWidgetItem(ffb->typeName(0));
+		ui.FFEditorUreyBradleysTable->setItem(count, AngleColumn::Type1, item);
+		item = new QTableWidgetItem(ffb->typeName(1));
+		ui.FFEditorUreyBradleysTable->setItem(count, AngleColumn::Type2, item);
+		item = new QTableWidgetItem(ffb->typeName(2));
+		ui.FFEditorUreyBradleysTable->setItem(count, AngleColumn::Type3, item);
+		combo = new TComboBox(this);
+		combo->setMinimumSize(78,24);
+		combo->addItems(slist);
+		combo->setCurrentIndex(ffb->bondForm());
+		combo->setPointer(ffb);
+		ui.FFEditorUreyBradleysTable->setCellWidget(count, AngleColumn::Form, combo);
+		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
+		for (int n=0; n<MAXFFPARAMDATA; n++)
+		{
+			item = new QTableWidgetItem(ftoa(params[n]));
+			ui.FFEditorUreyBradleysTable->setItem(count, AngleColumn::Data1+n, item);
+		}
+		count ++;
+	}
+	for (n=0; n<AngleColumn::nColumns; n++) ui.FFEditorUreyBradleysTable->resizeColumnToContents(n);
+	ui.FFEditorUreyBradleysTable->setColumnWidth(AngleColumn::Form, 82);
+	ui.FFEditorUreyBradleysTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	
 	// Done
 	updating_ = FALSE;
+}
+
+void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, ForcefieldBound::BoundType bt)
+{
+	// Check sender
+	if (!sender)
+	{
+		printf("AtenForcefieldEditor::boundFunctionChanged - Sender could not be cast to a TComboBox.\n");
+		return;
+	}
+	// Get ForcefieldBound pointer and set data
+	ForcefieldBound *ffb = (ForcefieldBound*) sender->pointer();
+	switch (bt)
+	{
+		case (ForcefieldBound::BondInteraction):
+			ffb->setBondForm( (BondFunctions::BondFunction) i);
+			break;
+		case (ForcefieldBound::AngleInteraction):
+			ffb->setAngleForm( (AngleFunctions::AngleFunction) i);
+			break;
+		case (ForcefieldBound::TorsionInteraction):
+			ffb->setTorsionForm( (TorsionFunctions::TorsionFunction) i);
+			break;
+	}
 }
 
 /*
@@ -340,7 +397,6 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 	switch (column)
 	{
 		// Forcefield TypeId
-		enum TypeColumn { Id, Element, Name, Equivalent, NETAString, Description, nColumns };
 		case (TypeColumn::Id):
 			// Must search FF to see if another type with this id already exists
 			n = atoi(qPrintable(w->text()));
@@ -382,6 +438,29 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 // Atom Page
 */
 
+void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom *ffa)
+{
+	if (ffa == NULL)
+	{
+		ui.FFEditorAtomFormLabel->setText("None");
+		ui.FFEditorAtomParametersLabel->setText("None");
+		return;
+	}
+	VdwFunctions::VdwFunction vf = ffa->vdwForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", VdwFunctions::VdwFunctions[vf].name, VdwFunctions::VdwFunctions[vf].keyword);
+	ui.FFEditorAtomFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<VdwFunctions::VdwFunctions[vf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", VdwFunctions::VdwFunctions[vf].parameterKeywords);
+		else text.strcatf("%s", VdwFunctions::VdwFunctions[vf].parameterKeywords);
+	}
+	ui.FFEditorAtomParametersLabel->setText(text.get());
+}
+
 // Vdw interaction type changed
 void AtenForcefieldEditor::VdwFunctionChanged(int index)
 {
@@ -395,6 +474,7 @@ void AtenForcefieldEditor::VdwFunctionChanged(int index)
 	// Get ForcefieldAtom pointer and set data
 	ForcefieldAtom *ffa = (ForcefieldAtom*) combo->pointer();
 	ffa->setVdwForm( (VdwFunctions::VdwFunction) index);
+	updateVdwLabels(ffa);
 }
 
 // Item in type table edited
@@ -448,26 +528,47 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 
 void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
 {
-	printf("Hello Types number of selected items is %i\n", ui.FFEditorAtomsTable->selectedItems().count());
+	int row = ui.FFEditorAtomsTable->currentRow();
+	if (row == -1)
+	{
+		updateVdwLabels(NULL);
+		return;
+	}
+	ForcefieldAtom *ffa = targetForcefield_->type(row+1);
+	updateVdwLabels(ffa);
 }
 
 /*
 // Bonds Page
 */
 
+void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound *ffb)
+{
+	if (ffb == NULL)
+	{
+		ui.FFEditorBondFormLabel->setText("None");
+		ui.FFEditorBondParametersLabel->setText("None");
+		return;
+	}
+	BondFunctions::BondFunction bf = ffb->bondForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
+	ui.FFEditorBondFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords);
+		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords);
+	}
+	ui.FFEditorBondParametersLabel->setText(text.get());
+}
+
 // Bond interaction type changed
 void AtenForcefieldEditor::BondFunctionChanged(int index)
 {
-	// Cast sender
-	TComboBox *combo = (TComboBox*) sender();
-	if (!combo)
-	{
-		printf("AtenForcefieldEditor::BondFunctionChanged - Sender could not be cast to a TComboBox.\n");
-		return;
-	}
-	// Get ForcefieldBound pointer and set data
-	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setBondForm( (BondFunctions::BondFunction) index);
+	boundFunctionChanged((TComboBox*) sender(), index,  ForcefieldBound::BondInteraction);
 }
 
 // Item in bonds table edited
@@ -510,26 +611,47 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 
 void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
 {
-	printf("Hello bonds number of selected items is %i\n", ui.FFEditorBondsTable->selectedItems().count());
+	int row = ui.FFEditorBondsTable->currentRow();
+	if (row == -1)
+	{
+		updateBondsLabels(NULL);
+		return;
+	}
+	ForcefieldBound *ffb = targetForcefield_->bond(row+1);
+	updateBondsLabels(ffb);
 }
 
 /*
 // Angles Page
 */
 
+void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound *ffb)
+{
+	if (ffb == NULL)
+	{
+		ui.FFEditorAngleFormLabel->setText("None");
+		ui.FFEditorAngleParametersLabel->setText("None");
+		return;
+	}
+	AngleFunctions::AngleFunction bf = ffb->angleForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", AngleFunctions::AngleFunctions[bf].name, AngleFunctions::AngleFunctions[bf].keyword);
+	ui.FFEditorAngleFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<AngleFunctions::AngleFunctions[bf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", AngleFunctions::AngleFunctions[bf].parameterKeywords);
+		else text.strcatf("%s", AngleFunctions::AngleFunctions[bf].parameterKeywords);
+	}
+	ui.FFEditorAngleParametersLabel->setText(text.get());
+}
+
 // Angle interaction type changed
 void AtenForcefieldEditor::AngleFunctionChanged(int index)
 {
-	// Cast sender
-	TComboBox *combo = (TComboBox*) sender();
-	if (!combo)
-	{
-		printf("AtenForcefieldEditor::AngleFunctionChanged - Sender could not be cast to a TComboBox.\n");
-		return;
-	}
-	// Get ForcefieldBound pointer and set data
-	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setAngleForm( (AngleFunctions::AngleFunction) index);
+	boundFunctionChanged((TComboBox*) sender(), index,  ForcefieldBound::AngleInteraction);
 }
 
 // Item in angles table edited
@@ -573,26 +695,47 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 
 void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
 {
-	printf("Hello angles number of selected items is %i\n", ui.FFEditorAnglesTable->selectedItems().count());
+	int row = ui.FFEditorAnglesTable->currentRow();
+	if (row == -1)
+	{
+		updateAnglesLabels(NULL);
+		return;
+	}
+	ForcefieldBound *ffb = targetForcefield_->angle(row+1);
+	updateAnglesLabels(ffb);
 }
 
 /*
 // Torsions Page
 */
 
+void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound *ffb)
+{
+	if (ffb == NULL)
+	{
+		ui.FFEditorTorsionFormLabel->setText("None");
+		ui.FFEditorTorsionParametersLabel->setText("None");
+		return;
+	}
+	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
+	ui.FFEditorTorsionFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+	}
+	ui.FFEditorTorsionParametersLabel->setText(text.get());
+}
+
 // Torsion interaction type changed
 void AtenForcefieldEditor::TorsionFunctionChanged(int index)
 {
-	// Cast sender
-	TComboBox *combo = (TComboBox*) sender();
-	if (!combo)
-	{
-		printf("AtenForcefieldEditor::TorsionFunctionChanged - Sender could not be cast to a TComboBox.\n");
-		return;
-	}
-	// Get ForcefieldBound pointer and set data
-	ForcefieldBound *ffb = (ForcefieldBound*) combo->pointer();
-	ffb->setTorsionForm( (TorsionFunctions::TorsionFunction) index);
+	boundFunctionChanged((TComboBox*) sender(), index,  ForcefieldBound::TorsionInteraction);
 }
 
 // Item in torsions table edited
@@ -639,7 +782,173 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 
 void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
 {
-	printf("Hello torsions number of selected items is %i\n", ui.FFEditorTorsionsTable->selectedItems().count());
+	int row = ui.FFEditorTorsionsTable->currentRow();
+	if (row == -1)
+	{
+		updateTorsionsLabels(NULL);
+		return;
+	}
+	ForcefieldBound *ffb = targetForcefield_->torsion(row+1);
+	updateTorsionsLabels(ffb);
+}
+
+/*
+// Impropers Page
+*/
+
+void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound *ffb)
+{
+	if (ffb == NULL)
+	{
+		ui.FFEditorImproperFormLabel->setText("None");
+		ui.FFEditorImproperParametersLabel->setText("None");
+		return;
+	}
+	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
+	ui.FFEditorImproperFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords);
+	}
+	ui.FFEditorImproperParametersLabel->setText(text.get());
+}
+
+// Item in impropers table edited
+void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetItem *w)
+{
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
+	// Get position of changed item
+	int row = ui.FFEditorImpropersTable->row(w);
+	int column = ui.FFEditorImpropersTable->column(w);
+	// Get pointer to forcefield bound from edited row
+	ForcefieldBound *ffb = targetForcefield_->torsion(row);
+	// Set new data based on the column edited
+	int n;
+	switch (column)
+	{
+		// Types involved in interaction
+		case (TorsionColumn::Type1):
+		case (TorsionColumn::Type2):
+		case (TorsionColumn::Type3):
+		case (TorsionColumn::Type4):
+			n = column - TorsionColumn::Type1;
+			ffb->setTypeName(n, qPrintable(w->text()));
+			break;
+			// Potential form
+		case (TorsionColumn::Form):
+			// Handled by AtenForcefieldEditor::TorsionsTableComboChanged
+			break;
+			// Scaling factors
+			
+			// Parameter data
+		case (TorsionColumn::Data1):
+		case (TorsionColumn::Data2):
+		case (TorsionColumn::Data3):
+		case (TorsionColumn::Data4):
+		case (TorsionColumn::Data5):
+		case (TorsionColumn::Data6):
+			n = column - TorsionColumn::Data1;
+			ffb->setParameter(n, atof(qPrintable(w->text())));
+			break;
+	}
+	updating_ = FALSE;
+}
+
+void AtenForcefieldEditor::on_FFEditorImpropersTable_itemSelectionChanged()
+{
+	int row = ui.FFEditorImpropersTable->currentRow();
+	if (row == -1)
+	{
+		updateImpropersLabels(NULL);
+		return;
+	}
+	ForcefieldBound *ffb = targetForcefield_->improper(row+1);
+	updateImpropersLabels(ffb);
+}
+
+/*
+// Urey-Bradleys Page
+*/
+
+void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound *ffb)
+{
+	if (ffb == NULL)
+	{
+		ui.FFEditorUreyBradleyFormLabel->setText("None");
+		ui.FFEditorUreyBradleyParametersLabel->setText("None");
+		return;
+	}
+	BondFunctions::BondFunction bf = ffb->bondForm();
+	// Construct labels
+	Dnchar text;
+	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
+	ui.FFEditorUreyBradleyFormLabel->setText(text.get());
+	text.clear();
+	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
+	{
+		if (n != 0) text.strcat(", ");
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords);
+		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords);
+	}
+	ui.FFEditorUreyBradleyParametersLabel->setText(text.get());
+}
+
+// Item in angles table edited
+void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemChanged(QTableWidgetItem *w)
+{
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
+	// Get position of changed item
+	int row = ui.FFEditorUreyBradleysTable->row(w);
+	int column = ui.FFEditorUreyBradleysTable->column(w);
+	// Get pointer to forcefield bound from edited row
+	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row);
+	// Set new data based on the column edited
+	int n;
+	switch (column)
+	{
+		// Types involved in interaction
+		case (AngleColumn::Type1):
+		case (AngleColumn::Type2):
+		case (AngleColumn::Type3):
+			n = column - AngleColumn::Type1;
+			ffb->setTypeName(n, qPrintable(w->text()));
+			break;
+			// Potential form
+		case (AngleColumn::Form):
+			// Handled by AtenForcefieldEditor::AnglesTableComboChanged
+			break;
+			// Parameter data
+		case (AngleColumn::Data1):
+		case (AngleColumn::Data2):
+		case (AngleColumn::Data3):
+		case (AngleColumn::Data4):
+		case (AngleColumn::Data5):
+		case (AngleColumn::Data6):
+			n = column - AngleColumn::Data1;
+			ffb->setParameter(n, atof(qPrintable(w->text())));
+			break;
+	}
+	updating_ = FALSE;
+}
+
+void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
+{
+	int row = ui.FFEditorUreyBradleysTable->currentRow();
+	if (row == -1)
+	{
+		updateUreyBradleysLabels(NULL);
+		return;
+	}
+	ForcefieldBound *ffb = targetForcefield_->ureyBradley(row+1);
+	updateUreyBradleysLabels(ffb);
 }
 
 /*

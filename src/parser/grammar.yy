@@ -45,7 +45,7 @@ TreeNode *tempNode;
 %token <functionId> FUNCCALL
 %token <functree> USERFUNCCALL
 %token <vtype> VTYPE
-%token DO WHILE FOR IF IN RETURN FILTERBLOCK HELP DIOV DUMMY OPTION
+%token ATEN_DO WHILE FOR ATEN_IF ATEN_IN ATEN_RETURN FILTERBLOCK HELP ATEN_VOID DUMMY OPTION
 %nonassoc ELSE
 
 %left AND OR
@@ -126,8 +126,8 @@ statement:
 	decexpr						{ $$ = $1; }
 	| widget					{ $$ = $1; }
 	| HELP FUNCCALL					{ $$ = cmdparser.addFunction(Command::Help, cmdparser.addConstant($2)); }
-	| RETURN expr					{ $$ = cmdparser.addFunction(Command::Return,$2); }
-	| RETURN 					{ $$ = cmdparser.addFunction(Command::Return); }
+	| ATEN_RETURN expr					{ $$ = cmdparser.addFunction(Command::Return,$2); }
+	| ATEN_RETURN 					{ $$ = cmdparser.addFunction(Command::Return); }
 	| statement decexpr				{ msg.print("Error: Expected ';' before current expression.\n"); YYABORT; }
 	;
 
@@ -138,19 +138,19 @@ decexpr:
 	;
 
 flowstatement:
-	IF '(' expr ')' blockment ELSE blockment {
+	ATEN_IF '(' expr ')' blockment ELSE blockment {
 		$$ = cmdparser.addFunction(Command::If,$3,$5,$7); }
-	| IF '(' expr ')' blockment {
+	| ATEN_IF '(' expr ')' blockment {
 		$$ = cmdparser.addFunction(Command::If,$3,$5); }
 	| FOR pushscope '(' decexpr ';' expr ';' expr ')' blockment {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::For, $4,$6,$8,$10)); cmdparser.popScope(); }
-	| FOR pushscope '(' var IN expr ')' {
+	| FOR pushscope '(' var ATEN_IN expr ')' {
 		if ($4->returnType() <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
 		if ($4->returnType() != $6->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
 		}
 		blockment {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,$4,$6,$9)); cmdparser.popScope(); }
-	| FOR pushscope '(' VTYPE savetype newname IN expr ')' { 
+	| FOR pushscope '(' VTYPE savetype newname ATEN_IN expr ')' { 
 		if (declaredType <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
 		tempNode = cmdparser.addVariable(declaredType, &tokenName);
 		if (declaredType != $8->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
@@ -159,7 +159,7 @@ flowstatement:
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::ForIn,tempNode,$8,$11)); cmdparser.popScope(); }
 	| WHILE pushscope '(' expr ')' blockment {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::While, $4,$6)); cmdparser.popScope(); }
-	| DO pushscope blockment WHILE '(' expr ')' ';' {
+	| ATEN_DO pushscope blockment WHILE '(' expr ')' ';' {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Command::DoWhile, $3,$6)); cmdparser.popScope(); }
 	;
 
@@ -175,14 +175,14 @@ constant:
 /* Variable and user-defined function declaration and name / assignment lists */
 
 funcdeclaration:
-	DIOV cleartype NEWFUNCTOKEN pushfunc arglist block	{
+	ATEN_VOID cleartype NEWFUNCTOKEN pushfunc arglist block	{
 		msg.print(Messenger::Parse,"PARSER : funcdeclaration : user-defined statement\n");
 		if (!cmdparser.addStatement($6)) YYABORT; cmdparser.popTree(); declaredType = VTypes::NoData; }
 	| VTYPE savetype NEWFUNCTOKEN pushfunc arglist block	{
 		msg.print(Messenger::Parse,"PARSER : funcdeclaration : user-defined function\n");
 		if (!cmdparser.addStatement($6)) YYABORT; cmdparser.popTree(); declaredType = VTypes::NoData; }
 	| NEWFUNCTOKEN						{
-		printf("NOPE\n"); YYABORT; }
+		msg.print("Error: '%s' is not a recognised built-in or user-defined function.\n", $1->get()); YYABORT; }
 	;
 
 vardeclaration:
