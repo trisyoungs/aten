@@ -3117,9 +3117,9 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="PrefsSetDefaultButton">
+      <widget class="QPushButton" name="PrefsSaveAsDefaultButton">
        <property name="text">
-        <string>Set Default</string>
+        <string>Save as Default</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>

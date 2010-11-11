@@ -27,7 +27,7 @@
 #include "base/pattern.h"
 
 // Create forcefield expression for pattern
-bool Pattern::createExpression(bool vdwOnly)
+bool Pattern::createExpression(bool vdwOnly, bool allowDummy)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
@@ -168,7 +168,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					if (ffb == NULL)
 					{
 						if (ff->bondGenerator() != NULL) ffb = ff->generateBond(ai,aj);
-						else if (addDummyTerms_)
+						else if (addDummyTerms_ || allowDummy)
 						{
 							ffb = createDummyBond(ti,tj);
 							++nDummy;
@@ -229,7 +229,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					if (ffb == NULL)
 					{
 						if (ff->angleGenerator() != NULL) ffb = ff->generateAngle(ai,aj,ak);
-						else if (addDummyTerms_)
+						else if (addDummyTerms_ || allowDummy)
 						{
 							ffb = createDummyAngle(ti,tj,tk);
 							++nDummy;
@@ -319,7 +319,7 @@ bool Pattern::createExpression(bool vdwOnly)
 					if (ffb == NULL)
 					{
 						if (ff->torsionGenerator() != NULL) ffb = ff->generateTorsion(ai,aj,ak,al);
-						else if (addDummyTerms_)
+						else if (addDummyTerms_ || allowDummy)
 						{
 							ffb = createDummyTorsion(ti,tj,tk,tl);
 							++nDummy;

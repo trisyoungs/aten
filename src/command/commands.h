@@ -514,6 +514,7 @@ class Command
 		RemoveStr,
 		SPrintF,
 		StripChars,
+		SubStr,
 		ToA,
 		Uppercase,
 
@@ -970,6 +971,7 @@ class Command
 	static bool function_RemoveStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_SPrintF(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv);
+	static bool function_SubStr(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	static bool function_Uppercase(CommandNode *c, Bundle &obj, ReturnValue &rv);
 	// System Commands

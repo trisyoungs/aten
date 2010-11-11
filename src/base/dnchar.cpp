@@ -483,3 +483,20 @@ char *Dnchar::strchr(char c) const
 {
 	return std::strchr(data_, c);
 }
+
+// Copy substring of supplied string into this string
+void Dnchar::substr(const char *source, int pos, int nchars)
+{
+	clear();
+	// Check start position
+	int len = strlen(source);
+	if ((pos < 0) || (pos >= len)) return;
+	// Copy characters
+	const char *c = &source[pos];
+	for (int n=0; n<nchars; ++n)
+	{
+		if (*c == '\0') break;
+		(*this) += *c;
+		c = c+1;
+	}
+}

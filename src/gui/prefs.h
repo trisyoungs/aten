@@ -40,7 +40,7 @@ class AtenPrefs : public QDialog
 	*/
 	private slots:
 	void on_PrefsCancelButton_clicked(bool checked);
-	void on_PrefsSetDefaultButton_clicked(bool checked);
+	void on_PrefsSaveAsDefaultButton_clicked(bool checked);
 
 	/*
 	// General Page

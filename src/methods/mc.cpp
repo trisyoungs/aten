@@ -305,7 +305,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
 		} // Loop over MC moves
 
-		if (prefs.shouldUpdateEnergy(cycle))
+		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
 			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));
@@ -315,6 +315,9 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
 			//msg.print("\n");
 		}
+		
+		if (prefs.shouldUpdateModel(cycle+1)) gui.update(FALSE, FALSE, FALSE, FALSE);
+		
 		elast = ecurrent;
 
 	} // Loop over MC cycles
