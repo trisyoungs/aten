@@ -173,6 +173,15 @@ bool Command::function_StripChars(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	return TRUE;
 }
 
+// Return substring of supplied string
+bool Command::function_SubStr(CommandNode *c, Bundle &obj, ReturnValue &rv)
+{
+	Dnchar result;
+	result.substr(c->argc(0), c->argi(1)-1, c->argi(2));
+	rv.set( result.get() );
+	return TRUE;
+}
+
 // Return string based on supplied format and arguments
 bool Command::function_ToA(CommandNode *c, Bundle &obj, ReturnValue &rv)
 {

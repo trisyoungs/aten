@@ -586,7 +586,7 @@ class Model
 	// Return the unique type specified
 	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(bool vdwOnly = FALSE);
+	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression

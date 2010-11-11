@@ -134,7 +134,7 @@ void Model::setForcefield(Forcefield *newff)
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(bool vdwOnly)
+bool Model::createExpression(bool vdwOnly, bool allowDummy)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	msg.enter("Model::createExpression");
@@ -170,7 +170,7 @@ bool Model::createExpression(bool vdwOnly)
 		while (!done)
 		{
 			p->deleteExpression();
-			if (!p->createExpression(vdwOnly))
+			if (!p->createExpression(vdwOnly, allowDummy))
 			{
 				// Failed to create an expression for this pattern, so....
 				if (!gui.exists())

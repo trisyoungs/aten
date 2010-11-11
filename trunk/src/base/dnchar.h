@@ -148,6 +148,8 @@ class Dnchar
 	void sprintf(const char *fmt ...);
 	// Search for character in string
 	char *strchr(char c) const;
+	// Copy substring of supplied string into this string
+	void substr(const char *source, int pos, int nchars);
 };
 
 #endif

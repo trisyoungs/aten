@@ -1220,7 +1220,8 @@ int Prefs::modelUpdate() const
 // Return whether to update the energy, given the cycle number
 bool Prefs::shouldUpdateModel(int n)
 {
-	return (n%modelUpdate_ == 0 ? TRUE : FALSE);
+	if (n == 1) return FALSE;
+	else return (n%modelUpdate_ == 0 ? TRUE : FALSE);
 }
 
 
@@ -1239,7 +1240,8 @@ int Prefs::energyUpdate() const
 // Return whether to update the energy, given the cycle number
 bool Prefs::shouldUpdateEnergy(int n)
 {
-	return (n%energyUpdate_ == 0 ? TRUE : FALSE);
+	if (n == 1) return FALSE;
+	else return (n%energyUpdate_ == 0 ? TRUE : FALSE);
 }
 
 // Return the maximum ring size allowed

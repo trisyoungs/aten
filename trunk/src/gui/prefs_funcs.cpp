@@ -207,7 +207,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 }
 
 // Store current prefs values as defaults
-void AtenPrefs::on_PrefsSetDefaultButton_clicked(bool checked)
+void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 {
 	Dnchar filename;
 	filename.sprintf("%s%c%s%cprefs.dat", aten.homeDir(), PATHSEP, aten.atenDir(), PATHSEP);

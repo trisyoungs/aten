@@ -34,7 +34,8 @@ filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension=
 {
 
 	# Variable declaration
-	int n;
+	int n, mol, molcount;
+	atom i;
 	model m = aten.frame;
 
 	# Write data
@@ -42,11 +43,21 @@ filter(type="exportmodel",name="GROMACS coordinates", nickname="gro", extension=
 	writeline(m.natoms);
 
 	n = 1;
-	for (atom i=m.atoms; i; ++i)
+	molcount = 1;
+	for (pattern p = m.patterns; p; ++p)
 	{
-		if (i.type == 0) writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.symbol,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
-		else writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",1,"CGE",i.type.name,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
-		++n;
+		i = p.firstatom;
+		for (mol=0; mol<p.nmols; ++mol)
+		{
+			for (n=0; n<p.nmolatoms; ++n)
+			{
+				if (i.type == 0) writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.symbol,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+				else writelinef("%5i%-5s%5s%5i%8.3f%8.3f%8.3f\n",molcount,substr(p.name,1,5),i.type.name,n,i.rx/10.0,i.ry/10.0,i.rz/10.0);
+				++i;
+				++n;
+			}
+			++molcount;
+		}
 	}
 	if (m.cell.type == "none") writelinef("%9.5f%9.5f%9.5f\n",0.0,0.0,0.0);
 	else writelinef("%9.5f%9.5f%9.5f\n",m.cell.a/10.0,m.cell.b/10.0,m.cell.c/10.0);
