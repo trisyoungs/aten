@@ -80,6 +80,7 @@ bool Generator::set(const char *s)
 			sub[count] = '\0';
 			setMatrixPart(n, sub);
 		}
+		//printf("PART=[%s], SUB=[%s]\n", part, sub);
 	}
 	msg.exit("Generator::set");
 	return TRUE;
@@ -98,6 +99,7 @@ bool Generator::setMatrixPart(int row, const char *s)
 	// Skip to next character if necessary
 	if (multiplier == 0) multiplier = 1;
 	else c = &s[1];
+	//printf("MULTIPLIER = %i, original=[%s], now=[%s]\n", multiplier, s, c);
 	// Now, check if this character is x, y, or z.
 	if ( (*c >= 88) && (*c <= 90) ) matrix_.set(row, *c-88, multiplier);
 	else if ( (*c >= 120) && (*c <= 122) ) matrix_.set(row, *c-120, multiplier);
@@ -125,6 +127,7 @@ void Generator::setTranslation(double tx, double ty, double tz, double divisor)
 	matrix_.set(0,3,tx/divisor);
 	matrix_.set(1,3,ty/divisor);
 	matrix_.set(2,3,tz/divisor);
+// 	matrix_.print();
 }
 
 // Return name of generator

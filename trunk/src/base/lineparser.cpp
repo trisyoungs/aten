@@ -594,7 +594,7 @@ bool LineParser::getArgDelim(Dnchar *destarg, int flags)
 {
 	msg.enter("LineParser::getArgDelim");
 	optionMask_ = flags;
-	bool result = getNextArg(destarg);
+	bool result = getNextArg(destarg, flags);
 	msg.print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
 	msg.exit("LineParser::getArgDelim");
 	return result;
