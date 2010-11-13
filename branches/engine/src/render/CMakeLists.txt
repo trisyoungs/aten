@@ -1,13 +1,12 @@
 add_library(render
 engine.h
+glmatrix.h
 polygon.h
 atoms.cpp 
 colourscale.cpp
 engine.cpp
 extra.cpp 
-glyph.cpp 
-model.cpp 
-objects.cpp 
+glmatrix.cpp
 polygon.cpp
 render.cpp 
 surface.cpp

@@ -108,10 +108,14 @@ class Prefs
 	int globeSize_;
 	// Rendering style of models
 	Atom::DrawStyle renderStyle_;
+	// General quality of primitives
+	int primitiveQuality_;
 	// Number of levels of detail for rendering primitives
 	int levelsOfDetail_;
+	// Level of detail start z-distance
+	double levelOfDetailStartZ_;
 	// Level of detail slice 'width'
-	int levelOfDetailWidth_;
+	double levelOfDetailWidth_;
 
 	public:
 	// Set the visibility of an object on-screen
@@ -148,14 +152,22 @@ class Prefs
 	void setRepeatCellsNeg(int i, int r);
 	// Get negative repeat cell value
 	int repeatCellsNeg(int i) const;
+	// Sets the general primitive quality
+	void setPrimitiveQuality(int n);
+	// Return the current primitive quality
+	int primitiveQuality() const;
 	// Set number of levels of detail for rendering primitives
 	void setLevelsOfDetail(int n);
 	// Return number of levels of detail for rendering primitives
 	int levelsOfDetail();
+	// Set level of detail starting z-distance
+	void setLevelOfDetailStartZ(double z);
+	// Return level of detail starting z-distance
+	double levelOfDetailStartZ();
 	// Set level of detail slice 'width'
 	void setLevelOfDetailWidth(double width);
 	// Return level of detail slice 'width'
-	int levelOfDetailWidth();
+	double levelOfDetailWidth();
 
 
 	/*
@@ -170,10 +182,6 @@ class Prefs
 	GLdouble bondStyleRadius_[Atom::nDrawStyles];
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
-	// Detail of atom quadric (slices/stacks)
-	GLint atomDetail_;
-	// Detail of bond quadric (slices/stacks)
-	GLint bondDetail_;
 	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
 	bool perspective_;
 	// Viewing angle for perspective projection
@@ -194,14 +202,6 @@ class Prefs
 	void setBondStyleRadius(Atom::DrawStyle ds, double f);
 	// Return the bond radius used in Scaled and Sphere styles
 	GLdouble bondStyleRadius(Atom::DrawStyle ds) const;
-	// Sets the detail for atom quadrics
-	void setAtomDetail(int n);
-	// Return the current detail of atom quadrics
-	GLint atomDetail() const;
-	// Sets the detail for bond quadrics
-	void setBondDetail(int n);
-	// Return the current detail of bond quadrics
-	GLint bondDetail() const;
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms

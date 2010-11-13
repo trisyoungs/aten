@@ -349,7 +349,6 @@ void RenderEngine::renderModel(Model *source)
 			if (j->id() > id_i) continue;
 			v = j->r() - i->r();
 
-
 			// Grab colour of second atom
 			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambientj);
 			else switch (scheme)
@@ -393,10 +392,22 @@ void RenderEngine::renderModel(Model *source)
 			transform.y().z *= halfr;
 			transform.z().z *= halfr;
 			renderPrimitive(bond_[Atom::SphereStyle], lod, ambient, diffuse, pos, transform);
-			pos += v;
+double m[16];
+glGetDoublev(GL_MODELVIEW_MATRIX, m);
+printf(" %f %f %f %f\n", m[0], m[1], m[2], m[3]);
+printf(" %f %f %f %f\n", m[4], m[5], m[6], m[7]);
+printf(" %f %f %f %f\n", m[8], m[9], m[10], m[11]);
+printf(" %f %f %f %f\n", m[12], m[13], m[14], m[15]);
 			glTranslated(v.x, v.y, v.z);
-			renderPrimitive(bond_[Atom::SphereStyle], lod, ambientj, diffusej, pos, transform);
-			glPopMatrix();
+glGetDoublev(GL_MODELVIEW_MATRIX, m);
+printf("Translated by %f %f %f\n", v.x, v.y, v.z);
+printf(" %f %f %f %f\n", m[0], m[1], m[2], m[3]);
+printf(" %f %f %f %f\n", m[4], m[5], m[6], m[7]);
+printf(" %f %f %f %f\n", m[8], m[9], m[10], m[11]);
+printf(" %f %f %f %f\n", m[12], m[13], m[14], m[15]);
+			renderPrimitive(bond_[Atom::SphereStyle], lod, ambientj, diffusej, pos+v, transform);
+			glTranslated(-v.x, -v.y, -v.z);
+			//transform.x().w = transform.x() * pos;
 		}
 
 		// Move back to 'zero' position

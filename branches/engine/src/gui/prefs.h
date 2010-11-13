@@ -89,7 +89,7 @@ class AtenPrefs : public QDialog
 	void spotlightPosChanged(int i, double value);
 	void spotlightColourChanged(Prefs::ColourComponent);
 	private slots:
-	// Radii
+	// Style page
 	void on_StickRadiusSpin_valueChanged(double value);
 	void on_TubeRadiusSpin_valueChanged(double value);
 	void on_SphereRadiusSpin_valueChanged(double value);
@@ -99,7 +99,20 @@ class AtenPrefs : public QDialog
 	void on_SphereBondRadiusSpin_valueChanged(double value);
 	void on_ScaledBondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
-	// Lighting
+	void on_StandardColoursTable_cellDoubleClicked(int row, int column);
+	void on_DefaultStyleCombo_currentIndexChanged(int index);
+	// Rendering / Quality page
+	void on_LevelOfDetailNLevelsSpin_valueChanged(int value);
+	void on_LevelOfDetailStartZSpin_valueChanged(double value);
+	void on_LevelOfDetailWidthSpin_valueChanged(double value);
+	void on_PrimitiveQualitySpin_valueChanged(int value);
+	void on_FarClipSpin_valueChanged(double value);
+	void on_FarDepthSpin_valueChanged(int value);
+	void on_NearClipSpin_valueChanged(double value);
+	void on_NearDepthSpin_valueChanged(int value);
+	void on_LineAliasingCheck_stateChanged(int state);
+	void on_PolygonAliasingCheck_stateChanged(int state);
+	void on_MultiSamplingCheck_stateChanged(int state);
 	void on_SpotlightGroup_clicked(bool checked);
 	void on_SpotlightAmbientColourButton_clicked(bool checked);
 	void on_SpotlightDiffuseColourButton_clicked(bool checked);
@@ -108,7 +121,9 @@ class AtenPrefs : public QDialog
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
 	void on_ShininessSpin_valueChanged(int value);
-	// Scene
+	void on_AngleLabelEdit_textEdited(const QString &text);
+	void on_DistanceLabelEdit_textEdited(const QString &text);
+	// Scene Objects page
 	void on_AtomsVisibleCheck_stateChanged(int state);
 	void on_CellVisibleCheck_stateChanged(int state);
 	void on_AxesVisibleCheck_stateChanged(int state);
@@ -125,35 +140,21 @@ class AtenPrefs : public QDialog
 	void on_MeasurementsVisibleImageCheck_stateChanged(int state);
 	void on_SurfacesVisibleImageCheck_stateChanged(int state);
 	void on_RegionsVisibleImageCheck_stateChanged(int state);
-	void on_AngleLabelEdit_textEdited(const QString &text);
-	void on_DistanceLabelEdit_textEdited(const QString &text);
-	// GL
-	void on_AtomQualitySpin_valueChanged(int value);
-	void on_BondQualitySpin_valueChanged(int value);
-	void on_FarClipSpin_valueChanged(double value);
-	void on_FarDepthSpin_valueChanged(int value);
-	void on_NearClipSpin_valueChanged(double value);
-	void on_NearDepthSpin_valueChanged(int value);
-	void on_LineAliasingCheck_stateChanged(int state);
-	void on_PolygonAliasingCheck_stateChanged(int state);
-	void on_MultiSamplingCheck_stateChanged(int state);
 
 	/*
-	// Colours page
+	// Colourscales page
 	*/
 	private:
 	void updateScalePointsList();
 	private slots:
-	void on_StandardColoursTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
-	void on_StandardColoursButton_clicked(bool checked);
 	void on_ScaleList_currentRowChanged(int id);
 	void on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
-	void on_ScaleNameEdit_returnPressed();
 	void on_PointValueSpin_valueChanged(double d);
 	void on_PointColourButton_clicked(bool checked);
 	void on_AddPointButton_clicked(bool checked);
 	void on_RemovePointButton_clicked(bool checked);
 	void on_ScaleList_itemClicked(QListWidgetItem *item);
+	void on_ScaleList_itemDoubleClicked(QListWidgetItem *item);
 
 	/*
 	// Energy / FF Page

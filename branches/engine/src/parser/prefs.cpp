@@ -51,11 +51,9 @@ PreferencesVariable::~PreferencesVariable()
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "anglelabel",		VTypes::StringData,	0, FALSE },
-	{ "atomdetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "atomstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
 	{ "backcull",		VTypes::IntegerData,	0, FALSE },
 	{ "backgroundcolour",	VTypes::DoubleData,	4, FALSE },
-	{ "bonddetail"	,	VTypes::DoubleData,	0, FALSE },
 	{ "bondstyleradius",	VTypes::DoubleData,	Atom::nDrawStyles, FALSE },
 	{ "bondtolerance",	VTypes::DoubleData,	0, FALSE },
 	{ "cachelimit",		VTypes::IntegerData,	0, FALSE },
@@ -86,6 +84,9 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "hdistance",		VTypes::DoubleData,	0, FALSE },
 	{ "keyaction",		VTypes::StringData,	Prefs::nModifierKeys, FALSE },
 	{ "labelsize",		VTypes::IntegerData,	0, FALSE },
+	{ "levelofdetailstartz",VTypes::DoubleData,	0, FALSE },
+	{ "levelofdetailwidth",	VTypes::DoubleData,	0, FALSE },
+	{ "levelsofdetail",	VTypes::IntegerData,	0, FALSE },
 	{ "linealiasing",	VTypes::IntegerData,	0, FALSE },
 	{ "manualswapbuffers",	VTypes::IntegerData,	0, FALSE },
 	{ "maxcuboids",		VTypes::IntegerData,	0, FALSE },
@@ -101,6 +102,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "perspective"	,	VTypes::IntegerData,	0, FALSE },
 	{ "perspectivefov",	VTypes::DoubleData,	0, FALSE },
 	{ "polygonaliasing",	VTypes::IntegerData,	0, FALSE },
+	{ "quality"	,	VTypes::IntegerData,	0, FALSE },
 	{ "renderstyle",	VTypes::StringData,	0, FALSE },
 	{ "replicatefold",	VTypes::IntegerData,	0, FALSE },
 	{ "replicatetrim",	VTypes::IntegerData,	0, FALSE },
@@ -225,9 +227,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::AngleLabel):
 			rv.set( ptr->angleLabel() );
 			break;
-		case (PreferencesVariable::AtomDetail):
-			rv.set( (int) ptr->atomDetail() );
-			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->atomStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
 			else rv.setArray( VTypes::DoubleData, &ptr->atomStyleRadius_, Atom::nDrawStyles);
@@ -238,9 +237,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::BackgroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::BackgroundColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::BackgroundColour), 4);
-			break;
-		case (PreferencesVariable::BondDetail):
-			rv.set( (int) ptr->bondDetail() );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (hasArrayIndex) rv.set(ptr->bondStyleRadius( (Atom::DrawStyle) (arrayIndex-1)) );
@@ -338,6 +334,15 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 		case (PreferencesVariable::LabelSize):
 			rv.set( ptr->labelSize() );
 			break;
+		case (PreferencesVariable::LevelOfDetailStartZ):
+			rv.set( ptr->levelOfDetailStartZ() );
+			break;
+		case (PreferencesVariable::LevelOfDetailWidth):
+			rv.set( ptr->levelOfDetailWidth() );
+			break;
+		case (PreferencesVariable::LevelsOfDetail):
+			rv.set( ptr->levelsOfDetail() );
+			break;
 		case (PreferencesVariable::LineAliasing):
 			rv.set( ptr->lineAliasing() );
 			break;
@@ -383,6 +388,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArray
 			break;
 		case (PreferencesVariable::PolygonAliasing):
 			rv.set( ptr->polygonAliasing() );
+			break;
+		case (PreferencesVariable::Quality):
+			rv.set( (int) ptr->primitiveQuality() );
 			break;
 		case (PreferencesVariable::RenderStyle):
 			rv.set( Atom::drawStyle(ptr->renderStyle()) );
@@ -541,9 +549,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::AngleLabel):
 			ptr->setAngleLabel( newvalue.asString(result) );
 			break;
-		case (PreferencesVariable::AtomDetail):
-			ptr->setAtomDetail( newvalue.asInteger(result) );
-			break;
 		case (PreferencesVariable::AtomStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setAtomStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Atom::DrawStyle) (arrayIndex-1), newvalue.asDouble(result));
@@ -556,9 +561,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::BackgroundColour, arrayIndex-1, newvalue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::BackgroundColour, n, newvalue.asDouble(result));
-			break;
-		case (PreferencesVariable::BondDetail):
-			ptr->setBondDetail( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::BondStyleRadius):
 			if (newvalue.arraySize() == Atom::nDrawStyles) for (n=0; n<Atom::nDrawStyles; ++n) ptr->setBondStyleRadius( (Atom::DrawStyle) n, newvalue.asDouble(n, result));
@@ -693,6 +695,15 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 		case (PreferencesVariable::LabelSize):
 			ptr->setLabelSize( newvalue.asInteger(result) );
 			break;
+		case (PreferencesVariable::LevelOfDetailStartZ):
+			ptr->setLevelOfDetailStartZ( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::LevelOfDetailWidth):
+			ptr->setLevelOfDetailWidth( newvalue.asDouble(result) );
+			break;
+		case (PreferencesVariable::LevelsOfDetail):
+			ptr->setLevelsOfDetail( newvalue.asInteger(result) );
+			break;
 		case (PreferencesVariable::LineAliasing):
 			ptr->setLineAliasing( newvalue.asBool() );
 			break;
@@ -754,6 +765,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue 
 			break;
 		case (PreferencesVariable::PolygonAliasing):
 			ptr->setPolygonAliasing( newvalue.asBool() );
+			break;
+		case (PreferencesVariable::Quality):
+			ptr->setPrimitiveQuality( newvalue.asInteger(result) );
 			break;
 		case (PreferencesVariable::RenderStyle):
 			ds = Atom::drawStyle( newvalue.asString(result), TRUE );
