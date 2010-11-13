@@ -161,6 +161,7 @@ const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 Prefs::Prefs()
 {
 	// Rendering - Style
+	renderStyle_ = Atom::StickStyle;
 	colourScheme_ = Prefs::ElementScheme;
 	atomStyleRadius_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
 	atomStyleRadius_[Atom::TubeStyle] = 0.15;
@@ -171,11 +172,11 @@ Prefs::Prefs()
 	bondStyleRadius_[Atom::SphereStyle] = 0.15;
 	bondStyleRadius_[Atom::ScaledStyle] = 0.15;
 	selectionScale_ = 1.5;
-	globeSize_ = 75;
-	atomDetail_ = 10;
-	bondDetail_ = 6;
 	perspective_ = TRUE;
 	perspectiveFov_ = 20.0;
+
+	// Rendering / Quality Options
+	globeSize_ = 75;
 	spotlightActive_ = TRUE;
 	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
@@ -193,8 +194,6 @@ Prefs::Prefs()
 	spotlightPosition_[1] = 1.0;
 	spotlightPosition_[2] = 1.0;
 	spotlightPosition_[3] = 0.0;
-
-	// GL Options
 	depthCue_ = FALSE;
 	lineAliasing_ = TRUE;
 	polygonAliasing_ = FALSE;
@@ -205,13 +204,14 @@ Prefs::Prefs()
 	clipFar_ = 2000.0;
 	depthNear_ = 1;
 	depthFar_ = 200;
-
-	// Rendering - Objects
-	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
-	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
-	renderStyle_ = Atom::StickStyle;
+	primitiveQuality_ = 10;
 	levelsOfDetail_ = 3;
 	levelOfDetailWidth_ = 10;
+	levelOfDetailStartZ_ = 10.0;
+
+	// Screen Objects
+	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
+	offScreenObjects_ = 1 + 2 + 4 + 64 + 128 + 256 + 512;
 
 	// Build
 	showGuide_ = FALSE;
@@ -516,6 +516,18 @@ int Prefs::repeatCellsNeg(int i) const
 	return repeatCellsNeg_.get(i);
 }
 
+// Set the general primitive detail
+void Prefs::setPrimitiveQuality(int n)
+{
+	primitiveQuality_ = n;
+}
+
+// Return the general primitive detail
+int Prefs::primitiveQuality() const
+{
+	return primitiveQuality_;
+}
+
 // Set number of levels of detail for rendering primitives
 void Prefs::setLevelsOfDetail(int n)
 {
@@ -528,6 +540,18 @@ int Prefs::levelsOfDetail()
 	return levelsOfDetail_;
 }
 
+// Set level of detail starting z
+void Prefs::setLevelOfDetailStartZ(double z)
+{
+	levelOfDetailStartZ_ = z;
+}
+
+// Return level of detail slice 'width'
+double Prefs::levelOfDetailStartZ()
+{
+	return levelOfDetailStartZ_;
+}
+
 // Set level of detail slice 'width'
 void Prefs::setLevelOfDetailWidth(double width)
 {
@@ -535,14 +559,14 @@ void Prefs::setLevelOfDetailWidth(double width)
 }
 
 // Return level of detail slice 'width'
-int Prefs::levelOfDetailWidth()
+double Prefs::levelOfDetailWidth()
 {
 	return levelOfDetailWidth_;
 }
 
+// Return screen radius of specified atom
 double Prefs::screenRadius(Atom *i) const
 {
-	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
 	return (dstyle == Atom::ScaledStyle) ? (elements().atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
@@ -574,30 +598,6 @@ void Prefs::setBondStyleRadius(Atom::DrawStyle ds, double f)
 GLdouble Prefs::bondStyleRadius(Atom::DrawStyle ds) const
 {
 	return bondStyleRadius_[ds];
-}
-
-// Sets the detail for atom quadrics
-void Prefs::setAtomDetail(int n)
-{
-	atomDetail_ = n;
-}
-
-// Return the current detail of atom quadrics
-GLint Prefs::atomDetail() const
-{
-	return atomDetail_;
-}
-
-// Sets the detail for bond quadrics
-void Prefs::setBondDetail(int n)
-{
-	bondDetail_ = n;
-}
-
-// Return the current detail of bond quadrics
-GLint Prefs::bondDetail() const
-{
-	return bondDetail_;
 }
 
 // Sets the scale of selected atoms

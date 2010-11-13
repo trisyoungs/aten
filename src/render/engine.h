@@ -22,6 +22,7 @@
 #ifndef ATEN_RENDERENGINE_H
 #define ATEN_RENDERENGINE_H
 
+#include "render/glmatrix.h"
 #include "render/polygon.h"
 #include "render/primitive.h"
 #include "templates/vector3.h"
@@ -85,7 +86,7 @@ class RenderEngine
 	// Render primitive in specified colour and level of detail (coords used only if filtered)
 	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
 	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, Mat4<double> &transform);
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform);
 
 	public:
 	// Render specified model

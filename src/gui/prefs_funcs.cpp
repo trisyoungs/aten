@@ -102,8 +102,10 @@ void AtenPrefs::setControls()
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
 	ui.ShininessSpin->setValue(prefs.shininess());
 	// ... GL
-	ui.AtomQualitySpin->setValue(prefs.atomDetail());
-	ui.BondQualitySpin->setValue(prefs.bondDetail());
+	ui.PrimitiveQualitySpin->setValue(prefs.primitiveQuality());
+	ui.LevelOfDetailNLevelsSpin->setValue(prefs.levelsOfDetail());
+	ui.LevelOfDetailStartZSpin->setValue(prefs.levelOfDetailStartZ());
+	ui.LevelOfDetailWidthSpin->setValue(prefs.levelOfDetailWidth());
 	ui.LineAliasingCheck->setChecked(prefs.lineAliasing());
 	ui.PolygonAliasingCheck->setChecked(prefs.polygonAliasing());
 	ui.MultiSamplingCheck->setChecked(prefs.multiSampling());
@@ -149,8 +151,6 @@ void AtenPrefs::setControls()
 		item->setBackgroundColor(qcol);
 		ui.StandardColoursTable->setItem(n, 1, item);
 	}
-        ui.StandardColoursFrame->setColour(prefs.colour( (Prefs::PenColour) 0 ));
-        ui.StandardColoursFrame->update();
 	Dnchar name;
 	for (int n=0; n<10; n++)
 	{
@@ -357,18 +357,30 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 }
 
 /*
-// View [GL] page
+// Rendering / Quality Page
 */
 
-void AtenPrefs::on_AtomQualitySpin_valueChanged(int value)
+void AtenPrefs::on_PrimitiveQualitySpin_valueChanged(int value)
 {
-	prefs.setAtomDetail(value);
+	prefs.setPrimitiveQuality(value);
 	updateAfterViewPrefs();
 }
 
-void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
+void AtenPrefs::on_LevelOfDetailNLevelsSpin_valueChanged(int value)
 {
-	prefs.setBondDetail(value);
+	prefs.setLevelsOfDetail(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_LevelOfDetailStartZSpin_valueChanged(double value)
+{
+	prefs.setLevelOfDetailStartZ(value);
+	updateAfterViewPrefs();
+}
+
+void AtenPrefs::on_LevelOfDetailWidthSpin_valueChanged(double value)
+{
+	prefs.setLevelOfDetailWidth(value);
 	updateAfterViewPrefs();
 }
 
@@ -645,12 +657,13 @@ void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
 // Colours Page
 */
 
-void AtenPrefs::on_StandardColoursButton_clicked(bool checked)
+void AtenPrefs::on_StandardColoursTable_cellDoubleClicked(int row, int column)
 {
-	// Get current item in table
-	int colid = ui.StandardColoursTable->currentRow();
-	if (colid == -1) return;
-	double *col = prefs.colour( (Prefs::PenColour) colid );
+	// Get clicked item in table
+	if (column != 1) return;
+	if (row == -1) return;
+	Prefs::PenColour pencol = (Prefs::PenColour) row;
+	double *col = prefs.colour(pencol);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -658,23 +671,11 @@ void AtenPrefs::on_StandardColoursButton_clicked(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	prefs.setColour( (Prefs::PenColour) colid, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.StandardColoursFrame->setColour(newcol);
-	ui.StandardColoursFrame->update();
-	ui.StandardColoursTable->item(colid, 1)->setBackgroundColor(newcol);
+	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	ui.StandardColoursTable->item(row, 1)->setBackgroundColor(newcol);
 	aten.currentModel()->changeLog.add(Log::Visual);
 	// Update display
 	gui.mainView.postRedisplay();
-}
-
-void AtenPrefs::on_StandardColoursTable_currentCellChanged(int row, int col, int prevrow, int prevcol)
-{
-	if (row == -1) return;
-	double *colour = prefs.colour( (Prefs::PenColour) row );
-	QColor oldcol;
-	oldcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
-	ui.StandardColoursFrame->setColour(oldcol);
-	ui.StandardColoursFrame->update();
 }
 
 void AtenPrefs::updateScalePointsList()
@@ -711,8 +712,6 @@ void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 	if (id == -1) return;
 	// Scale selection has changed, so update points list
 	updateScalePointsList();
-	// Set name in lineedit
-	ui.ScaleNameEdit->setText(prefs.colourScale[id].name());
 }
 
 void AtenPrefs::on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol)
@@ -726,15 +725,6 @@ void AtenPrefs::on_ScalePointsTable_currentCellChanged(int row, int col, int pre
 	ui.PointColourFrame->setColour(csp->colour());
 	ui.PointColourFrame->update();
 	ui.PointValueSpin->setValue(csp->value());
-}
-
-void AtenPrefs::on_ScaleNameEdit_returnPressed()
-{
-	// Get the id of the currently selected point and scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	prefs.colourScale[scale].setName( qPrintable(ui.ScaleNameEdit->text()) );
-	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::on_PointValueSpin_valueChanged(double d)
@@ -809,6 +799,20 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
 	// Look at checked state
 	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
 	gui.mainView.postRedisplay();
+}
+
+void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
+{
+	// Get row number associated with item
+	int row = ui.ScaleList->row(item);
+	if (row == -1) return;
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Rename Colourscale: ") + (row+1), tr("New name:"), QLineEdit::Normal, prefs.colourScale[row].name(), &ok);
+	if (ok && !text.isEmpty())
+	{
+		prefs.colourScale[row].setName( qPrintable(text) );
+		gui.mainView.postRedisplay();
+	}
 }
 
 /*
