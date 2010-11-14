@@ -294,25 +294,12 @@ void Canvas::initGl()
 {
 	if (!valid_) return;
 	msg.enter("Canvas::initGl");
-// 	if (beginGl())    TGAY
-// 	{
-		// Create lists for globs if this is the first call to init_gl()
-// 		if (renderOffScreen_)
-// 		{
-// 			temporaryGlobList_[Canvas::StickAtomGlob] = glGenLists(Canvas::nGlobs);
-// 			for (int n=1; n<Canvas::nGlobs; n++) temporaryGlobList_[n] = temporaryGlobList_[Canvas::StickAtomGlob]+n;
-			//printf("Model glob id = %i\n", list_[ModelGlob]);
-// 		}
-// 		else if (globList_[0] == 0)
-// 		{
-// 			globList_[StickAtomGlob] = glGenLists(Canvas::nGlobs);
-// // 			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", glob(StickAtomGlob));
-// 			for (int n=1; n<Canvas::nGlobs; n++) globList_[n] = globList_[Canvas::StickAtomGlob]+n;
-// 		}
-// 		createLists();
-// 		endGl();
-// 	}
-// 	else printf("Failed to set-up OpenGL on canvas.\n");
+ 	if (beginGl())
+ 	{
+		engine_.createPrimitives();
+ 		endGl();
+ 	}
+ 	else printf("Failed to set-up OpenGL on canvas.\n");
 	msg.exit("Canvas::initGl");
 }
 

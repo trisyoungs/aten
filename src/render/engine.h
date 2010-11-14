@@ -51,6 +51,8 @@ class RenderEngine
 	PrimitiveGroup selectedAtom_[Atom::nDrawStyles], *selectedScaledAtom_;
 	// Bond styles
 	PrimitiveGroup bond_[Atom::nDrawStyles];
+	// Selected bond styles
+	PrimitiveGroup selectedBond_[Atom::nDrawStyles];
 
 	public:
 	// (Re)Generate primitive vertex arrays
@@ -84,9 +86,9 @@ class RenderEngine
 	*/
 	private:
 	// Render primitive in specified colour and level of detail (coords used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local);
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &local, bool transformInGL = TRUE);
 	// Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform);
+	void renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform, bool transformInGL = TRUE);
 
 	public:
 	// Render specified model

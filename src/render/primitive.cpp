@@ -227,7 +227,7 @@ PrimitiveInfo::PrimitiveInfo()
 {
 	// Private variables
 	primitive_ = NULL;
-	transformDefined_ = FALSE;
+	matrixTransformDefined_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -247,12 +247,11 @@ void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec
 }
 
 // Set primitive info data, including local rotation
-void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords, Mat4<double> &transform)
+void PrimitiveInfo::set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform)
 {
 	primitive_ = prim;
-	localCoords_ = coords;
 	localTransform_ = transform;
-	transformDefined_ = TRUE;
+	matrixTransformDefined_ = TRUE;
 	for (int n=0; n<4; ++n)
 	{
 		ambient_[n] = ambient[n];
@@ -273,15 +272,15 @@ Vec3<double> &PrimitiveInfo::localCoords()
 }
 
 // Return local transformation of primitive
-Mat4<double> &PrimitiveInfo::localTransform()
+GLMatrix &PrimitiveInfo::localTransform()
 {
 	return localTransform_;
 }
 
 // Return whether a local transformation is defined
-bool PrimitiveInfo::transformDefined()
+bool PrimitiveInfo::matrixTransformDefined()
 {
-	return transformDefined_;
+	return matrixTransformDefined_;
 }
 
 // Return ambient colour pointer
@@ -326,9 +325,10 @@ void PrimitiveGroup::clear()
 // Return primitive corresponding to level of detail specified
 Primitive &PrimitiveGroup::primitive(int lod)
 {
-	if ((lod < 0) || (lod >= nPrimitives_)) printf("Level of detail is out of range for PrimitiveGroup\n");
+	// Clamp LOD to allowable range
+	if (lod < 0) return primitives_[0];
+	else if (lod >= nPrimitives_) return primitives_[nPrimitives_-1];
 	else return primitives_[lod];
-	return primitives_[0];
 }
 
 // Send to OpenGL (i.e. render) at specified level of detail
