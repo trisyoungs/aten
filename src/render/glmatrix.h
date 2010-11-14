@@ -41,10 +41,10 @@ class GLMatrix
 	/*
 	// Operators
 	*/
+	public:
 	GLMatrix operator*(const GLMatrix &B) const;
 	GLMatrix& operator*=(const GLMatrix &B);
-	Vec3<double> operator*(const Vec3<double>&) const;
-
+	void operator=(const Mat4<double> &B);
 
 	/*
 	// Methods
@@ -86,6 +86,8 @@ class GLMatrix
 	void zero();
 	// Return matrix array
 	GLdouble *matrix();
+	// Multiply against coordinates provided
+	void multiply(GLfloat *r, GLfloat *transformed);
 };
 
 #endif

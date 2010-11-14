@@ -2,6 +2,7 @@ add_library(render
 engine.h
 glmatrix.h
 polygon.h
+triangles.h
 atoms.cpp 
 colourscale.cpp
 engine.cpp
@@ -10,6 +11,7 @@ glmatrix.cpp
 polygon.cpp
 render.cpp 
 surface.cpp
+triangles.cpp
 )
 
 include_directories(

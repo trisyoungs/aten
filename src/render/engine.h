@@ -23,7 +23,7 @@
 #define ATEN_RENDERENGINE_H
 
 #include "render/glmatrix.h"
-#include "render/polygon.h"
+#include "render/triangles.h"
 #include "render/primitive.h"
 #include "templates/vector3.h"
 #include "base/atom.h"
@@ -36,8 +36,9 @@ class Model;
 class RenderEngine
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	RenderEngine();
+	~RenderEngine();
 	// Filter type (if any)
 	enum FilterType { NoFilter, TransparencyFilter, CompleteFilter, nFilterTypes };
 
@@ -99,10 +100,12 @@ class RenderEngine
 	// Filter Type and Filtered Polygon List
 	*/
 	private:
-	// Filter type
-	FilterType type_;
+	// List of filtered solid primitives	// OPTIMIZE - Don't use a list, use a chunked, extendible array
+	List<PrimitiveInfo> solidPrimitives_;
 	// List of filtered primitives
-	List<PrimitiveInfo> filteredPrimitives_;
+	List<PrimitiveInfo> transparentPrimitives_;
+	// Triangle 'sorter'
+	TriangleChopper triangleChopper_;
 
 	public:
 	// Set filter type
