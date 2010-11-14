@@ -171,7 +171,7 @@ void GLMatrix::createRotationXY(double anglex, double angley)
 	siny = sin(thetay);
 	matrix_[0] = cosy;
 	matrix_[1] = (-sinx)*(-siny);
-	matrix_[2] = -siny*cosx
+	matrix_[2] = -siny*cosx;
 	matrix_[3] = 0.0;
 	matrix_[4] = 0.0;
 	matrix_[5] = cosx;
@@ -236,13 +236,16 @@ void GLMatrix::createRotationZ(double angle)
 }
 
 // Create axis rotation quaternion
-void GLMatrix::createRotationAxis(double ax, double ay, double az, double angle)
+void GLMatrix::createRotationAxis(double ax, double ay, double az, double angle, bool normalise)
 {
 	double cosx, sinx, theta = angle/DEGRAD;
-	double mag = sqrt(ax*ax + ay*ay + az*az);
-	ax /= mag;
-	ay /= mag;
-	az /= mag;
+	if (normalise)
+	{
+		double mag = sqrt(ax*ax + ay*ay + az*az);
+		ax /= mag;
+		ay /= mag;
+		az /= mag;
+	}
 	cosx = cos(theta);
 	sinx = sin(theta);
 	matrix_[0] = ax*ax*(1.0-cosx) + cosx;
@@ -263,16 +266,126 @@ void GLMatrix::createRotationAxis(double ax, double ay, double az, double angle)
 	matrix_[15] = 1.0;
 }
 
-// Apply a general scaling to the matrix (as glScaled would do)
-void GLMatrix::scale(double scalex, double scaley, double scalez)
+// Apply rotation about X axis
+void GLMatrix::applyRotationX(double angle)
 {
-	scaleX(scalex);
-	scaleY(scaley);
-	scaleZ(scalez);
+	double cosx, sinx, theta = angle/DEGRAD, temp[4];
+	cosx = cos(theta);
+	sinx = sin(theta);
+
+	// Recalculate second column and store in temp values
+	temp[0] = matrix_[4]*cosx + matrix_[8]*-sinx;
+	temp[1] = matrix_[5]*cosx + matrix_[9]*-sinx;
+	temp[2] = matrix_[6]*cosx + matrix_[10]*-sinx;
+	temp[3] = matrix_[7]*cosx + matrix_[11]*-sinx;
+
+	matrix_[8] = matrix_[4]*sinx + matrix_[8]*cosx;
+	matrix_[9] = matrix_[5]*sinx + matrix_[9]*cosx;
+	matrix_[10] = matrix_[6]*sinx + matrix_[10]*cosx;
+	matrix_[11] = matrix_[7]*sinx + matrix_[11]*cosx;
+
+	matrix_[4] = temp[0];
+	matrix_[5] = temp[1];
+	matrix_[6] = temp[2];
+	matrix_[7] = temp[3];
+}
+
+// Apply axis rotation quaternion
+void GLMatrix::applyRotationAxis(double ax, double ay, double az, double angle, bool normalise)
+{
+	double cosx, sinx, theta = angle/DEGRAD, temp[8], multipliers[16];
+	if (normalise)
+	{
+		double mag = sqrt(ax*ax + ay*ay + az*az);
+		ax /= mag;
+		ay /= mag;
+		az /= mag;
+	}
+	cosx = cos(theta);
+	sinx = sin(theta);
+	multipliers[0] = ax*ax*(1.0-cosx) + cosx;
+	multipliers[1] = ax*ay*(1.0-cosx) + az*sinx;
+	multipliers[2] = ax*az*(1.0-cosx) - ay*sinx;
+	multipliers[4] = ax*ay*(1.0-cosx) - az*sinx;
+	multipliers[5] = ay*ay*(1.0-cosx) + cosx;
+	multipliers[6] = ay*az*(1.0-cosx) + ax*sinx;
+	multipliers[8] = ax*az*(1.0-cosx) + ay*sinx;
+	multipliers[9] = ay*az*(1.0-cosx) - ax*sinx;
+	multipliers[10] = az*az*(1.0-cosx) + cosx;
+
+	temp[0] = matrix_[0]*multipliers[0] + matrix_[4]*multipliers[1] + matrix_[8]*multipliers[2];
+	temp[1] = matrix_[1]*multipliers[0] + matrix_[5]*multipliers[1] + matrix_[9]*multipliers[2];
+	temp[2] = matrix_[2]*multipliers[0] + matrix_[6]*multipliers[1] + matrix_[10]*multipliers[2];
+	temp[3] = matrix_[3]*multipliers[0] + matrix_[7]*multipliers[1] + matrix_[11]*multipliers[2];
+
+	temp[4] = matrix_[0]*multipliers[4] + matrix_[4]*multipliers[5] + matrix_[8]*multipliers[6];
+	temp[5] = matrix_[1]*multipliers[4] + matrix_[5]*multipliers[5] + matrix_[9]*multipliers[6];
+	temp[6] = matrix_[2]*multipliers[4] + matrix_[6]*multipliers[5] + matrix_[10]*multipliers[6];
+	temp[7] = matrix_[3]*multipliers[4] + matrix_[7]*multipliers[5] + matrix_[11]*multipliers[6];
+
+	matrix_[8] = matrix_[0]*multipliers[8] + matrix_[4]*multipliers[9] + matrix_[8]*multipliers[10];
+	matrix_[9] = matrix_[1]*multipliers[8] + matrix_[5]*multipliers[9] + matrix_[9]*multipliers[10];
+	matrix_[10] = matrix_[2]*multipliers[8] + matrix_[6]*multipliers[9] + matrix_[10]*multipliers[10];
+	matrix_[11] = matrix_[3]*multipliers[8] + matrix_[7]*multipliers[9] + matrix_[11]*multipliers[10];
+
+	matrix_[0] = temp[0];
+	matrix_[1] = temp[1];
+	matrix_[2] = temp[2];
+	matrix_[3] = temp[3];
+	matrix_[4] = temp[4];
+	matrix_[5] = temp[5];
+	matrix_[6] = temp[6];
+	matrix_[7] = temp[7];
+}
+
+// Apply a translation to the matrix (as glTranslated would do)
+void GLMatrix::createTranslation(double dx, double dy, double dz)
+{
+	matrix_[0] = 1.0;
+	matrix_[1] = 0.0;
+	matrix_[2] = 0.0;
+	matrix_[3] = 0.0;
+	matrix_[4] = 0.0;
+	matrix_[5] = 1.0;
+	matrix_[6] = 0.0;
+	matrix_[7] = 0.0;
+	matrix_[8] = 0.0;
+	matrix_[9] = 0.0;
+	matrix_[10] = 1.0;
+	matrix_[11] = 0.0;
+	matrix_[12] = dx;
+	matrix_[13] = dy;
+	matrix_[14] = dz;
+	matrix_[15] = 1.0;
+}
+
+// Apply a translation to the matrix (as glTranslated would do)
+void GLMatrix::applyTranslation(double dx, double dy, double dz)
+{
+	matrix_[12] += matrix_[0]*dx + matrix_[4]*dy + matrix_[8]*dz;
+	matrix_[13] += matrix_[1]*dx + matrix_[5]*dy + matrix_[9]*dz;
+	matrix_[14] += matrix_[2]*dx + matrix_[6]*dy + matrix_[10]*dz;
+// 	matrix_[15] += matrix_[3]*dx + matrix_[7]*dy + matrix_[11]*dz;
+}
+
+// Add a translation to the matrix
+void GLMatrix::translate(double dx, double dy, double dz)
+{
+	matrix_[12] += dx;
+	matrix_[13] += dy;
+	matrix_[14] += dz;
+}
+
+// Apply a general scaling to the matrix (as glScaled would do)
+void GLMatrix::applyScaling(double scalex, double scaley, double scalez)
+{
+	applyScalingX(scalex);
+	applyScalingY(scaley);
+	applyScalingZ(scalez);
 }
 
 // Apply a x scaling to the matrix
-void GLMatrix::scaleX(double scale)
+void GLMatrix::applyScalingX(double scale)
 {
 	matrix_[0] *= scale;
 	matrix_[1] *= scale;
@@ -281,7 +394,7 @@ void GLMatrix::scaleX(double scale)
 }
 
 // Apply a y scaling to the matrix
-void GLMatrix::scaleY(double scale)
+void GLMatrix::applyScalingY(double scale)
 {
 	matrix_[4] *= scale;
 	matrix_[5] *= scale;
@@ -290,21 +403,12 @@ void GLMatrix::scaleY(double scale)
 }
 
 // Apply a z scaling to the matrix
-void GLMatrix::scaleZ(double scale)
+void GLMatrix::applyScalingZ(double scale)
 {
 	matrix_[8] *= scale;
 	matrix_[9] *= scale;
 	matrix_[10] *= scale;
 	matrix_[11] *= scale;
-}
-
-// Apply a translation to the matrix (as glTranslated would do)
-void GLMatrix::translate(double dx, double dy, double dz)
-{
-	matrix_[12] += matrix_[0]*dx + matrix_[4]*dy + matrix_[8]*dz;
-	matrix_[13] += matrix_[1]*dx + matrix_[5]*dy + matrix_[9]*dz;
-	matrix_[14] += matrix_[2]*dx + matrix_[6]*dy + matrix_[10]*dz;
-	matrix_[15] += matrix_[3]*dx + matrix_[7]*dy + matrix_[11]*dz;
 }
 
 // Print matrix

@@ -47,20 +47,33 @@ void RenderEngine::createPrimitives()
 {
 	msg.enter("RenderEngine::createPrimitives");
 	double radius;
-	int lod, nstacks, nslices;
+	int n, lod, nstacks, nslices, quality = prefs.primitiveQuality();
+	// Clear old primitive groups
+	for (n=0; n<Atom::nDrawStyles; ++n)
+	{
+		atom_[n].clear();
+		selectedAtom_[n].clear();	
+		bond_[n].clear();
+		selectedBond_[n].clear();
+		for (int m=0; m<elements().nElements(); ++m)
+		{
+			scaledAtom_[m].clear();
+			selectedScaledAtom_[m].clear();
+		}
+	}
 	// Loop over levels of detail
 	for (lod=0; lod < prefs.levelsOfDetail(); ++lod)
 	{
 		// Atom Styles (Atom::StickStyle, Atom::TubeStyle, and Atom::SphereStyle)
 		atom_[Atom::StickStyle].primitive(lod).createCross(0.5,3-lod);
-		nstacks = max(3,(int) (prefs.atomDetail()*(1.0-lod*0.2)*0.75));
-		nslices = max(3,(int) (prefs.atomDetail()*(1.0-lod*0.2)*1.5));
+		nstacks = max(3,(int) (quality*(1.0-lod*0.2)*0.75));
+		nslices = max(3,(int) (quality*(1.0-lod*0.2)*1.5));
 		atom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle), nstacks, nslices);
 		atom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle), nstacks, nslices);
 		selectedAtom_[Atom::TubeStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), nstacks, nslices);
 		selectedAtom_[Atom::SphereStyle].primitive(lod).createSphere(prefs.atomStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), nstacks, nslices);
 		// Atom Styles (Atom::ScaledStyle)
-		for (int n = 0; n<elements().nElements(); ++n)
+		for (n = 0; n<elements().nElements(); ++n)
 		{
 			radius = prefs.atomStyleRadius(Atom::ScaledStyle) * elements().el[n].atomicRadius;
 			scaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
@@ -68,10 +81,14 @@ void RenderEngine::createPrimitives()
 			selectedScaledAtom_[n].primitive(lod).createSphere(radius, nstacks, nslices);
 		}
 		// Bond Styles (all)
-		bond_[Atom::StickStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
+		nstacks = max(3,(int) (quality*(1.0-lod*0.2)*0.25));
+		nslices = max(3,(int) (quality*(1.0-lod*0.2)));
 		bond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle), prefs.bondStyleRadius(Atom::TubeStyle), 1.0, nstacks, nslices);
 		bond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle), prefs.bondStyleRadius(Atom::SphereStyle), 1.0, nstacks, nslices);
 		bond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle), prefs.bondStyleRadius(Atom::ScaledStyle), 1.0, nstacks, nslices);
+		selectedBond_[Atom::TubeStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
+		selectedBond_[Atom::SphereStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
+		selectedBond_[Atom::ScaledStyle].primitive(lod).createCylinder(prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), prefs.bondStyleRadius(Atom::ScaledStyle)*prefs.selectionScale(), 1.0, nstacks, nslices);
 	}
 	msg.exit("RenderEngine::createPrimitives");
 }
@@ -203,16 +220,22 @@ Vec4<double> &RenderEngine::worldToScreen(const Vec3<double> &v, Mat4<double> &v
 */
 
 // Render primitive at requested local position in specified colour, returning projected position
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &pos)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &pos, bool transformInGL)
 {
-	double alphadelta = 1.0-ambient[3];
+	double alphadelta = 1.0-diffuse[3];
 	// Filter type determines what to do here...
 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
 	{
 		// Pass through direct to GL
-		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-		pg.sendToGL(lod);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		if (transformInGL)
+		{
+			glTranslated(pos.x, pos.y, pos.z);
+			pg.sendToGL(lod);
+			glTranslated(-pos.x, -pos.y, -pos.z);
+		}
+		else pg.sendToGL(lod);
 	}
 	else
 	{
@@ -223,38 +246,42 @@ void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient
 }
 
 // Render primitive in specified colour and level of detail (coords/transform used only if filtered)
-void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &pos, Mat4<double> &transform)
+void RenderEngine::renderPrimitive(PrimitiveGroup &pg, int lod, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform, bool transformInGL)
 {
-	double alphadelta = 1.0-ambient[3];
+	double alphadelta = 1.0-diffuse[3];
 	// Filter type determines what to do here...
 	if ((type_ == NoFilter) || ((type_ == TransparencyFilter) && (alphadelta < 0.001)))
 	{
 		// Pass through direct to GL
-		glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
-		glPushMatrix();
-		glMultMatrixd(transform.forGL());
-		pg.sendToGL(lod);
-		glPopMatrix();
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		if (transformInGL)
+		{
+			glPushMatrix();
+			glMultMatrixd(transform.matrix());
+			pg.sendToGL(lod);
+			glPopMatrix();
+		}
+		else pg.sendToGL(lod);
 	}
 	else
 	{
 		// Add primitive info to local buffer (it will be rendered later
 		PrimitiveInfo *pi = filteredPrimitives_.add();
-		pi->set(&pg.primitive(lod), ambient, diffuse, pos, transform);
+		pi->set(&pg.primitive(lod), ambient, diffuse, transform);
 	}
 }
 
 // Render specified model
 void RenderEngine::renderModel(Model *source)
 {
-	GLfloat ambient[4], diffuse[4], ambientj[4], diffusej[4], scaledradius;
+	GLfloat ambienti[4], diffusei[4], ambientj[4], diffusej[4], scaledradius;
 	int lod, id_i;
 	double z, phi, halfr;
 	Atom *i, *j;
 	Vec3<double> pos, v;
 	Vec4<double> transformZ;
-	Mat4<double> transform;
+	GLMatrix transformbase, transform1, transform2;
 	Refitem<Bond,int> *ri;
 
 	// Clear filtered primitives list
@@ -265,13 +292,13 @@ void RenderEngine::renderModel(Model *source)
 	transformZ = transformationMatrix_.z();
 
 	// Set polygon fill mode and specular reflection
-	prefs.copyColour(Prefs::SpecularColour, ambient);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, ambient);
-	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
+	prefs.copyColour(Prefs::SpecularColour, ambienti);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, ambienti);
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 
 	// Grab style values....
 	Prefs::ColouringScheme scheme = prefs.colourScheme();
-	Atom::DrawStyle style = prefs.renderStyle();
+	Atom::DrawStyle stylei, stylej, globalstyle = prefs.renderStyle();
 	scaledradius = prefs.atomStyleRadius(Atom::ScaledStyle);
 
 	// Atoms and Bonds
@@ -282,66 +309,81 @@ void RenderEngine::renderModel(Model *source)
 
 		// Grab atom coordinate - we'll need it a lot
 		pos = i->r();
-		// Calculate projected Z coordinate and level of detail
-		z = pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w;
-		lod = int(-z / prefs.levelOfDetailWidth());
+		// Calculate projected Z distance from viewer
+		// If z is less than 0, don't even bother continuing since its behind the viewer
+		z = -(pos.x*transformZ.x + pos.y*transformZ.y + pos.z*transformZ.z + transformZ.w);
+		if (z < 0) continue;
+
+		// Determine level of detail to use for primitives
+		if (z < prefs.levelOfDetailStartZ()) lod = 0;
+		else lod = int(-z / prefs.levelOfDetailWidth());
 // 		printf("lod = %i, clipnear = %f, pos.z = %f\n", lod, prefs.clipNear(), z);
 
 		// Move to local atom position
 		glTranslated(pos.x, pos.y, pos.z);
 
 		// Select colour
-		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambient);
+		if (i->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, ambienti);
 		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				elements().copyAmbientColour(i->element(), ambient);
+				elements().copyAmbientColour(i->element(), ambienti);
 				break;
 			case (Prefs::ChargeScheme):
-				prefs.colourScale[0].colour(i->charge(), ambient);
+				prefs.colourScale[0].colour(i->charge(), ambienti);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.colourScale[1].colour(i->v().magnitude(), ambient);
+				prefs.colourScale[1].colour(i->v().magnitude(), ambienti);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.colourScale[2].colour(i->f().magnitude(), ambient);
+				prefs.colourScale[2].colour(i->f().magnitude(), ambienti);
 				break;
 			case (Prefs::CustomScheme):
-				i->copyColour(ambient);
+				i->copyColour(ambienti);
 				break;
 			default:
 				break;
 		}
 		// Set diffuse colour as 0.75*ambient
-		diffuse[0] = ambient[0] * 0.75;
-		diffuse[1] = ambient[1] * 0.75;
-		diffuse[2] = ambient[2] * 0.75;
-		diffuse[3] = ambient[3];
-		if (style == Atom::IndividualStyle) style = i->style();
-		switch (style)
+		diffusei[0] = ambienti[0] * 0.75;
+		diffusei[1] = ambienti[1] * 0.75;
+		diffusei[2] = ambienti[2] * 0.75;
+		diffusei[3] = ambienti[3];
+		// Get atom style
+		stylei = (globalstyle == Atom::IndividualStyle ? i->style() : globalstyle);
+		
+		switch (stylei)
 		{
 			case (Atom::StickStyle):
-				renderPrimitive(atom_[style], lod, ambient, diffuse, pos);
+				if (i->nBonds() == 0) renderPrimitive(atom_[stylei], lod, ambienti, diffusei, pos, FALSE);
 				break;
 			case (Atom::TubeStyle):
 			case (Atom::SphereStyle):
-				renderPrimitive(atom_[style], lod, ambient, diffuse, pos);
+				renderPrimitive(atom_[stylei], lod, ambienti, diffusei, pos, FALSE);
 				if (i->isSelected())
 				{
-					diffuse[3] = 0.5;
-					renderPrimitive(selectedAtom_[style], lod, ambient, diffuse, pos);
+					diffusei[3] = 0.5;
+					renderPrimitive(selectedAtom_[stylei], lod, ambienti, diffusei, pos, FALSE);
 				}
 				break;
 			case (Atom::ScaledStyle):
-				renderPrimitive(scaledAtom_[i->element()], lod, ambient, diffuse, pos);
+				renderPrimitive(scaledAtom_[i->element()], lod, ambienti, diffusei, pos, FALSE);
 				if (i->isSelected())
 				{
-					diffuse[3] = 0.5;
-					renderPrimitive(selectedScaledAtom_[i->element()], lod, ambient, diffuse, pos);
+					diffusei[3] = 0.5;
+					renderPrimitive(selectedScaledAtom_[i->element()], lod, ambienti, diffusei, pos, FALSE);
 				}
 				break;
 		}
+
+		// LABELS ETC SHOULD BE DONE HERE....
+
+		// Move back to 'zero' position
+		glTranslated(-pos.x, -pos.y, -pos.z);
+
 		// Bonds
+		// Translate local matrix to atom centre
+		transformbase.createTranslation(pos.x, pos.y, pos.z);
 		id_i = i->id();
 		for (ri = i->bonds(); ri != NULL; ri = ri->next)
 		{
@@ -371,47 +413,97 @@ void RenderEngine::renderModel(Model *source)
 				default:
 					break;
 			}
+			// Get atom style
+			stylej = (globalstyle == Atom::IndividualStyle ? j->style() : globalstyle);
+
 			// Set diffuse colour as 0.75*ambient
 			diffusej[0] = ambientj[0] * 0.75;
 			diffusej[1] = ambientj[1] * 0.75;
 			diffusej[2] = ambientj[2] * 0.75;
 			diffusej[3] = ambientj[3];
 
-			// OPTIMISE - Shift position so as not to draw 'inside' spherical atoms
-			// Scale to half-bond length
-			v *= 0.5;
-			halfr = v.magnitude();
-			// Calculate angle out of XZ plane
-			// OPTIMISE - Precalculate acos()
-			phi = DEGRAD * acos(v.z/halfr);
-			// Special case where the bond is exactly in the XY plane.
-			if ((180.0 - phi) < 0.0001) transform.createRotationX(phi);
-			else transform.createRotationAxis(-v.y/halfr , v.x/halfr, 0.0, phi);
-			// Scale to half length of bond
-			transform.x().z *= halfr;
-			transform.y().z *= halfr;
-			transform.z().z *= halfr;
-			renderPrimitive(bond_[Atom::SphereStyle], lod, ambient, diffuse, pos, transform);
-double m[16];
-glGetDoublev(GL_MODELVIEW_MATRIX, m);
-printf(" %f %f %f %f\n", m[0], m[1], m[2], m[3]);
-printf(" %f %f %f %f\n", m[4], m[5], m[6], m[7]);
-printf(" %f %f %f %f\n", m[8], m[9], m[10], m[11]);
-printf(" %f %f %f %f\n", m[12], m[13], m[14], m[15]);
-			glTranslated(v.x, v.y, v.z);
-glGetDoublev(GL_MODELVIEW_MATRIX, m);
-printf("Translated by %f %f %f\n", v.x, v.y, v.z);
-printf(" %f %f %f %f\n", m[0], m[1], m[2], m[3]);
-printf(" %f %f %f %f\n", m[4], m[5], m[6], m[7]);
-printf(" %f %f %f %f\n", m[8], m[9], m[10], m[11]);
-printf(" %f %f %f %f\n", m[12], m[13], m[14], m[15]);
-			renderPrimitive(bond_[Atom::SphereStyle], lod, ambientj, diffusej, pos+v, transform);
-			glTranslated(-v.x, -v.y, -v.z);
-			//transform.x().w = transform.x() * pos;
+			// Don't bother calculating transformation if both atom styles are Stick
+			if ((stylei == Atom::StickStyle) && (stylej == Atom::StickStyle))
+			{
+				glNormal3d(0.0,0.0,1.0);
+				glLineWidth( i->isSelected() ? 3.0 : 1.0 );
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambienti);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffusei);
+				glBegin(GL_LINES);
+				glVertex3d(pos.x, pos.y, pos.z);
+				glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
+				glEnd();
+				glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambienti);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffusei);
+				glBegin(GL_LINES);
+				glVertex3d(pos.x+0.5*v.x, pos.y+0.5*v.y, pos.z+0.5*v.z);
+				glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+				glEnd();
+			}
+			else
+			{
+				// OPTIMISE - Shift position so as not to draw 'inside' spherical atoms
+				// Scale to half-bond length
+				v *= 0.5;
+				halfr = v.magnitude();
+				// Calculate angle out of XZ plane
+				// OPTIMISE - Precalculate acos()
+				phi = DEGRAD * acos(v.z/halfr);
+	
+				// Special case where the bond is exactly in the XY plane.
+				transform1 = transformbase;
+				if ((fabs(phi) < 0.01) || (phi > 179.99)) transform1.applyRotationX(phi);
+				else transform1.applyRotationAxis(-v.y, v.x, 0.0, phi, TRUE);
+	
+				// Scale to half length of bond
+				transform1.applyScalingZ(halfr);
+	
+				// Draw bond halves
+				switch (stylei)
+				{
+					case (Atom::StickStyle):
+						glLineWidth( i->isSelected() ? 4.0 : 2.0 );
+						glBegin(GL_LINES);
+						glVertex3d(pos.x, pos.y, pos.z);
+						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+						glEnd();
+						break;
+					case (Atom::TubeStyle):
+					case (Atom::SphereStyle):
+					case (Atom::ScaledStyle):
+						renderPrimitive(bond_[stylei], lod, ambienti, diffusei, transform1);
+						if (i->isSelected())
+						{
+							diffusei[3] = 0.5;
+							renderPrimitive(selectedBond_[stylei], lod, ambienti, diffusei, transform1);
+						}
+						break;
+				}
+				switch (stylej)
+				{
+					case (Atom::StickStyle):
+						glLineWidth( j->isSelected() ? 3.0 : 1.0 );
+						glBegin(GL_LINES);
+						glVertex3d(pos.x+v.x, pos.y+v.y, pos.z+v.z);
+						glVertex3d(pos.x+2*v.x, pos.y+2*v.y, pos.z+2*v.z);
+						glEnd();
+						break;
+					case (Atom::TubeStyle):
+					case (Atom::SphereStyle):
+					case (Atom::ScaledStyle):
+						transform1.translate(v.x, v.y, v.z);
+						renderPrimitive(bond_[stylej], lod, ambientj, diffusej, transform1);
+						if (j->isSelected())
+						{
+							diffusej[3] = 0.5;
+							renderPrimitive(selectedBond_[stylej], lod, ambientj, diffusej, transform1);
+						}
+						break;
+				}
+			}
 		}
 
-		// Move back to 'zero' position
-		glTranslated(-pos.x, -pos.y, -pos.z);
 	}
 
 	// All un-filtered objects have now been rendered. Time to render filtered objects
@@ -425,18 +517,21 @@ void RenderEngine::sortAndSendGL()
 	Vec3<double> pos;
 	for (PrimitiveInfo *pi = filteredPrimitives_.first(); pi != NULL; pi = pi->next)
 	{
-		pos = pi->localCoords();
-		glMaterialfv(GL_FRONT, GL_AMBIENT, pi->ambient());
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, pi->diffuse());
-		glTranslated(pos.x, pos.y, pos.z);
-		if (pi->transformDefined())
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, pi->ambient());
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, pi->diffuse());
+		if (pi->matrixTransformDefined())
 		{
 			glPushMatrix();
-			glMultMatrixd(pi->localTransform().forGL());
+			glMultMatrixd(pi->localTransform().matrix());
 			pi->primitive()->sendToGL();
 			glPopMatrix();
 		}
-		else pi->primitive()->sendToGL();
-		glTranslated(-pos.x, -pos.y, -pos.z);
+		else
+		{
+			pos = pi->localCoords();
+			glTranslated(pos.x, pos.y, pos.z);
+			pi->primitive()->sendToGL();
+			glTranslated(-pos.x, -pos.y, -pos.z);
+		}
 	}
 }

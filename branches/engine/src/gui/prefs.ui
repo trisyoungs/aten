@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>620</height>
+    <width>391</width>
+    <height>631</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1036,7 +1036,7 @@
            <item>
             <widget class="QGroupBox" name="ColourGroup">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1900,19 +1900,6 @@
              </layout>
             </widget>
            </item>
-           <item>
-            <spacer>
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="tab">
@@ -1923,7 +1910,7 @@
            <item>
             <widget class="QGroupBox" name="ObjectsGroup">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -3046,6 +3033,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="CombinationGroup">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Combination Rules</string>
          </property>
@@ -3167,7 +3160,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>356</height>
+           <height>100</height>
           </size>
          </property>
         </spacer>

@@ -41,8 +41,8 @@ class GLMatrix
 	/*
 	// Operators
 	*/
-	GLMatrix operator*(const GLMatrix&) const;
-	GLMatrix& operator*=(const Mat4<double>&);
+	GLMatrix operator*(const GLMatrix &B) const;
+	GLMatrix& operator*=(const GLMatrix &B);
 	Vec3<double> operator*(const Vec3<double>&) const;
 
 
@@ -61,17 +61,25 @@ class GLMatrix
 	// Create rotation matrix about Z
 	void createRotationZ(double angle);
 	// Create axis rotation quaternion
-	void createRotationAxis(double ax, double ay, double az, double angle);
-	// Apply a general scaling to the matrix (as glScaled would to)
-	void scale(double scalex, double scaley, double scalez);
-	// Apply an x-scaling to the matrix
-	void scaleX(double scale);
-	// Apply a y-scaling to the matrix
-	void scaleY(double scale);
-	// Apply a z-scaling to the matrix
-	void scaleZ(double scale);
+	void createRotationAxis(double ax, double ay, double az, double angle, bool normalise);
+	// Apply rotation about X axis
+	void applyRotationX(double angle);
+	// Apply axis rotation quaternion
+	void applyRotationAxis(double ax, double ay, double az, double angle, bool normalise);
+	// Create a translation to the matrix (as glTranslated would to)
+	void createTranslation(double dx, double dy, double dz);
 	// Apply a translation to the matrix (as glTranslated would to)
+	void applyTranslation(double dx, double dy, double dz);
+	// Add a translation to the matrix
 	void translate(double dx, double dy, double dz);
+	// Apply a general scaling to the matrix (as glScaled would to)
+	void applyScaling(double scalex, double scaley, double scalez);
+	// Apply an x-scaling to the matrix
+	void applyScalingX(double scale);
+	// Apply a y-scaling to the matrix
+	void applyScalingY(double scale);
+	// Apply a z-scaling to the matrix
+	void applyScalingZ(double scale);
 	// Prints the matrix to stdout
 	void print() const;
 	// Set the zero matrix
