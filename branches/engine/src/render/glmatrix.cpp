@@ -80,15 +80,24 @@ GLMatrix &GLMatrix::operator*=(const GLMatrix &B)
 	return *this;
 }
 
-// Operator * (vec3)
-Vec3<double> GLMatrix::operator*(const Vec3<double> &v) const
+void GLMatrix::operator=(const Mat4<double> &B)
 {
-	// Assume vector 'w' element is 1.0
-	Vec3<double> result;
-	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + matrix_[11];
-	result.y = v.x*matrix_[1] + v.y*matrix_[5] + v.z*matrix_[9] + matrix_[12];
-	result.z = v.x*matrix_[2] + v.y*matrix_[6] + v.z*matrix_[10] + matrix_[13];
-	return result;
+	matrix_[0] = B.rows[0].x;
+	matrix_[1] = B.rows[1].x;
+	matrix_[2] = B.rows[2].x;
+	matrix_[3] = B.rows[3].x;
+	matrix_[4] = B.rows[0].y;
+	matrix_[5] = B.rows[1].y;
+	matrix_[6] = B.rows[2].y;
+	matrix_[7] = B.rows[3].y;
+	matrix_[8] = B.rows[0].z;
+	matrix_[9] = B.rows[1].z;
+	matrix_[10] = B.rows[2].z;
+	matrix_[11] = B.rows[3].z;
+	matrix_[12] = B.rows[0].w;
+	matrix_[13] = B.rows[1].w;
+	matrix_[14] = B.rows[2].w;
+	matrix_[15] = B.rows[3].w;
 }
 
 /*
@@ -426,3 +435,10 @@ GLdouble *GLMatrix::matrix()
 	return matrix_;
 }
 
+// Multiply against coordinates provided
+void GLMatrix::multiply(GLfloat *r, GLfloat *transformed)
+{
+	transformed[0] = r[0]*matrix_[0] + r[1]*matrix_[4] + r[2]*matrix_[8] + matrix_[12];
+	transformed[1] = r[0]*matrix_[1] + r[1]*matrix_[5] + r[2]*matrix_[9] + matrix_[13];
+	transformed[2] = r[0]*matrix_[2] + r[1]*matrix_[6] + r[2]*matrix_[10] + matrix_[14];
+}

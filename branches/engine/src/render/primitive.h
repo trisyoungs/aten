@@ -39,26 +39,48 @@ class Primitive
 	GLfloat *vertices_;
 	// Primitive's normal array
 	GLfloat *normals_;
-	// Number of vertices in primitive
-	int nVertices_;
+	// Centroid array
+	GLfloat *centroids_;
+	// Maximum number of vertices in primitive (i.e. array size)
+	int maxVertices_;
 	// Number of defined vertices (and normals) so far (when using createEmpty())
 	int nDefinedVertices_;
 	// GL object drawing method
 	GLenum type_;
-
+	// Number of primitive types stored
+	int nType_;
+	// Number of vertices per primitive type
+	int verticesPerType_;
+	// Number of defined primitive types
+	int nDefinedTypes_;
+	
 	public:
 	// Clear existing data
 	void clear();
+	// Forget all data, leaving arrays intact
+	void forgetAll();
 	// Create empty data arrays, setting type specified
-	void createEmpty(GLenum type, int nvertices);
+	void createEmpty(GLenum type, int ntype);
 	// Define next vertex and normal
-	void addVertexAndNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
+	void addVertexAndNormal(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, bool calcCentroid = TRUE);
 	// Create vertices of sphere with specified radius and quality
 	void createSphere(double radius, int nstacks, int nslices);
 	// Create vertices of cylinder along z with specified radius, length, and quality
 	void createCylinder(double startradius, double endradius, double length, int nstacks, int nslices);
 	// Create vertices of cross with specified width
 	void createCross(double width, int naxes);
+	// Return vertex array
+	GLfloat *vertices();
+	// Return normal array
+	GLfloat *normals();
+	// Return centroids array
+	GLfloat *centroids();
+	// Return number of vertices defined
+	int nDefinedVertices();
+	// Return number of primitive types defined
+	int nDefinedTypes();
+	// Return whether all arrays are full
+	bool full();
 	// Send to OpenGL (i.e. render)
 	void sendToGL();
 };
@@ -91,7 +113,6 @@ class PrimitiveInfo
 	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, Vec3<double> &coords);
 	// Set primitive info data, including local rotation
 	void set(Primitive *prim, GLfloat *ambient, GLfloat *diffuse, GLMatrix &transform);
-	// OPTIMISE - Instead of storing both coords, and transform, combine into single matrix
 	// Return pointer to primitive
 	Primitive *primitive();
 	// Return local coordinates of primitive
