@@ -116,6 +116,14 @@ class Prefs
 	double levelOfDetailStartZ_;
 	// Level of detail slice 'width'
 	double levelOfDetailWidth_;
+	// Whether transparency correction is enabled
+	bool transparencyCorrect_;
+	// Number of bins to use in transparency sorting
+	int transparencyNBins_;
+	// Starting Z-depth of transparency bins
+	double transparencyBinStartZ_;
+	// Width of individual transparency Z-bin
+	double transparencyBinWidth_;
 
 	public:
 	// Set the visibility of an object on-screen
@@ -168,6 +176,22 @@ class Prefs
 	void setLevelOfDetailWidth(double width);
 	// Return level of detail slice 'width'
 	double levelOfDetailWidth();
+	// Return whether transparency correction is enabled
+	bool transparencyCorrect();
+	// Return whether transparency correction is enabled
+	void setTransparencyCorrect(bool b);
+	// Return number of bins to use in transparency sorting
+	int transparencyNBins();
+	// Set number of bins to use in transparency sorting
+	void setTransparencyNBins(int nbins);
+	// Return starting Z-depth of transparency bins
+	double transparencyBinStartZ();
+	// Set starting Z-depth of transparency bins
+	void setTransparencyBinStartZ(double startz);
+	// Return width of individual transparency Z-bin
+	double transparencyBinWidth();
+	// Set width of individual transparency Z-bin
+	void setTransparencyBinWidth(double width);
 
 
 	/*

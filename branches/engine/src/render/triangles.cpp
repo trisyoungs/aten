@@ -123,31 +123,32 @@ void TriangleChopper::storeTriangles(PrimitiveInfo *pinfo)
 	GLfloat *vertices = pinfo->primitive()->vertices();
 	GLfloat *normals = pinfo->primitive()->normals();
 	GLfloat *centroids = pinfo->primitive()->centroids();
-	GLfloat newr[9], newn[9];
-	int voff = 0, bin;
-	if (pinfo->matrixTransformDefined())
+	GLfloat newr[9], newn[9], norm[3];
+	int voff = 0, bin, m;
+
+	for (int n=0; n<pinfo->primitive()->nDefinedTypes(); ++n)
 	{
-		for (int n=0; n<pinfo->primitive()->nDefinedTypes(); ++n)
-		{
-			// Transform triangle centroid into world coordinates to decide bin
-			pinfo->localTransform().multiply(&centroids[n], newr);
-			bin = int((-newr[2]-startZ_)/sliceWidth_);
-			if (bin >= nSlices_) bin = nSlices_-1;
-			// Transform triangle vertices into world coordinates and stored
-			pinfo->localTransform().multiply(&vertices[voff], newr);
-			pinfo->localTransform().multiply(&normals[voff], newn);
-			voff += 3;
-			pinfo->localTransform().multiply(&vertices[voff], &newr[3]);
-			pinfo->localTransform().multiply(&normals[voff], &newn[3]);
-			voff += 3;
-			pinfo->localTransform().multiply(&vertices[voff], &newr[6]);
-			pinfo->localTransform().multiply(&normals[voff], &newn[6]);
-			voff += 3;
-			triangleLists_[bin].addTriangle(newr, newn);
-		}
-	}
-	else
-	{
+		// Transform triangle centroid into world coordinates to decide bin
+		pinfo->localTransform().multiply(&centroids[n*3], newr);
+		bin = int((-newr[2]-startZ_)/sliceWidth_);
+		if (bin >= nSlices_) bin = nSlices_-1;
+		// Transform triangle vertices into world coordinates and stored
+		pinfo->localTransform().multiply(&vertices[voff], newr);
+		for (m=0; m<3; ++m) norm[m] = normals[voff+m] + vertices[voff+m];
+		pinfo->localTransform().multiply(norm, newn);
+		for (m=0; m<3; ++m) newn[m] -= newr[m];
+		voff += 3;
+		pinfo->localTransform().multiply(&vertices[voff], &newr[3]);
+		for (m=0; m<3; ++m) norm[m] = normals[voff+m] + vertices[voff+m];
+		pinfo->localTransform().multiply(norm, &newn[3]);
+		for (m=0; m<3; ++m) newn[3+m] -= newr[3+m];
+		voff += 3;
+		pinfo->localTransform().multiply(&vertices[voff], &newr[6]);
+		for (m=0; m<3; ++m) norm[m] = normals[voff+m] + vertices[voff+m];
+		pinfo->localTransform().multiply(norm, &newn[6]);
+		for (m=0; m<3; ++m) newn[6+m] -= newr[6+m];
+		voff += 3;
+		triangleLists_[bin].addTriangle(newr, newn);
 	}
 	
 }

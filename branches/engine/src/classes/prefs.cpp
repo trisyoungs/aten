@@ -208,6 +208,10 @@ Prefs::Prefs()
 	levelsOfDetail_ = 3;
 	levelOfDetailWidth_ = 10;
 	levelOfDetailStartZ_ = 10.0;
+	transparencyCorrect_ = TRUE;
+	transparencyNBins_ = 20;
+	transparencyBinStartZ_ = 0.0;
+	transparencyBinWidth_ = 1.0;
 
 	// Screen Objects
 	screenObjects_ = 1 + 2 + 4 + 32 + 64 + 128 + 256 + 512;
@@ -563,6 +567,55 @@ double Prefs::levelOfDetailWidth()
 {
 	return levelOfDetailWidth_;
 }
+
+// Return whether transparency correction is enabled
+bool Prefs::transparencyCorrect()
+{
+	return transparencyCorrect_;
+}
+
+// Return whether transparency correction is enabled
+void Prefs::setTransparencyCorrect(bool b)
+{
+	transparencyCorrect_ = b;
+}
+
+// Return number of bins to use in transparency sorting
+int Prefs::transparencyNBins()
+{
+	return transparencyNBins_;
+}
+
+// Set number of bins to use in transparency sorting
+void Prefs::setTransparencyNBins(int nbins)
+{
+	transparencyNBins_ = nbins;
+}
+
+// Return starting Z-depth of transparency bins
+double Prefs::transparencyBinStartZ()
+{
+	return transparencyBinStartZ_;
+}
+
+// Set starting Z-depth of transparency bins
+void Prefs::setTransparencyBinStartZ(double startz)
+{
+	transparencyBinStartZ_ = startz;
+}
+
+// Return width of individual transparency Z-bin
+double Prefs::transparencyBinWidth()
+{
+	return transparencyBinWidth_;
+}
+
+// Set width of individual transparency Z-bin
+void Prefs::setTransparencyBinWidth(double width)
+{
+	transparencyBinWidth_ = width;
+}
+
 
 // Return screen radius of specified atom
 double Prefs::screenRadius(Atom *i) const
